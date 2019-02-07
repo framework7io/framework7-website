@@ -1,5 +1,5 @@
 /**
- * Framework7 4.0.0-beta.34
+ * Framework7 4.0.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * http://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: January 31, 2019
+ * Released on: February 7, 2019
  */
 
 (function (global, factory) {
@@ -19,15 +19,15 @@
   /**
    * Template7 1.4.1
    * Mobile-first HTML template engine
-   *
+   * 
    * http://www.idangero.us/template7/
-   *
+   * 
    * Copyright 2019, Vladimir Kharlampidi
    * The iDangero.us
    * http://www.idangero.us/
-   *
+   * 
    * Licensed under MIT
-   *
+   * 
    * Released on: February 5, 2019
    */
 
@@ -8899,177 +8899,6 @@
       $(el).find(("." + (theme === 'md' ? 'ios' : 'md') + "-only, .if-" + (theme === 'md' ? 'ios' : 'md'))).remove();
     };
 
-    Router.prototype.templateLoader = function templateLoader (template, templateUrl, options, resolve, reject) {
-      var router = this;
-      function compile(t) {
-        var compiledHtml;
-        var context;
-        try {
-          context = options.context || {};
-          if (typeof context === 'function') { context = context.call(router); }
-          else if (typeof context === 'string') {
-            try {
-              context = JSON.parse(context);
-            } catch (err) {
-              reject();
-              throw (err);
-            }
-          }
-          if (typeof t === 'function') {
-            compiledHtml = t(context);
-          } else {
-            compiledHtml = Template7.compile(t)(Utils.extend({}, context || {}, {
-              $app: router.app,
-              $root: Utils.extend({}, router.app.data, router.app.methods),
-              $route: options.route,
-              $f7route: options.route,
-              $router: router,
-              $f7router: router,
-              $theme: {
-                ios: router.app.theme === 'ios',
-                md: router.app.theme === 'md',
-              },
-            }));
-          }
-        } catch (err) {
-          reject();
-          throw (err);
-        }
-        resolve(compiledHtml, { context: context });
-      }
-      if (templateUrl) {
-        // Load via XHR
-        if (router.xhr) {
-          router.xhr.abort();
-          router.xhr = false;
-        }
-        router
-          .xhrRequest(templateUrl, options)
-          .then(function (templateContent) {
-            compile(templateContent);
-          })
-          .catch(function () {
-            reject();
-          });
-      } else {
-        compile(template);
-      }
-    };
-
-    Router.prototype.modalTemplateLoader = function modalTemplateLoader (template, templateUrl, options, resolve, reject) {
-      var router = this;
-      return router.templateLoader(template, templateUrl, options, function (html) {
-        resolve(html);
-      }, reject);
-    };
-
-    Router.prototype.tabTemplateLoader = function tabTemplateLoader (template, templateUrl, options, resolve, reject) {
-      var router = this;
-      return router.templateLoader(template, templateUrl, options, function (html) {
-        resolve(html);
-      }, reject);
-    };
-
-    Router.prototype.pageTemplateLoader = function pageTemplateLoader (template, templateUrl, options, resolve, reject) {
-      var router = this;
-      return router.templateLoader(template, templateUrl, options, function (html, newOptions) {
-        if ( newOptions === void 0 ) newOptions = {};
-
-        resolve(router.getPageEl(html), newOptions);
-      }, reject);
-    };
-
-    Router.prototype.componentLoader = function componentLoader (component, componentUrl, options, resolve, reject) {
-      if ( options === void 0 ) options = {};
-
-      var router = this;
-      var app = router.app;
-      var url = typeof component === 'string' ? component : componentUrl;
-      var compiledUrl = router.replaceRequestUrlParams(url, options);
-      function compile(componentOptions) {
-        var context = options.context || {};
-        if (typeof context === 'function') { context = context.call(router); }
-        else if (typeof context === 'string') {
-          try {
-            context = JSON.parse(context);
-          } catch (err) {
-            reject();
-            throw (err);
-          }
-        }
-        var extendContext = Utils.merge(
-          {},
-          context,
-          {
-            $route: options.route,
-            $f7route: options.route,
-            $router: router,
-            $f7router: router,
-            $theme: {
-              ios: app.theme === 'ios',
-              md: app.theme === 'md',
-            },
-          }
-        );
-        var createdComponent = app.component.create(componentOptions, extendContext);
-        resolve(createdComponent.el);
-      }
-      var cachedComponent;
-      if (compiledUrl) {
-        router.cache.components.forEach(function (cached) {
-          if (cached.url === compiledUrl) { cachedComponent = cached.component; }
-        });
-      }
-      if (compiledUrl && cachedComponent) {
-        compile(cachedComponent);
-      } else if (compiledUrl && !cachedComponent) {
-        // Load via XHR
-        if (router.xhr) {
-          router.xhr.abort();
-          router.xhr = false;
-        }
-        router
-          .xhrRequest(url, options)
-          .then(function (loadedComponent) {
-            var parsedComponent = app.component.parse(loadedComponent);
-            router.cache.components.push({
-              url: compiledUrl,
-              component: parsedComponent,
-            });
-            compile(parsedComponent);
-          })
-          .catch(function (err) {
-            reject();
-            throw (err);
-          });
-      } else {
-        compile(component);
-      }
-    };
-
-    Router.prototype.modalComponentLoader = function modalComponentLoader (rootEl, component, componentUrl, options, resolve, reject) {
-      var router = this;
-      router.componentLoader(component, componentUrl, options, function (el) {
-        resolve(el);
-      }, reject);
-    };
-
-    Router.prototype.tabComponentLoader = function tabComponentLoader (tabEl, component, componentUrl, options, resolve, reject) {
-      var router = this;
-      router.componentLoader(component, componentUrl, options, function (el) {
-        resolve(el);
-      }, reject);
-    };
-
-    Router.prototype.pageComponentLoader = function pageComponentLoader (routerEl, component, componentUrl, options, resolve, reject) {
-      var router = this;
-      router.componentLoader(component, componentUrl, options, function (el, newOptions) {
-        if ( newOptions === void 0 ) newOptions = {};
-
-        resolve(el, newOptions);
-      }, reject);
-    };
-
     Router.prototype.getPageData = function getPageData (pageEl, navbarEl, from, to, route, pageFromEl) {
       if ( route === void 0 ) route = {};
 
@@ -9868,6 +9697,187 @@
       init: function init() {
         var app = this;
         initClicks(app);
+      },
+    },
+  };
+
+  var RouterTemplateLoaderModule = {
+    name: 'routerTemplateLoader',
+    proto: {
+      templateLoader: function templateLoader(template, templateUrl, options, resolve, reject) {
+        var router = this;
+        function compile(t) {
+          var compiledHtml;
+          var context;
+          try {
+            context = options.context || {};
+            if (typeof context === 'function') { context = context.call(router); }
+            else if (typeof context === 'string') {
+              try {
+                context = JSON.parse(context);
+              } catch (err) {
+                reject();
+                throw (err);
+              }
+            }
+            if (typeof t === 'function') {
+              compiledHtml = t(context);
+            } else {
+              compiledHtml = Template7.compile(t)(Utils.extend({}, context || {}, {
+                $app: router.app,
+                $root: Utils.extend({}, router.app.data, router.app.methods),
+                $route: options.route,
+                $f7route: options.route,
+                $router: router,
+                $f7router: router,
+                $theme: {
+                  ios: router.app.theme === 'ios',
+                  md: router.app.theme === 'md',
+                },
+              }));
+            }
+          } catch (err) {
+            reject();
+            throw (err);
+          }
+          resolve(compiledHtml, { context: context });
+        }
+        if (templateUrl) {
+          // Load via XHR
+          if (router.xhr) {
+            router.xhr.abort();
+            router.xhr = false;
+          }
+          router
+            .xhrRequest(templateUrl, options)
+            .then(function (templateContent) {
+              compile(templateContent);
+            })
+            .catch(function () {
+              reject();
+            });
+        } else {
+          compile(template);
+        }
+      },
+
+      modalTemplateLoader: function modalTemplateLoader(template, templateUrl, options, resolve, reject) {
+        var router = this;
+        return router.templateLoader(template, templateUrl, options, function (html) {
+          resolve(html);
+        }, reject);
+      },
+
+      tabTemplateLoader: function tabTemplateLoader(template, templateUrl, options, resolve, reject) {
+        var router = this;
+        return router.templateLoader(template, templateUrl, options, function (html) {
+          resolve(html);
+        }, reject);
+      },
+
+      pageTemplateLoader: function pageTemplateLoader(template, templateUrl, options, resolve, reject) {
+        var router = this;
+        return router.templateLoader(template, templateUrl, options, function (html, newOptions) {
+          if ( newOptions === void 0 ) newOptions = {};
+
+          resolve(router.getPageEl(html), newOptions);
+        }, reject);
+      },
+    },
+  };
+
+  var RouterComponentLoaderModule = {
+    name: 'routerComponentLoader',
+    proto: {
+      componentLoader: function componentLoader(component, componentUrl, options, resolve, reject) {
+        if ( options === void 0 ) options = {};
+
+        var router = this;
+        var app = router.app;
+        var url = typeof component === 'string' ? component : componentUrl;
+        var compiledUrl = router.replaceRequestUrlParams(url, options);
+        function compile(componentOptions) {
+          var context = options.context || {};
+          if (typeof context === 'function') { context = context.call(router); }
+          else if (typeof context === 'string') {
+            try {
+              context = JSON.parse(context);
+            } catch (err) {
+              reject();
+              throw (err);
+            }
+          }
+          var extendContext = Utils.merge(
+            {},
+            context,
+            {
+              $route: options.route,
+              $f7route: options.route,
+              $router: router,
+              $f7router: router,
+              $theme: {
+                ios: app.theme === 'ios',
+                md: app.theme === 'md',
+              },
+            }
+          );
+          var createdComponent = app.component.create(componentOptions, extendContext);
+          resolve(createdComponent.el);
+        }
+        var cachedComponent;
+        if (compiledUrl) {
+          router.cache.components.forEach(function (cached) {
+            if (cached.url === compiledUrl) { cachedComponent = cached.component; }
+          });
+        }
+        if (compiledUrl && cachedComponent) {
+          compile(cachedComponent);
+        } else if (compiledUrl && !cachedComponent) {
+          // Load via XHR
+          if (router.xhr) {
+            router.xhr.abort();
+            router.xhr = false;
+          }
+          router
+            .xhrRequest(url, options)
+            .then(function (loadedComponent) {
+              var parsedComponent = app.component.parse(loadedComponent);
+              router.cache.components.push({
+                url: compiledUrl,
+                component: parsedComponent,
+              });
+              compile(parsedComponent);
+            })
+            .catch(function (err) {
+              reject();
+              throw (err);
+            });
+        } else {
+          compile(component);
+        }
+      },
+
+      modalComponentLoader: function modalComponentLoader(rootEl, component, componentUrl, options, resolve, reject) {
+        var router = this;
+        router.componentLoader(component, componentUrl, options, function (el) {
+          resolve(el);
+        }, reject);
+      },
+
+      tabComponentLoader: function tabComponentLoader(tabEl, component, componentUrl, options, resolve, reject) {
+        var router = this;
+        router.componentLoader(component, componentUrl, options, function (el) {
+          resolve(el);
+        }, reject);
+      },
+
+      pageComponentLoader: function pageComponentLoader(routerEl, component, componentUrl, options, resolve, reject) {
+        var router = this;
+        router.componentLoader(component, componentUrl, options, function (el, newOptions) {
+          if ( newOptions === void 0 ) newOptions = {};
+
+          resolve(el, newOptions);
+        }, reject);
       },
     },
   };
@@ -13001,6 +13011,10 @@
   }
 
   // Install Core Modules & Components
+  Router.use([
+    RouterTemplateLoaderModule,
+    RouterComponentLoaderModule ]);
+
   Framework7.use([
     DeviceModule,
     SupportModule,

@@ -5,8 +5,8 @@
 }(this, function () { 'use strict';
 
   /*!
-   * Vue.js v2.5.21
-   * (c) 2014-2018 Evan You
+   * Vue.js v2.6.3
+   * (c) 2014-2019 Evan You
    * Released under the MIT License.
    */
   /*  */
@@ -82,13 +82,21 @@
     return n >= 0 && Math.floor(n) === n && isFinite(val)
   }
 
+  function isPromise (val) {
+    return (
+      isDef(val) &&
+      typeof val.then === 'function' &&
+      typeof val.catch === 'function'
+    )
+  }
+
   /**
    * Convert a value to a string that is actually rendered.
    */
   function toString (val) {
     return val == null
       ? ''
-      : typeof val === 'object'
+      : Array.isArray(val) || (isPlainObject(val) && val.toString === _toString)
         ? JSON.stringify(val, null, 2)
         : String(val)
   }
@@ -355,7 +363,8 @@
     'destroyed',
     'activated',
     'deactivated',
-    'errorCaptured'
+    'errorCaptured',
+    'serverPrefetch'
   ];
 
   /*  */
@@ -459,6 +468,13 @@
   /*  */
 
   /**
+   * unicode letters used for parsing html tags, component names and property paths.
+   * using https://www.w3.org/TR/html53/semantics-scripting.html#potentialcustomelementname
+   * skipping \u10000-\uEFFFF due to it freezing up PhantomJS
+   */
+  var unicodeLetters = 'a-zA-Z\u00B7\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u037D\u037F-\u1FFF\u200C-\u200D\u203F-\u2040\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD';
+
+  /**
    * Check if a string starts with $ or _
    */
   function isReserved (str) {
@@ -481,7 +497,7 @@
   /**
    * Parse simple path.
    */
-  var bailRE = /[^\w.$]/;
+  var bailRE = new RegExp(("[^" + unicodeLetters + ".$_\\d]"));
   function parsePath (path) {
     if (bailRE.test(path)) {
       return
@@ -512,6 +528,8 @@
   var isAndroid = (UA && UA.indexOf('android') > 0) || (weexPlatform === 'android');
   var isIOS = (UA && /iphone|ipad|ipod|ios/.test(UA)) || (weexPlatform === 'ios');
   var isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge;
+  var isPhantomJS = UA && /phantomjs/.test(UA);
+  var isFF = UA && UA.match(/firefox\/(\d+)/);
 
   // Firefox has a "watch" function on Object.prototype...
   var nativeWatch = ({}).watch;
@@ -623,9 +641,9 @@
     }
   };
 
-  // the current target watcher being evaluated.
-  // this is globally unique because there could be only one
-  // watcher being evaluated at any time.
+  // The current target watcher being evaluated.
+  // This is globally unique because only one watcher
+  // can be evaluated at a time.
   Dep.target = null;
   var targetStack = [];
 
@@ -1024,9 +1042,15 @@
   function mergeData (to, from) {
     if (!from) { return to }
     var key, toVal, fromVal;
-    var keys = Object.keys(from);
+
+    var keys = hasSymbol
+      ? Reflect.ownKeys(from)
+      : Object.keys(from);
+
     for (var i = 0; i < keys.length; i++) {
       key = keys[i];
+      // in case the object is already observed...
+      if (key === '__ob__') { continue }
       toVal = to[key];
       fromVal = from[key];
       if (!hasOwn(to, key)) {
@@ -1110,13 +1134,26 @@
     parentVal,
     childVal
   ) {
-    return childVal
+    var res = childVal
       ? parentVal
         ? parentVal.concat(childVal)
         : Array.isArray(childVal)
           ? childVal
           : [childVal]
-      : parentVal
+      : parentVal;
+    return res
+      ? dedupeHooks(res)
+      : res
+  }
+
+  function dedupeHooks (hooks) {
+    var res = [];
+    for (var i = 0; i < hooks.length; i++) {
+      if (res.indexOf(hooks[i]) === -1) {
+        res.push(hooks[i]);
+      }
+    }
+    return res
   }
 
   LIFECYCLE_HOOKS.forEach(function (hook) {
@@ -1271,9 +1308,9 @@
     var dirs = options.directives;
     if (dirs) {
       for (var key in dirs) {
-        var def = dirs[key];
-        if (typeof def === 'function') {
-          dirs[key] = { bind: def, update: def };
+        var def$$1 = dirs[key];
+        if (typeof def$$1 === 'function') {
+          dirs[key] = { bind: def$$1, update: def$$1 };
         }
       }
     }
@@ -1478,6 +1515,25 @@
     globalHandleError(err, vm, info);
   }
 
+  function invokeWithErrorHandling (
+    handler,
+    context,
+    args,
+    vm,
+    info
+  ) {
+    var res;
+    try {
+      res = args ? handler.apply(context, args) : handler.call(context);
+      if (res && !res._isVue && isPromise(res)) {
+        res.catch(function (e) { return handleError(e, vm, info + " (Promise/async)"); });
+      }
+    } catch (e) {
+      handleError(e, vm, info);
+    }
+    return res
+  }
+
   function globalHandleError (err, vm, info) {
     if (config.errorHandler) {
       try {
@@ -1500,6 +1556,8 @@
 
   /*  */
 
+  var isUsingMicroTask = false;
+
   var callbacks = [];
   var pending = false;
 
@@ -1512,76 +1570,69 @@
     }
   }
 
-  // Here we have async deferring wrappers using both microtasks and (macro) tasks.
-  // In < 2.4 we used microtasks everywhere, but there are some scenarios where
-  // microtasks have too high a priority and fire in between supposedly
-  // sequential events (e.g. #4521, #6690) or even between bubbling of the same
-  // event (#6566). However, using (macro) tasks everywhere also has subtle problems
-  // when state is changed right before repaint (e.g. #6813, out-in transitions).
-  // Here we use microtask by default, but expose a way to force (macro) task when
-  // needed (e.g. in event handlers attached by v-on).
-  var microTimerFunc;
-  var macroTimerFunc;
-  var useMacroTask = false;
+  // Here we have async deferring wrappers using microtasks.
+  // In 2.5 we used (macro) tasks (in combination with microtasks).
+  // However, it has subtle problems when state is changed right before repaint
+  // (e.g. #6813, out-in transitions).
+  // Also, using (macro) tasks in event handler would cause some weird behaviors
+  // that cannot be circumvented (e.g. #7109, #7153, #7546, #7834, #8109).
+  // So we now use microtasks everywhere, again.
+  // A major drawback of this tradeoff is that there are some scenarios
+  // where microtasks have too high a priority and fire in between supposedly
+  // sequential events (e.g. #4521, #6690, which have workarounds)
+  // or even between bubbling of the same event (#6566).
+  var timerFunc;
 
-  // Determine (macro) task defer implementation.
-  // Technically setImmediate should be the ideal choice, but it's only available
-  // in IE. The only polyfill that consistently queues the callback after all DOM
-  // events triggered in the same loop is by using MessageChannel.
-  /* istanbul ignore if */
-  if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
-    macroTimerFunc = function () {
-      setImmediate(flushCallbacks);
-    };
-  } else if (typeof MessageChannel !== 'undefined' && (
-    isNative(MessageChannel) ||
-    // PhantomJS
-    MessageChannel.toString() === '[object MessageChannelConstructor]'
-  )) {
-    var channel = new MessageChannel();
-    var port = channel.port2;
-    channel.port1.onmessage = flushCallbacks;
-    macroTimerFunc = function () {
-      port.postMessage(1);
-    };
-  } else {
-    /* istanbul ignore next */
-    macroTimerFunc = function () {
-      setTimeout(flushCallbacks, 0);
-    };
-  }
-
-  // Determine microtask defer implementation.
+  // The nextTick behavior leverages the microtask queue, which can be accessed
+  // via either native Promise.then or MutationObserver.
+  // MutationObserver has wider support, however it is seriously bugged in
+  // UIWebView in iOS >= 9.3.3 when triggered in touch event handlers. It
+  // completely stops working after triggering a few times... so, if native
+  // Promise is available, we will use it:
   /* istanbul ignore next, $flow-disable-line */
   if (typeof Promise !== 'undefined' && isNative(Promise)) {
     var p = Promise.resolve();
-    microTimerFunc = function () {
+    timerFunc = function () {
       p.then(flushCallbacks);
-      // in problematic UIWebViews, Promise.then doesn't completely break, but
+      // In problematic UIWebViews, Promise.then doesn't completely break, but
       // it can get stuck in a weird state where callbacks are pushed into the
       // microtask queue but the queue isn't being flushed, until the browser
       // needs to do some other work, e.g. handle a timer. Therefore we can
       // "force" the microtask queue to be flushed by adding an empty timer.
       if (isIOS) { setTimeout(noop); }
     };
+    isUsingMicroTask = true;
+  } else if (!isIE && typeof MutationObserver !== 'undefined' && (
+    isNative(MutationObserver) ||
+    // PhantomJS and iOS 7.x
+    MutationObserver.toString() === '[object MutationObserverConstructor]'
+  )) {
+    // Use MutationObserver where native Promise is not available,
+    // e.g. PhantomJS, iOS7, Android 4.4
+    // (#6466 MutationObserver is unreliable in IE11)
+    var counter = 1;
+    var observer = new MutationObserver(flushCallbacks);
+    var textNode = document.createTextNode(String(counter));
+    observer.observe(textNode, {
+      characterData: true
+    });
+    timerFunc = function () {
+      counter = (counter + 1) % 2;
+      textNode.data = String(counter);
+    };
+    isUsingMicroTask = true;
+  } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
+    // Fallback to setImmediate.
+    // Techinically it leverages the (macro) task queue,
+    // but it is still a better choice than setTimeout.
+    timerFunc = function () {
+      setImmediate(flushCallbacks);
+    };
   } else {
-    // fallback to macro
-    microTimerFunc = macroTimerFunc;
-  }
-
-  /**
-   * Wrap a function so that if any code inside triggers state change,
-   * the changes are queued using a (macro) task instead of a microtask.
-   */
-  function withMacroTask (fn) {
-    return fn._withTask || (fn._withTask = function () {
-      useMacroTask = true;
-      try {
-        return fn.apply(null, arguments)
-      } finally {
-        useMacroTask = false;
-      }
-    })
+    // Fallback to setTimeout.
+    timerFunc = function () {
+      setTimeout(flushCallbacks, 0);
+    };
   }
 
   function nextTick (cb, ctx) {
@@ -1599,11 +1650,7 @@
     });
     if (!pending) {
       pending = true;
-      if (useMacroTask) {
-        macroTimerFunc();
-      } else {
-        microTimerFunc();
-      }
+      timerFunc();
     }
     // $flow-disable-line
     if (!cb && typeof Promise !== 'undefined') {
@@ -1667,7 +1714,7 @@
     }
   });
 
-  function createFnInvoker (fns) {
+  function createFnInvoker (fns, vm) {
     function invoker () {
       var arguments$1 = arguments;
 
@@ -1675,11 +1722,11 @@
       if (Array.isArray(fns)) {
         var cloned = fns.slice();
         for (var i = 0; i < cloned.length; i++) {
-          cloned[i].apply(null, arguments$1);
+          invokeWithErrorHandling(cloned[i], null, arguments$1, vm, "v-on handler");
         }
       } else {
         // return handler return value for single handlers
-        return fns.apply(null, arguments)
+        return invokeWithErrorHandling(fns, null, arguments, vm, "v-on handler")
       }
     }
     invoker.fns = fns;
@@ -1701,7 +1748,7 @@
       event = normalizeEvent(name);
       if (isUndef(cur)) ; else if (isUndef(old)) {
         if (isUndef(cur.fns)) {
-          cur = on[name] = createFnInvoker(cur);
+          cur = on[name] = createFnInvoker(cur, vm);
         }
         if (isTrue(event.once)) {
           cur = on[name] = createOnceHandler(event.name, cur, event.capture);
@@ -1896,6 +1943,1037 @@
 
   /*  */
 
+  function initProvide (vm) {
+    var provide = vm.$options.provide;
+    if (provide) {
+      vm._provided = typeof provide === 'function'
+        ? provide.call(vm)
+        : provide;
+    }
+  }
+
+  function initInjections (vm) {
+    var result = resolveInject(vm.$options.inject, vm);
+    if (result) {
+      toggleObserving(false);
+      Object.keys(result).forEach(function (key) {
+        /* istanbul ignore else */
+        {
+          defineReactive$$1(vm, key, result[key]);
+        }
+      });
+      toggleObserving(true);
+    }
+  }
+
+  function resolveInject (inject, vm) {
+    if (inject) {
+      // inject is :any because flow is not smart enough to figure out cached
+      var result = Object.create(null);
+      var keys = hasSymbol
+        ? Reflect.ownKeys(inject)
+        : Object.keys(inject);
+
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        // #6574 in case the inject object is observed...
+        if (key === '__ob__') { continue }
+        var provideKey = inject[key].from;
+        var source = vm;
+        while (source) {
+          if (source._provided && hasOwn(source._provided, provideKey)) {
+            result[key] = source._provided[provideKey];
+            break
+          }
+          source = source.$parent;
+        }
+        if (!source) {
+          if ('default' in inject[key]) {
+            var provideDefault = inject[key].default;
+            result[key] = typeof provideDefault === 'function'
+              ? provideDefault.call(vm)
+              : provideDefault;
+          }
+        }
+      }
+      return result
+    }
+  }
+
+  /*  */
+
+
+
+  /**
+   * Runtime helper for resolving raw children VNodes into a slot object.
+   */
+  function resolveSlots (
+    children,
+    context
+  ) {
+    if (!children || !children.length) {
+      return {}
+    }
+    var slots = {};
+    for (var i = 0, l = children.length; i < l; i++) {
+      var child = children[i];
+      var data = child.data;
+      // remove slot attribute if the node is resolved as a Vue slot node
+      if (data && data.attrs && data.attrs.slot) {
+        delete data.attrs.slot;
+      }
+      // named slots should only be respected if the vnode was rendered in the
+      // same context.
+      if ((child.context === context || child.fnContext === context) &&
+        data && data.slot != null
+      ) {
+        var name = data.slot;
+        var slot = (slots[name] || (slots[name] = []));
+        if (child.tag === 'template') {
+          slot.push.apply(slot, child.children || []);
+        } else {
+          slot.push(child);
+        }
+      } else {
+        (slots.default || (slots.default = [])).push(child);
+      }
+    }
+    // ignore slots that contains only whitespace
+    for (var name$1 in slots) {
+      if (slots[name$1].every(isWhitespace)) {
+        delete slots[name$1];
+      }
+    }
+    return slots
+  }
+
+  function isWhitespace (node) {
+    return (node.isComment && !node.asyncFactory) || node.text === ' '
+  }
+
+  /*  */
+
+  function normalizeScopedSlots (
+    slots,
+    normalSlots
+  ) {
+    var res;
+    if (!slots) {
+      res = {};
+    } else if (slots._normalized) {
+      return slots
+    } else {
+      res = {};
+      for (var key in slots) {
+        if (slots[key] && key[0] !== '$') {
+          res[key] = normalizeScopedSlot(slots[key]);
+        }
+      }
+    }
+    // expose normal slots on scopedSlots
+    for (var key$1 in normalSlots) {
+      if (!(key$1 in res)) {
+        res[key$1] = proxyNormalSlot(normalSlots, key$1);
+      }
+    }
+    def(res, '_normalized', true);
+    def(res, '$stable', slots ? !!slots.$stable : true);
+    return res
+  }
+
+  function normalizeScopedSlot(fn) {
+    return function (scope) {
+      var res = fn(scope);
+      return res && typeof res === 'object' && !Array.isArray(res)
+        ? [res] // single vnode
+        : normalizeChildren(res)
+    }
+  }
+
+  function proxyNormalSlot(slots, key) {
+    return function () { return slots[key]; }
+  }
+
+  /*  */
+
+  /**
+   * Runtime helper for rendering v-for lists.
+   */
+  function renderList (
+    val,
+    render
+  ) {
+    var ret, i, l, keys, key;
+    if (Array.isArray(val) || typeof val === 'string') {
+      ret = new Array(val.length);
+      for (i = 0, l = val.length; i < l; i++) {
+        ret[i] = render(val[i], i);
+      }
+    } else if (typeof val === 'number') {
+      ret = new Array(val);
+      for (i = 0; i < val; i++) {
+        ret[i] = render(i + 1, i);
+      }
+    } else if (isObject(val)) {
+      if (hasSymbol && val[Symbol.iterator]) {
+        ret = [];
+        var iterator = val[Symbol.iterator]();
+        var result = iterator.next();
+        while (!result.done) {
+          ret.push(render(result.value, ret.length));
+          result = iterator.next();
+        }
+      } else {
+        keys = Object.keys(val);
+        ret = new Array(keys.length);
+        for (i = 0, l = keys.length; i < l; i++) {
+          key = keys[i];
+          ret[i] = render(val[key], key, i);
+        }
+      }
+    }
+    if (!isDef(ret)) {
+      ret = [];
+    }
+    (ret)._isVList = true;
+    return ret
+  }
+
+  /*  */
+
+  /**
+   * Runtime helper for rendering <slot>
+   */
+  function renderSlot (
+    name,
+    fallback,
+    props,
+    bindObject
+  ) {
+    var scopedSlotFn = this.$scopedSlots[name];
+    var nodes;
+    if (scopedSlotFn) { // scoped slot
+      props = props || {};
+      if (bindObject) {
+        props = extend(extend({}, bindObject), props);
+      }
+      nodes = scopedSlotFn(props) || fallback;
+    } else {
+      nodes = this.$slots[name] || fallback;
+    }
+
+    var target = props && props.slot;
+    if (target) {
+      return this.$createElement('template', { slot: target }, nodes)
+    } else {
+      return nodes
+    }
+  }
+
+  /*  */
+
+  /**
+   * Runtime helper for resolving filters
+   */
+  function resolveFilter (id) {
+    return resolveAsset(this.$options, 'filters', id, true) || identity
+  }
+
+  /*  */
+
+  function isKeyNotMatch (expect, actual) {
+    if (Array.isArray(expect)) {
+      return expect.indexOf(actual) === -1
+    } else {
+      return expect !== actual
+    }
+  }
+
+  /**
+   * Runtime helper for checking keyCodes from config.
+   * exposed as Vue.prototype._k
+   * passing in eventKeyName as last argument separately for backwards compat
+   */
+  function checkKeyCodes (
+    eventKeyCode,
+    key,
+    builtInKeyCode,
+    eventKeyName,
+    builtInKeyName
+  ) {
+    var mappedKeyCode = config.keyCodes[key] || builtInKeyCode;
+    if (builtInKeyName && eventKeyName && !config.keyCodes[key]) {
+      return isKeyNotMatch(builtInKeyName, eventKeyName)
+    } else if (mappedKeyCode) {
+      return isKeyNotMatch(mappedKeyCode, eventKeyCode)
+    } else if (eventKeyName) {
+      return hyphenate(eventKeyName) !== key
+    }
+  }
+
+  /*  */
+
+  /**
+   * Runtime helper for merging v-bind="object" into a VNode's data.
+   */
+  function bindObjectProps (
+    data,
+    tag,
+    value,
+    asProp,
+    isSync
+  ) {
+    if (value) {
+      if (!isObject(value)) ; else {
+        if (Array.isArray(value)) {
+          value = toObject(value);
+        }
+        var hash;
+        var loop = function ( key ) {
+          if (
+            key === 'class' ||
+            key === 'style' ||
+            isReservedAttribute(key)
+          ) {
+            hash = data;
+          } else {
+            var type = data.attrs && data.attrs.type;
+            hash = asProp || config.mustUseProp(tag, type, key)
+              ? data.domProps || (data.domProps = {})
+              : data.attrs || (data.attrs = {});
+          }
+          var camelizedKey = camelize(key);
+          if (!(key in hash) && !(camelizedKey in hash)) {
+            hash[key] = value[key];
+
+            if (isSync) {
+              var on = data.on || (data.on = {});
+              on[("update:" + camelizedKey)] = function ($event) {
+                value[key] = $event;
+              };
+            }
+          }
+        };
+
+        for (var key in value) loop( key );
+      }
+    }
+    return data
+  }
+
+  /*  */
+
+  /**
+   * Runtime helper for rendering static trees.
+   */
+  function renderStatic (
+    index,
+    isInFor
+  ) {
+    var cached = this._staticTrees || (this._staticTrees = []);
+    var tree = cached[index];
+    // if has already-rendered static tree and not inside v-for,
+    // we can reuse the same tree.
+    if (tree && !isInFor) {
+      return tree
+    }
+    // otherwise, render a fresh tree.
+    tree = cached[index] = this.$options.staticRenderFns[index].call(
+      this._renderProxy,
+      null,
+      this // for render fns generated for functional component templates
+    );
+    markStatic(tree, ("__static__" + index), false);
+    return tree
+  }
+
+  /**
+   * Runtime helper for v-once.
+   * Effectively it means marking the node as static with a unique key.
+   */
+  function markOnce (
+    tree,
+    index,
+    key
+  ) {
+    markStatic(tree, ("__once__" + index + (key ? ("_" + key) : "")), true);
+    return tree
+  }
+
+  function markStatic (
+    tree,
+    key,
+    isOnce
+  ) {
+    if (Array.isArray(tree)) {
+      for (var i = 0; i < tree.length; i++) {
+        if (tree[i] && typeof tree[i] !== 'string') {
+          markStaticNode(tree[i], (key + "_" + i), isOnce);
+        }
+      }
+    } else {
+      markStaticNode(tree, key, isOnce);
+    }
+  }
+
+  function markStaticNode (node, key, isOnce) {
+    node.isStatic = true;
+    node.key = key;
+    node.isOnce = isOnce;
+  }
+
+  /*  */
+
+  function bindObjectListeners (data, value) {
+    if (value) {
+      if (!isPlainObject(value)) ; else {
+        var on = data.on = data.on ? extend({}, data.on) : {};
+        for (var key in value) {
+          var existing = on[key];
+          var ours = value[key];
+          on[key] = existing ? [].concat(existing, ours) : ours;
+        }
+      }
+    }
+    return data
+  }
+
+  /*  */
+
+  function resolveScopedSlots (
+    fns, // see flow/vnode
+    hasDynamicKeys,
+    res
+  ) {
+    res = res || { $stable: !hasDynamicKeys };
+    for (var i = 0; i < fns.length; i++) {
+      var slot = fns[i];
+      if (Array.isArray(slot)) {
+        resolveScopedSlots(slot, hasDynamicKeys, res);
+      } else if (slot) {
+        res[slot.key] = slot.fn;
+      }
+    }
+    return res
+  }
+
+  /*  */
+
+  function bindDynamicKeys (baseObj, values) {
+    for (var i = 0; i < values.length; i += 2) {
+      var key = values[i];
+      if (typeof key === 'string' && key) {
+        baseObj[values[i]] = values[i + 1];
+      }
+    }
+    return baseObj
+  }
+
+  // helper to dynamically append modifier runtime markers to event names.
+  // ensure only append when value is already string, otherwise it will be cast
+  // to string and cause the type check to miss.
+  function prependModifier (value, symbol) {
+    return typeof value === 'string' ? symbol + value : value
+  }
+
+  /*  */
+
+  function installRenderHelpers (target) {
+    target._o = markOnce;
+    target._n = toNumber;
+    target._s = toString;
+    target._l = renderList;
+    target._t = renderSlot;
+    target._q = looseEqual;
+    target._i = looseIndexOf;
+    target._m = renderStatic;
+    target._f = resolveFilter;
+    target._k = checkKeyCodes;
+    target._b = bindObjectProps;
+    target._v = createTextVNode;
+    target._e = createEmptyVNode;
+    target._u = resolveScopedSlots;
+    target._g = bindObjectListeners;
+    target._d = bindDynamicKeys;
+    target._p = prependModifier;
+  }
+
+  /*  */
+
+  function FunctionalRenderContext (
+    data,
+    props,
+    children,
+    parent,
+    Ctor
+  ) {
+    var options = Ctor.options;
+    // ensure the createElement function in functional components
+    // gets a unique context - this is necessary for correct named slot check
+    var contextVm;
+    if (hasOwn(parent, '_uid')) {
+      contextVm = Object.create(parent);
+      // $flow-disable-line
+      contextVm._original = parent;
+    } else {
+      // the context vm passed in is a functional context as well.
+      // in this case we want to make sure we are able to get a hold to the
+      // real context instance.
+      contextVm = parent;
+      // $flow-disable-line
+      parent = parent._original;
+    }
+    var isCompiled = isTrue(options._compiled);
+    var needNormalization = !isCompiled;
+
+    this.data = data;
+    this.props = props;
+    this.children = children;
+    this.parent = parent;
+    this.listeners = data.on || emptyObject;
+    this.injections = resolveInject(options.inject, parent);
+    this.slots = function () { return resolveSlots(children, parent); };
+
+    Object.defineProperty(this, 'scopedSlots', ({
+      enumerable: true,
+      get: function get () {
+        return normalizeScopedSlots(data.scopedSlots, this.slots())
+      }
+    }));
+
+    // support for compiled functional template
+    if (isCompiled) {
+      // exposing $options for renderStatic()
+      this.$options = options;
+      // pre-resolve slots for renderSlot()
+      this.$slots = this.slots();
+      this.$scopedSlots = normalizeScopedSlots(data.scopedSlots, this.$slots);
+    }
+
+    if (options._scopeId) {
+      this._c = function (a, b, c, d) {
+        var vnode = createElement(contextVm, a, b, c, d, needNormalization);
+        if (vnode && !Array.isArray(vnode)) {
+          vnode.fnScopeId = options._scopeId;
+          vnode.fnContext = parent;
+        }
+        return vnode
+      };
+    } else {
+      this._c = function (a, b, c, d) { return createElement(contextVm, a, b, c, d, needNormalization); };
+    }
+  }
+
+  installRenderHelpers(FunctionalRenderContext.prototype);
+
+  function createFunctionalComponent (
+    Ctor,
+    propsData,
+    data,
+    contextVm,
+    children
+  ) {
+    var options = Ctor.options;
+    var props = {};
+    var propOptions = options.props;
+    if (isDef(propOptions)) {
+      for (var key in propOptions) {
+        props[key] = validateProp(key, propOptions, propsData || emptyObject);
+      }
+    } else {
+      if (isDef(data.attrs)) { mergeProps(props, data.attrs); }
+      if (isDef(data.props)) { mergeProps(props, data.props); }
+    }
+
+    var renderContext = new FunctionalRenderContext(
+      data,
+      props,
+      children,
+      contextVm,
+      Ctor
+    );
+
+    var vnode = options.render.call(null, renderContext._c, renderContext);
+
+    if (vnode instanceof VNode) {
+      return cloneAndMarkFunctionalResult(vnode, data, renderContext.parent, options, renderContext)
+    } else if (Array.isArray(vnode)) {
+      var vnodes = normalizeChildren(vnode) || [];
+      var res = new Array(vnodes.length);
+      for (var i = 0; i < vnodes.length; i++) {
+        res[i] = cloneAndMarkFunctionalResult(vnodes[i], data, renderContext.parent, options, renderContext);
+      }
+      return res
+    }
+  }
+
+  function cloneAndMarkFunctionalResult (vnode, data, contextVm, options, renderContext) {
+    // #7817 clone node before setting fnContext, otherwise if the node is reused
+    // (e.g. it was from a cached normal slot) the fnContext causes named slots
+    // that should not be matched to match.
+    var clone = cloneVNode(vnode);
+    clone.fnContext = contextVm;
+    clone.fnOptions = options;
+    if (data.slot) {
+      (clone.data || (clone.data = {})).slot = data.slot;
+    }
+    return clone
+  }
+
+  function mergeProps (to, from) {
+    for (var key in from) {
+      to[camelize(key)] = from[key];
+    }
+  }
+
+  /*  */
+
+  /*  */
+
+  /*  */
+
+  /*  */
+
+  // inline hooks to be invoked on component VNodes during patch
+  var componentVNodeHooks = {
+    init: function init (vnode, hydrating) {
+      if (
+        vnode.componentInstance &&
+        !vnode.componentInstance._isDestroyed &&
+        vnode.data.keepAlive
+      ) {
+        // kept-alive components, treat as a patch
+        var mountedNode = vnode; // work around flow
+        componentVNodeHooks.prepatch(mountedNode, mountedNode);
+      } else {
+        var child = vnode.componentInstance = createComponentInstanceForVnode(
+          vnode,
+          activeInstance
+        );
+        child.$mount(hydrating ? vnode.elm : undefined, hydrating);
+      }
+    },
+
+    prepatch: function prepatch (oldVnode, vnode) {
+      var options = vnode.componentOptions;
+      var child = vnode.componentInstance = oldVnode.componentInstance;
+      updateChildComponent(
+        child,
+        options.propsData, // updated props
+        options.listeners, // updated listeners
+        vnode, // new parent vnode
+        options.children // new children
+      );
+    },
+
+    insert: function insert (vnode) {
+      var context = vnode.context;
+      var componentInstance = vnode.componentInstance;
+      if (!componentInstance._isMounted) {
+        componentInstance._isMounted = true;
+        callHook(componentInstance, 'mounted');
+      }
+      if (vnode.data.keepAlive) {
+        if (context._isMounted) {
+          // vue-router#1212
+          // During updates, a kept-alive component's child components may
+          // change, so directly walking the tree here may call activated hooks
+          // on incorrect children. Instead we push them into a queue which will
+          // be processed after the whole patch process ended.
+          queueActivatedComponent(componentInstance);
+        } else {
+          activateChildComponent(componentInstance, true /* direct */);
+        }
+      }
+    },
+
+    destroy: function destroy (vnode) {
+      var componentInstance = vnode.componentInstance;
+      if (!componentInstance._isDestroyed) {
+        if (!vnode.data.keepAlive) {
+          componentInstance.$destroy();
+        } else {
+          deactivateChildComponent(componentInstance, true /* direct */);
+        }
+      }
+    }
+  };
+
+  var hooksToMerge = Object.keys(componentVNodeHooks);
+
+  function createComponent (
+    Ctor,
+    data,
+    context,
+    children,
+    tag
+  ) {
+    if (isUndef(Ctor)) {
+      return
+    }
+
+    var baseCtor = context.$options._base;
+
+    // plain options object: turn it into a constructor
+    if (isObject(Ctor)) {
+      Ctor = baseCtor.extend(Ctor);
+    }
+
+    // if at this stage it's not a constructor or an async component factory,
+    // reject.
+    if (typeof Ctor !== 'function') {
+      return
+    }
+
+    // async component
+    var asyncFactory;
+    if (isUndef(Ctor.cid)) {
+      asyncFactory = Ctor;
+      Ctor = resolveAsyncComponent(asyncFactory, baseCtor);
+      if (Ctor === undefined) {
+        // return a placeholder node for async component, which is rendered
+        // as a comment node but preserves all the raw information for the node.
+        // the information will be used for async server-rendering and hydration.
+        return createAsyncPlaceholder(
+          asyncFactory,
+          data,
+          context,
+          children,
+          tag
+        )
+      }
+    }
+
+    data = data || {};
+
+    // resolve constructor options in case global mixins are applied after
+    // component constructor creation
+    resolveConstructorOptions(Ctor);
+
+    // transform component v-model data into props & events
+    if (isDef(data.model)) {
+      transformModel(Ctor.options, data);
+    }
+
+    // extract props
+    var propsData = extractPropsFromVNodeData(data, Ctor, tag);
+
+    // functional component
+    if (isTrue(Ctor.options.functional)) {
+      return createFunctionalComponent(Ctor, propsData, data, context, children)
+    }
+
+    // extract listeners, since these needs to be treated as
+    // child component listeners instead of DOM listeners
+    var listeners = data.on;
+    // replace with listeners with .native modifier
+    // so it gets processed during parent component patch.
+    data.on = data.nativeOn;
+
+    if (isTrue(Ctor.options.abstract)) {
+      // abstract components do not keep anything
+      // other than props & listeners & slot
+
+      // work around flow
+      var slot = data.slot;
+      data = {};
+      if (slot) {
+        data.slot = slot;
+      }
+    }
+
+    // install component management hooks onto the placeholder node
+    installComponentHooks(data);
+
+    // return a placeholder vnode
+    var name = Ctor.options.name || tag;
+    var vnode = new VNode(
+      ("vue-component-" + (Ctor.cid) + (name ? ("-" + name) : '')),
+      data, undefined, undefined, undefined, context,
+      { Ctor: Ctor, propsData: propsData, listeners: listeners, tag: tag, children: children },
+      asyncFactory
+    );
+
+    return vnode
+  }
+
+  function createComponentInstanceForVnode (
+    vnode, // we know it's MountedComponentVNode but flow doesn't
+    parent // activeInstance in lifecycle state
+  ) {
+    var options = {
+      _isComponent: true,
+      _parentVnode: vnode,
+      parent: parent
+    };
+    // check inline-template render functions
+    var inlineTemplate = vnode.data.inlineTemplate;
+    if (isDef(inlineTemplate)) {
+      options.render = inlineTemplate.render;
+      options.staticRenderFns = inlineTemplate.staticRenderFns;
+    }
+    return new vnode.componentOptions.Ctor(options)
+  }
+
+  function installComponentHooks (data) {
+    var hooks = data.hook || (data.hook = {});
+    for (var i = 0; i < hooksToMerge.length; i++) {
+      var key = hooksToMerge[i];
+      var existing = hooks[key];
+      var toMerge = componentVNodeHooks[key];
+      if (existing !== toMerge && !(existing && existing._merged)) {
+        hooks[key] = existing ? mergeHook$1(toMerge, existing) : toMerge;
+      }
+    }
+  }
+
+  function mergeHook$1 (f1, f2) {
+    var merged = function (a, b) {
+      // flow complains about extra args which is why we use any
+      f1(a, b);
+      f2(a, b);
+    };
+    merged._merged = true;
+    return merged
+  }
+
+  // transform component v-model info (value and callback) into
+  // prop and event handler respectively.
+  function transformModel (options, data) {
+    var prop = (options.model && options.model.prop) || 'value';
+    var event = (options.model && options.model.event) || 'input'
+    ;(data.attrs || (data.attrs = {}))[prop] = data.model.value;
+    var on = data.on || (data.on = {});
+    var existing = on[event];
+    var callback = data.model.callback;
+    if (isDef(existing)) {
+      if (
+        Array.isArray(existing)
+          ? existing.indexOf(callback) === -1
+          : existing !== callback
+      ) {
+        on[event] = [callback].concat(existing);
+      }
+    } else {
+      on[event] = callback;
+    }
+  }
+
+  /*  */
+
+  var SIMPLE_NORMALIZE = 1;
+  var ALWAYS_NORMALIZE = 2;
+
+  // wrapper function for providing a more flexible interface
+  // without getting yelled at by flow
+  function createElement (
+    context,
+    tag,
+    data,
+    children,
+    normalizationType,
+    alwaysNormalize
+  ) {
+    if (Array.isArray(data) || isPrimitive(data)) {
+      normalizationType = children;
+      children = data;
+      data = undefined;
+    }
+    if (isTrue(alwaysNormalize)) {
+      normalizationType = ALWAYS_NORMALIZE;
+    }
+    return _createElement(context, tag, data, children, normalizationType)
+  }
+
+  function _createElement (
+    context,
+    tag,
+    data,
+    children,
+    normalizationType
+  ) {
+    if (isDef(data) && isDef((data).__ob__)) {
+      return createEmptyVNode()
+    }
+    // object syntax in v-bind
+    if (isDef(data) && isDef(data.is)) {
+      tag = data.is;
+    }
+    if (!tag) {
+      // in case of component :is set to falsy value
+      return createEmptyVNode()
+    }
+    // support single function children as default scoped slot
+    if (Array.isArray(children) &&
+      typeof children[0] === 'function'
+    ) {
+      data = data || {};
+      data.scopedSlots = { default: children[0] };
+      children.length = 0;
+    }
+    if (normalizationType === ALWAYS_NORMALIZE) {
+      children = normalizeChildren(children);
+    } else if (normalizationType === SIMPLE_NORMALIZE) {
+      children = simpleNormalizeChildren(children);
+    }
+    var vnode, ns;
+    if (typeof tag === 'string') {
+      var Ctor;
+      ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
+      if (config.isReservedTag(tag)) {
+        // platform built-in elements
+        vnode = new VNode(
+          config.parsePlatformTagName(tag), data, children,
+          undefined, undefined, context
+        );
+      } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
+        // component
+        vnode = createComponent(Ctor, data, context, children, tag);
+      } else {
+        // unknown or unlisted namespaced elements
+        // check at runtime because it may get assigned a namespace when its
+        // parent normalizes children
+        vnode = new VNode(
+          tag, data, children,
+          undefined, undefined, context
+        );
+      }
+    } else {
+      // direct component options / constructor
+      vnode = createComponent(tag, data, context, children);
+    }
+    if (Array.isArray(vnode)) {
+      return vnode
+    } else if (isDef(vnode)) {
+      if (isDef(ns)) { applyNS(vnode, ns); }
+      if (isDef(data)) { registerDeepBindings(data); }
+      return vnode
+    } else {
+      return createEmptyVNode()
+    }
+  }
+
+  function applyNS (vnode, ns, force) {
+    vnode.ns = ns;
+    if (vnode.tag === 'foreignObject') {
+      // use default namespace inside foreignObject
+      ns = undefined;
+      force = true;
+    }
+    if (isDef(vnode.children)) {
+      for (var i = 0, l = vnode.children.length; i < l; i++) {
+        var child = vnode.children[i];
+        if (isDef(child.tag) && (
+          isUndef(child.ns) || (isTrue(force) && child.tag !== 'svg'))) {
+          applyNS(child, ns, force);
+        }
+      }
+    }
+  }
+
+  // ref #5318
+  // necessary to ensure parent re-render when deep bindings like :style and
+  // :class are used on slot nodes
+  function registerDeepBindings (data) {
+    if (isObject(data.style)) {
+      traverse(data.style);
+    }
+    if (isObject(data.class)) {
+      traverse(data.class);
+    }
+  }
+
+  /*  */
+
+  function initRender (vm) {
+    vm._vnode = null; // the root of the child tree
+    vm._staticTrees = null; // v-once cached trees
+    var options = vm.$options;
+    var parentVnode = vm.$vnode = options._parentVnode; // the placeholder node in parent tree
+    var renderContext = parentVnode && parentVnode.context;
+    vm.$slots = resolveSlots(options._renderChildren, renderContext);
+    vm.$scopedSlots = emptyObject;
+    // bind the createElement fn to this instance
+    // so that we get proper render context inside it.
+    // args order: tag, data, children, normalizationType, alwaysNormalize
+    // internal version is used by render functions compiled from templates
+    vm._c = function (a, b, c, d) { return createElement(vm, a, b, c, d, false); };
+    // normalization is always applied for the public version, used in
+    // user-written render functions.
+    vm.$createElement = function (a, b, c, d) { return createElement(vm, a, b, c, d, true); };
+
+    // $attrs & $listeners are exposed for easier HOC creation.
+    // they need to be reactive so that HOCs using them are always updated
+    var parentData = parentVnode && parentVnode.data;
+
+    /* istanbul ignore else */
+    {
+      defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true);
+      defineReactive$$1(vm, '$listeners', options._parentListeners || emptyObject, null, true);
+    }
+  }
+
+  var currentRenderingInstance = null;
+
+  function renderMixin (Vue) {
+    // install runtime convenience helpers
+    installRenderHelpers(Vue.prototype);
+
+    Vue.prototype.$nextTick = function (fn) {
+      return nextTick(fn, this)
+    };
+
+    Vue.prototype._render = function () {
+      var vm = this;
+      var ref = vm.$options;
+      var render = ref.render;
+      var _parentVnode = ref._parentVnode;
+
+      if (_parentVnode) {
+        vm.$scopedSlots = normalizeScopedSlots(
+          _parentVnode.data.scopedSlots,
+          vm.$slots
+        );
+      }
+
+      // set parent vnode. this allows render functions to have access
+      // to the data on the placeholder node.
+      vm.$vnode = _parentVnode;
+      // render self
+      var vnode;
+      try {
+        // There's no need to maintain a stack becaues all render fns are called
+        // separately from one another. Nested component's render fns are called
+        // when parent component is patched.
+        currentRenderingInstance = vm;
+        vnode = render.call(vm._renderProxy, vm.$createElement);
+      } catch (e) {
+        handleError(e, vm, "render");
+        // return error render result,
+        // or previous vnode to prevent render error causing blank component
+        /* istanbul ignore else */
+        {
+          vnode = vm._vnode;
+        }
+      } finally {
+        currentRenderingInstance = null;
+      }
+      // if the returned array contains only a single node, allow it
+      if (Array.isArray(vnode) && vnode.length === 1) {
+        vnode = vnode[0];
+      }
+      // return empty vnode in case the render function errored out
+      if (!(vnode instanceof VNode)) {
+        vnode = createEmptyVNode();
+      }
+      // set parent
+      vnode.parent = _parentVnode;
+      return vnode
+    };
+  }
+
+  /*  */
+
   function ensureCtor (comp, base) {
     if (
       comp.__esModule ||
@@ -1923,8 +3001,7 @@
 
   function resolveAsyncComponent (
     factory,
-    baseCtor,
-    context
+    baseCtor
   ) {
     if (isTrue(factory.error) && isDef(factory.errorComp)) {
       return factory.errorComp
@@ -1938,20 +3015,21 @@
       return factory.loadingComp
     }
 
-    if (isDef(factory.contexts)) {
+    var owner = currentRenderingInstance;
+    if (isDef(factory.owners)) {
       // already pending
-      factory.contexts.push(context);
+      factory.owners.push(owner);
     } else {
-      var contexts = factory.contexts = [context];
+      var owners = factory.owners = [owner];
       var sync = true;
 
       var forceRender = function (renderCompleted) {
-        for (var i = 0, l = contexts.length; i < l; i++) {
-          contexts[i].$forceUpdate();
+        for (var i = 0, l = owners.length; i < l; i++) {
+          (owners[i]).$forceUpdate();
         }
 
         if (renderCompleted) {
-          contexts.length = 0;
+          owners.length = 0;
         }
       };
 
@@ -1962,6 +3040,8 @@
         // (async resolves are shimmed as synchronous during SSR)
         if (!sync) {
           forceRender(true);
+        } else {
+          owners.length = 0;
         }
       });
 
@@ -1975,12 +3055,12 @@
       var res = factory(resolve, reject);
 
       if (isObject(res)) {
-        if (typeof res.then === 'function') {
+        if (isPromise(res)) {
           // () => Promise
           if (isUndef(factory.resolved)) {
             res.then(resolve, reject);
           }
-        } else if (isDef(res.component) && typeof res.component.then === 'function') {
+        } else if (isPromise(res.component)) {
           res.component.then(resolve, reject);
 
           if (isDef(res.error)) {
@@ -2123,8 +3203,8 @@
       }
       // array of events
       if (Array.isArray(event)) {
-        for (var i = 0, l = event.length; i < l; i++) {
-          vm.$off(event[i], fn);
+        for (var i$1 = 0, l = event.length; i$1 < l; i$1++) {
+          vm.$off(event[i$1], fn);
         }
         return vm
       }
@@ -2137,16 +3217,14 @@
         vm._events[event] = null;
         return vm
       }
-      if (fn) {
-        // specific handler
-        var cb;
-        var i$1 = cbs.length;
-        while (i$1--) {
-          cb = cbs[i$1];
-          if (cb === fn || cb.fn === fn) {
-            cbs.splice(i$1, 1);
-            break
-          }
+      // specific handler
+      var cb;
+      var i = cbs.length;
+      while (i--) {
+        cb = cbs[i];
+        if (cb === fn || cb.fn === fn) {
+          cbs.splice(i, 1);
+          break
         }
       }
       return vm
@@ -2158,82 +3236,13 @@
       if (cbs) {
         cbs = cbs.length > 1 ? toArray(cbs) : cbs;
         var args = toArray(arguments, 1);
+        var info = "event handler for \"" + event + "\"";
         for (var i = 0, l = cbs.length; i < l; i++) {
-          try {
-            cbs[i].apply(vm, args);
-          } catch (e) {
-            handleError(e, vm, ("event handler for \"" + event + "\""));
-          }
+          invokeWithErrorHandling(cbs[i], vm, args, vm, info);
         }
       }
       return vm
     };
-  }
-
-  /*  */
-
-
-
-  /**
-   * Runtime helper for resolving raw children VNodes into a slot object.
-   */
-  function resolveSlots (
-    children,
-    context
-  ) {
-    var slots = {};
-    if (!children) {
-      return slots
-    }
-    for (var i = 0, l = children.length; i < l; i++) {
-      var child = children[i];
-      var data = child.data;
-      // remove slot attribute if the node is resolved as a Vue slot node
-      if (data && data.attrs && data.attrs.slot) {
-        delete data.attrs.slot;
-      }
-      // named slots should only be respected if the vnode was rendered in the
-      // same context.
-      if ((child.context === context || child.fnContext === context) &&
-        data && data.slot != null
-      ) {
-        var name = data.slot;
-        var slot = (slots[name] || (slots[name] = []));
-        if (child.tag === 'template') {
-          slot.push.apply(slot, child.children || []);
-        } else {
-          slot.push(child);
-        }
-      } else {
-        (slots.default || (slots.default = [])).push(child);
-      }
-    }
-    // ignore slots that contains only whitespace
-    for (var name$1 in slots) {
-      if (slots[name$1].every(isWhitespace)) {
-        delete slots[name$1];
-      }
-    }
-    return slots
-  }
-
-  function isWhitespace (node) {
-    return (node.isComment && !node.asyncFactory) || node.text === ' '
-  }
-
-  function resolveScopedSlots (
-    fns, // see flow/vnode
-    res
-  ) {
-    res = res || {};
-    for (var i = 0; i < fns.length; i++) {
-      if (Array.isArray(fns[i])) {
-        resolveScopedSlots(fns[i], res);
-      } else {
-        res[fns[i].key] = fns[i].fn;
-      }
-    }
-    return res
   }
 
   /*  */
@@ -2406,12 +3415,23 @@
   ) {
 
     // determine whether component has slot children
-    // we need to do this before overwriting $options._renderChildren
-    var hasChildren = !!(
+    // we need to do this before overwriting $options._renderChildren.
+
+    // check if there are dynamic scopedSlots (hand-written or compiled but with
+    // dynamic slot names). Static scoped slots compiled from template has the
+    // "$stable" marker.
+    var hasDynamicScopedSlot = !!(
+      (parentVnode.data.scopedSlots && !parentVnode.data.scopedSlots.$stable) ||
+      (vm.$scopedSlots !== emptyObject && !vm.$scopedSlots.$stable)
+    );
+
+    // Any static slot children from the parent may have changed during parent's
+    // update. Dynamic scoped slots may also have changed. In such cases, a forced
+    // update is necessary to ensure correctness.
+    var needsForceUpdate = !!(
       renderChildren ||               // has new static slots
       vm.$options._renderChildren ||  // has old static slots
-      parentVnode.data.scopedSlots || // has new scoped slots
-      vm.$scopedSlots !== emptyObject // has old scoped slots
+      hasDynamicScopedSlot
     );
 
     vm.$options._parentVnode = parentVnode;
@@ -2450,7 +3470,7 @@
     updateComponentListeners(vm, listeners, oldListeners);
 
     // resolve slots + force update if has children
-    if (hasChildren) {
+    if (needsForceUpdate) {
       vm.$slots = resolveSlots(renderChildren, parentVnode.context);
       vm.$forceUpdate();
     }
@@ -2501,13 +3521,10 @@
     // #7573 disable dep collection when invoking lifecycle hooks
     pushTarget();
     var handlers = vm.$options[hook];
+    var info = hook + " hook";
     if (handlers) {
       for (var i = 0, j = handlers.length; i < j; i++) {
-        try {
-          handlers[i].call(vm);
-        } catch (e) {
-          handleError(e, vm, (hook + " hook"));
-        }
+        invokeWithErrorHandling(handlers[i], vm, null, vm, info);
       }
     }
     if (vm._hasHookEvent) {
@@ -2532,10 +3549,32 @@
     waiting = flushing = false;
   }
 
+  // Async edge case #6566 requires saving the timestamp when event listeners are
+  // attached. However, calling performance.now() has a perf overhead especially
+  // if the page has thousands of event listeners. Instead, we take a timestamp
+  // every time the scheduler flushes and use that for all event listeners
+  // attached during that flush.
+  var currentFlushTimestamp = 0;
+
+  // Async edge case fix requires storing an event listener's attach timestamp.
+  var getNow = Date.now;
+
+  // Determine what event timestamp the browser is using. Annoyingly, the
+  // timestamp can either be hi-res (relative to page load) or low-res
+  // (relative to UNIX epoch), so in order to compare time we have to use the
+  // same timestamp type when saving the flush timestamp.
+  if (inBrowser && getNow() > document.createEvent('Event').timeStamp) {
+    // if the low-res timestamp which is bigger than the event timestamp
+    // (which is evaluated AFTER) it means the event is using a hi-res timestamp,
+    // and we need to use the hi-res version for event listeners as well.
+    getNow = function () { return performance.now(); };
+  }
+
   /**
    * Flush both queues and run the watchers.
    */
   function flushSchedulerQueue () {
+    currentFlushTimestamp = getNow();
     flushing = true;
     var watcher, id;
 
@@ -2639,7 +3678,7 @@
 
 
 
-  var uid$1 = 0;
+  var uid$2 = 0;
 
   /**
    * A watcher parses an expression, collects dependencies,
@@ -2669,7 +3708,7 @@
       this.deep = this.user = this.lazy = this.sync = false;
     }
     this.cb = cb;
-    this.id = ++uid$1; // uid for batching
+    this.id = ++uid$2; // uid for batching
     this.active = true;
     this.dirty = this.lazy; // for lazy watchers
     this.deps = [];
@@ -3089,872 +4128,6 @@
 
   /*  */
 
-  function initProvide (vm) {
-    var provide = vm.$options.provide;
-    if (provide) {
-      vm._provided = typeof provide === 'function'
-        ? provide.call(vm)
-        : provide;
-    }
-  }
-
-  function initInjections (vm) {
-    var result = resolveInject(vm.$options.inject, vm);
-    if (result) {
-      toggleObserving(false);
-      Object.keys(result).forEach(function (key) {
-        /* istanbul ignore else */
-        {
-          defineReactive$$1(vm, key, result[key]);
-        }
-      });
-      toggleObserving(true);
-    }
-  }
-
-  function resolveInject (inject, vm) {
-    if (inject) {
-      // inject is :any because flow is not smart enough to figure out cached
-      var result = Object.create(null);
-      var keys = hasSymbol
-        ? Reflect.ownKeys(inject).filter(function (key) {
-          /* istanbul ignore next */
-          return Object.getOwnPropertyDescriptor(inject, key).enumerable
-        })
-        : Object.keys(inject);
-
-      for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        var provideKey = inject[key].from;
-        var source = vm;
-        while (source) {
-          if (source._provided && hasOwn(source._provided, provideKey)) {
-            result[key] = source._provided[provideKey];
-            break
-          }
-          source = source.$parent;
-        }
-        if (!source) {
-          if ('default' in inject[key]) {
-            var provideDefault = inject[key].default;
-            result[key] = typeof provideDefault === 'function'
-              ? provideDefault.call(vm)
-              : provideDefault;
-          }
-        }
-      }
-      return result
-    }
-  }
-
-  /*  */
-
-  /**
-   * Runtime helper for rendering v-for lists.
-   */
-  function renderList (
-    val,
-    render
-  ) {
-    var ret, i, l, keys, key;
-    if (Array.isArray(val) || typeof val === 'string') {
-      ret = new Array(val.length);
-      for (i = 0, l = val.length; i < l; i++) {
-        ret[i] = render(val[i], i);
-      }
-    } else if (typeof val === 'number') {
-      ret = new Array(val);
-      for (i = 0; i < val; i++) {
-        ret[i] = render(i + 1, i);
-      }
-    } else if (isObject(val)) {
-      keys = Object.keys(val);
-      ret = new Array(keys.length);
-      for (i = 0, l = keys.length; i < l; i++) {
-        key = keys[i];
-        ret[i] = render(val[key], key, i);
-      }
-    }
-    if (!isDef(ret)) {
-      ret = [];
-    }
-    (ret)._isVList = true;
-    return ret
-  }
-
-  /*  */
-
-  /**
-   * Runtime helper for rendering <slot>
-   */
-  function renderSlot (
-    name,
-    fallback,
-    props,
-    bindObject
-  ) {
-    var scopedSlotFn = this.$scopedSlots[name];
-    var nodes;
-    if (scopedSlotFn) { // scoped slot
-      props = props || {};
-      if (bindObject) {
-        props = extend(extend({}, bindObject), props);
-      }
-      nodes = scopedSlotFn(props) || fallback;
-    } else {
-      nodes = this.$slots[name] || fallback;
-    }
-
-    var target = props && props.slot;
-    if (target) {
-      return this.$createElement('template', { slot: target }, nodes)
-    } else {
-      return nodes
-    }
-  }
-
-  /*  */
-
-  /**
-   * Runtime helper for resolving filters
-   */
-  function resolveFilter (id) {
-    return resolveAsset(this.$options, 'filters', id, true) || identity
-  }
-
-  /*  */
-
-  function isKeyNotMatch (expect, actual) {
-    if (Array.isArray(expect)) {
-      return expect.indexOf(actual) === -1
-    } else {
-      return expect !== actual
-    }
-  }
-
-  /**
-   * Runtime helper for checking keyCodes from config.
-   * exposed as Vue.prototype._k
-   * passing in eventKeyName as last argument separately for backwards compat
-   */
-  function checkKeyCodes (
-    eventKeyCode,
-    key,
-    builtInKeyCode,
-    eventKeyName,
-    builtInKeyName
-  ) {
-    var mappedKeyCode = config.keyCodes[key] || builtInKeyCode;
-    if (builtInKeyName && eventKeyName && !config.keyCodes[key]) {
-      return isKeyNotMatch(builtInKeyName, eventKeyName)
-    } else if (mappedKeyCode) {
-      return isKeyNotMatch(mappedKeyCode, eventKeyCode)
-    } else if (eventKeyName) {
-      return hyphenate(eventKeyName) !== key
-    }
-  }
-
-  /*  */
-
-  /**
-   * Runtime helper for merging v-bind="object" into a VNode's data.
-   */
-  function bindObjectProps (
-    data,
-    tag,
-    value,
-    asProp,
-    isSync
-  ) {
-    if (value) {
-      if (!isObject(value)) ; else {
-        if (Array.isArray(value)) {
-          value = toObject(value);
-        }
-        var hash;
-        var loop = function ( key ) {
-          if (
-            key === 'class' ||
-            key === 'style' ||
-            isReservedAttribute(key)
-          ) {
-            hash = data;
-          } else {
-            var type = data.attrs && data.attrs.type;
-            hash = asProp || config.mustUseProp(tag, type, key)
-              ? data.domProps || (data.domProps = {})
-              : data.attrs || (data.attrs = {});
-          }
-          var camelizedKey = camelize(key);
-          if (!(key in hash) && !(camelizedKey in hash)) {
-            hash[key] = value[key];
-
-            if (isSync) {
-              var on = data.on || (data.on = {});
-              on[("update:" + camelizedKey)] = function ($event) {
-                value[key] = $event;
-              };
-            }
-          }
-        };
-
-        for (var key in value) loop( key );
-      }
-    }
-    return data
-  }
-
-  /*  */
-
-  /**
-   * Runtime helper for rendering static trees.
-   */
-  function renderStatic (
-    index,
-    isInFor
-  ) {
-    var cached = this._staticTrees || (this._staticTrees = []);
-    var tree = cached[index];
-    // if has already-rendered static tree and not inside v-for,
-    // we can reuse the same tree.
-    if (tree && !isInFor) {
-      return tree
-    }
-    // otherwise, render a fresh tree.
-    tree = cached[index] = this.$options.staticRenderFns[index].call(
-      this._renderProxy,
-      null,
-      this // for render fns generated for functional component templates
-    );
-    markStatic(tree, ("__static__" + index), false);
-    return tree
-  }
-
-  /**
-   * Runtime helper for v-once.
-   * Effectively it means marking the node as static with a unique key.
-   */
-  function markOnce (
-    tree,
-    index,
-    key
-  ) {
-    markStatic(tree, ("__once__" + index + (key ? ("_" + key) : "")), true);
-    return tree
-  }
-
-  function markStatic (
-    tree,
-    key,
-    isOnce
-  ) {
-    if (Array.isArray(tree)) {
-      for (var i = 0; i < tree.length; i++) {
-        if (tree[i] && typeof tree[i] !== 'string') {
-          markStaticNode(tree[i], (key + "_" + i), isOnce);
-        }
-      }
-    } else {
-      markStaticNode(tree, key, isOnce);
-    }
-  }
-
-  function markStaticNode (node, key, isOnce) {
-    node.isStatic = true;
-    node.key = key;
-    node.isOnce = isOnce;
-  }
-
-  /*  */
-
-  function bindObjectListeners (data, value) {
-    if (value) {
-      if (!isPlainObject(value)) ; else {
-        var on = data.on = data.on ? extend({}, data.on) : {};
-        for (var key in value) {
-          var existing = on[key];
-          var ours = value[key];
-          on[key] = existing ? [].concat(existing, ours) : ours;
-        }
-      }
-    }
-    return data
-  }
-
-  /*  */
-
-  function installRenderHelpers (target) {
-    target._o = markOnce;
-    target._n = toNumber;
-    target._s = toString;
-    target._l = renderList;
-    target._t = renderSlot;
-    target._q = looseEqual;
-    target._i = looseIndexOf;
-    target._m = renderStatic;
-    target._f = resolveFilter;
-    target._k = checkKeyCodes;
-    target._b = bindObjectProps;
-    target._v = createTextVNode;
-    target._e = createEmptyVNode;
-    target._u = resolveScopedSlots;
-    target._g = bindObjectListeners;
-  }
-
-  /*  */
-
-  function FunctionalRenderContext (
-    data,
-    props,
-    children,
-    parent,
-    Ctor
-  ) {
-    var options = Ctor.options;
-    // ensure the createElement function in functional components
-    // gets a unique context - this is necessary for correct named slot check
-    var contextVm;
-    if (hasOwn(parent, '_uid')) {
-      contextVm = Object.create(parent);
-      // $flow-disable-line
-      contextVm._original = parent;
-    } else {
-      // the context vm passed in is a functional context as well.
-      // in this case we want to make sure we are able to get a hold to the
-      // real context instance.
-      contextVm = parent;
-      // $flow-disable-line
-      parent = parent._original;
-    }
-    var isCompiled = isTrue(options._compiled);
-    var needNormalization = !isCompiled;
-
-    this.data = data;
-    this.props = props;
-    this.children = children;
-    this.parent = parent;
-    this.listeners = data.on || emptyObject;
-    this.injections = resolveInject(options.inject, parent);
-    this.slots = function () { return resolveSlots(children, parent); };
-
-    // support for compiled functional template
-    if (isCompiled) {
-      // exposing $options for renderStatic()
-      this.$options = options;
-      // pre-resolve slots for renderSlot()
-      this.$slots = this.slots();
-      this.$scopedSlots = data.scopedSlots || emptyObject;
-    }
-
-    if (options._scopeId) {
-      this._c = function (a, b, c, d) {
-        var vnode = createElement(contextVm, a, b, c, d, needNormalization);
-        if (vnode && !Array.isArray(vnode)) {
-          vnode.fnScopeId = options._scopeId;
-          vnode.fnContext = parent;
-        }
-        return vnode
-      };
-    } else {
-      this._c = function (a, b, c, d) { return createElement(contextVm, a, b, c, d, needNormalization); };
-    }
-  }
-
-  installRenderHelpers(FunctionalRenderContext.prototype);
-
-  function createFunctionalComponent (
-    Ctor,
-    propsData,
-    data,
-    contextVm,
-    children
-  ) {
-    var options = Ctor.options;
-    var props = {};
-    var propOptions = options.props;
-    if (isDef(propOptions)) {
-      for (var key in propOptions) {
-        props[key] = validateProp(key, propOptions, propsData || emptyObject);
-      }
-    } else {
-      if (isDef(data.attrs)) { mergeProps(props, data.attrs); }
-      if (isDef(data.props)) { mergeProps(props, data.props); }
-    }
-
-    var renderContext = new FunctionalRenderContext(
-      data,
-      props,
-      children,
-      contextVm,
-      Ctor
-    );
-
-    var vnode = options.render.call(null, renderContext._c, renderContext);
-
-    if (vnode instanceof VNode) {
-      return cloneAndMarkFunctionalResult(vnode, data, renderContext.parent, options, renderContext)
-    } else if (Array.isArray(vnode)) {
-      var vnodes = normalizeChildren(vnode) || [];
-      var res = new Array(vnodes.length);
-      for (var i = 0; i < vnodes.length; i++) {
-        res[i] = cloneAndMarkFunctionalResult(vnodes[i], data, renderContext.parent, options, renderContext);
-      }
-      return res
-    }
-  }
-
-  function cloneAndMarkFunctionalResult (vnode, data, contextVm, options, renderContext) {
-    // #7817 clone node before setting fnContext, otherwise if the node is reused
-    // (e.g. it was from a cached normal slot) the fnContext causes named slots
-    // that should not be matched to match.
-    var clone = cloneVNode(vnode);
-    clone.fnContext = contextVm;
-    clone.fnOptions = options;
-    if (data.slot) {
-      (clone.data || (clone.data = {})).slot = data.slot;
-    }
-    return clone
-  }
-
-  function mergeProps (to, from) {
-    for (var key in from) {
-      to[camelize(key)] = from[key];
-    }
-  }
-
-  /*  */
-
-  /*  */
-
-  /*  */
-
-  /*  */
-
-  // inline hooks to be invoked on component VNodes during patch
-  var componentVNodeHooks = {
-    init: function init (vnode, hydrating) {
-      if (
-        vnode.componentInstance &&
-        !vnode.componentInstance._isDestroyed &&
-        vnode.data.keepAlive
-      ) {
-        // kept-alive components, treat as a patch
-        var mountedNode = vnode; // work around flow
-        componentVNodeHooks.prepatch(mountedNode, mountedNode);
-      } else {
-        var child = vnode.componentInstance = createComponentInstanceForVnode(
-          vnode,
-          activeInstance
-        );
-        child.$mount(hydrating ? vnode.elm : undefined, hydrating);
-      }
-    },
-
-    prepatch: function prepatch (oldVnode, vnode) {
-      var options = vnode.componentOptions;
-      var child = vnode.componentInstance = oldVnode.componentInstance;
-      updateChildComponent(
-        child,
-        options.propsData, // updated props
-        options.listeners, // updated listeners
-        vnode, // new parent vnode
-        options.children // new children
-      );
-    },
-
-    insert: function insert (vnode) {
-      var context = vnode.context;
-      var componentInstance = vnode.componentInstance;
-      if (!componentInstance._isMounted) {
-        componentInstance._isMounted = true;
-        callHook(componentInstance, 'mounted');
-      }
-      if (vnode.data.keepAlive) {
-        if (context._isMounted) {
-          // vue-router#1212
-          // During updates, a kept-alive component's child components may
-          // change, so directly walking the tree here may call activated hooks
-          // on incorrect children. Instead we push them into a queue which will
-          // be processed after the whole patch process ended.
-          queueActivatedComponent(componentInstance);
-        } else {
-          activateChildComponent(componentInstance, true /* direct */);
-        }
-      }
-    },
-
-    destroy: function destroy (vnode) {
-      var componentInstance = vnode.componentInstance;
-      if (!componentInstance._isDestroyed) {
-        if (!vnode.data.keepAlive) {
-          componentInstance.$destroy();
-        } else {
-          deactivateChildComponent(componentInstance, true /* direct */);
-        }
-      }
-    }
-  };
-
-  var hooksToMerge = Object.keys(componentVNodeHooks);
-
-  function createComponent (
-    Ctor,
-    data,
-    context,
-    children,
-    tag
-  ) {
-    if (isUndef(Ctor)) {
-      return
-    }
-
-    var baseCtor = context.$options._base;
-
-    // plain options object: turn it into a constructor
-    if (isObject(Ctor)) {
-      Ctor = baseCtor.extend(Ctor);
-    }
-
-    // if at this stage it's not a constructor or an async component factory,
-    // reject.
-    if (typeof Ctor !== 'function') {
-      return
-    }
-
-    // async component
-    var asyncFactory;
-    if (isUndef(Ctor.cid)) {
-      asyncFactory = Ctor;
-      Ctor = resolveAsyncComponent(asyncFactory, baseCtor, context);
-      if (Ctor === undefined) {
-        // return a placeholder node for async component, which is rendered
-        // as a comment node but preserves all the raw information for the node.
-        // the information will be used for async server-rendering and hydration.
-        return createAsyncPlaceholder(
-          asyncFactory,
-          data,
-          context,
-          children,
-          tag
-        )
-      }
-    }
-
-    data = data || {};
-
-    // resolve constructor options in case global mixins are applied after
-    // component constructor creation
-    resolveConstructorOptions(Ctor);
-
-    // transform component v-model data into props & events
-    if (isDef(data.model)) {
-      transformModel(Ctor.options, data);
-    }
-
-    // extract props
-    var propsData = extractPropsFromVNodeData(data, Ctor, tag);
-
-    // functional component
-    if (isTrue(Ctor.options.functional)) {
-      return createFunctionalComponent(Ctor, propsData, data, context, children)
-    }
-
-    // extract listeners, since these needs to be treated as
-    // child component listeners instead of DOM listeners
-    var listeners = data.on;
-    // replace with listeners with .native modifier
-    // so it gets processed during parent component patch.
-    data.on = data.nativeOn;
-
-    if (isTrue(Ctor.options.abstract)) {
-      // abstract components do not keep anything
-      // other than props & listeners & slot
-
-      // work around flow
-      var slot = data.slot;
-      data = {};
-      if (slot) {
-        data.slot = slot;
-      }
-    }
-
-    // install component management hooks onto the placeholder node
-    installComponentHooks(data);
-
-    // return a placeholder vnode
-    var name = Ctor.options.name || tag;
-    var vnode = new VNode(
-      ("vue-component-" + (Ctor.cid) + (name ? ("-" + name) : '')),
-      data, undefined, undefined, undefined, context,
-      { Ctor: Ctor, propsData: propsData, listeners: listeners, tag: tag, children: children },
-      asyncFactory
-    );
-
-    return vnode
-  }
-
-  function createComponentInstanceForVnode (
-    vnode, // we know it's MountedComponentVNode but flow doesn't
-    parent // activeInstance in lifecycle state
-  ) {
-    var options = {
-      _isComponent: true,
-      _parentVnode: vnode,
-      parent: parent
-    };
-    // check inline-template render functions
-    var inlineTemplate = vnode.data.inlineTemplate;
-    if (isDef(inlineTemplate)) {
-      options.render = inlineTemplate.render;
-      options.staticRenderFns = inlineTemplate.staticRenderFns;
-    }
-    return new vnode.componentOptions.Ctor(options)
-  }
-
-  function installComponentHooks (data) {
-    var hooks = data.hook || (data.hook = {});
-    for (var i = 0; i < hooksToMerge.length; i++) {
-      var key = hooksToMerge[i];
-      var existing = hooks[key];
-      var toMerge = componentVNodeHooks[key];
-      if (existing !== toMerge && !(existing && existing._merged)) {
-        hooks[key] = existing ? mergeHook$1(toMerge, existing) : toMerge;
-      }
-    }
-  }
-
-  function mergeHook$1 (f1, f2) {
-    var merged = function (a, b) {
-      // flow complains about extra args which is why we use any
-      f1(a, b);
-      f2(a, b);
-    };
-    merged._merged = true;
-    return merged
-  }
-
-  // transform component v-model info (value and callback) into
-  // prop and event handler respectively.
-  function transformModel (options, data) {
-    var prop = (options.model && options.model.prop) || 'value';
-    var event = (options.model && options.model.event) || 'input'
-    ;(data.props || (data.props = {}))[prop] = data.model.value;
-    var on = data.on || (data.on = {});
-    var existing = on[event];
-    var callback = data.model.callback;
-    if (isDef(existing)) {
-      if (
-        Array.isArray(existing)
-          ? existing.indexOf(callback) === -1
-          : existing !== callback
-      ) {
-        on[event] = [callback].concat(existing);
-      }
-    } else {
-      on[event] = callback;
-    }
-  }
-
-  /*  */
-
-  var SIMPLE_NORMALIZE = 1;
-  var ALWAYS_NORMALIZE = 2;
-
-  // wrapper function for providing a more flexible interface
-  // without getting yelled at by flow
-  function createElement (
-    context,
-    tag,
-    data,
-    children,
-    normalizationType,
-    alwaysNormalize
-  ) {
-    if (Array.isArray(data) || isPrimitive(data)) {
-      normalizationType = children;
-      children = data;
-      data = undefined;
-    }
-    if (isTrue(alwaysNormalize)) {
-      normalizationType = ALWAYS_NORMALIZE;
-    }
-    return _createElement(context, tag, data, children, normalizationType)
-  }
-
-  function _createElement (
-    context,
-    tag,
-    data,
-    children,
-    normalizationType
-  ) {
-    if (isDef(data) && isDef((data).__ob__)) {
-      return createEmptyVNode()
-    }
-    // object syntax in v-bind
-    if (isDef(data) && isDef(data.is)) {
-      tag = data.is;
-    }
-    if (!tag) {
-      // in case of component :is set to falsy value
-      return createEmptyVNode()
-    }
-    // support single function children as default scoped slot
-    if (Array.isArray(children) &&
-      typeof children[0] === 'function'
-    ) {
-      data = data || {};
-      data.scopedSlots = { default: children[0] };
-      children.length = 0;
-    }
-    if (normalizationType === ALWAYS_NORMALIZE) {
-      children = normalizeChildren(children);
-    } else if (normalizationType === SIMPLE_NORMALIZE) {
-      children = simpleNormalizeChildren(children);
-    }
-    var vnode, ns;
-    if (typeof tag === 'string') {
-      var Ctor;
-      ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
-      if (config.isReservedTag(tag)) {
-        // platform built-in elements
-        vnode = new VNode(
-          config.parsePlatformTagName(tag), data, children,
-          undefined, undefined, context
-        );
-      } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-        // component
-        vnode = createComponent(Ctor, data, context, children, tag);
-      } else {
-        // unknown or unlisted namespaced elements
-        // check at runtime because it may get assigned a namespace when its
-        // parent normalizes children
-        vnode = new VNode(
-          tag, data, children,
-          undefined, undefined, context
-        );
-      }
-    } else {
-      // direct component options / constructor
-      vnode = createComponent(tag, data, context, children);
-    }
-    if (Array.isArray(vnode)) {
-      return vnode
-    } else if (isDef(vnode)) {
-      if (isDef(ns)) { applyNS(vnode, ns); }
-      if (isDef(data)) { registerDeepBindings(data); }
-      return vnode
-    } else {
-      return createEmptyVNode()
-    }
-  }
-
-  function applyNS (vnode, ns, force) {
-    vnode.ns = ns;
-    if (vnode.tag === 'foreignObject') {
-      // use default namespace inside foreignObject
-      ns = undefined;
-      force = true;
-    }
-    if (isDef(vnode.children)) {
-      for (var i = 0, l = vnode.children.length; i < l; i++) {
-        var child = vnode.children[i];
-        if (isDef(child.tag) && (
-          isUndef(child.ns) || (isTrue(force) && child.tag !== 'svg'))) {
-          applyNS(child, ns, force);
-        }
-      }
-    }
-  }
-
-  // ref #5318
-  // necessary to ensure parent re-render when deep bindings like :style and
-  // :class are used on slot nodes
-  function registerDeepBindings (data) {
-    if (isObject(data.style)) {
-      traverse(data.style);
-    }
-    if (isObject(data.class)) {
-      traverse(data.class);
-    }
-  }
-
-  /*  */
-
-  function initRender (vm) {
-    vm._vnode = null; // the root of the child tree
-    vm._staticTrees = null; // v-once cached trees
-    var options = vm.$options;
-    var parentVnode = vm.$vnode = options._parentVnode; // the placeholder node in parent tree
-    var renderContext = parentVnode && parentVnode.context;
-    vm.$slots = resolveSlots(options._renderChildren, renderContext);
-    vm.$scopedSlots = emptyObject;
-    // bind the createElement fn to this instance
-    // so that we get proper render context inside it.
-    // args order: tag, data, children, normalizationType, alwaysNormalize
-    // internal version is used by render functions compiled from templates
-    vm._c = function (a, b, c, d) { return createElement(vm, a, b, c, d, false); };
-    // normalization is always applied for the public version, used in
-    // user-written render functions.
-    vm.$createElement = function (a, b, c, d) { return createElement(vm, a, b, c, d, true); };
-
-    // $attrs & $listeners are exposed for easier HOC creation.
-    // they need to be reactive so that HOCs using them are always updated
-    var parentData = parentVnode && parentVnode.data;
-
-    /* istanbul ignore else */
-    {
-      defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true);
-      defineReactive$$1(vm, '$listeners', options._parentListeners || emptyObject, null, true);
-    }
-  }
-
-  function renderMixin (Vue) {
-    // install runtime convenience helpers
-    installRenderHelpers(Vue.prototype);
-
-    Vue.prototype.$nextTick = function (fn) {
-      return nextTick(fn, this)
-    };
-
-    Vue.prototype._render = function () {
-      var vm = this;
-      var ref = vm.$options;
-      var render = ref.render;
-      var _parentVnode = ref._parentVnode;
-
-      if (_parentVnode) {
-        vm.$scopedSlots = _parentVnode.data.scopedSlots || emptyObject;
-      }
-
-      // set parent vnode. this allows render functions to have access
-      // to the data on the placeholder node.
-      vm.$vnode = _parentVnode;
-      // render self
-      var vnode;
-      try {
-        vnode = render.call(vm._renderProxy, vm.$createElement);
-      } catch (e) {
-        handleError(e, vm, "render");
-        // return error render result,
-        // or previous vnode to prevent render error causing blank component
-        /* istanbul ignore else */
-        {
-          vnode = vm._vnode;
-        }
-      }
-      // return empty vnode in case the render function errored out
-      if (!(vnode instanceof VNode)) {
-        vnode = createEmptyVNode();
-      }
-      // set parent
-      vnode.parent = _parentVnode;
-      return vnode
-    };
-  }
-
-  /*  */
-
   var uid$3 = 0;
 
   function initMixin (Vue) {
@@ -4045,34 +4218,14 @@
   function resolveModifiedOptions (Ctor) {
     var modified;
     var latest = Ctor.options;
-    var extended = Ctor.extendOptions;
     var sealed = Ctor.sealedOptions;
     for (var key in latest) {
       if (latest[key] !== sealed[key]) {
         if (!modified) { modified = {}; }
-        modified[key] = dedupe(latest[key], extended[key], sealed[key]);
+        modified[key] = latest[key];
       }
     }
     return modified
-  }
-
-  function dedupe (latest, extended, sealed) {
-    // compare latest and sealed to ensure lifecycle hooks won't be duplicated
-    // between merges
-    if (Array.isArray(latest)) {
-      var res = [];
-      sealed = Array.isArray(sealed) ? sealed : [sealed];
-      extended = Array.isArray(extended) ? extended : [extended];
-      for (var i = 0; i < latest.length; i++) {
-        // push original options and not sealed options to exclude duplicated options
-        if (extended.indexOf(latest[i]) >= 0 || sealed.indexOf(latest[i]) < 0) {
-          res.push(latest[i]);
-        }
-      }
-      return res
-    } else {
-      return latest
-    }
   }
 
   function Vue (options) {
@@ -4389,6 +4542,12 @@
     Vue.delete = del;
     Vue.nextTick = nextTick;
 
+    // 2.6 explicit observable API
+    Vue.observable = function (obj) {
+      observe(obj);
+      return obj
+    };
+
     Vue.options = Object.create(null);
     ASSET_TYPES.forEach(function (type) {
       Vue.options[type + 's'] = Object.create(null);
@@ -4424,7 +4583,7 @@
     value: FunctionalRenderContext
   });
 
-  Vue.version = '2.5.21';
+  Vue.version = '2.6.3';
 
   /*  */
 
@@ -4444,6 +4603,17 @@
   };
 
   var isEnumeratedAttr = makeMap('contenteditable,draggable,spellcheck');
+
+  var isValidContentEditableValue = makeMap('events,caret,typing,plaintext-only');
+
+  var convertEnumeratedValue = function (key, value) {
+    return isFalsyAttrValue(value) || value === 'false'
+      ? 'false'
+      // allow arbitrary string value for contenteditable
+      : key === 'contenteditable' && isValidContentEditableValue(value)
+        ? value
+        : 'true'
+  };
 
   var isBooleanAttr = makeMap(
     'allowfullscreen,async,autofocus,autoplay,checked,compact,controls,declare,' +
@@ -5456,6 +5626,7 @@
       } else {
         // existing directive, update
         dir.oldValue = oldDir.value;
+        dir.oldArg = oldDir.arg;
         callHook$1(dir, 'update', vnode, oldVnode);
         if (dir.def && dir.def.componentUpdated) {
           dirsWithPostpatch.push(dir);
@@ -5599,7 +5770,7 @@
         el.setAttribute(key, value);
       }
     } else if (isEnumeratedAttr(key)) {
-      el.setAttribute(key, isFalsyAttrValue(value) || value === 'false' ? 'false' : 'true');
+      el.setAttribute(key, convertEnumeratedValue(key, value));
     } else if (isXlink(key)) {
       if (isFalsyAttrValue(value)) {
         el.removeAttributeNS(xlinkNS, getXlinkProp(key));
@@ -5621,8 +5792,8 @@
       /* istanbul ignore if */
       if (
         isIE && !isIE9 &&
-        (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') &&
-        key === 'placeholder' && !el.__ieph
+        el.tagName === 'TEXTAREA' &&
+        key === 'placeholder' && value !== '' && !el.__ieph
       ) {
         var blocker = function (e) {
           e.stopImmediatePropagation();
@@ -5727,15 +5898,39 @@
     }
   }
 
+  // #9446: Firefox <= 53 (in particular, ESR 52) has incorrect Event.timeStamp
+  // implementation and does not fire microtasks in between event propagation, so
+  // safe to exclude.
+  var useMicrotaskFix = isUsingMicroTask && !(isFF && Number(isFF[1]) <= 53);
+
   function add$1 (
-    event,
+    name,
     handler,
     capture,
     passive
   ) {
-    handler = withMacroTask(handler);
+    // async edge case #6566: inner click event triggers patch, event handler
+    // attached to outer element during patch, and triggered again. This
+    // happens because browsers fire microtask ticks between event propagation.
+    // the solution is simple: we save the timestamp when a handler is attached,
+    // and the handler would only fire if the event passed to it was fired
+    // AFTER it was attached.
+    if (useMicrotaskFix) {
+      var attachedTimestamp = currentFlushTimestamp;
+      var original = handler;
+      handler = original._wrapper = function (e) {
+        if (
+          e.timeStamp >= attachedTimestamp ||
+          // #9448 bail if event is fired in another document in a multi-page
+          // electron/nw.js app
+          e.target.ownerDocument !== document
+        ) {
+          return original.apply(this, arguments)
+        }
+      };
+    }
     target$1.addEventListener(
-      event,
+      name,
       handler,
       supportsPassive
         ? { capture: capture, passive: passive }
@@ -5744,14 +5939,14 @@
   }
 
   function remove$2 (
-    event,
+    name,
     handler,
     capture,
     _target
   ) {
     (_target || target$1).removeEventListener(
-      event,
-      handler._withTask || handler,
+      name,
+      handler._wrapper || handler,
       capture
     );
   }
@@ -5774,6 +5969,8 @@
   };
 
   /*  */
+
+  var svgContainer;
 
   function updateDOMProps (oldVnode, vnode) {
     if (isUndef(oldVnode.data.domProps) && isUndef(vnode.data.domProps)) {
@@ -5808,6 +6005,14 @@
         }
       }
 
+      // skip the update if old and new VDOM state is the same.
+      // the only exception is `value` where the DOM value may be temporarily
+      // out of sync with VDOM state due to focus, composition and modifiers.
+      // This also covers #4521 by skipping the unnecesarry `checked` update.
+      if (key !== 'value' && cur === oldProps[key]) {
+        continue
+      }
+
       if (key === 'value') {
         // store value as _value as well since
         // non-string values will be stringified
@@ -5816,6 +6021,17 @@
         var strCur = isUndef(cur) ? '' : String(cur);
         if (shouldUpdateValue(elm, strCur)) {
           elm.value = strCur;
+        }
+      } else if (key === 'innerHTML' && isSVG(elm.tagName) && isUndef(elm.innerHTML)) {
+        // IE doesn't support innerHTML for SVG elements
+        svgContainer = svgContainer || document.createElement('div');
+        svgContainer.innerHTML = "<svg>" + cur + "</svg>";
+        var svg = svgContainer.firstChild;
+        while (elm.firstChild) {
+          elm.removeChild(elm.firstChild);
+        }
+        while (svg.firstChild) {
+          elm.appendChild(svg.firstChild);
         }
       } else {
         elm[key] = cur;
@@ -5848,10 +6064,6 @@
     var value = elm.value;
     var modifiers = elm._vModifiers; // injected by v-model runtime
     if (isDef(modifiers)) {
-      if (modifiers.lazy) {
-        // inputs with lazy should only be updated when not in focus
-        return false
-      }
       if (modifiers.number) {
         return toNumber(value) !== toNumber(newVal)
       }
@@ -5946,7 +6158,7 @@
     if (cssVarRE.test(name)) {
       el.style.setProperty(name, val);
     } else if (importantRE.test(val)) {
-      el.style.setProperty(name, val.replace(importantRE, ''), 'important');
+      el.style.setProperty(hyphenate(name), val.replace(importantRE, ''), 'important');
     } else {
       var normalizedName = normalize(name);
       if (Array.isArray(val)) {
@@ -7173,15 +7385,15 @@
   /**
    * Template7 1.4.1
    * Mobile-first HTML template engine
-   *
+   * 
    * http://www.idangero.us/template7/
-   *
+   * 
    * Copyright 2019, Vladimir Kharlampidi
    * The iDangero.us
    * http://www.idangero.us/
-   *
+   * 
    * Licensed under MIT
-   *
+   * 
    * Released on: February 5, 2019
    */
 
@@ -16053,177 +16265,6 @@
       $(el).find(("." + (theme === 'md' ? 'ios' : 'md') + "-only, .if-" + (theme === 'md' ? 'ios' : 'md'))).remove();
     };
 
-    Router.prototype.templateLoader = function templateLoader (template, templateUrl, options, resolve, reject) {
-      var router = this;
-      function compile(t) {
-        var compiledHtml;
-        var context;
-        try {
-          context = options.context || {};
-          if (typeof context === 'function') { context = context.call(router); }
-          else if (typeof context === 'string') {
-            try {
-              context = JSON.parse(context);
-            } catch (err) {
-              reject();
-              throw (err);
-            }
-          }
-          if (typeof t === 'function') {
-            compiledHtml = t(context);
-          } else {
-            compiledHtml = Template7.compile(t)(Utils.extend({}, context || {}, {
-              $app: router.app,
-              $root: Utils.extend({}, router.app.data, router.app.methods),
-              $route: options.route,
-              $f7route: options.route,
-              $router: router,
-              $f7router: router,
-              $theme: {
-                ios: router.app.theme === 'ios',
-                md: router.app.theme === 'md',
-              },
-            }));
-          }
-        } catch (err) {
-          reject();
-          throw (err);
-        }
-        resolve(compiledHtml, { context: context });
-      }
-      if (templateUrl) {
-        // Load via XHR
-        if (router.xhr) {
-          router.xhr.abort();
-          router.xhr = false;
-        }
-        router
-          .xhrRequest(templateUrl, options)
-          .then(function (templateContent) {
-            compile(templateContent);
-          })
-          .catch(function () {
-            reject();
-          });
-      } else {
-        compile(template);
-      }
-    };
-
-    Router.prototype.modalTemplateLoader = function modalTemplateLoader (template, templateUrl, options, resolve, reject) {
-      var router = this;
-      return router.templateLoader(template, templateUrl, options, function (html) {
-        resolve(html);
-      }, reject);
-    };
-
-    Router.prototype.tabTemplateLoader = function tabTemplateLoader (template, templateUrl, options, resolve, reject) {
-      var router = this;
-      return router.templateLoader(template, templateUrl, options, function (html) {
-        resolve(html);
-      }, reject);
-    };
-
-    Router.prototype.pageTemplateLoader = function pageTemplateLoader (template, templateUrl, options, resolve, reject) {
-      var router = this;
-      return router.templateLoader(template, templateUrl, options, function (html, newOptions) {
-        if ( newOptions === void 0 ) newOptions = {};
-
-        resolve(router.getPageEl(html), newOptions);
-      }, reject);
-    };
-
-    Router.prototype.componentLoader = function componentLoader (component, componentUrl, options, resolve, reject) {
-      if ( options === void 0 ) options = {};
-
-      var router = this;
-      var app = router.app;
-      var url = typeof component === 'string' ? component : componentUrl;
-      var compiledUrl = router.replaceRequestUrlParams(url, options);
-      function compile(componentOptions) {
-        var context = options.context || {};
-        if (typeof context === 'function') { context = context.call(router); }
-        else if (typeof context === 'string') {
-          try {
-            context = JSON.parse(context);
-          } catch (err) {
-            reject();
-            throw (err);
-          }
-        }
-        var extendContext = Utils.merge(
-          {},
-          context,
-          {
-            $route: options.route,
-            $f7route: options.route,
-            $router: router,
-            $f7router: router,
-            $theme: {
-              ios: app.theme === 'ios',
-              md: app.theme === 'md',
-            },
-          }
-        );
-        var createdComponent = app.component.create(componentOptions, extendContext);
-        resolve(createdComponent.el);
-      }
-      var cachedComponent;
-      if (compiledUrl) {
-        router.cache.components.forEach(function (cached) {
-          if (cached.url === compiledUrl) { cachedComponent = cached.component; }
-        });
-      }
-      if (compiledUrl && cachedComponent) {
-        compile(cachedComponent);
-      } else if (compiledUrl && !cachedComponent) {
-        // Load via XHR
-        if (router.xhr) {
-          router.xhr.abort();
-          router.xhr = false;
-        }
-        router
-          .xhrRequest(url, options)
-          .then(function (loadedComponent) {
-            var parsedComponent = app.component.parse(loadedComponent);
-            router.cache.components.push({
-              url: compiledUrl,
-              component: parsedComponent,
-            });
-            compile(parsedComponent);
-          })
-          .catch(function (err) {
-            reject();
-            throw (err);
-          });
-      } else {
-        compile(component);
-      }
-    };
-
-    Router.prototype.modalComponentLoader = function modalComponentLoader (rootEl, component, componentUrl, options, resolve, reject) {
-      var router = this;
-      router.componentLoader(component, componentUrl, options, function (el) {
-        resolve(el);
-      }, reject);
-    };
-
-    Router.prototype.tabComponentLoader = function tabComponentLoader (tabEl, component, componentUrl, options, resolve, reject) {
-      var router = this;
-      router.componentLoader(component, componentUrl, options, function (el) {
-        resolve(el);
-      }, reject);
-    };
-
-    Router.prototype.pageComponentLoader = function pageComponentLoader (routerEl, component, componentUrl, options, resolve, reject) {
-      var router = this;
-      router.componentLoader(component, componentUrl, options, function (el, newOptions) {
-        if ( newOptions === void 0 ) newOptions = {};
-
-        resolve(el, newOptions);
-      }, reject);
-    };
-
     Router.prototype.getPageData = function getPageData (pageEl, navbarEl, from, to, route, pageFromEl) {
       if ( route === void 0 ) route = {};
 
@@ -17022,6 +17063,187 @@
       init: function init() {
         var app = this;
         initClicks(app);
+      },
+    },
+  };
+
+  var RouterTemplateLoaderModule = {
+    name: 'routerTemplateLoader',
+    proto: {
+      templateLoader: function templateLoader(template, templateUrl, options, resolve, reject) {
+        var router = this;
+        function compile(t) {
+          var compiledHtml;
+          var context;
+          try {
+            context = options.context || {};
+            if (typeof context === 'function') { context = context.call(router); }
+            else if (typeof context === 'string') {
+              try {
+                context = JSON.parse(context);
+              } catch (err) {
+                reject();
+                throw (err);
+              }
+            }
+            if (typeof t === 'function') {
+              compiledHtml = t(context);
+            } else {
+              compiledHtml = Template7.compile(t)(Utils.extend({}, context || {}, {
+                $app: router.app,
+                $root: Utils.extend({}, router.app.data, router.app.methods),
+                $route: options.route,
+                $f7route: options.route,
+                $router: router,
+                $f7router: router,
+                $theme: {
+                  ios: router.app.theme === 'ios',
+                  md: router.app.theme === 'md',
+                },
+              }));
+            }
+          } catch (err) {
+            reject();
+            throw (err);
+          }
+          resolve(compiledHtml, { context: context });
+        }
+        if (templateUrl) {
+          // Load via XHR
+          if (router.xhr) {
+            router.xhr.abort();
+            router.xhr = false;
+          }
+          router
+            .xhrRequest(templateUrl, options)
+            .then(function (templateContent) {
+              compile(templateContent);
+            })
+            .catch(function () {
+              reject();
+            });
+        } else {
+          compile(template);
+        }
+      },
+
+      modalTemplateLoader: function modalTemplateLoader(template, templateUrl, options, resolve, reject) {
+        var router = this;
+        return router.templateLoader(template, templateUrl, options, function (html) {
+          resolve(html);
+        }, reject);
+      },
+
+      tabTemplateLoader: function tabTemplateLoader(template, templateUrl, options, resolve, reject) {
+        var router = this;
+        return router.templateLoader(template, templateUrl, options, function (html) {
+          resolve(html);
+        }, reject);
+      },
+
+      pageTemplateLoader: function pageTemplateLoader(template, templateUrl, options, resolve, reject) {
+        var router = this;
+        return router.templateLoader(template, templateUrl, options, function (html, newOptions) {
+          if ( newOptions === void 0 ) newOptions = {};
+
+          resolve(router.getPageEl(html), newOptions);
+        }, reject);
+      },
+    },
+  };
+
+  var RouterComponentLoaderModule = {
+    name: 'routerComponentLoader',
+    proto: {
+      componentLoader: function componentLoader(component, componentUrl, options, resolve, reject) {
+        if ( options === void 0 ) options = {};
+
+        var router = this;
+        var app = router.app;
+        var url = typeof component === 'string' ? component : componentUrl;
+        var compiledUrl = router.replaceRequestUrlParams(url, options);
+        function compile(componentOptions) {
+          var context = options.context || {};
+          if (typeof context === 'function') { context = context.call(router); }
+          else if (typeof context === 'string') {
+            try {
+              context = JSON.parse(context);
+            } catch (err) {
+              reject();
+              throw (err);
+            }
+          }
+          var extendContext = Utils.merge(
+            {},
+            context,
+            {
+              $route: options.route,
+              $f7route: options.route,
+              $router: router,
+              $f7router: router,
+              $theme: {
+                ios: app.theme === 'ios',
+                md: app.theme === 'md',
+              },
+            }
+          );
+          var createdComponent = app.component.create(componentOptions, extendContext);
+          resolve(createdComponent.el);
+        }
+        var cachedComponent;
+        if (compiledUrl) {
+          router.cache.components.forEach(function (cached) {
+            if (cached.url === compiledUrl) { cachedComponent = cached.component; }
+          });
+        }
+        if (compiledUrl && cachedComponent) {
+          compile(cachedComponent);
+        } else if (compiledUrl && !cachedComponent) {
+          // Load via XHR
+          if (router.xhr) {
+            router.xhr.abort();
+            router.xhr = false;
+          }
+          router
+            .xhrRequest(url, options)
+            .then(function (loadedComponent) {
+              var parsedComponent = app.component.parse(loadedComponent);
+              router.cache.components.push({
+                url: compiledUrl,
+                component: parsedComponent,
+              });
+              compile(parsedComponent);
+            })
+            .catch(function (err) {
+              reject();
+              throw (err);
+            });
+        } else {
+          compile(component);
+        }
+      },
+
+      modalComponentLoader: function modalComponentLoader(rootEl, component, componentUrl, options, resolve, reject) {
+        var router = this;
+        router.componentLoader(component, componentUrl, options, function (el) {
+          resolve(el);
+        }, reject);
+      },
+
+      tabComponentLoader: function tabComponentLoader(tabEl, component, componentUrl, options, resolve, reject) {
+        var router = this;
+        router.componentLoader(component, componentUrl, options, function (el) {
+          resolve(el);
+        }, reject);
+      },
+
+      pageComponentLoader: function pageComponentLoader(routerEl, component, componentUrl, options, resolve, reject) {
+        var router = this;
+        router.componentLoader(component, componentUrl, options, function (el, newOptions) {
+          if ( newOptions === void 0 ) newOptions = {};
+
+          resolve(el, newOptions);
+        }, reject);
       },
     },
   };
@@ -22936,7 +23158,7 @@
         vl.filteredItems = [];
       }
       if (vl.params.itemTemplate) {
-        if (typeof vl.params.itemTemplate === 'string') { vl.renderItem = Template7.compile(vl.params.itemTemplate); }
+        if (typeof vl.params.itemTemplate === 'string') { vl.renderItem = app.t7.compile(vl.params.itemTemplate); }
         else if (typeof vl.params.itemTemplate === 'function') { vl.renderItem = vl.params.itemTemplate; }
       } else if (vl.params.renderItem) {
         vl.renderItem = vl.params.renderItem;
@@ -42854,7 +43076,7 @@
   };
 
   /**
-   * Framework7 4.0.0-beta.34
+   * Framework7 4.0.0
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -42862,10 +43084,14 @@
    *
    * Released under the MIT License
    *
-   * Released on: January 31, 2019
+   * Released on: February 7, 2019
    */
 
   // Install Core Modules & Components
+  Router.use([
+    RouterTemplateLoaderModule,
+    RouterComponentLoaderModule ]);
+
   Framework7.use([
     DeviceModule,
     SupportModule,
@@ -54366,7 +54592,7 @@
 
       var Extend = params.Vue || Vue; // eslint-disable-line
 
-
+      
       // Define protos
       Object.defineProperty(Extend.prototype, '$f7', {
         get: function get() {
@@ -54466,7 +54692,7 @@
   };
 
   /**
-   * Framework7 Vue 4.0.0-beta.34
+   * Framework7 Vue 4.0.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -54474,7 +54700,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: January 31, 2019
+   * Released on: February 7, 2019
    */
 
   //
@@ -54496,85 +54722,93 @@
     },
   };
 
-  function normalizeComponent(compiledTemplate, injectStyle, defaultExport, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, isShadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-      if (typeof isShadowMode === 'function') {
-          createInjectorSSR = createInjector;
-          createInjector = isShadowMode;
-          isShadowMode = false;
+  function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
+  /* server only */
+  , shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
+    if (typeof shadowMode !== 'boolean') {
+      createInjectorSSR = createInjector;
+      createInjector = shadowMode;
+      shadowMode = false;
+    } // Vue.extend constructor export interop.
+
+
+    var options = typeof script === 'function' ? script.options : script; // render functions
+
+    if (template && template.render) {
+      options.render = template.render;
+      options.staticRenderFns = template.staticRenderFns;
+      options._compiled = true; // functional template
+
+      if (isFunctionalTemplate) {
+        options.functional = true;
       }
-      // Vue.extend constructor export interop
-      var options = typeof defaultExport === 'function' ? defaultExport.options : defaultExport;
-      // render functions
-      if (compiledTemplate && compiledTemplate.render) {
-          options.render = compiledTemplate.render;
-          options.staticRenderFns = compiledTemplate.staticRenderFns;
-          options._compiled = true;
-          // functional template
-          if (isFunctionalTemplate) {
-              options.functional = true;
-          }
+    } // scopedId
+
+
+    if (scopeId) {
+      options._scopeId = scopeId;
+    }
+
+    var hook;
+
+    if (moduleIdentifier) {
+      // server build
+      hook = function hook(context) {
+        // 2.3 injection
+        context = context || // cached call
+        this.$vnode && this.$vnode.ssrContext || // stateful
+        this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext; // functional
+        // 2.2 with runInNewContext: true
+
+        if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+          context = __VUE_SSR_CONTEXT__;
+        } // inject component styles
+
+
+        if (style) {
+          style.call(this, createInjectorSSR(context));
+        } // register component module identifier for async chunk inference
+
+
+        if (context && context._registeredComponents) {
+          context._registeredComponents.add(moduleIdentifier);
+        }
+      }; // used by ssr in case component is cached and beforeCreate
+      // never gets called
+
+
+      options._ssrRegister = hook;
+    } else if (style) {
+      hook = shadowMode ? function () {
+        style.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
+      } : function (context) {
+        style.call(this, createInjector(context));
+      };
+    }
+
+    if (hook) {
+      if (options.functional) {
+        // register for functional component in vue file
+        var originalRender = options.render;
+
+        options.render = function renderWithStyleInjection(h, context) {
+          hook.call(context);
+          return originalRender(h, context);
+        };
+      } else {
+        // inject component registration as beforeCreate hook
+        var existing = options.beforeCreate;
+        options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
       }
-      // scopedId
-      if (scopeId) {
-          options._scopeId = scopeId;
-      }
-      var hook;
-      if (moduleIdentifier) {
-          // server build
-          hook = function (context) {
-              // 2.3 injection
-              context =
-                  context || // cached call
-                      (this.$vnode && this.$vnode.ssrContext) || // stateful
-                      (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext); // functional
-              // 2.2 with runInNewContext: true
-              if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-                  context = __VUE_SSR_CONTEXT__;
-              }
-              // inject component styles
-              if (injectStyle) {
-                  injectStyle.call(this, createInjectorSSR(context));
-              }
-              // register component module identifier for async chunk inference
-              if (context && context._registeredComponents) {
-                  context._registeredComponents.add(moduleIdentifier);
-              }
-          };
-          // used by ssr in case component is cached and beforeCreate
-          // never gets called
-          options._ssrRegister = hook;
-      }
-      else if (injectStyle) {
-          hook = isShadowMode
-              ? function () {
-                  injectStyle.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
-              }
-              : function (context) {
-                  injectStyle.call(this, createInjector(context));
-              };
-      }
-      if (hook) {
-          if (options.functional) {
-              // register for functional component in vue file
-              var originalRender = options.render;
-              options.render = function renderWithStyleInjection(h, context) {
-                  hook.call(context);
-                  return originalRender(h, context);
-              };
-          }
-          else {
-              // inject component registration as beforeCreate hook
-              var existing = options.beforeCreate;
-              options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-          }
-      }
-      return defaultExport;
+    }
+
+    return script;
   }
+
+  var normalizeComponent_1 = normalizeComponent;
 
   /* script */
   var __vue_script__ = script;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script.__file = "home.vue";
 
   /* template */
   var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","sliding":false}},[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',{attrs:{"sliding":""}},[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-nav-title-large',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards-expandable/","title":"Cards Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/menu/","title":"Menu"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/skeleton/","title":"Skeleton (Ghost) Elements"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Master-Detail (Split View)","link":"/master-detail/"}})],1)],1)};
@@ -54589,12 +54823,12 @@
     /* functional template */
     var __vue_is_functional_template__ = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Home = normalizeComponent(
+    
+    var Home = normalizeComponent_1(
       { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
       __vue_inject_styles__,
       __vue_script__,
@@ -54620,8 +54854,6 @@
 
   /* script */
   var __vue_script__$1 = script$1;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1.__file = "panel-left.vue";
 
   /* template */
   var __vue_render__$1 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-block-title',[_vm._v("Left Panel")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("This is a left side panel. You can close it by clicking outsite or on this link: "),_c('f7-link',{attrs:{"panel-close":""}},[_vm._v("close me")]),_vm._v(". You can put here anything, even another isolated view like in  "),_c('f7-link',{attrs:{"panel-open":"right"}},[_vm._v("Right Panel")])],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Main View Navigation")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table","panel-close":""}})],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero.")])])],1)};
@@ -54636,12 +54868,12 @@
     /* functional template */
     var __vue_is_functional_template__$1 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var PanelLeft = normalizeComponent(
+    
+    var PanelLeft = normalizeComponent_1(
       { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
       __vue_inject_styles__$1,
       __vue_script__$1,
@@ -54668,8 +54900,6 @@
 
   /* script */
   var __vue_script__$2 = script$2;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$2.__file = "panel-right.vue";
 
   /* template */
   var __vue_render__$2 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Right Panel"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Left Panel")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("This is a right side panel. You can close it by clicking outsite or on this link: "),_c('f7-link',{attrs:{"panel-close":""}},[_vm._v("close me")]),_vm._v(". You can put here anything, even another isolated view.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Panel Navigation")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/panel-right-1/","title":"Right panel page 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel-right-2/","title":"Right panel page 2"}})],1)],1)};
@@ -54684,12 +54914,12 @@
     /* functional template */
     var __vue_is_functional_template__$2 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var PanelRight = normalizeComponent(
+    
+    var PanelRight = normalizeComponent_1(
       { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
       __vue_inject_styles__$2,
       __vue_script__$2,
@@ -54713,8 +54943,6 @@
 
   /* script */
   var __vue_script__$3 = script$3;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$3.__file = "about.vue";
 
   /* template */
   var __vue_render__$3 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"About","title-large":"About","back-link":"Framework7"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Welcome to Framework7")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).")]),_vm._v(" "),_c('p',[_vm._v("The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is definitely for you if you decide to build iOS and Android hybrid app (PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.")])])],1)};
@@ -54729,12 +54957,12 @@
     /* functional template */
     var __vue_is_functional_template__$3 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var About = normalizeComponent(
+    
+    var About = normalizeComponent_1(
       { render: __vue_render__$3, staticRenderFns: __vue_staticRenderFns__$3 },
       __vue_inject_styles__$3,
       __vue_script__$3,
@@ -54763,8 +54991,6 @@
 
   /* script */
   var __vue_script__$4 = script$4;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$4.__file = "accordion.vue";
 
   /* template */
   var __vue_render__$4 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Accordion","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("List View Accordion")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset Accordion")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":"","inset":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom Collapsible")]),_vm._v(" "),_c('f7-block',{attrs:{"inner":"","accordion-list":""}},_vm._l((3),function(n){return _c('f7-accordion-item',{key:n},[_c('f7-accordion-toggle',[_c('b',[_vm._v("Item "+_vm._s(n))])]),_vm._v(" "),_c('f7-accordion-content',[_vm._v("Content "+_vm._s(n))])],1)}),1)],1)};
@@ -54779,12 +55005,12 @@
     /* functional template */
     var __vue_is_functional_template__$4 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Accordion$2 = normalizeComponent(
+    
+    var Accordion$2 = normalizeComponent_1(
       { render: __vue_render__$4, staticRenderFns: __vue_staticRenderFns__$4 },
       __vue_inject_styles__$4,
       __vue_script__$4,
@@ -54859,11 +55085,9 @@
 
   /* script */
   var __vue_script__$5 = script$5;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$5.__file = "action-sheet.vue";
 
   /* template */
-  var __vue_render__$5 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',{staticClass:"row"},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":function($event){_vm.$refs.actionsOneGroup.open();}}},[_vm._v("One group")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":"","actions-open":"#actions-two-groups"}},[_vm._v("Two groups")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.actionGridOpened = true;}}},[_vm._v("Action Grid")])],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Action Sheet To Popover")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Action Sheet can be automatically converted to Popover (for tablets). This button will open Popover on tablets and Action Sheet on phones: "),_c('f7-button',{staticClass:"button-to-popover",staticStyle:{"display":"inline-block"},on:{"click":_vm.openActionsPopover}},[_vm._v("Actions")])],1)]),_vm._v(" "),_c('f7-actions',{ref:"actionsOneGroup"},[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("Do something")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"bold":""}},[_vm._v("Button 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Button 2")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1),_vm._v(" "),_c('f7-actions',{attrs:{"id":"actions-two-groups"}},[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("Do something")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"bold":""}},[_vm._v("Button 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Button 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1),_vm._v(" "),_c('f7-actions',{attrs:{"grid":true,"opened":_vm.actionGridOpened},on:{"actions:closed":function($event){_vm.actionGridOpened = false;}}},[_c('f7-actions-group',[_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-96x96-1.jpg","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 1")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-96x96-2.jpg","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 2")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-96x96-3.jpg","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 3")])])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-96x96-4.jpg","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 4")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-96x96-5.jpg","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 5")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-96x96-6.jpg","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 6")])])],1)],1)],1)};
+  var __vue_render__$5 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',{staticClass:"row"},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.actionsOneGroup.open()}}},[_vm._v("One group")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":"","actions-open":"#actions-two-groups"}},[_vm._v("Two groups")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.actionGridOpened = true;}}},[_vm._v("Action Grid")])],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Action Sheet To Popover")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Action Sheet can be automatically converted to Popover (for tablets). This button will open Popover on tablets and Action Sheet on phones: "),_c('f7-button',{staticClass:"button-to-popover",staticStyle:{"display":"inline-block"},on:{"click":_vm.openActionsPopover}},[_vm._v("Actions")])],1)]),_vm._v(" "),_c('f7-actions',{ref:"actionsOneGroup"},[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("Do something")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"bold":""}},[_vm._v("Button 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Button 2")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1),_vm._v(" "),_c('f7-actions',{attrs:{"id":"actions-two-groups"}},[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("Do something")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"bold":""}},[_vm._v("Button 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Button 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1),_vm._v(" "),_c('f7-actions',{attrs:{"grid":true,"opened":_vm.actionGridOpened},on:{"actions:closed":function($event){_vm.actionGridOpened = false;}}},[_c('f7-actions-group',[_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-96x96-1.jpg","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 1")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-96x96-2.jpg","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 2")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-96x96-3.jpg","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 3")])])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-96x96-4.jpg","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 4")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-96x96-5.jpg","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 5")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-96x96-6.jpg","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 6")])])],1)],1)],1)};
   var __vue_staticRenderFns__$5 = [];
 
     /* style */
@@ -54875,12 +55099,12 @@
     /* functional template */
     var __vue_is_functional_template__$5 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var ActionSheet = normalizeComponent(
+    
+    var ActionSheet = normalizeComponent_1(
       { render: __vue_render__$5, staticRenderFns: __vue_staticRenderFns__$5 },
       __vue_inject_styles__$5,
       __vue_script__$5,
@@ -55282,8 +55506,6 @@
 
   /* script */
   var __vue_script__$6 = script$6;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$6.__file = "autocomplete.vue";
 
   /* template */
   var __vue_render__$6 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Autocomplete","back-link":"Back"}},[_c('div',{staticClass:"subnavbar"},[_c('form',{staticClass:"searchbar",attrs:{"id":"searchbar-autocomplete"}},[_c('div',{staticClass:"searchbar-inner"},[_c('div',{staticClass:"searchbar-input-wrap"},[_c('input',{attrs:{"type":"search","placeholder":"Search"}}),_vm._v(" "),_c('i',{staticClass:"searchbar-icon"}),_vm._v(" "),_c('span',{staticClass:"input-clear-button"})]),_vm._v(" "),_c('span',{staticClass:"searchbar-disable-button"},[_vm._v("Cancel")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Dropdown Autocomplete")]),_vm._v(" "),_c('div',{staticClass:"block"},[_c('p',[_vm._v("Dropdown autocomplete is good to use as a quick and simple solution to provide more options in addition to free-type value.")])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Simple Dropdown Autocomplete")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input inline-label"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Fruit")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Fruit","id":"autocomplete-dropdown"}})])])])])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Dropdown With Input Expand")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input inline-label"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Fruit")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Fruit","id":"autocomplete-dropdown-expand"}})])])])])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Dropdown With All Values")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Fruit")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Fruit","id":"autocomplete-dropdown-all"}})])])])])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Dropdown With Placeholder")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Fruit")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Fruit","id":"autocomplete-dropdown-placeholder"}})])])])])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Dropdown With Typeahead")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Fruit")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Fruit","id":"autocomplete-dropdown-typeahead"}})])])])])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Dropdown With Ajax-Data")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Language")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Language","id":"autocomplete-dropdown-ajax"}})])])])])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Dropdown With Ajax-Data + Typeahead")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Language")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Language","id":"autocomplete-dropdown-ajax-typeahead"}})])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Standalone Autocomplete")]),_vm._v(" "),_c('div',{staticClass:"block"},[_c('p',[_vm._v("Standalone autocomplete provides better mobile UX by opening it in a new page or popup. Good to use when you need to get strict values without allowing free-type values.")])]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('div',{staticClass:"block-header"},[_vm._v("Simple Standalone Autocomplete")]),_vm._v(" "),_c('ul',[_c('li',[_c('a',{staticClass:"item-link item-content autocomplete-opener",attrs:{"href":"#","id":"autocomplete-standalone"}},[_c('input',{attrs:{"type":"hidden"}}),_vm._v(" "),_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Favorite Fruite")]),_vm._v(" "),_c('div',{staticClass:"item-after"})])])])])]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('div',{staticClass:"block-header"},[_vm._v("Popup Autocomplete")]),_vm._v(" "),_c('ul',[_c('li',[_c('a',{staticClass:"item-link item-content autocomplete-opener",attrs:{"href":"#","id":"autocomplete-standalone-popup"}},[_c('input',{attrs:{"type":"hidden"}}),_vm._v(" "),_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Favorite Fruite")]),_vm._v(" "),_c('div',{staticClass:"item-after"})])])])])]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('div',{staticClass:"block-header"},[_vm._v("Multiple Values")]),_vm._v(" "),_c('ul',[_c('li',[_c('a',{staticClass:"item-link item-content autocomplete-opener",attrs:{"href":"#","id":"autocomplete-standalone-multiple"}},[_c('input',{attrs:{"type":"hidden"}}),_vm._v(" "),_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Favorite Fruite")]),_vm._v(" "),_c('div',{staticClass:"item-after"})])])])])]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('div',{staticClass:"block-header"},[_vm._v("With Ajax-Data")]),_vm._v(" "),_c('ul',[_c('li',[_c('a',{staticClass:"item-link item-content autocomplete-opener",attrs:{"href":"#","id":"autocomplete-standalone-ajax"}},[_c('input',{attrs:{"type":"hidden"}}),_vm._v(" "),_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Language")]),_vm._v(" "),_c('div',{staticClass:"item-after"})])])])])])],1)};
@@ -55298,12 +55520,12 @@
     /* functional template */
     var __vue_is_functional_template__$6 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Autocomplete$2 = normalizeComponent(
+    
+    var Autocomplete$2 = normalizeComponent_1(
       { render: __vue_render__$6, staticRenderFns: __vue_staticRenderFns__$6 },
       __vue_inject_styles__$6,
       __vue_script__$6,
@@ -55332,8 +55554,6 @@
 
   /* script */
   var __vue_script__$7 = script$7;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$7.__file = "badge.vue";
 
   /* template */
   var __vue_render__$7 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"sliding":"","back-link":"Back","title":"Badge"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-only":""}},[_c('f7-icon',{attrs:{"ios":"f7:person_round_fill","md":"material:person"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("5")])],1)],1)],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_c('f7-icon',{attrs:{"ios":"f7:email_fill","md":"material:email"}},[_c('f7-badge',{attrs:{"color":"green"}},[_vm._v("5")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Inbox")])],1),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_c('f7-icon',{attrs:{"ios":"f7:calendar_fill","md":"material:today"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("7")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Calendar")])],1),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_c('f7-icon',{attrs:{"ios":"f7:cloud_upload_fill","md":"material:file_upload"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("1")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Upload")])],1)],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Foo Bar","badge":"0"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ivan Petrov","badge":"CEO","badge-color":"blue"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"John Doe","badge":"5","badge-color":"green"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jane Doe","badge":"NEW","badge-color":"orange"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1)],1)};
@@ -55348,12 +55568,12 @@
     /* functional template */
     var __vue_is_functional_template__$7 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Badge = normalizeComponent(
+    
+    var Badge = normalizeComponent_1(
       { render: __vue_render__$7, staticRenderFns: __vue_staticRenderFns__$7 },
       __vue_inject_styles__$7,
       __vue_script__$7,
@@ -55383,8 +55603,6 @@
 
   /* script */
   var __vue_script__$8 = script$8;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$8.__file = "buttons.vue";
 
   /* template */
   var __vue_render__$8 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Buttons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Usual Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Fill Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":""}},[_vm._v("Outline")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","round":""}},[_vm._v("Round")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":"","round":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":"","round":""}},[_vm._v("Outline")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Segmented")]),_vm._v(" "),_c('f7-block',[_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":"","active":""}},[_vm._v("Active")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Large Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":""}},[_vm._v("Raised")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":"","fill":""}},[_vm._v("Raised Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Small Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","round":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":"","round":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":"","round":""}},[_vm._v("Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Fill Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("List-Block Buttons")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"List Button 1"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 2"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 3"}})],1),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"Large Red Button","color":"red"}})],1)],1)};
@@ -55399,12 +55617,12 @@
     /* functional template */
     var __vue_is_functional_template__$8 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Buttons = normalizeComponent(
+    
+    var Buttons = normalizeComponent_1(
       { render: __vue_render__$8, staticRenderFns: __vue_staticRenderFns__$8 },
       __vue_inject_styles__$8,
       __vue_script__$8,
@@ -55500,8 +55718,6 @@
 
   /* script */
   var __vue_script__$9 = script$9;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$9.__file = "calendar.vue";
 
   /* template */
   var __vue_render__$9 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Calendar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block"},[_c('p',[_vm._v("Calendar is a touch optimized component that provides an easy way to handle dates.")]),_vm._v(" "),_c('p',[_vm._v("Calendar could be used as inline component or as overlay. Overlay Calendar will be automatically converted to Popover on tablets (iPad).")])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Default setup")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your birth date","readonly":"readonly","id":"demo-calendar-default"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Custom date format")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date","readonly":"readonly","id":"demo-calendar-date-format"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Multiple Values")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select multiple dates","readonly":"readonly","id":"demo-calendar-multiple"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Range Picker")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date range","readonly":"readonly","id":"demo-calendar-range"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Open in Modal")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date","readonly":"readonly","id":"demo-calendar-modal"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Calendar Page")]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('ul',[_c('li',[_c('a',{staticClass:"item-content item-link",attrs:{"href":"/calendar-page/"}},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Open Calendar Page")])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Inline with custom toolbar")]),_vm._v(" "),_c('div',{staticClass:"block block-strong no-padding"},[_c('div',{attrs:{"id":"demo-calendar-inline-container"}})]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Jalali Calendar")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your birth date in Jalali","readonly":"readonly","id":"demo-jcalendar-default"}})])])])])])])])],1)};
@@ -55516,12 +55732,12 @@
     /* functional template */
     var __vue_is_functional_template__$9 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Calendar$2 = normalizeComponent(
+    
+    var Calendar$2 = normalizeComponent_1(
       { render: __vue_render__$9, staticRenderFns: __vue_staticRenderFns__$9 },
       __vue_inject_styles__$9,
       __vue_script__$9,
@@ -55649,8 +55865,6 @@
 
   /* script */
   var __vue_script__$a = script$a;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$a.__file = "calendar-page.vue";
 
   /* template */
   var __vue_render__$a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"back-link":"Back","no-shadow":""}},[_c('f7-nav-title',{staticClass:"navbar-calendar-title"})],1),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block block-strong no-padding no-margin no-hairline-top",attrs:{"id":"calendar"}}),_vm._v(" "),_c('f7-list',{staticClass:"no-margin no-hairlines no-safe-area-left",attrs:{"id":"calendar-events"}},[_vm._l((_vm.eventItems),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":item.title,"after":item.time}},[_c('div',{staticClass:"event-color",style:({'background-color': item.color}),attrs:{"slot":"root-start"},slot:"root-start"})])}),_vm._v(" "),(_vm.eventItems.length === 0)?_c('f7-list-item',[_c('span',{staticClass:"text-color-gray",attrs:{"slot":"title"},slot:"title"},[_vm._v("No events for this day")])]):_vm._e()],2)],1)],1)};
@@ -55665,12 +55879,12 @@
     /* functional template */
     var __vue_is_functional_template__$a = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var CalendarPage = normalizeComponent(
+    
+    var CalendarPage = normalizeComponent_1(
       { render: __vue_render__$a, staticRenderFns: __vue_staticRenderFns__$a },
       __vue_inject_styles__$a,
       __vue_script__$a,
@@ -55701,11 +55915,9 @@
 
   /* script */
   var __vue_script__$b = script$b;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$b.__file = "cards.vue";
 
   /* template */
-  var __vue_render__$b = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Cards","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Cards are a great way to contain and organize your information, especially when combined with List Views. Cards can contain unique related data, like for example photos, text or links about a particular subject. Cards are typically an entry point to more complex and detailed information.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Simple Cards")]),_vm._v(" "),_c('f7-card',{attrs:{"content":"This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."}}),_vm._v(" "),_c('f7-card',{attrs:{"title":"Card header","content":"Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions.","footer":"Card footer"}}),_vm._v(" "),_c('f7-card',{attrs:{"content":"Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Cards")]),_vm._v(" "),_c('f7-card',{attrs:{"outline":"","content":"This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."}}),_vm._v(" "),_c('f7-card',{attrs:{"outline":"","title":"Card header","content":"Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions.","footer":"Card footer"}}),_vm._v(" "),_c('f7-card',{attrs:{"outline":"","content":"Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Styled Cards")]),_vm._v(" "),_c('f7-card',{staticClass:"demo-card-header-pic"},[_c('f7-card-header',{staticClass:"no-border",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-1000x600-3.jpg/)"},attrs:{"valign":"bottom"}},[_vm._v("Journey To Mountains")]),_vm._v(" "),_c('f7-card-content',[_c('p',{staticClass:"date"},[_vm._v("Posted on January 21, 2015")]),_vm._v(" "),_c('p',[_vm._v("Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...")])]),_vm._v(" "),_c('f7-card-footer',[_c('f7-link',[_vm._v("Like")]),_vm._v(" "),_c('f7-link',[_vm._v("Read more")])],1)],1),_vm._v(" "),_c('f7-card',{staticClass:"demo-card-header-pic"},[_c('f7-card-header',{staticClass:"no-border",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1000x600-6.jpg/)"},attrs:{"valign":"bottom"}},[_vm._v("Journey To Mountains")]),_vm._v(" "),_c('f7-card-content',[_c('p',{staticClass:"date"},[_vm._v("Posted on January 21, 2015")]),_vm._v(" "),_c('p',[_vm._v("Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...")])]),_vm._v(" "),_c('f7-card-footer',[_c('f7-link',[_vm._v("Like")]),_vm._v(" "),_c('f7-link',[_vm._v("Read more")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Facebook Cards")]),_vm._v(" "),_c('f7-card',{staticClass:"demo-facebook-card"},[_c('f7-card-header',{staticClass:"no-border"},[_c('div',{staticClass:"demo-facebook-avatar"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/people-68x68-1.jpg/","width":"34","height":"34"}})]),_vm._v(" "),_c('div',{staticClass:"demo-facebook-name"},[_vm._v("John Doe")]),_vm._v(" "),_c('div',{staticClass:"demo-facebook-date"},[_vm._v("Monday at 3:47 PM")])]),_vm._v(" "),_c('f7-card-content',{attrs:{"padding":false}},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg/","width":"100%"}})]),_vm._v(" "),_c('f7-card-footer',{staticClass:"no-border"},[_c('f7-link',[_vm._v("Like")]),_vm._v(" "),_c('f7-link',[_vm._v("Comment")]),_vm._v(" "),_c('f7-link',[_vm._v("Share")])],1)],1),_vm._v(" "),_c('f7-card',{staticClass:"demo-facebook-card"},[_c('f7-card-header',{staticClass:"no-border"},[_c('div',{staticClass:"demo-facebook-avatar"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/people-68x68-1.jpg/","width":"34","height":"34"}})]),_vm._v(" "),_c('div',{staticClass:"demo-facebook-name"},[_vm._v("John Doe")]),_vm._v(" "),_c('div',{staticClass:"demo-facebook-date"},[_vm._v("Monday at 2:15 PM")])]),_vm._v(" "),_c('f7-card-content',[_c('p',[_vm._v("What a nice photo i took yesterday!")]),_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg/","width":"100%"}}),_vm._v(" "),_c('p',{staticClass:"likes"},[_vm._v("Likes: 112    Comments: 43")])]),_vm._v(" "),_c('f7-card-footer',{staticClass:"no-border"},[_c('f7-link',[_vm._v("Like")]),_vm._v(" "),_c('f7-link',[_vm._v("Comment")]),_vm._v(" "),_c('f7-link',[_vm._v("Share")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Cards With List View")]),_vm._v(" "),_c('f7-card',[_c('f7-card-content',{attrs:{"padding":false}},[_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 1")]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 2")]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 3")]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 4")]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 5")])],1)],1)],1),_vm._v(" "),_c('f7-card',{attrs:{"title":"New Reelases"}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('f7-list',{attrs:{"medial-list":""}},[_c('f7-list-item',{attrs:{"title":"Yellow Submarine","subtitle":"Beatles"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Don't Stop Me Now","subtitle":"Queen"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Billie Jean","subtitle":"Michael Jackson"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg","width":"44"},slot:"media"})])],1)],1),_vm._v(" "),_c('f7-card-footer',[_c('span',[_vm._v("January 20, 2015")]),_vm._v(" "),_c('span',[_vm._v("5 comments")])])],1)],1)};
+  var __vue_render__$b = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Cards","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Cards are a great way to contain and organize your information, especially when combined with List Views. Cards can contain unique related data, like for example photos, text or links about a particular subject. Cards are typically an entry point to more complex and detailed information.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Simple Cards")]),_vm._v(" "),_c('f7-card',{attrs:{"content":"This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."}}),_vm._v(" "),_c('f7-card',{attrs:{"title":"Card header","content":"Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions.","footer":"Card footer"}}),_vm._v(" "),_c('f7-card',{attrs:{"content":"Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Cards")]),_vm._v(" "),_c('f7-card',{attrs:{"outline":"","content":"This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."}}),_vm._v(" "),_c('f7-card',{attrs:{"outline":"","title":"Card header","content":"Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions.","footer":"Card footer"}}),_vm._v(" "),_c('f7-card',{attrs:{"outline":"","content":"Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Styled Cards")]),_vm._v(" "),_c('f7-card',{staticClass:"demo-card-header-pic"},[_c('f7-card-header',{staticClass:"no-border",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-1000x600-3.jpg)"},attrs:{"valign":"bottom"}},[_vm._v("Journey To Mountains")]),_vm._v(" "),_c('f7-card-content',[_c('p',{staticClass:"date"},[_vm._v("Posted on January 21, 2015")]),_vm._v(" "),_c('p',[_vm._v("Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...")])]),_vm._v(" "),_c('f7-card-footer',[_c('f7-link',[_vm._v("Like")]),_vm._v(" "),_c('f7-link',[_vm._v("Read more")])],1)],1),_vm._v(" "),_c('f7-card',{staticClass:"demo-card-header-pic"},[_c('f7-card-header',{staticClass:"no-border",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1000x600-6.jpg)"},attrs:{"valign":"bottom"}},[_vm._v("Journey To Mountains")]),_vm._v(" "),_c('f7-card-content',[_c('p',{staticClass:"date"},[_vm._v("Posted on January 21, 2015")]),_vm._v(" "),_c('p',[_vm._v("Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...")])]),_vm._v(" "),_c('f7-card-footer',[_c('f7-link',[_vm._v("Like")]),_vm._v(" "),_c('f7-link',[_vm._v("Read more")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Facebook Cards")]),_vm._v(" "),_c('f7-card',{staticClass:"demo-facebook-card"},[_c('f7-card-header',{staticClass:"no-border"},[_c('div',{staticClass:"demo-facebook-avatar"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/people-68x68-1.jpg","width":"34","height":"34"}})]),_vm._v(" "),_c('div',{staticClass:"demo-facebook-name"},[_vm._v("John Doe")]),_vm._v(" "),_c('div',{staticClass:"demo-facebook-date"},[_vm._v("Monday at 3:47 PM")])]),_vm._v(" "),_c('f7-card-content',{attrs:{"padding":false}},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg","width":"100%"}})]),_vm._v(" "),_c('f7-card-footer',{staticClass:"no-border"},[_c('f7-link',[_vm._v("Like")]),_vm._v(" "),_c('f7-link',[_vm._v("Comment")]),_vm._v(" "),_c('f7-link',[_vm._v("Share")])],1)],1),_vm._v(" "),_c('f7-card',{staticClass:"demo-facebook-card"},[_c('f7-card-header',{staticClass:"no-border"},[_c('div',{staticClass:"demo-facebook-avatar"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/people-68x68-1.jpg","width":"34","height":"34"}})]),_vm._v(" "),_c('div',{staticClass:"demo-facebook-name"},[_vm._v("John Doe")]),_vm._v(" "),_c('div',{staticClass:"demo-facebook-date"},[_vm._v("Monday at 2:15 PM")])]),_vm._v(" "),_c('f7-card-content',[_c('p',[_vm._v("What a nice photo i took yesterday!")]),_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg","width":"100%"}}),_vm._v(" "),_c('p',{staticClass:"likes"},[_vm._v("Likes: 112    Comments: 43")])]),_vm._v(" "),_c('f7-card-footer',{staticClass:"no-border"},[_c('f7-link',[_vm._v("Like")]),_vm._v(" "),_c('f7-link',[_vm._v("Comment")]),_vm._v(" "),_c('f7-link',[_vm._v("Share")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Cards With List View")]),_vm._v(" "),_c('f7-card',[_c('f7-card-content',{attrs:{"padding":false}},[_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 1")]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 2")]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 3")]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 4")]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 5")])],1)],1)],1),_vm._v(" "),_c('f7-card',{attrs:{"title":"New Reelases"}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('f7-list',{attrs:{"medial-list":""}},[_c('f7-list-item',{attrs:{"title":"Yellow Submarine","subtitle":"Beatles"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Don't Stop Me Now","subtitle":"Queen"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Billie Jean","subtitle":"Michael Jackson"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg","width":"44"},slot:"media"})])],1)],1),_vm._v(" "),_c('f7-card-footer',[_c('span',[_vm._v("January 20, 2015")]),_vm._v(" "),_c('span',[_vm._v("5 comments")])])],1)],1)};
   var __vue_staticRenderFns__$b = [];
 
     /* style */
@@ -55717,12 +55929,12 @@
     /* functional template */
     var __vue_is_functional_template__$b = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Cards = normalizeComponent(
+    
+    var Cards = normalizeComponent_1(
       { render: __vue_render__$b, staticRenderFns: __vue_staticRenderFns__$b },
       __vue_inject_styles__$b,
       __vue_script__$b,
@@ -55750,8 +55962,6 @@
 
   /* script */
   var __vue_script__$c = script$c;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$c.__file = "cards-expandable.vue";
 
   /* template */
   var __vue_render__$c = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Cards Expandable","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to usual "),_c('a',{attrs:{"href":"/cards/"}},[_vm._v("Cards")]),_vm._v(" there are also Expandable Cards that allow to store more information and illustrations about particular subject.")])]),_vm._v(" "),_c('div',{staticClass:"demo-expandable-cards"},[_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{staticClass:"bg-color-red",style:({height: '300px'})},[_c('f7-card-header',{staticClass:"display-block",attrs:{"text-color":"white"}},[_vm._v("\n            Framework7\n            "),_c('br'),_vm._v(" "),_c('small',{style:({opacity: 0.7})},[_vm._v("Build Mobile Apps")])]),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"white","icon-f7":"close_round_fill"}})],1),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).")]),_vm._v(" "),_c('p',[_vm._v("The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":"","color":"red"}},[_vm._v("Close")])],1)])])],1),_vm._v(" "),_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{staticClass:"bg-color-yellow",style:({height: '300px'})},[_c('f7-card-header',{staticClass:"display-block",attrs:{"text-color":"black"}},[_vm._v("\n            Framework7\n            "),_c('br'),_vm._v(" "),_c('small',{style:({opacity: 0.7})},[_vm._v("Build Mobile Apps")])]),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"black","icon-f7":"close_round_fill"}})],1),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).")]),_vm._v(" "),_c('p',[_vm._v("The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":"","color":"yellow","text-color":"black"}},[_vm._v("Close")])],1)])])],1),_vm._v(" "),_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{style:({background: 'url(./img/beach.jpg) no-repeat center bottom', 'background-size': 'cover', height: '240px'})}),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"white","icon-f7":"close_round_fill"}}),_vm._v(" "),_c('f7-card-header',{style:({height: '60px'}),attrs:{"text-color":"black"}},[_vm._v("Beach, Goa")]),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rhoncus cursus. Etiam lorem est, consectetur vitae tempor a, volutpat eget purus. Duis urna lectus, vehicula at quam id, sodales dapibus turpis. Suspendisse potenti. Proin condimentum luctus nulla, et rhoncus ante rutrum eu. Maecenas ut tincidunt diam. Vestibulum lacinia dui ligula, sit amet pulvinar nisl blandit luctus. Vestibulum aliquam ligula nulla, tincidunt rhoncus tellus interdum at. Phasellus mollis ipsum at mollis tristique. Maecenas sit amet tempus justo. Duis dolor elit, mollis quis viverra quis, vehicula eu ante. Integer a molestie risus. Vestibulum eu sollicitudin massa, sit amet dictum sem. Aliquam nisi tellus, maximus eget placerat in, porta vel lorem. Aenean tempus sodales nisl in cursus. Curabitur tincidunt turpis in nisl ornare euismod eget at libero.")]),_vm._v(" "),_c('p',[_vm._v("Suspendisse ligula eros, congue in nulla pellentesque, imperdiet blandit sapien. Morbi nisi sem, efficitur a rutrum porttitor, feugiat vel enim. Fusce eget vehicula odio, et luctus neque. Donec mattis a nulla laoreet commodo. Integer eget hendrerit augue, vel porta libero. Morbi imperdiet, eros at ultricies rutrum, eros urna auctor enim, eget laoreet massa diam vitae lorem. Proin eget urna ultrices, semper ligula aliquam, dignissim eros. Donec vitae augue eu sapien tristique elementum a nec nulla. Aliquam erat volutpat. Curabitur condimentum, metus blandit lobortis fringilla, enim mauris venenatis neque, et venenatis lorem urna ut justo. Maecenas neque enim, congue ac tempor quis, tincidunt ut mi. Donec venenatis ante non consequat molestie. Quisque ut rhoncus ligula. Vestibulum sodales maximus justo sit amet ornare. Nullam pulvinar eleifend nisi sit amet molestie.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":""}},[_vm._v("Close")])],1)])],1)],1),_vm._v(" "),_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{style:({background: 'url(./img/monkey.jpg) no-repeat center top', 'background-size': 'cover', height: '400px'})},[_c('f7-card-header',{attrs:{"text-color":"white"}},[_vm._v("Monkeys")]),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"white","icon-f7":"close_round_fill"}})],1),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rhoncus cursus. Etiam lorem est, consectetur vitae tempor a, volutpat eget purus. Duis urna lectus, vehicula at quam id, sodales dapibus turpis. Suspendisse potenti. Proin condimentum luctus nulla, et rhoncus ante rutrum eu. Maecenas ut tincidunt diam. Vestibulum lacinia dui ligula, sit amet pulvinar nisl blandit luctus. Vestibulum aliquam ligula nulla, tincidunt rhoncus tellus interdum at. Phasellus mollis ipsum at mollis tristique. Maecenas sit amet tempus justo. Duis dolor elit, mollis quis viverra quis, vehicula eu ante. Integer a molestie risus. Vestibulum eu sollicitudin massa, sit amet dictum sem. Aliquam nisi tellus, maximus eget placerat in, porta vel lorem. Aenean tempus sodales nisl in cursus. Curabitur tincidunt turpis in nisl ornare euismod eget at libero.")]),_vm._v(" "),_c('p',[_vm._v("Suspendisse ligula eros, congue in nulla pellentesque, imperdiet blandit sapien. Morbi nisi sem, efficitur a rutrum porttitor, feugiat vel enim. Fusce eget vehicula odio, et luctus neque. Donec mattis a nulla laoreet commodo. Integer eget hendrerit augue, vel porta libero. Morbi imperdiet, eros at ultricies rutrum, eros urna auctor enim, eget laoreet massa diam vitae lorem. Proin eget urna ultrices, semper ligula aliquam, dignissim eros. Donec vitae augue eu sapien tristique elementum a nec nulla. Aliquam erat volutpat. Curabitur condimentum, metus blandit lobortis fringilla, enim mauris venenatis neque, et venenatis lorem urna ut justo. Maecenas neque enim, congue ac tempor quis, tincidunt ut mi. Donec venenatis ante non consequat molestie. Quisque ut rhoncus ligula. Vestibulum sodales maximus justo sit amet ornare. Nullam pulvinar eleifend nisi sit amet molestie.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":""}},[_vm._v("Close")])],1)])])],1)],1)],1)};
@@ -55766,12 +55976,12 @@
     /* functional template */
     var __vue_is_functional_template__$c = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var CardsExpandable = normalizeComponent(
+    
+    var CardsExpandable = normalizeComponent_1(
       { render: __vue_render__$c, staticRenderFns: __vue_staticRenderFns__$c },
       __vue_inject_styles__$c,
       __vue_script__$c,
@@ -55798,8 +56008,6 @@
 
   /* script */
   var __vue_script__$d = script$d;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$d.__file = "checkbox.vue";
 
   /* template */
   var __vue_render__$d = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Checkbox","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Inline")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem "),_c('f7-checkbox',{attrs:{"name":"checkbox-1"}}),_vm._v(" ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi "),_c('f7-checkbox',{attrs:{"name":"checkbox-2","checked":""}}),_vm._v(" ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Checkbox Group")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"checkbox":"","title":"Books","name":"demo-checkbox","checked":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Movies","name":"demo-checkbox"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Food","name":"demo-checkbox"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Drinks","name":"demo-checkbox"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With Media Lists")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"checkbox":"","checked":"","name":"demo-media-checkbox","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1)],1)};
@@ -55814,12 +56022,12 @@
     /* functional template */
     var __vue_is_functional_template__$d = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Checkbox$1 = normalizeComponent(
+    
+    var Checkbox$1 = normalizeComponent_1(
       { render: __vue_render__$d, staticRenderFns: __vue_staticRenderFns__$d },
       __vue_inject_styles__$d,
       __vue_script__$d,
@@ -55855,11 +56063,9 @@
 
   /* script */
   var __vue_script__$e = script$e;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$e.__file = "chips.vue";
 
   /* template */
-  var __vue_render__$e = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Chips","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Chips With Text")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Example Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Another Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"One More Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Fourth Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Last One"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"outline":"","text":"Example Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Another Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"One More Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Fourth Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Last One"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Icon Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Add Contact","media-bg-color":"blue"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:add_round","md":"material:add_circle"},slot:"media"})],1),_vm._v(" "),_c('f7-chip',{attrs:{"text":"London","media-bg-color":"green"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:compass","md":"material:location_on"},slot:"media"})],1),_vm._v(" "),_c('f7-chip',{attrs:{"text":"John Doe","media-bg-color":"red"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:person","md":"material:person"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Contact Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Jane Doe"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-9.jpg/"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"John Doe"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-3.jpg/"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Adam Smith"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-7.jpg/"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jennifer","media-bg-color":"pink","media":"J"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Chris","media-bg-color":"yellow","media-text-color":"black","media":"C"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Kate","media-bg-color":"red","media":"K"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Deletable Chips / Tags")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Example Chip","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Chris","media":"C","media-bg-color":"orange","text-color":"black","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jane Doe","deleteable":""},on:{"click":_vm.deleteChip}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-9.jpg/"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"One More Chip","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jennifer","media-bg-color":"pink","media":"J","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Adam Smith","deleteable":""},on:{"click":_vm.deleteChip}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-7.jpg/"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Red Chip","color":"red"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Green Chip","color":"green"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Blue Chip","color":"blue"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Orange Chip","color":"orange"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Pink Chip","color":"pink"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Red Chip","color":"red"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Green Chip","color":"green"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Blue Chip","color":"blue"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Orange Chip","color":"orange"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Pink Chip","color":"pink"}})],1)],1)};
+  var __vue_render__$e = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Chips","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Chips With Text")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Example Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Another Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"One More Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Fourth Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Last One"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"outline":"","text":"Example Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Another Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"One More Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Fourth Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Last One"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Icon Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Add Contact","media-bg-color":"blue"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:add_round","md":"material:add_circle"},slot:"media"})],1),_vm._v(" "),_c('f7-chip',{attrs:{"text":"London","media-bg-color":"green"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:compass","md":"material:location_on"},slot:"media"})],1),_vm._v(" "),_c('f7-chip',{attrs:{"text":"John Doe","media-bg-color":"red"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:person","md":"material:person"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Contact Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Jane Doe"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-9.jpg"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"John Doe"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-3.jpg"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Adam Smith"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-7.jpg"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jennifer","media-bg-color":"pink","media":"J"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Chris","media-bg-color":"yellow","media-text-color":"black","media":"C"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Kate","media-bg-color":"red","media":"K"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Deletable Chips / Tags")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Example Chip","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Chris","media":"C","media-bg-color":"orange","text-color":"black","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jane Doe","deleteable":""},on:{"click":_vm.deleteChip}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-9.jpg"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"One More Chip","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jennifer","media-bg-color":"pink","media":"J","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Adam Smith","deleteable":""},on:{"click":_vm.deleteChip}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-7.jpg"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Red Chip","color":"red"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Green Chip","color":"green"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Blue Chip","color":"blue"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Orange Chip","color":"orange"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Pink Chip","color":"pink"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Red Chip","color":"red"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Green Chip","color":"green"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Blue Chip","color":"blue"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Orange Chip","color":"orange"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Pink Chip","color":"pink"}})],1)],1)};
   var __vue_staticRenderFns__$e = [];
 
     /* style */
@@ -55871,12 +56077,12 @@
     /* functional template */
     var __vue_is_functional_template__$e = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Chips = normalizeComponent(
+    
+    var Chips = normalizeComponent_1(
       { render: __vue_render__$e, staticRenderFns: __vue_staticRenderFns__$e },
       __vue_inject_styles__$e,
       __vue_script__$e,
@@ -55901,8 +56107,6 @@
 
   /* script */
   var __vue_script__$f = script$f;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$f.__file = "contacts-list.vue";
 
   /* template */
   var __vue_render__$f = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Contacts List","back-link":"Back"}}),_vm._v(" "),_c('f7-list',{attrs:{"contacts-list":""}},[_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"A","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aaron "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Abbie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Adam"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Adele"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Agatha"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Agnes"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Albert"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Alexander"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"B","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bailey"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Barclay"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bartolo"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bellamy"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Belle"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Benjamin"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"C","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Caiden"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Calvin"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Candy"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Carl"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Cherilyn"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chester"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chloe"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"V","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Vladimir"}})],1)],1)],1)};
@@ -55917,12 +56121,12 @@
     /* functional template */
     var __vue_is_functional_template__$f = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var ContactsList$1 = normalizeComponent(
+    
+    var ContactsList$1 = normalizeComponent_1(
       { render: __vue_render__$f, staticRenderFns: __vue_staticRenderFns__$f },
       __vue_inject_styles__$f,
       __vue_script__$f,
@@ -55948,8 +56152,6 @@
 
   /* script */
   var __vue_script__$g = script$g;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$g.__file = "content-block.vue";
 
   /* template */
   var __vue_render__$g = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Content Block","back-link":"Back"}}),_vm._v(" "),_c('p',[_vm._v("This paragraph is outside of content block. Not cool, but useful for any custom elements with custom styling.")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Here comes another text block with additional \"block-strong\" class. Praesent nec imperdiet diam. Maecenas vel lectus porttitor, consectetur magna nec, viverra sem. Aliquam sed risus dolor. Morbi tincidunt ut libero id sodales. Integer blandit varius nisi quis consectetur. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Block title")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Another ultra long content block title")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":"","inset":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Tablet Inset")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":"","tablet-inset":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("With Header & Footer")]),_vm._v(" "),_c('f7-block',[_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")])],1),_vm._v(" "),_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")])],1),_vm._v(" "),_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")]),_vm._v(" "),_c('f7-block-title',{attrs:{"large":""}},[_vm._v("Block Title Large")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Block Title Medium")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])])],1)};
@@ -55964,12 +56166,12 @@
     /* functional template */
     var __vue_is_functional_template__$g = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var ContentBlock = normalizeComponent(
+    
+    var ContentBlock = normalizeComponent_1(
       { render: __vue_render__$g, staticRenderFns: __vue_staticRenderFns__$g },
       __vue_inject_styles__$g,
       __vue_script__$g,
@@ -55994,8 +56196,6 @@
 
   /* script */
   var __vue_script__$h = script$h;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$h.__file = "data-table.vue";
 
   /* template */
   var __vue_render__$h = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Data Table","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Plain table")]),_vm._v(" "),_c('div',{staticClass:"data-table"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Within card")]),_vm._v(" "),_c('div',{staticClass:"card data-table"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Selectable rows")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})]),_vm._v(" "),_c('span',[_vm._v("In Stock")])])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Tablet-only columns")]),_vm._v(" "),_c('div',{staticClass:"block-header"},[_c('p',[_vm._v("\"Comments\" column will be visible only on large screen devices (tablets)")])]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("With inputs")]),_vm._v(" "),_c('div',{staticClass:"block-header"},[_vm._v("Such tables are widely used in admin interfaces for filtering or search data")]),_vm._v(" "),_c('div',{staticClass:"card data-table"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("ID")]),_vm._v(" "),_c('div',{staticClass:"input",staticStyle:{"width":"50px"}},[_c('input',{attrs:{"type":"number","placeholder":"Filter"}})])]),_vm._v(" "),_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("Name")]),_vm._v(" "),_c('div',{staticClass:"input"},[_c('input',{attrs:{"type":"text","placeholder":"Filter"}})])]),_vm._v(" "),_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("Email")]),_vm._v(" "),_c('div',{staticClass:"input"},[_c('input',{attrs:{"type":"email","placeholder":"Filter"}})])]),_vm._v(" "),_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("Gender")]),_vm._v(" "),_c('div',{staticClass:"input input-dropdown"},[_c('select',[_c('option',{attrs:{"value":"All"}},[_vm._v("All")]),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])])])])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',[_vm._v("1")]),_vm._v(" "),_c('td',[_vm._v("John Doe")]),_vm._v(" "),_c('td',[_vm._v("john@doe.com")]),_vm._v(" "),_c('td',[_vm._v("Male")])]),_vm._v(" "),_c('tr',[_c('td',[_vm._v("2")]),_vm._v(" "),_c('td',[_vm._v("Jane Doe")]),_vm._v(" "),_c('td',[_vm._v("jane@doe.com")]),_vm._v(" "),_c('td',[_vm._v("Female")])]),_vm._v(" "),_c('tr',[_c('td',[_vm._v("3")]),_vm._v(" "),_c('td',[_vm._v("Vladimir Kharlampidi")]),_vm._v(" "),_c('td',[_vm._v("vladimir@google.com")]),_vm._v(" "),_c('td',[_vm._v("Male")])]),_vm._v(" "),_c('tr',[_c('td',[_vm._v("4")]),_vm._v(" "),_c('td',[_vm._v("Jennifer Doe")]),_vm._v(" "),_c('td',[_vm._v("jennifer@doe.com")]),_vm._v(" "),_c('td',[_vm._v("Female")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Within card with title and actions")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Sortable columns")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell sortable-cell sortable-cell-active"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("With title and different actions on select")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"data-table-header-selected"},[_c('div',{staticClass:"data-table-title-selected"},[_c('span',{staticClass:"data-table-selected-count"}),_vm._v(" items selected")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)])]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Alternate header with actions")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-links"},[_c('a',{staticClass:"button"},[_vm._v("Add")]),_c('a',{staticClass:"button"},[_vm._v("Remove")])]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1),_vm._v(" "),_c('th')])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Collapsible")]),_vm._v(" "),_c('div',{staticClass:"block-header"},[_c('p',[_vm._v("The following table will be collapsed to kind of List View on small screens:")])]),_vm._v(" "),_c('div',{staticClass:"card data-table data-table-collapsible data-table-init"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")])])])])])])],1)};
@@ -56010,12 +56210,12 @@
     /* functional template */
     var __vue_is_functional_template__$h = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var DataTable$2 = normalizeComponent(
+    
+    var DataTable$2 = normalizeComponent_1(
       { render: __vue_render__$h, staticRenderFns: __vue_staticRenderFns__$h },
       __vue_inject_styles__$h,
       __vue_script__$h,
@@ -56134,8 +56334,6 @@
 
   /* script */
   var __vue_script__$i = script$i;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$i.__file = "dialog.vue";
 
   /* template */
   var __vue_render__$i = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Dialog","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("There are 1:1 replacements of native Alert, Prompt and Confirm modals. They support callbacks, have very easy api and can be combined with each other. Check these examples:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openAlert}},[_vm._v("Alert")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openConfirm}},[_vm._v("Confirm")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openPrompt}},[_vm._v("Prompt")])],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openLogin}},[_vm._v("Login")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openPassword}},[_vm._v("Password")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.openVerticalButtons}},[_vm._v("Vertical Buttons")])],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Preloader Dialog")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openPreloader}},[_vm._v("Preloader")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openCustomPreloader}},[_vm._v("Custom Text")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Progress Dialog")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openInfiniteProgress}},[_vm._v("Infinite")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openDeterminedProgress}},[_vm._v("Determined")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Dialogs Stack")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This feature doesn't allow to open multiple dialogs at the same time, and will automatically open next dialog when you close the current one. Such behavior is similar to browser native dialogs: ")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.openAlerts}},[_vm._v("Open Multiple Alerts")])],1)])],1)};
@@ -56150,12 +56348,12 @@
     /* functional template */
     var __vue_is_functional_template__$i = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Dialog$2 = normalizeComponent(
+    
+    var Dialog$2 = normalizeComponent_1(
       { render: __vue_render__$i, staticRenderFns: __vue_staticRenderFns__$i },
       __vue_inject_styles__$i,
       __vue_script__$i,
@@ -56181,8 +56379,6 @@
 
   /* script */
   var __vue_script__$j = script$j;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$j.__file = "elevation.vue";
 
   /* template */
   var __vue_render__$j = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Elevation","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Shadows provide important visual cues about objects' depth and directional movement. They are the only visual cue indicating the amount of separation between surfaces. An object’s elevation determines the appearance of its shadow. The elevation values are mapped out in a \"z-space\" and range from 1 to 24.")]),_vm._v(" "),_c('p',[_vm._v("Elevation can be added to any element by adding "),_c('code',[_vm._v("elevation-0")]),_vm._v(", "),_c('code',[_vm._v("elevation-1")]),_vm._v(", ..., "),_c('code',[_vm._v("elevation-24")]),_vm._v(" classes.")]),_vm._v(" "),_c('p',[_vm._v("To add different elevation only on hover (desktop), you can use "),_c('code',[_vm._v("elevation-hover-0")]),_vm._v(", "),_c('code',[_vm._v("elevation-hover-1")]),_vm._v(", ..., "),_c('code',[_vm._v("elevation-hover-24")]),_vm._v(" classes.")]),_vm._v(" "),_c('p',[_vm._v("To specify elevation only when item pressed, you can use "),_c('code',[_vm._v("elevation-pressed-0")]),_vm._v(", "),_c('code',[_vm._v("elevation-pressed-1")]),_vm._v(", ..., "),_c('code',[_vm._v("elevation-pressed-24")]),_vm._v(" classes.")])]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-1"},[_vm._v("1")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-2"},[_vm._v("2")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-3"},[_vm._v("3")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-4"},[_vm._v("4")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-5"},[_vm._v("5")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-6"},[_vm._v("6")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-7"},[_vm._v("7")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-8"},[_vm._v("8")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-9"},[_vm._v("9")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-10"},[_vm._v("10")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-11"},[_vm._v("11")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-12"},[_vm._v("12")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-13"},[_vm._v("13")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-14"},[_vm._v("14")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-15"},[_vm._v("15")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-16"},[_vm._v("16")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-17"},[_vm._v("17")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-18"},[_vm._v("18")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-19"},[_vm._v("19")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-20"},[_vm._v("20")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-21"},[_vm._v("21")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-22"},[_vm._v("22")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-23"},[_vm._v("23")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-24"},[_vm._v("24")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-6 elevation-hover-24 elevation-pressed-12 elevation-transition"},[_vm._v("6 + hover-24 + pressed-12")])])],1)],1)],1)};
@@ -56197,12 +56393,12 @@
     /* functional template */
     var __vue_is_functional_template__$j = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Elevation$1 = normalizeComponent(
+    
+    var Elevation$1 = normalizeComponent_1(
       { render: __vue_render__$j, staticRenderFns: __vue_staticRenderFns__$j },
       __vue_inject_styles__$j,
       __vue_script__$j,
@@ -56223,8 +56419,6 @@
 
   /* script */
   var __vue_script__$k = script$k;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$k.__file = "fab.vue";
 
   /* template */
   var __vue_render__$k = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Floating Action Button","back-link":"Back"}}),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"right-top"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"left"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"right-bottom"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"top"}},[_c('f7-fab-button',{attrs:{"label":"Action 1"}},[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',{attrs:{"label":"Action 2"}},[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',{attrs:{"label":"Third Action"}},[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"left-bottom"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"top"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"left-top"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"bottom"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"center-center"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"center"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("4")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"center-bottom","text":"Create"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus eligendi est saepe molestias perferendis suscipit, commodi labore ipsa non quasi eum magnam neque ducimus! Quasi, numquam.")]),_vm._v(" "),_c('p',[_vm._v("Maiores culpa, itaque! Eaque natus ab cum ipsam numquam blanditiis a, quia, molestiae aut laudantium recusandae ipsa. Ad iste ex asperiores ipsa, mollitia perferendis consectetur quam eaque, voluptate laboriosam unde.")]),_vm._v(" "),_c('p',[_vm._v("Sed odit quis aperiam temporibus vitae necessitatibus, laboriosam, exercitationem dolores odio sapiente provident. Accusantium id, itaque aliquam libero ipsum eos fugiat distinctio laboriosam exercitationem sequi facere quas quidem magnam reprehenderit.")]),_vm._v(" "),_c('p',[_vm._v("Pariatur corporis illo, amet doloremque. Ab veritatis sunt nisi consectetur error modi, nam illo et nostrum quia aliquam ipsam vitae facere voluptates atque similique odit mollitia, rerum placeat nobis est.")]),_vm._v(" "),_c('p',[_vm._v("Et impedit soluta minus a autem adipisci cupiditate eius dignissimos nihil officia dolore voluptatibus aperiam reprehenderit esse facilis labore qui, officiis consectetur. Ipsa obcaecati aspernatur odio assumenda veniam, ipsum alias.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ipsa debitis sed nihil eaque dolore cum iste quibusdam, accusamus doloribus, tempora quia quos voluptatibus corporis officia at quas dolorem earum!")]),_vm._v(" "),_c('p',[_vm._v("Quod soluta eos inventore magnam suscipit enim at hic in maiores temporibus pariatur tempora minima blanditiis vero autem est perspiciatis totam dolorum, itaque repellat? Nobis necessitatibus aut odit aliquam adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Tenetur delectus perspiciatis ex numquam, unde corrupti velit! Quam aperiam, animi fuga veritatis consectetur, voluptatibus atque consequuntur dignissimos itaque, sint impedit cum cumque at. Adipisci sint, iusto blanditiis ullam? Vel?")]),_vm._v(" "),_c('p',[_vm._v("Dignissimos velit officia quibusdam! Eveniet beatae, aut, omnis temporibus consequatur expedita eaque aliquid quos accusamus fugiat id iusto autem obcaecati repellat fugit cupiditate suscipit natus quas doloribus? Temporibus necessitatibus, libero.")]),_vm._v(" "),_c('p',[_vm._v("Architecto quisquam ipsa fugit facere, repudiandae asperiores vitae obcaecati possimus, labore excepturi reprehenderit consectetur perferendis, ullam quidem hic, repellat fugiat eaque fuga. Consectetur in eveniet, deleniti recusandae omnis eum quas?")]),_vm._v(" "),_c('p',[_vm._v("Quos nulla consequatur quo, officia quaerat. Nulla voluptatum, assumenda quibusdam, placeat cum aut illo deleniti dolores commodi odio ipsam, recusandae est pariatur veniam repudiandae blanditiis. Voluptas unde deleniti quisquam, nobis?")]),_vm._v(" "),_c('p',[_vm._v("Atque qui quaerat quasi officia molestiae, molestias totam incidunt reprehenderit laboriosam facilis veritatis, non iusto! Dolore ipsam obcaecati voluptates minima maxime minus qui mollitia facere. Nostrum esse recusandae voluptatibus eligendi.")])])],1)};
@@ -56239,12 +56433,12 @@
     /* functional template */
     var __vue_is_functional_template__$k = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Fab$2 = normalizeComponent(
+    
+    var Fab$2 = normalizeComponent_1(
       { render: __vue_render__$k, staticRenderFns: __vue_staticRenderFns__$k },
       __vue_inject_styles__$k,
       __vue_script__$k,
@@ -56265,8 +56459,6 @@
 
   /* script */
   var __vue_script__$l = script$l;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$l.__file = "fab-morph.vue";
 
   /* template */
   var __vue_render__$l = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Floating Action Button Morph","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{staticClass:"fab-morph-target",attrs:{"tabbar":"","labels":"","bottom":""}},[_c('f7-link',{attrs:{"tab-link":"","tab-link-active":"","icon-ios":"f7:email_fill","icon-md":"material:email","text":"Inbox"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","icon-ios":"f7:calendar_fill","icon-md":"material:today","text":"Calendar"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","icon-ios":"f7:cloud_upload_fill","icon-md":"material:file_upload","text":"Upload"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"right-bottom","morph-to":".toolbar.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"left-bottom","morph-to":".demo-fab-sheet.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"center-bottom","morph-to":".demo-fab-fullscreen-sheet.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('div',{staticClass:"list links-list demo-fab-sheet fab-morph-target",attrs:{"slot":"fixed"},slot:"fixed"},[_c('ul',[_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 1")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 2")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 3")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 4")])])])]),_vm._v(" "),_c('div',{staticClass:"demo-fab-fullscreen-sheet fab-morph-target",attrs:{"slot":"fixed"},slot:"fixed"},[_c('f7-block-title',[_vm._v("Choose Something")]),_vm._v(" "),_c('div',{staticClass:"list links-list"},[_c('ul',[_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 1")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 2")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 3")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 4")])])])])],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus eligendi est saepe molestias perferendis suscipit, commodi labore ipsa non quasi eum magnam neque ducimus! Quasi, numquam.")]),_vm._v(" "),_c('p',[_vm._v("Maiores culpa, itaque! Eaque natus ab cum ipsam numquam blanditiis a, quia, molestiae aut laudantium recusandae ipsa. Ad iste ex asperiores ipsa, mollitia perferendis consectetur quam eaque, voluptate laboriosam unde.")]),_vm._v(" "),_c('p',[_vm._v("Sed odit quis aperiam temporibus vitae necessitatibus, laboriosam, exercitationem dolores odio sapiente provident. Accusantium id, itaque aliquam libero ipsum eos fugiat distinctio laboriosam exercitationem sequi facere quas quidem magnam reprehenderit.")]),_vm._v(" "),_c('p',[_vm._v("Pariatur corporis illo, amet doloremque. Ab veritatis sunt nisi consectetur error modi, nam illo et nostrum quia aliquam ipsam vitae facere voluptates atque similique odit mollitia, rerum placeat nobis est.")]),_vm._v(" "),_c('p',[_vm._v("Et impedit soluta minus a autem adipisci cupiditate eius dignissimos nihil officia dolore voluptatibus aperiam reprehenderit esse facilis labore qui, officiis consectetur. Ipsa obcaecati aspernatur odio assumenda veniam, ipsum alias.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ipsa debitis sed nihil eaque dolore cum iste quibusdam, accusamus doloribus, tempora quia quos voluptatibus corporis officia at quas dolorem earum!")]),_vm._v(" "),_c('p',[_vm._v("Quod soluta eos inventore magnam suscipit enim at hic in maiores temporibus pariatur tempora minima blanditiis vero autem est perspiciatis totam dolorum, itaque repellat? Nobis necessitatibus aut odit aliquam adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Tenetur delectus perspiciatis ex numquam, unde corrupti velit! Quam aperiam, animi fuga veritatis consectetur, voluptatibus atque consequuntur dignissimos itaque, sint impedit cum cumque at. Adipisci sint, iusto blanditiis ullam? Vel?")]),_vm._v(" "),_c('p',[_vm._v("Dignissimos velit officia quibusdam! Eveniet beatae, aut, omnis temporibus consequatur expedita eaque aliquid quos accusamus fugiat id iusto autem obcaecati repellat fugit cupiditate suscipit natus quas doloribus? Temporibus necessitatibus, libero.")]),_vm._v(" "),_c('p',[_vm._v("Architecto quisquam ipsa fugit facere, repudiandae asperiores vitae obcaecati possimus, labore excepturi reprehenderit consectetur perferendis, ullam quidem hic, repellat fugiat eaque fuga. Consectetur in eveniet, deleniti recusandae omnis eum quas?")]),_vm._v(" "),_c('p',[_vm._v("Quos nulla consequatur quo, officia quaerat. Nulla voluptatum, assumenda quibusdam, placeat cum aut illo deleniti dolores commodi odio ipsam, recusandae est pariatur veniam repudiandae blanditiis. Voluptas unde deleniti quisquam, nobis?")]),_vm._v(" "),_c('p',[_vm._v("Atque qui quaerat quasi officia molestiae, molestias totam incidunt reprehenderit laboriosam facilis veritatis, non iusto! Dolore ipsam obcaecati voluptates minima maxime minus qui mollitia facere. Nostrum esse recusandae voluptatibus eligendi.")])])],1)};
@@ -56281,12 +56473,12 @@
     /* functional template */
     var __vue_is_functional_template__$l = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var FabMorph = normalizeComponent(
+    
+    var FabMorph = normalizeComponent_1(
       { render: __vue_render__$l, staticRenderFns: __vue_staticRenderFns__$l },
       __vue_inject_styles__$l,
       __vue_script__$l,
@@ -56309,8 +56501,6 @@
 
   /* script */
   var __vue_script__$m = script$m;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$m.__file = "form-storage.vue";
 
   /* template */
   var __vue_render__$m = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Form Storage","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"block block-strong"},[_c('p',[_vm._v("With forms storage it is easy to store and parse form data, especially on Ajax loaded pages. All you need to make it work is to add \"form-store-data\" class to your <form> and Framework7 will store form data with every input change. And the most awesome part is that when you load this page again Framework7 will parse this data and fill all form fields automatically!")]),_vm._v(" "),_c('p',[_vm._v("Just try to fill the form below and then go to any other page, or even you may close this site, and when you return here form fields will have kept your data.")])]),_vm._v(" "),_c('form',{staticClass:"list form-store-data",attrs:{"id":"demo-form"}},[_c('ul',[_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Name")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"name","type":"text","placeholder":"Your name"}}),_vm._v(" "),_c('span',{staticClass:"input-clear-button"})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Password")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"password","type":"password","placeholder":"Your password"}}),_vm._v(" "),_c('span',{staticClass:"input-clear-button"})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("E-mail")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"email","type":"email","placeholder":"Your e-mail"}}),_vm._v(" "),_c('span',{staticClass:"input-clear-button"})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("URL")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"url","type":"url","placeholder":"URL"}}),_vm._v(" "),_c('span',{staticClass:"input-clear-button"})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Phone")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"phone","type":"tel","placeholder":"Your phone number"}}),_vm._v(" "),_c('span',{staticClass:"input-clear-button"})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Gender")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('select',{attrs:{"name":"gender","placeholder":"Please choose..."}},[_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])])])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Birthday")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"birthday","type":"date","value":"2014-04-30","placeholder":"Please choose..."}})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Date time")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"date","type":"datetime-local","placeholder":"Please choose..."}})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Range")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('div',{staticClass:"range-slider range-slider-init",attrs:{"data-label":"true"}},[_c('input',{attrs:{"name":"range","type":"range","value":"50","min":"0","max":"100","step":"1"}})])])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("About you")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('textarea',{staticClass:"resizable",attrs:{"name":"bio","placeholder":"Bio"}})])])])])])],1)};
@@ -56325,12 +56515,12 @@
     /* functional template */
     var __vue_is_functional_template__$m = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var FormStorage$1 = normalizeComponent(
+    
+    var FormStorage$1 = normalizeComponent_1(
       { render: __vue_render__$m, staticRenderFns: __vue_staticRenderFns__$m },
       __vue_inject_styles__$m,
       __vue_script__$m,
@@ -56364,8 +56554,6 @@
 
   /* script */
   var __vue_script__$n = script$n;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$n.__file = "gauge.vue";
 
   /* template */
   var __vue_render__$n = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Gauge","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with Gauge component. It produces nice looking fully responsive SVG gauges.")])]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-gauge',{attrs:{"type":"circle","value":_vm.gaugeValue,"size":250,"borderColor":"#2196f3","borderWidth":10,"valueText":((_vm.gaugeValue * 100) + "%"),"valueFontSize":41,"valueTextColor":"#2196f3","labelText":"amount of something"}}),_vm._v(" "),_c('f7-segmented',{attrs:{"tag":"p","raised":""}},[_c('f7-button',{attrs:{"active":_vm.gaugeValue === 0},on:{"click":function () { return _vm.gaugeValue = 0; }}},[_vm._v("0%")]),_vm._v(" "),_c('f7-button',{attrs:{"active":_vm.gaugeValue === 0.25},on:{"click":function () { return _vm.gaugeValue = 0.25; }}},[_vm._v("25%")]),_vm._v(" "),_c('f7-button',{attrs:{"active":_vm.gaugeValue === 0.5},on:{"click":function () { return _vm.gaugeValue = 0.5; }}},[_vm._v("50%")]),_vm._v(" "),_c('f7-button',{attrs:{"active":_vm.gaugeValue === 0.75},on:{"click":function () { return _vm.gaugeValue = 0.75; }}},[_vm._v("75%")]),_vm._v(" "),_c('f7-button',{attrs:{"active":_vm.gaugeValue === 1},on:{"click":function () { return _vm.gaugeValue = 1; }}},[_vm._v("100%")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Circle Gauges")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"circle","value":0.44,"valueText":"44%","valueTextColor":"#ff9800","borderColor":"#ff9800"}})],1),_vm._v(" "),_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"circle","value":0.12,"valueText":"$120","valueTextColor":"#4caf50","borderColor":"#4caf50","labelText":"of $1000 budget","labelTextColor":"#f44336","labelFontWeight":700}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Semicircle Gauges")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"semicircle","value":0.3,"valueText":"30%","valueTextColor":"#f44336","borderColor":"#f44336"}})],1),_vm._v(" "),_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"semicircle","value":0.5,"valueText":"30kg","valueTextColor":"#e91e63","borderColor":"#e91e63","labelText":"of 60kg total","labelTextColor":"#333"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Customization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"circle","value":0.35,"valueText":"35%","valueTextColor":"#4caf50","valueFontSize":51,"valueFontWeight":700,"borderWidth":20,"borderColor":"#4caf50","borderBgColor":"#ffeb3b","bgColor":"#ffeb3b"}})],1),_vm._v(" "),_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"circle","value":0.67,"valueText":"$670","valueTextColor":"#000","borderColor":"#ff9800","labelText":"of $1000 spent","labelTextColor":"#4caf50","labelFontWeight":800,"labelFontSize":12,"borderWidth":30}})],1)],1),_vm._v(" "),_c('br'),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"semicircle","value":0.5,"valueText":"50%","valueTextColor":"#ffeb3b","valueFontSize":41,"valueFontWeight":700,"borderWidth":10,"borderColor":"#ffeb3b","borderBgColor":"transparent"}})],1),_vm._v(" "),_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"semicircle","value":0.77,"borderColor":"#ff9800","labelText":"$770 spent so far","labelTextColor":"#ff9800","labelFontWeight":800,"labelFontSize":12,"borderWidth":10}})],1)],1)],1)],1)};
@@ -56380,12 +56568,12 @@
     /* functional template */
     var __vue_is_functional_template__$n = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Gauge$2 = normalizeComponent(
+    
+    var Gauge$2 = normalizeComponent_1(
       { render: __vue_render__$n, staticRenderFns: __vue_staticRenderFns__$n },
       __vue_inject_styles__$n,
       __vue_script__$n,
@@ -56411,8 +56599,6 @@
 
   /* script */
   var __vue_script__$o = script$o;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$o.__file = "grid.vue";
 
   /* template */
   var __vue_render__$o = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{staticClass:"grid-demo"},[_c('f7-navbar',{attrs:{"title":"Grid / Layout","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Columns within a row are automatically set to have equal width. Otherwise you can define your column with pourcentage of screen you want.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Columns with gap")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_vm._v("50% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("50% (.col)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_vm._v("25% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("25% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("25% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("25% (.col)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_vm._v("33% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("33% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("33% (.col)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"33"}},[_vm._v("33% (.col-33)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"66"}},[_vm._v("66% (.col-66)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"25"}},[_vm._v("25% (.col-25)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"25"}},[_vm._v("25% (.col-25)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50"}},[_vm._v("50% (.col-50)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"75"}},[_vm._v("75% (.col-75)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"25"}},[_vm._v("25% (.col-25)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"80"}},[_vm._v("80% (.col-80)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"20"}},[_vm._v("20% (.col-20)")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("No gap between columns")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',[_vm._v("50% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("50% (.col)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',[_vm._v("25% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("25% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("25% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("25% (.col)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',[_vm._v("33% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("33% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("33% (.col)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',{attrs:{"width":"33"}},[_vm._v("33% (.col-33)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"66"}},[_vm._v("66% (.col-66)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',{attrs:{"width":"25"}},[_vm._v("25% (.col-25)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"25"}},[_vm._v("25% (.col-25)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50"}},[_vm._v("50% (.col-50)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',{attrs:{"width":"75"}},[_vm._v("75% (.col-75)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"25"}},[_vm._v("25% (.col-25)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',{attrs:{"width":"80"}},[_vm._v("80% (.col-80)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"20"}},[_vm._v("20% (.col-20)")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Nested")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_vm._v("50% (.col)\n        "),_c('f7-row',[_c('f7-col',[_vm._v("50% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("50% (.col)")])],1)],1),_vm._v(" "),_c('f7-col',[_vm._v("50% (.col)\n        "),_c('f7-row',[_c('f7-col',{attrs:{"width":"33"}},[_vm._v("33% (.col-33)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"66"}},[_vm._v("66% (.col-66)")])],1)],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Responsive Grid")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Grid cells have different size on Phone/Tablet")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"100","tablet-width":"50"}},[_vm._v(".col-100.tablet-50")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"100","tablet-width":"50"}},[_vm._v(".col-100.tablet-50")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"50","tablet-width":"25"}},[_vm._v(".col-50.tablet-25")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50","tablet-width":"25"}},[_vm._v(".col-50.tablet-25")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50","tablet-width":"25"}},[_vm._v(".col-50.tablet-25")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50","tablet-width":"25"}},[_vm._v(".col-50.tablet-25")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"100","tablet-width":"40"}},[_vm._v(".col-100.tablet-40")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50","tablet-width":"60"}},[_vm._v(".col-50.tablet-60")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50","tablet-width":"66"}},[_vm._v(".col-50.tablet-66")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"100","tablet-width":"33"}},[_vm._v(".col-100.tablet-33")])],1)],1)],1)};
@@ -56427,12 +56613,12 @@
     /* functional template */
     var __vue_is_functional_template__$o = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Grid$1 = normalizeComponent(
+    
+    var Grid$1 = normalizeComponent_1(
       { render: __vue_render__$o, staticRenderFns: __vue_staticRenderFns__$o },
       __vue_inject_styles__$o,
       __vue_script__$o,
@@ -56445,7 +56631,7 @@
 
   //
 
-  var f7Icons = 'add add_round add_round_fill alarm alarm_fill albums albums_fill alert alert_fill arrow_down arrow_down_round_fill arrow_left arrow_left_round_fill arrow_right arrow_right_round_fill arrow_up arrow_up_round_fill at at_round at_round_fill attachment bag bag_fill barcode barcode_fill bars bars_chart bars_chart_round bars_chart_round_fill bars_chart_square bars_chart_square_fill bell bell_fill bell_off bitcoin bitcoin_round bitcoin_round_fill bolt bolt_fill bolt_round bolt_round_fill book book_fill bookmark bookmark_fill box box_fill briefcase briefcase_fill bulb bulb_fill business business_fill calendar calendar_fill calendar_today calendar_today_fill camera camera_fill camera_round camera_round_fill card card_fill chat chat_bubble chat_bubble_fill chat_fill check check_round check_round_fill chevron_down chevron_down_round chevron_down_round_fill chevron_left chevron_left_round chevron_left_round_fill chevron_right chevron_right_round chevron_right_round_fill chevron_up chevron_up_round chevron_up_round_fill circle circle_fill circle_half close close_round close_round_fill cloud cloud_download cloud_download_fill cloud_fill cloud_upload cloud_upload_fill collection collection_fill color_filter color_filter_fill compass compass_fill compose compose_fill data data_fill delete delete_round delete_round_fill document document_chart document_chart_fill document_check document_check_fill document_fill document_person document_person_fill document_text document_text_fill download download_fill download_round download_round_fill drawer drawer_fill drawers drawers_fill edit email email_fill enter enter_fill enter_round enter_round_fill exit exit_fill exit_round exit_round_fill eye eye_fill eye_off fastforward fastforward_fill fastforward_round fastforward_round_fill favorites favorites_alt favorites_alt_fill favorites_fill film film_fill filter fire fire_fill flag flag_fill folder folder_fill forward forward_fill gear gear_fill gift gift_fill graph_round graph_round_fill graph_square graph_square_fill heart heart_fill help help_round help_round_fill home home_fill images images_fill infinite info info_round info_round_fill keyboard keyboard_fill layers layers_alt layers_alt_fill layers_fill library library_fill link list list_fill lock lock_fill logo_facebook logo_github logo_googleplus logo_instagram logo_linkedin logo_rss logo_twitter menu message message_fill mic mic_fill mic_off mic_round mic_round_fill money_dollar money_dollar_round money_dollar_round_fill money_euro money_euro_round money_euro_round_fill money_pound money_pound_round money_pound_round_fill money_rubl money_rubl_round money_rubl_round_fill money_yen money_yen_round money_yen_round_fill more more_fill more_round more_round_fill more_vertical more_vertical_fill more_vertical_round more_vertical_round_fill navigation navigation_fill navigation_round navigation_round_fill paper_plane paper_plane_fill pause pause_fill pause_round pause_round_fill person person_round person_round_fill persons persons_round persons_round_fill phone phone_fill phone_round phone_round_fill photos photos_fill pie_chart pie_chart_fill placemark placemark_fill play play_fill play_round play_round_fill qrcode radio redo refresh refresh_round refresh_round_fill reload reload_round reload_round_fill reply reply_fill rewind rewind_fill rewind_round rewind_round_fill rocket rocket_fill scissors search settings settings_fill share share_fill sort sort_down sort_down_round sort_down_round_fill sort_round sort_round_fill sort_up sort_up_round sort_up_round_fill star star_fill star_half star_round_fill stopwatch stopwatch_fill tabs tabs_fill tag tag_fill tags tags_fill tape tape_fill thumbs_down thumbs_up ticket ticket_fill tickets tickets_fill time time_fill timer timer_fill today today_fill trash trash_fill tune tune_fill undo unlock unlock_fill upload_round upload_round_fill videocam videocam_fill videocam_round videocam_round_fill volume volume_fill volume_low volume_low_fill volume_mute volume_mute_fill volume_off waterdrop waterdrop_fill world world_fill zoom_in zoom_out';
+  var f7Icons = 'add add_round add_round_fill alarm alarm_fill albums albums_fill alert alert_fill arrow_down arrow_down_round_fill arrow_left arrow_left_round_fill arrow_right arrow_right_round_fill arrow_up arrow_up_round_fill at at_round at_round_fill attachment bag bag_fill barcode barcode_fill bars bars_chart bars_chart_round bars_chart_round_fill bars_chart_square bars_chart_square_fill bell bell_fill bell_off bitcoin bitcoin_round bitcoin_round_fill bolt bolt_fill bolt_round bolt_round_fill book book_fill bookmark bookmark_fill box box_fill briefcase briefcase_fill bulb bulb_fill business business_fill calendar calendar_fill calendar_today calendar_today_fill camera camera_fill camera_round camera_round_fill card card_fill chat chat_bubble chat_bubble_fill chat_fill check check_round check_round_fill chevron_down chevron_down_round chevron_down_round_fill chevron_left chevron_left_round chevron_left_round_fill chevron_right chevron_right_round chevron_right_round_fill chevron_up chevron_up_round chevron_up_round_fill circle circle_fill circle_half close close_round close_round_fill cloud cloud_download cloud_download_fill cloud_fill cloud_upload cloud_upload_fill collection collection_fill color_filter color_filter_fill compass compass_fill compose compose_fill data data_fill delete delete_round delete_round_fill desktop document document_chart document_chart_fill document_check document_check_fill document_fill document_person document_person_fill document_text document_text_fill download download_fill download_round download_round_fill drawer drawer_fill drawers drawers_fill edit email email_fill enter enter_fill enter_round enter_round_fill exit exit_fill exit_round exit_round_fill eye eye_fill eye_off fastforward fastforward_fill fastforward_round fastforward_round_fill favorites favorites_alt favorites_alt_fill favorites_fill film film_fill filter fire fire_fill flag flag_fill folder folder_fill forward forward_fill gear gear_fill gift gift_fill graph_round graph_round_fill graph_square graph_square_fill hand hand_alt heart heart_fill help help_round help_round_fill home home_fill images images_fill infinite info info_round info_round_fill keyboard keyboard_fill laptop layers layers_alt layers_alt_fill layers_fill library library_fill link list list_fill lock lock_fill logo_android logo_android_text logo_apple logo_facebook logo_github logo_google logo_google_text logo_googleplus logo_instagram logo_ios logo_linkedin logo_macos logo_microsoft logo_rss logo_twitter logo_windows menu message message_fill mic mic_fill mic_off mic_round mic_round_fill money_dollar money_dollar_round money_dollar_round_fill money_euro money_euro_round money_euro_round_fill money_pound money_pound_round money_pound_round_fill money_rubl money_rubl_round money_rubl_round_fill money_yen money_yen_round money_yen_round_fill more more_fill more_round more_round_fill more_vertical more_vertical_fill more_vertical_round more_vertical_round_fill navigation navigation_fill navigation_round navigation_round_fill paper_plane paper_plane_fill pause pause_fill pause_round pause_round_fill person person_round person_round_fill persons persons_round persons_round_fill phone phone_fill phone_landscape phone_portrait phone_round phone_round_fill photos photos_fill pie_chart pie_chart_fill placemark placemark_fill play play_fill play_round play_round_fill qrcode radio redo refresh refresh_round refresh_round_fill reload reload_round reload_round_fill reply reply_fill rewind rewind_fill rewind_round rewind_round_fill rocket rocket_fill scissors search settings settings_fill share share_fill sort sort_down sort_down_round sort_down_round_fill sort_round sort_round_fill sort_up sort_up_round sort_up_round_fill star star_fill star_half star_round_fill stopwatch stopwatch_fill tablet_landscape tablet_portrait tabs tabs_fill tag tag_fill tags tags_fill tape tape_fill thumbs_down thumbs_up ticket ticket_fill tickets tickets_fill time time_fill timer timer_fill today today_fill trash trash_fill tune tune_fill undo unlock unlock_fill upload_round upload_round_fill videocam videocam_fill videocam_round videocam_round_fill volume volume_fill volume_low volume_low_fill volume_mute volume_mute_fill volume_off waterdrop waterdrop_fill world world_fill zoom_in zoom_out';
   var mdIcons = '3d_rotation ac_unit access_alarm access_alarms access_time accessibility accessible account_balance account_balance_wallet account_box account_circle adb add add_a_photo add_alarm add_alert add_box add_circle add_circle_outline add_location add_shopping_cart add_to_photos add_to_queue adjust airline_seat_flat airline_seat_flat_angled airline_seat_individual_suite airline_seat_legroom_extra airline_seat_legroom_normal airline_seat_legroom_reduced airline_seat_recline_extra airline_seat_recline_normal airplanemode_active airplanemode_inactive airplay airport_shuttle alarm alarm_add alarm_off alarm_on album all_inclusive all_out android announcement apps archive arrow_back arrow_downward arrow_drop_down arrow_drop_down_circle arrow_drop_up arrow_forward arrow_upward art_track aspect_ratio assessment assignment assignment_ind assignment_late assignment_return assignment_returned assignment_turned_in assistant assistant_photo attach_file attach_money attachment audiotrack autorenew av_timer backspace backup battery_alert battery_charging_full battery_full battery_std battery_unknown beach_access beenhere block bluetooth bluetooth_audio bluetooth_connected bluetooth_disabled bluetooth_searching blur_circular blur_linear blur_off blur_on book bookmark bookmark_border border_all border_bottom border_clear border_color border_horizontal border_inner border_left border_outer border_right border_style border_top border_vertical branding_watermark brightness_1 brightness_2 brightness_3 brightness_4 brightness_5 brightness_6 brightness_7 brightness_auto brightness_high brightness_low brightness_medium broken_image brush bubble_chart bug_report build burst_mode business business_center cached cake call call_end call_made call_merge call_missed call_missed_outgoing call_received call_split call_to_action camera camera_alt camera_enhance camera_front camera_rear camera_roll cancel card_giftcard card_membership card_travel casino cast cast_connected center_focus_strong center_focus_weak change_history chat chat_bubble chat_bubble_outline check check_box check_box_outline_blank check_circle chevron_left chevron_right child_care child_friendly chrome_reader_mode class clear clear_all close closed_caption cloud cloud_circle cloud_done cloud_download cloud_off cloud_queue cloud_upload code collections collections_bookmark color_lens colorize comment compare compare_arrows computer confirmation_number contact_mail contact_phone contacts content_copy content_cut content_paste control_point control_point_duplicate copyright create create_new_folder credit_card crop crop_16_9 crop_3_2 crop_5_4 crop_7_5 crop_din crop_free crop_landscape crop_original crop_portrait crop_rotate crop_square dashboard data_usage date_range dehaze delete delete_forever delete_sweep description desktop_mac desktop_windows details developer_board developer_mode device_hub devices devices_other dialer_sip dialpad directions directions_bike directions_boat directions_bus directions_car directions_railway directions_run directions_subway directions_transit directions_walk disc_full dns do_not_disturb do_not_disturb_alt do_not_disturb_off do_not_disturb_on dock domain done done_all donut_large donut_small drafts drag_handle drive_eta dvr edit edit_location eject email enhanced_encryption equalizer error error_outline euro_symbol ev_station event event_available event_busy event_note event_seat exit_to_app expand_less expand_more explicit explore exposure exposure_neg_1 exposure_neg_2 exposure_plus_1 exposure_plus_2 exposure_zero extension face fast_forward fast_rewind favorite favorite_border featured_play_list featured_video feedback fiber_dvr fiber_manual_record fiber_new fiber_pin fiber_smart_record file_download file_upload filter filter_1 filter_2 filter_3 filter_4 filter_5 filter_6 filter_7 filter_8 filter_9 filter_9_plus filter_b_and_w filter_center_focus filter_drama filter_frames filter_hdr filter_list filter_none filter_tilt_shift filter_vintage find_in_page find_replace fingerprint first_page fitness_center flag flare flash_auto flash_off flash_on flight flight_land flight_takeoff flip flip_to_back flip_to_front folder folder_open folder_shared folder_special font_download format_align_center format_align_justify format_align_left format_align_right format_bold format_clear format_color_fill format_color_reset format_color_text format_indent_decrease format_indent_increase format_italic format_line_spacing format_list_bulleted format_list_numbered format_paint format_quote format_shapes format_size format_strikethrough format_textdirection_l_to_r format_textdirection_r_to_l format_underlined forum forward forward_10 forward_30 forward_5 free_breakfast fullscreen fullscreen_exit functions g_translate gamepad games gavel gesture get_app gif golf_course gps_fixed gps_not_fixed gps_off grade gradient grain graphic_eq grid_off grid_on group group_add group_work hd hdr_off hdr_on hdr_strong hdr_weak headset headset_mic healing hearing help help_outline high_quality highlight highlight_off history home hot_tub hotel hourglass_empty hourglass_full http https image image_aspect_ratio import_contacts import_export important_devices inbox indeterminate_check_box info info_outline input insert_chart insert_comment insert_drive_file insert_emoticon insert_invitation insert_link insert_photo invert_colors invert_colors_off iso keyboard keyboard_arrow_down keyboard_arrow_left keyboard_arrow_right keyboard_arrow_up keyboard_backspace keyboard_capslock keyboard_hide keyboard_return keyboard_tab keyboard_voice kitchen label label_outline landscape language laptop laptop_chromebook laptop_mac laptop_windows last_page launch layers layers_clear leak_add leak_remove lens library_add library_books library_music lightbulb_outline line_style line_weight linear_scale link linked_camera list live_help live_tv local_activity local_airport local_atm local_bar local_cafe local_car_wash local_convenience_store local_dining local_drink local_florist local_gas_station local_grocery_store local_hospital local_hotel local_laundry_service local_library local_mall local_movies local_offer local_parking local_pharmacy local_phone local_pizza local_play local_post_office local_printshop local_see local_shipping local_taxi location_city location_disabled location_off location_on location_searching lock lock_open lock_outline looks looks_3 looks_4 looks_5 looks_6 looks_one looks_two loop loupe low_priority loyalty mail mail_outline map markunread markunread_mailbox memory menu merge_type message mic mic_none mic_off mms mode_comment mode_edit monetization_on money_off monochrome_photos mood mood_bad more more_horiz more_vert motorcycle mouse move_to_inbox movie movie_creation movie_filter multiline_chart music_note music_video my_location nature nature_people navigate_before navigate_next navigation near_me network_cell network_check network_locked network_wifi new_releases next_week nfc no_encryption no_sim not_interested note note_add notifications notifications_active notifications_none notifications_off notifications_paused offline_pin ondemand_video opacity open_in_browser open_in_new open_with pages pageview palette pan_tool panorama panorama_fish_eye panorama_horizontal panorama_vertical panorama_wide_angle party_mode pause pause_circle_filled pause_circle_outline payment people people_outline perm_camera_mic perm_contact_calendar perm_data_setting perm_device_information perm_identity perm_media perm_phone_msg perm_scan_wifi person person_add person_outline person_pin person_pin_circle personal_video pets phone phone_android phone_bluetooth_speaker phone_forwarded phone_in_talk phone_iphone phone_locked phone_missed phone_paused phonelink phonelink_erase phonelink_lock phonelink_off phonelink_ring phonelink_setup photo photo_album photo_camera photo_filter photo_library photo_size_select_actual photo_size_select_large photo_size_select_small picture_as_pdf picture_in_picture picture_in_picture_alt pie_chart pie_chart_outlined pin_drop place play_arrow play_circle_filled play_circle_outline play_for_work playlist_add playlist_add_check playlist_play plus_one poll polymer pool portable_wifi_off portrait power power_input power_settings_new pregnant_woman present_to_all print priority_high public publish query_builder question_answer queue queue_music queue_play_next radio radio_button_checked radio_button_unchecked rate_review receipt recent_actors record_voice_over redeem redo refresh remove remove_circle remove_circle_outline remove_from_queue remove_red_eye remove_shopping_cart reorder repeat repeat_one replay replay_10 replay_30 replay_5 reply reply_all report report_problem restaurant restaurant_menu restore restore_page ring_volume room room_service rotate_90_degrees_ccw rotate_left rotate_right rounded_corner router rowing rss_feed rv_hookup satellite save scanner schedule school screen_lock_landscape screen_lock_portrait screen_lock_rotation screen_rotation screen_share sd_card sd_storage search security select_all send sentiment_dissatisfied sentiment_neutral sentiment_satisfied sentiment_very_dissatisfied sentiment_very_satisfied settings settings_applications settings_backup_restore settings_bluetooth settings_brightness settings_cell settings_ethernet settings_input_antenna settings_input_component settings_input_composite settings_input_hdmi settings_input_svideo settings_overscan settings_phone settings_power settings_remote settings_system_daydream settings_voice share shop shop_two shopping_basket shopping_cart short_text show_chart shuffle signal_cellular_4_bar signal_cellular_connected_no_internet_4_bar signal_cellular_no_sim signal_cellular_null signal_cellular_off signal_wifi_4_bar signal_wifi_4_bar_lock signal_wifi_off sim_card sim_card_alert skip_next skip_previous slideshow slow_motion_video smartphone smoke_free smoking_rooms sms sms_failed snooze sort sort_by_alpha spa space_bar speaker speaker_group speaker_notes speaker_notes_off speaker_phone spellcheck star star_border star_half stars stay_current_landscape stay_current_portrait stay_primary_landscape stay_primary_portrait stop stop_screen_share storage store store_mall_directory straighten streetview strikethrough_s style subdirectory_arrow_left subdirectory_arrow_right subject subscriptions subtitles subway supervisor_account surround_sound swap_calls swap_horiz swap_vert swap_vertical_circle switch_camera switch_video sync sync_disabled sync_problem system_update system_update_alt tab tab_unselected tablet tablet_android tablet_mac tag_faces tap_and_play terrain text_fields text_format textsms texture theaters thumb_down thumb_up thumbs_up_down time_to_leave timelapse timeline timer timer_10 timer_3 timer_off title toc today toll tonality touch_app toys track_changes traffic train tram transfer_within_a_station transform translate trending_down trending_flat trending_up tune turned_in turned_in_not tv unarchive undo unfold_less unfold_more update usb verified_user vertical_align_bottom vertical_align_center vertical_align_top vibration video_call video_label video_library videocam videocam_off videogame_asset view_agenda view_array view_carousel view_column view_comfy view_compact view_day view_headline view_list view_module view_quilt view_stream view_week vignette visibility visibility_off voice_chat voicemail volume_down volume_mute volume_off volume_up vpn_key vpn_lock wallpaper warning watch watch_later wb_auto wb_cloudy wb_incandescent wb_iridescent wb_sunny wc web web_asset weekend whatshot widgets wifi wifi_lock wifi_tethering work wrap_text youtube_searched_for zoom_in zoom_out zoom_out_map';
 
   var script$p = {
@@ -56471,11 +56657,9 @@
 
   /* script */
   var __vue_script__$p = script$p;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$p.__file = "icons.vue";
 
   /* template */
-  var __vue_render__$p = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Icons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Scroll bottom")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with the premium and free "),_c('a',{staticClass:"external",attrs:{"href":"https://github.com/nolimits4web/Framework7-Icons","target":"_blank"}},[_vm._v("Framework7 Icons")]),_vm._v(" iOS-icons font developed specially to be used with iOS theme of Framework7. As for Material theme we recommend to use great-designed "),_c('a',{staticClass:"external",attrs:{"href":"https://material.io/icons/","target":"_blank"}},[_vm._v("Material Icons")]),_vm._v(" font. Both of these fonts use a typographic feature called "),_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("ligatures")]),_vm._v(". It’s easy to incorporate icons into your app. Here’s a small example:")]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"f7-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"f7-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"material-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"material-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("Ligatures")]),_vm._v(" allow rendering of an icon glyph simply by using its textual name. The replacement is done automatically by the web browser and provides more readable code than the equivalent numeric character reference.")])]),_vm._v(" "),_c('f7-block-header',[_c('f7-segmented',[_c('f7-button',{attrs:{"outline":"","tab-link":"#tab-f7","tab-link-active":""}},[_vm._v("F7 Icons")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":"","tab-link":"#tab-md"}},[_vm._v("Material Icons")])],1)],1),_vm._v(" "),_c('f7-block',{staticClass:"tabs",attrs:{"strong":""}},[_c('f7-tab',{attrs:{"id":"tab-f7","tab-active":""}},[_c('f7-row',_vm._l((_vm.f7Icons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"f7-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}),1)],1),_vm._v(" "),_c('f7-tab',{attrs:{"id":"tab-md"}},[_c('f7-row',_vm._l((_vm.mdIcons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"material-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}),1)],1)],1)],1)};
+  var __vue_render__$p = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Icons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Scroll bottom")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with the premium and free "),_c('a',{staticClass:"external",attrs:{"href":"https://github.com/framework7io/framework7-icons","target":"_blank"}},[_vm._v("Framework7 Icons")]),_vm._v(" iOS-icons font developed specially to be used with iOS theme of Framework7. As for Material theme we recommend to use great-designed "),_c('a',{staticClass:"external",attrs:{"href":"https://material.io/icons/","target":"_blank"}},[_vm._v("Material Icons")]),_vm._v(" font. Both of these fonts use a typographic feature called "),_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("ligatures")]),_vm._v(". It’s easy to incorporate icons into your app. Here’s a small example:")]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"f7-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"f7-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"material-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"material-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("Ligatures")]),_vm._v(" allow rendering of an icon glyph simply by using its textual name. The replacement is done automatically by the web browser and provides more readable code than the equivalent numeric character reference.")])]),_vm._v(" "),_c('f7-block-header',[_c('f7-segmented',[_c('f7-button',{attrs:{"outline":"","tab-link":"#tab-f7","tab-link-active":""}},[_vm._v("F7 Icons")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":"","tab-link":"#tab-md"}},[_vm._v("Material Icons")])],1)],1),_vm._v(" "),_c('f7-block',{staticClass:"tabs",attrs:{"strong":""}},[_c('f7-tab',{attrs:{"id":"tab-f7","tab-active":""}},[_c('f7-row',_vm._l((_vm.f7Icons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"f7-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}),1)],1),_vm._v(" "),_c('f7-tab',{attrs:{"id":"tab-md"}},[_c('f7-row',_vm._l((_vm.mdIcons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"material-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}),1)],1)],1)],1)};
   var __vue_staticRenderFns__$p = [];
 
     /* style */
@@ -56487,12 +56671,12 @@
     /* functional template */
     var __vue_is_functional_template__$p = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Icons = normalizeComponent(
+    
+    var Icons = normalizeComponent_1(
       { render: __vue_render__$p, staticRenderFns: __vue_staticRenderFns__$p },
       __vue_inject_styles__$p,
       __vue_script__$p,
@@ -56546,8 +56730,6 @@
 
   /* script */
   var __vue_script__$q = script$q;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$q.__file = "infinite-scroll.vue";
 
   /* template */
   var __vue_render__$q = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"infinite":"","infinite-distance":50,"infinite-preloader":_vm.showPreloader},on:{"infinite":_vm.loadMore}},[_c('f7-navbar',{attrs:{"title":"Infinite Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Scroll bottom")]),_vm._v(" "),_c('f7-list',_vm._l((_vm.items),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":("Item " + item)}})}),1)],1)};
@@ -56562,12 +56744,12 @@
     /* functional template */
     var __vue_is_functional_template__$q = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var InfiniteScroll$2 = normalizeComponent(
+    
+    var InfiniteScroll$2 = normalizeComponent_1(
       { render: __vue_render__$q, staticRenderFns: __vue_staticRenderFns__$q },
       __vue_inject_styles__$q,
       __vue_script__$q,
@@ -56595,8 +56777,6 @@
 
   /* script */
   var __vue_script__$r = script$r;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$r.__file = "inputs.vue";
 
   /* template */
   var __vue_render__$r = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Form Inputs","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Full Layout / Inline Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"inline-labels":"","no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Gender","type":"select","defaultValue":"Male","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Birthday","type":"date","defaultValue":"2014-04-30","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Date time","type":"datetime-local","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Range","input":false}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-range',{attrs:{"slot":"input","value":50,"min":0,"max":100,"step":1},slot:"input"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Textarea","type":"textarea","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Full Layout / Stacked Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Gender","type":"select","defaultValue":"Male","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Birthday","type":"date","defaultValue":"2014-04-30","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Date time","type":"datetime-local","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Range","input":false}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-range',{attrs:{"slot":"input","value":50,"min":0,"max":100,"step":1},slot:"input"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Textarea","type":"textarea","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Floating Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","floating-label":"","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","floating-label":"","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","floating-label":"","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","floating-label":"","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","floating-label":"","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","floating-label":"","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Validation + Additional Info")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","info":"Default validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Fruit","type":"text","placeholder":"Type 'apple' or 'banana'","required":"","validate":"","pattern":"apple|banana","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('span',{attrs:{"slot":"info"},slot:"info"},[_vm._v("Pattern validation ("),_c('b',[_vm._v("apple|banana")]),_vm._v(")")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","info":"Default e-mail validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"Your URL","info":"Default URL validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Number","type":"text","placeholder":"Enter number","info":"With custom error message","error-message":"Only numbers please!","required":"","validate":"","pattern":"[0-9]*","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Icon + Input")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Label + Input")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Inputs")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inputs + Additional Info")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","info":"Full name please","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","info":"8 characters minimum","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","info":"Your work e-mail address","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","info":"Your website URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Inputs Inset")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1)],1)};
@@ -56611,12 +56791,12 @@
     /* functional template */
     var __vue_is_functional_template__$r = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Inputs = normalizeComponent(
+    
+    var Inputs = normalizeComponent_1(
       { render: __vue_render__$r, staticRenderFns: __vue_staticRenderFns__$r },
       __vue_inject_styles__$r,
       __vue_script__$r,
@@ -56639,8 +56819,6 @@
 
   /* script */
   var __vue_script__$s = script$s;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$s.__file = "lazy-load.vue";
 
   /* template */
   var __vue_render__$s = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Lazy Load Images","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lazy Load delays loading of images on page while they are outside of viewport until user scrolls to them.")]),_vm._v(" "),_c('p',[_vm._v("It will make the page load faster, improve scrolling performance and also save traffic.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-500x500-1.jpg","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tempus viverra lectus sit amet lobortis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque faucibus consectetur mauris eget lobortis. Maecenas efficitur efficitur mauris ac vehicula. Sed ut lectus laoreet, semper nisi vel, maximus massa. Duis at lorem vitae sem auctor condimentum a at neque. Phasellus vel scelerisque dui. Morbi varius nibh eu finibus rutrum.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-500x500-2.jpg","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Aenean id congue orci. Aliquam gravida nulla nec sollicitudin consectetur. Donec iaculis ipsum in purus tincidunt sagittis quis vehicula sapien. Vestibulum quis consectetur nibh. Pellentesque vehicula ligula sit amet commodo malesuada. Proin eget dolor sodales, egestas sapien sed, consectetur ante. Vivamus imperdiet porttitor condimentum. Aliquam sit amet tellus quis mauris dapibus convallis eu in nulla. Aliquam erat volutpat.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-500x500-3.jpg","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Pellentesque aliquam maximus libero a tincidunt. Nunc rhoncus tellus ac congue commodo. Aenean malesuada ante sit amet erat efficitur vehicula ac id ipsum. Suspendisse sed purus vel nisl rhoncus feugiat et ut ante. Mauris vehicula ligula sed nisl vulputate, nec ullamcorper quam vehicula. Etiam eu turpis eget sem luctus rutrum at porta nulla. Ut posuere lorem et nisi faucibus molestie.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-500x500-4.jpg","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Duis ullamcorper velit id enim rutrum, vel venenatis lacus laoreet. Sed id bibendum ligula, sed congue erat. Maecenas rhoncus posuere lorem ac consectetur. Duis accumsan, urna id pharetra tincidunt, libero nibh tincidunt enim, vestibulum suscipit turpis neque nec ante.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-500x500-5.jpg","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Suspendisse potenti. Curabitur et neque ac ante dapibus mollis tempor eget ex. Vivamus porttitor faucibus dui. Nulla eleifend hendrerit cursus. Sed elit nulla, pulvinar vitae diam eget, consectetur efficitur orci. Vivamus vel pharetra sapien. Suspendisse tortor tortor, iaculis at ullamcorper sit amet, vestibulum vel arcu. Aenean sed eleifend sapien. Praesent at varius metus.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-500x500-6.jpg","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent laoreet nisl eget neque blandit lobortis. Sed sagittis risus id vestibulum finibus. Cras vestibulum sem et massa hendrerit maximus. Vestibulum suscipit tristique iaculis. Nam vitae risus non eros auctor tincidunt quis vel nulla. Sed volutpat, libero ac blandit vehicula, est sem gravida lectus, sed imperdiet sapien risus ut neque.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-500x500-7.jpg","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Aenean id congue orci. Aliquam gravida nulla nec sollicitudin consectetur. Donec iaculis ipsum in purus tincidunt sagittis quis vehicula sapien. Vestibulum quis consectetur nibh. Pellentesque vehicula ligula sit amet commodo malesuada. Proin eget dolor sodales, egestas sapien sed, consectetur ante. Vivamus imperdiet porttitor condimentum. Aliquam sit amet tellus quis mauris dapibus convallis eu in nulla. Aliquam erat volutpat.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-500x500-8.jpg","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tempus viverra lectus sit amet lobortis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque faucibus consectetur mauris eget lobortis. Maecenas efficitur efficitur mauris ac vehicula. Sed ut lectus laoreet, semper nisi vel, maximus massa. Duis at lorem vitae sem auctor condimentum a at neque. Phasellus vel scelerisque dui. Morbi varius nibh eu finibus rutrum.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/people-500x500-1.jpg","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Pellentesque aliquam maximus libero a tincidunt. Nunc rhoncus tellus ac congue commodo. Aenean malesuada ante sit amet erat efficitur vehicula ac id ipsum. Suspendisse sed purus vel nisl rhoncus feugiat et ut ante. Mauris vehicula ligula sed nisl vulputate, nec ullamcorper quam vehicula. Etiam eu turpis eget sem luctus rutrum at porta nulla. Ut posuere lorem et nisi faucibus molestie.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-500x500-10.jpg","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Duis ullamcorper velit id enim rutrum, vel venenatis lacus laoreet. Sed id bibendum ligula, sed congue erat. Maecenas rhoncus posuere lorem ac consectetur. Duis accumsan, urna id pharetra tincidunt, libero nibh tincidunt enim, vestibulum suscipit turpis neque nec ante.")]),_vm._v(" "),_c('p',[_c('b',[_vm._v("Using as background image:")])]),_vm._v(" "),_c('div',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-background":"https://cdn.framework7.io/placeholder/people-500x500-10.jpg"}}),_vm._v(" "),_c('p',[_vm._v("Suspendisse potenti. Curabitur et neque ac ante dapibus mollis tempor eget ex. Vivamus porttitor faucibus dui. Nulla eleifend hendrerit cursus. Sed elit nulla, pulvinar vitae diam eget, consectetur efficitur orci. Vivamus vel pharetra sapien. Suspendisse tortor tortor, iaculis at ullamcorper sit amet, vestibulum vel arcu. Aenean sed eleifend sapien. Praesent at varius metus.")])])],1)};
@@ -56655,12 +56833,12 @@
     /* functional template */
     var __vue_is_functional_template__$s = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var LazyLoad = normalizeComponent(
+    
+    var LazyLoad = normalizeComponent_1(
       { render: __vue_render__$s, staticRenderFns: __vue_staticRenderFns__$s },
       __vue_inject_styles__$s,
       __vue_script__$s,
@@ -56692,8 +56870,6 @@
 
   /* script */
   var __vue_script__$t = script$t;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$t.__file = "list.vue";
 
   /* template */
   var __vue_render__$t = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"List View","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 allows you to be flexible with list views (table views). You can make them as navigation menus, you can use there icons, inputs, and any elements inside of the list, and even make them nested:")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Simple List")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Simple Links List")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Link 1","link":"#"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Link 2","link":"#"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Link 3","link":"#"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Data list, with icons")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"John Doe","badge":"5"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jenna Smith"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Links")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe","after":"Cleaner"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Jenna Smith"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Links, Header, Footer")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","header":"Name","title":"John Doe","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","header":"Phone","title":"+7 90 111-22-3344","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","header":"Email","title":"john@doe","footer":"Home","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","header":"Email","title":"john@framework7","footer":"Work","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Links, no icons")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"divider":"","title":"Divider Here"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Jenna Smith"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Grouped with sticky titles")]),_vm._v(" "),_c('f7-list',[_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"A","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aaron "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Abbie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Adam"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"B","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bailey"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Barclay"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bartolo"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"C","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Caiden"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Calvin"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Candy"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Mixed and nested")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"No icons here"}}),_vm._v(" "),_c('li',[_c('ul',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"No icons here"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"With toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-toggle',{attrs:{"slot":"after"},slot:"after"})],1)],1)]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"With toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-toggle',{attrs:{"slot":"after"},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Mixed, inset")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"With toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-toggle',{attrs:{"slot":"after"},slot:"after"})],1),_vm._v(" "),_c('f7-block-footer',[_c('p',[_vm._v("Here comes some useful information about list above")])])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Tablet inset")]),_vm._v(" "),_c('f7-list',{attrs:{"tablet-inset":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-block-footer',[_c('p',[_vm._v("This list block will look like \"inset\" only on tablets (iPad)")])])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Media Lists")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Media Lists are almost the same as Data Lists, but with a more flexible layout for visualization of more complex data, like products, services, userc, etc.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Songs")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Yellow Submarine","after":"$15","subtitle":"Beatles","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-1.jpg","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Don't Stop Me Now","after":"$22","subtitle":"Queen","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-2.jpg","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Billie Jean","after":"$16","subtitle":"Michael Jackson","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-3.jpg","width":"80"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Mail App")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Something more simple")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"title":"Yellow Submarine","subtitle":"Beatles"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-1.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Don't Stop Me Now","subtitle":"Queen"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-2.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Billie Jean","subtitle":"Michael Jackson"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-3.jpg","width":"44"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":"","inset":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Yellow Submarine","subtitle":"Beatles"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Don't Stop Me Now","subtitle":"Queen"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Billie Jean","subtitle":"Michael Jackson"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg","width":"44"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom Table-like Layout")]),_vm._v(" "),_c('f7-list',[_c('li',[_c('a',{staticClass:"item-link item-content",attrs:{"href":"#"}},[_c('div',{staticClass:"item-inner item-cell"},[_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-2")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-3")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-2")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 3-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-2\n              ")]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-3\n              ")])])])])])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"item-link item-content",attrs:{"href":"#"}},[_c('div',{staticClass:"item-inner item-cell"},[_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-2")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-3")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-2")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 3-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-2\n              ")]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-3\n              ")])])])])])])])],1)};
@@ -56708,12 +56884,12 @@
     /* functional template */
     var __vue_is_functional_template__$t = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var List = normalizeComponent(
+    
+    var List = normalizeComponent_1(
       { render: __vue_render__$t, staticRenderFns: __vue_staticRenderFns__$t },
       __vue_inject_styles__$t,
       __vue_script__$t,
@@ -56739,8 +56915,6 @@
 
   /* script */
   var __vue_script__$u = script$u;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$u.__file = "list-index.vue";
 
   /* template */
   var __vue_render__$u = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"List Index","back-link":"Back"}}),_vm._v(" "),_c('f7-list-index',{attrs:{"indexes":"auto","list-el":".list.contacts-list","scroll-list":true,"label":true},on:{"listindex:select":_vm.onIndexSelect}}),_vm._v(" "),_c('f7-list',{attrs:{"contacts-list":""}},[_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"A","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aaron"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Adam"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aiden"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Albert"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Alex"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Alexander"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Alfie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Archie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Arthur"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Austin"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"B","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Benjamin"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Blake"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bobby"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"C","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Caleb"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Callum"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Cameron"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Charles"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Charlie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Connor"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"D","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Daniel"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"David"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Dexter"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Dylan"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"E","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Edward"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Elijah"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Elliot"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Elliott"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ethan"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Evan"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"F","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Felix"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Finlay"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Finley"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Frankie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Freddie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Frederick"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"G","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Gabriel"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"George"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"H","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Harley"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Harrison"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Harry"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Harvey"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Henry"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hugo"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"I","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ibrahim"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Isaac"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"J","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jack"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jacob"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jake"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"James"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jamie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jayden"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jenson"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Joseph"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Joshua"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jude"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"K","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kai"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kian"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"L","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Leo"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Leon"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lewis"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Liam"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Logan"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Louie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Louis"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Luca"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lucas"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Luke"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"M","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mason"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Matthew"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Max"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Michael"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mohammad"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mohammed"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Muhammad"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"N","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Nathan"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Noah"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"O","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Oliver"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ollie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Oscar"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Owen"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"R","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Reuben"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Riley"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Robert"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ronnie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Rory"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ryan"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"S","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Samuel"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Sebastian"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Seth"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Sonny"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Stanley"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"T","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Teddy"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Theo"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Theodore"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Thomas"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Toby"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Tommy"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Tyler"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"W","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"William"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"Z","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Zachary"}})],1)],1)],1)};
@@ -56755,12 +56929,12 @@
     /* functional template */
     var __vue_is_functional_template__$u = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var ListIndex$2 = normalizeComponent(
+    
+    var ListIndex$2 = normalizeComponent_1(
       { render: __vue_render__$u, staticRenderFns: __vue_staticRenderFns__$u },
       __vue_inject_styles__$u,
       __vue_script__$u,
@@ -56809,8 +56983,6 @@
 
   /* script */
   var __vue_script__$v = script$v;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$v.__file = "login-screen.vue";
 
   /* template */
   var __vue_render__$v = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Login Screen","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with ready to use Login Screen layout. It could be used inside of page or inside of popup (Embedded) or as a standalone overlay:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/login-screen-page/","title":"As Separate Page"}})],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","large":"","fill":"","login-screen-open":".demo-login-screen"}},[_vm._v("As Overlay")])],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","large":"","fill":""},on:{"click":function($event){_vm.loginScreenOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('f7-login-screen',{staticClass:"demo-login-screen",attrs:{"opened":_vm.loginScreenOpened},on:{"loginscreen:closed":function($event){_vm.loginScreenOpened = false;}}},[_c('f7-page',{attrs:{"login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-input',{attrs:{"label":"Username","type":"text","placeholder":"Your username","value":_vm.username},on:{"input":function($event){_vm.username = $event.target.value;}}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","value":_vm.password},on:{"input":function($event){_vm.password = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)],1)],1)};
@@ -56825,12 +56997,12 @@
     /* functional template */
     var __vue_is_functional_template__$v = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var LoginScreen$2 = normalizeComponent(
+    
+    var LoginScreen$2 = normalizeComponent_1(
       { render: __vue_render__$v, staticRenderFns: __vue_staticRenderFns__$v },
       __vue_inject_styles__$v,
       __vue_script__$v,
@@ -56873,8 +57045,6 @@
 
   /* script */
   var __vue_script__$w = script$w;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$w.__file = "login-screen-page.vue";
 
   /* template */
   var __vue_render__$w = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"no-toolbar":"","no-navbar":"","no-swipeback":"","login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-input',{attrs:{"label":"Username","type":"text","placeholder":"Your username","value":_vm.username},on:{"input":function($event){_vm.username = $event.target.value;}}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","value":_vm.password},on:{"input":function($event){_vm.password = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)};
@@ -56889,12 +57059,12 @@
     /* functional template */
     var __vue_is_functional_template__$w = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var LoginScreenPage = normalizeComponent(
+    
+    var LoginScreenPage = normalizeComponent_1(
       { render: __vue_render__$w, staticRenderFns: __vue_staticRenderFns__$w },
       __vue_inject_styles__$w,
       __vue_script__$w,
@@ -56976,8 +57146,6 @@
 
   /* script */
   var __vue_script__$x = script$x;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$x.__file = "menu.vue";
 
   /* template */
   var __vue_render__$x = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:afterin":_vm.onPageAfterIn}},[_c('f7-navbar',{attrs:{"title":"Menu","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Menu component is designed to be used as overlay control. It can be very helpful when you need controls on top of the map, images, some text/code editor, etc.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Links")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-menu',[_c('f7-menu-item',{attrs:{"href":"#","text":"Item 1"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","text":"Item 2"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"edit"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"share"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Dropdowns")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",staticStyle:{"z-index":"2000"},attrs:{"strong":""}},[_c('p',{staticClass:"padding-horizontal"},[_vm._v("Dropdown can be position on left, center or right of the menu item. It also can be scrollable.")]),_vm._v(" "),_c('f7-menu',[_c('f7-menu-item',{attrs:{"text":"Left","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"left":""}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 1"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 2"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 3"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 4"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"divider":""}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 5"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 6"}})],1)],1),_vm._v(" "),_c('f7-menu-item',{attrs:{"text":"Center","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"center":"","content-height":"200px"}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 1"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 2"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 3"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 4"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"divider":""}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 5"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 6"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 7"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"divider":""}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 8"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 9"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 10"}})],1)],1),_vm._v(" "),_c('f7-menu-item',{attrs:{"text":"Right","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"right":""}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 1"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 2"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 3"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 4"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"divider":""}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 5"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 6"}})],1)],1),_vm._v(" "),_c('f7-menu-item',{staticStyle:{"margin-left":"auto"},attrs:{"icon-f7":"share","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"right":""}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#"}},[_c('span',[_vm._v("Share on Facebook")]),_vm._v(" "),_c('f7-icon',{staticClass:"margin-left",attrs:{"f7":"logo_facebook"}})],1),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#"}},[_c('span',[_vm._v("Share on Twitter")]),_vm._v(" "),_c('f7-icon',{staticClass:"margin-left",attrs:{"f7":"logo_twitter"}})],1)],1)],1),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"edit"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("On Top Of Map")]),_vm._v(" "),_c('f7-card',[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{ref:"map",staticStyle:{"height":"240px"}}),_vm._v(" "),_c('f7-menu',{staticStyle:{"position":"absolute","left":"0px","top":"6px"}},[_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"zoom_in"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"zoom_out"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"icon-f7":"layers_fill","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"left":""}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Terrain"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Satellite"}})],1)],1)],1)],1)],1)],1)};
@@ -56992,12 +57160,12 @@
     /* functional template */
     var __vue_is_functional_template__$x = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Menu$2 = normalizeComponent(
+    
+    var Menu$2 = normalizeComponent_1(
       { render: __vue_render__$x, staticRenderFns: __vue_staticRenderFns__$x },
       __vue_inject_styles__$x,
       __vue_script__$x,
@@ -57061,7 +57229,7 @@
           },
           {
             type: 'sent',
-            image: 'https://cdn.framework7.io/placeholder/cats-200x260-4.jpg/',
+            image: 'https://cdn.framework7.io/placeholder/cats-200x260-4.jpg',
 
           },
           {
@@ -57083,16 +57251,16 @@
             avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
           } ],
         images: [
-          'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg/',
-          'https://cdn.framework7.io/placeholder/cats-200x300-2.jpg/',
-          'https://cdn.framework7.io/placeholder/cats-400x300-3.jpg/',
-          'https://cdn.framework7.io/placeholder/cats-300x150-4.jpg/',
-          'https://cdn.framework7.io/placeholder/cats-150x300-5.jpg/',
-          'https://cdn.framework7.io/placeholder/cats-300x300-6.jpg/',
-          'https://cdn.framework7.io/placeholder/cats-300x300-7.jpg/',
-          'https://cdn.framework7.io/placeholder/cats-200x300-8.jpg/',
-          'https://cdn.framework7.io/placeholder/cats-400x300-9.jpg/',
-          'https://cdn.framework7.io/placeholder/cats-300x150-10.jpg/' ],
+          'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg',
+          'https://cdn.framework7.io/placeholder/cats-200x300-2.jpg',
+          'https://cdn.framework7.io/placeholder/cats-400x300-3.jpg',
+          'https://cdn.framework7.io/placeholder/cats-300x150-4.jpg',
+          'https://cdn.framework7.io/placeholder/cats-150x300-5.jpg',
+          'https://cdn.framework7.io/placeholder/cats-300x300-6.jpg',
+          'https://cdn.framework7.io/placeholder/cats-300x300-7.jpg',
+          'https://cdn.framework7.io/placeholder/cats-200x300-8.jpg',
+          'https://cdn.framework7.io/placeholder/cats-400x300-9.jpg',
+          'https://cdn.framework7.io/placeholder/cats-300x150-10.jpg' ],
         people: [
           {
             name: 'Kate Johnson',
@@ -57232,11 +57400,9 @@
 
   /* script */
   var __vue_script__$y = script$y;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$y.__file = "messages.vue";
 
   /* template */
-  var __vue_render__$y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Messsages","back-link":"Back"}}),_vm._v(" "),_c('f7-messagebar',{ref:"messagebar",attrs:{"placeholder":_vm.placeholder,"attachments-visible":_vm.attachmentsVisible,"sheet-visible":_vm.sheetVisible,"value":_vm.messageText},on:{"input":function($event){_vm.messageText = $event.target.value;}}},[_c('f7-link',{attrs:{"slot":"inner-start","icon-ios":"f7:camera_fill","icon-md":"material:camera_alt"},on:{"click":function($event){_vm.sheetVisible = !_vm.sheetVisible;}},slot:"inner-start"}),_vm._v(" "),_c('f7-link',{attrs:{"slot":"inner-end","icon-ios":"f7:arrow_up_round_fill","icon-md":"material:send"},on:{"click":_vm.sendMessage},slot:"inner-end"}),_vm._v(" "),_c('f7-messagebar-attachments',_vm._l((_vm.attachments),function(image,index){return _c('f7-messagebar-attachment',{key:index,attrs:{"image":image},on:{"attachment:delete":function($event){_vm.deleteAttachment(image);}}})}),1),_vm._v(" "),_c('f7-messagebar-sheet',_vm._l((_vm.images),function(image,index){return _c('f7-messagebar-sheet-image',{key:index,attrs:{"image":image,"checked":_vm.attachments.indexOf(image) >= 0},on:{"change":_vm.handleAttachment}})}),1)],1),_vm._v(" "),_c('f7-messages',{ref:"messages"},[_c('f7-messages-title',[_c('b',[_vm._v("Sunday, Feb 9,")]),_vm._v(" 12:58")]),_vm._v(" "),_vm._l((_vm.messagesData),function(message,index){return _c('f7-message',{key:index,attrs:{"type":message.type,"image":message.image,"name":message.name,"avatar":message.avatar,"first":_vm.isFirstMessage(message, index),"last":_vm.isLastMessage(message, index),"tail":_vm.isTailMessage(message, index)}},[(message.text)?_c('span',{attrs:{"slot":"text"},domProps:{"innerHTML":_vm._s(message.text)},slot:"text"}):_vm._e()])}),_vm._v(" "),(_vm.typingMessage)?_c('f7-message',{attrs:{"type":"received","typing":true,"first":true,"last":true,"tail":true,"header":((_vm.typingMessage.name) + " is typing"),"avatar":_vm.typingMessage.avatar}}):_vm._e()],2)],1)};
+  var __vue_render__$y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Messsages","back-link":"Back"}}),_vm._v(" "),_c('f7-messagebar',{ref:"messagebar",attrs:{"placeholder":_vm.placeholder,"attachments-visible":_vm.attachmentsVisible,"sheet-visible":_vm.sheetVisible,"value":_vm.messageText},on:{"input":function($event){_vm.messageText = $event.target.value;}}},[_c('f7-link',{attrs:{"slot":"inner-start","icon-ios":"f7:camera_fill","icon-md":"material:camera_alt"},on:{"click":function($event){_vm.sheetVisible = !_vm.sheetVisible;}},slot:"inner-start"}),_vm._v(" "),_c('f7-link',{attrs:{"slot":"inner-end","icon-ios":"f7:arrow_up_round_fill","icon-md":"material:send"},on:{"click":_vm.sendMessage},slot:"inner-end"}),_vm._v(" "),_c('f7-messagebar-attachments',_vm._l((_vm.attachments),function(image,index){return _c('f7-messagebar-attachment',{key:index,attrs:{"image":image},on:{"attachment:delete":function($event){return _vm.deleteAttachment(image)}}})}),1),_vm._v(" "),_c('f7-messagebar-sheet',_vm._l((_vm.images),function(image,index){return _c('f7-messagebar-sheet-image',{key:index,attrs:{"image":image,"checked":_vm.attachments.indexOf(image) >= 0},on:{"change":_vm.handleAttachment}})}),1)],1),_vm._v(" "),_c('f7-messages',{ref:"messages"},[_c('f7-messages-title',[_c('b',[_vm._v("Sunday, Feb 9,")]),_vm._v(" 12:58")]),_vm._v(" "),_vm._l((_vm.messagesData),function(message,index){return _c('f7-message',{key:index,attrs:{"type":message.type,"image":message.image,"name":message.name,"avatar":message.avatar,"first":_vm.isFirstMessage(message, index),"last":_vm.isLastMessage(message, index),"tail":_vm.isTailMessage(message, index)}},[(message.text)?_c('span',{attrs:{"slot":"text"},domProps:{"innerHTML":_vm._s(message.text)},slot:"text"}):_vm._e()])}),_vm._v(" "),(_vm.typingMessage)?_c('f7-message',{attrs:{"type":"received","typing":true,"first":true,"last":true,"tail":true,"header":((_vm.typingMessage.name) + " is typing"),"avatar":_vm.typingMessage.avatar}}):_vm._e()],2)],1)};
   var __vue_staticRenderFns__$y = [];
 
     /* style */
@@ -57248,12 +57414,12 @@
     /* functional template */
     var __vue_is_functional_template__$y = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Messages$2 = normalizeComponent(
+    
+    var Messages$2 = normalizeComponent_1(
       { render: __vue_render__$y, staticRenderFns: __vue_staticRenderFns__$y },
       __vue_inject_styles__$y,
       __vue_script__$y,
@@ -57280,8 +57446,6 @@
 
   /* script */
   var __vue_script__$z = script$z;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$z.__file = "navbar.vue";
 
   /* template */
   var __vue_render__$z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Navbar","subtitle":"Subtitle","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',[_vm._v("Right")])],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Navbar is a fixed (with Fixed and Through layout types) area at the top of a screen that contains Page title and navigation elements.")]),_vm._v(" "),_c('p',[_vm._v("Navbar has 3 main parts: Left, Title and Right. Each part may contain any HTML content.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/navbar-hide-scroll/","title":"Hide Navbar On Scroll"}})],1)],1)};
@@ -57296,12 +57460,12 @@
     /* functional template */
     var __vue_is_functional_template__$z = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Navbar$2 = normalizeComponent(
+    
+    var Navbar$2 = normalizeComponent_1(
       { render: __vue_render__$z, staticRenderFns: __vue_staticRenderFns__$z },
       __vue_inject_styles__$z,
       __vue_script__$z,
@@ -57324,8 +57488,6 @@
 
   /* script */
   var __vue_script__$A = script$A;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$A.__file = "navbar-hide-scroll.vue";
 
   /* template */
   var __vue_render__$A = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"hide-navbar-on-scroll":""}},[_c('f7-navbar',{attrs:{"title":"Hide Navbar On Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Navbar will be hidden if you scroll bottom")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")])])],1)};
@@ -57340,12 +57502,12 @@
     /* functional template */
     var __vue_is_functional_template__$A = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var NavbarHideScroll = normalizeComponent(
+    
+    var NavbarHideScroll = normalizeComponent_1(
       { render: __vue_render__$A, staticRenderFns: __vue_staticRenderFns__$A },
       __vue_inject_styles__$A,
       __vue_script__$A,
@@ -57451,8 +57613,6 @@
 
   /* script */
   var __vue_script__$B = script$B;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$B.__file = "notifications.vue";
 
   /* template */
   var __vue_render__$B = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Notifications","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with simple Notifications component that allows you to show some useful messages to user and request basic actions.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showNotificationFull}},[_vm._v("Full layout notification")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showNotificationWithButton}},[_vm._v("With close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showNotificationCloseOnClick}},[_vm._v("Click to close")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showNotificationCallbackOnClose}},[_vm._v("Callback on close")])],1)])],1)};
@@ -57467,12 +57627,12 @@
     /* functional template */
     var __vue_is_functional_template__$B = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Notifications = normalizeComponent(
+    
+    var Notifications = normalizeComponent_1(
       { render: __vue_render__$B, staticRenderFns: __vue_staticRenderFns__$B },
       __vue_inject_styles__$B,
       __vue_script__$B,
@@ -57497,8 +57657,6 @@
 
   /* script */
   var __vue_script__$C = script$C;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$C.__file = "panel.vue";
 
   /* template */
   var __vue_render__$C = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Panel / Side panels","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with 2 panels (on left and on right), both are optional. They have two different layouts/effects - "),_c('b',[_vm._v("cover")]),_vm._v(" above the content (like left panel here) and "),_c('b',[_vm._v("reveal")]),_vm._v(" (like right panel). You can put absolutely anything inside: data lists, forms, custom content, and even other isolated app view (like in right panel now) with its own dynamic navbar. Checkout panels:")])]),_vm._v(" "),_c('f7-block',{staticClass:"row"},[_c('f7-col',[_c('f7-button',{attrs:{"raised":"","fill":"","panel-open":"left"}},[_vm._v("Open left panel")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"raised":"","fill":"","panel-open":"right"}},[_vm._v("Open right panel")])],1)],1)],1)};
@@ -57513,12 +57671,12 @@
     /* functional template */
     var __vue_is_functional_template__$C = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Panel$2 = normalizeComponent(
+    
+    var Panel$2 = normalizeComponent_1(
       { render: __vue_render__$C, staticRenderFns: __vue_staticRenderFns__$C },
       __vue_inject_styles__$C,
       __vue_script__$C,
@@ -57564,11 +57722,9 @@
 
   /* script */
   var __vue_script__$D = script$D;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$D.__file = "photo-browser.vue";
 
   /* template */
-  var __vue_render__$D = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Photo Browser","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser is a standalone and highly configurable component that allows to open window with photo viewer and navigation elements with the following features:")]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("Swiper between photos")]),_vm._v(" "),_c('li',[_vm._v("Multi-gestures support for zooming")]),_vm._v(" "),_c('li',[_vm._v("Toggle zoom by double tap on photo")]),_vm._v(" "),_c('li',[_vm._v("Single click on photo to toggle Exposition mode")])])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standalone",attrs:{"photos":_vm.photos}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.standalone.open();}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popup",attrs:{"photos":_vm.photos,"type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.popup.open();}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"page",attrs:{"photos":_vm.photos,"type":"page","back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.page.open();}}},[_vm._v("Page")])],1)],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standaloneDark",attrs:{"photos":_vm.photos,"theme":"dark"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.standaloneDark.open();}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popupDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.popupDark.open();}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"pageDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"page","back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.pageDark.open();}}},[_vm._v("Page")])],1)],1)],1)],1)};
+  var __vue_render__$D = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Photo Browser","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser is a standalone and highly configurable component that allows to open window with photo viewer and navigation elements with the following features:")]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("Swiper between photos")]),_vm._v(" "),_c('li',[_vm._v("Multi-gestures support for zooming")]),_vm._v(" "),_c('li',[_vm._v("Toggle zoom by double tap on photo")]),_vm._v(" "),_c('li',[_vm._v("Single click on photo to toggle Exposition mode")])])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standalone",attrs:{"photos":_vm.photos}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){return _vm.$refs.standalone.open()}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popup",attrs:{"photos":_vm.photos,"type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){return _vm.$refs.popup.open()}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"page",attrs:{"photos":_vm.photos,"type":"page","back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){return _vm.$refs.page.open()}}},[_vm._v("Page")])],1)],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standaloneDark",attrs:{"photos":_vm.photos,"theme":"dark"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){return _vm.$refs.standaloneDark.open()}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popupDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){return _vm.$refs.popupDark.open()}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"pageDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"page","back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){return _vm.$refs.pageDark.open()}}},[_vm._v("Page")])],1)],1)],1)],1)};
   var __vue_staticRenderFns__$D = [];
 
     /* style */
@@ -57580,12 +57736,12 @@
     /* functional template */
     var __vue_is_functional_template__$D = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var PhotoBrowser$2 = normalizeComponent(
+    
+    var PhotoBrowser$2 = normalizeComponent_1(
       { render: __vue_render__$D, staticRenderFns: __vue_staticRenderFns__$D },
       __vue_inject_styles__$D,
       __vue_script__$D,
@@ -57786,8 +57942,6 @@
 
   /* script */
   var __vue_script__$E = script$E;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$E.__file = "picker.vue";
 
   /* template */
   var __vue_render__$E = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Picker","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block"},[_c('p',[_vm._v("Picker is a powerful component that allows you to create custom overlay pickers which looks like native picker.")]),_vm._v(" "),_c('p',[_vm._v("Picker could be used as inline component or as overlay. Overlay Picker will be automatically converted to Popover on tablets (iPad).")])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Picker with single value")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your iOS device","readonly":"readonly","id":"demo-picker-device"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("2 values and 3d-rotate effect")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Describe yourself","readonly":"readonly","id":"demo-picker-describe"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Dependent values")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your car","readonly":"readonly","id":"demo-picker-dependent"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Custom toolbar")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Describe yourself","readonly":"readonly","id":"demo-picker-custom-toolbar"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Inline Picker / Date-time")]),_vm._v(" "),_c('div',{staticClass:"list no-margin"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Date Time","readonly":"readonly","id":"demo-picker-date"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block block-strong no-padding no-margin margin-bottom"},[_c('div',{attrs:{"id":"demo-picker-date-container"}})])])],1)};
@@ -57802,12 +57956,12 @@
     /* functional template */
     var __vue_is_functional_template__$E = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Picker$2 = normalizeComponent(
+    
+    var Picker$2 = normalizeComponent_1(
       { render: __vue_render__$E, staticRenderFns: __vue_staticRenderFns__$E },
       __vue_inject_styles__$E,
       __vue_script__$E,
@@ -57857,8 +58011,6 @@
 
   /* script */
   var __vue_script__$F = script$F;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$F.__file = "popup.vue";
 
   /* template */
   var __vue_render__$F = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Popup","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Popup is a modal window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called \"Temporary Views\".")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","popup-open":".demo-popup"}},[_vm._v("Open Popup")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.popupOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.createPopup}},[_vm._v("Create Dynamic Popup")])],1)]),_vm._v(" "),_c('f7-popup',{staticClass:"demo-popup",attrs:{"opened":_vm.popupOpened},on:{"popup:closed":function($event){_vm.popupOpened = false;}}},[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Popup Title"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes popup. You can put here anything, even independent view with its own navigation. Also not, that by default popup looks a bit different on iPhone/iPod and iPad, on iPhone it is fullscreen.")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero.")])])],1)],1)],1)};
@@ -57873,12 +58025,12 @@
     /* functional template */
     var __vue_is_functional_template__$F = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Popup$2 = normalizeComponent(
+    
+    var Popup$2 = normalizeComponent_1(
       { render: __vue_render__$F, staticRenderFns: __vue_staticRenderFns__$F },
       __vue_inject_styles__$F,
       __vue_script__$F,
@@ -57907,8 +58059,6 @@
 
   /* script */
   var __vue_script__$G = script$G;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$G.__file = "popover.vue";
 
   /* template */
   var __vue_render__$G = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Popover","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":""}},[_c('f7-link',[_vm._v("Dummy Link")]),_vm._v(" "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("Open Popover")])],1),_vm._v(" "),_c('f7-block',[_c('p',[_c('f7-button',{attrs:{"fill":"","popover-open":".popover-menu"}},[_vm._v("Open popover on me")])],1),_vm._v(" "),_c('p',[_vm._v("Mauris fermentum neque et luctus venenatis. Vivamus a sem rhoncus, ornare tellus eu, euismod mauris. In porta turpis at semper convallis. Duis adipiscing leo eu nulla lacinia, quis rhoncus metus condimentum. Etiam nec malesuada nibh. Maecenas quis lacinia nisl, vel posuere dolor. Vestibulum condimentum, nisl ac vulputate egestas, neque enim dignissim elit, rhoncus volutpat magna enim a est. Aenean sit amet ligula neque. Cras suscipit rutrum enim. Nam a odio facilisis, elementum tellus non, "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("popover")]),_vm._v(" tortor. Pellentesque felis eros, dictum vitae lacinia quis, lobortis vitae ipsum. Cras vehicula bibendum lorem quis imperdiet.")],1),_vm._v(" "),_c('p',[_vm._v("In hac habitasse platea dictumst. Etiam varius, ante vel ornare facilisis, velit massa rutrum dolor, ac porta magna magna lacinia nunc. Curabitur "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("popover!")]),_vm._v(" cursus laoreet. Aenean vel tempus augue. Pellentesque in imperdiet nibh. Mauris rhoncus nulla id sem suscipit volutpat. Pellentesque ac arcu in nisi viverra pulvinar. Nullam nulla orci, bibendum sed ligula non, ullamcorper iaculis mi. In hac habitasse platea dictumst. Praesent varius at nisl eu luctus. Cras aliquet porta est. Quisque elementum quis dui et consectetur. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed sed laoreet purus. Pellentesque eget ante ante.")],1),_vm._v(" "),_c('p',[_vm._v("Duis et ultricies nibh. Sed facilisis turpis urna, ac imperdiet erat venenatis eu. Proin sit amet faucibus tortor, et varius sem. Etiam vitae lacinia neque. Aliquam nisi purus, interdum in arcu sed, ultrices rutrum arcu. Nulla mi turpis, consectetur vel enim quis, facilisis viverra dui. Aliquam quis convallis tortor, quis semper ligula. Morbi ullamcorper "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("one more popover")]),_vm._v(" massa at accumsan. Etiam purus odio, posuere in ligula vitae, viverra ultricies justo. Vestibulum nec interdum nisi. Aenean ac consectetur velit, non malesuada magna. Sed pharetra vehicula augue, vel venenatis lectus gravida eget. Curabitur lacus tellus, venenatis eu arcu in, interdum auctor nunc. Nunc non metus neque. Suspendisse viverra lectus sed risus aliquet, vel accumsan dolor feugiat.")],1)]),_vm._v(" "),_c('f7-popover',{staticClass:"popover-menu"},[_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/dialog/","popover-close":"","title":"Dialog"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","popover-close":"","title":"Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","popover-close":"","title":"Side Panels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","popover-close":"","title":"List View"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","popover-close":"","title":"Form Inputs"}})],1)],1)],1)};
@@ -57923,12 +58073,12 @@
     /* functional template */
     var __vue_is_functional_template__$G = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Popover$2 = normalizeComponent(
+    
+    var Popover$2 = normalizeComponent_1(
       { render: __vue_render__$G, staticRenderFns: __vue_staticRenderFns__$G },
       __vue_inject_styles__$G,
       __vue_script__$G,
@@ -57977,8 +58127,6 @@
 
   /* script */
   var __vue_script__$H = script$H;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$H.__file = "preloader.vue";
 
   /* template */
   var __vue_render__$H = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Preloader","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("How about an activity indicator? Framework 7 has a nice one. The F7 Preloader is made with SVG and animated with CSS so it can be easily resized.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('f7-block',{staticClass:"row demo-preloaders align-items-stretch text-align-center"},[_c('f7-col',[_c('f7-preloader')],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"color":"white"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"size":42}})],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"size":42,"color":"white"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Preloaders")]),_vm._v(" "),_c('f7-block',{staticClass:"row text-align-center"},[_c('f7-col',[_c('f7-preloader',{attrs:{"color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"orange"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"blue"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Multi-color (MD-theme only)")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center"},[_c('f7-preloader',{attrs:{"color":"multi"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Preloader Modals")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("With "),_c('b',[_vm._v("app.preloader.show()")]),_vm._v(" you can show small overlay with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openIndicator}},[_vm._v("Open Small Indicator")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader()")]),_vm._v(" you can show dialog modal with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openDialog}},[_vm._v("Open Dialog Preloader")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader('My text...')")]),_vm._v(" you can show dialog preloader modal with custom title.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openCustomDialog}},[_vm._v("Open Dialog Preloader")])])])],1)};
@@ -57993,12 +58141,12 @@
     /* functional template */
     var __vue_is_functional_template__$H = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Preloader$2 = normalizeComponent(
+    
+    var Preloader$2 = normalizeComponent_1(
       { render: __vue_render__$H, staticRenderFns: __vue_staticRenderFns__$H },
       __vue_inject_styles__$H,
       __vue_script__$H,
@@ -58074,11 +58222,9 @@
 
   /* script */
   var __vue_script__$I = script$I;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$I.__file = "progressbar.vue";
 
   /* template */
-  var __vue_render__$I = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Progress Bar","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to "),_c('a',{attrs:{"href":"/preloader/"}},[_vm._v("Preloader")]),_vm._v(", Framework7 also comes with fancy animated determinate and infinite/indeterminate progress bars to indicate some activity.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Determinate Progress Bar")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("When progress bar is determinate it indicates how long an operation will take when the percentage complete is detectable.")]),_vm._v(" "),_c('p',[_vm._v("Inline determinate progress bar:")]),_vm._v(" "),_c('div',[_c('p',[_c('f7-progressbar',{attrs:{"progress":10,"id":"demo-inline-progressbar"}})],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":""}},[_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(10);}}},[_vm._v("10%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(30);}}},[_vm._v("30%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(50);}}},[_vm._v("50%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(100);}}},[_vm._v("100%")])],1)],1),_vm._v(" "),_c('div',[_c('p',[_vm._v("Inline determinate load & hide:")]),_vm._v(" "),_c('p',{attrs:{"id":"demo-determinate-container"}}),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.showDeterminate(true);}}},[_vm._v("Start Loading")])],1)]),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with determinate progress bar on top of the app:")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.showDeterminate(false);}}},[_vm._v("Start Loading")])],1)])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Infinite Progress Bar")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("When progress bar is infinite/indeterminate it requests that the user wait while something finishes when it’s not necessary to indicate how long it will take.")]),_vm._v(" "),_c('p',[_vm._v("Inline infinite progress bar")]),_vm._v(" "),_c('p',[_c('f7-progressbar',{attrs:{"infinite":""}})],1),_vm._v(" "),_c('p',[_vm._v("Multi-color infinite progress bar")]),_vm._v(" "),_c('p',[_c('f7-progressbar',{attrs:{"infinite":"","color":"multi"}})],1),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with infinite progress bar on top of the app")]),_vm._v(" "),_c('p',{attrs:{"id":"demo-infinite-container"}}),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.showInfinite(false);}}},[_vm._v("Start Loading")])],1)]),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with infinite multi-color progress bar on top of the app")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.showInfinite(true);}}},[_vm._v("Start Loading")])],1)])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Colors")]),_vm._v(" "),_c('div',{staticClass:"list simple-list"},[_c('ul',[_c('li',[_c('f7-progressbar',{attrs:{"color":"blue","progress":10}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"red","progress":20}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"pink","progress":30}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"green","progress":80}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"yellow","progress":90}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"orange","progress":100}})],1)])])],1)};
+  var __vue_render__$I = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Progress Bar","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to "),_c('a',{attrs:{"href":"/preloader/"}},[_vm._v("Preloader")]),_vm._v(", Framework7 also comes with fancy animated determinate and infinite/indeterminate progress bars to indicate some activity.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Determinate Progress Bar")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("When progress bar is determinate it indicates how long an operation will take when the percentage complete is detectable.")]),_vm._v(" "),_c('p',[_vm._v("Inline determinate progress bar:")]),_vm._v(" "),_c('div',[_c('p',[_c('f7-progressbar',{attrs:{"progress":10,"id":"demo-inline-progressbar"}})],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":""}},[_c('f7-button',{on:{"click":function($event){return _vm.setInlineProgress(10)}}},[_vm._v("10%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){return _vm.setInlineProgress(30)}}},[_vm._v("30%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){return _vm.setInlineProgress(50)}}},[_vm._v("50%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){return _vm.setInlineProgress(100)}}},[_vm._v("100%")])],1)],1),_vm._v(" "),_c('div',[_c('p',[_vm._v("Inline determinate load & hide:")]),_vm._v(" "),_c('p',{attrs:{"id":"demo-determinate-container"}}),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.showDeterminate(true)}}},[_vm._v("Start Loading")])],1)]),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with determinate progress bar on top of the app:")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.showDeterminate(false)}}},[_vm._v("Start Loading")])],1)])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Infinite Progress Bar")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("When progress bar is infinite/indeterminate it requests that the user wait while something finishes when it’s not necessary to indicate how long it will take.")]),_vm._v(" "),_c('p',[_vm._v("Inline infinite progress bar")]),_vm._v(" "),_c('p',[_c('f7-progressbar',{attrs:{"infinite":""}})],1),_vm._v(" "),_c('p',[_vm._v("Multi-color infinite progress bar")]),_vm._v(" "),_c('p',[_c('f7-progressbar',{attrs:{"infinite":"","color":"multi"}})],1),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with infinite progress bar on top of the app")]),_vm._v(" "),_c('p',{attrs:{"id":"demo-infinite-container"}}),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.showInfinite(false)}}},[_vm._v("Start Loading")])],1)]),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with infinite multi-color progress bar on top of the app")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.showInfinite(true)}}},[_vm._v("Start Loading")])],1)])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Colors")]),_vm._v(" "),_c('div',{staticClass:"list simple-list"},[_c('ul',[_c('li',[_c('f7-progressbar',{attrs:{"color":"blue","progress":10}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"red","progress":20}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"pink","progress":30}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"green","progress":80}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"yellow","progress":90}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"orange","progress":100}})],1)])])],1)};
   var __vue_staticRenderFns__$I = [];
 
     /* style */
@@ -58090,12 +58236,12 @@
     /* functional template */
     var __vue_is_functional_template__$I = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Progressbar$2 = normalizeComponent(
+    
+    var Progressbar$2 = normalizeComponent_1(
       { render: __vue_render__$I, staticRenderFns: __vue_staticRenderFns__$I },
       __vue_inject_styles__$I,
       __vue_script__$I,
@@ -58161,8 +58307,6 @@
 
   /* script */
   var __vue_script__$J = script$J;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$J.__file = "pull-to-refresh.vue";
 
   /* template */
   var __vue_render__$J = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"ptr":""},on:{"ptr:refresh":_vm.loadMore}},[_c('f7-navbar',{attrs:{"title":"Pull To Refresh","back-link":"Back"}}),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_vm._l((_vm.items),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":item.title,"subtitle":item.author}},[_c('img',{attrs:{"slot":"media","src":item.cover,"width":"44"},slot:"media"})])}),_vm._v(" "),_c('f7-block-footer',[_c('p',[_vm._v("Just pull page down to let the magic happen."),_c('br'),_vm._v("Note that pull-to-refresh feature is optimised for touch and native scrolling so it may not work on desktop browser.")])])],2)],1)};
@@ -58177,12 +58321,12 @@
     /* functional template */
     var __vue_is_functional_template__$J = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var PullToRefresh$2 = normalizeComponent(
+    
+    var PullToRefresh$2 = normalizeComponent_1(
       { render: __vue_render__$J, staticRenderFns: __vue_staticRenderFns__$J },
       __vue_inject_styles__$J,
       __vue_script__$J,
@@ -58209,8 +58353,6 @@
 
   /* script */
   var __vue_script__$K = script$K;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$K.__file = "radio.vue";
 
   /* template */
   var __vue_render__$K = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Radio","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Inline")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem "),_c('f7-radio',{attrs:{"name":"demo-radio-inline"}}),_vm._v(" ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi "),_c('f7-radio',{attrs:{"name":"demo-radio-inline","checked":""}}),_vm._v(" ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Radio Group")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"radio":"","checked":"","title":"Books","name":"demo-radio","checked":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","title":"Movies","name":"demo-radio"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","title":"Food","name":"demo-radio"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","title":"Drinks","name":"demo-radio"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With Media Lists")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"radio":"","checked":"","name":"demo-media-radio","value":"1","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","name":"demo-media-radio","value":"2","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","name":"demo-media-radio","value":"3","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","name":"demo-media-radio","value":"4","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1)],1)};
@@ -58225,12 +58367,12 @@
     /* functional template */
     var __vue_is_functional_template__$K = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Radio$1 = normalizeComponent(
+    
+    var Radio$1 = normalizeComponent_1(
       { render: __vue_render__$K, staticRenderFns: __vue_staticRenderFns__$K },
       __vue_inject_styles__$K,
       __vue_script__$K,
@@ -58271,8 +58413,6 @@
 
   /* script */
   var __vue_script__$L = script$L;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$L.__file = "range.vue";
 
   /* template */
   var __vue_render__$L = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Range Slider","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Volume")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:volume_mute_fill","md":"material:volume_mute"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"flex-shrink-3"},[_c('f7-range',{attrs:{"min":0,"max":100,"step":1,"value":10}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:volume_fill","md":"material:volume_up"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Brightness")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:circle","md":"material:brightness_low"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"flex-shrink-3"},[_c('f7-range',{attrs:{"min":0,"max":100,"step":1,"value":50,"label":true,"color":"orange"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:circle_half","md":"material:brightness_high"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"display-flex justify-content-space-between"},[_vm._v("Price Filter "),_c('span',[_vm._v("$"+_vm._s(_vm.priceMin)+" - $"+_vm._s(_vm.priceMax))])]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:money_dollar_round","md":"material:attach_money"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"flex-shrink-3"},[_c('f7-range',{attrs:{"min":0,"max":500,"step":1,"value":[_vm.priceMin, _vm.priceMax],"label":true,"dual":true,"color":"green"},on:{"range:change":_vm.onPriceChange}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:money_dollar_round_fill","md":"material:monetization_on"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With Scale")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-range',{attrs:{"min":0,"max":100,"label":true,"step":5,"value":25,"scale":true,"scale-steps":5,"scale-sub-steps":4}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical")]),_vm._v(" "),_c('f7-block',{staticClass:"display-flex justify-content-center",attrs:{"strong":""}},[_c('f7-range',{staticClass:"margin-right",staticStyle:{"height":"160px"},attrs:{"vertical":true,"min":0,"max":100,"label":true,"step":1,"value":25}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-horizontal",staticStyle:{"height":"160px"},attrs:{"vertical":true,"min":0,"max":100,"label":true,"step":1,"value":50}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-horizontal",staticStyle:{"height":"160px"},attrs:{"vertical":true,"min":0,"max":100,"label":true,"step":1,"value":75}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-left",staticStyle:{"height":"160px"},attrs:{"dual":true,"vertical":true,"min":0,"max":100,"label":true,"step":1,"value":[25, 75]}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical Reversed")]),_vm._v(" "),_c('f7-block',{staticClass:"display-flex justify-content-center",attrs:{"strong":""}},[_c('f7-range',{staticClass:"margin-right",staticStyle:{"height":"160px"},attrs:{"color":"red","vertical":true,"vertical-reversed":true,"min":0,"max":100,"label":true,"step":1,"value":25}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-horizontal",staticStyle:{"height":"160px"},attrs:{"color":"red","vertical":true,"vertical-reversed":true,"min":0,"max":100,"label":true,"step":1,"value":50}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-horizontal",staticStyle:{"height":"160px"},attrs:{"color":"red","vertical":true,"vertical-reversed":true,"min":0,"max":100,"label":true,"step":1,"value":75}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-left",staticStyle:{"height":"160px"},attrs:{"color":"red","dual":true,"vertical":true,"vertical-reversed":true,"min":0,"max":100,"label":true,"step":1,"value":[25, 75]}})],1)],1)};
@@ -58287,12 +58427,12 @@
     /* functional template */
     var __vue_is_functional_template__$L = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Range$2 = normalizeComponent(
+    
+    var Range$2 = normalizeComponent_1(
       { render: __vue_render__$L, staticRenderFns: __vue_staticRenderFns__$L },
       __vue_inject_styles__$L,
       __vue_script__$L,
@@ -58318,8 +58458,6 @@
 
   /* script */
   var __vue_script__$M = script$M;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$M.__file = "searchbar.vue";
 
   /* template */
   var __vue_render__$M = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"back-link":"Back","title":"Searchbar"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".search-list","search-in":".item-title"}})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"search-list searchbar-found"},[_c('f7-list-item',{attrs:{"title":"Acura"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Audi"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"BMW"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Cadillac "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chevrolet "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chrysler "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Dodge "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ferrari "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ford "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"GMC "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Honda"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hummer"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hyundai"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Infiniti "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Isuzu "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jaguar "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jeep "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kia"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lamborghini "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Land Rover"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lexus "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lincoln "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lotus "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mazda"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mercedes-Benz"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mercury "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mitsubishi"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Nissan "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Oldsmobile "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Peugeot "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Pontiac "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Porsche"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Regal"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Saab "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Saturn "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Subaru "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Suzuki "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Toyota"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Volkswagen"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Volvo"}})],1)],1)};
@@ -58334,12 +58472,12 @@
     /* functional template */
     var __vue_is_functional_template__$M = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Searchbar$2 = normalizeComponent(
+    
+    var Searchbar$2 = normalizeComponent_1(
       { render: __vue_render__$M, staticRenderFns: __vue_staticRenderFns__$M },
       __vue_inject_styles__$M,
       __vue_script__$M,
@@ -58367,8 +58505,6 @@
 
   /* script */
   var __vue_script__$N = script$N;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$N.__file = "searchbar-expandable.vue";
 
   /* template */
   var __vue_render__$N = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"back-link":"Back","title":"Searchbar"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-demo","icon-ios":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-demo",attrs:{"expandable":"","search-container":".search-list","search-in":".item-title"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"search-list searchbar-found"},[_c('f7-list-item',{attrs:{"title":"Acura"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Audi"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"BMW"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Cadillac "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chevrolet "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chrysler "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Dodge "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ferrari "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ford "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"GMC "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Honda"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hummer"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hyundai"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Infiniti "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Isuzu "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jaguar "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jeep "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kia"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lamborghini "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Land Rover"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lexus "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lincoln "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lotus "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mazda"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mercedes-Benz"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mercury "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mitsubishi"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Nissan "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Oldsmobile "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Peugeot "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Pontiac "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Porsche"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Regal"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Saab "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Saturn "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Subaru "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Suzuki "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Toyota"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Volkswagen"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Volvo"}})],1)],1)};
@@ -58383,12 +58519,12 @@
     /* functional template */
     var __vue_is_functional_template__$N = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SearchbarExpandable = normalizeComponent(
+    
+    var SearchbarExpandable = normalizeComponent_1(
       { render: __vue_render__$N, staticRenderFns: __vue_staticRenderFns__$N },
       __vue_inject_styles__$N,
       __vue_script__$N,
@@ -58448,8 +58584,6 @@
 
   /* script */
   var __vue_script__$O = script$O;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$O.__file = "sheet-modal.vue";
 
   /* template */
   var __vue_render__$O = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Sheet Modal","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Sheet Modals slide up from the bottom of the screen to reveal more content. Such modals allow to create custom overlays with custom content.")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":"","sheet-open":".demo-sheet"}},[_vm._v("Open Sheet")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.createSheet}},[_vm._v("Create Dynamic Sheet")])],1),_vm._v(" "),_c('p',[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":function($event){_vm.sheetOpened = true;}}},[_vm._v("Open Via Prop Change")])],1)],1),_vm._v(" "),_c('f7-sheet',{staticClass:"demo-sheet",attrs:{"opened":_vm.sheetOpened},on:{"sheet:closed":function($event){_vm.sheetOpened = false;}}},[_c('f7-toolbar',[_c('div',{staticClass:"left"}),_vm._v(" "),_c('div',{staticClass:"right"},[_c('f7-link',{attrs:{"sheet-close":""}},[_vm._v("Close")])],1)]),_vm._v(" "),_c('f7-page-content',[_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique quis facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam. Consequatur, nisi, enim.")]),_vm._v(" "),_c('p',[_vm._v("Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.")]),_vm._v(" "),_c('p',[_vm._v("Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?")]),_vm._v(" "),_c('p',[_vm._v("Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt praesentium velit ipsa illo iusto.")])])],1)],1)],1)};
@@ -58464,12 +58598,12 @@
     /* functional template */
     var __vue_is_functional_template__$O = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SheetModal = normalizeComponent(
+    
+    var SheetModal = normalizeComponent_1(
       { render: __vue_render__$O, staticRenderFns: __vue_staticRenderFns__$O },
       __vue_inject_styles__$O,
       __vue_script__$O,
@@ -58516,11 +58650,9 @@
 
   /* script */
   var __vue_script__$P = script$P;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$P.__file = "skeleton.vue";
 
   /* template */
-  var __vue_render__$P = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Skeleton Layouts","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Skeleton (or Ghost) elements designed to improve perceived performance and make app feels faster.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 comes with two types of such elements: Skeleton Block and Skeleton Text. Skeleton block is a gray box that can be used as placeholder for any element. Skeleton text uses special built-in skeleton font to render each character of such text as gray rectangle. Skeleton text allows to make such elements responsive and feel more natural.")]),_vm._v(" "),_c('p',[_vm._v("It can be used in any places and with any elements.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Skeleton List")]),_vm._v(" "),_c('f7-list',{staticClass:"skeleton-text",attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"title":"Title","subtitle":"Subtitle","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum."}},[_c('f7-skeleton-block',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Title","subtitle":"Subtitle","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum."}},[_c('f7-skeleton-block',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Skeleton Card")]),_vm._v(" "),_c('f7-card',{staticClass:"skeleton-text",attrs:{"title":"Card Header","content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit.","footer":"Card Footer"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Loading Effects")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("It supports few loading effects:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":"","small":"","round":""},on:{"click":function($event){_vm.load('fade');}}},[_vm._v("Fade")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":"","small":"","round":""},on:{"click":function($event){_vm.load('blink');}}},[_vm._v("Blink")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":"","small":"","round":""},on:{"click":function($event){_vm.load('pulse');}}},[_vm._v("Pulse")])],1)],1),_vm._v(" "),(_vm.loading)?_c('f7-list',{attrs:{"media-list":""}},_vm._l((3),function(n){return (_vm.loading)?_c('f7-list-item',{key:n,class:("skeleton-text skeleton-effect-" + _vm.effect),attrs:{"title":"Full Name","subtitle":"Position","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('f7-skeleton-block',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media"},slot:"media"})],1):_vm._e()}),1):_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"title":"John Doe","subtitle":"CEO","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('img',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media","src":"https://placeimg.com/80/80/people/1"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jane Doe","subtitle":"Marketing","text":"Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('img',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media","src":"https://placeimg.com/80/80/people/2"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kate Johnson","subtitle":"Admin","text":"Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('img',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media","src":"https://placeimg.com/80/80/people/3"},slot:"media"})])],1)],1)};
+  var __vue_render__$P = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Skeleton Layouts","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Skeleton (or Ghost) elements designed to improve perceived performance and make app feels faster.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 comes with two types of such elements: Skeleton Block and Skeleton Text. Skeleton block is a gray box that can be used as placeholder for any element. Skeleton text uses special built-in skeleton font to render each character of such text as gray rectangle. Skeleton text allows to make such elements responsive and feel more natural.")]),_vm._v(" "),_c('p',[_vm._v("It can be used in any places and with any elements.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Skeleton List")]),_vm._v(" "),_c('f7-list',{staticClass:"skeleton-text",attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"title":"Title","subtitle":"Subtitle","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum."}},[_c('f7-skeleton-block',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Title","subtitle":"Subtitle","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum."}},[_c('f7-skeleton-block',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Skeleton Card")]),_vm._v(" "),_c('f7-card',{staticClass:"skeleton-text",attrs:{"title":"Card Header","content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit.","footer":"Card Footer"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Loading Effects")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("It supports few loading effects:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":"","small":"","round":""},on:{"click":function($event){return _vm.load('fade')}}},[_vm._v("Fade")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":"","small":"","round":""},on:{"click":function($event){return _vm.load('blink')}}},[_vm._v("Blink")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":"","small":"","round":""},on:{"click":function($event){return _vm.load('pulse')}}},[_vm._v("Pulse")])],1)],1),_vm._v(" "),(_vm.loading)?_c('f7-list',{attrs:{"media-list":""}},_vm._l((3),function(n){return (_vm.loading)?_c('f7-list-item',{key:n,class:("skeleton-text skeleton-effect-" + _vm.effect),attrs:{"title":"Full Name","subtitle":"Position","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('f7-skeleton-block',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media"},slot:"media"})],1):_vm._e()}),1):_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"title":"John Doe","subtitle":"CEO","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('img',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media","src":"https://placeimg.com/80/80/people/1"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jane Doe","subtitle":"Marketing","text":"Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('img',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media","src":"https://placeimg.com/80/80/people/2"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kate Johnson","subtitle":"Admin","text":"Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('img',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media","src":"https://placeimg.com/80/80/people/3"},slot:"media"})])],1)],1)};
   var __vue_staticRenderFns__$P = [];
 
     /* style */
@@ -58532,12 +58664,12 @@
     /* functional template */
     var __vue_is_functional_template__$P = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Skeleton$1 = normalizeComponent(
+    
+    var Skeleton$1 = normalizeComponent_1(
       { render: __vue_render__$P, staticRenderFns: __vue_staticRenderFns__$P },
       __vue_inject_styles__$P,
       __vue_script__$P,
@@ -58562,8 +58694,6 @@
 
   /* script */
   var __vue_script__$Q = script$Q;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$Q.__file = "smart-select.vue";
 
   /* template */
   var __vue_render__$Q = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Smart Select","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_vm._v("\n    Framework7 allows you to easily convert your usual form selects to dynamic pages with radios:\n  ")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Fruit","smart-select":""}},[_c('select',{attrs:{"name":"fruits"}},[_c('option',{attrs:{"value":"apple","selected":""}},[_vm._v("Apple")]),_vm._v(" "),_c('option',{attrs:{"value":"pineapple"}},[_vm._v("Pineapple")]),_vm._v(" "),_c('option',{attrs:{"value":"pear"}},[_vm._v("Pear")]),_vm._v(" "),_c('option',{attrs:{"value":"orange"}},[_vm._v("Orange")]),_vm._v(" "),_c('option',{attrs:{"value":"melon"}},[_vm._v("Melon")]),_vm._v(" "),_c('option',{attrs:{"value":"peach"}},[_vm._v("Peach")]),_vm._v(" "),_c('option',{attrs:{"value":"banana"}},[_vm._v("Banana")])])]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Car","smart-select":"","smart-select-params":{openIn: 'popup', searchbar: true, searchbarPlaceholder: 'Search car'}}},[_c('select',{attrs:{"name":"car","multiple":""}},[_c('optgroup',{attrs:{"label":"Japanese"}},[_c('option',{attrs:{"value":"honda","selected":""}},[_vm._v("Honda")]),_vm._v(" "),_c('option',{attrs:{"value":"lexus"}},[_vm._v("Lexus")]),_vm._v(" "),_c('option',{attrs:{"value":"mazda"}},[_vm._v("Mazda")]),_vm._v(" "),_c('option',{attrs:{"value":"nissan"}},[_vm._v("Nissan")]),_vm._v(" "),_c('option',{attrs:{"value":"toyota"}},[_vm._v("Toyota")])]),_vm._v(" "),_c('optgroup',{attrs:{"label":"German"}},[_c('option',{attrs:{"value":"audi","selected":""}},[_vm._v("Audi")]),_vm._v(" "),_c('option',{attrs:{"value":"bmw"}},[_vm._v("BMW")]),_vm._v(" "),_c('option',{attrs:{"value":"mercedes"}},[_vm._v("Mercedes")]),_vm._v(" "),_c('option',{attrs:{"value":"vw"}},[_vm._v("Volkswagen")]),_vm._v(" "),_c('option',{attrs:{"value":"volvo"}},[_vm._v("Volvo")])]),_vm._v(" "),_c('optgroup',{attrs:{"label":"American"}},[_c('option',{attrs:{"value":"cadillac"}},[_vm._v("Cadillac")]),_vm._v(" "),_c('option',{attrs:{"value":"chrysler"}},[_vm._v("Chrysler")]),_vm._v(" "),_c('option',{attrs:{"value":"dodge"}},[_vm._v("Dodge")]),_vm._v(" "),_c('option',{attrs:{"value":"ford","selected":""}},[_vm._v("Ford")])])])]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mac or Windows","smart-select":"","smart-select-params":{openIn: 'sheet'}}},[_c('select',{attrs:{"name":"mac-windows"}},[_c('option',{attrs:{"value":"mac","selected":""}},[_vm._v("Mac")]),_vm._v(" "),_c('option',{attrs:{"value":"windows"}},[_vm._v("Windows")])])]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Super Hero","smart-select":"","smart-select-params":{openIn: 'popover'}}},[_c('select',{attrs:{"name":"superhero","multiple":""}},[_c('option',{attrs:{"value":"Batman","selected":""}},[_vm._v("Batman")]),_vm._v(" "),_c('option',{attrs:{"value":"Superman"}},[_vm._v("Superman")]),_vm._v(" "),_c('option',{attrs:{"value":"Hulk"}},[_vm._v("Hulk")]),_vm._v(" "),_c('option',{attrs:{"value":"Spiderman"}},[_vm._v("Spiderman")]),_vm._v(" "),_c('option',{attrs:{"value":"Ironman"}},[_vm._v("Ironman")]),_vm._v(" "),_c('option',{attrs:{"value":"Thor"}},[_vm._v("Thor")]),_vm._v(" "),_c('option',{attrs:{"value":"Wonder Woman"}},[_vm._v("Wonder Woman")])])])],1)],1)};
@@ -58578,12 +58708,12 @@
     /* functional template */
     var __vue_is_functional_template__$Q = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SmartSelect$2 = normalizeComponent(
+    
+    var SmartSelect$2 = normalizeComponent_1(
       { render: __vue_render__$Q, staticRenderFns: __vue_staticRenderFns__$Q },
       __vue_inject_styles__$Q,
       __vue_script__$Q,
@@ -58611,8 +58741,6 @@
 
   /* script */
   var __vue_script__$R = script$R;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$R.__file = "sortable.vue";
 
   /* template */
   var __vue_render__$R = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Sortable List","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"sortable-toggle":".sortable"}},[_vm._v("Toggle")])],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Just click \"Toggle\" button on navigation bar to enable/disable sorting")])]),_vm._v(" "),_c('f7-list',{attrs:{"sortable":""}},[_c('f7-list-item',{attrs:{"title":"1 Jenna Smith","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"2 John Doe","after":"Director"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"3 John Doe","after":"Developer"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"4 Aaron Darling","after":"Manager"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"5 Calvin Johnson","after":"Accounter"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"6 John Smith","after":"SEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"7 Chloe","after":"Manager"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{attrs:{"media-list":"","sortable":""}},[_c('f7-list-item',{attrs:{"title":"Yellow Submarine","after":"$15","subtitle":"Beatles","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-1.jpg","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Don't Stop Me Now","after":"$22","subtitle":"Queen","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-2.jpg","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Billie Jean","after":"$16","subtitle":"Michael Jackson","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-3.jpg","width":"80"},slot:"media"})])],1)],1)};
@@ -58627,12 +58755,12 @@
     /* functional template */
     var __vue_is_functional_template__$R = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Sortable$2 = normalizeComponent(
+    
+    var Sortable$2 = normalizeComponent_1(
       { render: __vue_render__$R, staticRenderFns: __vue_staticRenderFns__$R },
       __vue_inject_styles__$R,
       __vue_script__$R,
@@ -58665,8 +58793,6 @@
 
   /* script */
   var __vue_script__$S = script$S;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$S.__file = "statusbar.vue";
 
   /* template */
   var __vue_render__$S = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Statusbar Overlay","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 automatically detects if your app in full screen mode, and automatically shows statusbar overlay if app is in full screen mode (or hides statusbar if app is not in full screen mode). Its visibility can be forced using app parameters or using API:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.showStatusbar}},[_vm._v("Show Statusbar")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.hideStatusbar}},[_vm._v("Hide Statusbar")])],1)],1)],1)};
@@ -58681,12 +58807,12 @@
     /* functional template */
     var __vue_is_functional_template__$S = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Statusbar$2 = normalizeComponent(
+    
+    var Statusbar$2 = normalizeComponent_1(
       { render: __vue_render__$S, staticRenderFns: __vue_staticRenderFns__$S },
       __vue_inject_styles__$S,
       __vue_script__$S,
@@ -58741,8 +58867,6 @@
 
   /* script */
   var __vue_script__$T = script$T;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$T.__file = "stepper.vue";
 
   /* template */
   var __vue_render__$T = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Stepper","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Shape and size")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper')],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","round":"","fill":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","round":"","fill":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","fill":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","round":"","fill":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","round":"","fill":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Colors")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","round":"","color":"green"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","color":"blue"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","round":"","color":"pink"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","color":"yellow"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","round":"","color":"orange"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","color":"gray"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","round":"","color":"black"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Without input element")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"input":false}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"input":false,"round":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Min, max, step")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":100,"min":0,"max":1000,"step":100}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","input":false,"value":5,"min":0,"max":10,"step":0.5}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Autorepeat (Tap & hold)")]),_vm._v(" "),_c('f7-block-header',[_vm._v("Pressing and holding one of its buttons increments or decrements the stepper’s value repeatedly. With dynamic autorepeat, the rate of change depends on how long the user continues pressing the control.")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":100,"step":1,"autorepeat":true}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Dynamic")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":100,"step":1,"autorepeat":true,"autorepeat-dynamic":true}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Wraps")]),_vm._v(" "),_c('f7-block-header',[_vm._v("In wraps mode incrementing beyond maximum value sets value to minimum value, likewise, decrementing below minimum value sets value to maximum value")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":10,"step":1,"autorepeat":true,"wraps":true}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom value element")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":("Apples " + _vm.applesCount)}},[_c('f7-stepper',{attrs:{"slot":"after","buttons-only":true,"small":"","raised":""},on:{"stepper:change":_vm.setApples},slot:"after"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":("Oranges " + _vm.orangesCount)}},[_c('f7-stepper',{attrs:{"slot":"after","buttons-only":true,"small":"","raised":""},on:{"stepper:change":_vm.setOranges},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom value format")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"header":"Meeting starts in","title":_vm.meetingTimeComputed}},[_c('f7-stepper',{attrs:{"slot":"after","min":15,"max":240,"step":15,"value":_vm.meetingTime,"buttons-only":true,"small":"","fill":"","raised":""},on:{"stepper:change":_vm.setMeetingTime},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Manual input")]),_vm._v(" "),_c('f7-block-header',[_vm._v("It is possible to enter value manually from keyboard or mobile keypad. When click on input field, stepper enter into manual input mode, which allow type value from keyboar and check fractional part with defined accurancy. Click outside or enter Return key, ending manual mode.")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":1000,"step":1,"autorepeat":true,"wraps":true,"manual-input-mode":true,"decimal-point":2}})],1)],1)],1)],1)};
@@ -58757,12 +58881,12 @@
     /* functional template */
     var __vue_is_functional_template__$T = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Stepper$2 = normalizeComponent(
+    
+    var Stepper$2 = normalizeComponent_1(
       { render: __vue_render__$T, staticRenderFns: __vue_staticRenderFns__$T },
       __vue_inject_styles__$T,
       __vue_script__$T,
@@ -58783,8 +58907,6 @@
 
   /* script */
   var __vue_script__$U = script$U;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$U.__file = "subnavbar.vue";
 
   /* template */
   var __vue_render__$U = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Subnavbar","back-link":"Back"}},[_c('f7-subnavbar',[_c('f7-segmented',[_c('f7-button',{attrs:{"outline":"","active":""}},[_vm._v("Link 1")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Link 2")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Link 3")])],1)],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Subnavbar is useful when you need to put any additional elements into Navbar, like Tab Links or Search Bar. It also remains visible when Navbar hidden.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/subnavbar-title/","title":"Subnavbar Title"}})],1)],1)};
@@ -58799,12 +58921,12 @@
     /* functional template */
     var __vue_is_functional_template__$U = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Subnavbar$1 = normalizeComponent(
+    
+    var Subnavbar$1 = normalizeComponent_1(
       { render: __vue_render__$U, staticRenderFns: __vue_staticRenderFns__$U },
       __vue_inject_styles__$U,
       __vue_script__$U,
@@ -58825,8 +58947,6 @@
 
   /* script */
   var __vue_script__$V = script$V;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$V.__file = "subnavbar-title.vue";
 
   /* template */
   var __vue_render__$V = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"title":"Page Title"}})],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("It also possible to use Subnavbar to display page title and keep navbar only for actions.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde, consequatur quia amet voluptate vero quasi, veniam, quisquam dolorum magni sint enim, harum expedita excepturi quas iure magnam minus voluptatem quaerat!")]),_vm._v(" "),_c('p',[_vm._v("Dolore laboriosam error magnam velit expedita recusandae, dolor asperiores unde, sint, veritatis illum ipsum? Nulla ratione nobis, ullam debitis. Inventore sapiente rem dolore eum ipsa totam perspiciatis cupiditate, amet maiores!")]),_vm._v(" "),_c('p',[_vm._v("Ratione quod minus ipsum maxime cum voluptate molestiae adipisci placeat ut illo, alias nobis perferendis magni odio sunt, porro, totam praesentium possimus! Autem inventore ut provident animi quae, impedit id!")]),_vm._v(" "),_c('p',[_vm._v("Aperiam ea ab harum. Quis dolorem cupiditate, incidunt mollitia ducimus voluptatem commodi! Odio quasi amet hic nesciunt, quibusdam, est vero repellat sapiente perferendis, optio laboriosam in culpa veniam alias ad.")]),_vm._v(" "),_c('p',[_vm._v("A fuga corporis harum velit maiores, quaerat accusantium cum aspernatur consequuntur dolor vel fugit omnis est dolorum delectus debitis aperiam distinctio eveniet vero nihil voluptatum culpa. Accusamus aliquid facere tenetur?")])])],1)};
@@ -58841,12 +58961,12 @@
     /* functional template */
     var __vue_is_functional_template__$V = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SubnavbarTitle = normalizeComponent(
+    
+    var SubnavbarTitle = normalizeComponent_1(
       { render: __vue_render__$V, staticRenderFns: __vue_staticRenderFns__$V },
       __vue_inject_styles__$V,
       __vue_script__$V,
@@ -58868,8 +58988,6 @@
 
   /* script */
   var __vue_script__$W = script$W;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$W.__file = "swiper.vue";
 
   /* template */
   var __vue_render__$W = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Swiper Slider","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"block"},[_c('p',[_vm._v("\n      Framework7 comes with powerful and most modern touch slider ever -\n      "),_c('a',{staticClass:"external",attrs:{"href":"http://idangero.us/swiper","target":"_blank"}},[_vm._v("Swiper Slider")]),_vm._v("\n      with super flexible configuration and lot, lot of features. Just check the following demos:\n    ")])]),_vm._v(" "),_c('div',{staticClass:"list links-list"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"swiper-horizontal/"}},[_vm._v("Swiper Horizontal")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-vertical/"}},[_vm._v("Swiper Vertical")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-space-between/"}},[_vm._v("Space Between Slides")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-multiple/"}},[_vm._v("Multiple Per Page")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-nested/"}},[_vm._v("Nested Swipers")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-loop/"}},[_vm._v("Infinite Loop Mode")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-cube/"}},[_vm._v("3D Cube Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-coverflow/"}},[_vm._v("3D Coverflow Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-flip/"}},[_vm._v("3D Flip Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-fade/"}},[_vm._v("Fade Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-scrollbar/"}},[_vm._v("With Scrollbar")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-gallery/"}},[_vm._v("Thumbs Gallery")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-custom-controls/"}},[_vm._v("Custom Controls")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-parallax/"}},[_vm._v("Parallax")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-lazy/"}},[_vm._v("Lazy Loading")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-pagination-progress/"}},[_vm._v("Progress Pagination")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-pagination-fraction/"}},[_vm._v("Fraction Pagination")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-zoom/"}},[_vm._v("Zoom")])])])])],1)};
@@ -58884,12 +59002,12 @@
     /* functional template */
     var __vue_is_functional_template__$W = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Swiper$2 = normalizeComponent(
+    
+    var Swiper$2 = normalizeComponent_1(
       { render: __vue_render__$W, staticRenderFns: __vue_staticRenderFns__$W },
       __vue_inject_styles__$W,
       __vue_script__$W,
@@ -58911,8 +59029,6 @@
 
   /* script */
   var __vue_script__$X = script$X;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$X.__file = "swiper-horizontal.vue";
 
   /* template */
   var __vue_render__$X = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Swiper Horizontal","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"hideOnClick\": true}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
@@ -58927,12 +59043,12 @@
     /* functional template */
     var __vue_is_functional_template__$X = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperHorizontal = normalizeComponent(
+    
+    var SwiperHorizontal = normalizeComponent_1(
       { render: __vue_render__$X, staticRenderFns: __vue_staticRenderFns__$X },
       __vue_inject_styles__$X,
       __vue_script__$X,
@@ -58954,8 +59070,6 @@
 
   /* script */
   var __vue_script__$Y = script$Y;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$Y.__file = "swiper-vertical.vue";
 
   /* template */
   var __vue_render__$Y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Vertical Swiper","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-direction":"vertical","data-pagination":"{\"el\": \".swiper-pagination\", \"hideOnClick\": true}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
@@ -58970,12 +59084,12 @@
     /* functional template */
     var __vue_is_functional_template__$Y = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperVertical = normalizeComponent(
+    
+    var SwiperVertical = normalizeComponent_1(
       { render: __vue_render__$Y, staticRenderFns: __vue_staticRenderFns__$Y },
       __vue_inject_styles__$Y,
       __vue_script__$Y,
@@ -58997,8 +59111,6 @@
 
   /* script */
   var __vue_script__$Z = script$Z;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$Z.__file = "swiper-space-between.vue";
 
   /* template */
   var __vue_render__$Z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Space Between Slides","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"hideOnClick\": true}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
@@ -59013,12 +59125,12 @@
     /* functional template */
     var __vue_is_functional_template__$Z = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperSpaceBetween = normalizeComponent(
+    
+    var SwiperSpaceBetween = normalizeComponent_1(
       { render: __vue_render__$Z, staticRenderFns: __vue_staticRenderFns__$Z },
       __vue_inject_styles__$Z,
       __vue_script__$Z,
@@ -59041,8 +59153,6 @@
 
   /* script */
   var __vue_script__$_ = script$_;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$_.__file = "swiper-multiple.vue";
 
   /* template */
   var __vue_render__$_ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Multiple Swipers","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("1 Slide Per View, 50px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("2 Slides Per View, 20px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"20","data-slides-per-view":"2"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("3 Slides Per View, 10px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-slides-per-view":"3"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Slides Per View + Centered")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple demo-swiper-multiple-auto",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical, 10px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-direction":"vertical"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Slow speed")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-speed":"900","data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
@@ -59057,12 +59167,12 @@
     /* functional template */
     var __vue_is_functional_template__$_ = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperMultiple = normalizeComponent(
+    
+    var SwiperMultiple = normalizeComponent_1(
       { render: __vue_render__$_, staticRenderFns: __vue_staticRenderFns__$_ },
       __vue_inject_styles__$_,
       __vue_script__$_,
@@ -59084,8 +59194,6 @@
 
   /* script */
   var __vue_script__$10 = script$10;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$10.__file = "swiper-nested.vue";
 
   /* template */
   var __vue_render__$10 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Nested Swipers","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination-h\"}"}},[_c('div',{staticClass:"swiper-pagination swiper-pagination-h"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination-v\"}","data-direction":"vertical"}},[_c('div',{staticClass:"swiper-pagination swiper-pagination-v"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 3")])])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 4")])])])],1)};
@@ -59100,12 +59208,12 @@
     /* functional template */
     var __vue_is_functional_template__$10 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperNested = normalizeComponent(
+    
+    var SwiperNested = normalizeComponent_1(
       { render: __vue_render__$10, staticRenderFns: __vue_staticRenderFns__$10 },
       __vue_inject_styles__$10,
       __vue_script__$10,
@@ -59127,8 +59235,6 @@
 
   /* script */
   var __vue_script__$11 = script$11;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$11.__file = "swiper-loop.vue";
 
   /* template */
   var __vue_render__$11 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Infinite Loop Mode","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-loop":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
@@ -59143,12 +59249,12 @@
     /* functional template */
     var __vue_is_functional_template__$11 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperLoop = normalizeComponent(
+    
+    var SwiperLoop = normalizeComponent_1(
       { render: __vue_render__$11, staticRenderFns: __vue_staticRenderFns__$11 },
       __vue_inject_styles__$11,
       __vue_script__$11,
@@ -59170,11 +59276,9 @@
 
   /* script */
   var __vue_script__$12 = script$12;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$12.__file = "swiper-3d-cube.vue";
 
   /* template */
-  var __vue_render__$12 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Cube","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"cube"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg/)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg/)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg/)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg/)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg/)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg/)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg/)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg/)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-9.jpg/)"}},[_vm._v("Slide 9")])])])],1)};
+  var __vue_render__$12 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Cube","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"cube"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-9.jpg)"}},[_vm._v("Slide 9")])])])],1)};
   var __vue_staticRenderFns__$12 = [];
 
     /* style */
@@ -59186,12 +59290,12 @@
     /* functional template */
     var __vue_is_functional_template__$12 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Swiper3dCube = normalizeComponent(
+    
+    var Swiper3dCube = normalizeComponent_1(
       { render: __vue_render__$12, staticRenderFns: __vue_staticRenderFns__$12 },
       __vue_inject_styles__$12,
       __vue_script__$12,
@@ -59213,11 +59317,9 @@
 
   /* script */
   var __vue_script__$13 = script$13;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$13.__file = "swiper-3d-coverflow.vue";
 
   /* template */
-  var __vue_render__$13 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Coverflow Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-coverflow",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"coverflow","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg/)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg/)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg/)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg/)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg/)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg/)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-7.jpg/)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-8.jpg/)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-9.jpg/)"}},[_vm._v("Slide 9")])])])],1)};
+  var __vue_render__$13 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Coverflow Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-coverflow",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"coverflow","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-8.jpg)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-9.jpg)"}},[_vm._v("Slide 9")])])])],1)};
   var __vue_staticRenderFns__$13 = [];
 
     /* style */
@@ -59229,12 +59331,12 @@
     /* functional template */
     var __vue_is_functional_template__$13 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Swiper3dCoverflow = normalizeComponent(
+    
+    var Swiper3dCoverflow = normalizeComponent_1(
       { render: __vue_render__$13, staticRenderFns: __vue_staticRenderFns__$13 },
       __vue_inject_styles__$13,
       __vue_script__$13,
@@ -59256,11 +59358,9 @@
 
   /* script */
   var __vue_script__$14 = script$14;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$14.__file = "swiper-3d-flip.vue";
 
   /* template */
-  var __vue_render__$14 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Flip Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"flip"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg/)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg/)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg/)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg/)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg/)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg/)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg/)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg/)"}},[_vm._v("Slide 8")])])])],1)};
+  var __vue_render__$14 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Flip Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"flip"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg)"}},[_vm._v("Slide 8")])])])],1)};
   var __vue_staticRenderFns__$14 = [];
 
     /* style */
@@ -59272,12 +59372,12 @@
     /* functional template */
     var __vue_is_functional_template__$14 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Swiper3dFlip = normalizeComponent(
+    
+    var Swiper3dFlip = normalizeComponent_1(
       { render: __vue_render__$14, staticRenderFns: __vue_staticRenderFns__$14 },
       __vue_inject_styles__$14,
       __vue_script__$14,
@@ -59299,11 +59399,9 @@
 
   /* script */
   var __vue_script__$15 = script$15;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$15.__file = "swiper-fade.vue";
 
   /* template */
-  var __vue_render__$15 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Fade Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-fade",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"fade"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-1.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-2.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-3.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-4.jpg/)"}})])])],1)};
+  var __vue_render__$15 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Fade Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-fade",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"fade"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-4.jpg)"}})])])],1)};
   var __vue_staticRenderFns__$15 = [];
 
     /* style */
@@ -59315,12 +59413,12 @@
     /* functional template */
     var __vue_is_functional_template__$15 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperFade = normalizeComponent(
+    
+    var SwiperFade = normalizeComponent_1(
       { render: __vue_render__$15, staticRenderFns: __vue_staticRenderFns__$15 },
       __vue_inject_styles__$15,
       __vue_script__$15,
@@ -59342,8 +59440,6 @@
 
   /* script */
   var __vue_script__$16 = script$16;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$16.__file = "swiper-scrollbar.vue";
 
   /* template */
   var __vue_render__$16 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Scrollbar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-scrollbar":"{\"el\": \".swiper-scrollbar\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-scrollbar"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
@@ -59358,12 +59454,12 @@
     /* functional template */
     var __vue_is_functional_template__$16 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperScrollbar = normalizeComponent(
+    
+    var SwiperScrollbar = normalizeComponent_1(
       { render: __vue_render__$16, staticRenderFns: __vue_staticRenderFns__$16 },
       __vue_inject_styles__$16,
       __vue_script__$16,
@@ -59415,11 +59511,9 @@
 
   /* script */
   var __vue_script__$17 = script$17;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$17.__file = "swiper-gallery.vue";
 
   /* template */
-  var __vue_render__$17 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{staticStyle:{"background":"#000"},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Thumbs Gallery","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-top"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"})]),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-thumbs"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg/)"}})])])])],1)};
+  var __vue_render__$17 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{staticStyle:{"background":"#000"},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Thumbs Gallery","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-top"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"})]),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-thumbs"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}})])])])],1)};
   var __vue_staticRenderFns__$17 = [];
 
     /* style */
@@ -59431,12 +59525,12 @@
     /* functional template */
     var __vue_is_functional_template__$17 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperGallery = normalizeComponent(
+    
+    var SwiperGallery = normalizeComponent_1(
       { render: __vue_render__$17, staticRenderFns: __vue_staticRenderFns__$17 },
       __vue_inject_styles__$17,
       __vue_script__$17,
@@ -59458,11 +59552,9 @@
 
   /* script */
   var __vue_script__$18 = script$18;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$18.__file = "swiper-custom-controls.vue";
 
   /* template */
-  var __vue_render__$18 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Custom Controls","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"demo-swiper-custom"},[_c('div',{staticClass:"swiper-container swiper-init",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"clickable\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-space-between":"0"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-1.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-3.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-4.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-5.jpg/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-6.jpg/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])])],1)};
+  var __vue_render__$18 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Custom Controls","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"demo-swiper-custom"},[_c('div',{staticClass:"swiper-container swiper-init",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"clickable\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-space-between":"0"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-4.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-5.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-6.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])])],1)};
   var __vue_staticRenderFns__$18 = [];
 
     /* style */
@@ -59474,12 +59566,12 @@
     /* functional template */
     var __vue_is_functional_template__$18 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperCustomControls = normalizeComponent(
+    
+    var SwiperCustomControls = normalizeComponent_1(
       { render: __vue_render__$18, staticRenderFns: __vue_staticRenderFns__$18 },
       __vue_inject_styles__$18,
       __vue_script__$18,
@@ -59501,11 +59593,9 @@
 
   /* script */
   var __vue_script__$19 = script$19;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$19.__file = "swiper-parallax.vue";
 
   /* template */
-  var __vue_render__$19 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Parallax","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-parallax",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-parallax":"true","data-speed":"600"}},[_c('div',{staticClass:"swiper-parallax-bg",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg/)"},attrs:{"data-swiper-parallax":"-23%"}}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])])])])],1)};
+  var __vue_render__$19 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Parallax","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-parallax",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-parallax":"true","data-speed":"600"}},[_c('div',{staticClass:"swiper-parallax-bg",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg)"},attrs:{"data-swiper-parallax":"-23%"}}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])])])])],1)};
   var __vue_staticRenderFns__$19 = [];
 
     /* style */
@@ -59517,12 +59607,12 @@
     /* functional template */
     var __vue_is_functional_template__$19 = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperParallax = normalizeComponent(
+    
+    var SwiperParallax = normalizeComponent_1(
       { render: __vue_render__$19, staticRenderFns: __vue_staticRenderFns__$19 },
       __vue_inject_styles__$19,
       __vue_script__$19,
@@ -59544,11 +59634,9 @@
 
   /* script */
   var __vue_script__$1a = script$1a;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1a.__file = "swiper-lazy.vue";
 
   /* template */
-  var __vue_render__$1a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Slider Lazy Loading","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-lazy",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-lazy":"{\"enabled\": true}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-1.jpg/"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-2.jpg/"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-3.jpg/"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-4.jpg/"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-5.jpg/"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-6.jpg/"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})])]),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])],1)};
+  var __vue_render__$1a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Slider Lazy Loading","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-lazy",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-lazy":"{\"enabled\": true}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-1.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-2.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-3.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-4.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-5.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-6.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})])]),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])],1)};
   var __vue_staticRenderFns__$1a = [];
 
     /* style */
@@ -59560,12 +59648,12 @@
     /* functional template */
     var __vue_is_functional_template__$1a = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperLazy = normalizeComponent(
+    
+    var SwiperLazy = normalizeComponent_1(
       { render: __vue_render__$1a, staticRenderFns: __vue_staticRenderFns__$1a },
       __vue_inject_styles__$1a,
       __vue_script__$1a,
@@ -59587,8 +59675,6 @@
 
   /* script */
   var __vue_script__$1b = script$1b;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1b.__file = "swiper-pagination-progress.vue";
 
   /* template */
   var __vue_render__$1b = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Progress Pagination","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"type\": \"progressbar\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
@@ -59603,12 +59689,12 @@
     /* functional template */
     var __vue_is_functional_template__$1b = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperPaginationProgress = normalizeComponent(
+    
+    var SwiperPaginationProgress = normalizeComponent_1(
       { render: __vue_render__$1b, staticRenderFns: __vue_staticRenderFns__$1b },
       __vue_inject_styles__$1b,
       __vue_script__$1b,
@@ -59630,8 +59716,6 @@
 
   /* script */
   var __vue_script__$1c = script$1c;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1c.__file = "swiper-pagination-fraction.vue";
 
   /* template */
   var __vue_render__$1c = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Pagination Fraction","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"type\": \"fraction\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
@@ -59646,12 +59730,12 @@
     /* functional template */
     var __vue_is_functional_template__$1c = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperPaginationFraction = normalizeComponent(
+    
+    var SwiperPaginationFraction = normalizeComponent_1(
       { render: __vue_render__$1c, staticRenderFns: __vue_staticRenderFns__$1c },
       __vue_inject_styles__$1c,
       __vue_script__$1c,
@@ -59673,11 +59757,9 @@
 
   /* script */
   var __vue_script__$1d = script$1d;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1d.__file = "swiper-zoom.vue";
 
   /* template */
-  var __vue_render__$1d = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Zoom","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-zoom":"{\"enabled\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-1.jpg/"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-2.jpg/"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-3.jpg/"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-4.jpg/"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-5.jpg/"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-6.jpg/"}})])])]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"})])],1)};
+  var __vue_render__$1d = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Zoom","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-zoom":"{\"enabled\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-1.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-2.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-3.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-4.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-5.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-6.jpg"}})])])]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"})])],1)};
   var __vue_staticRenderFns__$1d = [];
 
     /* style */
@@ -59689,12 +59771,12 @@
     /* functional template */
     var __vue_is_functional_template__$1d = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var SwiperZoom = normalizeComponent(
+    
+    var SwiperZoom = normalizeComponent_1(
       { render: __vue_render__$1d, staticRenderFns: __vue_staticRenderFns__$1d },
       __vue_inject_styles__$1d,
       __vue_script__$1d,
@@ -59772,8 +59854,6 @@
 
   /* script */
   var __vue_script__$1e = script$1e;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1e.__file = "swipeout.vue";
 
   /* template */
   var __vue_render__$1e = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Swipeout","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("\n      Swipe out actions on list elements is one of the most awesome F7 features. It allows you to call hidden menu for each list element where you can put default ready-to use delete button or any other buttons for some required actions.\n    ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe to delete with confirm modal")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe to delete without confirm")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe for actions")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"You can't delete me"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With callback on remove")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"},on:{"swipeout:deleted":_vm.onDeleted}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"},on:{"swipeout:deleted":_vm.onDeleted}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With actions on left side (swipe to right)")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe right on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe right on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("On both sides with overswipes")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"swipeout":"","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1)],1)],1)};
@@ -59788,12 +59868,12 @@
     /* functional template */
     var __vue_is_functional_template__$1e = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Swipeout$2 = normalizeComponent(
+    
+    var Swipeout$2 = normalizeComponent_1(
       { render: __vue_render__$1e, staticRenderFns: __vue_staticRenderFns__$1e },
       __vue_inject_styles__$1e,
       __vue_script__$1e,
@@ -59817,8 +59897,6 @@
 
   /* script */
   var __vue_script__$1f = script$1f;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1f.__file = "tabs.vue";
 
   /* template */
   var __vue_render__$1f = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/tabs-static/","title":"Static Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-animated/","title":"Animated Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-swipeable/","title":"Swipeable Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-routable/","title":"Routable Tabs"}})],1)],1)};
@@ -59833,12 +59911,12 @@
     /* functional template */
     var __vue_is_functional_template__$1f = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Tabs$1 = normalizeComponent(
+    
+    var Tabs$1 = normalizeComponent_1(
       { render: __vue_render__$1f, staticRenderFns: __vue_staticRenderFns__$1f },
       __vue_inject_styles__$1f,
       __vue_script__$1f,
@@ -59859,8 +59937,6 @@
 
   /* script */
   var __vue_script__$1g = script$1g;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1g.__file = "tabs-static.vue";
 
   /* template */
   var __vue_render__$1g = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Static Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
@@ -59875,12 +59951,12 @@
     /* functional template */
     var __vue_is_functional_template__$1g = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var TabsStatic = normalizeComponent(
+    
+    var TabsStatic = normalizeComponent_1(
       { render: __vue_render__$1g, staticRenderFns: __vue_staticRenderFns__$1g },
       __vue_inject_styles__$1g,
       __vue_script__$1g,
@@ -59901,8 +59977,6 @@
 
   /* script */
   var __vue_script__$1h = script$1h;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1h.__file = "tabs-animated.vue";
 
   /* template */
   var __vue_render__$1h = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Animated Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"animated":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
@@ -59917,12 +59991,12 @@
     /* functional template */
     var __vue_is_functional_template__$1h = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var TabsAnimated = normalizeComponent(
+    
+    var TabsAnimated = normalizeComponent_1(
       { render: __vue_render__$1h, staticRenderFns: __vue_staticRenderFns__$1h },
       __vue_inject_styles__$1h,
       __vue_script__$1h,
@@ -59943,8 +60017,6 @@
 
   /* script */
   var __vue_script__$1i = script$1i;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1i.__file = "tabs-swipeable.vue";
 
   /* template */
   var __vue_render__$1i = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Swipeable Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"swipeable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
@@ -59959,12 +60031,12 @@
     /* functional template */
     var __vue_is_functional_template__$1i = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var TabsSwipeable = normalizeComponent(
+    
+    var TabsSwipeable = normalizeComponent_1(
       { render: __vue_render__$1i, staticRenderFns: __vue_staticRenderFns__$1i },
       __vue_inject_styles__$1i,
       __vue_script__$1i,
@@ -59985,8 +60057,6 @@
 
   /* script */
   var __vue_script__$1j = script$1j;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1j.__file = "tabs-routable.vue";
 
   /* template */
   var __vue_render__$1j = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabs Routable","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"","href":"./","route-tab-id":"tab1"}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab2/","route-tab-id":"tab2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab3/","route-tab-id":"tab3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"routable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab1"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab2"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab3"}})],1)],1)};
@@ -60001,12 +60071,12 @@
     /* functional template */
     var __vue_is_functional_template__$1j = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var TabsRoutable = normalizeComponent(
+    
+    var TabsRoutable = normalizeComponent_1(
       { render: __vue_render__$1j, staticRenderFns: __vue_staticRenderFns__$1j },
       __vue_inject_styles__$1j,
       __vue_script__$1j,
@@ -60152,8 +60222,6 @@
 
   /* script */
   var __vue_script__$1k = script$1k;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1k.__file = "toast.vue";
 
   /* template */
   var __vue_render__$1k = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Toast","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toasts provide brief feedback about an operation through a message on the screen.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastBottom}},[_vm._v("Toast on Bottom")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastTop}},[_vm._v("Toast on Top")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastCenter}},[_vm._v("Toast on Center")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastIcon}},[_vm._v("Toast with icon")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastLargeMessage}},[_vm._v("Toast with large message")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithButton}},[_vm._v("Toast with close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCustomButton}},[_vm._v("Toast with custom button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCallback}},[_vm._v("Toast with callback on close")])],1)])],1)};
@@ -60168,12 +60236,12 @@
     /* functional template */
     var __vue_is_functional_template__$1k = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Toast$2 = normalizeComponent(
+    
+    var Toast$2 = normalizeComponent_1(
       { render: __vue_render__$1k, staticRenderFns: __vue_staticRenderFns__$1k },
       __vue_inject_styles__$1k,
       __vue_script__$1k,
@@ -60199,8 +60267,6 @@
 
   /* script */
   var __vue_script__$1l = script$1l;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1l.__file = "toggle.vue";
 
   /* template */
   var __vue_render__$1l = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toggle","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Super Heroes")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('span',[_vm._v("Batman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Aquaman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"blue"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Superman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"red"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Hulk")]),_vm._v(" "),_c('f7-toggle',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Spiderman (Disabled)")]),_vm._v(" "),_c('f7-toggle',{attrs:{"disabled":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Ironman (Disabled)")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","disabled":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Thor")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"orange"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Wonder Woman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"color":"pink"}})],1)],1)],1)};
@@ -60215,12 +60281,12 @@
     /* functional template */
     var __vue_is_functional_template__$1l = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Toggle$2 = normalizeComponent(
+    
+    var Toggle$2 = normalizeComponent_1(
       { render: __vue_render__$1l, staticRenderFns: __vue_staticRenderFns__$1l },
       __vue_inject_styles__$1l,
       __vue_script__$1l,
@@ -60251,8 +60317,6 @@
 
   /* script */
   var __vue_script__$1m = script$1m;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1m.__file = "toolbar-tabbar.vue";
 
   /* template */
   var __vue_render__$1m = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toolbar & Tabbar","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"./tabbar/","title":"Tabbar"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-labels/","title":"Tabbar With Labels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-scrollable/","title":"Tabbar Scrollable"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./toolbar-hide-scroll/","title":"Hide Toolbar On Scroll"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Toolbar Position")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toolbar supports both top and bottom positions. Click the following button to change its position.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.toggleToolbarPosition}},[_vm._v("Toggle Toolbar Position")])],1)])],1)};
@@ -60267,12 +60331,12 @@
     /* functional template */
     var __vue_is_functional_template__$1m = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var ToolbarTabbar = normalizeComponent(
+    
+    var ToolbarTabbar = normalizeComponent_1(
       { render: __vue_render__$1m, staticRenderFns: __vue_staticRenderFns__$1m },
       __vue_inject_styles__$1m,
       __vue_script__$1m,
@@ -60303,8 +60367,6 @@
 
   /* script */
   var __vue_script__$1n = script$1n;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1n.__file = "tabbar.vue";
 
   /* template */
   var __vue_render__$1n = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
@@ -60319,12 +60381,12 @@
     /* functional template */
     var __vue_is_functional_template__$1n = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Tabbar = normalizeComponent(
+    
+    var Tabbar = normalizeComponent_1(
       { render: __vue_render__$1n, staticRenderFns: __vue_staticRenderFns__$1n },
       __vue_inject_styles__$1n,
       __vue_script__$1n,
@@ -60355,8 +60417,6 @@
 
   /* script */
   var __vue_script__$1o = script$1o;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1o.__file = "tabbar-labels.vue";
 
   /* template */
   var __vue_render__$1o = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Labels","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":"","text":"Tab 1","icon-ios":"f7:email_fill","icon-md":"material:email"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2","text":"Tab 2","icon-ios":"f7:calendar_fill","icon-md":"material:today"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3","text":"Tab 3","icon-ios":"f7:cloud_upload_fill","icon-md":"material:file_upload"}})],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
@@ -60371,12 +60431,12 @@
     /* functional template */
     var __vue_is_functional_template__$1o = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var TabbarLabels = normalizeComponent(
+    
+    var TabbarLabels = normalizeComponent_1(
       { render: __vue_render__$1o, staticRenderFns: __vue_staticRenderFns__$1o },
       __vue_inject_styles__$1o,
       __vue_script__$1o,
@@ -60408,8 +60468,6 @@
 
   /* script */
   var __vue_script__$1p = script$1p;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1p.__file = "tabbar-scrollable.vue";
 
   /* template */
   var __vue_render__$1p = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Scrollable","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","scrollable":""}},_vm._l((_vm.tabs),function(tab,index){return _c('f7-link',{key:tab,attrs:{"tab-link":("#tab-" + tab),"tab-link-active":index === 0}},[_vm._v("Tab "+_vm._s(tab))])}),1),_vm._v(" "),_c('f7-tabs',_vm._l((_vm.tabs),function(tab,index){return _c('f7-tab',{key:tab,staticClass:"page-content",attrs:{"id":("tab-" + tab),"tab-active":index === 0}},[_c('f7-block',[_c('p',[_c('b',[_vm._v("Tab "+_vm._s(tab)+" content")])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?")]),_vm._v(" "),_c('p',[_vm._v("Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!")]),_vm._v(" "),_c('p',[_vm._v("At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.")]),_vm._v(" "),_c('p',[_vm._v("Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.")]),_vm._v(" "),_c('p',[_vm._v("Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.")])])],1)}),1)],1)};
@@ -60424,12 +60482,12 @@
     /* functional template */
     var __vue_is_functional_template__$1p = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var TabbarScrollable = normalizeComponent(
+    
+    var TabbarScrollable = normalizeComponent_1(
       { render: __vue_render__$1p, staticRenderFns: __vue_staticRenderFns__$1p },
       __vue_inject_styles__$1p,
       __vue_script__$1p,
@@ -60450,8 +60508,6 @@
 
   /* script */
   var __vue_script__$1q = script$1q;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1q.__file = "toolbar-hide-scroll.vue";
 
   /* template */
   var __vue_render__$1q = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"hide-toolbar-on-scroll":""}},[_c('f7-navbar',{attrs:{"title":"Hide Toolbar On Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":""}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Toolbar will be hidden if you scroll bottom")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")])])],1)};
@@ -60466,12 +60522,12 @@
     /* functional template */
     var __vue_is_functional_template__$1q = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var ToolbarHideScroll = normalizeComponent(
+    
+    var ToolbarHideScroll = normalizeComponent_1(
       { render: __vue_render__$1q, staticRenderFns: __vue_staticRenderFns__$1q },
       __vue_inject_styles__$1q,
       __vue_script__$1q,
@@ -60518,8 +60574,6 @@
 
   /* script */
   var __vue_script__$1r = script$1r;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1r.__file = "tooltip.vue";
 
   /* template */
   var __vue_render__$1r = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:init":_vm.onPageInit,"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"navbar-tooltip"},[_c('f7-icon',{attrs:{"ios":"f7:info_round_fill","md":"material:info_outline"}})],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Tooltips display informative text when users hover over, or tap an target element.")]),_vm._v(" "),_c('p',[_vm._v("Tooltip can be positioned around any element with any HTML content inside.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec.")],1),_vm._v(" "),_c('p',[_vm._v("Vestibulum "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt.")],1),_vm._v(" "),_c('p',[_vm._v("Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" massa.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Initialization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("For simple cases when you don't need a lot of control over the Tooltip, it can be set on buttons and links automatically with "),_c('code',[_vm._v("tooltip")]),_vm._v(" prop: "),_c('f7-button',{staticStyle:{"display":"inline-block"},attrs:{"round":"","outline":"","small":"","tooltip":"Button tooltip text"}},[_vm._v("Button with Tooltip")])],1)])],1)};
@@ -60534,12 +60588,12 @@
     /* functional template */
     var __vue_is_functional_template__$1r = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Tooltip$2 = normalizeComponent(
+    
+    var Tooltip$2 = normalizeComponent_1(
       { render: __vue_render__$1r, staticRenderFns: __vue_staticRenderFns__$1r },
       __vue_inject_styles__$1r,
       __vue_script__$1r,
@@ -60560,8 +60614,6 @@
 
   /* script */
   var __vue_script__$1s = script$1s;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1s.__file = "timeline.vue";
 
   /* template */
   var __vue_render__$1s = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/timeline-vertical/","title":"Vertical Timeline"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline-horizontal/","title":"Horizontal Timeline"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline-horizontal-calendar/","title":"Calendar Timeline"}})],1)],1)};
@@ -60576,12 +60628,12 @@
     /* functional template */
     var __vue_is_functional_template__$1s = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var Timeline$1 = normalizeComponent(
+    
+    var Timeline$1 = normalizeComponent_1(
       { render: __vue_render__$1s, staticRenderFns: __vue_staticRenderFns__$1s },
       __vue_inject_styles__$1s,
       __vue_script__$1s,
@@ -60604,8 +60656,6 @@
 
   /* script */
   var __vue_script__$1t = script$1t;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1t.__file = "timeline-vertical.vue";
 
   /* template */
   var __vue_render__$1t = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Vertical Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Tablet Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline tablet-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Forced Sides")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Rich Content")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content card no-safe-areas"},[_c('div',{staticClass:"card-header"},[_vm._v("Card Header")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content list links-list inset no-safe-areas"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Inside Content Block")]),_vm._v(" "),_c('div',{staticClass:"block block-strong"},[_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])])])],1)};
@@ -60620,12 +60670,12 @@
     /* functional template */
     var __vue_is_functional_template__$1t = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var TimelineVertical = normalizeComponent(
+    
+    var TimelineVertical = normalizeComponent_1(
       { render: __vue_render__$1t, staticRenderFns: __vue_staticRenderFns__$1t },
       __vue_inject_styles__$1t,
       __vue_script__$1t,
@@ -60648,8 +60698,6 @@
 
   /* script */
   var __vue_script__$1u = script$1u;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1u.__file = "timeline-horizontal.vue";
 
   /* template */
   var __vue_render__$1u = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-20"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:45")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something else")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text goes here")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"card no-safe-areas"},[_c('div',{staticClass:"card-header"},[_vm._v("Card")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])]),_vm._v(" "),_c('div',{staticClass:"card no-safe-areas"},[_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Another Card Content")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"list links-list inset no-safe-areas"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])])])])],1)};
@@ -60664,12 +60712,12 @@
     /* functional template */
     var __vue_is_functional_template__$1u = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var TimelineHorizontal = normalizeComponent(
+    
+    var TimelineHorizontal = normalizeComponent_1(
       { render: __vue_render__$1u, staticRenderFns: __vue_staticRenderFns__$1u },
       __vue_inject_styles__$1u,
       __vue_script__$1u,
@@ -60692,8 +60740,6 @@
 
   /* script */
   var __vue_script__$1v = script$1v;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1v.__file = "timeline-horizontal-calendar.vue";
 
   /* template */
   var __vue_render__$1v = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline Calendar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-15"},[_c('div',{staticClass:"timeline-year"},[_c('div',{staticClass:"timeline-year-title"},[_c('span',[_vm._v("2016")])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("December")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("29")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("30")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("31")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-year"},[_c('div',{staticClass:"timeline-year-title"},[_c('span',[_vm._v("2017")])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("January")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("6")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("7")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("8")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("9")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("10")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("12")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("13")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("14")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("16")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("17")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("18")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("19")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("29")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("30")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("31")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("February")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("6")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("7")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("8")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("9")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("10")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("12")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("13")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("14")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("16")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("17")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("18")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("19")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])])])])])],1)};
@@ -60708,12 +60754,12 @@
     /* functional template */
     var __vue_is_functional_template__$1v = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var TimelineHorizontalCalendar = normalizeComponent(
+    
+    var TimelineHorizontalCalendar = normalizeComponent_1(
       { render: __vue_render__$1v, staticRenderFns: __vue_staticRenderFns__$1v },
       __vue_inject_styles__$1v,
       __vue_script__$1v,
@@ -60761,8 +60807,6 @@
 
   /* script */
   var __vue_script__$1w = script$1w;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1w.__file = "virtual-list.vue";
 
   /* template */
   var __vue_render__$1w = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Virtual List","back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".virtual-list","search-item":"li","search-in":".item-title"}})],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.")]),_vm._v(" "),_c('p',[_vm._v("Here is the example of virtual list with 10 000 items:")])]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-found",attrs:{"medial-list":"","virtual-list":"","virtual-list-params":{ items: _vm.items, searchAll: _vm.searchAll, renderExternal: _vm.renderExternal, height: _vm.$theme.ios ? 63 : 73}}},[_c('ul',_vm._l((_vm.vlData.items),function(item,index){return _c('f7-list-item',{key:index,style:(("top: " + (_vm.vlData.topPosition) + "px")),attrs:{"media-item":"","link":"#","title":item.title,"subtitle":item.subtitle,"virtual-list-index":_vm.items.indexOf(item)}})}),1)])],1)};
@@ -60777,12 +60821,12 @@
     /* functional template */
     var __vue_is_functional_template__$1w = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var VirtualList$2 = normalizeComponent(
+    
+    var VirtualList$2 = normalizeComponent_1(
       { render: __vue_render__$1w, staticRenderFns: __vue_staticRenderFns__$1w },
       __vue_inject_styles__$1w,
       __vue_script__$1w,
@@ -60915,11 +60959,9 @@
 
   /* script */
   var __vue_script__$1x = script$1x;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1x.__file = "color-themes.vue";
 
   /* template */
-  var __vue_render__$1x = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"Color Themes","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Layout Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with 2 main layout themes: Light (default) and Dark:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"bg-color-white demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){_vm.setLayoutTheme('light');}}},[(_vm.theme === 'light')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"bg-color-black demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){_vm.setLayoutTheme('dark');}}},[(_vm.theme === 'dark')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Navigation Bars Style")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Switch navigation bars to filled style:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-empty",attrs:{"width":"50"},on:{"click":function($event){_vm.setBarsStyle('empty');}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'empty')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-fill",attrs:{"width":"50"},on:{"click":function($event){_vm.setBarsStyle('fill');}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'fill')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Default Color Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with "+_vm._s(_vm.colors.length)+" color themes set.")]),_vm._v(" "),_c('f7-row',[_vm._l((_vm.colors),function(color,index){return _c('f7-col',{key:index,attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}},[_c('f7-button',{staticClass:"demo-color-picker-button",attrs:{"fill":"","round":"","small":"","color":color},on:{"click":function($event){_vm.setColorTheme(color);}}},[_vm._v(_vm._s(color))])],1)}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}})],2)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Custom Color Theme")]),_vm._v(" "),_c('f7-list',[_c('f7-list-input',{attrs:{"type":"text","label":"HEX Color","value":_vm.customColor,"placeholder":"e.g. #ff0000"},on:{"input":_vm.setCustomColor}},[_c('div',{staticStyle:{"width":"28px","height":"28px","border-radius":"4px","background":"var(--f7-theme-color)"},attrs:{"slot":"media"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Generated CSS Variables")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[(_vm.customProperties)?[_c('p',[_vm._v("Add this code block to your custom stylesheet:")]),_vm._v(" "),_c('pre',{staticStyle:{"overflow":"auto","-webkit-overflow-scrolling":"touch","margin":"0","font-size":"12px"}},[_vm._v(_vm._s(_vm.customProperties))])]:_c('p',[_vm._v("Change navigation bars styles or specify custom color to see custom CSS variables here")])],2)],1)};
+  var __vue_render__$1x = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"Color Themes","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Layout Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with 2 main layout themes: Light (default) and Dark:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"bg-color-white demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('light')}}},[(_vm.theme === 'light')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"bg-color-black demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('dark')}}},[(_vm.theme === 'dark')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Navigation Bars Style")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Switch navigation bars to filled style:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-empty",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('empty')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'empty')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-fill",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('fill')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'fill')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Default Color Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with "+_vm._s(_vm.colors.length)+" color themes set.")]),_vm._v(" "),_c('f7-row',[_vm._l((_vm.colors),function(color,index){return _c('f7-col',{key:index,attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}},[_c('f7-button',{staticClass:"demo-color-picker-button",attrs:{"fill":"","round":"","small":"","color":color},on:{"click":function($event){return _vm.setColorTheme(color)}}},[_vm._v(_vm._s(color))])],1)}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}})],2)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Custom Color Theme")]),_vm._v(" "),_c('f7-list',[_c('f7-list-input',{attrs:{"type":"text","label":"HEX Color","value":_vm.customColor,"placeholder":"e.g. #ff0000"},on:{"input":_vm.setCustomColor}},[_c('div',{staticStyle:{"width":"28px","height":"28px","border-radius":"4px","background":"var(--f7-theme-color)"},attrs:{"slot":"media"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Generated CSS Variables")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[(_vm.customProperties)?[_c('p',[_vm._v("Add this code block to your custom stylesheet:")]),_vm._v(" "),_c('pre',{staticStyle:{"overflow":"auto","-webkit-overflow-scrolling":"touch","margin":"0","font-size":"12px"}},[_vm._v(_vm._s(_vm.customProperties))])]:_c('p',[_vm._v("Change navigation bars styles or specify custom color to see custom CSS variables here")])],2)],1)};
   var __vue_staticRenderFns__$1x = [];
 
     /* style */
@@ -60931,12 +60973,12 @@
     /* functional template */
     var __vue_is_functional_template__$1x = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var ColorThemes = normalizeComponent(
+    
+    var ColorThemes = normalizeComponent_1(
       { render: __vue_render__$1x, staticRenderFns: __vue_staticRenderFns__$1x },
       __vue_inject_styles__$1x,
       __vue_script__$1x,
@@ -60957,8 +60999,6 @@
 
   /* script */
   var __vue_script__$1y = script$1y;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1y.__file = "routable-modals.vue";
 
   /* template */
   var __vue_render__$1y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Modals","backLink":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to pages, Framework7 router allows to load modal components:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Popup","link":"popup/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Action Sheet","link":"actions/"}})],1)],1)};
@@ -60973,12 +61013,12 @@
     /* functional template */
     var __vue_is_functional_template__$1y = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var RoutableModals$1 = normalizeComponent(
+    
+    var RoutableModals$1 = normalizeComponent_1(
       { render: __vue_render__$1y, staticRenderFns: __vue_staticRenderFns__$1y },
       __vue_inject_styles__$1y,
       __vue_script__$1y,
@@ -60998,8 +61038,6 @@
 
   /* script */
   var __vue_script__$1z = script$1z;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1z.__file = "routable-popup.vue";
 
   /* template */
   var __vue_render__$1z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-popup',[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Popup"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This Popup was loaded using route link as standalone component")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit f7amet, consectetur adipiscing elit. Suspendisse faucibus mauris f7leo, eu bibendum neque congue non. Ut leo f7mauris, eleifend eu commodo f7a, egestas ac urna. Maecenas in lacus f7faucibus, viverra ipsum f7pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris f7sollicitudin, venenatis nisi f7sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor f7nibh, suscipit in consequat f7vel, feugiat sed quam. Nam risus f7libero, auctor vel tristique f7ac, malesuada ut ante. Sed f7molestie, est in eleifend f7sagittis, leo tortor ullamcorper f7erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor f7sem, suscipit in iaculis f7id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc f7eros, convallis blandit dui sit f7amet, gravida adipiscing libero.")])])],1)],1)};
@@ -61014,12 +61052,12 @@
     /* functional template */
     var __vue_is_functional_template__$1z = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var RoutablePopup = normalizeComponent(
+    
+    var RoutablePopup = normalizeComponent_1(
       { render: __vue_render__$1z, staticRenderFns: __vue_staticRenderFns__$1z },
       __vue_inject_styles__$1z,
       __vue_script__$1z,
@@ -61039,8 +61077,6 @@
 
   /* script */
   var __vue_script__$1A = script$1A;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1A.__file = "routable-actions.vue";
 
   /* template */
   var __vue_render__$1A = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-actions',[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("This Action Sheet was loaded as standalone component")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1)};
@@ -61055,12 +61091,12 @@
     /* functional template */
     var __vue_is_functional_template__$1A = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var RoutableActions = normalizeComponent(
+    
+    var RoutableActions = normalizeComponent_1(
       { render: __vue_render__$1A, staticRenderFns: __vue_staticRenderFns__$1A },
       __vue_inject_styles__$1A,
       __vue_script__$1A,
@@ -61085,8 +61121,6 @@
 
   /* script */
   var __vue_script__$1B = script$1B;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1B.__file = "master-detail-master.vue";
 
   /* template */
   var __vue_render__$1B = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Master Detail","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Master-Detail pattern oftenly used on wide enough screens and tablets, and consists of two views. Master - is an area in the UI where you have a list of something. Detail - is the area that shows the relevant information of a selection in the master.")]),_vm._v(" "),_c('p',[_vm._v("To see Master Detail view make sure the window width is larger than 800px.")]),_vm._v(" "),_c('p',[_vm._v("When collapsed (on narrow screen) navigation between such pages will behave as usual routing.")]),_vm._v(" "),_c('p',[_vm._v("Navigation to/from Master-Detail view happens without transition.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/1/"}},[_vm._v("Detail Page 1")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/2/"}},[_vm._v("Detail Page 2")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/3/"}},[_vm._v("Detail Page 3")])],1)],1)};
@@ -61101,12 +61135,12 @@
     /* functional template */
     var __vue_is_functional_template__$1B = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var MasterDetailMaster = normalizeComponent(
+    
+    var MasterDetailMaster = normalizeComponent_1(
       { render: __vue_render__$1B, staticRenderFns: __vue_staticRenderFns__$1B },
       __vue_inject_styles__$1B,
       __vue_script__$1B,
@@ -61129,8 +61163,6 @@
 
   /* script */
   var __vue_script__$1C = script$1C;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1C.__file = "master-detail-detail.vue";
 
   /* template */
   var __vue_render__$1C = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":("Detail Page " + (_vm.$f7route.params.id)),"back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('b',[_vm._v("Detail Page "+_vm._s(_vm.$f7route.params.id))])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque congue turpis et risus fringilla condimentum. Aliquam vestibulum est tempor, sagittis massa nec, dictum massa. Phasellus non viverra dui, eget aliquam sem. Donec eleifend dolor id arcu ultrices, vel ultrices dolor fringilla. Phasellus feugiat consectetur libero, eget luctus felis rhoncus at. Duis scelerisque ligula sit amet purus congue pulvinar. Proin a risus id nibh fermentum auctor. Vestibulum at sem a risus mollis iaculis. In vestibulum malesuada arcu id consectetur.")])])],1)};
@@ -61145,12 +61177,12 @@
     /* functional template */
     var __vue_is_functional_template__$1C = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var MasterDetailDetail = normalizeComponent(
+    
+    var MasterDetailDetail = normalizeComponent_1(
       { render: __vue_render__$1C, staticRenderFns: __vue_staticRenderFns__$1C },
       __vue_inject_styles__$1C,
       __vue_script__$1C,
@@ -61172,8 +61204,6 @@
 
   /* script */
   var __vue_script__$1D = script$1D;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1D.__file = "404.vue";
 
   /* template */
   var __vue_render__$1D = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Not found","backLink":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Sorry")]),_vm._v(" "),_c('p',[_vm._v("Requested content not found.")])])],1)};
@@ -61188,12 +61218,12 @@
     /* functional template */
     var __vue_is_functional_template__$1D = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var NotFound = normalizeComponent(
+    
+    var NotFound = normalizeComponent_1(
       { render: __vue_render__$1D, staticRenderFns: __vue_staticRenderFns__$1D },
       __vue_inject_styles__$1D,
       __vue_script__$1D,
@@ -61693,8 +61723,6 @@
 
   /* script */
   var __vue_script__$1E = script$1E;
-  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
-  script$1E.__file = "app.vue";
 
   /* template */
   var __vue_render__$1E = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-app',{attrs:{"params":_vm.f7Params}},[_c('f7-statusbar'),_vm._v(" "),_c('f7-panel',{attrs:{"left":"","cover":""}},[_c('f7-view',{attrs:{"url":"/panel-left/","links-view":".view-main"}})],1),_vm._v(" "),_c('f7-panel',{attrs:{"right":"","reveal":""}},[_c('f7-view',{attrs:{"url":"/panel-right/"}})],1),_vm._v(" "),_c('f7-view',{staticClass:"safe-areas",attrs:{"url":"/","main":true,"master-detail-breakpoint":800}})],1)};
@@ -61709,12 +61737,12 @@
     /* functional template */
     var __vue_is_functional_template__$1E = false;
     /* style inject */
-
+    
     /* style inject SSR */
+    
 
-
-
-    var App = normalizeComponent(
+    
+    var App = normalizeComponent_1(
       { render: __vue_render__$1E, staticRenderFns: __vue_staticRenderFns__$1E },
       __vue_inject_styles__$1E,
       __vue_script__$1E,
