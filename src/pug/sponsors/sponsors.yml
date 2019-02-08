@@ -1,6 +1,10 @@
 diamond:
 platinum:
 gold:
+-
+  title: Yakaz
+  link: https://yakaz.com
+  imageUrl: "#{cdn}/i/sponsors/yakaz.png"
 silver:
 -
   title: AppValley

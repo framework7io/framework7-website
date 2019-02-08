@@ -143,12 +143,44 @@
       font-size: 0;
       line-height: 100px;
       text-align: center;
+      box-sizing: border-box;
+      padding: 10px;
+      position: relative;
     }
     img {
       width: auto;
-      max-width: 90%;
-      max-height: 90%;
+      max-width: 100%;
+      max-height: 100%;
       vertical-align: middle;
+    }
+  }
+  .sponsor-badge {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 4px;
+    &.sponsor-badge-platinum {
+      background: linear-gradient(to right bottom,#ffddf4 45%,#f1b7e7 55%)
+    }
+    &.sponsor-badge-gold {
+      background: linear-gradient(to right bottom,#fffc2c 50%,#e1e206 50%)
+    }
+    &.sponsor-badge-silver {
+      background: linear-gradient(to right bottom, #eee 50%, #dadada 50%)
+    }
+    &.sponsor-badge-topSupporter {
+      line-height: 18px;
+      color: @yellowColor;
+      background: @redColor;
+      &:after {
+        content: 'thumbs_up';
+        font-family: 'Framework7 Icons';
+        font-size: 14px;
+      }
+
     }
   }
   .home-sponsors-button {

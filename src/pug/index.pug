@@ -149,36 +149,33 @@ html
           p Framework7 is an MIT-licensed open source project with its ongoing development made possible entirely by the support of #[a(href="/sponsors/") sponsors] and  #[a(href="https://github.com/framework7io/framework7/blob/master/BACKERS.md" target="_blank") these awesome backers].
           p
             a(href="https://www.patreon.com/vladimirkharlampidi", target="_blank").home-sponsors-button Support Framework7 #[i.f7-icons thumbs_up]
-        - var sponsors = getYamlData('sponsors/sponsors.yml');
-        if (sponsors.diamond)
-          h3 Diamond Sponsors
-          .home-sponsors-list
+        h3 Sponsors
+        .home-sponsors-list
+          - var sponsors = getYamlData('sponsors/sponsors.yml');
+          if (sponsors.diamond)
             each sponsor in sponsors.diamond
               a(href=sponsor.link, target="_blank")
+                .sponsor-badge.sponsor-badge-diamond(title="Diamond Sponsor")
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
-        if (sponsors.platinum)
-          h3 Platinum Sponsors
-          .home-sponsors-list
+          if (sponsors.platinum)
             each sponsor in sponsors.platinum
               a(href=sponsor.link, target="_blank")
+                .sponsor-badge.sponsor-badge-platinum(title="Platinum Sponsor")
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
-        if (sponsors.gold)
-          h3 Gold Sponsors
-          .home-sponsors-list
+          if (sponsors.gold)
             each sponsor in sponsors.gold
               a(href=sponsor.link, target="_blank")
+                .sponsor-badge.sponsor-badge-gold(title="Gold Sponsor")
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
-        if (sponsors.silver)
-          h3 Silver Sponsors
-          .home-sponsors-list
+          if (sponsors.silver)
             each sponsor in sponsors.silver
               a(href=sponsor.link, target="_blank")
+                .sponsor-badge.sponsor-badge-silver(title="Silver Sponsor")
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
-        if (sponsors.topSupporter)
-          h3 Top Supporters
-          .home-sponsors-list
+          if (sponsors.topSupporter)
             each sponsor in sponsors.topSupporter
-              a(href=sponsor.link, target="_blank")
+              a(href=sponsor.link, target="_blank")(title="Top Supporter")
+                .sponsor-badge.sponsor-badge-topSupporter
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
 
     include _footer
