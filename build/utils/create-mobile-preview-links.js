@@ -2,7 +2,7 @@ module.exports = (content = '') => {
   if (content.indexOf('data-device-preview') < 0) {
     return content;
   }
-  content = content.replace(/\n([ ]{1,})([^(^\n]*)\(data-device-preview="([^"]*)"\)([^\n]*)\n/, (string, indent, before, url) => {
+  content = content.replace(/\n([ ]{1,})([^(^\n]*)\(data-device-preview="([^"]*)"\)([^\n]*)\n/g, (string, indent, before, url) => {
     if (string.indexOf('.with-device') >= 0) {
       indent += '  ';
     }

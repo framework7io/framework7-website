@@ -2,10 +2,12 @@ import $ from 'dom7';
 import initDocsSearch from './init-docs-search';
 import initDocsDevice from './init-docs-device';
 import initDocsNav from './init-docs-nav';
+import initDocsHeaders from './init-docs-headers';
 
 initDocsSearch();
 initDocsDevice();
 initDocsNav();
+initDocsHeaders();
 
 // Home device theme switch
 $('.home-header .theme-switch a').click(function onClick(e) {

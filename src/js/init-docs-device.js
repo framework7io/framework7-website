@@ -37,7 +37,7 @@ function handleDeviceScroll() {
   let newPreviewLink;
   $('[data-device-preview]').each(function forEach() {
     const link = $(this);
-    if (link.offset().top < st + $(window).height() / 2 - 200) {
+    if (link.offset().top < $(window).height() / 2) {
       newPreviewLink = link.attr('data-device-preview');
     }
   });
