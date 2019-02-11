@@ -238,7 +238,7 @@ community:
   - v1
 -
   title: HackerNews7
-  iconUrl: http://guillaumebiton.github.io/HackerNews7/apple-touch-icon.png
+  iconUrl: https://github.com/GuillaumeBiton/HackerNews7/raw/master/assets-src/apple-touch-icon.png
   author:
     url: https://github.com/GuillaumeBiton
     name: Guillaume Biton
@@ -246,7 +246,7 @@ community:
   previewUrl: http://guillaumebiton.github.io/HackerNews7/
   description: Hacker News Reader powered by Framework7 which is based on the Official Hacker News API
   badges:
-  - v1
+  - v4
 -
   title: CanJS Issue Tracker
   author:
