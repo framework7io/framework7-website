@@ -111,6 +111,17 @@ phonegap:
 
 community:
 -
+  title: HackerNews7
+  iconUrl: https://github.com/GuillaumeBiton/HackerNews7/raw/master/assets-src/apple-touch-icon.png
+  author:
+    url: https://github.com/GuillaumeBiton
+    name: Guillaume Biton
+  url: https://github.com/GuillaumeBiton/HackerNews7
+  previewUrl: http://guillaumebiton.github.io/HackerNews7/
+  description: Hacker News Reader powered by Framework7 which is based on the Official Hacker News API
+  badges:
+  - v4
+-
   title: Simplest Framework7 Template
   icon:
     text: The simplest core template possible
@@ -236,17 +247,6 @@ community:
   badges:
   - Angular 1.x
   - v1
--
-  title: HackerNews7
-  iconUrl: https://github.com/GuillaumeBiton/HackerNews7/raw/master/assets-src/apple-touch-icon.png
-  author:
-    url: https://github.com/GuillaumeBiton
-    name: Guillaume Biton
-  url: https://github.com/GuillaumeBiton/HackerNews7
-  previewUrl: http://guillaumebiton.github.io/HackerNews7/
-  description: Hacker News Reader powered by Framework7 which is based on the Official Hacker News API
-  badges:
-  - v4
 -
   title: CanJS Issue Tracker
   author:
