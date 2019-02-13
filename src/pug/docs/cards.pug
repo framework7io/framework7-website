@@ -86,10 +86,23 @@ block content
     p Expandable card content (#[code card-content]) is set to #[code 100vw] width when collapsed (closed). It is done to improve card open/close transition performance, so you need to take care about its content positioning. You can make its content width also animatable and responsive by adding additional #[code card-expandable-animate-width] class to card element, but performance can be worse in this case.
 
     h4 Hide Elements On Open/Close
-    p Expandable card has 2 states: closed and opened. And it is possible to hide/show card's  elements by using these two classes:
+    p Expandable card has 2 states: closed and opened. And it is possible to hide/show card's elements by using these two classes:
     ul
       li #[code card-opened-fade-in] - element with such class inside of card-content will have #[code 0] opacity when card closed, and it will fade to #[code 1] opacity on card open.
       li #[code card-opened-fade-out] - element with such class inside of card-content will have #[code 1] opacity when card closed, and it will fade to #[code 0] opacity on card open.
+
+    h4 Prevent Card From Opening
+    p In some layouts you may have a button or link in visible area or expandable card when it is collapsed. To allow click on such button or link and to prevent expandable card from opening, we need to add `card-prevent-open` class to this button:
+
+    :code(lang="html")
+      <div class="card card-expandable">
+        <div class="card-content">
+          ...
+          <!-- Add "card-prevent-open" to element and click on it won't open expandable card -->
+          <a href="#" class="button card-prevent-open">Button</a>
+        </div>
+      </div>
+
     h2 Card App Methods
     p Let's look at related App methods to work with expandable cards:
     .method-wrap

@@ -1183,17 +1183,17 @@
 	} : window; // eslint-disable-line
 
 	/**
-	 * Dom7 2.1.2
+	 * Dom7 2.1.3
 	 * Minimalistic JavaScript library for DOM manipulation, with a jQuery-compatible API
 	 * http://framework7.io/docs/dom.html
 	 *
-	 * Copyright 2018, Vladimir Kharlampidi
+	 * Copyright 2019, Vladimir Kharlampidi
 	 * The iDangero.us
 	 * http://www.idangero.us/
 	 *
 	 * Licensed under MIT
 	 *
-	 * Released on: September 13, 2018
+	 * Released on: February 11, 2019
 	 */
 
 	var Dom7 = function Dom7(arr) {
@@ -1587,6 +1587,9 @@
 	          if (listener && handler.listener === listener) {
 	            el.removeEventListener(event, handler.proxyListener, capture);
 	            handlers.splice(k, 1);
+	          } else if (listener && handler.listener && handler.listener.dom7proxy && handler.listener.dom7proxy === listener) {
+	            el.removeEventListener(event, handler.proxyListener, capture);
+	            handlers.splice(k, 1);
 	          } else if (!listener) {
 	            el.removeEventListener(event, handler.proxyListener, capture);
 	            handlers.splice(k, 1);
@@ -1611,14 +1614,18 @@
 	    (assign = args, eventName = assign[0], listener = assign[1], capture = assign[2]);
 	    targetSelector = undefined;
 	  }
-	  function proxy() {
+	  function onceHandler() {
 	    var eventArgs = [], len = arguments.length;
 	    while ( len-- ) eventArgs[ len ] = arguments[ len ];
 
 	    listener.apply(this, eventArgs);
-	    dom.off(eventName, targetSelector, proxy, capture);
+	    dom.off(eventName, targetSelector, onceHandler, capture);
+	    if (onceHandler.dom7proxy) {
+	      delete onceHandler.dom7proxy;
+	    }
 	  }
-	  return dom.on(eventName, targetSelector, proxy, capture);
+	  onceHandler.dom7proxy = listener;
+	  return dom.on(eventName, targetSelector, onceHandler, capture);
 	}
 	function trigger() {
 	  var args = [], len = arguments.length;
@@ -1963,7 +1970,7 @@
 
 	  return this;
 	}
-	 // eslint-disable-next-line
+	// eslint-disable-next-line
 	function appendTo(parent) {
 	  $(parent).append(this);
 	  return this;
@@ -1988,7 +1995,7 @@
 	  }
 	  return this;
 	}
-	 // eslint-disable-next-line
+	// eslint-disable-next-line
 	function prependTo(parent) {
 	  $(parent).prepend(this);
 	  return this;
@@ -3442,7 +3449,11 @@
 
 	    handler.apply(self, args);
 	    self.off(events, onceHandler);
+	    if (onceHandler.f7proxy) {
+	      delete onceHandler.f7proxy;
+	    }
 	  }
+	  onceHandler.f7proxy = handler;
 	  return self.on(events, onceHandler, priority);
 	};
 
@@ -3454,7 +3465,7 @@
 	      self.eventsListeners[event] = [];
 	    } else if (self.eventsListeners[event]) {
 	      self.eventsListeners[event].forEach(function (eventHandler, index) {
-	        if (eventHandler === handler) {
+	        if (eventHandler === handler || (eventHandler.f7proxy && eventHandler.f7proxy === handler)) {
 	          self.eventsListeners[event].splice(index, 1);
 	        }
 	      });
@@ -7204,6 +7215,13 @@
 	        return router.tabLoad(options.route.route.tab, options);
 	      }
 	      return false;
+	    }
+	    if (!sameParams
+	      && options.route.route.tab
+	      && router.currentRoute.route.tab
+	      && router.currentRoute.parentPath === options.route.parentPath
+	    ) {
+	      return router.tabLoad(options.route.route.tab, options);
 	    }
 	  }
 
@@ -12347,7 +12365,9 @@
 	        return;
 	      }
 	    }
+	    var $pageEl = $(app.navbar.getPageByEl($navbarInnerEl));
 	    $navbarInnerEl.addClass('navbar-inner-large-collapsed');
+	    $pageEl.eq(0).addClass('page-with-navbar-large-collapsed').trigger('page:navbarlargecollapsed');
 	    if (app.theme === 'md') {
 	      $navbarInnerEl.parents('.navbar').addClass('navbar-large-collapsed');
 	    }
@@ -12364,7 +12384,9 @@
 	        return;
 	      }
 	    }
+	    var $pageEl = $(app.navbar.getPageByEl($navbarInnerEl));
 	    $navbarInnerEl.removeClass('navbar-inner-large-collapsed');
+	    $pageEl.eq(0).removeClass('page-with-navbar-large-collapsed').trigger('page:navbarlargeexpanded');
 	    if (app.theme === 'md') {
 	      $navbarInnerEl.parents('.navbar').removeClass('navbar-large-collapsed');
 	    }
@@ -12450,6 +12472,7 @@
 	      if (collapseProgress === 0 && navbarCollapsed) {
 	        app.navbar.expandLargeTitle($navbarInnerEl[0]);
 	        $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+	        $pageEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        $navbarInnerEl[0].style.overflow = '';
 	        if (app.theme === 'md') {
 	          $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
@@ -12458,18 +12481,21 @@
 	        app.navbar.collapseLargeTitle($navbarInnerEl[0]);
 	        $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        $navbarInnerEl[0].style.overflow = '';
+	        $pageEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        if (app.theme === 'md') {
 	          $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        }
 	      } else if ((collapseProgress === 1 && navbarCollapsed) || (collapseProgress === 0 && !navbarCollapsed)) {
 	        $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        $navbarInnerEl[0].style.overflow = '';
+	        $pageEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        if (app.theme === 'md') {
 	          $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        }
 	      } else {
 	        $navbarInnerEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
 	        $navbarInnerEl[0].style.overflow = 'visible';
+	        $pageEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
 	        if (app.theme === 'md') {
 	          $navbarEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
 	        }
@@ -18675,9 +18701,10 @@
 	      var app = this;
 	      app.card.open(data.card);
 	    },
-	    '.card-expandable': function toggleExpandableCard($clickedEl) {
+	    '.card-expandable': function toggleExpandableCard($clickedEl, data, e) {
 	      var app = this;
 	      if ($clickedEl.hasClass('card-opened') || $clickedEl.hasClass('card-opening') || $clickedEl.hasClass('card-closing')) { return; }
+	      if ($(e.target).closest('.card-prevent-open').length) { return; }
 	      app.card.open($clickedEl);
 	    },
 	    '.card-backdrop-in': function onBackdropClick() {
@@ -25496,18 +25523,15 @@
 	    $el[0].f7Searchbar = sb;
 
 	    var $pageEl;
-	    var $navbarEl;
+	    var $navbarEl = $el.parents('.navbar-inner');
 	    if ($el.parents('.page').length > 0) {
 	      $pageEl = $el.parents('.page');
-	    } else {
-	      $navbarEl = $el.parents('.navbar-inner');
-	      if ($navbarEl.length > 0) {
-	        $pageEl = $(app.navbar.getPageByEl($navbarEl[0]));
-	        if (!$pageEl.length) {
-	          var $currentPageEl = $el.parents('.view').find('.page-current');
-	          if ($currentPageEl[0] && $currentPageEl[0].f7Page && $currentPageEl[0].f7Page.navbarEl === $navbarEl[0]) {
-	            $pageEl = $currentPageEl;
-	          }
+	    } else if ($navbarEl.length > 0) {
+	      $pageEl = $(app.navbar.getPageByEl($navbarEl[0]));
+	      if (!$pageEl.length) {
+	        var $currentPageEl = $el.parents('.view').find('.page-current');
+	        if ($currentPageEl[0] && $currentPageEl[0].f7Page && $currentPageEl[0].f7Page.navbarEl === $navbarEl[0]) {
+	          $pageEl = $currentPageEl;
 	        }
 	      }
 	    }
@@ -25674,7 +25698,7 @@
 	      if (sb.params.disableOnBackdropClick && sb.$backdropEl) {
 	        sb.$backdropEl.on('click', disableOnClick);
 	      }
-	      if (sb.expandable && app.theme === 'ios' && sb.view && $navbarEl && sb.$pageEl) {
+	      if (sb.expandable && app.theme === 'ios' && sb.view && $navbarEl.length && sb.$pageEl) {
 	        sb.$pageEl.on('page:beforeout', onPageBeforeOut);
 	        sb.$pageEl.on('page:beforein', onPageBeforeIn);
 	      }
@@ -25691,7 +25715,7 @@
 	      if (sb.params.disableOnBackdropClick && sb.$backdropEl) {
 	        sb.$backdropEl.off('click', disableOnClick);
 	      }
-	      if (sb.expandable && app.theme === 'ios' && sb.view && $navbarEl && sb.$pageEl) {
+	      if (sb.expandable && app.theme === 'ios' && sb.view && $navbarEl.length && sb.$pageEl) {
 	        sb.$pageEl.off('page:beforeout', onPageBeforeOut);
 	        sb.$pageEl.off('page:beforein', onPageBeforeIn);
 	      }
@@ -36150,7 +36174,7 @@
 	};
 
 	/**
-	 * Framework7 4.0.1
+	 * Framework7 4.0.2
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -36158,7 +36182,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: February 8, 2019
+	 * Released on: February 13, 2019
 	 */
 
 	// Install Core Modules & Components
@@ -36479,6 +36503,7 @@
 
 	    // Card
 	    cardOpen: [Boolean, String],
+	    cardPreventOpen: [Boolean, String],
 	    cardClose: [Boolean, String],
 
 	    // Menu
@@ -36555,6 +36580,7 @@
 	    var sortableDisable = props.sortableDisable;
 	    var sortableToggle = props.sortableToggle;
 	    var cardOpen = props.cardOpen;
+	    var cardPreventOpen = props.cardPreventOpen;
 	    var cardClose = props.cardClose;
 	    var menuClose = props.menuClose;
 
@@ -36580,6 +36606,7 @@
 	      'sortable-toggle': sortableToggle || sortableToggle === '',
 	      'card-close': cardClose || cardClose === '',
 	      'card-open': cardOpen || cardOpen === '',
+	      'card-prevent-open': cardPreventOpen || cardPreventOpen === '',
 	      'menu-close': menuClose || menuClose === '',
 	    };
 	  },
@@ -45149,6 +45176,7 @@
 	      return {
 	        hasSubnavbar: false,
 	        hasNavbarLarge: false,
+	        hasNavbarLargeCollapsed: false,
 	        routerPositionClass: '',
 	        routerForceUnstack: false,
 	        routerPageRole: null,
@@ -45231,6 +45259,18 @@
 	  F7Page.prototype.onPageMasterUnstack = function onPageMasterUnstack () {
 	    this.setState({
 	      routerPageMasterStack: false
+	    });
+	  };
+
+	  F7Page.prototype.onPageNavbarLargeCollapsed = function onPageNavbarLargeCollapsed () {
+	    this.setState({
+	      hasNavbarLargeCollapsed: true
+	    });
+	  };
+
+	  F7Page.prototype.onPageNavbarLargeExpanded = function onPageNavbarLargeExpanded () {
+	    this.setState({
+	      hasNavbarLargeCollapsed: false
 	    });
 	  };
 
@@ -45409,7 +45449,8 @@
 	      'no-swipeback': noSwipeback,
 	      'page-master': this.state.routerPageRole === 'master',
 	      'page-master-detail': this.state.routerPageRole === 'detail',
-	      'page-master-stacked': this.state.routerPageMasterStack === true
+	      'page-master-stacked': this.state.routerPageMasterStack === true,
+	      'page-with-navbar-large-collapsed': this.state.hasNavbarLargeCollapsed === true
 	    }, Mixins.colorClasses(props));
 
 	    if (!needsPageContent) {
@@ -45473,6 +45514,8 @@
 	    el.removeEventListener('page:role', self.onPageRole);
 	    el.removeEventListener('page:masterstack', self.onPageMasterStack);
 	    el.removeEventListener('page:masterunstack', self.onPageMasterUnstack);
+	    el.removeEventListener('page:navbarlargecollapsed', self.onPageNavbarLargeCollapsed);
+	    el.removeEventListener('page:navbarlargeexpanded', self.onPageNavbarLargeExpanded);
 	  };
 
 	  F7Page.prototype.componentDidMount = function componentDidMount () {
@@ -45508,6 +45551,8 @@
 	    el.addEventListener('page:role', self.onPageRole);
 	    el.addEventListener('page:masterstack', self.onPageMasterStack);
 	    el.addEventListener('page:masterunstack', self.onPageMasterUnstack);
+	    el.addEventListener('page:navbarlargecollapsed', self.onPageNavbarLargeCollapsed);
+	    el.addEventListener('page:navbarlargeexpanded', self.onPageNavbarLargeExpanded);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -49211,7 +49256,7 @@
 	};
 
 	/**
-	 * Framework7 React 4.0.1
+	 * Framework7 React 4.0.2
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -49219,7 +49264,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: February 8, 2019
+	 * Released on: February 13, 2019
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -50867,7 +50912,7 @@
 	        )
 	      )
 	    ),
-	    react.createElement( Card$1, { title: "New Reelases" },
+	    react.createElement( Card$1, { title: "New Releases:" },
 	      react.createElement( CardContent, { padding: false },
 	        react.createElement( List, { 'medial-list': true },
 	          react.createElement( ListItem, {
