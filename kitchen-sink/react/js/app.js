@@ -36174,7 +36174,7 @@
 	};
 
 	/**
-	 * Framework7 4.0.2
+	 * Framework7 4.0.3
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -49256,7 +49256,7 @@
 	};
 
 	/**
-	 * Framework7 React 4.0.2
+	 * Framework7 React 4.0.3
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
