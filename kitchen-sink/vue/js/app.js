@@ -43096,7 +43096,7 @@
   };
 
   /**
-   * Framework7 4.0.4
+   * Framework7 4.0.5
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -43104,7 +43104,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: February 13, 2019
+   * Released on: February 14, 2019
    */
 
   // Install Core Modules & Components
@@ -54733,7 +54733,7 @@
   };
 
   /**
-   * Framework7 Vue 4.0.4
+   * Framework7 Vue 4.0.5
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -54741,7 +54741,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: February 13, 2019
+   * Released on: February 14, 2019
    */
 
   //
