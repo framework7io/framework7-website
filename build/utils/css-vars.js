@@ -7,8 +7,16 @@ const componentsWithCssVars = require('./components-with-css-vars');
 
 module.exports = (component, info = true, title = 'CSS Variables') => {
   if (componentsWithCssVars.indexOf(component) < 0) return '';
-  const content = fs.readFileSync(`./packages/core/components/${component}/${component}-vars.less`, 'utf8');
+  let content = fs.readFileSync(`./packages/core/components/${component}/${component}-vars.less`, 'utf8');
   let css;
+  content = `
+.ltr(@ruleset) {
+  @ruleset();
+}
+.rtl(@ruleset) {}
+
+${content}
+  `;
   less.render(content, (err, output) => {
     css = output.css;
   });
