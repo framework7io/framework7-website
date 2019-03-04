@@ -1,5 +1,24 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/collect.png"
+  iconRounded: true
+  title: "Collect"
+  author:
+    url: https://collect-app.com/
+    name: Dirk Holtwick
+  links:
+    appstore: https://itunes.apple.com/us/app/collect-all-in-one-place/id1437495207?l=de&ls=1&mt=8
+  description: |
+    Great documents with strong privacy
+
+    No more worries about documents being spread over multiple apps. Collect is capable of handling many types of information and will continuously be extended. The powerful build in rich text editing is the perfect place for noting down your ideas and structure your memories.
+
+  screenshots:
+    - "#{cdn}/i/showcase/collect-1.png"
+    - "#{cdn}/i/showcase/collect-2.png"
+    - "#{cdn}/i/showcase/collect-3.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/b2b-liga.png"
   iconRounded: true
   title: "B2B-Liga"
