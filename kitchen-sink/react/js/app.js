@@ -8250,7 +8250,7 @@
 	    router.emit('routeChanged', router.currentRoute, router.previousRoute, router);
 
 	    // Preload previous page
-	    var preloadPreviousPage = router.params.preloadPreviousPage || (app.theme.ios ? router.params.iosSwipeBack : router.params.mdSwipeBack);
+	    var preloadPreviousPage = router.params.preloadPreviousPage || (app.theme === 'ios' ? router.params.iosSwipeBack : router.params.mdSwipeBack);
 	    if (preloadPreviousPage && router.history[router.history.length - 2] && !isMaster) {
 	      router.back(router.history[router.history.length - 2], { preload: true });
 	    }
@@ -9643,7 +9643,6 @@
 	      console.warn('Framework7: wrong or not complete pushState configuration, trying to guess pushStateRoot');
 	      pushStateRoot = doc.location.pathname.split('index.html')[0];
 	    }
-
 	    if (!pushState || !pushStateOnLoad) {
 	      if (!initUrl) {
 	        initUrl = documentUrl;
@@ -9785,7 +9784,8 @@
 	          animate: pushStateAnimateOnLoad,
 	          once: {
 	            pageAfterIn: function pageAfterIn() {
-	              if (router.history.length > 2) {
+	              var preloadPreviousPage = router.params.preloadPreviousPage || router.params[((app.theme) + "SwipeBack")];
+	              if (preloadPreviousPage && router.history.length > 2) {
 	                router.back({ preload: true });
 	              }
 	            },
@@ -18374,6 +18374,9 @@
 	    var scaleY = maxHeight / cardHeight;
 
 	    var offset = $cardEl.offset();
+	    var pageOffset = $pageEl.offset();
+	    offset.left -= pageOffset.left;
+	    offset.top -= pageOffset.top;
 
 	    var cardLeftOffset;
 	    var cardTopOffset;
@@ -18453,6 +18456,9 @@
 
 	      $cardEl.transform('translate3d(0px, 0px, 0) scale(1)');
 	      offset = $cardEl.offset();
+	      pageOffset = $pageEl.offset();
+	      offset.left -= pageOffset.left;
+	      offset.top -= pageOffset.top;
 
 	      cardLeftOffset = offset.left - (pageWidth - maxWidth) / 2;
 	      if (app.rtl) { cardLeftOffset -= $cardEl[0].scrollLeft; }
@@ -19138,7 +19144,7 @@
 	      }
 	      if ($errorEl.length > 0) {
 	        $itemInputEl.addClass('item-input-with-error-message');
-	        $inputWrapEl.addClass('input-with-eror-message');
+	        $inputWrapEl.addClass('input-with-error-message');
 	      }
 	      $itemInputEl.addClass('item-input-invalid');
 	      $inputWrapEl.addClass('input-invalid');
@@ -23041,7 +23047,7 @@
 	    if (calendar.params.renderToolbar) {
 	      return calendar.params.renderToolbar.call(calendar, calendar);
 	    }
-	    return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        " + (calendar.renderMonthSelector()) + "\n        " + (calendar.renderYearSelector()) + "\n      </div>\n    </div>\n  ").trim();
+	    return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        " + (calendar.params.monthSelector ? calendar.renderMonthSelector() : '') + "\n        " + (calendar.params.yearSelector ? calendar.renderYearSelector() : '') + "\n      </div>\n    </div>\n  ").trim();
 	  };
 	  // eslint-disable-next-line
 	  Calendar.prototype.renderInline = function renderInline () {
@@ -35648,11 +35654,24 @@
 	        if (!text) { return; }
 	        app.tooltip.create({ targetEl: el, text: text });
 	      });
+	      if (app.theme === 'ios' && page.view && page.view.router.separateNavbar && page.$navbarEl && page.$navbarEl.length > 0) {
+	        page.$navbarEl.find('.tooltip-init').each(function (index, el) {
+	          var text = $(el).attr('data-tooltip');
+	          if (!text) { return; }
+	          app.tooltip.create({ targetEl: el, text: text });
+	        });
+	      }
 	    },
 	    pageBeforeRemove: function pageBeforeRemove(page) {
+	      var app = this;
 	      page.$el.find('.tooltip-init').each(function (index, el) {
 	        if (el.f7Tooltip) { el.f7Tooltip.destroy(); }
 	      });
+	      if (app.theme === 'ios' && page.view && page.view.router.separateNavbar && page.$navbarEl && page.$navbarEl.length > 0) {
+	        page.$navbarEl.find('.tooltip-init').each(function (index, el) {
+	          if (el.f7Tooltip) { el.f7Tooltip.destroy(); }
+	        });
+	      }
 	    },
 	  },
 	  vnode: {
@@ -36328,7 +36347,7 @@
 	};
 
 	/**
-	 * Framework7 4.0.6
+	 * Framework7 4.1.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -36336,7 +36355,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: February 25, 2019
+	 * Released on: March 4, 2019
 	 */
 
 	// Install Core Modules & Components
@@ -40269,6 +40288,7 @@
 	    var noStoreData = props.noStoreData;
 	    var noFormStoreData = props.noFormStoreData;
 	    var ignoreStoreData = props.ignoreStoreData;
+	    var outline = props.outline;
 	    var domValue = self.domValue();
 	    var inputHasValue = self.inputHasValue();
 	    var inputEl;
@@ -40379,6 +40399,7 @@
 
 	    if (wrap) {
 	      var wrapClasses = Utils$1.classNames(className, 'input', {
+	        'input-outline': outline,
 	        'input-dropdown': dropdown === 'auto' ? type === 'select' : dropdown
 	      }, Mixins.colorClasses(props));
 	      return react.createElement('div', {
@@ -40559,6 +40580,7 @@
 	  errorMessage: String,
 	  errorMessageForce: Boolean,
 	  info: String,
+	  outline: Boolean,
 	  wrap: {
 	    type: Boolean,
 	    default: true
@@ -41340,6 +41362,7 @@
 	    var errorMessage = props.errorMessage;
 	    var errorMessageForce = props.errorMessageForce;
 	    var info = props.info;
+	    var outline = props.outline;
 	    var label = props.label;
 	    var inlineLabel = props.inlineLabel;
 	    var floatingLabel = props.floatingLabel;
@@ -41435,6 +41458,7 @@
 	        disabled: disabled
 	      }, !wrap && Mixins.colorClasses(props), {
 	        'inline-label': inlineLabel,
+	        'item-input-outline': outline,
 	        'item-input-focused': inputFocused,
 	        'item-input-with-info': !!info || self.slots.info && self.slots.info.length,
 	        'item-input-with-value': inputHasValue,
@@ -41652,6 +41676,7 @@
 	  errorMessage: String,
 	  errorMessageForce: Boolean,
 	  info: String,
+	  outline: Boolean,
 	  label: [String, Number],
 	  inlineLabel: Boolean,
 	  floatingLabel: Boolean
@@ -45339,7 +45364,7 @@
 	    })();
 
 	    (function () {
-	      Utils$1.bindMethods(this$1, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack']);
+	      Utils$1.bindMethods(this$1, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack', 'onPageNavbarLargeCollapsed', 'onPageNavbarLargeExpanded']);
 	    })();
 	  }
 
@@ -49410,7 +49435,7 @@
 	};
 
 	/**
-	 * Framework7 React 4.0.6
+	 * Framework7 React 4.1.0
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -49418,7 +49443,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: February 25, 2019
+	 * Released on: March 4, 2019
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -51099,7 +51124,7 @@
 	      react.createElement( 'p', null, "In addition to usual ", react.createElement( 'a', { href: "/cards/" }, "Cards"), " there are also Expandable Cards that allow to store more information and illustrations about particular subject." )
 	    ),
 
-	    react.createElement( 'div', { classNmae: "demo-expandable-cards" },
+	    react.createElement( 'div', { className: "demo-expandable-cards" },
 	      react.createElement( Card$1, { expandable: true },
 	        react.createElement( CardContent, { padding: false },
 	          react.createElement( 'div', { className: "bg-color-red", style: {height: '300px'} },
@@ -51142,7 +51167,7 @@
 
 	      react.createElement( Card$1, { expandable: true },
 	        react.createElement( CardContent, { padding: false },
-	          react.createElement( 'div', { style: {background: 'url(./img/beach.jpg) no-repeat center bottom', 'background-size': 'cover', height: '240px'} }),
+	          react.createElement( 'div', { style: {background: 'url(./img/beach.jpg) no-repeat center bottom', backgroundSize: 'cover', height: '240px'} }),
 	          react.createElement( Link, { cardClose: true, color: "white", className: "card-opened-fade-in", style: {position: 'absolute', right: '15px', top: '15px'}, iconF7: "close_round_fill" }),
 	          react.createElement( CardHeader, { textColor: "black", style: {height: '60px'} }, "Beach, Goa"),
 	          react.createElement( 'div', { className: "card-content-padding" },
@@ -51157,7 +51182,7 @@
 
 	      react.createElement( Card$1, { expandable: true },
 	        react.createElement( CardContent, { padding: false },
-	          react.createElement( 'div', { style: {background: 'url(./img/monkey.jpg) no-repeat center top', 'background-size': 'cover', height: '400px'} },
+	          react.createElement( 'div', { style: {background: 'url(./img/monkey.jpg) no-repeat center top', backgroundSize: 'cover', height: '400px'} },
 	            react.createElement( CardHeader, { textColor: "white" }, "Monkeys"),
 	            react.createElement( Link, { cardClose: true, color: "white", className: "card-opened-fade-in", style: {position: 'absolute', right: '15px', top: '15px'}, iconF7: "close_round_fill" })
 	          ),
@@ -53001,6 +53026,34 @@
 
 	      react.createElement( ListInput, {
 	        label: "Resizable", floatingLabel: true, type: "textarea", resizable: true, placeholder: "Bio" },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
+	      )
+	    ),
+
+	    react.createElement( BlockTitle, null, "Floating Labels + Outline Inputs" ),
+	    react.createElement( List, { noHairlinesMd: true },
+	      react.createElement( ListInput, {
+	        outline: true, label: "Name", floatingLabel: true, type: "text", placeholder: "Your name", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
+	      ),
+	      react.createElement( ListInput, {
+	        outline: true, label: "Password", floatingLabel: true, type: "password", placeholder: "Your password", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
+	      ),
+	      react.createElement( ListInput, {
+	        outline: true, label: "E-mail", floatingLabel: true, type: "email", placeholder: "Your e-mail", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
+	      ),
+	      react.createElement( ListInput, {
+	        outline: true, label: "URL", floatingLabel: true, type: "url", placeholder: "URL", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
+	      ),
+	      react.createElement( ListInput, {
+	        outline: true, label: "Phone", floatingLabel: true, type: "tel", placeholder: "Your phone number", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
+	      ),
+	      react.createElement( ListInput, {
+	        outline: true, label: "Bio", floatingLabel: true, type: "textarea", resizable: true, placeholder: "Bio", clearButton: true },
 	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      )
 	    ),

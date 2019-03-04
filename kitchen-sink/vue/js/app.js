@@ -15172,7 +15172,7 @@
       router.emit('routeChanged', router.currentRoute, router.previousRoute, router);
 
       // Preload previous page
-      var preloadPreviousPage = router.params.preloadPreviousPage || (app.theme.ios ? router.params.iosSwipeBack : router.params.mdSwipeBack);
+      var preloadPreviousPage = router.params.preloadPreviousPage || (app.theme === 'ios' ? router.params.iosSwipeBack : router.params.mdSwipeBack);
       if (preloadPreviousPage && router.history[router.history.length - 2] && !isMaster) {
         router.back(router.history[router.history.length - 2], { preload: true });
       }
@@ -16565,7 +16565,6 @@
         console.warn('Framework7: wrong or not complete pushState configuration, trying to guess pushStateRoot');
         pushStateRoot = doc.location.pathname.split('index.html')[0];
       }
-
       if (!pushState || !pushStateOnLoad) {
         if (!initUrl) {
           initUrl = documentUrl;
@@ -16707,7 +16706,8 @@
             animate: pushStateAnimateOnLoad,
             once: {
               pageAfterIn: function pageAfterIn() {
-                if (router.history.length > 2) {
+                var preloadPreviousPage = router.params.preloadPreviousPage || router.params[((app.theme) + "SwipeBack")];
+                if (preloadPreviousPage && router.history.length > 2) {
                   router.back({ preload: true });
                 }
               },
@@ -25296,6 +25296,9 @@
       var scaleY = maxHeight / cardHeight;
 
       var offset = $cardEl.offset();
+      var pageOffset = $pageEl.offset();
+      offset.left -= pageOffset.left;
+      offset.top -= pageOffset.top;
 
       var cardLeftOffset;
       var cardTopOffset;
@@ -25375,6 +25378,9 @@
 
         $cardEl.transform('translate3d(0px, 0px, 0) scale(1)');
         offset = $cardEl.offset();
+        pageOffset = $pageEl.offset();
+        offset.left -= pageOffset.left;
+        offset.top -= pageOffset.top;
 
         cardLeftOffset = offset.left - (pageWidth - maxWidth) / 2;
         if (app.rtl) { cardLeftOffset -= $cardEl[0].scrollLeft; }
@@ -26060,7 +26066,7 @@
         }
         if ($errorEl.length > 0) {
           $itemInputEl.addClass('item-input-with-error-message');
-          $inputWrapEl.addClass('input-with-eror-message');
+          $inputWrapEl.addClass('input-with-error-message');
         }
         $itemInputEl.addClass('item-input-invalid');
         $inputWrapEl.addClass('input-invalid');
@@ -29963,7 +29969,7 @@
       if (calendar.params.renderToolbar) {
         return calendar.params.renderToolbar.call(calendar, calendar);
       }
-      return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        " + (calendar.renderMonthSelector()) + "\n        " + (calendar.renderYearSelector()) + "\n      </div>\n    </div>\n  ").trim();
+      return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        " + (calendar.params.monthSelector ? calendar.renderMonthSelector() : '') + "\n        " + (calendar.params.yearSelector ? calendar.renderYearSelector() : '') + "\n      </div>\n    </div>\n  ").trim();
     };
     // eslint-disable-next-line
     Calendar.prototype.renderInline = function renderInline () {
@@ -42570,11 +42576,24 @@
           if (!text) { return; }
           app.tooltip.create({ targetEl: el, text: text });
         });
+        if (app.theme === 'ios' && page.view && page.view.router.separateNavbar && page.$navbarEl && page.$navbarEl.length > 0) {
+          page.$navbarEl.find('.tooltip-init').each(function (index, el) {
+            var text = $(el).attr('data-tooltip');
+            if (!text) { return; }
+            app.tooltip.create({ targetEl: el, text: text });
+          });
+        }
       },
       pageBeforeRemove: function pageBeforeRemove(page) {
+        var app = this;
         page.$el.find('.tooltip-init').each(function (index, el) {
           if (el.f7Tooltip) { el.f7Tooltip.destroy(); }
         });
+        if (app.theme === 'ios' && page.view && page.view.router.separateNavbar && page.$navbarEl && page.$navbarEl.length > 0) {
+          page.$navbarEl.find('.tooltip-init').each(function (index, el) {
+            if (el.f7Tooltip) { el.f7Tooltip.destroy(); }
+          });
+        }
       },
     },
     vnode: {
@@ -43250,7 +43269,7 @@
   };
 
   /**
-   * Framework7 4.0.6
+   * Framework7 4.1.0
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -43258,7 +43277,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: February 25, 2019
+   * Released on: March 4, 2019
    */
 
   // Install Core Modules & Components
@@ -46483,6 +46502,7 @@
       errorMessage: String,
       errorMessageForce: Boolean,
       info: String,
+      outline: Boolean,
       wrap: {
         type: Boolean,
         default: true
@@ -46554,6 +46574,7 @@
       var noStoreData = props.noStoreData;
       var noFormStoreData = props.noFormStoreData;
       var ignoreStoreData = props.ignoreStoreData;
+      var outline = props.outline;
       var domValue = self.domValue();
       var inputHasValue = self.inputHasValue();
       var inputEl;
@@ -46676,6 +46697,7 @@
 
       if (wrap) {
         var wrapClasses = Utils$1.classNames(className, 'input', {
+          'input-outline': outline,
           'input-dropdown': dropdown === 'auto' ? type === 'select' : dropdown
         }, Mixins.colorClasses(props));
         return _h('div', {
@@ -47508,6 +47530,7 @@
       errorMessage: String,
       errorMessageForce: Boolean,
       info: String,
+      outline: Boolean,
       label: [String, Number],
       inlineLabel: Boolean,
       floatingLabel: Boolean
@@ -47580,6 +47603,7 @@
       var errorMessage = props.errorMessage;
       var errorMessageForce = props.errorMessageForce;
       var info = props.info;
+      var outline = props.outline;
       var label = props.label;
       var inlineLabel = props.inlineLabel;
       var floatingLabel = props.floatingLabel;
@@ -47678,6 +47702,7 @@
           disabled: disabled
         }, !wrap && Mixins.colorClasses(props), {
           'inline-label': inlineLabel,
+          'item-input-outline': outline,
           'item-input-focused': inputFocused,
           'item-input-with-info': !!info || self.$slots.info && self.$slots.info.length,
           'item-input-with-value': inputHasValue,
@@ -51399,7 +51424,7 @@
     },
 
     created: function created() {
-      Utils$1.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack']);
+      Utils$1.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack', 'onPageNavbarLargeCollapsed', 'onPageNavbarLargeExpanded']);
     },
 
     mounted: function mounted() {
@@ -54887,7 +54912,7 @@
   };
 
   /**
-   * Framework7 Vue 4.0.6
+   * Framework7 Vue 4.1.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -54895,7 +54920,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: February 25, 2019
+   * Released on: March 4, 2019
    */
 
   //
@@ -56974,7 +56999,7 @@
   var __vue_script__$r = script$r;
 
   /* template */
-  var __vue_render__$r = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Form Inputs","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Full Layout / Inline Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"inline-labels":"","no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Gender","type":"select","defaultValue":"Male","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Birthday","type":"date","defaultValue":"2014-04-30","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Date time","type":"datetime-local","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Range","input":false}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-range',{attrs:{"slot":"input","value":50,"min":0,"max":100,"step":1},slot:"input"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Textarea","type":"textarea","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Full Layout / Stacked Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Gender","type":"select","defaultValue":"Male","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Birthday","type":"date","defaultValue":"2014-04-30","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Date time","type":"datetime-local","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Range","input":false}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-range',{attrs:{"slot":"input","value":50,"min":0,"max":100,"step":1},slot:"input"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Textarea","type":"textarea","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Floating Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","floating-label":"","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","floating-label":"","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","floating-label":"","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","floating-label":"","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","floating-label":"","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","floating-label":"","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Validation + Additional Info")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","info":"Default validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Fruit","type":"text","placeholder":"Type 'apple' or 'banana'","required":"","validate":"","pattern":"apple|banana","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('span',{attrs:{"slot":"info"},slot:"info"},[_vm._v("Pattern validation ("),_c('b',[_vm._v("apple|banana")]),_vm._v(")")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","info":"Default e-mail validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"Your URL","info":"Default URL validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Number","type":"text","placeholder":"Enter number","info":"With custom error message","error-message":"Only numbers please!","required":"","validate":"","pattern":"[0-9]*","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Icon + Input")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Label + Input")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Inputs")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inputs + Additional Info")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","info":"Full name please","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","info":"8 characters minimum","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","info":"Your work e-mail address","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","info":"Your website URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Inputs Inset")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1)],1)};
+  var __vue_render__$r = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Form Inputs","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Full Layout / Inline Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"inline-labels":"","no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Gender","type":"select","defaultValue":"Male","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Birthday","type":"date","defaultValue":"2014-04-30","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Date time","type":"datetime-local","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Range","input":false}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-range',{attrs:{"slot":"input","value":50,"min":0,"max":100,"step":1},slot:"input"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Textarea","type":"textarea","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Full Layout / Stacked Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Gender","type":"select","defaultValue":"Male","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Birthday","type":"date","defaultValue":"2014-04-30","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Date time","type":"datetime-local","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Range","input":false}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-range',{attrs:{"slot":"input","value":50,"min":0,"max":100,"step":1},slot:"input"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Textarea","type":"textarea","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Floating Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","floating-label":"","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","floating-label":"","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","floating-label":"","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","floating-label":"","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","floating-label":"","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","floating-label":"","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Floating Labels + Outline Inputs")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"outline":"","label":"Name","floating-label":"","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"outline":"","label":"Password","floating-label":"","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"outline":"","label":"E-mail","floating-label":"","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"outline":"","label":"URL","floating-label":"","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"outline":"","label":"Phone","floating-label":"","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"outline":"","label":"Bio","floating-label":"","type":"textarea","resizable":"","placeholder":"Bio","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Validation + Additional Info")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","info":"Default validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Fruit","type":"text","placeholder":"Type 'apple' or 'banana'","required":"","validate":"","pattern":"apple|banana","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('span',{attrs:{"slot":"info"},slot:"info"},[_vm._v("Pattern validation ("),_c('b',[_vm._v("apple|banana")]),_vm._v(")")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","info":"Default e-mail validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"Your URL","info":"Default URL validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Number","type":"text","placeholder":"Enter number","info":"With custom error message","error-message":"Only numbers please!","required":"","validate":"","pattern":"[0-9]*","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Icon + Input")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Label + Input")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Inputs")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inputs + Additional Info")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","info":"Full name please","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","info":"8 characters minimum","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","info":"Your work e-mail address","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","info":"Your website URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Inputs Inset")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1)],1)};
   var __vue_staticRenderFns__$r = [];
 
     /* style */
