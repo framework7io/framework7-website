@@ -14,9 +14,9 @@
     No more worries about documents being spread over multiple apps. Collect is capable of handling many types of information and will continuously be extended. The powerful build in rich text editing is the perfect place for noting down your ideas and structure your memories.
 
   screenshots:
-    - "#{cdn}/i/showcase/collect-1.png"
-    - "#{cdn}/i/showcase/collect-2.png"
-    - "#{cdn}/i/showcase/collect-3.png"
+    - "#{cdn}/i/showcase/collect-1.jpg"
+    - "#{cdn}/i/showcase/collect-2.jpg"
+    - "#{cdn}/i/showcase/collect-3.jpg"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/b2b-liga.png"
