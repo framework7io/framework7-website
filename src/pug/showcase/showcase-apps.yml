@@ -1111,7 +1111,7 @@
   - "#{cdn}/i/showcase/cfb-3.png"
 ##########
 -
-  iconUrl: "#{cdn}/i/showcase/tpg.jpg"
+  iconUrl: "#{cdn}/i/showcase/tpg.png"
   iconRounded: true
   title: "TPGwidget - raccourcis pour arrêts TPG"
   author:
