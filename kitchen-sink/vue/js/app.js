@@ -11909,7 +11909,9 @@
         // Upon tapping, we give the scrolling time to stop, then we grab the element based where the user tapped.
         setTimeout(function () {
           targetElement = doc.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-          targetElement.dispatchEvent(evt);
+          if (targetElement) {
+            targetElement.dispatchEvent(evt);
+          }
         }, 10);
       } else {
         targetElement.dispatchEvent(evt);
@@ -13129,7 +13131,7 @@
           if (isSliding) {
             var transformTarget = el;
             if (isLeft && previousNavBackIconText.length && params.iosAnimateNavbarBackIcon) {
-              var textEl = { el: activeNavBackIconText[0] };
+              var textEl = { el: previousNavBackIconText[0] };
               transformTarget = textEl;
               els.push(textEl);
             }
@@ -24832,6 +24834,8 @@
     };
 
     Panel.prototype.destroy = function destroy () {
+      var obj;
+
       var panel = this;
       var app = panel.app;
 
@@ -24846,6 +24850,15 @@
       if (panel.resizeHandler) {
         app.off('resize', panel.resizeHandler);
       }
+
+      if (panel.$el.hasClass('panel-visible-by-breakpoint')) {
+        var $viewEl = $(panel.getViewEl());
+        panel.$el.css('display', '').removeClass('panel-visible-by-breakpoint panel-active');
+        $viewEl.css(( obj = {}, obj[("margin-" + (panel.side))] = '', obj ));
+        app.emit('local::breakpoint panelBreakpoint');
+        panel.$el.trigger('panel:breakpoint', panel);
+      }
+
       panel.$el.trigger('panel:destroy', panel);
       panel.emit('local::destroy panelDestroy');
       delete app.panel[panel.side];
@@ -25248,7 +25261,10 @@
       if (prevented) { return; }
 
       var $backropEl;
-      if (app.params.card.backrop) {
+      if ($cardEl.attr('data-backdrop-el')) {
+        $backropEl = $($cardEl.attr('data-backdrop-el'));
+      }
+      if (!$backropEl && app.params.card.backrop) {
         $backropEl = $cardEl.parents('.page-content').find('.card-backdrop');
         if (!$backropEl.length) {
           $backropEl = $('<div class="card-backdrop"></div>');
@@ -25304,8 +25320,19 @@
       var cardTopOffset;
 
       if (hasTransform) {
-        cardLeftOffset = $cardEl[0].offsetLeft;
-        cardTopOffset = $cardEl[0].offsetTop - $cardEl.parents('.page-content')[0].scrollTop;
+        var transformValues = currTransform
+          .replace(/matrix\(|\)/g, '')
+          .split(',')
+          .map(function (el) { return el.trim(); });
+        if (transformValues && transformValues.length > 1) {
+          var scale = parseFloat(transformValues[0]);
+          cardLeftOffset = offset.left - cardWidth * (1 - scale) / 2;
+          cardTopOffset = offset.top - $pageEl.offset().top - cardHeight * (1 - scale) / 2;
+          if (app.rtl) { cardLeftOffset -= $cardEl[0].scrollLeft; }
+        } else {
+          cardLeftOffset = $cardEl[0].offsetLeft;
+          cardTopOffset = $cardEl[0].offsetTop - $cardEl.parents('.page-content')[0].scrollTop;
+        }
       } else {
         cardLeftOffset = offset.left;
         cardTopOffset = offset.top - $pageEl.offset().top;
@@ -25517,6 +25544,9 @@
       var $toolbarEl;
 
       var $backropEl;
+      if ($cardEl.attr('data-backdrop-el')) {
+        $backropEl = $($cardEl.attr('data-backdrop-el'));
+      }
       if (app.params.card.backrop) {
         $backropEl = $cardEl.parents('.page-content').find('.card-backdrop');
       }
@@ -25543,7 +25573,6 @@
         }
       }
       $pageEl.removeClass('page-with-card-opened');
-
 
       if ($backropEl && $backropEl.length) {
         $backropEl.removeClass('card-backdrop-in').addClass('card-backdrop-out');
@@ -25924,19 +25953,19 @@
         contentType: contentType,
         data: data,
         beforeSend: function beforeSend(xhr) {
-          $formEl.trigger('formajax:beforesend', data, xhr);
+          $formEl.trigger('formajax:beforesend', { data: data, xhr: xhr });
           app.emit('formAjaxBeforeSend', $formEl[0], data, xhr);
         },
         error: function error(xhr) {
-          $formEl.trigger('formajax:error', data, xhr);
+          $formEl.trigger('formajax:error', { data: data, xhr: xhr });
           app.emit('formAjaxError', $formEl[0], data, xhr);
         },
         complete: function complete(xhr) {
-          $formEl.trigger('formajax:complete', data, xhr);
+          $formEl.trigger('formajax:complete', { data: data, xhr: xhr });
           app.emit('formAjaxComplete', $formEl[0], data, xhr);
         },
         success: function success(response, status, xhr) {
-          $formEl.trigger('formajax:success', data, xhr);
+          $formEl.trigger('formajax:success', { data: data, xhr: xhr });
           app.emit('formAjaxSuccess', $formEl[0], data, xhr);
         },
       });
@@ -41619,7 +41648,9 @@
       }
       function onInputBlur() {
         if (ac.$dropdownEl.find('label.active-state').length > 0) { return; }
-        ac.close();
+        setTimeout(function () {
+          ac.close();
+        }, 0);
       }
       function onResize() {
         ac.positionDropdown();
@@ -41631,7 +41662,7 @@
           ac.$inputEl.blur();
         }
       }
-      function onDropdownclick() {
+      function onDropdownClick() {
         var $clickedEl = $(this);
         var clickedItem;
         for (var i = 0; i < ac.items.length; i += 1) {
@@ -41647,7 +41678,6 @@
         }
         ac.value = [clickedItem];
         ac.emit('local::change autocompleteChange', [clickedItem]);
-
         ac.close();
       }
 
@@ -41686,11 +41716,11 @@
         }
       };
       ac.attachDropdownEvents = function attachDropdownEvents() {
-        ac.$dropdownEl.on('click', 'label', onDropdownclick);
+        ac.$dropdownEl.on('click', 'label', onDropdownClick);
         app.on('resize', onResize);
       };
       ac.detachDropdownEvents = function detachDropdownEvents() {
-        ac.$dropdownEl.off('click', 'label', onDropdownclick);
+        ac.$dropdownEl.off('click', 'label', onDropdownClick);
         app.off('resize', onResize);
       };
 
@@ -43269,7 +43299,7 @@
   };
 
   /**
-   * Framework7 4.1.0
+   * Framework7 4.1.1
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -43277,7 +43307,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: March 4, 2019
+   * Released on: March 14, 2019
    */
 
   // Install Core Modules & Components
@@ -54912,7 +54942,7 @@
   };
 
   /**
-   * Framework7 Vue 4.1.0
+   * Framework7 Vue 4.1.1
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -54920,7 +54950,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: March 4, 2019
+   * Released on: March 14, 2019
    */
 
   //
