@@ -1,0 +1,38 @@
+extends _layout
+block content
+  .appbar
+    .appbar-inner
+      <div class="left">
+        <a href="#" class="button button-small panel-toggle display-flex" data-panel="left">
+          <i class="f7-icons">bars</i>
+        </a>
+        <a href="#" class="button button-small display-flex margin-left-half">
+          <i class="f7-icons">reply_fill</i>
+        </a>
+        <a href="#" class="button button-small display-flex margin-left-half">
+          <i class="f7-icons">forward_fill</i>
+        </a>
+      </div>
+      <div class="right">
+        <div class="searchbar searchbar-inline">
+          <div class="searchbar-input-wrap">
+            <input type="text" placeholder="Search app">
+            <i class="searchbar-icon"></i>
+            <div class="input-clear-button"></div>
+          </div>
+        </div>
+      </div>
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          .title Appbar
+      .page-content
+        .block.block-strong
+          p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed sagittis dui. Fusce nulla massa, scelerisque vitae auctor in, luctus in ipsum. Sed eu lectus vel magna malesuada lacinia. Ut at vestibulum sem. In semper, arcu pulvinar volutpat fermentum, felis magna fringilla felis, nec volutpat nisi nunc quis ante. Fusce elementum egestas tortor ut porta. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis id commodo elit. Sed massa dui, laoreet a orci sed, egestas vehicula tellus. Nulla pulvinar ornare justo sed finibus. Aliquam hendrerit dui at nulla eleifend, quis feugiat enim aliquam. Nulla facilisi. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+
+
+
+block scripts
+  script.
+    var app = new Framework7();
