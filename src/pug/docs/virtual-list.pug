@@ -104,7 +104,7 @@ block content
           td height
           td number or function(item)
           td
-          td If <code>number</code> - list item height in px. If <code>function</code> then function should return item height. By default equals to <code>44</code> for iOS theme and <code>48</code> for MD theme
+          td If <code>number</code> - list item height in px. If <code>function</code> then function should return item height. By default equals to <code>44</code> for iOS theme, <code>48</code> for MD theme, <code>38</code> for Aurora theme.
         tr
           td itemTemplate
           td string<br>function
@@ -322,7 +322,7 @@ block content
                           <i class="searchbar-icon"></i>
                           <span class="input-clear-button"></span>
                         </div>
-                        <span class="searchbar-disable-button">Cancel</span>
+                        <span class="searchbar-disable-button if-not-aurora">Cancel</span>
                       </div>
                     </form>
                   </div>
@@ -376,7 +376,7 @@ block content
                   '</a>' +
                 '</li>',
               // Item height
-              height: app.theme === 'ios' ? 63 : 73,
+              height: app.theme === 'ios' ? 63 : (app.theme === 'md' ? 73 : 46),
             });
 
 

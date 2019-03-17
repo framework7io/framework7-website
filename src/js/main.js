@@ -17,8 +17,8 @@ $('.home-header .theme-switch a').click(function onClick(e) {
   e.preventDefault();
   const url = $(this).attr('href');
   $('header .phone iframe').attr('src', url);
-  $('.theme-switch a').toggleClass('active');
-  $('header .phone').toggleClass('phone-android');
+  $('.home-header .theme-switch a').removeClass('active');
+  $(this).addClass('active');
   $('header .phone .fullscreen').attr('href', url);
 });
 $('.home-header .mobile-preview-button').click((e) => {

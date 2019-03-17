@@ -104,28 +104,31 @@ b.ios-only {
     left: 50%;
     bottom: 100%;
     margin-bottom: 10px;
-    height: 20px;
-    line-height: 20px;
     font-size: 0;
     white-space: nowrap;
     transform: translateX(-50%);
     a {
-      width: 80px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      width: 60px;
       text-align: center;
       background: #f3f3f3;
       color: #777;
-      font-weight: bold;
-      display: inline-block;
-      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
       transition: 200ms;
       cursor: pointer;
       text-decoration: none;
+      i {
+        font-size: 18px;
+      }
       &:first-child {
-        border-radius: 10px 0 0 10px;
+        border-radius: 20px 0 0 20px;
       }
       &:last-child {
-        border-radius: 0 10px 10px 0;
+        border-radius: 0 20px 20px 0;
       }
       &:hover {
         background: rgba(red(@redColor), green(@redColor), blue(@redColor), 0.2);
@@ -573,7 +576,8 @@ ul.method-parameters {
       font-weight: 500;
     }
     .mobile-preview-ios,
-    .mobile-preview-md {
+    .mobile-preview-md,
+    .mobile-preview-aurora {
       &:before {
         font-family: 'Framework7 Icons';
         font-size: 20px;
@@ -583,25 +587,25 @@ ul.method-parameters {
         margin-right: 5px;
         line-height: 20px;
       }
+      &:after {
+        content: 'Preview';
+        line-height: 1;
+      }
     }
     .mobile-preview-ios {
       &:before {
         content:'logo_ios';
-      }
-      &:after {
-        content: 'Preview';
-        line-height: 1;
       }
     }
     .mobile-preview-md {
       &:before {
         content:'logo_android';
       }
-      &:after {
-        content: 'Preview';
-        line-height: 1;
+    }
+    .mobile-preview-aurora {
+      &:before {
+        content:'device_desktop';
       }
     }
-
   }
 }

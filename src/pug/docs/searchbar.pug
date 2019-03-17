@@ -95,7 +95,7 @@ block content
                 <div class="right">
                   <!-- Link to enable searchbar -->
                   <a class="link icon-only searchbar-enable" data-searchbar=".searchbar">
-                    <i class="icon f7-icons ios-only">search_strong</i>
+                    <i class="icon f7-icons if-not-md">search</i>
                     <i class="icon material-icons md-only">search</i>
                   </a>
                 </div>
@@ -120,6 +120,20 @@ block content
     ul
       li <code><b>&lt;a class="link icon-only searchbar-enable" data-searchbar=".searchbar"&gt;</b></code> - link to enable/expand Searchbar. Optional or can be placed in any other place. <code><b>data-searchbar</b></code> attribute contains CSS selector of Searchbar to enable.
       li Searchbar has additional <code><b>searchbar-expandable</b></code> class. It is required for expandable Searchbar to work
+
+    h3 Inline Searchbar
+    p Inline Searchbar is designed to be used inside of other components, specifically inside of <a href="./appbar.html">Appbar</a>. It has simplified layout - without <code>.searchbar-inner</code>, and it is recommended to use it without disable button.
+    p We just need to add <code>searchbar-inline</code> class to Searchbar to make it inline
+    :code(lang="html")
+      <!-- Additional "searchbar-inline" class -->
+      <div class="searchbar searchbar-inline">
+        <div class="searchbar-input-wrap">
+          <input type="search" placeholder="Search">
+          <i class="searchbar-icon"></i>
+          <span class="input-clear-button"></span>
+        </div>
+      </div>
+
     h2 Searchbar Behavior Classes
     p There are also several CSS classes that can be added to elements that will define their behavior when Searchbar is active:
     ul
@@ -306,8 +320,8 @@ block content
         tr
           td backdrop
           td boolean
-          td true
-          td Enables searchbar backdrop element
+          td
+          td Enables searchbar backdrop element. By default, disabled for Aurora theme
         tr
           td backdropEl
           td string<br>HTMLElement
@@ -560,7 +574,7 @@ block content
                           <i class="searchbar-icon"></i>
                           <span class="input-clear-button"></span>
                         </div>
-                        <span class="searchbar-disable-button">Cancel</span>
+                        <span class="searchbar-disable-button if-not-aurora">Cancel</span>
                       </div>
                     </form>
                   </div>

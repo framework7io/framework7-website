@@ -72,11 +72,17 @@ block content
           td edge
           td <code>true</code> for Edge browser
         tr
+          td electron
+          td <code>true</code> when app is running under Electron environment
+        tr
           td webView
-          td <code>true</code> if app runs in web view - webapp installed to home screen
+          td <code>true</code> if app runs in web view - webapp installed to home screen, valid for desktop PWAs installed to desktop
+        tr
+          td standalone
+          td Same as <code>webView</code>
         tr
           td os
-          td Contains OS can be <code>ios</code>, <code>android</code> or <code>windows</code> (for Windows Phone)
+          td Contains OS can be <code>ios</code>, <code>android</code> or <code>windowsPhone</code> (for Windows Phone)
         tr
           td osVersion
           td Contains OS version, e.g. <code>11.2.0</code>

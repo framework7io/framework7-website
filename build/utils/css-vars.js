@@ -10,6 +10,21 @@ module.exports = (component, info = true, title = 'CSS Variables') => {
   let content = fs.readFileSync(`./packages/core/components/${component}/${component}-vars.less`, 'utf8');
   let css;
   content = `
+.ios-vars(@ruleset) {
+  .ios {
+    @ruleset();
+  }
+}
+.md-vars(@ruleset) {
+  .md {
+    @ruleset();
+  }
+}
+.aurora-vars(@ruleset) {
+  .aurora {
+    @ruleset();
+  }
+}
 .ltr(@ruleset) {
   @ruleset();
 }
