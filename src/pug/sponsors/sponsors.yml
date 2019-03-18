@@ -20,6 +20,10 @@ silver:
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
 -
+  title: ActiveWaiter
+  link: https://www.activewaiter.com/
+  imageUrl: "#{cdn}/i/sponsors/activewaiter.png"
+-
   title: Wappler - The Visual Web App Creator
   link: https://wappler.io/
   imageUrl: "#{cdn}/i/sponsors/wappler.png"
