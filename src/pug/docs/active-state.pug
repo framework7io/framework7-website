@@ -22,3 +22,13 @@ block content
       .my-button.active-state {
           color: blue;
       }
+    p You can control which elements will receive <code>active-state</code> class in <code>touch.activeStateElements</code> #[a(href="app.html#app-parameters") app parameters].
+    p There are some situations when you may have nested active-state elements. You may prevent setting active state on parent element by adding <code>prevent-active-state-propagation</code> class to child active-state element:
+
+    :code(lang="html")
+      <div class="card card-expandable">
+        <div class="card-content">
+          <!-- Tap on button will prevent setting active-state on parent card -->
+          <a class="button prevent-active-state-propagation">...</a>
+        </div>
+      </div>

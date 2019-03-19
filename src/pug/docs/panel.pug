@@ -140,6 +140,17 @@ block content
           |  - <span class="parameter-type">boolean</span>. Should it be closed with animation or not. Optional, by default is <code>true</code>
     .method-wrap
       p
+        span.method app.panel.toggle(<span>side, animate</span>)
+        | - toggle panel
+      ul.method-parameters
+        li
+          span.parameter side
+          |  - <span class="parameter-type">string</span>. Panel to toggle. Optional, by default will toggle any opened panel.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Should it be opened/closed with animation or not. Optional, by default is <code>true</code>
+    .method-wrap
+      p
         span.method app.panel.create(<span>parameters</span>)
         | - create new panel instance
       ul.method-parameters
@@ -262,6 +273,13 @@ block content
                 span.parameter animate
                 |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation or not
         tr
+          td panel.toggle(<span>animate</span>)
+          td Toggle panel. Where
+            ul.method-parameters
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation or not
+        tr
           td panel.destroy()
           td Destroy panel instance
         tr
@@ -288,7 +306,7 @@ block content
         li
           p To close panel we need to add <code><b>panel-close</b></code> class to any HTML element (prefered to link)
         li
-          p If you have two panels in app, such link will open/close Left panel by default
+          p To toggle panel we need to add <code><b>panel-toggle</b></code> class to any HTML element (prefered to link)
         li
           p If you want to specify which panel should opened/closed, then it could be done via additional <code><b>data-panel="left</b></code> attribute on this HTML element
     p According to above note:

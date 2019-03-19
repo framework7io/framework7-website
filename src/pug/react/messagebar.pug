@@ -213,7 +213,7 @@ block content
             <div slot="after-inner">After inner</div>
             <div slot="before-area">Before textarea</div>
             <div slot="after-area">After textarea</div>
-            <Icon ios="f7:arrow_up_fill" md="material:send" slot="send-link"></Icon>
+            <Icon ios="f7:arrow_up_fill" aurora="f7:arrow_up_fill" md="material:send" slot="send-link"></Icon>
             <div>Default slot</div>
           </Messagebar>
     p Renders to:
@@ -352,12 +352,14 @@ block content
                     >
                       <Link
                         iconIos="f7:camera_fill"
+                        iconAurora="f7:camera_fill"
                         iconMd="material:camera_alt"
                         slot="inner-start"
                         onClick={() => {this.setState({sheetVisible: !this.state.sheetVisible})}}
                       ></Link>
                       <Link
                         iconIos="f7:arrow_up_fill"
+                        iconAurora="f7:arrow_up_fill"
                         iconMd="material:send"
                         slot="inner-end"
                         onClick={this.sendMessage.bind(this)}

@@ -205,10 +205,11 @@ block content
           td $theme
           td object
           td
-            p Object with <code>md</code> and <code>ios</code> boolean properties which indicating current theme. For example:
+            p Object with <code>md</code>, <code>ios</code> and <code>aurora</code> boolean properties which indicating current theme. For example:
             :code(lang="js")
               if (this.$theme.ios) { /* do something when iOS theme is active */ }
               if (this.$theme.md) { /* do something when MD theme is active */ }
+              if (this.$theme.aurora) { /* do something when Aurora theme is active */ }
         tr
           td $setState()
           td function

@@ -57,7 +57,7 @@ block content
           td theme
           td string
           td auto
-          td App theme. Can be <code>ios</code>, <code>md</code> or <code>auto</code>. In case of <code>auto</code> it will use iOS theme for iOS devices and MD theme for all other devices.
+          td App theme. Can be <code>ios</code>, <code>md</code>, <code>aurora</code> or <code>auto</code>. In case of <code>auto</code> it will use iOS theme for iOS devices, Aurora theme for desktop device running in Electron environment, and MD theme for all other devices.
         tr
           td language
           td string
@@ -68,7 +68,6 @@ block content
           td array
           td []
           td Array with default routes to all views.
-
         tr
           td data
           td function
@@ -228,6 +227,11 @@ block content
           td true
           td Enables touch ripple effect for MD theme
         tr.subparam-row
+          td auroraTouchRipple
+          td boolean
+          td false
+          td Enables touch ripple effect for Aurora theme
+        tr.subparam-row
           td touchRippleElements
           td string
           td .ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content
@@ -310,7 +314,7 @@ block content
           td Boolean property indicating app is in RTL layout or not
         tr
           td app.theme
-          td Current app theme. Can be <code>md</code> or <code>ios</code>
+          td String with current app theme. Can be <code>md</code>, <code>ios</code> or <code>aurora</code>
         tr
           td app.data
           td Object with app root data passed on intialization
@@ -530,10 +534,12 @@ block content
       /*====================
         Fonts
         ==================== */
+      :root {
+        --f7-font-size: 14px;
+      }
       .ios {
         --f7-font-family: -apple-system, SF Pro Text, SF UI Text, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
         --f7-text-color: #000;
-        --f7-font-size: 14px;
         --f7-line-height: 1.4;
       }
       .ios .theme-dark,
@@ -543,12 +549,20 @@ block content
       .md {
         --f7-font-family: Roboto, system-ui, Noto, Helvetica, Arial, sans-serif;
         --f7-text-color: #212121;
-        --f7-font-size: 14px;
         --f7-line-height: 1.5;
       }
       .md .theme-dark,
       .md.theme-dark {
         --f7-text-color: rgba(255, 255, 255, 0.87);
+      }
+      .aurora {
+        --f7-font-family: -apple-system, system-ui, Helvetica, Arial, sans-serif;
+        --f7-text-color: #000;
+        --f7-line-height: 1.5;
+      }
+      .aurora .theme-dark,
+      .aurora.theme-dark {
+        --f7-text-color: #fff;
       }
       /*====================
         Bars
@@ -577,4 +591,11 @@ block content
       }
       .md {
         --f7-bars-border-color: transparent;
+      }
+      .aurora {
+        --f7-bars-border-color: rgba(0, 0, 0, 0.2);
+      }
+      .aurora .theme-dark,
+      .aurora.theme-dark {
+        --f7-bars-border-color: #282829;
       }

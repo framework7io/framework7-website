@@ -9,6 +9,7 @@ module.exports = (content = '') => {
     return `${string}${indent}.docs-mobile-preview-links
 ${indent}  a(href="${url}?theme=ios" target="_blank").mobile-preview-ios
 ${indent}  a(href="${url}?theme=md" target="_blank").mobile-preview-md
+${indent}  a(href="${url}?theme=aurora" target="_blank").mobile-preview-aurora
 `;
   });
 

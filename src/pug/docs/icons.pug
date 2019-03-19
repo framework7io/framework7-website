@@ -61,10 +61,10 @@ block content
           &lt;i class="icon f7-icons color-custom"&gt;home&lt;/i&gt;
     h2 Using Both F7 Icons & Material Icons
     p To keep best practise its better to use F7 Icons font for iOS theme and Material Icons font for MD theme. But what to do in case you develop your app for both MD and iOS themes?
-    p In this case we may use router's <code>ios-only</code> and <code>md-only</code> helper classes to have F7 icon in iOS theme and Material icons in MD theme:
+    p In this case we may use router's <code>${theme}-only</code> and <code>if-${theme}</code> and <code>if-not-${theme}</code> helper classes to have F7 icon in iOS theme and Material icons in MD theme:
     :code(lang="html")
-          <i class="f7-icons ios-only">home</i>
-          <i class="material-icons md-only">home</i>
-    p In this case we will have only <code>&lt;i class="f7-icons ios-only"&gt;home&lt;/i&gt;</code> when app running with iOS theme and only <code>&lt;i class="material-icons ios-only"&gt;home&lt;/i&gt;</code> when app is in MD theme.
+      <i class="f7-icons if-not-md">home</i>
+      <i class="material-icons md-only">home</i>
+    p In this case we will have only <code>&lt;i class="f7-icons if-not-md"&gt;home&lt;/i&gt;</code> when app running with iOS or Aurora themes and only <code>&lt;i class="material-icons md-only"&gt;home&lt;/i&gt;</code> when app is in MD theme.
 
     +cssVars('icon')

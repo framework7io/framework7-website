@@ -19,7 +19,7 @@ html
         .content
           .logo-title
             | !{inlineSvg('i/logo-text-white.svg')}
-          .slogan Full featured framework<br>for building <b>iOS</b> & <b>Android</b> apps
+          .slogan Full featured framework<br>for building <b>iOS</b>, <b>Android</b> & <b>Desktop</b> apps
           .buttons-links
             .buttons
               a(href="#get-started") Get Started
@@ -46,6 +46,11 @@ html
             a(href="kitchen-sink/core/?theme=md", target="_blank")
               .theme-icon
                 i.f7-icons logo_android
+              .fullscreen
+                i.f7-icons enter
+            a(href="kitchen-sink/core/?theme=aurora", target="_blank")
+              .theme-icon
+                i.f7-icons device_desktop
               .fullscreen
                 i.f7-icons enter
         .mobile-preview-button
@@ -174,8 +179,8 @@ html
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
           if (sponsors.topSupporter)
             each sponsor in sponsors.topSupporter
-              a(href=sponsor.link, target="_blank")(title="Top Supporter")
-                .sponsor-badge.sponsor-badge-topSupporter
+              a(href=sponsor.link, target="_blank")
+                .sponsor-badge.sponsor-badge-topSupporter(title="Top Supporter")
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
 
     include _footer
