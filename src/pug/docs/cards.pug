@@ -103,6 +103,20 @@ block content
         </div>
       </div>
 
+    h4 Expandable Card Backdrop
+    p If you have enabled expandable card backdrop (enabled by default, see parameters below), then it will automatically add backdrop element (darken overlay behind the card) on card open to card parent page.
+    p In some layouts you may need to place such backdrop element in custom place. In this case we need to manually add this element and specify it in card's <code>data-backdrop-el</code> attribute:
+    :code(lang="html")
+      <div class="block">
+        <!-- custom backdrop element -->
+        <div class="card-backdrop custom-backdrop"></div>
+        <!-- pass its CSS selector in data-backdrop-el attribute -->
+        <div class="card card-expandable" data-backdrop-el=".custom-backdrop">
+          ...
+        </div>
+      </div>
+
+
     h2 Card App Methods
     p Let's look at related App methods to work with expandable cards:
     .method-wrap
