@@ -91,7 +91,11 @@
   height: 24px;
   border-radius: 4px;
 }
-
+.aurora .demo-list-icon, .aurora .icon-f7, .aurora .icon-vi {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
 /* Lazy Demo */
 img.demo-lazy {
   display: block;
@@ -495,6 +499,9 @@ code {
   font-size: 18px;
   text-align: center;
   line-height: 100px;
+}
+.theme-dark .elevation-demo {
+  background: none;
 }
 /* Demo Color Themes */
 .demo-theme-picker {

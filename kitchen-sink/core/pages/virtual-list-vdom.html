@@ -5,7 +5,7 @@
         <div class="left">
           <a href="#" class="link back">
             <i class="icon icon-back"></i>
-            <span class="ios-only">Back</span>
+            <span class="if-not-md">Back</span>
           </a>
         </div>
         <div class="title">Virtual List VDOM</div>
@@ -17,7 +17,7 @@
                 <i class="searchbar-icon"></i>
                 <span class="input-clear-button"></span>
               </div>
-              <span class="searchbar-disable-button">Cancel</span>
+              <span class="searchbar-disable-button if-not-aurora">Cancel</span>
             </div>
           </form>
         </div>
@@ -91,7 +91,7 @@
             return found; //return array with mathced indexes
           },
           // Item height
-          height: self.$theme.ios ? 63 : 73,
+          height: self.$theme.ios ? 63 : (self.$theme.md ? 73 : 46),
           // Render external function
           renderExternal: function(vl, vlData) {
             self.$setState({

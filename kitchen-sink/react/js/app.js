@@ -2986,6 +2986,7 @@
 	  },
 	  mdPreloaderContent: "\n    <span class=\"preloader-inner\">\n      <span class=\"preloader-inner-gap\"></span>\n      <span class=\"preloader-inner-left\">\n          <span class=\"preloader-inner-half-circle\"></span>\n      </span>\n      <span class=\"preloader-inner-right\">\n          <span class=\"preloader-inner-half-circle\"></span>\n      </span>\n    </span>\n  ".trim(),
 	  iosPreloaderContent: ("\n    <span class=\"preloader-inner\">\n      " + ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(function () { return '<span class="preloader-inner-line"></span>'; }).join('')) + "\n    </span>\n  ").trim(),
+	  auroraPreloaderContent: "\n    <span class=\"preloader-inner\">\n      <span class=\"preloader-inner-circle\"></span>\n    </span>\n  ",
 	  eventNameToColonCase: function eventNameToColonCase(eventName) {
 	    var hasColon;
 	    return eventName.split('').map(function (char, index) {
@@ -3311,6 +3312,7 @@
 	    windows: false,
 	    cordova: !!(win.cordova || win.phonegap),
 	    phonegap: !!(win.cordova || win.phonegap),
+	    electron: false,
 	  };
 
 	  var screenWidth = win.screen.width;
@@ -3330,6 +3332,7 @@
 	  var firefox = ua.indexOf('Gecko/') >= 0 && ua.indexOf('Firefox/') >= 0;
 	  var macos = platform === 'MacIntel';
 	  var windows = platform === 'Win32';
+	  var electron = ua.toLowerCase().indexOf('electron') >= 0;
 
 	  device.ie = ie;
 	  device.edge = edge;
@@ -3337,7 +3340,7 @@
 
 	  // Windows
 	  if (windowsPhone) {
-	    device.os = 'windows';
+	    device.os = 'windowsPhone';
 	    device.osVersion = windowsPhone[2];
 	    device.windowsPhone = true;
 	  }
@@ -3380,20 +3383,11 @@
 	  device.standalone = device.webView;
 
 	  // Desktop
-	  device.desktop = !(device.os || device.android || device.webView);
+	  device.desktop = !(device.ios || device.android || device.windowsPhone) || electron;
 	  if (device.desktop) {
+	    device.electron = electron;
 	    device.macos = macos;
 	    device.windows = windows;
-	  }
-
-	  // Minimal UI
-	  if (device.os && device.os === 'ios') {
-	    var osVersionArr = device.osVersion.split('.');
-	    var metaViewport = doc.querySelector('meta[name="viewport"]');
-	    device.minimalUi = !device.webView
-	      && (ipod || iphone)
-	      && (osVersionArr[0] * 1 === 7 ? osVersionArr[1] * 1 >= 1 : osVersionArr[0] * 1 > 7)
-	      && metaViewport && metaViewport.getAttribute('content').indexOf('minimal-ui') >= 0;
 	  }
 
 	  // Meta statusbar
@@ -3401,6 +3395,7 @@
 
 	  // Check for status bar and fullscreen app mode
 	  device.needsStatusbarOverlay = function needsStatusbarOverlay() {
+	    if (device.desktop) { return false; }
 	    if (device.standalone && device.ios && metaStatusbar && metaStatusbar.content === 'black-translucent') {
 	      return true;
 	    }
@@ -3947,7 +3942,9 @@
 	      // Theme
 	      theme: (function getTheme() {
 	        if (app.params.theme === 'auto') {
-	          return Device.ios ? 'ios' : 'md';
+	          if (Device.ios) { return 'ios'; }
+	          if (Device.desktop && Device.electron) { return 'aurora'; }
+	          return 'md';
 	        }
 	        return app.params.theme;
 	      }()),
@@ -4706,11 +4703,6 @@
 	    },
 	    orientationchange: function orientationchange() {
 	      var app = this;
-	      if (app.device && app.device.minimalUi) {
-	        if (win.orientation === 90 || win.orientation === -90) {
-	          doc.body.scrollTop = 0;
-	        }
-	      }
 	      // Fix iPad weird body scroll
 	      if (app.device.ipad) {
 	        doc.body.scrollLeft = 0;
@@ -4780,6 +4772,21 @@
 	    }
 	    if (parents.length > 0) {
 	      activable = activable ? activable.add(parents) : parents;
+	    }
+	    if (activable && activable.length > 1) {
+	      var newActivable = [];
+	      var preventPropagation;
+	      for (var i = 0; i < activable.length; i += 1) {
+	        if (!preventPropagation) {
+	          newActivable.push(activable[i]);
+	          if (activable.eq(i).hasClass('prevent-active-state-propagation')
+	            || activable.eq(i).hasClass('no-active-state-propagation')
+	          ) {
+	            preventPropagation = true;
+	          }
+	        }
+	      }
+	      activable = $(newActivable);
 	    }
 	    return activable || target;
 	  }
@@ -5297,10 +5304,18 @@
 	    return true;
 	  }
 	  function handleTouchMoveLight(e) {
-	    var distance = params.fastClicks ? params.fastClicksDistanceThreshold : 0;
-	    if (distance) {
-	      var pageX = e.targetTouches[0].pageX;
-	      var pageY = e.targetTouches[0].pageY;
+	    var distance = 0;
+	    var touch;
+	    if (e.type === 'touchmove') {
+	      touch = e.targetTouches[0];
+	      if (touch && touch.touchType === 'stylus') {
+	        distance = 5;
+	      }
+	    }
+
+	    if (distance && touch) {
+	      var pageX = touch.pageX;
+	      var pageY = touch.pageY;
 	      if (Math.abs(pageX - touchStartX) > distance || Math.abs(pageY - touchStartY) > distance) {
 	        isMoved = true;
 	      }
@@ -5479,6 +5494,7 @@
 	      activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item',
 	      mdTouchRipple: true,
 	      iosTouchRipple: false,
+	      auroraTouchRipple: false,
 	      touchRippleElements: '.ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content',
 	    },
 	  },
@@ -6386,7 +6402,7 @@
 	    currentPage.transform(("translate3d(" + currentPageTranslate + "px,0,0)"));
 	    if (paramsSwipeBackAnimateShadow) { pageShadow[0].style.opacity = 1 - (1 * percentage); }
 
-	    if (app.theme !== 'md') {
+	    if (app.theme === 'ios') {
 	      previousPage.transform(("translate3d(" + previousPageTranslate + "px,0,0)"));
 	    }
 	    if (paramsSwipeBackAnimateOpacity) { pageOpacity[0].style.opacity = 1 - (1 * percentage); }
@@ -6423,7 +6439,7 @@
 	      (timeDiff < 300 && touchesDiff > 10)
 	      || (timeDiff >= 300 && touchesDiff > viewContainerWidth / 2)
 	    ) {
-	      currentPage.removeClass('page-current').addClass(("page-next" + (app.theme === 'md' ? ' page-next-on-right' : '')));
+	      currentPage.removeClass('page-current').addClass(("page-next" + (app.theme !== 'ios' ? ' page-next-on-right' : '')));
 	      previousPage.removeClass('page-previous').addClass('page-current').removeAttr('aria-hidden');
 	      if (pageShadow) { pageShadow[0].style.opacity = ''; }
 	      if (pageOpacity) { pageOpacity[0].style.opacity = ''; }
@@ -7112,7 +7128,7 @@
 	    router.pageCallback('afterIn', $newPage, $newNavbarInner, 'next', 'current', options);
 	    router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', 'previous', options);
 
-	    var keepOldPage = (router.params.preloadPreviousPage || (app.theme === 'ios' ? router.params.iosSwipeBack : router.params.mdSwipeBack)) && !isMaster;
+	    var keepOldPage = (router.params.preloadPreviousPage || router.params[((app.theme) + "SwipeBack")]) && !isMaster;
 	    if (!keepOldPage) {
 	      if ($newPage.hasClass('smart-select-page') || $newPage.hasClass('photo-browser-page') || $newPage.hasClass('autocomplete-page')) {
 	        keepOldPage = true;
@@ -7152,7 +7168,7 @@
 	    }
 	  }
 	  if (options.animate && !(isMaster && app.width >= router.params.masterDetailBreakpoint)) {
-	    var delay = router.app.theme === 'md' ? router.params.mdPageLoadDelay : router.params.iosPageLoadDelay;
+	    var delay = router.params[((router.app.theme) + "PageLoadDelay")];
 	    if (delay) {
 	      setTimeout(function () {
 	        setPositionClasses();
@@ -8252,7 +8268,7 @@
 	    router.emit('routeChanged', router.currentRoute, router.previousRoute, router);
 
 	    // Preload previous page
-	    var preloadPreviousPage = router.params.preloadPreviousPage || (app.theme === 'ios' ? router.params.iosSwipeBack : router.params.mdSwipeBack);
+	    var preloadPreviousPage = router.params.preloadPreviousPage || router.params[((app.theme) + "SwipeBack")];
 	    if (preloadPreviousPage && router.history[router.history.length - 2] && !isMaster) {
 	      router.back(router.history[router.history.length - 2], { preload: true });
 	    }
@@ -9356,7 +9372,15 @@
 	  Router.prototype.removeThemeElements = function removeThemeElements (el) {
 	    var router = this;
 	    var theme = router.app.theme;
-	    $(el).find(("." + (theme === 'md' ? 'ios' : 'md') + "-only, .if-" + (theme === 'md' ? 'ios' : 'md'))).remove();
+	    var toRemove;
+	    if (theme === 'ios') {
+	      toRemove = '.md-only, .aurora-only, .if-md, .if-aurora, .if-not-ios, .not-ios';
+	    } else if (theme === 'md') {
+	      toRemove = '.ios-only, .aurora-only, .if-ios, .if-aurora, .if-not-md, .not-md';
+	    } else if (theme === 'aurora') {
+	      toRemove = '.ios-only, .md-only, .if-ios, .if-md, .if-not-aurora, .not-aurora';
+	    }
+	    $(el).find(toRemove).remove();
 	  };
 
 	  Router.prototype.getPageData = function getPageData (pageEl, navbarEl, from, to, route, pageFromEl) {
@@ -9620,6 +9644,7 @@
 	      if (
 	        (view && router.params.iosSwipeBack && app.theme === 'ios')
 	        || (view && router.params.mdSwipeBack && app.theme === 'md')
+	        || (view && router.params.auroraSwipeBack && app.theme === 'aurora')
 	      ) {
 	        SwipeBack(router);
 	      }
@@ -10193,6 +10218,7 @@
 	              $theme: {
 	                ios: router.app.theme === 'ios',
 	                md: router.app.theme === 'md',
+	                aurora: router.app.theme === 'aurora',
 	              },
 	            }));
 	          }
@@ -10278,6 +10304,7 @@
 	            $theme: {
 	              ios: app.theme === 'ios',
 	              md: app.theme === 'md',
+	              aurora: app.theme === 'aurora',
 	            },
 	          }
 	        );
@@ -10739,8 +10766,8 @@
 
 	function elementToVNode(el, context, app, initial, isRoot) {
 	  if (el.nodeType === 1) {
-	    // element
-	    var tagName = el.nodeName.toLowerCase();
+	    // element (statement adds inline SVG compatibility)
+	    var tagName = (el instanceof win.SVGElement) ? el.nodeName : el.nodeName.toLowerCase();
 	    return h(
 	      tagName,
 	      getData(el, context, app, initial, isRoot),
@@ -12060,6 +12087,11 @@
 	      mdSwipeBackAnimateOpacity: false,
 	      mdSwipeBackActiveArea: 30,
 	      mdSwipeBackThreshold: 0,
+	      auroraSwipeBack: false,
+	      auroraSwipeBackAnimateShadow: false,
+	      auroraSwipeBackAnimateOpacity: true,
+	      auroraSwipeBackActiveArea: 30,
+	      auroraSwipeBackThreshold: 0,
 	      // Push State
 	      pushState: false,
 	      pushStateRoot: undefined,
@@ -12077,6 +12109,7 @@
 	      // Delays
 	      iosPageLoadDelay: 0,
 	      mdPageLoadDelay: 0,
+	      auroraPageLoadDelay: 0,
 	      // Routes hooks
 	      routesBeforeEnter: null,
 	      routesBeforeLeave: null,
@@ -12140,7 +12173,9 @@
 	var Navbar = {
 	  size: function size(el) {
 	    var app = this;
-	    if (app.theme === 'md' && !app.params.navbar.mdCenterTitle) { return; }
+	    if (app.theme !== 'ios' && !app.params.navbar[((app.theme) + "CenterTitle")]) {
+	      return;
+	    }
 	    var $el = $(el);
 	    if ($el.hasClass('navbar')) {
 	      $el = $el.children('.navbar-inner').each(function (index, navbarEl) {
@@ -12158,7 +12193,7 @@
 	      return;
 	    }
 
-	    if (app.theme === 'md' && app.params.navbar.mdCenterTitle) {
+	    if (app.theme !== 'ios' && app.params.navbar[((app.theme) + "CenterTitle")]) {
 	      $el.addClass('navbar-inner-centered-title');
 	    }
 	    if (app.theme === 'ios' && !app.params.navbar.iosCenterTitle) {
@@ -12275,10 +12310,7 @@
 	    }
 
 	    // Center title
-	    if (
-	      (app.theme === 'ios' && app.params.navbar.iosCenterTitle)
-	      || (app.theme === 'md' && app.params.navbar.mdCenterTitle)
-	    ) {
+	    if (app.params.navbar[((app.theme) + "CenterTitle")]) {
 	      var titleLeft = diff;
 	      if (app.rtl && noLeft && noRight && title.length > 0) { titleLeft = -titleLeft; }
 	      title.css({ left: (titleLeft + "px") });
@@ -12293,7 +12325,9 @@
 	    if (!$el.length) { return; }
 	    if ($el.hasClass('navbar-hidden')) { return; }
 	    var className = "navbar-hidden" + (animate ? ' navbar-transitioning' : '');
-	    var currentIsLarge = app.theme === 'ios' ? $el.find('.navbar-current .title-large').length : $el.find('.title-large').length;
+	    var currentIsLarge = app.theme === 'ios'
+	      ? $el.find('.navbar-current .title-large').length
+	      : $el.find('.title-large').length;
 	    if (currentIsLarge) {
 	      className += ' navbar-large-hidden';
 	    }
@@ -12370,7 +12404,7 @@
 	    var $pageEl = $(app.navbar.getPageByEl($navbarInnerEl));
 	    $navbarInnerEl.addClass('navbar-inner-large-collapsed');
 	    $pageEl.eq(0).addClass('page-with-navbar-large-collapsed').trigger('page:navbarlargecollapsed');
-	    if (app.theme === 'md') {
+	    if (app.theme === 'md' || app.theme === 'aurora') {
 	      $navbarInnerEl.parents('.navbar').addClass('navbar-large-collapsed');
 	    }
 	  },
@@ -12389,7 +12423,7 @@
 	    var $pageEl = $(app.navbar.getPageByEl($navbarInnerEl));
 	    $navbarInnerEl.removeClass('navbar-inner-large-collapsed');
 	    $pageEl.eq(0).removeClass('page-with-navbar-large-collapsed').trigger('page:navbarlargeexpanded');
-	    if (app.theme === 'md') {
+	    if (app.theme === 'md' || app.theme === 'aurora') {
 	      $navbarInnerEl.parents('.navbar').removeClass('navbar-large-collapsed');
 	    }
 	  },
@@ -12415,7 +12449,7 @@
 	    var app = this;
 	    var $pageEl = $(pageEl);
 	    var $navbarInnerEl = $(navbarInnerEl);
-	    var $navbarEl = app.theme === 'md'
+	    var $navbarEl = app.theme === 'md' || app.theme === 'aurora'
 	      ? $navbarInnerEl.parents('.navbar')
 	      : $(navbarInnerEl || app.navbar.getElByPage(pageEl)).closest('.navbar');
 	    var isLarge = $navbarInnerEl.find('.title-large').length || $navbarInnerEl.hasClass('.navbar-inner-large');
@@ -12438,10 +12472,14 @@
 	      if (navbarTitleLargeHeight && navbarTitleLargeHeight.indexOf('px') >= 0) {
 	        navbarTitleLargeHeight = parseInt(navbarTitleLargeHeight, 10);
 	        if (Number.isNaN(navbarTitleLargeHeight)) {
-	          navbarTitleLargeHeight = app.theme === 'ios' ? 52 : 48;
+	          if (app.theme === 'ios') { navbarTitleLargeHeight = 52; }
+	          else if (app.theme === 'md') { navbarTitleLargeHeight = 48; }
+	          else if (app.theme === 'aurora') { navbarTitleLargeHeight = 38; }
 	        }
-	      } else {
-	        navbarTitleLargeHeight = app.theme === 'ios' ? 52 : 48;
+	      } else { // eslint-disable-next-line
+	        if (app.theme === 'ios') { navbarTitleLargeHeight = 52; }
+	        else if (app.theme === 'md') { navbarTitleLargeHeight = 48; }
+	        else if (app.theme === 'aurora') { navbarTitleLargeHeight = 38; }
 	      }
 	    }
 	    if (needHide && isLarge) {
@@ -12476,7 +12514,7 @@
 	        $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        $pageEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        $navbarInnerEl[0].style.overflow = '';
-	        if (app.theme === 'md') {
+	        if (app.theme === 'md' || app.theme === 'aurora') {
 	          $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        }
 	      } else if (collapseProgress === 1 && !navbarCollapsed) {
@@ -12484,21 +12522,21 @@
 	        $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        $navbarInnerEl[0].style.overflow = '';
 	        $pageEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
-	        if (app.theme === 'md') {
+	        if (app.theme === 'md' || app.theme === 'aurora') {
 	          $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        }
 	      } else if ((collapseProgress === 1 && navbarCollapsed) || (collapseProgress === 0 && !navbarCollapsed)) {
 	        $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        $navbarInnerEl[0].style.overflow = '';
 	        $pageEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
-	        if (app.theme === 'md') {
+	        if (app.theme === 'md' || app.theme === 'aurora') {
 	          $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
 	        }
 	      } else {
 	        $navbarInnerEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
 	        $navbarInnerEl[0].style.overflow = 'visible';
 	        $pageEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
-	        if (app.theme === 'md') {
+	        if (app.theme === 'md' || app.theme === 'aurora') {
 	          $navbarEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
 	        }
 	      }
@@ -12623,6 +12661,7 @@
 	      scrollTopOnTitleClick: true,
 	      iosCenterTitle: true,
 	      mdCenterTitle: false,
+	      auroraCenterTitle: true,
 	      hideOnPageScroll: false,
 	      showOnPageScrollEnd: true,
 	      showOnPageScrollTop: true,
@@ -12681,7 +12720,7 @@
 	      }
 	      if ($navbarInnerEl.hasClass('navbar-inner-large')) {
 	        if (app.params.navbar.collapseLargeTitleOnScroll) { needCollapseOnScrollHandler = true; }
-	        if (app.theme === 'md') {
+	        if (app.theme === 'md' || app.theme === 'aurora') {
 	          $navbarInnerEl.parents('.navbar').addClass('navbar-large');
 	        }
 	        page.$el.addClass('page-with-navbar-large');
@@ -12714,10 +12753,7 @@
 	    },
 	    modalOpen: function modalOpen(modal) {
 	      var app = this;
-	      if (
-	        (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
-	        || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
-	      ) {
+	      if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
 	        return;
 	      }
 	      modal.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
@@ -12726,10 +12762,7 @@
 	    },
 	    panelOpen: function panelOpen(panel) {
 	      var app = this;
-	      if (
-	        (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
-	        || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
-	      ) {
+	      if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
 	        return;
 	      }
 	      panel.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
@@ -12738,10 +12771,7 @@
 	    },
 	    panelSwipeOpen: function panelSwipeOpen(panel) {
 	      var app = this;
-	      if (
-	        (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
-	        || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
-	      ) {
+	      if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
 	        return;
 	      }
 	      panel.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
@@ -12750,10 +12780,7 @@
 	    },
 	    tabShow: function tabShow(tabEl) {
 	      var app = this;
-	      if (
-	        (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
-	        || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
-	      ) {
+	      if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
 	        return;
 	      }
 	      $(tabEl).find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
@@ -12800,10 +12827,7 @@
 	    'navbar-inner': {
 	      postpatch: function postpatch(vnode) {
 	        var app = this;
-	        if (
-	          (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
-	          || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
-	        ) {
+	        if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
 	          return;
 	        }
 	        app.navbar.size(vnode.elm);
@@ -13468,6 +13492,10 @@
 	  },
 	};
 
+	var Appbar = {
+	  name: 'appbar',
+	};
+
 	var Dialog = /*@__PURE__*/(function (Modal$$1) {
 	  function Dialog(app, params) {
 	    var extendedParams = Utils.extend({
@@ -13746,6 +13774,7 @@
 	              {
 	                text: app.params.dialog.buttonCancel,
 	                keyCodes: keyboardActions ? [27] : null,
+	                color: app.theme === 'aurora' ? 'gray' : null,
 	              },
 	              {
 	                text: app.params.dialog.buttonOk,
@@ -13780,6 +13809,7 @@
 	                text: app.params.dialog.buttonCancel,
 	                onClick: callbackCancel,
 	                keyCodes: keyboardActions ? [27] : null,
+	                color: app.theme === 'aurora' ? 'gray' : null,
 	              },
 	              {
 	                text: app.params.dialog.buttonOk,
@@ -13810,6 +13840,7 @@
 	              {
 	                text: app.params.dialog.buttonCancel,
 	                keyCodes: keyboardActions ? [27] : null,
+	                color: app.theme === 'aurora' ? 'gray' : null,
 	              },
 	              {
 	                text: app.params.dialog.buttonOk,
@@ -13845,6 +13876,7 @@
 	              {
 	                text: app.params.dialog.buttonCancel,
 	                keyCodes: keyboardActions ? [27] : null,
+	                color: app.theme === 'aurora' ? 'gray' : null,
 	              },
 	              {
 	                text: app.params.dialog.buttonOk,
@@ -14263,7 +14295,7 @@
 	    var angleSize = 0;
 	    var angleLeft;
 	    var angleTop;
-	    if (app.theme === 'ios') {
+	    if (app.theme === 'ios' || app.theme === 'aurora') {
 	      $angleEl.removeClass('on-left on-right on-top on-bottom').css({ left: '', top: '' });
 	      angleSize = $angleEl.width() / 2;
 	    } else {
@@ -14335,6 +14367,7 @@
 	        $el.addClass('popover-on-bottom');
 	      }
 	    } else {
+	      // ios and aurora
 	      if ((height + angleSize) < targetOffsetTop) {
 	        // On top
 	        top = targetOffsetTop - height - angleSize;
@@ -14531,6 +14564,7 @@
 	          actions.params.forceToPopover
 	          || (app.device.ios && app.device.ipad)
 	          || app.width >= 768
+	          || (app.device.desktop && app.theme === 'aurora')
 	        ) {
 	          convertToPopover = true;
 	        }
@@ -14880,7 +14914,7 @@
 	  create: function create() {
 	    var app = this;
 	    if (!app.passedParams.sheet || app.passedParams.sheet.backdrop === undefined) {
-	      app.params.sheet.backdrop = app.theme === 'md';
+	      app.params.sheet.backdrop = app.theme !== 'ios';
 	    }
 	    app.sheet = Utils.extend(
 	      {},
@@ -16222,9 +16256,18 @@
 	    Framework7Class$$1.call(this, params, [app]);
 	    var vl = this;
 
+	    var defaultHeight;
+	    if (app.theme === 'md') {
+	      defaultHeight = 48;
+	    } else if (app.theme === 'ios') {
+	      defaultHeight = 44;
+	    } else if (app.theme === 'aurora') {
+	      defaultHeight = 38;
+	    }
+
 	    var defaults = {
 	      cols: 1,
-	      height: app.theme === 'md' ? 48 : 44,
+	      height: defaultHeight,
 	      cache: true,
 	      dynamicHeightBufferSize: 1,
 	      showFilteredItemsOnly: false,
@@ -16246,7 +16289,7 @@
 
 	    vl.params = Utils.extend(defaults, params);
 	    if (vl.params.height === undefined || !vl.params.height) {
-	      vl.params.height = app.theme === 'md' ? 48 : 44;
+	      vl.params.height = defaultHeight;
 	    }
 
 	    vl.$el = $(params.el);
@@ -16811,6 +16854,7 @@
 	      indexes: 'auto', // or array of indexes
 	      iosItemHeight: 14,
 	      mdItemHeight: 14,
+	      auroraItemHeight: 14,
 	      scrollList: true,
 	      label: false,
 	      // eslint-disable-next-line
@@ -17089,7 +17133,7 @@
 	    var el = index.el;
 	    var indexes = index.indexes;
 	    var height = el.offsetHeight;
-	    var itemHeight = app.theme === 'ios' ? params.iosItemHeight : params.mdItemHeight;
+	    var itemHeight = params[((app.theme) + "ItemHeight")];
 	    var maxItems = Math.floor(height / itemHeight);
 	    var items = indexes.length;
 	    var skipRate = 0;
@@ -17861,7 +17905,7 @@
 	  };
 
 	  Panel.prototype.setBreakpoint = function setBreakpoint () {
-	    var obj, obj$1;
+	    var obj, obj$1, obj$2;
 
 	    var panel = this;
 	    var app = panel.app;
@@ -17881,12 +17925,14 @@
 	        app.allowPanelOpen = true;
 	        app.emit('local::breakpoint panelBreakpoint');
 	        panel.$el.trigger('panel:breakpoint', panel);
+	      } else {
+	        $viewEl.css(( obj$1 = {}, obj$1[("margin-" + side)] = (($el.width()) + "px"), obj$1 ));
 	      }
 	    } else if (wasVisible) {
 	      $el.css('display', '').removeClass('panel-visible-by-breakpoint panel-active');
 	      panel.onClose();
 	      panel.onClosed();
-	      $viewEl.css(( obj$1 = {}, obj$1[("margin-" + side)] = '', obj$1 ));
+	      $viewEl.css(( obj$2 = {}, obj$2[("margin-" + side)] = '', obj$2 ));
 	      app.emit('local::breakpoint panelBreakpoint');
 	      panel.$el.trigger('panel:breakpoint', panel);
 	    }
@@ -18092,6 +18138,14 @@
 	    return true;
 	  };
 
+	  Panel.prototype.toggle = function toggle (animate) {
+	    if ( animate === void 0 ) animate = true;
+
+	    var panel = this;
+	    if (panel.opened) { panel.close(animate); }
+	    else { panel.open(animate); }
+	  };
+
 	  Panel.prototype.onOpen = function onOpen () {
 	    var panel = this;
 	    panel.opened = true;
@@ -18248,6 +18302,31 @@
 	        }
 	        return false;
 	      },
+	      toggle: function toggle(side, animate) {
+	        var $panelEl;
+	        var panelSide = side;
+	        if (side) {
+	          panelSide = side;
+	          $panelEl = $((".panel-" + panelSide));
+	        } else if ($('.panel.panel-active').length) {
+	          $panelEl = $('.panel.panel-active');
+	          panelSide = $panelEl.hasClass('panel-left') ? 'left' : 'right';
+	        } else {
+	          if ($('.panel').length > 1) {
+	            return false;
+	          }
+	          panelSide = $('.panel').hasClass('panel-left') ? 'left' : 'right';
+	          $panelEl = $((".panel-" + panelSide));
+	        }
+	        if (!panelSide) { return false; }
+	        if (app.panel[panelSide]) {
+	          return app.panel[panelSide].toggle(animate);
+	        }
+	        if ($panelEl.length > 0) {
+	          return app.panel.create({ el: $panelEl }).toggle(animate);
+	        }
+	        return false;
+	      },
 	      get: function get(side) {
 	        var panelSide = side;
 	        if (!panelSide) {
@@ -18296,6 +18375,13 @@
 	      var app = this;
 	      var side = data.panel;
 	      app.panel.close(side, data.animate);
+	    },
+	    '.panel-toggle': function close(clickedEl, data) {
+	      if ( data === void 0 ) data = {};
+
+	      var app = this;
+	      var side = data.panel;
+	      app.panel.toggle(side, data.animate);
 	    },
 	    '.panel-backdrop': function close() {
 	      var app = this;
@@ -20821,6 +20907,10 @@
 	      on: {},
 	    }, app.params.smartSelect);
 
+	    if (typeof defaults.searchbarDisableButton === 'undefined') {
+	      defaults.searchbarDisableButton = app.theme !== 'aurora';
+	    }
+
 	    // Extend defaults with modules params
 	    ss.useModulesParams(defaults);
 
@@ -21099,7 +21189,7 @@
 	  SmartSelect.prototype.renderSearchbar = function renderSearchbar () {
 	    var ss = this;
 	    if (ss.params.renderSearchbar) { return ss.params.renderSearchbar.call(ss); }
-	    var searchbarHTML = "\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" placeholder=\"" + (ss.params.searchbarPlaceholder) + "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          <span class=\"searchbar-disable-button\">" + (ss.params.searchbarDisableText) + "</span>\n        </div>\n      </form>\n    ";
+	    var searchbarHTML = "\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" placeholder=\"" + (ss.params.searchbarPlaceholder) + "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          " + (ss.params.searchbarDisableButton ? ("\n          <span class=\"searchbar-disable-button\">" + (ss.params.searchbarDisableText) + "</span>\n          ") : '') + "\n        </div>\n      </form>\n    ";
 	    return searchbarHTML;
 	  };
 
@@ -21493,6 +21583,7 @@
 	      searchbar: false,
 	      searchbarPlaceholder: 'Search',
 	      searchbarDisableText: 'Cancel',
+	      searchbarDisableButton: undefined,
 	      closeOnSelect: false,
 	      virtualList: false,
 	      virtualListHeight: undefined,
@@ -22332,6 +22423,9 @@
 	        return !!app.device.ipad;
 	      }
 	      if (app.width >= 768) {
+	        return true;
+	      }
+	      if (app.device.desktop && app.theme === 'aurora') {
 	        return true;
 	      }
 	    }
@@ -23723,7 +23817,9 @@
 	    if (returnTo) {
 	      if (returnTo === 'min') {
 	        col.$itemsEl.transform(("translate3d(0," + minTranslate + "px,0)"));
-	      } else { col.$itemsEl.transform(("translate3d(0," + maxTranslate + "px,0)")); }
+	      } else {
+	        col.$itemsEl.transform(("translate3d(0," + maxTranslate + "px,0)"));
+	      }
 	    }
 	    touchEndTime = new Date().getTime();
 	    var newTranslate;
@@ -23736,7 +23832,7 @@
 	    newTranslate = Math.max(Math.min(newTranslate, maxTranslate), minTranslate);
 
 	    // Active Index
-	    var activeIndex = -Math.floor((newTranslate - maxTranslate) / itemHeight);
+	    var activeIndex = Math.round(Math.abs(((newTranslate - maxTranslate) / itemHeight)));
 
 	    // Normalize translate
 	    if (!picker.params.freeMode) { newTranslate = (-activeIndex * itemHeight) + maxTranslate; }
@@ -23761,6 +23857,65 @@
 	    }, 100);
 	  }
 
+	  var mousewheelTimeout;
+	  function handleMouseWheel(e) {
+	    var deltaX = e.deltaX;
+	    var deltaY = e.deltaY;
+	    if (Math.abs(deltaX) > Math.abs(deltaY)) { return; }
+	    clearTimeout(mousewheelTimeout);
+
+	    e.preventDefault();
+
+	    Utils.cancelAnimationFrame(animationFrameId);
+	    startTranslate = Utils.getTranslate(col.$itemsEl[0], 'y');
+	    col.$itemsEl.transition(0);
+
+	    currentTranslate = startTranslate - deltaY;
+	    returnTo = undefined;
+
+	    // Normalize translate
+	    if (currentTranslate < minTranslate) {
+	      currentTranslate = minTranslate;
+	      returnTo = 'min';
+	    }
+	    if (currentTranslate > maxTranslate) {
+	      currentTranslate = maxTranslate;
+	      returnTo = 'max';
+	    }
+	    // Transform wrapper
+	    col.$itemsEl.transform(("translate3d(0," + currentTranslate + "px,0)"));
+
+	    // Update items
+	    col.updateItems(undefined, currentTranslate, 0, picker.params.updateValuesOnMousewheel);
+
+	    // On end
+	    mousewheelTimeout = setTimeout(function () {
+	      col.$itemsEl.transition('');
+	      if (returnTo) {
+	        if (returnTo === 'min') {
+	          col.$itemsEl.transform(("translate3d(0," + minTranslate + "px,0)"));
+	        } else {
+	          col.$itemsEl.transform(("translate3d(0," + maxTranslate + "px,0)"));
+	        }
+	      }
+	      touchEndTime = new Date().getTime();
+	      var newTranslate = currentTranslate;
+	      newTranslate = Math.max(Math.min(newTranslate, maxTranslate), minTranslate);
+
+	      // Active Index
+	      var activeIndex = Math.round(Math.abs(((newTranslate - maxTranslate) / itemHeight)));
+
+	      // Normalize translate
+	      if (!picker.params.freeMode) { newTranslate = (-activeIndex * itemHeight) + maxTranslate; }
+
+	      // Transform wrapper
+	      col.$itemsEl.transform(("translate3d(0," + (parseInt(newTranslate, 10)) + "px,0)"));
+
+	      // Update items
+	      col.updateItems(activeIndex, newTranslate, '', true);
+	    }, 200);
+	  }
+
 	  function handleClick() {
 	    if (!allowItemClick) { return; }
 	    Utils.cancelAnimationFrame(animationFrameId);
@@ -23773,12 +23928,18 @@
 	    col.$el.on(app.touchEvents.start, handleTouchStart, activeListener);
 	    app.on('touchmove:active', handleTouchMove);
 	    app.on('touchend:passive', handleTouchEnd);
+	    if (picker.params.mousewheel) {
+	      col.$el.on('wheel', handleMouseWheel);
+	    }
 	    col.items.on('click', handleClick);
 	  };
 	  col.detachEvents = function detachColEvents() {
 	    col.$el.off(app.touchEvents.start, handleTouchStart, activeListener);
 	    app.off('touchmove:active', handleTouchMove);
 	    app.off('touchend:passive', handleTouchEnd);
+	    if (picker.params.mousewheel) {
+	      col.$el.off('wheel', handleMouseWheel);
+	    }
 	    col.items.off('click', handleClick);
 	  };
 
@@ -23929,7 +24090,11 @@
 	      if (params.openIn === 'popover') { return true; }
 	      if (app.device.ios) {
 	        return !!app.device.ipad;
-	      } if (app.width >= 768) {
+	      }
+	      if (app.width >= 768) {
+	        return true;
+	      }
+	      if (app.device.desktop && app.theme === 'aurora') {
 	        return true;
 	      }
 	    }
@@ -24349,6 +24514,8 @@
 	      // Picker settings
 	      updateValuesOnMomentum: false,
 	      updateValuesOnTouchmove: true,
+	      updateValuesOnMousewheel: true,
+	      mousewheel: true,
 	      rotateEffect: false,
 	      momentumRatio: 7,
 	      freeMode: false,
@@ -24479,6 +24646,8 @@
 	    ptr.useModulesParams({});
 
 	    var isMaterial = app.theme === 'md';
+	    var isIos = app.theme === 'ios';
+	    var isAurora = app.theme === 'aurora';
 
 	    // Done
 	    ptr.done = function done() {
@@ -24499,6 +24668,9 @@
 	      ptr.emit('local::refresh ptrRefresh', $el[0], ptr.done);
 	      return ptr;
 	    };
+
+	    // Mousewheel
+	    ptr.mousewheel = $el.attr('data-ptr-mousewheel') === 'true';
 
 	    // Events handling
 	    var touchId;
@@ -24530,8 +24702,12 @@
 	    // Define trigger distance
 	    if ($el.attr('data-ptr-distance')) {
 	      dynamicTriggerDistance = true;
-	    } else {
-	      triggerDistance = isMaterial ? 66 : 44;
+	    } else if (isMaterial) {
+	      triggerDistance = 66;
+	    } else if (isIos) {
+	      triggerDistance = 44;
+	    } else if (isAurora) {
+	      triggerDistance = 38;
 	    }
 
 	    function handleTouchStart(e) {
@@ -24753,6 +24929,160 @@
 	      }
 	    }
 
+	    var mousewheelTimeout;
+	    var mousewheelMoved;
+	    var mousewheelAllow = true;
+	    var mousewheelTranslate = 0;
+
+	    function handleMouseWheelRelease() {
+	      mousewheelAllow = true;
+	      mousewheelMoved = false;
+	      mousewheelTranslate = 0;
+	      if (translate) {
+	        $el.addClass('ptr-transitioning');
+	        translate = 0;
+	      }
+	      if (isMaterial) {
+	        $preloaderEl.transform('')
+	          .find('.ptr-arrow').transform('');
+	      } else {
+	        // eslint-disable-next-line
+	        if (ptr.bottom) {
+	          $el.children().transform('');
+	        } else {
+	          $el.transform('');
+	        }
+	      }
+
+	      if (refresh) {
+	        $el.addClass('ptr-refreshing');
+	        $el.trigger('ptr:refresh', ptr.done);
+	        ptr.emit('local::refresh ptrRefresh', $el[0], ptr.done);
+	      } else {
+	        $el.removeClass('ptr-pull-down');
+	      }
+	      if (pullStarted) {
+	        $el.trigger('ptr:pullend');
+	        ptr.emit('local::pullEnd ptrPullEnd', $el[0]);
+	      }
+	    }
+	    function handleMouseWheel(e) {
+	      if (!mousewheelAllow) { return; }
+	      var deltaX = e.deltaX;
+	      var deltaY = e.deltaY;
+	      if (Math.abs(deltaX) > Math.abs(deltaY)) { return; }
+	      if ($el.hasClass('ptr-refreshing')) {
+	        return;
+	      }
+	      if ($(e.target).closest('.sortable-handler, .ptr-ignore, .card-expandable.card-opened').length) { return; }
+
+	      clearTimeout(mousewheelTimeout);
+
+	      scrollTop = $el[0].scrollTop;
+
+	      if (!mousewheelMoved) {
+	        $el.removeClass('ptr-transitioning');
+	        var targetIsScrollable;
+	        scrollHeight = $el[0].scrollHeight;
+	        offsetHeight = $el[0].offsetHeight;
+	        if (ptr.bottom) {
+	          maxScrollTop = scrollHeight - offsetHeight;
+	        }
+	        if (scrollTop > scrollHeight) {
+	          mousewheelAllow = false;
+	          return;
+	        }
+	        var $ptrWatchScrollable = $(e.target).closest('.ptr-watch-scroll');
+	        if ($ptrWatchScrollable.length) {
+	          $ptrWatchScrollable.each(function (ptrScrollableIndex, ptrScrollableEl) {
+	            if (ptrScrollableEl === el) { return; }
+	            if (
+	              (ptrScrollableEl.scrollHeight > ptrScrollableEl.offsetHeight)
+	              && $(ptrScrollableEl).css('overflow') === 'auto'
+	              && (
+	                (!ptr.bottom && ptrScrollableEl.scrollTop > 0)
+	                || (ptr.bottom && ptrScrollableEl.scrollTop < ptrScrollableEl.scrollHeight - ptrScrollableEl.offsetHeight)
+	              )
+	            ) {
+	              targetIsScrollable = true;
+	            }
+	          });
+	        }
+	        if (targetIsScrollable) {
+	          mousewheelAllow = false;
+	          return;
+	        }
+	        if (dynamicTriggerDistance) {
+	          triggerDistance = $el.attr('data-ptr-distance');
+	          if (triggerDistance.indexOf('%') >= 0) { triggerDistance = (scrollHeight * parseInt(triggerDistance, 10)) / 100; }
+	        }
+	      }
+	      isMoved = true;
+	      mousewheelTranslate -= deltaY;
+	      touchesDiff = mousewheelTranslate; // pageY - touchesStart.y;
+
+	      if (typeof wasScrolled === 'undefined' && (ptr.bottom ? scrollTop !== maxScrollTop : scrollTop !== 0)) { wasScrolled = true; }
+
+	      var ptrStarted = ptr.bottom
+	        ? (touchesDiff < 0 && scrollTop >= maxScrollTop) || scrollTop > maxScrollTop
+	        : (touchesDiff > 0 && scrollTop <= 0) || scrollTop < 0;
+
+	      if (ptrStarted) {
+	        if (e.cancelable) {
+	          e.preventDefault();
+	        }
+
+	        translate = touchesDiff;
+	        if (Math.abs(translate) > triggerDistance) {
+	          translate = triggerDistance + (Math.pow( (Math.abs(translate) - triggerDistance), 0.7 ));
+	          if (ptr.bottom) { translate = -translate; }
+	        }
+
+	        if (isMaterial) {
+	          $preloaderEl.transform(("translate3d(0," + translate + "px,0)"))
+	            .find('.ptr-arrow').transform(("rotate(" + ((180 * (Math.abs(touchesDiff) / 66)) + 100) + "deg)"));
+	        } else {
+	          // eslint-disable-next-line
+	          if (ptr.bottom) {
+	            $el.children().transform(("translate3d(0," + translate + "px,0)"));
+	          } else {
+	            $el.transform(("translate3d(0," + translate + "px,0)"));
+	          }
+	        }
+
+	        if (Math.abs(translate) > triggerDistance) {
+	          refresh = true;
+	          $el.addClass('ptr-pull-up').removeClass('ptr-pull-down');
+	        } else {
+	          refresh = false;
+	          $el.removeClass('ptr-pull-up').addClass('ptr-pull-down');
+	        }
+	        if (!pullStarted) {
+	          $el.trigger('ptr:pullstart');
+	          ptr.emit('local::pullStart ptrPullStart', $el[0]);
+	          pullStarted = true;
+	        }
+	        $el.trigger('ptr:pullmove', {
+	          event: e,
+	          scrollTop: scrollTop,
+	          translate: translate,
+	          touchesDiff: touchesDiff,
+	        });
+	        ptr.emit('local::pullMove ptrPullMove', $el[0], {
+	          event: e,
+	          scrollTop: scrollTop,
+	          translate: translate,
+	          touchesDiff: touchesDiff,
+	        });
+	      } else {
+	        pullStarted = false;
+	        $el.removeClass('ptr-pull-up ptr-pull-down');
+	        refresh = false;
+	      }
+
+	      mousewheelTimeout = setTimeout(handleMouseWheelRelease, 300);
+	    }
+
 	    if (!$pageEl.length || !$el.length) { return ptr; }
 
 	    $el[0].f7PullToRefresh = ptr;
@@ -24763,12 +25093,18 @@
 	      $el.on(app.touchEvents.start, handleTouchStart, passive);
 	      app.on('touchmove:active', handleTouchMove);
 	      app.on('touchend:passive', handleTouchEnd);
+	      if (ptr.mousewheel && !ptr.bottom) {
+	        $el.on('wheel', handleMouseWheel);
+	      }
 	    };
 	    ptr.detachEvents = function detachEvents() {
 	      var passive = Support.passiveListener ? { passive: true } : false;
 	      $el.off(app.touchEvents.start, handleTouchStart, passive);
 	      app.off('touchmove:active', handleTouchMove);
 	      app.off('touchend:passive', handleTouchEnd);
+	      if (ptr.mousewheel && !ptr.bottom) {
+	        $el.off('wheel', handleMouseWheel);
+	      }
 	    };
 
 	    // Install Modules
@@ -25559,13 +25895,14 @@
 	      notFoundEl: '.searchbar-not-found',
 	      hideOnEnableEl: '.searchbar-hide-on-enable',
 	      hideOnSearchEl: '.searchbar-hide-on-search',
-	      backdrop: true,
+	      backdrop: undefined,
 	      removeDiacritics: true,
 	      customSearch: false,
 	      hideDividers: true,
 	      hideGroups: true,
 	      disableOnBackdropClick: true,
 	      expandable: false,
+	      inline: false,
 	    };
 
 	    // Extend defaults with modules params
@@ -25620,6 +25957,15 @@
 	      $hideOnSearchEl = $(params.hideOnSearchEl);
 	    } else if (typeof sb.params.hideOnSearchEl === 'string' && $pageEl) {
 	      $hideOnSearchEl = $pageEl.find(sb.params.hideOnSearchEl);
+	    }
+
+
+	    var expandable = sb.params.expandable || $el.hasClass('searchbar-expandable');
+	    var inline = sb.params.inline || $el.hasClass('searchbar-inline');
+
+	    if (typeof sb.params.backdrop === 'undefined') {
+	      if (!inline) { sb.params.backdrop = app.theme !== 'aurora'; }
+	      else { sb.params.backdrop = false; }
 	    }
 
 	    var $backdropEl;
@@ -25697,7 +26043,8 @@
 	      isVirtualList: $searchContainer && $searchContainer.hasClass('virtual-list'),
 	      virtualList: undefined,
 	      enabled: false,
-	      expandable: sb.params.expandable || $el.hasClass('searchbar-expandable'),
+	      expandable: expandable,
+	      inline: inline,
 	    });
 
 	    // Events
@@ -25710,6 +26057,9 @@
 	    }
 	    function onInputBlur() {
 	      sb.$el.removeClass('searchbar-focused');
+	      if (app.theme === 'aurora' && (!$disableButtonEl || !$disableButtonEl.length || !sb.params.disableButton) && !sb.query) {
+	        sb.disable();
+	      }
 	    }
 	    function onInputChange() {
 	      var value = sb.$inputEl.val().trim();
@@ -25834,7 +26184,7 @@
 	      if (!sb.$disableButtonEl || (sb.$disableButtonEl && sb.$disableButtonEl.length === 0)) {
 	        sb.$el.addClass('searchbar-enabled-no-disable-button');
 	      }
-	      if (!sb.expandable && sb.$disableButtonEl && sb.$disableButtonEl.length > 0 && app.theme === 'ios') {
+	      if (!sb.expandable && sb.$disableButtonEl && sb.$disableButtonEl.length > 0 && app.theme !== 'md') {
 	        if (!sb.disableButtonHasMargin) {
 	          sb.setDisableButtonMargin();
 	        }
@@ -25905,7 +26255,7 @@
 	        }
 	      }
 	    }
-	    if (!sb.expandable && sb.$disableButtonEl && sb.$disableButtonEl.length > 0 && app.theme === 'ios') {
+	    if (!sb.expandable && sb.$disableButtonEl && sb.$disableButtonEl.length > 0 && app.theme !== 'md') {
 	      sb.$disableButtonEl.css(("margin-" + (app.rtl ? 'left' : 'right')), ((-sb.disableButtonEl.offsetWidth) + "px"));
 	    }
 	    if (sb.$backdropEl && ((sb.$searchContainer && sb.$searchContainer.length) || sb.params.customSearch)) {
@@ -26097,6 +26447,8 @@
 
 	  Searchbar.prototype.init = function init () {
 	    var sb = this;
+	    if (sb.expandable && sb.$el) { sb.$el.addClass('searchbar-expandable'); }
+	    if (sb.inline && sb.$el) { sb.$el.addClass('searchbar-inline'); }
 	    sb.attachEvents();
 	  };
 
@@ -33763,7 +34115,7 @@
 	    var iconsColor = pb.params.iconsColor;
 	    if (!pb.params.iconsColor && pb.params.theme === 'dark') { iconsColor = 'white'; }
 
-	    var backLinkText = pb.app.theme === 'ios' && pb.params.backLinkText ? pb.params.backLinkText : '';
+	    var backLinkText = (pb.app.theme === 'ios' || pb.app.theme === 'aurora') && pb.params.backLinkText ? pb.params.backLinkText : '';
 
 	    var isPopup = pb.params.type !== 'page';
 	    var navbarHtml = ("\n      <div class=\"navbar\">\n        <div class=\"navbar-inner sliding\">\n          <div class=\"left\">\n            <a href=\"#\" class=\"link " + (isPopup ? 'popup-close' : '') + " " + (!backLinkText ? 'icon-only' : '') + " " + (!isPopup ? 'back' : '') + "\" " + (isPopup ? 'data-popup=".photo-browser-popup"' : '') + ">\n              <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n              " + (backLinkText ? ("<span>" + backLinkText + "</span>") : '') + "\n            </a>\n          </div>\n          <div class=\"title\">\n            <span class=\"photo-browser-current\"></span>\n            <span class=\"photo-browser-of\">" + (pb.params.navbarOfText) + "</span>\n            <span class=\"photo-browser-total\"></span>\n          </div>\n          <div class=\"right\"></div>\n        </div>\n      </div>\n    ").trim();
@@ -34546,6 +34898,9 @@
 	      on: {},
 	    }, app.params.autocomplete);
 
+	    if (typeof defaults.searchbarDisableButton === 'undefined') {
+	      defaults.searchbarDisableButton = app.theme !== 'aurora';
+	    }
 
 	    // Extend defaults with modules params
 	    ac.useModulesParams(defaults);
@@ -34964,7 +35319,7 @@
 	  Autocomplete.prototype.renderSearchbar = function renderSearchbar () {
 	    var ac = this;
 	    if (ac.params.renderSearchbar) { return ac.params.renderSearchbar.call(ac); }
-	    var searchbarHTML = ("\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" placeholder=\"" + (ac.params.searchbarPlaceholder) + "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          <span class=\"searchbar-disable-button\">" + (ac.params.searchbarDisableText) + "</span>\n        </div>\n      </form>\n    ").trim();
+	    var searchbarHTML = ("\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" placeholder=\"" + (ac.params.searchbarPlaceholder) + "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          " + (ac.params.searchbarDisableButton ? ("\n          <span class=\"searchbar-disable-button\">" + (ac.params.searchbarDisableText) + "</span>\n          ") : '') + "\n        </div>\n      </form>\n    ").trim();
 	    return searchbarHTML;
 	  };
 
@@ -35294,6 +35649,7 @@
 	      pageTitle: undefined,
 	      searchbarPlaceholder: 'Search...',
 	      searchbarDisableText: 'Cancel',
+	      searchbarDisableButton: undefined,
 
 	      animate: true,
 
@@ -36065,6 +36421,13 @@
 	    if (!el) { return; }
 	    var $el = $(el).closest('.menu-item-dropdown');
 	    if (!$el.length) { return; }
+	    var $menuEl = $el.closest('.menu').eq(0);
+	    if ($menuEl.length) {
+	      var zIndex = $menuEl.css('z-index');
+	      var originalZIndex = $menuEl[0].style.zIndex;
+	      $menuEl.css('z-index', parseInt(zIndex || 0, 0) + 1);
+	      $menuEl[0].f7MenuZIndex = originalZIndex;
+	    }
 	    $el.eq(0).addClass('menu-item-dropdown-opened').trigger('menu:opened');
 	    app.emit('menuOpened', $el.eq(0)[0]);
 	  },
@@ -36075,6 +36438,12 @@
 	    if (!el) { return; }
 	    var $el = $(el).closest('.menu-item-dropdown-opened');
 	    if (!$el.length) { return; }
+	    var $menuEl = $el.closest('.menu').eq(0);
+	    if ($menuEl.length) {
+	      var zIndex = $menuEl[0].f7MenuZIndex;
+	      $menuEl.css('z-index', zIndex);
+	      delete $menuEl[0].f7MenuZIndex;
+	    }
 	    $el.eq(0).removeClass('menu-item-dropdown-opened').trigger('menu:closed');
 	    app.emit('menuClosed', $el.eq(0)[0]);
 	  },
@@ -36377,7 +36746,7 @@
 	};
 
 	/**
-	 * Framework7 4.1.1
+	 * Framework7 4.2.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -36385,7 +36754,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: March 14, 2019
+	 * Released on: March 20, 2019
 	 */
 
 	// Install Core Modules & Components
@@ -36413,6 +36782,7 @@
 	  Subnavbar,
 	  TouchRipple$1,
 	  Modal$1,
+	  Appbar,
 	  Dialog$1,
 	  Popup$1,
 	  LoginScreen$1,
@@ -36595,10 +36965,9 @@
 	    iconIon: String,
 	    iconFa: String,
 	    iconF7: String,
-	    iconIfMd: String,
-	    iconIfIos: String,
 	    iconIos: String,
 	    iconMd: String,
+	    iconAurora: String,
 	    iconColor: String,
 	    iconSize: [String, Number],
 	  },
@@ -36678,6 +37047,7 @@
 	    // Panel
 	    panelOpen: [Boolean, String],
 	    panelClose: [Boolean, String],
+	    panelToggle: [Boolean, String],
 
 	    // Popup
 	    popupOpen: [Boolean, String],
@@ -36722,6 +37092,7 @@
 	    var searchbarToggle = props.searchbarToggle;
 	    var panelOpen = props.panelOpen;
 	    var panelClose = props.panelClose;
+	    var panelToggle = props.panelToggle;
 	    var popupOpen = props.popupOpen;
 	    var popupClose = props.popupClose;
 	    var actionsOpen = props.actionsOpen;
@@ -36744,7 +37115,8 @@
 	                        || (Utils$1.isStringProp(searchbarClear) && searchbarClear)
 	                        || (Utils$1.isStringProp(searchbarToggle) && searchbarToggle) || undefined,
 	      'data-panel': (Utils$1.isStringProp(panelOpen) && panelOpen)
-	                    || (Utils$1.isStringProp(panelClose) && panelClose) || undefined,
+	                    || (Utils$1.isStringProp(panelClose) && panelClose)
+	                    || (Utils$1.isStringProp(panelToggle) && panelToggle) || undefined,
 	      'data-popup': (Utils$1.isStringProp(popupOpen) && popupOpen)
 	                    || (Utils$1.isStringProp(popupClose) && popupClose) || undefined,
 	      'data-actions': (Utils$1.isStringProp(actionsOpen) && actionsOpen)
@@ -36769,6 +37141,7 @@
 	    var searchbarToggle = props.searchbarToggle;
 	    var panelOpen = props.panelOpen;
 	    var panelClose = props.panelClose;
+	    var panelToggle = props.panelToggle;
 	    var popupOpen = props.popupOpen;
 	    var popupClose = props.popupClose;
 	    var actionsClose = props.actionsClose;
@@ -36794,6 +37167,7 @@
 	      'searchbar-toggle': searchbarToggle || searchbarToggle === '',
 	      'panel-close': panelClose || panelClose === '',
 	      'panel-open': panelOpen || panelOpen === '',
+	      'panel-toggle': panelToggle || panelToggle === '',
 	      'popup-close': popupClose || popupClose === '',
 	      'popup-open': popupOpen || popupOpen === '',
 	      'actions-close': actionsClose || actionsClose === '',
@@ -37893,6 +38267,87 @@
 
 	F7App.displayName = 'f7-app';
 
+	var F7Appbar = /*@__PURE__*/(function (superclass) {
+	  function F7Appbar(props, context) {
+	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+	  }
+
+	  if ( superclass ) F7Appbar.__proto__ = superclass;
+	  F7Appbar.prototype = Object.create( superclass && superclass.prototype );
+	  F7Appbar.prototype.constructor = F7Appbar;
+
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
+
+	  F7Appbar.prototype.render = function render () {
+	    var this$1 = this;
+
+	    var self = this;
+	    var props = self.props;
+	    var inner = props.inner;
+	    var innerClass = props.innerClass;
+	    var innerClassName = props.innerClassName;
+	    var className = props.className;
+	    var id = props.id;
+	    var style = props.style;
+	    var noShadow = props.noShadow;
+	    var noHairline = props.noHairline;
+	    var innerEl;
+
+	    if (inner) {
+	      innerEl = react.createElement('div', {
+	        ref: function (__reactNode) {
+	          this$1.__reactRefs['inner'] = __reactNode;
+	        },
+	        className: Utils$1.classNames('appbar-inner', innerClass, innerClassName)
+	      }, this.slots['default']);
+	    }
+
+	    var classes = Utils$1.classNames(className, 'appbar', {
+	      'no-shadow': noShadow,
+	      'no-hairline': noHairline
+	    }, Mixins.colorClasses(props));
+	    return react.createElement('div', {
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      },
+	      id: id,
+	      style: style,
+	      className: classes
+	    }, this.slots['before-inner'], innerEl || self.slots.default, this.slots['after-inner']);
+	  };
+
+	  prototypeAccessors.slots.get = function () {
+	    return __reactComponentSlots(this.props);
+	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
+
+	  Object.defineProperties( F7Appbar.prototype, prototypeAccessors );
+
+	  return F7Appbar;
+	}(react.Component));
+
+	__reactComponentSetProps(F7Appbar, Object.assign({
+	  id: [String, Number],
+	  className: String,
+	  style: Object,
+	  noShadow: Boolean,
+	  noHairline: Boolean,
+	  inner: {
+	    type: Boolean,
+	    default: true
+	  },
+	  innerClass: String,
+	  innerClassName: String
+	}, Mixins.colorProps));
+
+	F7Appbar.displayName = 'f7-appbar';
+
 	var F7Badge = /*@__PURE__*/(function (superclass) {
 	  function F7Badge(props, context) {
 	    superclass.call(this, props, context);
@@ -38106,6 +38561,7 @@
 	    var noHairlines = props.noHairlines;
 	    var noHairlinesIos = props.noHairlinesIos;
 	    var noHairlinesMd = props.noHairlinesMd;
+	    var noHairlinesAurora = props.noHairlinesAurora;
 	    var id = props.id;
 	    var style = props.style;
 	    var classes = Utils$1.classNames(className, 'block', {
@@ -38118,7 +38574,8 @@
 	      'tab-active': tabActive,
 	      'no-hairlines': noHairlines,
 	      'no-hairlines-md': noHairlinesMd,
-	      'no-hairlines-ios': noHairlinesIos
+	      'no-hairlines-ios': noHairlinesIos,
+	      'no-hairlines-aurora': noHairlinesAurora
 	    }, Mixins.colorClasses(props));
 	    return react.createElement('div', {
 	      id: id,
@@ -38179,7 +38636,8 @@
 	  accordionList: Boolean,
 	  noHairlines: Boolean,
 	  noHairlinesMd: Boolean,
-	  noHairlinesIos: Boolean
+	  noHairlinesIos: Boolean,
+	  noHairlinesAurora: Boolean
 	}, Mixins.colorProps));
 
 	F7Block.displayName = 'f7-block';
@@ -38212,18 +38670,17 @@
 	    var ref = self.props;
 	    var material = ref.material;
 	    var f7 = ref.f7;
-	    var ifMd = ref.ifMd;
-	    var ifIos = ref.ifIos;
 	    var md = ref.md;
 	    var ios = ref.ios;
+	    var aurora = ref.aurora;
 	    var text = material || f7;
-	    var mdIcon = ifMd || md;
-	    var iosIcon = ifIos || ios;
 
-	    if (mdIcon && self.$theme.md && (mdIcon.indexOf('material:') >= 0 || mdIcon.indexOf('f7:') >= 0)) {
-	      text = mdIcon.split(':')[1];
-	    } else if (iosIcon && self.$theme.ios && (iosIcon.indexOf('material:') >= 0 || iosIcon.indexOf('f7:') >= 0)) {
-	      text = iosIcon.split(':')[1];
+	    if (md && self.$theme.md && (md.indexOf('material:') >= 0 || md.indexOf('f7:') >= 0)) {
+	      text = md.split(':')[1];
+	    } else if (ios && self.$theme.ios && (ios.indexOf('material:') >= 0 || ios.indexOf('f7:') >= 0)) {
+	      text = ios.split(':')[1];
+	    } else if (aurora && self.$theme.aurora && (aurora.indexOf('material:') >= 0 || aurora.indexOf('f7:') >= 0)) {
+	      text = aurora.split(':')[1];
 	    }
 
 	    return text;
@@ -38235,8 +38692,6 @@
 	    };
 	    var self = this;
 	    var props = self.props;
-	    var ifMd = props.ifMd;
-	    var ifIos = props.ifIos;
 	    var material = props.material;
 	    var f7 = props.f7;
 	    var fa = props.fa;
@@ -38244,12 +38699,13 @@
 	    var icon = props.icon;
 	    var md = props.md;
 	    var ios = props.ios;
+	    var aurora = props.aurora;
 	    var className = props.className;
-	    var mdIcon = ifMd || md;
-	    var iosIcon = ifIos || ios;
+	    var themeIcon;
+	    if (self.$theme.ios) { themeIcon = ios; }else if (self.$theme.md) { themeIcon = md; }else if (self.$theme.aurora) { themeIcon = aurora; }
 
-	    if (mdIcon || iosIcon) {
-	      var parts = (self.$theme.md ? mdIcon : iosIcon).split(':');
+	    if (themeIcon) {
+	      var parts = themeIcon.split(':');
 	      var prop = parts[0];
 	      var value = parts[1];
 
@@ -38359,9 +38815,8 @@
 	  ion: String,
 	  fa: String,
 	  icon: String,
-	  ifMd: String,
-	  ifIos: String,
 	  ios: String,
+	  aurora: String,
 	  md: String,
 	  tooltip: String,
 	  size: [String, Number]
@@ -38416,22 +38871,28 @@
 	    var tabLinkActive = props.tabLinkActive;
 	    var round = props.round;
 	    var roundIos = props.roundIos;
+	    var roundAurora = props.roundAurora;
 	    var roundMd = props.roundMd;
 	    var fill = props.fill;
 	    var fillIos = props.fillIos;
+	    var fillAurora = props.fillAurora;
 	    var fillMd = props.fillMd;
 	    var large = props.large;
 	    var largeIos = props.largeIos;
+	    var largeAurora = props.largeAurora;
 	    var largeMd = props.largeMd;
 	    var small = props.small;
 	    var smallIos = props.smallIos;
+	    var smallAurora = props.smallAurora;
 	    var smallMd = props.smallMd;
 	    var raised = props.raised;
 	    var raisedIos = props.raisedIos;
+	    var raisedAurora = props.raisedAurora;
 	    var raisedMd = props.raisedMd;
 	    var active = props.active;
 	    var outline = props.outline;
 	    var outlineIos = props.outlineIos;
+	    var outlineAurora = props.outlineAurora;
 	    var outlineMd = props.outlineMd;
 	    var disabled = props.disabled;
 	    var className = props.className;
@@ -38441,22 +38902,28 @@
 	      'no-fastclick': noFastclick || noFastClick,
 	      'button-round': round,
 	      'button-round-ios': roundIos,
+	      'button-round-aurora': roundAurora,
 	      'button-round-md': roundMd,
 	      'button-fill': fill,
 	      'button-fill-ios': fillIos,
+	      'button-fill-aurora': fillAurora,
 	      'button-fill-md': fillMd,
 	      'button-large': large,
 	      'button-large-ios': largeIos,
+	      'button-large-aurora': largeAurora,
 	      'button-large-md': largeMd,
 	      'button-small': small,
 	      'button-small-ios': smallIos,
+	      'button-small-aurora': smallAurora,
 	      'button-small-md': smallMd,
 	      'button-raised': raised,
 	      'button-raised-ios': raisedIos,
+	      'button-raised-aurora': raisedAurora,
 	      'button-raised-md': raisedMd,
 	      'button-active': active,
 	      'button-outline': outline,
 	      'button-outline-ios': outlineIos,
+	      'button-outline-aurora': outlineAurora,
 	      'button-outline-md': outlineMd,
 	      disabled: disabled
 	    }, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
@@ -38475,10 +38942,9 @@
 	    var iconIon = props.iconIon;
 	    var iconFa = props.iconFa;
 	    var iconF7 = props.iconF7;
-	    var iconIfMd = props.iconIfMd;
-	    var iconIfIos = props.iconIfIos;
 	    var iconMd = props.iconMd;
 	    var iconIos = props.iconIos;
+	    var iconAurora = props.iconAurora;
 	    var iconColor = props.iconColor;
 	    var iconSize = props.iconSize;
 	    var id = props.id;
@@ -38488,18 +38954,16 @@
 	      textEl = react.createElement('span', null, text);
 	    }
 
-	    var mdThemeIcon = iconIfMd || iconMd;
-	    var iosThemeIcon = iconIfIos || iconIos;
-
-	    if (icon || iconMaterial || iconIon || iconFa || iconF7 || mdThemeIcon || iosThemeIcon) {
+	    if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
 	      iconEl = react.createElement(F7Icon, {
 	        material: iconMaterial,
 	        ion: iconIon,
 	        fa: iconFa,
 	        f7: iconF7,
 	        icon: icon,
-	        md: mdThemeIcon,
-	        ios: iosThemeIcon,
+	        md: iconMd,
+	        ios: iconIos,
+	        aurora: iconAurora,
 	        color: iconColor,
 	        size: iconSize
 	      });
@@ -38607,21 +39071,27 @@
 	  round: Boolean,
 	  roundMd: Boolean,
 	  roundIos: Boolean,
+	  roundAurora: Boolean,
 	  fill: Boolean,
 	  fillMd: Boolean,
 	  fillIos: Boolean,
+	  fillAurora: Boolean,
 	  large: Boolean,
 	  largeMd: Boolean,
 	  largeIos: Boolean,
+	  largeAurora: Boolean,
 	  small: Boolean,
 	  smallMd: Boolean,
 	  smallIos: Boolean,
+	  smallAurora: Boolean,
 	  raised: Boolean,
 	  raisedMd: Boolean,
 	  raisedIos: Boolean,
+	  raisedAurora: Boolean,
 	  outline: Boolean,
 	  outlineMd: Boolean,
 	  outlineIos: Boolean,
+	  outlineAurora: Boolean,
 	  active: Boolean,
 	  disabled: Boolean,
 	  tooltip: String
@@ -40704,10 +41174,9 @@
 	    var iconIon = props.iconIon;
 	    var iconFa = props.iconFa;
 	    var iconF7 = props.iconF7;
-	    var iconIfMd = props.iconIfMd;
-	    var iconIfIos = props.iconIfIos;
 	    var iconMd = props.iconMd;
 	    var iconIos = props.iconIos;
+	    var iconAurora = props.iconAurora;
 	    var id = props.id;
 	    var style = props.style;
 	    var defaultSlots = self.slots.default;
@@ -40725,10 +41194,7 @@
 	      }, text, badgeEl);
 	    }
 
-	    var mdThemeIcon = iconIfMd || iconMd;
-	    var iosThemeIcon = iconIfIos || iconIos;
-
-	    if (icon || iconMaterial || iconIon || iconFa || iconF7 || mdThemeIcon || iosThemeIcon) {
+	    if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
 	      if (iconBadge) {
 	        iconBadgeEl = react.createElement(F7Badge, {
 	          color: badgeColor
@@ -40741,8 +41207,9 @@
 	        fa: iconFa,
 	        ion: iconIon,
 	        icon: icon,
-	        md: mdThemeIcon,
-	        ios: iosThemeIcon,
+	        md: iconMd,
+	        ios: iconIos,
+	        aurora: iconAurora,
 	        color: iconColor,
 	        size: iconSize
 	      }, iconBadgeEl);
@@ -41130,6 +41597,7 @@
 	      var indexes = ref.indexes;
 	      var iosItemHeight = ref.iosItemHeight;
 	      var mdItemHeight = ref.mdItemHeight;
+	      var auroraItemHeight = ref.auroraItemHeight;
 	      var scrollList = ref.scrollList;
 	      var label = ref.label;
 	      self.f7ListIndex = f7.listIndex.create({
@@ -41138,6 +41606,7 @@
 	        indexes: indexes,
 	        iosItemHeight: iosItemHeight,
 	        mdItemHeight: mdItemHeight,
+	        auroraItemHeight: auroraItemHeight,
 	        scrollList: scrollList,
 	        label: label,
 	        on: {
@@ -41216,6 +41685,10 @@
 	    default: 14
 	  },
 	  mdItemHeight: {
+	    type: Number,
+	    default: 14
+	  },
+	  auroraItemHeight: {
 	    type: Number,
 	    default: 14
 	  }
@@ -42636,9 +43109,11 @@
 	    var noHairlines = props.noHairlines;
 	    var noHairlinesIos = props.noHairlinesIos;
 	    var noHairlinesMd = props.noHairlinesMd;
+	    var noHairlinesAurora = props.noHairlinesAurora;
 	    var noHairlinesBetween = props.noHairlinesBetween;
 	    var noHairlinesBetweenIos = props.noHairlinesBetweenIos;
 	    var noHairlinesBetweenMd = props.noHairlinesBetweenMd;
+	    var noHairlinesBetweenAurora = props.noHairlinesBetweenAurora;
 	    var formStoreData = props.formStoreData;
 	    var inlineLabels = props.inlineLabels;
 	    var className = props.className;
@@ -42663,6 +43138,8 @@
 	      'no-hairlines-between-md': noHairlinesBetweenMd,
 	      'no-hairlines-ios': noHairlinesIos,
 	      'no-hairlines-between-ios': noHairlinesBetweenIos,
+	      'no-hairlines-aurora': noHairlinesAurora,
+	      'no-hairlines-between-aurora': noHairlinesBetweenAurora,
 	      'form-store-data': formStoreData,
 	      'inline-labels': inlineLabels,
 	      'no-chevron': noChevron,
@@ -42843,6 +43320,8 @@
 	  noHairlinesBetweenMd: Boolean,
 	  noHairlinesIos: Boolean,
 	  noHairlinesBetweenIos: Boolean,
+	  noHairlinesAurora: Boolean,
+	  noHairlinesBetweenAurora: Boolean,
 	  noChevron: Boolean,
 	  chevronCenter: Boolean,
 	  tab: Boolean,
@@ -43295,25 +43774,23 @@
 	    var iconIon = props.iconIon;
 	    var iconFa = props.iconFa;
 	    var iconF7 = props.iconF7;
-	    var iconIfMd = props.iconIfMd;
-	    var iconIfIos = props.iconIfIos;
 	    var iconMd = props.iconMd;
 	    var iconIos = props.iconIos;
+	    var iconAurora = props.iconAurora;
 	    var slots = self.slots;
 	    var iconEl;
 	    var iconOnlyComputed;
-	    var mdThemeIcon = iconIfMd || iconMd;
-	    var iosThemeIcon = iconIfIos || iconIos;
 
-	    if (icon || iconMaterial || iconIon || iconFa || iconF7 || mdThemeIcon || iosThemeIcon) {
+	    if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
 	      iconEl = react.createElement(F7Icon, {
 	        material: iconMaterial,
 	        f7: iconF7,
 	        fa: iconFa,
 	        ion: iconIon,
 	        icon: icon,
-	        md: mdThemeIcon,
-	        ios: iosThemeIcon,
+	        md: iconMd,
+	        ios: iconIos,
+	        aurora: iconAurora,
 	        color: iconColor,
 	        size: iconSize
 	      });
@@ -44723,11 +45200,14 @@
 	    var backLink = props.backLink;
 	    var backLinkUrl = props.backLinkUrl;
 	    var backLinkForce = props.backLinkForce;
+	    var backLinkShowText = props.backLinkShowText;
 	    var sliding = props.sliding;
 	    var className = props.className;
 	    var style = props.style;
 	    var id = props.id;
 	    var linkEl;
+	    var needBackLinkText = backLinkShowText;
+	    if (typeof needBackLinkText === 'undefined') { needBackLinkText = !this.$theme.md; }
 
 	    if (backLink) {
 	      linkEl = react.createElement(F7Link, {
@@ -44736,7 +45216,7 @@
 	        icon: 'icon-back',
 	        force: backLinkForce || undefined,
 	        className: backLink === true || backLink && this.$theme.md ? 'icon-only' : undefined,
-	        text: backLink !== true && !this.$theme.md ? backLink : undefined,
+	        text: backLink !== true && needBackLinkText ? backLink : undefined,
 	        onClick: this.onBackClick
 	      });
 	    }
@@ -44783,6 +45263,10 @@
 	  backLink: [Boolean, String],
 	  backLinkUrl: String,
 	  backLinkForce: Boolean,
+	  backLinkShowText: {
+	    type: Boolean,
+	    default: undefined
+	  },
 	  sliding: Boolean
 	}, Mixins.colorProps));
 
@@ -45011,6 +45495,7 @@
 	    var backLink = props.backLink;
 	    var backLinkUrl = props.backLinkUrl;
 	    var backLinkForce = props.backLinkForce;
+	    var backLinkShowText = props.backLinkShowText;
 	    var sliding = props.sliding;
 	    var title = props.title;
 	    var subtitle = props.subtitle;
@@ -45030,8 +45515,8 @@
 	    var titleEl;
 	    var rightEl;
 	    var titleLargeEl;
-	    var iosLeftTitle = self.$theme && self.$theme.ios && self.$f7 && !self.$f7.params.navbar.iosCenterTitle;
-	    var mdCenterTitle = self.$theme && self.$theme.md && self.$f7 && self.$f7.params.navbar.mdCenterTitle;
+	    var addLeftTitleClass = self.$theme && self.$theme.ios && self.$f7 && !self.$f7.params.navbar.iosCenterTitle;
+	    var addCenterTitleClass = self.$theme && self.$theme.md && self.$f7 && self.$f7.params.navbar.mdCenterTitle || self.$theme && self.$theme.aurora && self.$f7 && self.$f7.params.navbar.auroraCenterTitle;
 	    var slots = self.slots;
 
 	    if (inner) {
@@ -45040,6 +45525,7 @@
 	          backLink: backLink,
 	          backLinkUrl: backLinkUrl,
 	          backLinkForce: backLinkForce,
+	          backLinkShowText: backLinkShowText,
 	          onBackClick: self.onBackClick
 	        }, slots['nav-left']);
 	      }
@@ -45072,8 +45558,8 @@
 	        },
 	        className: Utils$1.classNames('navbar-inner', innerClass, innerClassName, {
 	          sliding: sliding,
-	          'navbar-inner-left-title': iosLeftTitle,
-	          'navbar-inner-centered-title': mdCenterTitle,
+	          'navbar-inner-left-title': addLeftTitleClass,
+	          'navbar-inner-centered-title': addCenterTitleClass,
 	          'navbar-inner-large': large
 	        })
 	      }, leftEl, titleEl, rightEl, titleLargeEl, this.slots['default']);
@@ -45136,6 +45622,10 @@
 	  backLink: [Boolean, String],
 	  backLinkUrl: String,
 	  backLinkForce: Boolean,
+	  backLinkShowText: {
+	    type: Boolean,
+	    default: undefined
+	  },
 	  sliding: {
 	    type: Boolean,
 	    default: true
@@ -45247,6 +45737,7 @@
 	    var ptrPreloader = props.ptrPreloader;
 	    var ptrDistance = props.ptrDistance;
 	    var ptrBottom = props.ptrBottom;
+	    var ptrMousewheel = props.ptrMousewheel;
 	    var infinite = props.infinite;
 	    var infinitePreloader = props.infinitePreloader;
 	    var id = props.id;
@@ -45277,6 +45768,7 @@
 	      style: style,
 	      className: self.classes,
 	      'data-ptr-distance': ptrDistance || undefined,
+	      'data-ptr-mousewheel': ptrMousewheel || undefined,
 	      'data-infinite-distance': infiniteDistance || undefined,
 	      ref: function (__reactNode) {
 	        this$1.__reactRefs['el'] = __reactNode;
@@ -45358,6 +45850,7 @@
 	    default: true
 	  },
 	  ptrBottom: Boolean,
+	  ptrMousewheel: Boolean,
 	  infinite: Boolean,
 	  infiniteTop: Boolean,
 	  infiniteDistance: Number,
@@ -45583,6 +46076,7 @@
 	    var ptrDistance = props.ptrDistance;
 	    var ptrPreloader = props.ptrPreloader;
 	    var ptrBottom = props.ptrBottom;
+	    var ptrMousewheel = props.ptrMousewheel;
 	    var infinite = props.infinite;
 	    var infiniteDistance = props.infiniteDistance;
 	    var infinitePreloader = props.infinitePreloader;
@@ -45679,6 +46173,7 @@
 	      ptrDistance: ptrDistance,
 	      ptrPreloader: ptrPreloader,
 	      ptrBottom: ptrBottom,
+	      ptrMousewheel: ptrMousewheel,
 	      infinite: infinite,
 	      infiniteTop: infiniteTop,
 	      infiniteDistance: infiniteDistance,
@@ -45823,6 +46318,7 @@
 	    default: true
 	  },
 	  ptrBottom: Boolean,
+	  ptrMousewheel: Boolean,
 	  infinite: Boolean,
 	  infiniteTop: Boolean,
 	  infiniteDistance: Number,
@@ -45901,6 +46397,13 @@
 	    if (!self.$f7) { return; }
 	    var side = self.props.side || (self.props.left ? 'left' : 'right');
 	    self.$f7.panel.close(side, animate);
+	  };
+
+	  F7Panel.prototype.toggle = function toggle (animate) {
+	    var self = this;
+	    if (!self.$f7) { return; }
+	    var side = self.props.side || (self.props.left ? 'left' : 'right');
+	    self.$f7.panel.toggle(side, animate);
 	  };
 
 	  prototypeAccessors.classes.get = function () {
@@ -46579,6 +47082,7 @@
 	    if (sizeComputed) {
 	      preloaderStyle.width = sizeComputed + "px";
 	      preloaderStyle.height = sizeComputed + "px";
+	      preloaderStyle['--f7-preloader-size'] = sizeComputed + "px";
 	    }
 
 	    if (style) { Utils$1.extend(preloaderStyle, style || {}); }
@@ -46598,7 +47102,7 @@
 	      }, react.createElement('span', {
 	        className: 'preloader-inner-half-circle'
 	      })));
-	    } else {
+	    } else if (self.$theme.ios) {
 	      innerEl = react.createElement('span', {
 	        className: 'preloader-inner'
 	      }, react.createElement('span', {
@@ -46625,6 +47129,12 @@
 	        className: 'preloader-inner-line'
 	      }), react.createElement('span', {
 	        className: 'preloader-inner-line'
+	      }));
+	    } else if (self.$theme.aurora) {
+	      innerEl = react.createElement('span', {
+	        className: 'preloader-inner'
+	      }, react.createElement('span', {
+	        className: 'preloader-inner-circle'
 	      }));
 	    }
 
@@ -46999,6 +47509,7 @@
 	    var style = props.style;
 	    var id = props.id;
 	    var value = props.value;
+	    var inline = props.inline;
 
 	    if (clearButton) {
 	      clearEl = react.createElement('span', {
@@ -47020,6 +47531,7 @@
 
 	    var SearchbarTag = form ? 'form' : 'div';
 	    var classes = Utils$1.classNames(className, 'searchbar', {
+	      'searchbar-inline': inline,
 	      'no-shadow': noShadow,
 	      'no-hairline': noHairline,
 	      'searchbar-expandable': expandable
@@ -47058,7 +47570,6 @@
 	  F7Searchbar.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
 	    var ref = self.refs;
-	    var inputEl = ref.inputEl;
 	    var el = ref.el;
 	    var clearEl = ref.clearEl;
 	    var disableEl = ref.disableEl;
@@ -47101,8 +47612,9 @@
 	    var hideDividers = ref.hideDividers;
 	    var hideGroups = ref.hideGroups;
 	    var form = ref.form;
+	    var expandable = ref.expandable;
+	    var inline = ref.inline;
 	    var ref$1 = self.refs;
-	    var inputEl = ref$1.inputEl;
 	    var el = ref$1.el;
 	    var clearEl = ref$1.clearEl;
 	    var disableEl = ref$1.disableEl;
@@ -47141,6 +47653,8 @@
 	        removeDiacritics: removeDiacritics,
 	        hideDividers: hideDividers,
 	        hideGroups: hideGroups,
+	        expandable: expandable,
+	        inline: inline,
 	        on: {
 	          search: function search(searchbar, query, previousQuery) {
 	            self.dispatchEvent('searchbar:search searchbarSearch', searchbar, query, previousQuery);
@@ -47167,16 +47681,6 @@
 	      });
 	      self.f7Searchbar = self.$f7.searchbar.create(params);
 	    });
-	  };
-
-	  F7Searchbar.prototype.componentWillUnmount = function componentWillUnmount () {
-	    var self = this;
-
-	    if (self.props.form && self.refs.el) {
-	      self.refs.el.removeEventListener('submit', self.onSubmit, false);
-	    }
-
-	    if (self.f7Searchbar && self.f7Searchbar.destroy) { self.f7Searchbar.destroy(); }
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -47233,6 +47737,7 @@
 	    default: 'change input compositionend'
 	  },
 	  expandable: Boolean,
+	  inline: Boolean,
 	  searchContainer: [String, Object],
 	  searchIn: {
 	    type: String,
@@ -47260,7 +47765,7 @@
 	  },
 	  backdrop: {
 	    type: Boolean,
-	    default: true
+	    default: undefined
 	  },
 	  backdropEl: [String, Object],
 	  hideOnEnableEl: {
@@ -47316,9 +47821,11 @@
 	    var className = props.className;
 	    var raised = props.raised;
 	    var raisedIos = props.raisedIos;
+	    var raisedAurora = props.raisedAurora;
 	    var raisedMd = props.raisedMd;
 	    var round = props.round;
 	    var roundIos = props.roundIos;
+	    var roundAurora = props.roundAurora;
 	    var roundMd = props.roundMd;
 	    var id = props.id;
 	    var style = props.style;
@@ -47327,9 +47834,11 @@
 	      segmented: true,
 	      'segmented-raised': raised,
 	      'segmented-raised-ios': raisedIos,
+	      'segmented-raised-aurora': raisedAurora,
 	      'segmented-raised-md': raisedMd,
 	      'segmented-round': round,
 	      'segmented-round-ios': roundIos,
+	      'segmented-round-aurora': roundAurora,
 	      'segmented-round-md': roundMd
 	    }, Mixins.colorClasses(props));
 	    var SegmentedTag = tag;
@@ -47356,9 +47865,11 @@
 	  raised: Boolean,
 	  raisedIos: Boolean,
 	  raisedMd: Boolean,
+	  raisedAurora: Boolean,
 	  round: Boolean,
 	  roundIos: Boolean,
 	  roundMd: Boolean,
+	  roundAurora: Boolean,
 	  tag: {
 	    type: String,
 	    default: 'div'
@@ -47495,7 +48006,7 @@
 	    }
 	    self.$f7ready(function (f7) {
 	      if (useDefaultBackdrop) {
-	        sheetParams.backdrop = f7.params.sheet && f7.params.sheet.backdrop !== undefined ? f7.params.sheet.backdrop : self.$theme.md;
+	        sheetParams.backdrop = f7.params.sheet && f7.params.sheet.backdrop !== undefined ? f7.params.sheet.backdrop : !self.$theme.ios;
 	      } else {
 	        sheetParams.backdrop = backdrop;
 	      }
@@ -47832,32 +48343,46 @@
 	    var round = props.round;
 	    var roundIos = props.roundIos;
 	    var roundMd = props.roundMd;
+	    var roundAurora = props.roundAurora;
 	    var fill = props.fill;
 	    var fillIos = props.fillIos;
 	    var fillMd = props.fillMd;
+	    var fillAurora = props.fillAurora;
 	    var large = props.large;
 	    var largeIos = props.largeIos;
 	    var largeMd = props.largeMd;
+	    var largeAurora = props.largeAurora;
 	    var small = props.small;
 	    var smallIos = props.smallIos;
 	    var smallMd = props.smallMd;
+	    var smallAurora = props.smallAurora;
 	    var raised = props.raised;
+	    var raisedMd = props.raisedMd;
+	    var raisedIos = props.raisedIos;
+	    var raisedAurora = props.raisedAurora;
 	    var disabled = props.disabled;
 	    return Utils$1.classNames(self.props.className, 'stepper', {
 	      disabled: disabled,
 	      'stepper-round': round,
 	      'stepper-round-ios': roundIos,
 	      'stepper-round-md': roundMd,
+	      'stepper-round-aurora': roundAurora,
 	      'stepper-fill': fill,
 	      'stepper-fill-ios': fillIos,
 	      'stepper-fill-md': fillMd,
+	      'stepper-fill-aurora': fillAurora,
 	      'stepper-large': large,
 	      'stepper-large-ios': largeIos,
 	      'stepper-large-md': largeMd,
+	      'stepper-large-aurora': largeAurora,
 	      'stepper-small': small,
 	      'stepper-small-ios': smallIos,
 	      'stepper-small-md': smallMd,
-	      'stepper-raised': raised
+	      'stepper-small-aurora': smallAurora,
+	      'stepper-raised': raised,
+	      'stepper-raised-ios': raisedIos,
+	      'stepper-raised-md': raisedMd,
+	      'stepper-raised-aurora': raisedAurora
 	    }, Mixins.colorClasses(props));
 	  };
 
@@ -47892,8 +48417,7 @@
 	          step: inputType === 'number' ? step : undefined,
 	          onInput: self.onInput,
 	          value: value,
-	          readOnly: inputReadonly,
-	          onInput: self.onInput
+	          readOnly: inputReadonly
 	        });
 	      }
 	      inputWrapEl = react.createElement('div', {
@@ -48085,16 +48609,23 @@
 	  round: Boolean,
 	  roundMd: Boolean,
 	  roundIos: Boolean,
+	  roundAurora: Boolean,
 	  fill: Boolean,
 	  fillMd: Boolean,
 	  fillIos: Boolean,
+	  fillAurora: Boolean,
 	  large: Boolean,
 	  largeMd: Boolean,
 	  largeIos: Boolean,
+	  largeAurora: Boolean,
 	  small: Boolean,
 	  smallMd: Boolean,
 	  smallIos: Boolean,
-	  raised: Boolean
+	  smallAurora: Boolean,
+	  raised: Boolean,
+	  raisedMd: Boolean,
+	  raisedIos: Boolean,
+	  raisedAurora: Boolean
 	}, Mixins.colorProps));
 
 	F7Stepper.displayName = 'f7-stepper';
@@ -48784,15 +49315,17 @@
 	    var noBorder = props.noBorder;
 	    var topMd = props.topMd;
 	    var topIos = props.topIos;
+	    var topAurora = props.topAurora;
 	    var top = props.top;
 	    var bottomMd = props.bottomMd;
 	    var bottomIos = props.bottomIos;
+	    var bottomAurora = props.bottomAurora;
 	    var bottom = props.bottom;
 	    var position = props.position;
 	    var classes = Utils$1.classNames(className, 'toolbar', {
 	      tabbar: tabbar,
-	      'toolbar-bottom': self.$theme.md && bottomMd || self.$theme.ios && bottomIos || bottom || position === 'bottom',
-	      'toolbar-top': self.$theme.md && topMd || self.$theme.ios && topIos || top || position === 'top',
+	      'toolbar-bottom': self.$theme.md && bottomMd || self.$theme.ios && bottomIos || self.$theme.aurora && bottomAurora || bottom || position === 'bottom',
+	      'toolbar-top': self.$theme.md && topMd || self.$theme.ios && topIos || self.$theme.aurora && topAurora || top || position === 'top',
 	      'tabbar-labels': labels,
 	      'tabbar-scrollable': scrollable,
 	      'toolbar-hidden': hidden,
@@ -48864,6 +49397,10 @@
 	    type: Boolean,
 	    default: undefined
 	  },
+	  topAurora: {
+	    type: Boolean,
+	    default: undefined
+	  },
 	  top: {
 	    type: Boolean,
 	    default: undefined
@@ -48873,6 +49410,10 @@
 	    default: undefined
 	  },
 	  bottomIos: {
+	    type: Boolean,
+	    default: undefined
+	  },
+	  bottomAurora: {
 	    type: Boolean,
 	    default: undefined
 	  },
@@ -49097,6 +49638,11 @@
 	  mdSwipeBackAnimateOpacity: Boolean,
 	  mdSwipeBackActiveArea: Number,
 	  mdSwipeBackThreshold: Number,
+	  auroraSwipeBack: Boolean,
+	  auroraSwipeBackAnimateShadow: Boolean,
+	  auroraSwipeBackAnimateOpacity: Boolean,
+	  auroraSwipeBackActiveArea: Number,
+	  auroraSwipeBackThreshold: Number,
 	  pushState: Boolean,
 	  pushStateRoot: String,
 	  pushStateAnimate: Boolean,
@@ -49404,15 +49950,18 @@
 	    var theme = params.theme;
 	    if (theme === 'md') { $theme.md = true; }
 	    if (theme === 'ios') { $theme.ios = true; }
+	    if (theme === 'aurora') { $theme.aurora = true; }
 	    if (!theme || theme === 'auto') {
-	      $theme.ios = !!(Framework7.Device || Framework7.device).ios;
-	      $theme.md = !(Framework7.Device || Framework7.device).ios;
+	      $theme.ios = !!Framework7.device.ios;
+	      $theme.aurora = Framework7.device.desktop && Framework7.device.electron;
+	      $theme.md = !$theme.ios && !$theme.aurora;
 	    }
 	    Object.defineProperty(Extend.prototype, '$theme', {
 	      get: function get() {
 	        return {
 	          ios: f7.instance ? f7.instance.theme === 'ios' : $theme.ios,
 	          md: f7.instance ? f7.instance.theme === 'md' : $theme.md,
+	          aurora: f7.instance ? f7.instance.theme === 'aurora' : $theme.aurora,
 	        };
 	      },
 	    });
@@ -49465,7 +50014,7 @@
 	};
 
 	/**
-	 * Framework7 React 4.1.1
+	 * Framework7 React 4.2.0
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -49473,7 +50022,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: March 14, 2019
+	 * Released on: March 20, 2019
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -49558,223 +50107,241 @@
 	var Toolbar$2 = F7Toolbar;
 	var View$2 = F7View;
 
-	function Home () { return (
-	  react.createElement( Page, null,
-	    react.createElement( Navbar$2, { large: true, sliding: false },
-	      react.createElement( NavLeft, null,
-	        react.createElement( Link, { panelOpen: "left", iconIos: "f7:menu", iconMd: "material:menu" })
-	      ),
-	      react.createElement( NavTitle, { sliding: true }, "Framework7 React"),
-	      react.createElement( NavRight, null,
-	        react.createElement( Link, { searchbarEnable: ".searchbar-components", iconIos: "f7:search", iconMd: "material:search" })
-	      ),
-	      react.createElement( NavTitleLarge, null, "Framework7 React" ),
-	      react.createElement( Searchbar$2, { className: "searchbar-components", searchContainer: ".components-list", searchIn: "a", expandable: true })
-	    ),
+	var defaultExport = /*@__PURE__*/(function (superclass) {
+	  function defaultExport() {
+	    superclass.call(this);
+	  }
 
-	    react.createElement( List, { className: "searchbar-hide-on-search" },
-	      react.createElement( ListItem, { title: "About Framework7", link: "/about/" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      )
-	    ),
+	  if ( superclass ) defaultExport.__proto__ = superclass;
+	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
+	  defaultExport.prototype.constructor = defaultExport;
+	  defaultExport.prototype.render = function render () {
+	    return (
+	      react.createElement( Page, null,
+	        react.createElement( Navbar$2, { large: true, sliding: false },
+	          react.createElement( NavLeft, null,
+	            react.createElement( Link, { panelOpen: "left", iconIos: "f7:menu", iconAurora: "f7:menu", iconMd: "material:menu" })
+	          ),
+	          react.createElement( NavTitle, { sliding: true }, "Framework7 React"),
+	          react.createElement( NavRight, null,
+	            react.createElement( Link, { searchbarEnable: ".searchbar-components", iconIos: "f7:search", iconAurora: "f7:search", iconMd: "material:search" })
+	          ),
+	          react.createElement( NavTitleLarge, null, "Framework7 React" ),
+	          react.createElement( Searchbar$2, {
+	            className: "searchbar-components", searchContainer: ".components-list", searchIn: "a", expandable: true, disableButton: !this.$theme.aurora })
+	        ),
 
-	    react.createElement( BlockTitle, { className: "searchbar-found" }, "Components"),
-	    react.createElement( List, { className: "components-list searchbar-found" },
-	      react.createElement( ListItem, { link: "/accordion/", title: "Accordion" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/action-sheet/", title: "Action Sheet" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/autocomplete/", title: "Autocomplete" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/badge/", title: "Badge" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/buttons/", title: "Buttons" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/calendar/", title: "Calendar / Date Picker" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/cards/", title: "Cards" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/cards-expandable/", title: "Cards Expandable" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/checkbox/", title: "Checkbox" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/chips/", title: "Chips/Tags" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/contacts-list/", title: "Contacts List" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/content-block/", title: "Content Block" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/data-table/", title: "Data Table" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/dialog/", title: "Dialog" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/elevation/", title: "Elevation" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/fab/", title: "FAB" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/fab-morph/", title: "FAB Morph" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/form-storage/", title: "Form Storage" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/gauge/", title: "Gauge" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/grid/", title: "Grid / Layout Grid" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/icons/", title: "Icons" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/infinite-scroll/", title: "Infinite Scroll" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/inputs/", title: "Inputs" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/lazy-load/", title: "Lazy Load" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/list/", title: "List View" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/list-index/", title: "List Index" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/login-screen/", title: "Login Screen" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/menu/", title: "Menu" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/messages/", title: "Messages" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/navbar/", title: "Navbar" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/notifications/", title: "Notifications" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/panel/", title: "Panel / Side Panels" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/picker/", title: "Picker" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/photo-browser/", title: "Photo Browser" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/popup/", title: "Popup" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/popover/", title: "Popover" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/preloader/", title: "Preloader" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/progressbar/", title: "Progress Bar" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/pull-to-refresh/", title: "Pull To Refresh" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/radio/", title: "Radio" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/range/", title: "Range Slider" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/searchbar/", title: "Searchbar" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/searchbar-expandable/", title: "Searchbar Expandable" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/sheet-modal/", title: "Sheet Modal" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/skeleton/", title: "Skeleton (Ghost) Elements" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/smart-select/", title: "Smart Select" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/sortable/", title: "Sortable List" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/statusbar/", title: "Statusbar" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/stepper/", title: "Stepper" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/subnavbar/", title: "Subnavbar" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/swipeout/", title: "Swipeout (Swipe To Delete)" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/swiper/", title: "Swiper Slider" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/tabs/", title: "Tabs" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/timeline/", title: "Timeline" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/toast/", title: "Toast" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/toggle/", title: "Toggle" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/toolbar-tabbar/", title: "Toolbar & Tabbar" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/tooltip/", title: "Tooltip" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/virtual-list/", title: "Virtual List" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	        react.createElement( List, { className: "searchbar-hide-on-search" },
+	          react.createElement( ListItem, { title: "About Framework7", link: "/about/" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, { className: "searchbar-found" }, "Components"),
+	        react.createElement( List, { className: "components-list searchbar-found" },
+	          react.createElement( ListItem, { link: "/accordion/", title: "Accordion" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/action-sheet/", title: "Action Sheet" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/appbar/", title: "Appbar" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/autocomplete/", title: "Autocomplete" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/badge/", title: "Badge" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/buttons/", title: "Buttons" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/calendar/", title: "Calendar / Date Picker" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/cards/", title: "Cards" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/cards-expandable/", title: "Cards Expandable" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/checkbox/", title: "Checkbox" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/chips/", title: "Chips/Tags" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/contacts-list/", title: "Contacts List" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/content-block/", title: "Content Block" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/data-table/", title: "Data Table" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/dialog/", title: "Dialog" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/elevation/", title: "Elevation" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/fab/", title: "FAB" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/fab-morph/", title: "FAB Morph" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/form-storage/", title: "Form Storage" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/gauge/", title: "Gauge" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/grid/", title: "Grid / Layout Grid" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/icons/", title: "Icons" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/infinite-scroll/", title: "Infinite Scroll" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/inputs/", title: "Inputs" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/lazy-load/", title: "Lazy Load" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/list/", title: "List View" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/list-index/", title: "List Index" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/login-screen/", title: "Login Screen" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/menu/", title: "Menu" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/messages/", title: "Messages" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/navbar/", title: "Navbar" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/notifications/", title: "Notifications" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/panel/", title: "Panel / Side Panels" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/picker/", title: "Picker" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/photo-browser/", title: "Photo Browser" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/popup/", title: "Popup" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/popover/", title: "Popover" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/preloader/", title: "Preloader" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/progressbar/", title: "Progress Bar" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/pull-to-refresh/", title: "Pull To Refresh" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/radio/", title: "Radio" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/range/", title: "Range Slider" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/searchbar/", title: "Searchbar" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/searchbar-expandable/", title: "Searchbar Expandable" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/sheet-modal/", title: "Sheet Modal" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/skeleton/", title: "Skeleton (Ghost) Elements" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/smart-select/", title: "Smart Select" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/sortable/", title: "Sortable List" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/statusbar/", title: "Statusbar" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/stepper/", title: "Stepper" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/subnavbar/", title: "Subnavbar" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/swipeout/", title: "Swipeout (Swipe To Delete)" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/swiper/", title: "Swiper Slider" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/tabs/", title: "Tabs" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/timeline/", title: "Timeline" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/toast/", title: "Toast" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/toggle/", title: "Toggle" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/toolbar-tabbar/", title: "Toolbar & Tabbar" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/tooltip/", title: "Tooltip" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/virtual-list/", title: "Virtual List" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          )
+	        ),
+	        react.createElement( List, { className: "searchbar-not-found" },
+	          react.createElement( ListItem, { title: "Nothing found" })
+	        ),
+	        react.createElement( BlockTitle, { className: "searchbar-hide-on-search" }, "Themes"),
+	        react.createElement( List, { className: "searchbar-hide-on-search" },
+	          react.createElement( ListItem, { title: "iOS Theme", external: true, link: "./index.html?theme=ios" }),
+	          react.createElement( ListItem, { title: "Material (MD) Theme", external: true, link: "./index.html?theme=md" }),
+	          react.createElement( ListItem, { title: "Aurora Desktop Theme", external: true, link: "./index.html?theme=aurora" }),
+	          react.createElement( ListItem, { title: "Color Themes", link: "/color-themes/" })
+	        ),
+	        react.createElement( BlockTitle, { className: "searchbar-hide-on-search" }, "Page Loaders & Router"),
+	        react.createElement( List, { className: "searchbar-hide-on-search" },
+	          react.createElement( ListItem, { title: "Routable Modals", link: "/routable-modals/" }),
+	          react.createElement( ListItem, { title: "Default Route (404)", link: "/load-something-that-doesnt-exist/" }),
+	          react.createElement( ListItem, { title: "Master-Detail (Split View)", link: "/master-detail/" })
+	        )
 	      )
-	    ),
-	    react.createElement( List, { className: "searchbar-not-found" },
-	      react.createElement( ListItem, { title: "Nothing found" })
-	    ),
-	    react.createElement( BlockTitle, { className: "searchbar-hide-on-search" }, "Themes"),
-	    react.createElement( List, { className: "searchbar-hide-on-search" },
-	      react.createElement( ListItem, { title: "iOS Theme", external: true, link: "./index.html?theme=ios" }),
-	      react.createElement( ListItem, { title: "Material (MD) Theme", external: true, link: "./index.html?theme=md" }),
-	      react.createElement( ListItem, { title: "Color Themes", link: "/color-themes/" })
-	    ),
-	    react.createElement( BlockTitle, { className: "searchbar-hide-on-search" }, "Page Loaders & Router"),
-	    react.createElement( List, { className: "searchbar-hide-on-search" },
-	      react.createElement( ListItem, { title: "Routable Modals", link: "/routable-modals/" }),
-	      react.createElement( ListItem, { title: "Default Route (404)", link: "/load-something-that-doesnt-exist/" }),
-	      react.createElement( ListItem, { title: "Master-Detail (Split View)", link: "/master-detail/" })
-	    )
-	  )
-	); }
+	    );
+	  };
+
+	  return defaultExport;
+	}(react.Component));
 
 	function PanelLeft () { return (
 	  react.createElement( Page, null,
@@ -49901,7 +50468,7 @@
 	  )
 	); }
 
-	var defaultExport = /*@__PURE__*/(function (superclass) {
+	var defaultExport$1 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 
@@ -49967,29 +50534,29 @@
 	        react.createElement( Actions$2, { grid: true, opened: this.state.actionGridOpened, onActionsClosed: function () { return this$1.setActionsGridOpened(false); } },
 	          react.createElement( ActionsGroup, null,
 	            react.createElement( ActionsButton, null,
-	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-96x96-1.jpg", width: "48" }),
+	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-96x96-1.jpg", width: "48", style: {maxWidth: '100%'} }),
 	              react.createElement( 'span', null, "Button 1" )
 	            ),
 	            react.createElement( ActionsButton, null,
-	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-96x96-2.jpg", width: "48" }),
+	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-96x96-2.jpg", width: "48", style: {maxWidth: '100%'} }),
 	              react.createElement( 'span', null, "Button 2" )
 	            ),
 	            react.createElement( ActionsButton, null,
-	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-96x96-3.jpg", width: "48" }),
+	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-96x96-3.jpg", width: "48", style: {maxWidth: '100%'} }),
 	              react.createElement( 'span', null, "Button 3" )
 	            )
 	          ),
 	          react.createElement( ActionsGroup, null,
 	            react.createElement( ActionsButton, null,
-	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-96x96-4.jpg", width: "48" }),
+	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-96x96-4.jpg", width: "48", style: {maxWidth: '100%'} }),
 	              react.createElement( 'span', null, "Button 4" )
 	            ),
 	            react.createElement( ActionsButton, null,
-	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-96x96-5.jpg", width: "48" }),
+	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-96x96-5.jpg", width: "48", style: {maxWidth: '100%'} }),
 	              react.createElement( 'span', null, "Button 5" )
 	            ),
 	            react.createElement( ActionsButton, null,
-	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-96x96-6.jpg", width: "48" }),
+	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-96x96-6.jpg", width: "48", style: {maxWidth: '100%'} }),
 	              react.createElement( 'span', null, "Button 6" )
 	            )
 	          )
@@ -50050,7 +50617,60 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$1 = /*@__PURE__*/(function (superclass) {
+	var appbarEnabled = false;
+
+	var defaultExport$2 = /*@__PURE__*/(function (superclass) {
+	  function defaultExport() {
+	    superclass.call(this);
+
+	    this.state = {
+	      appbarEnabled: appbarEnabled,
+	    };
+	  }
+
+	  if ( superclass ) defaultExport.__proto__ = superclass;
+	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
+	  defaultExport.prototype.constructor = defaultExport;
+	  defaultExport.prototype.enableAppbar = function enableAppbar () {
+	    var self = this;
+	    self.setState({appbarEnabled: true});
+	    appbarEnabled = true;
+	    self.$f7.root.prepend("\n    <div class=\"appbar\">\n      <div class=\"appbar-inner\">\n        <div class=\"left\">\n          <a href=\"#\" class=\"button button-small panel-toggle display-flex\" data-panel=\"left\">\n            <i class=\"f7-icons\">bars</i>\n          </a>\n          <a href=\"#\" class=\"button button-small display-flex margin-left-half\">\n            <i class=\"f7-icons\">list</i>\n          </a>\n          <a href=\"#\" class=\"button button-small display-flex margin-left-half\">\n            <i class=\"f7-icons\">reply_fill</i>\n          </a>\n          <a href=\"#\" class=\"button button-small display-flex margin-left-half\">\n            <i class=\"f7-icons\">forward_fill</i>\n          </a>\n        </div>\n        <div class=\"right\">\n          <div class=\"searchbar searchbar-inline\">\n            <div class=\"searchbar-input-wrap\">\n              <input type=\"text\" placeholder=\"Search app\">\n              <i class=\"searchbar-icon\"></i>\n              <div class=\"input-clear-button\"></div>\n            </div>\n          </div>\n        </div>\n\n      </div>\n    </div>\n    ");
+	  };
+	  defaultExport.prototype.disableAppbar = function disableAppbar () {
+	    var self = this;
+	    self.setState({appbarEnabled: false});
+	    appbarEnabled = false;
+	    self.$$('.appbar').remove();
+	  };
+	  defaultExport.prototype.toggleAppbar = function toggleAppbar () {
+	    var self = this;
+	    if (self.state.appbarEnabled) {
+	      self.disableAppbar();
+	    } else {
+	      self.enableAppbar();
+	    }
+	  };
+	  defaultExport.prototype.render = function render () {
+	    var this$1 = this;
+
+	    return (
+	      react.createElement( Page, null,
+	        react.createElement( Navbar$2, { title: "Appbar", backLink: "Back" }),
+	        react.createElement( Block, { strong: true },
+	          react.createElement( 'p', null, "Appbar is the main app bar with actions on top of the whole app. It is designed to be used in desktop apps with Aurora theme." )
+	        ),
+	        react.createElement( Block, { strong: true },
+	          react.createElement( Button, { fill: true, onClick: function () { return this$1.toggleAppbar(); } }, "Toggle Appbar")
+	        )
+	      )
+	    )
+	  };
+
+	  return defaultExport;
+	}(react.Component));
+
+	var defaultExport$3 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -50066,7 +50686,7 @@
 	      react.createElement( Page, { onPageInit: this.onPageInit.bind(this), onPageBeforeRemove: this.onPageBeforeRemove.bind(this) },
 	        react.createElement( Navbar$2, { title: "Autocomplete", backLink: "Back" },
 	          react.createElement( Subnavbar$1, { inner: false },
-	            react.createElement( Searchbar$2, { init: false, id: "searchbar-autocomplete" })
+	            react.createElement( Searchbar$2, { init: false, id: "searchbar-autocomplete", disableButton: !this.$theme.aurora })
 	          )
 	        ),
 
@@ -50521,7 +51141,7 @@
 	    react.createElement( Navbar$2, { sliding: true, backLink: "Back", title: "Badge" },
 	      react.createElement( NavRight, null,
 	        react.createElement( Link, { iconOnly: true },
-	          react.createElement( Icon, { ios: "f7:person_round_fill", md: "material:person" },
+	          react.createElement( Icon, { ios: "f7:person_round_fill", aurora: "f7:person_round_fill", md: "material:person" },
 	            react.createElement( Badge, { color: "red" }, "5")
 	          )
 	        )
@@ -50529,19 +51149,19 @@
 	    ),
 	    react.createElement( Toolbar$2, { bottom: true, tabbar: true, labels: true },
 	      react.createElement( Link, { tabLink: "#tab-1", tabLinkActive: true },
-	        react.createElement( Icon, { ios: "f7:email_fill", md: "material:email" },
+	        react.createElement( Icon, { ios: "f7:email_fill", aurora: "f7:email_fill", md: "material:email" },
 	          react.createElement( Badge, { color: "green" }, "5")
 	        ),
 	        react.createElement( 'span', { className: "tabbar-label" }, "Inbox")
 	      ),
 	      react.createElement( Link, { tabLink: "#tab-2" },
-	        react.createElement( Icon, { ios: "f7:calendar_fill", md: "material:today" },
+	        react.createElement( Icon, { ios: "f7:calendar_fill", aurora: "f7:calendar_fill", md: "material:today" },
 	          react.createElement( Badge, { color: "red" }, "7")
 	        ),
 	        react.createElement( 'span', { className: "tabbar-label" }, "Calendar")
 	      ),
 	      react.createElement( Link, { tabLink: "#tab-3" },
-	        react.createElement( Icon, { ios: "f7:cloud_upload_fill", md: "material:file_upload" },
+	        react.createElement( Icon, { ios: "f7:cloud_upload_fill", aurora: "f7:cloud_upload_fill", md: "material:file_upload" },
 	          react.createElement( Badge, { color: "red" }, "1")
 	        ),
 	        react.createElement( 'span', { className: "tabbar-label" }, "Upload")
@@ -50752,7 +51372,7 @@
 	  )
 	); }
 
-	var defaultExport$2 = /*@__PURE__*/(function (superclass) {
+	var defaultExport$4 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -50887,7 +51507,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$3 = /*@__PURE__*/(function (superclass) {
+	var defaultExport$5 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -51005,13 +51625,13 @@
 	      on: {
 	        init: function init(calendar) {
 	          $('.navbar-calendar-title').text(((monthNames[calendar.currentMonth]) + ", " + (calendar.currentYear)));
-	          app.navbar.size(page.navbarEl);
+	          app.navbar.size(app.navbar.getElByPage(page.el));
 	          calendar.$el.addClass('no-safe-area-right');
 	          self.renderEvents(calendar);
 	        },
 	        monthYearChangeStart: function monthYearChangeStart(calendar) {
 	          $('.navbar-calendar-title').text(((monthNames[calendar.currentMonth]) + ", " + (calendar.currentYear)));
-	          app.navbar.size(page.navbarEl);
+	          app.navbar.size(app.navbar.getElByPage(page.el));
 	        },
 	        change: function change(calendar) {
 	          self.renderEvents(calendar);
@@ -51199,7 +51819,7 @@
 	        react.createElement( CardContent, { padding: false },
 	          react.createElement( 'div', { style: {background: 'url(./img/beach.jpg) no-repeat center bottom', backgroundSize: 'cover', height: '240px'} }),
 	          react.createElement( Link, { cardClose: true, color: "white", className: "card-opened-fade-in", style: {position: 'absolute', right: '15px', top: '15px'}, iconF7: "close_round_fill" }),
-	          react.createElement( CardHeader, { textColor: "black", style: {height: '60px'} }, "Beach, Goa"),
+	          react.createElement( CardHeader, { style: {height: '60px'} }, "Beach, Goa"),
 	          react.createElement( 'div', { className: "card-content-padding" },
 	            react.createElement( 'p', null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rhoncus cursus. Etiam lorem est, consectetur vitae tempor a, volutpat eget purus. Duis urna lectus, vehicula at quam id, sodales dapibus turpis. Suspendisse potenti. Proin condimentum luctus nulla, et rhoncus ante rutrum eu. Maecenas ut tincidunt diam. Vestibulum lacinia dui ligula, sit amet pulvinar nisl blandit luctus. Vestibulum aliquam ligula nulla, tincidunt rhoncus tellus interdum at. Phasellus mollis ipsum at mollis tristique. Maecenas sit amet tempus justo. Duis dolor elit, mollis quis viverra quis, vehicula eu ante. Integer a molestie risus. Vestibulum eu sollicitudin massa, sit amet dictum sem. Aliquam nisi tellus, maximus eget placerat in, porta vel lorem. Aenean tempus sodales nisl in cursus. Curabitur tincidunt turpis in nisl ornare euismod eget at libero." ),
 	            react.createElement( 'p', null, "Suspendisse ligula eros, congue in nulla pellentesque, imperdiet blandit sapien. Morbi nisi sem, efficitur a rutrum porttitor, feugiat vel enim. Fusce eget vehicula odio, et luctus neque. Donec mattis a nulla laoreet commodo. Integer eget hendrerit augue, vel porta libero. Morbi imperdiet, eros at ultricies rutrum, eros urna auctor enim, eget laoreet massa diam vitae lorem. Proin eget urna ultrices, semper ligula aliquam, dignissim eros. Donec vitae augue eu sapien tristique elementum a nec nulla. Aliquam erat volutpat. Curabitur condimentum, metus blandit lobortis fringilla, enim mauris venenatis neque, et venenatis lorem urna ut justo. Maecenas neque enim, congue ac tempor quis, tincidunt ut mi. Donec venenatis ante non consequat molestie. Quisque ut rhoncus ligula. Vestibulum sodales maximus justo sit amet ornare. Nullam pulvinar eleifend nisi sit amet molestie." ),
@@ -51259,7 +51879,7 @@
 	  )
 	); }
 
-	var defaultExport$4 = /*@__PURE__*/(function (superclass) {
+	var defaultExport$6 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 	    this.deleteChipBound = this.deleteChip.bind(this);
@@ -51291,13 +51911,13 @@
 	        react.createElement( BlockTitle, null, "Icon Chips" ),
 	        react.createElement( Block, { strong: true },
 	          react.createElement( Chip$1, { text: "Add Contact", mediaBgColor: "blue" },
-	            react.createElement( Icon, { slot: "media", ios: "f7:add_round", md: "material:add_circle" })
+	            react.createElement( Icon, { slot: "media", ios: "f7:add_round", aurora: "f7:add_round", md: "material:add_circle" })
 	          ),
 	          react.createElement( Chip$1, { text: "London", mediaBgColor: "green" },
-	            react.createElement( Icon, { slot: "media", ios: "f7:compass", md: "material:location_on" })
+	            react.createElement( Icon, { slot: "media", ios: "f7:compass", aurora: "f7:compass", md: "material:location_on" })
 	          ),
 	          react.createElement( Chip$1, { text: "John Doe", mediaBgColor: "red" },
-	            react.createElement( Icon, { slot: "media", ios: "f7:person", md: "material:person" })
+	            react.createElement( Icon, { slot: "media", ios: "f7:person", aurora: "f7:person", md: "material:person" })
 	          )
 	        ),
 	        react.createElement( BlockTitle, null, "Contact Chips" ),
@@ -51651,7 +52271,7 @@
 	            react.createElement( 'th', { className: "numeric-cell" }, "Fat (g)"),
 	            react.createElement( 'th', { className: "numeric-cell" }, "Carbs"),
 	            react.createElement( 'th', { className: "numeric-cell" }, "Protein (g)"),
-	            react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", md: "material:message" }), " Comments")
+	            react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", aurora: "f7:message_fill", md: "material:message" }), " Comments")
 	          )
 	        ),
 	        react.createElement( 'tbody', null,
@@ -51772,8 +52392,8 @@
 	      react.createElement( CardHeader, null,
 	        react.createElement( 'div', { className: "data-table-title" }, "Nutrition"),
 	        react.createElement( 'div', { className: "data-table-actions" },
-	          react.createElement( Link, { iconIos: "f7:sort", iconMd: "material:sort" }),
-	          react.createElement( Link, { iconIos: "f7:more_vertical_round", iconMd: "material:more_vert" })
+	          react.createElement( Link, { iconIos: "f7:sort", iconAurora: "f7:sort", iconMd: "material:sort" }),
+	          react.createElement( Link, { iconIos: "f7:more_vertical_round", iconAurora: "f7:more_vertical_round", iconMd: "material:more_vert" })
 	        )
 	      ),
 	      react.createElement( CardContent, { padding: false },
@@ -51788,7 +52408,7 @@
 	              react.createElement( 'th', { className: "numeric-cell" }, "Fat (g)"),
 	              react.createElement( 'th', { className: "numeric-cell" }, "Carbs"),
 	              react.createElement( 'th', { className: "numeric-cell" }, "Protein (g)"),
-	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", md: "material:message" }), " Comments")
+	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", aurora: "f7:message_fill", md: "material:message" }), " Comments")
 	            )
 	          ),
 	          react.createElement( 'tbody', null,
@@ -51846,8 +52466,8 @@
 	      react.createElement( CardHeader, null,
 	        react.createElement( 'div', { className: "data-table-title" }, "Nutrition"),
 	        react.createElement( 'div', { className: "data-table-actions" },
-	          react.createElement( Link, { iconIos: "f7:sort", iconMd: "material:sort" }),
-	          react.createElement( Link, { iconIos: "f7:more_vertical_round", iconMd: "material:more_vert" })
+	          react.createElement( Link, { iconIos: "f7:sort", iconAurora: "f7:sort", iconMd: "material:sort" }),
+	          react.createElement( Link, { iconIos: "f7:more_vertical_round", iconAurora: "f7:more_vertical_round", iconMd: "material:more_vert" })
 	        )
 	      ),
 	      react.createElement( CardContent, { padding: false },
@@ -51862,7 +52482,7 @@
 	              react.createElement( 'th', { className: "numeric-cell sortable-cell" }, "Fat (g)"),
 	              react.createElement( 'th', { className: "numeric-cell sortable-cell" }, "Carbs"),
 	              react.createElement( 'th', { className: "numeric-cell sortable-cell" }, "Protein (g)"),
-	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", md: "material:message" }), " Comments")
+	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", aurora: "f7:message_fill", md: "material:message" }), " Comments")
 	            )
 	          ),
 	          react.createElement( 'tbody', null,
@@ -51920,15 +52540,15 @@
 	        react.createElement( 'div', { className: "data-table-header" },
 	          react.createElement( 'div', { className: "data-table-title" }, "Nutrition"),
 	          react.createElement( 'div', { className: "data-table-actions" },
-	            react.createElement( Link, { iconIos: "f7:sort", iconMd: "material:sort" }),
-	            react.createElement( Link, { iconIos: "f7:more_vertical_round", iconMd: "material:more_vert" })
+	            react.createElement( Link, { iconIos: "f7:sort", iconAurora: "f7:sort", iconMd: "material:sort" }),
+	            react.createElement( Link, { iconIos: "f7:more_vertical_round", iconAurora: "f7:more_vertical_round", iconMd: "material:more_vert" })
 	          )
 	        ),
 	        react.createElement( 'div', { className: "data-table-header-selected" },
 	          react.createElement( 'div', { className: "data-table-title-selected" }, react.createElement( 'span', { className: "data-table-selected-count" }), " items selected"),
 	          react.createElement( 'div', { className: "data-table-actions" },
-	            react.createElement( Link, { iconIos: "f7:trash", iconMd: "material:delete" }),
-	            react.createElement( Link, { iconIos: "f7:more_vertical_round", iconMd: "material:more_vert" })
+	            react.createElement( Link, { iconIos: "f7:trash", iconAurora: "f7:trash", iconMd: "material:delete" }),
+	            react.createElement( Link, { iconIos: "f7:more_vertical_round", iconAurora: "f7:more_vertical_round", iconMd: "material:more_vert" })
 	          )
 	        )
 	      ),
@@ -51944,7 +52564,7 @@
 	              react.createElement( 'th', { className: "numeric-cell" }, "Fat (g)"),
 	              react.createElement( 'th', { className: "numeric-cell" }, "Carbs"),
 	              react.createElement( 'th', { className: "numeric-cell" }, "Protein (g)"),
-	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", md: "material:message" }), " Comments")
+	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", aurora: "f7:message_fill", md: "material:message" }), " Comments")
 	            )
 	          ),
 	          react.createElement( 'tbody', null,
@@ -52002,8 +52622,8 @@
 	      react.createElement( CardHeader, null,
 	        react.createElement( 'div', { className: "data-table-links" }, react.createElement( 'a', { className: "button" }, "Add"), react.createElement( 'a', { className: "button" }, "Remove")),
 	        react.createElement( 'div', { className: "data-table-actions" },
-	          react.createElement( Link, { iconIos: "f7:sort", iconMd: "material:sort" }),
-	          react.createElement( Link, { iconIos: "f7:more_vertical_round", iconMd: "material:more_vert" })
+	          react.createElement( Link, { iconIos: "f7:sort", iconAurora: "f7:sort", iconMd: "material:sort" }),
+	          react.createElement( Link, { iconIos: "f7:more_vertical_round", iconAurora: "f7:more_vertical_round", iconMd: "material:more_vert" })
 	        )
 	      ),
 	      react.createElement( CardContent, { padding: false },
@@ -52018,7 +52638,7 @@
 	              react.createElement( 'th', { className: "numeric-cell" }, "Fat (g)"),
 	              react.createElement( 'th', { className: "numeric-cell" }, "Carbs"),
 	              react.createElement( 'th', { className: "numeric-cell" }, "Protein (g)"),
-	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", md: "material:message" }), " Comments"),
+	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", aurora: "f7:message_fill", md: "material:message" }), " Comments"),
 	              react.createElement( 'th', null )
 	            )
 	          ),
@@ -52034,8 +52654,8 @@
 	              react.createElement( 'td', { className: "numeric-cell" }, "4.0"),
 	              react.createElement( 'td', { className: "tablet-only" }, "I like frozen yogurt"),
 	              react.createElement( 'td', { className: "actions-cell" },
-	                react.createElement( Link, { iconIos: "f7:compose", iconMd: "material:edit" }),
-	                react.createElement( Link, { iconIos: "f7:trash", iconMd: "material:delete" })
+	                react.createElement( Link, { iconIos: "f7:compose", iconAurora: "f7:compose", iconMd: "material:edit" }),
+	                react.createElement( Link, { iconIos: "f7:trash", iconAurora: "f7:trash", iconMd: "material:delete" })
 	              )
 	            ),
 	            react.createElement( 'tr', null,
@@ -52049,8 +52669,8 @@
 	              react.createElement( 'td', { className: "numeric-cell" }, "4.4"),
 	              react.createElement( 'td', { className: "tablet-only" }, "But like ice cream more"),
 	              react.createElement( 'td', { className: "actions-cell" },
-	                react.createElement( Link, { iconIos: "f7:compose", iconMd: "material:edit" }),
-	                react.createElement( Link, { iconIos: "f7:trash", iconMd: "material:delete" })
+	                react.createElement( Link, { iconIos: "f7:compose", iconAurora: "f7:compose", iconMd: "material:edit" }),
+	                react.createElement( Link, { iconIos: "f7:trash", iconAurora: "f7:trash", iconMd: "material:delete" })
 	              )
 	            ),
 	            react.createElement( 'tr', null,
@@ -52064,8 +52684,8 @@
 	              react.createElement( 'td', { className: "numeric-cell" }, "6.0"),
 	              react.createElement( 'td', { className: "tablet-only" }, "Super tasty"),
 	              react.createElement( 'td', { className: "actions-cell" },
-	                react.createElement( Link, { iconIos: "f7:compose", iconMd: "material:edit" }),
-	                react.createElement( Link, { iconIos: "f7:trash", iconMd: "material:delete" })
+	                react.createElement( Link, { iconIos: "f7:compose", iconAurora: "f7:compose", iconMd: "material:edit" }),
+	                react.createElement( Link, { iconIos: "f7:trash", iconAurora: "f7:trash", iconMd: "material:delete" })
 	              )
 	            ),
 	            react.createElement( 'tr', null,
@@ -52079,8 +52699,8 @@
 	              react.createElement( 'td', { className: "numeric-cell" }, "4.3"),
 	              react.createElement( 'td', { className: "tablet-only" }, "Don't like it"),
 	              react.createElement( 'td', { className: "actions-cell" },
-	                react.createElement( Link, { iconIos: "f7:compose", iconMd: "material:edit" }),
-	                react.createElement( Link, { iconIos: "f7:trash", iconMd: "material:delete" })
+	                react.createElement( Link, { iconIos: "f7:compose", iconAurora: "f7:compose", iconMd: "material:edit" }),
+	                react.createElement( Link, { iconIos: "f7:trash", iconAurora: "f7:trash", iconMd: "material:delete" })
 	              )
 	            )
 	          )
@@ -52096,8 +52716,8 @@
 	      react.createElement( CardHeader, null,
 	        react.createElement( 'div', { className: "data-table-title" }, "Nutrition"),
 	        react.createElement( 'div', { className: "data-table-actions" },
-	          react.createElement( Link, { iconIos: "f7:sort", iconMd: "material:sort" }),
-	          react.createElement( Link, { iconIos: "f7:more_vertical_round", iconMd: "material:more_vert" })
+	          react.createElement( Link, { iconIos: "f7:sort", iconAurora: "f7:sort", iconMd: "material:sort" }),
+	          react.createElement( Link, { iconIos: "f7:more_vertical_round", iconAurora: "f7:more_vertical_round", iconMd: "material:more_vert" })
 	        )
 	      ),
 	      react.createElement( CardContent, { padding: false },
@@ -52147,7 +52767,7 @@
 	  )
 	); }
 
-	var defaultExport$5 = /*@__PURE__*/(function (superclass) {
+	var defaultExport$7 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -52408,8 +53028,8 @@
 	    react.createElement( Navbar$2, { title: "Floating Action Button", backLink: "Back" }),
 
 	    react.createElement( Fab$2, { position: "right-top", slot: "fixed" },
-	      react.createElement( Icon, { ios: "f7:add", md: "material:add" }),
-	      react.createElement( Icon, { ios: "f7:close", md: "material:close" }),
+	      react.createElement( Icon, { ios: "f7:add", aurora: "f7:add", md: "material:add" }),
+	      react.createElement( Icon, { ios: "f7:close", aurora: "f7:close", md: "material:close" }),
 	      react.createElement( FabButtons, { position: "left" },
 	        react.createElement( FabButton, null, "1" ),
 	        react.createElement( FabButton, null, "2" ),
@@ -52418,8 +53038,8 @@
 	    ),
 
 	    react.createElement( Fab$2, { position: "right-bottom", slot: "fixed" },
-	      react.createElement( Icon, { ios: "f7:add", md: "material:add" }),
-	      react.createElement( Icon, { ios: "f7:close", md: "material:close" }),
+	      react.createElement( Icon, { ios: "f7:add", aurora: "f7:add", md: "material:add" }),
+	      react.createElement( Icon, { ios: "f7:close", aurora: "f7:close", md: "material:close" }),
 	      react.createElement( FabButtons, { position: "top" },
 	        react.createElement( FabButton, { label: "Action 1" }, "1"),
 	        react.createElement( FabButton, { label: "Action 2" }, "2"),
@@ -52428,8 +53048,8 @@
 	    ),
 
 	    react.createElement( Fab$2, { position: "left-bottom", slot: "fixed" },
-	      react.createElement( Icon, { ios: "f7:add", md: "material:add" }),
-	      react.createElement( Icon, { ios: "f7:close", md: "material:close" }),
+	      react.createElement( Icon, { ios: "f7:add", aurora: "f7:add", md: "material:add" }),
+	      react.createElement( Icon, { ios: "f7:close", aurora: "f7:close", md: "material:close" }),
 	      react.createElement( FabButtons, { position: "top" },
 	        react.createElement( FabButton, null, "1" ),
 	        react.createElement( FabButton, null, "2" ),
@@ -52438,8 +53058,8 @@
 	    ),
 
 	    react.createElement( Fab$2, { position: "left-top", slot: "fixed" },
-	      react.createElement( Icon, { ios: "f7:add", md: "material:add" }),
-	      react.createElement( Icon, { ios: "f7:close", md: "material:close" }),
+	      react.createElement( Icon, { ios: "f7:add", aurora: "f7:add", md: "material:add" }),
+	      react.createElement( Icon, { ios: "f7:close", aurora: "f7:close", md: "material:close" }),
 	      react.createElement( FabButtons, { position: "bottom" },
 	        react.createElement( FabButton, null, "1" ),
 	        react.createElement( FabButton, null, "2" ),
@@ -52448,8 +53068,8 @@
 	    ),
 
 	    react.createElement( Fab$2, { position: "center-center", slot: "fixed" },
-	      react.createElement( Icon, { ios: "f7:add", md: "material:add" }),
-	      react.createElement( Icon, { ios: "f7:close", md: "material:close" }),
+	      react.createElement( Icon, { ios: "f7:add", aurora: "f7:add", md: "material:add" }),
+	      react.createElement( Icon, { ios: "f7:close", aurora: "f7:close", md: "material:close" }),
 	      react.createElement( FabButtons, { position: "center" },
 	        react.createElement( FabButton, null, "1" ),
 	        react.createElement( FabButton, null, "2" ),
@@ -52459,7 +53079,7 @@
 	    ),
 
 	    react.createElement( Fab$2, { position: "center-bottom", slot: "fixed", text: "Create" },
-	      react.createElement( Icon, { ios: "f7:add", md: "material:add" })
+	      react.createElement( Icon, { ios: "f7:add", aurora: "f7:add", md: "material:add" })
 	    ),
 
 	    react.createElement( Block, null,
@@ -52485,18 +53105,18 @@
 	  react.createElement( Page, null,
 	    react.createElement( Navbar$2, { title: "Floating Action Button Morph", backLink: "Back" }),
 	    react.createElement( Toolbar$2, { tabbar: true, labels: true, bottom: true, className: "fab-morph-target" },
-	      react.createElement( Link, { tabLink: true, tabLinkActive: true, iconIos: "f7:email_fill", iconMd: "material:email", text: "Inbox" }),
-	      react.createElement( Link, { tabLink: true, iconIos: "f7:calendar_fill", iconMd: "material:today", text: "Calendar" }),
-	      react.createElement( Link, { tabLink: true, iconIos: "f7:cloud_upload_fill", iconMd: "material:file_upload", text: "Upload" })
+	      react.createElement( Link, { tabLink: true, tabLinkActive: true, iconIos: "f7:email_fill", iconAurora: "f7:email_fill", iconMd: "material:email", text: "Inbox" }),
+	      react.createElement( Link, { tabLink: true, iconIos: "f7:calendar_fill", iconAurora: "f7:calendar_fill", iconMd: "material:today", text: "Calendar" }),
+	      react.createElement( Link, { tabLink: true, iconIos: "f7:cloud_upload_fill", iconAurora: "f7:cloud_upload_fill", iconMd: "material:file_upload", text: "Upload" })
 	    ),
 	    react.createElement( Fab$2, { position: "right-bottom", morphTo: ".toolbar.fab-morph-target" },
-	      react.createElement( Icon, { ios: "f7:add", md: "material:add" })
+	      react.createElement( Icon, { ios: "f7:add", aurora: "f7:add", md: "material:add" })
 	    ),
 	    react.createElement( Fab$2, { position: "left-bottom", morphTo: ".demo-fab-sheet.fab-morph-target" },
-	      react.createElement( Icon, { ios: "f7:add", md: "material:add" })
+	      react.createElement( Icon, { ios: "f7:add", aurora: "f7:add", md: "material:add" })
 	    ),
 	    react.createElement( Fab$2, { position: "center-bottom", morphTo: ".demo-fab-fullscreen-sheet.fab-morph-target" },
-	      react.createElement( Icon, { ios: "f7:add", md: "material:add" })
+	      react.createElement( Icon, { ios: "f7:add", aurora: "f7:add", md: "material:add" })
 	    ),
 	    react.createElement( 'div', { className: "list links-list demo-fab-sheet fab-morph-target", slot: "fixed" },
 	      react.createElement( 'ul', null,
@@ -52575,7 +53195,7 @@
 	  )
 	); }
 
-	var defaultExport$6 = /*@__PURE__*/(function (superclass) {
+	var defaultExport$8 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 
@@ -52796,7 +53416,7 @@
 	  )
 	); }
 
-	var f7Icons = 'add add_round add_round_fill alarm alarm_fill albums albums_fill alert alert_fill arrow_down arrow_down_round_fill arrow_left arrow_left_round_fill arrow_right arrow_right_round_fill arrow_up arrow_up_round_fill at at_round at_round_fill attachment bag bag_fill barcode barcode_fill bars bars_chart bars_chart_round bars_chart_round_fill bars_chart_square bars_chart_square_fill bell bell_fill bell_off bitcoin bitcoin_round bitcoin_round_fill bolt bolt_fill bolt_round bolt_round_fill book book_fill bookmark bookmark_fill box box_fill briefcase briefcase_fill bulb bulb_fill business business_fill calendar calendar_fill calendar_today calendar_today_fill camera camera_fill camera_round camera_round_fill card card_fill chat chat_bubble chat_bubble_fill chat_fill check check_round check_round_fill chevron_down chevron_down_round chevron_down_round_fill chevron_left chevron_left_round chevron_left_round_fill chevron_right chevron_right_round chevron_right_round_fill chevron_up chevron_up_round chevron_up_round_fill circle circle_fill circle_half close close_round close_round_fill cloud cloud_download cloud_download_fill cloud_fill cloud_upload cloud_upload_fill collection collection_fill color_filter color_filter_fill compass compass_fill compose compose_fill data data_fill delete delete_round delete_round_fill desktop document document_chart document_chart_fill document_check document_check_fill document_fill document_person document_person_fill document_text document_text_fill download download_fill download_round download_round_fill drawer drawer_fill drawers drawers_fill edit email email_fill enter enter_fill enter_round enter_round_fill exit exit_fill exit_round exit_round_fill eye eye_fill eye_off fastforward fastforward_fill fastforward_round fastforward_round_fill favorites favorites_alt favorites_alt_fill favorites_fill film film_fill filter fire fire_fill flag flag_fill folder folder_fill forward forward_fill gear gear_fill gift gift_fill graph_round graph_round_fill graph_square graph_square_fill hand hand_alt heart heart_fill help help_round help_round_fill home home_fill images images_fill infinite info info_round info_round_fill keyboard keyboard_fill laptop layers layers_alt layers_alt_fill layers_fill library library_fill link list list_fill lock lock_fill logo_android logo_android_text logo_apple logo_facebook logo_github logo_google logo_google_text logo_googleplus logo_instagram logo_ios logo_linkedin logo_macos logo_microsoft logo_rss logo_twitter logo_windows menu message message_fill mic mic_fill mic_off mic_round mic_round_fill money_dollar money_dollar_round money_dollar_round_fill money_euro money_euro_round money_euro_round_fill money_pound money_pound_round money_pound_round_fill money_rubl money_rubl_round money_rubl_round_fill money_yen money_yen_round money_yen_round_fill more more_fill more_round more_round_fill more_vertical more_vertical_fill more_vertical_round more_vertical_round_fill navigation navigation_fill navigation_round navigation_round_fill paper_plane paper_plane_fill pause pause_fill pause_round pause_round_fill person person_round person_round_fill persons persons_round persons_round_fill phone phone_fill phone_landscape phone_portrait phone_round phone_round_fill photos photos_fill pie_chart pie_chart_fill placemark placemark_fill play play_fill play_round play_round_fill qrcode radio redo refresh refresh_round refresh_round_fill reload reload_round reload_round_fill reply reply_fill rewind rewind_fill rewind_round rewind_round_fill rocket rocket_fill scissors search settings settings_fill share share_fill sort sort_down sort_down_round sort_down_round_fill sort_round sort_round_fill sort_up sort_up_round sort_up_round_fill star star_fill star_half star_round_fill stopwatch stopwatch_fill tablet_landscape tablet_portrait tabs tabs_fill tag tag_fill tags tags_fill tape tape_fill thumbs_down thumbs_up ticket ticket_fill tickets tickets_fill time time_fill timer timer_fill today today_fill trash trash_fill tune tune_fill undo unlock unlock_fill upload_round upload_round_fill videocam videocam_fill videocam_round videocam_round_fill volume volume_fill volume_low volume_low_fill volume_mute volume_mute_fill volume_off waterdrop waterdrop_fill world world_fill zoom_in zoom_out'.split(' ');
+	var f7Icons = 'abc abc_square abc_square_fill add add_round add_round_fill alarm alarm_fill albums albums_fill alert alert_fill arrow_down arrow_down_round_fill arrow_left arrow_left_round_fill arrow_right arrow_right_round_fill arrow_up arrow_up_round_fill at at_round at_round_fill attachment bag bag_fill barcode barcode_fill bars bars_chart bars_chart_round bars_chart_round_fill bars_chart_square bars_chart_square_fill bell bell_fill bell_off bitcoin bitcoin_round bitcoin_round_fill bolt bolt_fill bolt_round bolt_round_fill book book_fill bookmark bookmark_fill box box_fill briefcase briefcase_fill bulb bulb_fill business business_fill calendar calendar_fill calendar_today calendar_today_fill camera camera_fill camera_round camera_round_fill card card_fill cat chat chat_bubble chat_bubble_fill chat_fill check check_round check_round_fill chevron_down chevron_down_round chevron_down_round_fill chevron_left chevron_left_round chevron_left_round_fill chevron_right chevron_right_round chevron_right_round_fill chevron_up chevron_up_round chevron_up_round_fill circle circle_fill circle_half close close_round close_round_fill cloud cloud_download cloud_download_fill cloud_fill cloud_upload cloud_upload_fill collection collection_fill color_filter color_filter_fill compass compass_fill compose compose_fill data data_fill delete delete_round delete_round_fill desktop document document_chart document_chart_fill document_check document_check_fill document_fill document_person document_person_fill document_text document_text_fill dog download download_fill download_round download_round_fill drawer drawer_fill drawers drawers_fill edit email email_fill enter enter_fill enter_round enter_round_fill exit exit_fill exit_round exit_round_fill eye eye_fill eye_off fastforward fastforward_fill fastforward_round fastforward_round_fill favorites favorites_alt favorites_alt_fill favorites_fill film film_fill filter fire fire_fill flag flag_fill folder folder_fill forward forward_fill gamepad gear gear_fill gift gift_fill graph_round graph_round_fill graph_square graph_square_fill hand hand_alt heart heart_fill help help_round help_round_fill home home_fill images images_fill infinite info info_round info_round_fill keyboard keyboard_fill laptop layers layers_alt layers_alt_fill layers_fill library library_fill link list list_fill lock lock_fill logo_android logo_android_text logo_apple logo_facebook logo_github logo_google logo_google_text logo_googleplus logo_instagram logo_ios logo_linkedin logo_macos logo_microsoft logo_rss logo_twitter logo_windows map menu message message_fill mic mic_fill mic_off mic_round mic_round_fill money_dollar money_dollar_round money_dollar_round_fill money_euro money_euro_round money_euro_round_fill money_pound money_pound_round money_pound_round_fill money_rubl money_rubl_round money_rubl_round_fill money_yen money_yen_round money_yen_round_fill more more_fill more_round more_round_fill more_vertical more_vertical_fill more_vertical_round more_vertical_round_fill navigation navigation_fill navigation_round navigation_round_fill numbers numbers_square numbers_square_fill paper_plane paper_plane_fill pause pause_fill pause_round pause_round_fill paw person person_round person_round_fill persons persons_round persons_round_fill phone phone_fill phone_landscape phone_portrait phone_round phone_round_fill photos photos_fill piano pie_chart pie_chart_fill placemark placemark_fill play play_fill play_round play_round_fill poultry_leg print qrcode radio redo refresh refresh_round refresh_round_fill reload reload_round reload_round_fill reply reply_fill rewind rewind_fill rewind_round rewind_round_fill rocket rocket_fill save scissors search settings settings_fill share share_fill shopping_cart sort sort_down sort_down_round sort_down_round_fill sort_round sort_round_fill sort_up sort_up_round sort_up_round_fill star star_fill star_half star_round_fill stopwatch stopwatch_fill tablet_landscape tablet_portrait tabs tabs_fill tag tag_fill tags tags_fill tape tape_fill thumbs_down thumbs_up ticket ticket_fill tickets tickets_fill time time_fill timer timer_fill today today_fill trash trash_fill tree tune tune_fill undo unlock unlock_fill upload_round upload_round_fill videocam videocam_fill videocam_round videocam_round_fill volume volume_fill volume_low volume_low_fill volume_mute volume_mute_fill volume_off waterdrop waterdrop_fill world world_fill zoom_in zoom_out'.split(' ');
 
 	var mdIcons = '3d_rotation ac_unit access_alarm access_alarms access_time accessibility accessible account_balance account_balance_wallet account_box account_circle adb add add_a_photo add_alarm add_alert add_box add_circle add_circle_outline add_location add_shopping_cart add_to_photos add_to_queue adjust airline_seat_flat airline_seat_flat_angled airline_seat_individual_suite airline_seat_legroom_extra airline_seat_legroom_normal airline_seat_legroom_reduced airline_seat_recline_extra airline_seat_recline_normal airplanemode_active airplanemode_inactive airplay airport_shuttle alarm alarm_add alarm_off alarm_on album all_inclusive all_out android announcement apps archive arrow_back arrow_downward arrow_drop_down arrow_drop_down_circle arrow_drop_up arrow_forward arrow_upward art_track aspect_ratio assessment assignment assignment_ind assignment_late assignment_return assignment_returned assignment_turned_in assistant assistant_photo attach_file attach_money attachment audiotrack autorenew av_timer backspace backup battery_alert battery_charging_full battery_full battery_std battery_unknown beach_access beenhere block bluetooth bluetooth_audio bluetooth_connected bluetooth_disabled bluetooth_searching blur_circular blur_linear blur_off blur_on book bookmark bookmark_border border_all border_bottom border_clear border_color border_horizontal border_inner border_left border_outer border_right border_style border_top border_vertical branding_watermark brightness_1 brightness_2 brightness_3 brightness_4 brightness_5 brightness_6 brightness_7 brightness_auto brightness_high brightness_low brightness_medium broken_image brush bubble_chart bug_report build burst_mode business business_center cached cake call call_end call_made call_merge call_missed call_missed_outgoing call_received call_split call_to_action camera camera_alt camera_enhance camera_front camera_rear camera_roll cancel card_giftcard card_membership card_travel casino cast cast_connected center_focus_strong center_focus_weak change_history chat chat_bubble chat_bubble_outline check check_box check_box_outline_blank check_circle chevron_left chevron_right child_care child_friendly chrome_reader_mode class clear clear_all close closed_caption cloud cloud_circle cloud_done cloud_download cloud_off cloud_queue cloud_upload code collections collections_bookmark color_lens colorize comment compare compare_arrows computer confirmation_number contact_mail contact_phone contacts content_copy content_cut content_paste control_point control_point_duplicate copyright create create_new_folder credit_card crop crop_16_9 crop_3_2 crop_5_4 crop_7_5 crop_din crop_free crop_landscape crop_original crop_portrait crop_rotate crop_square dashboard data_usage date_range dehaze delete delete_forever delete_sweep description desktop_mac desktop_windows details developer_board developer_mode device_hub devices devices_other dialer_sip dialpad directions directions_bike directions_boat directions_bus directions_car directions_railway directions_run directions_subway directions_transit directions_walk disc_full dns do_not_disturb do_not_disturb_alt do_not_disturb_off do_not_disturb_on dock domain done done_all donut_large donut_small drafts drag_handle drive_eta dvr edit edit_location eject email enhanced_encryption equalizer error error_outline euro_symbol ev_station event event_available event_busy event_note event_seat exit_to_app expand_less expand_more explicit explore exposure exposure_neg_1 exposure_neg_2 exposure_plus_1 exposure_plus_2 exposure_zero extension face fast_forward fast_rewind favorite favorite_border featured_play_list featured_video feedback fiber_dvr fiber_manual_record fiber_new fiber_pin fiber_smart_record file_download file_upload filter filter_1 filter_2 filter_3 filter_4 filter_5 filter_6 filter_7 filter_8 filter_9 filter_9_plus filter_b_and_w filter_center_focus filter_drama filter_frames filter_hdr filter_list filter_none filter_tilt_shift filter_vintage find_in_page find_replace fingerprint first_page fitness_center flag flare flash_auto flash_off flash_on flight flight_land flight_takeoff flip flip_to_back flip_to_front folder folder_open folder_shared folder_special font_download format_align_center format_align_justify format_align_left format_align_right format_bold format_clear format_color_fill format_color_reset format_color_text format_indent_decrease format_indent_increase format_italic format_line_spacing format_list_bulleted format_list_numbered format_paint format_quote format_shapes format_size format_strikethrough format_textdirection_l_to_r format_textdirection_r_to_l format_underlined forum forward forward_10 forward_30 forward_5 free_breakfast fullscreen fullscreen_exit functions g_translate gamepad games gavel gesture get_app gif golf_course gps_fixed gps_not_fixed gps_off grade gradient grain graphic_eq grid_off grid_on group group_add group_work hd hdr_off hdr_on hdr_strong hdr_weak headset headset_mic healing hearing help help_outline high_quality highlight highlight_off history home hot_tub hotel hourglass_empty hourglass_full http https image image_aspect_ratio import_contacts import_export important_devices inbox indeterminate_check_box info info_outline input insert_chart insert_comment insert_drive_file insert_emoticon insert_invitation insert_link insert_photo invert_colors invert_colors_off iso keyboard keyboard_arrow_down keyboard_arrow_left keyboard_arrow_right keyboard_arrow_up keyboard_backspace keyboard_capslock keyboard_hide keyboard_return keyboard_tab keyboard_voice kitchen label label_outline landscape language laptop laptop_chromebook laptop_mac laptop_windows last_page launch layers layers_clear leak_add leak_remove lens library_add library_books library_music lightbulb_outline line_style line_weight linear_scale link linked_camera list live_help live_tv local_activity local_airport local_atm local_bar local_cafe local_car_wash local_convenience_store local_dining local_drink local_florist local_gas_station local_grocery_store local_hospital local_hotel local_laundry_service local_library local_mall local_movies local_offer local_parking local_pharmacy local_phone local_pizza local_play local_post_office local_printshop local_see local_shipping local_taxi location_city location_disabled location_off location_on location_searching lock lock_open lock_outline looks looks_3 looks_4 looks_5 looks_6 looks_one looks_two loop loupe low_priority loyalty mail mail_outline map markunread markunread_mailbox memory menu merge_type message mic mic_none mic_off mms mode_comment mode_edit monetization_on money_off monochrome_photos mood mood_bad more more_horiz more_vert motorcycle mouse move_to_inbox movie movie_creation movie_filter multiline_chart music_note music_video my_location nature nature_people navigate_before navigate_next navigation near_me network_cell network_check network_locked network_wifi new_releases next_week nfc no_encryption no_sim not_interested note note_add notifications notifications_active notifications_none notifications_off notifications_paused offline_pin ondemand_video opacity open_in_browser open_in_new open_with pages pageview palette pan_tool panorama panorama_fish_eye panorama_horizontal panorama_vertical panorama_wide_angle party_mode pause pause_circle_filled pause_circle_outline payment people people_outline perm_camera_mic perm_contact_calendar perm_data_setting perm_device_information perm_identity perm_media perm_phone_msg perm_scan_wifi person person_add person_outline person_pin person_pin_circle personal_video pets phone phone_android phone_bluetooth_speaker phone_forwarded phone_in_talk phone_iphone phone_locked phone_missed phone_paused phonelink phonelink_erase phonelink_lock phonelink_off phonelink_ring phonelink_setup photo photo_album photo_camera photo_filter photo_library photo_size_select_actual photo_size_select_large photo_size_select_small picture_as_pdf picture_in_picture picture_in_picture_alt pie_chart pie_chart_outlined pin_drop place play_arrow play_circle_filled play_circle_outline play_for_work playlist_add playlist_add_check playlist_play plus_one poll polymer pool portable_wifi_off portrait power power_input power_settings_new pregnant_woman present_to_all print priority_high public publish query_builder question_answer queue queue_music queue_play_next radio radio_button_checked radio_button_unchecked rate_review receipt recent_actors record_voice_over redeem redo refresh remove remove_circle remove_circle_outline remove_from_queue remove_red_eye remove_shopping_cart reorder repeat repeat_one replay replay_10 replay_30 replay_5 reply reply_all report report_problem restaurant restaurant_menu restore restore_page ring_volume room room_service rotate_90_degrees_ccw rotate_left rotate_right rounded_corner router rowing rss_feed rv_hookup satellite save scanner schedule school screen_lock_landscape screen_lock_portrait screen_lock_rotation screen_rotation screen_share sd_card sd_storage search security select_all send sentiment_dissatisfied sentiment_neutral sentiment_satisfied sentiment_very_dissatisfied sentiment_very_satisfied settings settings_applications settings_backup_restore settings_bluetooth settings_brightness settings_cell settings_ethernet settings_input_antenna settings_input_component settings_input_composite settings_input_hdmi settings_input_svideo settings_overscan settings_phone settings_power settings_remote settings_system_daydream settings_voice share shop shop_two shopping_basket shopping_cart short_text show_chart shuffle signal_cellular_4_bar signal_cellular_connected_no_internet_4_bar signal_cellular_no_sim signal_cellular_null signal_cellular_off signal_wifi_4_bar signal_wifi_4_bar_lock signal_wifi_off sim_card sim_card_alert skip_next skip_previous slideshow slow_motion_video smartphone smoke_free smoking_rooms sms sms_failed snooze sort sort_by_alpha spa space_bar speaker speaker_group speaker_notes speaker_notes_off speaker_phone spellcheck star star_border star_half stars stay_current_landscape stay_current_portrait stay_primary_landscape stay_primary_portrait stop stop_screen_share storage store store_mall_directory straighten streetview strikethrough_s style subdirectory_arrow_left subdirectory_arrow_right subject subscriptions subtitles subway supervisor_account surround_sound swap_calls swap_horiz swap_vert swap_vertical_circle switch_camera switch_video sync sync_disabled sync_problem system_update system_update_alt tab tab_unselected tablet tablet_android tablet_mac tag_faces tap_and_play terrain text_fields text_format textsms texture theaters thumb_down thumb_up thumbs_up_down time_to_leave timelapse timeline timer timer_10 timer_3 timer_off title toc today toll tonality touch_app toys track_changes traffic train tram transfer_within_a_station transform translate trending_down trending_flat trending_up tune turned_in turned_in_not tv unarchive undo unfold_less unfold_more update usb verified_user vertical_align_bottom vertical_align_center vertical_align_top vibration video_call video_label video_library videocam videocam_off videogame_asset view_agenda view_array view_carousel view_column view_comfy view_compact view_day view_headline view_list view_module view_quilt view_stream view_week vignette visibility visibility_off voice_chat voicemail volume_down volume_mute volume_off volume_up vpn_key vpn_lock wallpaper warning watch watch_later wb_auto wb_cloudy wb_incandescent wb_iridescent wb_sunny wc web web_asset weekend whatshot widgets wifi wifi_lock wifi_tethering work wrap_text youtube_searched_for zoom_in zoom_out zoom_out_map'.split(' ');
 
@@ -52845,7 +53465,7 @@
 	  )
 	); }
 
-	var defaultExport$7 = /*@__PURE__*/(function (superclass) {
+	var defaultExport$9 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -53509,7 +54129,7 @@
 	  )
 	); }
 
-	var defaultExport$8 = /*@__PURE__*/(function (superclass) {
+	var defaultExport$a = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -53695,7 +54315,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$9 = /*@__PURE__*/(function (superclass) {
+	var defaultExport$b = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -53765,7 +54385,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$a = /*@__PURE__*/(function (superclass) {
+	var defaultExport$c = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -53814,7 +54434,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$b = /*@__PURE__*/(function (superclass) {
+	var defaultExport$d = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 	    this.state = {
@@ -53973,7 +54593,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$c = /*@__PURE__*/(function (superclass) {
+	var defaultExport$e = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -54086,9 +54706,9 @@
 	        react.createElement( Messagebar$2, {
 	          placeholder: this.placeholder, ref: function (el) {this$1.messagebarComponent = el;}, attachmentsVisible: this.attachmentsVisible, sheetVisible: this.state.sheetVisible, value: this.state.messageText, onInput: function (e) { return this$1.setState({messageText: e.target.value}); } },
 	          react.createElement( Link, {
-	            iconIos: "f7:camera_fill", iconMd: "material:camera_alt", slot: "inner-start", onClick: function () {this$1.setState({sheetVisible: !this$1.state.sheetVisible});} }),
+	            iconIos: "f7:camera_fill", iconAurora: "f7:camera_fill", iconMd: "material:camera_alt", slot: "inner-start", onClick: function () {this$1.setState({sheetVisible: !this$1.state.sheetVisible});} }),
 	          react.createElement( Link, {
-	            iconIos: "f7:arrow_up_round_fill", iconMd: "material:send", slot: "inner-end", onClick: this.sendMessage.bind(this) }),
+	            iconIos: "f7:arrow_up_round_fill", iconAurora: "f7:arrow_up_round_fill", iconMd: "material:send", slot: "inner-end", onClick: this.sendMessage.bind(this) }),
 	          react.createElement( MessagebarAttachments, null,
 	            this.state.attachments.map(function (image, index) { return (
 	              react.createElement( MessagebarAttachment, {
@@ -54304,7 +54924,7 @@
 	  )
 	); }
 
-	var defaultExport$d = /*@__PURE__*/(function (superclass) {
+	var defaultExport$f = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -54427,7 +55047,7 @@
 	  )
 	); }
 
-	var defaultExport$e = /*@__PURE__*/(function (superclass) {
+	var defaultExport$g = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -54472,15 +55092,15 @@
 	          react.createElement( Row, null,
 	            react.createElement( Col, null,
 	              react.createElement( PhotoBrowser$2, { photos: this.state.photos, ref: function (el) {this$1.standalone = el;} }),
-	              react.createElement( Button, { raisedMd: true, outlineIos: true, onClick: function () { return this$1.standalone.open(); } }, "Standalone")
+	              react.createElement( Button, { fill: true, onClick: function () { return this$1.standalone.open(); } }, "Standalone")
 	            ),
 	            react.createElement( Col, null,
 	              react.createElement( PhotoBrowser$2, { photos: this.state.photos, type: "popup", ref: function (el) {this$1.popup = el;} }),
-	              react.createElement( Button, { raisedMd: true, outlineIos: true, onClick: function () { return this$1.popup.open(); } }, "Popup")
+	              react.createElement( Button, { fill: true, onClick: function () { return this$1.popup.open(); } }, "Popup")
 	            ),
 	            react.createElement( Col, null,
 	              react.createElement( PhotoBrowser$2, { photos: this.state.photos, type: "page", backLinkText: "Back", ref: function (el) {this$1.page = el;} }),
-	              react.createElement( Button, { raisedMd: true, outlineIos: true, onClick: function () { return this$1.page.open(); } }, "Page")
+	              react.createElement( Button, { fill: true, onClick: function () { return this$1.page.open(); } }, "Page")
 	            )
 	          )
 	        ),
@@ -54489,15 +55109,15 @@
 	          react.createElement( Row, null,
 	            react.createElement( Col, null,
 	              react.createElement( PhotoBrowser$2, { photos: this.state.photos, theme: "dark", ref: function (el) {this$1.standaloneDark = el;} }),
-	              react.createElement( Button, { raisedMd: true, outlineIos: true, onClick: function () { return this$1.standaloneDark.open(); } }, "Standalone")
+	              react.createElement( Button, { fill: true, onClick: function () { return this$1.standaloneDark.open(); } }, "Standalone")
 	            ),
 	            react.createElement( Col, null,
 	              react.createElement( PhotoBrowser$2, { photos: this.state.photos, theme: "dark", type: "popup", ref: function (el) {this$1.popupDark = el;} }),
-	              react.createElement( Button, { raisedMd: true, outlineIos: true, onClick: function () { return this$1.popupDark.open(); } }, "Popup")
+	              react.createElement( Button, { fill: true, onClick: function () { return this$1.popupDark.open(); } }, "Popup")
 	            ),
 	            react.createElement( Col, null,
 	              react.createElement( PhotoBrowser$2, { photos: this.state.photos, theme: "dark", type: "page", backLinkText: "Back", ref: function (el) {this$1.pageDark = el;} }),
-	              react.createElement( Button, { raisedMd: true, outlineIos: true, onClick: function () { return this$1.pageDark.open(); } }, "Page")
+	              react.createElement( Button, { fill: true, onClick: function () { return this$1.pageDark.open(); } }, "Page")
 	            )
 	          )
 	        )
@@ -54508,7 +55128,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$f = /*@__PURE__*/(function (superclass) {
+	var defaultExport$h = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -54732,7 +55352,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$g = /*@__PURE__*/(function (superclass) {
+	var defaultExport$i = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -54825,7 +55445,7 @@
 	  )
 	); }
 
-	var defaultExport$h = /*@__PURE__*/(function (superclass) {
+	var defaultExport$j = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -54922,7 +55542,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$i = /*@__PURE__*/(function (superclass) {
+	var defaultExport$k = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -55070,7 +55690,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$j = /*@__PURE__*/(function (superclass) {
+	var defaultExport$l = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -55101,7 +55721,7 @@
 	  defaultExport.prototype.constructor = defaultExport;
 	  defaultExport.prototype.render = function render () {
 	    return (
-	      react.createElement( Page, { ptr: true, onPtrRefresh: this.loadMore.bind(this) },
+	      react.createElement( Page, { ptr: true, ptrMousewheel: true, onPtrRefresh: this.loadMore.bind(this) },
 	        react.createElement( Navbar$2, { title: "Pull To Refresh", backLink: "Back" }),
 	        react.createElement( List, { mediaList: true },
 	          this.state.items.map(function (item, index) { return (
@@ -55173,7 +55793,7 @@
 	  )
 	); }
 
-	var defaultExport$k = /*@__PURE__*/(function (superclass) {
+	var defaultExport$m = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -55195,14 +55815,14 @@
 	        react.createElement( List, { simpleList: true },
 	          react.createElement( ListItem, null,
 	            react.createElement( ListItemCell, { className: "width-auto flex-shrink-0" },
-	              react.createElement( Icon, { ios: "f7:volume_mute_fill", md: "material:volume_mute" })
+	              react.createElement( Icon, { ios: "f7:volume_mute_fill", aurora: "f7:volume_mute_fill", md: "material:volume_mute" })
 	            ),
 	            react.createElement( ListItemCell, { className: "flex-shrink-3" },
 	              react.createElement( Range$2, {
 	                min: 0, max: 100, step: 1, value: 10 })
 	            ),
 	            react.createElement( ListItemCell, { className: "width-auto flex-shrink-0" },
-	              react.createElement( Icon, { ios: "f7:volume_fill", md: "material:volume_up" })
+	              react.createElement( Icon, { ios: "f7:volume_fill", aurora: "f7:volume_fill", md: "material:volume_up" })
 	            )
 	          )
 	        ),
@@ -55211,14 +55831,14 @@
 	        react.createElement( List, { simpleList: true },
 	          react.createElement( ListItem, null,
 	            react.createElement( ListItemCell, { className: "width-auto flex-shrink-0" },
-	              react.createElement( Icon, { ios: "f7:circle", md: "material:brightness_low" })
+	              react.createElement( Icon, { ios: "f7:circle", aurora: "f7:circle", md: "material:brightness_low" })
 	            ),
 	            react.createElement( ListItemCell, { className: "flex-shrink-3" },
 	              react.createElement( Range$2, {
 	                min: 0, max: 100, step: 1, value: 50, label: true, color: "orange" })
 	            ),
 	            react.createElement( ListItemCell, { className: "width-auto flex-shrink-0" },
-	              react.createElement( Icon, { ios: "f7:circle_half", md: "material:brightness_high" })
+	              react.createElement( Icon, { ios: "f7:circle_half", aurora: "f7:circle_half", md: "material:brightness_high" })
 	            )
 	          )
 	        ),
@@ -55227,14 +55847,14 @@
 	        react.createElement( List, { simpleList: true },
 	          react.createElement( ListItem, null,
 	            react.createElement( ListItemCell, { className: "width-auto flex-shrink-0" },
-	              react.createElement( Icon, { ios: "f7:money_dollar_round", md: "material:attach_money" })
+	              react.createElement( Icon, { ios: "f7:money_dollar_round", aurora: "f7:money_dollar_round", md: "material:attach_money" })
 	            ),
 	            react.createElement( ListItemCell, { className: "flex-shrink-3" },
 	              react.createElement( Range$2, {
 	                min: 0, max: 500, step: 1, value: [this.state.priceMin, this.state.priceMax], label: true, dual: true, color: "green", onRangeChange: this.onPriceChange.bind(this) })
 	            ),
 	            react.createElement( ListItemCell, { className: "width-auto flex-shrink-0" },
-	              react.createElement( Icon, { ios: "f7:money_dollar_round_fill", md: "material:monetization_on" })
+	              react.createElement( Icon, { ios: "f7:money_dollar_round_fill", aurora: "f7:money_dollar_round_fill", md: "material:monetization_on" })
 	            )
 	          )
 	        ),
@@ -55282,120 +55902,146 @@
 	  return defaultExport;
 	}(react.Component));
 
-	function Searchbar$3 () { return (
-	  react.createElement( Page, null,
-	    react.createElement( Navbar$2, { backLink: "Back", title: "Searchbar" },
-	      react.createElement( Subnavbar$1, { inner: false },
-	        react.createElement( Searchbar$2, {
-	          searchContainer: ".search-list", searchIn: ".item-title" })
+	var defaultExport$n = /*@__PURE__*/(function (superclass) {
+	  function defaultExport() {
+	    superclass.call(this);
+	  }
+
+	  if ( superclass ) defaultExport.__proto__ = superclass;
+	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
+	  defaultExport.prototype.constructor = defaultExport;
+	  defaultExport.prototype.render = function render () {
+	    return (
+	      react.createElement( Page, null,
+	        react.createElement( Navbar$2, { backLink: "Back", title: "Searchbar" },
+	          react.createElement( Subnavbar$1, { inner: false },
+	            react.createElement( Searchbar$2, {
+	              searchContainer: ".search-list", searchIn: ".item-title", disableButton: !this.$theme.aurora })
+	          )
+	        ),
+	        react.createElement( List, { className: "searchbar-not-found" },
+	          react.createElement( ListItem, { title: "Nothing found" })
+	        ),
+	        react.createElement( List, { className: "search-list searchbar-found" },
+	          react.createElement( ListItem, { title: "Acura" }),
+	          react.createElement( ListItem, { title: "Audi" }),
+	          react.createElement( ListItem, { title: "BMW" }),
+	          react.createElement( ListItem, { title: "Cadillac " }),
+	          react.createElement( ListItem, { title: "Chevrolet " }),
+	          react.createElement( ListItem, { title: "Chrysler " }),
+	          react.createElement( ListItem, { title: "Dodge " }),
+	          react.createElement( ListItem, { title: "Ferrari " }),
+	          react.createElement( ListItem, { title: "Ford " }),
+	          react.createElement( ListItem, { title: "GMC " }),
+	          react.createElement( ListItem, { title: "Honda" }),
+	          react.createElement( ListItem, { title: "Hummer" }),
+	          react.createElement( ListItem, { title: "Hyundai" }),
+	          react.createElement( ListItem, { title: "Infiniti " }),
+	          react.createElement( ListItem, { title: "Isuzu " }),
+	          react.createElement( ListItem, { title: "Jaguar " }),
+	          react.createElement( ListItem, { title: "Jeep " }),
+	          react.createElement( ListItem, { title: "Kia" }),
+	          react.createElement( ListItem, { title: "Lamborghini " }),
+	          react.createElement( ListItem, { title: "Land Rover" }),
+	          react.createElement( ListItem, { title: "Lexus " }),
+	          react.createElement( ListItem, { title: "Lincoln " }),
+	          react.createElement( ListItem, { title: "Lotus " }),
+	          react.createElement( ListItem, { title: "Mazda" }),
+	          react.createElement( ListItem, { title: "Mercedes-Benz" }),
+	          react.createElement( ListItem, { title: "Mercury " }),
+	          react.createElement( ListItem, { title: "Mitsubishi" }),
+	          react.createElement( ListItem, { title: "Nissan " }),
+	          react.createElement( ListItem, { title: "Oldsmobile " }),
+	          react.createElement( ListItem, { title: "Peugeot " }),
+	          react.createElement( ListItem, { title: "Pontiac " }),
+	          react.createElement( ListItem, { title: "Porsche" }),
+	          react.createElement( ListItem, { title: "Regal" }),
+	          react.createElement( ListItem, { title: "Saab " }),
+	          react.createElement( ListItem, { title: "Saturn " }),
+	          react.createElement( ListItem, { title: "Subaru " }),
+	          react.createElement( ListItem, { title: "Suzuki " }),
+	          react.createElement( ListItem, { title: "Toyota" }),
+	          react.createElement( ListItem, { title: "Volkswagen" }),
+	          react.createElement( ListItem, { title: "Volvo" })
+	        )
 	      )
-	    ),
-	    react.createElement( List, { className: "searchbar-not-found" },
-	      react.createElement( ListItem, { title: "Nothing found" })
-	    ),
-	    react.createElement( List, { className: "search-list searchbar-found" },
-	      react.createElement( ListItem, { title: "Acura" }),
-	      react.createElement( ListItem, { title: "Audi" }),
-	      react.createElement( ListItem, { title: "BMW" }),
-	      react.createElement( ListItem, { title: "Cadillac " }),
-	      react.createElement( ListItem, { title: "Chevrolet " }),
-	      react.createElement( ListItem, { title: "Chrysler " }),
-	      react.createElement( ListItem, { title: "Dodge " }),
-	      react.createElement( ListItem, { title: "Ferrari " }),
-	      react.createElement( ListItem, { title: "Ford " }),
-	      react.createElement( ListItem, { title: "GMC " }),
-	      react.createElement( ListItem, { title: "Honda" }),
-	      react.createElement( ListItem, { title: "Hummer" }),
-	      react.createElement( ListItem, { title: "Hyundai" }),
-	      react.createElement( ListItem, { title: "Infiniti " }),
-	      react.createElement( ListItem, { title: "Isuzu " }),
-	      react.createElement( ListItem, { title: "Jaguar " }),
-	      react.createElement( ListItem, { title: "Jeep " }),
-	      react.createElement( ListItem, { title: "Kia" }),
-	      react.createElement( ListItem, { title: "Lamborghini " }),
-	      react.createElement( ListItem, { title: "Land Rover" }),
-	      react.createElement( ListItem, { title: "Lexus " }),
-	      react.createElement( ListItem, { title: "Lincoln " }),
-	      react.createElement( ListItem, { title: "Lotus " }),
-	      react.createElement( ListItem, { title: "Mazda" }),
-	      react.createElement( ListItem, { title: "Mercedes-Benz" }),
-	      react.createElement( ListItem, { title: "Mercury " }),
-	      react.createElement( ListItem, { title: "Mitsubishi" }),
-	      react.createElement( ListItem, { title: "Nissan " }),
-	      react.createElement( ListItem, { title: "Oldsmobile " }),
-	      react.createElement( ListItem, { title: "Peugeot " }),
-	      react.createElement( ListItem, { title: "Pontiac " }),
-	      react.createElement( ListItem, { title: "Porsche" }),
-	      react.createElement( ListItem, { title: "Regal" }),
-	      react.createElement( ListItem, { title: "Saab " }),
-	      react.createElement( ListItem, { title: "Saturn " }),
-	      react.createElement( ListItem, { title: "Subaru " }),
-	      react.createElement( ListItem, { title: "Suzuki " }),
-	      react.createElement( ListItem, { title: "Toyota" }),
-	      react.createElement( ListItem, { title: "Volkswagen" }),
-	      react.createElement( ListItem, { title: "Volvo" })
-	    )
-	  )
-	); }
+	    );
+	  };
 
-	function SearchbarExpandable () { return (
-	  react.createElement( Page, null,
-	    react.createElement( Navbar$2, { backLink: "Back", title: "Searchbar" },
-	      react.createElement( NavRight, null,
-	        react.createElement( Link, { searchbarEnable: ".searchbar-demo", iconIos: "f7:search", iconMd: "material:search" })
-	      ),
-	      react.createElement( Searchbar$2, {
-	        className: "searchbar-demo", expandable: true, searchContainer: ".search-list", searchIn: ".item-title" })
-	    ),
-	    react.createElement( List, { className: "searchbar-not-found" },
-	      react.createElement( ListItem, { title: "Nothing found" })
-	    ),
-	    react.createElement( List, { className: "search-list searchbar-found" },
-	      react.createElement( ListItem, { title: "Acura" }),
-	      react.createElement( ListItem, { title: "Audi" }),
-	      react.createElement( ListItem, { title: "BMW" }),
-	      react.createElement( ListItem, { title: "Cadillac " }),
-	      react.createElement( ListItem, { title: "Chevrolet " }),
-	      react.createElement( ListItem, { title: "Chrysler " }),
-	      react.createElement( ListItem, { title: "Dodge " }),
-	      react.createElement( ListItem, { title: "Ferrari " }),
-	      react.createElement( ListItem, { title: "Ford " }),
-	      react.createElement( ListItem, { title: "GMC " }),
-	      react.createElement( ListItem, { title: "Honda" }),
-	      react.createElement( ListItem, { title: "Hummer" }),
-	      react.createElement( ListItem, { title: "Hyundai" }),
-	      react.createElement( ListItem, { title: "Infiniti " }),
-	      react.createElement( ListItem, { title: "Isuzu " }),
-	      react.createElement( ListItem, { title: "Jaguar " }),
-	      react.createElement( ListItem, { title: "Jeep " }),
-	      react.createElement( ListItem, { title: "Kia" }),
-	      react.createElement( ListItem, { title: "Lamborghini " }),
-	      react.createElement( ListItem, { title: "Land Rover" }),
-	      react.createElement( ListItem, { title: "Lexus " }),
-	      react.createElement( ListItem, { title: "Lincoln " }),
-	      react.createElement( ListItem, { title: "Lotus " }),
-	      react.createElement( ListItem, { title: "Mazda" }),
-	      react.createElement( ListItem, { title: "Mercedes-Benz" }),
-	      react.createElement( ListItem, { title: "Mercury " }),
-	      react.createElement( ListItem, { title: "Mitsubishi" }),
-	      react.createElement( ListItem, { title: "Nissan " }),
-	      react.createElement( ListItem, { title: "Oldsmobile " }),
-	      react.createElement( ListItem, { title: "Peugeot " }),
-	      react.createElement( ListItem, { title: "Pontiac " }),
-	      react.createElement( ListItem, { title: "Porsche" }),
-	      react.createElement( ListItem, { title: "Regal" }),
-	      react.createElement( ListItem, { title: "Saab " }),
-	      react.createElement( ListItem, { title: "Saturn " }),
-	      react.createElement( ListItem, { title: "Subaru " }),
-	      react.createElement( ListItem, { title: "Suzuki " }),
-	      react.createElement( ListItem, { title: "Toyota" }),
-	      react.createElement( ListItem, { title: "Volkswagen" }),
-	      react.createElement( ListItem, { title: "Volvo" })
-	    )
-	  )
-	); }
+	  return defaultExport;
+	}(react.Component));
 
-	var defaultExport$l = /*@__PURE__*/(function (superclass) {
+	var defaultExport$o = /*@__PURE__*/(function (superclass) {
+	  function defaultExport() {
+	    superclass.call(this);
+	  }
+
+	  if ( superclass ) defaultExport.__proto__ = superclass;
+	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
+	  defaultExport.prototype.constructor = defaultExport;
+	  defaultExport.prototype.render = function render () {
+	    return (
+	      react.createElement( Page, null,
+	        react.createElement( Navbar$2, { backLink: "Back", title: "Searchbar" },
+	          react.createElement( NavRight, null,
+	            react.createElement( Link, { searchbarEnable: ".searchbar-demo", iconIos: "f7:search", iconMd: "material:search", iconAurora: "f7:search" })
+	          ),
+	          react.createElement( Searchbar$2, {
+	            className: "searchbar-demo", expandable: true, searchContainer: ".search-list", searchIn: ".item-title", disableButton: !this.$theme.aurora })
+	        ),
+	        react.createElement( List, { className: "searchbar-not-found" },
+	          react.createElement( ListItem, { title: "Nothing found" })
+	        ),
+	        react.createElement( List, { className: "search-list searchbar-found" },
+	          react.createElement( ListItem, { title: "Acura" }),
+	          react.createElement( ListItem, { title: "Audi" }),
+	          react.createElement( ListItem, { title: "BMW" }),
+	          react.createElement( ListItem, { title: "Cadillac " }),
+	          react.createElement( ListItem, { title: "Chevrolet " }),
+	          react.createElement( ListItem, { title: "Chrysler " }),
+	          react.createElement( ListItem, { title: "Dodge " }),
+	          react.createElement( ListItem, { title: "Ferrari " }),
+	          react.createElement( ListItem, { title: "Ford " }),
+	          react.createElement( ListItem, { title: "GMC " }),
+	          react.createElement( ListItem, { title: "Honda" }),
+	          react.createElement( ListItem, { title: "Hummer" }),
+	          react.createElement( ListItem, { title: "Hyundai" }),
+	          react.createElement( ListItem, { title: "Infiniti " }),
+	          react.createElement( ListItem, { title: "Isuzu " }),
+	          react.createElement( ListItem, { title: "Jaguar " }),
+	          react.createElement( ListItem, { title: "Jeep " }),
+	          react.createElement( ListItem, { title: "Kia" }),
+	          react.createElement( ListItem, { title: "Lamborghini " }),
+	          react.createElement( ListItem, { title: "Land Rover" }),
+	          react.createElement( ListItem, { title: "Lexus " }),
+	          react.createElement( ListItem, { title: "Lincoln " }),
+	          react.createElement( ListItem, { title: "Lotus " }),
+	          react.createElement( ListItem, { title: "Mazda" }),
+	          react.createElement( ListItem, { title: "Mercedes-Benz" }),
+	          react.createElement( ListItem, { title: "Mercury " }),
+	          react.createElement( ListItem, { title: "Mitsubishi" }),
+	          react.createElement( ListItem, { title: "Nissan " }),
+	          react.createElement( ListItem, { title: "Oldsmobile " }),
+	          react.createElement( ListItem, { title: "Peugeot " }),
+	          react.createElement( ListItem, { title: "Pontiac " }),
+	          react.createElement( ListItem, { title: "Porsche" }),
+	          react.createElement( ListItem, { title: "Regal" }),
+	          react.createElement( ListItem, { title: "Saab " }),
+	          react.createElement( ListItem, { title: "Saturn " }),
+	          react.createElement( ListItem, { title: "Subaru " }),
+	          react.createElement( ListItem, { title: "Suzuki " }),
+	          react.createElement( ListItem, { title: "Toyota" }),
+	          react.createElement( ListItem, { title: "Volkswagen" }),
+	          react.createElement( ListItem, { title: "Volvo" })
+	        )
+	      )
+	    );
+	  };
+
+	  return defaultExport;
+	}(react.Component));
+
+	var defaultExport$p = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -55473,7 +56119,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$m = /*@__PURE__*/(function (superclass) {
+	var defaultExport$q = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 	    this.state = {
@@ -55686,7 +56332,7 @@
 	  )
 	); }
 
-	var defaultExport$n = /*@__PURE__*/(function (superclass) {
+	var defaultExport$r = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -55718,7 +56364,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$o = /*@__PURE__*/(function (superclass) {
+	var defaultExport$s = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -56405,7 +57051,7 @@
 
 	); }
 
-	var defaultExport$p = /*@__PURE__*/(function (superclass) {
+	var defaultExport$t = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -56663,7 +57309,7 @@
 
 	); }
 
-	var defaultExport$q = /*@__PURE__*/(function (superclass) {
+	var defaultExport$u = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -57073,7 +57719,7 @@
 	  )
 	); }
 
-	var defaultExport$r = /*@__PURE__*/(function (superclass) {
+	var defaultExport$v = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -57158,7 +57804,7 @@
 	    // Create toast
 	    if (!self.toastIcon) {
 	      self.toastIcon = self.$f7.toast.create({
-	        icon: self.$theme.ios ? '<i class="f7-icons">star_fill</i>' : '<i class="material-icons">star</i>',
+	        icon: self.$theme.ios || self.$theme.aurora ? '<i class="f7-icons">star_fill</i>' : '<i class="material-icons">star</i>',
 	        text: 'I\'m on center',
 	        position: 'center',
 	        closeTimeout: 2000,
@@ -57283,7 +57929,7 @@
 	  )
 	); }
 
-	var defaultExport$s = /*@__PURE__*/(function (superclass) {
+	var defaultExport$w = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -57329,7 +57975,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$t = /*@__PURE__*/(function (superclass) {
+	var defaultExport$x = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -57352,7 +57998,7 @@
 	      react.createElement( Page, { pageContent: false, ref: "el" },
 	        react.createElement( Navbar$2, { title: "Tabbar", backLink: "Back" },
 	          react.createElement( NavRight, null,
-	            react.createElement( Link, { iconMd: "material:compare_arrows", iconIos: "f7:reload", onClick: function () {this$1.toggleToolbarPosition();} })
+	            react.createElement( Link, { iconMd: "material:compare_arrows", iconIos: "f7:reload", iconAurora: "f7:reload", onClick: function () {this$1.toggleToolbarPosition();} })
 	          )
 	        ),
 	        react.createElement( Toolbar$2, { tabbar: true, position: this.state.toolbarPosition },
@@ -57406,7 +58052,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$u = /*@__PURE__*/(function (superclass) {
+	var defaultExport$y = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -57429,13 +58075,13 @@
 	      react.createElement( Page, { pageContent: false },
 	        react.createElement( Navbar$2, { title: "Tabbar Labels", backLink: "Back" },
 	          react.createElement( NavRight, null,
-	            react.createElement( Link, { iconMd: "material:compare_arrows", iconIos: "f7:reload", onClick: function () {this$1.toggleToolbarPosition();} })
+	            react.createElement( Link, { iconMd: "material:compare_arrows", iconIos: "f7:reload", iconAurora: "f7:reload", onClick: function () {this$1.toggleToolbarPosition();} })
 	          )
 	        ),
 	        react.createElement( Toolbar$2, { tabbar: true, labels: true, position: this.state.toolbarPosition },
-	          react.createElement( Link, { tabLink: "#tab-1", tabLinkActive: true, text: "Tab 1", iconIos: "f7:email_fill", iconMd: "material:email" }),
-	          react.createElement( Link, { tabLink: "#tab-2", text: "Tab 2", iconIos: "f7:calendar_fill", iconMd: "material:today" }),
-	          react.createElement( Link, { tabLink: "#tab-3", text: "Tab 3", iconIos: "f7:cloud_upload_fill", iconMd: "material:file_upload" })
+	          react.createElement( Link, { tabLink: "#tab-1", tabLinkActive: true, text: "Tab 1", iconIos: "f7:email_fill", iconAurora: "f7:email_fill", iconMd: "material:email" }),
+	          react.createElement( Link, { tabLink: "#tab-2", text: "Tab 2", iconIos: "f7:calendar_fill", iconAurora: "f7:calendar_fill", iconMd: "material:today" }),
+	          react.createElement( Link, { tabLink: "#tab-3", text: "Tab 3", iconIos: "f7:cloud_upload_fill", iconAurora: "f7:cloud_upload_fill", iconMd: "material:file_upload" })
 	        ),
 
 	        react.createElement( Tabs$1, null,
@@ -57483,7 +58129,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$v = /*@__PURE__*/(function (superclass) {
+	var defaultExport$z = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -57507,7 +58153,7 @@
 	      react.createElement( Page, { pageContent: false },
 	        react.createElement( Navbar$2, { title: "Tabbar Scrollable", backLink: "Back" },
 	          react.createElement( NavRight, null,
-	            react.createElement( Link, { iconMd: "material:compare_arrows", iconIos: "f7:reload", onClick: function () {this$1.toggleToolbarPosition();} })
+	            react.createElement( Link, { iconMd: "material:compare_arrows", iconIos: "f7:reload", iconAurora: "f7:reload", onClick: function () {this$1.toggleToolbarPosition();} })
 	          )
 	        ),
 	        react.createElement( Toolbar$2, { tabbar: true, scrollable: true, position: this.state.toolbarPosition },
@@ -57583,7 +58229,7 @@
 	  )
 	); }
 
-	var defaultExport$w = /*@__PURE__*/(function (superclass) {
+	var defaultExport$A = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -57597,7 +58243,7 @@
 	        react.createElement( Navbar$2, { title: "Action Sheet", backLink: "Back" },
 	          react.createElement( NavRight, null,
 	            react.createElement( Link, { className: "navbar-tooltip" },
-	              react.createElement( Icon, { ios: "f7:info_round_fill", md: "material:info_outline" })
+	              react.createElement( Icon, { ios: "f7:info_round_fill", aurora: "f7:info_round_fill", md: "material:info_outline" })
 	            )
 	          )
 	        ),
@@ -57606,9 +58252,9 @@
 	          react.createElement( 'p', null, "Tooltip can be positioned around any element with any HTML content inside." )
 	        ),
 	        react.createElement( Block, { strong: true },
-	          react.createElement( 'p', null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", md: "material:info", size: 20 }), " Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", md: "material:info", size: 20 }), " aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec." ),
-	          react.createElement( 'p', null, "Vestibulum ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", md: "material:info", size: 20 }), " gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", md: "material:info", size: 20 }), " felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt." ),
-	          react.createElement( 'p', null, "Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", md: "material:info", size: 20 }), " neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", md: "material:info", size: 20 }), " massa." )
+	          react.createElement( 'p', null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", aurora: "f7:info_round_fill", md: "material:info", size: 20 }), " Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", aurora: "f7:info_round_fill", md: "material:info", size: 20 }), " aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec." ),
+	          react.createElement( 'p', null, "Vestibulum ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", aurora: "f7:info_round_fill", md: "material:info", size: 20 }), " gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", aurora: "f7:info_round_fill", md: "material:info", size: 20 }), " felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt." ),
+	          react.createElement( 'p', null, "Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", aurora: "f7:info_round_fill", md: "material:info", size: 20 }), " neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", aurora: "f7:info_round_fill", md: "material:info", size: 20 }), " massa." )
 	        ),
 
 	        react.createElement( BlockTitle, null, "Auto Initialization" ),
@@ -58733,7 +59379,7 @@
 	  )
 	); }
 
-	var defaultExport$x = /*@__PURE__*/(function (superclass) {
+	var defaultExport$B = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -58763,7 +59409,7 @@
 	        react.createElement( Navbar$2, { title: "Virtual List", backLink: "Back" },
 	          react.createElement( Subnavbar$1, { inner: false },
 	            react.createElement( Searchbar$2, {
-	              searchContainer: ".virtual-list", searchItem: "li", searchIn: ".item-title" })
+	              searchContainer: ".virtual-list", searchItem: "li", searchIn: ".item-title", disableButton: !this.$theme.aurora })
 	          )
 	        ),
 	        react.createElement( Block, null,
@@ -58774,7 +59420,7 @@
 	          react.createElement( ListItem, { title: "Nothing found" })
 	        ),
 	        react.createElement( List, {
-	          className: "searchbar-found", medialList: true, virtualList: true, virtualListParams: { items: this.state.items, searchAll: this.searchAll, renderExternal: this.renderExternal.bind(this), height: this.$theme.ios ? 63 : 73} },
+	          className: "searchbar-found", medialList: true, virtualList: true, virtualListParams: { items: this.state.items, searchAll: this.searchAll, renderExternal: this.renderExternal.bind(this), height: this.$theme.ios ? 63 : (this.$theme.md ? 73 : 46)} },
 	          react.createElement( 'ul', null,
 	            this.state.vlData.items.map(function (item, index) { return (
 	              react.createElement( ListItem, {
@@ -58805,7 +59451,7 @@
 	var globalCustomColor = '';
 	var globalCustomProperties = '';
 
-	var defaultExport$y = /*@__PURE__*/(function (superclass) {
+	var defaultExport$C = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -58927,7 +59573,7 @@
 	      }
 	    }
 	    if (self.state.barsStyle === 'fill') {
-	      styles += "\n/* Invert navigation bars to fill style */\n:root,\n:root.theme-dark,\n:root .theme-dark {\n--f7-bars-bg-color: var(--f7-theme-color);\n--f7-bars-text-color: #fff;\n--f7-bars-link-color: #fff;\n--f7-navbar-subtitle-text-color: rgba(255,255,255,0.85);\n--f7-bars-border-color: transparent;\n--f7-tabbar-link-active-color: #fff;\n--f7-tabbar-link-inactive-color: rgba(255,255,255,0.54);\n--f7-searchbar-input-bg-color: #fff;\n--f7-sheet-border-color: transparent;\n--f7-tabbar-link-active-border-color: #fff;\n}\n.navbar,\n.toolbar,\n.subnavbar,\n.calendar-header,\n.calendar-footer {\n--f7-touch-ripple-color: var(--f7-touch-ripple-white);\n--f7-link-highlight-color: var(--f7-link-highlight-white);\n--f7-button-text-color: #fff;\n--f7-button-pressed-bg-color: rgba(255,255,255,0.1);\n}\n      ";
+	      styles += "\n/* Invert navigation bars to fill style */\n:root,\n:root.theme-dark,\n:root .theme-dark {\n--f7-bars-bg-color: var(--f7-theme-color);\n--f7-bars-text-color: #fff;\n--f7-bars-link-color: #fff;\n--f7-navbar-subtitle-text-color: rgba(255,255,255,0.85);\n--f7-bars-border-color: transparent;\n--f7-tabbar-link-active-color: #fff;\n--f7-tabbar-link-inactive-color: rgba(255,255,255,0.54);\n--f7-searchbar-bg-color: var(--f7-bars-bg-color);\n--f7-searchbar-input-bg-color: #fff;\n--f7-searchbar-input-text-color: #000;\n--f7-sheet-border-color: transparent;\n--f7-tabbar-link-active-border-color: #fff;\n}\n.navbar,\n.toolbar,\n.subnavbar,\n.calendar-header,\n.calendar-footer {\n--f7-touch-ripple-color: var(--f7-touch-ripple-white);\n--f7-link-highlight-color: var(--f7-link-highlight-white);\n--f7-button-text-color: #fff;\n--f7-button-pressed-bg-color: rgba(255,255,255,0.1);\n}\n      ";
 	    }
 	    return styles.trim();
 	  };
@@ -59058,7 +59704,7 @@
 	  )
 	); }
 
-	var defaultExport$z = /*@__PURE__*/(function (superclass) {
+	var defaultExport$D = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 	  }
@@ -59096,7 +59742,7 @@
 	  // Index page
 	  {
 	    path: '/',
-	    component: Home,
+	    component: defaultExport,
 	  },
 	  // About page
 	  {
@@ -59116,11 +59762,11 @@
 	  // Right Panel pages
 	  {
 	    path: '/panel-right-1/',
-	    content: "\n      <div class=\"page\">\n        <div class=\"navbar\">\n          <div class=\"navbar-inner sliding\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"ios-only\">Back</span>\n              </a>\n            </div>\n            <div class=\"title\">Panel Page 1</div>\n          </div>\n        </div>\n        <div class=\"page-content\">\n          <div class=\"block\">\n            <p>This is a right panel page 1</p>\n            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo saepe aspernatur inventore dolorum voluptates consequatur tempore ipsum! Quia, incidunt, aliquam sit veritatis nisi aliquid porro similique ipsa mollitia eaque ex!</p>\n          </div>\n        </div>\n      </div>\n    ",
+	    content: "\n      <div class=\"page\">\n        <div class=\"navbar\">\n          <div class=\"navbar-inner sliding\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"if-not-md\">Back</span>\n              </a>\n            </div>\n            <div class=\"title\">Panel Page 1</div>\n          </div>\n        </div>\n        <div class=\"page-content\">\n          <div class=\"block\">\n            <p>This is a right panel page 1</p>\n            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo saepe aspernatur inventore dolorum voluptates consequatur tempore ipsum! Quia, incidunt, aliquam sit veritatis nisi aliquid porro similique ipsa mollitia eaque ex!</p>\n          </div>\n        </div>\n      </div>\n    ",
 	  },
 	  {
 	    path: '/panel-right-2/',
-	    content: "\n      <div class=\"page\">\n        <div class=\"navbar\">\n          <div class=\"navbar-inner sliding\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"ios-only\">Back</span>\n              </a>\n            </div>\n            <div class=\"title\">Panel Page 2</div>\n          </div>\n        </div>\n        <div class=\"page-content\">\n          <div class=\"block\">\n            <p>This is a right panel page 2</p>\n            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo saepe aspernatur inventore dolorum voluptates consequatur tempore ipsum! Quia, incidunt, aliquam sit veritatis nisi aliquid porro similique ipsa mollitia eaque ex!</p>\n          </div>\n        </div>\n      </div>\n    ",
+	    content: "\n      <div class=\"page\">\n        <div class=\"navbar\">\n          <div class=\"navbar-inner sliding\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"if-not-md\">Back</span>\n              </a>\n            </div>\n            <div class=\"title\">Panel Page 2</div>\n          </div>\n        </div>\n        <div class=\"page-content\">\n          <div class=\"block\">\n            <p>This is a right panel page 2</p>\n            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo saepe aspernatur inventore dolorum voluptates consequatur tempore ipsum! Quia, incidunt, aliquam sit veritatis nisi aliquid porro similique ipsa mollitia eaque ex!</p>\n          </div>\n        </div>\n      </div>\n    ",
 	  },
 	  // Components
 	  {
@@ -59129,11 +59775,15 @@
 	  },
 	  {
 	    path: '/action-sheet/',
-	    component: defaultExport,
+	    component: defaultExport$1,
+	  },
+	  {
+	    path: '/appbar/',
+	    component: defaultExport$2,
 	  },
 	  {
 	    path: '/autocomplete/',
-	    component: defaultExport$1,
+	    component: defaultExport$3,
 	  },
 	  {
 	    path: '/badge/',
@@ -59145,11 +59795,11 @@
 	  },
 	  {
 	    path: '/calendar/',
-	    component: defaultExport$2,
+	    component: defaultExport$4,
 	  },
 	  {
 	    path: '/calendar-page/',
-	    component: defaultExport$3,
+	    component: defaultExport$5,
 	  },
 	  {
 	    path: '/cards/',
@@ -59165,7 +59815,7 @@
 	  },
 	  {
 	    path: '/chips/',
-	    component: defaultExport$4,
+	    component: defaultExport$6,
 	  },
 	  {
 	    path: '/contacts-list/',
@@ -59181,7 +59831,7 @@
 	  },
 	  {
 	    path: '/dialog/',
-	    component: defaultExport$5,
+	    component: defaultExport$7,
 	  },
 	  {
 	    path: '/elevation/',
@@ -59201,7 +59851,7 @@
 	  },
 	  {
 	    path: '/gauge/',
-	    component: defaultExport$6,
+	    component: defaultExport$8,
 	  },
 	  {
 	    path: '/grid/',
@@ -59213,7 +59863,7 @@
 	  },
 	  {
 	    path: '/infinite-scroll/',
-	    component: defaultExport$7,
+	    component: defaultExport$9,
 	  },
 	  {
 	    path: '/inputs/',
@@ -59229,23 +59879,23 @@
 	  },
 	  {
 	    path: '/list-index/',
-	    component: defaultExport$8,
-	  },
-	  {
-	    path: '/login-screen/',
-	    component: defaultExport$9,
-	  },
-	  {
-	    path: '/login-screen-page/',
 	    component: defaultExport$a,
 	  },
 	  {
-	    path: '/menu/',
+	    path: '/login-screen/',
 	    component: defaultExport$b,
 	  },
 	  {
-	    path: '/messages/',
+	    path: '/login-screen-page/',
 	    component: defaultExport$c,
+	  },
+	  {
+	    path: '/menu/',
+	    component: defaultExport$d,
+	  },
+	  {
+	    path: '/messages/',
+	    component: defaultExport$e,
 	  },
 	  {
 	    path: '/navbar/',
@@ -59257,7 +59907,7 @@
 	  },
 	  {
 	    path: '/notifications/',
-	    component: defaultExport$d,
+	    component: defaultExport$f,
 	  },
 	  {
 	    path: '/panel/',
@@ -59265,15 +59915,15 @@
 	  },
 	  {
 	    path: '/photo-browser/',
-	    component: defaultExport$e,
+	    component: defaultExport$g,
 	  },
 	  {
 	    path: '/picker/',
-	    component: defaultExport$f,
+	    component: defaultExport$h,
 	  },
 	  {
 	    path: '/popup/',
-	    component: defaultExport$g,
+	    component: defaultExport$i,
 	  },
 	  {
 	    path: '/popover/',
@@ -59281,15 +59931,15 @@
 	  },
 	  {
 	    path: '/preloader/',
-	    component: defaultExport$h,
+	    component: defaultExport$j,
 	  },
 	  {
 	    path: '/progressbar/',
-	    component: defaultExport$i,
+	    component: defaultExport$k,
 	  },
 	  {
 	    path: '/pull-to-refresh/',
-	    component: defaultExport$j,
+	    component: defaultExport$l,
 	  },
 	  {
 	    path: '/radio/',
@@ -59297,23 +59947,23 @@
 	  },
 	  {
 	    path: '/range/',
-	    component: defaultExport$k,
+	    component: defaultExport$m,
 	  },
 	  {
 	    path: '/searchbar/',
-	    component: Searchbar$3,
+	    component: defaultExport$n,
 	  },
 	  {
 	    path: '/searchbar-expandable/',
-	    component: SearchbarExpandable,
+	    component: defaultExport$o,
 	  },
 	  {
 	    path: '/sheet-modal/',
-	    component: defaultExport$l,
+	    component: defaultExport$p,
 	  },
 	  {
 	    path: '/skeleton/',
-	    component: defaultExport$m,
+	    component: defaultExport$q,
 	  },
 	  {
 	    path: '/smart-select/',
@@ -59325,11 +59975,11 @@
 	  },
 	  {
 	    path: '/statusbar/',
-	    component: defaultExport$n,
+	    component: defaultExport$r,
 	  },
 	  {
 	    path: '/stepper/',
-	    component: defaultExport$o,
+	    component: defaultExport$s,
 	  },
 	  {
 	    path: '/subnavbar/',
@@ -59389,7 +60039,7 @@
 	      },
 	      {
 	        path: 'swiper-gallery/',
-	        component: defaultExport$p,
+	        component: defaultExport$t,
 	      },
 	      {
 	        path: 'swiper-custom-controls/',
@@ -59418,7 +60068,7 @@
 	  },
 	  {
 	    path: '/swipeout/',
-	    component: defaultExport$q,
+	    component: defaultExport$u,
 	  },
 	  {
 	    path: '/tabs/',
@@ -59458,7 +60108,7 @@
 	  },
 	  {
 	    path: '/toast/',
-	    component: defaultExport$r,
+	    component: defaultExport$v,
 	  },
 	  {
 	    path: '/toggle/',
@@ -59466,19 +60116,19 @@
 	  },
 	  {
 	    path: '/toolbar-tabbar/',
-	    component: defaultExport$s,
+	    component: defaultExport$w,
 	    routes: [
 	      {
 	        path: 'tabbar/',
-	        component: defaultExport$t,
+	        component: defaultExport$x,
 	      },
 	      {
 	        path: 'tabbar-labels/',
-	        component: defaultExport$u,
+	        component: defaultExport$y,
 	      },
 	      {
 	        path: 'tabbar-scrollable/',
-	        component: defaultExport$v,
+	        component: defaultExport$z,
 	      },
 	      {
 	        path: 'toolbar-hide-scroll/',
@@ -59487,7 +60137,7 @@
 	  },
 	  {
 	    path: '/tooltip/',
-	    component: defaultExport$w,
+	    component: defaultExport$A,
 	  },
 	  {
 	    path: '/timeline/',
@@ -59507,13 +60157,13 @@
 	  },
 	  {
 	    path: '/virtual-list/',
-	    component: defaultExport$x,
+	    component: defaultExport$B,
 	  },
 
 	  // Color Themes
 	  {
 	    path: '/color-themes/',
-	    component: defaultExport$y,
+	    component: defaultExport$C,
 	  },
 
 	  // Routable Modals
@@ -59541,7 +60191,7 @@
 	  },
 	  {
 	    path: '/master-detail/:id/',
-	    component: defaultExport$z,
+	    component: defaultExport$D,
 	  },
 	  // Default route (404 page). MUST BE THE LAST
 	  {
