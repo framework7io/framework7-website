@@ -83,10 +83,12 @@ block content
       /*====================
         Fonts
         ==================== */
+      :root {
+        --f7-font-size: 14px;
+      }
       .ios {
         --f7-font-family: -apple-system, SF Pro Text, SF UI Text, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
         --f7-text-color: #000;
-        --f7-font-size: 14px;
         --f7-line-height: 1.4;
       }
       .ios .theme-dark,
@@ -96,12 +98,20 @@ block content
       .md {
         --f7-font-family: Roboto, system-ui, Noto, Helvetica, Arial, sans-serif;
         --f7-text-color: #212121;
-        --f7-font-size: 14px;
         --f7-line-height: 1.5;
       }
       .md .theme-dark,
       .md.theme-dark {
         --f7-text-color: rgba(255, 255, 255, 0.87);
+      }
+      .aurora {
+        --f7-font-family: -apple-system, system-ui, Helvetica, Arial, sans-serif;
+        --f7-text-color: #000;
+        --f7-line-height: 1.5;
+      }
+      .aurora .theme-dark,
+      .aurora.theme-dark {
+        --f7-text-color: #fff;
       }
       /*====================
         Bars
@@ -130,6 +140,13 @@ block content
       }
       .md {
         --f7-bars-border-color: transparent;
+      }
+      .aurora {
+        --f7-bars-border-color: rgba(0, 0, 0, 0.2);
+      }
+      .aurora .theme-dark,
+      .aurora.theme-dark {
+        --f7-bars-border-color: #282829;
       }
     h2 Color Theme Variables
     :code(lang="css")
