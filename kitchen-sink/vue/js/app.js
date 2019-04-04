@@ -10289,7 +10289,7 @@
     }
     if (ipod) {
       device.osVersion = ipod[3] ? ipod[3].replace(/_/g, '.') : null;
-      device.iphone = true;
+      device.ipod = true;
     }
     // iOS 8+ changed UA
     if (device.ios && device.osVersion && ua.indexOf('Version/') >= 0) {
@@ -10435,12 +10435,12 @@
     return self;
   };
 
-  var Framework7Class = /*@__PURE__*/(function (EventsClass$$1) {
+  var Framework7Class = /*@__PURE__*/(function (EventsClass) {
     function Framework7Class(params, parents) {
       if ( params === void 0 ) params = {};
       if ( parents === void 0 ) parents = [];
 
-      EventsClass$$1.call(this, parents);
+      EventsClass.call(this, parents);
       var self = this;
       self.params = params;
 
@@ -10451,8 +10451,8 @@
       }
     }
 
-    if ( EventsClass$$1 ) Framework7Class.__proto__ = EventsClass$$1;
-    Framework7Class.prototype = Object.create( EventsClass$$1 && EventsClass$$1.prototype );
+    if ( EventsClass ) Framework7Class.__proto__ = EventsClass;
+    Framework7Class.prototype = Object.create( EventsClass && EventsClass.prototype );
     Framework7Class.prototype.constructor = Framework7Class;
 
     var staticAccessors = { components: { configurable: true } };
@@ -10810,9 +10810,9 @@
     });
   }
 
-  var Framework7 = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Framework7 = /*@__PURE__*/(function (Framework7Class) {
     function Framework7(params) {
-      Framework7Class$$1.call(this, params);
+      Framework7Class.call(this, params);
       if (Framework7.instance) {
         throw new Error('Framework7 is already initialized and can\'t be initialized more than once');
       }
@@ -10899,8 +10899,8 @@
       return app;
     }
 
-    if ( Framework7Class$$1 ) Framework7.__proto__ = Framework7Class$$1;
-    Framework7.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Framework7.__proto__ = Framework7Class;
+    Framework7.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Framework7.prototype.constructor = Framework7;
 
     var prototypeAccessors = { $: { configurable: true },t7: { configurable: true } };
@@ -10958,7 +10958,7 @@
     };
 
     // eslint-disable-next-line
-    Framework7.prototype.loadModule = function loadModule$$1 () {
+    Framework7.prototype.loadModule = function loadModule () {
       var args = [], len = arguments.length;
       while ( len-- ) args[ len ] = arguments[ len ];
 
@@ -11001,7 +11001,7 @@
     };
 
     staticAccessors.Class.get = function () {
-      return Framework7Class$$1;
+      return Framework7Class;
     };
 
     staticAccessors.Events.get = function () {
@@ -12953,18 +12953,18 @@
     var isMoved = false;
     var touchesStart = {};
     var isScrolling;
-    var currentPage = [];
-    var previousPage = [];
+    var $currentPageEl = [];
+    var $previousPageEl = [];
     var viewContainerWidth;
     var touchesDiff;
     var allowViewTouchMove = true;
     var touchStartTime;
-    var $currentNavbarInner = [];
-    var $previousNavbarInner = [];
+    var $currentNavbarInnerEl = [];
+    var $previousNavbarInnerEl = [];
     var dynamicNavbar;
     var separateNavbar;
-    var pageShadow;
-    var pageOpacity;
+    var $pageShadowEl;
+    var $pageOpacityEl;
 
     var animatableNavEls;
 
@@ -12978,25 +12978,25 @@
     function animatableNavElements() {
       var els = [];
       var inverter = app.rtl ? -1 : 1;
-      var currentNavIsLarge = $currentNavbarInner.hasClass('navbar-inner-large');
-      var previousNavIsLarge = $previousNavbarInner.hasClass('navbar-inner-large');
-      var fromLarge = currentNavIsLarge && !$currentNavbarInner.hasClass('navbar-inner-large-collapsed');
-      var toLarge = previousNavIsLarge && !$previousNavbarInner.hasClass('navbar-inner-large-collapsed');
-      var $currentNavElements = $currentNavbarInner.children('.left, .title, .right, .subnavbar, .fading, .title-large');
-      var $previousNavElements = $previousNavbarInner.children('.left, .title, .right, .subnavbar, .fading, .title-large');
+      var currentNavIsLarge = $currentNavbarInnerEl.hasClass('navbar-inner-large');
+      var previousNavIsLarge = $previousNavbarInnerEl.hasClass('navbar-inner-large');
+      var fromLarge = currentNavIsLarge && !$currentNavbarInnerEl.hasClass('navbar-inner-large-collapsed');
+      var toLarge = previousNavIsLarge && !$previousNavbarInnerEl.hasClass('navbar-inner-large-collapsed');
+      var $currentNavElements = $currentNavbarInnerEl.children('.left, .title, .right, .subnavbar, .fading, .title-large');
+      var $previousNavElements = $previousNavbarInnerEl.children('.left, .title, .right, .subnavbar, .fading, .title-large');
       var activeNavBackIconText;
       var previousNavBackIconText;
 
       if (params.iosAnimateNavbarBackIcon) {
-        if ($currentNavbarInner.hasClass('sliding')) {
-          activeNavBackIconText = $currentNavbarInner.children('.left').find('.back .icon + span').eq(0);
+        if ($currentNavbarInnerEl.hasClass('sliding')) {
+          activeNavBackIconText = $currentNavbarInnerEl.children('.left').find('.back .icon + span').eq(0);
         } else {
-          activeNavBackIconText = $currentNavbarInner.children('.left.sliding').find('.back .icon + span').eq(0);
+          activeNavBackIconText = $currentNavbarInnerEl.children('.left.sliding').find('.back .icon + span').eq(0);
         }
-        if ($previousNavbarInner.hasClass('sliding')) {
-          previousNavBackIconText = $previousNavbarInner.children('.left').find('.back .icon + span').eq(0);
+        if ($previousNavbarInnerEl.hasClass('sliding')) {
+          previousNavBackIconText = $previousNavbarInnerEl.children('.left').find('.back .icon + span').eq(0);
         } else {
-          previousNavBackIconText = $previousNavbarInner.children('.left.sliding').find('.back .icon + span').eq(0);
+          previousNavBackIconText = $previousNavbarInnerEl.children('.left.sliding').find('.back .icon + span').eq(0);
         }
         if (activeNavBackIconText.length) {
           $previousNavElements.each(function (index, el) {
@@ -13065,7 +13065,7 @@
             }
           }
           if ($navEl.hasClass('title-large')) { return; }
-          var isSliding = $navEl.hasClass('sliding') || $currentNavbarInner.hasClass('sliding');
+          var isSliding = $navEl.hasClass('sliding') || $currentNavbarInnerEl.hasClass('sliding');
           if (els.indexOf(el) < 0) { els.push(el); }
           if (!isSubnavbar || (isSubnavbar && !isSliding)) {
             el.opacity = function (progress) { return (1 - (Math.pow( progress, 0.33 ))); };
@@ -13139,7 +13139,7 @@
             }
           }
           if ($navEl.hasClass('title-large')) { return; }
-          var isSliding = $navEl.hasClass('sliding') || $previousNavbarInner.hasClass('sliding');
+          var isSliding = $navEl.hasClass('sliding') || $previousNavbarInnerEl.hasClass('sliding');
           if (els.indexOf(el) < 0) { els.push(el); }
           if (!isSubnavbar || (isSubnavbar && !isSliding)) {
             el.opacity = function (progress) { return (Math.pow( progress, 3 )); };
@@ -13228,10 +13228,12 @@
           if (app.rtl && swipeout.find('.swipeout-actions-right').length > 0) { cancel = true; }
         }
 
-        currentPage = target.closest('.page');
-        if (currentPage.hasClass('no-swipeback') || target.closest('.no-swipeback, .card-opened').length > 0) { cancel = true; }
-        previousPage = $el.find('.page-previous:not(.stacked)');
-
+        $currentPageEl = target.closest('.page');
+        if ($currentPageEl.hasClass('no-swipeback') || target.closest('.no-swipeback, .card-opened').length > 0) { cancel = true; }
+        $previousPageEl = $el.find('.page-previous:not(.stacked)');
+        if ($previousPageEl.length > 1) {
+          $previousPageEl = $previousPageEl.eq($previousPageEl.length - 1);
+        }
         var notFromBorder = touchesStart.x - $el.offset().left > paramsSwipeBackActiveArea;
         viewContainerWidth = $el.width();
         if (app.rtl) {
@@ -13240,37 +13242,40 @@
           notFromBorder = touchesStart.x - $el.offset().left > paramsSwipeBackActiveArea;
         }
         if (notFromBorder) { cancel = true; }
-        if (previousPage.length === 0 || currentPage.length === 0) { cancel = true; }
+        if ($previousPageEl.length === 0 || $currentPageEl.length === 0) { cancel = true; }
         if (cancel) {
           isTouched = false;
           return;
         }
 
         if (paramsSwipeBackAnimateShadow) {
-          pageShadow = currentPage.find('.page-shadow-effect');
-          if (pageShadow.length === 0) {
-            pageShadow = $('<div class="page-shadow-effect"></div>');
-            currentPage.append(pageShadow);
+          $pageShadowEl = $currentPageEl.find('.page-shadow-effect');
+          if ($pageShadowEl.length === 0) {
+            $pageShadowEl = $('<div class="page-shadow-effect"></div>');
+            $currentPageEl.append($pageShadowEl);
           }
         }
         if (paramsSwipeBackAnimateOpacity) {
-          pageOpacity = previousPage.find('.page-opacity-effect');
-          if (pageOpacity.length === 0) {
-            pageOpacity = $('<div class="page-opacity-effect"></div>');
-            previousPage.append(pageOpacity);
+          $pageOpacityEl = $previousPageEl.find('.page-opacity-effect');
+          if ($pageOpacityEl.length === 0) {
+            $pageOpacityEl = $('<div class="page-opacity-effect"></div>');
+            $previousPageEl.append($pageOpacityEl);
           }
         }
 
         if (dynamicNavbar) {
           if (separateNavbar) {
-            $currentNavbarInner = $navbarEl.find('.navbar-current:not(.stacked)');
-            $previousNavbarInner = $navbarEl.find('.navbar-previous:not(.stacked)');
+            $currentNavbarInnerEl = $navbarEl.find('.navbar-current:not(.stacked)');
+            $previousNavbarInnerEl = $navbarEl.find('.navbar-previous:not(.stacked)');
           } else {
-            $currentNavbarInner = currentPage.children('.navbar').children('.navbar-inner');
-            $previousNavbarInner = previousPage.children('.navbar').children('.navbar-inner');
+            $currentNavbarInnerEl = $currentPageEl.children('.navbar').children('.navbar-inner');
+            $previousNavbarInnerEl = $previousPageEl.children('.navbar').children('.navbar-inner');
+          }
+          if ($previousNavbarInnerEl.length > 1) {
+            $previousNavbarInnerEl = $previousNavbarInnerEl.eq($previousNavbarInnerEl.length - 1);
           }
 
-          animatableNavEls = animatableNavElements($previousNavbarInner, $currentNavbarInner);
+          animatableNavEls = animatableNavElements($previousNavbarInnerEl, $currentNavbarInnerEl);
         }
 
         // Close/Hide Any Picker
@@ -13295,10 +13300,10 @@
       var callbackData = {
         percentage: percentage,
         progress: percentage,
-        currentPageEl: currentPage[0],
-        previousPageEl: previousPage[0],
-        currentNavbarEl: $currentNavbarInner[0],
-        previousNavbarEl: $previousNavbarInner[0],
+        currentPageEl: $currentPageEl[0],
+        previousPageEl: $previousPageEl[0],
+        currentNavbarEl: $currentNavbarInnerEl[0],
+        previousNavbarEl: $previousNavbarInnerEl[0],
       };
       $el.trigger('swipeback:move', callbackData);
       router.emit('swipebackMove', callbackData);
@@ -13319,15 +13324,15 @@
       }
 
       router.swipeBackActive = true;
-      $([currentPage[0], previousPage[0]]).addClass('page-swipeback-active');
+      $([$currentPageEl[0], $previousPageEl[0]]).addClass('page-swipeback-active');
 
-      currentPage.transform(("translate3d(" + currentPageTranslate + "px,0,0)"));
-      if (paramsSwipeBackAnimateShadow) { pageShadow[0].style.opacity = 1 - (1 * percentage); }
+      $currentPageEl.transform(("translate3d(" + currentPageTranslate + "px,0,0)"));
+      if (paramsSwipeBackAnimateShadow) { $pageShadowEl[0].style.opacity = 1 - (1 * percentage); }
 
       if (app.theme === 'ios') {
-        previousPage.transform(("translate3d(" + previousPageTranslate + "px,0,0)"));
+        $previousPageEl.transform(("translate3d(" + previousPageTranslate + "px,0,0)"));
       }
-      if (paramsSwipeBackAnimateOpacity) { pageOpacity[0].style.opacity = 1 - (1 * percentage); }
+      if (paramsSwipeBackAnimateOpacity) { $pageShadowEl[0].style.opacity = 1 - (1 * percentage); }
 
       // Dynamic Navbars Animation
       if (!dynamicNavbar) { return; }
@@ -13344,11 +13349,11 @@
       isTouched = false;
       isMoved = false;
       router.swipeBackActive = false;
-      $([currentPage[0], previousPage[0]]).removeClass('page-swipeback-active');
+      $([$currentPageEl[0], $previousPageEl[0]]).removeClass('page-swipeback-active');
       if (touchesDiff === 0) {
-        $([currentPage[0], previousPage[0]]).transform('');
-        if (pageShadow && pageShadow.length > 0) { pageShadow.remove(); }
-        if (pageOpacity && pageOpacity.length > 0) { pageOpacity.remove(); }
+        $([$currentPageEl[0], $previousPageEl[0]]).transform('');
+        if ($pageShadowEl && $pageShadowEl.length > 0) { $pageShadowEl.remove(); }
+        if ($pageOpacityEl && $pageOpacityEl.length > 0) { $pageOpacityEl.remove(); }
         if (dynamicNavbar) {
           setAnimatableNavElements({ reset: true });
         }
@@ -13361,19 +13366,19 @@
         (timeDiff < 300 && touchesDiff > 10)
         || (timeDiff >= 300 && touchesDiff > viewContainerWidth / 2)
       ) {
-        currentPage.removeClass('page-current').addClass(("page-next" + (app.theme !== 'ios' ? ' page-next-on-right' : '')));
-        previousPage.removeClass('page-previous').addClass('page-current').removeAttr('aria-hidden');
-        if (pageShadow) { pageShadow[0].style.opacity = ''; }
-        if (pageOpacity) { pageOpacity[0].style.opacity = ''; }
+        $currentPageEl.removeClass('page-current').addClass(("page-next" + (app.theme !== 'ios' ? ' page-next-on-right' : '')));
+        $previousPageEl.removeClass('page-previous').addClass('page-current').removeAttr('aria-hidden');
+        if ($pageShadowEl) { $pageShadowEl[0].style.opacity = ''; }
+        if ($pageOpacityEl) { $pageOpacityEl[0].style.opacity = ''; }
         if (dynamicNavbar) {
-          $currentNavbarInner.removeClass('navbar-current').addClass('navbar-next');
-          $previousNavbarInner.removeClass('navbar-previous').addClass('navbar-current').removeAttr('aria-hidden');
+          $currentNavbarInnerEl.removeClass('navbar-current').addClass('navbar-next');
+          $previousNavbarInnerEl.removeClass('navbar-previous').addClass('navbar-current').removeAttr('aria-hidden');
         }
         pageChanged = true;
       }
       // Reset custom styles
       // Add transitioning class for transition-duration
-      $([currentPage[0], previousPage[0]]).addClass('page-transitioning page-transitioning-swipeback').transform('');
+      $([$currentPageEl[0], $previousPageEl[0]]).addClass('page-transitioning page-transitioning-swipeback').transform('');
 
       if (dynamicNavbar) {
         setAnimatableNavElements({ progress: pageChanged ? 1 : 0, transition: true });
@@ -13383,20 +13388,20 @@
 
       // Swipe Back Callback
       var callbackData = {
-        currentPageEl: currentPage[0],
-        previousPageEl: previousPage[0],
-        currentNavbarEl: $currentNavbarInner[0],
-        previousNavbarEl: $previousNavbarInner[0],
+        currentPageEl: $currentPageEl[0],
+        previousPageEl: $previousPageEl[0],
+        currentNavbarEl: $currentNavbarInnerEl[0],
+        previousNavbarEl: $previousNavbarInnerEl[0],
       };
 
       if (pageChanged) {
         // Update Route
-        router.currentRoute = previousPage[0].f7Page.route;
-        router.currentPage = previousPage[0];
+        router.currentRoute = $previousPageEl[0].f7Page.route;
+        router.currentPage = $previousPageEl[0];
 
         // Page before animation callback
-        router.pageCallback('beforeOut', currentPage, $currentNavbarInner, 'current', 'next', { route: currentPage[0].f7Page.route, swipeBack: true });
-        router.pageCallback('beforeIn', previousPage, $previousNavbarInner, 'previous', 'current', { route: previousPage[0].f7Page.route, swipeBack: true });
+        router.pageCallback('beforeOut', $currentPageEl, $currentNavbarInnerEl, 'current', 'next', { route: $currentPageEl[0].f7Page.route, swipeBack: true });
+        router.pageCallback('beforeIn', $previousPageEl, $previousNavbarInnerEl, 'previous', 'current', { route: $previousPageEl[0].f7Page.route, swipeBack: true });
 
         $el.trigger('swipeback:beforechange', callbackData);
         router.emit('swipebackBeforeChange', callbackData);
@@ -13405,8 +13410,8 @@
         router.emit('swipebackBeforeReset', callbackData);
       }
 
-      currentPage.transitionEnd(function () {
-        $([currentPage[0], previousPage[0]]).removeClass('page-transitioning page-transitioning-swipeback');
+      $currentPageEl.transitionEnd(function () {
+        $([$currentPageEl[0], $previousPageEl[0]]).removeClass('page-transitioning page-transitioning-swipeback');
         if (dynamicNavbar) {
           setAnimatableNavElements({ reset: true, transition: false });
         }
@@ -13426,20 +13431,20 @@
           }
 
           // Page after animation callback
-          router.pageCallback('afterOut', currentPage, $currentNavbarInner, 'current', 'next', { route: currentPage[0].f7Page.route, swipeBack: true });
-          router.pageCallback('afterIn', previousPage, $previousNavbarInner, 'previous', 'current', { route: previousPage[0].f7Page.route, swipeBack: true });
+          router.pageCallback('afterOut', $currentPageEl, $currentNavbarInnerEl, 'current', 'next', { route: $currentPageEl[0].f7Page.route, swipeBack: true });
+          router.pageCallback('afterIn', $previousPageEl, $previousNavbarInnerEl, 'previous', 'current', { route: $previousPageEl[0].f7Page.route, swipeBack: true });
 
           // Remove Old Page
-          if (params.stackPages && router.initialPages.indexOf(currentPage[0]) >= 0) {
-            currentPage.addClass('stacked');
+          if (params.stackPages && router.initialPages.indexOf($currentPageEl[0]) >= 0) {
+            $currentPageEl.addClass('stacked');
             if (separateNavbar) {
-              $currentNavbarInner.addClass('stacked');
+              $currentNavbarInnerEl.addClass('stacked');
             }
           } else {
-            router.pageCallback('beforeRemove', currentPage, $currentNavbarInner, 'next', { swipeBack: true });
-            router.removePage(currentPage);
+            router.pageCallback('beforeRemove', $currentPageEl, $currentNavbarInnerEl, 'next', { swipeBack: true });
+            router.removePage($currentPageEl);
             if (separateNavbar) {
-              router.removeNavbar($currentNavbarInner);
+              router.removeNavbar($currentNavbarInnerEl);
             }
           }
 
@@ -13455,8 +13460,8 @@
           $el.trigger('swipeback:afterreset', callbackData);
           router.emit('swipebackAfterReset', callbackData);
         }
-        if (pageShadow && pageShadow.length > 0) { pageShadow.remove(); }
-        if (pageOpacity && pageOpacity.length > 0) { pageOpacity.remove(); }
+        if ($pageShadowEl && $pageShadowEl.length > 0) { $pageShadowEl.remove(); }
+        if ($pageOpacityEl && $pageOpacityEl.length > 0) { $pageOpacityEl.remove(); }
       });
     }
 
@@ -13763,6 +13768,7 @@
       newPagePosition = 'previous';
     }
     $newPage
+      .removeClass('page-previous page-current page-next')
       .addClass(("page-" + newPagePosition + (isMaster ? ' page-master' : '') + (isDetail ? ' page-master-detail' : '')))
       .removeClass('stacked')
       .trigger('page:unstack')
@@ -13774,6 +13780,7 @@
 
     if (dynamicNavbar && $newNavbarInner.length) {
       $newNavbarInner
+        .removeClass('navbar-previous navbar-current navbar-next')
         .addClass(("navbar-" + newPagePosition + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '')))
         .removeClass('stacked');
     }
@@ -14007,6 +14014,10 @@
     if (options.reloadCurrent || options.reloadAll || reloadDetail) {
       router.allowPageChange = true;
       router.pageCallback('beforeIn', $newPage, $newNavbarInner, newPagePosition, 'current', options);
+      $newPage.removeAttr('aria-hidden');
+      if (dynamicNavbar && $newNavbarInner) {
+        $newNavbarInner.removeAttr('aria-hidden');
+      }
       router.pageCallback('afterIn', $newPage, $newNavbarInner, newPagePosition, 'current', options);
       if (options.reloadCurrent && options.clearPreviousHistory) { router.clearPreviousHistory(); }
       if (reloadDetail) {
@@ -15630,9 +15641,9 @@
     router.saveHistory();
   }
 
-  var Router = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Router = /*@__PURE__*/(function (Framework7Class) {
     function Router(app, view) {
-      Framework7Class$$1.call(this, {}, [typeof view === 'undefined' ? app : view]);
+      Framework7Class.call(this, {}, [typeof view === 'undefined' ? app : view]);
       var router = this;
 
       // Is App Router
@@ -15710,8 +15721,8 @@
       return router;
     }
 
-    if ( Framework7Class$$1 ) Router.__proto__ = Framework7Class$$1;
-    Router.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Router.__proto__ = Framework7Class;
+    Router.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Router.prototype.constructor = Router;
 
     Router.prototype.animatableNavElements = function animatableNavElements (newNavbarInner, oldNavbarInner, toLarge, fromLarge, direction) {
@@ -16791,7 +16802,7 @@
   // Clear history
   Router.prototype.clearPreviousHistory = clearPreviousHistory;
 
-  var Router$1 = {
+  var RouterModule = {
     name: 'router',
     static: {
       Router: Router,
@@ -16817,11 +16828,11 @@
     },
   };
 
-  var View = /*@__PURE__*/(function (Framework7Class$$1) {
+  var View = /*@__PURE__*/(function (Framework7Class) {
     function View(appInstance, el, viewParams) {
       if ( viewParams === void 0 ) viewParams = {};
 
-      Framework7Class$$1.call(this, viewParams, [appInstance]);
+      Framework7Class.call(this, viewParams, [appInstance]);
 
       var app = appInstance;
       var $el = $(el);
@@ -16914,8 +16925,8 @@
       return view;
     }
 
-    if ( Framework7Class$$1 ) View.__proto__ = Framework7Class$$1;
-    View.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) View.__proto__ = Framework7Class;
+    View.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     View.prototype.constructor = View;
 
     View.prototype.destroy = function destroy () {
@@ -16998,7 +17009,7 @@
   }(Framework7Class));
 
   // Use Router
-  View.use(Router$1);
+  View.use(RouterModule);
 
   function initClicks(app) {
     function handleClicks(e) {
@@ -17794,8 +17805,8 @@
   function sameVnode$1(vnode1, vnode2) {
       return vnode1.key === vnode2.key && vnode1.sel === vnode2.sel;
   }
-  function isVnode(vnode$$1) {
-      return vnode$$1.sel !== undefined;
+  function isVnode(vnode) {
+      return vnode.sel !== undefined;
   }
   function createKeyToOldIdx$1(children, beginIdx, endIdx) {
       var i, map = {}, key, ch;
@@ -17810,7 +17821,7 @@
       return map;
   }
   var hooks$1 = ['create', 'update', 'remove', 'destroy', 'pre', 'post'];
-  function init$1(modules, domApi) {
+  function init(modules, domApi) {
       var i, j, cbs = {};
       var api = domApi !== undefined ? domApi : htmlDomApi;
       for (i = 0; i < hooks$1.length; ++i) {
@@ -17835,20 +17846,20 @@
               }
           };
       }
-      function createElm(vnode$$1, insertedVnodeQueue) {
-          var i, data = vnode$$1.data;
+      function createElm(vnode, insertedVnodeQueue) {
+          var i, data = vnode.data;
           if (data !== undefined) {
               if (isDef$1(i = data.hook) && isDef$1(i = i.init)) {
-                  i(vnode$$1);
-                  data = vnode$$1.data;
+                  i(vnode);
+                  data = vnode.data;
               }
           }
-          var children = vnode$$1.children, sel = vnode$$1.sel;
+          var children = vnode.children, sel = vnode.sel;
           if (sel === '!') {
-              if (isUndef$1(vnode$$1.text)) {
-                  vnode$$1.text = '';
+              if (isUndef$1(vnode.text)) {
+                  vnode.text = '';
               }
-              vnode$$1.elm = api.createComment(vnode$$1.text);
+              vnode.elm = api.createComment(vnode.text);
           }
           else if (sel !== undefined) {
               // Parse selector
@@ -17857,14 +17868,14 @@
               var hash = hashIdx > 0 ? hashIdx : sel.length;
               var dot = dotIdx > 0 ? dotIdx : sel.length;
               var tag = hashIdx !== -1 || dotIdx !== -1 ? sel.slice(0, Math.min(hash, dot)) : sel;
-              var elm = vnode$$1.elm = isDef$1(data) && isDef$1(i = data.ns) ? api.createElementNS(i, tag)
+              var elm = vnode.elm = isDef$1(data) && isDef$1(i = data.ns) ? api.createElementNS(i, tag)
                   : api.createElement(tag);
               if (hash < dot)
                   { elm.setAttribute('id', sel.slice(hash + 1, dot)); }
               if (dotIdx > 0)
                   { elm.setAttribute('class', sel.slice(dot + 1).replace(/\./g, ' ')); }
               for (i = 0; i < cbs.create.length; ++i)
-                  { cbs.create[i](emptyNode$1, vnode$$1); }
+                  { cbs.create[i](emptyNode$1, vnode); }
               if (array(children)) {
                   for (i = 0; i < children.length; ++i) {
                       var ch = children[i];
@@ -17873,21 +17884,21 @@
                       }
                   }
               }
-              else if (primitive(vnode$$1.text)) {
-                  api.appendChild(elm, api.createTextNode(vnode$$1.text));
+              else if (primitive(vnode.text)) {
+                  api.appendChild(elm, api.createTextNode(vnode.text));
               }
-              i = vnode$$1.data.hook; // Reuse variable
+              i = vnode.data.hook; // Reuse variable
               if (isDef$1(i)) {
                   if (i.create)
-                      { i.create(emptyNode$1, vnode$$1); }
+                      { i.create(emptyNode$1, vnode); }
                   if (i.insert)
-                      { insertedVnodeQueue.push(vnode$$1); }
+                      { insertedVnodeQueue.push(vnode); }
               }
           }
           else {
-              vnode$$1.elm = api.createTextNode(vnode$$1.text);
+              vnode.elm = api.createTextNode(vnode.text);
           }
-          return vnode$$1.elm;
+          return vnode.elm;
       }
       function addVnodes(parentElm, before, vnodes, startIdx, endIdx, insertedVnodeQueue) {
           for (; startIdx <= endIdx; ++startIdx) {
@@ -17897,16 +17908,16 @@
               }
           }
       }
-      function invokeDestroyHook(vnode$$1) {
-          var i, j, data = vnode$$1.data;
+      function invokeDestroyHook(vnode) {
+          var i, j, data = vnode.data;
           if (data !== undefined) {
               if (isDef$1(i = data.hook) && isDef$1(i = i.destroy))
-                  { i(vnode$$1); }
+                  { i(vnode); }
               for (i = 0; i < cbs.destroy.length; ++i)
-                  { cbs.destroy[i](vnode$$1); }
-              if (vnode$$1.children !== undefined) {
-                  for (j = 0; j < vnode$$1.children.length; ++j) {
-                      i = vnode$$1.children[j];
+                  { cbs.destroy[i](vnode); }
+              if (vnode.children !== undefined) {
+                  for (j = 0; j < vnode.children.length; ++j) {
+                      i = vnode.children[j];
                       if (i != null && typeof i !== "string") {
                           invokeDestroyHook(i);
                       }
@@ -18017,24 +18028,24 @@
               }
           }
       }
-      function patchVnode(oldVnode, vnode$$1, insertedVnodeQueue) {
+      function patchVnode(oldVnode, vnode, insertedVnodeQueue) {
           var i, hook;
-          if (isDef$1(i = vnode$$1.data) && isDef$1(hook = i.hook) && isDef$1(i = hook.prepatch)) {
-              i(oldVnode, vnode$$1);
+          if (isDef$1(i = vnode.data) && isDef$1(hook = i.hook) && isDef$1(i = hook.prepatch)) {
+              i(oldVnode, vnode);
           }
-          var elm = vnode$$1.elm = oldVnode.elm;
+          var elm = vnode.elm = oldVnode.elm;
           var oldCh = oldVnode.children;
-          var ch = vnode$$1.children;
-          if (oldVnode === vnode$$1)
+          var ch = vnode.children;
+          if (oldVnode === vnode)
               { return; }
-          if (vnode$$1.data !== undefined) {
+          if (vnode.data !== undefined) {
               for (i = 0; i < cbs.update.length; ++i)
-                  { cbs.update[i](oldVnode, vnode$$1); }
-              i = vnode$$1.data.hook;
+                  { cbs.update[i](oldVnode, vnode); }
+              i = vnode.data.hook;
               if (isDef$1(i) && isDef$1(i = i.update))
-                  { i(oldVnode, vnode$$1); }
+                  { i(oldVnode, vnode); }
           }
-          if (isUndef$1(vnode$$1.text)) {
+          if (isUndef$1(vnode.text)) {
               if (isDef$1(oldCh) && isDef$1(ch)) {
                   if (oldCh !== ch)
                       { updateChildren(elm, oldCh, ch, insertedVnodeQueue); }
@@ -18051,14 +18062,14 @@
                   api.setTextContent(elm, '');
               }
           }
-          else if (oldVnode.text !== vnode$$1.text) {
-              api.setTextContent(elm, vnode$$1.text);
+          else if (oldVnode.text !== vnode.text) {
+              api.setTextContent(elm, vnode.text);
           }
           if (isDef$1(hook) && isDef$1(i = hook.postpatch)) {
-              i(oldVnode, vnode$$1);
+              i(oldVnode, vnode);
           }
       }
-      return function patch(oldVnode, vnode$$1) {
+      return function patch(oldVnode, vnode) {
           var i, elm, parent;
           var insertedVnodeQueue = [];
           for (i = 0; i < cbs.pre.length; ++i)
@@ -18066,15 +18077,15 @@
           if (!isVnode(oldVnode)) {
               oldVnode = emptyNodeAt(oldVnode);
           }
-          if (sameVnode$1(oldVnode, vnode$$1)) {
-              patchVnode(oldVnode, vnode$$1, insertedVnodeQueue);
+          if (sameVnode$1(oldVnode, vnode)) {
+              patchVnode(oldVnode, vnode, insertedVnodeQueue);
           }
           else {
               elm = oldVnode.elm;
               parent = api.parentNode(elm);
-              createElm(vnode$$1, insertedVnodeQueue);
+              createElm(vnode, insertedVnodeQueue);
               if (parent !== null) {
-                  api.insertBefore(parent, vnode$$1.elm, api.nextSibling(elm));
+                  api.insertBefore(parent, vnode.elm, api.nextSibling(elm));
                   removeVnodes(parent, [oldVnode], 0, 0);
               }
           }
@@ -18083,7 +18094,7 @@
           }
           for (i = 0; i < cbs.post.length; ++i)
               { cbs.post[i](); }
-          return vnode$$1;
+          return vnode;
       };
   }
 
@@ -18322,7 +18333,7 @@
 
   /* eslint import/no-named-as-default: off */
 
-  var patch$1 = init$1([
+  var patch$1 = init([
     attributesModule,
     propsModule,
     styleModule,
@@ -20076,9 +20087,9 @@
     var dialog = dialogsQueue.shift();
     dialog.open();
   }
-  var Modal = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Modal = /*@__PURE__*/(function (Framework7Class) {
     function Modal(app, params) {
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var modal = this;
 
@@ -20096,8 +20107,8 @@
       return this;
     }
 
-    if ( Framework7Class$$1 ) Modal.__proto__ = Framework7Class$$1;
-    Modal.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Modal.__proto__ = Framework7Class;
+    Modal.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Modal.prototype.constructor = Modal;
 
     Modal.prototype.onOpen = function onOpen () {
@@ -20314,7 +20325,7 @@
     return Modal;
   }(Framework7Class));
 
-  var CustomModal = /*@__PURE__*/(function (Modal$$1) {
+  var CustomModal = /*@__PURE__*/(function (Modal) {
     function CustomModal(app, params) {
       var extendedParams = Utils.extend({
         backdrop: true,
@@ -20323,7 +20334,7 @@
       }, params);
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var customModal = this;
 
@@ -20385,8 +20396,8 @@
       return customModal;
     }
 
-    if ( Modal$$1 ) CustomModal.__proto__ = Modal$$1;
-    CustomModal.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) CustomModal.__proto__ = Modal;
+    CustomModal.prototype = Object.create( Modal && Modal.prototype );
     CustomModal.prototype.constructor = CustomModal;
 
     return CustomModal;
@@ -20418,7 +20429,7 @@
     name: 'appbar',
   };
 
-  var Dialog = /*@__PURE__*/(function (Modal$$1) {
+  var Dialog = /*@__PURE__*/(function (Modal) {
     function Dialog(app, params) {
       var extendedParams = Utils.extend({
         title: app.params.dialog.title,
@@ -20436,7 +20447,7 @@
       }
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var dialog = this;
 
@@ -20610,8 +20621,8 @@
       return dialog;
     }
 
-    if ( Modal$$1 ) Dialog.__proto__ = Modal$$1;
-    Dialog.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Dialog.__proto__ = Modal;
+    Dialog.prototype = Object.create( Modal && Modal.prototype );
     Dialog.prototype.constructor = Dialog;
 
     return Dialog;
@@ -20856,7 +20867,7 @@
     },
   };
 
-  var Popup = /*@__PURE__*/(function (Modal$$1) {
+  var Popup = /*@__PURE__*/(function (Modal) {
     function Popup(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -20865,7 +20876,7 @@
       );
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var popup = this;
 
@@ -20951,8 +20962,8 @@
       return popup;
     }
 
-    if ( Modal$$1 ) Popup.__proto__ = Modal$$1;
-    Popup.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Popup.__proto__ = Modal;
+    Popup.prototype = Object.create( Modal && Modal.prototype );
     Popup.prototype.constructor = Popup;
 
     return Popup;
@@ -20993,14 +21004,14 @@
     },
   };
 
-  var LoginScreen = /*@__PURE__*/(function (Modal$$1) {
+  var LoginScreen = /*@__PURE__*/(function (Modal) {
     function LoginScreen(app, params) {
       var extendedParams = Utils.extend({
         on: {},
       }, params);
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var loginScreen = this;
 
@@ -21034,8 +21045,8 @@
       return loginScreen;
     }
 
-    if ( Modal$$1 ) LoginScreen.__proto__ = Modal$$1;
-    LoginScreen.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) LoginScreen.__proto__ = Modal;
+    LoginScreen.prototype = Object.create( Modal && Modal.prototype );
     LoginScreen.prototype.constructor = LoginScreen;
 
     return LoginScreen;
@@ -21070,7 +21081,7 @@
     },
   };
 
-  var Popover = /*@__PURE__*/(function (Modal$$1) {
+  var Popover = /*@__PURE__*/(function (Modal) {
     function Popover(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -21079,7 +21090,7 @@
       );
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var popover = this;
 
@@ -21197,8 +21208,8 @@
       return popover;
     }
 
-    if ( Modal$$1 ) Popover.__proto__ = Modal$$1;
-    Popover.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Popover.__proto__ = Modal;
+    Popover.prototype = Object.create( Modal && Modal.prototype );
     Popover.prototype.constructor = Popover;
 
     Popover.prototype.resize = function resize () {
@@ -21396,7 +21407,7 @@
 
   /* eslint indent: ["off"] */
 
-  var Actions = /*@__PURE__*/(function (Modal$$1) {
+  var Actions = /*@__PURE__*/(function (Modal) {
     function Actions(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -21405,7 +21416,7 @@
       );
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var actions = this;
 
@@ -21588,8 +21599,8 @@
       return actions;
     }
 
-    if ( Modal$$1 ) Actions.__proto__ = Modal$$1;
-    Actions.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Actions.__proto__ = Modal;
+    Actions.prototype = Object.create( Modal && Modal.prototype );
     Actions.prototype.constructor = Actions;
 
     Actions.prototype.render = function render () {
@@ -21688,7 +21699,7 @@
     },
   };
 
-  var Sheet = /*@__PURE__*/(function (Modal$$1) {
+  var Sheet = /*@__PURE__*/(function (Modal) {
     function Sheet(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -21697,7 +21708,7 @@
       );
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var sheet = this;
 
@@ -21815,8 +21826,8 @@
       return sheet;
     }
 
-    if ( Modal$$1 ) Sheet.__proto__ = Modal$$1;
-    Sheet.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Sheet.__proto__ = Modal;
+    Sheet.prototype = Object.create( Modal && Modal.prototype );
     Sheet.prototype.constructor = Sheet;
 
     return Sheet;
@@ -21866,14 +21877,14 @@
     },
   };
 
-  var Toast = /*@__PURE__*/(function (Modal$$1) {
+  var Toast = /*@__PURE__*/(function (Modal) {
     function Toast(app, params) {
       var extendedParams = Utils.extend({
         on: {},
       }, app.params.toast, params);
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var toast = this;
 
@@ -21951,8 +21962,8 @@
       return toast;
     }
 
-    if ( Modal$$1 ) Toast.__proto__ = Modal$$1;
-    Toast.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Toast.__proto__ = Modal;
+    Toast.prototype = Object.create( Modal && Modal.prototype );
     Toast.prototype.constructor = Toast;
 
     Toast.prototype.render = function render () {
@@ -23171,11 +23182,11 @@
     name: 'contactsList',
   };
 
-  var VirtualList = /*@__PURE__*/(function (Framework7Class$$1) {
+  var VirtualList = /*@__PURE__*/(function (Framework7Class) {
     function VirtualList(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var vl = this;
 
       var defaultHeight;
@@ -23316,8 +23327,8 @@
       return vl;
     }
 
-    if ( Framework7Class$$1 ) VirtualList.__proto__ = Framework7Class$$1;
-    VirtualList.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) VirtualList.__proto__ = Framework7Class;
+    VirtualList.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     VirtualList.prototype.constructor = VirtualList;
 
     VirtualList.prototype.setListSize = function setListSize () {
@@ -23763,11 +23774,11 @@
     },
   };
 
-  var ListIndex = /*@__PURE__*/(function (Framework7Class$$1) {
+  var ListIndex = /*@__PURE__*/(function (Framework7Class) {
     function ListIndex(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var index = this;
 
       var defaults = {
@@ -23980,14 +23991,15 @@
       return index;
     }
 
-    if ( Framework7Class$$1 ) ListIndex.__proto__ = Framework7Class$$1;
-    ListIndex.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) ListIndex.__proto__ = Framework7Class;
+    ListIndex.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     ListIndex.prototype.constructor = ListIndex;
     // eslint-disable-next-line
     ListIndex.prototype.scrollListToIndex = function scrollListToIndex (itemContent, itemIndex) {
       var index = this;
       var $listEl = index.$listEl;
       var $pageContentEl = index.$pageContentEl;
+      var app = index.app;
       if (!$listEl || !$pageContentEl || $pageContentEl.length === 0) { return index; }
 
       var $scrollToEl;
@@ -24004,6 +24016,13 @@
       var paddingTop = parseInt($pageContentEl.css('padding-top'), 10);
       var scrollTop = $pageContentEl[0].scrollTop;
       var scrollToElTop = $scrollToEl.offset().top;
+      if ($pageContentEl.parents('.page-with-navbar-large').length) {
+        var navbarInnerEl = app.navbar.getElByPage($pageContentEl.parents('.page-with-navbar-large').eq(0));
+        var $titleLargeEl = $(navbarInnerEl).find('.title-large');
+        if ($titleLargeEl.length) {
+          paddingTop -= $titleLargeEl[0].offsetHeight || 0;
+        }
+      }
 
       if (parentTop <= paddingTop) {
         $pageContentEl.scrollTop((parentTop + scrollTop) - paddingTop);
@@ -24733,12 +24752,12 @@
     });
   }
 
-  var Panel = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Panel = /*@__PURE__*/(function (Framework7Class) {
     function Panel(app, params) {
       var obj;
 
       if ( params === void 0 ) params = {};
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var panel = this;
 
       var el = params.el;
@@ -24793,8 +24812,8 @@
       return panel;
     }
 
-    if ( Framework7Class$$1 ) Panel.__proto__ = Framework7Class$$1;
-    Panel.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Panel.__proto__ = Framework7Class;
+    Panel.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Panel.prototype.constructor = Panel;
 
     Panel.prototype.init = function init () {
@@ -25400,7 +25419,6 @@
       var offset = $cardEl.offset();
       var pageOffset = $pageEl.offset();
       offset.left -= pageOffset.left;
-      offset.top -= pageOffset.top;
 
       var cardLeftOffset;
       var cardTopOffset;
@@ -25413,7 +25431,7 @@
         if (transformValues && transformValues.length > 1) {
           var scale = parseFloat(transformValues[0]);
           cardLeftOffset = offset.left - cardWidth * (1 - scale) / 2;
-          cardTopOffset = offset.top - $pageEl.offset().top - cardHeight * (1 - scale) / 2;
+          cardTopOffset = offset.top - pageOffset.top - cardHeight * (1 - scale) / 2;
           if (app.rtl) { cardLeftOffset -= $cardEl[0].scrollLeft; }
         } else {
           cardLeftOffset = $cardEl[0].offsetLeft;
@@ -25421,7 +25439,7 @@
         }
       } else {
         cardLeftOffset = offset.left;
-        cardTopOffset = offset.top - $pageEl.offset().top;
+        cardTopOffset = offset.top - pageOffset.top;
         if (app.rtl) { cardLeftOffset -= $cardEl[0].scrollLeft; }
       }
 
@@ -26413,11 +26431,11 @@
     name: 'radio',
   };
 
-  var Toggle = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Toggle = /*@__PURE__*/(function (Framework7Class) {
     function Toggle(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var toggle = this;
 
       var defaults = {};
@@ -26572,8 +26590,8 @@
       toggle.init();
     }
 
-    if ( Framework7Class$$1 ) Toggle.__proto__ = Framework7Class$$1;
-    Toggle.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Toggle.__proto__ = Framework7Class;
+    Toggle.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Toggle.prototype.constructor = Toggle;
 
     Toggle.prototype.toggle = function toggle () {
@@ -26648,9 +26666,9 @@
     },
   };
 
-  var Range = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Range = /*@__PURE__*/(function (Framework7Class) {
     function Range(app, params) {
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var range = this;
 
@@ -27017,8 +27035,8 @@
       return range;
     }
 
-    if ( Framework7Class$$1 ) Range.__proto__ = Framework7Class$$1;
-    Range.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Range.__proto__ = Framework7Class;
+    Range.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Range.prototype.constructor = Range;
 
     Range.prototype.calcSize = function calcSize () {
@@ -27310,9 +27328,9 @@
     },
   };
 
-  var Stepper = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Stepper = /*@__PURE__*/(function (Framework7Class) {
     function Stepper(app, params) {
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var stepper = this;
 
       var defaults = {
@@ -27583,8 +27601,8 @@
       return stepper;
     }
 
-    if ( Framework7Class$$1 ) Stepper.__proto__ = Framework7Class$$1;
-    Stepper.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Stepper.__proto__ = Framework7Class;
+    Stepper.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Stepper.prototype.constructor = Stepper;
 
     Stepper.prototype.minus = function minus () {
@@ -27818,11 +27836,11 @@
     },
   };
 
-  var SmartSelect = /*@__PURE__*/(function (Framework7Class$$1) {
+  var SmartSelect = /*@__PURE__*/(function (Framework7Class) {
     function SmartSelect(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var ss = this;
 
       var defaults = Utils.extend({
@@ -27963,8 +27981,8 @@
       return ss;
     }
 
-    if ( Framework7Class$$1 ) SmartSelect.__proto__ = Framework7Class$$1;
-    SmartSelect.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) SmartSelect.__proto__ = Framework7Class;
+    SmartSelect.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     SmartSelect.prototype.constructor = SmartSelect;
 
     SmartSelect.prototype.setValue = function setValue (value) {
@@ -27997,6 +28015,7 @@
         ss.selectEl.value = newValue;
       }
       ss.$valueEl.text(optionText.join(', '));
+      return ss;
     };
 
     SmartSelect.prototype.getValue = function getValue () {
@@ -28143,7 +28162,7 @@
         pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
       }
       var cssClass = ss.params.cssClass;
-      var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"ios-only\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
+      var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"if-not-md\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
       return pageHtml;
     };
 
@@ -28156,7 +28175,7 @@
         pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
       }
       var cssClass = ss.params.cssClass || '';
-      var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                <div class=\"left\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">\n                    <i class=\"icon icon-back\"></i>\n                    <span class=\"ios-only\">" + (ss.params.popupCloseLinkText) + "</span>\n                  </a>\n                </div>\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
+      var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                <div class=\"right\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">" + (ss.params.popupCloseLinkText) + "</span></a>\n                </div>\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
       return popupHtml;
     };
 
@@ -28174,6 +28193,29 @@
       var cssClass = ss.params.cssClass;
       var popoverHtml = "\n      <div class=\"popover smart-select-popover " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"popover-inner\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
       return popoverHtml;
+    };
+
+    SmartSelect.prototype.scrollToSelectedItem = function scrollToSelectedItem () {
+      var ss = this;
+      var params = ss.params;
+      var $containerEl = ss.$containerEl;
+      if (!ss.opened) { return ss; }
+      if (params.virtualList) {
+        var selectedIndex;
+        ss.vl.items.forEach(function (item, index) {
+          if (typeof selectedIndex === 'undefined' && item.selected) {
+            selectedIndex = index;
+          }
+        });
+        if (typeof selectedIndex !== 'undefined') {
+          ss.vl.scrollToItem(selectedIndex);
+        }
+      } else {
+        var $selectedItemEl = $containerEl.find('input:checked').parents('li');
+        var $pageContentEl = $containerEl.find('.page-content');
+        $pageContentEl.scrollTop($selectedItemEl.offset().top - $pageContentEl.offset().top - parseInt($pageContentEl.css('padding-top'), 10));
+      }
+      return ss;
     };
 
     SmartSelect.prototype.onOpen = function onOpen (type, containerEl) {
@@ -28196,6 +28238,9 @@
             return false;
           },
         });
+      }
+      if (ss.params.scrollToSelectedItem) {
+        ss.scrollToSelectedItem();
       }
 
       // Init SB
@@ -28509,6 +28554,7 @@
         closeOnSelect: false,
         virtualList: false,
         virtualListHeight: undefined,
+        scrollToSelectedItem: false,
         formColorTheme: undefined,
         navbarColorTheme: undefined,
         routableModals: true,
@@ -29011,11 +29057,11 @@
     return IDate;
   }(Date));
 
-  var Calendar = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Calendar = /*@__PURE__*/(function (Framework7Class) {
     function Calendar(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var calendar = this;
 
       calendar.params = Utils.extend({}, app.params.calendar, params);
@@ -29306,8 +29352,8 @@
       return calendar;
     }
 
-    if ( Framework7Class$$1 ) Calendar.__proto__ = Framework7Class$$1;
-    Calendar.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Calendar.__proto__ = Framework7Class;
+    Calendar.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Calendar.prototype.constructor = Calendar;
     // eslint-disable-next-line
     Calendar.prototype.normalizeDate = function normalizeDate (date) {
@@ -29434,6 +29480,14 @@
 
     Calendar.prototype.setValue = function setValue (values) {
       var calendar = this;
+      var currentValue = calendar.value;
+      if (Array.isArray(currentValue) && Array.isArray(values) && currentValue.length === values.length) {
+        var equal = true;
+        currentValue.forEach(function (v, index) {
+          if (v !== values[index]) { equal = false; }
+        });
+        if (equal) { return; }
+      }
       calendar.value = values;
       calendar.updateValue();
     };
@@ -30883,11 +30937,11 @@
     col.init();
   }
 
-  var Picker = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Picker = /*@__PURE__*/(function (Framework7Class) {
     function Picker(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var picker = this;
       picker.params = Utils.extend({}, app.params.picker, params);
 
@@ -30979,8 +31033,8 @@
       return picker;
     }
 
-    if ( Framework7Class$$1 ) Picker.__proto__ = Framework7Class$$1;
-    Picker.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Picker.__proto__ = Framework7Class;
+    Picker.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Picker.prototype.constructor = Picker;
 
     Picker.prototype.initInput = function initInput () {
@@ -31551,9 +31605,9 @@
     },
   };
 
-  var PullToRefresh = /*@__PURE__*/(function (Framework7Class$$1) {
+  var PullToRefresh = /*@__PURE__*/(function (Framework7Class) {
     function PullToRefresh(app, el) {
-      Framework7Class$$1.call(this, {}, [app]);
+      Framework7Class.call(this, {}, [app]);
       var ptr = this;
       var $el = $(el);
       var $preloaderEl = $el.find('.ptr-preloader');
@@ -32038,8 +32092,8 @@
       return ptr;
     }
 
-    if ( Framework7Class$$1 ) PullToRefresh.__proto__ = Framework7Class$$1;
-    PullToRefresh.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) PullToRefresh.__proto__ = Framework7Class;
+    PullToRefresh.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     PullToRefresh.prototype.constructor = PullToRefresh;
 
     PullToRefresh.prototype.init = function init () {
@@ -32368,11 +32422,11 @@
     },
   };
 
-  var DataTable = /*@__PURE__*/(function (Framework7Class$$1) {
+  var DataTable = /*@__PURE__*/(function (Framework7Class) {
     function DataTable(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var table = this;
 
@@ -32473,8 +32527,8 @@
       return table;
     }
 
-    if ( Framework7Class$$1 ) DataTable.__proto__ = Framework7Class$$1;
-    DataTable.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) DataTable.__proto__ = Framework7Class;
+    DataTable.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     DataTable.prototype.constructor = DataTable;
 
     DataTable.prototype.setCollapsibleLabels = function setCollapsibleLabels () {
@@ -33496,11 +33550,11 @@
     },
   };
 
-  var Messages = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Messages = /*@__PURE__*/(function (Framework7Class) {
     function Messages(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var m = this;
 
@@ -33552,8 +33606,8 @@
       return m;
     }
 
-    if ( Framework7Class$$1 ) Messages.__proto__ = Framework7Class$$1;
-    Messages.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Messages.__proto__ = Framework7Class;
+    Messages.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Messages.prototype.constructor = Messages;
     // eslint-disable-next-line
     Messages.prototype.getMessageData = function getMessageData (messageEl) {
@@ -34051,11 +34105,11 @@
     },
   };
 
-  var Messagebar = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Messagebar = /*@__PURE__*/(function (Framework7Class) {
     function Messagebar(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var messagebar = this;
 
@@ -34192,8 +34246,8 @@
       return messagebar;
     }
 
-    if ( Framework7Class$$1 ) Messagebar.__proto__ = Framework7Class$$1;
-    Messagebar.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Messagebar.__proto__ = Framework7Class;
+    Messagebar.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Messagebar.prototype.constructor = Messagebar;
 
     Messagebar.prototype.focus = function focus () {
@@ -37120,7 +37174,7 @@
       return spv;
     };
 
-    Swiper.prototype.update = function update$$1 () {
+    Swiper.prototype.update = function update () {
       var swiper = this;
       if (!swiper || swiper.destroyed) { return; }
       var snapGrid = swiper.snapGrid;
@@ -40869,11 +40923,11 @@
 
   /* eslint indent: ["off"] */
 
-  var PhotoBrowser = /*@__PURE__*/(function (Framework7Class$$1) {
+  var PhotoBrowser = /*@__PURE__*/(function (Framework7Class) {
     function PhotoBrowser(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var pb = this;
       pb.app = app;
@@ -40912,8 +40966,8 @@
       pb.init();
     }
 
-    if ( Framework7Class$$1 ) PhotoBrowser.__proto__ = Framework7Class$$1;
-    PhotoBrowser.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) PhotoBrowser.__proto__ = Framework7Class;
+    PhotoBrowser.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     PhotoBrowser.prototype.constructor = PhotoBrowser;
 
     PhotoBrowser.prototype.onSlideChange = function onSlideChange (swiper) {
@@ -41558,14 +41612,14 @@
     },
   };
 
-  var Notification = /*@__PURE__*/(function (Modal$$1) {
+  var Notification = /*@__PURE__*/(function (Modal) {
     function Notification(app, params) {
       var extendedParams = Utils.extend({
         on: {},
       }, app.params.notification, params);
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var notification = this;
 
@@ -41751,8 +41805,8 @@
       return notification;
     }
 
-    if ( Modal$$1 ) Notification.__proto__ = Modal$$1;
-    Notification.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Notification.__proto__ = Modal;
+    Notification.prototype = Object.create( Modal && Modal.prototype );
     Notification.prototype.constructor = Notification;
 
     Notification.prototype.render = function render () {
@@ -41807,11 +41861,11 @@
 
   /* eslint "no-useless-escape": "off" */
 
-  var Autocomplete = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Autocomplete = /*@__PURE__*/(function (Framework7Class) {
     function Autocomplete(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var ac = this;
       ac.app = app;
@@ -42102,8 +42156,8 @@
       return ac;
     }
 
-    if ( Framework7Class$$1 ) Autocomplete.__proto__ = Framework7Class$$1;
-    Autocomplete.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Autocomplete.__proto__ = Framework7Class;
+    Autocomplete.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Autocomplete.prototype.constructor = Autocomplete;
 
     Autocomplete.prototype.positionDropdown = function positionDropdown () {
@@ -42269,7 +42323,14 @@
       if (typeof pageTitle === 'undefined' && ac.$openerEl && ac.$openerEl.length) {
         pageTitle = ac.$openerEl.find('.item-title').text().trim();
       }
-      var navbarHtml = ("\n      <div class=\"navbar " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n        <div class=\"navbar-inner " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n          <div class=\"left sliding\">\n            <a href=\"#\" class=\"link " + (ac.params.openIn === 'page' ? 'back' : 'popup-close') + "\" " + (ac.params.openIn === 'popup' ? 'data-popup=".autocomplete-popup"' : '') + ">\n              <i class=\"icon icon-back\"></i>\n              <span class=\"ios-only\">" + (ac.params.openIn === 'page' ? ac.params.pageBackLinkText : ac.params.popupCloseLinkText) + "</span>\n            </a>\n          </div>\n          " + (pageTitle ? ("<div class=\"title sliding\">" + pageTitle + "</div>") : '') + "\n          " + (ac.params.preloader ? ("\n          <div class=\"right\">\n            " + (ac.renderPreloader()) + "\n          </div>\n          ") : '') + "\n          <div class=\"subnavbar sliding\">" + (ac.renderSearchbar()) + "</div>\n        </div>\n      </div>\n    ").trim();
+      var inPopup = ac.params.openIn === 'popup';
+      var navbarLeft = inPopup
+        ? ("\n        " + (ac.params.preloader ? ("\n        <div class=\"left\">\n          " + (ac.renderPreloader()) + "\n        </div>\n        ") : '') + "\n      ")
+        : ("\n        <div class=\"left sliding\">\n          <a href=\"#\" class=\"link back\">\n            <i class=\"icon icon-back\"></i>\n            <span class=\"if-not-md\">" + (ac.params.pageBackLinkText) + "</span>\n          </a>\n        </div>\n      ");
+      var navbarRight = inPopup
+        ? ("\n        <div class=\"right\">\n          <a href=\"#\" class=\"link popup-close\" data-popup=\".autocomplete-popup\">\n            " + (ac.params.popupCloseLinkText) + "\n          </a>\n        </div>\n      ")
+        : ("\n        " + (ac.params.preloader ? ("\n        <div class=\"right\">\n          " + (ac.renderPreloader()) + "\n        </div>\n        ") : '') + "\n      ");
+      var navbarHtml = ("\n      <div class=\"navbar " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n        <div class=\"navbar-inner " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n          " + navbarLeft + "\n          " + (pageTitle ? ("<div class=\"title sliding\">" + pageTitle + "</div>") : '') + "\n          " + navbarRight + "\n          <div class=\"subnavbar sliding\">" + (ac.renderSearchbar()) + "</div>\n        </div>\n      </div>\n    ").trim();
       return navbarHtml;
     };
 
@@ -42280,18 +42341,18 @@
       return dropdownHtml;
     };
 
-    Autocomplete.prototype.renderPage = function renderPage () {
+    Autocomplete.prototype.renderPage = function renderPage (inPopup) {
       var ac = this;
       if (ac.params.renderPage) { return ac.params.renderPage.call(ac, ac.items); }
 
-      var pageHtml = ("\n      <div class=\"page page-with-subnavbar autocomplete-page\" data-name=\"autocomplete-page\">\n        " + (ac.renderNavbar()) + "\n        <div class=\"searchbar-backdrop\"></div>\n        <div class=\"page-content\">\n          <div class=\"list autocomplete-list autocomplete-found autocomplete-list-" + (ac.id) + " " + (ac.params.formColorTheme ? ("color-" + (ac.params.formColorTheme)) : '') + "\">\n            <ul></ul>\n          </div>\n          <div class=\"list autocomplete-not-found\">\n            <ul>\n              <li class=\"item-content\"><div class=\"item-inner\"><div class=\"item-title\">" + (ac.params.notFoundText) + "</div></div></li>\n            </ul>\n          </div>\n          <div class=\"list autocomplete-values\">\n            <ul></ul>\n          </div>\n        </div>\n      </div>\n    ").trim();
+      var pageHtml = ("\n      <div class=\"page page-with-subnavbar autocomplete-page\" data-name=\"autocomplete-page\">\n        " + (ac.renderNavbar(inPopup)) + "\n        <div class=\"searchbar-backdrop\"></div>\n        <div class=\"page-content\">\n          <div class=\"list autocomplete-list autocomplete-found autocomplete-list-" + (ac.id) + " " + (ac.params.formColorTheme ? ("color-" + (ac.params.formColorTheme)) : '') + "\">\n            <ul></ul>\n          </div>\n          <div class=\"list autocomplete-not-found\">\n            <ul>\n              <li class=\"item-content\"><div class=\"item-inner\"><div class=\"item-title\">" + (ac.params.notFoundText) + "</div></div></li>\n            </ul>\n          </div>\n          <div class=\"list autocomplete-values\">\n            <ul></ul>\n          </div>\n        </div>\n      </div>\n    ").trim();
       return pageHtml;
     };
 
     Autocomplete.prototype.renderPopup = function renderPopup () {
       var ac = this;
       if (ac.params.renderPopup) { return ac.params.renderPopup.call(ac, ac.items); }
-      var popupHtml = ("\n      <div class=\"popup autocomplete-popup\">\n        <div class=\"view\">\n          " + (ac.renderPage()) + ";\n        </div>\n      </div>\n    ").trim();
+      var popupHtml = ("\n      <div class=\"popup autocomplete-popup\">\n        <div class=\"view\">\n          " + (ac.renderPage(true)) + ";\n        </div>\n      </div>\n    ").trim();
       return popupHtml;
     };
 
@@ -42630,11 +42691,11 @@
     },
   };
 
-  var Tooltip = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Tooltip = /*@__PURE__*/(function (Framework7Class) {
     function Tooltip(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, app, params);
+      Framework7Class.call(this, app, params);
 
       var tooltip = this;
 
@@ -42741,8 +42802,8 @@
       return tooltip;
     }
 
-    if ( Framework7Class$$1 ) Tooltip.__proto__ = Framework7Class$$1;
-    Tooltip.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Tooltip.__proto__ = Framework7Class;
+    Tooltip.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Tooltip.prototype.constructor = Tooltip;
 
     Tooltip.prototype.position = function position (targetEl) {
@@ -43001,12 +43062,12 @@
 
   /* eslint no-nested-ternary: off */
 
-  var Gauge = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Gauge = /*@__PURE__*/(function (Framework7Class) {
     function Gauge(app, params) {
       if ( params === void 0 ) params = {};
 
       // Extends with open/close Modal methods;
-      Framework7Class$$1.call(this, app, params);
+      Framework7Class.call(this, app, params);
 
       var gauge = this;
 
@@ -43042,8 +43103,8 @@
       return gauge;
     }
 
-    if ( Framework7Class$$1 ) Gauge.__proto__ = Framework7Class$$1;
-    Gauge.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Gauge.__proto__ = Framework7Class;
+    Gauge.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Gauge.prototype.constructor = Gauge;
 
     Gauge.prototype.calcRadius = function calcRadius () {
@@ -43409,11 +43470,11 @@
     },
   };
 
-  var ViAd = /*@__PURE__*/(function (Framework7Class$$1) {
+  var ViAd = /*@__PURE__*/(function (Framework7Class) {
     function ViAd(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var vi = this;
       if (!win.vi) {
         throw new Error('Framework7: vi SDK not found.');
@@ -43551,8 +43612,8 @@
       });
     }
 
-    if ( Framework7Class$$1 ) ViAd.__proto__ = Framework7Class$$1;
-    ViAd.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) ViAd.__proto__ = Framework7Class;
+    ViAd.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     ViAd.prototype.constructor = ViAd;
 
     ViAd.prototype.start = function start () {
@@ -43668,7 +43729,7 @@
   };
 
   /**
-   * Framework7 4.2.0
+   * Framework7 4.2.2
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -43676,7 +43737,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: March 20, 2019
+   * Released on: April 4, 2019
    */
 
   // Install Core Modules & Components
@@ -43692,7 +43753,7 @@
     RequestModule,
     TouchModule,
     ClicksModule,
-    Router$1,
+    RouterModule,
     HistoryModule,
     StorageModule,
     ComponentModule,
@@ -45362,6 +45423,7 @@
       text: String,
       tabLink: [Boolean, String],
       tabLinkActive: Boolean,
+      type: String,
       href: {
         type: [String, Boolean],
         default: '#'
@@ -45415,6 +45477,7 @@
       var iconSize = props.iconSize;
       var id = props.id;
       var style = props.style;
+      var type = props.type;
 
       if (text) {
         textEl = _h('span', [text]);
@@ -45437,7 +45500,8 @@
         });
       }
 
-      return _h('a', __vueComponentTransformJSXProps(Object.assign({
+      var ButtonTag = type === 'submit' || type === 'reset' || type === 'button' ? 'button' : 'a';
+      return _h(ButtonTag, __vueComponentTransformJSXProps(Object.assign({
         ref: 'el',
         style: style,
         class: self.classes
@@ -45455,12 +45519,14 @@
         var href = props.href;
         var target = props.target;
         var tabLink = props.tabLink;
+        var type = props.type;
         var hrefComputed = href;
         if (href === true) { hrefComputed = '#'; }
         if (href === false) { hrefComputed = undefined; }
         return Utils$1.extend({
           href: hrefComputed,
           target: target,
+          type: type,
           'data-tab': Utils$1.isStringProp(tabLink) && tabLink || undefined
         }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
       },
@@ -46942,7 +47008,7 @@
     props: Object.assign({
       type: String,
       name: String,
-      value: [String, Number, Array],
+      value: [String, Number, Array, Date],
       defaultValue: [String, Number, Array],
       placeholder: String,
       id: [String, Number],
@@ -46986,7 +47052,8 @@
       dropdown: {
         type: [String, Boolean],
         default: 'auto'
-      }
+      },
+      calendarParams: Object
     }, Mixins.colorProps),
 
     data: function data() {
@@ -47056,10 +47123,16 @@
       var inputEl;
 
       var createInput = function (InputTag, children) {
-        var needsValue = type !== 'file';
+        var needsValue = type !== 'file' && type !== 'datepicker';
         var needsType = InputTag === 'input';
+        var inputType = type;
+
+        if (inputType === 'datepicker') {
+          inputType = 'text';
+        }
+
         var inputClassName = Utils$1.classNames(!wrap && className, {
-          resizable: type === 'textarea' && resizable,
+          resizable: inputType === 'textarea' && resizable,
           'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
           'input-invalid': errorMessage && errorMessageForce || self.state.inputInvalid,
           'input-with-value': inputHasValue,
@@ -47073,8 +47146,12 @@
         }
 
         var valueProps = {};
-        if ('value' in props) { valueProps.value = inputValue; }
-        if ('defaultValue' in props) { valueProps.defaultValue = defaultValue; }
+
+        if (type !== 'datepicker') {
+          if ('value' in props) { valueProps.value = inputValue; }
+          if ('defaultValue' in props) { valueProps.defaultValue = defaultValue; }
+        }
+
         {
           input = _h(InputTag, {
             ref: 'inputEl',
@@ -47095,7 +47172,7 @@
             },
             attrs: {
               name: name,
-              type: needsType ? type : undefined,
+              type: needsType ? inputType : undefined,
               placeholder: placeholder,
               id: inputId,
               size: size,
@@ -47203,6 +47280,10 @@
         if (type === 'range' || type === 'toggle') { return; }
         if (!self.$f7) { return; }
         self.updateInputOnDidUpdate = true;
+
+        if (self.f7Calendar) {
+          self.f7Calendar.setValue(self.props.value);
+        }
       }
     },
 
@@ -47221,6 +47302,7 @@
         var clearButton = ref.clearButton;
         var value = ref.value;
         var defaultValue = ref.defaultValue;
+        var calendarParams = ref.calendarParams;
         if (type === 'range' || type === 'toggle') { return; }
         var inputEl = self.$refs.inputEl;
         if (!inputEl) { return; }
@@ -47233,6 +47315,19 @@
         if (clearButton) {
           inputEl.addEventListener('input:empty', self.onInputEmpty, false);
           inputEl.addEventListener('input:clear', self.onInputClear, false);
+        }
+
+        if (type === 'datepicker') {
+          self.f7Calendar = f7.calendar.create(Object.assign({
+            inputEl: inputEl,
+            value: value,
+            on: {
+              change: function change(calendar, calendarValue) {
+                self.dispatchEvent('calendar:change calendarChange', calendarValue);
+              }
+
+            }
+          }, calendarParams || {}));
         }
 
         f7.input.checkEmptyState(inputEl);
@@ -47293,6 +47388,12 @@
         inputEl.removeEventListener('input:empty', self.onInputEmpty, false);
         inputEl.removeEventListener('input:clear', self.onInputClear, false);
       }
+
+      if (self.f7Calendar && self.f7Calendar.destroy) {
+        self.f7Calendar.destroy();
+      }
+
+      delete self.f7Calendar;
     },
 
     methods: {
@@ -47975,7 +48076,7 @@
         default: 'text'
       },
       name: String,
-      value: [String, Number, Array],
+      value: [String, Number, Array, Date],
       defaultValue: [String, Number, Array],
       readonly: Boolean,
       required: Boolean,
@@ -48012,7 +48113,8 @@
       outline: Boolean,
       label: [String, Number],
       inlineLabel: Boolean,
-      floatingLabel: Boolean
+      floatingLabel: Boolean,
+      calendarParams: Object
     }, Mixins.colorProps),
 
     data: function data() {
@@ -48091,10 +48193,16 @@
       var isSortable = sortable || self.state.isSortable;
 
       var createInput = function (InputTag, children) {
-        var needsValue = type !== 'file';
+        var needsValue = type !== 'file' && type !== 'datepicker';
         var needsType = InputTag === 'input';
+        var inputType = type;
+
+        if (inputType === 'datepicker') {
+          inputType = 'text';
+        }
+
         var inputClassName = Utils$1.classNames({
-          resizable: type === 'textarea' && resizable,
+          resizable: inputType === 'textarea' && resizable,
           'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
           'input-invalid': errorMessage && errorMessageForce || inputInvalid,
           'input-with-value': inputHasValue,
@@ -48108,8 +48216,12 @@
         }
 
         var valueProps = {};
-        if ('value' in props) { valueProps.value = inputValue; }
-        if ('defaultValue' in props) { valueProps.defaultValue = defaultValue; }
+
+        if (type !== 'datepicker') {
+          if ('value' in props) { valueProps.value = inputValue; }
+          if ('defaultValue' in props) { valueProps.defaultValue = defaultValue; }
+        }
+
         {
           input = _h(InputTag, {
             ref: 'inputEl',
@@ -48129,7 +48241,7 @@
             },
             attrs: {
               name: name,
-              type: needsType ? type : undefined,
+              type: needsType ? inputType : undefined,
               placeholder: placeholder,
               id: inputId,
               size: size,
@@ -48235,6 +48347,10 @@
         var self = this;
         if (!self.$f7) { return; }
         self.updateInputOnDidUpdate = true;
+
+        if (self.f7Calendar) {
+          self.f7Calendar.setValue(self.props.value);
+        }
       }
     },
 
@@ -48255,12 +48371,26 @@
         var value = ref.value;
         var defaultValue = ref.defaultValue;
         var type = ref.type;
+        var calendarParams = ref.calendarParams;
         var inputEl = self.$refs.inputEl;
         if (!inputEl) { return; }
         inputEl.addEventListener('input:notempty', self.onInputNotEmpty, false);
         inputEl.addEventListener('textarea:resize', self.onTextareaResize, false);
         inputEl.addEventListener('input:empty', self.onInputEmpty, false);
         inputEl.addEventListener('input:clear', self.onInputClear, false);
+
+        if (type === 'datepicker') {
+          self.f7Calendar = f7.calendar.create(Object.assign({
+            inputEl: inputEl,
+            value: value,
+            on: {
+              change: function change(calendar, calendarValue) {
+                self.dispatchEvent('calendar:change calendarChange', calendarValue);
+              }
+
+            }
+          }, calendarParams || {}));
+        }
 
         if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
           setTimeout(function () {
@@ -48324,6 +48454,12 @@
       inputEl.removeEventListener('textarea:resize', self.onTextareaResize, false);
       inputEl.removeEventListener('input:empty', self.onInputEmpty, false);
       inputEl.removeEventListener('input:clear', self.onInputClear, false);
+
+      if (self.f7Calendar && self.f7Calendar.destroy) {
+        self.f7Calendar.destroy();
+      }
+
+      delete self.f7Calendar;
     },
 
     methods: {
@@ -51299,7 +51435,7 @@
       var className = props.className;
       var subtitleEl;
 
-      if (self.subtitle) {
+      if (subtitle) {
         subtitleEl = _h('span', {
           class: 'subtitle'
         }, [subtitle]);
@@ -51776,6 +51912,7 @@
           hasSubnavbar: false,
           hasNavbarLarge: false,
           hasNavbarLargeCollapsed: false,
+          hasCardExpandableOpened: false,
           routerPositionClass: '',
           routerForceUnstack: false,
           routerPageRole: null,
@@ -51880,7 +52017,8 @@
         'page-master': this.state.routerPageRole === 'master',
         'page-master-detail': this.state.routerPageRole === 'detail',
         'page-master-stacked': this.state.routerPageMasterStack === true,
-        'page-with-navbar-large-collapsed': this.state.hasNavbarLargeCollapsed === true
+        'page-with-navbar-large-collapsed': this.state.hasNavbarLargeCollapsed === true,
+        'page-with-card-opened': this.state.hasCardExpandableOpened === true
       }, Mixins.colorClasses(props));
 
       if (!needsPageContent) {
@@ -51926,7 +52064,7 @@
     },
 
     created: function created() {
-      Utils$1.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack', 'onPageNavbarLargeCollapsed', 'onPageNavbarLargeExpanded']);
+      Utils$1.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack', 'onPageNavbarLargeCollapsed', 'onPageNavbarLargeExpanded', 'onCardOpen', 'onCardClose']);
     },
 
     mounted: function mounted() {
@@ -51964,6 +52102,8 @@
       el.addEventListener('page:masterunstack', self.onPageMasterUnstack);
       el.addEventListener('page:navbarlargecollapsed', self.onPageNavbarLargeCollapsed);
       el.addEventListener('page:navbarlargeexpanded', self.onPageNavbarLargeExpanded);
+      el.addEventListener('card:open', self.onCardOpen);
+      el.addEventListener('card:close', self.onCardClose);
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -51991,6 +52131,8 @@
       el.removeEventListener('page:masterunstack', self.onPageMasterUnstack);
       el.removeEventListener('page:navbarlargecollapsed', self.onPageNavbarLargeCollapsed);
       el.removeEventListener('page:navbarlargeexpanded', self.onPageNavbarLargeExpanded);
+      el.removeEventListener('card:open', self.onCardOpen);
+      el.removeEventListener('card:close', self.onCardClose);
     },
 
     methods: {
@@ -52157,6 +52299,18 @@
       onPageBeforeRemove: function onPageBeforeRemove(event) {
         var page = event.detail;
         this.dispatchEvent('page:beforeremove pageBeforeRemove', event, page);
+      },
+
+      onCardOpen: function onCardOpen() {
+        this.setState({
+          hasCardExpandableOpened: true
+        });
+      },
+
+      onCardClose: function onCardClose() {
+        this.setState({
+          hasCardExpandableOpened: false
+        });
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -55468,7 +55622,7 @@
   };
 
   /**
-   * Framework7 Vue 4.2.0
+   * Framework7 Vue 4.2.2
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -55476,7 +55630,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: March 20, 2019
+   * Released on: April 4, 2019
    */
 
   //
@@ -55587,7 +55741,7 @@
   var __vue_script__ = script;
 
   /* template */
-  var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","sliding":false}},[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-aurora":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',{attrs:{"sliding":""}},[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search","icon-aurora":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-nav-title-large',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":"","disable-button":!this.$theme.aurora}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/appbar/","title":"Appbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards-expandable/","title":"Cards Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/menu/","title":"Menu"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/skeleton/","title":"Skeleton (Ghost) Elements"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aurora Desktop Theme","external":"","link":"./index.html?theme=aurora"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Master-Detail (Split View)","link":"/master-detail/"}})],1)],1)};
+  var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","sliding":false}},[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-aurora":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',{attrs:{"sliding":""}},[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search","icon-aurora":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-nav-title-large',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":"","disable-button":!this.$theme.aurora}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/appbar/","title":"Appbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards-expandable/","title":"Cards Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/menu/","title":"Menu"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/skeleton/","title":"Skeleton (Ghost) Elements"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aurora Desktop Theme","external":"","link":"./index.html?theme=aurora"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Master-Detail (Split View)","link":"/master-detail/"}})],1)],1)};
   var __vue_staticRenderFns__ = [];
 
     /* style */
@@ -56486,46 +56640,18 @@
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
+      f7Block: f7Block,
+      f7BlockTitle: f7BlockTitle,
+      f7List: f7List,
+      f7ListInput: f7ListInput,
+      f7ListItem: f7ListItem,
     },
     methods: {
       onPageInit: function onPageInit(e) {
         var self = this;
         var app = self.$f7;
         var $ = self.$$;
-        // Default
-        self.calendarDefault = app.calendar.create({
-          inputEl: '#demo-calendar-default',
-        });
-        // Jalali
-        self.jcalendarDefault = app.calendar.create({
-          calendarType: 'jalali',
-          inputEl: '#demo-jcalendar-default',
-        });
-        // With custom date format
-        self.calendarDateFormat = app.calendar.create({
-          inputEl: '#demo-calendar-date-format',
-          dateFormat: 'DD, MM dd, yyyy',
-        });
-        // With multiple values
-        self.calendarMultiple = app.calendar.create({
-          inputEl: '#demo-calendar-multiple',
-          dateFormat: 'M dd yyyy',
-          multiple: true,
-        });
-        // Range Picker
-        self.calendarRange = app.calendar.create({
-          inputEl: '#demo-calendar-range',
-          dateFormat: 'M dd yyyy',
-          rangePicker: true,
-        });
-        // Custom modal
-        self.calendarModal = app.calendar.create({
-          inputEl: '#demo-calendar-modal',
-          openIn: 'customModal',
-          header: true,
-          footer: true,
-          dateFormat: 'MM dd yyyy',
-        });
+
         // Inline with custom toolbar
         var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         self.calendarInline = app.calendar.create({
@@ -56552,12 +56678,6 @@
       },
       onPageBeforeRemove: function onPageBeforeRemove() {
         var self = this;
-        self.calendarDefault.destroy();
-        self.jcalendarDefault.destroy();
-        self.calendarDateFormat.destroy();
-        self.calendarMultiple.destroy();
-        self.calendarRange.destroy();
-        self.calendarModal.destroy();
         self.calendarInline.destroy();
       },
     },
@@ -56567,7 +56687,7 @@
   var __vue_script__$a = script$a;
 
   /* template */
-  var __vue_render__$a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Calendar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block"},[_c('p',[_vm._v("Calendar is a touch optimized component that provides an easy way to handle dates.")]),_vm._v(" "),_c('p',[_vm._v("Calendar could be used as inline component or as overlay. Overlay Calendar will be automatically converted to Popover on tablets (iPad).")])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Default setup")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your birth date","readonly":"readonly","id":"demo-calendar-default"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Custom date format")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date","readonly":"readonly","id":"demo-calendar-date-format"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Multiple Values")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select multiple dates","readonly":"readonly","id":"demo-calendar-multiple"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Range Picker")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date range","readonly":"readonly","id":"demo-calendar-range"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Open in Modal")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date","readonly":"readonly","id":"demo-calendar-modal"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Calendar Page")]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('ul',[_c('li',[_c('a',{staticClass:"item-content item-link",attrs:{"href":"/calendar-page/"}},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Open Calendar Page")])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Inline with custom toolbar")]),_vm._v(" "),_c('div',{staticClass:"block block-strong no-padding"},[_c('div',{attrs:{"id":"demo-calendar-inline-container"}})]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Jalali Calendar")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your birth date in Jalali","readonly":"readonly","id":"demo-jcalendar-default"}})])])])])])])])],1)};
+  var __vue_render__$a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Calendar","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Calendar is a touch optimized component that provides an easy way to handle dates.")]),_vm._v(" "),_c('p',[_vm._v("Calendar could be used as inline component or as overlay. Overlay Calendar will be automatically converted to Popover on tablets (iPad).")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default setup")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Your birth date","readonly":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom date format")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select date","readonly":"","calendar-params":{dateFormat: 'DD, MM dd, yyyy'}}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Multiple Values")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select multiple dates","readonly":"","calendar-params":{ dateFormat: 'M dd yyyy', multiple: true }}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Range Picker")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select date range","readonly":"","calendar-params":{ dateFormat: 'M dd yyyy', rangePicker: true }}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Open in Modal")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select date","readonly":"","calendar-params":{openIn: 'customModal', header: true, footer: true, dateFormat: 'MM dd yyyy'}}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Calendar Page")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Open Calendar Page","link":"/calendar-page/"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inline with custom toolbar")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding"},[_c('div',{attrs:{"id":"demo-calendar-inline-container"}})]),_vm._v(" "),_c('f7-block-title',[_vm._v("Jalali Calendar")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Your birth date in Jalali","readonly":"","calendar-params":{calendarType: 'jalali'}}})],1)],1)};
   var __vue_staticRenderFns__$a = [];
 
     /* style */
@@ -59990,7 +60110,7 @@
 
   //
 
-  var script$10 = {
+  var script$$ = {
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -59999,10 +60119,51 @@
   };
 
   /* script */
+  var __vue_script__$$ = script$$;
+
+  /* template */
+  var __vue_render__$$ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Multiple Swipers","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("1 Slide Per View, 50px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("2 Slides Per View, 20px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"20","data-slides-per-view":"2"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("3 Slides Per View, 10px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-slides-per-view":"3"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Slides Per View + Centered")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple demo-swiper-multiple-auto",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical, 10px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-direction":"vertical"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Slow speed")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-speed":"900","data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
+  var __vue_staticRenderFns__$$ = [];
+
+    /* style */
+    var __vue_inject_styles__$$ = undefined;
+    /* scoped */
+    var __vue_scope_id__$$ = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$$ = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$$ = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var SwiperMultiple = normalizeComponent_1(
+      { render: __vue_render__$$, staticRenderFns: __vue_staticRenderFns__$$ },
+      __vue_inject_styles__$$,
+      __vue_script__$$,
+      __vue_scope_id__$$,
+      __vue_is_functional_template__$$,
+      __vue_module_identifier__$$,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$10 = {
+    components: {
+      f7Navbar: f7Navbar,
+      f7Page: f7Page,
+    },
+  };
+
+  /* script */
   var __vue_script__$10 = script$10;
 
   /* template */
-  var __vue_render__$10 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Multiple Swipers","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("1 Slide Per View, 50px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("2 Slides Per View, 20px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"20","data-slides-per-view":"2"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("3 Slides Per View, 10px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-slides-per-view":"3"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Slides Per View + Centered")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple demo-swiper-multiple-auto",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical, 10px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-direction":"vertical"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Slow speed")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-speed":"900","data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
+  var __vue_render__$10 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Nested Swipers","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination-h\"}"}},[_c('div',{staticClass:"swiper-pagination swiper-pagination-h"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination-v\"}","data-direction":"vertical"}},[_c('div',{staticClass:"swiper-pagination swiper-pagination-v"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 3")])])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 4")])])])],1)};
   var __vue_staticRenderFns__$10 = [];
 
     /* style */
@@ -60019,7 +60180,7 @@
     
 
     
-    var SwiperMultiple = normalizeComponent_1(
+    var SwiperNested = normalizeComponent_1(
       { render: __vue_render__$10, staticRenderFns: __vue_staticRenderFns__$10 },
       __vue_inject_styles__$10,
       __vue_script__$10,
@@ -60043,7 +60204,7 @@
   var __vue_script__$11 = script$11;
 
   /* template */
-  var __vue_render__$11 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Nested Swipers","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination-h\"}"}},[_c('div',{staticClass:"swiper-pagination swiper-pagination-h"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination-v\"}","data-direction":"vertical"}},[_c('div',{staticClass:"swiper-pagination swiper-pagination-v"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 3")])])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 4")])])])],1)};
+  var __vue_render__$11 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Infinite Loop Mode","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-loop":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$11 = [];
 
     /* style */
@@ -60060,7 +60221,7 @@
     
 
     
-    var SwiperNested = normalizeComponent_1(
+    var SwiperLoop = normalizeComponent_1(
       { render: __vue_render__$11, staticRenderFns: __vue_staticRenderFns__$11 },
       __vue_inject_styles__$11,
       __vue_script__$11,
@@ -60084,7 +60245,7 @@
   var __vue_script__$12 = script$12;
 
   /* template */
-  var __vue_render__$12 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Infinite Loop Mode","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-loop":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
+  var __vue_render__$12 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Cube","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"cube"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-9.jpg)"}},[_vm._v("Slide 9")])])])],1)};
   var __vue_staticRenderFns__$12 = [];
 
     /* style */
@@ -60101,7 +60262,7 @@
     
 
     
-    var SwiperLoop = normalizeComponent_1(
+    var Swiper3dCube = normalizeComponent_1(
       { render: __vue_render__$12, staticRenderFns: __vue_staticRenderFns__$12 },
       __vue_inject_styles__$12,
       __vue_script__$12,
@@ -60125,7 +60286,7 @@
   var __vue_script__$13 = script$13;
 
   /* template */
-  var __vue_render__$13 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Cube","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"cube"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-9.jpg)"}},[_vm._v("Slide 9")])])])],1)};
+  var __vue_render__$13 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Coverflow Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-coverflow",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"coverflow","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-8.jpg)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-9.jpg)"}},[_vm._v("Slide 9")])])])],1)};
   var __vue_staticRenderFns__$13 = [];
 
     /* style */
@@ -60142,7 +60303,7 @@
     
 
     
-    var Swiper3dCube = normalizeComponent_1(
+    var Swiper3dCoverflow = normalizeComponent_1(
       { render: __vue_render__$13, staticRenderFns: __vue_staticRenderFns__$13 },
       __vue_inject_styles__$13,
       __vue_script__$13,
@@ -60166,7 +60327,7 @@
   var __vue_script__$14 = script$14;
 
   /* template */
-  var __vue_render__$14 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Coverflow Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-coverflow",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"coverflow","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-8.jpg)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-9.jpg)"}},[_vm._v("Slide 9")])])])],1)};
+  var __vue_render__$14 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Flip Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"flip"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg)"}},[_vm._v("Slide 8")])])])],1)};
   var __vue_staticRenderFns__$14 = [];
 
     /* style */
@@ -60183,7 +60344,7 @@
     
 
     
-    var Swiper3dCoverflow = normalizeComponent_1(
+    var Swiper3dFlip = normalizeComponent_1(
       { render: __vue_render__$14, staticRenderFns: __vue_staticRenderFns__$14 },
       __vue_inject_styles__$14,
       __vue_script__$14,
@@ -60207,7 +60368,7 @@
   var __vue_script__$15 = script$15;
 
   /* template */
-  var __vue_render__$15 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Flip Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"flip"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg)"}},[_vm._v("Slide 8")])])])],1)};
+  var __vue_render__$15 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Fade Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-fade",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"fade"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-4.jpg)"}})])])],1)};
   var __vue_staticRenderFns__$15 = [];
 
     /* style */
@@ -60224,7 +60385,7 @@
     
 
     
-    var Swiper3dFlip = normalizeComponent_1(
+    var SwiperFade = normalizeComponent_1(
       { render: __vue_render__$15, staticRenderFns: __vue_staticRenderFns__$15 },
       __vue_inject_styles__$15,
       __vue_script__$15,
@@ -60248,7 +60409,7 @@
   var __vue_script__$16 = script$16;
 
   /* template */
-  var __vue_render__$16 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Fade Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-fade",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"fade"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-4.jpg)"}})])])],1)};
+  var __vue_render__$16 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Scrollbar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-scrollbar":"{\"el\": \".swiper-scrollbar\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-scrollbar"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$16 = [];
 
     /* style */
@@ -60265,7 +60426,7 @@
     
 
     
-    var SwiperFade = normalizeComponent_1(
+    var SwiperScrollbar = normalizeComponent_1(
       { render: __vue_render__$16, staticRenderFns: __vue_staticRenderFns__$16 },
       __vue_inject_styles__$16,
       __vue_script__$16,
@@ -60279,47 +60440,6 @@
   //
 
   var script$17 = {
-    components: {
-      f7Navbar: f7Navbar,
-      f7Page: f7Page,
-    },
-  };
-
-  /* script */
-  var __vue_script__$17 = script$17;
-
-  /* template */
-  var __vue_render__$17 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Scrollbar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-scrollbar":"{\"el\": \".swiper-scrollbar\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-scrollbar"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
-  var __vue_staticRenderFns__$17 = [];
-
-    /* style */
-    var __vue_inject_styles__$17 = undefined;
-    /* scoped */
-    var __vue_scope_id__$17 = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$17 = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$17 = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var SwiperScrollbar = normalizeComponent_1(
-      { render: __vue_render__$17, staticRenderFns: __vue_staticRenderFns__$17 },
-      __vue_inject_styles__$17,
-      __vue_script__$17,
-      __vue_scope_id__$17,
-      __vue_is_functional_template__$17,
-      __vue_module_identifier__$17,
-      undefined,
-      undefined
-    );
-
-  //
-
-  var script$18 = {
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -60357,10 +60477,51 @@
   };
 
   /* script */
+  var __vue_script__$17 = script$17;
+
+  /* template */
+  var __vue_render__$17 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{staticStyle:{"background":"#000"},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Thumbs Gallery","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-top"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"})]),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-thumbs"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}})])])])],1)};
+  var __vue_staticRenderFns__$17 = [];
+
+    /* style */
+    var __vue_inject_styles__$17 = undefined;
+    /* scoped */
+    var __vue_scope_id__$17 = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$17 = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$17 = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var SwiperGallery = normalizeComponent_1(
+      { render: __vue_render__$17, staticRenderFns: __vue_staticRenderFns__$17 },
+      __vue_inject_styles__$17,
+      __vue_script__$17,
+      __vue_scope_id__$17,
+      __vue_is_functional_template__$17,
+      __vue_module_identifier__$17,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$18 = {
+    components: {
+      f7Navbar: f7Navbar,
+      f7Page: f7Page,
+    },
+  };
+
+  /* script */
   var __vue_script__$18 = script$18;
 
   /* template */
-  var __vue_render__$18 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{staticStyle:{"background":"#000"},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Thumbs Gallery","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-top"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"})]),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-thumbs"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}})])])])],1)};
+  var __vue_render__$18 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Custom Controls","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"demo-swiper-custom"},[_c('div',{staticClass:"swiper-container swiper-init",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"clickable\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-space-between":"0"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-4.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-5.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-6.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])])],1)};
   var __vue_staticRenderFns__$18 = [];
 
     /* style */
@@ -60377,7 +60538,7 @@
     
 
     
-    var SwiperGallery = normalizeComponent_1(
+    var SwiperCustomControls = normalizeComponent_1(
       { render: __vue_render__$18, staticRenderFns: __vue_staticRenderFns__$18 },
       __vue_inject_styles__$18,
       __vue_script__$18,
@@ -60401,7 +60562,7 @@
   var __vue_script__$19 = script$19;
 
   /* template */
-  var __vue_render__$19 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Custom Controls","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"demo-swiper-custom"},[_c('div',{staticClass:"swiper-container swiper-init",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"clickable\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-space-between":"0"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-4.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-5.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-6.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])])],1)};
+  var __vue_render__$19 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Parallax","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-parallax",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-parallax":"true","data-speed":"600"}},[_c('div',{staticClass:"swiper-parallax-bg",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg)"},attrs:{"data-swiper-parallax":"-23%"}}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])])])])],1)};
   var __vue_staticRenderFns__$19 = [];
 
     /* style */
@@ -60418,7 +60579,7 @@
     
 
     
-    var SwiperCustomControls = normalizeComponent_1(
+    var SwiperParallax = normalizeComponent_1(
       { render: __vue_render__$19, staticRenderFns: __vue_staticRenderFns__$19 },
       __vue_inject_styles__$19,
       __vue_script__$19,
@@ -60442,7 +60603,7 @@
   var __vue_script__$1a = script$1a;
 
   /* template */
-  var __vue_render__$1a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Parallax","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-parallax",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-parallax":"true","data-speed":"600"}},[_c('div',{staticClass:"swiper-parallax-bg",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg)"},attrs:{"data-swiper-parallax":"-23%"}}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])])])])],1)};
+  var __vue_render__$1a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Slider Lazy Loading","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-lazy",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-lazy":"{\"enabled\": true}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-1.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-2.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-3.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-4.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-5.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-6.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})])]),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])],1)};
   var __vue_staticRenderFns__$1a = [];
 
     /* style */
@@ -60459,7 +60620,7 @@
     
 
     
-    var SwiperParallax = normalizeComponent_1(
+    var SwiperLazy = normalizeComponent_1(
       { render: __vue_render__$1a, staticRenderFns: __vue_staticRenderFns__$1a },
       __vue_inject_styles__$1a,
       __vue_script__$1a,
@@ -60483,7 +60644,7 @@
   var __vue_script__$1b = script$1b;
 
   /* template */
-  var __vue_render__$1b = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Slider Lazy Loading","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-lazy",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-lazy":"{\"enabled\": true}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-1.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-2.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-3.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-4.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-5.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-6.jpg"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})])]),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])],1)};
+  var __vue_render__$1b = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Progress Pagination","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"type\": \"progressbar\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$1b = [];
 
     /* style */
@@ -60500,7 +60661,7 @@
     
 
     
-    var SwiperLazy = normalizeComponent_1(
+    var SwiperPaginationProgress = normalizeComponent_1(
       { render: __vue_render__$1b, staticRenderFns: __vue_staticRenderFns__$1b },
       __vue_inject_styles__$1b,
       __vue_script__$1b,
@@ -60524,7 +60685,7 @@
   var __vue_script__$1c = script$1c;
 
   /* template */
-  var __vue_render__$1c = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Progress Pagination","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"type\": \"progressbar\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
+  var __vue_render__$1c = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Pagination Fraction","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"type\": \"fraction\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$1c = [];
 
     /* style */
@@ -60541,7 +60702,7 @@
     
 
     
-    var SwiperPaginationProgress = normalizeComponent_1(
+    var SwiperPaginationFraction = normalizeComponent_1(
       { render: __vue_render__$1c, staticRenderFns: __vue_staticRenderFns__$1c },
       __vue_inject_styles__$1c,
       __vue_script__$1c,
@@ -60565,7 +60726,7 @@
   var __vue_script__$1d = script$1d;
 
   /* template */
-  var __vue_render__$1d = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Pagination Fraction","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"type\": \"fraction\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
+  var __vue_render__$1d = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Zoom","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-zoom":"{\"enabled\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-1.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-2.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-3.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-4.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-5.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-6.jpg"}})])])]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"})])],1)};
   var __vue_staticRenderFns__$1d = [];
 
     /* style */
@@ -60582,7 +60743,7 @@
     
 
     
-    var SwiperPaginationFraction = normalizeComponent_1(
+    var SwiperZoom = normalizeComponent_1(
       { render: __vue_render__$1d, staticRenderFns: __vue_staticRenderFns__$1d },
       __vue_inject_styles__$1d,
       __vue_script__$1d,
@@ -60596,47 +60757,6 @@
   //
 
   var script$1e = {
-    components: {
-      f7Navbar: f7Navbar,
-      f7Page: f7Page,
-    },
-  };
-
-  /* script */
-  var __vue_script__$1e = script$1e;
-
-  /* template */
-  var __vue_render__$1e = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Zoom","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-zoom":"{\"enabled\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-1.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-2.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-3.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-4.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-5.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-6.jpg"}})])])]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"})])],1)};
-  var __vue_staticRenderFns__$1e = [];
-
-    /* style */
-    var __vue_inject_styles__$1e = undefined;
-    /* scoped */
-    var __vue_scope_id__$1e = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$1e = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$1e = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var SwiperZoom = normalizeComponent_1(
-      { render: __vue_render__$1e, staticRenderFns: __vue_staticRenderFns__$1e },
-      __vue_inject_styles__$1e,
-      __vue_script__$1e,
-      __vue_scope_id__$1e,
-      __vue_is_functional_template__$1e,
-      __vue_module_identifier__$1e,
-      undefined,
-      undefined
-    );
-
-  //
-
-  var script$1f = {
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -60700,10 +60820,53 @@
   };
 
   /* script */
+  var __vue_script__$1e = script$1e;
+
+  /* template */
+  var __vue_render__$1e = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Swipeout","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("\n      Swipe out actions on list elements is one of the most awesome F7 features. It allows you to call hidden menu for each list element where you can put default ready-to use delete button or any other buttons for some required actions.\n    ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe to delete with confirm modal")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe to delete without confirm")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe for actions")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"You can't delete me"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With callback on remove")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"},on:{"swipeout:deleted":_vm.onDeleted}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"},on:{"swipeout:deleted":_vm.onDeleted}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With actions on left side (swipe to right)")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe right on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe right on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("On both sides with overswipes")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"swipeout":"","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1)],1)],1)};
+  var __vue_staticRenderFns__$1e = [];
+
+    /* style */
+    var __vue_inject_styles__$1e = undefined;
+    /* scoped */
+    var __vue_scope_id__$1e = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$1e = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$1e = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var Swipeout$2 = normalizeComponent_1(
+      { render: __vue_render__$1e, staticRenderFns: __vue_staticRenderFns__$1e },
+      __vue_inject_styles__$1e,
+      __vue_script__$1e,
+      __vue_scope_id__$1e,
+      __vue_is_functional_template__$1e,
+      __vue_module_identifier__$1e,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$1f = {
+    components: {
+      f7Navbar: f7Navbar,
+      f7Page: f7Page,
+      f7List: f7List,
+      f7ListItem: f7ListItem,
+    },
+  };
+
+  /* script */
   var __vue_script__$1f = script$1f;
 
   /* template */
-  var __vue_render__$1f = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Swipeout","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("\n      Swipe out actions on list elements is one of the most awesome F7 features. It allows you to call hidden menu for each list element where you can put default ready-to use delete button or any other buttons for some required actions.\n    ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe to delete with confirm modal")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe to delete without confirm")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe for actions")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"You can't delete me"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With callback on remove")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"},on:{"swipeout:deleted":_vm.onDeleted}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"},on:{"swipeout:deleted":_vm.onDeleted}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With actions on left side (swipe to right)")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe right on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe right on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("On both sides with overswipes")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"swipeout":"","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1)],1)],1)};
+  var __vue_render__$1f = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/tabs-static/","title":"Static Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-animated/","title":"Animated Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-swipeable/","title":"Swipeable Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-routable/","title":"Routable Tabs"}})],1)],1)};
   var __vue_staticRenderFns__$1f = [];
 
     /* style */
@@ -60720,7 +60883,7 @@
     
 
     
-    var Swipeout$2 = normalizeComponent_1(
+    var Tabs$1 = normalizeComponent_1(
       { render: __vue_render__$1f, staticRenderFns: __vue_staticRenderFns__$1f },
       __vue_inject_styles__$1f,
       __vue_script__$1f,
@@ -60735,10 +60898,7 @@
 
   var script$1g = {
     components: {
-      f7Navbar: f7Navbar,
-      f7Page: f7Page,
-      f7List: f7List,
-      f7ListItem: f7ListItem,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar,
     },
   };
 
@@ -60746,7 +60906,7 @@
   var __vue_script__$1g = script$1g;
 
   /* template */
-  var __vue_render__$1g = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/tabs-static/","title":"Static Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-animated/","title":"Animated Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-swipeable/","title":"Swipeable Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-routable/","title":"Routable Tabs"}})],1)],1)};
+  var __vue_render__$1g = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Static Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1g = [];
 
     /* style */
@@ -60763,7 +60923,7 @@
     
 
     
-    var Tabs$1 = normalizeComponent_1(
+    var TabsStatic = normalizeComponent_1(
       { render: __vue_render__$1g, staticRenderFns: __vue_staticRenderFns__$1g },
       __vue_inject_styles__$1g,
       __vue_script__$1g,
@@ -60786,7 +60946,7 @@
   var __vue_script__$1h = script$1h;
 
   /* template */
-  var __vue_render__$1h = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Static Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
+  var __vue_render__$1h = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Animated Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"animated":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1h = [];
 
     /* style */
@@ -60803,7 +60963,7 @@
     
 
     
-    var TabsStatic = normalizeComponent_1(
+    var TabsAnimated = normalizeComponent_1(
       { render: __vue_render__$1h, staticRenderFns: __vue_staticRenderFns__$1h },
       __vue_inject_styles__$1h,
       __vue_script__$1h,
@@ -60826,7 +60986,7 @@
   var __vue_script__$1i = script$1i;
 
   /* template */
-  var __vue_render__$1i = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Animated Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"animated":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
+  var __vue_render__$1i = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Swipeable Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"swipeable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1i = [];
 
     /* style */
@@ -60843,7 +61003,7 @@
     
 
     
-    var TabsAnimated = normalizeComponent_1(
+    var TabsSwipeable = normalizeComponent_1(
       { render: __vue_render__$1i, staticRenderFns: __vue_staticRenderFns__$1i },
       __vue_inject_styles__$1i,
       __vue_script__$1i,
@@ -60866,7 +61026,7 @@
   var __vue_script__$1j = script$1j;
 
   /* template */
-  var __vue_render__$1j = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Swipeable Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"swipeable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
+  var __vue_render__$1j = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabs Routable","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"","href":"./","route-tab-id":"tab1"}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab2/","route-tab-id":"tab2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab3/","route-tab-id":"tab3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"routable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab1"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab2"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab3"}})],1)],1)};
   var __vue_staticRenderFns__$1j = [];
 
     /* style */
@@ -60883,7 +61043,7 @@
     
 
     
-    var TabsSwipeable = normalizeComponent_1(
+    var TabsRoutable = normalizeComponent_1(
       { render: __vue_render__$1j, staticRenderFns: __vue_staticRenderFns__$1j },
       __vue_inject_styles__$1j,
       __vue_script__$1j,
@@ -60897,46 +61057,6 @@
   //
 
   var script$1k = {
-    components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar,
-    },
-  };
-
-  /* script */
-  var __vue_script__$1k = script$1k;
-
-  /* template */
-  var __vue_render__$1k = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabs Routable","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"","href":"./","route-tab-id":"tab1"}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab2/","route-tab-id":"tab2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab3/","route-tab-id":"tab3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"routable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab1"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab2"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab3"}})],1)],1)};
-  var __vue_staticRenderFns__$1k = [];
-
-    /* style */
-    var __vue_inject_styles__$1k = undefined;
-    /* scoped */
-    var __vue_scope_id__$1k = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$1k = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$1k = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var TabsRoutable = normalizeComponent_1(
-      { render: __vue_render__$1k, staticRenderFns: __vue_staticRenderFns__$1k },
-      __vue_inject_styles__$1k,
-      __vue_script__$1k,
-      __vue_scope_id__$1k,
-      __vue_is_functional_template__$1k,
-      __vue_module_identifier__$1k,
-      undefined,
-      undefined
-    );
-
-  //
-
-  var script$1l = {
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Button: f7Button,
     },
@@ -61068,10 +61188,55 @@
   };
 
   /* script */
+  var __vue_script__$1k = script$1k;
+
+  /* template */
+  var __vue_render__$1k = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Toast","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toasts provide brief feedback about an operation through a message on the screen.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastBottom}},[_vm._v("Toast on Bottom")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastTop}},[_vm._v("Toast on Top")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastCenter}},[_vm._v("Toast on Center")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastIcon}},[_vm._v("Toast with icon")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastLargeMessage}},[_vm._v("Toast with large message")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithButton}},[_vm._v("Toast with close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCustomButton}},[_vm._v("Toast with custom button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCallback}},[_vm._v("Toast with callback on close")])],1)])],1)};
+  var __vue_staticRenderFns__$1k = [];
+
+    /* style */
+    var __vue_inject_styles__$1k = undefined;
+    /* scoped */
+    var __vue_scope_id__$1k = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$1k = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$1k = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var Toast$2 = normalizeComponent_1(
+      { render: __vue_render__$1k, staticRenderFns: __vue_staticRenderFns__$1k },
+      __vue_inject_styles__$1k,
+      __vue_script__$1k,
+      __vue_scope_id__$1k,
+      __vue_is_functional_template__$1k,
+      __vue_module_identifier__$1k,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$1l = {
+    components: {
+      f7Navbar: f7Navbar,
+      f7Page: f7Page,
+      f7BlockTitle: f7BlockTitle,
+      f7List: f7List,
+      f7ListItem: f7ListItem,
+      f7Toggle: f7Toggle,
+    },
+  };
+
+  /* script */
   var __vue_script__$1l = script$1l;
 
   /* template */
-  var __vue_render__$1l = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Toast","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toasts provide brief feedback about an operation through a message on the screen.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastBottom}},[_vm._v("Toast on Bottom")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastTop}},[_vm._v("Toast on Top")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastCenter}},[_vm._v("Toast on Center")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastIcon}},[_vm._v("Toast with icon")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastLargeMessage}},[_vm._v("Toast with large message")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithButton}},[_vm._v("Toast with close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCustomButton}},[_vm._v("Toast with custom button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCallback}},[_vm._v("Toast with callback on close")])],1)])],1)};
+  var __vue_render__$1l = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toggle","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Super Heroes")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('span',[_vm._v("Batman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Aquaman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"blue"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Superman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"red"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Hulk")]),_vm._v(" "),_c('f7-toggle',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Spiderman (Disabled)")]),_vm._v(" "),_c('f7-toggle',{attrs:{"disabled":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Ironman (Disabled)")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","disabled":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Thor")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"orange"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Wonder Woman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"color":"pink"}})],1)],1)],1)};
   var __vue_staticRenderFns__$1l = [];
 
     /* style */
@@ -61088,7 +61253,7 @@
     
 
     
-    var Toast$2 = normalizeComponent_1(
+    var Toggle$2 = normalizeComponent_1(
       { render: __vue_render__$1l, staticRenderFns: __vue_staticRenderFns__$1l },
       __vue_inject_styles__$1l,
       __vue_script__$1l,
@@ -61103,12 +61268,17 @@
 
   var script$1m = {
     components: {
-      f7Navbar: f7Navbar,
-      f7Page: f7Page,
-      f7BlockTitle: f7BlockTitle,
-      f7List: f7List,
-      f7ListItem: f7ListItem,
-      f7Toggle: f7Toggle,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7List: f7List, f7ListItem: f7ListItem, f7Button: f7Button, f7Link: f7Link, f7BlockTitle: f7BlockTitle, f7Block: f7Block,
+    },
+    data: function data() {
+      return {
+        toolbarPosition: 'bottom',
+      }
+    },
+    methods: {
+      toggleToolbarPosition: function toggleToolbarPosition() {
+        this.toolbarPosition = this.toolbarPosition === 'top' ? 'bottom' : 'top';
+      },
     },
   };
 
@@ -61116,7 +61286,7 @@
   var __vue_script__$1m = script$1m;
 
   /* template */
-  var __vue_render__$1m = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toggle","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Super Heroes")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('span',[_vm._v("Batman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Aquaman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"blue"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Superman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"red"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Hulk")]),_vm._v(" "),_c('f7-toggle',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Spiderman (Disabled)")]),_vm._v(" "),_c('f7-toggle',{attrs:{"disabled":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Ironman (Disabled)")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","disabled":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Thor")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"orange"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Wonder Woman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"color":"pink"}})],1)],1)],1)};
+  var __vue_render__$1m = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toolbar & Tabbar","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"./tabbar/","title":"Tabbar"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-labels/","title":"Tabbar With Labels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-scrollable/","title":"Tabbar Scrollable"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./toolbar-hide-scroll/","title":"Hide Toolbar On Scroll"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Toolbar Position")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toolbar supports both top and bottom positions. Click the following button to change its position.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.toggleToolbarPosition}},[_vm._v("Toggle Toolbar Position")])],1)])],1)};
   var __vue_staticRenderFns__$1m = [];
 
     /* style */
@@ -61133,7 +61303,7 @@
     
 
     
-    var Toggle$2 = normalizeComponent_1(
+    var ToolbarTabbar = normalizeComponent_1(
       { render: __vue_render__$1m, staticRenderFns: __vue_staticRenderFns__$1m },
       __vue_inject_styles__$1m,
       __vue_script__$1m,
@@ -61148,7 +61318,7 @@
 
   var script$1n = {
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7List: f7List, f7ListItem: f7ListItem, f7Button: f7Button, f7Link: f7Link, f7BlockTitle: f7BlockTitle, f7Block: f7Block,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
     },
     data: function data() {
       return {
@@ -61166,7 +61336,7 @@
   var __vue_script__$1n = script$1n;
 
   /* template */
-  var __vue_render__$1n = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toolbar & Tabbar","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"./tabbar/","title":"Tabbar"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-labels/","title":"Tabbar With Labels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-scrollable/","title":"Tabbar Scrollable"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./toolbar-hide-scroll/","title":"Hide Toolbar On Scroll"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Toolbar Position")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toolbar supports both top and bottom positions. Click the following button to change its position.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.toggleToolbarPosition}},[_vm._v("Toggle Toolbar Position")])],1)])],1)};
+  var __vue_render__$1n = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload","icon-aurora":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1n = [];
 
     /* style */
@@ -61183,7 +61353,7 @@
     
 
     
-    var ToolbarTabbar = normalizeComponent_1(
+    var Tabbar = normalizeComponent_1(
       { render: __vue_render__$1n, staticRenderFns: __vue_staticRenderFns__$1n },
       __vue_inject_styles__$1n,
       __vue_script__$1n,
@@ -61216,7 +61386,7 @@
   var __vue_script__$1o = script$1o;
 
   /* template */
-  var __vue_render__$1o = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload","icon-aurora":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
+  var __vue_render__$1o = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Labels","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload","icon-aurora":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":"","text":"Tab 1","icon-ios":"f7:email_fill","icon-aurora":"f7:email_fill","icon-md":"material:email"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2","text":"Tab 2","icon-ios":"f7:calendar_fill","icon-aurora":"f7:calendar_fill","icon-md":"material:today"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3","text":"Tab 3","icon-ios":"f7:cloud_upload_fill","icon-aurora":"f7:cloud_upload_fill","icon-md":"material:file_upload"}})],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1o = [];
 
     /* style */
@@ -61233,7 +61403,7 @@
     
 
     
-    var Tabbar = normalizeComponent_1(
+    var TabbarLabels = normalizeComponent_1(
       { render: __vue_render__$1o, staticRenderFns: __vue_staticRenderFns__$1o },
       __vue_inject_styles__$1o,
       __vue_script__$1o,
@@ -61252,12 +61422,13 @@
     },
     data: function data() {
       return {
+        tabs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         toolbarPosition: 'bottom',
-      }
+      };
     },
     methods: {
       toggleToolbarPosition: function toggleToolbarPosition() {
-        this.toolbarPosition = this.toolbarPosition === 'top' ? 'bottom' : 'top';
+        this.toolbarPosition = this.position === 'top' ? 'bottom' : 'top';
       },
     },
   };
@@ -61266,7 +61437,7 @@
   var __vue_script__$1p = script$1p;
 
   /* template */
-  var __vue_render__$1p = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Labels","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload","icon-aurora":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":"","text":"Tab 1","icon-ios":"f7:email_fill","icon-aurora":"f7:email_fill","icon-md":"material:email"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2","text":"Tab 2","icon-ios":"f7:calendar_fill","icon-aurora":"f7:calendar_fill","icon-md":"material:today"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3","text":"Tab 3","icon-ios":"f7:cloud_upload_fill","icon-aurora":"f7:cloud_upload_fill","icon-md":"material:file_upload"}})],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
+  var __vue_render__$1p = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Scrollable","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload","icon-aurora":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","scrollable":""}},_vm._l((_vm.tabs),function(tab,index){return _c('f7-link',{key:tab,attrs:{"tab-link":("#tab-" + tab),"tab-link-active":index === 0}},[_vm._v("Tab "+_vm._s(tab))])}),1),_vm._v(" "),_c('f7-tabs',_vm._l((_vm.tabs),function(tab,index){return _c('f7-tab',{key:tab,staticClass:"page-content",attrs:{"id":("tab-" + tab),"tab-active":index === 0}},[_c('f7-block',[_c('p',[_c('b',[_vm._v("Tab "+_vm._s(tab)+" content")])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?")]),_vm._v(" "),_c('p',[_vm._v("Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!")]),_vm._v(" "),_c('p',[_vm._v("At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.")]),_vm._v(" "),_c('p',[_vm._v("Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.")]),_vm._v(" "),_c('p',[_vm._v("Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.")])])],1)}),1)],1)};
   var __vue_staticRenderFns__$1p = [];
 
     /* style */
@@ -61283,7 +61454,7 @@
     
 
     
-    var TabbarLabels = normalizeComponent_1(
+    var TabbarScrollable = normalizeComponent_1(
       { render: __vue_render__$1p, staticRenderFns: __vue_staticRenderFns__$1p },
       __vue_inject_styles__$1p,
       __vue_script__$1p,
@@ -61298,18 +61469,7 @@
 
   var script$1q = {
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
-    },
-    data: function data() {
-      return {
-        tabs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        toolbarPosition: 'bottom',
-      };
-    },
-    methods: {
-      toggleToolbarPosition: function toggleToolbarPosition() {
-        this.toolbarPosition = this.position === 'top' ? 'bottom' : 'top';
-      },
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7Link: f7Link, f7Block: f7Block,
     },
   };
 
@@ -61317,7 +61477,7 @@
   var __vue_script__$1q = script$1q;
 
   /* template */
-  var __vue_render__$1q = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Scrollable","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload","icon-aurora":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","scrollable":""}},_vm._l((_vm.tabs),function(tab,index){return _c('f7-link',{key:tab,attrs:{"tab-link":("#tab-" + tab),"tab-link-active":index === 0}},[_vm._v("Tab "+_vm._s(tab))])}),1),_vm._v(" "),_c('f7-tabs',_vm._l((_vm.tabs),function(tab,index){return _c('f7-tab',{key:tab,staticClass:"page-content",attrs:{"id":("tab-" + tab),"tab-active":index === 0}},[_c('f7-block',[_c('p',[_c('b',[_vm._v("Tab "+_vm._s(tab)+" content")])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?")]),_vm._v(" "),_c('p',[_vm._v("Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!")]),_vm._v(" "),_c('p',[_vm._v("At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.")]),_vm._v(" "),_c('p',[_vm._v("Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.")]),_vm._v(" "),_c('p',[_vm._v("Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.")])])],1)}),1)],1)};
+  var __vue_render__$1q = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"hide-toolbar-on-scroll":""}},[_c('f7-navbar',{attrs:{"title":"Hide Toolbar On Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":""}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Toolbar will be hidden if you scroll bottom")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")])])],1)};
   var __vue_staticRenderFns__$1q = [];
 
     /* style */
@@ -61334,7 +61494,7 @@
     
 
     
-    var TabbarScrollable = normalizeComponent_1(
+    var ToolbarHideScroll = normalizeComponent_1(
       { render: __vue_render__$1q, staticRenderFns: __vue_staticRenderFns__$1q },
       __vue_inject_styles__$1q,
       __vue_script__$1q,
@@ -61348,46 +61508,6 @@
   //
 
   var script$1r = {
-    components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7Link: f7Link, f7Block: f7Block,
-    },
-  };
-
-  /* script */
-  var __vue_script__$1r = script$1r;
-
-  /* template */
-  var __vue_render__$1r = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"hide-toolbar-on-scroll":""}},[_c('f7-navbar',{attrs:{"title":"Hide Toolbar On Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":""}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Toolbar will be hidden if you scroll bottom")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")])])],1)};
-  var __vue_staticRenderFns__$1r = [];
-
-    /* style */
-    var __vue_inject_styles__$1r = undefined;
-    /* scoped */
-    var __vue_scope_id__$1r = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$1r = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$1r = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var ToolbarHideScroll = normalizeComponent_1(
-      { render: __vue_render__$1r, staticRenderFns: __vue_staticRenderFns__$1r },
-      __vue_inject_styles__$1r,
-      __vue_script__$1r,
-      __vue_scope_id__$1r,
-      __vue_is_functional_template__$1r,
-      __vue_module_identifier__$1r,
-      undefined,
-      undefined
-    );
-
-  //
-
-  var script$1s = {
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
@@ -61420,10 +61540,50 @@
   };
 
   /* script */
+  var __vue_script__$1r = script$1r;
+
+  /* template */
+  var __vue_render__$1r = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:init":_vm.onPageInit,"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"navbar-tooltip"},[_c('f7-icon',{attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info_outline"}})],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Tooltips display informative text when users hover over, or tap an target element.")]),_vm._v(" "),_c('p',[_vm._v("Tooltip can be positioned around any element with any HTML content inside.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec.")],1),_vm._v(" "),_c('p',[_vm._v("Vestibulum "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt.")],1),_vm._v(" "),_c('p',[_vm._v("Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" massa.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Initialization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("For simple cases when you don't need a lot of control over the Tooltip, it can be set on buttons and links automatically with "),_c('code',[_vm._v("tooltip")]),_vm._v(" prop: "),_c('f7-button',{staticStyle:{"display":"inline-block"},attrs:{"round":"","outline":"","small":"","tooltip":"Button tooltip text"}},[_vm._v("Button with Tooltip")])],1)])],1)};
+  var __vue_staticRenderFns__$1r = [];
+
+    /* style */
+    var __vue_inject_styles__$1r = undefined;
+    /* scoped */
+    var __vue_scope_id__$1r = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$1r = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$1r = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var Tooltip$2 = normalizeComponent_1(
+      { render: __vue_render__$1r, staticRenderFns: __vue_staticRenderFns__$1r },
+      __vue_inject_styles__$1r,
+      __vue_script__$1r,
+      __vue_scope_id__$1r,
+      __vue_is_functional_template__$1r,
+      __vue_module_identifier__$1r,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$1s = {
+    components: {
+      f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem,
+    },
+  };
+
+  /* script */
   var __vue_script__$1s = script$1s;
 
   /* template */
-  var __vue_render__$1s = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:init":_vm.onPageInit,"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"navbar-tooltip"},[_c('f7-icon',{attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info_outline"}})],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Tooltips display informative text when users hover over, or tap an target element.")]),_vm._v(" "),_c('p',[_vm._v("Tooltip can be positioned around any element with any HTML content inside.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec.")],1),_vm._v(" "),_c('p',[_vm._v("Vestibulum "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt.")],1),_vm._v(" "),_c('p',[_vm._v("Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" massa.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Initialization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("For simple cases when you don't need a lot of control over the Tooltip, it can be set on buttons and links automatically with "),_c('code',[_vm._v("tooltip")]),_vm._v(" prop: "),_c('f7-button',{staticStyle:{"display":"inline-block"},attrs:{"round":"","outline":"","small":"","tooltip":"Button tooltip text"}},[_vm._v("Button with Tooltip")])],1)])],1)};
+  var __vue_render__$1s = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/timeline-vertical/","title":"Vertical Timeline"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline-horizontal/","title":"Horizontal Timeline"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline-horizontal-calendar/","title":"Calendar Timeline"}})],1)],1)};
   var __vue_staticRenderFns__$1s = [];
 
     /* style */
@@ -61440,7 +61600,7 @@
     
 
     
-    var Tooltip$2 = normalizeComponent_1(
+    var Timeline$1 = normalizeComponent_1(
       { render: __vue_render__$1s, staticRenderFns: __vue_staticRenderFns__$1s },
       __vue_inject_styles__$1s,
       __vue_script__$1s,
@@ -61455,7 +61615,9 @@
 
   var script$1t = {
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem,
+      f7Navbar: f7Navbar,
+      f7Page: f7Page,
+      f7BlockTitle: f7BlockTitle,
     },
   };
 
@@ -61463,7 +61625,7 @@
   var __vue_script__$1t = script$1t;
 
   /* template */
-  var __vue_render__$1t = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/timeline-vertical/","title":"Vertical Timeline"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline-horizontal/","title":"Horizontal Timeline"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline-horizontal-calendar/","title":"Calendar Timeline"}})],1)],1)};
+  var __vue_render__$1t = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Vertical Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Tablet Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline tablet-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Forced Sides")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Rich Content")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content card no-safe-areas"},[_c('div',{staticClass:"card-header"},[_vm._v("Card Header")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content list links-list inset no-safe-areas"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Inside Content Block")]),_vm._v(" "),_c('div',{staticClass:"block block-strong"},[_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])])])],1)};
   var __vue_staticRenderFns__$1t = [];
 
     /* style */
@@ -61480,7 +61642,7 @@
     
 
     
-    var Timeline$1 = normalizeComponent_1(
+    var TimelineVertical = normalizeComponent_1(
       { render: __vue_render__$1t, staticRenderFns: __vue_staticRenderFns__$1t },
       __vue_inject_styles__$1t,
       __vue_script__$1t,
@@ -61505,7 +61667,7 @@
   var __vue_script__$1u = script$1u;
 
   /* template */
-  var __vue_render__$1u = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Vertical Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Tablet Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline tablet-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Forced Sides")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Rich Content")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content card no-safe-areas"},[_c('div',{staticClass:"card-header"},[_vm._v("Card Header")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content list links-list inset no-safe-areas"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Inside Content Block")]),_vm._v(" "),_c('div',{staticClass:"block block-strong"},[_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])])])],1)};
+  var __vue_render__$1u = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-20"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:45")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something else")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text goes here")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"card no-safe-areas"},[_c('div',{staticClass:"card-header"},[_vm._v("Card")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])]),_vm._v(" "),_c('div',{staticClass:"card no-safe-areas"},[_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Another Card Content")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"list links-list inset no-safe-areas"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])])])])],1)};
   var __vue_staticRenderFns__$1u = [];
 
     /* style */
@@ -61522,7 +61684,7 @@
     
 
     
-    var TimelineVertical = normalizeComponent_1(
+    var TimelineHorizontal = normalizeComponent_1(
       { render: __vue_render__$1u, staticRenderFns: __vue_staticRenderFns__$1u },
       __vue_inject_styles__$1u,
       __vue_script__$1u,
@@ -61547,7 +61709,7 @@
   var __vue_script__$1v = script$1v;
 
   /* template */
-  var __vue_render__$1v = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-20"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:45")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something else")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text goes here")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"card no-safe-areas"},[_c('div',{staticClass:"card-header"},[_vm._v("Card")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])]),_vm._v(" "),_c('div',{staticClass:"card no-safe-areas"},[_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Another Card Content")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"list links-list inset no-safe-areas"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])])])])],1)};
+  var __vue_render__$1v = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline Calendar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-15"},[_c('div',{staticClass:"timeline-year"},[_c('div',{staticClass:"timeline-year-title"},[_c('span',[_vm._v("2016")])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("December")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("29")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("30")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("31")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-year"},[_c('div',{staticClass:"timeline-year-title"},[_c('span',[_vm._v("2017")])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("January")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("6")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("7")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("8")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("9")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("10")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("12")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("13")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("14")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("16")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("17")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("18")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("19")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("29")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("30")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("31")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("February")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("6")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("7")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("8")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("9")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("10")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("12")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("13")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("14")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("16")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("17")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("18")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("19")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])])])])])],1)};
   var __vue_staticRenderFns__$1v = [];
 
     /* style */
@@ -61564,7 +61726,7 @@
     
 
     
-    var TimelineHorizontal = normalizeComponent_1(
+    var TimelineHorizontalCalendar = normalizeComponent_1(
       { render: __vue_render__$1v, staticRenderFns: __vue_staticRenderFns__$1v },
       __vue_inject_styles__$1v,
       __vue_script__$1v,
@@ -61578,48 +61740,6 @@
   //
 
   var script$1w = {
-    components: {
-      f7Navbar: f7Navbar,
-      f7Page: f7Page,
-      f7BlockTitle: f7BlockTitle,
-    },
-  };
-
-  /* script */
-  var __vue_script__$1w = script$1w;
-
-  /* template */
-  var __vue_render__$1w = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline Calendar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-15"},[_c('div',{staticClass:"timeline-year"},[_c('div',{staticClass:"timeline-year-title"},[_c('span',[_vm._v("2016")])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("December")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("29")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("30")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("31")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-year"},[_c('div',{staticClass:"timeline-year-title"},[_c('span',[_vm._v("2017")])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("January")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("6")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("7")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("8")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("9")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("10")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("12")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("13")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("14")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("16")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("17")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("18")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("19")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("29")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("30")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("31")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("February")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("6")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("7")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("8")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("9")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("10")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("12")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("13")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("14")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("16")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("17")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("18")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("19")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])])])])])],1)};
-  var __vue_staticRenderFns__$1w = [];
-
-    /* style */
-    var __vue_inject_styles__$1w = undefined;
-    /* scoped */
-    var __vue_scope_id__$1w = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$1w = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$1w = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var TimelineHorizontalCalendar = normalizeComponent_1(
-      { render: __vue_render__$1w, staticRenderFns: __vue_staticRenderFns__$1w },
-      __vue_inject_styles__$1w,
-      __vue_script__$1w,
-      __vue_scope_id__$1w,
-      __vue_is_functional_template__$1w,
-      __vue_module_identifier__$1w,
-      undefined,
-      undefined
-    );
-
-  //
-
-  var script$1x = {
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Subnavbar: f7Subnavbar, f7Searchbar: f7Searchbar, f7Block: f7Block,
     },
@@ -61653,20 +61773,20 @@
   };
 
   /* script */
-  var __vue_script__$1x = script$1x;
+  var __vue_script__$1w = script$1w;
 
   /* template */
-  var __vue_render__$1x = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Virtual List","back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".virtual-list","search-item":"li","search-in":".item-title","disable-button":!_vm.$theme.aurora}})],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.")]),_vm._v(" "),_c('p',[_vm._v("Here is the example of virtual list with 10 000 items:")])]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-found",attrs:{"medial-list":"","virtual-list":"","virtual-list-params":{ items: _vm.items, searchAll: _vm.searchAll, renderExternal: _vm.renderExternal, height: _vm.$theme.ios ? 63 : (_vm.$theme.md ? 73 : 46)}}},[_c('ul',_vm._l((_vm.vlData.items),function(item,index){return _c('f7-list-item',{key:index,style:(("top: " + (_vm.vlData.topPosition) + "px")),attrs:{"media-item":"","link":"#","title":item.title,"subtitle":item.subtitle,"virtual-list-index":_vm.items.indexOf(item)}})}),1)])],1)};
-  var __vue_staticRenderFns__$1x = [];
+  var __vue_render__$1w = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Virtual List","back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".virtual-list","search-item":"li","search-in":".item-title","disable-button":!_vm.$theme.aurora}})],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.")]),_vm._v(" "),_c('p',[_vm._v("Here is the example of virtual list with 10 000 items:")])]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-found",attrs:{"medial-list":"","virtual-list":"","virtual-list-params":{ items: _vm.items, searchAll: _vm.searchAll, renderExternal: _vm.renderExternal, height: _vm.$theme.ios ? 63 : (_vm.$theme.md ? 73 : 46)}}},[_c('ul',_vm._l((_vm.vlData.items),function(item,index){return _c('f7-list-item',{key:index,style:(("top: " + (_vm.vlData.topPosition) + "px")),attrs:{"media-item":"","link":"#","title":item.title,"subtitle":item.subtitle,"virtual-list-index":_vm.items.indexOf(item)}})}),1)])],1)};
+  var __vue_staticRenderFns__$1w = [];
 
     /* style */
-    var __vue_inject_styles__$1x = undefined;
+    var __vue_inject_styles__$1w = undefined;
     /* scoped */
-    var __vue_scope_id__$1x = undefined;
+    var __vue_scope_id__$1w = undefined;
     /* module identifier */
-    var __vue_module_identifier__$1x = undefined;
+    var __vue_module_identifier__$1w = undefined;
     /* functional template */
-    var __vue_is_functional_template__$1x = false;
+    var __vue_is_functional_template__$1w = false;
     /* style inject */
     
     /* style inject SSR */
@@ -61674,12 +61794,12 @@
 
     
     var VirtualList$2 = normalizeComponent_1(
-      { render: __vue_render__$1x, staticRenderFns: __vue_staticRenderFns__$1x },
-      __vue_inject_styles__$1x,
-      __vue_script__$1x,
-      __vue_scope_id__$1x,
-      __vue_is_functional_template__$1x,
-      __vue_module_identifier__$1x,
+      { render: __vue_render__$1w, staticRenderFns: __vue_staticRenderFns__$1w },
+      __vue_inject_styles__$1w,
+      __vue_script__$1w,
+      __vue_scope_id__$1w,
+      __vue_is_functional_template__$1w,
+      __vue_module_identifier__$1w,
       undefined,
       undefined
     );
@@ -61692,7 +61812,7 @@
     var globalCustomColor = '';
     var globalCustomProperties = '';
 
-    var script$1y = {
+    var script$1x = {
       components: {
         f7Navbar: f7Navbar,
         f7Page: f7Page,
@@ -61748,7 +61868,7 @@
             }
           }
           if (self.barsStyle === 'fill') {
-            styles += "\n/* Invert navigation bars to fill style */\n:root,\n:root.theme-dark,\n:root .theme-dark {\n  --f7-bars-bg-color: var(--f7-theme-color);\n  --f7-bars-text-color: #fff;\n  --f7-bars-link-color: #fff;\n  --f7-navbar-subtitle-text-color: rgba(255,255,255,0.85);\n  --f7-bars-border-color: transparent;\n  --f7-tabbar-link-active-color: #fff;\n  --f7-tabbar-link-inactive-color: rgba(255,255,255,0.54);\n  --f7-searchbar-bg-color: var(--f7-bars-bg-color);\n  --f7-searchbar-input-bg-color: #fff;\n  --f7-searchbar-input-text-color: #000;\n  --f7-sheet-border-color: transparent;\n  --f7-tabbar-link-active-border-color: #fff;\n}\n.navbar,\n.toolbar,\n.subnavbar,\n.calendar-header,\n.calendar-footer {\n  --f7-touch-ripple-color: var(--f7-touch-ripple-white);\n  --f7-link-highlight-color: var(--f7-link-highlight-white);\n  --f7-button-text-color: #fff;\n  --f7-button-pressed-bg-color: rgba(255,255,255,0.1);\n}\n          ";
+            styles += "\n/* Invert navigation bars to fill style */\n:root,\n:root.theme-dark,\n:root .theme-dark {\n  --f7-bars-bg-color: var(--f7-theme-color);\n  --f7-bars-text-color: #fff;\n  --f7-bars-link-color: #fff;\n  --f7-navbar-subtitle-text-color: rgba(255,255,255,0.85);\n  --f7-bars-border-color: transparent;\n  --f7-tabbar-link-active-color: #fff;\n  --f7-tabbar-link-inactive-color: rgba(255,255,255,0.54);\n  --f7-searchbar-bg-color: var(--f7-bars-bg-color);\n  --f7-searchbar-input-bg-color: #fff;\n  --f7-searchbar-input-text-color: #000;\n  --f7-sheet-border-color: transparent;\n  --f7-tabbar-link-active-border-color: #fff;\n}\n.appbar,\n.navbar,\n.toolbar,\n.subnavbar,\n.calendar-header,\n.calendar-footer {\n  --f7-touch-ripple-color: var(--f7-touch-ripple-white);\n  --f7-link-highlight-color: var(--f7-link-highlight-white);\n  --f7-button-text-color: #fff;\n  --f7-button-pressed-bg-color: rgba(255,255,255,0.1);\n}\n          ";
           }
           return styles.trim();
         },
@@ -61805,10 +61925,50 @@
     };
 
   /* script */
+  var __vue_script__$1x = script$1x;
+
+  /* template */
+  var __vue_render__$1x = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"Color Themes","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Layout Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with 2 main layout themes: Light (default) and Dark:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"bg-color-white demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('light')}}},[(_vm.theme === 'light')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"bg-color-black demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('dark')}}},[(_vm.theme === 'dark')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Navigation Bars Style")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Switch navigation bars to filled style:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-empty",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('empty')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'empty')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-fill",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('fill')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'fill')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Default Color Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with "+_vm._s(_vm.colors.length)+" color themes set.")]),_vm._v(" "),_c('f7-row',[_vm._l((_vm.colors),function(color,index){return _c('f7-col',{key:index,attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}},[_c('f7-button',{staticClass:"demo-color-picker-button",attrs:{"fill":"","round":"","small":"","color":color},on:{"click":function($event){return _vm.setColorTheme(color)}}},[_vm._v(_vm._s(color))])],1)}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}})],2)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Custom Color Theme")]),_vm._v(" "),_c('f7-list',[_c('f7-list-input',{attrs:{"type":"text","label":"HEX Color","value":_vm.customColor,"placeholder":"e.g. #ff0000"},on:{"input":_vm.setCustomColor}},[_c('div',{staticStyle:{"width":"28px","height":"28px","border-radius":"4px","background":"var(--f7-theme-color)"},attrs:{"slot":"media"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Generated CSS Variables")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[(_vm.customProperties)?[_c('p',[_vm._v("Add this code block to your custom stylesheet:")]),_vm._v(" "),_c('pre',{staticStyle:{"overflow":"auto","-webkit-overflow-scrolling":"touch","margin":"0","font-size":"12px"}},[_vm._v(_vm._s(_vm.customProperties))])]:_c('p',[_vm._v("Change navigation bars styles or specify custom color to see custom CSS variables here")])],2)],1)};
+  var __vue_staticRenderFns__$1x = [];
+
+    /* style */
+    var __vue_inject_styles__$1x = undefined;
+    /* scoped */
+    var __vue_scope_id__$1x = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$1x = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$1x = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var ColorThemes = normalizeComponent_1(
+      { render: __vue_render__$1x, staticRenderFns: __vue_staticRenderFns__$1x },
+      __vue_inject_styles__$1x,
+      __vue_script__$1x,
+      __vue_scope_id__$1x,
+      __vue_is_functional_template__$1x,
+      __vue_module_identifier__$1x,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$1y = {
+    components: {
+      f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block
+    },
+  };
+
+  /* script */
   var __vue_script__$1y = script$1y;
 
   /* template */
-  var __vue_render__$1y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"Color Themes","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Layout Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with 2 main layout themes: Light (default) and Dark:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"bg-color-white demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('light')}}},[(_vm.theme === 'light')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"bg-color-black demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('dark')}}},[(_vm.theme === 'dark')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Navigation Bars Style")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Switch navigation bars to filled style:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-empty",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('empty')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'empty')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-fill",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('fill')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'fill')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Default Color Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with "+_vm._s(_vm.colors.length)+" color themes set.")]),_vm._v(" "),_c('f7-row',[_vm._l((_vm.colors),function(color,index){return _c('f7-col',{key:index,attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}},[_c('f7-button',{staticClass:"demo-color-picker-button",attrs:{"fill":"","round":"","small":"","color":color},on:{"click":function($event){return _vm.setColorTheme(color)}}},[_vm._v(_vm._s(color))])],1)}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}})],2)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Custom Color Theme")]),_vm._v(" "),_c('f7-list',[_c('f7-list-input',{attrs:{"type":"text","label":"HEX Color","value":_vm.customColor,"placeholder":"e.g. #ff0000"},on:{"input":_vm.setCustomColor}},[_c('div',{staticStyle:{"width":"28px","height":"28px","border-radius":"4px","background":"var(--f7-theme-color)"},attrs:{"slot":"media"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Generated CSS Variables")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[(_vm.customProperties)?[_c('p',[_vm._v("Add this code block to your custom stylesheet:")]),_vm._v(" "),_c('pre',{staticStyle:{"overflow":"auto","-webkit-overflow-scrolling":"touch","margin":"0","font-size":"12px"}},[_vm._v(_vm._s(_vm.customProperties))])]:_c('p',[_vm._v("Change navigation bars styles or specify custom color to see custom CSS variables here")])],2)],1)};
+  var __vue_render__$1y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Modals","backLink":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to pages, Framework7 router allows to load modal components:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Popup","link":"popup/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Action Sheet","link":"actions/"}})],1)],1)};
   var __vue_staticRenderFns__$1y = [];
 
     /* style */
@@ -61825,7 +61985,7 @@
     
 
     
-    var ColorThemes = normalizeComponent_1(
+    var RoutableModals$1 = normalizeComponent_1(
       { render: __vue_render__$1y, staticRenderFns: __vue_staticRenderFns__$1y },
       __vue_inject_styles__$1y,
       __vue_script__$1y,
@@ -61837,10 +61997,9 @@
     );
 
   //
-
   var script$1z = {
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block
+      f7Popup: f7Popup, f7Navbar: f7Navbar, f7NavRight: f7NavRight, f7Link: f7Link, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block,
     },
   };
 
@@ -61848,7 +62007,7 @@
   var __vue_script__$1z = script$1z;
 
   /* template */
-  var __vue_render__$1z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Modals","backLink":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to pages, Framework7 router allows to load modal components:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Popup","link":"popup/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Action Sheet","link":"actions/"}})],1)],1)};
+  var __vue_render__$1z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-popup',[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Popup"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This Popup was loaded using route link as standalone component")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit f7amet, consectetur adipiscing elit. Suspendisse faucibus mauris f7leo, eu bibendum neque congue non. Ut leo f7mauris, eleifend eu commodo f7a, egestas ac urna. Maecenas in lacus f7faucibus, viverra ipsum f7pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris f7sollicitudin, venenatis nisi f7sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor f7nibh, suscipit in consequat f7vel, feugiat sed quam. Nam risus f7libero, auctor vel tristique f7ac, malesuada ut ante. Sed f7molestie, est in eleifend f7sagittis, leo tortor ullamcorper f7erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor f7sem, suscipit in iaculis f7id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc f7eros, convallis blandit dui sit f7amet, gravida adipiscing libero.")])])],1)],1)};
   var __vue_staticRenderFns__$1z = [];
 
     /* style */
@@ -61865,7 +62024,7 @@
     
 
     
-    var RoutableModals$1 = normalizeComponent_1(
+    var RoutablePopup = normalizeComponent_1(
       { render: __vue_render__$1z, staticRenderFns: __vue_staticRenderFns__$1z },
       __vue_inject_styles__$1z,
       __vue_script__$1z,
@@ -61879,7 +62038,7 @@
   //
   var script$1A = {
     components: {
-      f7Popup: f7Popup, f7Navbar: f7Navbar, f7NavRight: f7NavRight, f7Link: f7Link, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block,
+      f7Actions: f7Actions, f7ActionsLabel: f7ActionsLabel, f7ActionsGroup: f7ActionsGroup, f7ActionsButton: f7ActionsButton,
     },
   };
 
@@ -61887,7 +62046,7 @@
   var __vue_script__$1A = script$1A;
 
   /* template */
-  var __vue_render__$1A = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-popup',[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Popup"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This Popup was loaded using route link as standalone component")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit f7amet, consectetur adipiscing elit. Suspendisse faucibus mauris f7leo, eu bibendum neque congue non. Ut leo f7mauris, eleifend eu commodo f7a, egestas ac urna. Maecenas in lacus f7faucibus, viverra ipsum f7pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris f7sollicitudin, venenatis nisi f7sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor f7nibh, suscipit in consequat f7vel, feugiat sed quam. Nam risus f7libero, auctor vel tristique f7ac, malesuada ut ante. Sed f7molestie, est in eleifend f7sagittis, leo tortor ullamcorper f7erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor f7sem, suscipit in iaculis f7id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc f7eros, convallis blandit dui sit f7amet, gravida adipiscing libero.")])])],1)],1)};
+  var __vue_render__$1A = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-actions',[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("This Action Sheet was loaded as standalone component")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1)};
   var __vue_staticRenderFns__$1A = [];
 
     /* style */
@@ -61904,7 +62063,7 @@
     
 
     
-    var RoutablePopup = normalizeComponent_1(
+    var RoutableActions = normalizeComponent_1(
       { render: __vue_render__$1A, staticRenderFns: __vue_staticRenderFns__$1A },
       __vue_inject_styles__$1A,
       __vue_script__$1A,
@@ -61916,9 +62075,14 @@
     );
 
   //
+
   var script$1B = {
     components: {
-      f7Actions: f7Actions, f7ActionsLabel: f7ActionsLabel, f7ActionsGroup: f7ActionsGroup, f7ActionsButton: f7ActionsButton,
+      f7Page: f7Page,
+      f7Navbar: f7Navbar,
+      f7Block: f7Block,
+      f7List: f7List,
+      f7ListItem: f7ListItem,
     },
   };
 
@@ -61926,7 +62090,7 @@
   var __vue_script__$1B = script$1B;
 
   /* template */
-  var __vue_render__$1B = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-actions',[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("This Action Sheet was loaded as standalone component")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1)};
+  var __vue_render__$1B = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Master Detail","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Master-Detail pattern oftenly used on wide enough screens and tablets, and consists of two views. Master - is an area in the UI where you have a list of something. Detail - is the area that shows the relevant information of a selection in the master.")]),_vm._v(" "),_c('p',[_vm._v("To see Master Detail view make sure the window width is larger than 800px.")]),_vm._v(" "),_c('p',[_vm._v("When collapsed (on narrow screen) navigation between such pages will behave as usual routing.")]),_vm._v(" "),_c('p',[_vm._v("Navigation to/from Master-Detail view happens without transition.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/1/"}},[_vm._v("Detail Page 1")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/2/"}},[_vm._v("Detail Page 2")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/3/"}},[_vm._v("Detail Page 3")])],1)],1)};
   var __vue_staticRenderFns__$1B = [];
 
     /* style */
@@ -61943,7 +62107,7 @@
     
 
     
-    var RoutableActions = normalizeComponent_1(
+    var MasterDetailMaster = normalizeComponent_1(
       { render: __vue_render__$1B, staticRenderFns: __vue_staticRenderFns__$1B },
       __vue_inject_styles__$1B,
       __vue_script__$1B,
@@ -61961,8 +62125,6 @@
       f7Page: f7Page,
       f7Navbar: f7Navbar,
       f7Block: f7Block,
-      f7List: f7List,
-      f7ListItem: f7ListItem,
     },
   };
 
@@ -61970,7 +62132,7 @@
   var __vue_script__$1C = script$1C;
 
   /* template */
-  var __vue_render__$1C = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Master Detail","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Master-Detail pattern oftenly used on wide enough screens and tablets, and consists of two views. Master - is an area in the UI where you have a list of something. Detail - is the area that shows the relevant information of a selection in the master.")]),_vm._v(" "),_c('p',[_vm._v("To see Master Detail view make sure the window width is larger than 800px.")]),_vm._v(" "),_c('p',[_vm._v("When collapsed (on narrow screen) navigation between such pages will behave as usual routing.")]),_vm._v(" "),_c('p',[_vm._v("Navigation to/from Master-Detail view happens without transition.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/1/"}},[_vm._v("Detail Page 1")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/2/"}},[_vm._v("Detail Page 2")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/3/"}},[_vm._v("Detail Page 3")])],1)],1)};
+  var __vue_render__$1C = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":("Detail Page " + (_vm.$f7route.params.id)),"back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('b',[_vm._v("Detail Page "+_vm._s(_vm.$f7route.params.id))])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque congue turpis et risus fringilla condimentum. Aliquam vestibulum est tempor, sagittis massa nec, dictum massa. Phasellus non viverra dui, eget aliquam sem. Donec eleifend dolor id arcu ultrices, vel ultrices dolor fringilla. Phasellus feugiat consectetur libero, eget luctus felis rhoncus at. Duis scelerisque ligula sit amet purus congue pulvinar. Proin a risus id nibh fermentum auctor. Vestibulum at sem a risus mollis iaculis. In vestibulum malesuada arcu id consectetur.")])])],1)};
   var __vue_staticRenderFns__$1C = [];
 
     /* style */
@@ -61987,7 +62149,7 @@
     
 
     
-    var MasterDetailMaster = normalizeComponent_1(
+    var MasterDetailDetail = normalizeComponent_1(
       { render: __vue_render__$1C, staticRenderFns: __vue_staticRenderFns__$1C },
       __vue_inject_styles__$1C,
       __vue_script__$1C,
@@ -61999,7 +62161,6 @@
     );
 
   //
-
   var script$1D = {
     components: {
       f7Page: f7Page,
@@ -62012,7 +62173,7 @@
   var __vue_script__$1D = script$1D;
 
   /* template */
-  var __vue_render__$1D = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":("Detail Page " + (_vm.$f7route.params.id)),"back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('b',[_vm._v("Detail Page "+_vm._s(_vm.$f7route.params.id))])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque congue turpis et risus fringilla condimentum. Aliquam vestibulum est tempor, sagittis massa nec, dictum massa. Phasellus non viverra dui, eget aliquam sem. Donec eleifend dolor id arcu ultrices, vel ultrices dolor fringilla. Phasellus feugiat consectetur libero, eget luctus felis rhoncus at. Duis scelerisque ligula sit amet purus congue pulvinar. Proin a risus id nibh fermentum auctor. Vestibulum at sem a risus mollis iaculis. In vestibulum malesuada arcu id consectetur.")])])],1)};
+  var __vue_render__$1D = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Not found","backLink":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Sorry")]),_vm._v(" "),_c('p',[_vm._v("Requested content not found.")])])],1)};
   var __vue_staticRenderFns__$1D = [];
 
     /* style */
@@ -62029,54 +62190,13 @@
     
 
     
-    var MasterDetailDetail = normalizeComponent_1(
+    var NotFound = normalizeComponent_1(
       { render: __vue_render__$1D, staticRenderFns: __vue_staticRenderFns__$1D },
       __vue_inject_styles__$1D,
       __vue_script__$1D,
       __vue_scope_id__$1D,
       __vue_is_functional_template__$1D,
       __vue_module_identifier__$1D,
-      undefined,
-      undefined
-    );
-
-  //
-  var script$1E = {
-    components: {
-      f7Page: f7Page,
-      f7Navbar: f7Navbar,
-      f7Block: f7Block,
-    },
-  };
-
-  /* script */
-  var __vue_script__$1E = script$1E;
-
-  /* template */
-  var __vue_render__$1E = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Not found","backLink":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Sorry")]),_vm._v(" "),_c('p',[_vm._v("Requested content not found.")])])],1)};
-  var __vue_staticRenderFns__$1E = [];
-
-    /* style */
-    var __vue_inject_styles__$1E = undefined;
-    /* scoped */
-    var __vue_scope_id__$1E = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$1E = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$1E = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var NotFound = normalizeComponent_1(
-      { render: __vue_render__$1E, staticRenderFns: __vue_staticRenderFns__$1E },
-      __vue_inject_styles__$1E,
-      __vue_script__$1E,
-      __vue_scope_id__$1E,
-      __vue_is_functional_template__$1E,
-      __vue_module_identifier__$1E,
       undefined,
       undefined
     );
@@ -62548,7 +62668,7 @@
 
   //
 
-  var script$1F = {
+  var script$1E = {
     components: {
       f7App: f7App,
       f7Panel: f7Panel,
@@ -62573,20 +62693,20 @@
   };
 
   /* script */
-  var __vue_script__$1F = script$1F;
+  var __vue_script__$1E = script$1E;
 
   /* template */
-  var __vue_render__$1F = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-app',{attrs:{"params":_vm.f7Params}},[_c('f7-statusbar'),_vm._v(" "),_c('f7-panel',{attrs:{"left":"","cover":""}},[_c('f7-view',{attrs:{"url":"/panel-left/","links-view":".view-main"}})],1),_vm._v(" "),_c('f7-panel',{attrs:{"right":"","reveal":""}},[_c('f7-view',{attrs:{"url":"/panel-right/"}})],1),_vm._v(" "),_c('f7-view',{staticClass:"safe-areas",attrs:{"url":"/","main":true,"master-detail-breakpoint":800}})],1)};
-  var __vue_staticRenderFns__$1F = [];
+  var __vue_render__$1E = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-app',{attrs:{"params":_vm.f7Params}},[_c('f7-statusbar'),_vm._v(" "),_c('f7-panel',{attrs:{"left":"","cover":""}},[_c('f7-view',{attrs:{"url":"/panel-left/","links-view":".view-main"}})],1),_vm._v(" "),_c('f7-panel',{attrs:{"right":"","reveal":""}},[_c('f7-view',{attrs:{"url":"/panel-right/"}})],1),_vm._v(" "),_c('f7-view',{staticClass:"safe-areas",attrs:{"url":"/","main":true,"master-detail-breakpoint":800}})],1)};
+  var __vue_staticRenderFns__$1E = [];
 
     /* style */
-    var __vue_inject_styles__$1F = undefined;
+    var __vue_inject_styles__$1E = undefined;
     /* scoped */
-    var __vue_scope_id__$1F = undefined;
+    var __vue_scope_id__$1E = undefined;
     /* module identifier */
-    var __vue_module_identifier__$1F = undefined;
+    var __vue_module_identifier__$1E = undefined;
     /* functional template */
-    var __vue_is_functional_template__$1F = false;
+    var __vue_is_functional_template__$1E = false;
     /* style inject */
     
     /* style inject SSR */
@@ -62594,12 +62714,12 @@
 
     
     var App = normalizeComponent_1(
-      { render: __vue_render__$1F, staticRenderFns: __vue_staticRenderFns__$1F },
-      __vue_inject_styles__$1F,
-      __vue_script__$1F,
-      __vue_scope_id__$1F,
-      __vue_is_functional_template__$1F,
-      __vue_module_identifier__$1F,
+      { render: __vue_render__$1E, staticRenderFns: __vue_staticRenderFns__$1E },
+      __vue_inject_styles__$1E,
+      __vue_script__$1E,
+      __vue_scope_id__$1E,
+      __vue_is_functional_template__$1E,
+      __vue_module_identifier__$1E,
       undefined,
       undefined
     );

@@ -293,6 +293,11 @@ block content
           td
           td Virtual list item height. If <code>number</code> - list item height in px. If <code>function</code> then function should return item height.
         tr
+          td scrollToSelectedItem
+          td boolean
+          td false
+          td When enabled it will scroll smart select content to first selected item on open
+        tr
           td formColorTheme
           td string
           td
@@ -433,6 +438,9 @@ block content
         tr
           td smartSelect.setValue(<span>newValue</span>)
           td Set new smart select value. In case of select is <code>multiple</code> it must be an array with new values
+        tr
+          td smartSelect.scrollToSelectedItem()
+          td Scroll smart select content to first selected item (when opened)
         tr
           td smartSelect.destroy()
           td Destroy smart select

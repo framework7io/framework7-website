@@ -76,6 +76,7 @@ block content
             ul
               li <b>textarea</b> - to render textarea element
               li <b>select</b> - to render select element
+              li <b>datepicker</b> - to open <a href="/docs/calendar.html" target="_blank">Calendar</a> on input focus
         tr
           td resizable
           td boolean
@@ -134,9 +135,11 @@ block content
           td Input element ID attribute
         tr
           td value
-          td string<br>number
+          td string<br>number<br>array
           td
-          td Input value
+          td
+            p Input value.
+            p If <code>type="datepicker"</code> then value must be passed as what <a href="/docs/calendar.html" target="_blank">Calendar</a> accepts - Array with dates, for example <code>:value="[new Date()]"</code>
         tr
           td default-value
           td string<br>number
@@ -243,6 +246,11 @@ block content
           td true
           td When enabled it will be wrapped in #[code &lt;li&gt;] element
         tr
+          td calendar-params
+          td object
+          td
+          td Object with <a href="../docs/calendar.html#calendar-parameters" target="_blank">Calendar Parameters</a> which is used when <code>type="datepicker"</code>
+        tr
           th(colspan="4") &lt;f7-input&gt; properties
         tr
           td outline
@@ -262,6 +270,7 @@ block content
             ul
               li <b>textarea</b> - to render textarea element
               li <b>select</b> - to render select element
+              li <b>datepicker</b> - to open <a href="/docs/calendar.html" target="_blank">Calendar</a> on input focus
         tr
           td resizable
           td boolean
@@ -326,7 +335,9 @@ block content
           td value
           td string<br>number
           td
-          td Input value
+          td
+            p Input value.
+            p If <code>type="datepicker"</code> then value must be passed as what <a href="/docs/calendar.html" target="_blank">Calendar</a> accepts - Array with dates, for example <code>:value="[new Date()]"</code>
         tr
           td size
           td string<br>number
@@ -422,6 +433,11 @@ block content
           td boolean
           td false
           td Same as previous
+        tr
+          td calendar-params
+          td object
+          td
+          td Object with <a href="../docs/calendar.html#calendar-parameters" target="_blank">Calendar Parameters</a> which is used when <code>type="datepicker"</code>
 
     h2 Input Events
     table.events-table
@@ -448,7 +464,7 @@ block content
         tr
           td change
           td <span>(event)</span>
-          td Fired when blur if value changed.
+          td Fired on blur if value changed.
         tr
           td input:clear
           td <span>(event)</span>
@@ -465,6 +481,10 @@ block content
           td input:notempty
           td <span>(event)</span>
           td Fired when input value becomes not empty
+        tr
+          td calendar:change
+          td <span>(value)</span>
+          td Fired when <code>type="datepicker"</code> Calendar value changed. As an argument it receives array with selected dates.
 
     h2 Input Slots
     p <code>&lt;f7-list-input&gt;</code> has additional slots for custom elements:
@@ -509,550 +529,588 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/vue/inputs.html") Examples
       :code(lang="html")
-            <f7-block-title>Full Layout / Inline Labels</f7-block-title>
-            <f7-list inline-labels no-hairlines-md>
-              <f7-list-input
-                label="Name"
-                type="text"
-                placeholder="Your name"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+        <f7-block-title>Full Layout / Inline Labels</f7-block-title>
+        <f7-list inline-labels no-hairlines-md>
+          <f7-list-input
+            label="Name"
+            type="text"
+            placeholder="Your name"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Password"
-                type="password"
-                placeholder="Your password"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Password"
+            type="password"
+            placeholder="Your password"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="E-mail"
-                type="email"
-                placeholder="Your e-mail"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="E-mail"
+            type="email"
+            placeholder="Your e-mail"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="URL"
-                type="url"
-                placeholder="URL"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="URL"
+            type="url"
+            placeholder="URL"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Phone"
-                type="tel"
-                placeholder="Your phone number"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Phone"
+            type="tel"
+            placeholder="Your phone number"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Gender"
-                type="select"
-                defaultValue="Male"
-                placeholder="Please choose..."
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </f7-list-input>
+          <f7-list-input
+            label="Gender"
+            type="select"
+            defaultValue="Male"
+            placeholder="Please choose..."
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Birthday"
-                type="date"
-                defaultValue="2014-04-30"
-                placeholder="Please choose..."
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Birthday"
+            type="date"
+            defaultValue="2014-04-30"
+            placeholder="Please choose..."
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Date time"
-                type="datetime-local"
-                placeholder="Please choose..."
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Date time"
+            type="datetime-local"
+            placeholder="Please choose..."
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Range"
-                :input="false"
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-                <f7-range slot="input" :value="50" :min="0" :max="100" :step="1"></f7-range>
-              </f7-list-input>
+          <f7-list-input
+            label="Range"
+            :input="false"
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+            <f7-range slot="input" :value="50" :min="0" :max="100" :step="1"></f7-range>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Textarea"
-                type="textarea"
-                placeholder="Bio"
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Textarea"
+            type="textarea"
+            placeholder="Bio"
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Resizable"
-                type="textarea"
-                resizable
-                placeholder="Bio"
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
-            </f7-list>
+          <f7-list-input
+            label="Resizable"
+            type="textarea"
+            resizable
+            placeholder="Bio"
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
+        </f7-list>
 
-            <f7-block-title>Full Layout / Stacked Labels</f7-block-title>
-            <f7-list no-hairlines-md>
-              <f7-list-input
-                label="Name"
-                type="text"
-                placeholder="Your name"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+        <f7-block-title>Date Pickers</f7-block-title>
+        <f7-list no-hairlines-md>
+          <f7-list-input
+            label="Default setup"
+            type="datepicker"
+            placeholder="Your birth date"
+            readonly
+          ></f7-list-input>
+          <f7-list-input
+            label="Custom date format"
+            type="datepicker"
+            placeholder="Select date"
+            readonly
+            :calendar-params="{dateFormat: 'DD, MM dd, yyyy'}"
+          ></f7-list-input>
+          <f7-list-input
+            label="Multiple Values"
+            type="datepicker"
+            placeholder="Select multiple dates"
+            readonly
+            :calendar-params="{ dateFormat: 'M dd yyyy', multiple: true }"
+          ></f7-list-input>
+          <f7-list-input
+            label="Range Picker"
+            type="datepicker"
+            placeholder="Select date range"
+            readonly
+            :calendar-params="{ dateFormat: 'M dd yyyy', rangePicker: true }"
+          ></f7-list-input>
+          <f7-list-input
+            label="Open in Modal"
+            type="datepicker"
+            placeholder="Select date"
+            readonly
+            :calendar-params="{openIn: 'customModal', header: true, footer: true, dateFormat: 'MM dd yyyy'}"
+          ></f7-list-input>
+        </f7-list>
 
-              <f7-list-input
-                label="Password"
-                type="password"
-                placeholder="Your password"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+        <f7-block-title>Full Layout / Stacked Labels</f7-block-title>
+        <f7-list no-hairlines-md>
+          <f7-list-input
+            label="Name"
+            type="text"
+            placeholder="Your name"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="E-mail"
-                type="email"
-                placeholder="Your e-mail"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Password"
+            type="password"
+            placeholder="Your password"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="URL"
-                type="url"
-                placeholder="URL"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="E-mail"
+            type="email"
+            placeholder="Your e-mail"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Phone"
-                type="tel"
-                placeholder="Your phone number"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="URL"
+            type="url"
+            placeholder="URL"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Gender"
-                type="select"
-                defaultValue="Male"
-                placeholder="Please choose..."
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </f7-list-input>
+          <f7-list-input
+            label="Phone"
+            type="tel"
+            placeholder="Your phone number"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Birthday"
-                type="date"
-                defaultValue="2014-04-30"
-                placeholder="Please choose..."
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Gender"
+            type="select"
+            defaultValue="Male"
+            placeholder="Please choose..."
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Date time"
-                type="datetime-local"
-                placeholder="Please choose..."
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Birthday"
+            type="date"
+            defaultValue="2014-04-30"
+            placeholder="Please choose..."
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Range"
-                :input="false"
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-                <f7-range slot="input" :value="50" :min="0" :max="100" :step="1"></f7-range>
-              </f7-list-input>
+          <f7-list-input
+            label="Date time"
+            type="datetime-local"
+            placeholder="Please choose..."
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Textarea"
-                type="textarea"
-                placeholder="Bio"
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Range"
+            :input="false"
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+            <f7-range slot="input" :value="50" :min="0" :max="100" :step="1"></f7-range>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Resizable"
-                type="textarea"
-                resizable
-                placeholder="Bio"
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
-            </f7-list>
+          <f7-list-input
+            label="Textarea"
+            type="textarea"
+            placeholder="Bio"
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-            <f7-block-title>Floating Labels</f7-block-title>
-            <f7-list no-hairlines-md>
-              <f7-list-input
-                label="Name"
-                floating-label
-                type="text"
-                placeholder="Your name"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Resizable"
+            type="textarea"
+            resizable
+            placeholder="Bio"
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
+        </f7-list>
 
-              <f7-list-input
-                label="Password"
-                floating-label
-                type="password"
-                placeholder="Your password"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+        <f7-block-title>Floating Labels</f7-block-title>
+        <f7-list no-hairlines-md>
+          <f7-list-input
+            label="Name"
+            floating-label
+            type="text"
+            placeholder="Your name"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="E-mail"
-                floating-label
-                type="email"
-                placeholder="Your e-mail"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Password"
+            floating-label
+            type="password"
+            placeholder="Your password"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="URL"
-                floating-label
-                type="url"
-                placeholder="URL"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="E-mail"
+            floating-label
+            type="email"
+            placeholder="Your e-mail"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Phone"
-                floating-label
-                type="tel"
-                placeholder="Your phone number"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="URL"
+            floating-label
+            type="url"
+            placeholder="URL"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Resizable"
-                floating-label
-                type="textarea"
-                resizable
-                placeholder="Bio"
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
-            </f7-list>
+          <f7-list-input
+            label="Phone"
+            floating-label
+            type="tel"
+            placeholder="Your phone number"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-            <f7-block-title>Floating Labels + Outline Inputs</f7-block-title>
-            <f7-list no-hairlines-md>
-              <f7-list-input
-                outline
-                label="Name"
-                floating-label
-                type="text"
-                placeholder="Your name"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
-              <f7-list-input
-                outline
-                label="Password"
-                floating-label
-                type="password"
-                placeholder="Your password"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
-              <f7-list-input
-                outline
-                label="E-mail"
-                floating-label
-                type="email"
-                placeholder="Your e-mail"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
-              <f7-list-input
-                outline
-                label="URL"
-                floating-label
-                type="url"
-                placeholder="URL"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
-              <f7-list-input
-                outline
-                label="Phone"
-                floating-label
-                type="tel"
-                placeholder="Your phone number"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
-              <f7-list-input
-                outline
-                label="Bio"
-                floating-label
-                type="textarea"
-                resizable
-                placeholder="Bio"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
-            </f7-list>
+          <f7-list-input
+            label="Resizable"
+            floating-label
+            type="textarea"
+            resizable
+            placeholder="Bio"
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
+        </f7-list>
 
-            <f7-block-title>Validation + Additional Info</f7-block-title>
-            <f7-list no-hairlines-md>
-              <f7-list-input
-                label="Name"
-                type="text"
-                placeholder="Your name"
-                info="Default validation"
-                required
-                validate
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+        <f7-block-title>Floating Labels + Outline Inputs</f7-block-title>
+        <f7-list no-hairlines-md>
+          <f7-list-input
+            outline
+            label="Name"
+            floating-label
+            type="text"
+            placeholder="Your name"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
+          <f7-list-input
+            outline
+            label="Password"
+            floating-label
+            type="password"
+            placeholder="Your password"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
+          <f7-list-input
+            outline
+            label="E-mail"
+            floating-label
+            type="email"
+            placeholder="Your e-mail"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
+          <f7-list-input
+            outline
+            label="URL"
+            floating-label
+            type="url"
+            placeholder="URL"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
+          <f7-list-input
+            outline
+            label="Phone"
+            floating-label
+            type="tel"
+            placeholder="Your phone number"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
+          <f7-list-input
+            outline
+            label="Bio"
+            floating-label
+            type="textarea"
+            resizable
+            placeholder="Bio"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
+        </f7-list>
 
-              <f7-list-input
-                label="Fruit"
-                type="text"
-                placeholder="Type 'apple' or 'banana'"
-                required
-                validate
-                pattern="apple|banana"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-                <span slot="info">Pattern validation (<b>apple|banana</b>)</span>
-              </f7-list-input>
+        <f7-block-title>Validation + Additional Info</f7-block-title>
+        <f7-list no-hairlines-md>
+          <f7-list-input
+            label="Name"
+            type="text"
+            placeholder="Your name"
+            info="Default validation"
+            required
+            validate
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="E-mail"
-                type="email"
-                placeholder="Your e-mail"
-                info="Default e-mail validation"
-                required
-                validate
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Fruit"
+            type="text"
+            placeholder="Type 'apple' or 'banana'"
+            required
+            validate
+            pattern="apple|banana"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+            <span slot="info">Pattern validation (<b>apple|banana</b>)</span>
+          </f7-list-input>
 
-              <f7-list-input
-                label="URL"
-                type="url"
-                placeholder="Your URL"
-                info="Default URL validation"
-                required
-                validate
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="E-mail"
+            type="email"
+            placeholder="Your e-mail"
+            info="Default e-mail validation"
+            required
+            validate
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                label="Number"
-                type="text"
-                placeholder="Enter number"
-                info="With custom error message"
-                error-message="Only numbers please!"
-                required
-                validate
-                pattern="[0-9]*"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
-            </f7-list>
+          <f7-list-input
+            label="URL"
+            type="url"
+            placeholder="Your URL"
+            info="Default URL validation"
+            required
+            validate
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-            <f7-block-title>Icon + Input</f7-block-title>
-            <f7-list no-hairlines-md>
-              <f7-list-input
-                type="text"
-                placeholder="Your name"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            label="Number"
+            type="text"
+            placeholder="Enter number"
+            info="With custom error message"
+            error-message="Only numbers please!"
+            required
+            validate
+            pattern="[0-9]*"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
+        </f7-list>
 
-              <f7-list-input
-                type="password"
-                placeholder="Your password"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+        <f7-block-title>Icon + Input</f7-block-title>
+        <f7-list no-hairlines-md>
+          <f7-list-input
+            type="text"
+            placeholder="Your name"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                type="email"
-                placeholder="Your e-mail"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            type="password"
+            placeholder="Your password"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-              <f7-list-input
-                type="url"
-                placeholder="URL"
-                clear-button
-              >
-                <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-              </f7-list-input>
+          <f7-list-input
+            type="email"
+            placeholder="Your e-mail"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-            </f7-list>
+          <f7-list-input
+            type="url"
+            placeholder="URL"
+            clear-button
+          >
+            <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+          </f7-list-input>
 
-            <f7-block-title>Label + Input</f7-block-title>
-            <f7-list no-hairlines-md>
-              <f7-list-input
-                label="Name"
-                type="text"
-                placeholder="Your name"
-                clear-button
-              ></f7-list-input>
+        </f7-list>
 
-              <f7-list-input
-                label="Password"
-                type="password"
-                placeholder="Your password"
-                clear-button
-              ></f7-list-input>
+        <f7-block-title>Label + Input</f7-block-title>
+        <f7-list no-hairlines-md>
+          <f7-list-input
+            label="Name"
+            type="text"
+            placeholder="Your name"
+            clear-button
+          ></f7-list-input>
 
-              <f7-list-input
-                label="E-mail"
-                type="email"
-                placeholder="Your e-mail"
-                clear-button
-              ></f7-list-input>
+          <f7-list-input
+            label="Password"
+            type="password"
+            placeholder="Your password"
+            clear-button
+          ></f7-list-input>
 
-              <f7-list-input
-                label="URL"
-                type="url"
-                placeholder="URL"
-                clear-button
-              ></f7-list-input>
-            </f7-list>
+          <f7-list-input
+            label="E-mail"
+            type="email"
+            placeholder="Your e-mail"
+            clear-button
+          ></f7-list-input>
 
-            <f7-block-title>Only Inputs</f7-block-title>
-            <f7-list no-hairlines-md>
-              <f7-list-input
-                type="text"
-                placeholder="Your name"
-                clear-button
-              ></f7-list-input>
+          <f7-list-input
+            label="URL"
+            type="url"
+            placeholder="URL"
+            clear-button
+          ></f7-list-input>
+        </f7-list>
 
-              <f7-list-input
-                type="password"
-                placeholder="Your password"
-                clear-button
-              ></f7-list-input>
+        <f7-block-title>Only Inputs</f7-block-title>
+        <f7-list no-hairlines-md>
+          <f7-list-input
+            type="text"
+            placeholder="Your name"
+            clear-button
+          ></f7-list-input>
 
-              <f7-list-input
-                type="email"
-                placeholder="Your e-mail"
-                clear-button
-              ></f7-list-input>
+          <f7-list-input
+            type="password"
+            placeholder="Your password"
+            clear-button
+          ></f7-list-input>
 
-              <f7-list-input
-                type="url"
-                placeholder="URL"
-                clear-button
-              ></f7-list-input>
-            </f7-list>
+          <f7-list-input
+            type="email"
+            placeholder="Your e-mail"
+            clear-button
+          ></f7-list-input>
 
-            <f7-block-title>Inputs + Additional Info</f7-block-title>
-            <f7-list no-hairlines-md>
-              <f7-list-input
-                type="text"
-                placeholder="Your name"
-                info="Full name please"
-                clear-button
-              ></f7-list-input>
+          <f7-list-input
+            type="url"
+            placeholder="URL"
+            clear-button
+          ></f7-list-input>
+        </f7-list>
 
-              <f7-list-input
-                type="password"
-                placeholder="Your password"
-                info="8 characters minimum"
-                clear-button
-              ></f7-list-input>
+        <f7-block-title>Inputs + Additional Info</f7-block-title>
+        <f7-list no-hairlines-md>
+          <f7-list-input
+            type="text"
+            placeholder="Your name"
+            info="Full name please"
+            clear-button
+          ></f7-list-input>
 
-              <f7-list-input
-                type="email"
-                placeholder="Your e-mail"
-                info="Your work e-mail address"
-                clear-button
-              ></f7-list-input>
+          <f7-list-input
+            type="password"
+            placeholder="Your password"
+            info="8 characters minimum"
+            clear-button
+          ></f7-list-input>
 
-              <f7-list-input
-                type="url"
-                placeholder="URL"
-                info="Your website URL"
-                clear-button
-              ></f7-list-input>
-            </f7-list>
+          <f7-list-input
+            type="email"
+            placeholder="Your e-mail"
+            info="Your work e-mail address"
+            clear-button
+          ></f7-list-input>
 
-            <f7-block-title>Only Inputs Inset</f7-block-title>
-            <f7-list inset>
-              <f7-list-input
-                type="text"
-                placeholder="Your name"
-                clear-button
-              ></f7-list-input>
+          <f7-list-input
+            type="url"
+            placeholder="URL"
+            info="Your website URL"
+            clear-button
+          ></f7-list-input>
+        </f7-list>
 
-              <f7-list-input
-                type="password"
-                placeholder="Your password"
-                clear-button
-              ></f7-list-input>
+        <f7-block-title>Only Inputs Inset</f7-block-title>
+        <f7-list inset>
+          <f7-list-input
+            type="text"
+            placeholder="Your name"
+            clear-button
+          ></f7-list-input>
 
-              <f7-list-input
-                type="email"
-                placeholder="Your e-mail"
-                clear-button
-              ></f7-list-input>
+          <f7-list-input
+            type="password"
+            placeholder="Your password"
+            clear-button
+          ></f7-list-input>
 
-              <f7-list-input
-                type="url"
-                placeholder="URL"
-                clear-button
-              ></f7-list-input>
-            </f7-list>
+          <f7-list-input
+            type="email"
+            placeholder="Your e-mail"
+            clear-button
+          ></f7-list-input>
+
+          <f7-list-input
+            type="url"
+            placeholder="URL"
+            clear-button
+          ></f7-list-input>
+        </f7-list>

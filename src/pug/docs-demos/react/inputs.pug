@@ -115,7 +115,44 @@ block content
                   >
                     <Icon icon="demo-list-icon" slot="media"/>
                   </ListInput>
+                </List>
 
+                <BlockTitle>Date Pickers</BlockTitle>
+                <List noHairlinesMd>
+                  <ListInput
+                    label="Default setup"
+                    type="datepicker"
+                    placeholder="Your birth date"
+                    readonly
+                  ></ListInput>
+                  <ListInput
+                    label="Custom date format"
+                    type="datepicker"
+                    placeholder="Select date"
+                    readonly
+                    calendarParams={{dateFormat: 'DD, MM dd, yyyy'}}
+                  ></ListInput>
+                  <ListInput
+                    label="Multiple Values"
+                    type="datepicker"
+                    placeholder="Select multiple dates"
+                    readonly
+                    calendarParams={{ dateFormat: 'M dd yyyy', multiple: true }}
+                  ></ListInput>
+                  <ListInput
+                    label="Range Picker"
+                    type="datepicker"
+                    placeholder="Select date range"
+                    readonly
+                    calendarParams={{ dateFormat: 'M dd yyyy', rangePicker: true }}
+                  ></ListInput>
+                  <ListInput
+                    label="Open in Modal"
+                    type="datepicker"
+                    placeholder="Select date"
+                    readonly
+                    calendarParams={{openIn: 'customModal', header: true, footer: true, dateFormat: 'MM dd yyyy'}}
+                  ></ListInput>
                 </List>
 
                 <BlockTitle>Full Layout / Stacked Labels</BlockTitle>
@@ -586,5 +623,10 @@ block content
     .md .demo-list-icon, .md .icon-f7, .md .icon-vi {
       width: 24px;
       height: 24px;
+      border-radius: 4px;
+    }
+    .aurora .demo-list-icon, .aurora .icon-f7, .aurora .icon-vi {
+      width: 18px;
+      height: 18px;
       border-radius: 4px;
     }
