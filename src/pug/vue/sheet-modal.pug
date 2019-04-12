@@ -30,9 +30,25 @@ block content
         tr
           th(colspan="3") &lt;f7-sheet&gt; properties
         tr
+          td position
+          td string
+          td Sheet position, can be `top` or `bottom`. By default is `bottom`
+        tr
+          td top
+          td boolean
+          td Same as `position="top"`
+        tr
+          td bottom
+          td boolean
+          td Same as `position="bottom"`
+        tr
           td backdrop
           td boolean
           td Enable to render additional sheet modal backdrop when required
+        tr
+          td backdropEl
+          td string<br>object
+          td HTML element or string CSS selector of custom backdrop element
         tr
           td opened
           td boolean
@@ -45,6 +61,10 @@ block content
           td closeByOutsideClick
           td boolean
           td When enabled, sheet will be closed on when click outside of it. By default inherits same app parameter value
+        tr
+          td closeOnEscape
+          td boolean
+          td When enabled, sheet will be closed on ESC keyboard key press
     h2 Sheet Modal Methods
     table.methods-table
       tr

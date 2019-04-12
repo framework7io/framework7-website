@@ -104,6 +104,11 @@ block content
           td
           td Path to Framework7's lazy components. Required to use <a href="lazy-modules.html">Lazy Modules</a> with browser modules.
         tr
+          td autoDarkTheme
+          td boolean
+          td false
+          td Automatically enables dark theme based on user system color scheme preference. This feature support is based on <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank"><code>(prefers-color-scheme)</code> media query support</a>.
+        tr
           td init
           td boolean
           td true
@@ -362,6 +367,12 @@ block content
           td Array with registered service workers
         tr
           th(colspan="2") Methods
+        tr
+          td app.enableAutoDarkTheme()
+          td Enables auto dark theme detection
+        tr
+          td app.disableAutoDarkTheme()
+          td Disables auto dark theme detection
         tr
           td app.on(<span>event</span>, <span>handler</span>)
           td Add event handler

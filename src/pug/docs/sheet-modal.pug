@@ -39,6 +39,28 @@ block content
         </div>
 
       </body>
+    h2 Sheet Top Layout
+    p By default sheet modal opens from bottom of the screen. It is also possible to open it from top of the screen. In this case we need to add <code>sheet-modal-top</code> class to sheet element. It is also recommended to use bottom toolbar in this case:
+    :code(lang="html")
+      <!-- Additional "sheet-modal-top" class to open it from top -->
+      <div class="sheet-modal sheet-modal-top">
+        <!-- Bottom toolbar for top sheet -->
+        <div class="toolbar toolbar-bottom">
+          <div class="toolbar-inner">
+            <div class="left"></div>
+            <div class="right">
+              <a href="#" class="link sheet-close">Done</a>
+            </div>
+          </div>
+        </div>
+        <!-- Sheet Modal Inner -->
+        <div class="sheet-modal-inner">
+          <!-- Sheet Modal content -->
+          <div class="block">
+            <p>Integer mollis nulla id nibh elementum finibus...</p>
+          </div>
+        </div>
+      </div>
     h2 Sheet App Methods
     p Let's look at related App methods to work with Sheet:
     .method-wrap
@@ -119,6 +141,11 @@ block content
           td
           td Enables Sheet backdrop (dark semi transparent layer behind). By default it is <code>true</code> for MD and Aurora themes and <code>false</code> for iOS theme
         tr
+          td backdropEl
+          td HTMLElement<br>string
+          td
+          td HTML element or string CSS selector of custom backdrop element
+        tr
           td scrollToEl
           td HTMLElement<br>string
           td
@@ -133,6 +160,11 @@ block content
           td boolean
           td false
           td When enabled, sheet will be closed on when click outside of it
+        tr
+          td closeOnEscape
+          td boolean
+          td false
+          td When enabled, sheet will be closed on ESC keyboard key press
         tr
           td animate
           td boolean
@@ -351,13 +383,31 @@ block content
                   <!-- Link to close sheet-->
                   <p><a class="link sheet-close" href="#" data-sheet=".my-sheet">Close Sheet</a></p>
                   <p><a class="link dynamic-sheet" href="#">Create Dynamic Sheet</a></p>
+                  <!-- Link to open another top sheet-->
+                  <p><a class="link sheet-open" href="#" data-sheet=".my-sheet-top">Open Top Sheet</a></p>
                 </div>
               </div>
             </div>
           ...
-
+          <!-- Default bottom sheet -->
           <div class="sheet-modal my-sheet">
             <div class="toolbar">
+              <div class="toolbar-inner">
+                <div class="left"></div>
+                <div class="right"><a class="link sheet-close" href="#">Done</a></div>
+              </div>
+            </div>
+            <div class="sheet-modal-inner">
+              <div class="block">
+                <h4>Info</h4>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top sheet -->
+          <div class="sheet-modal sheet-modal-top my-sheet-top">
+            <div class="toolbar toolbar-bottom">
               <div class="toolbar-inner">
                 <div class="left"></div>
                 <div class="right"><a class="link sheet-close" href="#">Done</a></div>

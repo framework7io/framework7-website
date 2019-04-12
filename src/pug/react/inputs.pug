@@ -77,6 +77,7 @@ block content
               li <b>textarea</b> - to render textarea element
               li <b>select</b> - to render select element
               li <b>datepicker</b> - to open <a href="/docs/calendar.html" target="_blank">Calendar</a> on input focus
+              li <b>colorpicker</b> - to open <a href="/docs/color-picker.html" target="_blank">Color Picker</a> on input focus
         tr
           td resizable
           td boolean
@@ -144,6 +145,7 @@ block content
           td
             p Input value.
             p If <code>type="datepicker"</code> then value must be passed as what <a href="/docs/calendar.html" target="_blank">Calendar</a> accepts - Array with dates, for example <code>value={[new Date()}"</code>
+            p If <code>type="colorpicker"</code> then value must be passed as what <a href="/docs/color-picker.html" target="_blank">Color Picker</a> accepts - Object with colors, for example <code>value={{hex: '#ff0000'}}</code>
         tr
           td defaultValue
           td string<br>number
@@ -255,6 +257,11 @@ block content
           td
           td Object with <a href="../docs/calendar.html#calendar-parameters" target="_blank">Calendar Parameters</a> which is used when <code>type="datepicker"</code>
         tr
+          td colorPickerParams
+          td object
+          td
+          td Object with <a href="../docs/color-picker.html#color-picker-parameters" target="_blank">Color Picker Parameters</a> which is used when <code>type="colorpicker"</code>
+        tr
           th(colspan="4") &lt;Input&gt; properties
         tr
           td outline
@@ -275,6 +282,7 @@ block content
               li <b>textarea</b> - to render textarea element
               li <b>select</b> - to render select element
               li <b>datepicker</b> - to open <a href="/docs/calendar.html" target="_blank">Calendar</a> on input focus
+              li <b>colorpicker</b> - to open <a href="/docs/color-picker.html" target="_blank">Color Picker</a> on input focus
         tr
           td resizable
           td boolean
@@ -342,6 +350,7 @@ block content
           td
             p Input value.
             p If <code>type="datepicker"</code> then value must be passed as what <a href="/docs/calendar.html" target="_blank">Calendar</a> accepts - Array with dates, for example <code>value={[new Date()}"</code>
+            p If <code>type="colorpicker"</code> then value must be passed as what <a href="/docs/color-picker.html" target="_blank">Color Picker</a> accepts - Object with colors, for example <code>value={{hex: '#ff0000'}}</code>
         tr
           td defaultValue
           td string<br>number
@@ -447,6 +456,11 @@ block content
           td object
           td
           td Object with <a href="../docs/calendar.html#calendar-parameters" target="_blank">Calendar Parameters</a> which is used when <code>type="datepicker"</code>
+        tr
+          td colorPickerParams
+          td object
+          td
+          td Object with <a href="../docs/color-picker.html#color-picker-parameters" target="_blank">Color Picker Parameters</a> which is used when <code>type="colorpicker"</code>
 
     h2 Input Events
     table.events-table
@@ -494,6 +508,10 @@ block content
           td calendarChange
           td <span>(value)</span>
           td Fired when <code>type="datepicker"</code> Calendar value changed. As an argument it receives array with selected dates.
+        tr
+          td colorPickerChange
+          td <span>(value)</span>
+          td Fired when <code>type="colorpicker"</code> Color Picker value changed. As an argument it receives object with Color Picker value.
 
     h2 Input Slots
     p <code>&lt;ListInput&gt;</code> has additional slots for custom elements:

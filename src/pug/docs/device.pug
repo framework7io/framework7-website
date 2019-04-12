@@ -97,6 +97,9 @@ block content
         tr
           td needsStatusbarOverlay()
           td Returns <code>true</code> if app running in full-screen mode and requires <a href="status-bar.html">Status Bar</a> overlay
+        tr
+          td prefersColorScheme()
+          td Returns pereferd user system color scheme. Returns <code>"light"</code> or <code>"dark"</code> where this feature supported or <code>undefined</code> otherwise. This feature support is based on <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank"><code>(prefers-color-scheme)</code> media query support</a>.
     h2 Device Related Classes
     p Also this Device detecting library adds additional classes on <code>&lt;html&gt;</code> element which can help you with different CSS styles for different OS and platforms.
     p So if you open app with iOS 7.1 device you may have the following classes:
