@@ -5,6 +5,6 @@ module.exports = (code, { lang } = {}) => {
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>');
 
-  code = `<pre><code class="${lang || ''}">${highlight(code, lang)}</pre></code>`;
+  code = `<pre><code class="${lang || ''}">${highlight(code, lang)}</code></pre>`;
   return code;
 };

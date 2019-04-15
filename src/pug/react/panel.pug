@@ -116,39 +116,45 @@ block content
     p You can access Panel initialized instance by accessing <code><b>.f7Panel</b></code> component's property.
     .with-device
       h2(data-device-preview="../docs-demos/react/panel.html") Examples
+      :code(lang="css")
+        /* Limit resizable panel width */
+        .panel {
+          min-width: 100px;
+          max-width: 90vw;
+        }
       :code(lang="jsx")
-            <App>
-              {/* Left Panel with Reveal effect */}
-              <Panel left reveal>
-                <View>
-                  <Page>
-                    <Block>Left panel content</Block>
-                  </Page>
-                </View>
-              </Panel>
+        <App>
+          {/* Left resizable Panel with Reveal effect */}
+          <Panel left reveal resizable>
+            <View>
+              <Page>
+                <Block>Left panel content</Block>
+              </Page>
+            </View>
+          </Panel>
 
-              {/* Right Panel with Cover effect and dark layout theme */}
-              <Panel right themeDark>
-                <View>
-                  <Page>
-                    <Block>Right panel content</Block>
-                  </Page>
-                </View>
-              </Panel>
+          {/* Right resizable Panel with Cover effect and dark layout theme */}
+          <Panel right resizable themeDark>
+            <View>
+              <Page>
+                <Block>Right panel content</Block>
+              </Page>
+            </View>
+          </Panel>
 
-              {/* Main view */}
-              <View main>
-                <Page>
-                  <Navbar title="Panel"></Navbar>
+          {/* Main view */}
+          <View main>
+            <Page>
+              <Navbar title="Panel"></Navbar>
 
-                  <Block className="row">
-                    <Col>
-                      <Button raised panelOpen="left">Open left panel</Button>
-                    </Col>
-                    <Col>
-                      <Button raised panelOpen="right">Open right panel</Button>
-                    </Col>
-                  </Block>
-                </Page>
-              </View>
-            </App>
+              <Block className="row">
+                <Col>
+                  <Button raised panelOpen="left">Open left panel</Button>
+                </Col>
+                <Col>
+                  <Button raised panelOpen="right">Open right panel</Button>
+                </Col>
+              </Block>
+            </Page>
+          </View>
+        </App>
