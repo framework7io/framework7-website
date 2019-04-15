@@ -78,7 +78,7 @@ block content
           td modules
           td array
           td ['wheel']
-          td Array with <a href="#color-picker-modules">Color Picker modules</a>
+          td Array with <a href="#color-picker-modules">Color Picker modules</a> in order of their appearance
         tr
           td palette
           td array
@@ -376,13 +376,13 @@ block content
         tr
           td sb-spectrum
           td
-            p Saturation-Brightness spectrum. It is recommended to use with <code>hue-slider</code>
+            p Saturation-Brightness spectrum. It is recommended to use it with <code>hue-slider</code>
             p
               img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-sb-spectrum.png")
         tr
           td hue-slider
           td
-            p Single Hue slider
+            p Single hue slider
             p
               img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-hue-slider.png")
         tr
@@ -412,12 +412,13 @@ block content
         tr
           td palette
           td
-            p Modules displays palette color specified in <code>palette</code> parameter
+            p Module displays palette colors specified in <code>palette</code> parameter
             p
               img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-palette.png")
         tr
           td hex
           td
+            p Module with current HEX value
             p
               img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-hex.png")
         tr
@@ -429,11 +430,46 @@ block content
         tr
           td initial-current-colors
           td
-            p Modules displays currently selected color, and initial color - color that was selected before Color Picker was opened. Clicking on initial color will set Color Picker value to this color.
+            p Modules displays currently selected color, and initial color (color that was selected before Color Picker was opened). Clicking on initial color will set Color Picker value to initial color.
             p
               img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-initial-current-colors.png")
+    h3 Custom Modules
+    p It is also possible to use and create custom color picker modules. Such custom modules can be used to create custom pickers or just to add some custom content between modules.
+    p To add custom color picker module, we need to pass an object instead of string to <code>modules</code> array parameter. Custom module object can contain following methods. Each method receives color picker instance as an argument.
+    table.methods-table
+      tbody
+        tr
+          td render(<span>colorPicker</span>)
+          td Module render function. It must return module HTML content
+        tr
+          td init(<span>colorPicker</span>)
+          td Module init function. It is executed when module rendered and added to DOM. You should define here any custom event listeners
+        tr
+          td update(<span>colorPicker</span>)
+          td This method executed when color picker value updated
+        tr
+          td destroy(<span>colorPicker</span>)
+          td This method executed on module destroy. You should detach all event listeners here
+    p For, example if we need to add some custom text between modules, we can use such simple module:
+    :code(lang="js")
+      var colorPicker = app.colorPicker.create({
+        // ...
+        modules: [
+          'sb-spectrum',
+          // custom module with only render function
+          {
+            render: function() {
+              return '<p class="text-align-center">Enter HUE value:</p>'
+            },
+          },
+          'hue-slider',
+        ]
+      })
+    p For inspiration and how things work in modules, check the <a href="https://github.com/framework7io/framework7/tree/master/src/core/components/color-picker/modules" target="_blank">built-in modules source code</a>.
+
+
     h2 Color Picker Value
-    p Color Picker instance value represented as Object with the following properties:
+    p Color Picker instance value represented as Object with the following properties.
     table.params-table
       tbody
         tr
