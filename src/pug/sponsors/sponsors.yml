@@ -16,6 +16,10 @@ silver:
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
 -
+  title: Blokt - Cryptocurrency News
+  link: https://blokt.com/
+  imageUrl: "#{cdn}/i/sponsors/blokt.png"
+-
   title: ActiveWaiter
   link: https://www.activewaiter.com/
   imageUrl: "#{cdn}/i/sponsors/activewaiter.png"
