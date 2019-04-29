@@ -197,7 +197,17 @@ block content
           closeByBackdropClick: false,
         },
       });
+    p In addition, all these paramteres can be set on each expandable card individually with same <code>data-</code> attributes, including additional <code>data-animate</code> attribute:
+    :code(lang="html")
+      <!-- this card will opened without animation -->
+      <div class="card card-expandable" data-animate="false">
+        ...
+      </div>
 
+      <!-- this card will opened without backdrop -->
+      <div class="card card-expandable" data-backdrop="false">
+        ...
+      </div>
     h2 Control Cards With Links
     p It is possible to open and close required expandable cards using special classes and data attributes on links:
     .important-note

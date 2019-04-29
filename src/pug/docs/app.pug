@@ -192,6 +192,11 @@ block content
           td
           td This parameter allows to specify elements not handled by fast clicks by passing CSS selector of such elements
         tr.subparam-row
+          td touchClicksDistanceThreshold
+          td number
+          td 5
+          td Distance threshold (in px) to prevent short swipes. So if tap/move distance is larger than this value then "click" will not be triggered. (Used only for touch events when fastClicks disabled).
+        tr.subparam-row
           td disableContextMenu
           td boolean
           td false
