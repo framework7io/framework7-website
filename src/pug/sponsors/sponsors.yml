@@ -16,6 +16,10 @@ silver:
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
 -
+  title: EduBirdie - Professional Essay Writing Service
+  link: https://edubirdie.com/
+  imageUrl: "#{cdn}/i/sponsors/birdie.png"
+-
   title: Blokt - Cryptocurrency News
   link: https://blokt.com/
   imageUrl: "#{cdn}/i/sponsors/blokt.png"
