@@ -25,12 +25,11 @@
   - Set color and theme preferences
   - Easily print or share PDF's of your results
   screenshots:
-  - "#{cdn}/i/showcase/vetcalculators-1.png"
-  - "#{cdn}/i/showcase/vetcalculators-2.png"
-  - "#{cdn}/i/showcase/vetcalculators-3.png"
-  - "#{cdn}/i/showcase/vetcalculators-4.png"
-  - "#{cdn}/i/showcase/vetcalculators-5.png"
-  - "#{cdn}/i/showcase/vetcalculators-6.png"
+  - "#{cdn}/i/showcase/vetcalculators-1.jpg"
+  - "#{cdn}/i/showcase/vetcalculators-2.jpg"
+  - "#{cdn}/i/showcase/vetcalculators-3.jpg"
+  - "#{cdn}/i/showcase/vetcalculators-4.jpg"
+  - "#{cdn}/i/showcase/vetcalculators-5.jpg"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/maple_pos.png"
