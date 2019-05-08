@@ -113,6 +113,16 @@ block content
           td true
           td Disable if you want to use custom pull to refresh preloader element
         tr
+          td ptrBottom
+          td boolean
+          td false
+          td Enables pull to refresh from bottom
+        tr
+          td ptrMousewheel
+          td boolean
+          td false
+          td Enables pull to refresh with mousewheel (for desktop apps). Works only for PTR top
+        tr
           td infinite
           td boolean
           td
@@ -148,6 +158,8 @@ block content
           td ptr
             <br> ptrDistance
             <br> ptrPreloader
+            <br> ptrBottom
+            <br> ptrMousewheel
             <br> infinite
             <br> infiniteTop
             <br> infiniteDistance
@@ -172,7 +184,7 @@ block content
           th(colspan="2") &lt;Page&gt; events
         tr
           td pageMounted
-          td Event will be triggered when new page just inserted to DOM
+          td Event will be triggered when page with <code>keepAlive</code> route is mounted/attached to DOM
         tr
           td pageInit
           td Event will be triggered after Framework7 initialize required page's components and navbar
@@ -192,8 +204,11 @@ block content
           td pageAfterOut
           td Event will be triggered after page transitioned out of view
         tr
+          td pageBeforeUnmount
+          td Event will be triggered when page with <code>keepAlive</code> route is going to be unmounted/detached from DOM
+        tr
           td pageBeforeRemove
-          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
+          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. This event won't be triggered for <code>keepAlive</code> routes.
         tr
           td ptrPullStart
           td Event will be triggered when you start to move pull to refresh content
@@ -315,17 +330,17 @@ block content
                     {
                       title: 'Yellow Submarine',
                       author: 'Beatles',
-                      cover: 'http://lorempixel.com/88/88/abstract/1',
+                      cover: 'https://cdn.framework7.io/placeholder/abstract-88x88-1.jpg',
                     },
                     {
                       title: 'Don\'t Stop Me Now',
                       author: 'Queen',
-                      cover: 'http://lorempixel.com/88/88/abstract/2',
+                      cover: 'https://cdn.framework7.io/placeholder/abstract-88x88-2.jpg',
                     },
                     {
                       title: 'Billie Jean',
                       author: 'Michael Jackson',
-                      cover: 'http://lorempixel.com/88/88/abstract/3',
+                      cover: 'https://cdn.framework7.io/placeholder/abstract-88x88-3.jpg',
                     },
                   ],
                   songs: ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'],
@@ -357,7 +372,7 @@ block content
                 const self = this;
                 setTimeout(() => {
                   const { items, songs, authors } = self.state;
-                  const picURL = `http://lorempixel.com/88/88/abstract/${Math.round(Math.random() * 10)}`;
+                  const picURL = `https://cdn.framework7.io/placeholder/abstract-88x88-${Math.round(Math.random() * 10)}.jpg`;
                   const song = songs[Math.floor(Math.random() * songs.length)];
                   const author = authors[Math.floor(Math.random() * authors.length)];
                   items.push({

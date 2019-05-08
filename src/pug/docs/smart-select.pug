@@ -12,141 +12,141 @@ block content
     +improveDocsLink
     h1 Smart Select
     ul.docs-index
-    p Smart select allows you to easily convert your usual form selects to dynamic pages with <a href="checkboxes-radios.html">grouped radio inputs</a>. You can see such feature in many native iOS apps
+    p Smart select allows you to easily convert your usual form selects to dynamic pages with grouped radio or checkbox inputs. You can see such feature in many native iOS apps
     h2 Smart Select Layout
     p Smart select layout is pretty simple. It is a well known <a href="list-view.html">List View</a> link with <code>&lt;select&gt;</code> inside and additional <code><b>smart-select</b></code> class on <code>item-link</code>:
     :code(lang="html")
-          <div class="list">
-            <ul>
-              <!-- Smart select item -->
-              <li>
-                <!-- Additional "smart-select" class -->
-                <a href="#" class="item-link smart-select">
-                  <!-- select -->
-                  <select name="fruits">
-                    <option value="apple" selected>Apple</option>
-                    <option value="pineapple">Pineapple</option>
-                    ...
-                  </select>
-                  <div class="item-content">
-                    <div class="item-inner">
-                      <!-- Select label -->
-                      <div class="item-title">Fruit</div>
-                      <!-- Selected value, not required -->
-                      <div class="item-after">Apple</div>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <!-- Another smart selects or list view elements -->
-              ...
-            </ul>
-          </div>
+      <div class="list">
+        <ul>
+          <!-- Smart select item -->
+          <li>
+            <!-- Additional "smart-select" class -->
+            <a href="#" class="item-link smart-select">
+              <!-- select -->
+              <select name="fruits">
+                <option value="apple" selected>Apple</option>
+                <option value="pineapple">Pineapple</option>
+                ...
+              </select>
+              <div class="item-content">
+                <div class="item-inner">
+                  <!-- Select label -->
+                  <div class="item-title">Fruit</div>
+                  <!-- Selected value, not required -->
+                  <div class="item-after">Apple</div>
+                </div>
+              </div>
+            </a>
+          </li>
+          <!-- Another smart selects or list view elements -->
+          ...
+        </ul>
+      </div>
     .important-note
       p Note that smart select works only in initialized Views, because it used Router to load smart select pages or open modals!
     h3 Custom Option Icons, Colors and Images
     p You can also specify Smart Select page' list view element custom icon, image or color. We need to use additional <code><b>data-option-icon</b></code>, <code><b>data-option-image</b></code> attributes on smart select <code>&lt;select&gt;</code> (to set default image for all options) or on <code>&lt;option&gt;</code> to set image or icon on single option.
     p For single option we may also use <code><b>data-option-color</b></code> and <code><b>data-option-class</b></code> attributes to add specific option color or css class for additional styling
     :code(lang="html")
-          <li>
-            <a href="#" class="item-link smart-select">
-              <select name="fruits">
-                <option value="apple" selected data-option-image="http://lorempixel.com/29/29/">Apple</option>
-                <option value="pineapple" data-option-image="http://lorempixel.com/29/29/?2">Pineapple</option>
-                <option value="pear" data-option-color="orange" data-option-image="http://lorempixel.com/29/29/?3">Pear</option>
-                ...
-              </select>
-              <div class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Fruit</div>
-                </div>
-              </div>
-            </a>
-          </li>
+      <li>
+        <a href="#" class="item-link smart-select">
+          <select name="fruits">
+            <option value="apple" selected data-option-image="https://cdn.framework7.io/placeholder/abstract-29x29-1.jpg">Apple</option>
+            <option value="pineapple" data-option-image="https://cdn.framework7.io/placeholder/abstract-29x29-2.jpg">Pineapple</option>
+            <option value="pear" data-option-color="orange" data-option-image="https://cdn.framework7.io/placeholder/abstract-29x29-3.jpg">Pear</option>
+            ...
+          </select>
+          <div class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Fruit</div>
+            </div>
+          </div>
+        </a>
+      </li>
 
     h3 Multiple Select And &lt;optgroup&gt;
     p We can also use multiple select and group options using <code>&lt;optgroup&gt;</code>. So if we add <code>multiple</code> attribute to our select then radio buttons on smart select page will be automatically converted to checkboxes:
     :code(lang="html")
-          <li>
-            <a href="#" class="item-link smart-select">
-              <!-- "multiple" attribute for multiple select-->
-              <select name="car" multiple>
-                <!-- options grouped within "optgroup" tag-->
-                <optgroup label="Japanese">
-                  <option value="honda" selected>Honda</option>
-                  <option value="lexus">Lexus</option>
-                  ...
-                </optgroup>
-                <optgroup label="German">
-                  <option value="audi" selected>Audi</option>
-                  <option value="bmw">BMW</option>
-                  ...
-                </optgroup>
-                <optgroup label="American">
-                  <option value="cadillac">Cadillac</option>
-                  <option value="chrysler">Chrysler</option>
-                  ...
-                </optgroup>
-              </select>
-              <div class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Car</div>
-                </div>
-              </div>
-            </a>
-          </li>
+      <li>
+        <a href="#" class="item-link smart-select">
+          <!-- "multiple" attribute for multiple select-->
+          <select name="car" multiple>
+            <!-- options grouped within "optgroup" tag-->
+            <optgroup label="Japanese">
+              <option value="honda" selected>Honda</option>
+              <option value="lexus">Lexus</option>
+              ...
+            </optgroup>
+            <optgroup label="German">
+              <option value="audi" selected>Audi</option>
+              <option value="bmw">BMW</option>
+              ...
+            </optgroup>
+            <optgroup label="American">
+              <option value="cadillac">Cadillac</option>
+              <option value="chrysler">Chrysler</option>
+              ...
+            </optgroup>
+          </select>
+          <div class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Car</div>
+            </div>
+          </div>
+        </a>
+      </li>
     h3 Multiple Select and maxlength
     p With multiple select we can also use <b>maxlength</b> attribute to limit number of possible selected items:
     :code(lang="html")
-          <li>
-            <a href="#" class="item-link smart-select">
-              <!-- "maxlength" attribute to limit number of possible selected items -->
-              <!-- we won't allow to select more than 3 items -->
-              <select name="car" multiple maxlength="3">
-                <optgroup label="Japanese">
-                  <option value="honda" selected>Honda</option>
-                  <option value="lexus">Lexus</option>
-                  ...
-                </optgroup>
-                <optgroup label="German">
-                  <option value="audi">Audi</option>
-                  <option value="bmw">BMW</option>
-                  ...
-                </optgroup>
-                <optgroup label="American">
-                  <option value="cadillac">Cadillac</option>
-                  <option value="chrysler">Chrysler</option>
-                  ...
-                </optgroup>
-              </select>
-              <div class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Car</div>
-                </div>
-              </div>
-            </a>
-          </li>
+      <li>
+        <a href="#" class="item-link smart-select">
+          <!-- "maxlength" attribute to limit number of possible selected items -->
+          <!-- we won't allow to select more than 3 items -->
+          <select name="car" multiple maxlength="3">
+            <optgroup label="Japanese">
+              <option value="honda" selected>Honda</option>
+              <option value="lexus">Lexus</option>
+              ...
+            </optgroup>
+            <optgroup label="German">
+              <option value="audi">Audi</option>
+              <option value="bmw">BMW</option>
+              ...
+            </optgroup>
+            <optgroup label="American">
+              <option value="cadillac">Cadillac</option>
+              <option value="chrysler">Chrysler</option>
+              ...
+            </optgroup>
+          </select>
+          <div class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Car</div>
+            </div>
+          </div>
+        </a>
+      </li>
     h3 Different Display Value
     p Using <code><b>data-display-as</b></code> attribute on options we can show selected value in different way:
     :code(lang="html")
-          <li>
-            <a href="#" class="item-link smart-select">
-              <select name="days">
-                <option value="monday" selected data-display-as="Mon">Monday</option>
-                <option value="tuesday" data-display-as="Tue">Tuesday</option>
-                <option value="wednesday" data-display-as="Wed">Wednesday</option>
-                <option value="thursday" data-display-as="Thu">Thursday</option>
-                <option value="friday" data-display-as="Fri">Friday</option>
-                <option value="saturday" data-display-as="Sat">Saturday</option>
-                <option value="sunday" data-display-as="Sun">Sunday</option>
-              </select>
-              <div class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Day</div>
-                </div>
-              </div>
-            </a>
-          </li>
+      <li>
+        <a href="#" class="item-link smart-select">
+          <select name="days">
+            <option value="monday" selected data-display-as="Mon">Monday</option>
+            <option value="tuesday" data-display-as="Tue">Tuesday</option>
+            <option value="wednesday" data-display-as="Wed">Wednesday</option>
+            <option value="thursday" data-display-as="Thu">Thursday</option>
+            <option value="friday" data-display-as="Fri">Friday</option>
+            <option value="saturday" data-display-as="Sat">Saturday</option>
+            <option value="sunday" data-display-as="Sun">Sunday</option>
+          </select>
+          <div class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Day</div>
+            </div>
+          </div>
+        </a>
+      </li>
     h2 Smart Select App Methods
     p Let's look at related App methods to work with Smart Select:
     .method-wrap
@@ -241,6 +241,11 @@ block content
           td Close
           td Smart select Popup close link text
         tr
+          td popupTabletFullscreen
+          td boolean
+          td false
+          td When enabled smart select popup will be displayed as full screen on tablets
+        tr
           td sheetCloseLinkText
           td string
           td Done
@@ -287,6 +292,11 @@ block content
           td number<br>function
           td
           td Virtual list item height. If <code>number</code> - list item height in px. If <code>function</code> then function should return item height.
+        tr
+          td scrollToSelectedItem
+          td boolean
+          td false
+          td When enabled it will scroll smart select content to first selected item on open
         tr
           td formColorTheme
           td string
@@ -357,24 +367,24 @@ block content
           td
           td Object with events handlers. For example:
             :code(lang="js")
-                  var smartSelect = app.smartSelect.create({
-                    ...
-                    on: {
-                      opened: function () {
-                        console.log('Smart select opened')
-                      }
-                    }
-                  })
+              var smartSelect = app.smartSelect.create({
+                ...
+                on: {
+                  opened: function () {
+                    console.log('Smart select opened')
+                  }
+                }
+              })
 
     .important-note
       p Note that all following parameters can be used in global app parameters under <code>smartSelect</code> property to set defaults for all smart selects. For example:
       :code(lang="js")
-            var app = new Framework7({
-              smartSelect: {
-                pageTitle: 'Select Option',
-                openIn: 'popup',
-              }
-            });
+        var app = new Framework7({
+          smartSelect: {
+            pageTitle: 'Select Option',
+            openIn: 'popup',
+          }
+        });
     h2 Smart Select Methods & Properties
     p So to create Smart Select we have to call:
     :code(lang="js")
@@ -422,6 +432,15 @@ block content
         tr
           td smartSelect.close()
           td Close smart select
+        tr
+          td smartSelect.getValue()
+          td Returns smart select value. In case of select is <code>multiple</code> it returns array with selected values
+        tr
+          td smartSelect.setValue(<span>newValue</span>)
+          td Set new smart select value. In case of select is <code>multiple</code> it must be an array with new values
+        tr
+          td smartSelect.scrollToSelectedItem()
+          td Scroll smart select content to first selected item (when opened)
         tr
           td smartSelect.destroy()
           td Destroy smart select
@@ -524,130 +543,133 @@ block content
     h2 Smart Select Auto Initialization
     p If you don't need to use Smart Select API and your Smart Select is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>smart-select-init</code> class:
     :code(lang="html")
-          <li>
-            <!-- Add smart-select-init class -->
-            <a href="#" class="item-link smart-select smart-select-init">
-              <!-- select -->
-              <select name="fruits">
-                <option value="apple" selected>Apple</option>
-                <option value="pineapple">Pineapple</option>
-                ...
-              </select>
-              <div class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Fruit</div>
-                  <div class="item-after">Apple</div>
-                </div>
-              </div>
-            </a>
-          </li>
+      <li>
+        <!-- Add smart-select-init class -->
+        <a href="#" class="item-link smart-select smart-select-init">
+          <!-- select -->
+          <select name="fruits">
+            <option value="apple" selected>Apple</option>
+            <option value="pineapple">Pineapple</option>
+            ...
+          </select>
+          <div class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Fruit</div>
+              <div class="item-after">Apple</div>
+            </div>
+          </div>
+        </a>
+      </li>
     p In this case if you need to access created Smart Select instance you can use the <code>app.smartSelect.get</code> app method:
     :code(lang="js")
           var smartSelect = app.smartSelect.get('.smart-select');
 
     p When using auto init you may need to pass additional parameters. In this case you may pass all additional parameters via <code>data-</code> attributes on smart select element:
     :code(lang="html")
-          <li>
-            <!-- Pass parameters as kebab-case data attributes -->
-            <a href="#" class="item-link smart-select smart-select-init" data-open-in="popup" data-virtual-list="true" data-page-back-link-text="Go back">
-              <!-- select -->
-              <select name="fruits">
-                <option value="apple" selected>Apple</option>
-                <option value="pineapple">Pineapple</option>
-                ...
-              </select>
-              <div class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Fruit</div>
-                  <div class="item-after">Apple</div>
-                </div>
-              </div>
-            </a>
-          </li>
+      <li>
+        <!-- Pass parameters as kebab-case data attributes -->
+        <a href="#" class="item-link smart-select smart-select-init" data-open-in="popup" data-virtual-list="true" data-page-back-link-text="Go back">
+          <!-- select -->
+          <select name="fruits">
+            <option value="apple" selected>Apple</option>
+            <option value="pineapple">Pineapple</option>
+            ...
+          </select>
+          <div class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Fruit</div>
+              <div class="item-after">Apple</div>
+            </div>
+          </div>
+        </a>
+      </li>
+
+    +cssVars('smart-select')
+
     .with-device
       h2(data-device-preview="../docs-demos/core/smart-select.html") Examples
       :code(lang="html")
-            <!-- Default Setup -->
-            <li>
-              <a class="item-link smart-select smart-select-init">
-                <select name="fruits">
-                  <option value="apple" selected>Apple</option>
-                  <option value="pineapple">Pineapple</option>
-                  <option value="pear">Pear</option>
-                  <option value="orange">Orange</option>
-                  <option value="melon">Melon</option>
-                  <option value="peach">Peach</option>
-                  <option value="banana">Banana</option>
-                </select>
-                <div class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title">Fruit</div>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <!-- Open In Popup + Searchbar + Multiple -->
-            <li>
-              <a class="item-link smart-select smart-select-init" data-open-in="popup"  data-searchbar="true" data-searchbar-placeholder="Search car">
-                <select name="car" multiple>
-                  <optgroup label="Japanese">
-                    <option value="honda" selected>Honda</option>
-                    <option value="lexus">Lexus</option>
-                    <option value="mazda">Mazda</option>
-                    <option value="nissan">Nissan</option>
-                    <option value="toyota">Toyota</option>
-                  </optgroup>
-                  <optgroup label="German">
-                    <option value="audi" selected>Audi</option>
-                    <option value="bmw">BMW</option>
-                    <option value="mercedes">Mercedes</option>
-                    <option value="vw">Volkswagen</option>
-                    <option value="volvo">Volvo</option>
-                  </optgroup>
-                  <optgroup label="American">
-                    <option value="cadillac">Cadillac</option>
-                    <option value="chrysler">Chrysler</option>
-                    <option value="dodge">Dodge</option>
-                    <option value="ford" selected>Ford</option>
-                  </optgroup>
-                </select>
-                <div class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title">Car</div>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <!-- Open In Sheet -->
-            <li>
-              <a class="item-link smart-select smart-select-init" data-open-in="sheet">
-                <select name="mac-windows">
-                  <option value="mac" selected>Mac</option>
-                  <option value="windows">Windows</option>
-                </select>
-                <div class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title">Mac or Windows</div>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <!-- Open In Popover -->
-            <li>
-              <a class="item-link smart-select smart-select-init" data-open-in="popover">
-                <select name="superhero" multiple>
-                  <option value="Batman" selected>Batman</option>
-                  <option value="Superman">Superman</option>
-                  <option value="Hulk">Hulk</option>
-                  <option value="Spiderman">Spiderman</option>
-                  <option value="Ironman">Ironman</option>
-                  <option value="Thor">Thor</option>
-                  <option value="Wonder Woman">Wonder Woman</option>
-                </select>
-                <div class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title">Super Hero</div>
-                  </div>
-                </div>
-              </a>
-            </li>
+        <!-- Default Setup -->
+        <li>
+          <a class="item-link smart-select smart-select-init">
+            <select name="fruits">
+              <option value="apple" selected>Apple</option>
+              <option value="pineapple">Pineapple</option>
+              <option value="pear">Pear</option>
+              <option value="orange">Orange</option>
+              <option value="melon">Melon</option>
+              <option value="peach">Peach</option>
+              <option value="banana">Banana</option>
+            </select>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Fruit</div>
+              </div>
+            </div>
+          </a>
+        </li>
+        <!-- Open In Popup + Searchbar + Multiple -->
+        <li>
+          <a class="item-link smart-select smart-select-init" data-open-in="popup"  data-searchbar="true" data-searchbar-placeholder="Search car">
+            <select name="car" multiple>
+              <optgroup label="Japanese">
+                <option value="honda" selected>Honda</option>
+                <option value="lexus">Lexus</option>
+                <option value="mazda">Mazda</option>
+                <option value="nissan">Nissan</option>
+                <option value="toyota">Toyota</option>
+              </optgroup>
+              <optgroup label="German">
+                <option value="audi" selected>Audi</option>
+                <option value="bmw">BMW</option>
+                <option value="mercedes">Mercedes</option>
+                <option value="vw">Volkswagen</option>
+                <option value="volvo">Volvo</option>
+              </optgroup>
+              <optgroup label="American">
+                <option value="cadillac">Cadillac</option>
+                <option value="chrysler">Chrysler</option>
+                <option value="dodge">Dodge</option>
+                <option value="ford" selected>Ford</option>
+              </optgroup>
+            </select>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Car</div>
+              </div>
+            </div>
+          </a>
+        </li>
+        <!-- Open In Sheet -->
+        <li>
+          <a class="item-link smart-select smart-select-init" data-open-in="sheet">
+            <select name="mac-windows">
+              <option value="mac" selected>Mac</option>
+              <option value="windows">Windows</option>
+            </select>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Mac or Windows</div>
+              </div>
+            </div>
+          </a>
+        </li>
+        <!-- Open In Popover -->
+        <li>
+          <a class="item-link smart-select smart-select-init" data-open-in="popover">
+            <select name="superhero" multiple>
+              <option value="Batman" selected>Batman</option>
+              <option value="Superman">Superman</option>
+              <option value="Hulk">Hulk</option>
+              <option value="Spiderman">Spiderman</option>
+              <option value="Ironman">Ironman</option>
+              <option value="Thor">Thor</option>
+              <option value="Wonder Woman">Wonder Woman</option>
+            </select>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Super Hero</div>
+              </div>
+            </div>
+          </a>
+        </li>

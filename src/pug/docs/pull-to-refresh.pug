@@ -16,26 +16,56 @@ block content
     h2 Pull To Refresh Layout
     p Let's look on how to integrate pull to refresh to page:
     :code(lang="html")
-          <div class="page">
-            <!-- Page content must have additional "ptr-content" class -->
-            <div class="page-content ptr-content" data-ptr-distance="55">
-              <!-- Default pull to refresh preloader-->
-              <div class="ptr-preloader">
-                <div class="preloader"></div>
-                <div class="ptr-arrow"></div>
-              </div>
-
-              <!-- usual content below -->
-              <div class="list">
-                ...
-              </div>
-            </div>
+      <div class="page">
+        <!-- Page content must have additional "ptr-content" class -->
+        <div class="page-content ptr-content" data-ptr-distance="55" data-ptr-mousewheel="true">
+          <!-- Default pull to refresh preloader-->
+          <div class="ptr-preloader">
+            <div class="preloader"></div>
+            <div class="ptr-arrow"></div>
           </div>
+
+          <!-- usual content below -->
+          <div class="list">
+            ...
+          </div>
+
+          <!-- nested scrollable element -->
+          <div class="my-scolling-content ptr-watch-scrollable">
+            ...
+          </div>
+
+          <!-- another nested scrollable element -->
+          <div class="another-scolling-content ptr-ignore">
+            ...
+          </div>
+        </div>
+      </div>
     p Where:
       ul
         li <code><b>ptr-content</b></code> class. This is required to enable pull to refresh
         li <code><b>div class="ptr-preloader"</b></code> hidden layer with pull to refresh visual elements: preloader and arrow
         li <code>data-ptr-distance="55"</code> additional attribute that allows to set custom pull to refresh trigger distance. By default (if not specified) it is 44px
+        li <code>data-ptr-mousewheel="true"</code> additional attribute that enables pull to refresh with mousewheel (for desktop apps). Works only for PTR top.
+        li <code>ptr-watch-scrollable</code> - additional class that must be added on nested scrollable elements to prevent pull to refresh on such elements scrolling
+        li <code>ptr-ignore</code> - additional class that must be added on nested scrollable elements or other elements that will to prevent pull to refresh on such elements scrolling or touchmove
+    h2 Pull To Refresh From Bottom
+    p It is also possible to make it work like pull from bottom. In this case we need to move #[code ptr-preloader] element to the bottom of page content and add additional #[code ptr-bottom] class to pull to refresh content:
+    :code(lang="html")
+      <div class="page">
+        <!-- ptr-content must have additional "ptr-bottom" class -->
+        <div class="page-content ptr-content ptr-bottom">
+          <div class="list">
+            ...
+          </div>
+
+          <!-- Pull to refresh preloader moves to bottom -->
+          <div class="ptr-preloader">
+            <div class="preloader"></div>
+            <div class="ptr-arrow"></div>
+          </div>
+        </div>
+      </div>
     h2 Pull To Refresh Sequence
     p When user starts to pull <b>ptr-content</b> down, then <b>ptr-preloader</b> will receive additional <code><b>ptr-pull-down</code></b> class.
     p When user pulls down <b>ptr-content</b> on a distance more than 44px (when <b>ptr-preloader</b> will be fully visible), then <b>ptr-preloader</b> will receive additional <code><b>ptr-pull-up</code></b> class which changes arrow rotation to notify user about refresh action on release.
@@ -225,76 +255,122 @@ block content
           td ptrBeforeDestroy
           td app
           td <span>(ptr)</span>
+
+    +cssVars('pull-to-refresh')
+
+    h2 Examples
     .with-device
-      h2(data-device-preview="../docs-demos/core/pull-to-refresh.html") Example
+      h4(data-device-preview="../docs-demos/core/pull-to-refresh.html") Pull From Top
       :code(lang="html")
-            <div class="page-content ptr-content">
-              <div class="ptr-preloader">
-                <div class="preloader"></div>
-                <div class="ptr-arrow"></div>
-              </div>
-              <div class="list media-list">
-                <ul>
-                  <li class="item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/88/88/abstract/1" width="44"/></div>
-                    <div class="item-inner">
-                      <div class="item-title-row">
-                        <div class="item-title">Yellow Submarine</div>
-                      </div>
-                      <div class="item-subtitle">Beatles</div>
-                    </div>
-                  </li>
-                  <li class="item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/88/88/abstract/2" width="44"/></div>
-                    <div class="item-inner">
-                      <div class="item-title-row">
-                        <div class="item-title">Don't Stop Me Now</div>
-                      </div>
-                      <div class="item-subtitle">Queen</div>
-                    </div>
-                  </li>
-                  <li class="item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/88/88/abstract/3" width="44"/></div>
-                    <div class="item-inner">
-                      <div class="item-title-row">
-                        <div class="item-title">Billie Jean</div>
-                      </div>
-                      <div class="item-subtitle">Michael Jackson</div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
+        <div class="page-content ptr-content">
+          <div class="ptr-preloader">
+            <div class="preloader"></div>
+            <div class="ptr-arrow"></div>
+          </div>
+          <div class="list media-list">
+            <ul>
+              <li class="item-content">
+                <div class="item-media"><img src="https://cdn.framework7.io/placeholder/abstract-88x88-1.jpg" width="44"/></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Yellow Submarine</div>
+                  </div>
+                  <div class="item-subtitle">Beatles</div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-media"><img src="https://cdn.framework7.io/placeholder/abstract-88x88-2.jpg" width="44"/></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Don't Stop Me Now</div>
+                  </div>
+                  <div class="item-subtitle">Queen</div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-media"><img src="https://cdn.framework7.io/placeholder/abstract-88x88-3.jpg" width="44"/></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Billie Jean</div>
+                  </div>
+                  <div class="item-subtitle">Michael Jackson</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
       :code(lang="js")
-            var app = new Framework7();
+        var app = new Framework7();
 
-            var $$ = Dom7;
+        var $$ = Dom7;
 
-            // Dummy Content
-            var songs = ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'];
-            var authors = ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers'];
-            // Pull to refresh content
-            var $ptrContent = $$('.ptr-content');
-            // Add 'refresh' listener on it
-            $ptrContent.on('ptr:refresh', function (e) {
-              // Emulate 2s loading
-              setTimeout(function () {
-                var picURL = 'http://lorempixel.com/88/88/abstract/' + Math.round(Math.random() * 10);
-                var song = songs[Math.floor(Math.random() * songs.length)];
-                var author = authors[Math.floor(Math.random() * authors.length)];
-                var itemHTML =
-                  '<li class="item-content">' +
-                    '<div class="item-media"><img src="' + picURL + '" width="44"/></div>' +
-                    '<div class="item-inner">' +
-                      '<div class="item-title-row">' +
-                        '<div class="item-title">' + song + '</div>' +
-                      '</div>' +
-                      '<div class="item-subtitle">' + author + '</div>' +
-                    '</div>' +
-                  '</li>';
-                // Prepend new list element
-                $ptrContent.find('ul').prepend(itemHTML);
-                // When loading done, we need to reset it
-                app.ptr.done(); // or e.detail();
-              }, 2000);
-            });
+        // Dummy Content
+        var songs = ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'];
+        var authors = ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers'];
+        // Pull to refresh content
+        var $ptrContent = $$('.ptr-content');
+        // Add 'refresh' listener on it
+        $ptrContent.on('ptr:refresh', function (e) {
+          // Emulate 2s loading
+          setTimeout(function () {
+            var picURL = 'https://cdn.framework7.io/placeholder/abstract-88x88-' + Math.round(Math.random() * 10) + '.jpg';
+            var song = songs[Math.floor(Math.random() * songs.length)];
+            var author = authors[Math.floor(Math.random() * authors.length)];
+            var itemHTML =
+              '<li class="item-content">' +
+                '<div class="item-media"><img src="' + picURL + '" width="44"/></div>' +
+                '<div class="item-inner">' +
+                  '<div class="item-title-row">' +
+                    '<div class="item-title">' + song + '</div>' +
+                  '</div>' +
+                  '<div class="item-subtitle">' + author + '</div>' +
+                '</div>' +
+              '</li>';
+            // Prepend new list element
+            $ptrContent.find('ul').prepend(itemHTML);
+            // When loading done, we need to reset it
+            app.ptr.done(); // or e.detail();
+          }, 2000);
+        });
+      h4(data-device-preview="../docs-demos/core/pull-to-refresh-bottom.html") Pull From Bottom
+      :code(lang="html")
+        <!-- additional "ptr-bottom" class -->
+        <div class="page-content ptr-content ptr-bottom">
+          <div class="list media-list">
+            <ul>
+              <li class="item-content">
+                <div class="item-media"><img src="https://cdn.framework7.io/placeholder/abstract-88x88-1.jpg" width="44"/></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Yellow Submarine</div>
+                  </div>
+                  <div class="item-subtitle">Beatles</div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-media"><img src="https://cdn.framework7.io/placeholder/abstract-88x88-2.jpg" width="44"/></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Don't Stop Me Now</div>
+                  </div>
+                  <div class="item-subtitle">Queen</div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-media"><img src="https://cdn.framework7.io/placeholder/abstract-88x88-3.jpg" width="44"/></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Billie Jean</div>
+                  </div>
+                  <div class="item-subtitle">Michael Jackson</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- ptr-preload is on the bottom -->
+          <div class="ptr-preloader">
+            <div class="preloader"></div>
+            <div class="ptr-arrow"></div>
+          </div>
+        </div>

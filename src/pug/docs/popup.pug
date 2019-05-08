@@ -112,10 +112,20 @@ block content
           td true
           td Enables Popup backdrop (dark semi transparent layer behind)
         tr
+          td backdropEl
+          td HTMLElement<br>string
+          td
+          td HTML element or string CSS selector of custom backdrop element
+        tr
           td closeByBackdropClick
           td boolean
           td true
           td When enabled, popup will be closed on backdrop click
+        tr
+          td closeOnEscape
+          td boolean
+          td false
+          td When enabled, popup will be closed on ESC keyboard key press
         tr
           td animate
           td boolean
@@ -325,6 +335,9 @@ block content
           td popupBeforeDestroy
           td <span>popup</span>
           td app
+
+    +cssVars('popup')
+
     .with-device
       h2(data-device-preview="../docs-demos/core/popup.html") Examples
       :code(lang="xml")

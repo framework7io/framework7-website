@@ -112,7 +112,7 @@ block content
           td Object with events handlers. For example:
             :code(lang="js")
                   var toggle = app.toggle.create({
-                    el: '.toggle'
+                    el: '.toggle',
                     on: {
                       change: function () {
                         console.log('Toggle changed')
@@ -232,6 +232,9 @@ block content
           if (toggle.checked) {
             // do something
           }
+
+    +cssVars('toggle')
+
     .with-device
       h2(data-device-preview="../docs-demos/core/toggle.html") Examples
       :code(lang="html")

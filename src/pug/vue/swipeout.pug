@@ -46,7 +46,7 @@ block content
           td left
           td boolean
           td
-          td Shortcut for <code>side="right"</code> prop
+          td Shortcut for <code>side="left"</code> prop
         tr
           th(colspan="4") &lt;f7-swipeout-button&gt; Properties
         tr
@@ -70,10 +70,15 @@ block content
           td
           td Swipeout button text label
         tr
-          td confirmText
+          td confirm-text
           td string
           td
           td This text will be shown in dialog where user must agree before item delete
+        tr
+          td confirm-title
+          td string
+          td
+          td This text will be shown as dialog title where user must agree before item delete
     h2 Swipeout Events
     table.events-table
       thead
@@ -111,6 +116,12 @@ block content
         tr
           td swipeout:deleted
           td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
+        tr
+          td swipeout:overswipeenter
+          td Event will be triggered when overswipe enabled
+        tr
+          td swipeout:overswipeexit
+          td Event will be triggered when overswipe disabled
     .with-device
       h2(data-device-preview="../docs-demos/vue/swipeout.html") Examples
       :code(lang="html")

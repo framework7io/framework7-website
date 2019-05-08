@@ -12,7 +12,7 @@ block content
     ul.docs-index
     p Router Component is a special type of content that can be loaded by Router when we specify route content using <code>component</code> or <code>componentUrl</code> properties.
     p It should help to better structure our apps, keep things in appropriate place, and make many things quicker and in a more clear and comfortable way.
-    <h2>Component Structure</h2>
+    h2 Component Structure
     p If you know what is Vue component, then it will be much easier to understand as it looks pretty similar. Router Component is basically an object with the following properties (all properties are optional):
     table.params-table
       thead
@@ -79,60 +79,60 @@ block content
       p All lifecycle hooks and methods automatically have their <code>this</code> context bound to the component context, so that you can access component data and methods. This means <b>you should not use an arrow function to define a lifecycle method</b> (e.g. <code>created: () => this.doSomething()</code>). The reason is arrow functions bind the parent context, so <code>this</code> will not be the component instance as you expect and <code>this.doSomething</code> will be undefined.
     p So the example route with page component may look like:
     :code(lang="js")
-          routes = [
-            // ...
-            {
-              path: '/some-page/',
-              // Component Object
-              component: {
-                template: `
-                  <div class="page">
-                    <div class="navbar">
-                      <div class="navbar-inner">
-                        <div class="title">{{title}}</div>
-                      </div>
-                    </div>
-                    <div class="page-content">
-                      <a @click="openAlert" class="red-link">Open Alert</a>
-                      <div class="list simple-list">
-                        <ul>
-                          {{#each names}}
-                            <li>{{this}}</li>
-                          {{/each}}
-                        </ul>
-                      </div>
-                    </div>
+      routes = [
+        // ...
+        {
+          path: '/some-page/',
+          // Component Object
+          component: {
+            template: `
+              <div class="page">
+                <div class="navbar">
+                  <div class="navbar-inner">
+                    <div class="title">{{title}}</div>
                   </div>
-                `,
-                style: `
-                  .red-link {
-                    color: red;
-                  }
-                `,
-                data: function () {
-                  return {
-                    title: 'Component Page',
-                    names: ['John', 'Vladimir', 'Timo'],
-                  }
-                },
-                methods: {
-                  openAlert: function () {
-                    var self = this;
-                    self.$app.dialog.alert('Hello world!');
-                  },
-                },
-                on: {
-                  pageInit: function (e, page) {
-                    // do something on page init
-                  },
-                  pageAfterOut: function (e, page) {
-                    // page has left the view
-                  },
-                }
+                </div>
+                <div class="page-content">
+                  <a @click="openAlert" class="red-link">Open Alert</a>
+                  <div class="list simple-list">
+                    <ul>
+                      {{#each names}}
+                        <li>{{this}}</li>
+                      {{/each}}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            `,
+            style: `
+              .red-link {
+                color: red;
+              }
+            `,
+            data: function () {
+              return {
+                title: 'Component Page',
+                names: ['John', 'Vladimir', 'Timo'],
+              }
+            },
+            methods: {
+              openAlert: function () {
+                var self = this;
+                self.$app.dialog.alert('Hello world!');
               },
             },
-            // ...
-          ]
+            on: {
+              pageInit: function (e, page) {
+                // do something on page init
+              },
+              pageAfterOut: function (e, page) {
+                // page has left the view
+              },
+            }
+          },
+        },
+        // ...
+      ]
     h2 Component Context
     p As we said above, all component methods and Template7 compiler are executed in the context of the component.
     p Component context is the object you have returned in component's <code>data</code> and methods from specified <code>methods</code> object, but also extended with the following useful properties:
@@ -145,62 +145,76 @@ block content
         tr
           td $el
           td object
-          td Dom7 instance with component HTML element
+          td
+            p Dom7 instance with component HTML element
             :code(lang="js")
-                  this.$el.find('p').addClass('red')
+              this.$el.find('p').addClass('red')
         tr
           td $<br>$$<br>$dom7
           td function
-          td <a href="dom7.html">Dom7</a> library:
+          td
+            p <a href="dom7.html">Dom7</a> library:
             :code(lang="js")
-                  this.$$('p').text('hello world')
+              this.$$('p').text('hello world')
         tr
-          td $app
+          td $app<br>$f7
           td object
-          td Framework7 app instance
+          td
+            p Framework7 app instance
             :code(lang="js")
-                  this.$app.dialog.alert('Hello world!')
+              this.$app.dialog.alert('Hello world!')
+              /* or */
+              this.$f7.dialog.alert('Hello world!')
         tr
           td $root
           td object
-          td Root data and methods you have specified in <code>data</code> and <code>methods</code> properties on app init
+          td
+            p Root data and methods you have specified in <code>data</code> and <code>methods</code> properties on app init
             :code(lang="js")
-                  var app = new Framework7({
-                    // root data
-                    data: function () {
-                      return {
-                        username: 'johndoe'
-                      }
-                    },
-                    // root methods
-                    methods: {
-                      helloWorld: function () {
-                        app.dialog.alert('Hello world!');
-                      }
-                    }
-                  });
+              var app = new Framework7({
+                // root data
+                data: function () {
+                  return {
+                    username: 'johndoe'
+                  }
+                },
+                // root methods
+                methods: {
+                  helloWorld: function () {
+                    app.dialog.alert('Hello world!');
+                  }
+                }
+              });
 
-                  // then in component:
-                  console.log(this.$root.username); // -> 'johndoe';
+              // then in component:
+              console.log(this.$root.username); // -> 'johndoe';
 
-                  this.$root.helloWorld(); // -> call alert
+              this.$root.helloWorld(); // -> call alert
         tr
-          td $route
+          td $route<br>$f7route
           td object
           td Current route. Contains object with route <code>query</code>, <code>hash</code>, <code>params</code>, <code>path</code> and <code>url</code>
         tr
-          td $router
+          td $router<br>$f7router
           td Router instance
-          td Related router instance
+          td
+            p Related router instance
             :code(lang="js")
-                  this.$router.back(); //navigate back
+              this.$router.back(); //navigate back
+        tr
+          td $id
+          td string
+          td
+            p Component id, used as <a href="#scoped-styles">scoped styles</a> id
         tr
           td $theme
           td object
-          td Object with <code>md</code> and <code>ios</code> boolean properties which indicating current theme. For example:
+          td
+            p Object with <code>md</code>, <code>ios</code> and <code>aurora</code> boolean properties which indicating current theme. For example:
             :code(lang="js")
-                  if (this.$theme.ios) { /* do something when iOS theme is active */ }
-                  if (this.$theme.md) { /* do something when MD theme is active */ }
+              if (this.$theme.ios) { /* do something when iOS theme is active */ }
+              if (this.$theme.md) { /* do something when MD theme is active */ }
+              if (this.$theme.aurora) { /* do something when Aurora theme is active */ }
         tr
           td $setState()
           td function
@@ -211,117 +225,156 @@ block content
     h2 Component Page Events
     p Component page events handlers can be passed in <code>on</code> component property. They are usual DOM <a href="page.html#page-events">Page Events</a>. Because they are DOM events, they accept <code>event</code> as first agrument, and <a href="page.html#page-data">Page Data</a> as second argument. There only difference with usual DOM events is that their context (<code>this</code>) bound to component context and event handler name must be specified in camelCase format (#[code page:init] -> #[code pageInit]):
     :code(lang="js")
-          ...
-          data: function () {
-            return {
-              username: 'johndoe',
-            };
-          },
-          on: {
-            pageMounted: function (e, page) {
-              console.log('page mounted');
-            },
-            pageInit: function (e, page) {
-              console.log(this.username); // -> 'johndoe'
-            },
-            pageBeforeIn: function (e, page) {
-              console.log('page before in');
-            },
-            pageAfterIn: function (e, page) {
-              console.log('page after in');
-            },
-            pageBeforeOut: function (e, page) {
-              console.log('page before out');
-            },
-            pageAfterOut: function (e, page) {
-              console.log('page after out');
-            },
-            pageBeforeRemove: function (e, page) {
-              console.log('page before remove');
-            },
-          }
+      ...
+      data: function () {
+        return {
+          username: 'johndoe',
+        };
+      },
+      on: {
+        pageMounted: function (e, page) {
+          console.log('page mounted');
+        },
+        pageInit: function (e, page) {
+          console.log(this.username); // -> 'johndoe'
+        },
+        pageBeforeIn: function (e, page) {
+          console.log('page before in');
+        },
+        pageAfterIn: function (e, page) {
+          console.log('page after in');
+        },
+        pageBeforeOut: function (e, page) {
+          console.log('page before out');
+        },
+        pageAfterOut: function (e, page) {
+          console.log('page after out');
+        },
+        pageBeforeUnmount: function (e, page) {
+          console.log('page before unmount');
+        },
+        pageBeforeRemove: function (e, page) {
+          console.log('page before remove');
+        },
+      }
     h2 DOM Events Handling
     p Note that additional <code>@</code> attribute in component template. It is a shorthand method to assign event listener to the specified element. Specified event handler will be searched in component <code>methods</code>.
     p Such event handlers are processed only on initial rendering, or for elements patched with VDOM. <b>If you add such element to DOM manually it won't work!</b>
     :code(lang="js")
-          {
+      {
+        // ...
+        methods: {
+          onClick: function() {
             // ...
-            methods: {
-              onClick: function() {
-                // ...
-              }
-            },
-            on: {
-              pageInit: function (page) {
-                // this won't work
-                page.$el.append('<a @click="onClick">Link</a>');
-              }
-            }
           }
+        },
+        on: {
+          pageInit: function (page) {
+            // this won't work
+            page.$el.append('<a @click="onClick">Link</a>');
+          }
+        }
+      }
+    h2 Component Root Element
+    p Component template or render function must return only single HTML element. And it must be an element that is supported by router:
+    ul
+      li
+        p If you load pages as router component then router component must return Page element:
+          :code
+            <template>
+              <div class="page">
+                ...
+              </div>
+            </template>
+      li
+        p If you load modal (<a href="routes.html#routable-modals">Routable Modals</a>) as router component then router component must return that modal element:
+          :code
+            <template>
+              <div class="popup">
+                ...
+              </div>
+            </template>
+      li
+        p If you load panel (<a href="routes.html#routable-panels">Routable Panels</a>) as router component then router component must return Panel element:
+          :code
+            <template>
+              <div class="panel panel-left panel-cover">
+                ...
+              </div>
+            </template>
+      li
+        p If you load tab content (<a href="routes.html#routable-tabs">Routable Tabs</a>) as router component then router component must return Tab's child element that will be inserted inside of routable Tab:
+          :code
+            <template>
+              <div class="some-element">
+                ...
+              </div>
+            </template>
+
     h2 Single File Component
     p It is not very comfortable to specify all component routes under same routes array, especially if we have a lot of such routes. This is why we can use <code>componentUrl</code> instead and out component into single file:
     :code(lang="js")
-          routes = [
-            ...
-            {
-              path: '/some-page/',
-              componentUrl: './some-page.html',
-            },
-            ..
-          ];
+      routes = [
+        ...
+        {
+          path: '/some-page/',
+          componentUrl: './some-page.html',
+        },
+        ..
+      ];
     p And in <code>some-page.html</code>:
     :code(lang="html")
-          <!-- component template -->
-          <template>
-            <div class="page">
-              <div class="navbar">
-                <div class="navbar-inner">
-                  <div class="title">{{title}}</div>
-                </div>
-              </div>
-              <div class="page-content">
-                <a @click="openAlert">Open Alert</a>
-                <div class="list simple-list">
-                  <ul>
-                    {{#each names}}
-                      <li>{{this}}</li>
-                    {{/each}}
-                  </ul>
-                </div>
-              </div>
+      <!-- component template -->
+      <template>
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-inner">
+              <div class="title">{{title}}</div>
             </div>
-          </template>
-          <!-- component styles -->
-          <style>
-            .red-link {
-              color: red;
-            }
-          </style>
-          <!-- rest of component data and methods -->
-          <script>
-            // script must return component object
+          </div>
+          <div class="page-content">
+            <a @click="openAlert">Open Alert</a>
+            <div class="list simple-list">
+              <ul>
+                {{#each names}}
+                  <li>{{this}}</li>
+                {{/each}}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </template>
+      <!-- component styles -->
+      <style>
+        .red-link {
+          color: red;
+        }
+      </style>
+      <!-- rest of component data and methods -->
+      <script>
+        // script must return component object
+        return {
+          data: function () {
             return {
-              data: function () {
-                return {
-                  title: 'Component Page',
-                  names: ['John', 'Vladimir', 'Timo'],
-                }
-              },
-              methods: {
-                openAlert: function () {
-                  var self = this.$app.dialog.alert('Hello world!');
-                },
-              },
-              on: {
-                pageInit: function () {
-                  // do something on page init
-                },
-                pageAfterOut: function () {
-                  // page has left the view
-                },
-              }
+              title: 'Component Page',
+              names: ['John', 'Vladimir', 'Timo'],
             }
-          </script>
+          },
+          methods: {
+            openAlert: function () {
+              var self = this.$app.dialog.alert('Hello world!');
+            },
+          },
+          on: {
+            pageInit: function () {
+              // do something on page init
+            },
+            pageAfterOut: function () {
+              // page has left the view
+            },
+          }
+        }
+      </script>
     p Well, now it is much cleaner. The <code>&lt;template&gt;</code> and <code>&lt;style&gt;</code> tags will be automatically converted to the same properties of exported component.
     p You may think that it is not valid to have a direct <code>return</code> statement in script, but it is ok because parser puts the content of the script tag into function body.
     h3 ES Template Literals
@@ -335,85 +388,151 @@ block content
     p Template literals are string literals allowing embedded expressions. You can use multi-line strings and string interpolation features with them. They were called "template strings" in prior editions of the ES2015 specification.
 
     :code(lang="js")
-          var a = 5;
-          var b = 10;
-          console.log(`Fifteen is ${a + b} and not ${2 * a + b}.`);
+      var a = 5;
+      var b = 10;
+      console.log(`Fifteen is ${a + b} and not ${2 * a + b}.`);
 
     p To enable your component template being treated as template literal we need to add <code>es</code> attribute to <code>&lt;template&gt;</code> tag. The template from previous example will look like:
     :code(lang="html")
-          <template es>
-            <div class="page">
-              <div class="navbar">
-                <div class="navbar-inner">
-                  <div class="title">${this.title}</div>
-                </div>
-              </div>
-              <div class="page-content">
-                <a @click="openAlert">Open Alert</a>
-                <div class="list simple-list">
-                  <ul>
-                    ${this.names.map((name) => `
-                      <li>${name}</li>
-                    `).join('')}
-                  </ul>
-                </div>
-              </div>
+      <template es>
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-inner">
+              <div class="title">${this.title}</div>
             </div>
-          </template>
+          </div>
+          <div class="page-content">
+            <a @click="openAlert">Open Alert</a>
+            <div class="list simple-list">
+              <ul>
+                ${this.names.map((name) => `
+                  <li>${name}</li>
+                `).join('')}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </template>
 
     h3 Scoped Styles
     p In case you want to scope component styles in single file component to this component only, you may add <code><b>scoped</b></code> attribute to component <code>&lt;style&gt;</code> tag:
     :code(lang="html")
-          <template>
-            <!-- component template -->
-          </template>
+      <template>
+        <!-- component template -->
+      </template>
 
-          <!-- style has additional "scoped" attribute -->
-          <style scoped>
-            p {
-              color: red;
-            }
-            a {
-              text-decoration: none;
-            }
-          </style>
+      <!-- style has additional "scoped" attribute -->
+      <style scoped>
+        p {
+          color: red;
+        }
+        a {
+          text-decoration: none;
+        }
+      </style>
 
-          <script>
-            return {
-              ...
-            }
-          </script>
-    p When scoped style added component element will have additional <code>data-scope="[unique_id]"</code> where [unique_id] is the unique timestamp. And all styles will be refactored to have this unique scope id, for example:
+      <script>
+        return {
+          ...
+        }
+      </script>
+    p When scoped style added component element will have additional <code>data-f7-[unique_id]</code> where [unique_id] is the unique timestamp. And all styles will be refactored to have this unique scope id, for example:
     :code(lang="css")
-          [data-scope="1515740589328"] p {
-            color: red;
-          }
-          [data-scope="1515740589328"] a {
-            text-decoration: none;
-          }
+      [data-f7-3454d941c3] p {
+        color: red;
+      }
+      [data-f7-3454d941c3] a {
+        text-decoration: none;
+      }
     p In case you need to use more complex selector with including component parent reference, then you may use <code><b>{{this}}</b></code> keword to reference the component:
     :code(lang="html")
-          <template>
-            <!-- component template -->
-          </template>
+      <template>
+        <!-- component template -->
+      </template>
 
-          <!-- style has additional "scoped" attribute -->
-          <style scoped>
-            /* all paragraphs in this component will be red under iOS theme */
-            html.ios {{this}} p {
-              color: red;
-            }
-            /* all paragraphs in this component will be green under MD theme */
-            html.md {{this}} p {
-              color: green;
-            }
-          </style>
+      <!-- style has additional "scoped" attribute -->
+      <style scoped>
+        /* all paragraphs in this component will be red under iOS theme */
+        html.ios {{this}} p {
+          color: red;
+        }
+        /* all paragraphs in this component will be green under MD theme */
+        html.md {{this}} p {
+          color: green;
+        }
+      </style>
 
-          <script>
+      <script>
+        return {
+          ...
+        }
+      </script>
+    h3 Usage With WebPack
+    p There is a special <a href="https://github.com/framework7io/framework7-component-loader" target="_blank">framework7-component-loader</a> for WebPack that allows to bundle Single-File Components into main bundle and not to use XHR (e.g. <code>componentUrl</code>) to load and parse component files each time.
+    p This loader parses Single-File component's file and transforms it to plain JS object during bundling process. So, potentially, it can increase app performance because there won't be runtime parsing and compilation.
+    p When this loader is configured, we need to store Single-File components in <code><b>.f7.html</b></code> files and use <code>export default</code> for component export:
+    :code(lang="html")
+      <template>
+        <div class="page">
+          ...
+        </div>
+      </template>
+      <script>
+        export default {
+          data() {
             return {
-              ...
+              foo: 'bar',
             }
-          </script>
+          },
+          methods: {
+            doThis() {
+              // ...
+            }
+          }
+        }
+      </script>
+    p It also possible to import required dependencies and styles:
+    :code(lang="html")
+      <template>
+        <div class="page">
+          ...
+        </div>
+      </template>
+      <script>
+        import './path/to/some-styles.css';
+        import utils from './path/to/utils.js';
+
+        export default {
+          data() {
+            return {
+              foo: 'bar',
+              now: utils.now(),
+            }
+          },
+          methods: {
+            doThis() {
+              // ...
+            }
+          }
+        }
+      </script>
+    p And then we can import it and add to routes:
+    :code(lang="js")
+      // routes.js
+
+      import NewsPages from './path/to/news.f7.html';
+      import ServicePages from './path/to/services.f7.html';
+
+      export default [
+        {
+          path: '/news/',
+          component: NewsPages,
+        },
+        {
+          path: '/services/',
+          component: ServicesPages,
+        }
+      ]
     h2 Virtual DOM
     .important-note
       p
@@ -424,55 +543,55 @@ block content
     p Let's look at that user profile component example that will auto update layout when we request user data:
 
     :code(lang="html")
-        <template>
-          <div class="page">
-            <div class="navbar">
-              <div class="navbar-inner">
-                <div class="title">Profile</div>
-              </div>
-            </div>
-            <div class="page-content">
-              {{#if user}}
-              <!-- Show user list when it is loaded -->
-              <div class="list simple-list">
-                <ul>
-                  <li>First Name: {{user.firstName}}</li>
-                  <li>Last Name: {{user.lastName}}</li>
-                  <li>Age: {{user.age}}</li>
-                </ul>
-              </div>
-              {{else}}
-              <!-- Otherwise show preloader -->
-              <div class="block block-strong text-align-center">
-                <div class="preloader"></div>
-              </div>
-              {{/if}}
+      <template>
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-inner">
+              <div class="title">Profile</div>
             </div>
           </div>
-        </template>
-        <script>
-          return {
-            data() {
-              return {
-                // empty initial user data
-                user: null,
-              }
-            },
-            on: {
-              pageInit() {
-                var self = this;
-                var app = self.$app;
-                // request user data on page init
-                app.request.get('http://api.website.com/get-user-profile', (user) => {
-                  // update component state with new state
-                  self.$setState({
-                    user: user,
-                  });
+          <div class="page-content">
+            {{#if user}}
+            <!-- Show user list when it is loaded -->
+            <div class="list simple-list">
+              <ul>
+                <li>First Name: {{user.firstName}}</li>
+                <li>Last Name: {{user.lastName}}</li>
+                <li>Age: {{user.age}}</li>
+              </ul>
+            </div>
+            {{else}}
+            <!-- Otherwise show preloader -->
+            <div class="block block-strong text-align-center">
+              <div class="preloader"></div>
+            </div>
+            {{/if}}
+          </div>
+        </div>
+      </template>
+      <script>
+        return {
+          data: function () {
+            return {
+              // empty initial user data
+              user: null,
+            }
+          },
+          on: {
+            pageInit: function () {
+              var self = this;
+              var app = self.$app;
+              // request user data on page init
+              app.request.get('http://api.website.com/get-user-profile', (user) => {
+                // update component state with new state
+                self.$setState({
+                  user: user,
                 });
-              },
+              });
             },
-          };
-        </script>
+          },
+        };
+      </script>
     .important-note
       p Note, that direct assignment to component state won't trigger layout update. And if we in previous example used <code>this.user = user</code> it wouldn't be updated. Use <code>$setState</code> whenever you need to update component layout!
     h3 Keys in Lists & Auto-Init Components
@@ -485,71 +604,71 @@ block content
     p When rendering lists, an ideal value for <code>key</code> would be the unique id of each item:
 
     :code(lang="html")
-          <template>
-            ...
-            <ul>
-              {{#each items}}
-              <li key="{{this.id}}">...</li>
-              {{/each}}
-            </ul>
-            ...
-          </template>
-          <script>
+      <template>
+        ...
+        <ul>
+          {{#each items}}
+          <li key="{{this.id}}">...</li>
+          {{/each}}
+        </ul>
+        ...
+      </template>
+      <script>
+        return {
+          data: function () {
             return {
-              data() {
-                return {
-                  items: [
-                    {
-                      id: 1,
-                      title: 'Item A'
-                    },
-                    {
-                      id: 2,
-                      title: 'Item B'
-                    },
-                  ]
-                }
-              }
+              items: [
+                {
+                  id: 1,
+                  title: 'Item A'
+                },
+                {
+                  id: 2,
+                  title: 'Item B'
+                },
+              ]
             }
-          </script>
+          }
+        }
+      </script>
 
     p Same with auto-initialized components like <a href="./range-slider.html">Range Slider</a>, <a href="./gauge.html">Gauge</a> and others that should be automatically initialized (if they have <code>range-slider-init</code>, <code>gauge-init</code>) when they added to DOM, and automatically destroyed when they removed from DOM. So such elements must be also indentified with unique keys.
 
     :code(lang="html")
-          <template>
-            <div class="page">
-              ...
-              <div class="page-content">
-                {{#if gaugeVisible}}
-                <!-- must have unique key -->
-                <div key="gauge" class="gauge gauge-init" data-type="circle"
-                  data-value="0.60"
-                  data-value-text="60%"
-                  data-value-text-color="#ff9800"
-                  data-border-color="#ff9800"
-                ></div>
-                {{/if}}
-                ...
-                <a href="#" class="button" @click="showGauge">Show Gauge</a>
-              </div>
-            </div>
-          </template>
-          <script>
+      <template>
+        <div class="page">
+          ...
+          <div class="page-content">
+            {{#if gaugeVisible}}
+            <!-- must have unique key -->
+            <div key="gauge" class="gauge gauge-init" data-type="circle"
+              data-value="0.60"
+              data-value-text="60%"
+              data-value-text-color="#ff9800"
+              data-border-color="#ff9800"
+            ></div>
+            {{/if}}
+            ...
+            <a href="#" class="button" @click="showGauge">Show Gauge</a>
+          </div>
+        </div>
+      </template>
+      <script>
+        return {
+          data: function () {
             return {
-              data() {
-                return {
-                  gaugeVisible: false,
-                }
-              },
-              methods: {
-                showGauge() {
-                  this.$setState({
-                    gaugeVisible: true
-                  })
-                },
-              }
+              gaugeVisible: false,
             }
-          </script>
+          },
+          methods: {
+            showGauge: function () {
+              this.$setState({
+                gaugeVisible: true
+              })
+            },
+          }
+        }
+      </script>
     .important-note
       ul
         li Note that <code>key</code> attribute must be unique accross single component.

@@ -1,7 +1,4 @@
 extends _layout
-block vars
-  - includeF7Icons = true
-  - includeMaterialIcons = true
 block content
   .view.view-main.view-init
     .page
@@ -16,8 +13,8 @@ block content
           <ul>
             <li>
               <div class="item-cell width-auto flex-shrink-0">
-                <i class="icon f7-icons ios-only">volume_mute_fill</i>
-                <i class="icon material-icons md-only">volume_mute</i>
+                <i class="icon f7-icons if-not-md" style="width:25px">volume_mute_fill</i>
+                <i class="icon material-icons md-only" style="width:24px">volume_mute</i>
               </div>
               <div class="item-cell flex-shrink-3">
                 <div class="range-slider range-slider-init">
@@ -25,8 +22,8 @@ block content
                 </div>
               </div>
               <div class="item-cell width-auto flex-shrink-0">
-                <i class="icon f7-icons ios-only">volume_fill</i>
-                <i class="icon material-icons md-only">volume_up</i>
+                <i class="icon f7-icons if-not-md" style="width:25px">volume_fill</i>
+                <i class="icon material-icons md-only" style="width:24px">volume_up</i>
               </div>
             </li>
           </ul>
@@ -36,8 +33,8 @@ block content
           <ul>
             <li>
               <div class="item-cell width-auto flex-shrink-0">
-                <i class="icon f7-icons ios-only">circle</i>
-                <i class="icon material-icons md-only">brightness_low</i>
+                <i class="icon f7-icons if-not-md" style="width:25px">circle</i>
+                <i class="icon material-icons md-only" style="width:24px">brightness_low</i>
               </div>
               <div class="item-cell flex-shrink-3">
                 <div class="range-slider range-slider-init color-orange" data-label="true">
@@ -45,8 +42,8 @@ block content
                 </div>
               </div>
               <div class="item-cell width-auto flex-shrink-0">
-                <i class="icon f7-icons ios-only">circle_half</i>
-                <i class="icon material-icons md-only">brightness_high</i>
+                <i class="icon f7-icons if-not-md" style="width:25px">circle_half</i>
+                <i class="icon material-icons md-only" style="width:24px">brightness_high</i>
               </div>
             </li>
           </ul>
@@ -56,18 +53,37 @@ block content
           <ul>
             <li class="item-row">
               <div class="item-cell width-auto flex-shrink-0">
-                <i class="icon f7-icons ios-only">money_dollar</i>
-                <i class="icon material-icons md-only">attach_money</i>
+                <i class="icon f7-icons if-not-md" style="width:25px">money_dollar_round</i>
+                <i class="icon material-icons md-only" style="width:24px">attach_money</i>
               </div>
               <div class="item-cell item-cell-shrink-3">
                 <div id="price-filter" class="range-slider range-slider-init color-green" data-label="true" data-dual="true" data-min="0" data-max="500" data-step="1" data-value-left="200" data-value-right="400"></div>
               </div>
               <div class="item-cell width-auto flex-shrink-0">
-                <i class="icon f7-icons ios-only">money_dollar_fill</i>
-                <i class="icon material-icons md-only">monetization_on</i>
+                <i class="icon f7-icons if-not-md" style="width:25px">money_dollar_round_fill</i>
+                <i class="icon material-icons md-only" style="width:24px">monetization_on</i>
               </div>
             </li>
           </ul>
+        </div>
+
+        <div class="block-title">With Scale</div>
+        <div class="block block-strong">
+          <div class="range-slider range-slider-init" data-min="0" data-max="100" data-label="true" data-step="5" data-value="25" data-scale="true" data-scale-steps="5" data-scale-sub-steps="4"></div>
+        </div>
+        <div class="block-title">Vertical</div>
+        <div class="block block-strong display-flex justify-content-center">
+          <div class="range-slider range-slider-init margin-right" data-vertical="true" data-min="0" data-max="100" data-label="true" data-step="1" data-value="25" style="height: 160px"></div>
+          <div class="range-slider range-slider-init margin-horizontal" data-vertical="true" data-min="0" data-max="100" data-label="true" data-step="1" data-value="50" style="height: 160px"></div>
+          <div class="range-slider range-slider-init margin-horizontal" data-vertical="true" data-min="0" data-max="100" data-label="true" data-step="1" data-value="75" style="height: 160px"></div>
+          <div class="range-slider range-slider-init margin-left" data-dual="true" data-vertical="true" data-min="0" data-max="100" data-label="true" data-step="1" data-value-left="25" data-value-right="75" style="height: 160px"></div>
+        </div>
+        <div class="block-title">Vertical Reversed</div>
+        <div class="block block-strong display-flex justify-content-center">
+          <div class="range-slider range-slider-init color-red margin-right" data-vertical="true" data-vertical-reversed="true" data-min="0" data-max="100" data-label="true" data-step="1" data-value="25" style="height: 160px"></div>
+          <div class="range-slider range-slider-init color-red margin-horizontal" data-vertical="true" data-vertical-reversed="true" data-min="0" data-max="100" data-label="true" data-step="1" data-value="50" style="height: 160px"></div>
+          <div class="range-slider range-slider-init color-red margin-horizontal" data-vertical="true" data-vertical-reversed="true" data-min="0" data-max="100" data-label="true" data-step="1" data-value="75" style="height: 160px"></div>
+          <div class="range-slider range-slider-init color-red margin-left" data-dual="true" data-vertical="true" data-vertical-reversed="true" data-min="0" data-max="100" data-label="true" data-step="1" data-value-left="25" data-value-right="75" style="height: 160px"></div>
         </div>
 block scripts
   script.

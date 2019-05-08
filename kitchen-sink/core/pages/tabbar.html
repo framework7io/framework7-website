@@ -5,18 +5,19 @@
         <div class="left">
             <a href="#" class="link back">
               <i class="icon icon-back"></i>
-              <span class="ios-only">Back</span>
+              <span class="if-not-md">Back</span>
             </a>
           </div>
         <div class="title">Tabbar</div>
-        <div class="right md-only">
+        <div class="right">
           <a class="link" @click="toggleToolbarPosition">
-            <i class="icon material-icons rotate-icon">compare_arrows</i>
+            <i class="icon material-icons rotate-icon md-only">compare_arrows</i>
+            <i class="icon f7-icons rotate-icon if-not-md">reload</i>
           </a>
         </div>
       </div>
     </div>
-    <div class="toolbar tabbar">
+    <div class="toolbar tabbar toolbar-{{toolbarPosition}}">
       <div class="toolbar-inner">
         <a href="#tab-1" class="tab-link tab-link-active">Tab 1</a>
         <a href="#tab-2" class="tab-link">Tab 2</a>
@@ -70,9 +71,16 @@
 </style>
 <script>
   return {
+    data() {
+      return {
+        toolbarPosition: 'bottom',
+      };
+    },
     methods: {
       toggleToolbarPosition: function () {
-        this.$el.find('.toolbar, .tabbar').toggleClass('toolbar-bottom-md');
+        this.$setState({
+          toolbarPosition: this.toolbarPosition === 'top' ? 'bottom' : 'top',
+        });
       },
     }
   }

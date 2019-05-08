@@ -121,6 +121,11 @@ block content
           td Ok
           td Close button text
         tr
+          td closeTimeout
+          td number
+          td
+          td Timeout delay (in ms) to close toast automatically
+        tr
           td cssClass
           td string
           td
@@ -142,7 +147,6 @@ block content
           td Object with events handlers. For example:
             :code(lang="js")
                   var toast = app.toast.create({
-                    title: 'John Doe'
                     text: 'Hello, how are you?',
                     on: {
                       opened: function () {
@@ -294,6 +298,9 @@ block content
           td toastBeforeDestroy
           td <span>toast</span>
           td app
+
+    +cssVars('toast')
+
     .with-device
       h2(data-device-preview="../docs-demos/core/toast.html") Examples
       :code(lang="html")

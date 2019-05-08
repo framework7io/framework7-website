@@ -36,7 +36,7 @@ block content
         tr
           td page:mounted
           td Page Element<span>&lt;div class="page"&gt;</span>
-          td Event will be triggered when new page just inserted to DOM
+          td Event will be triggered when new page just inserted to DOM. Or when page with <code>keepAlive</code> route is mounted/attached to DOM
         tr
           td page:init
           td Page Element<span>&lt;div class="page"&gt;</span>
@@ -62,9 +62,13 @@ block content
           td Page Element<span>&lt;div class="page"&gt;</span>
           td Event will be triggered after page transitioned out of view
         tr
+          td page:beforeunmount
+          td Page Element<span>&lt;div class="page"&gt;</span>
+          td Event will be triggered when page with <code>keepAlive</code> route is going to be unmounted/detached from DOM
+        tr
           td page:beforeremove
           td Page Element<span>&lt;div class="page"&gt;</span>
-          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
+          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. This event won't be triggered for <code>keepAlive</code> routes.
     p Lets see how we can use these events. There are two ways to add page event handlers:
     :code(lang="js")
           // Option 1. Using one 'page:init' handler for all pages
@@ -134,10 +138,6 @@ block content
           td <span class="parameter-type">object</span>
           td Router instance that contains this page (if this View was initialized). Same as <code>page.view.router</code>
         tr
-          td page.app
-          td <span class="parameter-type">string</span>
-          td Initialized app instance
-        tr
           td page.name
           td <span class="parameter-type">string</span>
           td Value of page's <code>data-name</code> attribute
@@ -149,14 +149,6 @@ block content
           td page.$el
           td <span class="parameter-type">object</span>
           td Dom7 instance with Page element
-        tr
-          td page.navbarEl
-          td <span class="parameter-type">HTMLElement</span>
-          td Related navbar element for this page. Available only in iOS theme with dynamic navbar enabled.
-        tr
-          td page.$navbarEl
-          td <span class="parameter-type">object</span>
-          td Dom7 instance with related navbar element for this page. Available only in iOS theme with dynamic navbar enabled.
         tr
           td page.from
           td <span class="parameter-type">string</span>
@@ -203,4 +195,5 @@ block content
 
           // do something with page data
 
+    +cssVars('page')
 

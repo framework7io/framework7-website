@@ -8,13 +8,49 @@ block content
   .docs-nav
     include ../_docs-menu-react
   .docs-content
-    .home-block.home-react
-      .text
-        h1 Framework7 React
-        p Bring components-syntax, structured data and data bindings to Framework7 with power and simplicity of React.js
-      .pic
-        img(src=cdn + "/i/react-intro.png", style="max-width: 680px; width: 100%")
-      br
-      p
-        a(href="introduction.html").button Get Started
+    h1 Framework7 React
+    p Bring components-syntax, structured data and data bindings to Framework7 with power and simplicity of React.js
+    :code(lang="jsx")
+      <App>
+
+        <Statusbar />
+
+        <Panel left cover themeDark>
+          <Navbar title="Left Panel" />
+          <Block>Left panel content</Block>
+        </Panel>
+
+        <Panel right reveal>
+          <Navbar title="Right Panel" />
+          <Block>Right panel content</Block>
+        </Panel>
+
+        <View main>
+          <Page>
+            <Navbar title="My App" />
+            <Block>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eleifend, elit vitae scelerisque vulputate, tortor velit tempus dui, et luctus tellus justo nec velit. Duis scelerisque in tellus et pretium. Ut faucibus fringilla risus, ut dapibus nunc vehicula sit amet. Donec posuere nunc non fermentum commodo.</p>
+            </Block>
+            <Block>
+              <Segmented>
+                <Button panelOpen="left">Left Panel</Button>
+                <Button panelOpen="right">Right Panel</Button>
+              </Segmented>
+            </Block>
+            <List>
+              {
+                [1, 2, 3].map(n => (
+                  <ListItem
+                    key={n}
+                    title={`Item ${n}`}
+                  />
+                ))
+              }
+            </List>
+          </Page>
+        </View>
+
+      </App>
+    p
+      a(href="introduction.html").button Get Started
 

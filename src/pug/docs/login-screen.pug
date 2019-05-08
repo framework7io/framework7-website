@@ -147,7 +147,7 @@ block content
           td
           td Object with events handlers. For example:
             :code(lang="js")
-                  var login screen = app.loginScreen.create({
+                  var loginScreen = app.loginScreen.create({
                     content: '<div class="login-screen">...</div>',
                     on: {
                       opened: function () {
@@ -372,6 +372,9 @@ block content
           </div>
     .important-note
       p Note that on login screen page we have additional "no-navbar", "no-toolbar" and "no-swipeback" classes to hide navigation element from user
+
+    +cssVars('login-screen')
+
     .with-device
       h2(data-device-preview="../docs-demos/core/login-screen.html") Examples
       :code(lang="html")

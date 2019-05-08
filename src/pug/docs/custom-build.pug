@@ -15,7 +15,7 @@ block content
     p Framework7 comes with Gulp builder that allows to build custom library version where you may include only required components/modules. We need the following:
     ol
       li
-        p Download and unzip <a href="https://github.com/nolimits4web/Framework7" target="_blank">Framework7 GitHub repository</a> to local folder
+        p Download and unzip <a href="https://github.com/framework7io/framework7" target="_blank">Framework7 GitHub repository</a> to local folder
       li
         p Install <a href="http://nodejs.org/" target="_blank">Node.js</a> (if not installed)
       li
@@ -80,7 +80,10 @@ block content
                   'autocomplete',
                   'tooltip',
                   'gauge',
+                  'skeleton',
+                  'menu',
                   'vi',
+                  'elevation',
                   'typography',
                 ],
                 // include/exclude dark theme styles
@@ -89,35 +92,26 @@ block content
                 themes: [
                   'ios',
                   'md',
+                  'aurora',
                 ],
                 // modify colors
-                ios: {
-                  themeColor: '#007aff',
-                  colors: {
-                    red: '#ff3b30',
-                    green: '#4cd964',
-                    blue: '#007aff',
-                    pink: '#ff2d55',
-                    yellow: '#ffcc00',
-                    orange: '#ff9500',
-                    gray: '#8e8e93',
-                    white: '#ffffff',
-                    black: '#000000',
-                  },
-                },
-                md: {
-                  themeColor: '#2196f3',
-                  colors: {
-                    red: '#f44336',
-                    green: '#4caf50',
-                    blue: '#2196f3',
-                    pink: '#e91e63',
-                    yellow: '#ffeb3b',
-                    orange: '#ff9800',
-                    gray: '#9e9e9e',
-                    white: '#ffffff',
-                    black: '#000000',
-                  },
+                themeColor: '#007aff',
+                colors: {
+                  red: '#ff3b30',
+                  green: '#4cd964',
+                  blue: '#2196f3',
+                  pink: '#ff2d55',
+                  yellow: '#ffcc00',
+                  orange: '#ff9500',
+                  purple: '#9c27b0',
+                  deeppurple: '#673ab7',
+                  lightblue: '#5ac8fa',
+                  teal: '#009688',
+                  lime: '#cddc39',
+                  deeporange: '#ff6b22',
+                  gray: '#8e8e93',
+                  white: '#ffffff',
+                  black: '#000000',
                 },
               };
 
@@ -125,23 +119,10 @@ block content
 
       li
         p Now, we are ready to build custom version of Framework7. We need to execute:
-        :code              $ npm run build-core:prod -- --config scripts/my-config.js --output path/to/output/folder
+        :code
+          $ npm run build-core:prod -- --config scripts/my-config.js --output path/to/output/folder
       li
         p That is all. Now you should see newly generated js and css files in specified output folder
-      li
-        p If you are in hurry and want to see how its working then do follow step 1 to 4
-        :code              $ npm run build-core:dev
-        p The result is available in build/ folder.
-      li
-        p To build production version of Framework7:
-        :code              $ npm run build-core:prod
-        p Production version will be available in dist/ folder.
-      li Run Kitchen Sink with development environment
-        :code              $ npm run core:dev
-      li Run Kitchen Sink with Production environment
-        :code              $ npm run core:prod
-      li Kitchen Sink is live
-        p Visit http://localhost:3000/kitchen-sink/core/ From Youre Browser
 
     h2 ES Modules
     p If you use bundler like Webpack or Rollup you can use only required Framework7 JS components without that build process and by importing only required components:
@@ -158,7 +139,7 @@ block content
           Framework7.use([Searchbar, Calendar, Popup]);
 
           // Init app
-          var app = new Framework({/*...*/});
+          var app = new Framework7({/*...*/});
     p The following components are available for importing (all other components are part of the core):
     table
       thead
@@ -303,51 +284,69 @@ block content
           td Gauge
           td <code>framework7/components/gauge/gauge.js</code>
         tr
+          td Skeleton
+          td <code>framework7/components/skeleton/skeleton.js</code>
+        tr
+          td Menu
+          td <code>framework7/components/menu/menu.js</code>
+        tr
           td Vi
           td <code>framework7/components/vi/vi.js</code>
         tr
           td Typography
           td <code>framework7/components/typography/typography.js</code>
     h2 Less.js
-    p Framework7 styles are build with <a href="http://lesscss.org/" target="_blank">Less.js</a>. If you use Less and NPM in your app/project then you can easily create custom framework7 stylesheet with only components you need.
+    p Framework7 styles are built with <a href="http://lesscss.org/" target="_blank">Less.js</a>. If you use Less and NPM in your app/project then you can easily create custom framework7 stylesheet with only components you need.
     p Create your own <code>framework7.less</code> file:
     :code(lang="less")
-          // core
-          @import url('path/to/node_modules/framework7/framework7.less');
+      // core
+      @import url('path/to/node_modules/framework7/framework7.less');
 
-          // import only components you need
-          @import url('path/to/node_modules/framework7/components/searchbar/searchbar.less');
-          @import url('path/to/node_modules/framework7/components/calendar/calendar.less');
-          @import url('path/to/node_modules/framework7/components/popup/popup.less');
+      // import only components you need
+      @import url('path/to/node_modules/framework7/components/searchbar/searchbar.less');
+      @import url('path/to/node_modules/framework7/components/calendar/calendar.less');
+      @import url('path/to/node_modules/framework7/components/popup/popup.less');
     p We can go even further and specify Framework7's main color theme and required colors in custom <code>framework7.less</code> file:
     :code(lang="less")
-          // core
-          @import url('path/to/node_modules/framework7/framework7.less');
+      // core
+      @import url('path/to/node_modules/framework7/framework7.less');
 
-          // import only components you need
-          @import url('path/to/node_modules/framework7/components/searchbar/searchbar.less');
-          @import url('path/to/node_modules/framework7/components/calendar/calendar.less');
-          @import url('path/to/node_modules/framework7/components/popup/popup.less');
+      // import only components you need
+      @import url('path/to/node_modules/framework7/components/searchbar/searchbar.less');
+      @import url('path/to/node_modules/framework7/components/calendar/calendar.less');
+      @import url('path/to/node_modules/framework7/components/popup/popup.less');
 
-          // include/exclude themes
-          @includeIosTheme: true;
-          @includeMdTheme: true;
+      // include/exclude themes
+      @includeIosTheme: true;
+      @includeMdTheme: true;
+      @includeAuroraTheme: true;
 
-          // include/exclude dark theme
-          @includeDarkTheme: true;
+      // include/exclude dark theme
+      @includeDarkTheme: true;
 
-          // iOS theme color
-          @themeColorIos: #007aff;
-          // MD theme color
-          @themeColorMd: #2196f3;
+      // Theme color
+      @themeColor: #007aff;
 
-          // Extra colors for iOS theme
-          @colorsIos: red #ff3b30, green #4cd964, blue #007aff, pink #ff2d55, yellow #ffcc00, orange #ff9500, gray #8e8e93, white #ffffff, black #000000;
+      // Extra colors
+      @colors: {
+        red: #ff3b30;
+        green: #4cd964;
+        blue: #2196f3;
+        pink: #ff2d55;
+        yellow: #ffcc00;
+        orange: #ff9500;
+        purple: #9c27b0;
+        deeppurple: #673ab7;
+        lightblue: #5ac8fa;
+        teal: #009688;
+        lime: #cddc39;
+        deeporange: #ff6b22;
+        gray: #8e8e93;
+        white: #ffffff;
+        black: #000000;
+      };
 
-          // Extra colors for MD theme
-          @colorsMd: red #f44336, green #4caf50, blue #2196f3, pink #e91e63, yellow #ffeb3b, orange #ff9800, gray #9e9e9e, white #ffffff, black #000000;
-
-          // change to true to generate RTL styles
-          @rtl: false;
+      // change to true to generate RTL styles
+      @rtl: false;
 
 

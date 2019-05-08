@@ -24,7 +24,7 @@ block content
 
     h2 Utils Methods
 
-    h3 parseUrlQuery
+    h3 #[code parseUrlQuery()]
     .method-wrap
       p
         span.method app.utils.parseUrlQuery(<span>url</span>)
@@ -38,7 +38,7 @@ block content
           var query = app.utils.parseUrlQuery('http://google.com/?id=5&foo=bar');
           console.log(query); // { id: 5, foo: 'bar' }
 
-    h3 serializeObject
+    h3 #[code serializeObject()]
     .method-wrap
       p
         span.method app.utils.serializeObject(<span>object</span>)
@@ -52,7 +52,7 @@ block content
           var params = { foo: 'bar', id: 5 };
           console.log(app.utils.serializeObject(params)); // 'foo=bar&id=5'
 
-    h3 requestAnimationFrame
+    h3 #[code requestAnimationFrame()]
     .method-wrap
       p
         span.method app.utils.requestAnimationFrame(<span>callback</span>)
@@ -71,7 +71,7 @@ block content
           }
           animId = app.utils.requestAnimationFrame(anim);
 
-    h3 cancelAnimationFrame
+    h3 #[code cancelAnimationFrame()]
     .method-wrap
       p
         span.method app.utils.cancelAnimationFrame(<span>requestID</span>)
@@ -83,7 +83,7 @@ block content
     :code(lang="js")
           app.utils.cancelAnimationFrame(animId);
 
-    h3 removeDiacritics
+    h3 #[code removeDiacritics()]
     .method-wrap
       p
         span.method app.utils.removeDiacritics(<span>text</span>)
@@ -97,7 +97,7 @@ block content
           var text = app.utils.removeDiacritics('ÁÓL');
           console.log(text); //-&gt; 'AOL'
 
-    h3 nextFrame
+    h3 #[code nextFrame()]
     .method-wrap
       p
         span.method app.utils.nextFrame(<span>callback</span>)
@@ -112,7 +112,7 @@ block content
             // do something on next frame
           });
 
-    h3 nextTick
+    h3 #[code nextTick()]
     .method-wrap
       p
         span.method app.utils.nextTick(<span>callback</span>, <span>delay</span>)
@@ -130,7 +130,7 @@ block content
             // do something on next tick
           });
 
-    h3 now
+    h3 #[code now()]
     .method-wrap
       p
         span.method app.utils.now()
@@ -141,7 +141,7 @@ block content
             var timeDiff = app.utils.now() - now;
             console.log(timeDiff + 'ms past');
           }, 2000);
-    h3 extend
+    h3 #[code extend()]
     .method-wrap
       p
         span.method app.utils.extend(<span>target</span>, <span>...from</span>)
@@ -163,7 +163,7 @@ block content
           // Pass as empty object as target to copy a into b
           var b = app.utils.extend({}, a);
 
-          console.log(b); // { apple:0, cherry: 97 }
+          console.log(b); // { apple: 0, cherry: 97 }
           console.log(a === b); // false
     :code(lang="js")
           var a = {
@@ -171,28 +171,28 @@ block content
             cherry: 97
           };
           var b = {
-            bannana: 10,
+            banana: 10,
             pineapple: 20,
           }
 
           // Extends a with b
           app.utils.extend(a, b);
 
-          console.log(a); // { apple: 0, cherry: 97, bannana: 10, peneapple: 20 }
+          console.log(a); // { apple: 0, cherry: 97, banana: 10, pineapple: 20 }
     :code(lang="js")
           var a = {
             apple: 0,
             cherry: 97
           };
           var b = {
-            bannana: 10,
+            banana: 10,
             pineapple: 20,
           }
 
           // Create new object c from the merge of a and b
           var c = app.utils.extend({}, a, b);
 
-          console.log(c); // { apple: 0, cherry: 97, bannana: 10, peneapple: 20 }
+          console.log(c); // { apple: 0, cherry: 97, banana: 10, pineapple: 20 }
     :code(lang="js")
           var a = {
             apple: 0,
@@ -206,9 +206,9 @@ block content
           // Extend a with b
           app.utils.extend(a, b);
 
-          console.log(a); // { apple: 10, cherry: 97, peneapple: 20 }
+          console.log(a); // { apple: 10, cherry: 97, pineapple: 20 }
 
-    h3 uniqueNumber
+    h3 #[code uniqueNumber()]
     .method-wrap
       p
         span.method app.utils.uniqueNumber()
@@ -220,7 +220,7 @@ block content
 
       app.utils.uniqueNumber(); // -> 4
 
-    h3 id
+    h3 #[code id()]
     .method-wrap
       p
         span.method app.utils.id(<span>mask</span>, <span>map</span>)
@@ -239,3 +239,184 @@ block content
       app.utils.id('xxxx-xxxx-xxxx-xxxx') // -> 1ea3-f127-dc67-627d
 
       app.utils.id('xxxx-xxxx', 'abcd') // -> aabc-ccda
+
+    h3 #[code preloaderContent()]
+    p There are methods to return theme-related (iOS, MD or Aurora) content of <a href="preloader.html#preloader-layout">Preloader</a> element. This method can be useful if you create preloaders dynamically.
+    .method-wrap
+      p
+        span.method app.utils.iosPreloaderContent()
+        span - returns required preloader inner content (HTML string) for iOS theme
+    .method-wrap
+      p
+        span.method app.utils.mdPreloaderContent()
+        span - returns required preloader inner content (HTML string) for MD theme
+    .method-wrap
+      p
+        span.method app.utils.auroraPreloaderContent()
+        span - returns required preloader inner content (HTML string) for Aurora theme
+    :code(lang="js")
+      // call method dynamically based on current app theme
+      var preloaderContent = app.utils[app.theme + 'PreloaderContent']();
+
+      // create required preloader content
+      var myPreloader = '<div class="preloader">' + preloaderContent + '</div>';
+
+      // add it somewhere
+      $('.something').append(myPreloader);
+
+
+    h3 #[code colorHexToRgb()]
+    .method-wrap
+      p
+        span.method app.utils.colorHexToRgb(<span>hexColor</span>)
+        span - converts HEX color to RGB color
+      ul.method-parameters
+        li
+          span.parameter hexColor
+          |  - <span class="parameter-type">string</span> - HEX color string
+      p.method-returns returns <code>[R, G, B]</code> array
+    :code(lang="js")
+      app.utils.colorHexToRgb('#f00') // -> [255, 0, 0]
+
+    h3 #[code colorRgbToHex()]
+    .method-wrap
+      p
+        span.method app.utils.colorRgbToHex(<span>R</span>, <span>G</span>, <span>B</span>)
+        span - converts RGB color to HEX color
+      ul.method-parameters
+        li
+          span.parameter R
+          |  - <span class="parameter-type">number</span> - red value (0 - 255)
+        li
+          span.parameter G
+          |  - <span class="parameter-type">number</span> - green value (0 - 255)
+        li
+          span.parameter B
+          |  - <span class="parameter-type">number</span> - blue value (0 - 255)
+      p.method-returns returns HEX color string
+    :code(lang="js")
+      app.utils.colorHexToRgb(255, 0, 0) // -> '#ff0000'
+
+    h3 #[code colorRgbToHsl()]
+    .method-wrap
+      p
+        span.method app.utils.colorRgbToHsl(<span>R</span>, <span>G</span>, <span>B</span>)
+        span - converts RGB color to HSL color
+      ul.method-parameters
+        li
+          span.parameter R
+          |  - <span class="parameter-type">number</span> - red value (0 - 255)
+        li
+          span.parameter G
+          |  - <span class="parameter-type">number</span> - green value (0 - 255)
+        li
+          span.parameter B
+          |  - <span class="parameter-type">number</span> - blue value (0 - 255)
+      p.method-returns returns <code>[H, S, L]</code> array
+    :code(lang="js")
+      app.utils.colorRgbToHsl(255, 0, 0) // -> [0, 1, 0.5]
+
+    h3 #[code colorHslToRgb()]
+    .method-wrap
+      p
+        span.method app.utils.colorHslToRgb(<span>H</span>, <span>S</span>, <span>L</span>)
+        span - converts HSL color to RGB color
+      ul.method-parameters
+        li
+          span.parameter H
+          |  - <span class="parameter-type">number</span> - hue value (0 - 360)
+        li
+          span.parameter S
+          |  - <span class="parameter-type">number</span> - saturation value (0 - 1)
+        li
+          span.parameter L
+          |  - <span class="parameter-type">number</span> - lightness value (0 - 1)
+      p.method-returns returns <code>[R, G, B]</code> array
+    :code(lang="js")
+      app.utils.colorHslToRgb(0, 1, 0.5) // -> [255, 0, 0]
+
+    h3 #[code colorHsbToHsl()]
+    .method-wrap
+      p
+        span.method app.utils.colorHsbToHsl(<span>H</span>, <span>S</span>, <span>B</span>)
+        span - converts HSB(V) color to HSL color
+      ul.method-parameters
+        li
+          span.parameter H
+          |  - <span class="parameter-type">number</span> - hue value (0 - 360)
+        li
+          span.parameter S
+          |  - <span class="parameter-type">number</span> - saturation value (0 - 1)
+        li
+          span.parameter B
+          |  - <span class="parameter-type">number</span> - brightness value (0 - 1)
+      p.method-returns returns <code>[H, S, L]</code> array
+    :code(lang="js")
+      app.utils.colorHsbToHsl(360, 0.5, 0.5) // -> [360, 0.33, 0.375]
+
+    h3 #[code colorHslToHsb()]
+    .method-wrap
+      p
+        span.method app.utils.colorHslToHsb(<span>H</span>, <span>S</span>, <span>L</span>)
+        span - converts HSL color to HSB(V) color
+      ul.method-parameters
+        li
+          span.parameter H
+          |  - <span class="parameter-type">number</span> - hue value (0 - 360)
+        li
+          span.parameter S
+          |  - <span class="parameter-type">number</span> - saturation value (0 - 1)
+        li
+          span.parameter L
+          |  - <span class="parameter-type">number</span> - lightness value (0 - 1)
+      p.method-returns returns <code>[H, S, L]</code> array
+    :code(lang="js")
+      app.utils.colorHslToHsb(360, 0.5, 0.5) // -> [360, 0.66, 0.75]
+
+    h3 #[code colorThemeCSSProperties()]
+    .method-wrap
+      p
+        span.method app.utils.colorThemeCSSProperties(<span>hexColor</span>)
+        span - returns object with generate CSS variables required to set specified theme color
+      ul.method-parameters
+        li
+          span.parameter hexColor
+          |  - <span class="parameter-type">string</span> - HEX color string
+      p.method-returns returns object with required CSS variables and their values.
+
+    .method-wrap
+      p
+        span.method app.utils.colorThemeCSSProperties(<span>R</span>, <span>G</span>, <span>B</span>)
+        span - returns object with generate CSS variables required to set specified theme color
+      ul.method-parameters
+        li
+          span.parameter R
+          |  - <span class="parameter-type">number</span> - red value
+        li
+          span.parameter G
+          |  - <span class="parameter-type">number</span> - green value
+        li
+          span.parameter B
+          |  - <span class="parameter-type">number</span> - blue value
+      p.method-returns returns object with required CSS variables and their values.
+
+    :code(lang="js")
+      app.utils.colorThemeCSSProperties('#f00')
+      /* returns the following object:
+      {
+        "--f7-theme-color": "#f00",
+        "--f7-theme-color-rgb": "255, 0, 0",
+        "--f7-theme-color-shade": "#d60000",
+        "--f7-theme-color-tint": "#ff2929"
+      }
+      */
+    :code(lang="js")
+      app.utils.colorThemeCSSProperties(255, 0, 0)
+      /* returns the following object:
+      {
+        "--f7-theme-color": "#f00",
+        "--f7-theme-color-rgb": "255, 0, 0",
+        "--f7-theme-color-shade": "#d60000",
+        "--f7-theme-color-tint": "#ff2929"
+      }
+      */

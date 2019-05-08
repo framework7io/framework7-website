@@ -420,7 +420,7 @@ block content
               app.vi.createAd({
                 fallbackOverlay: false,
                 on: {
-                  autoplayFailed() {
+                  autoplayFailed: function() {
                     const ad = this;
                     app.dialog.alert('Check out this awesome ad', () => {
                       ad.start();
@@ -435,16 +435,16 @@ block content
               app.vi.createAd({
                 autoplay: false,
                 on: {
-                  ready() {
+                  ready: function() {
                     const ad = this;
                     app.dialog.alert('Check out this awesome ad to get the reward', () => {
                       ad.start();
                     })
                   },
-                  complete() {
+                  complete: function() {
                     app.dialog.alert('Congrats! You got the reward!')
                   },
-                  userexit() {
+                  userexit: function() {
                     app.dialog.alert('Sorry, no reward for you!')
                   },
                 }

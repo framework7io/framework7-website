@@ -17,26 +17,26 @@ block content
       li "left" and "top" hairlines are made using <code>:before</code> pseudo elements
     p So, for example, if you want to change navbar's bottom hairline color, you need to change <b>background-color</b> of <code>:after</code> element:
     :code(lang="css")
-          .navbar:after {
-            background-color: red;
-          }
+      .navbar:after {
+        background-color: #ff0000;
+      }
     p To remove bottom hairline on navbar and top hairline on toolbar:
     :code(lang="css")
-          .navbar:after {
-            display:none;
-          }
+      .navbar:after {
+        display:none;
+      }
 
-          .toolbar:before {
-            display:none;
-          }
-    h2 no-hairline Class
+      .toolbar:before {
+        display:none;
+      }
+    h2 #[code no-hairline] Class
     p This helper class can be used to remove hairline. Currently it is supported on Navbar, Toolbar, Subnavbar, Searchbar, Card and its elements (card header, footer).
     P To remove hairline from navbar:
     :code(lang="html")
-          &lt;div class="navbar no-hairline"&gt;
-              ...
-          &lt;/div&gt;
-    h2 no-hairlines Classes
+      &lt;div class="navbar no-hairline"&gt;
+          ...
+      &lt;/div&gt;
+    h2 #[code no-hairlines] Classes
     ul
       li <code>no-hairlines</code> class on List View and Content Block to remove outer hairlines.
       li <code>no-hairlines-md</code> does the same but only for MD theme.
@@ -46,24 +46,31 @@ block content
       li <code>no-hairlines-between-ios</code> does the same but only for MD theme.
 
     :code(lang="html")
-          <!-- remove outer hairlines -->
-          <div class="list no-hairlines">
-            ...
-          </div>
+      <!-- remove outer hairlines -->
+      <div class="list no-hairlines">
+        ...
+      </div>
 
-          <!-- remove hairlines between items -->
-          <div class="list no-hairlines-between">
-            ...
-          </div>
+      <!-- remove hairlines between items -->
+      <div class="list no-hairlines-between">
+        ...
+      </div>
 
-          <!-- remove hairlines between items -->
-          <div class="list no-hairlines-between">
-            ...
-          </div>
+      <!-- remove hairlines between items -->
+      <div class="list no-hairlines-between">
+        ...
+      </div>
 
-          <!-- remove hairlines between items only for MD theme -->
-          <div class="list no-hairlines-between-md">
-            ...
-          </div>
+      <!-- remove hairlines between items only for MD theme -->
+      <div class="list no-hairlines-between-md">
+        ...
+      </div>
+
+    h2 Hairlines CSS Variables
+    p If there is a CSS variable available for hairline/border color, it can be set to transparent, instead of removal. For example to remove (make transparent) List Item hairlines, we may just specify:
+    :code(lang="css")
+      :root {
+        --f7-list-item-border-color: transparent;
+      }
 
 

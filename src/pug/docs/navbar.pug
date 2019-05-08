@@ -102,6 +102,28 @@ block content
                   &lt;/div&gt;
               &lt;/div&gt;
           &lt;/div&gt;
+
+    h3 Large Title
+    p Large-title navbar has additional "row" (or "bar") with large title text, which is get collapsed on page scroll. To make it large we need to add additional #[code navbar-inner-large] class to navbar-inner and add additional #[code title-large] element to it:
+    :code(lang="html")
+      <div class="navbar">
+        <!-- additional "navbar-inner-large" class -->
+        <div class="navbar-inner navbar-inner-large">
+          <div class="left">
+            <!-- ... -->
+          </div>
+          <!-- usual title will be visible when larget title collapsed -->
+          <div class="title">My App</div>
+          <div class="right">
+            <!-- ... -->
+          </div>
+          <!-- large title element -->
+          <div class="title-large">
+            <div class="title-large-text">My App</div>
+          </div>
+        </div>
+      </div>
+
     h3 Theme-specific Styling
     p In iOS theme Navbar has thin border on the bottom. To disable this border you need to add <code><b>no-hairline</b></code> class to navbar element:
     :code(lang="html")
@@ -109,9 +131,11 @@ block content
     p In MD theme Navbar has shadow. To disable this shadow you need to add <code><b>no-shadow</b></code> class to navbar element:
     :code(lang="html")
           <div class="navbar no-shadow">...</div>
+
     h2 Navbar Type
     p Now let's look where we can place our Navbar in DOM. There are several rules to place Navbar.
-    h3 Static Navbar
+
+    h3 Static Navbar Type
     p Static navbar position is the probably most rarely used layout type. In this case Navbar is just part of the scrollable page content:
     :code(lang="html")
           <div class="page">
@@ -123,24 +147,26 @@ block content
 
             </div>
           </div>
-    h3 Fixed Navbar
+
+    h3 Fixed Navbar Type
     p Fixed navbar is also part of the page but it is always visible on screen not depending on page scroll. In this case it must be a direct child of page and if page has also fixed toolbar then it must be BEFORE the toolbar:
     :code(lang="html")
-          <div class="page">
-            <!-- Fixed navbar goes ALWAYS FIRST -->
-            <div class="navbar">...</div>
-            <!-- Fixed toolbar goes ALWAYS AFTER navbar -->
-            <div class="toolbar">...</div>
+      <div class="page">
+        <!-- Fixed navbar goes ALWAYS FIRST -->
+        <div class="navbar">...</div>
+        <!-- Fixed toolbar goes ALWAYS AFTER navbar -->
+        <div class="toolbar toolbar-bottom">...</div>
 
-            <!-- Scrollable page content -->
-            <div class="page-content">
-              ...
-            </div>
-          </div>
+        <!-- Scrollable page content -->
+        <div class="page-content">
+          ...
+        </div>
+      </div>
     .important-note
       p
         strong Fixed Navbar must always be a direct child of a page and BEFORE the toolbar (if fixed toolbar is used on this page)
-    h3 Common Navbar
+
+    h3 Common Navbar Type
     p If we need only one common navbar for all pages in View then it must be a direct child of this view and be BEFORE all pages in view:
     :code(lang="html")
           <div class="view">
@@ -169,17 +195,17 @@ block content
     p It is enabled by default when you use <code>Fixed-positioned</code> navbars, when Navbar is a direct child of the page.
     p If you want to disable it you need to pass <code>iosDynamicNavbar: false</code> for required View on its initialisation or in global <a href="app.html#app-parameters">app parameters</a> for all views. For example:
     :code(lang="js")
-          // Disable globally
-          var app = new Framework7({
-            view: {
-              iosDynamicNavbar: false,
-            },
-          });
+      // Disable globally
+      var app = new Framework7({
+        view: {
+          iosDynamicNavbar: false,
+        },
+      });
 
-          // Disable only for view on its initialisation
-          var mainView = app.views.create('.view-main', {
-            iosDynamicNavbar: false,
-          });
+      // Disable only for view on its initialisation
+      var mainView = app.views.create('.view-main', {
+        iosDynamicNavbar: false,
+      });
     .important-note
       p Note that when Dynamic Navbar (<code>iosDynamicNavbar</code>) is enabled and <code>iosSeparateDynamicNavbar</code> parameter is enabled (by default), Navbar HTML element will be detached from the page and moved under View HTML element. In this case to access page related dynamic navbar element use <code>app.navbar.getElByPage(pageEl)</code> <a href="#navbar-app-methods">method</a>
     h3 Dynamic Navbar Layout
@@ -194,47 +220,47 @@ block content
       li
         p For better look you should keep identic transition type for the same Navbar parts through different pages.
     :code(lang="html")
-          <!-- No additional classes, all elements will have "fade" effect on page transition -->
-          <div class="navbar">
-            <div class="navbar-inner">
-              <div class="left">
-                <a href="#" class="link">Home Left</a>
-              </div>
-              <div class="title">Home</div>
-              <div class="right">
-                <a href="#" class="link">Home Right</a>
-              </div>
-            </div>
+      <!-- No additional classes, all elements will have "fade" effect on page transition -->
+      <div class="navbar">
+        <div class="navbar-inner">
+          <div class="left">
+            <a href="#" class="link">Home Left</a>
           </div>
+          <div class="title">Home</div>
+          <div class="right">
+            <a href="#" class="link">Home Right</a>
+          </div>
+        </div>
+      </div>
 
-          <!-- Title and Left will have "sliding" effect on page transition -->
-          <div class="navbar">
-            <div class="navbar-inner">
-              <!-- Additional "sliding" class -->
-              <div class="left sliding">
-                <a href="#" class="link">Home Left</a>
-              </div>
-              <!-- Additional "sliding" class -->
-              <div class="title sliding">Home</div>
-              <div class="right">
-                <a href="#" class="link">Home Right</a>
-              </div>
-            </div>
+      <!-- Title and Left will have "sliding" effect on page transition -->
+      <div class="navbar">
+        <div class="navbar-inner">
+          <!-- Additional "sliding" class -->
+          <div class="left sliding">
+            <a href="#" class="link">Home Left</a>
           </div>
+          <!-- Additional "sliding" class -->
+          <div class="title sliding">Home</div>
+          <div class="right">
+            <a href="#" class="link">Home Right</a>
+          </div>
+        </div>
+      </div>
 
-          <!-- All parts will have "sliding" effect on page transition -->
-          <div class="navbar">
-            <!-- Additional "sliding" class -->
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a href="#" class="link">Home Left</a>
-              </div>
-              <div class="title">Home</div>
-              <div class="right">
-                <a href="#" class="link">Home Right</a>
-              </div>
-            </div>
+      <!-- All parts will have "sliding" effect on page transition -->
+      <div class="navbar">
+        <!-- Additional "sliding" class -->
+        <div class="navbar-inner sliding">
+          <div class="left">
+            <a href="#" class="link">Home Left</a>
           </div>
+          <div class="title">Home</div>
+          <div class="right">
+            <a href="#" class="link">Home Right</a>
+          </div>
+        </div>
+      </div>
 
     h2 Navbar App Methods
     p We can use following app methods available for Navbar:
@@ -254,12 +280,12 @@ block content
               li <span class="parameter">animated</span> - <span class="parameter-type">Boolean</span> - wheter it should be shown with animation or not. By default is <code>true</code>
         tr
           td app.navbar.size(<span>navbarEl</span>)
-          td Recalculate positional styles for Navbar elements. It could be useful after you change some of Navbar elements dynamically. <span class="ios-only">This will have effect only in iOS theme</span>
+          td Recalculate positional styles for Navbar elements. It could be useful after you change some of Navbar elements dynamically.
             ul.method-parameters
               li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
         tr
           td app.navbar.getElByPage(<span>pageEl</span>)
-          td Get navbar HTML element by specified page element. Useful only when dynamic navbar is enabled. In this case it is out of the page container. <span class="ios-only">This will have effect only in iOS theme</span>
+          td Get navbar HTML element by specified page element. Useful only when dynamic navbar is enabled. In this case it is out of the page container.
             ul.method-parameters
               li <span class="parameter">pageEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of page where to look for navbar. Required.
     h2 Navbar App Parameters
@@ -296,7 +322,28 @@ block content
           td iosCenterTitle
           td boolean
           td true
-          td When enabled then it will try to position title at the center in iOS theme. Sometime (with some custom design) it may not needed. <span class="ios-only">This will have effect only in iOS theme</span>
+          td When enabled then it will try to position title at the center in iOS theme. Sometime (with some custom design) it may not needed.
+        tr
+          td mdCenterTitle
+          td boolean
+          td false
+          td When enabled then it will try to position title at the center in MD theme. Sometime (with some custom design) it may not needed.
+        tr
+          td auroraCenterTitle
+          td boolean
+          td true
+          td When enabled then it will try to position title at the center in Aurora theme. Sometime (with some custom design) it may not needed.
+        tr
+          td collapseLargeTitleOnScroll
+          td boolean
+          td true
+          td When enabled large title will be collapsed on page scroll top, and expanded again on top of the page.
+        tr
+          td snapPageScrollToLargeTitle
+          td boolean
+          td true
+          td When enabled it will snap page scroll to large title collapse/expand positions, so it will make impossible to leave page scroll in the middle of large title position. Has effect only when #[code collapseLargeTitleOnScroll] is enabled.
+
 
     p For example:
     :code(lang="js")
@@ -342,6 +389,61 @@ block content
                 ...
             &lt;/div&gt;
           &lt;/div&gt;
+
+    h2 Navbar Events
+    p Navbar will fire the following DOM events on Navbar element (#[code &lt;div class="navbar"&gt;]) and app events on app instance:
+
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td navbar:hide
+          td Navbar <span>&lt;div class="navbar"&gt;</span>
+          td Event will be triggered when Navbar becomes hidden
+        tr
+          td navbar:show
+          td Navbar <span>&lt;div class="navbar"&gt;</span>
+          td Event will be triggered when Navbar becomes visible
+        tr
+          td navbar:collapse
+          td Navbar <span>&lt;div class="navbar"&gt;</span>
+          td Event will be triggered when Navbar with large title collapsed (from large navbar to usual navbar)
+        tr
+          td navbar:expand
+          td Navbar <span>&lt;div class="navbar"&gt;</span>
+          td Event will be triggered when Navbar with large title expanded (from usual navbar to large navbar)
+    h3 App Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          td navbarHide
+          td <span>(el)</span>
+          td Event will be triggered when Navbar becomes hidden
+        tr
+          td navbarShow
+          td <span>(el)</span>
+          td Event will be triggered when Navbar becomes visible
+        tr
+          td navbarCollapse
+          td <span>(el)</span>
+          td Event will be triggered when Navbar with large title collapsed (from large navbar to usual navbar)
+        tr
+          td navbarExpand
+          td <span>(el)</span>
+          td Event will be triggered when Navbar with large title expanded (from usual navbar to large navbar)
+
+    +cssVars('navbar')
+
     .with-device
       h2(data-device-preview="../docs-demos/core/navbar.html") Examples
       h3 Static Navbar
@@ -354,7 +456,7 @@ block content
                     <div class="left">
                       <a class="link back">
                         <i class="icon icon-back"></i>
-                        <span class="ios-only">Back</span>
+                        <span class="if-not-md">Back</span>
                       </a>
                     </div>
                     <div class="title">Static Navbar</div>
@@ -369,26 +471,54 @@ block content
             </div>
       h3 Fixed Navbar
       :code(lang="html")
-            <div class="page">
-              <!-- Fixed/Dynamic Navbar -->
-              <div class="navbar">
-                <div class="navbar-inner sliding">
-                  <div class="left">
-                    <a class="link back">
-                      <i class="icon icon-back"></i>
-                      <span class="ios-only">Back</span>
-                    </a>
-                  </div>
-                  <div class="title">Fixed Navbar</div>
-                </div>
+        <div class="page">
+          <!-- Fixed/Dynamic Navbar -->
+          <div class="navbar">
+            <div class="navbar-inner sliding">
+              <div class="left">
+                <a class="link back">
+                  <i class="icon icon-back"></i>
+                  <span class="if-not-md">Back</span>
+                </a>
               </div>
-              <div class="page-content">
-                <div class="block">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
-                  ...
-                </div>
+              <div class="title">Fixed Navbar</div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="block">
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
+              ...
+            </div>
+          </div>
+        </div>
+
+      h3 Large Title
+      :code(lang="html")
+        <div class="page">
+          <div class="navbar">
+            <!-- Additional "navbar-inner-large" class on navbar-inner -->
+            <div class="navbar-inner navbar-inner-large sliding">
+              <div class="left">
+                <a class="link back">
+                  <i class="icon icon-back"></i>
+                  <span class="if-not-md">Back</span>
+                </a>
+              </div>
+              <div class="title">Large Title</div>
+              <!-- Large title element -->
+              <div class="title-large">
+                <div class="title-large-text">Large Title</div>
               </div>
             </div>
+          </div>
+          <div class="page-content">
+            <div class="block">
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
+              ...
+            </div>
+          </div>
+        </div>
+
       h3 Navbar API
       :code(lang="html")
             <div class="page">
@@ -397,7 +527,7 @@ block content
                   <div class="left">
                     <a class="link back">
                       <i class="icon icon-back"></i>
-                      <span class="ios-only">Back</span>
+                      <span class="if-not-md">Back</span>
                     </a>
                   </div>
                   <div class="title">Navbar API</div>
@@ -431,7 +561,7 @@ block content
                   <div class="left">
                     <a class="link back">
                       <i class="icon icon-back"></i>
-                      <span class="ios-only">Back</span>
+                      <span class="if-not-md">Back</span>
                     </a>
                   </div>
                   <div class="title">Hide On Scroll</div>

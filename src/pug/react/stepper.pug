@@ -125,20 +125,30 @@ block content
           td false
           td Makes stepper round for MD theme only
         tr
-          td big
+          td roundAurora
           td boolean
           td false
-          td Makes big stepper
+          td Makes stepper round for Aurora theme only
         tr
-          td bigIos
+          td large
           td boolean
           td false
-          td Makes big stepper for iOS theme only
+          td Makes large stepper
         tr
-          td bigMd
+          td largeIos
           td boolean
           td false
-          td Makes big stepper for MD theme only
+          td Makes large stepper for iOS theme only
+        tr
+          td largeMd
+          td boolean
+          td false
+          td Makes large stepper for MD theme only
+        tr
+          td largeAurora
+          td boolean
+          td false
+          td Makes large stepper for Aurora theme only
         tr
           td small
           td boolean
@@ -155,6 +165,11 @@ block content
           td false
           td Makes small stepper for MD theme only
         tr
+          td smallAurora
+          td boolean
+          td false
+          td Makes small stepper for Aurora theme only
+        tr
           td fill
           td boolean
           td false
@@ -170,10 +185,30 @@ block content
           td false
           td Makes stepper filled color for MD theme only
         tr
+          td fillAurora
+          td boolean
+          td false
+          td Makes stepper filled color for Aurora theme only
+        tr
           td raised
           td boolean
           td false
-          td Makes stepper raised. Affects MD theme only
+          td Makes stepper raised.
+        tr
+          td raisedIos
+          td boolean
+          td false
+          td Makes stepper raised for iOS theme.
+        tr
+          td raisedMd
+          td boolean
+          td false
+          td Makes stepper raised for MD theme.
+        tr
+          td raisedAurora
+          td boolean
+          td false
+          td Makes stepper raised for Aurora theme.
     h2 Stepper Events
     table.events-table
       thead
@@ -306,28 +341,28 @@ block content
 
                       <Row className="margin-top">
                         <Col>
-                          <small className="display-block">Big</small>
-                          <Stepper big></Stepper>
+                          <small className="display-block">Large</small>
+                          <Stepper large></Stepper>
                         </Col>
                         <Col>
-                          <small className="display-block">Big Round</small>
-                          <Stepper big round></Stepper>
+                          <small className="display-block">Large Round</small>
+                          <Stepper large round></Stepper>
                         </Col>
                       </Row>
 
                       <Row className="margin-top">
                         <Col>
-                          <small className="display-block">Big Fill</small>
-                          <Stepper big fill></Stepper>
+                          <small className="display-block">Large Fill</small>
+                          <Stepper large fill></Stepper>
                         </Col>
                         <Col>
-                          <small className="display-block">Big Round Fill</small>
-                          <Stepper big round fill></Stepper>
+                          <small className="display-block">Large Round Fill</small>
+                          <Stepper large round fill></Stepper>
                         </Col>
                       </Row>
                     </Block>
 
-                    <BlockTitle>Raised (MD-theme only)</BlockTitle>
+                    <BlockTitle>Raised</BlockTitle>
                     <Block strong className="text-align-center">
                       <Row>
                         <Col>
@@ -375,23 +410,23 @@ block content
 
                       <Row className="margin-top">
                         <Col>
-                          <small className="display-block">Big</small>
-                          <Stepper raised big></Stepper>
+                          <small className="display-block">Large</small>
+                          <Stepper raised large></Stepper>
                         </Col>
                         <Col>
-                          <small className="display-block">Big Round</small>
-                          <Stepper raised big round></Stepper>
+                          <small className="display-block">Large Round</small>
+                          <Stepper raised large round></Stepper>
                         </Col>
                       </Row>
 
                       <Row className="margin-top">
                         <Col>
-                          <small className="display-block">Big Fill</small>
-                          <Stepper raised big fill></Stepper>
+                          <small className="display-block">Large Fill</small>
+                          <Stepper raised large fill></Stepper>
                         </Col>
                         <Col>
-                          <small className="display-block">Big Round Fill</small>
-                          <Stepper raised big round fill></Stepper>
+                          <small className="display-block">Large Round Fill</small>
+                          <Stepper raised large round fill></Stepper>
                         </Col>
                       </Row>
                     </Block>

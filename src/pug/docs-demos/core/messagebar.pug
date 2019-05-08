@@ -1,7 +1,4 @@
 extends _layout
-block vars
-  - var includeF7Icons = true
-  - var includeMaterialIcons = true
 block content
   .view.view-main.view-init
     .page
@@ -11,7 +8,7 @@ block content
       .toolbar.messagebar
         .toolbar-inner
           a(href="#").link.toggle-sheet
-            <i class="icon f7-icons ios-only">camera_fill</i>
+            <i class="icon f7-icons if-not-md">camera_fill</i>
             <i class="icon material-icons md-only">camera_alt</i>
           .messagebar-area
             textarea(placeholder="Message")
@@ -35,7 +32,7 @@ block content
             </div>
           </div>
           <div class="message message-received">
-            <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/9)"></div>
+            <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-9.jpg)"></div>
             <div class="message-content">
               <div class="message-name">Kate</div>
               <div class="message-bubble">
@@ -44,7 +41,7 @@ block content
             </div>
           </div>
           <div class="message message-received">
-            <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7)"></div>
+            <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg)"></div>
             <div class="message-content">
               <div class="message-name">Blue Ninja</div>
               <div class="message-bubble">
@@ -70,13 +67,13 @@ block content
             <div class="message-content">
               <div class="message-bubble">
                 <div class="message-image">
-                  <img src="http://lorempixel.com/200/260/cats/4/" style="width:200px; height: 260px">
+                  <img src="https://cdn.framework7.io/placeholder/cats-200x260-4.jpg" style="width:200px; height: 260px">
                 </div>
               </div>
             </div>
           </div>
           <div class="message message-received">
-            <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/9)"></div>
+            <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-9.jpg)"></div>
             <div class="message-content">
               <div class="message-name">Kate</div>
               <div class="message-bubble">
@@ -85,7 +82,7 @@ block content
             </div>
           </div>
           <div class="message message-received">
-            <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/9)"></div>
+            <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-9.jpg)"></div>
             <div class="message-content">
               <div class="message-name">Kate</div>
               <div class="message-bubble">
@@ -94,7 +91,7 @@ block content
             </div>
           </div>
           <div class="message message-received">
-            <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7)"></div>
+            <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg)"></div>
             <div class="message-content">
               <div class="message-name">Blue Ninja</div>
               <div class="message-bubble">
@@ -136,16 +133,16 @@ block scripts
 
     // Available Images
     var images = [
-      'http://lorempixel.com/300/300/cats/1/',
-      'http://lorempixel.com/200/300/cats/2/',
-      'http://lorempixel.com/400/300/cats/3/',
-      'http://lorempixel.com/300/150/cats/4/',
-      'http://lorempixel.com/150/300/cats/5/',
-      'http://lorempixel.com/300/300/cats/6/',
-      'http://lorempixel.com/300/300/cats/7/',
-      'http://lorempixel.com/200/300/cats/8/',
-      'http://lorempixel.com/400/300/cats/9/',
-      'http://lorempixel.com/300/150/cats/10/'
+      'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg',
+      'https://cdn.framework7.io/placeholder/cats-200x300-2.jpg',
+      'https://cdn.framework7.io/placeholder/cats-400x300-3.jpg',
+      'https://cdn.framework7.io/placeholder/cats-300x150-4.jpg',
+      'https://cdn.framework7.io/placeholder/cats-150x300-5.jpg',
+      'https://cdn.framework7.io/placeholder/cats-300x300-6.jpg',
+      'https://cdn.framework7.io/placeholder/cats-300x300-7.jpg',
+      'https://cdn.framework7.io/placeholder/cats-200x300-8.jpg',
+      'https://cdn.framework7.io/placeholder/cats-400x300-9.jpg',
+      'https://cdn.framework7.io/placeholder/cats-300x150-10.jpg'
     ]
     // Create sheet items
     var sheetHtml = '';

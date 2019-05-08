@@ -7,21 +7,19 @@ html
     meta(name='apple-mobile-web-app-capable', content='yes')
     meta(name="apple-mobile-web-app-status-bar-style", content="black")
     title My App
-    link(rel="stylesheet", href="../../packages/core/css/framework7.min.css")
-    if (includeF7Icons)
-      link(rel="stylesheet" href="../../css/framework7-icons.css")
-    if (includeMaterialIcons)
-      link(href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet")
+    link(rel="stylesheet", href="../../packages/core/css/framework7.bundle.min.css")
+    link(rel="stylesheet" href="../../css/framework7-icons.css")
+    link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
   body
     #app
     block content
     script(src="https://cdn.jsdelivr.net/npm/vue")
-    script(src="../../packages/vue/framework7-vue.min.js")
-    script(src="../../packages/core/js/framework7.min.js")
+    script(src="../../packages/vue/framework7-vue.bundle.min.js")
+    script(src="../../packages/core/js/framework7.bundle.min.js")
     script.
       var theme = 'ios';
       if (location.href.indexOf('theme=md') >= 0) theme = 'md';
+      if (location.href.indexOf('theme=aurora') >= 0) theme = 'aurora';
 
       if (Framework7.use) Framework7.use(Framework7Vue, { theme: theme });
       else if (Framework7.Class && Framework7.Class.use) Framework7.Class.use(Framework7Vue, { theme: theme });

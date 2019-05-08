@@ -116,6 +116,11 @@ block content
           td true
           td Enables Popover backdrop (dark semi transparent layer behind)
         tr
+          td backdropEl
+          td HTMLElement<br>string
+          td
+          td HTML element or string CSS selector of custom backdrop element
+        tr
           td closeByBackdropClick
           td boolean
           td true
@@ -125,6 +130,11 @@ block content
           td boolean
           td true
           td When enabled, popover will be closed on when click outside of it
+        tr
+          td closeOnEscape
+          td boolean
+          td false
+          td When enabled, popover will be closed on ESC keyboard key press
         tr
           td animate
           td boolean
@@ -221,7 +231,7 @@ block content
             ul.method-parameters
               li
                 span.parameter targetEl
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - target element to set popover position around this element
+                |  - <span class="parameter-type">HTMLElement or string</span> - target element to set popover position around this element
               li
                 span.parameter animate
                 |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
@@ -363,6 +373,7 @@ block content
           td <span>popover</span>
           td app
 
+    +cssVars('popover')
 
     .with-device
       h2(data-device-preview="../docs-demos/core/popover.html") Examples

@@ -28,14 +28,14 @@ block content
                  ... list elements here ...
              &lt;/ul&gt;
          &lt;/div&gt;
-    p To remove hairlines (thin borders) around list block we need additional <code><b>no-harilines</b></code> class:
+    p To remove hairlines (thin borders) around list block we need additional <code><b>no-hairlines</b></code> class:
     :code(lang="html")
           &lt;div class="list no-hairlines"&gt;
               &lt;ul&gt;
                   ... list elements here ...
               &lt;/ul&gt;
           &lt;/div&gt;
-    p To remove hairlines (thin borders) between list items we need additional <code><b>no-harilines-between</b></code> class:
+    p To remove hairlines (thin borders) between list items we need additional <code><b>no-hairlines-between</b></code> class:
     :code(lang="html")
           &lt;div class="list no-hairlines-between"&gt;
               &lt;ul&gt;
@@ -57,13 +57,6 @@ block content
               &lt;/ul&gt;
           &lt;/div&gt;
     h2 List Item
-    :code(lang="html")
-          &lt;div class="list no-hairlines"&gt;
-              &lt;ul&gt;
-                  ... list elements here ...
-              &lt;/ul&gt;
-          &lt;/div&gt;
-
     p Single list element has pretty complex but flexible layout:
     :code(lang="html")
           &lt;li&gt;
@@ -197,8 +190,7 @@ block content
                &lt;ul&gt;
                  &lt;li class="list-group-title"&gt;First group&lt;/li&gt;
                  &lt;li class="item-content"&gt;...&lt;/li&gt;
-                 &lt;li class="item-content"&gt;...&lt;/div&gt;
-                 &lt;/li&gt;
+                 &lt;li class="item-content"&gt;...&lt;/li&gt;
                  ...
                &lt;/ul&gt;
              &lt;/div&gt;
@@ -317,6 +309,8 @@ block content
               </div>
             </div>
           </li>
+
+    +cssVars('list')
 
     .with-device
       h2(data-device-preview="../docs-demos/core/list-view.html") Examples
@@ -763,7 +757,7 @@ block content
               <ul>
                 <li>
                   <a href="#" class="item-link item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/160/160/people/1" width="80"/></div>
+                    <div class="item-media"><img src="https://cdn.framework7.io/placeholder/people-160x160-1.jpg" width="80"/></div>
                     <div class="item-inner">
                       <div class="item-title-row">
                         <div class="item-title">Yellow Submarine</div>
@@ -774,7 +768,7 @@ block content
                     </div></a></li>
                 <li>
                   <a href="#" class="item-link item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/160/160/people/2" width="80"/></div>
+                    <div class="item-media"><img src="https://cdn.framework7.io/placeholder/people-160x160-2.jpg" width="80"/></div>
                     <div class="item-inner">
                       <div class="item-title-row">
                         <div class="item-title">Don't Stop Me Now</div>
@@ -787,7 +781,7 @@ block content
                 </li>
                 <li>
                   <a href="#" class="item-link item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/160/160/people/3" width="80"/></div>
+                    <div class="item-media"><img src="https://cdn.framework7.io/placeholder/people-160x160-3.jpg" width="80"/></div>
                     <div class="item-inner">
                       <div class="item-title-row">
                         <div class="item-title">Billie Jean</div>
@@ -890,7 +884,7 @@ block content
               <ul>
                 <li>
                   <div class="item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/1" width="44"/></div>
+                    <div class="item-media"><img src="https://cdn.framework7.io/placeholder/fashion-88x88-1.jpg" width="44"/></div>
                     <div class="item-inner">
                       <div class="item-title-row">
                         <div class="item-title">Yellow Submarine</div>
@@ -901,7 +895,7 @@ block content
                 </li>
                 <li>
                   <a href="#" class="item-link item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/2" width="44"/></div>
+                    <div class="item-media"><img src="https://cdn.framework7.io/placeholder/fashion-88x88-2.jpg" width="44"/></div>
                     <div class="item-inner">
                       <div class="item-title-row">
                         <div class="item-title">Don't Stop Me Now</div>
@@ -912,7 +906,7 @@ block content
                 </li>
                 <li>
                   <div class="item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/3" width="44"/></div>
+                    <div class="item-media"><img src="https://cdn.framework7.io/placeholder/fashion-88x88-3.jpg" width="44"/></div>
                     <div class="item-inner">
                       <div class="item-title-row">
                         <div class="item-title">Billie Jean</div>
@@ -929,7 +923,7 @@ block content
               <ul>
                 <li>
                   <a href="#" class="item-link item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/4" width="44"/></div>
+                    <div class="item-media"><img src="https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg" width="44"/></div>
                     <div class="item-inner">
                       <div class="item-title-row">
                         <div class="item-title">Yellow Submarine</div>
@@ -940,7 +934,7 @@ block content
                 </li>
                 <li>
                   <a href="#" class="item-link item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/5" width="44"/></div>
+                    <div class="item-media"><img src="https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg" width="44"/></div>
                     <div class="item-inner">
                       <div class="item-title-row">
                         <div class="item-title">Don't Stop Me Now</div>
@@ -951,7 +945,7 @@ block content
                 </li>
                 <li>
                   <a href="#" class="item-link item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/6" width="44"/></div>
+                    <div class="item-media"><img src="https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg" width="44"/></div>
                     <div class="item-inner">
                       <div class="item-title-row">
                         <div class="item-title">Billie Jean</div>

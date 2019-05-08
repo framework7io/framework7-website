@@ -75,7 +75,7 @@ block content
               </div>
               <div class="item-inner">
                 <div class="item-title item-label">Gender</div>
-                <div class="item-input-wrap">
+                <div class="item-input-wrap input-dropdown-wrap">
                   <select placeholder="Please choose...">
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -212,7 +212,7 @@ block content
               </div>
               <div class="item-inner">
                 <div class="item-title item-label">Gender</div>
-                <div class="item-input-wrap">
+                <div class="item-input-wrap input-dropdown-wrap">
                   <select placeholder="Please choose...">
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -280,7 +280,7 @@ block content
           </ul>
         </div>
 
-        <div class="block-title">Floating Labels (MD-theme only)</div>
+        <div class="block-title">Floating Labels</div>
         <div class="list no-hairlines-md">
           <ul>
             <li class="item-content item-input">
@@ -344,6 +344,84 @@ block content
               </div>
             </li>
             <li class="item-content item-input">
+              <div class="item-media">
+                <i class="icon demo-list-icon"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title item-floating-label">Bio</div>
+                <div class="item-input-wrap">
+                  <textarea class="resizable" placeholder="Bio"></textarea>
+                  <span class="input-clear-button"></span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="block-title">Floating Labels + Outline Inputs</div>
+        <div class="list no-hairlines-md">
+          <ul>
+            <li class="item-content item-input item-input-outline">
+              <div class="item-media">
+                <i class="icon demo-list-icon"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title item-floating-label">Name</div>
+                <div class="item-input-wrap">
+                  <input type="text" placeholder="Your name">
+                  <span class="input-clear-button"></span>
+                </div>
+              </div>
+            </li>
+            <li class="item-content item-input item-input-outline">
+              <div class="item-media">
+                <i class="icon demo-list-icon"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title item-floating-label">Password</div>
+                <div class="item-input-wrap">
+                  <input type="password" placeholder="Your password">
+                  <span class="input-clear-button"></span>
+                </div>
+              </div>
+            </li>
+            <li class="item-content item-input item-input-outline">
+              <div class="item-media">
+                <i class="icon demo-list-icon"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title item-floating-label">E-mail</div>
+                <div class="item-input-wrap">
+                  <input type="email" placeholder="Your e-mail">
+                  <span class="input-clear-button"></span>
+                </div>
+              </div>
+            </li>
+            <li class="item-content item-input item-input-outline">
+              <div class="item-media">
+                <i class="icon demo-list-icon"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title item-floating-label">URL</div>
+                <div class="item-input-wrap">
+                  <input type="url" placeholder="URL">
+                  <span class="input-clear-button"></span>
+                </div>
+              </div>
+            </li>
+            <li class="item-content item-input item-input-outline">
+              <div class="item-media">
+                <i class="icon demo-list-icon"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title item-floating-label">Phone</div>
+                <div class="item-input-wrap">
+                  <input type="tel" placeholder="Your phone number">
+                  <span class="input-clear-button"></span>
+                </div>
+              </div>
+            </li>
+            <li class="item-content item-input item-input-outline">
               <div class="item-media">
                 <i class="icon demo-list-icon"></i>
               </div>
@@ -655,6 +733,11 @@ block scripts
     .md .demo-list-icon {
       width: 24px;
       height: 24px;
+      border-radius: 4px;
+    }
+    .aurora .demo-list-icon {
+      width: 18px;
+      height: 18px;
       border-radius: 4px;
     }
   script.

@@ -11,21 +11,21 @@ block content
         .block-title Light Theme
         .block.row
             .col-33
-              a(href="#").button.pb-standalone Standalone
+              a(href="#").button.button-fill.pb-standalone Standalone
             .col-33
-              a(href="#").button.pb-popup Popup
+              a(href="#").button.button-fill.pb-popup Popup
             .col-33
-              a(href="#").button.pb-page Page
+              a(href="#").button.button-fill.pb-page Page
         .block-title Dark Theme
         .block.row
             .col-50
-              a(href="#").button.pb-standalone-dark Standalone
+              a(href="#").button.button-fill.pb-standalone-dark Standalone
             .col-50
-              a(href="#").button.pb-popup-dark Popup
+              a(href="#").button.button-fill.pb-popup-dark Popup
         .block
-            a(href="#").button.pb-standalone-captions With Captions
+            a(href="#").button.button-fill.pb-standalone-captions With Captions
         .block
-            a(href="#").button.pb-standalone-video With Video
+            a(href="#").button.button-fill.pb-standalone-video With Video
 
 
 
@@ -38,9 +38,9 @@ block scripts
     /*=== Default standalone ===*/
     var myPhotoBrowserStandalone = app.photoBrowser.create({
         photos : [
-            'http://lorempixel.com/1024/1024/sports/1/',
-            'http://lorempixel.com/1024/1024/sports/2/',
-            'http://lorempixel.com/1024/1024/sports/3/',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
         ]
     });
     //Open photo browser on click
@@ -51,9 +51,9 @@ block scripts
     /*=== Popup ===*/
     var myPhotoBrowserPopup = app.photoBrowser.create({
         photos : [
-            'http://lorempixel.com/1024/1024/sports/1/',
-            'http://lorempixel.com/1024/1024/sports/2/',
-            'http://lorempixel.com/1024/1024/sports/3/',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
         ],
         type: 'popup'
     });
@@ -64,9 +64,9 @@ block scripts
     /*=== As Page ===*/
     var myPhotoBrowserPage = app.photoBrowser.create({
         photos : [
-            'http://lorempixel.com/1024/1024/sports/1/',
-            'http://lorempixel.com/1024/1024/sports/2/',
-            'http://lorempixel.com/1024/1024/sports/3/',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
         ],
         type: 'page',
         backLinkText: 'Back'
@@ -78,9 +78,9 @@ block scripts
     /*=== Standalone Dark ===*/
     var myPhotoBrowserDark = app.photoBrowser.create({
         photos : [
-            'http://lorempixel.com/1024/1024/sports/1/',
-            'http://lorempixel.com/1024/1024/sports/2/',
-            'http://lorempixel.com/1024/1024/sports/3/',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
         ],
         theme: 'dark'
     });
@@ -91,9 +91,9 @@ block scripts
     /*=== Popup Dark ===*/
     var myPhotoBrowserPopupDark = app.photoBrowser.create({
         photos : [
-            'http://lorempixel.com/1024/1024/sports/1/',
-            'http://lorempixel.com/1024/1024/sports/2/',
-            'http://lorempixel.com/1024/1024/sports/3/',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
         ],
         theme: 'dark',
         type: 'popup'
@@ -106,16 +106,16 @@ block scripts
     var myPhotoBrowserCaptions = app.photoBrowser.create({
         photos : [
             {
-                url: 'http://lorempixel.com/1024/1024/sports/1/',
+                url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
                 caption: 'Caption 1 Text'
             },
             {
-                url: 'http://lorempixel.com/1024/1024/sports/2/',
+                url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
                 caption: 'Second Caption Text'
             },
             // This one without caption
             {
-                url: 'http://lorempixel.com/1024/1024/sports/3/',
+                url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
             },
         ],
         theme: 'dark',
@@ -133,11 +133,11 @@ block scripts
                 caption: 'Woodkid - Run Boy Run (Official HD Video)'
             },
             {
-                url: 'http://lorempixel.com/1024/1024/sports/2/',
+                url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
                 caption: 'Second Caption Text'
             },
             {
-                url: 'http://lorempixel.com/1024/1024/sports/3/',
+                url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
             },
         ],
         theme: 'dark',

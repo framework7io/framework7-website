@@ -1,26 +1,30 @@
 // Footer
 footer {
-  background: @footerBg;
-  color: #666;
+  background: #fff;
+  color: #000;
   border-top: 1px solid rgba(0,0,0,0.05);
   position: relative;
   z-index: 100;
   font-size: 14px;
   line-height: 1.5;
   .center {
-    padding-top: 20px;
+    padding-top: 40px;
   }
   a {
-    color: #888;
     text-decoration: none;
   }
   a:hover {
-    color: @primaryColor;
     text-decoration: none;
   }
   .links {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
+    a {
+      color: inherit;
+    }
+    a:hover {
+      color: @redColor;
+    }
   }
   .links-block {
     text-align: left;
@@ -39,21 +43,35 @@ footer {
   }
   .links-block-title {
     font-size: 16px;
+    font-weight: bold;
   }
   .footer-sponsors {
     text-align: right;
-    margin-left: auto;
+    max-width: 230px;
   }
   .footer-sponsors-title {
     font-size: 16px;
     margin-bottom: 5px;
-    text-align: right;
+    font-weight: bold;
   }
-  #bsap_1306028 {
-    margin-top: 5px;
+  .custom-sponsors {
     margin-right: -5px;
+  }
+  .custom-sponsors a {
+    width: 220px;
+    height: 65px;
+    text-align: center !important;
+    line-height: 65px;
     font-size: 0;
-    text-align: right;
+  }
+  .custom-sponsors a img {
+    max-width: 220px;
+    max-height: 65px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .custom-sponsors,
+  #bsap_1306028 a {
     a {
       text-align: left;
       margin-bottom: 20px;
@@ -76,26 +94,38 @@ footer {
         opacity: 1;
       }
     }
+  }
+  #bsap_1306028 {
+    margin-top: 5px;
+    margin-right: -5px;
+    font-size: 0;
+    text-align: right;
+
     a.adhere {
-      border: 1px solid rgba(0,0,0,0.4);
-      border-radius: 3px;
+      background: rgba(0,0,0,0.05);
       text-align: center;
       width: 220px;
       height: 65px;
-      background: none;
       font-family: inherit;
       line-height: 63px;
       font-weight: normal;
       transform: translate3d(0,0,0);
       &:hover {
-        background: rgba(255,255,255,0.05);
+        background: rgba(0,0,0,0.1);
       }
     }
   }
   .copy {
-    padding: 20px 0;
+    padding: 30px 0;
     font-size: 14px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    overflow: hidden;
+    .clearfix {
+      display: none;
+    }
     a {
       border-bottom: 1px solid rgba(255,255,255,0.2);
     }
@@ -109,7 +139,8 @@ footer {
       }
     }
   }
-  a.keycdn-link {
+  a.keycdn-link,
+  a.vpsserver-link {
     text-decoration: none;
     border-bottom: none;
     opacity: 0.5;
@@ -122,12 +153,48 @@ footer {
   }
   .copy-right {
     float: right;
+    text-align: right;
+    flex-shrink: 0;
   }
-  img.keycdn-logo {
+  img.keycdn-logo,
+  img.vpsserver-logo {
     height: 20px;
     width: auto;
     vertical-align: middle;
     position: relative;
     top: -1px;
+  }
+}
+@media (max-width: 700px) {
+  footer {
+    .links {
+      flex-direction: column;
+    }
+    .links-block {
+      order: 1;
+      margin-top: 30px;
+    }
+    .footer-sponsors {
+      order: 0;
+      text-align: left;
+      max-width: none;
+    }
+    #bsap_1306028 {
+      text-align: left;
+      a {
+        margin: 5px 5px 5px 0px;
+      }
+    }
+    .copy {
+      flex-direction: column;
+    }
+    .copy-left {
+      float: none;
+      margin-bottom: 30px;
+    }
+    .copy-right {
+      float: none;
+      text-align: left;
+    }
   }
 }

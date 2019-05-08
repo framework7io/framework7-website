@@ -63,6 +63,11 @@ block content
           td number
           td 14
           td Single index item height. It is required to calculate dynamic index and how many indexes fit on the screen. For MD theme
+        tr
+          td auroraItemHeight
+          td number
+          td 14
+          td Single index item height. It is required to calculate dynamic index and how many indexes fit on the screen. For Aurora theme
     h2 List Index Events
     table.events-table
       thead
@@ -90,7 +95,7 @@ block content
           td .update()
           td Recalculates indexes, sizes and rerenders list index
         tr
-          td .scrollToList(<span>itemContent</span>)
+          td .scrollListToIndex(<span>itemContent</span>)
           td Scrolls related list to specified index content
     .with-device
       h2(data-device-preview="../docs-demos/react/list-index.html") Examples

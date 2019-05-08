@@ -489,7 +489,7 @@ block content
     p Prompt dialog is used when it is required to get some data/answer from user. To open Prompt dialog we should also call one of the following App methods:
     .method-wrap
       p
-        span.method app.dialog.prompt(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
+        span.method app.dialog.prompt(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>, <span>defaultValue</span>)
         | - create Prompt Dialog and open it
       ul.method-parameters
         li
@@ -504,9 +504,12 @@ block content
         li
           span.parameter callbackCancel
           |  - <span class="parameter-type">function(value)</span>. Optional. Callback function that will be executed when user click "Cancel" button on Prompt dialog. As an argument function receives value of text input
+        li
+          span.parameter defaultValue
+          |  - <span class="parameter-type">string</span>. Optional. Prompt input default value
     .method-wrap
       p
-        span.method app.dialog.prompt(<span>text</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
+        span.method app.dialog.prompt(<span>text</span>, <span>callbackOk</span>, <span>callbackCancel</span>, <span>defaultValue</span>)
         | - create Prompt Dialog with default title and open it
       p.method-returns Method returns created Dialog's instance
     h3 Login
@@ -587,6 +590,8 @@ block content
           span.parameter color
           |  - <span class="parameter-type">string</span>. Optional. Progressbar color. One of <a href="color-themes.html">default colors</a>
       p.method-returns Method returns created Dialog's instance
+
+    +cssVars('dialog')
 
     .with-device
       h2(data-device-preview="../docs-demos/core/dialog.html") Examples

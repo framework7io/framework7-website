@@ -20,7 +20,7 @@ block content
     ul
       li <code><b>f7-popup</b></code> - popup element
     h2 Popup Properties
-    table.params-table
+    table.params-table.cols-3
       thead
         tr
           th Prop
@@ -40,17 +40,22 @@ block content
         tr
           td backdrop
           td boolean
-          td
           td Enables Popup backdrop (dark semi transparent layer behind). By default inherits same app parameter value (<code>true</code>)
+        tr
+          td backdropEl
+          td string<br>object
+          td HTML element or string CSS selector of custom backdrop element
         tr
           td closeByBackdropClick
           td boolean
-          td
           td When enabled, popup will be closed on backdrop click. By default inherits same app parameter value (<code>true</code>)
+        tr
+          td closeOnEscape
+          td boolean
+          td When enabled, popup will be closed on ESC keyboard key press
         tr
           td animate
           td boolean
-          td
           td Whether the Popup should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods. By default inherits same app parameter value (<code>true</code>)
     h2 Popup Methods
     table.methods-table

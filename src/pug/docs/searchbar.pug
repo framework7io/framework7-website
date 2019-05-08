@@ -42,17 +42,17 @@ block content
     ul
       li It can be a direct child of page and if page has also fixed Navbar and/or Toolbar then it must be AFTER Navbar and Toolbar:
         :code(lang="html")
-              <div class="page">
-                <div class="navbar">...</div>
-                <div class="toolbar">...</div>
-                <!-- Searchbar goes after Navbar and Toolbar -->
-                <form class="searchbar">...</form>
-                <div class="page-content">
-                  <!-- Searchbar backdrop layer -->
-                  <div class="searchbar-backdrop"></div>
-                  <!-- page content here -->
-                </div>
-              </div>
+          <div class="page">
+            <div class="navbar">...</div>
+            <div class="toolbar toolbar-bottom">...</div>
+            <!-- Searchbar goes after Navbar and Toolbar -->
+            <form class="searchbar">...</form>
+            <div class="page-content">
+              <!-- Searchbar backdrop layer -->
+              <div class="searchbar-backdrop"></div>
+              <!-- page content here -->
+            </div>
+          </div>
       li It can be placed inside of Subnavbar which is inside of the Navbar (recommended way):
         :code(lang="html")
               <div class="page page-with-subnavbar">
@@ -95,7 +95,7 @@ block content
                 <div class="right">
                   <!-- Link to enable searchbar -->
                   <a class="link icon-only searchbar-enable" data-searchbar=".searchbar">
-                    <i class="icon f7-icons ios-only">search_strong</i>
+                    <i class="icon f7-icons if-not-md">search</i>
                     <i class="icon material-icons md-only">search</i>
                   </a>
                 </div>
@@ -120,13 +120,27 @@ block content
     ul
       li <code><b>&lt;a class="link icon-only searchbar-enable" data-searchbar=".searchbar"&gt;</b></code> - link to enable/expand Searchbar. Optional or can be placed in any other place. <code><b>data-searchbar</b></code> attribute contains CSS selector of Searchbar to enable.
       li Searchbar has additional <code><b>searchbar-expandable</b></code> class. It is required for expandable Searchbar to work
+
+    h3 Inline Searchbar
+    p Inline Searchbar is designed to be used inside of other components, specifically inside of <a href="./appbar.html">Appbar</a>. It has simplified layout - without <code>.searchbar-inner</code>, and it is recommended to use it without disable button.
+    p We just need to add <code>searchbar-inline</code> class to Searchbar to make it inline
+    :code(lang="html")
+      <!-- Additional "searchbar-inline" class -->
+      <div class="searchbar searchbar-inline">
+        <div class="searchbar-input-wrap">
+          <input type="search" placeholder="Search">
+          <i class="searchbar-icon"></i>
+          <span class="input-clear-button"></span>
+        </div>
+      </div>
+
     h2 Searchbar Behavior Classes
     p There are also several CSS classes that can be added to elements that will define their behavior when Searchbar is active:
     ul
       li <code><b>searchbar-hide-on-enable</b></code> - elements with such class on page will be hidden when searchbar is enabled
       li <code><b>searchbar-hide-on-search</b></code> - elements with such class on page will be hidden during search
-      li <code><b>searchbar-not-found</b></code> - elements with such class are hidden by default and become visible when there is no any search results
-      li <code><b>searchbar-found</b></code> - elements with such class are visible by default and become hidden when there is no any search results
+      li <code><b>searchbar-not-found</b></code> - elements with such class are hidden by default and become visible when there is not any search results
+      li <code><b>searchbar-found</b></code> - elements with such class are visible by default and become hidden when there is not any search results
       li <code><b>searchbar-ignore</b></code> - searchbar will not consider this elements in search results
     p For example:
     :code(lang="html")
@@ -151,7 +165,7 @@ block content
                 </ul>
               </div>
 
-              <!-- This list will be visible when there is no any search results -->
+              <!-- This list will be visible when there is not any search results -->
               <div class="list simple-list searchbar-not-found">
                 <ul>
                   <li>Nothing found</li>
@@ -274,6 +288,16 @@ block content
           td li
           td CSS selector of single search item. If we do a search in List View, then it must be a single list element <code>li</code>
         tr
+          td searchGroup
+          td string
+          td .list-group
+          td CSS selector of group element. Used when <code>hideGroups</code> enabled to hide groups. If we do a search in List View, then it usually a list group.
+        tr
+          td searchGroupTitle
+          td string
+          td .list-group-title, .item-divider
+          td CSS selector of group titles and dividers. Used when <code>hideDividers</code> enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider.
+        tr
           td foundEl
           td string<br>HTMLElement
           td .searchbar-found
@@ -296,8 +320,8 @@ block content
         tr
           td backdrop
           td boolean
-          td true
-          td Enables searchbar backdrop element
+          td
+          td Enables searchbar backdrop element. By default, disabled for Aurora theme or for inline searchbar
         tr
           td backdropEl
           td string<br>HTMLElement
@@ -343,7 +367,7 @@ block content
                     }
                   })
     h2 Searchbar Methods & Properties
-    p So to create Popup we have to call:
+    p To create a Searchbar we have to call:
     :code(lang="js")
           var searchbar = app.searchbar.create({ /* parameters */ })
     p After we initialize Searchbar we have its initialized instance in variable (like <code>searchbar</code> variable in example above) with helpful methods and properties:
@@ -531,8 +555,11 @@ block content
           </div>
     .important-note
       p Parameters that used in camelCase, for example <b>searchContainer</b>, in data- attributes should be used in kebab-case as <b>data-search-container</b>
+
+    +cssVars('searchbar')
+
     .with-device
-      h2(data-device-preview="../docs-demos/core/searchbar.html")
+      h2(data-device-preview="../docs-demos/core/searchbar.html") Example
       :code(lang="html")
             <div class="page">
               <div class="navbar">
@@ -547,7 +574,7 @@ block content
                           <i class="searchbar-icon"></i>
                           <span class="input-clear-button"></span>
                         </div>
-                        <span class="searchbar-disable-button">Cancel</span>
+                        <span class="searchbar-disable-button if-not-aurora">Cancel</span>
                       </div>
                     </form>
                   </div>
@@ -592,7 +619,7 @@ block content
                 </div>
               </div>
             </div>
-    :code(lang="js")
+      :code(lang="js")
           var app = new Framework7();
 
           // create searchbar

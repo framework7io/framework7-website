@@ -103,6 +103,41 @@ block content
           </script>
     .important-note
       p Check the full <a href="../docs/routes.html">Routes Documentation</a> to know about all possible routes options, how to use <a href="../docs/routes.html#nested-routes">Nested Routes</a>, <a href="../docs/routes.html#routable-tabs">Routable Tabs</a> and <a href="../docs/routes.html#routable-modals">Routable Modals</a>.
+    h2 Pass Props To Components
+    p It is possible to pass component props to Vue components loaded by router. There are few ways to do it.
+    p First of all, all route params will be automatically passed as props to component, e.g.
+    :code(lang="js")
+      // route with params
+      {
+        path: '/blog/:postId/comments/:commentId/',
+        component: BlogPost,
+      }
+    p So if we navigate by <code>/blog/45/comments/122/</code> URL, then the following data will be passed to props:
+    :code(lang="js")
+      {
+        postId: '45',
+        commentId: '122',
+      }
+    p Another option is to specify props in route's <code>options</code>:
+    :code(lang="js")
+      {
+        path: '/some-page/',
+        component: SomeComponent,
+        options: {
+          props: {
+            foo: 'bar',
+            bar: true,
+          },
+        },
+      }
+    p And finally, props can be passed dynamically to route component when we navigate with API:
+    :code(lang="js")
+      this.$f7router.navigate('/some-page/', {
+        props: {
+          foo: 'bar',
+          bar: true,
+        }
+      })
     h2 Async Lazy Components
     p With Webpack it is possible to load page components on demand, it is possible with F7's async route, for example:
     :code(lang="js")

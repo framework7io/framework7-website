@@ -48,7 +48,7 @@ block content
     :code(lang="js")
           var photoBrowser = app.photoBrowser.create({
             photos: [
-              'path/to/photo-1.jpg'
+              'path/to/photo-1.jpg',
               'path/to/photo-2.jpg'
             ],
           });
@@ -336,7 +336,7 @@ block content
           td Disable exposition mode
         tr
           td photoBrowser.destroy()
-          td Destroy photo prowser instance
+          td Destroy photo browser instance
         tr
           td photoBrowser.on(<span>event</span>, <span>handler</span>)
           td Add event handler
@@ -481,24 +481,25 @@ block content
           td app
 
 
+    +cssVars('photo-browser')
 
     .with-device
       h2(data-device-preview="../docs-demos/core/photo-browser.html") Examples
 
       :code(lang="html")
-            &lt;div class="page-content"&gt;
-              &lt;div class="block-title"&gt;Light Theme&lt;/div&gt;
-              &lt;div class="block row"&gt;
-                &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-standalone"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
-                &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-popup"&gt;Popup&lt;/a&gt;&lt;/div&gt;
-                &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-page"&gt;Page&lt;/a&gt;&lt;/div&gt;
-              &lt;/div&gt;
-              &lt;div class="block-title"&gt;Dark Theme&lt;/div&gt;
-              &lt;div class="block row"&gt;
-                &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-standalone-dark"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
-                &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-popup-dark"&gt;Popup&lt;/a&gt;&lt;/div&gt;
-              &lt;/div&gt;
-            &lt;/div&gt;
+        <div class="page-content">
+          <div class="block-title">Light Theme</div>
+          <div class="block row">
+            <div class="col-33"><a href="#" class="button button-fill pb-standalone">Standalone</a></div>
+            <div class="col-33"><a href="#" class="button button-fill pb-popup">Popup</a></div>
+            <div class="col-33"><a href="#" class="button button-fill pb-page">Page</a></div>
+          </div>
+          <div class="block-title">Dark Theme</div>
+          <div class="block row">
+            <div class="col-50"><a href="#" class="button button-fill pb-standalone-dark">Standalone</a></div>
+            <div class="col-50"><a href="#" class="button button-fill pb-popup-dark">Popup</a></div>
+          </div>
+        </div>
       :code(lang="js")
             var app = new Framework7();
 
@@ -508,9 +509,9 @@ block content
             /*=== Default standalone ===*/
             var myPhotoBrowserStandalone = app.photoBrowser.create({
                 photos : [
-                    'http://lorempixel.com/1024/1024/sports/1/',
-                    'http://lorempixel.com/1024/1024/sports/2/',
-                    'http://lorempixel.com/1024/1024/sports/3/',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
                 ]
             });
             //Open photo browser on click
@@ -521,9 +522,9 @@ block content
             /*=== Popup ===*/
             var myPhotoBrowserPopup = app.photoBrowser.create({
                 photos : [
-                    'http://lorempixel.com/1024/1024/sports/1/',
-                    'http://lorempixel.com/1024/1024/sports/2/',
-                    'http://lorempixel.com/1024/1024/sports/3/',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
                 ],
                 type: 'popup'
             });
@@ -534,9 +535,9 @@ block content
             /*=== As Page ===*/
             var myPhotoBrowserPage = app.photoBrowser.create({
                 photos : [
-                    'http://lorempixel.com/1024/1024/sports/1/',
-                    'http://lorempixel.com/1024/1024/sports/2/',
-                    'http://lorempixel.com/1024/1024/sports/3/',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
                 ],
                 type: 'page',
                 backLinkText: 'Back'
@@ -548,9 +549,9 @@ block content
             /*=== Standalone Dark ===*/
             var myPhotoBrowserDark = app.photoBrowser.create({
                 photos : [
-                    'http://lorempixel.com/1024/1024/sports/1/',
-                    'http://lorempixel.com/1024/1024/sports/2/',
-                    'http://lorempixel.com/1024/1024/sports/3/',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
                 ],
                 theme: 'dark'
             });
@@ -561,9 +562,9 @@ block content
             /*=== Popup Dark ===*/
             var myPhotoBrowserPopupDark = app.photoBrowser.create({
                 photos : [
-                    'http://lorempixel.com/1024/1024/sports/1/',
-                    'http://lorempixel.com/1024/1024/sports/2/',
-                    'http://lorempixel.com/1024/1024/sports/3/',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
                 ],
                 theme: 'dark',
                 type: 'popup'
@@ -576,16 +577,16 @@ block content
             var myPhotoBrowserPopupDark = app.photoBrowser.create({
                 photos : [
                     {
-                        url: 'http://lorempixel.com/1024/1024/sports/1/',
+                        url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
                         caption: 'Caption 1 Text'
                     },
                     {
-                        url: 'http://lorempixel.com/1024/1024/sports/2/',
+                        url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
                         caption: 'Second Caption Text'
                     },
                     // This one without caption
                     {
-                        url: 'http://lorempixel.com/1024/1024/sports/3/',
+                        url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
                     },
                 ],
                 theme: 'dark',
@@ -603,11 +604,11 @@ block content
                         caption: 'Woodkid - Run Boy Run (Official HD Video)'
                     },
                     {
-                        url: 'http://lorempixel.com/1024/1024/sports/2/',
+                        url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
                         caption: 'Second Caption Text'
                     },
                     {
-                        url: 'http://lorempixel.com/1024/1024/sports/3/',
+                        url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
                     },
                 ],
                 theme: 'dark',

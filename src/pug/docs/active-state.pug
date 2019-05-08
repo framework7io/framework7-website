@@ -10,16 +10,25 @@ block content
   .docs-content
     +improveDocsLink
     h1 Active State
-    p Framework7 uses so called "active state" to highlight links and buttons when you tap them. It is done to make F7 app behave like native app, not like a web app.
-    p Active state is a part of built-in <b>Fast Clicks</b> library, so Fast Clicks should be also enabled.
+    p Framework7 uses so called "active state" to highlight links and buttons when you tap them. It is done to make Framework7 app behave like native app, not like a web app.
     p It works almost in the same way as CSS <code>:active</code> selector, it adds <code>active-state</code> class to links and buttons when you tap them. The only difference is that it adds this class after small time interval, this prevents false highlights during page scrolling.
     p So when you write your CSS styles you should write active states like:
     :code(lang="css")
-          /* Usual state */
-          .my-button {
-              color: red;
-          }
-          /* Active/tapped state */
-          .my-button.active-state {
-              color: blue;
-          }
+      /* Usual state */
+      .my-button {
+          color: red;
+      }
+      /* Active/tapped state */
+      .my-button.active-state {
+          color: blue;
+      }
+    p You can control which elements will receive <code>active-state</code> class in <code>touch.activeStateElements</code> #[a(href="app.html#app-parameters") app parameters].
+    p There are some situations when you may have nested active-state elements. You may prevent setting active state on parent element by adding <code>prevent-active-state-propagation</code> class to child active-state element:
+
+    :code(lang="html")
+      <div class="card card-expandable">
+        <div class="card-content">
+          <!-- Tap on button will prevent setting active-state on parent card -->
+          <a class="button prevent-active-state-propagation">...</a>
+        </div>
+      </div>

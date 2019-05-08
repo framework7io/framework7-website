@@ -15,58 +15,47 @@ block content
     p Messages component will help you with visualisation of comments and messaging system in your app.
     h2 Messages Layout
     :code(lang="html")
-          <div class="page">
-            <div class="page-content messages-content">
-              <div class="messages">
-                <!-- Date stamp -->
-                <div class="messages-title"><b>Sunday, Feb 9</b> 12:58</div>
+      <div class="page">
+        <div class="page-content messages-content">
+          <div class="messages">
+            <!-- Date stamp -->
+            <div class="messages-title"><b>Sunday, Feb 9</b> 12:58</div>
 
-                <!-- Sent message (by default - green and on right side) -->
-                <div class="message message-sent">
-                  <div class="message-content">
-                    <!-- Bubble with text -->
-                    <div class="message-bubble">
-                      <div class="message-text">Hi, Kate</div>
-                    </div>
-                  </div>
+            <!-- Sent message (by default - green and on right side) -->
+            <div class="message message-sent">
+              <div class="message-content">
+                <!-- Bubble with text -->
+                <div class="message-bubble">
+                  <div class="message-text">Hi, Kate</div>
                 </div>
+              </div>
+            </div>
 
-                <!-- Another sent message -->
-                <div class="message message-sent">
-                  <div class="message-content">
-                    <div class="message-bubble">
-                      <div class="message-text">How are you?</div>
-                    </div>
-                  </div>
+            <!-- Another sent message -->
+            <div class="message message-sent">
+              <div class="message-content">
+                <div class="message-bubble">
+                  <div class="message-text">How are you?</div>
                 </div>
+              </div>
+            </div>
 
-                <!-- Received message (by default - grey on left side) -->
-                <div class="message message-with-avatar message-received">
-                  <!-- Sender name -->
-                  <div class="message-name">Kate</div>
-
-                  <!-- Bubble with text -->
-                  <div class="message-text">I am fine, thanks</div>
-
-                  <!-- Sender avatar -->
-                  <div style="background-image:url(http://lorempixel.com/output/people-q-c-100-100-9.jpg)" class="message-avatar"></div>
-                </div>
-
-                <div class="message message-received">
-                  <!-- Sender name -->
-                  <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7)"></div>
-                  <div class="message-content">
-                    <!-- Sender name -->
-                    <div class="message-name">Blue Ninja</div>
-                    <!-- Bubble with text -->
-                    <div class="message-bubble">
-                      <div class="message-text">Hi there, I am also fine, thanks! And how are you?</div>
-                    </div>
-                  </div>
+            <!-- Received message (by default - grey on left side) -->
+            <div class="message message-received">
+              <!-- Sender avatar -->
+              <div class="message-avatar" style="background-image:url(path/to/avatar.jpg)"></div>
+              <div class="message-content">
+                <!-- Sender name -->
+                <div class="message-name">Blue Ninja</div>
+                <!-- Bubble with text -->
+                <div class="message-bubble">
+                  <div class="message-text">Hi there, I am also fine, thanks! And how are you?</div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
     p
       b Messages page layout:
     ul
@@ -323,6 +312,24 @@ block content
           td boolean
           td
           td Defines whether it should be rendered as a message or as a messages title
+        tr
+          td cssClass
+          td string
+          td
+          td Additional CSS class to set on message HTML element
+        tr
+          td attrs
+          td object
+          td
+          td Object with additional HTML attributes to be set on message HTML element. For example to set extra <code>data</code> attributes it should look like:
+            :code(lang="js")
+              var message = {
+                text: 'Hello!',
+                attrs: {
+                  'data-id': 1,
+                  'data-author-id': 150
+                }
+              }
     h2 Messages Methods & Properties
     p So to create Messages we have to call:
     :code(lang="js")
@@ -458,6 +465,9 @@ block content
           </div>
     .important-note
       p Parameters that used in camelCase, for example <b>newMessagesFirst</b>, in data- attributes should be used in kebab-case as <b>data-new-messages-first</b>
+
+    +cssVars('messages')
+
     .with-device
       h2(data-device-preview="../docs-demos/core/messages.html") Examples
       :code(lang="html")
@@ -480,7 +490,7 @@ block content
                   <div class="messages-title"><b>Sunday, Feb 9,</b> 12:58</div>
                   <!-- Full layout sent message -->
                   <div class="message message-sent">
-                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7);"></div>
+                    <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg);"></div>
                     <div class="message-content">
                       <div class="message-name">John Doe</div>
                       <div class="message-header">Message header</div>
@@ -494,7 +504,7 @@ block content
                   </div>
                   <!-- Full layout received message -->
                   <div class="message message-received">
-                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7);"></div>
+                    <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg);"></div>
                     <div class="message-content">
                       <div class="message-name">John Doe</div>
                       <div class="message-header">Message header</div>
@@ -522,7 +532,7 @@ block content
                     </div>
                   </div>
                   <div class="message message-received">
-                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/9);"></div>
+                    <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-9.jpg);"></div>
                     <div class="message-content">
                       <div class="message-name">Kate</div>
                       <div class="message-bubble">
@@ -531,7 +541,7 @@ block content
                     </div>
                   </div>
                   <div class="message message-received">
-                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7);"></div>
+                    <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg);"></div>
                     <div class="message-content">
                       <div class="message-name">Blue Ninja</div>
                       <div class="message-bubble">
@@ -556,12 +566,12 @@ block content
                   <div class="message message-sent">
                     <div class="message-content">
                       <div class="message-bubble">
-                        <div class="message-image"><img src="http://lorempixel.com/200/260/cats/4/" style="width:200px; height: 260px;"></div>
+                        <div class="message-image"><img src="https://cdn.framework7.io/placeholder/cats-200x260-4.jpg" style="width:200px; height: 260px;"></div>
                       </div>
                     </div>
                   </div>
                   <div class="message message-received">
-                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/9);"></div>
+                    <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-9.jpg);"></div>
                     <div class="message-content">
                       <div class="message-name">Kate</div>
                       <div class="message-bubble">
@@ -570,7 +580,7 @@ block content
                     </div>
                   </div>
                   <div class="message message-received">
-                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/9);"></div>
+                    <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-9.jpg);"></div>
                     <div class="message-content">
                       <div class="message-name">Kate</div>
                       <div class="message-bubble">
@@ -579,7 +589,7 @@ block content
                     </div>
                   </div>
                   <div class="message message-received">
-                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7);"></div>
+                    <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg);"></div>
                     <div class="message-content">
                       <div class="message-name">Blue Ninja</div>
                       <div class="message-bubble">
@@ -685,11 +695,11 @@ block content
             var people = [
               {
                 name: 'Kate Johnson',
-                avatar: 'http://lorempixel.com/100/100/people/9'
+                avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg'
               },
               {
                 name: 'Blue Ninja',
-                avatar: 'http://lorempixel.com/100/100/people/7'
+                avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg'
               }
             ];
             function receiveMessage() {

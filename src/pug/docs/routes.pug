@@ -110,15 +110,31 @@ block content
           td array
           td Array with nested routes
         tr
+          th(colspan="4") Master Detail
+        tr
+          td master
+          td boolean
+          td Enables this route as Master route
+        tr
+          td detailRoutes
+          td array
+          td Array with detail routes
+        tr
+          th(colspan="4") Lazy Modules
+        tr
+          td modules
+          td array
+          td Array with <a href="./lazy-modules.html">Lazy Modules</a> to load before route loading
+        tr
           th(colspan="4") Content Related Properties<br><small>The following route properties define how (from where/what) content should be loaded</small>
         tr
           td el
           td HTMLElement
-          td Load page from DOM by passed HTMLElement
+          td Load page from DOM by passed HTMLElement. Can be used only with enabled <code>stackPages</code> on View.
         tr
           td pageName
           td string
-          td Load page from DOM that has same data-name attribute
+          td Load page from DOM that has same data-name attribute. Can be used only with enabled <code>stackPages</code> on View.
         tr
           td content
           td string
@@ -229,6 +245,12 @@ block content
             br
             | array
           td Function (or array of functions) that will be executed before route unload/leave. To proceed navigation <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+        tr
+          th(colspan="4") keepAlive
+        tr
+          td keepAlive
+          td boolean
+          td Enables so called <code>keepAlive</code> route. When enabled then once loaded page and its component (Vue, React or Router component) will be never destroyed. Instead, it will be detached from DOM and reused again when required.
     p Here is an example for most of the possible options:
     :code(lang="js")
           routes: [
@@ -297,7 +319,7 @@ block content
                 // Requested route
                 console.log(routeTo);
                 // Get external data and return template7 template
-                app.request.json('http://some-endpoint/', function (data) {
+                this.app.request.json('http://some-endpoint/', function (data) {
                   resolve(
                     // How and what to load: template
                     {
@@ -362,6 +384,10 @@ block content
         td context
         td object
         td custom/extended context for Template7/Component page (when route loaded from <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>)
+      tr
+        td props
+        td object
+        td props that will be passed as Vue/React page component props
     h2 Async Route
     p <code>async</code> route property is very powerful tool designed to return dynamic route properties. It is a function with the following arguments:
     .method-wrap
@@ -482,6 +508,27 @@ block content
       li
         p <code>&lt;a href="/computers/"&gt;Computers&lt;/a&gt;</code> - <b>won't work</b> as expected because <code>/</code> (slash) in the beginning means root. And we don't have such <code>/computers/</code> root route in our routes.
 
+    h2 Detail Routes
+    p For Master Detail view, it is also possible to specify #[code detailRoutes] in addition to #[code master: true] on master route.
+    p When #[code detailRoutes] are specified then navigating to detail route will also preload its master route.
+    p But unlike nested routes (specified in #[code routes] parameters), detail routes #[code path]s don't merged with master route #[code path].
+
+    :code(lang="js")
+      routes = [
+        {
+          path: '/blog/',
+          url: './news.html',
+          master: true,
+          detailRoutes: [
+            {
+              /* We need to specify detail route path from root */
+              path: '/blog/:postId/',
+              url: './post.html',
+            },
+          ],
+        },
+        // ...
+      ]
 
     h2 Routable Tabs
     p What routable tabs means and why is it good?
@@ -492,62 +539,62 @@ block content
       li And the last but not least, when using routable tabs you can load tabs content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
     p First of all we need to specify tabs routes in app routes. Lets assume we have a page with routable tabs on /tabs/ route:
     :code(lang="js")
-          routes = [
+      routes = [
+        {
+          path: '/about-me/',
+          url: './pages/about-me/index.html',
+          // Pass "tabs" property to route
+          tabs: [
+            // First (default) tab has the same url as the page itself
             {
-              path: '/about-me/',
-              url: './pages/about-me/index.html',
-              // Pass "tabs" property to route
-              tabs: [
-                // First (default) tab has the same url as the page itself
-                {
-                  path: '/',
-                  id: 'about',
-                  // Fill this tab content from content string
-                  content: `
-                    <div class="block">
-                      <h3>About Me</h3>
-                      <p>...</p>
-                    </div>
-                  `
-                },
-                // Second tab
-                {
-                  path: '/contacts/',
-                  id: 'contacts',
-                  // Fill this tab content via Ajax request
-                  url: './pages/about-me/contacts.html',
-                },
-                // Third tab
-                {
-                  path: '/cv/',
-                  id: 'cv',
-                  // Load this tab content as a component via Ajax request
-                  componentUrl: './pages/about-me/cv.html',
-                },
-              ],
-            }
-          ]
+              path: '/',
+              id: 'about',
+              // Fill this tab content from content string
+              content: `
+                <div class="block">
+                  <h3>About Me</h3>
+                  <p>...</p>
+                </div>
+              `
+            },
+            // Second tab
+            {
+              path: '/contacts/',
+              id: 'contacts',
+              // Fill this tab content via Ajax request
+              url: './pages/about-me/contacts.html',
+            },
+            // Third tab
+            {
+              path: '/cv/',
+              id: 'cv',
+              // Load this tab content as a component via Ajax request
+              componentUrl: './pages/about-me/cv.html',
+            },
+          ],
+        }
+      ]
     p On the <code>/about-me/</code> page we may have the following structure for example:
     :code(lang="html")
-          <div class="page">
-            <div class="navbar">
-              <div class="navbar-inner">
-                <div class="title">About Me</div>
-              </div>
-            </div>
-            <div class="toolbar tabbar">
-              <div class="toolbar-inner">
-                <a href="./" class="tab-link" data-route-tab-id="about">About</a>
-                <a href="./contacts/" class="tab-link" data-route-tab-id="contacts">>Contacts</a>
-                <a href="./cv/" class="tab-link" data-route-tab-id="cv">>CV</a>
-              </div>
-            </div>
-            <div class="tabs tabs-routable">
-              <div class="tab page-content" id="about"></div>
-              <div class="tab page-content" id="contacts"></div>
-              <div class="tab page-content" id="cv"></div>
-            </div>
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="title">About Me</div>
           </div>
+        </div>
+        <div class="toolbar tabbar toolbar-bottom">
+          <div class="toolbar-inner">
+            <a href="./" class="tab-link" data-route-tab-id="about">About</a>
+            <a href="./contacts/" class="tab-link" data-route-tab-id="contacts">>Contacts</a>
+            <a href="./cv/" class="tab-link" data-route-tab-id="cv">>CV</a>
+          </div>
+        </div>
+        <div class="tabs tabs-routable">
+          <div class="tab page-content" id="about"></div>
+          <div class="tab page-content" id="contacts"></div>
+          <div class="tab page-content" id="cv"></div>
+        </div>
+      </div>
     p Almost the same as with usual <a href="tabs.html">Tabs</a> but with the difference that there is no more <code>tab-link-active</code> and <code>tab-active</code> classes on tab links and tabs. These classes and tabs will be switched by router. And there is a new <code>data-route-tab-id</code> attribute, it is required for tabs switcher to understand which link related to the selected route.
     p You can learn more about Routable Tabs and their additional events in appropriate sections of <a href="tabs.html#routable-tabs">Tabs</a> component page.
 
@@ -559,77 +606,77 @@ block content
       li with enabled Push State, the same modal will be opened when you refresh browser, navigate back and forward in history,
       li with routable modals you can load modal itself and its content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
     :code(lang="js")
-          routes = [
-            ...
-            // Creates popup from passed HTML string
-            {
-              path: '/popup-content/',
-              popup: {
-                content: `
-                  <div class="popup">
-                    <div class="view">
-                      <div class="page">
-                        ...
-                      </div>
+      routes = [
+        ...
+        // Creates popup from passed HTML string
+        {
+          path: '/popup-content/',
+          popup: {
+            content: `
+              <div class="popup">
+                <div class="view">
+                  <div class="page">
+                    ...
+                  </div>
+                </div>
+              </div>
+            `
+          }
+        },
+        // Load Login Screen from file via Ajax
+        {
+          path: '/login-screen-ajax/',
+          loginScreen: {
+            url: './login-screen.html',
+            /* login-screen.html contains:
+              <div class="login-screen">
+                <div class="view">
+                  <div class="page">
+                    ...
+                  </div>
+                </div>
+              </div>
+            */
+          },
+        },
+        // Load Popup from component file
+        {
+          path: '/popup-component/',
+          loginScreen: {
+            componentUrl: './popup-component.html',
+            /* popup-component.html contains:
+              <template>
+                <div class="popup-screen">
+                  <div class="view">
+                    <div class="page">
+                      ...
                     </div>
                   </div>
-                `
-              }
-            },
-            // Load Login Screen from file via Ajax
-            {
-              path: '/login-screen-ajax/',
-              loginScreen: {
-                url: './login-screen.html',
-                /* login-screen.html contains:
-                  <div class="login-screen">
-                    <div class="view">
-                      <div class="page">
-                        ...
-                      </div>
-                    </div>
-                  </div>
-                */
-              },
-            },
-            // Load Popup from component file
-            {
-              path: '/popup-component/',
-              loginScreen: {
-                componentUrl: './popup-component.html',
-                /* popup-component.html contains:
-                  <template>
-                    <div class="popup-screen">
-                      <div class="view">
-                        <div class="page">
-                          ...
-                        </div>
-                      </div>
-                    </div>
-                  </template>
-                  <style>...</style>
-                  <script>...</script>
-                */
-              },
-            },
-            // Use async route to check if the user is logged in:
-            {
-              path: '/secured-page/',
-              async(routeTo, routeFrom, resolve, reject) {
-                if (userIsLoggedIn) {
-                  resolve({
-                    url: 'secured-page.html',
-                  });
-                } else {
-                  resolve({
-                    loginScreen: {
-                      url: 'login-screen.html'
-                    } ,
-                  });
-                }
-              },
+                </div>
+              </template>
+              <style>...</style>
+              <script>...</script>
+            */
+          },
+        },
+        // Use async route to check if the user is logged in:
+        {
+          path: '/secured-page/',
+          async(routeTo, routeFrom, resolve, reject) {
+            if (userIsLoggedIn) {
+              resolve({
+                url: 'secured-page.html',
+              });
+            } else {
+              resolve({
+                loginScreen: {
+                  url: 'login-screen.html'
+                } ,
+              });
             }
-          ]
+          },
+        }
+      ]
     p According to example above:
     ul
       li when you click on link with <code>/popup-content/</code> href attribute it will open Popup from specified string content,
@@ -647,60 +694,60 @@ block content
       li with enabled Push State, the same Panel will be opened when you refresh browser, navigate back and forward in history,
       li with routable Panels you can load Panel itself and its content in the same ways as for pages and modals, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
     :code(lang="js")
-          routes = [
-            ...
-            // Creates Panel from passed HTML string
-            {
-              path: '/left-panel/',
-              panel: {
-                content: `
-                  <div class="panel panel-left panel-cover">
-                    <div class="view">
-                      <div class="page">
-                        ...
-                      </div>
-                    </div>
-                  </div>
-                `
-              }
-            },
-            // Load Panel from file via Ajax
-            {
-              path: '/right-panel-ajax/',
-              panel: {
-                url: './right-panel.html',
-                /* right-panel.html contains:
-                <div class="panel panel-right panel-reveal">
-                  <div class="view">
-                    <div class="page">
-                      ...
-                    </div>
+      routes = [
+        ...
+        // Creates Panel from passed HTML string
+        {
+          path: '/left-panel/',
+          panel: {
+            content: `
+              <div class="panel panel-left panel-cover">
+                <div class="view">
+                  <div class="page">
+                    ...
                   </div>
                 </div>
-                */
-              },
-            },
-            // Load Panel from component file
-            {
-              path: '/panel-component/',
-              panel: {
-                componentUrl: './panel-component.html',
-                /* panel-component.html contains:
-                <template>
-                  <div class="panel panel-left panel-cover">
-                    <div class="view">
-                      <div class="page">
-                        ...
-                      </div>
-                    </div>
+              </div>
+            `
+          }
+        },
+        // Load Panel from file via Ajax
+        {
+          path: '/right-panel-ajax/',
+          panel: {
+            url: './right-panel.html',
+            /* right-panel.html contains:
+            <div class="panel panel-right panel-reveal">
+              <div class="view">
+                <div class="page">
+                  ...
+                </div>
+              </div>
+            </div>
+            */
+          },
+        },
+        // Load Panel from component file
+        {
+          path: '/panel-component/',
+          panel: {
+            componentUrl: './panel-component.html',
+            /* panel-component.html contains:
+            <template>
+              <div class="panel panel-left panel-cover">
+                <div class="view">
+                  <div class="page">
+                    ...
                   </div>
-                </template>
-                <style>...</style>
-                <script>...</script>
-                */
-              },
-            },
-          ]
+                </div>
+              </div>
+            </template>
+            <style>...</style>
+            <script>...</script>
+            */
+          },
+        },
+      ]
     p According to example above:
     ul
       li when you click on link with <code>/left-panel/</code> href attribute it will open Panel from specified string content,
@@ -712,124 +759,124 @@ block content
     h2 Route Before Enter/Leave
     p <code>beforeEnter</code> and <code>beforeLeave</code> route hooks can be very useful if you need to do additional checks, execute additional actions or load/send something before route load (enter) and unload (leave). It can be single method or array of methods to be executed. For example:
     :code(lang="js")
-          routes = [
-            {
-              path: 'profile',
-              url: 'profile.html',
-              beforeEnter: function (routeTo, routeFrom, resolve, reject) {
-                if (/* some condition to check user is logged in */) {
-                  resolve();
-                } else {
-                  // don't allow to visit this page for unauthenticated users
-                  reject();
-                }
-              },
-
-            },
-            {
-              path: 'profile-edit',
-              url: 'profile.html',
-              beforeLeave: function (routeTo, routeFrom, resolve, reject) {
-                if (/* user didn't save edited form */) {
-                  app.dialog.confirm(
-                    'Are you sure you want to leave this page without saving data?',
-                    function () {
-                      // proceed navigation
-                      resolve();
-                    },
-                    function () {
-                      // stay on page
-                      reject();
-                    }
-                  )
-                } else {
-                  resolve();
-                }
-              }
-            }
-          ]
-    p And of course there are multiple hooks are supported when passed as array of functions:
-    :code(lang="js")
-          function checkAuth(to, from, resolve, reject) {
+      routes = [
+        {
+          path: 'profile',
+          url: 'profile.html',
+          beforeEnter: function (routeTo, routeFrom, resolve, reject) {
             if (/* some condition to check user is logged in */) {
               resolve();
             } else {
+              // don't allow to visit this page for unauthenticated users
               reject();
             }
-          }
-          function checkPermission(to, from, resolve, reject) {
-            if (/* some condition to check user edit permission */) {
-              resolve();
-            } else {
-              reject();
-            }
-          }
+          },
 
-          routes = [
-            {
-              path: '/profile/',
-              url: 'profile.html',
-              // check if the user is logged in
-              beforeEnter: checkAuth,
-            },
-            {
-              path: '/profile-edit/',
-              url: 'profile-edit.html',
-              // check if the user is logged in and has required permission
-              beforeEnter: [checkAuth, checkPermission],
+        },
+        {
+          path: 'profile-edit',
+          url: 'profile.html',
+          beforeLeave: function (routeTo, routeFrom, resolve, reject) {
+            if (/* user didn't save edited form */) {
+              app.dialog.confirm(
+                'Are you sure you want to leave this page without saving data?',
+                function () {
+                  // proceed navigation
+                  resolve();
+                },
+                function () {
+                  // stay on page
+                  reject();
+                }
+              )
+            } else {
+              resolve();
             }
-          ]
+          }
+        }
+      ]
+    p And of course there are multiple hooks are supported when passed as array of functions:
+    :code(lang="js")
+      function checkAuth(to, from, resolve, reject) {
+        if (/* some condition to check user is logged in */) {
+          resolve();
+        } else {
+          reject();
+        }
+      }
+      function checkPermission(to, from, resolve, reject) {
+        if (/* some condition to check user edit permission */) {
+          resolve();
+        } else {
+          reject();
+        }
+      }
+
+      routes = [
+        {
+          path: '/profile/',
+          url: 'profile.html',
+          // check if the user is logged in
+          beforeEnter: checkAuth,
+        },
+        {
+          path: '/profile-edit/',
+          url: 'profile-edit.html',
+          // check if the user is logged in and has required permission
+          beforeEnter: [checkAuth, checkPermission],
+        }
+      ]
 
 
     h2 Redirect & Alias
-    h3 Alias
+    h4 Alias
     p We can pass route alias using route <code>alias</code> property. Alias in this case basically means that same route can have multiple <b>paths</b> to access:
     :code(lang="js")
-          routes = [
-            {
-              path: '/foo/',
-              url: 'somepage.html',
-              alias: '/bar/',
-            },
-            {
-              path: '/foo2/',
-              url: 'anotherpage.html',
-              alias: ['/bar2/', '/baz/', '/baz2/'],
-            }
-          ]
+      routes = [
+        {
+          path: '/foo/',
+          url: 'somepage.html',
+          alias: '/bar/',
+        },
+        {
+          path: '/foo2/',
+          url: 'anotherpage.html',
+          alias: ['/bar2/', '/baz/', '/baz2/'],
+        }
+      ]
     p According to the example above:
     ul
       li if we request page by <code>/foo/</code> or <code>/bar/</code> URL then first route will match and we get the page loaded from <code>somepage.html</code>
       li if we request page by <code>/foo2/</code> , <code>/bar2/</code>, <code>/baz/</code>, <code>/baz2/</code> URL then second route will match and we the page loaded from <code>anotherpage.html</code>
-    h3 Redirect
+    h4 Redirect
     p We can pass route redirect using <code>redirect</code> property:
     ul
       li if we pass <code>redirect</code> as a <code>string</code>, we must pass here direct redirect url
       li if we pass <code>redirect</code> as a <code>function</code>, we need to call function's resolve parameter with redirect url
     p For example:
     :code(lang="js")
-          routes = [
-            {
-              path: '/foo/',
-              url: 'somepage.html',
-            },
-            {
-              path: '/bar/',
-              redirect: '/foo/',
-            },
-            {
-              path: '/baz/',
-              redirect: function (route, resolve, reject) {
-                // if we have "user" query parameter
-                if (route.query.user) {
-                  // redirect to such url
-                  resolve('/foo/?user=' + route.query.user);
-                }
-                // otherwise do nothing
-                else reject();
-              }
+      routes = [
+        {
+          path: '/foo/',
+          url: 'somepage.html',
+        },
+        {
+          path: '/bar/',
+          redirect: '/foo/',
+        },
+        {
+          path: '/baz/',
+          redirect: function (route, resolve, reject) {
+            // if we have "user" query parameter
+            if (route.query.user) {
+              // redirect to such url
+              resolve('/foo/?user=' + route.query.user);
             }
-          ]
+            // otherwise do nothing
+            else reject();
+          }
+        }
+      ]
     p Above example means:
     ul
       li when we request <code>/bar/</code> URL then router will redirect to <code>/foo/</code> URL and then search for route that match to this new URL. In this case it will match to the first route with path <code>/foo/</code> and load the page from <code>somepage.html</code>
@@ -838,6 +885,52 @@ block content
     .important-note
       p Note in redirects we pass URL, not the route path like in alias
 
+    h2 Keep Alive
+    .important-note
+      p
+       b keepAlive routes available from Framework7 version 3.6.0.
+    p When <code>keepAlive</code> enabled, then once router loads such page, the page and, if applicable, its component (Vue, React or Router component) will be never destroyed. Instead, it will be detached from DOM and reused again when required.
+    p It can be useful to enable for "heavy" pages which are not too often updated. For example, page with map, or with heavy canvas or other computation. With usual logic, all those heavy computations will happen each time this page is visited. But with keepAlive it will be done once, and with all next visits, router will reuse already rendered page DOM element.
+    p It also can be useful if you really need to preserve page state. With enabled keepAlive, the next time page will be loaded, all DOM modifications and form elements state will be preserved.
+    p But there are things to pay attention:
+    ul
+      li It is not supported for <code>async</code> routes
+      li It is supported only for pages (not for panels and modals)
+      li If you have dynamic route path (like <code>/some-page/:foo/:bar</code>) or you rely on page route query (<code>?foo=bar</code>), then query and route params won't be changed after its initial load.
+      li <code>page:beforeremove</code>,<code>pageBeforeRemove</code> page events will never be fired for such page
+      li If you use it as Vue component, then <code>beforeDestroy</code>,<code>destroyed</code> hooks will never be fired for such component. <code>created</code>, <code>mounted</code> hooks will fire only once.
+      li If you use it as React component, then <code>componentWillUnmount</code> method will never be fired for such component. <code>componentWillMount</code>, <code>componentDidMount</code> methods will fire only once.
+      li If you use it as F7's Router component, then <code>beforeDestroy</code>, <code>destroyed</code> hooks will never be fired for such component. <code>created</code>, <code>mounted</code> hooks will fire only once.
+    p To avoid pitfalls with component's and page lifecycle, it is recommend to rely on following page events:
+    ul
+      li
+        p <code>page:mounted</code> - will be always called for keepAlive route page when its DOM element attached or reattached again.
+      li
+        p <code>page:beforeunmount</code> - will be always called for keepAlive route page when its DOM element is going to be detached from DOM.
+    p To make keepAlive route we just need to pass <code>keepAlive: true</code> to its parameters:
+    :code(lang="js")
+      import SomPageComponent from './some-page.js';
+
+      var routes = [
+        /* Usual route */
+        {
+          path: '/',
+          url: './pages/home.html',
+        },
+        /* Alive route. Will be loaded from file first time, and then will reuse rendered DOM element */
+        {
+          path: '/map/',
+          url: './pages/map.html',
+          keepAlive: true,
+        },
+
+        /* Alive route. Will be created as component, and then will reuse rendered DOM element */
+        {
+          path: '/some-page/',
+          component: SomPageComponent,
+          keepAlive: true,
+        },
+      ];
 
 
 

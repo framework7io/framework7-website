@@ -1,7 +1,4 @@
 extends _layout
-block vars
-  - var includeF7Icons = true;
-  - var includeMaterialIcons = true;
 block content
   .view.view-main.view-init
     .page
@@ -16,10 +13,10 @@ block content
             .data-table-title Nutrition
             .data-table-actions
               a.link.icon-only
-                i.icon.f7-icons.ios-only sort
+                i.icon.f7-icons.if-not-md sort
                 i.icon.material-icons.md-only sort
               a.link.icon-only
-                i.icon.f7-icons.ios-only more_vertical_round
+                i.icon.f7-icons.if-not-md more_vertical_round
                 i.icon.material-icons.md-only more_vert
           .card-content
             table

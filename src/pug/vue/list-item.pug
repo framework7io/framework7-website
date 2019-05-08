@@ -103,6 +103,16 @@ block content
           td
           td List item link target attribute
         tr
+          td no-chevron
+          td boolean
+          td false
+          td Removes "chevron" icon on list item link
+        tr
+          td chevron-center
+          td boolean
+          td false
+          td Sets "chevron" icon on media list item on center (vertically)
+        tr
           th(colspan="4") &lt;f7-list-item&gt; Form inputs specific properties
         tr
           td inline-label
@@ -143,6 +153,13 @@ block content
           td boolean
           td false
           td Makes accordion item opened
+        tr
+          th(colspan="4") &lt;f7-list-item&gt; Virtual List specific properties
+        tr
+          td virtual-list-index
+          td number
+          td
+          td Allows to pass list item index (from whole collection) when used in Virtual List. Useful to be used together with Sortable to know correct changed indexes
         tr
           th(colspan="4") &lt;f7-list-item&gt; Smart Select specific properties
         tr
@@ -247,11 +264,17 @@ block content
           td swipeout:deleted
           td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
         tr
+          td accordion:beforeopen
+          td Event will be triggered right before accordion content starts its opening animation. <code>event.detail.prevent</code> contains function that will prevent accordion from opening when called
+        tr
           td accordion:open
           td Event will be triggered when accordion content starts its opening animation.
         tr
           td accordion:opened
           td Event will be triggered after accordion content completes its opening animation.
+        tr
+          td accordion:beforeclose
+          td Event will be triggered right before accordion content starts its closing animation. <code>event.detail.prevent</code> contains function that will prevent accordion from closing when called
         tr
           td accordion:close
           td Event will be triggered when accordion content starts its closing animation.
@@ -529,7 +552,7 @@ block content
                 subtitle="Beatles"
                 text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
               >
-                <img slot="media" src="http://lorempixel.com/160/160/people/1" width="80" />
+                <img slot="media" src="https://cdn.framework7.io/placeholder/people-160x160-1.jpg" width="80" />
               </f7-list-item>
               <f7-list-item
                 link="#"
@@ -538,7 +561,7 @@ block content
                 subtitle="Queen"
                 text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
               >
-                <img slot="media" src="http://lorempixel.com/160/160/people/2" width="80" />
+                <img slot="media" src="https://cdn.framework7.io/placeholder/people-160x160-2.jpg" width="80" />
               </f7-list-item>
               <f7-list-item
                 link="#"
@@ -547,7 +570,7 @@ block content
                 subtitle="Michael Jackson"
                 text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
               >
-                <img slot="media" src="http://lorempixel.com/160/160/people/3" width="80" />
+                <img slot="media" src="https://cdn.framework7.io/placeholder/people-160x160-3.jpg" width="80" />
               </f7-list-item>
             </f7-list>
       h4 Mail App
@@ -590,18 +613,18 @@ block content
               <f7-list-item
                 title="Yellow Submarine"
                 subtitle="Beatles">
-                <img slot="media" src="http://lorempixel.com/88/88/fashion/1" width="44" />
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-1.jpg" width="44" />
               </f7-list-item>
               <f7-list-item
                 link="#"
                 title="Don't Stop Me Now"
                 subtitle="Queen">
-                <img slot="media" src="http://lorempixel.com/88/88/fashion/2" width="44" />
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-2.jpg" width="44" />
               </f7-list-item>
               <f7-list-item
                 title="Billie Jean"
                 subtitle="Michael Jackson">
-                <img slot="media" src="http://lorempixel.com/88/88/fashion/3" width="44" />
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-3.jpg" width="44" />
               </f7-list-item>
             </f7-list>
       h4 Inset
@@ -612,18 +635,18 @@ block content
                 link="#"
                 title="Yellow Submarine"
                 subtitle="Beatles">
-                <img slot="media" src="http://lorempixel.com/88/88/fashion/4" width="44" />
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg" width="44" />
               </f7-list-item>
               <f7-list-item
                 link="#"
                 title="Don't Stop Me Now"
                 subtitle="Queen">
-                <img slot="media" src="http://lorempixel.com/88/88/fashion/5" width="44" />
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg" width="44" />
               </f7-list-item>
               <f7-list-item
                 link="#"
                 title="Billie Jean"
                 subtitle="Michael Jackson">
-                <img slot="media" src="http://lorempixel.com/88/88/fashion/6" width="44" />
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg" width="44" />
               </f7-list-item>
             </f7-list>

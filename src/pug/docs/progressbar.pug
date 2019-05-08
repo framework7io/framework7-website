@@ -31,25 +31,22 @@ block content
 
     h2 Progressbar Colors
     p Progressbar supports all <a href="color-themes.html">default colors</a>. So to change its color just add <code>color-[color]</code> class to preloader element.
-    p MD theme also supports special <code>color-multi</code> color for infinite progressbar to make it multi-color.
-    pre.html
-      code
-        :code(lang="html")
-          <!-- Red progressbar -->
-          <div class="progressbar color-red" data-progress="20">
-            <span></span>
-          </div>
+    :code(lang="html")
+      <!-- Red progressbar -->
+      <div class="progressbar color-red" data-progress="20">
+        <span></span>
+      </div>
 
-          <!-- Green progressbar -->
-          <div class="progressbar color-green" data-progress="50">
-            <span></span>
-          </div>
+      <!-- Green progressbar -->
+      <div class="progressbar color-green" data-progress="50">
+        <span></span>
+      </div>
 
-          <!-- Yellow infinite progressbar -->
-          <div class="progressbar-infinite color-yellow"></div>
+      <!-- Yellow infinite progressbar -->
+      <div class="progressbar-infinite color-yellow"></div>
 
-          <!-- Multicolor infinite progressbar (MD theme only) -->
-          <div class="progressbar-infinite color-multi"></div>
+      <!-- Multicolor infinite progressbar -->
+      <div class="progressbar-infinite color-multi"></div>
     h2 Progressbar API
     p Progressbar comes with API that allows you to control Progressbar's progress, show and hide it. Let's look on appropriate App's properties and methods:
     .method-wrap
@@ -108,8 +105,10 @@ block content
           span.parameter el
           |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. Progressbar element container or element containing progressbar element. If string - CSS selector of such element. If not specified then it will look for such element under the app root element.
 
-    .with-device(data-device-preview="../docs-demos/core/progressbar.html")
-      h2 Examples
+    +cssVars('progressbar')
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/progressbar.html") Examples
       :code(lang="html")
             <div class="block-title">Determinate Progress Bar</div>
             <div class="block block-strong">

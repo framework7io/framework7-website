@@ -1,9 +1,12 @@
 extends _layout
-block vars
-  - includeF7Icons = true
-  - includeMaterialIcons = true
 
 block content
+  style.
+    /* Limit resizable panel width */
+    .panel {
+      min-width: 100px;
+      max-width: 90vw;
+    }
   script(type="text/babel").
     class AppComponent extends React.Component {
       constructor() {
@@ -16,14 +19,14 @@ block content
       render() {
         return (
           <App>
-            <Panel left reveal>
+            <Panel resizable left reveal>
               <View>
                 <Page>
                   <Block>Left panel content</Block>
                 </Page>
               </View>
             </Panel>
-            <Panel right themeDark>
+            <Panel resizable right themeDark>
               <View>
                 <Page>
                   <Block>Right panel content</Block>

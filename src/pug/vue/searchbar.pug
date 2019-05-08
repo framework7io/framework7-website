@@ -39,6 +39,11 @@ block content
           td true
           td Initializes Searchbar
         tr
+          td value
+          td string<br>number
+          td
+          td Allows to specify Searchbar input's value. Can be usefule when used with <code>custom-search</code> enabled
+        tr
           td form
           td boolean
           td true
@@ -64,6 +69,16 @@ block content
           td true
           td Enables searchbar input clear button
         tr
+          td expandable
+          td boolean
+          td false
+          td Enables expandable searchbar
+        tr
+          td inline
+          td boolean
+          td false
+          td Enables inline searchbar
+        tr
           td search-container
           td string<br>object
           td
@@ -79,20 +94,30 @@ block content
           td li
           td CSS selector of single search item. If we do a search in List View, then it must be a single list element <code>li</code>
         tr
+          td search-group
+          td string
+          td .list-group
+          td CSS selector of group element. Used when <code>hide-groups</code> enabled to hide groups. If we do a search in List View, then it usually a list group.
+        tr
+          td search-group-title
+          td string
+          td .list-group-title, .item-divider
+          td CSS selector of group titles and dividers. Used when <code>hide-dividers</code> enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider.
+        tr
           td found-el
           td string<br>object
           td .searchbar-found
           td CSS selector or HTMLElement of searchbar "found" element. If not specified, searchbar will look for <code>.searchbar-found</code> element on page
         tr
-          td not-foud-el
+          td not-found-el
           td string<br>object
           td .searchbar-not-found
           td CSS selector or HTMLElement of searchbar "not-found" element. If not specified, searchbar will look for <code>.searchbar-not-found</code> element on page
         tr
           td backdrop
           td boolean
-          td true
-          td Enables searchbar backdrop element
+          td
+          td Enables searchbar backdrop element. By default, disabled for Aurora theme or for inline searchbar
         tr
           td backdrop-el
           td string<br>object
@@ -281,6 +306,7 @@ block content
                   <f7-searchbar
                     search-container=".search-list"
                     search-in=".item-title"
+                    :disable-button="!$theme.aurora"
                   ></f7-searchbar>
                 </f7-subnavbar>
               </f7-navbar>
@@ -336,13 +362,14 @@ block content
             <f7-page>
               <f7-navbar title="Searchbar">
                 <f7-nav-right>
-                  <f7-link class="searchbar-enable" data-searchbar=".searchbar-demo" icon-ios="f7:search_strong" icon-md="material:search"></f7-link>
+                  <f7-link class="searchbar-enable" data-searchbar=".searchbar-demo" icon-ios="f7:search" icon-aurora="f7:search" icon-md="material:search"></f7-link>
                 </f7-nav-right>
                 <f7-searchbar
                   class="searchbar-demo"
                   expandable
                   search-container=".search-list"
                   search-in=".item-title"
+                  :disable-button="!$theme.aurora"
                 ></f7-searchbar>
               </f7-navbar>
               <f7-list class="searchbar-not-found">

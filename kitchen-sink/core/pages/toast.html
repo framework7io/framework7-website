@@ -5,7 +5,7 @@
         <div class="left">
           <a href="#" class="link back">
             <i class="icon icon-back"></i>
-            <span class="ios-only">Back</span>
+            <span class="if-not-md">Back</span>
           </a>
         </div>
         <div class="title">Toast</div>
@@ -15,28 +15,28 @@
       <div class="block block-strong">
         <p>Toasts provide brief feedback about an operation through a message on the screen.</p>
         <p>
-          <a href="#" class="button button-raised" @click="showToastBottom">Toast on Bottom</a>
+          <a href="#" class="button button-fill" @click="showToastBottom">Toast on Bottom</a>
         </p>
         <p>
-          <a href="#" class="button button-raised" @click="showToastTop">Toast on Top</a>
+          <a href="#" class="button button-fill" @click="showToastTop">Toast on Top</a>
         </p>
         <p>
-          <a href="#" class="button button-raised" @click="showToastCenter">Toast on Center</a>
+          <a href="#" class="button button-fill" @click="showToastCenter">Toast on Center</a>
         </p>
         <p>
-          <a href="#" class="button button-raised" @click="showToastIcon">Toast with icon</a>
+          <a href="#" class="button button-fill" @click="showToastIcon">Toast with icon</a>
         </p>
         <p>
-          <a href="#" class="button button-raised" @click="showToastLargeMessage">Toast with large message</a>
+          <a href="#" class="button button-fill" @click="showToastLargeMessage">Toast with large message</a>
         </p>
         <p>
-          <a href="#" class="button button-raised" @click="showToastWithButton">Toast with close button</a>
+          <a href="#" class="button button-fill" @click="showToastWithButton">Toast with close button</a>
         </p>
         <p>
-          <a href="#" class="button button-raised" @click="showToastWithCustomButton">Toast with custom button</a>
+          <a href="#" class="button button-fill" @click="showToastWithCustomButton">Toast with custom button</a>
         </p>
         <p>
-          <a href="#" class="button button-raised" @click="showToastWithCallback">Toast with callback on close</a>
+          <a href="#" class="button button-fill" @click="showToastWithCallback">Toast with callback on close</a>
         </p>
       </div>
     </div>
@@ -88,7 +88,7 @@
         // Create toast
         if (!self.toastIcon) {
           self.toastIcon = self.$app.toast.create({
-            icon: self.$theme.ios ? '<i class="f7-icons">star</i>' : '<i class="material-icons">star</i>',
+            icon: self.$theme.ios || self.$theme.aurora ? '<i class="f7-icons">star_fill</i>' : '<i class="material-icons">star</i>',
             text: 'I\'m with icon',
             position: 'center',
             closeTimeout: 2000,

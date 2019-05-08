@@ -1,7 +1,4 @@
 extends _layout
-block vars
-  - var includeF7Icons = true;
-  - var includeMaterialIcons = true;
 block content
     .view.view-main.view-init
       .page
@@ -20,6 +17,8 @@ block content
               li
                 a(href="/fixed/") Fixed Navbar
               li
+                a(href="/large/") Large Title
+              li
                 a(href="/api/") Navbar API
               li
                 a(href="/hide-on-scroll/") Hide On Scroll
@@ -33,7 +32,7 @@ block scripts
             .left
               a.link.back
                 i.icon.icon-back
-                span.ios-only Back
+                span.if-not-md Back
             .title Static Navbar
             .right
         .block
@@ -51,7 +50,7 @@ block scripts
           .left
             a.link.back
               i.icon.icon-back
-              span.ios-only Back
+              span.if-not-md Back
           .title Fixed Navbar
       .page-content
         .block
@@ -65,6 +64,31 @@ block scripts
           p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
           p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
           p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+
+  script(type="text/template7", id="large")
+    .page
+      .navbar
+        .navbar-inner.navbar-inner-large.sliding
+          .left
+            a.link.back
+              i.icon.icon-back
+              span.if-not-md Back
+          .title Large Title
+          .title-large
+            .title-large-text Large Title
+      .page-content
+        .block
+          p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+          p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+
   script(type="text/template7", id="api")
     .page
       .navbar
@@ -72,14 +96,14 @@ block scripts
           .left
             a.link.back
               i.icon.icon-back
-              span.ios-only Back
+              span.if-not-md Back
           .title Navbar API
       .page-content
         .block
           p
-            a.button.button-raised.hide-navbar Hide Navbar
+            a.button.button-raised.button-fill.hide-navbar Hide Navbar
           p
-            a.button.button-raised.show-navbar Show Navbar
+            a.button.button-raised.button-fill.show-navbar Show Navbar
           p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
           p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
           p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
@@ -96,7 +120,7 @@ block scripts
           .left
             a.link.back
               i.icon.icon-back
-              span.ios-only Back
+              span.if-not-md Back
           .title Hide On Scroll
       .page-content.hide-navbar-on-scroll
         .block
@@ -119,6 +143,7 @@ block scripts
 
     var static = Template7.compile($$('#static').html());
     var fixed = Template7.compile($$('#fixed').html());
+    var large = Template7.compile($$('#large').html());
     var api = Template7.compile($$('#api').html());
     var hideOnScroll = Template7.compile($$('#hide-on-scroll').html());
 
@@ -131,6 +156,10 @@ block scripts
         {
           path: '/fixed/',
           template: fixed,
+        },
+        {
+          path: '/large/',
+          template: large,
         },
         {
           path: '/api/',

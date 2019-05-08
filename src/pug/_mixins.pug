@@ -49,6 +49,11 @@ mixin vueLinkIconProps
     td string
     td
     td Icon to be used in case of MD theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
+  tr
+    td icon-aurora
+    td string
+    td
+    td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
 mixin vueLinkRouterProps
   tr
     td href
@@ -96,6 +101,11 @@ mixin vueLinkRouterProps
     td
     td Load new page and remove all previous pages from history and DOM
   tr
+    td reload-detail
+    td boolean
+    td
+    td Reload Detail page in Master Detail view
+  tr
     td animate
     td boolean
     td
@@ -106,15 +116,20 @@ mixin vueLinkRouterProps
     td
     td Ignores caching
   tr
-    td page-name
-    td string
-    td
-    td Name of the page to load
-  tr
     td route-tab-id
     td string
     td
     td Routable Tab id
+  tr
+    td route-props
+    td object
+    td
+    td Object with additional props that will be passed to target route component
+  tr
+    td prevent-router
+    td boolean
+    td false
+    td If set, then it won't be processed by Framework7 router
 
 mixin vueLinkActionsProps
   tr
@@ -127,6 +142,11 @@ mixin vueLinkActionsProps
     td boolean
     td
     td Closes panel on click
+  tr
+    td panel-toggle
+    td boolean
+    td
+    td Toggle (open/close) panel on click
   tr
     td actions-open
     td string<br>boolean
@@ -212,6 +232,26 @@ mixin vueLinkActionsProps
     td string<br>boolean
     td
     td CSS selector of the Expandable Searchbar to clear on click. Or boolean property to clear the first found Searchbar
+  tr
+    td card-open
+    td string<br>boolean
+    td
+    td CSS selector of the expandable card to open on click. Or boolean to open first found expandable card
+  tr
+    td card-close
+    td string<br>boolean
+    td
+    td CSS selector of the expandable card to close on click. Or boolean property to close currently opened expandable card
+  tr
+    td card-prevent-open
+    td boolean
+    td
+    td Click on element with this prop won't open its parent expandable card
+  tr
+    td menu-close
+    td boolean
+    td
+    td Closes Menu dropdown on click
 
 mixin reactLinkIconProps
   tr
@@ -259,6 +299,11 @@ mixin reactLinkIconProps
     td string
     td
     td Icon to be used in case of MD theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
+  tr
+    td iconAurora
+    td string
+    td
+    td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>fa:home</code>
 
 mixin reactLinkRouterProps
   tr
@@ -307,6 +352,11 @@ mixin reactLinkRouterProps
     td
     td Load new page and remove all previous pages from history and DOM
   tr
+    td reloadDetail
+    td boolean
+    td
+    td Reload Detail page in Master Detail view
+  tr
     td animate
     td boolean
     td
@@ -317,15 +367,20 @@ mixin reactLinkRouterProps
     td
     td Ignores caching
   tr
-    td pageName
-    td string
-    td
-    td Name of the page to load
-  tr
     td routeTabId
     td string
     td
     td Routable Tab id
+  tr
+    td routeProps
+    td object
+    td
+    td Object with additional props that will be passed to target route component
+  tr
+    td preventRouter
+    td boolean
+    td false
+    td If set, then it won't be processed by Framework7 router
 
 mixin reactLinkActionsProps
   tr
@@ -338,6 +393,11 @@ mixin reactLinkActionsProps
     td boolean
     td
     td Closes panel on click
+  tr
+    td panelToggle
+    td boolean
+    td
+    td Toggle (open/close) panel on click
   tr
     td actionsOpen
     td string<br>boolean
@@ -423,3 +483,25 @@ mixin reactLinkActionsProps
     td string<br>boolean
     td
     td CSS selector of the Expandable Searchbar to clear on click. Or boolean property to clear the first found Searchbar
+  tr
+    td cardOpen
+    td string<br>boolean
+    td
+    td CSS selector of the expandable card to open on click. Or boolean to open first found expandable card
+  tr
+    td cardClose
+    td string<br>boolean
+    td
+    td CSS selector of the expandable card to close on click. Or boolean property to close currently opened expandable card
+  tr
+    td cardPreventOpen
+    td boolean
+    td
+    td Click on element with this prop won't open its parent expandable card
+  tr
+    td menuClose
+    td boolean
+    td
+    td Closes Menu dropdown on click
+mixin cssVars(component, info, title)
+  | !{cssVars(component, info, title)}

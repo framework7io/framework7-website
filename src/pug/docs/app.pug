@@ -57,7 +57,7 @@ block content
           td theme
           td string
           td auto
-          td App theme. Can be <code>ios</code>, <code>md</code> or <code>auto</code>. In case of <code>auto</code> it will use iOS theme for iOS devices and MD theme for all other devices.
+          td App theme. Can be <code>ios</code>, <code>md</code>, <code>aurora</code> or <code>auto</code>. In case of <code>auto</code> it will use iOS theme for iOS devices, Aurora theme for desktop device running in Electron environment, and MD theme for all other devices.
         tr
           td language
           td string
@@ -68,7 +68,6 @@ block content
           td array
           td []
           td Array with default routes to all views.
-
         tr
           td data
           td function
@@ -100,21 +99,15 @@ block content
                   });
             p Note, that <code>this</code> inside of each method points to app Framework7 instance.
         tr
-          td on
-          td object
-          td {}
-          td Object with events handlers. For example:
-            :code(lang="js")
-                  var app = new Framework({
-                    on: {
-                      init: function () {
-                        console.log('App initialized'),
-                      },
-                      pageInit: function () {
-                        console.log('Page initialized'),
-                      },
-                    }
-                  })
+          td lazyModulesPath
+          td string
+          td
+          td Path to Framework7's lazy components. Required to use <a href="lazy-modules.html">Lazy Modules</a> with browser modules.
+        tr
+          td autoDarkTheme
+          td boolean
+          td false
+          td Automatically enables dark theme based on user system color scheme preference. This feature support is based on <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank"><code>(prefers-color-scheme)</code> media query support</a>.
         tr
           td init
           td boolean
@@ -125,6 +118,22 @@ block content
           td boolean
           td true
           td If automatic initialization is enabled with <code>init: true</code> parameter and app is running under cordova environment then it will be initialized on <code>deviceready</code> event.
+        tr
+          td on
+          td object
+          td {}
+          td Object with events handlers. For example:
+            :code(lang="js")
+              var app = new Framework7({
+                on: {
+                  init: function () {
+                    console.log('App initialized');
+                  },
+                  pageInit: function () {
+                    console.log('Page initialized');
+                  },
+                }
+              })
         tr
           th(colspan="4") Clicks Module Parameters
         tr
@@ -165,8 +174,8 @@ block content
         tr.subparam-row
           td fastClicks
           td boolean
-          td true
-          td Fast clicks is a built-in library that removes 300ms delay from links and form elements in mobile browser while you click them. You can disable this built-in library if you want to use other third party fast clicks script.
+          td false
+          td Fast clicks is a built-in library that removes 300ms delay from links and form elements in mobile browser while you click them. Modern browsers are smart enough to eliminate that click delay. You can enable this built-in library if you target old devices or experience click delays.
         tr.subparam-row
           td fastClicksDistanceThreshold
           td number
@@ -183,10 +192,15 @@ block content
           td
           td This parameter allows to specify elements not handled by fast clicks by passing CSS selector of such elements
         tr.subparam-row
+          td touchClicksDistanceThreshold
+          td number
+          td 5
+          td Distance threshold (in px) to prevent short swipes. So if tap/move distance is larger than this value then "click" will not be triggered. (Used only for touch events when fastClicks disabled).
+        tr.subparam-row
           td disableContextMenu
           td boolean
-          td true
-          td
+          td false
+          td Set to true to disable context menu (with right click or tap and hold)
         tr.subparam-row
           td tapHold
           td boolean
@@ -213,15 +227,51 @@ block content
           td a, button, label, span, .actions-button
           td CSS selector of elements where enabled <code>activeState</code> will add appropriate active class
         tr.subparam-row
-          td materialRipple
+          td iosTouchRipple
+          td boolean
+          td false
+          td Enables touch ripple effect for iOS theme
+        tr.subparam-row
+          td mdTouchRipple
           td boolean
           td true
-          td Enables Material theme specific touch ripple effect
+          td Enables touch ripple effect for MD theme
         tr.subparam-row
-          td materialRippleElements
+          td auroraTouchRipple
+          td boolean
+          td false
+          td Enables touch ripple effect for Aurora theme
+        tr.subparam-row
+          td touchRippleElements
           td string
-          td .ripple, .link, .item-link, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell, .notification-close-button
+          td .ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content
           td CSS selector of elements to apply touch ripple effect on click
+        tr.subparam-close-row
+          td(colspan="4") }
+        tr
+          td serviceWorker
+          td object
+          td
+          td Object with service worker module parameters:
+            :code(lang="js")
+              var app = new Framework7({
+                serviceWorker: {
+                  path: './service-worker.js',
+                  scope: '/',
+                }
+              })
+        tr.subparam-open-row
+          td(colspan="4") {
+        tr.subparam-row
+          td path
+          td string
+          td
+          td Path to service worker file
+        tr.subparam-row
+          td scope
+          td string
+          td
+          td Path to service worker scope
         tr.subparam-close-row
           td(colspan="4") }
     p These are default app parameters for app core module.
@@ -274,7 +324,7 @@ block content
           td Boolean property indicating app is in RTL layout or not
         tr
           td app.theme
-          td Current app theme. Can be <code>md</code> or <code>ios</code>
+          td String with current app theme. Can be <code>md</code>, <code>ios</code> or <code>aurora</code>
         tr
           td app.data
           td Object with app root data passed on intialization
@@ -317,9 +367,17 @@ block content
         tr
           td app.request
           td Contains methods to work with XHR requests. Check the <a href="request.html">Request</a> utilities section
-
+        tr
+          td app.serviceWorker.registration
+          td Array with registered service workers
         tr
           th(colspan="2") Methods
+        tr
+          td app.enableAutoDarkTheme()
+          td Enables auto dark theme detection
+        tr
+          td app.disableAutoDarkTheme()
+          td Disables auto dark theme detection
         tr
           td app.on(<span>event</span>, <span>handler</span>)
           td Add event handler
@@ -338,6 +396,12 @@ block content
         tr
           td app.init()
           td Initialize app. In case you disabled auto initialization with <code>init: false</code> parameter
+        tr
+          td app.serviceWorker.register(<span>path</span>, <span>scope</span>)
+          td Register service worker. It returns promise that will be resolved with #[a(href="https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration", target="_blank") ServiceWorkerRegistration]
+        tr
+          td app.serviceWorker.unregister(<span>registration</span>)
+          td Unregister service worker. It returns promise that will be resolved when service worker unregistered.
     p Same as with app parameters most of components that has JavaScript API may extend this list of properties with the property named as component. For example Panel component extends app instance properties with <code>panel</code> property that accepts Panel specific properties and methods.
     p Example:
     :code(lang="js")
@@ -369,32 +433,48 @@ block content
           td Event will be fired on app orientation change (window orientantion change).
         tr
           td click
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on app click
         tr
           td touchstart:active
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on touch start (mousedown) event added as active listener (possible to prevent default)
         tr
           td touchmove:active
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on touch move (mousemove) event added as active listener (possible to prevent default)
         tr
           td touchend:active
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on touch end (mouseup) event added as active listener (possible to prevent default)
         tr
           td touchstart:passive
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on touch start (mousedown) event added as passive listener (impossible to prevent default)
         tr
           td touchmove:passive
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on touch move (mousemove) event added as passive listener (impossible to prevent default)
         tr
           td touchend:passive
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on touch end (mouseup) event added as passive listener (impossible to prevent default)
+        tr
+          td serviceWorkerRegisterSuccess
+          td <span>(registration)</span>
+          td Event will be triggered when service worker successfully registered
+        tr
+          td serviceWorkerRegisterError
+          td <span>(error)</span>
+          td Event will be triggered when service worker registration failed
+        tr
+          td serviceWorkerUnregisterSuccess
+          td <span>(registration)</span>
+          td Event will be triggered when service worker successfully unregistered
+        tr
+          td serviceWorkerUnregisterError
+          td <span>(registration, error)</span>
+          td Event will be triggered when service worker unregister failed
     p And again, most of components that has JavaScript API may extend this list of events like Panel component will also trigger additional events on app instance.
     p Example:
     :code(lang="js")
@@ -402,3 +482,136 @@ block content
             console.log('Panel ' + panel.side + ' opened');
           });
 
+    h2 CSS Variables
+    :code(lang="css")
+      :root {
+        --f7-theme-color: #007aff;
+        --f7-theme-color-rgb: 0, 122, 255;
+        --f7-theme-color-shade: #0066d6;
+        --f7-theme-color-tint: #298fff;
+        --f7-safe-area-left: 0px;
+        --f7-safe-area-right: 0px;
+        --f7-safe-area-top: 0px;
+        --f7-safe-area-bottom: 0px;
+        --f7-safe-area-outer-left: 0px;
+        --f7-safe-area-outer-right: 0px;
+        --f7-device-pixel-ratio: 1;
+      }
+      @supports (left: env(safe-area-inset-left)) {
+        :root {
+          --f7-safe-area-top: env(safe-area-inset-top);
+          --f7-safe-area-bottom: env(safe-area-inset-bottom);
+        }
+        :root .ios-left-edge,
+        :root .ios-edges,
+        :root .safe-area-left,
+        :root .safe-areas,
+        :root .popup,
+        :root .sheet-modal,
+        :root .panel-left {
+          --f7-safe-area-left: env(safe-area-inset-left);
+          --f7-safe-area-outer-left: env(safe-area-inset-left);
+        }
+        :root .ios-right-edge,
+        :root .ios-edges,
+        :root .safe-area-right,
+        :root .safe-areas,
+        :root .popup,
+        :root .sheet-modal,
+        :root .panel-right {
+          --f7-safe-area-right: env(safe-area-inset-right);
+          --f7-safe-area-outer-right: env(safe-area-inset-right);
+        }
+        :root .no-safe-areas,
+        :root .no-safe-area-left,
+        :root .no-ios-edges,
+        :root .no-ios-left-edge {
+          --f7-safe-area-left: 0px;
+          --f7-safe-area-outer-left: 0px;
+        }
+        :root .no-safe-areas,
+        :root .no-safe-area-right,
+        :root .no-ios-edges,
+        :root .no-ios-right-edge {
+          --f7-safe-area-right: 0px;
+          --f7-safe-area-outer-right: 0px;
+        }
+      }
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+        :root {
+          --f7-device-pixel-ratio: 2;
+        }
+      }
+      @media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 3dppx) {
+        :root {
+          --f7-device-pixel-ratio: 3;
+        }
+      }
+      /*====================
+        Fonts
+        ==================== */
+      :root {
+        --f7-font-size: 14px;
+      }
+      .ios {
+        --f7-font-family: -apple-system, SF Pro Text, SF UI Text, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
+        --f7-text-color: #000;
+        --f7-line-height: 1.4;
+      }
+      .ios .theme-dark,
+      .ios.theme-dark {
+        --f7-text-color: #fff;
+      }
+      .md {
+        --f7-font-family: Roboto, system-ui, Noto, Helvetica, Arial, sans-serif;
+        --f7-text-color: #212121;
+        --f7-line-height: 1.5;
+      }
+      .md .theme-dark,
+      .md.theme-dark {
+        --f7-text-color: rgba(255, 255, 255, 0.87);
+      }
+      .aurora {
+        --f7-font-family: -apple-system, system-ui, Helvetica, Arial, sans-serif;
+        --f7-text-color: #000;
+        --f7-line-height: 1.5;
+      }
+      .aurora .theme-dark,
+      .aurora.theme-dark {
+        --f7-text-color: #fff;
+      }
+      /*====================
+        Bars
+        ==================== */
+      :root {
+        /*
+        --f7-bars-link-color: var(--f7-theme-color);
+        */
+        --f7-bars-bg-image: none;
+        --f7-bars-bg-color: #f7f7f8;
+        --f7-bars-bg-color-rgb: 247, 247, 248;
+        --f7-bars-text-color: #000;
+        --f7-bars-shadow-bottom-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.08) 40%, rgba(0, 0, 0, 0.04) 50%, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 0) 100%);
+        --f7-bars-shadow-top-image: linear-gradient(to top, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.08) 40%, rgba(0, 0, 0, 0.04) 50%, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 0) 100%);
+      }
+      .theme-dark {
+        --f7-bars-bg-color: #1b1b1b;
+        --f7-bars-text-color: #fff;
+      }
+      .ios {
+        --f7-bars-border-color: #c4c4c4;
+      }
+      .ios .theme-dark,
+      .ios.theme-dark {
+        --f7-bars-border-color: #282829;
+      }
+      .md {
+        --f7-bars-border-color: transparent;
+      }
+      .aurora {
+        --f7-bars-border-color: rgba(0, 0, 0, 0.2);
+      }
+      .aurora .theme-dark,
+      .aurora.theme-dark {
+        --f7-bars-border-color: #282829;
+      }

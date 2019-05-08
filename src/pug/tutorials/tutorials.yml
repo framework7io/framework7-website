@@ -1,4 +1,34 @@
 -
+  date: February 12, 2019
+  video: false
+  title: "Migration To Framework7 v4"
+  url: https://blog.framework7.io/migration-to-framework7-v4-89d1ce49f4c0
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+  - v4
+-
+  date: December 5, 2018
+  video: true
+  title: "How to use the Calendar Component in Framework7"
+  url: https://youtu.be/qYteZaz_pUc
+  author:
+    name: Timo Ernst
+    url: http://www.timo-ernst.net
+  badges:
+  - v3
+-
+  date: November 2, 2018
+  video: true
+  title: "Auto-Complete Search Fields with React, Node and Framework7 tutorial"
+  url: https://youtu.be/6VEGkAdPTkU
+  author:
+    name: Timo Ernst
+    url: http://www.timo-ernst.net
+  badges:
+  - v3
+-
   date: July 9, 2018
   video: false
   title: "Migration To Framework7 v3"

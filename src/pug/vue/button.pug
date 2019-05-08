@@ -37,12 +37,42 @@ block content
           td raised
           td boolean
           td false
-          td Makes segmented raised. Affects MD theme only
+          td Makes segmented raised
+        tr
+          td raised-ios
+          td boolean
+          td false
+          td Makes segmented raised only in iOS theme
+        tr
+          td raised-md
+          td boolean
+          td false
+          td Makes segmented raised only in MD theme
+        tr
+          td raised-aurora
+          td boolean
+          td false
+          td Makes segmented raised only in Aurora theme
         tr
           td round
           td boolean
           td false
           td Makes segmented round
+        tr
+          td round-ios
+          td boolean
+          td false
+          td Makes segmented round only in iOS theme
+        tr
+          td round-md
+          td boolean
+          td false
+          td Makes segmented round only in MD theme
+        tr
+          td round-aurora
+          td boolean
+          td false
+          td Makes segmented round only in Aurora theme
         tr
           td tag
           td string
@@ -50,6 +80,11 @@ block content
           td Tag used to render Segmented element
         tr
           th(colspan="4") &lt;f7-button&gt; properties
+        tr
+          td type
+          td string
+          td
+          td If it is one of <code>submit</code>, <code>button</code> or <code>reset</code> then it will be rendered as <code>&lt;button&gt;</code> element with same <code>type</code> attribute
         tr
           td tab-link
           td string<br>boolean
@@ -96,20 +131,30 @@ block content
           td false
           td Makes button round for MD theme only
         tr
-          td big
+          td round-aurora
           td boolean
           td false
-          td Makes big button
+          td Makes button round for Aurora theme only
         tr
-          td big-ios
+          td large
           td boolean
           td false
-          td Makes big button for iOS theme only
+          td Makes large button
         tr
-          td big-md
+          td large-ios
           td boolean
           td false
-          td Makes big button for MD theme only
+          td Makes large button for iOS theme only
+        tr
+          td large-md
+          td boolean
+          td false
+          td Makes large button for MD theme only
+        tr
+          td large-aurora
+          td boolean
+          td false
+          td Makes large button for Aurora theme only
         tr
           td small
           td boolean
@@ -126,6 +171,11 @@ block content
           td false
           td Makes small button for MD theme only
         tr
+          td small-aurora
+          td boolean
+          td false
+          td Makes small button for Aurora theme only
+        tr
           td fill
           td boolean
           td false
@@ -141,15 +191,50 @@ block content
           td false
           td Makes button filled color for MD theme only
         tr
+          td fill-aurora
+          td boolean
+          td false
+          td Makes button filled color for Aurora theme only
+        tr
           td raised
           td boolean
           td false
-          td Makes button raised. Affects MD theme only
+          td Makes button raised
+        tr
+          td raised-ios
+          td boolean
+          td false
+          td Makes button raised only in iOS theme
+        tr
+          td raised-md
+          td boolean
+          td false
+          td Makes button raised only in MD theme
+        tr
+          td raised-aurora
+          td boolean
+          td false
+          td Makes button raised only in Aurora theme
         tr
           td outline
           td boolean
           td false
-          td Makes button outline. Affects MD theme only
+          td Makes button outline
+        tr
+          td outline-ios
+          td boolean
+          td false
+          td Makes button outline only in iOS theme
+        tr
+          td outline-md
+          td boolean
+          td false
+          td Makes button outline only in MD theme
+        tr
+          td outline-aurora
+          td boolean
+          td false
+          td Makes button outline only in Aurora theme
         tr
           th(colspan="4") &lt;f7-button&gt; icon related properties
         +vueLinkIconProps
@@ -206,7 +291,7 @@ block content
               </f7-row>
             </f7-block>
 
-            <f7-block-title>Outline Buttons (MD-theme only)</f7-block-title>
+            <f7-block-title>Outline Buttons</f7-block-title>
             <f7-block>
               <f7-row>
                 <f7-col>
@@ -221,7 +306,7 @@ block content
               </f7-row>
             </f7-block>
 
-            <f7-block-title>Raised Buttons (MD-theme only)</f7-block-title>
+            <f7-block-title>Raised Buttons</f7-block-title>
             <f7-block>
               <f7-row tag="p">
                 <f7-col tag="span">
@@ -271,22 +356,22 @@ block content
               </f7-segmented>
             </f7-block>
 
-            <f7-block-title>Big Buttons</f7-block-title>
+            <f7-block-title>Large Buttons</f7-block-title>
             <f7-block>
               <f7-row tag="p">
                 <f7-col tag="span">
-                  <f7-button big>Button</f7-button>
+                  <f7-button large>Button</f7-button>
                 </f7-col>
                 <f7-col tag="span">
-                  <f7-button big fill>Fill</f7-button>
+                  <f7-button large fill>Fill</f7-button>
                 </f7-col>
               </f7-row>
               <f7-row tag="p">
                 <f7-col tag="span">
-                  <f7-button big raised>Raised</f7-button>
+                  <f7-button large raised>Raised</f7-button>
                 </f7-col>
                 <f7-col tag="span">
-                  <f7-button big raised fill>Raised Fill</f7-button>
+                  <f7-button large raised fill>Raised Fill</f7-button>
                 </f7-col>
               </f7-row>
             </f7-block>
@@ -295,24 +380,24 @@ block content
             <f7-block>
               <f7-row tag="p">
                 <f7-col tag="span">
-                  <f7-button big small>Button</f7-button>
+                  <f7-button large small>Button</f7-button>
                 </f7-col>
                 <f7-col tag="span">
-                  <f7-button big small outline>Outline</f7-button>
+                  <f7-button large small outline>Outline</f7-button>
                 </f7-col>
                 <f7-col tag="span">
-                  <f7-button big small fill>Fill</f7-button>
+                  <f7-button large small fill>Fill</f7-button>
                 </f7-col>
               </f7-row>
               <f7-row tag="p">
                 <f7-col tag="span">
-                  <f7-button big small round>Button</f7-button>
+                  <f7-button large small round>Button</f7-button>
                 </f7-col>
                 <f7-col tag="span">
-                  <f7-button big small outline round>Outline</f7-button>
+                  <f7-button large small outline round>Outline</f7-button>
                 </f7-col>
                 <f7-col tag="span">
-                  <f7-button big small fill round>Fill</f7-button>
+                  <f7-button large small fill round>Fill</f7-button>
                 </f7-col>
               </f7-row>
             </f7-block>

@@ -1,0 +1,71 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Framework7 React Package Structure | Framework7 Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Framework7 React Package Structure
+    ul.docs-index
+    h2 Package
+    p Framework7 React package contains the following files and folders:
+    :code(lang="html")
+      framework7-react/
+          components/
+              accordion-content.js
+              accordion-item.js
+              accordion-toggle.js
+              accordion.js
+              actions-button.js
+              actions-group.js
+              actions-label.js
+              actions.js
+              app.js
+              ...
+          framework7-react.bundle.js
+          framework7-react.bundle.min.js
+          framework7-react.esm.js
+
+    h2 Browser Script (UMD)
+    p #[code framework7-react.bundle.js] is so called #[a(href="https://github.com/umdjs/umd", target="_blank") UMD]-format JavaScript intended to be used directly in browser (e.g. with #[code &lt;script src="..."&gt;]) or with libraries like Require.js. It already contains all Framework7-React components registered.
+    p It is not recommended to use this version for production, just for development and testing.
+
+    h2 Components
+    p All React components are located in #[code components/] folder. These components are ES modules.
+    :code(lang="js")
+      import App from 'framework7-react/components/app.js';
+      import Navbar from 'framework7-react/components/navbar.js';
+
+    p Or they can be imported using named import from main file
+    :code(lang="js")
+      import { App, Navbar } from 'framework7-react';
+
+    h2 ES Module
+    p Framework7 React plugin can be imported as an ES-next module:
+    :code(lang="js")
+      // Import Framework7 Core
+      import Framework7 from 'framework7';
+      /*
+      Or import bundle with all components:
+      import Framework7 from 'framework7/framework7.esm.bundle.js';
+      */
+
+      // Import Framework7 React
+      import Framework7React from 'framework7-react';
+
+      // Init plugin
+      Framework7.use(Framework7React)
+
+    .important-note
+      p
+        b By default it exports only Framework7-React plugin without any components. To import components separately, we need to use named import:
+      :code(lang="js")
+        import { App, Navbar } from 'framework7-react';
+
+    h2 ES-Next
+    p Note, that Framework7 and Framework7-React ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile them as well, as well as <code>template7</code>, <code>dom7</code> and <code>ssr-window</code> modules that used as dependencies.
+
+

@@ -59,146 +59,261 @@ block content
           td false
           td Makes Card outline
         tr
+          td no-shadow
+          td boolean
+          td false
+          td Disables card shadow
+        tr
+          td no-border
+          td boolean
+          td false
+          td Disables card border (for outline cards)
+        tr
+          td expandable
+          td boolean
+          td false
+          td Enables expandable card
+        tr
+          td expandable-animate-width
+          td boolean
+          td false
+          td Enables card content width also animatable and responsive, but can affect performance
+        tr
+          td expandable-opened
+          td boolean
+          td false
+          td Boolean property indicating whether the expandable card opened or not
+
+        tr
+          td animate
+          td boolean
+          td true
+          td Specifies to open expandable card with animation or not
+        tr
+          td hide-navbar-on-open
+          td boolean
+          td
+          td Will hide Navbar on expandable card open. By default inherits same <a href="/docs/cards.html#card-app-parameters" target="_blank">app card parameter</a>.
+        tr
+          td hide-toolbar-on-open
+          td boolean
+          td
+          td Will hide Toolbar on expandable card open. By default inherits same <a href="/docs/cards.html#card-app-parameters" target="_blank">app card parameter</a>.
+        tr
+          td swipe-to-close
+          td boolean
+          td
+          td Allows to close expandable card with swipe. By default inherits same <a href="/docs/cards.html#card-app-parameters" target="_blank">app card parameter</a>.
+        tr
+          td backrop
+          td boolean
+          td
+          td Enables expandable card backdrop layer. By default inherits same <a href="/docs/cards.html#card-app-parameters" target="_blank">app card parameter</a>.
+        tr
+          td close-by-backdrop-click
+          td boolean
+          td
+          td When enabled, expandable card will be closed on its backdrop click. By default inherits same <a href="/docs/cards.html#card-app-parameters" target="_blank">app card parameter</a>.
+        tr
           th(colspan="4") &lt;f7-card-content&gt; properties
         tr
           td padding
           td boolean
           td true
           td Adds additional inner padding
+
+    h2 Card Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-card&gt; events
+        tr
+          td card:beforeopen
+          td Event will be triggered right before expandable card starts its opening animation. <code>event.detail.prevent</code> contains function that will prevent card from opening when called
+        tr
+          td card:open
+          td Event will be triggered when expandable card starts its opening animation
+        tr
+          td card:opened
+          td Event will be triggered after expandable card completes its opening animation
+        tr
+          td card:close
+          td Event will be triggered when expandable card starts its closing animation
+        tr
+          td card:closed
+          td Event will be triggered after expandable card completes its closing animation
+
     .with-device
       h2(data-device-preview="../docs-demos/vue/cards.html") Examples
       :code(lang="html")
-            <f7-block-title>Simple Cards</f7-block-title>
-            <f7-card
-              content="This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."
-            ></f7-card>
-            <f7-card
-              title="Card header"
-              content="Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions."
-              footer="Card footer"
-            ></f7-card>
-            <f7-card
-              content="Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "
-            ></f7-card>
+        <f7-block-title>Simple Cards</f7-block-title>
+        <f7-card
+          content="This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."
+        ></f7-card>
+        <f7-card
+          title="Card header"
+          content="Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions."
+          footer="Card footer"
+        ></f7-card>
+        <f7-card
+          content="Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "
+        ></f7-card>
 
-            <f7-block-title>Outline Cards</f7-block-title>
-            <f7-card
-              outline
-              content="This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."
-            ></f7-card>
-            <f7-card
-              outline
-              title="Card header"
-              content="Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions."
-              footer="Card footer"
-            ></f7-card>
-            <f7-card
-              outline
-              content="Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "
-            ></f7-card>
+        <f7-block-title>Outline Cards</f7-block-title>
+        <f7-card
+          outline
+          content="This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."
+        ></f7-card>
+        <f7-card
+          outline
+          title="Card header"
+          content="Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions."
+          footer="Card footer"
+        ></f7-card>
+        <f7-card
+          outline
+          content="Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "
+        ></f7-card>
 
-            <f7-block-title>Styled Cards</f7-block-title>
-            <f7-card class="demo-card-header-pic">
-              <f7-card-header
-                class="no-border"
-                valign="bottom"
-                style="background-image:url(http://lorempixel.com/1000/600/nature/3/)"
-              >Journey To Mountains</f7-card-header>
-              <f7-card-content>
-                <p class="date">Posted on January 21, 2015</p>
-                <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...</p>
-              </f7-card-content>
-              <f7-card-footer>
-                <f7-link>Like</f7-link>
-                <f7-link>Read more</f7-link>
-              </f7-card-footer>
-            </f7-card>
-            <f7-card class="demo-card-header-pic">
-              <f7-card-header
-                class="no-border"
-                valign="bottom"
-                style="background-image:url(http://lorempixel.com/1000/600/people/6/)"
-              >Journey To Mountains</f7-card-header>
-              <f7-card-content>
-                <p class="date">Posted on January 21, 2015</p>
-                <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...</p>
-              </f7-card-content>
-              <f7-card-footer>
-                <f7-link>Like</f7-link>
-                <f7-link>Read more</f7-link>
-              </f7-card-footer>
-            </f7-card>
+        <f7-block-title>Styled Cards</f7-block-title>
+        <f7-card class="demo-card-header-pic">
+          <f7-card-header
+            class="no-border"
+            valign="bottom"
+            style="background-image:url(https://cdn.framework7.io/placeholder/nature-1000x600-3.jpg)"
+          >Journey To Mountains</f7-card-header>
+          <f7-card-content>
+            <p class="date">Posted on January 21, 2015</p>
+            <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...</p>
+          </f7-card-content>
+          <f7-card-footer>
+            <f7-link>Like</f7-link>
+            <f7-link>Read more</f7-link>
+          </f7-card-footer>
+        </f7-card>
+        <f7-card class="demo-card-header-pic">
+          <f7-card-header
+            class="no-border"
+            valign="bottom"
+            style="background-image:url(https://cdn.framework7.io/placeholder/people-1000x600-6.jpg)"
+          >Journey To Mountains</f7-card-header>
+          <f7-card-content>
+            <p class="date">Posted on January 21, 2015</p>
+            <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...</p>
+          </f7-card-content>
+          <f7-card-footer>
+            <f7-link>Like</f7-link>
+            <f7-link>Read more</f7-link>
+          </f7-card-footer>
+        </f7-card>
 
-            <f7-block-title>Facebook Cards</f7-block-title>
-            <f7-card class="demo-facebook-card">
-              <f7-card-header class="no-border">
-                <div class="demo-facebook-avatar"><img src="http://lorempixel.com/68/68/people/1/" width="34" height="34"/></div>
-                <div class="demo-facebook-name">John Doe</div>
-                <div class="demo-facebook-date">Monday at 3:47 PM</div>
+        <f7-block-title>Facebook Cards</f7-block-title>
+        <f7-card class="demo-facebook-card">
+          <f7-card-header class="no-border">
+            <div class="demo-facebook-avatar"><img src="https://cdn.framework7.io/placeholder/people-68x68-1.jpg" width="34" height="34"/></div>
+            <div class="demo-facebook-name">John Doe</div>
+            <div class="demo-facebook-date">Monday at 3:47 PM</div>
+          </f7-card-header>
+          <f7-card-content :padding="false">
+            <img src="https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg" width="100%"/>
+          </f7-card-content>
+          <f7-card-footer class="no-border">
+            <f7-link>Like</f7-link>
+            <f7-link>Comment</f7-link>
+            <f7-link>Share</f7-link>
+          </f7-card-footer>
+        </f7-card>
+        <f7-card class="demo-facebook-card">
+          <f7-card-header class="no-border">
+            <div class="demo-facebook-avatar"><img src="https://cdn.framework7.io/placeholder/people-68x68-1.jpg" width="34" height="34"/></div>
+            <div class="demo-facebook-name">John Doe</div>
+            <div class="demo-facebook-date">Monday at 2:15 PM</div>
+          </f7-card-header>
+          <f7-card-content>
+            <p>What a nice photo i took yesterday!</p><img src="https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg" width="100%"/>
+            <p class="likes">Likes: 112 &nbsp;&nbsp; Comments: 43</p>
+          </f7-card-content>
+          <f7-card-footer class="no-border">
+            <f7-link>Like</f7-link>
+            <f7-link>Comment</f7-link>
+            <f7-link>Share</f7-link>
+          </f7-card-footer>
+        </f7-card>
+
+        <f7-block-title>Cards With List View</f7-block-title>
+        <f7-card>
+          <f7-card-content :padding="false">
+            <f7-list>
+              <f7-list-item link="#">Link 1</f7-list-item>
+              <f7-list-item link="#">Link 2</f7-list-item>
+              <f7-list-item link="#">Link 3</f7-list-item>
+              <f7-list-item link="#">Link 4</f7-list-item>
+              <f7-list-item link="#">Link 5</f7-list-item>
+            </f7-list>
+          </f7-card-content>
+        </f7-card>
+        <f7-card title="New Releases:">
+          <f7-card-content :padding="false">
+            <f7-list medial-list>
+              <f7-list-item
+                title="Yellow Submarine"
+                subtitle="Beatles"
+              >
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg" width="44"/>
+              </f7-list-item>
+              <f7-list-item
+                title="Don't Stop Me Now"
+                subtitle="Queen"
+              >
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg" width="44"/>
+              </f7-list-item>
+              <f7-list-item
+                title="Billie Jean"
+                subtitle="Michael Jackson"
+              >
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg" width="44"/>
+              </f7-list-item>
+            </f7-list>
+          </f7-card-content>
+          <f7-card-footer>
+            <span>January 20, 2015</span>
+            <span>5 comments</span>
+          </f7-card-footer>
+        </f7-card>
+
+        <f7-block-title>Expandable Cards</f7-block-title>
+        <f7-card expandable>
+          <f7-card-content :padding="false">
+            <div class="bg-color-red" :style="{height: '300px'}">
+              <f7-card-header text-color="white" class="display-block">
+                Framework7
+                <br />
+                <small :style="{opacity: 0.7}">Build Mobile Apps</small>
               </f7-card-header>
-              <f7-card-content :padding="false">
-                <img src="http://lorempixel.com/1000/700/nature/8/" width="100%"/>
-              </f7-card-content>
-              <f7-card-footer class="no-border">
-                <f7-link>Like</f7-link>
-                <f7-link>Comment</f7-link>
-                <f7-link>Share</f7-link>
-              </f7-card-footer>
-            </f7-card>
-            <f7-card class="demo-facebook-card">
-              <f7-card-header class="no-border">
-                <div class="demo-facebook-avatar"><img src="http://lorempixel.com/68/68/people/1/" width="34" height="34"/></div>
-                <div class="demo-facebook-name">John Doe</div>
-                <div class="demo-facebook-date">Monday at 2:15 PM</div>
-              </f7-card-header>
-              <f7-card-content>
-                <p>What a nice photo i took yesterday!</p><img src="http://lorempixel.com/1000/700/nature/8/" width="100%"/>
-                <p class="likes">Likes: 112 &nbsp;&nbsp; Comments: 43</p>
-              </f7-card-content>
-              <f7-card-footer class="no-border">
-                <f7-link>Like</f7-link>
-                <f7-link>Comment</f7-link>
-                <f7-link>Share</f7-link>
-              </f7-card-footer>
-            </f7-card>
+              <f7-link card-close color="white" class="card-opened-fade-in" :style="{position: 'absolute', right: '15px', top: '15px'}" icon-f7="close_round_fill"></f7-link>
+            </div>
+            <div class="card-content-padding">
+              <p>Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel...</p>
+            </div>
+          </f7-card-content>
+        </f7-card>
 
-            <f7-block-title>Cards With List View</f7-block-title>
-            <f7-card>
-              <f7-card-content :padding="false">
-                <f7-list>
-                  <f7-list-item link="#">Link 1</f7-list-item>
-                  <f7-list-item link="#">Link 2</f7-list-item>
-                  <f7-list-item link="#">Link 3</f7-list-item>
-                  <f7-list-item link="#">Link 4</f7-list-item>
-                  <f7-list-item link="#">Link 5</f7-list-item>
-                </f7-list>
-              </f7-card-content>
-            </f7-card>
-            <f7-card title="New Reelases">
-              <f7-card-content :padding="false">
-                <f7-list medial-list>
-                  <f7-list-item
-                    title="Yellow Submarine"
-                    subtitle="Beatles"
-                  >
-                    <img slot="media" src="http://lorempixel.com/88/88/fashion/4" width="44"/>
-                  </f7-list-item>
-                  <f7-list-item
-                    title="Don't Stop Me Now"
-                    subtitle="Queen"
-                  >
-                    <img slot="media" src="http://lorempixel.com/88/88/fashion/5" width="44"/>
-                  </f7-list-item>
-                  <f7-list-item
-                    title="Billie Jean"
-                    subtitle="Michael Jackson"
-                  >
-                    <img slot="media" src="http://lorempixel.com/88/88/fashion/6" width="44"/>
-                  </f7-list-item>
-                </f7-list>
-              </f7-card-content>
-              <f7-card-footer>
-                <span>January 20, 2015</span>
-                <span>5 comments</span>
-              </f7-card-footer>
-            </f7-card>
+        <f7-card expandable>
+          <f7-card-content :padding="false">
+            <div class="bg-color-yellow" :style="{height: '300px'}">
+              <f7-card-header text-color="black" class="display-block">
+                Framework7
+                <br/>
+                <small :style="{opacity: 0.7}">Build Mobile Apps</small>
+              </f7-card-header>
+              <f7-link card-close color="black" class="card-opened-fade-in" :style="{position: 'absolute', right: '15px', top: '15px'}" icon-f7="close_round_fill"></f7-link>
+            </div>
+            <div class="card-content-padding">
+              <p>Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel...</p>
+            </div>
+          </f7-card-content>
+        </f7-card>

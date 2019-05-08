@@ -1,10 +1,12 @@
+:root {
+  --table-monospace-font-size: inherit;
+}
 table {
   width: 100%;
-  color: #333;
   font-size: 14px;
   margin: 1em 0 2em;
   th,td {
-    padding: 8px 5px;
+    padding: 10px 5px;
   }
   thead {
     text-align: left;
@@ -12,7 +14,7 @@ table {
   }
   tbody {
     th, td {
-      border-top: 1px solid #e4e4e4;
+      border-top: 1px solid #eaeaea;
     }
   }
   thead + tbody tr:first-child {
@@ -25,15 +27,15 @@ table {
   }
 }
 .heading-cell() {
-  background: #fff;
   text-align: left;
   font-size: 14px;
   background: #f6f6f6;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
   small {
     font-size: 14px;
     font-weight: 500;
+    opacity: 0.7;
   }
 }
 table.params-table {
@@ -42,13 +44,16 @@ table.params-table {
     vertical-align: top;
   }
   tbody {
-    td:first-child:not([colspan]), td:nth-child(2), td:nth-child(3):not(:last-child) {
-      color: @darkColor;
+    td:first-child:not([colspan]),
+    td:nth-child(2),
+    td:nth-child(3):not(:last-child) {
+      color: @docsCodeRed;
       .monospace();
       font-weight: 500;
+      font-size: var(--table-monospace-font-size);
     }
     td:nth-child(2) {
-      color: @greenColor;
+      color: @docsCodeGreen;
     }
     td:nth-child(n + 3) {
       word-break: break-word;
@@ -94,13 +99,15 @@ table.methods-table {
     color:#000;
     white-space: nowrap;
     font-weight: 500;
+    font-size: var(--table-monospace-font-size);
     span {
-      color: @darkColor;
+      color: @docsCodeRed;
     }
   }
   .parameter-type {
     .monospace();
-    color: @greenColor;
+    font-size: var(--table-monospace-font-size);
+    color: @docsCodeGreen;
   }
   ul.method-parameters {
     margin: 0;
@@ -125,11 +132,12 @@ table.methods-table {
     }
     tbody td:first-child:not(:last-child) {
       .monospace();
+      font-size: var(--table-monospace-font-size);
       color:#000;
       white-space: normal;
       font-weight: 500;
       span {
-        color: @darkColor;
+        color: @docsCodeRed;
       }
     }
   }
@@ -144,7 +152,8 @@ table.events-table {
   tbody td:nth-child(2) span, tbody td:nth-child(3) span {
     white-space: nowrap;
     .monospace();
-    color: @darkColor;
+    font-size: var(--table-monospace-font-size);
+    color: @docsCodeRed;
     font-weight: 500;
     display: block;
   }
@@ -154,6 +163,7 @@ table.events-table {
   }
   tbody td:first-child:not([colspan]) {
     .monospace();
+    font-size: var(--table-monospace-font-size);
     color:#000;
     white-space: nowrap;
     font-weight: 500;
@@ -166,6 +176,7 @@ table.events-table {
 table.props-table {
   tbody td:first-child {
     .monospace();
+    font-size: var(--table-monospace-font-size);
     color:#000;
     white-space: nowrap;
     font-weight: 500;
@@ -186,6 +197,66 @@ table.double-events-table {
     background: #fafafa;
     td {
       border: none;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  table.methods-table,
+  table.params-table,
+  table.events-table {
+    display: block;
+    font-size: 14px;
+    line-height: 1.4;
+    --table-monospace-font-size: 13px;
+    thead {
+      display: none;
+    }
+    tbody {
+      display: block;
+    }
+    tr {
+      display: flex;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    tbody {
+      th, td, th[colspan] {
+        display: block;
+        border: none;
+        padding: 0;
+        background: none;
+        width: auto;
+      }
+    }
+    td:not(:last-child) {
+      margin-right: 20px;
+    }
+    tr.subparam-row {
+      padding-left: 1em;
+    }
+    tr.subparam-row td:first-child {
+      padding-left: 0;
+    }
+    tbody {
+      th[colspan] {
+        text-align: center;
+        font-size: 16px;
+      }
+      tr + tr {
+        border-top: 1px solid #eaeaea;
+      }
+      // td ~ td {
+      //   margin-left: 10px;
+      // }
+      td:last-child {
+        width: 100% !important;
+        margin-top: 10px;
+        margin-left: 0;
+        font-size: 14px;
+        color: #333;
+      }
     }
   }
 }

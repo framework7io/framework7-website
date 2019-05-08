@@ -1,0 +1,195 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Skeleton | Framework7 Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Skeleton
+    ul.docs-index
+    p Skeleton elements (aka UI Skeletons, Skeleton Screens, Ghost Elements) are basically "gray box" representations of UI that will be available soon. They are designed to improve perceived performance.
+    p Framework7 comes with two Skeleton patterns: Skeleton Block and Skeleton Text.
+
+    h2 Skeleton Block
+    p Skeleton block is just a usual block element with gray background color, that can be in any required size.
+    p To create skeleton block element we just need to create #[code div] element with #[code skeleton-block] class and better with fixed width:
+    :code(lang="html")
+      ...
+      <div class="list">
+        <ul>
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title">
+                <!-- Use skeleton block instead of list item title -->
+                <div class="skeleton-block" style="width: 100px"></div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      ...
+
+    h2 Skeleton Text
+    p Skeleton text is more interesting thing. Framework7 comes with special built-in Skeleton font, that renders every character as small gray rectangle. When we apply #[code skeleton-text] class to any element, it converts text to gray blocks/lines. Advantage over #[code skeleton-block] is that such "skeleton text" can be fully responsive and its size will reflect actual text size.
+    p Skeleton text font supports following characters set (including "space"):
+    :code
+      0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o p q r s t u v w z x y z A B C D E F G H I J K L M N O P Q R S T U V W Z X Y Z _ -   . , : ; / ! / * & ' " | ( ) { } [ ]
+    :code(lang="html")
+      ...
+      <div class="list media-list">
+        <ul>
+          <!-- we just add "skeleton-text" class to list item and its text will be rendered as gray boxes -->
+          <li class="item-content skeleton-text">
+            <div class="item-inner">
+              <div class="item-title-row">
+                <div class="item-title">Item Title</div>
+              </div>
+              <div class="item-subtitle">Item Subtitle</div>
+              <div class="item-text">Item text goes here, and it will be rendered as gray box too.</div>
+            </div>
+          </li>
+          <!-- In the next item we use "_" character instead of actual text -->
+          <li class="item-content skeleton-text">
+            <div class="item-inner">
+              <div class="item-title-row">
+                <div class="item-title">____ _____</div>
+              </div>
+              <div class="item-subtitle">____ _______</div>
+              <div class="item-text">____ ____ ____ _____ ___ __ ____ __ ________ __ ____ ___ ____</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      ...
+
+    h2 Skeleton Effects
+    p Skeleton elements also support three animation effects: Fade, Blink and Pulse.
+    p To enable special skeleton animation effect, we can need add one of the following classes to skeleton elements, or to parent element containing skeleton elements:
+    ul
+      li #[code skeleton-effect-fade] - to add fade effect
+      li #[code skeleton-effect-blink] - to add blink effect
+      li #[code skeleton-effect-pulse] - to add pulse effect
+
+    +cssVars('skeleton')
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/skeleton.html") Examples
+      :code(lang="html")
+        <template>
+          ...
+          <div class="block-title">Skeleton List</div>
+          <div class="list media-list skeleton-text">
+            <ul>
+              <li class="item-content">
+                <div class="item-media">
+                  <div class="skeleton-block" style="width: 40px; height: 40px; border-radius: 50%"></div>
+                </div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Title</div>
+                  </div>
+                  <div class="item-subtitle">Subtitle</div>
+                  <div class="item-text">
+                    Placeholder text line 1<br>
+                    Text line 2
+                  </div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-media">
+                  <div class="skeleton-block" style="width: 40px; height: 40px; border-radius: 50%"></div>
+                </div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Title</div>
+                  </div>
+                  <div class="item-subtitle">Subtitle</div>
+                  <div class="item-text">
+                    Placeholder text line 1<br>
+                    Text line 2
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="block-title">Skeleton Card</div>
+          <div class="card skeleton-text">
+            <div class="card-header">Card Header</div>
+            <div class="card-content card-content-padding">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit.</div>
+            <div class="card-footer">Card Footer</div>
+          </div>
+
+          <div class="block-title">Loading Effects</div>
+          <div class="block block-strong">
+            <p class="row">
+              <a href="#" class="col button button-fill button-small button-round" @click="load('fade')">Fade</a>
+              <a href="#" class="col button button-fill button-small button-round" @click="load('blink')">Blink</a>
+              <a href="#" class="col button button-fill button-small button-round" @click="load('pulse')">Pulse</a>
+            </p>
+          </div>
+          <div class="list media-list">
+            <ul>
+              {{#if loading}}
+              {{#each '123'}}
+                <li class="item-content skeleton-text skeleton-effect-{{../effect}}">
+                  <div class="item-media">
+                    <div class="skeleton-block" style="width: 40px; height: 40px; border-radius: 50%"></div>
+                  </div>
+                  <div class="item-inner">
+                    <div class="item-title-row">
+                      <div class="item-title">Full Name</div>
+                    </div>
+                    <div class="item-subtitle">Position</div>
+                    <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim.</div>
+                  </div>
+                </li>
+              {{/each}}
+              {{else}}
+              <li class="item-content">
+                <div class="item-media">
+                  <img src="https://placeimg.com/80/80/people/1" style="width: 40px; height: 40px; border-radius: 50%">
+                </div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">John Doe</div>
+                  </div>
+                  <div class="item-subtitle">CEO</div>
+                  <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim.</div>
+                </div>
+              </li>
+              ...
+              {{/if}}
+            </ul>
+          </div>
+          ...
+        </template>
+        <script>
+        return {
+          data: function () {
+            return {
+              loading: false,
+              effect: null,
+            }
+          },
+          methods: {
+            load: function (effect) {
+              var self = this;
+              if (self.loading) return;
+              self.$setState({
+                effect: effect,
+                loading: true,
+              });
+              setTimeout(function() {
+                self.$setState({ loading: false });
+              }, 3000);
+            }
+          }
+        }
+        </script>
+

@@ -17,7 +17,10 @@ block content
     <p>To add different elevation only on hover (desktop), you can use <code>elevation-hover-0</code>, <code>elevation-hover-1</code>, ..., <code>elevation-hover-24</code> classes.</p>
     <p>To specify elevation only when item pressed, you can use <code>elevation-pressed-0</code>, <code>elevation-pressed-1</code>, ..., <code>elevation-pressed-24</code> classes.</p>
     p To add transition between elevation changes (when <code>elevation-$n</code>, <code>elevation-hover-$n</code> and <code>elevation-pressed-$n</code> used together) we can add <code>elevation-transition</code> class to element, it will set 200ms transition duration. To use different duration we can use one of <code>elevation-transition-100</code>, <code>elevation-transition-200</code>, ..., <code>elevation-transition-500</code> classes.
-    .with-device(data-device-preview="../docs-demos/core/elevation.html")
+
+    +cssVars('elevation')
+    .with-device
+      h2(data-device-preview="../docs-demos/core/elevation.html") Example
       :code(lang="html")
             <div class="row">
               <div class="col">

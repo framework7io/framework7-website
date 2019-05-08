@@ -1,0 +1,112 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Framework7 Package Structure | Framework7 Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Framework7 Package Structure
+    ul.docs-index
+    h2 Package
+    p Framework7 core library contains the following files and folders:
+    :code(lang="html")
+      framework7/
+          components/
+              accordion/
+                  accordion.js
+                  accordion.less
+              accordion.css
+              accordion.js
+
+              actions/
+                  actions.js
+                  actions.less
+              actions.css
+              actions.js
+
+              ...
+          js/
+              framework7.bundle.js
+              framework7.bundle.min.js
+              framework7.js
+              framework7.min.js
+          css/
+              framework7.bundle.css
+              framework7.bundle.min.css
+              framework7.bundle.rtl.css
+              framework7.bundle.rtl.min.css
+              framework7.css
+              framework7.min.css
+              framework7.rtl.css
+              framework7.rtl.min.css
+          framework7.esm.bundle.js
+          framework7.esm.js
+          framework7.bundle.less
+          framework7.less
+
+    h2 Styles
+    p Main Framework7 styles are located in #[code css/] folder:
+    ul
+      li #[code framework7.css] - contains minimal (core) Framework7 styles with minimal required set of components.
+      li #[code framework7.rtl.css] - same but for RTL layout.
+      li #[code framework7.bundle.css] - contains styles for Framework7 core version and includes styles for all components.
+      li #[code framework7.bundle.rtl.css] - same but for RTL layout.
+
+    h2 Scripts (UMD)
+    p In #[code js/] folder there are so called #[a(href="https://github.com/umdjs/umd", target="_blank") UMD] JavaScript files intended to be used directly in browser (e.g. with #[code &lt;script src="..."&gt;]) or with libraries like Require.js:
+    ul
+      li #[code framework7.js] - contains minimal (core) Framework7 version with minimal required set of components.
+      li #[code framework7.bundle.js] - contains whole Framework7 with all its components.
+
+    h2 Components
+    p All components are located in #[code components/] folder and required to be used with core (not bundle) version. You can learn more about how to use them in #[a(href="lazy-modules.html") lazy modules] section.
+
+    h2 ES Module
+    .important-note
+      p This feature currently can be used in bundlers like Webpack and Rollup
+    p Framework7 can also be imported as an ES-next module:
+    :code(lang="js")
+          import Framework7 from 'framework7';
+    p Framework7 has modular structure and <b>by default it exports only core Framework7 with core components</b>.
+    p And if you need additional components they must be included additionally:
+    :code(lang="js")
+          // Import core framework
+          import Framework7 from 'framework7';
+
+          // Import additional components
+          import Searchbar from 'framework7/components/searchbar/searchbar.js';
+          import Calendar from 'framework7/components/calendar/calendar.js';
+          import Popup from 'framework7/components/popup/popup.js';
+
+          // Install F7 Components using .use() method on class:
+          Framework7.use([Searchbar, Calendar, Popup]);
+
+          // Init app
+          var app = new Framework7({/*...*/});
+    p Such modular structure provides best tree-shaking results and package size optimization.
+    p In addition to <code>default</code> export it has named export for <code>Template7</code>, <code>Dom7</code>, <code>Request</code>, <code>Device</code>, <code>Utils</code> and <code>Support</code> libraries:
+    :code(lang="js")
+          import Framework7, { Device, Request } from 'framework7';
+
+          var app = new Framework7({/*...*/});
+
+          if (Device.ios) {
+            Request.get('http://google.com');
+          }
+
+    h2 ES Module Bundle
+    p If you need to include Framework7 with all components, we can include its another script bundle with all components installed:
+    :code(lang="js")
+          // Import framework with all components
+          import Framework7 from 'framework7/framework7.esm.bundle.js';
+
+          // Init app
+          var app = new Framework7({/*...*/});
+
+    h2 ES-Next
+    p Note, that Framework7 ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile them as well, as well as <code>template7</code>, <code>dom7</code> and <code>ssr-window</code> modules that used as dependencies.
+
+

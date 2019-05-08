@@ -16,12 +16,23 @@ block content
           // Link to close sheet
           p
             a(href="#", data-sheet=".my-sheet").link.sheet-close Close Sheet
-
           p
             a(href="#").link.dynamic-sheet Create Dynamic Sheet
+          p
+            a(href="#", data-sheet=".my-sheet-top").link.sheet-open Open Top Sheet
 
   .sheet-modal.my-sheet
     .toolbar
+      .toolbar-inner
+        .left
+        .right
+          a(href="#").link.sheet-close Done
+    .sheet-modal-inner
+      .block
+        h4 Info
+        p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.
+  .sheet-modal.sheet-modal-top.my-sheet-top
+    .toolbar.toolbar-bottom
       .toolbar-inner
         .left
         .right

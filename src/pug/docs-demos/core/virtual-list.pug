@@ -13,7 +13,7 @@ block content
                   <i class="searchbar-icon"></i>
                   <span class="input-clear-button"></span>
                 </div>
-                <span class="searchbar-disable-button">Cancel</span>
+                <span class="searchbar-disable-button if-not-aurora">Cancel</span>
               </div>
             </form>
           </div>
@@ -69,7 +69,7 @@ block scripts
           '</a>' +
         '</li>',
       // Item height
-      height: app.theme === 'ios' ? 63 : 73,
+      height: app.theme === 'ios' ? 63 : (app.theme === 'md' ? 73 : 46),
     });
 
 

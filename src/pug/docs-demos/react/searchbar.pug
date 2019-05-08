@@ -1,7 +1,4 @@
 extends _layout
-block vars
-  - includeF7Icons = true
-  - includeMaterialIcons = true
 
 block content
   script(type="text/babel").
@@ -23,6 +20,7 @@ block content
                     <Searchbar
                       searchContainer=".search-list"
                       searchIn=".item-title"
+                      disableButton={!this.$theme.aurora}
                     ></Searchbar>
                   </Subnavbar>
                 </Navbar>

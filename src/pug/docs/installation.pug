@@ -9,8 +9,16 @@ block content
   .docs-content
     +improveDocsLink
     h1 Installation
-    p It is really easy to build your app with Framework7. To get started we need to install Framework7. You can skip this step and use one of the ready to use <a href="/templates/">starter app templates</a>.
-    p We can download/install framework7 with two ways:
+    ul.docs-index
+
+    h2 Framework7 CLI
+    p The most recommended way to start with new Framework7 app is to use <a href="/cli/">Framework7 CLI</a>, it provides most complete amount of combinations with different templates, target devices/platforms, frameworks and some of best practices.
+
+    h2 Ready To Use Templates
+    p You can also check the #[a(href="/templates/") starter app templates and tools] section to start straight away from some pre-setup app.
+
+    h2 Manual Installation
+    p We can download/install framework7 with few ways:
     ul
       li
         p
@@ -20,52 +28,8 @@ block content
         p
           b Install From NPM
         p We can also install Framework7 from NPM:
-        :code              $ npm install framework7
-
+        :code
+          $ npm install framework7
     p From the downloaded Core package we will need files from <code>css</code> and <code>js</code> folders
-    h2 ES Module
-    .important-note
-      p This feature currently can be used in bundlers like Webpack and Rollup
-    p Framework7 can also be imported as an ES-next module:
-    :code(lang="js")
-          import Framework7 from 'framework7';
-    p Framework7 has modular structure and <b>by default it exports only core Framework7 with core components</b>.
-    p And if you need additional components they must be included additionally:
-    :code(lang="js")
-          // Import core framework
-          import Framework7 from 'framework7';
 
-          // Import additional components
-          import Searchbar from 'framework7/components/searchbar/searchbar.js';
-          import Calendar from 'framework7/components/calendar/calendar.js';
-          import Popup from 'framework7/components/popup/popup.js';
-
-          // Install F7 Components using .use() method on class:
-          Framework7.use([Searchbar, Calendar, Popup]);
-
-          // Init app
-          var app = new Framework({/*...*/});
-    p Such modular structure provides best tree-shaking results and package size optimization.
-    p In addition to <code>default</code> export it has named export for <code>Template7</code>, <code>Dom7</code>, <code>Request</code>, <code>Device</code>, <code>Utils</code> and <code>Support</code> libraries:
-    :code(lang="js")
-          import Framework7, { Device, Request } from 'framework7';
-
-          var app = new Framework({/*...*/});
-
-          if (Device.ios) {
-            Request.get('http://google.com');
-          }
-
-    h2 ES Module Bundle
-    p If you need to include Framework7 with all components, we can include its another script bundle with all components installed:
-    :code(lang="js")
-          // Import framework with all components
-          import Framework7 from 'framework7/framework7.esm.bundle.js';
-
-          // Init app
-          var app = new Framework({/*...*/});
-    h2 ES-Next
-    p Note, that Framework7 ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile them as well, as well as <code>template7</code>, <code>dom7</code> and <code>ssr-window</code> modules that used as dependencies.
-    h2 App HTML Layout
-    p Now when we have downloaded/installed Framework7, we can start from creating <a href="app-layout.html">App Layout</a>.
 

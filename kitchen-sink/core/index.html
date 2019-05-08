@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#2196f3">
   <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap:">
   <title>Framework7</title>
-  <link rel="stylesheet" href="../../packages/core/css/framework7.min.css">
+  <link rel="stylesheet" href="../../packages/core/css/framework7.bundle.min.css">
   <link rel="stylesheet" href="css/app.css">
   <link rel="apple-touch-icon" href="img/f7-icon-square.png">
   <link rel="icon" href="img/f7-icon.png">
@@ -16,7 +16,7 @@
 <body>
   <div id="app">
     <div class="statusbar"></div>
-    <div class="panel panel-left panel-cover">
+    <div class="panel panel-left panel-cover panel-resizable">
       <div class="page">
         <div class="page-content">
           <div class="block-title">Left Panel</div>
@@ -62,7 +62,7 @@
         </div>
       </div>
     </div>
-    <div class="panel panel-right panel-reveal">
+    <div class="panel panel-right panel-reveal panel-resizable">
       <div class="view view-init view-right" name="right" data-url="/">
         <div class="page">
           <div class="navbar">
@@ -85,22 +85,25 @@
         </div>
       </div>
     </div>
-    <div class="view view-main view-init ios-edges" data-url="/">
+    <div class="view view-main view-init safe-areas" data-master-detail-breakpoint="800" data-url="/">
       <div class="page">
         <div class="navbar">
           <div class="navbar-inner">
             <div class="left">
               <a href="#" class="link icon-only panel-open" data-panel="left">
-                <i class="icon f7-icons ios-only">menu</i>
+                <i class="icon f7-icons if-not-md">menu</i>
                 <i class="icon material-icons md-only">menu</i>
               </a>
             </div>
             <div class="title sliding">Framework7</div>
             <div class="right">
               <a class="link icon-only searchbar-enable" data-searchbar=".searchbar-components">
-                <i class="icon f7-icons ios-only">search_strong</i>
+                <i class="icon f7-icons if-not-md">search</i>
                 <i class="icon material-icons md-only">search</i>
               </a>
+            </div>
+            <div class="title-large">
+              <div class="title-large-text">Framework7</div>
             </div>
             <form data-search-container=".components-list" data-search-in="a" class="searchbar searchbar-expandable searchbar-components searchbar-init">
               <div class="searchbar-inner">
@@ -109,7 +112,7 @@
                   <i class="searchbar-icon"></i>
                   <span class="input-clear-button"></span>
                 </div>
-                <span class="searchbar-disable-button">Cancel</span>
+                <span class="searchbar-disable-button if-not-aurora">Cancel</span>
               </div>
             </form>
           </div>
@@ -143,6 +146,14 @@
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
                     <div class="item-title">Action Sheet</div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="item-content item-link" href="/appbar/">
+                  <div class="item-media"><i class="icon icon-f7"></i></div>
+                  <div class="item-inner">
+                    <div class="item-title">Appbar</div>
                   </div>
                 </a>
               </li>
@@ -187,6 +198,14 @@
                 </a>
               </li>
               <li>
+                <a class="item-content item-link" href="/cards-expandable/">
+                  <div class="item-media"><i class="icon icon-f7"></i></div>
+                  <div class="item-inner">
+                    <div class="item-title">Cards Expandable</div>
+                  </div>
+                </a>
+              </li>
+              <li>
                 <a class="item-content item-link" href="/checkbox/">
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
@@ -199,6 +218,14 @@
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
                     <div class="item-title">Chips / Tags</div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="item-content item-link" href="/color-picker/">
+                  <div class="item-media"><i class="icon icon-f7"></i></div>
+                  <div class="item-inner">
+                    <div class="item-title">Color Picker</div>
                   </div>
                 </a>
               </li>
@@ -267,6 +294,22 @@
                 </a>
               </li>
               <li>
+                <a class="item-content item-link" href="/gauge/">
+                  <div class="item-media"><i class="icon icon-f7"></i></div>
+                  <div class="item-inner">
+                    <div class="item-title">Gauge</div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="item-content item-link" href="/grid/">
+                  <div class="item-media"><i class="icon icon-f7"></i></div>
+                  <div class="item-inner">
+                    <div class="item-title">Grid / Layout Grid</div>
+                  </div>
+                </a>
+              </li>
+              <li>
                 <a class="item-content item-link" href="/icons/">
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
@@ -287,22 +330,6 @@
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
                     <div class="item-title">Inputs</div>
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a class="item-content item-link" href="/gauge/">
-                  <div class="item-media"><i class="icon icon-f7"></i></div>
-                  <div class="item-inner">
-                    <div class="item-title">Gauge</div>
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a class="item-content item-link" href="/grid/">
-                  <div class="item-media"><i class="icon icon-f7"></i></div>
-                  <div class="item-inner">
-                    <div class="item-title">Grid / Layout Grid</div>
                   </div>
                 </a>
               </li>
@@ -339,6 +366,14 @@
                 </a>
               </li>
               <li>
+                  <a class="item-content item-link" href="/menu/">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Menu</div>
+                    </div>
+                  </a>
+                </li>
+              <li>
                 <a class="item-content item-link" href="/messages/">
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
@@ -371,14 +406,6 @@
                 </a>
               </li>
               <li>
-                <a class="item-content item-link" href="/picker/">
-                  <div class="item-media"><i class="icon icon-f7"></i></div>
-                  <div class="item-inner">
-                    <div class="item-title">Picker</div>
-                  </div>
-                </a>
-              </li>
-              <li>
                 <a class="item-content item-link" href="/photo-browser/">
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
@@ -387,10 +414,10 @@
                 </a>
               </li>
               <li>
-                <a class="item-content item-link" href="/popup/">
+                <a class="item-content item-link" href="/picker/">
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
-                    <div class="item-title">Popup</div>
+                    <div class="item-title">Picker</div>
                   </div>
                 </a>
               </li>
@@ -399,6 +426,14 @@
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
                     <div class="item-title">Popover</div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="item-content item-link" href="/popup/">
+                  <div class="item-media"><i class="icon icon-f7"></i></div>
+                  <div class="item-inner">
+                    <div class="item-title">Popup</div>
                   </div>
                 </a>
               </li>
@@ -463,6 +498,14 @@
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
                     <div class="item-title">Sheet Modal</div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="item-content item-link" href="/skeleton/">
+                  <div class="item-media"><i class="icon icon-f7"></i></div>
+                  <div class="item-inner">
+                    <div class="item-title">Skeleton (Ghost) Layouts</div>
                   </div>
                 </a>
               </li>
@@ -603,6 +646,9 @@
                 <a href="./index.html?theme=md" class="external">Material (MD) Theme</a>
               </li>
               <li>
+                <a href="./index.html?theme=aurora" class="external">Aurora Desktop Theme</a>
+              </li>
+              <li>
                 <a href="/color-themes/">Color Themes</a>
               </li>
             </ul>
@@ -619,13 +665,16 @@
               <li>
                 <a href="/load-something-that-doesnt-exist/">Default Route (404)</a>
               </li>
+              <li>
+                <a href="/master-detail/">Master-Detail (Split View)</a>
+              </li>
             </ul>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <script src="../../packages/core/js/framework7.min.js"></script>
+  <script src="../../packages/core/js/framework7.bundle.min.js"></script>
   <script src="js/routes.js"></script>
   <script src="js/app.js"></script>
 </body>

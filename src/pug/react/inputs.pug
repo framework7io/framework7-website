@@ -19,8 +19,8 @@ block content
     h2 Input Components
     p There are following components included:
     ul
+      li <code><b>ListInput</b></code> / <code><b>F7ListInput</b></code> - list item input element
       li <code><b>Input</b></code> / <code><b>F7Input</b></code> - input element
-      li <code><b>Label</b></code> / <code><b>F7Label</b></code> - input label element
 
     h2 Input Properties
     table.params-table
@@ -32,24 +32,42 @@ block content
           th Description
       tbody
         tr
-          th(colspan="4") &lt;Label&gt; properties
+          th(colspan="4") &lt;ListInput&gt; properties
         tr
-          td floating
-          td boolean
-          td false
-          td Enables floating label (affects MD theme only)
+          td id
+          td string
+          td
+          td Wrapping element ID attribute
         tr
-          td inline
+          td media
+          td string
+          td
+          td List item media image URL
+        tr
+          td label
+          td string
+          td
+          td Input's label text
+        tr
+          td inlineLabel
           td boolean
           td false
           td Makes label inline
         tr
-          th(colspan="4") &lt;Input&gt; properties
+          td floatingLabel
+          td boolean
+          td false
+          td Enables floating label
         tr
-          td wrap
+          td outline
+          td boolean
+          td false
+          td Makes input outline
+        tr
+          td input
           td boolean
           td true
-          td Defines should the input be wraped with "item-input-wrap" element or not. Must be disabled when using outside of List View
+          td Whether it should render input element or not. Disable if you want to use custom input inside.
         tr
           td type
           td string
@@ -58,6 +76,8 @@ block content
             ul
               li <b>textarea</b> - to render textarea element
               li <b>select</b> - to render select element
+              li <b>datepicker</b> - to open <a href="/docs/calendar.html" target="_blank">Calendar</a> on input focus
+              li <b>colorpicker</b> - to open <a href="/docs/color-picker.html" target="_blank">Color Picker</a> on input focus
         tr
           td resizable
           td boolean
@@ -65,9 +85,9 @@ block content
           td Makes textarea resizable
         tr
           td inputStyle
-          td string
+          td object
           td
-          td Value if input's "style" attribute, in case you need to pass extra styles
+          td Value of input's "style" attribute, in case you need to pass extra styles
         tr
           td clearButton
           td boolean
@@ -78,6 +98,11 @@ block content
           td boolean
           td false
           td When enabled then input value will be validated on change based on passed "pattern" or based on input type. If you use custom validation and need more control on where to show/hide error message, then it is better to disable validation and use <code>error-message</code> together with <code>error-message-force</code> props.
+        tr
+          td validateOnBlur
+          td boolean
+          td false
+          td When enabled then input will be validated on blur only.
         tr
           td errorMessage
           td string
@@ -117,7 +142,10 @@ block content
           td value
           td string<br>number
           td
-          td Input value
+          td
+            p Input value.
+            p If <code>type="datepicker"</code> then value must be passed as what <a href="/docs/calendar.html" target="_blank">Calendar</a> accepts - Array with dates, for example <code>value={[new Date()}"</code>
+            p If <code>type="colorpicker"</code> then value must be passed as what <a href="/docs/color-picker.html" target="_blank">Color Picker</a> accepts - Object with colors, for example <code>value={{hex: '#ff0000'}}</code>
         tr
           td defaultValue
           td string<br>number
@@ -218,6 +246,221 @@ block content
           td boolean
           td false
           td Same as previous
+        tr
+          td wrap
+          td boolean
+          td true
+          td When enabled it will be wrapped in #[code &lt;li&gt;] element
+        tr
+          td calendarParams
+          td object
+          td
+          td Object with <a href="../docs/calendar.html#calendar-parameters" target="_blank">Calendar Parameters</a> which is used when <code>type="datepicker"</code>
+        tr
+          td colorPickerParams
+          td object
+          td
+          td Object with <a href="../docs/color-picker.html#color-picker-parameters" target="_blank">Color Picker Parameters</a> which is used when <code>type="colorpicker"</code>
+        tr
+          th(colspan="4") &lt;Input&gt; properties
+        tr
+          td outline
+          td boolean
+          td false
+          td Makes input outline
+        tr
+          td wrap
+          td boolean
+          td true
+          td Defines should the input be wraped with #[code &lt;div class="input"&gt;] element or not.
+        tr
+          td type
+          td string
+          td
+          td Input type. All default HTML5 input type, and few special ones:
+            ul
+              li <b>textarea</b> - to render textarea element
+              li <b>select</b> - to render select element
+              li <b>datepicker</b> - to open <a href="/docs/calendar.html" target="_blank">Calendar</a> on input focus
+              li <b>colorpicker</b> - to open <a href="/docs/color-picker.html" target="_blank">Color Picker</a> on input focus
+        tr
+          td resizable
+          td boolean
+          td false
+          td Makes textarea resizable
+        tr
+          td inputStyle
+          td object
+          td
+          td Value of input's "style" attribute, in case you need to pass extra styles
+        tr
+          td clearButton
+          td boolean
+          td false
+          td Adds input clear button that will clear input value on click
+        tr
+          td validate
+          td boolean
+          td false
+          td When enabled then input value will be validated on change based on passed "pattern" or based on input type. If you use custom validation and need more control on where to show/hide error message, then it is better to disable validation and use <code>error-message</code> together with <code>error-message-force</code> props.
+        tr
+          td validateOnBlur
+          td boolean
+          td false
+          td When enabled then input will be validated on blur only.
+        tr
+          td errorMessage
+          td string
+          td
+          td Custom error message to show when input value is invalid
+        tr
+          td errorMessageForce
+          td boolean
+          td false
+          td Force error message to force. Useful in case you use custom validation and want to show/hide error message when you need it
+        tr
+          td info
+          td string
+          td
+          td Custom additional text with information about input
+        tr
+          td name
+          td string
+          td
+          td Input name
+        tr
+          td placeholder
+          td string
+          td
+          td Input placeholder
+        tr
+          td id
+          td string
+          td
+          td Wrapping element ID attribute
+        tr
+          td inputId
+          td string
+          td
+          td Input element ID attribute
+        tr
+          td value
+          td string<br>number
+          td
+          td
+            p Input value.
+            p If <code>type="datepicker"</code> then value must be passed as what <a href="/docs/calendar.html" target="_blank">Calendar</a> accepts - Array with dates, for example <code>value={[new Date()}"</code>
+            p If <code>type="colorpicker"</code> then value must be passed as what <a href="/docs/color-picker.html" target="_blank">Color Picker</a> accepts - Object with colors, for example <code>value={{hex: '#ff0000'}}</code>
+        tr
+          td defaultValue
+          td string<br>number
+          td
+          td Input value, in case of uncontrolled component
+        tr
+          td size
+          td string<br>number
+          td
+          td Value of input's native "size" attribute
+        tr
+          td pattern
+          td string
+          td
+          td Value of input's native "pattern" attribute
+        tr
+          td accept
+          td string<br>number
+          td
+          td Value of input's native "accept" attribute
+        tr
+          td autocomplete
+          td string
+          td
+          td Value of input's native "autocomplete" attribute
+        tr
+          td autofocus
+          td boolean
+          td false
+          td Value of input's native "autofocus" attribute
+        tr
+          td autosave
+          td string
+          td
+          td Value of input's native "autosave" attribute
+        tr
+          td checked
+          td boolean
+          td false
+          td Marks input as checked
+        tr
+          td disabled
+          td boolean
+          td false
+          td Marks input as disabled
+        tr
+          td max
+          td string<br>number
+          td
+          td Value of input's native "max" attribute
+        tr
+          td min
+          td string<br>number
+          td
+          td Value of input's native "min" attribute
+        tr
+          td step
+          td string<br>number
+          td
+          td Value of input's native "step" attribute
+        tr
+          td maxlength
+          td string<br>number
+          td
+          td Value of input's native "maxlength" attribute
+        tr
+          td minlength
+          td string<br>number
+          td
+          td Value of input's native "minlength" attribute
+        tr
+          td multiple
+          td boolean
+          td false
+          td Value of input's native "multiple" attribute
+        tr
+          td readonly
+          td boolean
+          td false
+          td Marks input as readonly
+        tr
+          td required
+          td boolean
+          td false
+          td Marks input as required
+        tr
+          td tabindex
+          td string<br>number
+          td
+          td Value of input's native "tabindex" attribute
+        tr
+          td noStoreData
+          td boolean
+          td false
+          td Allows to ignore input value to be stored when using with <a href="../docs/form.html#form-storage">Form Storage</a>
+        tr
+          td ignoreStoreData
+          td boolean
+          td false
+          td Same as previous
+        tr
+          td calendarParams
+          td object
+          td
+          td Object with <a href="../docs/calendar.html#calendar-parameters" target="_blank">Calendar Parameters</a> which is used when <code>type="datepicker"</code>
+        tr
+          td colorPickerParams
+          td object
+          td
+          td Object with <a href="../docs/color-picker.html#color-picker-parameters" target="_blank">Color Picker Parameters</a> which is used when <code>type="colorpicker"</code>
 
     h2 Input Events
     table.events-table
@@ -228,7 +471,7 @@ block content
           th Description
       tbody
         tr
-          th(colspan="3") &lt;Input&gt; events
+          th(colspan="3") &lt;ListInput&gt;, &lt;Input&gt; events
         tr
           td focus
           td <span>(event)</span>
@@ -244,7 +487,7 @@ block content
         tr
           td change
           td <span>(event)</span>
-          td Fired when blur if value changed.
+          td Fired on blur if value changed.
         tr
           td inputClear
           td <span>(event)</span>
@@ -261,336 +504,778 @@ block content
           td inputNotempty
           td <span>(event)</span>
           td Fired when input value becomes not empty
+        tr
+          td calendarChange
+          td <span>(value)</span>
+          td Fired when <code>type="datepicker"</code> Calendar value changed. As an argument it receives array with selected dates.
+        tr
+          td colorPickerChange
+          td <span>(value)</span>
+          td Fired when <code>type="colorpicker"</code> Color Picker value changed. As an argument it receives object with Color Picker value.
 
     h2 Input Slots
-    p Input React component (<code>&lt;Input&gt;</code>) has additional slots for custom elements:
+    p <code>&lt;ListInput&gt;</code> has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - in case of <code>type="select"</code> or <code>type="textarea"</code> - element will be placed inside of <code>select</code> or <code>textarea</code> tags. Otherwise, it will be placed instead of input element
-      li <code><b>info</b></code> - element will be inserted in <code>&lt;div class="input-info"&gt;</code> element
+      li <code><b>default</b></code> - in case of <code>type="select"</code> or <code>type="textarea"</code> - element will be placed inside of <code>select</code> or <code>textarea</code> tags.
+      li <code><b>info</b></code> - element will be inserted into container with info message
+      li <code><b>error-message</b></code> - element will be inserted into container with error message
+      li <code><b>label</b></code> - element will be inserted into container with input's label
+      li <code><b>input</b></code> - element will be inserted instead of input element (<code>input</code> prop must be also set to <code>false</code>)
+
+      li <code><b>root-start</b></code> - element will be inserted in the beginning of <code>&lt;li&gt;</code> element
+      li <code><b>root</b></code> / <code><b>root-end</b></code> - element will be inserted in the end of <code>&lt;li&gt;</code> element
+      li <code><b>content-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="item-content"&gt;</code> element
+      li <code><b>content</b></code> / <code><b>content-end</b></code> - element will be inserted in the end of <code>&lt;div class="item-content"&gt;</code> element
+      li <code><b>inner-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="item-inner"&gt;</code> element
+      li <code><b>inner</b></code> / <code><b>inner-end</b></code> - element will be inserted in the end of <code>&lt;div class="item-inner"&gt;</code> element
+      li <code><b>media</b></code> - element will be inserted inside of <code>&lt;div class="item-media"&gt;</code> element
 
     .with-device
       h2(data-device-preview="../docs-demos/react/inputs.html") Examples
+      h4 Full Layout / Inline Labels
       :code(lang="jsx")
-            <BlockTitle>Full Layout / Inline Labels</BlockTitle>
-            <List inlineLabels noHairlinesMd>
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Name</Label>
-                <Input type="text" placeholder="Your name" clearButton></Input>
-              </ListItem>
+        <List inlineLabels noHairlinesMd>
+          <ListInput
+            label="Name"
+            type="text"
+            placeholder="Your name"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Password</Label>
-                <Input type="password" placeholder="Your password" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="Password"
+            type="password"
+            placeholder="Your password"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>E-mail</Label>
-                <Input type="email" placeholder="Your e-mail" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="E-mail"
+            type="email"
+            placeholder="Your e-mail"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>URL</Label>
-                <Input type="url" placeholder="URL" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="URL"
+            type="url"
+            placeholder="URL"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Phone</Label>
-                <Input type="tel" placeholder="Your phone number" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="Phone"
+            type="tel"
+            placeholder="Your phone number"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Gender</Label>
-                <Input type="select" placeholder="Please choose...">
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </Input>
-              </ListItem>
+          <ListInput
+            label="Gender"
+            type="select"
+            defaultValue="Male"
+            placeholder="Please choose..."
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Birthday</Label>
-                <Input type="date" value="2014-04-30" placeholder="Please choose..."></Input>
-              </ListItem>
+          <ListInput
+            label="Birthday"
+            type="date"
+            defaultValue="2014-04-30"
+            placeholder="Please choose..."
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Date time</Label>
-                <Input type="datetime-local" placeholder="Please choose..."></Input>
-              </ListItem>
+          <ListInput
+            label="Date time"
+            type="datetime-local"
+            placeholder="Please choose..."
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Range</Label>
-                <Input id="range-id" type="range" value="50" min="0" max="100" step="1"></Input>
-              </ListItem>
+          <ListInput
+            label="Range"
+            input={false}
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+            <Range slot="input" value={50} min={0} max={100} step={1}/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Textarea</Label>
-                <Input type="textarea" placeholder="Bio"></Input>
-              </ListItem>
+          <ListInput
+            label="Textarea"
+            type="textarea"
+            placeholder="Bio"
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Resizable</Label>
-                <Input type="textarea" resizable placeholder="Bio"></Input>
-              </ListItem>
+          <ListInput
+            label="Resizable"
+            type="textarea"
+            resizable
+            placeholder="Bio"
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
+        </List>
 
-            </List>
+      h4 Full Layout / Stacked Labels
+      :code(lang="jsx")
+        <List noHairlinesMd>
+          <ListInput
+            label="Name"
+            type="text"
+            placeholder="Your name"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-            <BlockTitle>Full Layout / Stacked Labels</BlockTitle>
-            <List noHairlinesMd>
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Name</Label>
-                <Input type="text" placeholder="Your name" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="Password"
+            type="password"
+            placeholder="Your password"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Password</Label>
-                <Input type="password" placeholder="Your password" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="E-mail"
+            type="email"
+            placeholder="Your e-mail"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>E-mail</Label>
-                <Input type="email" placeholder="Your e-mail" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="URL"
+            type="url"
+            placeholder="URL"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>URL</Label>
-                <Input type="url" placeholder="URL" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="Phone"
+            type="tel"
+            placeholder="Your phone number"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Phone</Label>
-                <Input type="tel" placeholder="Your phone number" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="Gender"
+            type="select"
+            defaultValue="Male"
+            placeholder="Please choose..."
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Gender</Label>
-                <Input type="select" placeholder="Please choose...">
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </Input>
-              </ListItem>
+          <ListInput
+            label="Birthday"
+            type="date"
+            defaultValue="2014-04-30"
+            placeholder="Please choose..."
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Birthday</Label>
-                <Input type="date" value="2014-04-30" placeholder="Please choose..."></Input>
-              </ListItem>
+          <ListInput
+            label="Date time"
+            type="datetime-local"
+            placeholder="Please choose..."
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Date time</Label>
-                <Input type="datetime-local" placeholder="Please choose..."></Input>
-              </ListItem>
+          <ListInput
+            label="Range"
+            input={false}
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+            <Range slot="input" value={50} min={0} max={100} step={1}/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Range</Label>
-                <Input type="range" value="50" min="0" max="100" step="1"></Input>
-              </ListItem>
+          <ListInput
+            label="Textarea"
+            type="textarea"
+            placeholder="Bio"
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Textarea</Label>
-                <Input type="textarea" placeholder="Bio"></Input>
-              </ListItem>
+          <ListInput
+            label="Resizable"
+            type="textarea"
+            resizable
+            placeholder="Bio"
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
+        </List>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Resizable</Label>
-                <Input type="textarea" resizable placeholder="Bio"></Input>
-              </ListItem>
-            </List>
+      h4 Date Pickers
+      :code(lang="jsx")
+        <List noHairlinesMd>
+          <ListInput
+            label="Default setup"
+            type="datepicker"
+            placeholder="Your birth date"
+            readonly
+          />
+          <ListInput
+            label="Custom date format"
+            type="datepicker"
+            placeholder="Select date"
+            readonly
+            calendarParams={{dateFormat: 'DD, MM dd, yyyy'}}
+          />
+          <ListInput
+            label="Multiple Values"
+            type="datepicker"
+            placeholder="Select multiple dates"
+            readonly
+            calendarParams={{ dateFormat: 'M dd yyyy', multiple: true }}
+          />
+          <ListInput
+            label="Range Picker"
+            type="datepicker"
+            placeholder="Select date range"
+            readonly
+            calendarParams={{ dateFormat: 'M dd yyyy', rangePicker: true }}
+          />
+          <ListInput
+            label="Open in Modal"
+            type="datepicker"
+            placeholder="Select date"
+            readonly
+            calendarParams={{openIn: 'customModal', header: true, footer: true, dateFormat: 'MM dd yyyy'}}
+          />
+        </List>
 
-            <BlockTitle>Floating Labels (MD-theme only)</BlockTitle>
-            <List noHairlinesMd>
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label floating>Name</Label>
-                <Input type="text" placeholder="Your name" clearButton></Input>
-              </ListItem>
+      h4 Color Pickers
+      :code(lang="jsx")
+        <List noHairlinesMd>
+          <ListInput
+            type="colorpicker"
+            label="Color Wheel"
+            placeholder="Color"
+            readonly
+            value={{ hex: '#00ff00' }}
+          />
+          <ListInput
+            type="colorpicker"
+            label="Saturation-Brightness Spectrum"
+            placeholder="Color"
+            readonly
+            value={{ hex: '#ff0000' }}
+            colorPickerParams={{
+              modules: ['sb-spectrum', 'hue-slider'],
+            }}
+          />
+          <ListInput
+            type="colorpicker"
+            label="RGB Sliders"
+            placeholder="Color"
+            readonly
+            value={{ hex: '#0000ff' }}
+            colorPickerParams={{
+              modules: ['rgb-sliders'],
+              sliderValue: true,
+              sliderLabel: true,
+            }}
+          />
+          <ListInput
+            type="colorpicker"
+            label="RGBA Sliders"
+            placeholder="Color"
+            readonly
+            value={{ hex: '#ff00ff' }}
+            colorPickerParams={{
+              modules: ['rgb-sliders', 'alpha-slider'],
+              sliderValue: true,
+              sliderLabel: true,
+              formatValue(value) {
+                return `rgba(${value.rgba.join(', ')})`;
+              },
+            }}
+          />
+          <ListInput
+            type="colorpicker"
+            label="HSB Sliders"
+            placeholder="Color"
+            readonly
+            value={{ hex: '#00ff00' }}
+            colorPickerParams={{
+              modules: ['hsb-sliders'],
+              sliderValue: true,
+              sliderLabel: true,
+              formatValue(value) {
+                return `hsb(${value.hsb[0]}, ${value.hsb[1] * 1000 / 10}%, ${value.hsb[2] * 1000 / 10}%)`
+              },
+            }}
+          />
+          <ListInput
+            type="colorpicker"
+            label="RGB Bars"
+            placeholder="Color"
+            readonly
+            value={{ hex: '#0000ff' }}
+            colorPickerParams={{
+              modules: ['rgb-bars'],
+              openIn: 'auto',
+              barValue: true,
+              barLabel: true,
+              formatValue(value) {
+                return `rgb(${value.rgb.join(', ')})`;
+              },
+            }}
+          />
+          <ListInput
+            type="colorpicker"
+            label="RGB Sliders + Colors"
+            placeholder="Color"
+            readonly
+            value={{ hex: '#ffff00' }}
+            colorPickerParams={{
+              modules: ['initial-current-colors', 'rgb-sliders'],
+              sliderValue: true,
+              sliderLabel: true,
+              formatValue(value) {
+                return `rgb(${value.rgb.join(', ')})`;
+              },
+            }}
+          />
+          <ListInput
+            type="colorpicker"
+            label="Palette"
+            placeholder="Color"
+            readonly
+            value={{ hex: '#FFEBEE' }}
+            colorPickerParams={{
+              modules: ['palette'],
+              openIn: 'auto',
+              openInPhone: 'sheet',
+              palette: [
+                ['#FFEBEE', '#FFCDD2', '#EF9A9A', '#E57373', '#EF5350', '#F44336', '#E53935', '#D32F2F', '#C62828', '#B71C1C'],
+                ['#F3E5F5', '#E1BEE7', '#CE93D8', '#BA68C8', '#AB47BC', '#9C27B0', '#8E24AA', '#7B1FA2', '#6A1B9A', '#4A148C'],
+                ['#E8EAF6', '#C5CAE9', '#9FA8DA', '#7986CB', '#5C6BC0', '#3F51B5', '#3949AB', '#303F9F', '#283593', '#1A237E'],
+                ['#E1F5FE', '#B3E5FC', '#81D4FA', '#4FC3F7', '#29B6F6', '#03A9F4', '#039BE5', '#0288D1', '#0277BD', '#01579B'],
+                ['#E0F2F1', '#B2DFDB', '#80CBC4', '#4DB6AC', '#26A69A', '#009688', '#00897B', '#00796B', '#00695C', '#004D40'],
+                ['#F1F8E9', '#DCEDC8', '#C5E1A5', '#AED581', '#9CCC65', '#8BC34A', '#7CB342', '#689F38', '#558B2F', '#33691E'],
+                ['#FFFDE7', '#FFF9C4', '#FFF59D', '#FFF176', '#FFEE58', '#FFEB3B', '#FDD835', '#FBC02D', '#F9A825', '#F57F17'],
+                ['#FFF3E0', '#FFE0B2', '#FFCC80', '#FFB74D', '#FFA726', '#FF9800', '#FB8C00', '#F57C00', '#EF6C00', '#E65100'],
+              ],
+              formatValue(value) {
+                return value.hex;
+              },
+            }}
+          />
+          <ListInput
+            type="colorpicker"
+            label="Pro Mode"
+            placeholder="Color"
+            readonly
+            value={{ hex: '#00ffff' }}
+            colorPickerParams={{
+              modules: ['initial-current-colors', 'sb-spectrum', 'hsb-sliders', 'rgb-sliders', 'alpha-slider', 'hex', 'palette'],
+              openIn: 'auto',
+              sliderValue: true,
+              sliderValueEditable: true,
+              sliderLabel: true,
+              hexLabel: true,
+              hexValueEditable: true,
+              groupedModules: true,
+              palette: [
+                ['#FFEBEE', '#FFCDD2', '#EF9A9A', '#E57373', '#EF5350', '#F44336', '#E53935', '#D32F2F', '#C62828', '#B71C1C'],
+                ['#F3E5F5', '#E1BEE7', '#CE93D8', '#BA68C8', '#AB47BC', '#9C27B0', '#8E24AA', '#7B1FA2', '#6A1B9A', '#4A148C'],
+                ['#E8EAF6', '#C5CAE9', '#9FA8DA', '#7986CB', '#5C6BC0', '#3F51B5', '#3949AB', '#303F9F', '#283593', '#1A237E'],
+                ['#E1F5FE', '#B3E5FC', '#81D4FA', '#4FC3F7', '#29B6F6', '#03A9F4', '#039BE5', '#0288D1', '#0277BD', '#01579B'],
+                ['#E0F2F1', '#B2DFDB', '#80CBC4', '#4DB6AC', '#26A69A', '#009688', '#00897B', '#00796B', '#00695C', '#004D40'],
+                ['#F1F8E9', '#DCEDC8', '#C5E1A5', '#AED581', '#9CCC65', '#8BC34A', '#7CB342', '#689F38', '#558B2F', '#33691E'],
+                ['#FFFDE7', '#FFF9C4', '#FFF59D', '#FFF176', '#FFEE58', '#FFEB3B', '#FDD835', '#FBC02D', '#F9A825', '#F57F17'],
+                ['#FFF3E0', '#FFE0B2', '#FFCC80', '#FFB74D', '#FFA726', '#FF9800', '#FB8C00', '#F57C00', '#EF6C00', '#E65100'],
+              ],
+              formatValue(value) {
+                return `rgba(${value.rgba.join(', ')})`;
+              },
+            }}
+          />
+        </List>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label floating>Password</Label>
-                <Input type="password" placeholder="Your password" clearButton></Input>
-              </ListItem>
+      h4 Floating Labels
+      :code(lang="jsx")
+        <List noHairlinesMd>
+          <ListInput
+            label="Name"
+            floatingLabel
+            type="text"
+            placeholder="Your name"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label floating>E-mail</Label>
-                <Input type="email" placeholder="Your e-mail" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="Password"
+            floatingLabel
+            type="password"
+            placeholder="Your password"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label floating>URL</Label>
-                <Input type="url" placeholder="URL" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="E-mail"
+            floatingLabel
+            type="email"
+            placeholder="Your e-mail"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label floating>Phone</Label>
-                <Input type="tel" placeholder="Your phone number" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="URL"
+            floatingLabel
+            type="url"
+            placeholder="URL"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label floating>Bio</Label>
-                <Input type="textarea" placeholder="Bio" resizable></Input>
-              </ListItem>
-            </List>
+          <ListInput
+            label="Phone"
+            floatingLabel
+            type="tel"
+            placeholder="Your phone number"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-            <BlockTitle>Validation + Additional Info</BlockTitle>
-            <List noHairlinesMd>
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Name</Label>
-                <Input type="text" placeholder="Your name" info='Default "required" validation' required validate clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="Resizable"
+            floatingLabel
+            type="textarea"
+            resizable
+            placeholder="Bio"
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
+        </List>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Fruit</Label>
-                <Input type="text" placeholder="Type 'apple' or 'banana'" required validate pattern="apple|banana" clearButton>
-                  <span slot="info">Pattern validation (<b>apple|banana</b>)</span>
-                </Input>
-              </ListItem>
+      h4 Floating Labels + Outline Inputs
+      :code(lang="jsx")
+        <List noHairlinesMd>
+          <ListInput
+            outline
+            label="Name"
+            floatingLabel
+            type="text"
+            placeholder="Your name"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media" />
+          </ListInput>
+          <ListInput
+            outline
+            label="Password"
+            floatingLabel
+            type="password"
+            placeholder="Your password"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media" />
+          </ListInput>
+          <ListInput
+            outline
+            label="E-mail"
+            floatingLabel
+            type="email"
+            placeholder="Your e-mail"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media" />
+          </ListInput>
+          <ListInput
+            outline
+            label="URL"
+            floatingLabel
+            type="url"
+            placeholder="URL"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media" />
+          </ListInput>
+          <ListInput
+            outline
+            label="Phone"
+            floatingLabel
+            type="tel"
+            placeholder="Your phone number"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media" />
+          </ListInput>
+          <ListInput
+            outline
+            label="Bio"
+            floatingLabel
+            type="textarea"
+            resizable
+            placeholder="Bio"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media" />
+          </ListInput>
+        </List>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>E-mail</Label>
-                <Input type="email" placeholder="Your e-mail" info='Default e-mail validation' required validate clearButton></Input>
-              </ListItem>
+      h4 Validation + Additional Info
+      :code(lang="jsx")
+        <List noHairlinesMd>
+          <ListInput
+            label="Name"
+            type="text"
+            placeholder="Your name"
+            info="Default validation"
+            required
+            validate
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>URL</Label>
-                <Input type="url" placeholder="Your URL" info='Default URL validation' required validate clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="Fruit"
+            type="text"
+            placeholder="Type 'apple' or 'banana'"
+            required
+            validate
+            pattern="apple|banana"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+            <span slot="info">Pattern validation (<b>apple|banana</b>)</span>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Label>Number</Label>
-                <Input type="text" placeholder="Enter number" info='With custom error message' errorMessage="Only numbers please!" required validate pattern="[0-9]*" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="E-mail"
+            type="email"
+            placeholder="Your e-mail"
+            info="Default e-mail validation"
+            required
+            validate
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-            </List>
+          <ListInput
+            label="URL"
+            type="url"
+            placeholder="Your URL"
+            info="Default URL validation"
+            required
+            validate
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-            <BlockTitle>Icon + Input</BlockTitle>
-            <List noHairlinesMd>
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Input type="text" placeholder="Your name" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="Number"
+            type="text"
+            placeholder="Enter number"
+            info="With custom error message"
+            errorMessage="Only numbers please!"
+            required
+            validate
+            pattern="[0-9]*"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Input type="password" placeholder="Your password" clearButton></Input>
-              </ListItem>
+        </List>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Input type="email" placeholder="Your e-mail" clearButton></Input>
-              </ListItem>
+      h4 Icon + Input
+      :code(lang="jsx")
+        <List noHairlinesMd>
+          <ListInput
+            type="text"
+            placeholder="Your name"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Icon icon="demo-list-icon" slot="media"></Icon>
-                <Input type="url" placeholder="URL" clearButton></Input>
-              </ListItem>
+          <ListInput
+            type="password"
+            placeholder="Your password"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-            </List>
+          <ListInput
+            type="email"
+            placeholder="Your e-mail"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-            <BlockTitle>Label + Input</BlockTitle>
-            <List noHairlinesMd>
-              <ListItem>
-                <Label>Name</Label>
-                <Input type="text" placeholder="Your name" clearButton></Input>
-              </ListItem>
+          <ListInput
+            type="url"
+            placeholder="URL"
+            clearButton
+          >
+            <Icon icon="demo-list-icon" slot="media"/>
+          </ListInput>
 
-              <ListItem>
-                <Label>Password</Label>
-                <Input type="password" placeholder="Your password" clearButton></Input>
-              </ListItem>
+        </List>
 
-              <ListItem>
-                <Label>E-mail</Label>
-                <Input type="email" placeholder="Your e-mail" clearButton></Input>
-              </ListItem>
+      h4 Label + Input
+      :code(lang="jsx")
+        <List noHairlinesMd>
+          <ListInput
+            label="Name"
+            type="text"
+            placeholder="Your name"
+            clearButton
+          />
 
-              <ListItem>
-                <Label>URL</Label>
-                <Input type="url" placeholder="URL" clearButton></Input>
-              </ListItem>
-            </List>
+          <ListInput
+            label="Password"
+            type="password"
+            placeholder="Your password"
+            clearButton
+          />
 
-            <BlockTitle>Only Inputs</BlockTitle>
-            <List noHairlinesMd>
-              <ListItem>
-                <Input type="text" placeholder="Your name" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="E-mail"
+            type="email"
+            placeholder="Your e-mail"
+            clearButton
+          />
 
-              <ListItem>
-                <Input type="password" placeholder="Your password" clearButton></Input>
-              </ListItem>
+          <ListInput
+            label="URL"
+            type="url"
+            placeholder="URL"
+            clearButton
+          />
+        </List>
 
-              <ListItem>
-                <Input type="email" placeholder="Your e-mail" clearButton></Input>
-              </ListItem>
+      h4 Only Inputs
+      :code(lang="jsx")
+        <List noHairlinesMd>
+          <ListInput
+            type="text"
+            placeholder="Your name"
+            clearButton
+          />
 
-              <ListItem>
-                <Input type="url" placeholder="URL" clearButton></Input>
-              </ListItem>
-            </List>
+          <ListInput
+            type="password"
+            placeholder="Your password"
+            clearButton
+          />
 
-            <BlockTitle>Inputs + Additional Info</BlockTitle>
-            <List noHairlinesMd>
-              <ListItem>
-                <Input type="text" placeholder="Your name" info="Full name please" clearButton></Input>
-              </ListItem>
+          <ListInput
+            type="email"
+            placeholder="Your e-mail"
+            clearButton
+          />
 
-              <ListItem>
-                <Input type="password" placeholder="Your password" info="8 characters minimum" clearButton></Input>
-              </ListItem>
+          <ListInput
+            type="url"
+            placeholder="URL"
+            clearButton
+          />
+        </List>
 
-              <ListItem>
-                <Input type="email" placeholder="Your e-mail" info="Your work e-mail address" clearButton></Input>
-              </ListItem>
+      h4 Inputs + Additional Info
+      :code(lang="jsx")
+        <List noHairlinesMd>
+          <ListInput
+            type="text"
+            placeholder="Your name"
+            info="Full name please"
+            clearButton
+          />
 
-              <ListItem>
-                <Input type="url" placeholder="URL" info="Your website URL" clearButton></Input>
-              </ListItem>
-            </List>
+          <ListInput
+            type="password"
+            placeholder="Your password"
+            info="8 characters minimum"
+            clearButton
+          />
 
-            <BlockTitle>Only Inputs Inset</BlockTitle>
-            <List inset>
-              <ListItem>
-                <Input type="text" placeholder="Your name" clearButton></Input>
-              </ListItem>
+          <ListInput
+            type="email"
+            placeholder="Your e-mail"
+            info="Your work e-mail address"
+            clearButton
+          />
 
-              <ListItem>
-                <Input type="password" placeholder="Your password" clearButton></Input>
-              </ListItem>
+          <ListInput
+            type="url"
+            placeholder="URL"
+            info="Your website URL"
+            clearButton
+          />
+        </List>
 
-              <ListItem>
-                <Input type="email" placeholder="Your e-mail" clearButton></Input>
-              </ListItem>
+      h4 Only Inputs Inset
+      :code(lang="jsx")
+        <List inset>
+          <ListInput
+            type="text"
+            placeholder="Your name"
+            clearButton
+          />
 
-              <ListItem>
-                <Input type="url" placeholder="URL" clearButton></Input>
-              </ListItem>
-            </List>
+          <ListInput
+            type="password"
+            placeholder="Your password"
+            clearButton
+          />
+
+          <ListInput
+            type="email"
+            placeholder="Your e-mail"
+            clearButton
+          />
+
+          <ListInput
+            type="url"
+            placeholder="URL"
+            clearButton
+          />
+        </List>

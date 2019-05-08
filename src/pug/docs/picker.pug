@@ -55,11 +55,11 @@ block content
     p For example:
     :code(lang="js")
           var picker = app.picker.create({
-            input: '#picker-input',
+            inputEl: '#picker-input',
             cols: [
                {
-                 values: ['apple', 'orange', 'bananna'],
-                 displayValues: ['Apple', 'Orange', 'Bananna'],
+                 values: ['apple', 'orange', 'banana'],
+                 displayValues: ['Apple', 'Orange', 'Banana'],
                }
              ]
           });
@@ -84,6 +84,11 @@ block content
           td 7
           td Larger values produces more momentum when you release picker after fast touch and move
         tr
+          td mousewheel
+          td boolean
+          td true
+          td Enables ability to scroll through picker values with mousewheel
+        tr
           td updateValuesOnMomentum
           td boolean
           td false
@@ -93,6 +98,11 @@ block content
           td boolean
           td true
           td Updates picker and input values during touch move
+        tr
+          td updateValuesOnMousewheel
+          td boolean
+          td true
+          td Updates picker and input values during mousewheel scrolling
         tr
           td freeMode
           td boolean
@@ -479,6 +489,8 @@ block content
         tr
           td pickerBeforeDestroy
           td app
+
+    +cssVars('picker')
 
     .with-device
       h2(data-device-preview="../docs-demos/core/picker.html") Examples

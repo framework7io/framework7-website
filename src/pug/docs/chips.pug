@@ -18,7 +18,7 @@ block content
     :code(lang="html")
           <div class="chip">
             <div class="chip-media">
-              <img src="http://lorempixel.com/100/100/people/9/">
+              <img src="https://cdn.framework7.io/placeholder/people-100x100-9.jpg">
             </div>
             <div class="chip-label">Jane Doe</div>
             <a href="#" class="chip-delete"></a>
@@ -35,13 +35,16 @@ block content
           li
             p <code>&lt;div class="chip-media"&gt;</code> - Chip "media" element, can contain image/avatar or icon. <em>Optional</em>
           li
-            p <code>&lt;div class="card-label"&gt;</code> - Chip text label
+            p <code>&lt;div class="chip-label"&gt;</code> - Chip text label
           li
-            p <code>&lt;a class="card-delete"&gt;</code> - Chip delete icon-link. <em>Optional</em>
+            p <code>&lt;a class="chip-delete"&gt;</code> - Chip delete icon-link. <em>Optional</em>
           li
             p <code>chip-outline</code> - additional class that can be added to chip element to make it outline
-    .with-device(data-device-preview="../docs-demos/core/chips.html")
-      h2 Examples
+
+    +cssVars('chip')
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/chips.html") Examples
       :code(lang="html")
             <div class="block-title">Chips With Text</div>
             <div class="block block-strong">
@@ -85,21 +88,21 @@ block content
             <div class="block block-strong">
               <div class="chip">
                 <div class="chip-media bg-color-blue">
-                  <i class="icon f7-icons ios-only">add_round</i>
+                  <i class="icon f7-icons if-not-md">add_round</i>
                   <i class="icon material-icons md-only">add_circle</i>
                 </div>
                 <div class="chip-label">Add Contact</div>
               </div>
               <div class="chip">
                 <div class="chip-media bg-color-green">
-                  <i class="icon f7-icons ios-only">compass</i>
+                  <i class="icon f7-icons if-not-md">compass</i>
                   <i class="icon material-icons md-only">location_on</i>
                 </div>
                 <div class="chip-label">London</div>
               </div>
               <div class="chip">
                 <div class="chip-media bg-color-red">
-                  <i class="icon f7-icons ios-only">person</i>
+                  <i class="icon f7-icons if-not-md">person</i>
                   <i class="icon material-icons md-only">person</i>
                 </div>
                 <div class="chip-label">John Doe</div>
@@ -109,15 +112,15 @@ block content
             <div class="block-title">Contact Chips</div>
             <div class="block block-strong">
               <div class="chip">
-                <div class="chip-media"><img src="http://lorempixel.com/64/64/people/9/"/></div>
+                <div class="chip-media"><img src="https://cdn.framework7.io/placeholder/people-64x64-9.jpg"/></div>
                 <div class="chip-label">Jane Doe</div>
               </div>
               <div class="chip">
-                <div class="chip-media"><img src="http://lorempixel.com/64/64/people/9/"/></div>
+                <div class="chip-media"><img src="https://cdn.framework7.io/placeholder/people-64x64-9.jpg"/></div>
                 <div class="chip-label">John Doe</div>
               </div>
               <div class="chip">
-                <div class="chip-media"><img src="http://lorempixel.com/64/64/people/9/"/></div>
+                <div class="chip-media"><img src="https://cdn.framework7.io/placeholder/people-64x64-9.jpg"/></div>
                 <div class="chip-label">Adam Smith</div>
               </div>
               <div class="chip">
@@ -144,7 +147,7 @@ block content
                 <div class="chip-label">Chris</div><a href="#" class="chip-delete"></a>
               </div>
               <div class="chip">
-                <div class="chip-media"><img src="http://lorempixel.com/64/64/people/9/"/></div>
+                <div class="chip-media"><img src="https://cdn.framework7.io/placeholder/people-64x64-9.jpg"/></div>
                 <div class="chip-label">Jane Doe</div><a href="#" class="chip-delete"></a>
               </div>
               <div class="chip">
@@ -155,7 +158,7 @@ block content
                 <div class="chip-label">Jennifer</div><a href="#" class="chip-delete"></a>
               </div>
               <div class="chip">
-                <div class="chip-media"><img src="http://lorempixel.com/64/64/people/9/"/></div>
+                <div class="chip-media"><img src="https://cdn.framework7.io/placeholder/people-64x64-9.jpg"/></div>
                 <div class="chip-label">Adam Smith</div><a href="#" class="chip-delete"></a>
               </div>
             </div>

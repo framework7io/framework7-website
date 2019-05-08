@@ -21,7 +21,7 @@ var routes = [
             <div class="left">\
               <a href="#" class="link back">\
                 <i class="icon icon-back"></i>\
-                <span class="ios-only">Back</span>\
+                <span class="if-not-md">Back</span>\
               </a>\
             </div>\
             <div class="title">Panel Page 1</div>\
@@ -45,7 +45,7 @@ var routes = [
             <div class="left">\
               <a href="#" class="link back">\
                 <i class="icon icon-back"></i>\
-                <span class="ios-only">Back</span>\
+                <span class="if-not-md">Back</span>\
               </a>\
             </div>\
             <div class="title">Panel Page 2</div>\
@@ -69,6 +69,10 @@ var routes = [
   {
     path: '/action-sheet/',
     componentUrl: './pages/action-sheet.html',
+  },
+  {
+    path: '/appbar/',
+    componentUrl: './pages/appbar.html',
   },
   {
     path: '/autocomplete/',
@@ -95,12 +99,20 @@ var routes = [
     url: './pages/cards.html',
   },
   {
+    path: '/cards-expandable/',
+    url: './pages/cards-expandable.html',
+  },
+  {
     path: '/checkbox/',
     url: './pages/checkbox.html',
   },
   {
     path: '/chips/',
     componentUrl: './pages/chips.html',
+  },
+  {
+    path: '/color-picker/',
+    componentUrl: './pages/color-picker.html',
   },
   {
     path: '/contacts-list/',
@@ -175,6 +187,10 @@ var routes = [
     componentUrl: './pages/login-screen-page.html',
   },
   {
+    path: '/menu/',
+    componentUrl: './pages/menu.html',
+  },
+  {
     path: '/messages/',
     componentUrl: './pages/messages.html',
   },
@@ -241,6 +257,10 @@ var routes = [
   {
     path: '/sheet-modal/',
     componentUrl: './pages/sheet-modal.html',
+  },
+  {
+    path: '/skeleton/',
+    componentUrl: './pages/skeleton.html',
   },
   {
     path: '/smart-select/',
@@ -495,6 +515,17 @@ var routes = [
         foo: 'bar',
       },
     },
+  },
+  {
+    path: '/master-detail/',
+    url: './pages/master-detail-master.html',
+    master: true,
+    detailRoutes: [
+      {
+        path: '/master-detail/:id/',
+        templateUrl: './pages/master-detail-detail.html',
+      },
+    ]
   },
 
   // Default route (404 page). MUST BE THE LAST

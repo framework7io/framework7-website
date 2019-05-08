@@ -25,18 +25,31 @@ block content
         tr
           th Prop
           th Type
+          th Default
           th Description
       tbody
         tr
-          th(colspan="3") &lt;Popover&gt; properties
+          th(colspan="4") &lt;Popover&gt; properties
         tr
           td opened
           td boolean
+          td false
           td Allows to open/close Popover and set its initial state
         tr
           td target
           td string<br>object
+          td
           td HTML element or string CSS selector of Popover target element
+        tr
+          td backdrop
+          td boolean
+          td
+          td Enables Popover backdrop (dark semi transparent layer behind). By default inherits same app parameter value (<code>true</code>)
+        tr
+          td backdropEl
+          td string<br>object
+          td
+          td HTML element or string CSS selector of custom backdrop element
         tr
           td closeByBackdropClick
           td boolean
@@ -47,6 +60,11 @@ block content
           td boolean
           td true
           td When enabled, popover will be closed on when click outside of it. By default inherits same app parameter value
+        tr
+          td closeOnEscape
+          td boolean
+          td false
+          td When enabled, popover sheet will be closed on ESC keyboard key press
     h2 Popover Methods
     table.methods-table
       tr
@@ -92,7 +110,7 @@ block content
             export default () => (
               <Page>
                 <Navbar title="Popover"></Navbar>
-                <Toolbar bottomMd>
+                <Toolbar bottom>
                   <Link>Dummy Link</Link>
                   <Link popoverOpen=".popover-menu">Open Popover</Link>
                 </Toolbar>

@@ -4,7 +4,7 @@
       <div class="left">
         <a href="#" class="link back">
           <i class="icon icon-back"></i>
-          <span class="ios-only">Back</span>
+          <span class="if-not-md">Back</span>
         </a>
       </div>
       <div class="title">Template7 Page</div>
@@ -27,7 +27,7 @@
 
       <h4>$route</h4>
       <p>Contains properties of the current route:</p>
-      <ul style="padding-left:25px">
+      <ul style="padding-left:25px;word-wrap:break-word;">
         <li><b>$route.url</b>: {{$route.url}}</li>
         <li><b>$route.path</b>: {{$route.path}}</li>
         <li><b>$route.params</b>: {{js 'return JSON.stringify(this.$route.params)'}}</li>

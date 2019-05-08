@@ -143,7 +143,7 @@ block content
           td Object with events handlers. For example:
             :code(lang="js")
                   var notification = app.notification.create({
-                    title: 'John Doe'
+                    title: 'John Doe',
                     text: 'Hello, how are you?',
                     on: {
                       opened: function () {
@@ -295,6 +295,9 @@ block content
           td notificationBeforeDestroy
           td <span>notification</span>
           td app
+
+    +cssVars('notification')
+
     .with-device
       h2(data-device-preview="../docs-demos/core/notification.html") Examples
       :code(lang="html")

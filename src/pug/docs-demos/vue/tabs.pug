@@ -1,7 +1,4 @@
 extends _layout
-block vars
-  - includeF7Icons = true
-  - includeMaterialIcons = true
 
 block content
   template#app-template.
@@ -21,7 +18,7 @@ block content
   template#tabs-static.
     <f7-page :page-content="false">
       <f7-navbar title="Static Tabs" back-link="Back"></f7-navbar>
-      <f7-toolbar tabbar>
+      <f7-toolbar tabbar bottom>
         <f7-link tab-link="#tab-1" tab-link-active>Tab 1</f7-link>
         <f7-link tab-link="#tab-2">Tab 2</f7-link>
         <f7-link tab-link="#tab-3">Tab 3</f7-link>
@@ -68,7 +65,7 @@ block content
   template#tabs-animated.
     <f7-page :page-content="false">
       <f7-navbar title="Animated Tabs" back-link="Back"></f7-navbar>
-      <f7-toolbar tabbar>
+      <f7-toolbar tabbar bottom>
         <f7-link tab-link="#tab-1" tab-link-active>Tab 1</f7-link>
         <f7-link tab-link="#tab-2">Tab 2</f7-link>
         <f7-link tab-link="#tab-3">Tab 3</f7-link>
@@ -115,7 +112,7 @@ block content
   template#tabs-swipeable.
     <f7-page :page-content="false">
       <f7-navbar title="Swipeable Tabs" back-link="Back"></f7-navbar>
-      <f7-toolbar tabbar>
+      <f7-toolbar tabbar bottom>
         <f7-link tab-link="#tab-1" tab-link-active>Tab 1</f7-link>
         <f7-link tab-link="#tab-2">Tab 2</f7-link>
         <f7-link tab-link="#tab-3">Tab 3</f7-link>

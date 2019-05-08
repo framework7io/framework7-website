@@ -1,7 +1,4 @@
 extends _layout
-block vars
-  - includeF7Icons = true
-  - includeMaterialIcons = true
 
 block content
   script(type="text/babel").
@@ -20,13 +17,14 @@ block content
               <Page>
                 <Navbar title="Searchbar">
                   <NavRight>
-                    <Link searchbarEnable=".searchbar-demo" iconIos="f7:search_strong" iconMd="material:search"></Link>
+                    <Link searchbarEnable=".searchbar-demo" iconIos="f7:search" iconAurora="f7:search" iconMd="material:search"></Link>
                   </NavRight>
                   <Searchbar
                     className="searchbar-demo"
                     expandable
                     searchContainer=".search-list"
                     searchIn=".item-title"
+                    disableButton={!this.$theme.aurora}
                   ></Searchbar>
                 </Navbar>
                 <List className="searchbar-not-found">

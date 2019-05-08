@@ -7,9 +7,9 @@ block content
           .left
             a(href="#").link
               i.icon.icon-back
-              span.ios-only Back
+              span.if-not-md Back
           .title Color Themes
-      .toolbar.toolbar-bottom-md
+      .toolbar.toolbar-bottom
         .toolbar-inner
           a(href="#").link Left
           a(href="#").link Right
@@ -21,10 +21,16 @@ block content
             a(href="#").button Button 2
             a(href="#").button Button 3
           p
-            a(href="#").button.button-big.button-fill Fill Button
+            a(href="#").button.button-large.button-fill Fill Button
         .block-title Choose Color Theme
         .list
           ul
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="default", checked)
+                i.icon.icon-radio
+                .item-inner
+                  .item-title Default
             li
               label.item-radio.item-content
                 input(type="radio", name="color-radio", value="red")
@@ -39,7 +45,7 @@ block content
                   .item-title Green
             li
               label.item-radio.item-content
-                input(type="radio", name="color-radio", value="blue", checked)
+                input(type="radio", name="color-radio", value="blue")
                 i.icon-radio
                 .item-inner
                   .item-title Blue
@@ -63,6 +69,42 @@ block content
                   .item-title Orange
             li
               label.item-radio.item-content
+                input(type="radio", name="color-radio", value="purple")
+                i.icon-radio
+                .item-inner
+                  .item-title Purple
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="deeppurple")
+                i.icon-radio
+                .item-inner
+                  .item-title Deep Purple
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="lightblue")
+                i.icon-radio
+                .item-inner
+                  .item-title Light Blue
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="teal")
+                i.icon-radio
+                .item-inner
+                  .item-title Teal
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="lime")
+                i.icon-radio
+                .item-inner
+                  .item-title Lime
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="deeporange")
+                i.icon-radio
+                .item-inner
+                  .item-title Deep Orange
+            li
+              label.item-radio.item-content
                 input(type="radio", name="color-radio", value="gray")
                 i.icon-radio
                 .item-inner
@@ -79,21 +121,16 @@ block content
                 i.icon-radio
                 .item-inner
                   .item-title Black
-        .block-title Choose Layout Theme
         .list
           ul
-            li
-              label.item-radio.item-content
-                input(type="radio", name="layout-radio", value="", checked)
-                i.icon-radio
-                .item-inner
-                  .item-title Default
-            li
-              label.item-radio.item-content
-                input(type="radio", name="layout-radio", value="theme-dark")
-                i.icon-radio
-                .item-inner
-                  .item-title Dark
+            li.item-content
+              .item-inner
+                .item-title Dark Theme
+                .item-after
+                  label.toggle.toggle-init
+                    input(type="checkbox")
+                    span.toggle-icon
+
 block scripts
 
   script.
@@ -101,13 +138,17 @@ block scripts
     var $$ = Dom7;
     $$('input[name="color-radio"]').on('change', function () {
       if (this.checked) {
-        $$('.view').removeClass('color-theme-pink color-theme-blue color-theme-red color-theme-black color-theme-gray color-theme-orange color-theme-yellow color-theme-green color-theme-white');
+        $$('.view').attr('class', 'view view-main view-init');
         $$('.view').addClass('color-theme-' + $$(this).val());
+        if ($$('.toggle input')[0].checked) {
+          $$('.view').addClass('theme-dark');
+        }
       }
     });
-    $$('input[name="layout-radio"]').on('change', function () {
+    $$('.toggle input').on('change', function () {
       if (this.checked) {
-        $$('.view').removeClass('theme-white theme-dark');
-        $$('.view').addClass(this.value);
+        $$('.view').addClass('theme-dark');
+      } else {
+        $$('.view').removeClass('theme-dark');
       }
     });

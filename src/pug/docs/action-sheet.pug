@@ -97,6 +97,11 @@ block content
           td true
           td Enables Action Sheet backdrop (dark semi transparent layer behind)
         tr
+          td backdropEl
+          td HTMLElement<br>string
+          td
+          td HTML element or string CSS selector of custom backdrop element
+        tr
           td closeByBackdropClick
           td boolean
           td true
@@ -106,6 +111,11 @@ block content
           td boolean
           td false
           td When enabled, action sheet will be closed on when click outside of it
+        tr
+          td closeOnEscape
+          td boolean
+          td false
+          td When enabled, action sheet will be closed on ESC keyboard key press
         tr
           td animate
           td boolean
@@ -125,7 +135,7 @@ block content
           td convertToPopover
           td boolean
           td true
-          td When enabled, action sheet will be converted to <a href="popover.html">Popover</a> on large screens.
+          td When enabled, action sheet will be converted to <a href="popover.html">Popover</a> on large screens or on desktop device with Aurora theme.
         tr
           td forceToPopover
           td boolean
@@ -177,23 +187,23 @@ block content
           td
           td Object with events handlers. For example:
             :code(lang="js")
-                  var actions = app.actions.create({
-                    buttons: [ /* ... */ ],
-                    on: {
-                      opened: function () {
-                        console.log('Action Sheet opened')
-                      }
-                    }
-                  })
+              var actions = app.actions.create({
+                buttons: [ /* ... */ ],
+                on: {
+                  opened: function () {
+                    console.log('Action Sheet opened')
+                  }
+                }
+              })
     .important-note
       p Note that all of the following parameters can be used in the global app parameters under the <code>actions</code> property to set defaults for all action sheets. For example:
       :code(lang="js")
-            var app = new Framework7({
-              actions: {
-                convertToPopover: false,
-                grid: true,
-              }
-            });
+        var app = new Framework7({
+          actions: {
+            convertToPopover: false,
+            grid: true,
+          }
+        });
     h3 Button Parameters
     p Each Button in <code>buttons</code> array must be presented as an object with button parameters:
     table.params-table
@@ -252,7 +262,7 @@ block content
     h2 Action Sheet Methods & Properties
     p So to create an Action Sheet we have to call:
     :code(lang="js")
-          var actions = app.actions.create({ /* parameters */ })
+      var actions = app.actions.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>actions</code> variable in example above) with useful methods and properties:
     table.methods-table
       tbody
@@ -325,15 +335,13 @@ block content
           p If you have more than one action sheet in DOM, you need to specify appropriate action sheet via additional <b>data-actions=".my-actions"</b> attribute on this HTML element
     p According to above note:
     :code(lang="html")
-          <!-- In data-actions attribute we specify CSS selector of action sheet we need to open -->
-          <p><a href="#" data-actions=".my-actions" class="actions-open">Open Actions</a></p>
+      <!-- In data-actions attribute we specify CSS selector of action sheet we need to open -->
+      <p><a href="#" data-actions=".my-actions" class="actions-open">Open Actions</a></p>
 
-          <!-- And somewhere in DOM -->
-          <div class="actions-modal my-actions">
-            ...
-          </div>
-
-
+      <!-- And somewhere in DOM -->
+      <div class="actions-modal my-actions">
+        ...
+      </div>
     h2 Action Sheet Events
     p Action sheet will fire the following DOM events on action sheet element and events on app and action sheet instance:
     h3 DOM Events
@@ -415,201 +423,203 @@ block content
           td actionsBeforeDestroy
           td <span>actions</span>
           td app
+
+    +cssVars('actions')
+
     h2(data-device-preview="../docs-demos/core/action-sheet.html") Examples
     .with-device
       :code(lang="html")
-            <body>
-            ...
-             <div class="page-content">
-              <div class="block">
-                <p><a class="ac-1" href="#">One group, three buttons</a></p>
-                <p><a class="ac-2" href="#">One group, title, three buttons</a></p>
-                <p><a class="ac-3" href="#">Two groups</a></p>
-                <p><a class="ac-4" href="#">Three groups</a></p>
-                <p><a class="ac-5" href="#">With callbacks on click</a></p>
-                <p><a class="ac-6" href="#">Actions grid</a></p>
-              </div>
-            </div>
-            ...
-            </body>
-
+        <body>
+        ...
+          <div class="page-content">
+          <div class="block">
+            <p><a class="ac-1" href="#">One group, three buttons</a></p>
+            <p><a class="ac-2" href="#">One group, title, three buttons</a></p>
+            <p><a class="ac-3" href="#">Two groups</a></p>
+            <p><a class="ac-4" href="#">Three groups</a></p>
+            <p><a class="ac-5" href="#">With callbacks on click</a></p>
+            <p><a class="ac-6" href="#">Actions grid</a></p>
+          </div>
+        </div>
+        ...
+        </body>
       :code(lang="js")
-            var app = new Framework7();
+        var app = new Framework7();
 
-            var $$ = Dom7;
+        var $$ = Dom7;
 
-            //- One group, three buttons
-            var ac1 = app.actions.create({
-              buttons: [
-                {
-                  text: 'Button1',
-                  bold: true
-                },
-                {
-                  text: 'Button2'
-                },
-                {
-                  text: 'Cancel',
-                  color: 'red'
-                },
-              ]
-            })
-            //- One group, title, three buttons
-            var ac2 = app.actions.create({
-              buttons: [
-                {
-                  text: 'Do something',
-                  label: true
-                },
-                {
-                  text: 'Button1',
-                  bold: true
-                },
-                {
-                  text: 'Button2',
-                },
-                {
-                  text: 'Cancel',
-                  color: 'red'
-                },
-              ]
-            });
-            //- Two groups
-            var ac3 = app.actions.create({
-              buttons: [
-                // First group
-                [
-                  {
-                    text: 'Do something',
-                    label: true
-                  },
-                  {
-                    text: 'Button1',
-                    bold: true
-                  },
-                  {
-                    text: 'Button2',
-                  }
-                ],
-                // Second group
-                [
-                  {
-                    text: 'Cancel',
-                    color: 'red'
-                  }
-                ]
-              ]
-            });
-            //- Three groups
-            var ac4 = app.actions.create({
-              buttons: [
-                [
-                  {
-                    text: 'Share',
-                    label: true
-                  },
-                  {
-                    text: 'Mail',
-                  },
-                  {
-                    text: 'Messages',
-                  }
-                ],
-                [
-                  {
-                    text: 'Social share',
-                    label: true
-                  },
-                  {
-                    text: 'Facebook',
-                  },
-                  {
-                    text: 'Twitter',
-                  }
-                ],
-                [
-                  {
-                    text: 'Cancel',
-                    color: 'red'
-                  }
-                ]
-              ],
-            });
-            //- With callbacks on click
-            var ac5 = app.actions.create({
-              buttons: [
-                {
-                  text: 'Button1',
-                  onClick: function () {
-                    app.dialog.alert('Button1 clicked')
-                  }
-                },
-                {
-                  text: 'Button2',
-                  onClick: function () {
-                    app.dialog.alert('Button2 clicked')
-                  }
-                },
-                {
-                  text: 'Cancel',
-                  color: 'red',
-                  onClick: function () {
-                    app.dialog.alert('Cancel clicked')
-                  }
-                },
-              ]
-            });
-            //- Actions Grid
-            var ac6 = app.actions.create({
-              grid: true,
-              buttons: [
-                [
-                  {
-                    text: 'Button 1',
-                    icon: '<img src="http://lorempixel.com/96/96/people/1" width="48"/>'
-                  },
-                  {
-                    text: 'Button 2',
-                    icon: '<img src="http://lorempixel.com/96/96/people/2" width="48">'
-                  },
-                  {
-                    text: 'Button 3',
-                    icon: '<img src="http://lorempixel.com/96/96/people/3" width="48">'
-                  },
-                ],
-                [
-                  {
-                    text: 'Button 1',
-                    icon: '<img src="http://lorempixel.com/96/96/fashion/4" width="48"/>'
-                  },
-                  {
-                    text: 'Button 2',
-                    icon: '<img src="http://lorempixel.com/96/96/fashion/5" width="48">'
-                  },
-                  {
-                    text: 'Button 3',
-                    icon: '<img src="http://lorempixel.com/96/96/fashion/6" width="48">'
-                  },
-                ]
-              ]
-            });
+        //- One group, three buttons
+        var ac1 = app.actions.create({
+          buttons: [
+            {
+              text: 'Button1',
+              bold: true
+            },
+            {
+              text: 'Button2'
+            },
+            {
+              text: 'Cancel',
+              color: 'red'
+            },
+          ]
+        })
+        //- One group, title, three buttons
+        var ac2 = app.actions.create({
+          buttons: [
+            {
+              text: 'Do something',
+              label: true
+            },
+            {
+              text: 'Button1',
+              bold: true
+            },
+            {
+              text: 'Button2',
+            },
+            {
+              text: 'Cancel',
+              color: 'red'
+            },
+          ]
+        });
+        //- Two groups
+        var ac3 = app.actions.create({
+          buttons: [
+            // First group
+            [
+              {
+                text: 'Do something',
+                label: true
+              },
+              {
+                text: 'Button1',
+                bold: true
+              },
+              {
+                text: 'Button2',
+              }
+            ],
+            // Second group
+            [
+              {
+                text: 'Cancel',
+                color: 'red'
+              }
+            ]
+          ]
+        });
+        //- Three groups
+        var ac4 = app.actions.create({
+          buttons: [
+            [
+              {
+                text: 'Share',
+                label: true
+              },
+              {
+                text: 'Mail',
+              },
+              {
+                text: 'Messages',
+              }
+            ],
+            [
+              {
+                text: 'Social share',
+                label: true
+              },
+              {
+                text: 'Facebook',
+              },
+              {
+                text: 'Twitter',
+              }
+            ],
+            [
+              {
+                text: 'Cancel',
+                color: 'red'
+              }
+            ]
+          ],
+        });
+        //- With callbacks on click
+        var ac5 = app.actions.create({
+          buttons: [
+            {
+              text: 'Button1',
+              onClick: function () {
+                app.dialog.alert('Button1 clicked')
+              }
+            },
+            {
+              text: 'Button2',
+              onClick: function () {
+                app.dialog.alert('Button2 clicked')
+              }
+            },
+            {
+              text: 'Cancel',
+              color: 'red',
+              onClick: function () {
+                app.dialog.alert('Cancel clicked')
+              }
+            },
+          ]
+        });
+        //- Actions Grid
+        var ac6 = app.actions.create({
+          grid: true,
+          buttons: [
+            [
+              {
+                text: 'Button 1',
+                icon: '<img src="https://cdn.framework7.io/placeholder/people-96x96-1.jpg" width="48"/>'
+              },
+              {
+                text: 'Button 2',
+                icon: '<img src="https://cdn.framework7.io/placeholder/people-96x96-2.jpg" width="48">'
+              },
+              {
+                text: 'Button 3',
+                icon: '<img src="https://cdn.framework7.io/placeholder/people-96x96-3.jpg" width="48">'
+              },
+            ],
+            [
+              {
+                text: 'Button 1',
+                icon: '<img src="https://cdn.framework7.io/placeholder/fashion-96x96-4.jpg" width="48"/>'
+              },
+              {
+                text: 'Button 2',
+                icon: '<img src="https://cdn.framework7.io/placeholder/fashion-96x96-5.jpg" width="48">'
+              },
+              {
+                text: 'Button 3',
+                icon: '<img src="https://cdn.framework7.io/placeholder/fashion-96x96-6.jpg" width="48">'
+              },
+            ]
+          ]
+        });
 
-            $$('.ac-1').on('click', function () {
-                ac1.open();
-            });
-            $$('.ac-2').on('click', function () {
-                ac2.open();
-            });
-            $$('.ac-3').on('click', function () {
-                ac3.open();
-            });
-            $$('.ac-4').on('click', function () {
-                ac4.open();
-            });
-            $$('.ac-5').on('click', function () {
-                ac5.open();
-            });
-            $$('.ac-6').on('click', function () {
-                ac6.open();
-            });
+        $$('.ac-1').on('click', function () {
+            ac1.open();
+        });
+        $$('.ac-2').on('click', function () {
+            ac2.open();
+        });
+        $$('.ac-3').on('click', function () {
+            ac3.open();
+        });
+        $$('.ac-4').on('click', function () {
+            ac4.open();
+        });
+        $$('.ac-5').on('click', function () {
+            ac5.open();
+        });
+        $$('.ac-6').on('click', function () {
+            ac6.open();
+        });
 
