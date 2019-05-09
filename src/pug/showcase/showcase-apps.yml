@@ -1,5 +1,37 @@
 ##########
 -
+
+  iconUrl: "#{cdn}/i/showcase/vetcalculators.png"
+  iconRounded: true
+  title: "Vetcalculators"
+  author:
+    url: https://www.vetcalculators.com/app.html/
+    name: Michael Sozanski DVM, DABVP
+  links:
+    appstore: https://itunes.apple.com/us/app/vetcalculators/id1403466061?ls=1&mt=8
+    googleplay: https://play.google.com/store/apps/details?id=com.vetcalculators.android&hl=en_US
+    website: https://www.vetcalculators.com/app.html/
+  description: |
+    Vetcalculators is a collection of drug dosage calculators for Veterinarians and technicians
+    from the number one veterinary calculator website, Vetcalculators.com. 
+    It includes calculators for Emergency and Anesthetic drugs, Constant Rate Infusions (CRI's), 
+    IV Fluid Rates, Chocolate Toxicity, Calorie requirements, Blood Transfusions, 
+    Blood Glucose Curve Generator and Unit conversion calculators.
+  features:
+  - Includes 9 Veterinary Calculators
+  - Calculates drug dosages as you type, saves your results.
+  - Includes a built in database to store your own drugs.
+  - Include patient info.
+  - Built in Numeric Calculator
+  - Set color and theme preferences
+  - Easily print or share PDF's of your results
+  screenshots:
+  - "#{cdn}/i/showcase/vetcalculators-1.jpg"
+  - "#{cdn}/i/showcase/vetcalculators-2.jpg"
+  - "#{cdn}/i/showcase/vetcalculators-3.jpg"
+  - "#{cdn}/i/showcase/vetcalculators-4.jpg"
+  - "#{cdn}/i/showcase/vetcalculators-5.jpg"
+=======
   iconUrl: "#{cdn}/i/showcase/collect.png"
   iconRounded: true
   title: "Collect"
