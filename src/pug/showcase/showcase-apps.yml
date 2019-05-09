@@ -1,6 +1,5 @@
 ##########
 -
-
   iconUrl: "#{cdn}/i/showcase/vetcalculators.png"
   iconRounded: true
   title: "Vetcalculators"
@@ -13,9 +12,9 @@
     website: https://www.vetcalculators.com/app.html/
   description: |
     Vetcalculators is a collection of drug dosage calculators for Veterinarians and technicians
-    from the number one veterinary calculator website, Vetcalculators.com. 
-    It includes calculators for Emergency and Anesthetic drugs, Constant Rate Infusions (CRI's), 
-    IV Fluid Rates, Chocolate Toxicity, Calorie requirements, Blood Transfusions, 
+    from the number one veterinary calculator website, Vetcalculators.com.
+    It includes calculators for Emergency and Anesthetic drugs, Constant Rate Infusions (CRI's),
+    IV Fluid Rates, Chocolate Toxicity, Calorie requirements, Blood Transfusions,
     Blood Glucose Curve Generator and Unit conversion calculators.
   features:
   - Includes 9 Veterinary Calculators
@@ -31,7 +30,8 @@
   - "#{cdn}/i/showcase/vetcalculators-3.jpg"
   - "#{cdn}/i/showcase/vetcalculators-4.jpg"
   - "#{cdn}/i/showcase/vetcalculators-5.jpg"
-=======
+##########
+-
   iconUrl: "#{cdn}/i/showcase/collect.png"
   iconRounded: true
   title: "Collect"
