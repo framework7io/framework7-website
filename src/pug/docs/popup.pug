@@ -132,6 +132,16 @@ block content
           td true
           td Whether the Popup should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods
         tr
+          td swipeToClose
+          td boolean<br>string
+          td false
+          td Whether the Popup can be closed with swipe gesture. Can be <code>true</code> to allow to close popup with swipes to top and to bottom, or can be <code>to-top</code> (string) to allow only swipe to top to close popup, or <code>to-bottom</code> (string) to allow only swipe to bottom to close.
+        tr
+          td swipeHandler
+          td HTMLElement<br>string
+          td
+          td If not passed, then whole popup can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (<code>swipeToClose</code> must be also enabled)
+        tr
           td on
           td object
           td
@@ -341,76 +351,106 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/popup.html") Examples
       :code(lang="xml")
-            <body>
-              ...
-                <div class="page-content">
-                  <div class="block">
-                    <!-- Open About Popup -->
-                    <p><a class="link popup-open" href="#" data-popup=".popup-about">Open About Popup</a></p>
-                    <!-- Open Services Popup -->
-                    <p><a class="link popup-open" href="#" data-popup=".popup-services">Open Services Popup</a></p>
-                    <p><a class="link dynamic-popup" href="#">Create Dynamic Popup</a></p>
-                  </div>
-                </div>
-              ...
-              <div class="popup popup-about">
-                <div class="block">
-                  <p>About</p>
-                  <!-- Close Popup -->
-                  <p><a class="link popup-close" href="#">Close popup</a></p>
-                  <p>Lorem ipsum dolor sit amet...</p>
-                </div>
+        <body>
+          ...
+            <div class="page-content">
+              <div class="block">
+                <!-- Open About Popup -->
+                <p><a class="link popup-open" href="#" data-popup=".popup-about">Open About Popup</a></p>
+                <!-- Open Services Popup -->
+                <p><a class="link popup-open" href="#" data-popup=".popup-services">Open Services Popup</a></p>
+                <!-- Create Dynamic Popup -->
+                <p><a class="link dynamic-popup" href="#">Create dynamic popup</a></p>
+
+                <!-- Popup with swipe-to-close -->
+                <p><a class="link popup-open" href="#" data-popup=".popup-swipe-to-close">Popup with swipe to close</a></p>
+                <!-- Popup with swipe-to-close handler -->
+                <p><a class="link popup-open" href="#" data-popup=".popup-swipe-to-close-handler">Popup with swipe to close handler</a></p>
               </div>
-              <div class="popup popup-services">
-                <div class="block">
-                  <p>Services</p>
-                  <!-- Close Popup -->
-                  <p><a class="link popup-close" href="#">Close popup</a></p>
-                  <p>Lorem ipsum dolor sit amet...</p>
-                </div>
-              </div>
-            </body>
+            </div>
+          ...
+          <div class="popup popup-about">
+            <div class="block">
+              <p>About</p>
+              <!-- Close Popup -->
+              <p><a class="link popup-close" href="#">Close popup</a></p>
+              <p>Lorem ipsum dolor sit amet...</p>
+            </div>
+          </div>
+          <div class="popup popup-services">
+            <div class="block">
+              <p>Services</p>
+              <!-- Close Popup -->
+              <p><a class="link popup-close" href="#">Close popup</a></p>
+              <p>Lorem ipsum dolor sit amet...</p>
+            </div>
+          </div>
+          <div class="popup popup-swipe-to-close">
+            <div class="block text-align-center">
+              <p>Swipe me up or down to close</p>
+            </div>
+          </div>
+          <div class="popup popup-swipe-to-close-handler">
+            <div class="block">
+              <p class="my-swipe-to-close-handler"><b>Swipe works only on this paragraph</b></p>
+              <p>Lorem ipsum dolor sit amet...</p>
+            </div>
+          </div>
+        </body>
       :code(lang="js")
-            var app = new Framework7();
+        var app = new Framework7();
 
-            var $$ = Dom7;
+        var $$ = Dom7;
 
-            // DOM events for About popup
-            $$('.popup-about').on('popup:open', function (e, popup) {
-              console.log('About popup open');
-            });
-            $$('.popup-about').on('popup:opened', function (e, popup) {
-              console.log('About popup opened');
-            });
+        // DOM events for About popup
+        $$('.popup-about').on('popup:open', function (e, popup) {
+          console.log('About popup open');
+        });
+        $$('.popup-about').on('popup:opened', function (e, popup) {
+          console.log('About popup opened');
+        });
 
-            // Create dynamic Popup
-            var dynamicPopup = app.popup.create({
-              content: '<div class="popup">'+
-                          '<div class="block">'+
-                            '<p>Popup created dynamically.</p>'+
-                            '<p><a href="#" class="link popup-close">Close me</a></p>'+
-                          '</div>'+
-                        '</div>',
-              // Events
-              on: {
-                open: function (popup) {
-                  console.log('Popup open');
-                },
-                opened: function (popup) {
-                  console.log('Popup opened');
-                },
-              }
-            });
-            // Events also can be assigned on instance later
-            dynamicPopup.on('close', function (popup) {
-              console.log('Popup close');
-            });
-            dynamicPopup.on('closed', function (popup) {
-              console.log('Popup closed');
-            });
+        // Create dynamic Popup
+        var dynamicPopup = app.popup.create({
+          content: '<div class="popup">'+
+                      '<div class="block">'+
+                        '<p>Popup created dynamically.</p>'+
+                        '<p><a href="#" class="link popup-close">Close me</a></p>'+
+                      '</div>'+
+                    '</div>',
+          // Events
+          on: {
+            open: function (popup) {
+              console.log('Popup open');
+            },
+            opened: function (popup) {
+              console.log('Popup opened');
+            },
+          }
+        });
+        // Events also can be assigned on instance later
+        dynamicPopup.on('close', function (popup) {
+          console.log('Popup close');
+        });
+        dynamicPopup.on('closed', function (popup) {
+          console.log('Popup closed');
+        });
 
-            // Open dynamic popup
-            $$('.dynamic-popup').on('click', function () {
-              dynamicPopup.open();
-            });
+        // Open dynamic popup
+        $$('.dynamic-popup').on('click', function () {
+          dynamicPopup.open();
+        });
+
+        // Create Popup with swipe to close
+        var swipeToClosePopup = app.popup.create({
+          el: '.popup-swipe-to-close',
+          swipeToClose: true,
+        });
+
+        // Create Popup with swipe to close handler
+        var swipeToClosePopup = app.popup.create({
+          el: '.popup-swipe-to-close-handler',
+          swipeToClose: true,
+          swipeHandler: '.my-swipe-to-close-handler',
+        });
 

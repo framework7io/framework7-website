@@ -7,12 +7,20 @@ block content
         <f7-page @page:beforeremove="onPageBeforeRemove" @page:beforeout="onPageBeforeOut">
           <f7-navbar title="Sheet Modal"></f7-navbar>
           <f7-block>
-            <f7-row tag="p">
-              <f7-button class="col" raised sheet-open=".demo-sheet">Open Sheet</f7-button>
-              <f7-button class="col" raised @click="createSheet">Create Dynamic Sheet</f7-button>
-            </f7-row>
             <p>
-              <f7-button class="col" raised @click="sheetOpened = true">Open Via Prop Change</f7-button>
+              <f7-button fill sheet-open=".demo-sheet">Open Sheet</f7-button>
+            </p>
+            <p>
+              <f7-button fill @click="createSheet">Create Dynamic Sheet</f7-button>
+            </p>
+            <p>
+              <f7-button fill @click="sheetOpened = true">Open Via Prop Change</f7-button>
+            </p>
+            <p>
+              <f7-button fill sheet-open=".demo-sheet-swipe-to-close">Swipe To Close</f7-button>
+            </p>
+            <p>
+              <f7-button fill sheet-open=".demo-sheet-swipe-to-step">Swipe To Step</f7-button>
             </p>
           </f7-block>
           <f7-sheet class="demo-sheet" :opened="sheetOpened" @sheet:closed="sheetOpened = false">
@@ -32,6 +40,52 @@ block content
                 <p>Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt praesentium velit ipsa illo iusto.</p>
               </f7-block>
             </f7-page-content>
+          </f7-sheet>
+
+          <f7-sheet
+            class="demo-sheet-swipe-to-close"
+            style="height:auto; --f7-sheet-bg-color: #fff;"
+            swipe-to-close
+            backdrop
+          >
+            <f7-page-content>
+              <f7-block-title large>Hello!</f7-block-title>
+              <f7-block>
+                <p>Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.</p>
+                <p>Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?</p>
+              </f7-block>
+            </f7-page-content>
+          </f7-sheet>
+
+          <f7-sheet
+            class="demo-sheet-swipe-to-step"
+            style="height:auto; --f7-sheet-bg-color: #fff;"
+            swipe-to-close
+            swipe-to-step
+            backdrop
+          >
+            <div class="sheet-modal-swipe-step">
+              <div class="display-flex padding justify-content-space-between align-items-center">
+                <div style="font-size: 18px"><b>Total:</b></div>
+                <div style="font-size: 22px"><b>$500</b></div>
+              </div>
+              <div class="padding-horizontal padding-bottom">
+                <f7-button large fill>Make Payment</f7-button>
+                <div class="margin-top text-align-center">Swipe up for more details</div>
+              </div>
+            </div>
+            <f7-block-title medium class="margin-top">Your order:</f7-block-title>
+            <f7-list no-hairlines>
+              <f7-list-item title="Item 1">
+                <b slot="after" class="text-color-black">$200</b>
+              </f7-list-item>
+              <f7-list-item title="Item 2">
+                <b slot="after" class="text-color-black">$180</b>
+              </f7-list-item>
+              <f7-list-item title="Delivery">
+                <b slot="after" class="text-color-black">$120</b>
+              </f7-list-item>
+            </f7-list>
           </f7-sheet>
         </f7-page>
       </f7-view>
