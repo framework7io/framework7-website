@@ -5594,7 +5594,7 @@
 	      tapHoldPreventClicks: true,
 	      // Active State
 	      activeState: true,
-	      activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item',
+	      activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item, .link, .item-link',
 	      mdTouchRipple: true,
 	      iosTouchRipple: false,
 	      auroraTouchRipple: false,
@@ -10228,6 +10228,7 @@
 	    Object.keys(app.modules).forEach(function (moduleName) {
 	      var moduleClicks = app.modules[moduleName].clicks;
 	      if (!moduleClicks) { return; }
+	      if (e.preventF7Router) { return; }
 	      Object.keys(moduleClicks).forEach(function (clickSelector) {
 	        var matchingClickedElement = $clickedEl.closest(clickSelector).eq(0);
 	        if (matchingClickedElement.length > 0) {
@@ -10235,7 +10236,6 @@
 	        }
 	      });
 	    });
-
 
 	    // Load Page
 	    var clickedLinkData = {};
@@ -10245,6 +10245,7 @@
 	    }
 
 	    // Prevent Router
+	    if (e.preventF7Router) { return; }
 	    if ($clickedLinkEl.hasClass('prevent-router') || $clickedLinkEl.hasClass('router-prevent')) { return; }
 
 	    var validUrl = url && url.length > 0 && url !== '#' && !isTabLink;
@@ -10644,8 +10645,8 @@
 	/* eslint no-use-before-define: "off" */
 
 	var selfClosing = 'area base br col command embed hr img input keygen link menuitem meta param source track wbr'.split(' ');
-	var propsAttrs = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple value'.split(' ');
-	var booleanProps = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple readOnly'.split(' ');
+	var propsAttrs = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple value indeterminate'.split(' ');
+	var booleanProps = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple readOnly indeterminate'.split(' ');
 	var tempDom = doc.createElement('div');
 
 	function getHooks(data, app, initial, isRoot) {
@@ -10707,7 +10708,6 @@
 	  var once = ref.once;
 
 	  var fired = false;
-
 	  var methodName;
 	  var method;
 	  var customArgs = [];
@@ -10756,7 +10756,13 @@
 	    if (handlerString.indexOf('(') < 0) {
 	      customArgs = args;
 	    } else {
-	      handlerString.split('(')[1].split(')')[0].split(',').forEach(function (argument) {
+	      var handlerArguments = handlerString
+	        .split('(')[1]
+	        .split(')')[0]
+	        .replace(/'[^']*'|"[^"]*"/g, function (a) { return a.replace(/,/g, '<_comma_>'); })
+	        .split(',')
+	        .map(function (a) { return a.replace(/<_comma_>/g, ','); });
+	      handlerArguments.forEach(function (argument) {
 	        var arg = argument.trim();
 	        // eslint-disable-next-line
 	        if (!isNaN(arg)) { arg = parseFloat(arg); }
@@ -14163,6 +14169,7 @@
 	    }
 
 	    popup.on('popupOpened', function () {
+	      $el.removeClass('swipe-close-to-bottom swipe-close-to-top');
 	      if (popup.params.closeByBackdropClick) {
 	        app.on('click', handleClick);
 	      }
@@ -14172,6 +14179,127 @@
 	        app.off('click', handleClick);
 	      }
 	    });
+
+	    var allowSwipeToClose = true;
+	    var isTouched = false;
+	    var startTouch;
+	    var currentTouch;
+	    var isScrolling;
+	    var touchStartTime;
+	    var touchesDiff;
+	    var isMoved = false;
+	    var pageContentEl;
+	    var pageContentScrollTop;
+	    var pageContentOffsetHeight;
+	    var pageContentScrollHeight;
+
+	    function handleTouchStart(e) {
+	      if (isTouched || !allowSwipeToClose || !popup.params.swipeToClose) { return; }
+	      if (popup.params.swipeHandler && $(e.target).closest(popup.params.swipeHandler).length === 0) {
+	        return;
+	      }
+	      isTouched = true;
+	      isMoved = false;
+	      startTouch = {
+	        x: e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX,
+	        y: e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY,
+	      };
+	      touchStartTime = Utils.now();
+	      isScrolling = undefined;
+	      if (!popup.params.swipeHandler && e.type === 'touchstart') {
+	        pageContentEl = $(e.target).closest('.page-content')[0];
+	      }
+	    }
+	    function handleTouchMove(e) {
+	      if (!isTouched) { return; }
+	      currentTouch = {
+	        x: e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX,
+	        y: e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY,
+	      };
+
+	      if (typeof isScrolling === 'undefined') {
+	        isScrolling = !!(isScrolling || Math.abs(currentTouch.x - startTouch.x) > Math.abs(currentTouch.y - startTouch.y));
+	      }
+	      if (isScrolling) {
+	        isTouched = false;
+	        isMoved = false;
+	        return;
+	      }
+
+	      touchesDiff = startTouch.y - currentTouch.y;
+	      var direction = touchesDiff < 0 ? 'to-bottom' : 'to-top';
+	      $el.transition(0);
+
+	      if (typeof popup.params.swipeToClose === 'string' && direction !== popup.params.swipeToClose) {
+	        $el.transform('');
+	        return;
+	      }
+
+	      if (!isMoved) {
+	        if (pageContentEl) {
+	          pageContentScrollTop = pageContentEl.scrollTop;
+	          pageContentScrollHeight = pageContentEl.scrollHeight;
+	          pageContentOffsetHeight = pageContentEl.offsetHeight;
+	          if (
+	            !(pageContentScrollHeight === pageContentOffsetHeight)
+	            && !(direction === 'to-bottom' && pageContentScrollTop === 0)
+	            && !(direction === 'to-top' && pageContentScrollTop === (pageContentScrollHeight - pageContentOffsetHeight))
+	          ) {
+	            $el.transform('');
+	            isTouched = false;
+	            isMoved = false;
+	            return;
+	          }
+	        }
+	        isMoved = true;
+	      }
+	      e.preventDefault();
+	      $el.transition(0).transform(("translate3d(0," + (-touchesDiff) + "px,0)"));
+	    }
+	    function handleTouchEnd() {
+	      isTouched = false;
+	      if (!isMoved) {
+	        return;
+	      }
+	      isMoved = false;
+	      allowSwipeToClose = false;
+	      $el.transition('');
+	      var direction = touchesDiff < 0 ? 'to-bottom' : 'to-top';
+	      if ((typeof popup.params.swipeToClose === 'string' && direction !== popup.params.swipeToClose)) {
+	        $el.transform('');
+	        allowSwipeToClose = true;
+	        return;
+	      }
+	      var diff = Math.abs(touchesDiff);
+	      var timeDiff = (new Date()).getTime() - touchStartTime;
+	      if ((timeDiff < 300 && diff > 20) || (timeDiff >= 300 && diff > 100)) {
+	        Utils.nextTick(function () {
+	          if (direction === 'to-bottom') {
+	            $el.addClass('swipe-close-to-bottom');
+	          } else {
+	            $el.addClass('swipe-close-to-top');
+	          }
+	          $el.transform('');
+	          popup.close();
+	          allowSwipeToClose = true;
+	        });
+	        return;
+	      }
+	      allowSwipeToClose = true;
+	      $el.transform('');
+	    }
+
+	    var passive = Support.passiveListener ? { passive: true } : false;
+	    if (popup.params.swipeToClose) {
+	      $el.on(app.touchEvents.start, handleTouchStart, passive);
+	      app.on('touchmove', handleTouchMove);
+	      app.on('touchend:passive', handleTouchEnd);
+	      popup.once('popupDestroy', function () {
+	        $el.off(app.touchEvents.start, handleTouchStart, passive);
+	        app.off('touchmove', handleTouchMove);
+	        app.off('touchend:passive', handleTouchEnd);
+	      });
+	    }
 
 	    $el[0].f7Modal = popup;
 
@@ -14193,6 +14321,8 @@
 	      backdropEl: undefined,
 	      closeByBackdropClick: true,
 	      closeOnEscape: false,
+	      swipeToClose: false,
+	      swipeHandler: null,
 	    },
 	  },
 	  static: {
@@ -14905,7 +15035,7 @@
 	                    return ("\n                      <li>\n                        <a class=\"" + (itemClasses.join(' ')) + "\">\n                          <div class=\"item-media\">\n                            " + icon + "\n                          </div>\n                          <div class=\"item-inner\">\n                            <div class=\"item-title\">\n                              " + text + "\n                            </div>\n                          </div>\n                        </a>\n                      </li>\n                    ");
 	                  }
 	                  itemClasses.push('list-button');
-	                  return ("\n                    <li>\n                      <a href=\"#\" class=\"" + (itemClasses.join(' ')) + "\">" + text + "</a>\n                    </li>\n                  ");
+	                  return ("\n                    <li>\n                      <a class=\"" + (itemClasses.join(' ')) + "\">" + text + "</a>\n                    </li>\n                  ");
 	                }).join('')) + "\n              </ul>\n            </div>\n          "); }).join('')) + "\n        </div>\n      </div>\n    ").trim();
 	  };
 
@@ -14998,8 +15128,17 @@
 	      }
 	    }
 
+	    Utils.extend(sheet, {
+	      app: app,
+	      $el: $el,
+	      el: $el[0],
+	      $backdropEl: $backdropEl,
+	      backdropEl: $backdropEl && $backdropEl[0],
+	      type: 'sheet',
+	    });
+
 	    var $pageContentEl;
-	    function scrollToOpen() {
+	    function scrollToElementOnOpen() {
 	      var $scrollEl = $(sheet.params.scrollToEl).eq(0);
 	      if ($scrollEl.length === 0) { return; }
 	      $pageContentEl = $scrollEl.parents('.page-content');
@@ -15029,7 +15168,7 @@
 	      }
 	    }
 
-	    function scrollToClose() {
+	    function scrollToElementOnClose() {
 	      if ($pageContentEl && $pageContentEl.length > 0) {
 	        $pageContentEl.css({
 	          'padding-bottom': '',
@@ -15061,12 +15200,197 @@
 	        sheet.close();
 	      }
 	    }
+
+
+	    var isTouched = false;
+	    var startTouch;
+	    var currentTouch;
+	    var isScrolling;
+	    var touchStartTime;
+	    var touchesDiff;
+	    var isMoved = false;
+	    var isTopSheetModal;
+	    var swipeStepTranslate;
+	    var startTranslate;
+	    var currentTranslate;
+	    var sheetElOffsetHeight;
+	    var minTranslate;
+	    var maxTranslate;
+
+	    function handleTouchStart(e) {
+	      if (isTouched || !(sheet.params.swipeToClose || sheet.params.swipeToStep)) { return; }
+	      if (sheet.params.swipeHandler && $(e.target).closest(sheet.params.swipeHandler).length === 0) {
+	        return;
+	      }
+	      isTouched = true;
+	      isMoved = false;
+	      startTouch = {
+	        x: e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX,
+	        y: e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY,
+	      };
+	      touchStartTime = Utils.now();
+	      isScrolling = undefined;
+	      isTopSheetModal = $el.hasClass('sheet-modal-top');
+	    }
+	    function handleTouchMove(e) {
+	      if (!isTouched) { return; }
+	      currentTouch = {
+	        x: e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX,
+	        y: e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY,
+	      };
+
+	      if (typeof isScrolling === 'undefined') {
+	        isScrolling = !!(isScrolling || Math.abs(currentTouch.x - startTouch.x) > Math.abs(currentTouch.y - startTouch.y));
+	      }
+	      if (isScrolling) {
+	        isTouched = false;
+	        isMoved = false;
+	        return;
+	      }
+
+	      touchesDiff = startTouch.y - currentTouch.y;
+
+	      if (!isMoved) {
+	        sheetElOffsetHeight = $el[0].offsetHeight;
+	        startTranslate = Utils.getTranslate($el[0], 'y');
+	        if (isTopSheetModal) {
+	          minTranslate = sheet.params.swipeToClose ? -sheetElOffsetHeight : -swipeStepTranslate;
+	          maxTranslate = 0;
+	        } else {
+	          minTranslate = 0;
+	          maxTranslate = sheet.params.swipeToClose ? sheetElOffsetHeight : swipeStepTranslate;
+	        }
+	        isMoved = true;
+	      }
+	      currentTranslate = startTranslate - touchesDiff;
+	      currentTranslate = Math.min(Math.max(currentTranslate, minTranslate), maxTranslate);
+	      e.preventDefault();
+	      $el
+	        .transition(0)
+	        .transform(("translate3d(0," + currentTranslate + "px,0)"));
+	    }
+	    function handleTouchEnd() {
+	      isTouched = false;
+	      if (!isMoved) {
+	        return;
+	      }
+	      isMoved = false;
+	      $el.transform('').transition('');
+
+	      var direction = touchesDiff < 0 ? 'to-bottom' : 'to-top';
+
+	      var diff = Math.abs(touchesDiff);
+	      if (diff === 0 || currentTranslate === startTranslate) { return; }
+
+	      var timeDiff = (new Date()).getTime() - touchStartTime;
+
+	      if (!sheet.params.swipeToStep) {
+	        if (direction !== (isTopSheetModal ? 'to-top' : 'to-bottom')) {
+	          return;
+	        }
+	        if ((timeDiff < 300 && diff > 20) || (timeDiff >= 300 && diff > (sheetElOffsetHeight / 2))) {
+	          sheet.close();
+	        }
+	        return;
+	      }
+
+	      var openDirection = isTopSheetModal ? 'to-bottom' : 'to-top';
+	      var closeDirection = isTopSheetModal ? 'to-top' : 'to-bottom';
+	      var absCurrentTranslate = Math.abs(currentTranslate);
+	      var absSwipeStepTranslate = Math.abs(swipeStepTranslate);
+
+	      if (timeDiff < 300 && diff > 10) {
+	        if (direction === openDirection && absCurrentTranslate < absSwipeStepTranslate) {
+	          // open step
+	          $el.removeClass('modal-in-swipe-step');
+	          $el.trigger('sheet:stepopen');
+	          sheet.emit('local::stepOpen sheetStepOpen', sheet);
+	        }
+	        if (direction === closeDirection && absCurrentTranslate > absSwipeStepTranslate) {
+	          // close sheet
+	          if (sheet.params.swipeToClose) {
+	            sheet.close();
+	          } else {
+	            // close step
+	            $el.addClass('modal-in-swipe-step');
+	            $el.trigger('sheet:stepclose');
+	            sheet.emit('local::stepClose sheetStepClose', sheet);
+	          }
+	        }
+	        if (direction === closeDirection && absCurrentTranslate <= absSwipeStepTranslate) {
+	          // close step
+	          $el.addClass('modal-in-swipe-step');
+	          $el.trigger('sheet:stepclose');
+	          sheet.emit('local::stepClose sheetStepClose', sheet);
+	        }
+	        return;
+	      }
+	      if (timeDiff >= 300) {
+	        var stepOpened = !$el.hasClass('modal-in-swipe-step');
+	        if (!stepOpened) {
+	          if (absCurrentTranslate < (absSwipeStepTranslate / 2)) {
+	            // open step
+	            $el.removeClass('modal-in-swipe-step');
+	            $el.trigger('sheet:stepopen');
+	            sheet.emit('local::stepOpen sheetStepOpen', sheet);
+	          } else if ((absCurrentTranslate - absSwipeStepTranslate) > (sheetElOffsetHeight - absSwipeStepTranslate) / 2) {
+	            // close sheet
+	            if (sheet.params.swipeToClose) { sheet.close(); }
+	          }
+	        } else if (stepOpened) {
+	          if (absCurrentTranslate > absSwipeStepTranslate + (sheetElOffsetHeight - absSwipeStepTranslate) / 2) {
+	            // close sheet
+	            if (sheet.params.swipeToClose) { sheet.close(); }
+	          } else if (absCurrentTranslate > absSwipeStepTranslate / 2) {
+	            // close step
+	            $el.addClass('modal-in-swipe-step');
+	            $el.trigger('sheet:stepclose');
+	            sheet.emit('local::stepClose sheetStepClose', sheet);
+	          }
+	        }
+	      }
+	    }
+
+	    function setSwipeStep(byResize) {
+	      var $swipeStepEl = $el.find('.sheet-modal-swipe-step').eq(0);
+	      if (!$swipeStepEl.length) { return; }
+	      if ($el.hasClass('sheet-modal-top')) {
+	        swipeStepTranslate = -($swipeStepEl.offset().top - $el.offset().top + $swipeStepEl[0].offsetHeight);
+	      } else {
+	        swipeStepTranslate = $el[0].offsetHeight - ($swipeStepEl.offset().top - $el.offset().top + $swipeStepEl[0].offsetHeight);
+	      }
+	      $el[0].style.setProperty('--f7-sheet-swipe-step', (swipeStepTranslate + "px"));
+	      if (!byResize) {
+	        $el.addClass('modal-in-swipe-step');
+	      }
+	    }
+
+	    function onResize() {
+	      setSwipeStep(true);
+	    }
+
+	    var passive = Support.passiveListener ? { passive: true } : false;
+	    if (sheet.params.swipeToClose || sheet.params.swipeToStep) {
+	      $el.on(app.touchEvents.start, handleTouchStart, passive);
+	      app.on('touchmove', handleTouchMove);
+	      app.on('touchend:passive', handleTouchEnd);
+	      sheet.once('sheetDestroy', function () {
+	        $el.off(app.touchEvents.start, handleTouchStart, passive);
+	        app.off('touchmove', handleTouchMove);
+	        app.off('touchend:passive', handleTouchEnd);
+	      });
+	    }
+
 	    sheet.on('sheetOpen', function () {
 	      if (sheet.params.closeOnEscape) {
 	        $(document).on('keydown', onKeyDown);
 	      }
+	      if (sheet.params.swipeToStep) {
+	        setSwipeStep();
+	        app.on('resize', onResize);
+	      }
 	      if (sheet.params.scrollToEl) {
-	        scrollToOpen();
+	        scrollToElementOnOpen();
 	      }
 	    });
 	    sheet.on('sheetOpened', function () {
@@ -15075,25 +15399,30 @@
 	      }
 	    });
 	    sheet.on('sheetClose', function () {
+	      if (sheet.params.swipeToStep) {
+	        $el.removeClass('modal-in-swipe-step');
+	        app.off('resize', onResize);
+	      }
 	      if (sheet.params.closeOnEscape) {
 	        $(document).off('keydown', onKeyDown);
 	      }
 	      if (sheet.params.scrollToEl) {
-	        scrollToClose();
+	        scrollToElementOnClose();
 	      }
 	      if (sheet.params.closeByOutsideClick || sheet.params.closeByBackdropClick) {
 	        app.off('click', handleClick);
 	      }
 	    });
 
-	    Utils.extend(sheet, {
-	      app: app,
-	      $el: $el,
-	      el: $el[0],
-	      $backdropEl: $backdropEl,
-	      backdropEl: $backdropEl && $backdropEl[0],
-	      type: 'sheet',
-	    });
+	    sheet.stepOpen = function stepOpen() {
+	      $el.removeClass('modal-in-swipe-step');
+	    };
+	    sheet.stepClose = function stepClose() {
+	      $el.addClass('modal-in-swipe-step');
+	    };
+	    sheet.stepToggle = function stepToggle() {
+	      $el.toggleClass('modal-in-swipe-step');
+	    };
 
 	    $el[0].f7Modal = sheet;
 
@@ -15116,6 +15445,9 @@
 	      closeByBackdropClick: true,
 	      closeByOutsideClick: false,
 	      closeOnEscape: false,
+	      swipeToClose: false,
+	      swipeToStep: false,
+	      swipeHandler: null,
 	    },
 	  },
 	  static: {
@@ -15129,7 +15461,24 @@
 	        app: app,
 	        constructor: Sheet,
 	        defaultSelector: '.sheet-modal.modal-in',
-	      })
+	      }),
+	      {
+	        stepOpen: function stepOpen(sheet) {
+	          var sheetInstance = app.sheet.get(sheet);
+	          if (sheetInstance && sheetInstance.stepOpen) { return sheetInstance.stepOpen(); }
+	          return undefined;
+	        },
+	        stepClose: function stepClose(sheet) {
+	          var sheetInstance = app.sheet.get(sheet);
+	          if (sheetInstance && sheetInstance.stepClose) { return sheetInstance.stepClose(); }
+	          return undefined;
+	        },
+	        stepToggle: function stepToggle(sheet) {
+	          var sheetInstance = app.sheet.get(sheet);
+	          if (sheetInstance && sheetInstance.stepToggle) { return sheetInstance.stepToggle(); }
+	          return undefined;
+	        },
+	      }
 	    );
 	  },
 	  clicks: {
@@ -20223,6 +20572,7 @@
 	      scaleSteps: 5,
 	      scaleSubSteps: 0,
 	      formatScaleLabel: null,
+	      limitKnobPosition: app.theme === 'ios',
 	    };
 
 	    // Extend defaults with modules params
@@ -20279,6 +20629,7 @@
 	    var scale = ref.scale;
 	    var scaleSteps = ref.scaleSteps;
 	    var scaleSubSteps = ref.scaleSubSteps;
+	    var limitKnobPosition = ref.limitKnobPosition;
 
 	    Utils.extend(range, {
 	      app: app,
@@ -20298,6 +20649,7 @@
 	      scale: scale,
 	      scaleSteps: scaleSteps,
 	      scaleSubSteps: scaleSubSteps,
+	      limitKnobPosition: limitKnobPosition,
 	    });
 
 	    if ($inputEl) {
@@ -20385,6 +20737,7 @@
 	    var $touchedKnobEl;
 	    var dualValueIndex;
 	    var valueChangedByTouch;
+	    var targetTouchIdentifier;
 	    function onTouchChange() {
 	      valueChangedByTouch = true;
 	    }
@@ -20398,6 +20751,9 @@
 	      valueChangedByTouch = false;
 	      touchesStart.x = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
 	      touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+	      if (e.type === 'touchstart') {
+	        targetTouchIdentifier = e.targetTouches[0].identifier;
+	      }
 
 	      isTouched = true;
 	      isScrolling = undefined;
@@ -20438,8 +20794,20 @@
 	    }
 	    function handleTouchMove(e) {
 	      if (!isTouched) { return; }
-	      var pageX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
-	      var pageY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+	      var pageX;
+	      var pageY;
+	      if (e.type === 'touchmove') {
+	        for (var i = 0; i < e.targetTouches.length; i += 1) {
+	          if (e.targetTouches[i].identifier === targetTouchIdentifier) {
+	            pageX = e.targetTouches[i].pageX;
+	            pageY = e.targetTouches[i].pageY;
+	          }
+	        }
+	      } else {
+	        pageX = e.pageX;
+	        pageY = e.pageY;
+	      }
+	      if (typeof pageX === 'undefined' && typeof pageY === 'undefined') { return; }
 
 	      if (typeof isScrolling === 'undefined' && !range.vertical) {
 	        isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
@@ -20481,7 +20849,14 @@
 	      }
 	      range.setValue(newValue, true);
 	    }
-	    function handleTouchEnd() {
+	    function handleTouchEnd(e) {
+	      if (e.type === 'touchend') {
+	        var touchEnded;
+	        for (var i = 0; i < e.changedTouches.length; i += 1) {
+	          if (e.changedTouches[i].identifier === targetTouchIdentifier) { touchEnded = true; }
+	        }
+	        if (!touchEnded) { return; }
+	      }
 	      if (!isTouched) {
 	        if (isScrolling) { $touchedKnobEl.removeClass('range-knob-active-state'); }
 	        isTouched = false;
@@ -20602,6 +20977,7 @@
 	    var labels = range.labels;
 	    var vertical = range.vertical;
 	    var verticalReversed = range.verticalReversed;
+	    var limitKnobPosition = range.limitKnobPosition;
 	    var knobSize = vertical ? knobHeight : knobWidth;
 	    var rangeSize = vertical ? rangeHeight : rangeWidth;
 	    // eslint-disable-next-line
@@ -20613,7 +20989,7 @@
 	      $barActiveEl.css(( obj = {}, obj[positionProperty] = ((progress[0] * 100) + "%"), obj[vertical ? 'height' : 'width'] = (((progress[1] - progress[0]) * 100) + "%"), obj ));
 	      knobs.forEach(function ($knobEl, knobIndex) {
 	        var startPos = rangeSize * progress[knobIndex];
-	        if (app.theme === 'ios') {
+	        if (limitKnobPosition) {
 	          var realStartPos = (rangeSize * progress[knobIndex]) - (knobSize / 2);
 	          if (realStartPos < 0) { startPos = knobSize / 2; }
 	          if ((realStartPos + knobSize) > rangeSize) { startPos = rangeSize - (knobSize / 2); }
@@ -20626,7 +21002,7 @@
 	      $barActiveEl.css(vertical ? 'height' : 'width', ((progress$1 * 100) + "%"));
 
 	      var startPos = rangeSize * progress$1;
-	      if (app.theme === 'ios') {
+	      if (limitKnobPosition) {
 	        var realStartPos = (rangeSize * progress$1) - (knobSize / 2);
 	        if (realStartPos < 0) { startPos = knobSize / 2; }
 	        if ((realStartPos + knobSize) > rangeSize) { startPos = rangeSize - (knobSize / 2); }
@@ -21692,7 +22068,7 @@
 	      pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
 	    }
 	    var cssClass = ss.params.cssClass;
-	    var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"if-not-md\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
+	    var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"if-not-md\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
 	    return pageHtml;
 	  };
 
@@ -21705,7 +22081,7 @@
 	      pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
 	    }
 	    var cssClass = ss.params.cssClass || '';
-	    var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                <div class=\"right\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">" + (ss.params.popupCloseLinkText) + "</span></a>\n                </div>\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
+	    var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                <div class=\"right\">\n                  <a class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">" + (ss.params.popupCloseLinkText) + "</span></a>\n                </div>\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
 	    return popupHtml;
 	  };
 
@@ -23643,7 +24019,7 @@
 	      return calendar.params.renderMonthSelector.call(calendar);
 	    }
 
-	    return "\n    <div class=\"calendar-month-selector\">\n      <a href=\"#\" class=\"link icon-only calendar-prev-month-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-month-value\"></span>\n      <a href=\"#\" class=\"link icon-only calendar-next-month-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
+	    return "\n    <div class=\"calendar-month-selector\">\n      <a class=\"link icon-only calendar-prev-month-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-month-value\"></span>\n      <a class=\"link icon-only calendar-next-month-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
 	  };
 
 	  Calendar.prototype.renderYearSelector = function renderYearSelector () {
@@ -23651,7 +24027,7 @@
 	    if (calendar.params.renderYearSelector) {
 	      return calendar.params.renderYearSelector.call(calendar);
 	    }
-	    return "\n    <div class=\"calendar-year-selector\">\n      <a href=\"#\" class=\"link icon-only calendar-prev-year-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-year-value\"></span>\n      <a href=\"#\" class=\"link icon-only calendar-next-year-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
+	    return "\n    <div class=\"calendar-year-selector\">\n      <a class=\"link icon-only calendar-prev-year-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-year-value\"></span>\n      <a class=\"link icon-only calendar-next-year-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
 	  };
 
 	  Calendar.prototype.renderHeader = function renderHeader () {
@@ -23668,7 +24044,7 @@
 	    if (calendar.params.renderFooter) {
 	      return calendar.params.renderFooter.call(calendar);
 	    }
-	    return ("\n    <div class=\"calendar-footer\">\n      <a href=\"#\" class=\"" + (app.theme === 'md' ? 'button' : 'link') + " calendar-close sheet-close popover-close\">" + (calendar.params.toolbarCloseText) + "</a>\n    </div>\n  ").trim();
+	    return ("\n    <div class=\"calendar-footer\">\n      <a class=\"" + (app.theme === 'md' ? 'button' : 'link') + " calendar-close sheet-close popover-close\">" + (calendar.params.toolbarCloseText) + "</a>\n    </div>\n  ").trim();
 	  };
 
 	  Calendar.prototype.renderToolbar = function renderToolbar () {
@@ -24691,7 +25067,7 @@
 	  Picker.prototype.renderToolbar = function renderToolbar () {
 	    var picker = this;
 	    if (picker.params.renderToolbar) { return picker.params.renderToolbar.call(picker, picker); }
-	    return ("\n      <div class=\"toolbar toolbar-top no-shadow\">\n        <div class=\"toolbar-inner\">\n          <div class=\"left\"></div>\n          <div class=\"right\">\n            <a href=\"#\" class=\"link sheet-close popover-close\">" + (picker.params.toolbarCloseText) + "</a>\n          </div>\n        </div>\n      </div>\n    ").trim();
+	    return ("\n      <div class=\"toolbar toolbar-top no-shadow\">\n        <div class=\"toolbar-inner\">\n          <div class=\"left\"></div>\n          <div class=\"right\">\n            <a class=\"link sheet-close popover-close\">" + (picker.params.toolbarCloseText) + "</a>\n          </div>\n        </div>\n      </div>\n    ").trim();
 	  };
 	  // eslint-disable-next-line
 	  Picker.prototype.renderColumn = function renderColumn (col, onlyItems) {
@@ -26010,16 +26386,20 @@
 	          .find(("tbody tr td:nth-child(" + (columnIndex + 1) + ") input"))
 	          .prop('checked', checked)
 	          .trigger('change', { sentByF7DataTable: true });
+	        $inputEl.prop('indeterminate', false);
 	      } else {
 	        if (columnIndex === 0) {
 	          $inputEl.parents('tr')[checked ? 'addClass' : 'removeClass']('data-table-row-selected');
 	        }
-
+	        var checkedRows = $el.find(("tbody .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]:checked")).length;
+	        var totalRows = $el.find('tbody tr').length;
+	        var $headCheckboxEl = $el.find(("thead .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]"));
 	        if (!checked) {
-	          $el.find(("thead .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]")).prop('checked', false);
-	        } else if ($el.find(("tbody .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]:checked")).length === $el.find('tbody tr').length) {
-	          $el.find(("thead .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]")).prop('checked', true).trigger('change', { sentByF7DataTable: true });
+	          $headCheckboxEl.prop('checked', false);
+	        } else if (checkedRows === totalRows) {
+	          $headCheckboxEl.prop('checked', true).trigger('change', { sentByF7DataTable: true });
 	        }
+	        $headCheckboxEl.prop('indeterminate', checkedRows > 0 && checkedRows < totalRows);
 	      }
 	      table.checkSelectedHeader();
 	    }
@@ -34624,7 +35004,7 @@
 	    var backLinkText = (pb.app.theme === 'ios' || pb.app.theme === 'aurora') && pb.params.backLinkText ? pb.params.backLinkText : '';
 
 	    var isPopup = pb.params.type !== 'page';
-	    var navbarHtml = ("\n      <div class=\"navbar\">\n        <div class=\"navbar-inner sliding\">\n          <div class=\"left\">\n            <a href=\"#\" class=\"link " + (isPopup ? 'popup-close' : '') + " " + (!backLinkText ? 'icon-only' : '') + " " + (!isPopup ? 'back' : '') + "\" " + (isPopup ? 'data-popup=".photo-browser-popup"' : '') + ">\n              <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n              " + (backLinkText ? ("<span>" + backLinkText + "</span>") : '') + "\n            </a>\n          </div>\n          <div class=\"title\">\n            <span class=\"photo-browser-current\"></span>\n            <span class=\"photo-browser-of\">" + (pb.params.navbarOfText) + "</span>\n            <span class=\"photo-browser-total\"></span>\n          </div>\n          <div class=\"right\"></div>\n        </div>\n      </div>\n    ").trim();
+	    var navbarHtml = ("\n      <div class=\"navbar\">\n        <div class=\"navbar-inner sliding\">\n          <div class=\"left\">\n            <a class=\"link " + (isPopup ? 'popup-close' : '') + " " + (!backLinkText ? 'icon-only' : '') + " " + (!isPopup ? 'back' : '') + "\" " + (isPopup ? 'data-popup=".photo-browser-popup"' : '') + ">\n              <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n              " + (backLinkText ? ("<span>" + backLinkText + "</span>") : '') + "\n            </a>\n          </div>\n          <div class=\"title\">\n            <span class=\"photo-browser-current\"></span>\n            <span class=\"photo-browser-of\">" + (pb.params.navbarOfText) + "</span>\n            <span class=\"photo-browser-total\"></span>\n          </div>\n          <div class=\"right\"></div>\n        </div>\n      </div>\n    ").trim();
 	    return navbarHtml;
 	  };
 
@@ -34635,7 +35015,7 @@
 	    var iconsColor = pb.params.iconsColor;
 	    if (!pb.params.iconsColor && pb.params.theme === 'dark') { iconsColor = 'white'; }
 
-	    var toolbarHtml = ("\n      <div class=\"toolbar toolbar-bottom tabbar\">\n        <div class=\"toolbar-inner\">\n          <a href=\"#\" class=\"link photo-browser-prev\">\n            <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n          <a href=\"#\" class=\"link photo-browser-next\">\n            <i class=\"icon icon-forward " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n        </div>\n      </div>\n    ").trim();
+	    var toolbarHtml = ("\n      <div class=\"toolbar toolbar-bottom tabbar\">\n        <div class=\"toolbar-inner\">\n          <a class=\"link photo-browser-prev\">\n            <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n          <a class=\"link photo-browser-next\">\n            <i class=\"icon icon-forward " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n        </div>\n      </div>\n    ").trim();
 	    return toolbarHtml;
 	  };
 
@@ -35596,10 +35976,43 @@
 	    }
 
 	    function onKeyDown(e) {
-	      if (ac.opened && e.keyCode === 13) {
+	      if (!ac.opened) { return; }
+	      if (e.keyCode === 27) {
+	        // ESC
 	        e.preventDefault();
 	        ac.$inputEl.blur();
+	        return;
 	      }
+	      if (e.keyCode === 13) {
+	        // Enter
+	        var $selectedItemLabel = ac.$dropdownEl.find('.autocomplete-dropdown-selected label');
+	        if ($selectedItemLabel.length) {
+	          e.preventDefault();
+	          $selectedItemLabel.trigger('click');
+	          ac.$inputEl.blur();
+	          return;
+	        }
+	        if (ac.params.typeahead) {
+	          e.preventDefault();
+	          ac.$inputEl.blur();
+	        }
+	        return;
+	      }
+	      if (e.keyCode !== 40 && e.keyCode !== 38) { return; }
+	      e.preventDefault();
+	      var $selectedItem = ac.$dropdownEl.find('.autocomplete-dropdown-selected');
+	      var $newItem;
+	      if ($selectedItem.length) {
+	        $newItem = $selectedItem[e.keyCode === 40 ? 'next' : 'prev']('li');
+	        if (!$newItem.length) {
+	          $newItem = ac.$dropdownEl.find('li').eq(e.keyCode === 40 ? 0 : ac.$dropdownEl.find('li').length - 1);
+	        }
+	      } else {
+	        $newItem = ac.$dropdownEl.find('li').eq(e.keyCode === 40 ? 0 : ac.$dropdownEl.find('li').length - 1);
+	      }
+	      if ($newItem.hasClass('autocomplete-dropdown-placeholder')) { return; }
+	      $selectedItem.removeClass('autocomplete-dropdown-selected');
+	      $newItem.addClass('autocomplete-dropdown-selected');
 	    }
 	    function onDropdownClick() {
 	      var $clickedEl = $(this);
@@ -35632,9 +36045,7 @@
 	        } else {
 	          ac.$inputEl.on('blur', onInputBlur);
 	        }
-	        if (ac.params.typeahead) {
-	          ac.$inputEl.on('keydown', onKeyDown);
-	        }
+	        ac.$inputEl.on('keydown', onKeyDown);
 	      }
 	    };
 	    ac.detachEvents = function attachEvents() {
@@ -35649,9 +36060,7 @@
 	        } else {
 	          ac.$inputEl.off('blur', onInputBlur);
 	        }
-	        if (ac.params.typeahead) {
-	          ac.$inputEl.off('keydown', onKeyDown);
-	        }
+	        ac.$inputEl.off('keydown', onKeyDown);
 	      }
 	    };
 	    ac.attachDropdownEvents = function attachDropdownEvents() {
@@ -35856,9 +36265,9 @@
 	    var inPopup = ac.params.openIn === 'popup';
 	    var navbarLeft = inPopup
 	      ? ("\n        " + (ac.params.preloader ? ("\n        <div class=\"left\">\n          " + (ac.renderPreloader()) + "\n        </div>\n        ") : '') + "\n      ")
-	      : ("\n        <div class=\"left sliding\">\n          <a href=\"#\" class=\"link back\">\n            <i class=\"icon icon-back\"></i>\n            <span class=\"if-not-md\">" + (ac.params.pageBackLinkText) + "</span>\n          </a>\n        </div>\n      ");
+	      : ("\n        <div class=\"left sliding\">\n          <a class=\"link back\">\n            <i class=\"icon icon-back\"></i>\n            <span class=\"if-not-md\">" + (ac.params.pageBackLinkText) + "</span>\n          </a>\n        </div>\n      ");
 	    var navbarRight = inPopup
-	      ? ("\n        <div class=\"right\">\n          <a href=\"#\" class=\"link popup-close\" data-popup=\".autocomplete-popup\">\n            " + (ac.params.popupCloseLinkText) + "\n          </a>\n        </div>\n      ")
+	      ? ("\n        <div class=\"right\">\n          <a class=\"link popup-close\" data-popup=\".autocomplete-popup\">\n            " + (ac.params.popupCloseLinkText) + "\n          </a>\n        </div>\n      ")
 	      : ("\n        " + (ac.params.preloader ? ("\n        <div class=\"right\">\n          " + (ac.renderPreloader()) + "\n        </div>\n        ") : '') + "\n      ");
 	    var navbarHtml = ("\n      <div class=\"navbar " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n        <div class=\"navbar-inner " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n          " + navbarLeft + "\n          " + (pageTitle ? ("<div class=\"title sliding\">" + pageTitle + "</div>") : '') + "\n          " + navbarRight + "\n          <div class=\"subnavbar sliding\">" + (ac.renderSearchbar()) + "</div>\n        </div>\n      </div>\n    ").trim();
 	    return navbarHtml;
@@ -38343,7 +38752,7 @@
 	    var navbarTitleText = ref.navbarTitleText;
 	    var navbarBackLinkText = ref.navbarBackLinkText;
 	    var navbarCloseText = ref.navbarCloseText;
-	    return ("\n    <div class=\"navbar\">\n      <div class=\"navbar-inner sliding\">\n        " + (openIn === 'page' ? ("\n        <div class=\"left\">\n          <a class=\"link back\" href=\"#\">\n            <i class=\"icon icon-back\"></i>\n            <span class=\"if-not-md\">" + navbarBackLinkText + "</span>\n          </a>\n        </div>\n        ") : '') + "\n        <div class=\"title\">" + navbarTitleText + "</div>\n        " + (openIn !== 'page' ? ("\n        <div class=\"right\">\n          <a href=\"#\" class=\"link popup-close\" data-popup=\".color-picker-popup\">" + navbarCloseText + "</a>\n        </div>\n        ") : '') + "\n      </div>\n    </div>\n  ").trim();
+	    return ("\n    <div class=\"navbar\">\n      <div class=\"navbar-inner sliding\">\n        " + (openIn === 'page' ? ("\n        <div class=\"left\">\n          <a class=\"link back\">\n            <i class=\"icon icon-back\"></i>\n            <span class=\"if-not-md\">" + navbarBackLinkText + "</span>\n          </a>\n        </div>\n        ") : '') + "\n        <div class=\"title\">" + navbarTitleText + "</div>\n        " + (openIn !== 'page' ? ("\n        <div class=\"right\">\n          <a class=\"link popup-close\" data-popup=\".color-picker-popup\">" + navbarCloseText + "</a>\n        </div>\n        ") : '') + "\n      </div>\n    </div>\n  ").trim();
 	  };
 
 	  ColorPicker.prototype.renderToolbar = function renderToolbar () {
@@ -38351,7 +38760,7 @@
 	    if (self.params.renderToolbar) {
 	      return self.params.renderToolbar.call(self, self);
 	    }
-	    return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        <div class=\"left\"></div>\n        <div class=\"right\">\n          <a href=\"#\" class=\"link sheet-close popover-close\" data-sheet=\".color-picker-sheet-modal\" data-popover=\".color-picker-popover\">" + (self.params.toolbarCloseText) + "</a>\n        </div>\n      </div>\n    </div>\n  ").trim();
+	    return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        <div class=\"left\"></div>\n        <div class=\"right\">\n          <a class=\"link sheet-close popover-close\" data-sheet=\".color-picker-sheet-modal\" data-popover=\".color-picker-popover\">" + (self.params.toolbarCloseText) + "</a>\n        </div>\n      </div>\n    </div>\n  ").trim();
 	  };
 
 	  ColorPicker.prototype.renderInline = function renderInline () {
@@ -38823,6 +39232,75 @@
 	  },
 	};
 
+	var Treeview = {
+	  open: function open(itemEl) {
+	    var app = this;
+	    var $itemEl = $(itemEl).eq(0);
+	    if (!$itemEl.length) { return; }
+	    $itemEl.addClass('treeview-item-opened');
+	    $itemEl.trigger('treeview:open');
+	    app.emit('treeviewOpen', $itemEl[0]);
+	    function done() {
+	      $itemEl[0].f7TreeviewChildrenLoaded = true;
+	      $itemEl.find('.treeview-toggle').removeClass('treeview-toggle-hidden');
+	      $itemEl.find('.treeview-preloader').remove();
+	    }
+
+	    if ($itemEl.hasClass('treeview-load-children') && !$itemEl[0].f7TreeviewChildrenLoaded) {
+	      $itemEl.trigger('treeview:loadchildren', done);
+	      app.emit('treeviewLoadChildren', $itemEl[0], done);
+	      $itemEl.find('.treeview-toggle').addClass('treeview-toggle-hidden');
+	      $itemEl.find('.treeview-item-root').prepend(("<div class=\"preloader treeview-preloader\">" + (Utils[((app.theme) + "PreloaderContent")]) + "</div>"));
+	    }
+	  },
+	  close: function close(itemEl) {
+	    var app = this;
+	    var $itemEl = $(itemEl).eq(0);
+	    if (!$itemEl.length) { return; }
+	    $itemEl.removeClass('treeview-item-opened');
+	    $itemEl.trigger('treeview:close');
+	    app.emit('treeviewClose', $itemEl[0]);
+	  },
+	  toggle: function toggle(itemEl) {
+	    var app = this;
+	    var $itemEl = $(itemEl).eq(0);
+	    if (!$itemEl.length) { return; }
+	    var wasOpened = $itemEl.hasClass('treeview-item-opened');
+	    app.treeview[wasOpened ? 'close' : 'open']($itemEl);
+	  },
+	};
+
+	var Treeview$1 = {
+	  name: 'treeview',
+	  create: function create() {
+	    var app = this;
+	    Utils.extend(app, {
+	      treeview: {
+	        open: Treeview.open.bind(app),
+	        close: Treeview.close.bind(app),
+	        toggle: Treeview.toggle.bind(app),
+	      },
+	    });
+	  },
+	  clicks: {
+	    '.treeview-toggle': function toggle($clickedEl, clickedData, e) {
+	      var app = this;
+	      if ($clickedEl.parents('.treeview-item-toggle').length) { return; }
+	      var $treeviewItemEl = $clickedEl.parents('.treeview-item').eq(0);
+	      if (!$treeviewItemEl.length) { return; }
+	      e.preventF7Router = true;
+	      app.treeview.toggle($treeviewItemEl[0]);
+	    },
+	    '.treeview-item-toggle': function toggle($clickedEl, clickedData, e) {
+	      var app = this;
+	      var $treeviewItemEl = $clickedEl.closest('.treeview-item').eq(0);
+	      if (!$treeviewItemEl.length) { return; }
+	      e.preventF7Router = true;
+	      app.treeview.toggle($treeviewItemEl[0]);
+	    },
+	  },
+	};
+
 	var ViAd = /*@__PURE__*/(function (Framework7Class) {
 	  function ViAd(app, params) {
 	    if ( params === void 0 ) params = {};
@@ -39082,7 +39560,7 @@
 	};
 
 	/**
-	 * Framework7 4.3.1
+	 * Framework7 4.4.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -39090,7 +39568,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: April 29, 2019
+	 * Released on: May 13, 2019
 	 */
 
 	// Install Core Modules & Components
@@ -39167,6 +39645,7 @@
 	  Skeleton,
 	  Menu$1,
 	  ColorPicker$1,
+	  Treeview$1,
 	  Vi$1,
 	  Elevation,
 	  Typography
@@ -41882,6 +42361,30 @@
 	    }, inputEl, iconEl, this.slots['default']);
 	  };
 
+	  F7Checkbox.prototype.componentDidUpdate = function componentDidUpdate () {
+	    var self = this;
+	    var ref = self.refs;
+	    var inputEl = ref.inputEl;
+	    var ref$1 = self.props;
+	    var indeterminate = ref$1.indeterminate;
+
+	    if (inputEl) {
+	      inputEl.indeterminate = indeterminate;
+	    }
+	  };
+
+	  F7Checkbox.prototype.componentDidMount = function componentDidMount () {
+	    var self = this;
+	    var ref = self.refs;
+	    var inputEl = ref.inputEl;
+	    var ref$1 = self.props;
+	    var indeterminate = ref$1.indeterminate;
+
+	    if (indeterminate && inputEl) {
+	      inputEl.indeterminate = true;
+	    }
+	  };
+
 	  prototypeAccessors.slots.get = function () {
 	    return __reactComponentSlots(this.props);
 	  };
@@ -41909,6 +42412,7 @@
 	  className: String,
 	  style: Object,
 	  checked: Boolean,
+	  indeterminate: Boolean,
 	  name: [Number, String],
 	  value: [Number, String, Boolean],
 	  disabled: Boolean,
@@ -41980,7 +42484,6 @@
 	        ref: function (__reactNode) {
 	          this$1.__reactRefs['deleteEl'] = __reactNode;
 	        },
-	        href: '#',
 	        className: 'chip-delete'
 	      });
 	    }
@@ -42889,6 +43392,7 @@
 	      var scaleSteps = props.scaleSteps;
 	      var scaleSubSteps = props.scaleSubSteps;
 	      var formatScaleLabel = props.formatScaleLabel;
+	      var limitKnobPosition = props.limitKnobPosition;
 	      self.f7Range = f7.range.create(Utils$1.noUndefinedProps({
 	        el: self.refs.el,
 	        value: value,
@@ -42905,6 +43409,7 @@
 	        scaleSteps: scaleSteps,
 	        scaleSubSteps: scaleSubSteps,
 	        formatScaleLabel: formatScaleLabel,
+	        limitKnobPosition: limitKnobPosition,
 	        on: {
 	          change: function change(range, val) {
 	            self.dispatchEvent('range:change rangeChange', val);
@@ -43009,6 +43514,10 @@
 	    default: 0
 	  },
 	  formatScaleLabel: Function,
+	  limitKnobPosition: {
+	    type: Boolean,
+	    default: undefined
+	  },
 	  name: String,
 	  input: Boolean,
 	  inputId: String,
@@ -44979,11 +45488,30 @@
 	    el.removeEventListener('click', self.onClick);
 	  };
 
+	  F7ListItemContent.prototype.componentDidUpdate = function componentDidUpdate () {
+	    var self = this;
+	    var ref = self.refs;
+	    var inputEl = ref.inputEl;
+	    var ref$1 = self.props;
+	    var indeterminate = ref$1.indeterminate;
+
+	    if (inputEl) {
+	      inputEl.indeterminate = indeterminate;
+	    }
+	  };
+
 	  F7ListItemContent.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var ref = self.refs;
-	    var innerEl = ref.innerEl;
 	    var el = ref.el;
+	    var inputEl = ref.inputEl;
+	    var ref$1 = self.props;
+	    var indeterminate = ref$1.indeterminate;
+
+	    if (indeterminate && inputEl) {
+	      inputEl.indeterminate = true;
+	    }
+
 	    el.addEventListener('click', self.onClick);
 	  };
 
@@ -45027,6 +45555,7 @@
 	  checkbox: Boolean,
 	  checked: Boolean,
 	  defaultChecked: Boolean,
+	  indeterminate: Boolean,
 	  radio: Boolean,
 	  name: String,
 	  value: [String, Number, Array],
@@ -45216,6 +45745,7 @@
 	    var radio = props.radio;
 	    var checked = props.checked;
 	    var defaultChecked = props.defaultChecked;
+	    var indeterminate = props.indeterminate;
 	    var name = props.name;
 	    var value = props.value;
 	    var readonly = props.readonly;
@@ -45246,6 +45776,7 @@
 	        checkbox: checkbox,
 	        checked: checked,
 	        defaultChecked: defaultChecked,
+	        indeterminate: indeterminate,
 	        radio: radio,
 	        name: name,
 	        value: value,
@@ -45257,8 +45788,8 @@
 	      }, this.slots['content-start'], this.slots['content'], this.slots['content-end'], this.slots['media'], this.slots['inner-start'], this.slots['inner'], this.slots['inner-end'], this.slots['after-start'], this.slots['after'], this.slots['after-end'], this.slots['header'], this.slots['footer'], this.slots['before-title'], this.slots['title'], this.slots['after-title'], this.slots['subtitle'], this.slots['text'], swipeout || accordionItem ? null : self.slots.default);
 
 	      if (link || href || accordionItem || smartSelect) {
-	        var linkAttrs = Utils$1.extend({
-	          href: link === true || accordionItem || smartSelect ? '#' : link || href,
+	        var linkAttrs = Object.assign({
+	          href: link === true ? '' : link || href,
 	          target: target
 	        }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
 	        var linkClasses = Utils$1.classNames({
@@ -45552,6 +46083,7 @@
 	  radio: Boolean,
 	  checked: Boolean,
 	  defaultChecked: Boolean,
+	  indeterminate: Boolean,
 	  name: String,
 	  value: [String, Number, Array],
 	  readonly: Boolean,
@@ -49636,6 +50168,8 @@
 	    var backdropEl = props.backdropEl;
 	    var animate = props.animate;
 	    var closeOnEscape = props.closeOnEscape;
+	    var swipeToClose = props.swipeToClose;
+	    var swipeHandler = props.swipeHandler;
 	    var popupParams = {
 	      el: el
 	    };
@@ -49645,6 +50179,8 @@
 	      if ('animate' in props) { popupParams.animate = animate; }
 	      if ('backdrop' in props) { popupParams.backdrop = backdrop; }
 	      if ('backdropEl' in props) { popupParams.backdropEl = backdropEl; }
+	      if ('swipeToClose' in props) { popupParams.swipeToClose = swipeToClose; }
+	      if ('swipeHandler' in props) { popupParams.swipeHandler = swipeHandler; }
 	    }
 	    self.$f7ready(function () {
 	      self.f7Popup = self.$f7.popup.create(popupParams);
@@ -49702,7 +50238,12 @@
 	  backdrop: Boolean,
 	  backdropEl: [String, Object, window.HTMLElement],
 	  closeByBackdropClick: Boolean,
-	  closeOnEscape: Boolean
+	  closeOnEscape: Boolean,
+	  swipeToClose: {
+	    type: [Boolean, String],
+	    default: false
+	  },
+	  swipeHandler: [String, Object, window.HTMLElement]
 	}, Mixins.colorProps));
 
 	F7Popup.displayName = 'f7-popup';
@@ -50544,7 +51085,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(this$1, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+	      Utils$1.bindMethods(this$1, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onStepOpen', 'onStepClose']);
 	    })();
 	  }
 
@@ -50553,6 +51094,14 @@
 	  F7Sheet.prototype.constructor = F7Sheet;
 
 	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
+
+	  F7Sheet.prototype.onStepOpen = function onStepOpen (event) {
+	    this.dispatchEvent('sheet:stepopen sheetStepOpen', event);
+	  };
+
+	  F7Sheet.prototype.onStepClose = function onStepClose (event) {
+	    this.dispatchEvent('sheet:stepclose sheetStepClose', event);
+	  };
 
 	  F7Sheet.prototype.onOpen = function onOpen (event) {
 	    this.dispatchEvent('sheet:open sheetOpen', event);
@@ -50607,6 +51156,7 @@
 	          var tag = child.type && (child.type.displayName || child.type.name);
 
 	          if (!tag) {
+	            staticList.push(child);
 	            return;
 	          }
 
@@ -50639,10 +51189,12 @@
 	    if (self.f7Sheet) { self.f7Sheet.destroy(); }
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    el.removeEventListener('popup:open', self.onOpen);
-	    el.removeEventListener('popup:opened', self.onOpened);
-	    el.removeEventListener('popup:close', self.onClose);
-	    el.removeEventListener('popup:closed', self.onClosed);
+	    el.removeEventListener('sheet:open', self.onOpen);
+	    el.removeEventListener('sheet:opened', self.onOpened);
+	    el.removeEventListener('sheet:close', self.onClose);
+	    el.removeEventListener('sheet:closed', self.onClosed);
+	    el.removeEventListener('sheet:stepopen', self.onStepOpen);
+	    el.removeEventListener('sheet:stepclose', self.onStepClose);
 	  };
 
 	  F7Sheet.prototype.componentDidMount = function componentDidMount () {
@@ -50653,6 +51205,8 @@
 	    el.addEventListener('sheet:opened', self.onOpened);
 	    el.addEventListener('sheet:close', self.onClose);
 	    el.addEventListener('sheet:closed', self.onClosed);
+	    el.addEventListener('sheet:stepopen', self.onStepOpen);
+	    el.addEventListener('sheet:stepclose', self.onStepClose);
 	    var props = self.props;
 	    var opened = props.opened;
 	    var backdrop = props.backdrop;
@@ -50660,6 +51214,9 @@
 	    var closeByBackdropClick = props.closeByBackdropClick;
 	    var closeByOutsideClick = props.closeByOutsideClick;
 	    var closeOnEscape = props.closeOnEscape;
+	    var swipeToClose = props.swipeToClose;
+	    var swipeToStep = props.swipeToStep;
+	    var swipeHandler = props.swipeHandler;
 	    var sheetParams = {
 	      el: self.refs.el
 	    };
@@ -50669,6 +51226,9 @@
 	      if ('closeByBackdropClick' in props) { sheetParams.closeByBackdropClick = closeByBackdropClick; }
 	      if ('closeByOutsideClick' in props) { sheetParams.closeByOutsideClick = closeByOutsideClick; }
 	      if ('closeOnEscape' in props) { sheetParams.closeOnEscape = closeOnEscape; }
+	      if ('swipeToClose' in props) { sheetParams.swipeToClose = swipeToClose; }
+	      if ('swipeToStep' in props) { sheetParams.swipeToStep = swipeToStep; }
+	      if ('swipeHandler' in props) { sheetParams.swipeHandler = swipeHandler; }
 	    }
 	    self.$f7ready(function () {
 	      self.f7Sheet = self.$f7.sheet.create(sheetParams);
@@ -50728,7 +51288,10 @@
 	  backdropEl: [String, Object, window.HTMLElement],
 	  closeByBackdropClick: Boolean,
 	  closeByOutsideClick: Boolean,
-	  closeOnEscape: Boolean
+	  closeOnEscape: Boolean,
+	  swipeToClose: Boolean,
+	  swipeToStep: Boolean,
+	  swipeHandler: [String, Object, window.HTMLElement]
 	}, Mixins.colorProps));
 
 	F7Sheet.displayName = 'f7-sheet';
@@ -52097,6 +52660,248 @@
 
 	F7Toolbar.displayName = 'f7-toolbar';
 
+	var F7TreeviewItem = /*@__PURE__*/(function (superclass) {
+	  function F7TreeviewItem(props, context) {
+	    var this$1 = this;
+
+	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onClick', 'onOpen', 'onClose', 'onLoadChildren']);
+	    })();
+	  }
+
+	  if ( superclass ) F7TreeviewItem.__proto__ = superclass;
+	  F7TreeviewItem.prototype = Object.create( superclass && superclass.prototype );
+	  F7TreeviewItem.prototype.constructor = F7TreeviewItem;
+
+	  var prototypeAccessors = { itemRootAttrs: { configurable: true },itemRootClasses: { configurable: true },classes: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
+
+	  F7TreeviewItem.prototype.onClick = function onClick (event) {
+	    this.dispatchEvent('click', event);
+	  };
+
+	  F7TreeviewItem.prototype.onOpen = function onOpen (event) {
+	    this.dispatchEvent('treeview:open treeviewOpen', event);
+	  };
+
+	  F7TreeviewItem.prototype.onClose = function onClose (event) {
+	    this.dispatchEvent('treeview:close treeviewClose', event);
+	  };
+
+	  F7TreeviewItem.prototype.onLoadChildren = function onLoadChildren (event) {
+	    this.dispatchEvent('treeview:loadchildren treeviewLoadChildren', event, event.detail);
+	  };
+
+	  prototypeAccessors.itemRootAttrs.get = function () {
+	    var self = this;
+	    var props = self.props;
+	    var link = props.link;
+	    var href = link;
+	    if (link === true) { href = '#'; }
+	    if (link === false) { href = undefined; }
+	    return Utils$1.extend({
+	      href: href
+	    }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
+	  };
+
+	  prototypeAccessors.itemRootClasses.get = function () {
+	    var self = this;
+	    var props = self.props;
+	    var selectable = props.selectable;
+	    var selected = props.selected;
+	    var itemToggle = props.itemToggle;
+	    return Utils$1.classNames('treeview-item-root', {
+	      'treeview-item-selectable': selectable,
+	      'treeview-item-selected': selected,
+	      'treeview-item-toggle': itemToggle
+	    }, Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
+	  };
+
+	  prototypeAccessors.classes.get = function () {
+	    var self = this;
+	    var props = self.props;
+	    var className = props.className;
+	    var opened = props.opened;
+	    var loadChildren = props.loadChildren;
+	    return Utils$1.classNames(className, 'treeview-item', {
+	      'treeview-item-opened': opened,
+	      'treeview-load-children': loadChildren
+	    }, Mixins.colorClasses(props));
+	  };
+
+	  F7TreeviewItem.prototype.render = function render () {
+	    var this$1 = this;
+
+	    var self = this;
+	    var props = self.props;
+	    var id = props.id;
+	    var style = props.style;
+	    var toggle = props.toggle;
+	    var label = props.label;
+	    var icon = props.icon;
+	    var iconMaterial = props.iconMaterial;
+	    var iconIon = props.iconIon;
+	    var iconFa = props.iconFa;
+	    var iconF7 = props.iconF7;
+	    var iconMd = props.iconMd;
+	    var iconIos = props.iconIos;
+	    var iconAurora = props.iconAurora;
+	    var iconSize = props.iconSize;
+	    var iconColor = props.iconColor;
+	    var link = props.link;
+	    var slots = self.slots;
+	    var hasChildren = slots.default && slots.default.length || slots.children && slots.children.length || slots['children-start'] && slots['children-start'].length;
+	    var needToggle = typeof toggle === 'undefined' ? hasChildren : toggle;
+	    var iconEl;
+
+	    if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
+	      iconEl = react.createElement(F7Icon, {
+	        material: iconMaterial,
+	        f7: iconF7,
+	        fa: iconFa,
+	        ion: iconIon,
+	        icon: icon,
+	        md: iconMd,
+	        ios: iconIos,
+	        aurora: iconAurora,
+	        color: iconColor,
+	        size: iconSize
+	      });
+	    }
+
+	    var TreeviewRootTag = link || link === '' ? 'a' : 'div';
+	    return react.createElement('div', {
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      },
+	      id: id,
+	      style: style,
+	      className: self.classes
+	    }, react.createElement(TreeviewRootTag, Object.assign({
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['rootEl'] = __reactNode;
+	      },
+	      className: self.itemRootClasses
+	    }, self.itemRootAttrs), this.slots['root-start'], needToggle && react.createElement('div', {
+	      className: 'treeview-toggle'
+	    }), react.createElement('div', {
+	      className: 'treeview-item-content'
+	    }, this.slots['content-start'], iconEl, this.slots['media'], react.createElement('div', {
+	      className: 'treeview-item-label'
+	    }, this.slots['label-start'], label, this.slots['label']), this.slots['content'], this.slots['content-end']), this.slots['root'], this.slots['root-end']), hasChildren && react.createElement('div', {
+	      className: 'treeview-item-children'
+	    }, this.slots['children-start'], this.slots['default'], this.slots['children']));
+	  };
+
+	  F7TreeviewItem.prototype.componentWillUnmount = function componentWillUnmount () {
+	    var self = this;
+	    var ref = self.refs;
+	    var el = ref.el;
+	    var rootEl = ref.rootEl;
+	    rootEl.removeEventListener('click', self.onClick);
+	    el.removeEventListener('treeview:open', self.onOpen);
+	    el.removeEventListener('treeview:close', self.onClose);
+	    el.removeEventListener('treeview:loadchildren', self.onLoadChildren);
+	  };
+
+	  F7TreeviewItem.prototype.componentDidMount = function componentDidMount () {
+	    var self = this;
+	    var ref = self.refs;
+	    var el = ref.el;
+	    var rootEl = ref.rootEl;
+	    rootEl.addEventListener('click', self.onClick);
+	    el.addEventListener('treeview:open', self.onOpen);
+	    el.addEventListener('treeview:close', self.onClose);
+	    el.addEventListener('treeview:loadchildren', self.onLoadChildren);
+	  };
+
+	  prototypeAccessors.slots.get = function () {
+	    return __reactComponentSlots(this.props);
+	  };
+
+	  F7TreeviewItem.prototype.dispatchEvent = function dispatchEvent (events) {
+	    var args = [], len = arguments.length - 1;
+	    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
+
+	  Object.defineProperties( F7TreeviewItem.prototype, prototypeAccessors );
+
+	  return F7TreeviewItem;
+	}(react.Component));
+
+	__reactComponentSetProps(F7TreeviewItem, Object.assign({
+	  id: [String, Number],
+	  className: String,
+	  style: Object,
+	  toggle: {
+	    type: Boolean,
+	    default: undefined
+	  },
+	  itemToggle: Boolean,
+	  selectable: Boolean,
+	  selected: Boolean,
+	  opened: Boolean,
+	  label: String,
+	  loadChildren: Boolean,
+	  link: {
+	    type: [Boolean, String],
+	    default: undefined
+	  }
+	}, Mixins.colorProps, Mixins.linkActionsProps, Mixins.linkRouterProps, Mixins.linkIconProps));
+
+	F7TreeviewItem.displayName = 'f7-treeview-item';
+
+	var F7Treeview = /*@__PURE__*/(function (superclass) {
+	  function F7Treeview(props, context) {
+	    superclass.call(this, props, context);
+	  }
+
+	  if ( superclass ) F7Treeview.__proto__ = superclass;
+	  F7Treeview.prototype = Object.create( superclass && superclass.prototype );
+	  F7Treeview.prototype.constructor = F7Treeview;
+
+	  var prototypeAccessors = { slots: { configurable: true } };
+
+	  F7Treeview.prototype.render = function render () {
+	    var props = this.props;
+	    var className = props.className;
+	    var id = props.id;
+	    var style = props.style;
+	    var classes = Utils$1.classNames(className, 'treeview', Mixins.colorClasses(props));
+	    return react.createElement('div', {
+	      id: id,
+	      style: style,
+	      className: classes
+	    }, this.slots['default']);
+	  };
+
+	  prototypeAccessors.slots.get = function () {
+	    return __reactComponentSlots(this.props);
+	  };
+
+	  Object.defineProperties( F7Treeview.prototype, prototypeAccessors );
+
+	  return F7Treeview;
+	}(react.Component));
+
+	__reactComponentSetProps(F7Treeview, Object.assign({
+	  id: [String, Number],
+	  className: String,
+	  style: Object
+	}, Mixins.colorProps));
+
+	F7Treeview.displayName = 'f7-treeview';
+
 	var F7View = /*@__PURE__*/(function (superclass) {
 	  function F7View(props, context) {
 	    var this$1 = this;
@@ -52686,7 +53491,7 @@
 	};
 
 	/**
-	 * Framework7 React 4.3.1
+	 * Framework7 React 4.4.0
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -52694,7 +53499,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: April 29, 2019
+	 * Released on: May 13, 2019
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -52777,6 +53582,8 @@
 	var Tabs$1 = F7Tabs;
 	var Toggle$2 = F7Toggle;
 	var Toolbar$2 = F7Toolbar;
+	var TreeviewItem = F7TreeviewItem;
+	var Treeview$2 = F7Treeview;
 	var View$2 = F7View;
 
 	var defaultExport = /*@__PURE__*/(function (superclass) {
@@ -52989,6 +53796,9 @@
 	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
 	          ),
 	          react.createElement( ListItem, { link: "/tooltip/", title: "Tooltip" },
+	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	          ),
+	          react.createElement( ListItem, { link: "/treeview/", title: "Treeview" },
 	            react.createElement( Icon, { slot: "media", icon: "icon-f7" })
 	          ),
 	          react.createElement( ListItem, { link: "/virtual-list/", title: "Virtual List" },
@@ -54486,37 +55296,89 @@
 	  )
 	); }
 
-	function Checkbox$2 () { return (
-	  react.createElement( Page, null,
-	    react.createElement( Navbar$2, { title: "Checkbox", backLink: "Back" }),
-	    react.createElement( BlockTitle, null, "Inline" ),
-	    react.createElement( Block, { strong: true },
-	      react.createElement( 'p', null, "Lorem ", react.createElement( Checkbox$1, { name: "checkbox-1" }), " ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi ", react.createElement( Checkbox$1, { name: "checkbox-2", defaultChecked: true }), " ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!" )
-	    ),
-
-	    react.createElement( BlockTitle, null, "Checkbox Group" ),
-	    react.createElement( List, null,
-	      react.createElement( ListItem, { checkbox: true, title: "Books", name: "demo-checkbox", defaultChecked: true }),
-	      react.createElement( ListItem, { checkbox: true, title: "Movies", name: "demo-checkbox" }),
-	      react.createElement( ListItem, { checkbox: true, title: "Food", name: "demo-checkbox" }),
-	      react.createElement( ListItem, { checkbox: true, title: "Drinks", name: "demo-checkbox" })
-	    ),
-
-	    react.createElement( BlockTitle, null, "With Media Lists" ),
-	    react.createElement( List, { mediaList: true },
-	      react.createElement( ListItem, {
-	        checkbox: true, defaultChecked: true, name: "demo-media-checkbox", title: "Facebook", after: "17:14", subtitle: "New messages from John Doe", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." }),
-	      react.createElement( ListItem, {
-	        checkbox: true, name: "demo-media-checkbox", title: "John Doe (via Twitter)", after: "17:11", subtitle: "John Doe (@_johndoe) mentioned you on Twitter!", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." }),
-	      react.createElement( ListItem, {
-	        checkbox: true, name: "demo-media-checkbox", title: "Facebook", after: "16:48", subtitle: "New messages from John Doe", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." }),
-	      react.createElement( ListItem, {
-	        checkbox: true, name: "demo-media-checkbox", title: "John Doe (via Twitter)", after: "15:32", subtitle: "John Doe (@_johndoe) mentioned you on Twitter!", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." })
-	    )
-	  )
-	); }
-
 	var defaultExport$6 = /*@__PURE__*/(function (superclass) {
+	  function defaultExport() {
+	    superclass.call(this);
+	    this.state = {
+	      movies: ['Movie 1'],
+	    };
+	  }
+
+	  if ( superclass ) defaultExport.__proto__ = superclass;
+	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
+	  defaultExport.prototype.constructor = defaultExport;
+	  defaultExport.prototype.onMovieChange = function onMovieChange (e) {
+	    var self = this;
+	    var value = e.target.value;
+	    var movies = self.state.movies;
+	    if (e.target.checked) {
+	      movies.push(value);
+	    } else {
+	      movies.splice(movies.indexOf(value), 1);
+	    }
+	    self.setState({ movies: movies });
+	  };
+	  defaultExport.prototype.onMoviesChange = function onMoviesChange (e) {
+	    var self = this;
+	    var movies = self.state.movies;
+	    if (movies.length === 1 || movies.length === 0) {
+	      movies = ['Movie 1', 'Movie 2'];
+	    } else if (movies.length === 2) {
+	      movies = [];
+	    }
+	    self.setState({ movies: movies });
+	  };
+	  defaultExport.prototype.render = function render () {
+	    var this$1 = this;
+
+	    return (
+	      react.createElement( Page, null,
+	        react.createElement( Navbar$2, { title: "Checkbox", backLink: "Back" }),
+	        react.createElement( BlockTitle, null, "Inline" ),
+	        react.createElement( Block, { strong: true },
+	          react.createElement( 'p', null, "Lorem ", react.createElement( Checkbox$1, { name: "checkbox-1" }), " ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi ", react.createElement( Checkbox$1, { name: "checkbox-2", defaultChecked: true }), " ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!" )
+	        ),
+
+	        react.createElement( BlockTitle, null, "Checkbox Group" ),
+	        react.createElement( List, null,
+	          react.createElement( ListItem, { checkbox: true, title: "Books", name: "demo-checkbox", defaultChecked: true }),
+	          react.createElement( ListItem, { checkbox: true, title: "Movies", name: "demo-checkbox" }),
+	          react.createElement( ListItem, { checkbox: true, title: "Food", name: "demo-checkbox" }),
+	          react.createElement( ListItem, { checkbox: true, title: "Drinks", name: "demo-checkbox" })
+	        ),
+
+	        react.createElement( BlockTitle, null, "Indeterminate State" ),
+	        react.createElement( List, null,
+	          react.createElement( ListItem, {
+	            checkbox: true, title: "Movies", name: "demo-checkbox", checked: this.state.movies.length === 2, indeterminate: this.state.movies.length === 1, onChange: function (e) { return this$1.onMoviesChange(e); } },
+	            react.createElement( 'ul', { slot: "root" },
+	              react.createElement( ListItem, {
+	                checkbox: true, title: "Movie 1", name: "demo-checkbox", value: "Movie 1", checked: this.state.movies.indexOf('Movie 1') >= 0, onChange: function (e) { return this$1.onMovieChange(e); } }),
+	              react.createElement( ListItem, {
+	                checkbox: true, title: "Movie 2", name: "demo-checkbox", value: "Movie 2", checked: this.state.movies.indexOf('Movie 2') >= 0, onChange: function (e) { return this$1.onMovieChange(e); } })
+	            )
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "With Media Lists" ),
+	        react.createElement( List, { mediaList: true },
+	          react.createElement( ListItem, {
+	            checkbox: true, defaultChecked: true, name: "demo-media-checkbox", title: "Facebook", after: "17:14", subtitle: "New messages from John Doe", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." }),
+	          react.createElement( ListItem, {
+	            checkbox: true, name: "demo-media-checkbox", title: "John Doe (via Twitter)", after: "17:11", subtitle: "John Doe (@_johndoe) mentioned you on Twitter!", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." }),
+	          react.createElement( ListItem, {
+	            checkbox: true, name: "demo-media-checkbox", title: "Facebook", after: "16:48", subtitle: "New messages from John Doe", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." }),
+	          react.createElement( ListItem, {
+	            checkbox: true, name: "demo-media-checkbox", title: "John Doe (via Twitter)", after: "15:32", subtitle: "John Doe (@_johndoe) mentioned you on Twitter!", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." })
+	        )
+	      )
+	    );
+	  };
+
+	  return defaultExport;
+	}(react.Component));
+
+	var defaultExport$7 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 	    this.deleteChipBound = this.deleteChip.bind(this);
@@ -54613,7 +55475,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$7 = /*@__PURE__*/(function (superclass) {
+	var defaultExport$8 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 	    this.state = {
@@ -55643,7 +56505,7 @@
 	  )
 	); }
 
-	var defaultExport$8 = /*@__PURE__*/(function (superclass) {
+	var defaultExport$9 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -56071,7 +56933,7 @@
 	  )
 	); }
 
-	var defaultExport$9 = /*@__PURE__*/(function (superclass) {
+	var defaultExport$a = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 
@@ -56341,7 +57203,7 @@
 	  )
 	); }
 
-	var defaultExport$a = /*@__PURE__*/(function (superclass) {
+	var defaultExport$b = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -57005,7 +57867,7 @@
 	  )
 	); }
 
-	var defaultExport$b = /*@__PURE__*/(function (superclass) {
+	var defaultExport$c = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -57191,7 +58053,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$c = /*@__PURE__*/(function (superclass) {
+	var defaultExport$d = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -57261,7 +58123,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$d = /*@__PURE__*/(function (superclass) {
+	var defaultExport$e = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -57310,7 +58172,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$e = /*@__PURE__*/(function (superclass) {
+	var defaultExport$f = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 	    this.state = {
@@ -57469,7 +58331,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$f = /*@__PURE__*/(function (superclass) {
+	var defaultExport$g = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -57800,7 +58662,7 @@
 	  )
 	); }
 
-	var defaultExport$g = /*@__PURE__*/(function (superclass) {
+	var defaultExport$h = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -57923,7 +58785,7 @@
 	  )
 	); }
 
-	var defaultExport$h = /*@__PURE__*/(function (superclass) {
+	var defaultExport$i = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -58004,7 +58866,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$i = /*@__PURE__*/(function (superclass) {
+	var defaultExport$j = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -58228,7 +59090,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$j = /*@__PURE__*/(function (superclass) {
+	var defaultExport$k = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -58246,7 +59108,7 @@
 	    return (
 	      react.createElement( Page, { onPageBeforeRemove: this.onPageBeforeRemove.bind(this) },
 	        react.createElement( Navbar$2, { title: "Popup", backLink: "Back" }),
-	        react.createElement( Block, null,
+	        react.createElement( Block, { strong: true },
 	          react.createElement( 'p', null, "Popup is a modal window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called \"Temporary Views\"." ),
 	          react.createElement( 'p', null,
 	            react.createElement( Button, { fill: true, popupOpen: ".demo-popup" }, "Open Popup")
@@ -58256,6 +59118,17 @@
 	          ),
 	          react.createElement( 'p', null,
 	            react.createElement( Button, { fill: true, onClick: this.createPopup.bind(this) }, "Create Dynamic Popup")
+	          )
+	        ),
+	        react.createElement( BlockTitle, null, "Swipe To Close" ),
+	        react.createElement( Block, { strong: true },
+	          react.createElement( 'p', null, "Popup can be closed with swipe to top or bottom:" ),
+	          react.createElement( 'p', null,
+	            react.createElement( Button, { fill: true, popupOpen: ".demo-popup-swipe" }, "Swipe To Close")
+	          ),
+	          react.createElement( 'p', null, "Or it can be closed with swipe on special swipe handler and, for example, only to bottom:" ),
+	          react.createElement( 'p', null,
+	            react.createElement( Button, { fill: true, popupOpen: ".demo-popup-swipe-handler" }, "With Swipe Handler")
 	          )
 	        ),
 	        react.createElement( Popup$2, { className: "demo-popup", opened: this.state.popupOpened, onPopupClosed: function () { return this$1.setState({popupOpened : false}); } },
@@ -58271,6 +59144,33 @@
 	              react.createElement( 'p', null, "Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero." )
 	            )
 	          )
+	        ),
+
+	        react.createElement( Popup$2, { className: "demo-popup-swipe", swipeToClose: true },
+	          react.createElement( Page, null,
+	            react.createElement( Navbar$2, { title: "Swipe To Close" },
+	              react.createElement( NavRight, null,
+	                react.createElement( Link, { popupClose: true }, "Close")
+	              )
+	            ),
+
+	            react.createElement( 'div', { style: {height: '100%'}, className: "display-flex justify-content-center align-items-center" },
+	              react.createElement( 'p', null, "Swipe me up or down" )
+	            )
+	          )
+	        ),
+
+	        react.createElement( Popup$2, { className: "demo-popup-swipe-handler", swipeToClose: "to-bottom", swipeHandler: ".swipe-handler" },
+	          react.createElement( Page, null,
+	            react.createElement( 'div', { slot: "fixed", className: "swipe-handler" }),
+	            react.createElement( BlockTitle, { large: true }, "Hello!"),
+	            react.createElement( Block, { strong: true },
+	              react.createElement( 'p', null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus." ),
+	              react.createElement( 'p', null, "Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero." ),
+	              react.createElement( 'p', null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus." ),
+	              react.createElement( 'p', null, "Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero." )
+	            )
+	          )
 	        )
 	      )
 	    )
@@ -58280,7 +59180,7 @@
 	    // Create popup
 	    if (!self.popup) {
 	      self.popup = self.$f7.popup.create({
-	        content: "\n          <div class=\"popup\">\n            <div class=\"page\">\n              <div class=\"navbar\">\n                <div class=\"navbar-inner\">\n                  <div class=\"title\">Dynamic Popup</div>\n                  <div class=\"right\"><a href=\"#\" class=\"link popup-close\">Close</a></div>\n                </div>\n              </div>\n              <div class=\"page-content\">\n                <div class=\"block\">\n                  <p>This popup was created dynamically</p>\n                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.</p>\n                </div>\n              </div>\n            </div>\n          </div>\n        ".trim(),
+	        content: "\n          <div className=\"popup\">\n            <div className=\"page\">\n              <div className=\"navbar\">\n                <div className=\"navbar-inner\">\n                  <div className=\"title\">Dynamic Popup</div>\n                  <div className=\"right\"><a href=\"#\" className=\"link popup-close\">Close</a></div>\n                </div>\n              </div>\n              <div className=\"page-content\">\n                <div className=\"block\">\n                  <p>This popup was created dynamically</p>\n                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.</p>\n                </div>\n              </div>\n            </div>\n          </div>\n        ".trim(),
 	      });
 	    }
 	    // Open it
@@ -58321,7 +59221,7 @@
 	  )
 	); }
 
-	var defaultExport$k = /*@__PURE__*/(function (superclass) {
+	var defaultExport$l = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -58418,7 +59318,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$l = /*@__PURE__*/(function (superclass) {
+	var defaultExport$m = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -58566,7 +59466,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$m = /*@__PURE__*/(function (superclass) {
+	var defaultExport$n = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -58669,7 +59569,7 @@
 	  )
 	); }
 
-	var defaultExport$n = /*@__PURE__*/(function (superclass) {
+	var defaultExport$o = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -58778,7 +59678,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$o = /*@__PURE__*/(function (superclass) {
+	var defaultExport$p = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 	  }
@@ -58847,7 +59747,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$p = /*@__PURE__*/(function (superclass) {
+	var defaultExport$q = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 	  }
@@ -58917,7 +59817,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$q = /*@__PURE__*/(function (superclass) {
+	var defaultExport$r = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -58946,6 +59846,18 @@
 	          ),
 	          react.createElement( 'p', null,
 	            react.createElement( Button, { className: "col", fill: true, onClick: function () {this$1.setState({sheetOpened: true});} }, "Open Via Prop Change")
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "Swipeable Sheet" ),
+	        react.createElement( Block, { strong: true },
+	          react.createElement( 'p', null, "Sheet modal can be closed with swipe to top (for top Sheet) or bottom (for default Bottom sheet):" ),
+	          react.createElement( 'p', null,
+	            react.createElement( Button, { fill: true, sheetOpen: ".demo-sheet-swipe-to-close" }, "Swipe To Close")
+	          ),
+	          react.createElement( 'p', null, "Also there is swipe-step that can be set on Sheet modal to expand it with swipe:" ),
+	          react.createElement( 'p', null,
+	            react.createElement( Button, { fill: true, sheetOpen: ".demo-sheet-swipe-to-step" }, "Swipe To Step")
 	          )
 	        ),
 
@@ -58985,9 +59897,53 @@
 	              react.createElement( 'p', null, "Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt praesentium velit ipsa illo iusto." )
 	            )
 	          )
+	        ),
+
+	        react.createElement( Sheet$2, {
+	          className: "demo-sheet-swipe-to-close", style: {height: 'auto'}, swipeToClose: true, backdrop: true },
+	          react.createElement( 'div', { className: "swipe-handler" }),
+
+	          react.createElement( PageContent, null,
+	            react.createElement( BlockTitle, { large: true }, "Hello!"),
+	            react.createElement( Block, null,
+	              react.createElement( 'p', null, "Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat." ),
+	              react.createElement( 'p', null, "Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?" )
+	            )
+	          )
+	        ),
+
+	        react.createElement( Sheet$2, {
+	          className: "demo-sheet-swipe-to-step", style: {height: 'auto'}, swipeToClose: true, swipeToStep: true, backdrop: true },
+	          react.createElement( 'div', { className: "swipe-handler", onClick: function () { return this$1.toggleSwipeStep(); } }),
+	          react.createElement( 'div', { className: "sheet-modal-swipe-step" },
+	            react.createElement( 'div', { className: "display-flex padding justify-content-space-between align-items-center" },
+	              react.createElement( 'div', { style: {fontSize: '18px'} }, react.createElement( 'b', null, "Total:" )),
+	              react.createElement( 'div', { style: {fontSize: '22px'} }, react.createElement( 'b', null, "$500" ))
+	            ),
+	            react.createElement( 'div', { className: "padding-horizontal padding-bottom" },
+	              react.createElement( Button, { large: true, fill: true }, "Make Payment"),
+	              react.createElement( 'div', { className: "margin-top text-align-center" }, "Swipe up for more details")
+	            )
+	          ),
+	          react.createElement( BlockTitle, { medium: true, className: "margin-top" }, "Your order:"),
+	          react.createElement( List, { noHairlines: true },
+	            react.createElement( ListItem, { title: "Item 1" },
+	              react.createElement( 'b', { slot: "after", className: "text-color-black" }, "$200")
+	            ),
+	            react.createElement( ListItem, { title: "Item 2" },
+	              react.createElement( 'b', { slot: "after", className: "text-color-black" }, "$180")
+	            ),
+	            react.createElement( ListItem, { title: "Delivery" },
+	              react.createElement( 'b', { slot: "after", className: "text-color-black" }, "$120")
+	            )
+	          )
 	        )
 	      )
 	    );
+	  };
+	  defaultExport.prototype.toggleSwipeStep = function toggleSwipeStep () {
+	    var self = this;
+	    self.$f7.sheet.stepToggle('.demo-sheet-swipe-to-step');
 	  };
 	  defaultExport.prototype.createSheet = function createSheet () {
 	    var self = this;
@@ -58995,7 +59951,7 @@
 	    // Create sheet modal
 	    if (!self.sheet) {
 	      self.sheet = self.$f7.sheet.create({
-	        content: "\n          <div class=\"sheet-modal\">\n            <div class=\"toolbar\">\n              <div class=\"toolbar-inner justify-content-flex-end\">\n                <a href=\"#\" class=\"link sheet-close\">Close</a>\n              </div>\n            </div>\n            <div class=\"sheet-modal-inner\">\n              <div class=\"page-content\">\n                <div class=\"block\">\n                  <p>This sheet modal was created dynamically</p>\n                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.</p>\n                </div>\n              </div>\n            </div>\n          </div>\n        ".trim(),
+	        content: "\n          <div className=\"sheet-modal\">\n            <div className=\"toolbar\">\n              <div className=\"toolbar-inner justify-content-flex-end\">\n                <a href=\"#\" className=\"link sheet-close\">Close</a>\n              </div>\n            </div>\n            <div className=\"sheet-modal-inner\">\n              <div className=\"page-content\">\n                <div className=\"block\">\n                  <p>This sheet modal was created dynamically</p>\n                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.</p>\n                </div>\n              </div>\n            </div>\n          </div>\n        ".trim(),
 	      });
 	    }
 	    // Close inline sheet
@@ -59017,7 +59973,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$r = /*@__PURE__*/(function (superclass) {
+	var defaultExport$s = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 	    this.state = {
@@ -59230,7 +60186,7 @@
 	  )
 	); }
 
-	var defaultExport$s = /*@__PURE__*/(function (superclass) {
+	var defaultExport$t = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -59262,7 +60218,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$t = /*@__PURE__*/(function (superclass) {
+	var defaultExport$u = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -59949,7 +60905,7 @@
 
 	); }
 
-	var defaultExport$u = /*@__PURE__*/(function (superclass) {
+	var defaultExport$v = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -60207,7 +61163,7 @@
 
 	); }
 
-	var defaultExport$v = /*@__PURE__*/(function (superclass) {
+	var defaultExport$w = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -60617,7 +61573,7 @@
 	  )
 	); }
 
-	var defaultExport$w = /*@__PURE__*/(function (superclass) {
+	var defaultExport$x = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -60827,7 +61783,7 @@
 	  )
 	); }
 
-	var defaultExport$x = /*@__PURE__*/(function (superclass) {
+	var defaultExport$y = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -60873,7 +61829,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$y = /*@__PURE__*/(function (superclass) {
+	var defaultExport$z = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -60950,7 +61906,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$z = /*@__PURE__*/(function (superclass) {
+	var defaultExport$A = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -61027,7 +61983,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$A = /*@__PURE__*/(function (superclass) {
+	var defaultExport$B = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -61127,7 +62083,7 @@
 	  )
 	); }
 
-	var defaultExport$B = /*@__PURE__*/(function (superclass) {
+	var defaultExport$C = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -62277,7 +63233,237 @@
 	  )
 	); }
 
-	var defaultExport$C = /*@__PURE__*/(function (superclass) {
+	var defaultExport$D = /*@__PURE__*/(function (superclass) {
+	  function defaultExport() {
+	    superclass.call(this);
+	    this.state = {
+	      checkboxes: {
+	        images: {
+	          'avatar.png': false,
+	          'background.jpg': false,
+	        },
+	        documents: {
+	          'cv.docx': false,
+	          'info.docx': false,
+	        },
+	        '.gitignore': false,
+	        '.index.html': false,
+	      },
+	      selectedItem: null,
+	      loadedChildren: [],
+	    };
+	  }
+
+	  if ( superclass ) defaultExport.__proto__ = superclass;
+	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
+	  defaultExport.prototype.constructor = defaultExport;
+
+	  defaultExport.prototype.toggleSelectable = function toggleSelectable (e, item) {
+	    var self = this;
+	    var $ = self.$$;
+	    if ($(e.target).is('.treeview-toggle')) { return; }
+	    self.setState({selectedItem: item});
+	  };
+
+	  defaultExport.prototype.loadChildren = function loadChildren (done) {
+	    var self = this;
+	    setTimeout(function () {
+	      // call done() to hide preloader
+	      done();
+	      self.setState({
+	        loadedChildren: [
+	          {
+	            name: 'John Doe',
+	          },
+	          {
+	            name: 'Jane Doe',
+	          },
+	          {
+	            name: 'Calvin Johnson',
+	          } ],
+	      });
+	    }, 2000);
+	  };
+
+	  defaultExport.prototype.render = function render () {
+	    var this$1 = this;
+
+	    return (
+	      react.createElement( Page, null,
+	        react.createElement( Navbar$2, { title: "Treeview", backLink: "Back" }),
+
+	        react.createElement( BlockTitle, null, "Basic tree view" ),
+	        react.createElement( Block, { strong: true, className: "no-padding-horizontal" },
+	          react.createElement( Treeview$2, null,
+	            react.createElement( TreeviewItem, { label: "Item 1" },
+	              react.createElement( TreeviewItem, { label: "Sub Item 1" },
+	                react.createElement( TreeviewItem, { label: "Sub Sub Item 1" }),
+	                react.createElement( TreeviewItem, { label: "Sub Sub Item 2" })
+	              ),
+	              react.createElement( TreeviewItem, { label: "Sub Item 2" },
+	                react.createElement( TreeviewItem, { label: "Sub Sub Item 1" }),
+	                react.createElement( TreeviewItem, { label: "Sub Sub Item 2" })
+	              )
+	            ),
+	            react.createElement( TreeviewItem, { label: "Item 2" },
+	              react.createElement( TreeviewItem, { label: "Sub Item 1" },
+	                react.createElement( TreeviewItem, { label: "Sub Sub Item 1" }),
+	                react.createElement( TreeviewItem, { label: "Sub Sub Item 2" })
+	              ),
+	              react.createElement( TreeviewItem, { label: "Sub Item 2" },
+	                react.createElement( TreeviewItem, { label: "Sub Sub Item 1" }),
+	                react.createElement( TreeviewItem, { label: "Sub Sub Item 2" })
+	              )
+	            ),
+	            react.createElement( TreeviewItem, { label: "Item 3" })
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "With icons" ),
+	        react.createElement( Block, { strong: true, className: "no-padding-horizontal" },
+	          react.createElement( Treeview$2, null,
+	            react.createElement( TreeviewItem, { label: "images", iconF7: "folder_fill" },
+	              react.createElement( TreeviewItem, { label: "avatar.png", iconF7: "images_fill" }),
+	              react.createElement( TreeviewItem, { label: "background.jpg", iconF7: "images_fill" })
+	            ),
+	            react.createElement( TreeviewItem, { label: "documents", iconF7: "folder_fill" },
+	              react.createElement( TreeviewItem, { label: "cv.docx", iconF7: "document_text_fill" }),
+	              react.createElement( TreeviewItem, { label: "info.docx", iconF7: "document_text_fill" })
+	            ),
+	            react.createElement( TreeviewItem, { label: ".gitignore", iconF7: "logo_github" }),
+	            react.createElement( TreeviewItem, { label: "index.html", iconF7: "document_text_fill" })
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "With checkboxes" ),
+	        react.createElement( Block, { strong: true, className: "no-padding-horizontal" },
+	          react.createElement( Treeview$2, null,
+	            react.createElement( TreeviewItem, { label: "images", iconF7: "folder_fill" },
+	              react.createElement( Checkbox$1, { slot: "content-start", checked: Object.values(this.state.checkboxes.images).indexOf(false) < 0, indeterminate: Object.values(this.state.checkboxes.images).indexOf(false) >= 0 && Object.values(this.state.checkboxes.images).indexOf(true) >= 0, onChange: function (e) {
+	                  Object.keys(this$1.state.checkboxes.images).forEach(function (k) { return this$1.state.checkboxes.images[k] = e.target.checked; });
+	                  this$1.setState(Object.assign({}, this$1.state));
+	                } }),
+	              react.createElement( TreeviewItem, { label: "avatar.png", iconF7: "images_fill" },
+	                react.createElement( Checkbox$1, { slot: "content-start", checked: this.state.checkboxes.images['avatar.png'], onChange: function (e) {
+	                    this$1.state.checkboxes.images['avatar.png'] = e.target.checked;
+	                    this$1.setState(Object.assign({}, this$1.state));
+	                  } })
+	              ),
+	              react.createElement( TreeviewItem, { label: "background.jpg", iconF7: "images_fill" },
+	                react.createElement( Checkbox$1, { slot: "content-start", checked: this.state.checkboxes.images['background.jpg'], onChange: function (e) {
+	                    this$1.state.checkboxes.images['background.jpg'] = e.target.checked;
+	                    this$1.setState(Object.assign({}, this$1.state));
+	                  } })
+	              )
+	            ),
+	            react.createElement( TreeviewItem, { label: "documents", iconF7: "folder_fill" },
+	              react.createElement( Checkbox$1, { slot: "content-start", checked: Object.values(this.state.checkboxes.documents).indexOf(false) < 0, indeterminate: Object.values(this.state.checkboxes.documents).indexOf(false) >= 0 && Object.values(this.state.checkboxes.documents).indexOf(true) >= 0, onChange: function (e) {
+	                  Object.keys(this$1.state.checkboxes.documents).forEach(function (k) { return this$1.state.checkboxes.documents[k] = e.target.checked; });
+	                  this$1.setState(Object.assign({}, this$1.state));
+	                } }),
+	              react.createElement( TreeviewItem, { label: "cv.docx", iconF7: "document_text_fill" },
+	                react.createElement( Checkbox$1, { slot: "content-start", checked: this.state.checkboxes.documents['cv.docx'], onChange: function (e) {
+	                    this$1.state.checkboxes.documents['cv.docx'] = e.target.checked;
+	                    this$1.setState(Object.assign({}, this$1.state));
+	                  } })
+	              ),
+	              react.createElement( TreeviewItem, { label: "info.docx", iconF7: "document_text_fill" },
+	                react.createElement( Checkbox$1, { slot: "content-start", checked: this.state.checkboxes.documents['info.docx'], onChange: function (e) {
+	                    this$1.state.checkboxes.documents['info.docx'] = e.target.checked;
+	                    this$1.setState(Object.assign({}, this$1.state));
+	                  } })
+	              )
+	            ),
+	            react.createElement( TreeviewItem, { label: ".gitignore", iconF7: "logo_github" },
+	              react.createElement( Checkbox$1, { slot: "content-start", checked: this.state.checkboxes['.gitignore'], onChange: function (e) {
+	                this$1.state.checkboxes['.gitignore'] = e.target.checked;
+	                this$1.setState(Object.assign({}, this$1.state));
+	              } })
+	            ),
+	            react.createElement( TreeviewItem, { label: "index.html", iconF7: "document_text_fill" },
+	              react.createElement( Checkbox$1, { slot: "content-start", checked: this.state.checkboxes['index.html'], onChange: function (e) {
+	                this$1.state.checkboxes['index.html'] = e.target.checked;
+	                this$1.setState(Object.assign({}, this$1.state));
+	              } })
+	            )
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "Whole item as toggle" ),
+	        react.createElement( Block, { strong: true, className: "no-padding-horizontal" },
+	          react.createElement( Treeview$2, null,
+	            react.createElement( TreeviewItem, { itemToggle: true, label: "images", iconF7: "folder_fill" },
+	              react.createElement( TreeviewItem, { label: "avatar.png", iconF7: "images_fill" }),
+	              react.createElement( TreeviewItem, { label: "background.jpg", iconF7: "images_fill" })
+	            ),
+	            react.createElement( TreeviewItem, { itemToggle: true, label: "documents", iconF7: "folder_fill" },
+	              react.createElement( TreeviewItem, { label: "cv.docx", iconF7: "document_text_fill" }),
+	              react.createElement( TreeviewItem, { label: "info.docx", iconF7: "document_text_fill" })
+	            ),
+	            react.createElement( TreeviewItem, { label: ".gitignore", iconF7: "logo_github" }),
+	            react.createElement( TreeviewItem, { label: "index.html", iconF7: "document_text_fill" })
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "Selectable" ),
+	        react.createElement( Block, { strong: true, className: "no-padding-horizontal" },
+	          react.createElement( Treeview$2, null,
+	            react.createElement( TreeviewItem, {
+	              selectable: true, selected: this.state.selectedItem === 'images', label: "images", iconF7: "folder_fill", onClick: function (e) { return this$1.toggleSelectable(e, 'images'); } },
+	              react.createElement( TreeviewItem, {
+	                selectable: true, selected: this.state.selectedItem === 'avatar.png', label: "avatar.png", iconF7: "images_fill", onClick: function (e) { return this$1.toggleSelectable(e, 'avatar.png'); } }),
+	              react.createElement( TreeviewItem, {
+	                selectable: true, selected: this.state.selectedItem === 'background.jpg', label: "background.jpg", iconF7: "images_fill", onClick: function (e) { return this$1.toggleSelectable(e, 'background.jpg'); } })
+	            ),
+	            react.createElement( TreeviewItem, {
+	              selectable: true, selected: this.state.selectedItem === 'documents', label: "documents", iconF7: "folder_fill", onClick: function (e) { return this$1.toggleSelectable(e, 'documents'); } },
+	              react.createElement( TreeviewItem, {
+	                selectable: true, selected: this.state.selectedItem === 'cv.docx', label: "cv.docx", iconF7: "document_text_fill", onClick: function (e) { return this$1.toggleSelectable(e, 'cv.docx'); } }),
+	              react.createElement( TreeviewItem, {
+	                selectable: true, selected: this.state.selectedItem === 'info.docx', label: "info.docx", iconF7: "document_text_fill", onClick: function (e) { return this$1.toggleSelectable(e, 'info.docx'); } })
+	            ),
+	            react.createElement( TreeviewItem, {
+	              selectable: true, selected: this.state.selectedItem === '.gitignore', label: ".gitignore", iconF7: "logo_github", onClick: function (e) { return this$1.toggleSelectable(e, '.gitignore'); } }),
+	            react.createElement( TreeviewItem, {
+	              selectable: true, selected: this.state.selectedItem === 'index.html', label: "index.html", iconF7: "document_text_fill", onClick: function (e) { return this$1.toggleSelectable(e, 'index.html'); } })
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "Preload children" ),
+	        react.createElement( Block, { strong: true, className: "no-padding-horizontal" },
+	          react.createElement( Treeview$2, null,
+	            react.createElement( TreeviewItem, {
+	              toggle: true, loadChildren: true, iconF7: "persons", label: "Users", onTreeviewLoadChildren: function (e, done) { return this$1.loadChildren(done); } },
+	              this.state.loadedChildren.map(function (item, index) { return (
+	                react.createElement( TreeviewItem, {
+	                  key: index, iconF7: "person", label: item.name })
+	              ); })
+	            )
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "With links" ),
+	        react.createElement( Block, { strong: true, className: "no-padding-horizontal" },
+	          react.createElement( Treeview$2, null,
+	            react.createElement( TreeviewItem, { iconF7: "data_fill", itemToggle: true, label: "Modals" },
+	              react.createElement( TreeviewItem, { link: "/popup/", iconF7: "link", label: "Popup" }),
+	              react.createElement( TreeviewItem, { link: "/dialog/", iconF7: "link", label: "Dialog" }),
+	              react.createElement( TreeviewItem, { link: "/action-sheet/", iconF7: "link", label: "Action Sheet" })
+	            ),
+	            react.createElement( TreeviewItem, { iconF7: "data_fill", itemToggle: true, label: "Navigation Bars" },
+	              react.createElement( TreeviewItem, { link: "/navbar/", iconF7: "link", label: "Navbar" }),
+	              react.createElement( TreeviewItem, { link: "/toolbar-tabbar/", iconF7: "link", label: "Toolbar & Tabbar" })
+	            )
+	          )
+	        )
+	      )
+	    );
+	  };
+
+	  return defaultExport;
+	}(react.Component));
+
+	var defaultExport$E = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -62349,7 +63535,7 @@
 	var globalCustomColor = '';
 	var globalCustomProperties = '';
 
-	var defaultExport$D = /*@__PURE__*/(function (superclass) {
+	var defaultExport$F = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -62603,7 +63789,7 @@
 	  )
 	); }
 
-	var defaultExport$E = /*@__PURE__*/(function (superclass) {
+	var defaultExport$G = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 	  }
@@ -62710,15 +63896,15 @@
 	  },
 	  {
 	    path: '/checkbox/',
-	    component: Checkbox$2,
-	  },
-	  {
-	    path: '/chips/',
 	    component: defaultExport$6,
 	  },
 	  {
-	    path: '/color-picker/',
+	    path: '/chips/',
 	    component: defaultExport$7,
+	  },
+	  {
+	    path: '/color-picker/',
+	    component: defaultExport$8,
 	  },
 	  {
 	    path: '/contacts-list/',
@@ -62734,7 +63920,7 @@
 	  },
 	  {
 	    path: '/dialog/',
-	    component: defaultExport$8,
+	    component: defaultExport$9,
 	  },
 	  {
 	    path: '/elevation/',
@@ -62754,7 +63940,7 @@
 	  },
 	  {
 	    path: '/gauge/',
-	    component: defaultExport$9,
+	    component: defaultExport$a,
 	  },
 	  {
 	    path: '/grid/',
@@ -62766,7 +63952,7 @@
 	  },
 	  {
 	    path: '/infinite-scroll/',
-	    component: defaultExport$a,
+	    component: defaultExport$b,
 	  },
 	  {
 	    path: '/inputs/',
@@ -62782,23 +63968,23 @@
 	  },
 	  {
 	    path: '/list-index/',
-	    component: defaultExport$b,
-	  },
-	  {
-	    path: '/login-screen/',
 	    component: defaultExport$c,
 	  },
 	  {
-	    path: '/login-screen-page/',
+	    path: '/login-screen/',
 	    component: defaultExport$d,
 	  },
 	  {
-	    path: '/menu/',
+	    path: '/login-screen-page/',
 	    component: defaultExport$e,
 	  },
 	  {
-	    path: '/messages/',
+	    path: '/menu/',
 	    component: defaultExport$f,
+	  },
+	  {
+	    path: '/messages/',
+	    component: defaultExport$g,
 	  },
 	  {
 	    path: '/navbar/',
@@ -62810,7 +63996,7 @@
 	  },
 	  {
 	    path: '/notifications/',
-	    component: defaultExport$g,
+	    component: defaultExport$h,
 	  },
 	  {
 	    path: '/panel/',
@@ -62818,15 +64004,15 @@
 	  },
 	  {
 	    path: '/photo-browser/',
-	    component: defaultExport$h,
-	  },
-	  {
-	    path: '/picker/',
 	    component: defaultExport$i,
 	  },
 	  {
-	    path: '/popup/',
+	    path: '/picker/',
 	    component: defaultExport$j,
+	  },
+	  {
+	    path: '/popup/',
+	    component: defaultExport$k,
 	  },
 	  {
 	    path: '/popover/',
@@ -62834,15 +64020,15 @@
 	  },
 	  {
 	    path: '/preloader/',
-	    component: defaultExport$k,
-	  },
-	  {
-	    path: '/progressbar/',
 	    component: defaultExport$l,
 	  },
 	  {
-	    path: '/pull-to-refresh/',
+	    path: '/progressbar/',
 	    component: defaultExport$m,
+	  },
+	  {
+	    path: '/pull-to-refresh/',
+	    component: defaultExport$n,
 	  },
 	  {
 	    path: '/radio/',
@@ -62850,23 +64036,23 @@
 	  },
 	  {
 	    path: '/range/',
-	    component: defaultExport$n,
-	  },
-	  {
-	    path: '/searchbar/',
 	    component: defaultExport$o,
 	  },
 	  {
-	    path: '/searchbar-expandable/',
+	    path: '/searchbar/',
 	    component: defaultExport$p,
 	  },
 	  {
-	    path: '/sheet-modal/',
+	    path: '/searchbar-expandable/',
 	    component: defaultExport$q,
 	  },
 	  {
-	    path: '/skeleton/',
+	    path: '/sheet-modal/',
 	    component: defaultExport$r,
+	  },
+	  {
+	    path: '/skeleton/',
+	    component: defaultExport$s,
 	  },
 	  {
 	    path: '/smart-select/',
@@ -62878,11 +64064,11 @@
 	  },
 	  {
 	    path: '/statusbar/',
-	    component: defaultExport$s,
+	    component: defaultExport$t,
 	  },
 	  {
 	    path: '/stepper/',
-	    component: defaultExport$t,
+	    component: defaultExport$u,
 	  },
 	  {
 	    path: '/subnavbar/',
@@ -62942,7 +64128,7 @@
 	      },
 	      {
 	        path: 'swiper-gallery/',
-	        component: defaultExport$u,
+	        component: defaultExport$v,
 	      },
 	      {
 	        path: 'swiper-custom-controls/',
@@ -62971,7 +64157,7 @@
 	  },
 	  {
 	    path: '/swipeout/',
-	    component: defaultExport$v,
+	    component: defaultExport$w,
 	  },
 	  {
 	    path: '/tabs/',
@@ -63011,7 +64197,7 @@
 	  },
 	  {
 	    path: '/toast/',
-	    component: defaultExport$w,
+	    component: defaultExport$x,
 	  },
 	  {
 	    path: '/toggle/',
@@ -63019,19 +64205,19 @@
 	  },
 	  {
 	    path: '/toolbar-tabbar/',
-	    component: defaultExport$x,
+	    component: defaultExport$y,
 	    routes: [
 	      {
 	        path: 'tabbar/',
-	        component: defaultExport$y,
-	      },
-	      {
-	        path: 'tabbar-labels/',
 	        component: defaultExport$z,
 	      },
 	      {
-	        path: 'tabbar-scrollable/',
+	        path: 'tabbar-labels/',
 	        component: defaultExport$A,
+	      },
+	      {
+	        path: 'tabbar-scrollable/',
+	        component: defaultExport$B,
 	      },
 	      {
 	        path: 'toolbar-hide-scroll/',
@@ -63040,7 +64226,7 @@
 	  },
 	  {
 	    path: '/tooltip/',
-	    component: defaultExport$B,
+	    component: defaultExport$C,
 	  },
 	  {
 	    path: '/timeline/',
@@ -63059,14 +64245,18 @@
 	    component: TimelineHorizontalCalendar,
 	  },
 	  {
+	    path: '/treeview/',
+	    component: defaultExport$D,
+	  },
+	  {
 	    path: '/virtual-list/',
-	    component: defaultExport$C,
+	    component: defaultExport$E,
 	  },
 
 	  // Color Themes
 	  {
 	    path: '/color-themes/',
-	    component: defaultExport$D,
+	    component: defaultExport$F,
 	  },
 
 	  // Routable Modals
@@ -63094,7 +64284,7 @@
 	  },
 	  {
 	    path: '/master-detail/:id/',
-	    component: defaultExport$E,
+	    component: defaultExport$G,
 	  },
 	  // Default route (404 page). MUST BE THE LAST
 	  {

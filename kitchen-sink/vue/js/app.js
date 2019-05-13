@@ -12629,7 +12629,7 @@
         tapHoldPreventClicks: true,
         // Active State
         activeState: true,
-        activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item',
+        activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item, .link, .item-link',
         mdTouchRipple: true,
         iosTouchRipple: false,
         auroraTouchRipple: false,
@@ -17263,6 +17263,7 @@
       Object.keys(app.modules).forEach(function (moduleName) {
         var moduleClicks = app.modules[moduleName].clicks;
         if (!moduleClicks) { return; }
+        if (e.preventF7Router) { return; }
         Object.keys(moduleClicks).forEach(function (clickSelector) {
           var matchingClickedElement = $clickedEl.closest(clickSelector).eq(0);
           if (matchingClickedElement.length > 0) {
@@ -17270,7 +17271,6 @@
           }
         });
       });
-
 
       // Load Page
       var clickedLinkData = {};
@@ -17280,6 +17280,7 @@
       }
 
       // Prevent Router
+      if (e.preventF7Router) { return; }
       if ($clickedLinkEl.hasClass('prevent-router') || $clickedLinkEl.hasClass('router-prevent')) { return; }
 
       var validUrl = url && url.length > 0 && url !== '#' && !isTabLink;
@@ -17679,8 +17680,8 @@
   /* eslint no-use-before-define: "off" */
 
   var selfClosing = 'area base br col command embed hr img input keygen link menuitem meta param source track wbr'.split(' ');
-  var propsAttrs = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple value'.split(' ');
-  var booleanProps = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple readOnly'.split(' ');
+  var propsAttrs = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple value indeterminate'.split(' ');
+  var booleanProps = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple readOnly indeterminate'.split(' ');
   var tempDom = doc.createElement('div');
 
   function getHooks(data, app, initial, isRoot) {
@@ -17742,7 +17743,6 @@
     var once = ref.once;
 
     var fired = false;
-
     var methodName;
     var method;
     var customArgs = [];
@@ -17791,7 +17791,13 @@
       if (handlerString.indexOf('(') < 0) {
         customArgs = args;
       } else {
-        handlerString.split('(')[1].split(')')[0].split(',').forEach(function (argument) {
+        var handlerArguments = handlerString
+          .split('(')[1]
+          .split(')')[0]
+          .replace(/'[^']*'|"[^"]*"/g, function (a) { return a.replace(/,/g, '<_comma_>'); })
+          .split(',')
+          .map(function (a) { return a.replace(/<_comma_>/g, ','); });
+        handlerArguments.forEach(function (argument) {
           var arg = argument.trim();
           // eslint-disable-next-line
           if (!isNaN(arg)) { arg = parseFloat(arg); }
@@ -21198,6 +21204,7 @@
       }
 
       popup.on('popupOpened', function () {
+        $el.removeClass('swipe-close-to-bottom swipe-close-to-top');
         if (popup.params.closeByBackdropClick) {
           app.on('click', handleClick);
         }
@@ -21207,6 +21214,127 @@
           app.off('click', handleClick);
         }
       });
+
+      var allowSwipeToClose = true;
+      var isTouched = false;
+      var startTouch;
+      var currentTouch;
+      var isScrolling;
+      var touchStartTime;
+      var touchesDiff;
+      var isMoved = false;
+      var pageContentEl;
+      var pageContentScrollTop;
+      var pageContentOffsetHeight;
+      var pageContentScrollHeight;
+
+      function handleTouchStart(e) {
+        if (isTouched || !allowSwipeToClose || !popup.params.swipeToClose) { return; }
+        if (popup.params.swipeHandler && $(e.target).closest(popup.params.swipeHandler).length === 0) {
+          return;
+        }
+        isTouched = true;
+        isMoved = false;
+        startTouch = {
+          x: e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX,
+          y: e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY,
+        };
+        touchStartTime = Utils.now();
+        isScrolling = undefined;
+        if (!popup.params.swipeHandler && e.type === 'touchstart') {
+          pageContentEl = $(e.target).closest('.page-content')[0];
+        }
+      }
+      function handleTouchMove(e) {
+        if (!isTouched) { return; }
+        currentTouch = {
+          x: e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX,
+          y: e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY,
+        };
+
+        if (typeof isScrolling === 'undefined') {
+          isScrolling = !!(isScrolling || Math.abs(currentTouch.x - startTouch.x) > Math.abs(currentTouch.y - startTouch.y));
+        }
+        if (isScrolling) {
+          isTouched = false;
+          isMoved = false;
+          return;
+        }
+
+        touchesDiff = startTouch.y - currentTouch.y;
+        var direction = touchesDiff < 0 ? 'to-bottom' : 'to-top';
+        $el.transition(0);
+
+        if (typeof popup.params.swipeToClose === 'string' && direction !== popup.params.swipeToClose) {
+          $el.transform('');
+          return;
+        }
+
+        if (!isMoved) {
+          if (pageContentEl) {
+            pageContentScrollTop = pageContentEl.scrollTop;
+            pageContentScrollHeight = pageContentEl.scrollHeight;
+            pageContentOffsetHeight = pageContentEl.offsetHeight;
+            if (
+              !(pageContentScrollHeight === pageContentOffsetHeight)
+              && !(direction === 'to-bottom' && pageContentScrollTop === 0)
+              && !(direction === 'to-top' && pageContentScrollTop === (pageContentScrollHeight - pageContentOffsetHeight))
+            ) {
+              $el.transform('');
+              isTouched = false;
+              isMoved = false;
+              return;
+            }
+          }
+          isMoved = true;
+        }
+        e.preventDefault();
+        $el.transition(0).transform(("translate3d(0," + (-touchesDiff) + "px,0)"));
+      }
+      function handleTouchEnd() {
+        isTouched = false;
+        if (!isMoved) {
+          return;
+        }
+        isMoved = false;
+        allowSwipeToClose = false;
+        $el.transition('');
+        var direction = touchesDiff < 0 ? 'to-bottom' : 'to-top';
+        if ((typeof popup.params.swipeToClose === 'string' && direction !== popup.params.swipeToClose)) {
+          $el.transform('');
+          allowSwipeToClose = true;
+          return;
+        }
+        var diff = Math.abs(touchesDiff);
+        var timeDiff = (new Date()).getTime() - touchStartTime;
+        if ((timeDiff < 300 && diff > 20) || (timeDiff >= 300 && diff > 100)) {
+          Utils.nextTick(function () {
+            if (direction === 'to-bottom') {
+              $el.addClass('swipe-close-to-bottom');
+            } else {
+              $el.addClass('swipe-close-to-top');
+            }
+            $el.transform('');
+            popup.close();
+            allowSwipeToClose = true;
+          });
+          return;
+        }
+        allowSwipeToClose = true;
+        $el.transform('');
+      }
+
+      var passive = Support.passiveListener ? { passive: true } : false;
+      if (popup.params.swipeToClose) {
+        $el.on(app.touchEvents.start, handleTouchStart, passive);
+        app.on('touchmove', handleTouchMove);
+        app.on('touchend:passive', handleTouchEnd);
+        popup.once('popupDestroy', function () {
+          $el.off(app.touchEvents.start, handleTouchStart, passive);
+          app.off('touchmove', handleTouchMove);
+          app.off('touchend:passive', handleTouchEnd);
+        });
+      }
 
       $el[0].f7Modal = popup;
 
@@ -21228,6 +21356,8 @@
         backdropEl: undefined,
         closeByBackdropClick: true,
         closeOnEscape: false,
+        swipeToClose: false,
+        swipeHandler: null,
       },
     },
     static: {
@@ -21940,7 +22070,7 @@
                       return ("\n                      <li>\n                        <a class=\"" + (itemClasses.join(' ')) + "\">\n                          <div class=\"item-media\">\n                            " + icon + "\n                          </div>\n                          <div class=\"item-inner\">\n                            <div class=\"item-title\">\n                              " + text + "\n                            </div>\n                          </div>\n                        </a>\n                      </li>\n                    ");
                     }
                     itemClasses.push('list-button');
-                    return ("\n                    <li>\n                      <a href=\"#\" class=\"" + (itemClasses.join(' ')) + "\">" + text + "</a>\n                    </li>\n                  ");
+                    return ("\n                    <li>\n                      <a class=\"" + (itemClasses.join(' ')) + "\">" + text + "</a>\n                    </li>\n                  ");
                   }).join('')) + "\n              </ul>\n            </div>\n          "); }).join('')) + "\n        </div>\n      </div>\n    ").trim();
     };
 
@@ -22033,8 +22163,17 @@
         }
       }
 
+      Utils.extend(sheet, {
+        app: app,
+        $el: $el,
+        el: $el[0],
+        $backdropEl: $backdropEl,
+        backdropEl: $backdropEl && $backdropEl[0],
+        type: 'sheet',
+      });
+
       var $pageContentEl;
-      function scrollToOpen() {
+      function scrollToElementOnOpen() {
         var $scrollEl = $(sheet.params.scrollToEl).eq(0);
         if ($scrollEl.length === 0) { return; }
         $pageContentEl = $scrollEl.parents('.page-content');
@@ -22064,7 +22203,7 @@
         }
       }
 
-      function scrollToClose() {
+      function scrollToElementOnClose() {
         if ($pageContentEl && $pageContentEl.length > 0) {
           $pageContentEl.css({
             'padding-bottom': '',
@@ -22096,12 +22235,197 @@
           sheet.close();
         }
       }
+
+
+      var isTouched = false;
+      var startTouch;
+      var currentTouch;
+      var isScrolling;
+      var touchStartTime;
+      var touchesDiff;
+      var isMoved = false;
+      var isTopSheetModal;
+      var swipeStepTranslate;
+      var startTranslate;
+      var currentTranslate;
+      var sheetElOffsetHeight;
+      var minTranslate;
+      var maxTranslate;
+
+      function handleTouchStart(e) {
+        if (isTouched || !(sheet.params.swipeToClose || sheet.params.swipeToStep)) { return; }
+        if (sheet.params.swipeHandler && $(e.target).closest(sheet.params.swipeHandler).length === 0) {
+          return;
+        }
+        isTouched = true;
+        isMoved = false;
+        startTouch = {
+          x: e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX,
+          y: e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY,
+        };
+        touchStartTime = Utils.now();
+        isScrolling = undefined;
+        isTopSheetModal = $el.hasClass('sheet-modal-top');
+      }
+      function handleTouchMove(e) {
+        if (!isTouched) { return; }
+        currentTouch = {
+          x: e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX,
+          y: e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY,
+        };
+
+        if (typeof isScrolling === 'undefined') {
+          isScrolling = !!(isScrolling || Math.abs(currentTouch.x - startTouch.x) > Math.abs(currentTouch.y - startTouch.y));
+        }
+        if (isScrolling) {
+          isTouched = false;
+          isMoved = false;
+          return;
+        }
+
+        touchesDiff = startTouch.y - currentTouch.y;
+
+        if (!isMoved) {
+          sheetElOffsetHeight = $el[0].offsetHeight;
+          startTranslate = Utils.getTranslate($el[0], 'y');
+          if (isTopSheetModal) {
+            minTranslate = sheet.params.swipeToClose ? -sheetElOffsetHeight : -swipeStepTranslate;
+            maxTranslate = 0;
+          } else {
+            minTranslate = 0;
+            maxTranslate = sheet.params.swipeToClose ? sheetElOffsetHeight : swipeStepTranslate;
+          }
+          isMoved = true;
+        }
+        currentTranslate = startTranslate - touchesDiff;
+        currentTranslate = Math.min(Math.max(currentTranslate, minTranslate), maxTranslate);
+        e.preventDefault();
+        $el
+          .transition(0)
+          .transform(("translate3d(0," + currentTranslate + "px,0)"));
+      }
+      function handleTouchEnd() {
+        isTouched = false;
+        if (!isMoved) {
+          return;
+        }
+        isMoved = false;
+        $el.transform('').transition('');
+
+        var direction = touchesDiff < 0 ? 'to-bottom' : 'to-top';
+
+        var diff = Math.abs(touchesDiff);
+        if (diff === 0 || currentTranslate === startTranslate) { return; }
+
+        var timeDiff = (new Date()).getTime() - touchStartTime;
+
+        if (!sheet.params.swipeToStep) {
+          if (direction !== (isTopSheetModal ? 'to-top' : 'to-bottom')) {
+            return;
+          }
+          if ((timeDiff < 300 && diff > 20) || (timeDiff >= 300 && diff > (sheetElOffsetHeight / 2))) {
+            sheet.close();
+          }
+          return;
+        }
+
+        var openDirection = isTopSheetModal ? 'to-bottom' : 'to-top';
+        var closeDirection = isTopSheetModal ? 'to-top' : 'to-bottom';
+        var absCurrentTranslate = Math.abs(currentTranslate);
+        var absSwipeStepTranslate = Math.abs(swipeStepTranslate);
+
+        if (timeDiff < 300 && diff > 10) {
+          if (direction === openDirection && absCurrentTranslate < absSwipeStepTranslate) {
+            // open step
+            $el.removeClass('modal-in-swipe-step');
+            $el.trigger('sheet:stepopen');
+            sheet.emit('local::stepOpen sheetStepOpen', sheet);
+          }
+          if (direction === closeDirection && absCurrentTranslate > absSwipeStepTranslate) {
+            // close sheet
+            if (sheet.params.swipeToClose) {
+              sheet.close();
+            } else {
+              // close step
+              $el.addClass('modal-in-swipe-step');
+              $el.trigger('sheet:stepclose');
+              sheet.emit('local::stepClose sheetStepClose', sheet);
+            }
+          }
+          if (direction === closeDirection && absCurrentTranslate <= absSwipeStepTranslate) {
+            // close step
+            $el.addClass('modal-in-swipe-step');
+            $el.trigger('sheet:stepclose');
+            sheet.emit('local::stepClose sheetStepClose', sheet);
+          }
+          return;
+        }
+        if (timeDiff >= 300) {
+          var stepOpened = !$el.hasClass('modal-in-swipe-step');
+          if (!stepOpened) {
+            if (absCurrentTranslate < (absSwipeStepTranslate / 2)) {
+              // open step
+              $el.removeClass('modal-in-swipe-step');
+              $el.trigger('sheet:stepopen');
+              sheet.emit('local::stepOpen sheetStepOpen', sheet);
+            } else if ((absCurrentTranslate - absSwipeStepTranslate) > (sheetElOffsetHeight - absSwipeStepTranslate) / 2) {
+              // close sheet
+              if (sheet.params.swipeToClose) { sheet.close(); }
+            }
+          } else if (stepOpened) {
+            if (absCurrentTranslate > absSwipeStepTranslate + (sheetElOffsetHeight - absSwipeStepTranslate) / 2) {
+              // close sheet
+              if (sheet.params.swipeToClose) { sheet.close(); }
+            } else if (absCurrentTranslate > absSwipeStepTranslate / 2) {
+              // close step
+              $el.addClass('modal-in-swipe-step');
+              $el.trigger('sheet:stepclose');
+              sheet.emit('local::stepClose sheetStepClose', sheet);
+            }
+          }
+        }
+      }
+
+      function setSwipeStep(byResize) {
+        var $swipeStepEl = $el.find('.sheet-modal-swipe-step').eq(0);
+        if (!$swipeStepEl.length) { return; }
+        if ($el.hasClass('sheet-modal-top')) {
+          swipeStepTranslate = -($swipeStepEl.offset().top - $el.offset().top + $swipeStepEl[0].offsetHeight);
+        } else {
+          swipeStepTranslate = $el[0].offsetHeight - ($swipeStepEl.offset().top - $el.offset().top + $swipeStepEl[0].offsetHeight);
+        }
+        $el[0].style.setProperty('--f7-sheet-swipe-step', (swipeStepTranslate + "px"));
+        if (!byResize) {
+          $el.addClass('modal-in-swipe-step');
+        }
+      }
+
+      function onResize() {
+        setSwipeStep(true);
+      }
+
+      var passive = Support.passiveListener ? { passive: true } : false;
+      if (sheet.params.swipeToClose || sheet.params.swipeToStep) {
+        $el.on(app.touchEvents.start, handleTouchStart, passive);
+        app.on('touchmove', handleTouchMove);
+        app.on('touchend:passive', handleTouchEnd);
+        sheet.once('sheetDestroy', function () {
+          $el.off(app.touchEvents.start, handleTouchStart, passive);
+          app.off('touchmove', handleTouchMove);
+          app.off('touchend:passive', handleTouchEnd);
+        });
+      }
+
       sheet.on('sheetOpen', function () {
         if (sheet.params.closeOnEscape) {
           $(document).on('keydown', onKeyDown);
         }
+        if (sheet.params.swipeToStep) {
+          setSwipeStep();
+          app.on('resize', onResize);
+        }
         if (sheet.params.scrollToEl) {
-          scrollToOpen();
+          scrollToElementOnOpen();
         }
       });
       sheet.on('sheetOpened', function () {
@@ -22110,25 +22434,30 @@
         }
       });
       sheet.on('sheetClose', function () {
+        if (sheet.params.swipeToStep) {
+          $el.removeClass('modal-in-swipe-step');
+          app.off('resize', onResize);
+        }
         if (sheet.params.closeOnEscape) {
           $(document).off('keydown', onKeyDown);
         }
         if (sheet.params.scrollToEl) {
-          scrollToClose();
+          scrollToElementOnClose();
         }
         if (sheet.params.closeByOutsideClick || sheet.params.closeByBackdropClick) {
           app.off('click', handleClick);
         }
       });
 
-      Utils.extend(sheet, {
-        app: app,
-        $el: $el,
-        el: $el[0],
-        $backdropEl: $backdropEl,
-        backdropEl: $backdropEl && $backdropEl[0],
-        type: 'sheet',
-      });
+      sheet.stepOpen = function stepOpen() {
+        $el.removeClass('modal-in-swipe-step');
+      };
+      sheet.stepClose = function stepClose() {
+        $el.addClass('modal-in-swipe-step');
+      };
+      sheet.stepToggle = function stepToggle() {
+        $el.toggleClass('modal-in-swipe-step');
+      };
 
       $el[0].f7Modal = sheet;
 
@@ -22151,6 +22480,9 @@
         closeByBackdropClick: true,
         closeByOutsideClick: false,
         closeOnEscape: false,
+        swipeToClose: false,
+        swipeToStep: false,
+        swipeHandler: null,
       },
     },
     static: {
@@ -22164,7 +22496,24 @@
           app: app,
           constructor: Sheet,
           defaultSelector: '.sheet-modal.modal-in',
-        })
+        }),
+        {
+          stepOpen: function stepOpen(sheet) {
+            var sheetInstance = app.sheet.get(sheet);
+            if (sheetInstance && sheetInstance.stepOpen) { return sheetInstance.stepOpen(); }
+            return undefined;
+          },
+          stepClose: function stepClose(sheet) {
+            var sheetInstance = app.sheet.get(sheet);
+            if (sheetInstance && sheetInstance.stepClose) { return sheetInstance.stepClose(); }
+            return undefined;
+          },
+          stepToggle: function stepToggle(sheet) {
+            var sheetInstance = app.sheet.get(sheet);
+            if (sheetInstance && sheetInstance.stepToggle) { return sheetInstance.stepToggle(); }
+            return undefined;
+          },
+        }
       );
     },
     clicks: {
@@ -27258,6 +27607,7 @@
         scaleSteps: 5,
         scaleSubSteps: 0,
         formatScaleLabel: null,
+        limitKnobPosition: app.theme === 'ios',
       };
 
       // Extend defaults with modules params
@@ -27314,6 +27664,7 @@
       var scale = ref.scale;
       var scaleSteps = ref.scaleSteps;
       var scaleSubSteps = ref.scaleSubSteps;
+      var limitKnobPosition = ref.limitKnobPosition;
 
       Utils.extend(range, {
         app: app,
@@ -27333,6 +27684,7 @@
         scale: scale,
         scaleSteps: scaleSteps,
         scaleSubSteps: scaleSubSteps,
+        limitKnobPosition: limitKnobPosition,
       });
 
       if ($inputEl) {
@@ -27420,6 +27772,7 @@
       var $touchedKnobEl;
       var dualValueIndex;
       var valueChangedByTouch;
+      var targetTouchIdentifier;
       function onTouchChange() {
         valueChangedByTouch = true;
       }
@@ -27433,6 +27786,9 @@
         valueChangedByTouch = false;
         touchesStart.x = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
         touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+        if (e.type === 'touchstart') {
+          targetTouchIdentifier = e.targetTouches[0].identifier;
+        }
 
         isTouched = true;
         isScrolling = undefined;
@@ -27473,8 +27829,20 @@
       }
       function handleTouchMove(e) {
         if (!isTouched) { return; }
-        var pageX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
-        var pageY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+        var pageX;
+        var pageY;
+        if (e.type === 'touchmove') {
+          for (var i = 0; i < e.targetTouches.length; i += 1) {
+            if (e.targetTouches[i].identifier === targetTouchIdentifier) {
+              pageX = e.targetTouches[i].pageX;
+              pageY = e.targetTouches[i].pageY;
+            }
+          }
+        } else {
+          pageX = e.pageX;
+          pageY = e.pageY;
+        }
+        if (typeof pageX === 'undefined' && typeof pageY === 'undefined') { return; }
 
         if (typeof isScrolling === 'undefined' && !range.vertical) {
           isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
@@ -27516,7 +27884,14 @@
         }
         range.setValue(newValue, true);
       }
-      function handleTouchEnd() {
+      function handleTouchEnd(e) {
+        if (e.type === 'touchend') {
+          var touchEnded;
+          for (var i = 0; i < e.changedTouches.length; i += 1) {
+            if (e.changedTouches[i].identifier === targetTouchIdentifier) { touchEnded = true; }
+          }
+          if (!touchEnded) { return; }
+        }
         if (!isTouched) {
           if (isScrolling) { $touchedKnobEl.removeClass('range-knob-active-state'); }
           isTouched = false;
@@ -27637,6 +28012,7 @@
       var labels = range.labels;
       var vertical = range.vertical;
       var verticalReversed = range.verticalReversed;
+      var limitKnobPosition = range.limitKnobPosition;
       var knobSize = vertical ? knobHeight : knobWidth;
       var rangeSize = vertical ? rangeHeight : rangeWidth;
       // eslint-disable-next-line
@@ -27648,7 +28024,7 @@
         $barActiveEl.css(( obj = {}, obj[positionProperty] = ((progress[0] * 100) + "%"), obj[vertical ? 'height' : 'width'] = (((progress[1] - progress[0]) * 100) + "%"), obj ));
         knobs.forEach(function ($knobEl, knobIndex) {
           var startPos = rangeSize * progress[knobIndex];
-          if (app.theme === 'ios') {
+          if (limitKnobPosition) {
             var realStartPos = (rangeSize * progress[knobIndex]) - (knobSize / 2);
             if (realStartPos < 0) { startPos = knobSize / 2; }
             if ((realStartPos + knobSize) > rangeSize) { startPos = rangeSize - (knobSize / 2); }
@@ -27661,7 +28037,7 @@
         $barActiveEl.css(vertical ? 'height' : 'width', ((progress$1 * 100) + "%"));
 
         var startPos = rangeSize * progress$1;
-        if (app.theme === 'ios') {
+        if (limitKnobPosition) {
           var realStartPos = (rangeSize * progress$1) - (knobSize / 2);
           if (realStartPos < 0) { startPos = knobSize / 2; }
           if ((realStartPos + knobSize) > rangeSize) { startPos = rangeSize - (knobSize / 2); }
@@ -28727,7 +29103,7 @@
         pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
       }
       var cssClass = ss.params.cssClass;
-      var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"if-not-md\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
+      var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"if-not-md\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
       return pageHtml;
     };
 
@@ -28740,7 +29116,7 @@
         pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
       }
       var cssClass = ss.params.cssClass || '';
-      var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                <div class=\"right\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">" + (ss.params.popupCloseLinkText) + "</span></a>\n                </div>\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
+      var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                <div class=\"right\">\n                  <a class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">" + (ss.params.popupCloseLinkText) + "</span></a>\n                </div>\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
       return popupHtml;
     };
 
@@ -30678,7 +31054,7 @@
         return calendar.params.renderMonthSelector.call(calendar);
       }
 
-      return "\n    <div class=\"calendar-month-selector\">\n      <a href=\"#\" class=\"link icon-only calendar-prev-month-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-month-value\"></span>\n      <a href=\"#\" class=\"link icon-only calendar-next-month-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
+      return "\n    <div class=\"calendar-month-selector\">\n      <a class=\"link icon-only calendar-prev-month-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-month-value\"></span>\n      <a class=\"link icon-only calendar-next-month-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
     };
 
     Calendar.prototype.renderYearSelector = function renderYearSelector () {
@@ -30686,7 +31062,7 @@
       if (calendar.params.renderYearSelector) {
         return calendar.params.renderYearSelector.call(calendar);
       }
-      return "\n    <div class=\"calendar-year-selector\">\n      <a href=\"#\" class=\"link icon-only calendar-prev-year-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-year-value\"></span>\n      <a href=\"#\" class=\"link icon-only calendar-next-year-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
+      return "\n    <div class=\"calendar-year-selector\">\n      <a class=\"link icon-only calendar-prev-year-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-year-value\"></span>\n      <a class=\"link icon-only calendar-next-year-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
     };
 
     Calendar.prototype.renderHeader = function renderHeader () {
@@ -30703,7 +31079,7 @@
       if (calendar.params.renderFooter) {
         return calendar.params.renderFooter.call(calendar);
       }
-      return ("\n    <div class=\"calendar-footer\">\n      <a href=\"#\" class=\"" + (app.theme === 'md' ? 'button' : 'link') + " calendar-close sheet-close popover-close\">" + (calendar.params.toolbarCloseText) + "</a>\n    </div>\n  ").trim();
+      return ("\n    <div class=\"calendar-footer\">\n      <a class=\"" + (app.theme === 'md' ? 'button' : 'link') + " calendar-close sheet-close popover-close\">" + (calendar.params.toolbarCloseText) + "</a>\n    </div>\n  ").trim();
     };
 
     Calendar.prototype.renderToolbar = function renderToolbar () {
@@ -31726,7 +32102,7 @@
     Picker.prototype.renderToolbar = function renderToolbar () {
       var picker = this;
       if (picker.params.renderToolbar) { return picker.params.renderToolbar.call(picker, picker); }
-      return ("\n      <div class=\"toolbar toolbar-top no-shadow\">\n        <div class=\"toolbar-inner\">\n          <div class=\"left\"></div>\n          <div class=\"right\">\n            <a href=\"#\" class=\"link sheet-close popover-close\">" + (picker.params.toolbarCloseText) + "</a>\n          </div>\n        </div>\n      </div>\n    ").trim();
+      return ("\n      <div class=\"toolbar toolbar-top no-shadow\">\n        <div class=\"toolbar-inner\">\n          <div class=\"left\"></div>\n          <div class=\"right\">\n            <a class=\"link sheet-close popover-close\">" + (picker.params.toolbarCloseText) + "</a>\n          </div>\n        </div>\n      </div>\n    ").trim();
     };
     // eslint-disable-next-line
     Picker.prototype.renderColumn = function renderColumn (col, onlyItems) {
@@ -33045,16 +33421,20 @@
             .find(("tbody tr td:nth-child(" + (columnIndex + 1) + ") input"))
             .prop('checked', checked)
             .trigger('change', { sentByF7DataTable: true });
+          $inputEl.prop('indeterminate', false);
         } else {
           if (columnIndex === 0) {
             $inputEl.parents('tr')[checked ? 'addClass' : 'removeClass']('data-table-row-selected');
           }
-
+          var checkedRows = $el.find(("tbody .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]:checked")).length;
+          var totalRows = $el.find('tbody tr').length;
+          var $headCheckboxEl = $el.find(("thead .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]"));
           if (!checked) {
-            $el.find(("thead .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]")).prop('checked', false);
-          } else if ($el.find(("tbody .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]:checked")).length === $el.find('tbody tr').length) {
-            $el.find(("thead .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]")).prop('checked', true).trigger('change', { sentByF7DataTable: true });
+            $headCheckboxEl.prop('checked', false);
+          } else if (checkedRows === totalRows) {
+            $headCheckboxEl.prop('checked', true).trigger('change', { sentByF7DataTable: true });
           }
+          $headCheckboxEl.prop('indeterminate', checkedRows > 0 && checkedRows < totalRows);
         }
         table.checkSelectedHeader();
       }
@@ -41659,7 +42039,7 @@
       var backLinkText = (pb.app.theme === 'ios' || pb.app.theme === 'aurora') && pb.params.backLinkText ? pb.params.backLinkText : '';
 
       var isPopup = pb.params.type !== 'page';
-      var navbarHtml = ("\n      <div class=\"navbar\">\n        <div class=\"navbar-inner sliding\">\n          <div class=\"left\">\n            <a href=\"#\" class=\"link " + (isPopup ? 'popup-close' : '') + " " + (!backLinkText ? 'icon-only' : '') + " " + (!isPopup ? 'back' : '') + "\" " + (isPopup ? 'data-popup=".photo-browser-popup"' : '') + ">\n              <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n              " + (backLinkText ? ("<span>" + backLinkText + "</span>") : '') + "\n            </a>\n          </div>\n          <div class=\"title\">\n            <span class=\"photo-browser-current\"></span>\n            <span class=\"photo-browser-of\">" + (pb.params.navbarOfText) + "</span>\n            <span class=\"photo-browser-total\"></span>\n          </div>\n          <div class=\"right\"></div>\n        </div>\n      </div>\n    ").trim();
+      var navbarHtml = ("\n      <div class=\"navbar\">\n        <div class=\"navbar-inner sliding\">\n          <div class=\"left\">\n            <a class=\"link " + (isPopup ? 'popup-close' : '') + " " + (!backLinkText ? 'icon-only' : '') + " " + (!isPopup ? 'back' : '') + "\" " + (isPopup ? 'data-popup=".photo-browser-popup"' : '') + ">\n              <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n              " + (backLinkText ? ("<span>" + backLinkText + "</span>") : '') + "\n            </a>\n          </div>\n          <div class=\"title\">\n            <span class=\"photo-browser-current\"></span>\n            <span class=\"photo-browser-of\">" + (pb.params.navbarOfText) + "</span>\n            <span class=\"photo-browser-total\"></span>\n          </div>\n          <div class=\"right\"></div>\n        </div>\n      </div>\n    ").trim();
       return navbarHtml;
     };
 
@@ -41670,7 +42050,7 @@
       var iconsColor = pb.params.iconsColor;
       if (!pb.params.iconsColor && pb.params.theme === 'dark') { iconsColor = 'white'; }
 
-      var toolbarHtml = ("\n      <div class=\"toolbar toolbar-bottom tabbar\">\n        <div class=\"toolbar-inner\">\n          <a href=\"#\" class=\"link photo-browser-prev\">\n            <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n          <a href=\"#\" class=\"link photo-browser-next\">\n            <i class=\"icon icon-forward " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n        </div>\n      </div>\n    ").trim();
+      var toolbarHtml = ("\n      <div class=\"toolbar toolbar-bottom tabbar\">\n        <div class=\"toolbar-inner\">\n          <a class=\"link photo-browser-prev\">\n            <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n          <a class=\"link photo-browser-next\">\n            <i class=\"icon icon-forward " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n        </div>\n      </div>\n    ").trim();
       return toolbarHtml;
     };
 
@@ -42631,10 +43011,43 @@
       }
 
       function onKeyDown(e) {
-        if (ac.opened && e.keyCode === 13) {
+        if (!ac.opened) { return; }
+        if (e.keyCode === 27) {
+          // ESC
           e.preventDefault();
           ac.$inputEl.blur();
+          return;
         }
+        if (e.keyCode === 13) {
+          // Enter
+          var $selectedItemLabel = ac.$dropdownEl.find('.autocomplete-dropdown-selected label');
+          if ($selectedItemLabel.length) {
+            e.preventDefault();
+            $selectedItemLabel.trigger('click');
+            ac.$inputEl.blur();
+            return;
+          }
+          if (ac.params.typeahead) {
+            e.preventDefault();
+            ac.$inputEl.blur();
+          }
+          return;
+        }
+        if (e.keyCode !== 40 && e.keyCode !== 38) { return; }
+        e.preventDefault();
+        var $selectedItem = ac.$dropdownEl.find('.autocomplete-dropdown-selected');
+        var $newItem;
+        if ($selectedItem.length) {
+          $newItem = $selectedItem[e.keyCode === 40 ? 'next' : 'prev']('li');
+          if (!$newItem.length) {
+            $newItem = ac.$dropdownEl.find('li').eq(e.keyCode === 40 ? 0 : ac.$dropdownEl.find('li').length - 1);
+          }
+        } else {
+          $newItem = ac.$dropdownEl.find('li').eq(e.keyCode === 40 ? 0 : ac.$dropdownEl.find('li').length - 1);
+        }
+        if ($newItem.hasClass('autocomplete-dropdown-placeholder')) { return; }
+        $selectedItem.removeClass('autocomplete-dropdown-selected');
+        $newItem.addClass('autocomplete-dropdown-selected');
       }
       function onDropdownClick() {
         var $clickedEl = $(this);
@@ -42667,9 +43080,7 @@
           } else {
             ac.$inputEl.on('blur', onInputBlur);
           }
-          if (ac.params.typeahead) {
-            ac.$inputEl.on('keydown', onKeyDown);
-          }
+          ac.$inputEl.on('keydown', onKeyDown);
         }
       };
       ac.detachEvents = function attachEvents() {
@@ -42684,9 +43095,7 @@
           } else {
             ac.$inputEl.off('blur', onInputBlur);
           }
-          if (ac.params.typeahead) {
-            ac.$inputEl.off('keydown', onKeyDown);
-          }
+          ac.$inputEl.off('keydown', onKeyDown);
         }
       };
       ac.attachDropdownEvents = function attachDropdownEvents() {
@@ -42891,9 +43300,9 @@
       var inPopup = ac.params.openIn === 'popup';
       var navbarLeft = inPopup
         ? ("\n        " + (ac.params.preloader ? ("\n        <div class=\"left\">\n          " + (ac.renderPreloader()) + "\n        </div>\n        ") : '') + "\n      ")
-        : ("\n        <div class=\"left sliding\">\n          <a href=\"#\" class=\"link back\">\n            <i class=\"icon icon-back\"></i>\n            <span class=\"if-not-md\">" + (ac.params.pageBackLinkText) + "</span>\n          </a>\n        </div>\n      ");
+        : ("\n        <div class=\"left sliding\">\n          <a class=\"link back\">\n            <i class=\"icon icon-back\"></i>\n            <span class=\"if-not-md\">" + (ac.params.pageBackLinkText) + "</span>\n          </a>\n        </div>\n      ");
       var navbarRight = inPopup
-        ? ("\n        <div class=\"right\">\n          <a href=\"#\" class=\"link popup-close\" data-popup=\".autocomplete-popup\">\n            " + (ac.params.popupCloseLinkText) + "\n          </a>\n        </div>\n      ")
+        ? ("\n        <div class=\"right\">\n          <a class=\"link popup-close\" data-popup=\".autocomplete-popup\">\n            " + (ac.params.popupCloseLinkText) + "\n          </a>\n        </div>\n      ")
         : ("\n        " + (ac.params.preloader ? ("\n        <div class=\"right\">\n          " + (ac.renderPreloader()) + "\n        </div>\n        ") : '') + "\n      ");
       var navbarHtml = ("\n      <div class=\"navbar " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n        <div class=\"navbar-inner " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n          " + navbarLeft + "\n          " + (pageTitle ? ("<div class=\"title sliding\">" + pageTitle + "</div>") : '') + "\n          " + navbarRight + "\n          <div class=\"subnavbar sliding\">" + (ac.renderSearchbar()) + "</div>\n        </div>\n      </div>\n    ").trim();
       return navbarHtml;
@@ -45378,7 +45787,7 @@
       var navbarTitleText = ref.navbarTitleText;
       var navbarBackLinkText = ref.navbarBackLinkText;
       var navbarCloseText = ref.navbarCloseText;
-      return ("\n    <div class=\"navbar\">\n      <div class=\"navbar-inner sliding\">\n        " + (openIn === 'page' ? ("\n        <div class=\"left\">\n          <a class=\"link back\" href=\"#\">\n            <i class=\"icon icon-back\"></i>\n            <span class=\"if-not-md\">" + navbarBackLinkText + "</span>\n          </a>\n        </div>\n        ") : '') + "\n        <div class=\"title\">" + navbarTitleText + "</div>\n        " + (openIn !== 'page' ? ("\n        <div class=\"right\">\n          <a href=\"#\" class=\"link popup-close\" data-popup=\".color-picker-popup\">" + navbarCloseText + "</a>\n        </div>\n        ") : '') + "\n      </div>\n    </div>\n  ").trim();
+      return ("\n    <div class=\"navbar\">\n      <div class=\"navbar-inner sliding\">\n        " + (openIn === 'page' ? ("\n        <div class=\"left\">\n          <a class=\"link back\">\n            <i class=\"icon icon-back\"></i>\n            <span class=\"if-not-md\">" + navbarBackLinkText + "</span>\n          </a>\n        </div>\n        ") : '') + "\n        <div class=\"title\">" + navbarTitleText + "</div>\n        " + (openIn !== 'page' ? ("\n        <div class=\"right\">\n          <a class=\"link popup-close\" data-popup=\".color-picker-popup\">" + navbarCloseText + "</a>\n        </div>\n        ") : '') + "\n      </div>\n    </div>\n  ").trim();
     };
 
     ColorPicker.prototype.renderToolbar = function renderToolbar () {
@@ -45386,7 +45795,7 @@
       if (self.params.renderToolbar) {
         return self.params.renderToolbar.call(self, self);
       }
-      return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        <div class=\"left\"></div>\n        <div class=\"right\">\n          <a href=\"#\" class=\"link sheet-close popover-close\" data-sheet=\".color-picker-sheet-modal\" data-popover=\".color-picker-popover\">" + (self.params.toolbarCloseText) + "</a>\n        </div>\n      </div>\n    </div>\n  ").trim();
+      return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        <div class=\"left\"></div>\n        <div class=\"right\">\n          <a class=\"link sheet-close popover-close\" data-sheet=\".color-picker-sheet-modal\" data-popover=\".color-picker-popover\">" + (self.params.toolbarCloseText) + "</a>\n        </div>\n      </div>\n    </div>\n  ").trim();
     };
 
     ColorPicker.prototype.renderInline = function renderInline () {
@@ -45858,6 +46267,75 @@
     },
   };
 
+  var Treeview = {
+    open: function open(itemEl) {
+      var app = this;
+      var $itemEl = $(itemEl).eq(0);
+      if (!$itemEl.length) { return; }
+      $itemEl.addClass('treeview-item-opened');
+      $itemEl.trigger('treeview:open');
+      app.emit('treeviewOpen', $itemEl[0]);
+      function done() {
+        $itemEl[0].f7TreeviewChildrenLoaded = true;
+        $itemEl.find('.treeview-toggle').removeClass('treeview-toggle-hidden');
+        $itemEl.find('.treeview-preloader').remove();
+      }
+
+      if ($itemEl.hasClass('treeview-load-children') && !$itemEl[0].f7TreeviewChildrenLoaded) {
+        $itemEl.trigger('treeview:loadchildren', done);
+        app.emit('treeviewLoadChildren', $itemEl[0], done);
+        $itemEl.find('.treeview-toggle').addClass('treeview-toggle-hidden');
+        $itemEl.find('.treeview-item-root').prepend(("<div class=\"preloader treeview-preloader\">" + (Utils[((app.theme) + "PreloaderContent")]) + "</div>"));
+      }
+    },
+    close: function close(itemEl) {
+      var app = this;
+      var $itemEl = $(itemEl).eq(0);
+      if (!$itemEl.length) { return; }
+      $itemEl.removeClass('treeview-item-opened');
+      $itemEl.trigger('treeview:close');
+      app.emit('treeviewClose', $itemEl[0]);
+    },
+    toggle: function toggle(itemEl) {
+      var app = this;
+      var $itemEl = $(itemEl).eq(0);
+      if (!$itemEl.length) { return; }
+      var wasOpened = $itemEl.hasClass('treeview-item-opened');
+      app.treeview[wasOpened ? 'close' : 'open']($itemEl);
+    },
+  };
+
+  var Treeview$1 = {
+    name: 'treeview',
+    create: function create() {
+      var app = this;
+      Utils.extend(app, {
+        treeview: {
+          open: Treeview.open.bind(app),
+          close: Treeview.close.bind(app),
+          toggle: Treeview.toggle.bind(app),
+        },
+      });
+    },
+    clicks: {
+      '.treeview-toggle': function toggle($clickedEl, clickedData, e) {
+        var app = this;
+        if ($clickedEl.parents('.treeview-item-toggle').length) { return; }
+        var $treeviewItemEl = $clickedEl.parents('.treeview-item').eq(0);
+        if (!$treeviewItemEl.length) { return; }
+        e.preventF7Router = true;
+        app.treeview.toggle($treeviewItemEl[0]);
+      },
+      '.treeview-item-toggle': function toggle($clickedEl, clickedData, e) {
+        var app = this;
+        var $treeviewItemEl = $clickedEl.closest('.treeview-item').eq(0);
+        if (!$treeviewItemEl.length) { return; }
+        e.preventF7Router = true;
+        app.treeview.toggle($treeviewItemEl[0]);
+      },
+    },
+  };
+
   var ViAd = /*@__PURE__*/(function (Framework7Class) {
     function ViAd(app, params) {
       if ( params === void 0 ) params = {};
@@ -46117,7 +46595,7 @@
   };
 
   /**
-   * Framework7 4.3.1
+   * Framework7 4.4.0
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -46125,7 +46603,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: April 29, 2019
+   * Released on: May 13, 2019
    */
 
   // Install Core Modules & Components
@@ -46202,6 +46680,7 @@
     Skeleton,
     Menu$1,
     ColorPicker$1,
+    Treeview$1,
     Vi,
     Elevation,
     Typography
@@ -48377,6 +48856,7 @@
     props: Object.assign({
       id: [String, Number],
       checked: Boolean,
+      indeterminate: Boolean,
       name: [Number, String],
       value: [Number, String, Boolean],
       disabled: Boolean,
@@ -48451,6 +48931,30 @@
       Utils$1.bindMethods(this, ['onChange']);
     },
 
+    mounted: function mounted() {
+      var self = this;
+      var ref = self.$refs;
+      var inputEl = ref.inputEl;
+      var ref$1 = self.props;
+      var indeterminate = ref$1.indeterminate;
+
+      if (indeterminate && inputEl) {
+        inputEl.indeterminate = true;
+      }
+    },
+
+    updated: function updated() {
+      var self = this;
+      var ref = self.$refs;
+      var inputEl = ref.inputEl;
+      var ref$1 = self.props;
+      var indeterminate = ref$1.indeterminate;
+
+      if (inputEl) {
+        inputEl.indeterminate = indeterminate;
+      }
+    },
+
     methods: {
       onChange: function onChange(event) {
         this.dispatchEvent('change', event);
@@ -48511,10 +49015,7 @@
       if (deleteable) {
         deleteEl = _h('a', {
           ref: 'deleteEl',
-          class: 'chip-delete',
-          attrs: {
-            href: '#'
-          }
+          class: 'chip-delete'
         });
       }
 
@@ -49301,6 +49802,10 @@
         default: 0
       },
       formatScaleLabel: Function,
+      limitKnobPosition: {
+        type: Boolean,
+        default: undefined
+      },
       name: String,
       input: Boolean,
       inputId: String,
@@ -49370,6 +49875,7 @@
         var scaleSteps = props.scaleSteps;
         var scaleSubSteps = props.scaleSubSteps;
         var formatScaleLabel = props.formatScaleLabel;
+        var limitKnobPosition = props.limitKnobPosition;
         self.f7Range = f7.range.create(Utils$1.noUndefinedProps({
           el: self.$refs.el,
           value: value,
@@ -49386,6 +49892,7 @@
           scaleSteps: scaleSteps,
           scaleSubSteps: scaleSubSteps,
           formatScaleLabel: formatScaleLabel,
+          limitKnobPosition: limitKnobPosition,
           on: {
             change: function change(range, val) {
               self.dispatchEvent('range:change rangeChange', val);
@@ -51104,6 +51611,7 @@
       checkbox: Boolean,
       checked: Boolean,
       defaultChecked: Boolean,
+      indeterminate: Boolean,
       radio: Boolean,
       name: String,
       value: [String, Number, Array],
@@ -51329,9 +51837,28 @@
     mounted: function mounted() {
       var self = this;
       var ref = self.$refs;
-      var innerEl = ref.innerEl;
       var el = ref.el;
+      var inputEl = ref.inputEl;
+      var ref$1 = self.props;
+      var indeterminate = ref$1.indeterminate;
+
+      if (indeterminate && inputEl) {
+        inputEl.indeterminate = true;
+      }
+
       el.addEventListener('click', self.onClick);
+    },
+
+    updated: function updated() {
+      var self = this;
+      var ref = self.$refs;
+      var inputEl = ref.inputEl;
+      var ref$1 = self.props;
+      var indeterminate = ref$1.indeterminate;
+
+      if (inputEl) {
+        inputEl.indeterminate = indeterminate;
+      }
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -51430,6 +51957,7 @@
       radio: Boolean,
       checked: Boolean,
       defaultChecked: Boolean,
+      indeterminate: Boolean,
       name: String,
       value: [String, Number, Array],
       readonly: Boolean,
@@ -51489,6 +52017,7 @@
       var radio = props.radio;
       var checked = props.checked;
       var defaultChecked = props.defaultChecked;
+      var indeterminate = props.indeterminate;
       var name = props.name;
       var value = props.value;
       var readonly = props.readonly;
@@ -51524,6 +52053,7 @@
             checkbox: checkbox,
             checked: checked,
             defaultChecked: defaultChecked,
+            indeterminate: indeterminate,
             radio: radio,
             name: name,
             value: value,
@@ -51534,8 +52064,8 @@
         }, [this.$slots['content-start'], this.$slots['content'], this.$slots['content-end'], this.$slots['media'], this.$slots['inner-start'], this.$slots['inner'], this.$slots['inner-end'], this.$slots['after-start'], this.$slots['after'], this.$slots['after-end'], this.$slots['header'], this.$slots['footer'], this.$slots['before-title'], this.$slots['title'], this.$slots['after-title'], this.$slots['subtitle'], this.$slots['text'], swipeout || accordionItem ? null : self.$slots.default]);
 
         if (link || href || accordionItem || smartSelect) {
-          var linkAttrs = Utils$1.extend({
-            href: link === true || accordionItem || smartSelect ? '#' : link || href,
+          var linkAttrs = Object.assign({
+            href: link === true ? '' : link || href,
             target: target
           }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
           var linkClasses = Utils$1.classNames({
@@ -55451,7 +55981,12 @@
       backdrop: Boolean,
       backdropEl: [String, Object, window.HTMLElement],
       closeByBackdropClick: Boolean,
-      closeOnEscape: Boolean
+      closeOnEscape: Boolean,
+      swipeToClose: {
+        type: [Boolean, String],
+        default: false
+      },
+      swipeHandler: [String, Object, window.HTMLElement]
     }, Mixins.colorProps),
 
     render: function render() {
@@ -55506,6 +56041,8 @@
       var backdropEl = props.backdropEl;
       var animate = props.animate;
       var closeOnEscape = props.closeOnEscape;
+      var swipeToClose = props.swipeToClose;
+      var swipeHandler = props.swipeHandler;
       var popupParams = {
         el: el
       };
@@ -55515,6 +56052,8 @@
         if (typeof self.$options.propsData.animate !== 'undefined') { popupParams.animate = animate; }
         if (typeof self.$options.propsData.backdrop !== 'undefined') { popupParams.backdrop = backdrop; }
         if (typeof self.$options.propsData.backdropEl !== 'undefined') { popupParams.backdropEl = backdropEl; }
+        if (typeof self.$options.propsData.swipeToClose !== 'undefined') { popupParams.swipeToClose = swipeToClose; }
+        if (typeof self.$options.propsData.swipeHandler !== 'undefined') { popupParams.swipeHandler = swipeHandler; }
       }
       self.$f7ready(function () {
         self.f7Popup = self.$f7.popup.create(popupParams);
@@ -56329,7 +56868,10 @@
       backdropEl: [String, Object, window.HTMLElement],
       closeByBackdropClick: Boolean,
       closeByOutsideClick: Boolean,
-      closeOnEscape: Boolean
+      closeOnEscape: Boolean,
+      swipeToClose: Boolean,
+      swipeToStep: Boolean,
+      swipeHandler: [String, Object, window.HTMLElement]
     }, Mixins.colorProps),
 
     render: function render() {
@@ -56400,7 +56942,7 @@
     },
 
     created: function created() {
-      Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+      Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onStepOpen', 'onStepClose']);
     },
 
     mounted: function mounted() {
@@ -56411,6 +56953,8 @@
       el.addEventListener('sheet:opened', self.onOpened);
       el.addEventListener('sheet:close', self.onClose);
       el.addEventListener('sheet:closed', self.onClosed);
+      el.addEventListener('sheet:stepopen', self.onStepOpen);
+      el.addEventListener('sheet:stepclose', self.onStepClose);
       var props = self.props;
       var opened = props.opened;
       var backdrop = props.backdrop;
@@ -56418,6 +56962,9 @@
       var closeByBackdropClick = props.closeByBackdropClick;
       var closeByOutsideClick = props.closeByOutsideClick;
       var closeOnEscape = props.closeOnEscape;
+      var swipeToClose = props.swipeToClose;
+      var swipeToStep = props.swipeToStep;
+      var swipeHandler = props.swipeHandler;
       var sheetParams = {
         el: self.$refs.el
       };
@@ -56427,6 +56974,9 @@
         if (typeof self.$options.propsData.closeByBackdropClick !== 'undefined') { sheetParams.closeByBackdropClick = closeByBackdropClick; }
         if (typeof self.$options.propsData.closeByOutsideClick !== 'undefined') { sheetParams.closeByOutsideClick = closeByOutsideClick; }
         if (typeof self.$options.propsData.closeOnEscape !== 'undefined') { sheetParams.closeOnEscape = closeOnEscape; }
+        if (typeof self.$options.propsData.swipeToClose !== 'undefined') { sheetParams.swipeToClose = swipeToClose; }
+        if (typeof self.$options.propsData.swipeToStep !== 'undefined') { sheetParams.swipeToStep = swipeToStep; }
+        if (typeof self.$options.propsData.swipeHandler !== 'undefined') { sheetParams.swipeHandler = swipeHandler; }
       }
       self.$f7ready(function () {
         self.f7Sheet = self.$f7.sheet.create(sheetParams);
@@ -56442,13 +56992,23 @@
       if (self.f7Sheet) { self.f7Sheet.destroy(); }
       var el = self.$refs.el;
       if (!el) { return; }
-      el.removeEventListener('popup:open', self.onOpen);
-      el.removeEventListener('popup:opened', self.onOpened);
-      el.removeEventListener('popup:close', self.onClose);
-      el.removeEventListener('popup:closed', self.onClosed);
+      el.removeEventListener('sheet:open', self.onOpen);
+      el.removeEventListener('sheet:opened', self.onOpened);
+      el.removeEventListener('sheet:close', self.onClose);
+      el.removeEventListener('sheet:closed', self.onClosed);
+      el.removeEventListener('sheet:stepopen', self.onStepOpen);
+      el.removeEventListener('sheet:stepclose', self.onStepClose);
     },
 
     methods: {
+      onStepOpen: function onStepOpen(event) {
+        this.dispatchEvent('sheet:stepopen sheetStepOpen', event);
+      },
+
+      onStepClose: function onStepClose(event) {
+        this.dispatchEvent('sheet:stepclose sheetStepClose', event);
+      },
+
       onOpen: function onOpen(event) {
         this.dispatchEvent('sheet:open sheetOpen', event);
       },
@@ -57651,6 +58211,216 @@
     }
   };
 
+  var f7TreeviewItem = {
+    props: Object.assign({
+      id: [String, Number],
+      toggle: {
+        type: Boolean,
+        default: undefined
+      },
+      itemToggle: Boolean,
+      selectable: Boolean,
+      selected: Boolean,
+      opened: Boolean,
+      label: String,
+      loadChildren: Boolean,
+      link: {
+        type: [Boolean, String],
+        default: undefined
+      }
+    }, Mixins.colorProps, Mixins.linkActionsProps, Mixins.linkRouterProps, Mixins.linkIconProps),
+    name: 'f7-treeview-item',
+
+    render: function render() {
+      var _h = this.$createElement;
+      var self = this;
+      var props = self.props;
+      var id = props.id;
+      var style = props.style;
+      var toggle = props.toggle;
+      var label = props.label;
+      var icon = props.icon;
+      var iconMaterial = props.iconMaterial;
+      var iconIon = props.iconIon;
+      var iconFa = props.iconFa;
+      var iconF7 = props.iconF7;
+      var iconMd = props.iconMd;
+      var iconIos = props.iconIos;
+      var iconAurora = props.iconAurora;
+      var iconSize = props.iconSize;
+      var iconColor = props.iconColor;
+      var link = props.link;
+      var slots = self.$slots;
+      var hasChildren = slots.default && slots.default.length || slots.children && slots.children.length || slots['children-start'] && slots['children-start'].length;
+      var needToggle = typeof toggle === 'undefined' ? hasChildren : toggle;
+      var iconEl;
+
+      if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
+        iconEl = _h(f7Icon, {
+          attrs: {
+            material: iconMaterial,
+            f7: iconF7,
+            fa: iconFa,
+            ion: iconIon,
+            icon: icon,
+            md: iconMd,
+            ios: iconIos,
+            aurora: iconAurora,
+            color: iconColor,
+            size: iconSize
+          }
+        });
+      }
+
+      var TreeviewRootTag = link || link === '' ? 'a' : 'div';
+      return _h('div', {
+        ref: 'el',
+        style: style,
+        class: self.classes,
+        attrs: {
+          id: id
+        }
+      }, [_h(TreeviewRootTag, __vueComponentTransformJSXProps(Object.assign({
+        ref: 'rootEl',
+        class: self.itemRootClasses
+      }, self.itemRootAttrs)), [this.$slots['root-start'], needToggle && _h('div', {
+        class: 'treeview-toggle'
+      }), _h('div', {
+        class: 'treeview-item-content'
+      }, [this.$slots['content-start'], iconEl, this.$slots['media'], _h('div', {
+        class: 'treeview-item-label'
+      }, [this.$slots['label-start'], label, this.$slots['label']]), this.$slots['content'], this.$slots['content-end']]), this.$slots['root'], this.$slots['root-end']]), hasChildren && _h('div', {
+        class: 'treeview-item-children'
+      }, [this.$slots['children-start'], this.$slots['default'], this.$slots['children']])]);
+    },
+
+    computed: {
+      itemRootAttrs: function itemRootAttrs() {
+        var self = this;
+        var props = self.props;
+        var link = props.link;
+        var href = link;
+        if (link === true) { href = '#'; }
+        if (link === false) { href = undefined; }
+        return Utils$1.extend({
+          href: href
+        }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
+      },
+
+      itemRootClasses: function itemRootClasses() {
+        var self = this;
+        var props = self.props;
+        var selectable = props.selectable;
+        var selected = props.selected;
+        var itemToggle = props.itemToggle;
+        return Utils$1.classNames('treeview-item-root', {
+          'treeview-item-selectable': selectable,
+          'treeview-item-selected': selected,
+          'treeview-item-toggle': itemToggle
+        }, Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
+      },
+
+      classes: function classes() {
+        var self = this;
+        var props = self.props;
+        var className = props.className;
+        var opened = props.opened;
+        var loadChildren = props.loadChildren;
+        return Utils$1.classNames(className, 'treeview-item', {
+          'treeview-item-opened': opened,
+          'treeview-load-children': loadChildren
+        }, Mixins.colorClasses(props));
+      },
+
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    },
+
+    created: function created() {
+      Utils$1.bindMethods(this, ['onClick', 'onOpen', 'onClose', 'onLoadChildren']);
+    },
+
+    mounted: function mounted() {
+      var self = this;
+      var ref = self.$refs;
+      var el = ref.el;
+      var rootEl = ref.rootEl;
+      rootEl.addEventListener('click', self.onClick);
+      el.addEventListener('treeview:open', self.onOpen);
+      el.addEventListener('treeview:close', self.onClose);
+      el.addEventListener('treeview:loadchildren', self.onLoadChildren);
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      var self = this;
+      var ref = self.$refs;
+      var el = ref.el;
+      var rootEl = ref.rootEl;
+      rootEl.removeEventListener('click', self.onClick);
+      el.removeEventListener('treeview:open', self.onOpen);
+      el.removeEventListener('treeview:close', self.onClose);
+      el.removeEventListener('treeview:loadchildren', self.onLoadChildren);
+    },
+
+    methods: {
+      onClick: function onClick(event) {
+        this.dispatchEvent('click', event);
+      },
+
+      onOpen: function onOpen(event) {
+        this.dispatchEvent('treeview:open treeviewOpen', event);
+      },
+
+      onClose: function onClose(event) {
+        this.dispatchEvent('treeview:close treeviewClose', event);
+      },
+
+      onLoadChildren: function onLoadChildren(event) {
+        this.dispatchEvent('treeview:loadchildren treeviewLoadChildren', event, event.detail);
+      },
+
+      dispatchEvent: function dispatchEvent(events) {
+        var args = [], len = arguments.length - 1;
+        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+      }
+
+    }
+  };
+
+  var f7Treeview = {
+    props: Object.assign({
+      id: [String, Number]
+    }, Mixins.colorProps),
+    name: 'f7-treeview',
+
+    render: function render() {
+      var _h = this.$createElement;
+      var props = this.props;
+      var className = props.className;
+      var id = props.id;
+      var style = props.style;
+      var classes = Utils$1.classNames(className, 'treeview', Mixins.colorClasses(props));
+      return _h('div', {
+        style: style,
+        class: classes,
+        attrs: {
+          id: id
+        }
+      }, [this.$slots['default']]);
+    },
+
+    computed: {
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    }
+  };
+
   var f7View = {
     name: 'f7-view',
     props: Object.assign({
@@ -58247,7 +59017,7 @@
   };
 
   /**
-   * Framework7 Vue 4.3.1
+   * Framework7 Vue 4.4.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -58255,7 +59025,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: April 29, 2019
+   * Released on: May 13, 2019
    */
 
   //
@@ -58366,7 +59136,7 @@
   var __vue_script__ = script;
 
   /* template */
-  var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","sliding":false}},[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-aurora":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',{attrs:{"sliding":""}},[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search","icon-aurora":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-nav-title-large',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":"","disable-button":!this.$theme.aurora}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/appbar/","title":"Appbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards-expandable/","title":"Cards Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/color-picker/","title":"Color Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/menu/","title":"Menu"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/skeleton/","title":"Skeleton (Ghost) Elements"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aurora Desktop Theme","external":"","link":"./index.html?theme=aurora"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Master-Detail (Split View)","link":"/master-detail/"}})],1)],1)};
+  var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","sliding":false}},[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-aurora":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',{attrs:{"sliding":""}},[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search","icon-aurora":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-nav-title-large',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":"","disable-button":!this.$theme.aurora}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/appbar/","title":"Appbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards-expandable/","title":"Cards Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/color-picker/","title":"Color Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/menu/","title":"Menu"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/skeleton/","title":"Skeleton (Ghost) Elements"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/treeview/","title":"Treeview"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aurora Desktop Theme","external":"","link":"./index.html?theme=aurora"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Master-Detail (Split View)","link":"/master-detail/"}})],1)],1)};
   var __vue_staticRenderFns__ = [];
 
     /* style */
@@ -59596,13 +60366,39 @@
       f7ListItem: f7ListItem,
       f7Checkbox: f7Checkbox,
     },
+    data: function () {
+      return {
+        movies: ['Movie 1'],
+      };
+    },
+    methods: {
+      onMovieChange: function (e) {
+        var self = this;
+        var value = e.target.value;
+        var movies = self.movies;
+        if (e.target.checked) {
+          movies.push(value);
+        } else {
+          movies.splice(movies.indexOf(value), 1);
+        }
+      },
+      onMoviesChange: function (e) {
+        var self = this;
+        var movies = self.movies;
+        if (movies.length === 1 || movies.length === 0) {
+          self.movies = ['Movie 1', 'Movie 2'];
+        } else if (movies.length === 2) {
+          self.movies = [];
+        }
+      },
+    }
   };
 
   /* script */
   var __vue_script__$e = script$e;
 
   /* template */
-  var __vue_render__$e = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Checkbox","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Inline")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem "),_c('f7-checkbox',{attrs:{"name":"checkbox-1"}}),_vm._v(" ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi "),_c('f7-checkbox',{attrs:{"name":"checkbox-2","checked":""}}),_vm._v(" ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Checkbox Group")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"checkbox":"","title":"Books","name":"demo-checkbox","checked":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Movies","name":"demo-checkbox"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Food","name":"demo-checkbox"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Drinks","name":"demo-checkbox"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With Media Lists")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"checkbox":"","checked":"","name":"demo-media-checkbox","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1)],1)};
+  var __vue_render__$e = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Checkbox","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Inline")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem "),_c('f7-checkbox',{attrs:{"name":"checkbox-1"}}),_vm._v(" ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi "),_c('f7-checkbox',{attrs:{"name":"checkbox-2","checked":""}}),_vm._v(" ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Checkbox Group")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"checkbox":"","title":"Books","name":"demo-checkbox","checked":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Movies","name":"demo-checkbox"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Food","name":"demo-checkbox"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Drinks","name":"demo-checkbox"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Indeterminate State")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"checkbox":"","title":"Movies","name":"demo-checkbox","checked":_vm.movies.length === 2,"indeterminate":_vm.movies.length === 1},on:{"change":_vm.onMoviesChange}},[_c('ul',{attrs:{"slot":"root"},slot:"root"},[_c('f7-list-item',{attrs:{"checkbox":"","title":"Movie 1","name":"demo-checkbox","value":"Movie 1","checked":_vm.movies.indexOf('Movie 1') >= 0},on:{"change":_vm.onMovieChange}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Movie 2","name":"demo-checkbox","value":"Movie 2","checked":_vm.movies.indexOf('Movie 2') >= 0},on:{"change":_vm.onMovieChange}})],1)])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With Media Lists")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"checkbox":"","checked":"","name":"demo-media-checkbox","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1)],1)};
   var __vue_staticRenderFns__$e = [];
 
     /* style */
@@ -61732,6 +62528,7 @@
       f7Navbar: f7Navbar,
       f7Page: f7Page,
       f7Popup: f7Popup,
+      f7BlockTitle: f7BlockTitle,
       f7Block: f7Block,
       f7NavRight: f7NavRight,
       f7Link: f7Link,
@@ -61766,7 +62563,7 @@
   var __vue_script__$H = script$H;
 
   /* template */
-  var __vue_render__$H = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Popup","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Popup is a modal window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called \"Temporary Views\".")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","popup-open":".demo-popup"}},[_vm._v("Open Popup")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.popupOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.createPopup}},[_vm._v("Create Dynamic Popup")])],1)]),_vm._v(" "),_c('f7-popup',{staticClass:"demo-popup",attrs:{"opened":_vm.popupOpened},on:{"popup:closed":function($event){_vm.popupOpened = false;}}},[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Popup Title"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes popup. You can put here anything, even independent view with its own navigation. Also not, that by default popup looks a bit different on iPhone/iPod and iPad, on iPhone it is fullscreen.")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero.")])])],1)],1)],1)};
+  var __vue_render__$H = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Popup","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Popup is a modal window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called \"Temporary Views\".")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","popup-open":".demo-popup"}},[_vm._v("Open Popup")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.popupOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.createPopup}},[_vm._v("Create Dynamic Popup")])],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe To Close")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Popup can be closed with swipe to top or bottom:")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","popup-open":".demo-popup-swipe"}},[_vm._v("Swipe To Close")])],1),_vm._v(" "),_c('p',[_vm._v("Or it can be closed with swipe on special swipe handler and, for example, only to bottom:")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","popup-open":".demo-popup-swipe-handler"}},[_vm._v("With Swipe Handler")])],1)]),_vm._v(" "),_c('f7-popup',{staticClass:"demo-popup",attrs:{"opened":_vm.popupOpened},on:{"popup:closed":function($event){_vm.popupOpened = false;}}},[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Popup Title"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes popup. You can put here anything, even independent view with its own navigation. Also not, that by default popup looks a bit different on iPhone/iPod and iPad, on iPhone it is fullscreen.")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero.")])])],1)],1),_vm._v(" "),_c('f7-popup',{staticClass:"demo-popup-swipe",attrs:{"swipe-to-close":""}},[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Swipe To Close"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('div',{staticClass:"display-flex justify-content-center align-items-center",staticStyle:{"height":"100%"}},[_c('p',[_vm._v("Swipe me up or down")])])],1)],1),_vm._v(" "),_c('f7-popup',{staticClass:"demo-popup-swipe-handler",attrs:{"swipe-to-close":"to-bottom","swipe-handler":".swipe-handler"}},[_c('f7-page',[_c('div',{staticClass:"swipe-handler",attrs:{"slot":"fixed"},slot:"fixed"}),_vm._v(" "),_c('f7-block-title',{attrs:{"large":""}},[_vm._v("Hello!")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero.")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$H = [];
 
     /* style */
@@ -62108,7 +62905,7 @@
   var __vue_script__$M = script$M;
 
   /* template */
-  var __vue_render__$M = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Radio","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Inline")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem "),_c('f7-radio',{attrs:{"name":"demo-radio-inline"}}),_vm._v(" ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi "),_c('f7-radio',{attrs:{"name":"demo-radio-inline","checked":""}}),_vm._v(" ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Radio Group")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"radio":"","checked":"","title":"Books","name":"demo-radio","checked":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","title":"Movies","name":"demo-radio"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","title":"Food","name":"demo-radio"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","title":"Drinks","name":"demo-radio"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With Media Lists")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"radio":"","checked":"","name":"demo-media-radio","value":"1","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","name":"demo-media-radio","value":"2","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","name":"demo-media-radio","value":"3","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","name":"demo-media-radio","value":"4","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1)],1)};
+  var __vue_render__$M = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Radio","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Inline")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem "),_c('f7-radio',{attrs:{"name":"demo-radio-inline"}}),_vm._v(" ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi "),_c('f7-radio',{attrs:{"name":"demo-radio-inline","checked":""}}),_vm._v(" ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Radio Group")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"radio":"","title":"Books","name":"demo-radio","checked":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","title":"Movies","name":"demo-radio"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","title":"Food","name":"demo-radio"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","title":"Drinks","name":"demo-radio"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With Media Lists")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"radio":"","checked":"","name":"demo-media-radio","value":"1","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","name":"demo-media-radio","value":"2","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","name":"demo-media-radio","value":"3","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","name":"demo-media-radio","value":"4","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1)],1)};
   var __vue_staticRenderFns__$M = [];
 
     /* style */
@@ -62297,10 +63094,13 @@
       f7Sheet: f7Sheet,
       f7PageContent: f7PageContent,
       f7Toolbar: f7Toolbar,
+      f7BlockTitle: f7BlockTitle,
       f7Block: f7Block,
       f7Button: f7Button,
       f7Link: f7Link,
       f7Row: f7Row,
+      f7List: f7List,
+      f7ListItem: f7ListItem,
     },
     data: function data() {
       return {
@@ -62308,6 +63108,10 @@
       };
     },
     methods: {
+      toggleSwipeStep: function toggleSwipeStep() {
+        var self = this;
+        self.$f7.sheet.stepToggle('.demo-sheet-swipe-to-step');
+      },
       createSheet: function createSheet() {
         var self = this;
         var $ = self.$$;
@@ -62339,7 +63143,7 @@
   var __vue_script__$Q = script$Q;
 
   /* template */
-  var __vue_render__$Q = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Sheet Modal","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Sheet Modals slide up from the bottom of the screen to reveal more content. Such modals allow to create custom overlays with custom content.")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":"","sheet-open":".demo-sheet"}},[_vm._v("Open Sheet")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.createSheet}},[_vm._v("Create Dynamic Sheet")])],1),_vm._v(" "),_c('p',[_c('f7-button',{staticClass:"col",attrs:{"fill":"","sheet-open":".demo-sheet-top"}},[_vm._v("Top Sheet")])],1),_vm._v(" "),_c('p',[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":function($event){_vm.sheetOpened = true;}}},[_vm._v("Open Via Prop Change")])],1)],1),_vm._v(" "),_c('f7-sheet',{staticClass:"demo-sheet",attrs:{"opened":_vm.sheetOpened},on:{"sheet:closed":function($event){_vm.sheetOpened = false;}}},[_c('f7-toolbar',[_c('div',{staticClass:"left"}),_vm._v(" "),_c('div',{staticClass:"right"},[_c('f7-link',{attrs:{"sheet-close":""}},[_vm._v("Close")])],1)]),_vm._v(" "),_c('f7-page-content',[_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique quis facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam. Consequatur, nisi, enim.")]),_vm._v(" "),_c('p',[_vm._v("Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.")]),_vm._v(" "),_c('p',[_vm._v("Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?")]),_vm._v(" "),_c('p',[_vm._v("Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt praesentium velit ipsa illo iusto.")])])],1)],1),_vm._v(" "),_c('f7-sheet',{staticClass:"demo-sheet-top",attrs:{"top":""}},[_c('f7-toolbar',{attrs:{"bottom":""}},[_c('div',{staticClass:"left"}),_vm._v(" "),_c('div',{staticClass:"right"},[_c('f7-link',{attrs:{"sheet-close":""}},[_vm._v("Close")])],1)]),_vm._v(" "),_c('f7-page-content',[_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique quis facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam. Consequatur, nisi, enim.")]),_vm._v(" "),_c('p',[_vm._v("Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.")]),_vm._v(" "),_c('p',[_vm._v("Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?")]),_vm._v(" "),_c('p',[_vm._v("Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt praesentium velit ipsa illo iusto.")])])],1)],1)],1)};
+  var __vue_render__$Q = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Sheet Modal","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Sheet Modals slide up from the bottom of the screen to reveal more content. Such modals allow to create custom overlays with custom content.")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":"","sheet-open":".demo-sheet"}},[_vm._v("Open Sheet")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.createSheet}},[_vm._v("Create Dynamic Sheet")])],1),_vm._v(" "),_c('p',[_c('f7-button',{staticClass:"col",attrs:{"fill":"","sheet-open":".demo-sheet-top"}},[_vm._v("Top Sheet")])],1),_vm._v(" "),_c('p',[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":function($event){_vm.sheetOpened = true;}}},[_vm._v("Open Via Prop Change")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipeable Sheet")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Sheet modal can be closed with swipe to top (for top Sheet) or bottom (for default Bottom sheet):")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","sheet-open":".demo-sheet-swipe-to-close"}},[_vm._v("Swipe To Close")])],1),_vm._v(" "),_c('p',[_vm._v("Also there is swipe-step that can be set on Sheet modal to expand it with swipe:")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","sheet-open":".demo-sheet-swipe-to-step"}},[_vm._v("Swipe To Step")])],1)]),_vm._v(" "),_c('f7-sheet',{staticClass:"demo-sheet",attrs:{"opened":_vm.sheetOpened},on:{"sheet:closed":function($event){_vm.sheetOpened = false;}}},[_c('f7-toolbar',[_c('div',{staticClass:"left"}),_vm._v(" "),_c('div',{staticClass:"right"},[_c('f7-link',{attrs:{"sheet-close":""}},[_vm._v("Close")])],1)]),_vm._v(" "),_c('f7-page-content',[_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique quis facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam. Consequatur, nisi, enim.")]),_vm._v(" "),_c('p',[_vm._v("Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.")]),_vm._v(" "),_c('p',[_vm._v("Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?")]),_vm._v(" "),_c('p',[_vm._v("Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt praesentium velit ipsa illo iusto.")])])],1)],1),_vm._v(" "),_c('f7-sheet',{staticClass:"demo-sheet-top",attrs:{"top":""}},[_c('f7-toolbar',{attrs:{"bottom":""}},[_c('div',{staticClass:"left"}),_vm._v(" "),_c('div',{staticClass:"right"},[_c('f7-link',{attrs:{"sheet-close":""}},[_vm._v("Close")])],1)]),_vm._v(" "),_c('f7-page-content',[_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique quis facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam. Consequatur, nisi, enim.")]),_vm._v(" "),_c('p',[_vm._v("Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.")]),_vm._v(" "),_c('p',[_vm._v("Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?")]),_vm._v(" "),_c('p',[_vm._v("Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt praesentium velit ipsa illo iusto.")])])],1)],1),_vm._v(" "),_c('f7-sheet',{staticClass:"demo-sheet-swipe-to-close",staticStyle:{"height":"auto"},attrs:{"swipe-to-close":"","backdrop":""}},[_c('div',{staticClass:"swipe-handler"}),_vm._v(" "),_c('f7-page-content',[_c('f7-block-title',{attrs:{"large":""}},[_vm._v("Hello!")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.")]),_vm._v(" "),_c('p',[_vm._v("Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?")])])],1)],1),_vm._v(" "),_c('f7-sheet',{staticClass:"demo-sheet-swipe-to-step",staticStyle:{"height":"auto"},attrs:{"swipe-to-close":"","swipe-to-step":"","backdrop":""}},[_c('div',{staticClass:"swipe-handler",on:{"click":_vm.toggleSwipeStep}}),_vm._v(" "),_c('div',{staticClass:"sheet-modal-swipe-step"},[_c('div',{staticClass:"display-flex padding justify-content-space-between align-items-center"},[_c('div',{staticStyle:{"font-size":"18px"}},[_c('b',[_vm._v("Total:")])]),_vm._v(" "),_c('div',{staticStyle:{"font-size":"22px"}},[_c('b',[_vm._v("$500")])])]),_vm._v(" "),_c('div',{staticClass:"padding-horizontal padding-bottom"},[_c('f7-button',{attrs:{"large":"","fill":""}},[_vm._v("Make Payment")]),_vm._v(" "),_c('div',{staticClass:"margin-top text-align-center"},[_vm._v("Swipe up for more details")])],1)]),_vm._v(" "),_c('f7-block-title',{staticClass:"margin-top",attrs:{"medium":""}},[_vm._v("Your order:")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines":""}},[_c('f7-list-item',{attrs:{"title":"Item 1"}},[_c('b',{staticClass:"text-color-black",attrs:{"slot":"after"},slot:"after"},[_vm._v("$200")])]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}},[_c('b',{staticClass:"text-color-black",attrs:{"slot":"after"},slot:"after"},[_vm._v("$180")])]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Delivery"}},[_c('b',{staticClass:"text-color-black",attrs:{"slot":"after"},slot:"after"},[_vm._v("$120")])])],1)],1)],1)};
   var __vue_staticRenderFns__$Q = [];
 
     /* style */
@@ -64527,6 +65331,89 @@
 
   var script$1x = {
     components: {
+      f7Page: f7Page, f7Navbar: f7Navbar, f7BlockTitle: f7BlockTitle, f7Block: f7Block, f7Treeview: f7Treeview, f7TreeviewItem: f7TreeviewItem, f7Checkbox: f7Checkbox
+    },
+    data: function () {
+      return {
+        checkboxes: {
+          images: {
+            'avatar.png': false,
+            'background.jpg': false,
+          },
+          documents: {
+            'cv.docx': false,
+            'info.docx': false,
+          },
+          '.gitignore': false,
+          '.index.html': false,
+        },
+        selectedItem: null,
+        loadedChildren: [],
+      };
+    },
+    methods: {
+      toggleSelectable: function (e, item) {
+        var self = this;
+        var $ = self.$$;
+        if ($(e.target).is('.treeview-toggle')) { return; }
+        self.selectedItem = item;
+      },
+      loadChildren: function (e, done) {
+        var self = this;
+        setTimeout(function () {
+          // call done() to hide preloader
+          done();
+          self.loadedChildren = [
+            {
+              name: 'John Doe',
+            },
+            {
+              name: 'Jane Doe',
+            },
+            {
+              name: 'Calvin Johnson',
+            } ];
+        }, 2000);
+      },
+    },
+  };
+
+  /* script */
+  var __vue_script__$1x = script$1x;
+
+  /* template */
+  var __vue_render__$1x = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Treeview","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Basic tree view")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"label":"Item 1"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Item 1"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 1"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 2"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Item 2"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 1"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 2"}})],1)],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Item 2"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Item 1"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 1"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 2"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Item 2"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 1"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 2"}})],1)],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Item 3"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With icons")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"label":"images","icon-f7":"folder_fill"}},[_c('f7-treeview-item',{attrs:{"label":"avatar.png","icon-f7":"images_fill"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"background.jpg","icon-f7":"images_fill"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"documents","icon-f7":"folder_fill"}},[_c('f7-treeview-item',{attrs:{"label":"cv.docx","icon-f7":"document_text_fill"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"info.docx","icon-f7":"document_text_fill"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":".gitignore","icon-f7":"logo_github"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"index.html","icon-f7":"document_text_fill"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With checkboxes")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"label":"images","icon-f7":"folder_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":Object.values(_vm.checkboxes.images).indexOf(false) < 0,"indeterminate":Object.values(_vm.checkboxes.images).indexOf(false) >= 0 && Object.values(_vm.checkboxes.images).indexOf(true) >= 0},on:{"change":function (e) { return Object.keys(_vm.checkboxes.images).forEach(function (k) { return _vm.checkboxes.images[k] = e.target.checked; }); }},slot:"content-start"}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"avatar.png","icon-f7":"images_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes.images['avatar.png']},on:{"change":function($event){_vm.checkboxes.images['avatar.png'] = $event.target.checked;}},slot:"content-start"})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"background.jpg","icon-f7":"images_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes.images['background.jpg']},on:{"change":function($event){_vm.checkboxes.images['background.jpg'] = $event.target.checked;}},slot:"content-start"})],1)],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"documents","icon-f7":"folder_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":Object.values(_vm.checkboxes.documents).indexOf(false) < 0,"indeterminate":Object.values(_vm.checkboxes.documents).indexOf(false) >= 0 && Object.values(_vm.checkboxes.documents).indexOf(true) >= 0},on:{"change":function (e) { return Object.keys(_vm.checkboxes.documents).forEach(function (k) { return _vm.checkboxes.documents[k] = e.target.checked; }); }},slot:"content-start"}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"cv.docx","icon-f7":"document_text_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes.documents['cv.docx']},on:{"change":function($event){_vm.checkboxes.documents['cv.docx'] = $event.target.checked;}},slot:"content-start"})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"info.docx","icon-f7":"document_text_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes.documents['info.docx']},on:{"change":function($event){_vm.checkboxes.documents['info.docx'] = $event.target.checked;}},slot:"content-start"})],1)],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":".gitignore","icon-f7":"logo_github"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes['.gitignore']},on:{"change":function($event){_vm.checkboxes['.gitignore'] = $event.target.checked;}},slot:"content-start"})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"index.html","icon-f7":"document_text_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes['index.html']},on:{"change":function($event){_vm.checkboxes['index.html'] = $event.target.checked;}},slot:"content-start"})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Whole item as toggle")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"item-toggle":"","label":"images","icon-f7":"folder_fill"}},[_c('f7-treeview-item',{attrs:{"label":"avatar.png","icon-f7":"images_fill"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"background.jpg","icon-f7":"images_fill"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"item-toggle":"","label":"documents","icon-f7":"folder_fill"}},[_c('f7-treeview-item',{attrs:{"label":"cv.docx","icon-f7":"document_text_fill"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"info.docx","icon-f7":"document_text_fill"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":".gitignore","icon-f7":"logo_github"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"index.html","icon-f7":"document_text_fill"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Selectable")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'images',"label":"images","icon-f7":"folder_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'images')}}},[_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'avatar.png',"label":"avatar.png","icon-f7":"images_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'avatar.png')}}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'background.jpg',"label":"background.jpg","icon-f7":"images_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'background.jpg')}}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'documents',"label":"documents","icon-f7":"folder_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'documents')}}},[_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'cv.docx',"label":"cv.docx","icon-f7":"document_text_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'cv.docx')}}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'info.docx',"label":"info.docx","icon-f7":"document_text_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'info.docx')}}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === '.gitignore',"label":".gitignore","icon-f7":"logo_github"},on:{"click":function($event){return _vm.toggleSelectable($event, '.gitignore')}}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'index.html',"label":"index.html","icon-f7":"document_text_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'index.html')}}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Preload children")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"toggle":"","load-children":"","icon-f7":"persons","label":"Users"},on:{"treeview:loadchildren":_vm.loadChildren}},_vm._l((_vm.loadedChildren),function(item,index){return _c('f7-treeview-item',{key:index,attrs:{"icon-f7":"person","label":item.name}})}),1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With links")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"icon-f7":"data_fill","item-toggle":"","label":"Modals"}},[_c('f7-treeview-item',{attrs:{"link":"/popup/","icon-f7":"link","label":"Popup"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"link":"/dialog/","icon-f7":"link","label":"Dialog"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"link":"/action-sheet/","icon-f7":"link","label":"Action Sheet"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"icon-f7":"data_fill","item-toggle":"","label":"Navigation Bars"}},[_c('f7-treeview-item',{attrs:{"link":"/navbar/","icon-f7":"link","label":"Navbar"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"link":"/toolbar-tabbar/","icon-f7":"link","label":"Toolbar & Tabbar"}})],1)],1)],1)],1)};
+  var __vue_staticRenderFns__$1x = [];
+
+    /* style */
+    var __vue_inject_styles__$1x = undefined;
+    /* scoped */
+    var __vue_scope_id__$1x = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$1x = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$1x = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var Treeview$2 = normalizeComponent_1(
+      { render: __vue_render__$1x, staticRenderFns: __vue_staticRenderFns__$1x },
+      __vue_inject_styles__$1x,
+      __vue_script__$1x,
+      __vue_scope_id__$1x,
+      __vue_is_functional_template__$1x,
+      __vue_module_identifier__$1x,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$1y = {
+    components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Subnavbar: f7Subnavbar, f7Searchbar: f7Searchbar, f7Block: f7Block,
     },
     data: function data() {
@@ -64559,20 +65446,20 @@
   };
 
   /* script */
-  var __vue_script__$1x = script$1x;
+  var __vue_script__$1y = script$1y;
 
   /* template */
-  var __vue_render__$1x = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Virtual List","back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".virtual-list","search-item":"li","search-in":".item-title","disable-button":!_vm.$theme.aurora}})],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.")]),_vm._v(" "),_c('p',[_vm._v("Here is the example of virtual list with 10 000 items:")])]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-found",attrs:{"medial-list":"","virtual-list":"","virtual-list-params":{ items: _vm.items, searchAll: _vm.searchAll, renderExternal: _vm.renderExternal, height: _vm.$theme.ios ? 63 : (_vm.$theme.md ? 73 : 46)}}},[_c('ul',_vm._l((_vm.vlData.items),function(item,index){return _c('f7-list-item',{key:index,style:(("top: " + (_vm.vlData.topPosition) + "px")),attrs:{"media-item":"","link":"#","title":item.title,"subtitle":item.subtitle,"virtual-list-index":_vm.items.indexOf(item)}})}),1)])],1)};
-  var __vue_staticRenderFns__$1x = [];
+  var __vue_render__$1y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Virtual List","back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".virtual-list","search-item":"li","search-in":".item-title","disable-button":!_vm.$theme.aurora}})],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.")]),_vm._v(" "),_c('p',[_vm._v("Here is the example of virtual list with 10 000 items:")])]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-found",attrs:{"medial-list":"","virtual-list":"","virtual-list-params":{ items: _vm.items, searchAll: _vm.searchAll, renderExternal: _vm.renderExternal, height: _vm.$theme.ios ? 63 : (_vm.$theme.md ? 73 : 46)}}},[_c('ul',_vm._l((_vm.vlData.items),function(item,index){return _c('f7-list-item',{key:index,style:(("top: " + (_vm.vlData.topPosition) + "px")),attrs:{"media-item":"","link":"#","title":item.title,"subtitle":item.subtitle,"virtual-list-index":_vm.items.indexOf(item)}})}),1)])],1)};
+  var __vue_staticRenderFns__$1y = [];
 
     /* style */
-    var __vue_inject_styles__$1x = undefined;
+    var __vue_inject_styles__$1y = undefined;
     /* scoped */
-    var __vue_scope_id__$1x = undefined;
+    var __vue_scope_id__$1y = undefined;
     /* module identifier */
-    var __vue_module_identifier__$1x = undefined;
+    var __vue_module_identifier__$1y = undefined;
     /* functional template */
-    var __vue_is_functional_template__$1x = false;
+    var __vue_is_functional_template__$1y = false;
     /* style inject */
     
     /* style inject SSR */
@@ -64580,12 +65467,12 @@
 
     
     var VirtualList$2 = normalizeComponent_1(
-      { render: __vue_render__$1x, staticRenderFns: __vue_staticRenderFns__$1x },
-      __vue_inject_styles__$1x,
-      __vue_script__$1x,
-      __vue_scope_id__$1x,
-      __vue_is_functional_template__$1x,
-      __vue_module_identifier__$1x,
+      { render: __vue_render__$1y, staticRenderFns: __vue_staticRenderFns__$1y },
+      __vue_inject_styles__$1y,
+      __vue_script__$1y,
+      __vue_scope_id__$1y,
+      __vue_is_functional_template__$1y,
+      __vue_module_identifier__$1y,
       undefined,
       undefined
     );
@@ -64598,7 +65485,7 @@
     var globalCustomColor = '';
     var globalCustomProperties = '';
 
-    var script$1y = {
+    var script$1z = {
       components: {
         f7Navbar: f7Navbar,
         f7Page: f7Page,
@@ -64707,52 +65594,12 @@
     };
 
   /* script */
-  var __vue_script__$1y = script$1y;
-
-  /* template */
-  var __vue_render__$1y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"Color Themes","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Layout Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with 2 main layout themes: Light (default) and Dark:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"bg-color-white demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('light')}}},[(_vm.theme === 'light')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"bg-color-black demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('dark')}}},[(_vm.theme === 'dark')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Navigation Bars Style")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Switch navigation bars to filled style:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-empty",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('empty')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'empty')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-fill",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('fill')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'fill')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Default Color Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with "+_vm._s(_vm.colors.length)+" color themes set.")]),_vm._v(" "),_c('f7-row',[_vm._l((_vm.colors),function(color,index){return _c('f7-col',{key:index,attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}},[_c('f7-button',{staticClass:"demo-color-picker-button",attrs:{"fill":"","round":"","small":"","color":color},on:{"click":function($event){return _vm.setColorTheme(color)}}},[_vm._v(_vm._s(color))])],1)}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}})],2)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Custom Color Theme")]),_vm._v(" "),_c('f7-list',[_c('f7-list-input',{attrs:{"type":"colorpicker","label":"HEX Color","placeholder":"e.g. #ff0000","readonly":"","value":{hex: _vm.customColor || _vm.themeColor},"color-picker-params":{
-          targetEl: '#color-theme-picker-color',
-        }},on:{"colorpicker:change":function (value) { return _vm.setCustomColor(value.hex); }}},[_c('div',{staticStyle:{"width":"28px","height":"28px","border-radius":"4px","background":"var(--f7-theme-color)"},attrs:{"slot":"media","id":"color-theme-picker-color"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Generated CSS Variables")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[(_vm.customProperties)?[_c('p',[_vm._v("Add this code block to your custom stylesheet:")]),_vm._v(" "),_c('pre',{staticStyle:{"overflow":"auto","-webkit-overflow-scrolling":"touch","margin":"0","font-size":"12px"}},[_vm._v(_vm._s(_vm.customProperties))])]:_c('p',[_vm._v("Change navigation bars styles or specify custom color to see custom CSS variables here")])],2)],1)};
-  var __vue_staticRenderFns__$1y = [];
-
-    /* style */
-    var __vue_inject_styles__$1y = undefined;
-    /* scoped */
-    var __vue_scope_id__$1y = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$1y = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$1y = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var ColorThemes = normalizeComponent_1(
-      { render: __vue_render__$1y, staticRenderFns: __vue_staticRenderFns__$1y },
-      __vue_inject_styles__$1y,
-      __vue_script__$1y,
-      __vue_scope_id__$1y,
-      __vue_is_functional_template__$1y,
-      __vue_module_identifier__$1y,
-      undefined,
-      undefined
-    );
-
-  //
-
-  var script$1z = {
-    components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block
-    },
-  };
-
-  /* script */
   var __vue_script__$1z = script$1z;
 
   /* template */
-  var __vue_render__$1z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Modals","backLink":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to pages, Framework7 router allows to load modal components:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Popup","link":"popup/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Action Sheet","link":"actions/"}})],1)],1)};
+  var __vue_render__$1z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"Color Themes","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Layout Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with 2 main layout themes: Light (default) and Dark:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"bg-color-white demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('light')}}},[(_vm.theme === 'light')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"bg-color-black demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('dark')}}},[(_vm.theme === 'dark')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Navigation Bars Style")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Switch navigation bars to filled style:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-empty",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('empty')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'empty')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-fill",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('fill')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'fill')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Default Color Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with "+_vm._s(_vm.colors.length)+" color themes set.")]),_vm._v(" "),_c('f7-row',[_vm._l((_vm.colors),function(color,index){return _c('f7-col',{key:index,attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}},[_c('f7-button',{staticClass:"demo-color-picker-button",attrs:{"fill":"","round":"","small":"","color":color},on:{"click":function($event){return _vm.setColorTheme(color)}}},[_vm._v(_vm._s(color))])],1)}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}})],2)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Custom Color Theme")]),_vm._v(" "),_c('f7-list',[_c('f7-list-input',{attrs:{"type":"colorpicker","label":"HEX Color","placeholder":"e.g. #ff0000","readonly":"","value":{hex: _vm.customColor || _vm.themeColor},"color-picker-params":{
+          targetEl: '#color-theme-picker-color',
+        }},on:{"colorpicker:change":function (value) { return _vm.setCustomColor(value.hex); }}},[_c('div',{staticStyle:{"width":"28px","height":"28px","border-radius":"4px","background":"var(--f7-theme-color)"},attrs:{"slot":"media","id":"color-theme-picker-color"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Generated CSS Variables")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[(_vm.customProperties)?[_c('p',[_vm._v("Add this code block to your custom stylesheet:")]),_vm._v(" "),_c('pre',{staticStyle:{"overflow":"auto","-webkit-overflow-scrolling":"touch","margin":"0","font-size":"12px"}},[_vm._v(_vm._s(_vm.customProperties))])]:_c('p',[_vm._v("Change navigation bars styles or specify custom color to see custom CSS variables here")])],2)],1)};
   var __vue_staticRenderFns__$1z = [];
 
     /* style */
@@ -64769,7 +65616,7 @@
     
 
     
-    var RoutableModals$1 = normalizeComponent_1(
+    var ColorThemes = normalizeComponent_1(
       { render: __vue_render__$1z, staticRenderFns: __vue_staticRenderFns__$1z },
       __vue_inject_styles__$1z,
       __vue_script__$1z,
@@ -64781,9 +65628,10 @@
     );
 
   //
+
   var script$1A = {
     components: {
-      f7Popup: f7Popup, f7Navbar: f7Navbar, f7NavRight: f7NavRight, f7Link: f7Link, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block
     },
   };
 
@@ -64791,7 +65639,7 @@
   var __vue_script__$1A = script$1A;
 
   /* template */
-  var __vue_render__$1A = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-popup',[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Popup"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This Popup was loaded using route link as standalone component")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit f7amet, consectetur adipiscing elit. Suspendisse faucibus mauris f7leo, eu bibendum neque congue non. Ut leo f7mauris, eleifend eu commodo f7a, egestas ac urna. Maecenas in lacus f7faucibus, viverra ipsum f7pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris f7sollicitudin, venenatis nisi f7sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor f7nibh, suscipit in consequat f7vel, feugiat sed quam. Nam risus f7libero, auctor vel tristique f7ac, malesuada ut ante. Sed f7molestie, est in eleifend f7sagittis, leo tortor ullamcorper f7erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor f7sem, suscipit in iaculis f7id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc f7eros, convallis blandit dui sit f7amet, gravida adipiscing libero.")])])],1)],1)};
+  var __vue_render__$1A = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Modals","backLink":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to pages, Framework7 router allows to load modal components:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Popup","link":"popup/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Action Sheet","link":"actions/"}})],1)],1)};
   var __vue_staticRenderFns__$1A = [];
 
     /* style */
@@ -64808,7 +65656,7 @@
     
 
     
-    var RoutablePopup = normalizeComponent_1(
+    var RoutableModals$1 = normalizeComponent_1(
       { render: __vue_render__$1A, staticRenderFns: __vue_staticRenderFns__$1A },
       __vue_inject_styles__$1A,
       __vue_script__$1A,
@@ -64822,7 +65670,7 @@
   //
   var script$1B = {
     components: {
-      f7Actions: f7Actions, f7ActionsLabel: f7ActionsLabel, f7ActionsGroup: f7ActionsGroup, f7ActionsButton: f7ActionsButton,
+      f7Popup: f7Popup, f7Navbar: f7Navbar, f7NavRight: f7NavRight, f7Link: f7Link, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block,
     },
   };
 
@@ -64830,7 +65678,7 @@
   var __vue_script__$1B = script$1B;
 
   /* template */
-  var __vue_render__$1B = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-actions',[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("This Action Sheet was loaded as standalone component")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1)};
+  var __vue_render__$1B = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-popup',[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Popup"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This Popup was loaded using route link as standalone component")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit f7amet, consectetur adipiscing elit. Suspendisse faucibus mauris f7leo, eu bibendum neque congue non. Ut leo f7mauris, eleifend eu commodo f7a, egestas ac urna. Maecenas in lacus f7faucibus, viverra ipsum f7pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris f7sollicitudin, venenatis nisi f7sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor f7nibh, suscipit in consequat f7vel, feugiat sed quam. Nam risus f7libero, auctor vel tristique f7ac, malesuada ut ante. Sed f7molestie, est in eleifend f7sagittis, leo tortor ullamcorper f7erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor f7sem, suscipit in iaculis f7id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc f7eros, convallis blandit dui sit f7amet, gravida adipiscing libero.")])])],1)],1)};
   var __vue_staticRenderFns__$1B = [];
 
     /* style */
@@ -64847,7 +65695,7 @@
     
 
     
-    var RoutableActions = normalizeComponent_1(
+    var RoutablePopup = normalizeComponent_1(
       { render: __vue_render__$1B, staticRenderFns: __vue_staticRenderFns__$1B },
       __vue_inject_styles__$1B,
       __vue_script__$1B,
@@ -64859,14 +65707,9 @@
     );
 
   //
-
   var script$1C = {
     components: {
-      f7Page: f7Page,
-      f7Navbar: f7Navbar,
-      f7Block: f7Block,
-      f7List: f7List,
-      f7ListItem: f7ListItem,
+      f7Actions: f7Actions, f7ActionsLabel: f7ActionsLabel, f7ActionsGroup: f7ActionsGroup, f7ActionsButton: f7ActionsButton,
     },
   };
 
@@ -64874,7 +65717,7 @@
   var __vue_script__$1C = script$1C;
 
   /* template */
-  var __vue_render__$1C = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Master Detail","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Master-Detail pattern oftenly used on wide enough screens and tablets, and consists of two views. Master - is an area in the UI where you have a list of something. Detail - is the area that shows the relevant information of a selection in the master.")]),_vm._v(" "),_c('p',[_vm._v("To see Master Detail view make sure the window width is larger than 800px.")]),_vm._v(" "),_c('p',[_vm._v("When collapsed (on narrow screen) navigation between such pages will behave as usual routing.")]),_vm._v(" "),_c('p',[_vm._v("Navigation to/from Master-Detail view happens without transition.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/1/"}},[_vm._v("Detail Page 1")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/2/"}},[_vm._v("Detail Page 2")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/3/"}},[_vm._v("Detail Page 3")])],1)],1)};
+  var __vue_render__$1C = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-actions',[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("This Action Sheet was loaded as standalone component")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1)};
   var __vue_staticRenderFns__$1C = [];
 
     /* style */
@@ -64891,7 +65734,7 @@
     
 
     
-    var MasterDetailMaster = normalizeComponent_1(
+    var RoutableActions = normalizeComponent_1(
       { render: __vue_render__$1C, staticRenderFns: __vue_staticRenderFns__$1C },
       __vue_inject_styles__$1C,
       __vue_script__$1C,
@@ -64909,6 +65752,8 @@
       f7Page: f7Page,
       f7Navbar: f7Navbar,
       f7Block: f7Block,
+      f7List: f7List,
+      f7ListItem: f7ListItem,
     },
   };
 
@@ -64916,7 +65761,7 @@
   var __vue_script__$1D = script$1D;
 
   /* template */
-  var __vue_render__$1D = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":("Detail Page " + (_vm.$f7route.params.id)),"back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('b',[_vm._v("Detail Page "+_vm._s(_vm.$f7route.params.id))])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque congue turpis et risus fringilla condimentum. Aliquam vestibulum est tempor, sagittis massa nec, dictum massa. Phasellus non viverra dui, eget aliquam sem. Donec eleifend dolor id arcu ultrices, vel ultrices dolor fringilla. Phasellus feugiat consectetur libero, eget luctus felis rhoncus at. Duis scelerisque ligula sit amet purus congue pulvinar. Proin a risus id nibh fermentum auctor. Vestibulum at sem a risus mollis iaculis. In vestibulum malesuada arcu id consectetur.")])])],1)};
+  var __vue_render__$1D = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Master Detail","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Master-Detail pattern oftenly used on wide enough screens and tablets, and consists of two views. Master - is an area in the UI where you have a list of something. Detail - is the area that shows the relevant information of a selection in the master.")]),_vm._v(" "),_c('p',[_vm._v("To see Master Detail view make sure the window width is larger than 800px.")]),_vm._v(" "),_c('p',[_vm._v("When collapsed (on narrow screen) navigation between such pages will behave as usual routing.")]),_vm._v(" "),_c('p',[_vm._v("Navigation to/from Master-Detail view happens without transition.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/1/"}},[_vm._v("Detail Page 1")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/2/"}},[_vm._v("Detail Page 2")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/3/"}},[_vm._v("Detail Page 3")])],1)],1)};
   var __vue_staticRenderFns__$1D = [];
 
     /* style */
@@ -64933,7 +65778,7 @@
     
 
     
-    var MasterDetailDetail = normalizeComponent_1(
+    var MasterDetailMaster = normalizeComponent_1(
       { render: __vue_render__$1D, staticRenderFns: __vue_staticRenderFns__$1D },
       __vue_inject_styles__$1D,
       __vue_script__$1D,
@@ -64945,6 +65790,7 @@
     );
 
   //
+
   var script$1E = {
     components: {
       f7Page: f7Page,
@@ -64957,7 +65803,7 @@
   var __vue_script__$1E = script$1E;
 
   /* template */
-  var __vue_render__$1E = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Not found","backLink":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Sorry")]),_vm._v(" "),_c('p',[_vm._v("Requested content not found.")])])],1)};
+  var __vue_render__$1E = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":("Detail Page " + (_vm.$f7route.params.id)),"back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('b',[_vm._v("Detail Page "+_vm._s(_vm.$f7route.params.id))])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque congue turpis et risus fringilla condimentum. Aliquam vestibulum est tempor, sagittis massa nec, dictum massa. Phasellus non viverra dui, eget aliquam sem. Donec eleifend dolor id arcu ultrices, vel ultrices dolor fringilla. Phasellus feugiat consectetur libero, eget luctus felis rhoncus at. Duis scelerisque ligula sit amet purus congue pulvinar. Proin a risus id nibh fermentum auctor. Vestibulum at sem a risus mollis iaculis. In vestibulum malesuada arcu id consectetur.")])])],1)};
   var __vue_staticRenderFns__$1E = [];
 
     /* style */
@@ -64974,13 +65820,54 @@
     
 
     
-    var NotFound = normalizeComponent_1(
+    var MasterDetailDetail = normalizeComponent_1(
       { render: __vue_render__$1E, staticRenderFns: __vue_staticRenderFns__$1E },
       __vue_inject_styles__$1E,
       __vue_script__$1E,
       __vue_scope_id__$1E,
       __vue_is_functional_template__$1E,
       __vue_module_identifier__$1E,
+      undefined,
+      undefined
+    );
+
+  //
+  var script$1F = {
+    components: {
+      f7Page: f7Page,
+      f7Navbar: f7Navbar,
+      f7Block: f7Block,
+    },
+  };
+
+  /* script */
+  var __vue_script__$1F = script$1F;
+
+  /* template */
+  var __vue_render__$1F = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Not found","backLink":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Sorry")]),_vm._v(" "),_c('p',[_vm._v("Requested content not found.")])])],1)};
+  var __vue_staticRenderFns__$1F = [];
+
+    /* style */
+    var __vue_inject_styles__$1F = undefined;
+    /* scoped */
+    var __vue_scope_id__$1F = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$1F = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$1F = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var NotFound = normalizeComponent_1(
+      { render: __vue_render__$1F, staticRenderFns: __vue_staticRenderFns__$1F },
+      __vue_inject_styles__$1F,
+      __vue_script__$1F,
+      __vue_scope_id__$1F,
+      __vue_is_functional_template__$1F,
+      __vue_module_identifier__$1F,
       undefined,
       undefined
     );
@@ -65409,6 +66296,10 @@
       component: TimelineHorizontalCalendar,
     },
     {
+      path: '/treeview/',
+      component: Treeview$2,
+    },
+    {
       path: '/virtual-list/',
       component: VirtualList$2,
     },
@@ -65456,7 +66347,7 @@
 
   //
 
-  var script$1F = {
+  var script$1G = {
     components: {
       f7App: f7App,
       f7Panel: f7Panel,
@@ -65493,20 +66384,20 @@
   };
 
   /* script */
-  var __vue_script__$1F = script$1F;
+  var __vue_script__$1G = script$1G;
 
   /* template */
-  var __vue_render__$1F = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-app',{attrs:{"params":_vm.f7Params}},[_c('f7-statusbar'),_vm._v(" "),_c('f7-panel',{attrs:{"left":"","cover":"","resizable":""}},[_c('f7-view',{attrs:{"url":"/panel-left/","links-view":".view-main"}})],1),_vm._v(" "),_c('f7-panel',{attrs:{"right":"","reveal":"","resizable":""}},[_c('f7-view',{attrs:{"url":"/panel-right/"}})],1),_vm._v(" "),_c('f7-view',{staticClass:"safe-areas",attrs:{"url":"/","main":true,"master-detail-breakpoint":800}})],1)};
-  var __vue_staticRenderFns__$1F = [];
+  var __vue_render__$1G = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-app',{attrs:{"params":_vm.f7Params}},[_c('f7-statusbar'),_vm._v(" "),_c('f7-panel',{attrs:{"left":"","cover":"","resizable":""}},[_c('f7-view',{attrs:{"url":"/panel-left/","links-view":".view-main"}})],1),_vm._v(" "),_c('f7-panel',{attrs:{"right":"","reveal":"","resizable":""}},[_c('f7-view',{attrs:{"url":"/panel-right/"}})],1),_vm._v(" "),_c('f7-view',{staticClass:"safe-areas",attrs:{"url":"/","main":true,"master-detail-breakpoint":800}})],1)};
+  var __vue_staticRenderFns__$1G = [];
 
     /* style */
-    var __vue_inject_styles__$1F = undefined;
+    var __vue_inject_styles__$1G = undefined;
     /* scoped */
-    var __vue_scope_id__$1F = undefined;
+    var __vue_scope_id__$1G = undefined;
     /* module identifier */
-    var __vue_module_identifier__$1F = undefined;
+    var __vue_module_identifier__$1G = undefined;
     /* functional template */
-    var __vue_is_functional_template__$1F = false;
+    var __vue_is_functional_template__$1G = false;
     /* style inject */
     
     /* style inject SSR */
@@ -65514,12 +66405,12 @@
 
     
     var App = normalizeComponent_1(
-      { render: __vue_render__$1F, staticRenderFns: __vue_staticRenderFns__$1F },
-      __vue_inject_styles__$1F,
-      __vue_script__$1F,
-      __vue_scope_id__$1F,
-      __vue_is_functional_template__$1F,
-      __vue_module_identifier__$1F,
+      { render: __vue_render__$1G, staticRenderFns: __vue_staticRenderFns__$1G },
+      __vue_inject_styles__$1G,
+      __vue_script__$1G,
+      __vue_scope_id__$1G,
+      __vue_is_functional_template__$1G,
+      __vue_module_identifier__$1G,
       undefined,
       undefined
     );

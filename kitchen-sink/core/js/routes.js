@@ -104,7 +104,7 @@ var routes = [
   },
   {
     path: '/checkbox/',
-    url: './pages/checkbox.html',
+    componentUrl: './pages/checkbox.html',
   },
   {
     path: '/chips/',
@@ -459,6 +459,10 @@ var routes = [
   {
     path: '/tooltip/',
     componentUrl: './pages/tooltip.html',
+  },
+  {
+    path: '/treeview/',
+    componentUrl: './pages/treeview.html',
   },
   {
     path: '/timeline/',
