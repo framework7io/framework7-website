@@ -16,6 +16,10 @@ silver:
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
 -
+  title: HICAPPS - Health Informatics Custom APPs
+  link: https://hicapps.cl/web/
+  imageUrl: "#{cdn}/i/sponsors/hicapps.png"
+-
   title: EduBirdie - Professional Essay Writing Service
   link: https://edubirdie.com/
   imageUrl: "#{cdn}/i/sponsors/birdie.png"
