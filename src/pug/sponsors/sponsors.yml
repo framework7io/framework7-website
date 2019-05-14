@@ -16,6 +16,10 @@ silver:
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
 -
+  title: CyberBrain IT Services
+  link: https://www.cyberbrain.nl/
+  imageUrl: "#{cdn}/i/sponsors/cyberbrain.png"
+-
   title: HICAPPS - Health Informatics Custom APPs
   link: https://hicapps.cl/web/
   imageUrl: "#{cdn}/i/sponsors/hicapps.png"
