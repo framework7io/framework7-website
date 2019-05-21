@@ -1,4 +1,14 @@
 -
+  date: May 21, 2019
+  video: true
+  title: "Get Started with Framework7 in 2019 using CLI Tutorial"
+  url: https://youtu.be/65hfVB49PZU
+  author:
+    name: Timo Ernst
+    url: https://www.timo-ernst.net
+  badges:
+  - v4
+-
   date: February 12, 2019
   video: false
   title: "Migration To Framework7 v4"
