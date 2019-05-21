@@ -1,5 +1,32 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/kidoverse.png"
+  iconRounded: true
+  title: "Kidoverse"
+  author:
+    url: https://kidoverse.app
+    name: Kidoverse
+  links:
+    appstore: https://itunes.apple.com/us/app/kidoverse/id1461503721?mt=8
+    website: https://kidoverse.app
+  description: |
+    Kidoverse - application for young children, where they can learn, play, explore the world around us or just have fun.
+    Kidoverse is based on different "sets":
+    - Educational sets, like Alphabet and Numbers
+    - Cognitive sets: Animals, Vehicles, Fruits, Vegetables, Rainbow Colors
+    - Musical instruments: Piano, Violin, Guitar, Saxophone, Marimba and others
+    - DJ sets: special musical sets where child can feel like a little DJ
+    The collection of sets is constantly being replenished.
+    New sets every month!
+  screenshots:
+  - "#{cdn}/i/showcase/kidoverse1.png"
+  - "#{cdn}/i/showcase/kidoverse2.png"
+  - "#{cdn}/i/showcase/kidoverse3.png"
+  - "#{cdn}/i/showcase/kidoverse4.png"
+  - "#{cdn}/i/showcase/kidoverse5.png"
+  - "#{cdn}/i/showcase/kidoverse6.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/vetcalculators.png"
   iconRounded: true
   title: "Vetcalculators"

@@ -3,6 +3,10 @@ platinum:
 gold:
 silver:
 -
+  title: Thorium Builder - full visual Framework7 app builder
+  link: https://www.thoriumbuilder.com/
+  imageUrl: "#{cdn}/i/sponsors/thorium.png"
+-
   title: AppValley
   link: https://appvalley.vip/
   imageUrl: "#{cdn}/i/sponsors/appvalley.jpg"
@@ -15,6 +19,10 @@ silver:
   link: https://www.securcom.me/
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
+-
+  title: Kidoverse - App for kids to learn, play, create and explore
+  link: https://kidoverse.app/
+  imageUrl: "#{cdn}/i/sponsors/kidoverse.png"
 -
   title: CyberBrain IT Services
   link: https://www.cyberbrain.nl/
