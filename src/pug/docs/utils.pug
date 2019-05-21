@@ -240,6 +240,31 @@ block content
 
       app.utils.id('xxxx-xxxx', 'abcd') // -> aabc-ccda
 
+    h3 #[code preloaderContent()]
+    p There are methods to return theme-related (iOS, MD or Aurora) content of <a href="preloader.html#preloader-layout">Preloader</a> element. This method can be useful if you create preloaders dynamically.
+    .method-wrap
+      p
+        span.method app.utils.iosPreloaderContent()
+        span - returns required preloader inner content (HTML string) for iOS theme
+    .method-wrap
+      p
+        span.method app.utils.mdPreloaderContent()
+        span - returns required preloader inner content (HTML string) for MD theme
+    .method-wrap
+      p
+        span.method app.utils.auroraPreloaderContent()
+        span - returns required preloader inner content (HTML string) for Aurora theme
+    :code(lang="js")
+      // call method dynamically based on current app theme
+      var preloaderContent = app.utils[app.theme + 'PreloaderContent']();
+
+      // create required preloader content
+      var myPreloader = '<div class="preloader">' + preloaderContent + '</div>';
+
+      // add it somewhere
+      $('.something').append(myPreloader);
+
+
     h3 #[code colorHexToRgb()]
     .method-wrap
       p
@@ -261,13 +286,13 @@ block content
       ul.method-parameters
         li
           span.parameter R
-          |  - <span class="parameter-type">number</span> - red value
+          |  - <span class="parameter-type">number</span> - red value (0 - 255)
         li
           span.parameter G
-          |  - <span class="parameter-type">number</span> - green value
+          |  - <span class="parameter-type">number</span> - green value (0 - 255)
         li
           span.parameter B
-          |  - <span class="parameter-type">number</span> - blue value
+          |  - <span class="parameter-type">number</span> - blue value (0 - 255)
       p.method-returns returns HEX color string
     :code(lang="js")
       app.utils.colorHexToRgb(255, 0, 0) // -> '#ff0000'
@@ -280,13 +305,13 @@ block content
       ul.method-parameters
         li
           span.parameter R
-          |  - <span class="parameter-type">number</span> - red value
+          |  - <span class="parameter-type">number</span> - red value (0 - 255)
         li
           span.parameter G
-          |  - <span class="parameter-type">number</span> - green value
+          |  - <span class="parameter-type">number</span> - green value (0 - 255)
         li
           span.parameter B
-          |  - <span class="parameter-type">number</span> - blue value
+          |  - <span class="parameter-type">number</span> - blue value (0 - 255)
       p.method-returns returns <code>[H, S, L]</code> array
     :code(lang="js")
       app.utils.colorRgbToHsl(255, 0, 0) // -> [0, 1, 0.5]
@@ -299,16 +324,54 @@ block content
       ul.method-parameters
         li
           span.parameter H
-          |  - <span class="parameter-type">number</span> - hue value
+          |  - <span class="parameter-type">number</span> - hue value (0 - 360)
         li
           span.parameter S
-          |  - <span class="parameter-type">number</span> - saturation value
+          |  - <span class="parameter-type">number</span> - saturation value (0 - 1)
         li
           span.parameter L
-          |  - <span class="parameter-type">number</span> - lightness value
+          |  - <span class="parameter-type">number</span> - lightness value (0 - 1)
       p.method-returns returns <code>[R, G, B]</code> array
     :code(lang="js")
       app.utils.colorHslToRgb(0, 1, 0.5) // -> [255, 0, 0]
+
+    h3 #[code colorHsbToHsl()]
+    .method-wrap
+      p
+        span.method app.utils.colorHsbToHsl(<span>H</span>, <span>S</span>, <span>B</span>)
+        span - converts HSB(V) color to HSL color
+      ul.method-parameters
+        li
+          span.parameter H
+          |  - <span class="parameter-type">number</span> - hue value (0 - 360)
+        li
+          span.parameter S
+          |  - <span class="parameter-type">number</span> - saturation value (0 - 1)
+        li
+          span.parameter B
+          |  - <span class="parameter-type">number</span> - brightness value (0 - 1)
+      p.method-returns returns <code>[H, S, L]</code> array
+    :code(lang="js")
+      app.utils.colorHsbToHsl(360, 0.5, 0.5) // -> [360, 0.33, 0.375]
+
+    h3 #[code colorHslToHsb()]
+    .method-wrap
+      p
+        span.method app.utils.colorHslToHsb(<span>H</span>, <span>S</span>, <span>L</span>)
+        span - converts HSL color to HSB(V) color
+      ul.method-parameters
+        li
+          span.parameter H
+          |  - <span class="parameter-type">number</span> - hue value (0 - 360)
+        li
+          span.parameter S
+          |  - <span class="parameter-type">number</span> - saturation value (0 - 1)
+        li
+          span.parameter L
+          |  - <span class="parameter-type">number</span> - lightness value (0 - 1)
+      p.method-returns returns <code>[H, S, L]</code> array
+    :code(lang="js")
+      app.utils.colorHslToHsb(360, 0.5, 0.5) // -> [360, 0.66, 0.75]
 
     h3 #[code colorThemeCSSProperties()]
     .method-wrap

@@ -53,6 +53,42 @@ block content
             </li>
           </ul>
         </div>
+
+        <div class="block-title">Indeterminate State</div>
+        <div class="list">
+          <ul>
+            <li>
+              <label class="item-checkbox item-content">
+                <input type="checkbox" name="demo-checkbox-movies" />
+                <i class="icon icon-checkbox"></i>
+                <div class="item-inner">
+                  <div class="item-title">Movies</div>
+                </div>
+              </label>
+              <ul>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" name="demo-checkbox-movie" value="Movie 1"/>
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Movie 1</div>
+                    </div>
+                  </label>
+                </li>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" name="demo-checkbox-movie" value="Movie 2"/>
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Movie 2</div>
+                    </div>
+                  </label>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
         <div class="block-title">With Media Lists</div>
         <div class="list media-list">
           <ul>
@@ -116,4 +152,31 @@ block content
         </div>
 block scripts
   script.
+    var $ = Dom7;
     var app = new Framework7();
+
+    var $ = Dom7;
+
+    // Child checkbox change
+    $('[name="demo-checkbox-movie"]').on('change', function (e) {
+      var totalChecked = $('[name="demo-checkbox-movie"]:checked').length;
+      if (totalChecked === 0) {
+        $('[name="demo-checkbox-movies"]').prop('checked', false);
+      } else if (totalChecked === 2) {
+        $('[name="demo-checkbox-movies"]').prop('checked', true);
+      }
+      if (totalChecked === 1) {
+        $('[name="demo-checkbox-movies"]').prop('indeterminate', true);
+      } else {
+        $('[name="demo-checkbox-movies"]').prop('indeterminate', false);
+      }
+    });
+
+    // Parent checkbox change
+    $('[name="demo-checkbox-movies"]').on('change', function (e) {
+      if (e.target.checked) {
+        $('[name="demo-checkbox-movie"]').prop('checked', true);
+      } else {
+        $('[name="demo-checkbox-movie"]').prop('checked', false);
+      }
+    });

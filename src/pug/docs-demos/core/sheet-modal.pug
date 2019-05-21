@@ -12,13 +12,18 @@ block content
         .block
           // In data-sheet attribute we specify CSS selector of sheet we need to open
           p
-            a(href="#", data-sheet=".my-sheet").link.sheet-open Open Sheet
+            a(href="#", data-sheet=".my-sheet").button.button-fill.sheet-open Open Sheet
           // Link to close sheet
           p
-            a(href="#", data-sheet=".my-sheet").link.sheet-close Close Sheet
-
+            a(href="#", data-sheet=".my-sheet").button.button-fill.sheet-close Close Sheet
           p
-            a(href="#").link.dynamic-sheet Create Dynamic Sheet
+            a(href="#").button.button-fill.dynamic-sheet Create Dynamic Sheet
+          p
+            a(href="#", data-sheet=".my-sheet-top").button.button-fill.sheet-open Open Top Sheet
+          p
+            a(href="#", data-sheet=".my-sheet-swipe-to-close").button.button-fill.sheet-open Swipe To Close
+          p
+            a(href="#", data-sheet=".my-sheet-swipe-to-step").button.button-fill.sheet-open Swipe To Step
 
   .sheet-modal.my-sheet
     .toolbar
@@ -30,6 +35,66 @@ block content
       .block
         h4 Info
         p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.
+  .sheet-modal.sheet-modal-top.my-sheet-top
+    .toolbar.toolbar-bottom
+      .toolbar-inner
+        .left
+        .right
+          a(href="#").link.sheet-close Done
+    .sheet-modal-inner
+      .block
+        h4 Info
+        p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.
+
+  <div class="sheet-modal my-sheet-swipe-to-close" style="height:auto; --f7-sheet-bg-color: #fff;">
+    <div class="sheet-modal-inner">
+      <div class="page-content">
+        <div class="block-title block-title-large">Hello!</div>
+        <div class="block">
+          <p><b>Swipe me down to close</b></p>
+          <p>Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet-modal my-sheet-swipe-to-step" style="height:auto; --f7-sheet-bg-color: #fff;">
+    <div class="sheet-modal-inner">
+      <div class="sheet-modal-swipe-step">
+        <div class="display-flex padding justify-content-space-between align-items-center">
+          <div style="font-size: 18px"><b>Total:</b></div>
+          <div style="font-size: 22px"><b>$500</b></div>
+        </div>
+        <div class="padding-horizontal padding-bottom">
+          <a class="button button-large button-fill">Make Payment</a>
+          <div class="margin-top text-align-center">Swipe up for more details</div>
+        </div>
+      </div>
+      <div class="block-title block-title-medium margin-top">Your order:</div>
+      <div class="list no-hairlines">
+        <ul>
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Item 1</div>
+              <div class="item-after text-color-black"><b>$200</b></div>
+            </div>
+          </li>
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Item 2</div>
+              <div class="item-after text-color-black"><b>$180</b></div>
+            </div>
+          </li>
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Delivery</div>
+              <div class="item-after text-color-black"><b>$120</b></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
 
 block scripts
@@ -91,3 +156,16 @@ block scripts
       dynamicSheet.open();
     });
 
+    // Create swipe-to-close Sheet
+    app.sheet.create({
+      el: '.my-sheet-swipe-to-close',
+      swipeToClose: true,
+      backdrop: true,
+    });
+    // Create swipe-to-step Sheet
+    app.sheet.create({
+      el: '.my-sheet-swipe-to-step',
+      swipeToClose: true,
+      swipeToStep: true,
+      backdrop: true,
+    });

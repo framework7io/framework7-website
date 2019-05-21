@@ -57,7 +57,7 @@ block content
           td theme
           td string
           td auto
-          td App theme. Can be <code>ios</code>, <code>md</code> or <code>auto</code>. In case of <code>auto</code> it will use iOS theme for iOS devices and MD theme for all other devices.
+          td App theme. Can be <code>ios</code>, <code>md</code>, <code>aurora</code> or <code>auto</code>. In case of <code>auto</code> it will use iOS theme for iOS devices, Aurora theme for desktop device running in Electron environment, and MD theme for all other devices.
         tr
           td language
           td string
@@ -68,7 +68,6 @@ block content
           td array
           td []
           td Array with default routes to all views.
-
         tr
           td data
           td function
@@ -105,6 +104,11 @@ block content
           td
           td Path to Framework7's lazy components. Required to use <a href="lazy-modules.html">Lazy Modules</a> with browser modules.
         tr
+          td autoDarkTheme
+          td boolean
+          td false
+          td Automatically enables dark theme based on user system color scheme preference. This feature support is based on <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank"><code>(prefers-color-scheme)</code> media query support</a>.
+        tr
           td init
           td boolean
           td true
@@ -123,10 +127,10 @@ block content
               var app = new Framework7({
                 on: {
                   init: function () {
-                    console.log('App initialized'),
+                    console.log('App initialized');
                   },
                   pageInit: function () {
-                    console.log('Page initialized'),
+                    console.log('Page initialized');
                   },
                 }
               })
@@ -188,6 +192,11 @@ block content
           td
           td This parameter allows to specify elements not handled by fast clicks by passing CSS selector of such elements
         tr.subparam-row
+          td touchClicksDistanceThreshold
+          td number
+          td 5
+          td Distance threshold (in px) to prevent short swipes. So if tap/move distance is larger than this value then "click" will not be triggered. (Used only for touch events when fastClicks disabled).
+        tr.subparam-row
           td disableContextMenu
           td boolean
           td false
@@ -227,6 +236,11 @@ block content
           td boolean
           td true
           td Enables touch ripple effect for MD theme
+        tr.subparam-row
+          td auroraTouchRipple
+          td boolean
+          td false
+          td Enables touch ripple effect for Aurora theme
         tr.subparam-row
           td touchRippleElements
           td string
@@ -310,7 +324,7 @@ block content
           td Boolean property indicating app is in RTL layout or not
         tr
           td app.theme
-          td Current app theme. Can be <code>md</code> or <code>ios</code>
+          td String with current app theme. Can be <code>md</code>, <code>ios</code> or <code>aurora</code>
         tr
           td app.data
           td Object with app root data passed on intialization
@@ -358,6 +372,12 @@ block content
           td Array with registered service workers
         tr
           th(colspan="2") Methods
+        tr
+          td app.enableAutoDarkTheme()
+          td Enables auto dark theme detection
+        tr
+          td app.disableAutoDarkTheme()
+          td Disables auto dark theme detection
         tr
           td app.on(<span>event</span>, <span>handler</span>)
           td Add event handler
@@ -530,10 +550,12 @@ block content
       /*====================
         Fonts
         ==================== */
+      :root {
+        --f7-font-size: 14px;
+      }
       .ios {
         --f7-font-family: -apple-system, SF Pro Text, SF UI Text, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
         --f7-text-color: #000;
-        --f7-font-size: 14px;
         --f7-line-height: 1.4;
       }
       .ios .theme-dark,
@@ -543,12 +565,20 @@ block content
       .md {
         --f7-font-family: Roboto, system-ui, Noto, Helvetica, Arial, sans-serif;
         --f7-text-color: #212121;
-        --f7-font-size: 14px;
         --f7-line-height: 1.5;
       }
       .md .theme-dark,
       .md.theme-dark {
         --f7-text-color: rgba(255, 255, 255, 0.87);
+      }
+      .aurora {
+        --f7-font-family: -apple-system, system-ui, Helvetica, Arial, sans-serif;
+        --f7-text-color: #000;
+        --f7-line-height: 1.5;
+      }
+      .aurora .theme-dark,
+      .aurora.theme-dark {
+        --f7-text-color: #fff;
       }
       /*====================
         Bars
@@ -577,4 +607,11 @@ block content
       }
       .md {
         --f7-bars-border-color: transparent;
+      }
+      .aurora {
+        --f7-bars-border-color: rgba(0, 0, 0, 0.2);
+      }
+      .aurora .theme-dark,
+      .aurora.theme-dark {
+        --f7-bars-border-color: #282829;
       }

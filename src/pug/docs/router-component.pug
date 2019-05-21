@@ -202,13 +202,19 @@ block content
             :code(lang="js")
               this.$router.back(); //navigate back
         tr
+          td $id
+          td string
+          td
+            p Component id, used as <a href="#scoped-styles">scoped styles</a> id
+        tr
           td $theme
           td object
           td
-            p Object with <code>md</code> and <code>ios</code> boolean properties which indicating current theme. For example:
+            p Object with <code>md</code>, <code>ios</code> and <code>aurora</code> boolean properties which indicating current theme. For example:
             :code(lang="js")
               if (this.$theme.ios) { /* do something when iOS theme is active */ }
               if (this.$theme.md) { /* do something when MD theme is active */ }
+              if (this.$theme.aurora) { /* do something when Aurora theme is active */ }
         tr
           td $setState()
           td function
@@ -430,12 +436,12 @@ block content
           ...
         }
       </script>
-    p When scoped style added component element will have additional <code>data-scope="[unique_id]"</code> where [unique_id] is the unique timestamp. And all styles will be refactored to have this unique scope id, for example:
+    p When scoped style added component element will have additional <code>data-f7-[unique_id]</code> where [unique_id] is the unique timestamp. And all styles will be refactored to have this unique scope id, for example:
     :code(lang="css")
-      [data-scope="1515740589328"] p {
+      [data-f7-3454d941c3] p {
         color: red;
       }
-      [data-scope="1515740589328"] a {
+      [data-f7-3454d941c3] a {
         text-decoration: none;
       }
     p In case you need to use more complex selector with including component parent reference, then you may use <code><b>{{this}}</b></code> keword to reference the component:

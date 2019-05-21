@@ -49,6 +49,11 @@ mixin vueLinkIconProps
     td string
     td
     td Icon to be used in case of MD theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
+  tr
+    td icon-aurora
+    td string
+    td
+    td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
 mixin vueLinkRouterProps
   tr
     td href
@@ -137,6 +142,11 @@ mixin vueLinkActionsProps
     td boolean
     td
     td Closes panel on click
+  tr
+    td panel-toggle
+    td boolean
+    td
+    td Toggle (open/close) panel on click
   tr
     td actions-open
     td string<br>boolean
@@ -233,6 +243,11 @@ mixin vueLinkActionsProps
     td
     td CSS selector of the expandable card to close on click. Or boolean property to close currently opened expandable card
   tr
+    td card-prevent-open
+    td boolean
+    td
+    td Click on element with this prop won't open its parent expandable card
+  tr
     td menu-close
     td boolean
     td
@@ -284,6 +299,11 @@ mixin reactLinkIconProps
     td string
     td
     td Icon to be used in case of MD theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
+  tr
+    td iconAurora
+    td string
+    td
+    td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>fa:home</code>
 
 mixin reactLinkRouterProps
   tr
@@ -373,6 +393,11 @@ mixin reactLinkActionsProps
     td boolean
     td
     td Closes panel on click
+  tr
+    td panelToggle
+    td boolean
+    td
+    td Toggle (open/close) panel on click
   tr
     td actionsOpen
     td string<br>boolean
@@ -468,6 +493,11 @@ mixin reactLinkActionsProps
     td string<br>boolean
     td
     td CSS selector of the expandable card to close on click. Or boolean property to close currently opened expandable card
+  tr
+    td cardPreventOpen
+    td boolean
+    td
+    td Click on element with this prop won't open its parent expandable card
   tr
     td menuClose
     td boolean

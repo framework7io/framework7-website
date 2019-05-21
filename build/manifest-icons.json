@@ -2,6 +2,15 @@
   "name": "Framework7 Icons",
   "icons": [
     {
+      "name": "abc"
+    },
+    {
+      "name": "abc_square"
+    },
+    {
+      "name": "abc_square_fill"
+    },
+    {
       "name": "add"
     },
     {
@@ -191,6 +200,9 @@
       "name": "card_fill"
     },
     {
+      "name": "cat"
+    },
+    {
       "name": "chat"
     },
     {
@@ -356,6 +368,9 @@
       "name": "document_text_fill"
     },
     {
+      "name": "dog"
+    },
+    {
       "name": "download"
     },
     {
@@ -411,6 +426,9 @@
     },
     {
       "name": "exit_round_fill"
+    },
+    {
+      "name": "expand"
     },
     {
       "name": "eye"
@@ -477,6 +495,9 @@
     },
     {
       "name": "forward_fill"
+    },
+    {
+      "name": "gamepad"
     },
     {
       "name": "gear"
@@ -638,6 +659,9 @@
       "name": "logo_windows"
     },
     {
+      "name": "map"
+    },
+    {
       "name": "menu"
     },
     {
@@ -731,6 +755,9 @@
       "name": "more_vertical_round_fill"
     },
     {
+      "name": "move"
+    },
+    {
       "name": "navigation"
     },
     {
@@ -741,6 +768,15 @@
     },
     {
       "name": "navigation_round_fill"
+    },
+    {
+      "name": "numbers"
+    },
+    {
+      "name": "numbers_square"
+    },
+    {
+      "name": "numbers_square_fill"
     },
     {
       "name": "paper_plane"
@@ -759,6 +795,9 @@
     },
     {
       "name": "pause_round_fill"
+    },
+    {
+      "name": "paw"
     },
     {
       "name": "person"
@@ -803,6 +842,9 @@
       "name": "photos_fill"
     },
     {
+      "name": "piano"
+    },
+    {
       "name": "pie_chart"
     },
     {
@@ -825,6 +867,12 @@
     },
     {
       "name": "play_round_fill"
+    },
+    {
+      "name": "poultry_leg"
+    },
+    {
+      "name": "print"
     },
     {
       "name": "qrcode"
@@ -860,6 +908,15 @@
       "name": "reply_fill"
     },
     {
+      "name": "resize"
+    },
+    {
+      "name": "resize_h"
+    },
+    {
+      "name": "resize_v"
+    },
+    {
       "name": "rewind"
     },
     {
@@ -878,6 +935,9 @@
       "name": "rocket_fill"
     },
     {
+      "name": "save"
+    },
+    {
       "name": "scissors"
     },
     {
@@ -894,6 +954,9 @@
     },
     {
       "name": "share_fill"
+    },
+    {
+      "name": "shopping_cart"
     },
     {
       "name": "sort"
@@ -1011,6 +1074,9 @@
     },
     {
       "name": "trash_fill"
+    },
+    {
+      "name": "tree"
     },
     {
       "name": "tune"

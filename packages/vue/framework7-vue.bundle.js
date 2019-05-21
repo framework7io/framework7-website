@@ -1,5 +1,5 @@
 /**
- * Framework7 Vue 4.0.1
+ * Framework7 Vue 4.4.0
  * Build full featured iOS & Android apps using Framework7 & Vue
  * http://framework7.io/vue/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: February 8, 2019
+ * Released on: May 13, 2019
  */
 
 (function (global, factory) {
@@ -148,10 +148,9 @@
       iconIon: String,
       iconFa: String,
       iconF7: String,
-      iconIfMd: String,
-      iconIfIos: String,
       iconIos: String,
       iconMd: String,
+      iconAurora: String,
       iconColor: String,
       iconSize: [String, Number],
     },
@@ -231,6 +230,7 @@
       // Panel
       panelOpen: [Boolean, String],
       panelClose: [Boolean, String],
+      panelToggle: [Boolean, String],
 
       // Popup
       popupOpen: [Boolean, String],
@@ -259,6 +259,7 @@
 
       // Card
       cardOpen: [Boolean, String],
+      cardPreventOpen: [Boolean, String],
       cardClose: [Boolean, String],
 
       // Menu
@@ -274,6 +275,7 @@
       var searchbarToggle = props.searchbarToggle;
       var panelOpen = props.panelOpen;
       var panelClose = props.panelClose;
+      var panelToggle = props.panelToggle;
       var popupOpen = props.popupOpen;
       var popupClose = props.popupClose;
       var actionsOpen = props.actionsOpen;
@@ -296,7 +298,8 @@
                           || (Utils.isStringProp(searchbarClear) && searchbarClear)
                           || (Utils.isStringProp(searchbarToggle) && searchbarToggle) || undefined,
         'data-panel': (Utils.isStringProp(panelOpen) && panelOpen)
-                      || (Utils.isStringProp(panelClose) && panelClose) || undefined,
+                      || (Utils.isStringProp(panelClose) && panelClose)
+                      || (Utils.isStringProp(panelToggle) && panelToggle) || undefined,
         'data-popup': (Utils.isStringProp(popupOpen) && popupOpen)
                       || (Utils.isStringProp(popupClose) && popupClose) || undefined,
         'data-actions': (Utils.isStringProp(actionsOpen) && actionsOpen)
@@ -321,6 +324,7 @@
       var searchbarToggle = props.searchbarToggle;
       var panelOpen = props.panelOpen;
       var panelClose = props.panelClose;
+      var panelToggle = props.panelToggle;
       var popupOpen = props.popupOpen;
       var popupClose = props.popupClose;
       var actionsClose = props.actionsClose;
@@ -335,6 +339,7 @@
       var sortableDisable = props.sortableDisable;
       var sortableToggle = props.sortableToggle;
       var cardOpen = props.cardOpen;
+      var cardPreventOpen = props.cardPreventOpen;
       var cardClose = props.cardClose;
       var menuClose = props.menuClose;
 
@@ -345,6 +350,7 @@
         'searchbar-toggle': searchbarToggle || searchbarToggle === '',
         'panel-close': panelClose || panelClose === '',
         'panel-open': panelOpen || panelOpen === '',
+        'panel-toggle': panelToggle || panelToggle === '',
         'popup-close': popupClose || popupClose === '',
         'popup-open': popupOpen || popupOpen === '',
         'actions-close': actionsClose || actionsClose === '',
@@ -360,6 +366,7 @@
         'sortable-toggle': sortableToggle || sortableToggle === '',
         'card-close': cardClose || cardClose === '',
         'card-open': cardOpen || cardOpen === '',
+        'card-prevent-open': cardPreventOpen || cardPreventOpen === '',
         'menu-close': menuClose || menuClose === '',
       };
     },
@@ -762,8 +769,11 @@
       convertToPopover: Boolean,
       forceToPopover: Boolean,
       target: [String, Object],
+      backdrop: Boolean,
+      backdropEl: [String, Object, window.HTMLElement],
       closeByBackdropClick: Boolean,
-      closeByOutsideClick: Boolean
+      closeByOutsideClick: Boolean,
+      closeOnEscape: Boolean
     }, Mixins.colorProps),
 
     render: function render() {
@@ -820,6 +830,9 @@
       var opened = props.opened;
       var closeByBackdropClick = props.closeByBackdropClick;
       var closeByOutsideClick = props.closeByOutsideClick;
+      var closeOnEscape = props.closeOnEscape;
+      var backdrop = props.backdrop;
+      var backdropEl = props.backdropEl;
       var actionsParams = {
         el: self.$refs.el,
         grid: grid
@@ -828,8 +841,11 @@
       {
         if (typeof self.$options.propsData.convertToPopover !== 'undefined') { actionsParams.convertToPopover = convertToPopover; }
         if (typeof self.$options.propsData.forceToPopover !== 'undefined') { actionsParams.forceToPopover = forceToPopover; }
+        if (typeof self.$options.propsData.backdrop !== 'undefined') { actionsParams.backdrop = backdrop; }
+        if (typeof self.$options.propsData.backdropEl !== 'undefined') { actionsParams.backdropEl = backdropEl; }
         if (typeof self.$options.propsData.closeByBackdropClick !== 'undefined') { actionsParams.closeByBackdropClick = closeByBackdropClick; }
         if (typeof self.$options.propsData.closeByOutsideClick !== 'undefined') { actionsParams.closeByOutsideClick = closeByOutsideClick; }
+        if (typeof self.$options.propsData.closeOnEscape !== 'undefined') { actionsParams.closeOnEscape = closeOnEscape; }
       }
       self.$f7ready(function () {
         self.f7Actions = self.$f7.actions.create(actionsParams);
@@ -997,7 +1013,7 @@
     if (typeof callback === 'function') { callback(); }
   }
 
-  var RoutableModals = {
+  var f7RoutableModals = {
     name: 'f7-routable-modals',
 
     data: function data() {
@@ -1100,7 +1116,7 @@
         attrs: {
           id: id || 'framework7-root'
         }
-      }, [this.$slots['default'], _h(RoutableModals)]);
+      }, [this.$slots['default'], _h(f7RoutableModals)]);
     },
 
     mounted: function mounted() {
@@ -1126,7 +1142,64 @@
     }
   };
 
-  var F7Badge = {
+  var f7Appbar = {
+    name: 'f7-appbar',
+    props: Object.assign({
+      id: [String, Number],
+      noShadow: Boolean,
+      noHairline: Boolean,
+      inner: {
+        type: Boolean,
+        default: true
+      },
+      innerClass: String,
+      innerClassName: String
+    }, Mixins.colorProps),
+
+    render: function render() {
+      var _h = this.$createElement;
+      var self = this;
+      var props = self.props;
+      var inner = props.inner;
+      var innerClass = props.innerClass;
+      var innerClassName = props.innerClassName;
+      var className = props.className;
+      var id = props.id;
+      var style = props.style;
+      var noShadow = props.noShadow;
+      var noHairline = props.noHairline;
+      var innerEl;
+
+      if (inner) {
+        innerEl = _h('div', {
+          ref: 'inner',
+          class: Utils.classNames('appbar-inner', innerClass, innerClassName)
+        }, [this.$slots['default']]);
+      }
+
+      var classes = Utils.classNames(className, 'appbar', {
+        'no-shadow': noShadow,
+        'no-hairline': noHairline
+      }, Mixins.colorClasses(props));
+      return _h('div', {
+        ref: 'el',
+        style: style,
+        class: classes,
+        attrs: {
+          id: id
+        }
+      }, [this.$slots['before-inner'], innerEl || self.$slots.default, this.$slots['after-inner']]);
+    },
+
+    computed: {
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    }
+  };
+
+  var f7Badge = {
     name: 'f7-badge',
     props: Object.assign({
       id: [String, Number]
@@ -1266,7 +1339,8 @@
       accordionList: Boolean,
       noHairlines: Boolean,
       noHairlinesMd: Boolean,
-      noHairlinesIos: Boolean
+      noHairlinesIos: Boolean,
+      noHairlinesAurora: Boolean
     }, Mixins.colorProps),
 
     created: function created() {
@@ -1302,6 +1376,7 @@
       var noHairlines = props.noHairlines;
       var noHairlinesIos = props.noHairlinesIos;
       var noHairlinesMd = props.noHairlinesMd;
+      var noHairlinesAurora = props.noHairlinesAurora;
       var id = props.id;
       var style = props.style;
       var classes = Utils.classNames(className, 'block', {
@@ -1314,7 +1389,8 @@
         'tab-active': tabActive,
         'no-hairlines': noHairlines,
         'no-hairlines-md': noHairlinesMd,
-        'no-hairlines-ios': noHairlinesIos
+        'no-hairlines-ios': noHairlinesIos,
+        'no-hairlines-aurora': noHairlinesAurora
       }, Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -1351,7 +1427,7 @@
     }
   };
 
-  var F7Icon = {
+  var f7Icon = {
     name: 'f7-icon',
     props: Object.assign({
       id: [String, Number],
@@ -1360,9 +1436,8 @@
       ion: String,
       fa: String,
       icon: String,
-      ifMd: String,
-      ifIos: String,
       ios: String,
+      aurora: String,
       md: String,
       tooltip: String,
       size: [String, Number]
@@ -1436,18 +1511,17 @@
         var ref = self.props;
         var material = ref.material;
         var f7 = ref.f7;
-        var ifMd = ref.ifMd;
-        var ifIos = ref.ifIos;
         var md = ref.md;
         var ios = ref.ios;
+        var aurora = ref.aurora;
         var text = material || f7;
-        var mdIcon = ifMd || md;
-        var iosIcon = ifIos || ios;
 
-        if (mdIcon && self.$theme.md && (mdIcon.indexOf('material:') >= 0 || mdIcon.indexOf('f7:') >= 0)) {
-          text = mdIcon.split(':')[1];
-        } else if (iosIcon && self.$theme.ios && (iosIcon.indexOf('material:') >= 0 || iosIcon.indexOf('f7:') >= 0)) {
-          text = iosIcon.split(':')[1];
+        if (md && self.$theme.md && (md.indexOf('material:') >= 0 || md.indexOf('f7:') >= 0)) {
+          text = md.split(':')[1];
+        } else if (ios && self.$theme.ios && (ios.indexOf('material:') >= 0 || ios.indexOf('f7:') >= 0)) {
+          text = ios.split(':')[1];
+        } else if (aurora && self.$theme.aurora && (aurora.indexOf('material:') >= 0 || aurora.indexOf('f7:') >= 0)) {
+          text = aurora.split(':')[1];
         }
 
         return text;
@@ -1459,8 +1533,6 @@
         };
         var self = this;
         var props = self.props;
-        var ifMd = props.ifMd;
-        var ifIos = props.ifIos;
         var material = props.material;
         var f7 = props.f7;
         var fa = props.fa;
@@ -1468,12 +1540,13 @@
         var icon = props.icon;
         var md = props.md;
         var ios = props.ios;
+        var aurora = props.aurora;
         var className = props.className;
-        var mdIcon = ifMd || md;
-        var iosIcon = ifIos || ios;
+        var themeIcon;
+        if (self.$theme.ios) { themeIcon = ios; }else if (self.$theme.md) { themeIcon = md; }else if (self.$theme.aurora) { themeIcon = aurora; }
 
-        if (mdIcon || iosIcon) {
-          var parts = (self.$theme.md ? mdIcon : iosIcon).split(':');
+        if (themeIcon) {
+          var parts = themeIcon.split(':');
           var prop = parts[0];
           var value = parts[1];
 
@@ -1559,6 +1632,7 @@
       text: String,
       tabLink: [Boolean, String],
       tabLinkActive: Boolean,
+      type: String,
       href: {
         type: [String, Boolean],
         default: '#'
@@ -1567,21 +1641,27 @@
       round: Boolean,
       roundMd: Boolean,
       roundIos: Boolean,
+      roundAurora: Boolean,
       fill: Boolean,
       fillMd: Boolean,
       fillIos: Boolean,
+      fillAurora: Boolean,
       large: Boolean,
       largeMd: Boolean,
       largeIos: Boolean,
+      largeAurora: Boolean,
       small: Boolean,
       smallMd: Boolean,
       smallIos: Boolean,
+      smallAurora: Boolean,
       raised: Boolean,
       raisedMd: Boolean,
       raisedIos: Boolean,
+      raisedAurora: Boolean,
       outline: Boolean,
       outlineMd: Boolean,
       outlineIos: Boolean,
+      outlineAurora: Boolean,
       active: Boolean,
       disabled: Boolean,
       tooltip: String
@@ -1599,39 +1679,38 @@
       var iconIon = props.iconIon;
       var iconFa = props.iconFa;
       var iconF7 = props.iconF7;
-      var iconIfMd = props.iconIfMd;
-      var iconIfIos = props.iconIfIos;
       var iconMd = props.iconMd;
       var iconIos = props.iconIos;
+      var iconAurora = props.iconAurora;
       var iconColor = props.iconColor;
       var iconSize = props.iconSize;
       var id = props.id;
       var style = props.style;
+      var type = props.type;
 
       if (text) {
         textEl = _h('span', [text]);
       }
 
-      var mdThemeIcon = iconIfMd || iconMd;
-      var iosThemeIcon = iconIfIos || iconIos;
-
-      if (icon || iconMaterial || iconIon || iconFa || iconF7 || mdThemeIcon || iosThemeIcon) {
-        iconEl = _h(F7Icon, {
+      if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
+        iconEl = _h(f7Icon, {
           attrs: {
             material: iconMaterial,
             ion: iconIon,
             fa: iconFa,
             f7: iconF7,
             icon: icon,
-            md: mdThemeIcon,
-            ios: iosThemeIcon,
+            md: iconMd,
+            ios: iconIos,
+            aurora: iconAurora,
             color: iconColor,
             size: iconSize
           }
         });
       }
 
-      return _h('a', __vueComponentTransformJSXProps(Object.assign({
+      var ButtonTag = type === 'submit' || type === 'reset' || type === 'button' ? 'button' : 'a';
+      return _h(ButtonTag, __vueComponentTransformJSXProps(Object.assign({
         ref: 'el',
         style: style,
         class: self.classes
@@ -1649,12 +1728,14 @@
         var href = props.href;
         var target = props.target;
         var tabLink = props.tabLink;
+        var type = props.type;
         var hrefComputed = href;
         if (href === true) { hrefComputed = '#'; }
         if (href === false) { hrefComputed = undefined; }
         return Utils.extend({
           href: hrefComputed,
           target: target,
+          type: type,
           'data-tab': Utils.isStringProp(tabLink) && tabLink || undefined
         }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
       },
@@ -1668,22 +1749,28 @@
         var tabLinkActive = props.tabLinkActive;
         var round = props.round;
         var roundIos = props.roundIos;
+        var roundAurora = props.roundAurora;
         var roundMd = props.roundMd;
         var fill = props.fill;
         var fillIos = props.fillIos;
+        var fillAurora = props.fillAurora;
         var fillMd = props.fillMd;
         var large = props.large;
         var largeIos = props.largeIos;
+        var largeAurora = props.largeAurora;
         var largeMd = props.largeMd;
         var small = props.small;
         var smallIos = props.smallIos;
+        var smallAurora = props.smallAurora;
         var smallMd = props.smallMd;
         var raised = props.raised;
         var raisedIos = props.raisedIos;
+        var raisedAurora = props.raisedAurora;
         var raisedMd = props.raisedMd;
         var active = props.active;
         var outline = props.outline;
         var outlineIos = props.outlineIos;
+        var outlineAurora = props.outlineAurora;
         var outlineMd = props.outlineMd;
         var disabled = props.disabled;
         var className = props.className;
@@ -1693,22 +1780,28 @@
           'no-fastclick': noFastclick || noFastClick,
           'button-round': round,
           'button-round-ios': roundIos,
+          'button-round-aurora': roundAurora,
           'button-round-md': roundMd,
           'button-fill': fill,
           'button-fill-ios': fillIos,
+          'button-fill-aurora': fillAurora,
           'button-fill-md': fillMd,
           'button-large': large,
           'button-large-ios': largeIos,
+          'button-large-aurora': largeAurora,
           'button-large-md': largeMd,
           'button-small': small,
           'button-small-ios': smallIos,
+          'button-small-aurora': smallAurora,
           'button-small-md': smallMd,
           'button-raised': raised,
           'button-raised-ios': raisedIos,
+          'button-raised-aurora': raisedAurora,
           'button-raised-md': raisedMd,
           'button-active': active,
           'button-outline': outline,
           'button-outline-ios': outlineIos,
+          'button-outline-aurora': outlineAurora,
           'button-outline-md': outlineMd,
           disabled: disabled
         }, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
@@ -1791,7 +1884,7 @@
 
   };
 
-  var F7CardContent = {
+  var f7CardContent = {
     name: 'f7-card-content',
     props: Object.assign({
       id: [String, Number],
@@ -1828,7 +1921,7 @@
     }
   };
 
-  var F7CardFooter = {
+  var f7CardFooter = {
     name: 'f7-card-footer',
     props: Object.assign({
       id: [String, Number]
@@ -1858,7 +1951,7 @@
     }
   };
 
-  var F7CardHeader = {
+  var f7CardHeader = {
     name: 'f7-card-header',
     props: Object.assign({
       id: [String, Number]
@@ -1899,6 +1992,30 @@
       expandable: Boolean,
       expandableAnimateWidth: Boolean,
       expandableOpened: Boolean,
+      animate: {
+        type: Boolean,
+        default: undefined
+      },
+      hideNavbarOnOpen: {
+        type: Boolean,
+        default: undefined
+      },
+      hideToolbarOnOpen: {
+        type: Boolean,
+        default: undefined
+      },
+      swipeToClose: {
+        type: Boolean,
+        default: undefined
+      },
+      closeByBackdropClick: {
+        type: Boolean,
+        default: undefined
+      },
+      backdrop: {
+        type: Boolean,
+        default: undefined
+      },
       noShadow: Boolean,
       noBorder: Boolean,
       padding: {
@@ -1966,6 +2083,12 @@
       var outline = props.outline;
       var expandable = props.expandable;
       var expandableAnimateWidth = props.expandableAnimateWidth;
+      var animate = props.animate;
+      var hideNavbarOnOpen = props.hideNavbarOnOpen;
+      var hideToolbarOnOpen = props.hideToolbarOnOpen;
+      var swipeToClose = props.swipeToClose;
+      var closeByBackdropClick = props.closeByBackdropClick;
+      var backdrop = props.backdrop;
       var noShadow = props.noShadow;
       var noBorder = props.noBorder;
       var headerEl;
@@ -1980,11 +2103,11 @@
       }, Mixins.colorClasses(props));
 
       if (title || self.$slots && self.$slots.header) {
-        headerEl = _h(F7CardHeader, [title, this.$slots['header']]);
+        headerEl = _h(f7CardHeader, [title, this.$slots['header']]);
       }
 
       if (content || self.$slots && self.$slots.content) {
-        contentEl = _h(F7CardContent, {
+        contentEl = _h(f7CardContent, {
           attrs: {
             padding: padding
           }
@@ -1992,7 +2115,7 @@
       }
 
       if (footer || self.$slots && self.$slots.footer) {
-        footerEl = _h(F7CardFooter, [footer, this.$slots['footer']]);
+        footerEl = _h(f7CardFooter, [footer, this.$slots['footer']]);
       }
 
       return _h('div', {
@@ -2000,7 +2123,13 @@
         class: classes,
         ref: 'el',
         attrs: {
-          id: id
+          id: id,
+          'data-animate': typeof animate === 'undefined' ? animate : animate.toString(),
+          'data-hide-navbar-on-open': typeof hideNavbarOnOpen === 'undefined' ? hideNavbarOnOpen : hideNavbarOnOpen.toString(),
+          'data-hide-toolbar-on-open': typeof hideToolbarOnOpen === 'undefined' ? hideToolbarOnOpen : hideToolbarOnOpen.toString(),
+          'data-swipe-to-close': typeof swipeToClose === 'undefined' ? swipeToClose : swipeToClose.toString(),
+          'data-close-by-backdrop-click': typeof closeByBackdropClick === 'undefined' ? closeByBackdropClick : closeByBackdropClick.toString(),
+          'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString()
         }
       }, [headerEl, contentEl, footerEl, this.$slots['default']]);
     },
@@ -2059,6 +2188,7 @@
     props: Object.assign({
       id: [String, Number],
       checked: Boolean,
+      indeterminate: Boolean,
       name: [Number, String],
       value: [Number, String, Boolean],
       disabled: Boolean,
@@ -2133,6 +2263,30 @@
       Utils.bindMethods(this, ['onChange']);
     },
 
+    mounted: function mounted() {
+      var self = this;
+      var ref = self.$refs;
+      var inputEl = ref.inputEl;
+      var ref$1 = self.props;
+      var indeterminate = ref$1.indeterminate;
+
+      if (indeterminate && inputEl) {
+        inputEl.indeterminate = true;
+      }
+    },
+
+    updated: function updated() {
+      var self = this;
+      var ref = self.$refs;
+      var inputEl = ref.inputEl;
+      var ref$1 = self.props;
+      var indeterminate = ref$1.indeterminate;
+
+      if (inputEl) {
+        inputEl.indeterminate = indeterminate;
+      }
+    },
+
     methods: {
       onChange: function onChange(event) {
         this.dispatchEvent('change', event);
@@ -2193,10 +2347,7 @@
       if (deleteable) {
         deleteEl = _h('a', {
           ref: 'deleteEl',
-          class: 'chip-delete',
-          attrs: {
-            href: '#'
-          }
+          class: 'chip-delete'
         });
       }
 
@@ -2801,7 +2952,7 @@
     }
   };
 
-  var F7Toggle = {
+  var f7Toggle = {
     name: 'f7-toggle',
     props: Object.assign({
       id: [String, Number],
@@ -2925,7 +3076,7 @@
     }
   };
 
-  var F7Range = {
+  var f7Range = {
     name: 'f7-range',
     props: Object.assign({
       id: [String, Number],
@@ -2983,6 +3134,10 @@
         default: 0
       },
       formatScaleLabel: Function,
+      limitKnobPosition: {
+        type: Boolean,
+        default: undefined
+      },
       name: String,
       input: Boolean,
       inputId: String,
@@ -3052,6 +3207,7 @@
         var scaleSteps = props.scaleSteps;
         var scaleSubSteps = props.scaleSubSteps;
         var formatScaleLabel = props.formatScaleLabel;
+        var limitKnobPosition = props.limitKnobPosition;
         self.f7Range = f7.range.create(Utils.noUndefinedProps({
           el: self.$refs.el,
           value: value,
@@ -3068,6 +3224,7 @@
           scaleSteps: scaleSteps,
           scaleSubSteps: scaleSubSteps,
           formatScaleLabel: formatScaleLabel,
+          limitKnobPosition: limitKnobPosition,
           on: {
             change: function change(range, val) {
               self.dispatchEvent('range:change rangeChange', val);
@@ -3119,12 +3276,12 @@
     }
   };
 
-  var F7Input = {
+  var f7Input = {
     name: 'f7-input',
     props: Object.assign({
       type: String,
       name: String,
-      value: [String, Number, Array],
+      value: [String, Number, Array, Date, Object],
       defaultValue: [String, Number, Array],
       placeholder: String,
       id: [String, Number],
@@ -3160,6 +3317,7 @@
       errorMessage: String,
       errorMessageForce: Boolean,
       info: String,
+      outline: Boolean,
       wrap: {
         type: Boolean,
         default: true
@@ -3167,7 +3325,9 @@
       dropdown: {
         type: [String, Boolean],
         default: 'auto'
-      }
+      },
+      calendarParams: Object,
+      colorPickerParams: Object
     }, Mixins.colorProps),
 
     data: function data() {
@@ -3231,15 +3391,22 @@
       var noStoreData = props.noStoreData;
       var noFormStoreData = props.noFormStoreData;
       var ignoreStoreData = props.ignoreStoreData;
+      var outline = props.outline;
       var domValue = self.domValue();
       var inputHasValue = self.inputHasValue();
       var inputEl;
 
       var createInput = function (InputTag, children) {
-        var needsValue = type !== 'file';
+        var needsValue = type !== 'file' && type !== 'datepicker' && type !== 'colorpicker';
         var needsType = InputTag === 'input';
+        var inputType = type;
+
+        if (inputType === 'datepicker' || inputType === 'colorpicker') {
+          inputType = 'text';
+        }
+
         var inputClassName = Utils.classNames(!wrap && className, {
-          resizable: type === 'textarea' && resizable,
+          resizable: inputType === 'textarea' && resizable,
           'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
           'input-invalid': errorMessage && errorMessageForce || self.state.inputInvalid,
           'input-with-value': inputHasValue,
@@ -3253,8 +3420,12 @@
         }
 
         var valueProps = {};
-        if ('value' in props) { valueProps.value = inputValue; }
-        if ('defaultValue' in props) { valueProps.defaultValue = defaultValue; }
+
+        if (type !== 'datepicker' && type !== 'colorpicker') {
+          if ('value' in props) { valueProps.value = inputValue; }
+          if ('defaultValue' in props) { valueProps.defaultValue = defaultValue; }
+        }
+
         {
           input = _h(InputTag, {
             ref: 'inputEl',
@@ -3275,7 +3446,7 @@
             },
             attrs: {
               name: name,
-              type: needsType ? type : undefined,
+              type: needsType ? inputType : undefined,
               placeholder: placeholder,
               id: inputId,
               size: size,
@@ -3318,7 +3489,7 @@
       } else if (slotsDefault && slotsDefault.length > 0 || !type) {
         inputEl = slotsDefault;
       } else if (type === 'toggle') {
-        inputEl = _h(F7Toggle, {
+        inputEl = _h(f7Toggle, {
           on: {
             change: self.onChange
           },
@@ -3332,7 +3503,7 @@
           }
         });
       } else if (type === 'range') {
-        inputEl = _h(F7Range, {
+        inputEl = _h(f7Range, {
           on: {
             rangeChange: self.onChange
           },
@@ -3353,6 +3524,7 @@
 
       if (wrap) {
         var wrapClasses = Utils.classNames(className, 'input', {
+          'input-outline': outline,
           'input-dropdown': dropdown === 'auto' ? type === 'select' : dropdown
         }, Mixins.colorClasses(props));
         return _h('div', {
@@ -3382,6 +3554,14 @@
         if (type === 'range' || type === 'toggle') { return; }
         if (!self.$f7) { return; }
         self.updateInputOnDidUpdate = true;
+
+        if (self.f7Calendar) {
+          self.f7Calendar.setValue(self.props.value);
+        }
+
+        if (self.f7ColorPicker) {
+          self.f7ColorPicker.setValue(self.props.value);
+        }
       }
     },
 
@@ -3400,18 +3580,46 @@
         var clearButton = ref.clearButton;
         var value = ref.value;
         var defaultValue = ref.defaultValue;
+        var calendarParams = ref.calendarParams;
+        var colorPickerParams = ref.colorPickerParams;
         if (type === 'range' || type === 'toggle') { return; }
         var inputEl = self.$refs.inputEl;
         if (!inputEl) { return; }
         inputEl.addEventListener('input:notempty', self.onInputNotEmpty, false);
 
         if (type === 'textarea' && resizable) {
-          inputEl.addEventListener('textarea:resze', self.onTextareaResize, false);
+          inputEl.addEventListener('textarea:resize', self.onTextareaResize, false);
         }
 
         if (clearButton) {
           inputEl.addEventListener('input:empty', self.onInputEmpty, false);
           inputEl.addEventListener('input:clear', self.onInputClear, false);
+        }
+
+        if (type === 'datepicker') {
+          self.f7Calendar = f7.calendar.create(Object.assign({
+            inputEl: inputEl,
+            value: value,
+            on: {
+              change: function change(calendar, calendarValue) {
+                self.dispatchEvent('calendar:change calendarChange', calendarValue);
+              }
+
+            }
+          }, calendarParams || {}));
+        }
+
+        if (type === 'colorpicker') {
+          self.f7ColorPicker = f7.colorPicker.create(Object.assign({
+            inputEl: inputEl,
+            value: value,
+            on: {
+              change: function change(colorPicker, colorPickerValue) {
+                self.dispatchEvent('colorpicker:change colorPickerChange', colorPickerValue);
+              }
+
+            }
+          }, colorPickerParams || {}));
         }
 
         f7.input.checkEmptyState(inputEl);
@@ -3465,13 +3673,24 @@
       inputEl.removeEventListener('input:notempty', self.onInputNotEmpty, false);
 
       if (type === 'textarea' && resizable) {
-        inputEl.removeEventListener('textarea:resze', self.onTextareaResize, false);
+        inputEl.removeEventListener('textarea:resize', self.onTextareaResize, false);
       }
 
       if (clearButton) {
         inputEl.removeEventListener('input:empty', self.onInputEmpty, false);
         inputEl.removeEventListener('input:clear', self.onInputClear, false);
       }
+
+      if (self.f7Calendar && self.f7Calendar.destroy) {
+        self.f7Calendar.destroy();
+      }
+
+      if (self.f7ColorPicker && self.f7ColorPicker.destroy) {
+        self.f7ColorPicker.destroy();
+      }
+
+      delete self.f7Calendar;
+      delete self.f7ColorPicker;
     },
 
     methods: {
@@ -3586,7 +3805,7 @@
     }
   };
 
-  var F7Link = {
+  var f7Link = {
     name: 'f7-link',
     props: Object.assign({
       id: [String, Number],
@@ -3641,10 +3860,9 @@
       var iconIon = props.iconIon;
       var iconFa = props.iconFa;
       var iconF7 = props.iconF7;
-      var iconIfMd = props.iconIfMd;
-      var iconIfIos = props.iconIfIos;
       var iconMd = props.iconMd;
       var iconIos = props.iconIos;
+      var iconAurora = props.iconAurora;
       var id = props.id;
       var style = props.style;
       var defaultSlots = self.$slots.default;
@@ -3654,7 +3872,7 @@
       var iconBadgeEl;
 
       if (text) {
-        if (badge) { badgeEl = _h(F7Badge, {
+        if (badge) { badgeEl = _h(f7Badge, {
           attrs: {
             color: badgeColor
           }
@@ -3664,27 +3882,25 @@
         }, [text, badgeEl]);
       }
 
-      var mdThemeIcon = iconIfMd || iconMd;
-      var iosThemeIcon = iconIfIos || iconIos;
-
-      if (icon || iconMaterial || iconIon || iconFa || iconF7 || mdThemeIcon || iosThemeIcon) {
+      if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
         if (iconBadge) {
-          iconBadgeEl = _h(F7Badge, {
+          iconBadgeEl = _h(f7Badge, {
             attrs: {
               color: badgeColor
             }
           }, [iconBadge]);
         }
 
-        iconEl = _h(F7Icon, {
+        iconEl = _h(f7Icon, {
           attrs: {
             material: iconMaterial,
             f7: iconF7,
             fa: iconFa,
             ion: iconIon,
             icon: icon,
-            md: mdThemeIcon,
-            ios: iosThemeIcon,
+            md: iconMd,
+            ios: iconIos,
+            aurora: iconAurora,
             color: iconColor,
             size: iconSize
           }
@@ -4036,6 +4252,10 @@
       mdItemHeight: {
         type: Number,
         default: 14
+      },
+      auroraItemHeight: {
+        type: Number,
+        default: 14
       }
     }, Mixins.colorProps),
 
@@ -4074,6 +4294,7 @@
         var indexes = ref.indexes;
         var iosItemHeight = ref.iosItemHeight;
         var mdItemHeight = ref.mdItemHeight;
+        var auroraItemHeight = ref.auroraItemHeight;
         var scrollList = ref.scrollList;
         var label = ref.label;
         self.f7ListIndex = f7.listIndex.create({
@@ -4082,6 +4303,7 @@
           indexes: indexes,
           iosItemHeight: iosItemHeight,
           mdItemHeight: mdItemHeight,
+          auroraItemHeight: auroraItemHeight,
           scrollList: scrollList,
           label: label,
           on: {
@@ -4151,7 +4373,7 @@
         default: 'text'
       },
       name: String,
-      value: [String, Number, Array],
+      value: [String, Number, Array, Date, Object],
       defaultValue: [String, Number, Array],
       readonly: Boolean,
       required: Boolean,
@@ -4185,9 +4407,12 @@
       errorMessage: String,
       errorMessageForce: Boolean,
       info: String,
+      outline: Boolean,
       label: [String, Number],
       inlineLabel: Boolean,
-      floatingLabel: Boolean
+      floatingLabel: Boolean,
+      calendarParams: Object,
+      colorPickerParams: Object
     }, Mixins.colorProps),
 
     data: function data() {
@@ -4257,6 +4482,7 @@
       var errorMessage = props.errorMessage;
       var errorMessageForce = props.errorMessageForce;
       var info = props.info;
+      var outline = props.outline;
       var label = props.label;
       var inlineLabel = props.inlineLabel;
       var floatingLabel = props.floatingLabel;
@@ -4265,10 +4491,16 @@
       var isSortable = sortable || self.state.isSortable;
 
       var createInput = function (InputTag, children) {
-        var needsValue = type !== 'file';
+        var needsValue = type !== 'file' && type !== 'datepicker' && type !== 'colorpicker';
         var needsType = InputTag === 'input';
+        var inputType = type;
+
+        if (inputType === 'datepicker' || inputType === 'colorpicker') {
+          inputType = 'text';
+        }
+
         var inputClassName = Utils.classNames({
-          resizable: type === 'textarea' && resizable,
+          resizable: inputType === 'textarea' && resizable,
           'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
           'input-invalid': errorMessage && errorMessageForce || inputInvalid,
           'input-with-value': inputHasValue,
@@ -4282,8 +4514,12 @@
         }
 
         var valueProps = {};
-        if ('value' in props) { valueProps.value = inputValue; }
-        if ('defaultValue' in props) { valueProps.defaultValue = defaultValue; }
+
+        if (type !== 'datepicker' && type !== 'colorpicker') {
+          if ('value' in props) { valueProps.value = inputValue; }
+          if ('defaultValue' in props) { valueProps.defaultValue = defaultValue; }
+        }
+
         {
           input = _h(InputTag, {
             ref: 'inputEl',
@@ -4303,7 +4539,7 @@
             },
             attrs: {
               name: name,
-              type: needsType ? type : undefined,
+              type: needsType ? inputType : undefined,
               placeholder: placeholder,
               id: inputId,
               size: size,
@@ -4355,6 +4591,7 @@
           disabled: disabled
         }, !wrap && Mixins.colorClasses(props), {
           'inline-label': inlineLabel,
+          'item-input-outline': outline,
           'item-input-focused': inputFocused,
           'item-input-with-info': !!info || self.$slots.info && self.$slots.info.length,
           'item-input-with-value': inputHasValue,
@@ -4408,6 +4645,14 @@
         var self = this;
         if (!self.$f7) { return; }
         self.updateInputOnDidUpdate = true;
+
+        if (self.f7Calendar) {
+          self.f7Calendar.setValue(self.props.value);
+        }
+
+        if (self.f7ColorPicker) {
+          self.f7ColorPicker.setValue(self.props.value);
+        }
       }
     },
 
@@ -4428,12 +4673,40 @@
         var value = ref.value;
         var defaultValue = ref.defaultValue;
         var type = ref.type;
+        var calendarParams = ref.calendarParams;
+        var colorPickerParams = ref.colorPickerParams;
         var inputEl = self.$refs.inputEl;
         if (!inputEl) { return; }
         inputEl.addEventListener('input:notempty', self.onInputNotEmpty, false);
-        inputEl.addEventListener('textarea:resze', self.onTextareaResize, false);
+        inputEl.addEventListener('textarea:resize', self.onTextareaResize, false);
         inputEl.addEventListener('input:empty', self.onInputEmpty, false);
         inputEl.addEventListener('input:clear', self.onInputClear, false);
+
+        if (type === 'datepicker') {
+          self.f7Calendar = f7.calendar.create(Object.assign({
+            inputEl: inputEl,
+            value: value,
+            on: {
+              change: function change(calendar, calendarValue) {
+                self.dispatchEvent('calendar:change calendarChange', calendarValue);
+              }
+
+            }
+          }, calendarParams || {}));
+        }
+
+        if (type === 'colorpicker') {
+          self.f7ColorPicker = f7.colorPicker.create(Object.assign({
+            inputEl: inputEl,
+            value: value,
+            on: {
+              change: function change(colorPicker, colorPickerValue) {
+                self.dispatchEvent('colorpicker:change colorPickerChange', colorPickerValue);
+              }
+
+            }
+          }, colorPickerParams || {}));
+        }
 
         if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
           setTimeout(function () {
@@ -4494,9 +4767,20 @@
       var inputEl = self.$refs.inputEl;
       if (!inputEl) { return; }
       inputEl.removeEventListener('input:notempty', self.onInputNotEmpty, false);
-      inputEl.removeEventListener('textarea:resze', self.onTextareaResize, false);
+      inputEl.removeEventListener('textarea:resize', self.onTextareaResize, false);
       inputEl.removeEventListener('input:empty', self.onInputEmpty, false);
       inputEl.removeEventListener('input:clear', self.onInputClear, false);
+
+      if (self.f7Calendar && self.f7Calendar.destroy) {
+        self.f7Calendar.destroy();
+      }
+
+      if (self.f7ColorPicker && self.f7ColorPicker.destroy) {
+        self.f7ColorPicker.destroy();
+      }
+
+      delete self.f7Calendar;
+      delete self.f7ColorPicker;
     },
 
     methods: {
@@ -4641,7 +4925,7 @@
     }
   };
 
-  var F7ListItemContent = {
+  var f7ListItemContent = {
     name: 'f7-list-item-content',
     props: Object.assign({
       id: [String, Number],
@@ -4659,6 +4943,7 @@
       checkbox: Boolean,
       checked: Boolean,
       defaultChecked: Boolean,
+      indeterminate: Boolean,
       radio: Boolean,
       name: String,
       value: [String, Number, Array],
@@ -4835,7 +5120,7 @@
         }
 
         if (badge) {
-          badgeEl = _h(F7Badge, {
+          badgeEl = _h(f7Badge, {
             attrs: {
               color: badgeColor
             }
@@ -4884,9 +5169,28 @@
     mounted: function mounted() {
       var self = this;
       var ref = self.$refs;
-      var innerEl = ref.innerEl;
       var el = ref.el;
+      var inputEl = ref.inputEl;
+      var ref$1 = self.props;
+      var indeterminate = ref$1.indeterminate;
+
+      if (indeterminate && inputEl) {
+        inputEl.indeterminate = true;
+      }
+
       el.addEventListener('click', self.onClick);
+    },
+
+    updated: function updated() {
+      var self = this;
+      var ref = self.$refs;
+      var inputEl = ref.inputEl;
+      var ref$1 = self.props;
+      var indeterminate = ref$1.indeterminate;
+
+      if (inputEl) {
+        inputEl.indeterminate = indeterminate;
+      }
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -4985,6 +5289,7 @@
       radio: Boolean,
       checked: Boolean,
       defaultChecked: Boolean,
+      indeterminate: Boolean,
       name: String,
       value: [String, Number, Array],
       readonly: Boolean,
@@ -5044,6 +5349,7 @@
       var radio = props.radio;
       var checked = props.checked;
       var defaultChecked = props.defaultChecked;
+      var indeterminate = props.indeterminate;
       var name = props.name;
       var value = props.value;
       var readonly = props.readonly;
@@ -5059,7 +5365,7 @@
 
       if (!isSimple) {
         var needsEvents = !(link || href || accordionItem || smartSelect);
-        itemContentEl = _h(F7ListItemContent, {
+        itemContentEl = _h(f7ListItemContent, {
           on: needsEvents ? {
             click: self.onClick,
             change: self.onChange
@@ -5079,6 +5385,7 @@
             checkbox: checkbox,
             checked: checked,
             defaultChecked: defaultChecked,
+            indeterminate: indeterminate,
             radio: radio,
             name: name,
             value: value,
@@ -5089,8 +5396,8 @@
         }, [this.$slots['content-start'], this.$slots['content'], this.$slots['content-end'], this.$slots['media'], this.$slots['inner-start'], this.$slots['inner'], this.$slots['inner-end'], this.$slots['after-start'], this.$slots['after'], this.$slots['after-end'], this.$slots['header'], this.$slots['footer'], this.$slots['before-title'], this.$slots['title'], this.$slots['after-title'], this.$slots['subtitle'], this.$slots['text'], swipeout || accordionItem ? null : self.$slots.default]);
 
         if (link || href || accordionItem || smartSelect) {
-          var linkAttrs = Utils.extend({
-            href: link === true || accordionItem || smartSelect ? '#' : link || href,
+          var linkAttrs = Object.assign({
+            href: link === true ? '' : link || href,
             target: target
           }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
           var linkClasses = Utils.classNames({
@@ -5446,6 +5753,8 @@
       noHairlinesBetweenMd: Boolean,
       noHairlinesIos: Boolean,
       noHairlinesBetweenIos: Boolean,
+      noHairlinesAurora: Boolean,
+      noHairlinesBetweenAurora: Boolean,
       noChevron: Boolean,
       chevronCenter: Boolean,
       tab: Boolean,
@@ -5528,9 +5837,11 @@
         var noHairlines = props.noHairlines;
         var noHairlinesIos = props.noHairlinesIos;
         var noHairlinesMd = props.noHairlinesMd;
+        var noHairlinesAurora = props.noHairlinesAurora;
         var noHairlinesBetween = props.noHairlinesBetween;
         var noHairlinesBetweenIos = props.noHairlinesBetweenIos;
         var noHairlinesBetweenMd = props.noHairlinesBetweenMd;
+        var noHairlinesBetweenAurora = props.noHairlinesBetweenAurora;
         var formStoreData = props.formStoreData;
         var inlineLabels = props.inlineLabels;
         var className = props.className;
@@ -5555,6 +5866,8 @@
           'no-hairlines-between-md': noHairlinesBetweenMd,
           'no-hairlines-ios': noHairlinesIos,
           'no-hairlines-between-ios': noHairlinesBetweenIos,
+          'no-hairlines-aurora': noHairlinesAurora,
+          'no-hairlines-between-aurora': noHairlinesBetweenAurora,
           'form-store-data': formStoreData,
           'inline-labels': inlineLabels,
           'no-chevron': noChevron,
@@ -5569,7 +5882,7 @@
     },
 
     created: function created() {
-      Utils.bindMethods(this, ['onSortableEnable', 'onSortableDisable', 'onSortableSort', 'onTabShow', 'onTabHide']);
+      Utils.bindMethods(this, ['onSortableEnable', 'onSortableDisable', 'onSortableSort', 'onTabShow', 'onTabHide', 'onSubmit']);
     },
 
     mounted: function mounted() {
@@ -5578,6 +5891,7 @@
       var ref = self.props;
       var virtualList = ref.virtualList;
       var virtualListParams = ref.virtualListParams;
+      var form = ref.form;
 
       if (el) {
         el.addEventListener('sortable:enable', self.onSortableEnable);
@@ -5585,6 +5899,10 @@
         el.addEventListener('sortable:sort', self.onSortableSort);
         el.addEventListener('tab:show', self.onTabShow);
         el.addEventListener('tab:hide', self.onTabHide);
+
+        if (form) {
+          el.addEventListener('submit', self.onSubmit);
+        }
       }
 
       if (!virtualList) { return; }
@@ -5641,6 +5959,10 @@
         el.removeEventListener('sortable:sort', self.onSortableSort);
         el.removeEventListener('tab:show', self.onTabShow);
         el.removeEventListener('tab:hide', self.onTabHide);
+
+        if (self.props.form) {
+          el.removeEventListener('submit', self.onSubmit);
+        }
       }
 
       if (!(self.virtualList && self.f7VirtualList)) { return; }
@@ -5648,6 +5970,10 @@
     },
 
     methods: {
+      onSubmit: function onSubmit(event) {
+        this.dispatchEvent('submit', event);
+      },
+
       onSortableEnable: function onSortableEnable(event) {
         this.dispatchEvent('sortable:enable sortableEnable', event);
       },
@@ -6018,26 +6344,24 @@
       var iconIon = props.iconIon;
       var iconFa = props.iconFa;
       var iconF7 = props.iconF7;
-      var iconIfMd = props.iconIfMd;
-      var iconIfIos = props.iconIfIos;
       var iconMd = props.iconMd;
       var iconIos = props.iconIos;
+      var iconAurora = props.iconAurora;
       var slots = self.$slots;
       var iconEl;
       var iconOnlyComputed;
-      var mdThemeIcon = iconIfMd || iconMd;
-      var iosThemeIcon = iconIfIos || iconIos;
 
-      if (icon || iconMaterial || iconIon || iconFa || iconF7 || mdThemeIcon || iosThemeIcon) {
-        iconEl = _h(F7Icon, {
+      if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
+        iconEl = _h(f7Icon, {
           attrs: {
             material: iconMaterial,
             f7: iconF7,
             fa: iconFa,
             ion: iconIon,
             icon: icon,
-            md: mdThemeIcon,
-            ios: iosThemeIcon,
+            md: iconMd,
+            ios: iconIos,
+            aurora: iconAurora,
             color: iconColor,
             size: iconSize
           }
@@ -6739,7 +7063,7 @@
         class: 'toolbar-inner'
       }, [slotsInnerStart, _h('div', {
         class: 'messagebar-area'
-      }, [slotsBeforeArea, messagebarAttachmentsEl, _h(F7Input, {
+      }, [slotsBeforeArea, messagebarAttachmentsEl, _h(f7Input, {
         ref: 'area',
         on: {
           input: self.onInput,
@@ -6757,7 +7081,7 @@
           resizable: resizable,
           value: value
         }
-      }), slotsAfterArea]), (sendLink && sendLink.length > 0 || slotsSendLink) && _h(F7Link, {
+      }), slotsAfterArea]), (sendLink && sendLink.length > 0 || slotsSendLink) && _h(f7Link, {
         on: {
           click: self.onClick
         }
@@ -7271,13 +7595,17 @@
     }
   };
 
-  var F7NavLeft = {
+  var f7NavLeft = {
     name: 'f7-nav-left',
     props: Object.assign({
       id: [String, Number],
       backLink: [Boolean, String],
       backLinkUrl: String,
       backLinkForce: Boolean,
+      backLinkShowText: {
+        type: Boolean,
+        default: undefined
+      },
       sliding: Boolean
     }, Mixins.colorProps),
 
@@ -7287,14 +7615,17 @@
       var backLink = props.backLink;
       var backLinkUrl = props.backLinkUrl;
       var backLinkForce = props.backLinkForce;
+      var backLinkShowText = props.backLinkShowText;
       var sliding = props.sliding;
       var className = props.className;
       var style = props.style;
       var id = props.id;
       var linkEl;
+      var needBackLinkText = backLinkShowText;
+      if (typeof needBackLinkText === 'undefined') { needBackLinkText = !this.$theme.md; }
 
       if (backLink) {
-        linkEl = _h(F7Link, {
+        linkEl = _h(f7Link, {
           class: backLink === true || backLink && this.$theme.md ? 'icon-only' : undefined,
           on: {
             click: this.onBackClick
@@ -7304,7 +7635,7 @@
             back: true,
             icon: 'icon-back',
             force: backLinkForce || undefined,
-            text: backLink !== true && !this.$theme.md ? backLink : undefined
+            text: backLink !== true && needBackLinkText ? backLink : undefined
           }
         });
       }
@@ -7355,7 +7686,7 @@
     }
   };
 
-  var F7NavRight = {
+  var f7NavRight = {
     name: 'f7-nav-right',
     props: Object.assign({
       id: [String, Number],
@@ -7440,7 +7771,7 @@
     }
   };
 
-  var F7NavTitle = {
+  var f7NavTitle = {
     name: 'f7-nav-title',
     props: Object.assign({
       id: [String, Number],
@@ -7461,7 +7792,7 @@
       var className = props.className;
       var subtitleEl;
 
-      if (self.subtitle) {
+      if (subtitle) {
         subtitleEl = _h('span', {
           class: 'subtitle'
         }, [subtitle]);
@@ -7504,6 +7835,10 @@
       backLink: [Boolean, String],
       backLinkUrl: String,
       backLinkForce: Boolean,
+      backLinkShowText: {
+        type: Boolean,
+        default: undefined
+      },
       sliding: {
         type: Boolean,
         default: true
@@ -7530,6 +7865,7 @@
       var backLink = props.backLink;
       var backLinkUrl = props.backLinkUrl;
       var backLinkForce = props.backLinkForce;
+      var backLinkShowText = props.backLinkShowText;
       var sliding = props.sliding;
       var title = props.title;
       var subtitle = props.subtitle;
@@ -7549,65 +7885,74 @@
       var titleEl;
       var rightEl;
       var titleLargeEl;
-      var iosLeftTitle = self.$theme && self.$theme.ios && self.$f7 && !self.$f7.params.navbar.iosCenterTitle;
-      var mdCenterTitle = self.$theme && self.$theme.md && self.$f7 && self.$f7.params.navbar.mdCenterTitle;
+      var addLeftTitleClass = self.$theme && self.$theme.ios && self.$f7 && !self.$f7.params.navbar.iosCenterTitle;
+      var addCenterTitleClass = self.$theme && self.$theme.md && self.$f7 && self.$f7.params.navbar.mdCenterTitle || self.$theme && self.$theme.aurora && self.$f7 && self.$f7.params.navbar.auroraCenterTitle;
       var slots = self.$slots;
-
-      if (inner) {
-        if (backLink || slots['nav-left']) {
-          leftEl = _h(F7NavLeft, {
-            on: {
-              backClick: self.onBackClick
-            },
-            attrs: {
-              backLink: backLink,
-              backLinkUrl: backLinkUrl,
-              backLinkForce: backLinkForce
-            }
-          }, [slots['nav-left']]);
-        }
-
-        if (title || subtitle || slots.title) {
-          titleEl = _h(F7NavTitle, {
-            attrs: {
-              title: title,
-              subtitle: subtitle
-            }
-          }, [slots.title]);
-        }
-
-        if (slots['nav-right']) {
-          rightEl = _h(F7NavRight, [slots['nav-right']]);
-        }
-
-        var largeTitle = titleLarge;
-        if (!largeTitle && large && title) { largeTitle = title; }
-
-        if (largeTitle) {
-          titleLargeEl = _h('div', {
-            class: 'title-large'
-          }, [_h('div', {
-            class: 'title-large-text'
-          }, [largeTitle])]);
-        }
-
-        innerEl = _h('div', {
-          ref: 'inner',
-          class: Utils.classNames('navbar-inner', innerClass, innerClassName, {
-            sliding: sliding,
-            'navbar-inner-left-title': iosLeftTitle,
-            'navbar-inner-centered-title': mdCenterTitle,
-            'navbar-inner-large': large
-          })
-        }, [leftEl, titleEl, rightEl, titleLargeEl, this.$slots['default']]);
-      }
-
       var classes = Utils.classNames(className, 'navbar', {
         'navbar-hidden': hidden,
         'no-shadow': noShadow,
         'no-hairline': noHairline,
         'navbar-large': large
       }, Mixins.colorClasses(props));
+
+      if (!inner) {
+        return _h('div', {
+          ref: 'el',
+          style: style,
+          class: classes,
+          attrs: {
+            id: id
+          }
+        }, [this.$slots['default']]);
+      }
+
+      if (backLink || slots['nav-left']) {
+        leftEl = _h(f7NavLeft, {
+          on: {
+            backClick: self.onBackClick
+          },
+          attrs: {
+            backLink: backLink,
+            backLinkUrl: backLinkUrl,
+            backLinkForce: backLinkForce,
+            backLinkShowText: backLinkShowText
+          }
+        }, [slots['nav-left']]);
+      }
+
+      if (title || subtitle || slots.title) {
+        titleEl = _h(f7NavTitle, {
+          attrs: {
+            title: title,
+            subtitle: subtitle
+          }
+        }, [slots.title]);
+      }
+
+      if (slots['nav-right']) {
+        rightEl = _h(f7NavRight, [slots['nav-right']]);
+      }
+
+      var largeTitle = titleLarge;
+      if (!largeTitle && large && title) { largeTitle = title; }
+
+      if (largeTitle) {
+        titleLargeEl = _h('div', {
+          class: 'title-large'
+        }, [_h('div', {
+          class: 'title-large-text'
+        }, [largeTitle])]);
+      }
+
+      innerEl = _h('div', {
+        ref: 'innerEl',
+        class: Utils.classNames('navbar-inner', innerClass, innerClassName, {
+          sliding: sliding,
+          'navbar-inner-left-title': addLeftTitleClass,
+          'navbar-inner-centered-title': addCenterTitleClass,
+          'navbar-inner-large': large
+        })
+      }, [leftEl, titleEl, rightEl, titleLargeEl, this.$slots['default']]);
       return _h('div', {
         ref: 'el',
         style: style,
@@ -7619,7 +7964,20 @@
     },
 
     created: function created() {
-      Utils.bindMethods(this, ['onBackClick']);
+      Utils.bindMethods(this, ['onBackClick', 'onHide', 'onShow', 'onExpand', 'onCollapse']);
+    },
+
+    mounted: function mounted() {
+      var self = this;
+      var ref = self.$refs;
+      var innerEl = ref.innerEl;
+      if (!innerEl) { return; }
+      self.$f7ready(function (f7) {
+        f7.on('navbarShow', self.onShow);
+        f7.on('navbarHide', self.onHide);
+        f7.on('navbarCollapse', self.onCollapse);
+        f7.on('navbarExpand', self.onExpand);
+      });
     },
 
     updated: function updated() {
@@ -7629,12 +7987,70 @@
 
       if (el && el.children && el.children.length) {
         self.$f7.navbar.size(el);
-      } else if (self.$refs.inner) {
-        self.$f7.navbar.size(self.$refs.inner);
+      } else if (self.$refs.innerEl) {
+        self.$f7.navbar.size(self.$refs.innerEl);
       }
     },
 
+    beforeDestroy: function beforeDestroy() {
+      var self = this;
+      if (!self.props.inner) { return; }
+      var ref = self.$refs;
+      var innerEl = ref.innerEl;
+      if (!innerEl) { return; }
+      var f7 = self.$f7;
+      if (!f7) { return; }
+      f7.off('navbarShow', self.onShow);
+      f7.off('navbarHide', self.onHide);
+      f7.off('navbarCollapse', self.onCollapse);
+      f7.off('navbarExpand', self.onExpand);
+    },
+
     methods: {
+      onHide: function onHide(navbarEl) {
+        var self = this;
+        var ref = self.$refs;
+        var el = ref.el;
+        var innerEl = ref.innerEl;
+
+        if (navbarEl === el || innerEl && innerEl.parentNode === navbarEl) {
+          self.dispatchEvent('navbar:hide navbarHide');
+        }
+      },
+
+      onShow: function onShow(navbarEl) {
+        var self = this;
+        var ref = self.$refs;
+        var el = ref.el;
+        var innerEl = ref.innerEl;
+
+        if (navbarEl === el || innerEl && innerEl.parentNode === navbarEl) {
+          self.dispatchEvent('navbar:show navbarShow');
+        }
+      },
+
+      onExpand: function onExpand(navbarEl) {
+        var self = this;
+        var ref = self.$refs;
+        var el = ref.el;
+        var innerEl = ref.innerEl;
+
+        if (navbarEl === el || innerEl && innerEl.parentNode === navbarEl) {
+          self.dispatchEvent('navbar:expand navbarExpand');
+        }
+      },
+
+      onCollapse: function onCollapse(navbarEl) {
+        var self = this;
+        var ref = self.$refs;
+        var el = ref.el;
+        var innerEl = ref.innerEl;
+
+        if (navbarEl === el || innerEl && innerEl.parentNode === navbarEl) {
+          self.dispatchEvent('navbar:collapse navbarCollapse');
+        }
+      },
+
       hide: function hide(animate) {
         var self = this;
         if (!self.$f7) { return; }
@@ -7673,7 +8089,7 @@
     }
   };
 
-  var F7PageContent = {
+  var f7PageContent = {
     name: 'f7-page-content',
     props: Object.assign({
       id: [String, Number],
@@ -7686,6 +8102,7 @@
         default: true
       },
       ptrBottom: Boolean,
+      ptrMousewheel: Boolean,
       infinite: Boolean,
       infiniteTop: Boolean,
       infiniteDistance: Number,
@@ -7708,6 +8125,7 @@
       var ptrPreloader = props.ptrPreloader;
       var ptrDistance = props.ptrDistance;
       var ptrBottom = props.ptrBottom;
+      var ptrMousewheel = props.ptrMousewheel;
       var infinite = props.infinite;
       var infinitePreloader = props.infinitePreloader;
       var id = props.id;
@@ -7740,6 +8158,7 @@
         attrs: {
           id: id,
           'data-ptr-distance': ptrDistance || undefined,
+          'data-ptr-mousewheel': ptrMousewheel || undefined,
           'data-infinite-distance': infiniteDistance || undefined
         }
       }, [ptrBottom ? null : ptrEl, infiniteTop ? infiniteEl : null, self.$slots.default, infiniteTop ? null : infiniteEl, ptrBottom ? ptrEl : null]);
@@ -7906,6 +8325,7 @@
         default: true
       },
       ptrBottom: Boolean,
+      ptrMousewheel: Boolean,
       infinite: Boolean,
       infiniteTop: Boolean,
       infiniteDistance: Number,
@@ -7927,6 +8347,8 @@
         return {
           hasSubnavbar: false,
           hasNavbarLarge: false,
+          hasNavbarLargeCollapsed: false,
+          hasCardExpandableOpened: false,
           routerPositionClass: '',
           routerForceUnstack: false,
           routerPageRole: null,
@@ -7952,6 +8374,7 @@
       var ptrDistance = props.ptrDistance;
       var ptrPreloader = props.ptrPreloader;
       var ptrBottom = props.ptrBottom;
+      var ptrMousewheel = props.ptrMousewheel;
       var infinite = props.infinite;
       var infiniteDistance = props.infiniteDistance;
       var infinitePreloader = props.infinitePreloader;
@@ -8029,7 +8452,9 @@
         'no-swipeback': noSwipeback,
         'page-master': this.state.routerPageRole === 'master',
         'page-master-detail': this.state.routerPageRole === 'detail',
-        'page-master-stacked': this.state.routerPageMasterStack === true
+        'page-master-stacked': this.state.routerPageMasterStack === true,
+        'page-with-navbar-large-collapsed': this.state.hasNavbarLargeCollapsed === true,
+        'page-with-card-opened': this.state.hasCardExpandableOpened === true
       }, Mixins.colorClasses(props));
 
       if (!needsPageContent) {
@@ -8044,12 +8469,13 @@
         }, [slotsFixed, slotsStatic, slotsDefault]);
       }
 
-      var pageContentEl = _h(F7PageContent, {
+      var pageContentEl = _h(f7PageContent, {
         attrs: {
           ptr: ptr,
           ptrDistance: ptrDistance,
           ptrPreloader: ptrPreloader,
           ptrBottom: ptrBottom,
+          ptrMousewheel: ptrMousewheel,
           infinite: infinite,
           infiniteTop: infiniteTop,
           infiniteDistance: infiniteDistance,
@@ -8074,7 +8500,7 @@
     },
 
     created: function created() {
-      Utils.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack']);
+      Utils.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack', 'onPageNavbarLargeCollapsed', 'onPageNavbarLargeExpanded', 'onCardOpened', 'onCardClose']);
     },
 
     mounted: function mounted() {
@@ -8110,6 +8536,10 @@
       el.addEventListener('page:role', self.onPageRole);
       el.addEventListener('page:masterstack', self.onPageMasterStack);
       el.addEventListener('page:masterunstack', self.onPageMasterUnstack);
+      el.addEventListener('page:navbarlargecollapsed', self.onPageNavbarLargeCollapsed);
+      el.addEventListener('page:navbarlargeexpanded', self.onPageNavbarLargeExpanded);
+      el.addEventListener('card:opened', self.onCardOpened);
+      el.addEventListener('card:close', self.onCardClose);
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -8135,6 +8565,10 @@
       el.removeEventListener('page:role', self.onPageRole);
       el.removeEventListener('page:masterstack', self.onPageMasterStack);
       el.removeEventListener('page:masterunstack', self.onPageMasterUnstack);
+      el.removeEventListener('page:navbarlargecollapsed', self.onPageNavbarLargeCollapsed);
+      el.removeEventListener('page:navbarlargeexpanded', self.onPageNavbarLargeExpanded);
+      el.removeEventListener('card:opened', self.onCardOpened);
+      el.removeEventListener('card:close', self.onCardClose);
     },
 
     methods: {
@@ -8202,6 +8636,18 @@
       onPageMasterUnstack: function onPageMasterUnstack() {
         this.setState({
           routerPageMasterStack: false
+        });
+      },
+
+      onPageNavbarLargeCollapsed: function onPageNavbarLargeCollapsed() {
+        this.setState({
+          hasNavbarLargeCollapsed: true
+        });
+      },
+
+      onPageNavbarLargeExpanded: function onPageNavbarLargeExpanded() {
+        this.setState({
+          hasNavbarLargeCollapsed: false
         });
       },
 
@@ -8291,6 +8737,18 @@
         this.dispatchEvent('page:beforeremove pageBeforeRemove', event, page);
       },
 
+      onCardOpened: function onCardOpened() {
+        this.setState({
+          hasCardExpandableOpened: true
+        });
+      },
+
+      onCardClose: function onCardClose() {
+        this.setState({
+          hasCardExpandableOpened: false
+        });
+      },
+
       dispatchEvent: function dispatchEvent(events) {
         var args = [], len = arguments.length - 1;
         while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
@@ -8321,7 +8779,8 @@
       reveal: Boolean,
       left: Boolean,
       right: Boolean,
-      opened: Boolean
+      opened: Boolean,
+      resizable: Boolean
     }, Mixins.colorProps),
 
     render: function render() {
@@ -8329,6 +8788,7 @@
       var props = this.props;
       var id = props.id;
       var style = props.style;
+      var resizable = props.resizable;
       return _h('div', {
         ref: 'el',
         style: style,
@@ -8336,7 +8796,9 @@
         attrs: {
           id: id
         }
-      }, [this.$slots['default']]);
+      }, [this.$slots['default'], resizable && _h('div', {
+        class: 'panel-resize-handler'
+      })]);
     },
 
     computed: {
@@ -8349,12 +8811,14 @@
         var reveal = props.reveal;
         var className = props.className;
         var opened = props.opened;
+        var resizable = props.resizable;
         var side = props.side;
         var effect = props.effect;
         side = side || (left ? 'left' : 'right');
         effect = effect || (reveal ? 'reveal' : 'cover');
         return Utils.classNames(className, 'panel', ( obj = {
-          'panel-active': opened
+          'panel-active': opened,
+          'panel-resizable': resizable
         }, obj[("panel-" + side)] = side, obj[("panel-" + effect)] = effect, obj ), Mixins.colorClasses(props));
       },
 
@@ -8364,6 +8828,14 @@
 
     },
     watch: {
+      'props.resizable': function watchResizable(resizable) {
+        var self = this;
+        if (!resizable) { return; }
+
+        if (self.f7Panel && !self.f7Panel.resizableInitialized) {
+          self.f7Panel.initResizablePanel();
+        }
+      },
       'props.opened': function watchOpened(opened) {
         var self = this;
         if (!self.$f7) { return; }
@@ -8378,7 +8850,7 @@
     },
 
     created: function created() {
-      Utils.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onBackdropClick', 'onPanelSwipe', 'onPanelSwipeOpen', 'onBreakpoint']);
+      Utils.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onBackdropClick', 'onPanelSwipe', 'onPanelSwipeOpen', 'onBreakpoint', 'onResize']);
     },
 
     mounted: function mounted() {
@@ -8390,6 +8862,7 @@
       var opened = ref.opened;
       var left = ref.left;
       var reveal = ref.reveal;
+      var resizable = ref.resizable;
 
       if (el) {
         el.addEventListener('panel:open', self.onOpen);
@@ -8400,6 +8873,7 @@
         el.addEventListener('panel:swipe', self.onPanelSwipe);
         el.addEventListener('panel:swipeopen', self.onPanelSwipeOpen);
         el.addEventListener('panel:breakpoint', self.onBreakpoint);
+        el.addEventListener('panel:resize', self.onResize);
       }
 
       self.$f7ready(function () {
@@ -8411,7 +8885,8 @@
         }
 
         self.f7Panel = self.$f7.panel.create({
-          el: el
+          el: el,
+          resizable: resizable
         });
       });
 
@@ -8442,6 +8917,7 @@
       el.removeEventListener('panel:swipe', self.onPanelSwipe);
       el.removeEventListener('panel:swipeopen', self.onPanelSwipeOpen);
       el.removeEventListener('panel:breakpoint', self.onBreakpoint);
+      el.removeEventListener('panel:resize', self.onResize);
     },
 
     methods: {
@@ -8477,6 +8953,10 @@
         this.dispatchEvent('panel:breakpoint panelBreakpoint', event);
       },
 
+      onResize: function onResize(event) {
+        this.dispatchEvent('panel:resize panelResize', event);
+      },
+
       open: function open(animate) {
         var self = this;
         if (!self.$f7) { return; }
@@ -8489,6 +8969,13 @@
         if (!self.$f7) { return; }
         var side = self.props.side || (self.props.left ? 'left' : 'right');
         self.$f7.panel.close(side, animate);
+      },
+
+      toggle: function toggle(animate) {
+        var self = this;
+        if (!self.$f7) { return; }
+        var side = self.props.side || (self.props.left ? 'left' : 'right');
+        self.$f7.panel.toggle(side, animate);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -8678,8 +9165,11 @@
       id: [String, Number],
       opened: Boolean,
       target: [String, Object],
+      backdrop: Boolean,
+      backdropEl: [String, Object, window.HTMLElement],
       closeByBackdropClick: Boolean,
-      closeByOutsideClick: Boolean
+      closeByOutsideClick: Boolean,
+      closeOnEscape: Boolean
     }, Mixins.colorProps),
 
     render: function render() {
@@ -8732,8 +9222,11 @@
       var props = self.props;
       var target = props.target;
       var opened = props.opened;
+      var backdrop = props.backdrop;
+      var backdropEl = props.backdropEl;
       var closeByBackdropClick = props.closeByBackdropClick;
       var closeByOutsideClick = props.closeByOutsideClick;
+      var closeOnEscape = props.closeOnEscape;
       var popoverParams = {
         el: el
       };
@@ -8741,6 +9234,9 @@
       {
         if (typeof self.$options.propsData.closeByBackdropClick !== 'undefined') { popoverParams.closeByBackdropClick = closeByBackdropClick; }
         if (typeof self.$options.propsData.closeByOutsideClick !== 'undefined') { popoverParams.closeByOutsideClick = closeByOutsideClick; }
+        if (typeof self.$options.propsData.closeOnEscape !== 'undefined') { popoverParams.closeOnEscape = closeOnEscape; }
+        if (typeof self.$options.propsData.backdrop !== 'undefined') { popoverParams.backdrop = backdrop; }
+        if (typeof self.$options.propsData.backdropEl !== 'undefined') { popoverParams.backdropEl = backdropEl; }
       }
       self.$f7ready(function () {
         self.f7Popover = self.$f7.popover.create(popoverParams);
@@ -8813,9 +9309,16 @@
       id: [String, Number],
       tabletFullscreen: Boolean,
       opened: Boolean,
-      closeByBackdropClick: Boolean,
+      animate: Boolean,
       backdrop: Boolean,
-      animate: Boolean
+      backdropEl: [String, Object, window.HTMLElement],
+      closeByBackdropClick: Boolean,
+      closeOnEscape: Boolean,
+      swipeToClose: {
+        type: [Boolean, String],
+        default: false
+      },
+      swipeHandler: [String, Object, window.HTMLElement]
     }, Mixins.colorProps),
 
     render: function render() {
@@ -8867,14 +9370,22 @@
       var props = self.props;
       var closeByBackdropClick = props.closeByBackdropClick;
       var backdrop = props.backdrop;
+      var backdropEl = props.backdropEl;
       var animate = props.animate;
+      var closeOnEscape = props.closeOnEscape;
+      var swipeToClose = props.swipeToClose;
+      var swipeHandler = props.swipeHandler;
       var popupParams = {
         el: el
       };
       {
         if (typeof self.$options.propsData.closeByBackdropClick !== 'undefined') { popupParams.closeByBackdropClick = closeByBackdropClick; }
+        if (typeof self.$options.propsData.closeOnEscape !== 'undefined') { popupParams.closeOnEscape = closeOnEscape; }
         if (typeof self.$options.propsData.animate !== 'undefined') { popupParams.animate = animate; }
         if (typeof self.$options.propsData.backdrop !== 'undefined') { popupParams.backdrop = backdrop; }
+        if (typeof self.$options.propsData.backdropEl !== 'undefined') { popupParams.backdropEl = backdropEl; }
+        if (typeof self.$options.propsData.swipeToClose !== 'undefined') { popupParams.swipeToClose = swipeToClose; }
+        if (typeof self.$options.propsData.swipeHandler !== 'undefined') { popupParams.swipeHandler = swipeHandler; }
       }
       self.$f7ready(function () {
         self.f7Popup = self.$f7.popup.create(popupParams);
@@ -8961,6 +9472,7 @@
       if (sizeComputed) {
         preloaderStyle.width = sizeComputed + "px";
         preloaderStyle.height = sizeComputed + "px";
+        preloaderStyle['--f7-preloader-size'] = sizeComputed + "px";
       }
 
       if (style) { Utils.extend(preloaderStyle, style || {}); }
@@ -8980,7 +9492,7 @@
         }, [_h('span', {
           class: 'preloader-inner-half-circle'
         })])]);
-      } else {
+      } else if (self.$theme.ios) {
         innerEl = _h('span', {
           class: 'preloader-inner'
         }, [_h('span', {
@@ -9007,6 +9519,12 @@
           class: 'preloader-inner-line'
         }), _h('span', {
           class: 'preloader-inner-line'
+        })]);
+      } else if (self.$theme.aurora) {
+        innerEl = _h('span', {
+          class: 'preloader-inner'
+        }, [_h('span', {
+          class: 'preloader-inner-circle'
         })]);
       }
 
@@ -9276,6 +9794,7 @@
         default: 'change input compositionend'
       },
       expandable: Boolean,
+      inline: Boolean,
       searchContainer: [String, Object],
       searchIn: {
         type: String,
@@ -9303,7 +9822,7 @@
       },
       backdrop: {
         type: Boolean,
-        default: true
+        default: undefined
       },
       backdropEl: [String, Object],
       hideOnEnableEl: {
@@ -9358,6 +9877,7 @@
       var style = props.style;
       var id = props.id;
       var value = props.value;
+      var inline = props.inline;
 
       if (clearButton) {
         clearEl = _h('span', {
@@ -9375,6 +9895,7 @@
 
       var SearchbarTag = form ? 'form' : 'div';
       var classes = Utils.classNames(className, 'searchbar', {
+        'searchbar-inline': inline,
         'no-shadow': noShadow,
         'no-hairline': noHairline,
         'searchbar-expandable': expandable
@@ -9418,16 +9939,6 @@
       Utils.bindMethods(this, ['onSubmit', 'onClearButtonClick', 'onDisableButtonClick', 'onInput', 'onChange', 'onFocus', 'onBlur']);
     },
 
-    beforeDestroy: function beforeDestroy() {
-      var self = this;
-
-      if (self.props.form && self.$refs.el) {
-        self.$refs.el.removeEventListener('submit', self.onSubmit, false);
-      }
-
-      if (self.f7Searchbar && self.f7Searchbar.destroy) { self.f7Searchbar.destroy(); }
-    },
-
     mounted: function mounted() {
       var self = this;
       var ref = self.props;
@@ -9451,8 +9962,9 @@
       var hideDividers = ref.hideDividers;
       var hideGroups = ref.hideGroups;
       var form = ref.form;
+      var expandable = ref.expandable;
+      var inline = ref.inline;
       var ref$1 = self.$refs;
-      var inputEl = ref$1.inputEl;
       var el = ref$1.el;
       var clearEl = ref$1.clearEl;
       var disableEl = ref$1.disableEl;
@@ -9491,6 +10003,8 @@
           removeDiacritics: removeDiacritics,
           hideDividers: hideDividers,
           hideGroups: hideGroups,
+          expandable: expandable,
+          inline: inline,
           on: {
             search: function search(searchbar, query, previousQuery) {
               self.dispatchEvent('searchbar:search searchbarSearch', searchbar, query, previousQuery);
@@ -9522,7 +10036,6 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var ref = self.$refs;
-      var inputEl = ref.inputEl;
       var el = ref.el;
       var clearEl = ref.clearEl;
       var disableEl = ref.disableEl;
@@ -9619,9 +10132,11 @@
       raised: Boolean,
       raisedIos: Boolean,
       raisedMd: Boolean,
+      raisedAurora: Boolean,
       round: Boolean,
       roundIos: Boolean,
       roundMd: Boolean,
+      roundAurora: Boolean,
       tag: {
         type: String,
         default: 'div'
@@ -9635,9 +10150,11 @@
       var className = props.className;
       var raised = props.raised;
       var raisedIos = props.raisedIos;
+      var raisedAurora = props.raisedAurora;
       var raisedMd = props.raisedMd;
       var round = props.round;
       var roundIos = props.roundIos;
+      var roundAurora = props.roundAurora;
       var roundMd = props.roundMd;
       var id = props.id;
       var style = props.style;
@@ -9646,9 +10163,11 @@
         segmented: true,
         'segmented-raised': raised,
         'segmented-raised-ios': raisedIos,
+        'segmented-raised-aurora': raisedAurora,
         'segmented-raised-md': raisedMd,
         'segmented-round': round,
         'segmented-round-ios': roundIos,
+        'segmented-round-aurora': roundAurora,
         'segmented-round-md': roundMd
       }, Mixins.colorClasses(props));
       var SegmentedTag = tag;
@@ -9674,9 +10193,17 @@
     props: Object.assign({
       id: [String, Number],
       opened: Boolean,
+      top: Boolean,
+      bottom: Boolean,
+      position: String,
       backdrop: Boolean,
+      backdropEl: [String, Object, window.HTMLElement],
       closeByBackdropClick: Boolean,
-      closeByOutsideClick: Boolean
+      closeByOutsideClick: Boolean,
+      closeOnEscape: Boolean,
+      swipeToClose: Boolean,
+      swipeToStep: Boolean,
+      swipeHandler: [String, Object, window.HTMLElement]
     }, Mixins.colorProps),
 
     render: function render() {
@@ -9688,6 +10215,9 @@
       var id = props.id;
       var style = props.style;
       var className = props.className;
+      var top = props.top;
+      var bottom = props.bottom;
+      var position = props.position;
       var fixedTags;
       fixedTags = 'navbar toolbar tabbar subnavbar searchbar messagebar fab list-index'.split(' ');
       var slotsDefault = self.$slots.default;
@@ -9717,7 +10247,9 @@
         class: 'sheet-modal-inner'
       }, [staticList]);
 
-      var classes = Utils.classNames(className, 'sheet-modal', Mixins.colorClasses(props));
+      var positionComputed = 'bottom';
+      if (position) { positionComputed = position; }else if (top) { positionComputed = 'top'; }else if (bottom) { positionComputed = 'bottom'; }
+      var classes = Utils.classNames(className, 'sheet-modal', ("sheet-modal-" + positionComputed), Mixins.colorClasses(props));
       return _h('div', {
         ref: 'el',
         style: style,
@@ -9742,7 +10274,7 @@
     },
 
     created: function created() {
-      Utils.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+      Utils.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onStepOpen', 'onStepClose']);
     },
 
     mounted: function mounted() {
@@ -9753,27 +10285,32 @@
       el.addEventListener('sheet:opened', self.onOpened);
       el.addEventListener('sheet:close', self.onClose);
       el.addEventListener('sheet:closed', self.onClosed);
+      el.addEventListener('sheet:stepopen', self.onStepOpen);
+      el.addEventListener('sheet:stepclose', self.onStepClose);
       var props = self.props;
       var opened = props.opened;
       var backdrop = props.backdrop;
+      var backdropEl = props.backdropEl;
       var closeByBackdropClick = props.closeByBackdropClick;
       var closeByOutsideClick = props.closeByOutsideClick;
+      var closeOnEscape = props.closeOnEscape;
+      var swipeToClose = props.swipeToClose;
+      var swipeToStep = props.swipeToStep;
+      var swipeHandler = props.swipeHandler;
       var sheetParams = {
         el: self.$refs.el
       };
-      var useDefaultBackdrop;
       {
-        useDefaultBackdrop = self.$options.propsData.backdrop === undefined;
+        if (typeof self.$options.propsData.backdrop !== 'undefined') { sheetParams.backdrop = backdrop; }
+        if (typeof self.$options.propsData.backdropEl !== 'undefined') { sheetParams.backdropEl = backdropEl; }
         if (typeof self.$options.propsData.closeByBackdropClick !== 'undefined') { sheetParams.closeByBackdropClick = closeByBackdropClick; }
         if (typeof self.$options.propsData.closeByOutsideClick !== 'undefined') { sheetParams.closeByOutsideClick = closeByOutsideClick; }
+        if (typeof self.$options.propsData.closeOnEscape !== 'undefined') { sheetParams.closeOnEscape = closeOnEscape; }
+        if (typeof self.$options.propsData.swipeToClose !== 'undefined') { sheetParams.swipeToClose = swipeToClose; }
+        if (typeof self.$options.propsData.swipeToStep !== 'undefined') { sheetParams.swipeToStep = swipeToStep; }
+        if (typeof self.$options.propsData.swipeHandler !== 'undefined') { sheetParams.swipeHandler = swipeHandler; }
       }
-      self.$f7ready(function (f7) {
-        if (useDefaultBackdrop) {
-          sheetParams.backdrop = f7.params.sheet && f7.params.sheet.backdrop !== undefined ? f7.params.sheet.backdrop : self.$theme.md;
-        } else {
-          sheetParams.backdrop = backdrop;
-        }
-
+      self.$f7ready(function () {
         self.f7Sheet = self.$f7.sheet.create(sheetParams);
 
         if (opened) {
@@ -9787,13 +10324,23 @@
       if (self.f7Sheet) { self.f7Sheet.destroy(); }
       var el = self.$refs.el;
       if (!el) { return; }
-      el.removeEventListener('popup:open', self.onOpen);
-      el.removeEventListener('popup:opened', self.onOpened);
-      el.removeEventListener('popup:close', self.onClose);
-      el.removeEventListener('popup:closed', self.onClosed);
+      el.removeEventListener('sheet:open', self.onOpen);
+      el.removeEventListener('sheet:opened', self.onOpened);
+      el.removeEventListener('sheet:close', self.onClose);
+      el.removeEventListener('sheet:closed', self.onClosed);
+      el.removeEventListener('sheet:stepopen', self.onStepOpen);
+      el.removeEventListener('sheet:stepclose', self.onStepClose);
     },
 
     methods: {
+      onStepOpen: function onStepOpen(event) {
+        this.dispatchEvent('sheet:stepopen sheetStepOpen', event);
+      },
+
+      onStepClose: function onStepClose(event) {
+        this.dispatchEvent('sheet:stepclose sheetStepClose', event);
+      },
+
       onOpen: function onOpen(event) {
         this.dispatchEvent('sheet:open sheetOpen', event);
       },
@@ -10082,16 +10629,23 @@
       round: Boolean,
       roundMd: Boolean,
       roundIos: Boolean,
+      roundAurora: Boolean,
       fill: Boolean,
       fillMd: Boolean,
       fillIos: Boolean,
+      fillAurora: Boolean,
       large: Boolean,
       largeMd: Boolean,
       largeIos: Boolean,
+      largeAurora: Boolean,
       small: Boolean,
       smallMd: Boolean,
       smallIos: Boolean,
-      raised: Boolean
+      smallAurora: Boolean,
+      raised: Boolean,
+      raisedMd: Boolean,
+      raisedIos: Boolean,
+      raisedAurora: Boolean
     }, Mixins.colorProps),
 
     render: function render() {
@@ -10165,32 +10719,46 @@
         var round = props.round;
         var roundIos = props.roundIos;
         var roundMd = props.roundMd;
+        var roundAurora = props.roundAurora;
         var fill = props.fill;
         var fillIos = props.fillIos;
         var fillMd = props.fillMd;
+        var fillAurora = props.fillAurora;
         var large = props.large;
         var largeIos = props.largeIos;
         var largeMd = props.largeMd;
+        var largeAurora = props.largeAurora;
         var small = props.small;
         var smallIos = props.smallIos;
         var smallMd = props.smallMd;
+        var smallAurora = props.smallAurora;
         var raised = props.raised;
+        var raisedMd = props.raisedMd;
+        var raisedIos = props.raisedIos;
+        var raisedAurora = props.raisedAurora;
         var disabled = props.disabled;
         return Utils.classNames(self.props.className, 'stepper', {
           disabled: disabled,
           'stepper-round': round,
           'stepper-round-ios': roundIos,
           'stepper-round-md': roundMd,
+          'stepper-round-aurora': roundAurora,
           'stepper-fill': fill,
           'stepper-fill-ios': fillIos,
           'stepper-fill-md': fillMd,
+          'stepper-fill-aurora': fillAurora,
           'stepper-large': large,
           'stepper-large-ios': largeIos,
           'stepper-large-md': largeMd,
+          'stepper-large-aurora': largeAurora,
           'stepper-small': small,
           'stepper-small-ios': smallIos,
           'stepper-small-md': smallMd,
-          'stepper-raised': raised
+          'stepper-small-aurora': smallAurora,
+          'stepper-raised': raised,
+          'stepper-raised-ios': raisedIos,
+          'stepper-raised-md': raisedMd,
+          'stepper-raised-aurora': raisedAurora
         }, Mixins.colorClasses(props));
       },
 
@@ -10423,6 +10991,7 @@
     props: Object.assign({
       id: [String, Number],
       text: String,
+      confirmTitle: String,
       confirmText: String,
       overswipe: Boolean,
       close: Boolean,
@@ -10440,6 +11009,7 @@
       var deleteProp = props.delete;
       var close = props.close;
       var href = props.href;
+      var confirmTitle = props.confirmTitle;
       var confirmText = props.confirmText;
       var text = props.text;
       var classes = Utils.classNames(className, {
@@ -10454,7 +11024,8 @@
         attrs: {
           href: href || '#',
           id: id,
-          'data-confirm': confirmText || undefined
+          'data-confirm': confirmText || undefined,
+          'data-confirm-title': confirmTitle || undefined
         }
       }, [this.$slots['default'] || [text]]);
     },
@@ -10893,6 +11464,10 @@
         type: Boolean,
         default: undefined
       },
+      topAurora: {
+        type: Boolean,
+        default: undefined
+      },
       top: {
         type: Boolean,
         default: undefined
@@ -10902,6 +11477,10 @@
         default: undefined
       },
       bottomIos: {
+        type: Boolean,
+        default: undefined
+      },
+      bottomAurora: {
         type: Boolean,
         default: undefined
       },
@@ -10932,15 +11511,17 @@
       var noBorder = props.noBorder;
       var topMd = props.topMd;
       var topIos = props.topIos;
+      var topAurora = props.topAurora;
       var top = props.top;
       var bottomMd = props.bottomMd;
       var bottomIos = props.bottomIos;
+      var bottomAurora = props.bottomAurora;
       var bottom = props.bottom;
       var position = props.position;
       var classes = Utils.classNames(className, 'toolbar', {
         tabbar: tabbar,
-        'toolbar-bottom': self.$theme.md && bottomMd || self.$theme.ios && bottomIos || bottom || position === 'bottom',
-        'toolbar-top': self.$theme.md && topMd || self.$theme.ios && topIos || top || position === 'top',
+        'toolbar-bottom': self.$theme.md && bottomMd || self.$theme.ios && bottomIos || self.$theme.aurora && bottomAurora || bottom || position === 'bottom',
+        'toolbar-top': self.$theme.md && topMd || self.$theme.ios && topIos || self.$theme.aurora && topAurora || top || position === 'top',
         'tabbar-labels': labels,
         'tabbar-scrollable': scrollable,
         'toolbar-hidden': hidden,
@@ -10996,6 +11577,216 @@
     }
   };
 
+  var f7TreeviewItem = {
+    props: Object.assign({
+      id: [String, Number],
+      toggle: {
+        type: Boolean,
+        default: undefined
+      },
+      itemToggle: Boolean,
+      selectable: Boolean,
+      selected: Boolean,
+      opened: Boolean,
+      label: String,
+      loadChildren: Boolean,
+      link: {
+        type: [Boolean, String],
+        default: undefined
+      }
+    }, Mixins.colorProps, Mixins.linkActionsProps, Mixins.linkRouterProps, Mixins.linkIconProps),
+    name: 'f7-treeview-item',
+
+    render: function render() {
+      var _h = this.$createElement;
+      var self = this;
+      var props = self.props;
+      var id = props.id;
+      var style = props.style;
+      var toggle = props.toggle;
+      var label = props.label;
+      var icon = props.icon;
+      var iconMaterial = props.iconMaterial;
+      var iconIon = props.iconIon;
+      var iconFa = props.iconFa;
+      var iconF7 = props.iconF7;
+      var iconMd = props.iconMd;
+      var iconIos = props.iconIos;
+      var iconAurora = props.iconAurora;
+      var iconSize = props.iconSize;
+      var iconColor = props.iconColor;
+      var link = props.link;
+      var slots = self.$slots;
+      var hasChildren = slots.default && slots.default.length || slots.children && slots.children.length || slots['children-start'] && slots['children-start'].length;
+      var needToggle = typeof toggle === 'undefined' ? hasChildren : toggle;
+      var iconEl;
+
+      if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
+        iconEl = _h(f7Icon, {
+          attrs: {
+            material: iconMaterial,
+            f7: iconF7,
+            fa: iconFa,
+            ion: iconIon,
+            icon: icon,
+            md: iconMd,
+            ios: iconIos,
+            aurora: iconAurora,
+            color: iconColor,
+            size: iconSize
+          }
+        });
+      }
+
+      var TreeviewRootTag = link || link === '' ? 'a' : 'div';
+      return _h('div', {
+        ref: 'el',
+        style: style,
+        class: self.classes,
+        attrs: {
+          id: id
+        }
+      }, [_h(TreeviewRootTag, __vueComponentTransformJSXProps(Object.assign({
+        ref: 'rootEl',
+        class: self.itemRootClasses
+      }, self.itemRootAttrs)), [this.$slots['root-start'], needToggle && _h('div', {
+        class: 'treeview-toggle'
+      }), _h('div', {
+        class: 'treeview-item-content'
+      }, [this.$slots['content-start'], iconEl, this.$slots['media'], _h('div', {
+        class: 'treeview-item-label'
+      }, [this.$slots['label-start'], label, this.$slots['label']]), this.$slots['content'], this.$slots['content-end']]), this.$slots['root'], this.$slots['root-end']]), hasChildren && _h('div', {
+        class: 'treeview-item-children'
+      }, [this.$slots['children-start'], this.$slots['default'], this.$slots['children']])]);
+    },
+
+    computed: {
+      itemRootAttrs: function itemRootAttrs() {
+        var self = this;
+        var props = self.props;
+        var link = props.link;
+        var href = link;
+        if (link === true) { href = '#'; }
+        if (link === false) { href = undefined; }
+        return Utils.extend({
+          href: href
+        }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
+      },
+
+      itemRootClasses: function itemRootClasses() {
+        var self = this;
+        var props = self.props;
+        var selectable = props.selectable;
+        var selected = props.selected;
+        var itemToggle = props.itemToggle;
+        return Utils.classNames('treeview-item-root', {
+          'treeview-item-selectable': selectable,
+          'treeview-item-selected': selected,
+          'treeview-item-toggle': itemToggle
+        }, Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
+      },
+
+      classes: function classes() {
+        var self = this;
+        var props = self.props;
+        var className = props.className;
+        var opened = props.opened;
+        var loadChildren = props.loadChildren;
+        return Utils.classNames(className, 'treeview-item', {
+          'treeview-item-opened': opened,
+          'treeview-load-children': loadChildren
+        }, Mixins.colorClasses(props));
+      },
+
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    },
+
+    created: function created() {
+      Utils.bindMethods(this, ['onClick', 'onOpen', 'onClose', 'onLoadChildren']);
+    },
+
+    mounted: function mounted() {
+      var self = this;
+      var ref = self.$refs;
+      var el = ref.el;
+      var rootEl = ref.rootEl;
+      rootEl.addEventListener('click', self.onClick);
+      el.addEventListener('treeview:open', self.onOpen);
+      el.addEventListener('treeview:close', self.onClose);
+      el.addEventListener('treeview:loadchildren', self.onLoadChildren);
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      var self = this;
+      var ref = self.$refs;
+      var el = ref.el;
+      var rootEl = ref.rootEl;
+      rootEl.removeEventListener('click', self.onClick);
+      el.removeEventListener('treeview:open', self.onOpen);
+      el.removeEventListener('treeview:close', self.onClose);
+      el.removeEventListener('treeview:loadchildren', self.onLoadChildren);
+    },
+
+    methods: {
+      onClick: function onClick(event) {
+        this.dispatchEvent('click', event);
+      },
+
+      onOpen: function onOpen(event) {
+        this.dispatchEvent('treeview:open treeviewOpen', event);
+      },
+
+      onClose: function onClose(event) {
+        this.dispatchEvent('treeview:close treeviewClose', event);
+      },
+
+      onLoadChildren: function onLoadChildren(event) {
+        this.dispatchEvent('treeview:loadchildren treeviewLoadChildren', event, event.detail);
+      },
+
+      dispatchEvent: function dispatchEvent(events) {
+        var args = [], len = arguments.length - 1;
+        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+      }
+
+    }
+  };
+
+  var f7Treeview = {
+    props: Object.assign({
+      id: [String, Number]
+    }, Mixins.colorProps),
+    name: 'f7-treeview',
+
+    render: function render() {
+      var _h = this.$createElement;
+      var props = this.props;
+      var className = props.className;
+      var id = props.id;
+      var style = props.style;
+      var classes = Utils.classNames(className, 'treeview', Mixins.colorClasses(props));
+      return _h('div', {
+        style: style,
+        class: classes,
+        attrs: {
+          id: id
+        }
+      }, [this.$slots['default']]);
+    },
+
+    computed: {
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    }
+  };
+
   var f7View = {
     name: 'f7-view',
     props: Object.assign({
@@ -11031,6 +11822,11 @@
       mdSwipeBackAnimateOpacity: Boolean,
       mdSwipeBackActiveArea: Number,
       mdSwipeBackThreshold: Number,
+      auroraSwipeBack: Boolean,
+      auroraSwipeBackAnimateShadow: Boolean,
+      auroraSwipeBackAnimateOpacity: Boolean,
+      auroraSwipeBackActiveArea: Number,
+      auroraSwipeBackThreshold: Number,
       pushState: Boolean,
       pushStateRoot: String,
       pushStateAnimate: Boolean,
@@ -11471,7 +12267,7 @@
   };
 
   /**
-   * Framework7 Vue 4.0.1
+   * Framework7 Vue 4.4.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -11479,13 +12275,17 @@
    *
    * Released under the MIT License
    *
-   * Released on: February 8, 2019
+   * Released on: May 13, 2019
    */
 
   var Plugin = {
     name: 'phenomePlugin',
+    installed: false,
     install: function install(params) {
       if ( params === void 0 ) params = {};
+
+      if (Plugin.installed) { return; }
+      Plugin.installed = true;
 
       var Framework7 = this;
       f7.Framework7 = Framework7;
@@ -11501,15 +12301,16 @@
       Vue.component('f7-actions-label', f7ActionsLabel);
       Vue.component('f7-actions', f7Actions);
       Vue.component('f7-app', f7App);
-      Vue.component('f7-badge', F7Badge);
+      Vue.component('f7-appbar', f7Appbar);
+      Vue.component('f7-badge', f7Badge);
       Vue.component('f7-block-footer', f7BlockFooter);
       Vue.component('f7-block-header', f7BlockHeader);
       Vue.component('f7-block-title', f7BlockTitle);
       Vue.component('f7-block', f7Block);
       Vue.component('f7-button', f7Button);
-      Vue.component('f7-card-content', F7CardContent);
-      Vue.component('f7-card-footer', F7CardFooter);
-      Vue.component('f7-card-header', F7CardHeader);
+      Vue.component('f7-card-content', f7CardContent);
+      Vue.component('f7-card-footer', f7CardFooter);
+      Vue.component('f7-card-header', f7CardHeader);
       Vue.component('f7-card', f7Card);
       Vue.component('f7-checkbox', f7Checkbox);
       Vue.component('f7-chip', f7Chip);
@@ -11518,15 +12319,15 @@
       Vue.component('f7-fab-buttons', f7FabButtons);
       Vue.component('f7-fab', f7Fab);
       Vue.component('f7-gauge', f7Gauge);
-      Vue.component('f7-icon', F7Icon);
-      Vue.component('f7-input', F7Input);
-      Vue.component('f7-link', F7Link);
+      Vue.component('f7-icon', f7Icon);
+      Vue.component('f7-input', f7Input);
+      Vue.component('f7-link', f7Link);
       Vue.component('f7-list-button', f7ListButton);
       Vue.component('f7-list-group', f7ListGroup);
       Vue.component('f7-list-index', f7ListIndex);
       Vue.component('f7-list-input', f7ListInput);
       Vue.component('f7-list-item-cell', f7ListItemCell);
-      Vue.component('f7-list-item-content', F7ListItemContent);
+      Vue.component('f7-list-item-content', f7ListItemContent);
       Vue.component('f7-list-item-row', f7ListItemRow);
       Vue.component('f7-list-item', f7ListItem);
       Vue.component('f7-list', f7List);
@@ -11545,12 +12346,12 @@
       Vue.component('f7-messagebar', f7Messagebar);
       Vue.component('f7-messages-title', f7MessagesTitle);
       Vue.component('f7-messages', f7Messages);
-      Vue.component('f7-nav-left', F7NavLeft);
-      Vue.component('f7-nav-right', F7NavRight);
+      Vue.component('f7-nav-left', f7NavLeft);
+      Vue.component('f7-nav-right', f7NavRight);
       Vue.component('f7-nav-title-large', f7NavTitleLarge);
-      Vue.component('f7-nav-title', F7NavTitle);
+      Vue.component('f7-nav-title', f7NavTitle);
       Vue.component('f7-navbar', f7Navbar);
-      Vue.component('f7-page-content', F7PageContent);
+      Vue.component('f7-page-content', f7PageContent);
       Vue.component('f7-page', f7Page);
       Vue.component('f7-panel', f7Panel);
       Vue.component('f7-photo-browser', f7PhotoBrowser);
@@ -11559,8 +12360,8 @@
       Vue.component('f7-preloader', f7Preloader);
       Vue.component('f7-progressbar', f7Progressbar);
       Vue.component('f7-radio', f7Radio);
-      Vue.component('f7-range', F7Range);
-      Vue.component('f7-routable-modals', RoutableModals);
+      Vue.component('f7-range', f7Range);
+      Vue.component('f7-routable-modals', f7RoutableModals);
       Vue.component('f7-row', f7Row);
       Vue.component('f7-searchbar', f7Searchbar);
       Vue.component('f7-segmented', f7Segmented);
@@ -11576,8 +12377,10 @@
       Vue.component('f7-swiper', f7Swiper);
       Vue.component('f7-tab', f7Tab);
       Vue.component('f7-tabs', f7Tabs);
-      Vue.component('f7-toggle', F7Toggle);
+      Vue.component('f7-toggle', f7Toggle);
       Vue.component('f7-toolbar', f7Toolbar);
+      Vue.component('f7-treeview-item', f7TreeviewItem);
+      Vue.component('f7-treeview', f7Treeview);
       Vue.component('f7-view', f7View);
       Vue.component('f7-views', f7Views);
 
@@ -11592,15 +12395,18 @@
       var theme = params.theme;
       if (theme === 'md') { $theme.md = true; }
       if (theme === 'ios') { $theme.ios = true; }
+      if (theme === 'aurora') { $theme.aurora = true; }
       if (!theme || theme === 'auto') {
-        $theme.ios = !!(Framework7.Device || Framework7.device).ios;
-        $theme.md = !(Framework7.Device || Framework7.device).ios;
+        $theme.ios = !!Framework7.device.ios;
+        $theme.aurora = Framework7.device.desktop && Framework7.device.electron;
+        $theme.md = !$theme.ios && !$theme.aurora;
       }
       Object.defineProperty(Extend.prototype, '$theme', {
         get: function get() {
           return {
             ios: f7.instance ? f7.instance.theme === 'ios' : $theme.ios,
             md: f7.instance ? f7.instance.theme === 'md' : $theme.md,
+            aurora: f7.instance ? f7.instance.theme === 'aurora' : $theme.aurora,
           };
         },
       });

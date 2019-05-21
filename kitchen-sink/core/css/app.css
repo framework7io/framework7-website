@@ -95,6 +95,11 @@
   height: 24px;
   border-radius: 4px;
 }
+.aurora .demo-list-icon, .aurora .icon-f7, .aurora .icon-vi {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
 
 /* Lazy Demo */
 img.demo-lazy {
@@ -224,8 +229,14 @@ div.demo-lazy {
   color: #8e8e93;
 }
 /* Panels Demo */
+.panel {
+  min-width: 150px;
+  max-width: 90%;
+}
 .ios .panel-right.panel-active ~ .view-main:after,
-.ios .panel-right.panel-closing ~ .view-main:after {
+.ios .panel-right.panel-closing ~ .view-main:after,
+.aurora .panel-right.panel-active ~ .view-main:after,
+.aurora .panel-right.panel-closing ~ .view-main:after {
   content: '';
   height: 100%;
   width: 1px;
@@ -236,7 +247,9 @@ div.demo-lazy {
   z-index: 1000;
 }
 .ios .theme-dark .panel-right.panel-active ~ .view-main:after,
-.ios .theme-dark .panel-right.panel-closing ~ .view-main:after {
+.ios .theme-dark .panel-right.panel-closing ~ .view-main:after,
+.aurora .theme-dark .panel-right.panel-active ~ .view-main:after,
+.aurora .theme-dark .panel-right.panel-closing ~ .view-main:after {
   background: #282828;
 }
 
@@ -462,6 +475,9 @@ code {
   text-align: center;
   line-height: 100px;
 }
+.theme-dark .elevation-demo {
+  background: none;
+}
 
 /* Demo Color Themes */
 .demo-theme-picker {
@@ -575,6 +591,49 @@ code {
     margin-left: 0;
   }
 }
-.view-master-detail .navbar-master-detail .link.back {
+.view-master-detail .navbar-master-detail .link.back,
+.view-master-detail .page-master-detail .navbar .link.back {
   display: none;
+}
+
+/* Demo Popup & Sheet Swipe To Close */
+.demo-popup-swipe-handler {
+  --f7-popup-border-radius: 15px 15px 0 0;
+  --f7-popup-tablet-border-radius: 15px;
+  --f7-page-bg-color: #fff;
+  --f7-block-strong-border-color: transparent;
+  height: calc(100% - var(--f7-navbar-height) - var(--f7-statusbar-height));
+  top: calc(var(--f7-navbar-height) + var(--f7-statusbar-height))
+}
+.demo-popup-swipe-handler .page-content {
+  padding-top: 16px;
+}
+.demo-sheet-swipe-to-close,
+.demo-sheet-swipe-to-step {
+  --f7-sheet-bg-color: #fff;
+  --f7-sheet-border-color: transparent;
+  border-radius: 15px 15px 0 0;
+  overflow: hidden;
+}
+.swipe-handler {
+  height: 16px;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 0;
+  background: #fff;
+  cursor: pointer;
+  z-index: 10;
+}
+.swipe-handler:after {
+  content: '';
+  width: 36px;
+  height: 6px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -18px;
+  margin-top: -3px;
+  border-radius: 3px;
+  background: #666;
 }

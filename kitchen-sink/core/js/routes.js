@@ -21,7 +21,7 @@ var routes = [
             <div class="left">\
               <a href="#" class="link back">\
                 <i class="icon icon-back"></i>\
-                <span class="ios-only">Back</span>\
+                <span class="if-not-md">Back</span>\
               </a>\
             </div>\
             <div class="title">Panel Page 1</div>\
@@ -45,7 +45,7 @@ var routes = [
             <div class="left">\
               <a href="#" class="link back">\
                 <i class="icon icon-back"></i>\
-                <span class="ios-only">Back</span>\
+                <span class="if-not-md">Back</span>\
               </a>\
             </div>\
             <div class="title">Panel Page 2</div>\
@@ -69,6 +69,10 @@ var routes = [
   {
     path: '/action-sheet/',
     componentUrl: './pages/action-sheet.html',
+  },
+  {
+    path: '/appbar/',
+    componentUrl: './pages/appbar.html',
   },
   {
     path: '/autocomplete/',
@@ -100,11 +104,15 @@ var routes = [
   },
   {
     path: '/checkbox/',
-    url: './pages/checkbox.html',
+    componentUrl: './pages/checkbox.html',
   },
   {
     path: '/chips/',
     componentUrl: './pages/chips.html',
+  },
+  {
+    path: '/color-picker/',
+    componentUrl: './pages/color-picker.html',
   },
   {
     path: '/contacts-list/',
@@ -451,6 +459,10 @@ var routes = [
   {
     path: '/tooltip/',
     componentUrl: './pages/tooltip.html',
+  },
+  {
+    path: '/treeview/',
+    componentUrl: './pages/treeview.html',
   },
   {
     path: '/timeline/',

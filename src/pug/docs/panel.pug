@@ -15,41 +15,59 @@ block content
     h2 Panel Layout
     p Let's look how to add Side Panels to our App. We may include up to 2 panels to our App, one on left side and another one on right side. We should add panels' HTML right in the beginning of the app root element (or &lt;body&gt; in case there is no root element in use):
     :code(lang="html")
-          <body>
-            <!-- App root element -->
-            <div id="app">
-              <!-- Left panel -->
-              <div class="panel panel-left">
-                  ... panel content goes here ...
-              </div>
+      <body>
+        <!-- App root element -->
+        <div id="app">
+          <!-- Left panel -->
+          <div class="panel panel-left">
+              ... panel content goes here ...
+          </div>
 
-              <!-- Right panel -->
-              <div class="panel panel-right">
-                  ... panel content goes here ...
-              </div>
+          <!-- Right panel -->
+          <div class="panel panel-right">
+              ... panel content goes here ...
+          </div>
 
-              ...
-            </div>
-          </body>
+          ...
+        </div>
+      </body>
     h2 Panel Effect
     p After we added panels we need to choose opening effect for each panel. There could be one of two effects: <b>"Reveal"</b> (when panel moves out whole app's content) or <b>"Cover"</b> (when panel overlays app's content). If you want to use "Reveal" effect you should add additional <code><b>panel-reveal</b></code> class to Panel, or <code><b>panel-cover</b></code> for cover effect:
     :code(lang="html")
-          <body>
-            <!-- App root element -->
-            <div id="app">
-              <!-- Left panel, let it be with reveal effect -->
-              <div class="panel panel-left panel-reveal">
-                  ... panel content goes here ...
-              </div>
+      <body>
+        <!-- App root element -->
+        <div id="app">
+          <!-- Left panel, let it be with reveal effect -->
+          <div class="panel panel-left panel-reveal">
+              ... panel content goes here ...
+          </div>
 
-              <!-- Right panel, with cover effect -->
-              <div class="panel panel-right panel-cover">
-                  ... panel content goes here ...
-              </div>
+          <!-- Right panel, with cover effect -->
+          <div class="panel panel-right panel-cover">
+              ... panel content goes here ...
+          </div>
 
-              ...
-            </div>
-          </body>
+          ...
+        </div>
+      </body>
+    h2 Resizable Panel
+    p Each Panel can be resizable. To make Panel resizable we just need to add <code>panel-resizable</code> class to Panel element:
+    :code(lang="html")
+      <body>
+        <!-- App root element -->
+        <div id="app">
+          <!-- Make left panel resizable -->
+          <div class="panel panel-left panel-resizable">
+              ... panel content goes here ...
+          </div>
+
+          <!-- Make right panel resizable -->
+          <div class="panel panel-right panel-resizable">
+              ... panel content goes here ...
+          </div>
+          ...
+        </div>
+      </body>
     h2 Panel App Parameters
     p It is possible to control some default panels behavior using global <a href="app.html#app-parameters">app parameters</a> by passing panels related parameters under <code>panel</code> parameter:
     table.params-table
@@ -107,13 +125,13 @@ block content
           td Enable/disable ability to close panel by clicking outside of panel (on panel's backdrop)
     p For example:
     :code(lang="js")
-          var app = new Framework7({
-            panel: {
-              swipe: 'left',
-              leftBreakpoint: 768,
-              rightBreakpoint: 1440,
-            }
-          });
+      var app = new Framework7({
+        panel: {
+          swipe: 'left',
+          leftBreakpoint: 768,
+          rightBreakpoint: 1440,
+        }
+      });
     h2 Panel App Methods
     p Let's look at related App methods to work with Panel:
     .method-wrap
@@ -137,7 +155,18 @@ block content
           |  - <span class="parameter-type">string</span>. Panel to close. Optional, by default will close any opened panel.
         li
           span.parameter animate
-          |  - <span class="parameter-type">boolean</span>. Should it be opened with animation or not. Optional, by default is <code>true</code>
+          |  - <span class="parameter-type">boolean</span>. Should it be closed with animation or not. Optional, by default is <code>true</code>
+    .method-wrap
+      p
+        span.method app.panel.toggle(<span>side, animate</span>)
+        | - toggle panel
+      ul.method-parameters
+        li
+          span.parameter side
+          |  - <span class="parameter-type">string</span>. Panel to toggle. Optional, by default will toggle any opened panel.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Should it be opened/closed with animation or not. Optional, by default is <code>true</code>
     .method-wrap
       p
         span.method app.panel.create(<span>parameters</span>)
@@ -175,6 +204,22 @@ block content
           |  - <span class="parameter-type">string</span>. Panel to disable swipe actions on
     .method-wrap
       p
+        span.method app.panel.enableResizable(<span>side</span>)
+        | - makes specified panel resizable
+      ul.method-parameters
+        li
+          span.parameter side
+          |  - <span class="parameter-type">string</span>. Side of the panel that needs to be resizable
+    .method-wrap
+      p
+        span.method app.panel.disableResizable(<span>side</span>)
+        | - disable resizable panel
+      ul.method-parameters
+        li
+          span.parameter side
+          |  - <span class="parameter-type">string</span>. Side of the panel to disable resizing
+    .method-wrap
+      p
         span.method app.panel.left
         | - left panel instance
     .method-wrap
@@ -206,11 +251,16 @@ block content
           td string
           td
           td Can be <code>cover</code> or <code>reveal</code>. If not passed then will be determined based on <code>panel-cover</code> or <code>panel-reveal</code> element classes
+        tr
+          td resizable
+          td boolean
+          td
+          td If not passed then will be determined based on <code>panel-resizable</code> class
     p For example:
     :code(lang="js")
-          var panel = app.panel.create({
-            el: '.panel-left',
-          })
+      var panel = app.panel.create({
+        el: '.panel-left',
+      })
 
     h2 Panel Methods & Properties
     p After we created Panel instance (by calling <code>app.panel.create</code>) or after we got Panel instance (by calling <code>app.panel.get</code>) we may use its useful methods and properties:
@@ -262,6 +312,13 @@ block content
                 span.parameter animate
                 |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation or not
         tr
+          td panel.toggle(<span>animate</span>)
+          td Toggle panel. Where
+            ul.method-parameters
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation or not
+        tr
           td panel.destroy()
           td Destroy panel instance
         tr
@@ -288,47 +345,47 @@ block content
         li
           p To close panel we need to add <code><b>panel-close</b></code> class to any HTML element (prefered to link)
         li
-          p If you have two panels in app, such link will open/close Left panel by default
+          p To toggle panel we need to add <code><b>panel-toggle</b></code> class to any HTML element (prefered to link)
         li
           p If you want to specify which panel should opened/closed, then it could be done via additional <code><b>data-panel="left</b></code> attribute on this HTML element
     p According to above note:
     :code(lang="html")
-          <body>
-            <div id="app">
-              <!-- Left Panel with Reveal effect -->
-              <div class="panel panel-left panel-reveal">
-                <div class="content-block">
-                  ...
-                  <!-- Clicking on link with "panel-close" class will close panel -->
-                  <p><a href="#" class="panel-close">Close me</a></p>
-                  <!-- Click on link with "panel-open" and data-panel="right" attribute will open Right panel -->
-                  <p><a href="#" data-panel="right" class="panel-close">Open Right Panel</a></p>
-                </div>
-              </div>
-
-              <!-- Right Panel with Cover effect -->
-              <div class="panel panel-right panel-cover">
-                <div class="content-block">
-                  ...
-                  <!-- Click on link with "panel-close" class will close panel -->
-                  <p><a href="#" class="panel-close">Close me</a></p>
-                  <!-- Click on link with "panel-open" and data-panel="left" attribute will open Left panel -->
-                  <p><a href="#" data-panel="left" class="panel-open">Open Left Panel</a></p>
-                </div>
-              </div>
-
+      <body>
+        <div id="app">
+          <!-- Left Panel with Reveal effect -->
+          <div class="panel panel-left panel-reveal">
+            <div class="content-block">
               ...
-              <div class="page-content">
-                <div class="content-block">
-                  <!-- If no data-panel attribute, Left panel will be opened by default -->
-                  <p><a href="#" class="panel-open">Open Left Panel</a></p>
-                  <!-- Click on link with "panel-open" and data-panel="right" attribute will open Right panel -->
-                  <p><a href="#" data-panel="right" class="panel-open">Open Right Panel</a></p>
-                </div>
-              </div>
+              <!-- Clicking on link with "panel-close" class will close panel -->
+              <p><a href="#" class="panel-close">Close me</a></p>
+              <!-- Click on link with "panel-open" and data-panel="right" attribute will open Right panel -->
+              <p><a href="#" data-panel="right" class="panel-close">Open Right Panel</a></p>
             </div>
-            ...
-          </body>
+          </div>
+
+          <!-- Right Panel with Cover effect -->
+          <div class="panel panel-right panel-cover">
+            <div class="content-block">
+              ...
+              <!-- Click on link with "panel-close" class will close panel -->
+              <p><a href="#" class="panel-close">Close me</a></p>
+              <!-- Click on link with "panel-open" and data-panel="left" attribute will open Left panel -->
+              <p><a href="#" data-panel="left" class="panel-open">Open Left Panel</a></p>
+            </div>
+          </div>
+
+          ...
+          <div class="page-content">
+            <div class="content-block">
+              <!-- If no data-panel attribute, Left panel will be opened by default -->
+              <p><a href="#" class="panel-open">Open Left Panel</a></p>
+              <!-- Click on link with "panel-open" and data-panel="right" attribute will open Right panel -->
+              <p><a href="#" data-panel="right" class="panel-open">Open Right Panel</a></p>
+            </div>
+          </div>
+        </div>
+        ...
+      </body>
     h2 Routable Panels
     .important-note
       p
@@ -339,60 +396,60 @@ block content
       li with enabled Push State, the same Panel will be opened when you refresh browser, navigate back and forward in history,
       li with routable Panels you can load Panel itself and its content in the same ways as for pages and modals, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
     :code(lang="js")
-          routes = [
-            ...
-            // Creates Panel from passed HTML string
-            {
-              path: '/left-panel/',
-              panel: {
-                content: `
-                  <div class="panel panel-left panel-cover">
-                    <div class="view">
-                      <div class="page">
-                        ...
-                      </div>
-                    </div>
-                  </div>
-                `
-              }
-            },
-            // Load Panel from file via Ajax
-            {
-              path: '/right-panel-ajax/',
-              panel: {
-                url: './right-panel.html',
-                /* right-panel.html contains:
-                <div class="panel panel-right panel-reveal">
-                  <div class="view">
-                    <div class="page">
-                      ...
-                    </div>
+      routes = [
+        ...
+        // Creates Panel from passed HTML string
+        {
+          path: '/left-panel/',
+          panel: {
+            content: `
+              <div class="panel panel-left panel-cover">
+                <div class="view">
+                  <div class="page">
+                    ...
                   </div>
                 </div>
-                */
-              },
-            },
-            // Load Panel from component file
-            {
-              path: '/panel-component/',
-              panel: {
-                componentUrl: './panel-component.html',
-                /* panel-component.html contains:
-                <template>
-                  <div class="panel panel-left panel-cover">
-                    <div class="view">
-                      <div class="page">
-                        ...
-                      </div>
-                    </div>
+              </div>
+            `
+          }
+        },
+        // Load Panel from file via Ajax
+        {
+          path: '/right-panel-ajax/',
+          panel: {
+            url: './right-panel.html',
+            /* right-panel.html contains:
+            <div class="panel panel-right panel-reveal">
+              <div class="view">
+                <div class="page">
+                  ...
+                </div>
+              </div>
+            </div>
+            */
+          },
+        },
+        // Load Panel from component file
+        {
+          path: '/panel-component/',
+          panel: {
+            componentUrl: './panel-component.html',
+            /* panel-component.html contains:
+            <template>
+              <div class="panel panel-left panel-cover">
+                <div class="view">
+                  <div class="page">
+                    ...
                   </div>
-                </template>
-                <style>...</style>
-                <script>...</script>
-                */
-              },
-            },
-          ]
+                </div>
+              </div>
+            </template>
+            <style>...</style>
+            <script>...</script>
+            */
+          },
+        },
+      ]
     p According to example above:
     ul
       li when you click on link with <code>/left-panel/</code> href attribute it will open Panel from specified string content,
@@ -442,6 +499,10 @@ block content
           td panel:breakpoint
           td Panel Element<span>&lt;div class="panel"&gt;</span>
           td Event will be triggered when it becomes visible/hidden when app width matches its breakpoint
+        tr
+          td panel:resize
+          td Panel Element<span>&lt;div class="panel"&gt;</span>
+          td Event will be triggered on resizable panel resize
         tr
           td panel:beforedestroy
           td Panel Element<span>&lt;div class="panel"&gt;</span>
@@ -529,6 +590,15 @@ block content
           td app
           td <span>(panel)</span>
         tr
+          td resize
+          td panel
+          td <span>(panel, newPanelWidth)</span>
+          td(rowspan="2") Event will be triggered on resizable panel resize
+        tr
+          td panelResize
+          td app
+          td <span>(panel)</span>
+        tr
           td beforeDestroy
           td panel
           td <span>(panel)</span>
@@ -545,14 +615,14 @@ block content
       :code(lang="html")
         <body>
           <div id="app">
-            <div class="panel panel-left panel-reveal">
+            <div class="panel panel-left panel-reveal panel-resizable">
               <div class="block">
                 <p>Left Panel content here</p>
                 <p><a class="panel-close" href="#">Close me</a></p>
                 <p><a class="panel-open" href="#" data-panel="right">Open Right Panel</a></p>
               </div>
             </div>
-            <div class="panel panel-right panel-cover">
+            <div class="panel panel-right panel-cover panel-resizable">
               <div class="block">
                 <p>Right Panel content here</p>
                 <p><a class="panel-close" href="#">Close me</a></p>
@@ -578,6 +648,12 @@ block content
             </div>
           </div>
         </body>
+      :code(lang="css")
+        /* Limit resizable panel width */
+        .panel {
+          min-width: 100px;
+          max-width: 90vw;
+        }
       :code(lang="js")
         var app = new Framework7();
 
@@ -606,6 +682,9 @@ block content
         });
         app.on('panelClosed', function (panel) {
           console.log('Panel ' + panel.side + ': closed');
+        });
+        app.on('panelResize', function (panel, newPanelWidth) {
+          console.log('Panel resized to ' + newPanelWidth + 'px');
         });
 
 

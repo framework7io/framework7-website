@@ -59,6 +59,16 @@ block content
           td
           td HTML element or string CSS selector of target element. Required when converstion to popover is in use
         tr
+          td backdrop
+          td boolean
+          td
+          td Enables action sheet backdrop (dark semi transparent layer behind). By default inherits same app parameter value (<code>true</code>)
+        tr
+          td backdropEl
+          td string<br>object
+          td
+          td HTML element or string CSS selector of custom backdrop element
+        tr
           td closeByBackdropClick
           td boolean
           td true
@@ -68,6 +78,10 @@ block content
           td boolean
           td false
           td When enabled, action sheet will be closed on when click outside of it. By default inherits same app parameter value
+        tr
+          td closeOnEscape
+          td boolean
+          td When enabled, action sheet will be closed on ESC keyboard key press
         tr
           th(colspan="4") &lt;f7-actions-label&gt; properties
         tr

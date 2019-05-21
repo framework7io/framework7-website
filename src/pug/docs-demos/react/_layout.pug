@@ -21,6 +21,7 @@ html
     script.
       var theme = 'ios';
       if (location.href.indexOf('theme=md') >= 0) theme = 'md';
+      if (location.href.indexOf('theme=aurora') >= 0) theme = 'aurora';
 
       if (Framework7.use) Framework7.use(Framework7React, { theme: theme });
       else if (Framework7.Class && Framework7.Class.use) Framework7.Class.use(Framework7React, { theme: theme });

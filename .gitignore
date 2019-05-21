@@ -24,6 +24,7 @@ packages/core/components/*.css
 packages/core/components/**/*.js
 packages/core/components/**/*.d.ts
 packages/core/components/**/*.less
+packages/core/components/**/*.scss
 !packages/core/components/**/*-vars.less
 packages/core/less
 packages/core/modules

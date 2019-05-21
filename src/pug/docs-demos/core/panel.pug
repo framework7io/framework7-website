@@ -1,6 +1,6 @@
 extends _layout
 block content
-  .panel.panel-left.panel-reveal
+  .panel.panel-left.panel-reveal.panel-resizable
     .block
       p Left Panel content here
       p
@@ -8,7 +8,7 @@ block content
       p
         a(href="#", data-panel="right").panel-open Open Right Panel
 
-  .panel.panel-right.panel-cover
+  .panel.panel-right.panel-cover.panel-resizable
     .block
       p Right Panel content here
       p
@@ -30,6 +30,11 @@ block content
             a(href="#", data-panel="right").panel-open Open Right Panel
 
 block scripts
+  style.
+    .panel {
+      min-width: 100px;
+      max-width: 90vw;
+    }
   script.
     var app = new Framework7();
 
@@ -58,4 +63,7 @@ block scripts
     });
     app.on('panelClosed', function (panel) {
       console.log('Panel ' + panel.side + ': closed');
+    });
+    app.on('panelResize', function (panel, newPanelWidth) {
+      console.log('Panel resized to ' + newPanelWidth + 'px');
     });

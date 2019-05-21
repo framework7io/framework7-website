@@ -1,5 +1,83 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/kidoverse.png"
+  iconRounded: true
+  title: "Kidoverse"
+  author:
+    url: https://kidoverse.app
+    name: Kidoverse
+  links:
+    appstore: https://itunes.apple.com/us/app/kidoverse/id1461503721?mt=8
+    website: https://kidoverse.app
+  description: |
+    Kidoverse - application for young children, where they can learn, play, explore the world around us or just have fun.
+    Kidoverse is based on different "sets":
+    - Educational sets, like Alphabet and Numbers
+    - Cognitive sets: Animals, Vehicles, Fruits, Vegetables, Rainbow Colors
+    - Musical instruments: Piano, Violin, Guitar, Saxophone, Marimba and others
+    - DJ sets: special musical sets where child can feel like a little DJ
+    The collection of sets is constantly being replenished.
+    New sets every month!
+  screenshots:
+  - "#{cdn}/i/showcase/kidoverse1.png"
+  - "#{cdn}/i/showcase/kidoverse2.png"
+  - "#{cdn}/i/showcase/kidoverse3.png"
+  - "#{cdn}/i/showcase/kidoverse4.png"
+  - "#{cdn}/i/showcase/kidoverse5.png"
+  - "#{cdn}/i/showcase/kidoverse6.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/vetcalculators.png"
+  iconRounded: true
+  title: "Vetcalculators"
+  author:
+    url: https://www.vetcalculators.com/app.html/
+    name: Michael Sozanski DVM, DABVP
+  links:
+    appstore: https://itunes.apple.com/us/app/vetcalculators/id1403466061?ls=1&mt=8
+    googleplay: https://play.google.com/store/apps/details?id=com.vetcalculators.android&hl=en_US
+    website: https://www.vetcalculators.com/app.html/
+  description: |
+    Vetcalculators is a collection of drug dosage calculators for Veterinarians and technicians
+    from the number one veterinary calculator website, Vetcalculators.com.
+    It includes calculators for Emergency and Anesthetic drugs, Constant Rate Infusions (CRI's),
+    IV Fluid Rates, Chocolate Toxicity, Calorie requirements, Blood Transfusions,
+    Blood Glucose Curve Generator and Unit conversion calculators.
+  features:
+  - Includes 9 Veterinary Calculators
+  - Calculates drug dosages as you type, saves your results.
+  - Includes a built in database to store your own drugs.
+  - Include patient info.
+  - Built in Numeric Calculator
+  - Set color and theme preferences
+  - Easily print or share PDF's of your results
+  screenshots:
+  - "#{cdn}/i/showcase/vetcalculators-1.jpg"
+  - "#{cdn}/i/showcase/vetcalculators-2.jpg"
+  - "#{cdn}/i/showcase/vetcalculators-3.jpg"
+  - "#{cdn}/i/showcase/vetcalculators-4.jpg"
+  - "#{cdn}/i/showcase/vetcalculators-5.jpg"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/collect.png"
+  iconRounded: true
+  title: "Collect"
+  author:
+    url: https://collect-app.com/
+    name: Dirk Holtwick
+  links:
+    appstore: https://itunes.apple.com/us/app/collect-all-in-one-place/id1437495207?l=de&ls=1&mt=8
+  description: |
+    Great documents with strong privacy
+
+    No more worries about documents being spread over multiple apps. Collect is capable of handling many types of information and will continuously be extended. The powerful build in rich text editing is the perfect place for noting down your ideas and structure your memories.
+
+  screenshots:
+    - "#{cdn}/i/showcase/collect-1.jpg"
+    - "#{cdn}/i/showcase/collect-2.jpg"
+    - "#{cdn}/i/showcase/collect-3.jpg"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/b2b-liga.png"
   iconRounded: true
   title: "B2B-Liga"
@@ -1092,7 +1170,7 @@
   - "#{cdn}/i/showcase/cfb-3.png"
 ##########
 -
-  iconUrl: "#{cdn}/i/showcase/tpg.jpg"
+  iconUrl: "#{cdn}/i/showcase/tpg.png"
   iconRounded: true
   title: "TPGwidget - raccourcis pour arrêts TPG"
   author:

@@ -83,6 +83,37 @@ block content
           td boolean
           td false
           td Boolean property indicating whether the expandable card opened or not
+
+        tr
+          td animate
+          td boolean
+          td true
+          td Specifies to open expandable card with animation or not
+        tr
+          td hide-navbar-on-open
+          td boolean
+          td
+          td Will hide Navbar on expandable card open. By default inherits same <a href="/docs/cards.html#card-app-parameters" target="_blank">app card parameter</a>.
+        tr
+          td hide-toolbar-on-open
+          td boolean
+          td
+          td Will hide Toolbar on expandable card open. By default inherits same <a href="/docs/cards.html#card-app-parameters" target="_blank">app card parameter</a>.
+        tr
+          td swipe-to-close
+          td boolean
+          td
+          td Allows to close expandable card with swipe. By default inherits same <a href="/docs/cards.html#card-app-parameters" target="_blank">app card parameter</a>.
+        tr
+          td backrop
+          td boolean
+          td
+          td Enables expandable card backdrop layer. By default inherits same <a href="/docs/cards.html#card-app-parameters" target="_blank">app card parameter</a>.
+        tr
+          td close-by-backdrop-click
+          td boolean
+          td
+          td When enabled, expandable card will be closed on its backdrop click. By default inherits same <a href="/docs/cards.html#card-app-parameters" target="_blank">app card parameter</a>.
         tr
           th(colspan="4") &lt;f7-card-content&gt; properties
         tr
@@ -225,7 +256,7 @@ block content
             </f7-list>
           </f7-card-content>
         </f7-card>
-        <f7-card title="New Reelases">
+        <f7-card title="New Releases:">
           <f7-card-content :padding="false">
             <f7-list medial-list>
               <f7-list-item

@@ -83,9 +83,6 @@ export default function initDocsDevice() {
       const theme = a.attr('data-theme');
       const src = device.find('iframe').attr('src');
       device.find('.fade-overlay').addClass('visible');
-      device
-        .removeClass('docs-demo-device-ios docs-demo-device-android')
-        .addClass(`docs-demo-device-${theme === 'md' ? 'android' : 'ios'}`);
       device.find('iframe').attr('src', `${src.split('?')[0]}?theme=${theme}`);
       setTimeout(() => {
         device.find('.fade-overlay').removeClass('visible');

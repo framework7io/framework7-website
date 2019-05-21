@@ -195,17 +195,17 @@ block content
     p It is enabled by default when you use <code>Fixed-positioned</code> navbars, when Navbar is a direct child of the page.
     p If you want to disable it you need to pass <code>iosDynamicNavbar: false</code> for required View on its initialisation or in global <a href="app.html#app-parameters">app parameters</a> for all views. For example:
     :code(lang="js")
-          // Disable globally
-          var app = new Framework7({
-            view: {
-              iosDynamicNavbar: false,
-            },
-          });
+      // Disable globally
+      var app = new Framework7({
+        view: {
+          iosDynamicNavbar: false,
+        },
+      });
 
-          // Disable only for view on its initialisation
-          var mainView = app.views.create('.view-main', {
-            iosDynamicNavbar: false,
-          });
+      // Disable only for view on its initialisation
+      var mainView = app.views.create('.view-main', {
+        iosDynamicNavbar: false,
+      });
     .important-note
       p Note that when Dynamic Navbar (<code>iosDynamicNavbar</code>) is enabled and <code>iosSeparateDynamicNavbar</code> parameter is enabled (by default), Navbar HTML element will be detached from the page and moved under View HTML element. In this case to access page related dynamic navbar element use <code>app.navbar.getElByPage(pageEl)</code> <a href="#navbar-app-methods">method</a>
     h3 Dynamic Navbar Layout
@@ -220,47 +220,47 @@ block content
       li
         p For better look you should keep identic transition type for the same Navbar parts through different pages.
     :code(lang="html")
-          <!-- No additional classes, all elements will have "fade" effect on page transition -->
-          <div class="navbar">
-            <div class="navbar-inner">
-              <div class="left">
-                <a href="#" class="link">Home Left</a>
-              </div>
-              <div class="title">Home</div>
-              <div class="right">
-                <a href="#" class="link">Home Right</a>
-              </div>
-            </div>
+      <!-- No additional classes, all elements will have "fade" effect on page transition -->
+      <div class="navbar">
+        <div class="navbar-inner">
+          <div class="left">
+            <a href="#" class="link">Home Left</a>
           </div>
+          <div class="title">Home</div>
+          <div class="right">
+            <a href="#" class="link">Home Right</a>
+          </div>
+        </div>
+      </div>
 
-          <!-- Title and Left will have "sliding" effect on page transition -->
-          <div class="navbar">
-            <div class="navbar-inner">
-              <!-- Additional "sliding" class -->
-              <div class="left sliding">
-                <a href="#" class="link">Home Left</a>
-              </div>
-              <!-- Additional "sliding" class -->
-              <div class="title sliding">Home</div>
-              <div class="right">
-                <a href="#" class="link">Home Right</a>
-              </div>
-            </div>
+      <!-- Title and Left will have "sliding" effect on page transition -->
+      <div class="navbar">
+        <div class="navbar-inner">
+          <!-- Additional "sliding" class -->
+          <div class="left sliding">
+            <a href="#" class="link">Home Left</a>
           </div>
+          <!-- Additional "sliding" class -->
+          <div class="title sliding">Home</div>
+          <div class="right">
+            <a href="#" class="link">Home Right</a>
+          </div>
+        </div>
+      </div>
 
-          <!-- All parts will have "sliding" effect on page transition -->
-          <div class="navbar">
-            <!-- Additional "sliding" class -->
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a href="#" class="link">Home Left</a>
-              </div>
-              <div class="title">Home</div>
-              <div class="right">
-                <a href="#" class="link">Home Right</a>
-              </div>
-            </div>
+      <!-- All parts will have "sliding" effect on page transition -->
+      <div class="navbar">
+        <!-- Additional "sliding" class -->
+        <div class="navbar-inner sliding">
+          <div class="left">
+            <a href="#" class="link">Home Left</a>
           </div>
+          <div class="title">Home</div>
+          <div class="right">
+            <a href="#" class="link">Home Right</a>
+          </div>
+        </div>
+      </div>
 
     h2 Navbar App Methods
     p We can use following app methods available for Navbar:
@@ -329,6 +329,11 @@ block content
           td false
           td When enabled then it will try to position title at the center in MD theme. Sometime (with some custom design) it may not needed.
         tr
+          td auroraCenterTitle
+          td boolean
+          td true
+          td When enabled then it will try to position title at the center in Aurora theme. Sometime (with some custom design) it may not needed.
+        tr
           td collapseLargeTitleOnScroll
           td boolean
           td true
@@ -385,6 +390,58 @@ block content
             &lt;/div&gt;
           &lt;/div&gt;
 
+    h2 Navbar Events
+    p Navbar will fire the following DOM events on Navbar element (#[code &lt;div class="navbar"&gt;]) and app events on app instance:
+
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td navbar:hide
+          td Navbar <span>&lt;div class="navbar"&gt;</span>
+          td Event will be triggered when Navbar becomes hidden
+        tr
+          td navbar:show
+          td Navbar <span>&lt;div class="navbar"&gt;</span>
+          td Event will be triggered when Navbar becomes visible
+        tr
+          td navbar:collapse
+          td Navbar <span>&lt;div class="navbar"&gt;</span>
+          td Event will be triggered when Navbar with large title collapsed (from large navbar to usual navbar)
+        tr
+          td navbar:expand
+          td Navbar <span>&lt;div class="navbar"&gt;</span>
+          td Event will be triggered when Navbar with large title expanded (from usual navbar to large navbar)
+    h3 App Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          td navbarHide
+          td <span>(el)</span>
+          td Event will be triggered when Navbar becomes hidden
+        tr
+          td navbarShow
+          td <span>(el)</span>
+          td Event will be triggered when Navbar becomes visible
+        tr
+          td navbarCollapse
+          td <span>(el)</span>
+          td Event will be triggered when Navbar with large title collapsed (from large navbar to usual navbar)
+        tr
+          td navbarExpand
+          td <span>(el)</span>
+          td Event will be triggered when Navbar with large title expanded (from usual navbar to large navbar)
+
     +cssVars('navbar')
 
     .with-device
@@ -399,7 +456,7 @@ block content
                     <div class="left">
                       <a class="link back">
                         <i class="icon icon-back"></i>
-                        <span class="ios-only">Back</span>
+                        <span class="if-not-md">Back</span>
                       </a>
                     </div>
                     <div class="title">Static Navbar</div>
@@ -421,7 +478,7 @@ block content
               <div class="left">
                 <a class="link back">
                   <i class="icon icon-back"></i>
-                  <span class="ios-only">Back</span>
+                  <span class="if-not-md">Back</span>
                 </a>
               </div>
               <div class="title">Fixed Navbar</div>
@@ -444,7 +501,7 @@ block content
               <div class="left">
                 <a class="link back">
                   <i class="icon icon-back"></i>
-                  <span class="ios-only">Back</span>
+                  <span class="if-not-md">Back</span>
                 </a>
               </div>
               <div class="title">Large Title</div>
@@ -470,7 +527,7 @@ block content
                   <div class="left">
                     <a class="link back">
                       <i class="icon icon-back"></i>
-                      <span class="ios-only">Back</span>
+                      <span class="if-not-md">Back</span>
                     </a>
                   </div>
                   <div class="title">Navbar API</div>
@@ -504,7 +561,7 @@ block content
                   <div class="left">
                     <a class="link back">
                       <i class="icon icon-back"></i>
-                      <span class="ios-only">Back</span>
+                      <span class="if-not-md">Back</span>
                     </a>
                   </div>
                   <div class="title">Hide On Scroll</div>

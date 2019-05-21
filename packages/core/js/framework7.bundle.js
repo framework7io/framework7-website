@@ -1,5 +1,5 @@
 /**
- * Framework7 4.0.1
+ * Framework7 4.4.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * http://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: February 8, 2019
+ * Released on: May 13, 2019
  */
 
 (function (global, factory) {
@@ -739,17 +739,17 @@
   } : window; // eslint-disable-line
 
   /**
-   * Dom7 2.1.2
+   * Dom7 2.1.3
    * Minimalistic JavaScript library for DOM manipulation, with a jQuery-compatible API
    * http://framework7.io/docs/dom.html
    *
-   * Copyright 2018, Vladimir Kharlampidi
+   * Copyright 2019, Vladimir Kharlampidi
    * The iDangero.us
    * http://www.idangero.us/
    *
    * Licensed under MIT
    *
-   * Released on: September 13, 2018
+   * Released on: February 11, 2019
    */
 
   var Dom7 = function Dom7(arr) {
@@ -1143,6 +1143,9 @@
             if (listener && handler.listener === listener) {
               el.removeEventListener(event, handler.proxyListener, capture);
               handlers.splice(k, 1);
+            } else if (listener && handler.listener && handler.listener.dom7proxy && handler.listener.dom7proxy === listener) {
+              el.removeEventListener(event, handler.proxyListener, capture);
+              handlers.splice(k, 1);
             } else if (!listener) {
               el.removeEventListener(event, handler.proxyListener, capture);
               handlers.splice(k, 1);
@@ -1167,14 +1170,18 @@
       (assign = args, eventName = assign[0], listener = assign[1], capture = assign[2]);
       targetSelector = undefined;
     }
-    function proxy() {
+    function onceHandler() {
       var eventArgs = [], len = arguments.length;
       while ( len-- ) eventArgs[ len ] = arguments[ len ];
 
       listener.apply(this, eventArgs);
-      dom.off(eventName, targetSelector, proxy, capture);
+      dom.off(eventName, targetSelector, onceHandler, capture);
+      if (onceHandler.dom7proxy) {
+        delete onceHandler.dom7proxy;
+      }
     }
-    return dom.on(eventName, targetSelector, proxy, capture);
+    onceHandler.dom7proxy = listener;
+    return dom.on(eventName, targetSelector, onceHandler, capture);
   }
   function trigger() {
     var args = [], len = arguments.length;
@@ -1519,7 +1526,7 @@
 
     return this;
   }
-   // eslint-disable-next-line
+  // eslint-disable-next-line
   function appendTo(parent) {
     $(parent).append(this);
     return this;
@@ -1544,7 +1551,7 @@
     }
     return this;
   }
-   // eslint-disable-next-line
+  // eslint-disable-next-line
   function prependTo(parent) {
     $(parent).prepend(this);
     return this;
@@ -2534,7 +2541,8 @@
       return mask.replace(/x/g, function () { return map[Math.floor((Math.random() * length))]; });
     },
     mdPreloaderContent: "\n    <span class=\"preloader-inner\">\n      <span class=\"preloader-inner-gap\"></span>\n      <span class=\"preloader-inner-left\">\n          <span class=\"preloader-inner-half-circle\"></span>\n      </span>\n      <span class=\"preloader-inner-right\">\n          <span class=\"preloader-inner-half-circle\"></span>\n      </span>\n    </span>\n  ".trim(),
-    iosPreloaderContent: ("\n    <span class=\"preloader-inner\">\n      " + (Array.from({ length: 12 }).map(function () { return '<span class="preloader-inner-line"></span>'; }).join('')) + "\n    </span>\n  ").trim(),
+    iosPreloaderContent: ("\n    <span class=\"preloader-inner\">\n      " + ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(function () { return '<span class="preloader-inner-line"></span>'; }).join('')) + "\n    </span>\n  ").trim(),
+    auroraPreloaderContent: "\n    <span class=\"preloader-inner\">\n      <span class=\"preloader-inner-circle\"></span>\n    </span>\n  ",
     eventNameToColonCase: function eventNameToColonCase(eventName) {
       var hasColon;
       return eventName.split('').map(function (char, index) {
@@ -2793,6 +2801,7 @@
       else if (max === b) { h = (r - g) / d + 4; }
       var l = (min + max) / 2;
       var s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+      if (h < 0) { h = 360 / 60 + h; }
       return [h * 60, s, l];
     },
     colorHslToRgb: function colorHslToRgb(h, s, l) {
@@ -2810,6 +2819,33 @@
       else if (hp <= 6) { rgb1 = [c, 0, x]; }
       var m = l - (c / 2);
       return rgb1.map(function (n) { return Math.max(0, Math.min(255, Math.round(255 * (n + m)))); });
+    },
+    colorHsbToHsl: function colorHsbToHsl(h, s, b) {
+      var HSL = {
+        h: h,
+        s: 0,
+        l: 0,
+      };
+      var HSB = { h: h, s: s, b: b };
+
+      HSL.l = (2 - HSB.s) * HSB.b / 2;
+      HSL.s = HSL.l && HSL.l < 1 ? HSB.s * HSB.b / (HSL.l < 0.5 ? HSL.l * 2 : 2 - HSL.l * 2) : HSL.s;
+
+      return [HSL.h, HSL.s, HSL.l];
+    },
+    colorHslToHsb: function colorHslToHsb(h, s, l) {
+      var HSB = {
+        h: h,
+        s: 0,
+        b: 0,
+      };
+      var HSL = { h: h, s: s, l: l };
+
+      var t = HSL.s * (HSL.l < 0.5 ? HSL.l : 1 - HSL.l);
+      HSB.b = HSL.l + t;
+      HSB.s = HSL.l > 0 ? 2 * t / HSB.b : HSB.s;
+
+      return [HSB.h, HSB.s, HSB.b];
     },
     colorThemeCSSProperties: function colorThemeCSSProperties() {
       var args = [], len = arguments.length;
@@ -2860,6 +2896,7 @@
       windows: false,
       cordova: !!(win.cordova || win.phonegap),
       phonegap: !!(win.cordova || win.phonegap),
+      electron: false,
     };
 
     var screenWidth = win.screen.width;
@@ -2879,6 +2916,7 @@
     var firefox = ua.indexOf('Gecko/') >= 0 && ua.indexOf('Firefox/') >= 0;
     var macos = platform === 'MacIntel';
     var windows = platform === 'Win32';
+    var electron = ua.toLowerCase().indexOf('electron') >= 0;
 
     device.ie = ie;
     device.edge = edge;
@@ -2886,7 +2924,7 @@
 
     // Windows
     if (windowsPhone) {
-      device.os = 'windows';
+      device.os = 'windowsPhone';
       device.osVersion = windowsPhone[2];
       device.windowsPhone = true;
     }
@@ -2913,7 +2951,7 @@
     }
     if (ipod) {
       device.osVersion = ipod[3] ? ipod[3].replace(/_/g, '.') : null;
-      device.iphone = true;
+      device.ipod = true;
     }
     // iOS 8+ changed UA
     if (device.ios && device.osVersion && ua.indexOf('Version/') >= 0) {
@@ -2929,20 +2967,11 @@
     device.standalone = device.webView;
 
     // Desktop
-    device.desktop = !(device.os || device.android || device.webView);
+    device.desktop = !(device.ios || device.android || device.windowsPhone) || electron;
     if (device.desktop) {
+      device.electron = electron;
       device.macos = macos;
       device.windows = windows;
-    }
-
-    // Minimal UI
-    if (device.os && device.os === 'ios') {
-      var osVersionArr = device.osVersion.split('.');
-      var metaViewport = doc.querySelector('meta[name="viewport"]');
-      device.minimalUi = !device.webView
-        && (ipod || iphone)
-        && (osVersionArr[0] * 1 === 7 ? osVersionArr[1] * 1 >= 1 : osVersionArr[0] * 1 > 7)
-        && metaViewport && metaViewport.getAttribute('content').indexOf('minimal-ui') >= 0;
     }
 
     // Meta statusbar
@@ -2950,6 +2979,7 @@
 
     // Check for status bar and fullscreen app mode
     device.needsStatusbarOverlay = function needsStatusbarOverlay() {
+      if (device.desktop) { return false; }
       if (device.standalone && device.ios && metaStatusbar && metaStatusbar.content === 'black-translucent') {
         return true;
       }
@@ -2965,6 +2995,20 @@
 
     // Pixel Ratio
     device.pixelRatio = win.devicePixelRatio || 1;
+
+    // Color Scheme
+    var DARK = '(prefers-color-scheme: dark)';
+    var LIGHT = '(prefers-color-scheme: light)';
+    device.prefersColorScheme = function prefersColorTheme() {
+      var theme;
+      if (win.matchMedia && win.matchMedia(LIGHT).matches) {
+        theme = 'light';
+      }
+      if (win.matchMedia && win.matchMedia(DARK).matches) {
+        theme = 'dark';
+      }
+      return theme;
+    };
 
     // Export object
     return device;
@@ -2998,7 +3042,11 @@
 
       handler.apply(self, args);
       self.off(events, onceHandler);
+      if (onceHandler.f7proxy) {
+        delete onceHandler.f7proxy;
+      }
     }
+    onceHandler.f7proxy = handler;
     return self.on(events, onceHandler, priority);
   };
 
@@ -3010,7 +3058,7 @@
         self.eventsListeners[event] = [];
       } else if (self.eventsListeners[event]) {
         self.eventsListeners[event].forEach(function (eventHandler, index) {
-          if (eventHandler === handler) {
+          if (eventHandler === handler || (eventHandler.f7proxy && eventHandler.f7proxy === handler)) {
             self.eventsListeners[event].splice(index, 1);
           }
         });
@@ -3063,12 +3111,12 @@
     return self;
   };
 
-  var Framework7Class = /*@__PURE__*/(function (EventsClass$$1) {
+  var Framework7Class = /*@__PURE__*/(function (EventsClass) {
     function Framework7Class(params, parents) {
       if ( params === void 0 ) params = {};
       if ( parents === void 0 ) parents = [];
 
-      EventsClass$$1.call(this, parents);
+      EventsClass.call(this, parents);
       var self = this;
       self.params = params;
 
@@ -3079,8 +3127,8 @@
       }
     }
 
-    if ( EventsClass$$1 ) Framework7Class.__proto__ = EventsClass$$1;
-    Framework7Class.prototype = Object.create( EventsClass$$1 && EventsClass$$1.prototype );
+    if ( EventsClass ) Framework7Class.__proto__ = EventsClass;
+    Framework7Class.prototype = Object.create( EventsClass && EventsClass.prototype );
     Framework7Class.prototype.constructor = Framework7Class;
 
     var staticAccessors = { components: { configurable: true } };
@@ -3438,9 +3486,9 @@
     });
   }
 
-  var Framework7 = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Framework7 = /*@__PURE__*/(function (Framework7Class) {
     function Framework7(params) {
-      Framework7Class$$1.call(this, params);
+      Framework7Class.call(this, params);
       if (Framework7.instance) {
         throw new Error('Framework7 is already initialized and can\'t be initialized more than once');
       }
@@ -3464,6 +3512,7 @@
         lazyModulesPath: null,
         initOnDeviceReady: true,
         init: true,
+        autoDarkTheme: false,
       };
 
       // Extend defaults with modules params
@@ -3492,7 +3541,9 @@
         // Theme
         theme: (function getTheme() {
           if (app.params.theme === 'auto') {
-            return Device.ios ? 'ios' : 'md';
+            if (Device.ios) { return 'ios'; }
+            if (Device.desktop && Device.electron) { return 'aurora'; }
+            return 'md';
           }
           return app.params.theme;
         }()),
@@ -3511,6 +3562,28 @@
       // Init Data & Methods
       app.initData();
 
+      // Auto Dark Theme
+      var DARK = '(prefers-color-scheme: dark)';
+      var LIGHT = '(prefers-color-scheme: light)';
+      app.mq = {};
+      if (win.matchMedia) {
+        app.mq.dark = win.matchMedia(DARK);
+        app.mq.light = win.matchMedia(LIGHT);
+      }
+      app.colorSchemeListener = function colorSchemeListener(ref) {
+        var matches = ref.matches;
+        var media = ref.media;
+
+        if (!matches) {
+          return;
+        }
+        var html = doc.querySelector('html');
+        if (media === DARK) {
+          html.classList.add('theme-dark');
+        } else if (media === LIGHT) {
+          html.classList.remove('theme-dark');
+        }
+      };
       // Init
       if (app.params.init) {
         if (Device.cordova && app.params.initOnDeviceReady) {
@@ -3525,8 +3598,8 @@
       return app;
     }
 
-    if ( Framework7Class$$1 ) Framework7.__proto__ = Framework7Class$$1;
-    Framework7.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Framework7.__proto__ = Framework7Class;
+    Framework7.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Framework7.prototype.constructor = Framework7;
 
     var prototypeAccessors = { $: { configurable: true },t7: { configurable: true } };
@@ -3555,6 +3628,28 @@
       }
     };
 
+    Framework7.prototype.enableAutoDarkTheme = function enableAutoDarkTheme () {
+      if (!win.matchMedia) { return; }
+      var app = this;
+      var html = doc.querySelector('html');
+      if (app.mq.dark && app.mq.light) {
+        app.mq.dark.addListener(app.colorSchemeListener);
+        app.mq.light.addListener(app.colorSchemeListener);
+      }
+      if (app.mq.dark && app.mq.dark.matches) {
+        html.classList.add('theme-dark');
+      } else if (app.mq.light && app.mq.light.matches) {
+        html.classList.remove('theme-dark');
+      }
+    };
+
+    Framework7.prototype.disableAutoDarkTheme = function disableAutoDarkTheme () {
+      if (!win.matchMedia) { return; }
+      var app = this;
+      if (app.mq.dark) { app.mq.dark.removeListener(app.colorSchemeListener); }
+      if (app.mq.light) { app.mq.light.removeListener(app.colorSchemeListener); }
+    };
+
     Framework7.prototype.init = function init () {
       var app = this;
       if (app.initialized) { return app; }
@@ -3564,6 +3659,11 @@
       // RTL attr
       if (app.rtl) {
         $('html').attr('dir', 'rtl');
+      }
+
+      // Auto Dark Theme
+      if (app.params.autoDarkTheme) {
+        app.enableAutoDarkTheme();
       }
 
       // Root class
@@ -3584,7 +3684,7 @@
     };
 
     // eslint-disable-next-line
-    Framework7.prototype.loadModule = function loadModule$$1 () {
+    Framework7.prototype.loadModule = function loadModule () {
       var args = [], len = arguments.length;
       while ( len-- ) args[ len ] = arguments[ len ];
 
@@ -3627,7 +3727,7 @@
     };
 
     staticAccessors.Class.get = function () {
-      return Framework7Class$$1;
+      return Framework7Class;
     };
 
     staticAccessors.Events.get = function () {
@@ -3712,7 +3812,7 @@
         return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
       }()),
 
-      pointerEvents: !!(win.navigator.pointerEnabled || win.PointerEvent || ('maxTouchPoints' in win.navigator)),
+      pointerEvents: !!(win.navigator.pointerEnabled || win.PointerEvent || ('maxTouchPoints' in win.navigator && win.navigator.maxTouchPoints > 0)),
       prefixedPointerEvents: !!win.navigator.msPointerEnabled,
 
       transition: (function checkTransition() {
@@ -3832,11 +3932,6 @@
       },
       orientationchange: function orientationchange() {
         var app = this;
-        if (app.device && app.device.minimalUi) {
-          if (win.orientation === 90 || win.orientation === -90) {
-            doc.body.scrollTop = 0;
-          }
-        }
         // Fix iPad weird body scroll
         if (app.device.ipad) {
           doc.body.scrollLeft = 0;
@@ -4038,6 +4133,9 @@
         postData = options.data;
         xhr.setRequestHeader('Content-Type', options.contentType);
       }
+    }
+    if (options.dataType === 'json' && (!options.headers || !options.headers.Accept)) {
+      xhr.setRequestHeader('Accept', 'application/json');
     }
 
     // Additional headers
@@ -4326,6 +4424,21 @@
       if (parents.length > 0) {
         activable = activable ? activable.add(parents) : parents;
       }
+      if (activable && activable.length > 1) {
+        var newActivable = [];
+        var preventPropagation;
+        for (var i = 0; i < activable.length; i += 1) {
+          if (!preventPropagation) {
+            newActivable.push(activable[i]);
+            if (activable.eq(i).hasClass('prevent-active-state-propagation')
+              || activable.eq(i).hasClass('no-active-state-propagation')
+            ) {
+              preventPropagation = true;
+            }
+          }
+        }
+        activable = $(newActivable);
+      }
       return activable || target;
     }
 
@@ -4466,9 +4579,12 @@
         : isInsideScrollableViewLight(rippleTarget);
 
       if (!inScrollable) {
+        removeRipple();
         createRipple(rippleTarget, touchStartX, touchStartY);
       } else {
+        clearTimeout(rippleTimeout);
         rippleTimeout = setTimeout(function () {
+          removeRipple();
           createRipple(rippleTarget, touchStartX, touchStartY);
         }, 80);
       }
@@ -4478,9 +4594,7 @@
       removeRipple();
     }
     function rippleTouchEnd() {
-      if (rippleWave) {
-        removeRipple();
-      } else if (rippleTarget && !isMoved) {
+      if (!rippleWave && rippleTarget && !isMoved) {
         clearTimeout(rippleTimeout);
         createRipple(rippleTarget, touchStartX, touchStartY);
         setTimeout(removeRipple, 0);
@@ -4532,7 +4646,9 @@
         // Upon tapping, we give the scrolling time to stop, then we grab the element based where the user tapped.
         setTimeout(function () {
           targetElement = doc.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-          targetElement.dispatchEvent(evt);
+          if (targetElement) {
+            targetElement.dispatchEvent(evt);
+          }
         }, 10);
       } else {
         targetElement.dispatchEvent(evt);
@@ -4840,10 +4956,21 @@
       return true;
     }
     function handleTouchMoveLight(e) {
-      var distance = params.fastClicks ? params.fastClicksDistanceThreshold : 0;
-      if (distance) {
-        var pageX = e.targetTouches[0].pageX;
-        var pageY = e.targetTouches[0].pageY;
+      var touch;
+      var distance;
+      if (e.type === 'touchmove') {
+        touch = e.targetTouches[0];
+        distance = params.touchClicksDistanceThreshold;
+        // if (touch && touch.touchType === 'stylus') {
+        //   distance = 5;
+        // } else {
+        //   distance = 3;
+        // }
+      }
+
+      if (distance && touch) {
+        var pageX = touch.pageX;
+        var pageY = touch.pageY;
         if (Math.abs(pageX - touchStartX) > distance || Math.abs(pageY - touchStartY) > distance) {
           isMoved = true;
         }
@@ -5011,6 +5138,8 @@
         fastClicksDistanceThreshold: 10,
         fastClicksDelayBetweenClicks: 50,
         fastClicksExclude: '', // CSS selector
+        // Clicks
+        touchClicksDistanceThreshold: 5,
         // ContextMenu
         disableContextMenu: false,
         // Tap Hold
@@ -5019,9 +5148,10 @@
         tapHoldPreventClicks: true,
         // Active State
         activeState: true,
-        activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item',
+        activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item, .link, .item-link',
         mdTouchRipple: true,
         iosTouchRipple: false,
+        auroraTouchRipple: false,
         touchRippleElements: '.ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content',
       },
     },
@@ -5558,18 +5688,18 @@
     var isMoved = false;
     var touchesStart = {};
     var isScrolling;
-    var currentPage = [];
-    var previousPage = [];
+    var $currentPageEl = [];
+    var $previousPageEl = [];
     var viewContainerWidth;
     var touchesDiff;
     var allowViewTouchMove = true;
     var touchStartTime;
-    var $currentNavbarInner = [];
-    var $previousNavbarInner = [];
+    var $currentNavbarInnerEl = [];
+    var $previousNavbarInnerEl = [];
     var dynamicNavbar;
     var separateNavbar;
-    var pageShadow;
-    var pageOpacity;
+    var $pageShadowEl;
+    var $pageOpacityEl;
 
     var animatableNavEls;
 
@@ -5583,25 +5713,25 @@
     function animatableNavElements() {
       var els = [];
       var inverter = app.rtl ? -1 : 1;
-      var currentNavIsLarge = $currentNavbarInner.hasClass('navbar-inner-large');
-      var previousNavIsLarge = $previousNavbarInner.hasClass('navbar-inner-large');
-      var fromLarge = currentNavIsLarge && !$currentNavbarInner.hasClass('navbar-inner-large-collapsed');
-      var toLarge = previousNavIsLarge && !$previousNavbarInner.hasClass('navbar-inner-large-collapsed');
-      var $currentNavElements = $currentNavbarInner.children('.left, .title, .right, .subnavbar, .fading, .title-large');
-      var $previousNavElements = $previousNavbarInner.children('.left, .title, .right, .subnavbar, .fading, .title-large');
+      var currentNavIsLarge = $currentNavbarInnerEl.hasClass('navbar-inner-large');
+      var previousNavIsLarge = $previousNavbarInnerEl.hasClass('navbar-inner-large');
+      var fromLarge = currentNavIsLarge && !$currentNavbarInnerEl.hasClass('navbar-inner-large-collapsed');
+      var toLarge = previousNavIsLarge && !$previousNavbarInnerEl.hasClass('navbar-inner-large-collapsed');
+      var $currentNavElements = $currentNavbarInnerEl.children('.left, .title, .right, .subnavbar, .fading, .title-large');
+      var $previousNavElements = $previousNavbarInnerEl.children('.left, .title, .right, .subnavbar, .fading, .title-large');
       var activeNavBackIconText;
       var previousNavBackIconText;
 
       if (params.iosAnimateNavbarBackIcon) {
-        if ($currentNavbarInner.hasClass('sliding')) {
-          activeNavBackIconText = $currentNavbarInner.children('.left').find('.back .icon + span').eq(0);
+        if ($currentNavbarInnerEl.hasClass('sliding')) {
+          activeNavBackIconText = $currentNavbarInnerEl.children('.left').find('.back .icon + span').eq(0);
         } else {
-          activeNavBackIconText = $currentNavbarInner.children('.left.sliding').find('.back .icon + span').eq(0);
+          activeNavBackIconText = $currentNavbarInnerEl.children('.left.sliding').find('.back .icon + span').eq(0);
         }
-        if ($previousNavbarInner.hasClass('sliding')) {
-          previousNavBackIconText = $previousNavbarInner.children('.left').find('.back .icon + span').eq(0);
+        if ($previousNavbarInnerEl.hasClass('sliding')) {
+          previousNavBackIconText = $previousNavbarInnerEl.children('.left').find('.back .icon + span').eq(0);
         } else {
-          previousNavBackIconText = $previousNavbarInner.children('.left.sliding').find('.back .icon + span').eq(0);
+          previousNavBackIconText = $previousNavbarInnerEl.children('.left.sliding').find('.back .icon + span').eq(0);
         }
         if (activeNavBackIconText.length) {
           $previousNavElements.each(function (index, el) {
@@ -5670,7 +5800,7 @@
             }
           }
           if ($navEl.hasClass('title-large')) { return; }
-          var isSliding = $navEl.hasClass('sliding') || $currentNavbarInner.hasClass('sliding');
+          var isSliding = $navEl.hasClass('sliding') || $currentNavbarInnerEl.hasClass('sliding');
           if (els.indexOf(el) < 0) { els.push(el); }
           if (!isSubnavbar || (isSubnavbar && !isSliding)) {
             el.opacity = function (progress) { return (1 - (Math.pow( progress, 0.33 ))); };
@@ -5744,7 +5874,7 @@
             }
           }
           if ($navEl.hasClass('title-large')) { return; }
-          var isSliding = $navEl.hasClass('sliding') || $previousNavbarInner.hasClass('sliding');
+          var isSliding = $navEl.hasClass('sliding') || $previousNavbarInnerEl.hasClass('sliding');
           if (els.indexOf(el) < 0) { els.push(el); }
           if (!isSubnavbar || (isSubnavbar && !isSliding)) {
             el.opacity = function (progress) { return (Math.pow( progress, 3 )); };
@@ -5752,7 +5882,7 @@
           if (isSliding) {
             var transformTarget = el;
             if (isLeft && previousNavBackIconText.length && params.iosAnimateNavbarBackIcon) {
-              var textEl = { el: activeNavBackIconText[0] };
+              var textEl = { el: previousNavBackIconText[0] };
               transformTarget = textEl;
               els.push(textEl);
             }
@@ -5833,10 +5963,12 @@
           if (app.rtl && swipeout.find('.swipeout-actions-right').length > 0) { cancel = true; }
         }
 
-        currentPage = target.closest('.page');
-        if (currentPage.hasClass('no-swipeback') || target.closest('.no-swipeback, .card-opened').length > 0) { cancel = true; }
-        previousPage = $el.find('.page-previous:not(.stacked)');
-
+        $currentPageEl = target.closest('.page');
+        if ($currentPageEl.hasClass('no-swipeback') || target.closest('.no-swipeback, .card-opened').length > 0) { cancel = true; }
+        $previousPageEl = $el.find('.page-previous:not(.stacked)');
+        if ($previousPageEl.length > 1) {
+          $previousPageEl = $previousPageEl.eq($previousPageEl.length - 1);
+        }
         var notFromBorder = touchesStart.x - $el.offset().left > paramsSwipeBackActiveArea;
         viewContainerWidth = $el.width();
         if (app.rtl) {
@@ -5845,37 +5977,40 @@
           notFromBorder = touchesStart.x - $el.offset().left > paramsSwipeBackActiveArea;
         }
         if (notFromBorder) { cancel = true; }
-        if (previousPage.length === 0 || currentPage.length === 0) { cancel = true; }
+        if ($previousPageEl.length === 0 || $currentPageEl.length === 0) { cancel = true; }
         if (cancel) {
           isTouched = false;
           return;
         }
 
         if (paramsSwipeBackAnimateShadow) {
-          pageShadow = currentPage.find('.page-shadow-effect');
-          if (pageShadow.length === 0) {
-            pageShadow = $('<div class="page-shadow-effect"></div>');
-            currentPage.append(pageShadow);
+          $pageShadowEl = $currentPageEl.find('.page-shadow-effect');
+          if ($pageShadowEl.length === 0) {
+            $pageShadowEl = $('<div class="page-shadow-effect"></div>');
+            $currentPageEl.append($pageShadowEl);
           }
         }
         if (paramsSwipeBackAnimateOpacity) {
-          pageOpacity = previousPage.find('.page-opacity-effect');
-          if (pageOpacity.length === 0) {
-            pageOpacity = $('<div class="page-opacity-effect"></div>');
-            previousPage.append(pageOpacity);
+          $pageOpacityEl = $previousPageEl.find('.page-opacity-effect');
+          if ($pageOpacityEl.length === 0) {
+            $pageOpacityEl = $('<div class="page-opacity-effect"></div>');
+            $previousPageEl.append($pageOpacityEl);
           }
         }
 
         if (dynamicNavbar) {
           if (separateNavbar) {
-            $currentNavbarInner = $navbarEl.find('.navbar-current:not(.stacked)');
-            $previousNavbarInner = $navbarEl.find('.navbar-previous:not(.stacked)');
+            $currentNavbarInnerEl = $navbarEl.find('.navbar-current:not(.stacked)');
+            $previousNavbarInnerEl = $navbarEl.find('.navbar-previous:not(.stacked)');
           } else {
-            $currentNavbarInner = currentPage.children('.navbar').children('.navbar-inner');
-            $previousNavbarInner = previousPage.children('.navbar').children('.navbar-inner');
+            $currentNavbarInnerEl = $currentPageEl.children('.navbar').children('.navbar-inner');
+            $previousNavbarInnerEl = $previousPageEl.children('.navbar').children('.navbar-inner');
+          }
+          if ($previousNavbarInnerEl.length > 1) {
+            $previousNavbarInnerEl = $previousNavbarInnerEl.eq($previousNavbarInnerEl.length - 1);
           }
 
-          animatableNavEls = animatableNavElements($previousNavbarInner, $currentNavbarInner);
+          animatableNavEls = animatableNavElements($previousNavbarInnerEl, $currentNavbarInnerEl);
         }
 
         // Close/Hide Any Picker
@@ -5900,10 +6035,10 @@
       var callbackData = {
         percentage: percentage,
         progress: percentage,
-        currentPageEl: currentPage[0],
-        previousPageEl: previousPage[0],
-        currentNavbarEl: $currentNavbarInner[0],
-        previousNavbarEl: $previousNavbarInner[0],
+        currentPageEl: $currentPageEl[0],
+        previousPageEl: $previousPageEl[0],
+        currentNavbarEl: $currentNavbarInnerEl[0],
+        previousNavbarEl: $previousNavbarInnerEl[0],
       };
       $el.trigger('swipeback:move', callbackData);
       router.emit('swipebackMove', callbackData);
@@ -5924,15 +6059,15 @@
       }
 
       router.swipeBackActive = true;
-      $([currentPage[0], previousPage[0]]).addClass('page-swipeback-active');
+      $([$currentPageEl[0], $previousPageEl[0]]).addClass('page-swipeback-active');
 
-      currentPage.transform(("translate3d(" + currentPageTranslate + "px,0,0)"));
-      if (paramsSwipeBackAnimateShadow) { pageShadow[0].style.opacity = 1 - (1 * percentage); }
+      $currentPageEl.transform(("translate3d(" + currentPageTranslate + "px,0,0)"));
+      if (paramsSwipeBackAnimateShadow) { $pageShadowEl[0].style.opacity = 1 - (1 * percentage); }
 
-      if (app.theme !== 'md') {
-        previousPage.transform(("translate3d(" + previousPageTranslate + "px,0,0)"));
+      if (app.theme === 'ios') {
+        $previousPageEl.transform(("translate3d(" + previousPageTranslate + "px,0,0)"));
       }
-      if (paramsSwipeBackAnimateOpacity) { pageOpacity[0].style.opacity = 1 - (1 * percentage); }
+      if (paramsSwipeBackAnimateOpacity) { $pageShadowEl[0].style.opacity = 1 - (1 * percentage); }
 
       // Dynamic Navbars Animation
       if (!dynamicNavbar) { return; }
@@ -5949,11 +6084,11 @@
       isTouched = false;
       isMoved = false;
       router.swipeBackActive = false;
-      $([currentPage[0], previousPage[0]]).removeClass('page-swipeback-active');
+      $([$currentPageEl[0], $previousPageEl[0]]).removeClass('page-swipeback-active');
       if (touchesDiff === 0) {
-        $([currentPage[0], previousPage[0]]).transform('');
-        if (pageShadow && pageShadow.length > 0) { pageShadow.remove(); }
-        if (pageOpacity && pageOpacity.length > 0) { pageOpacity.remove(); }
+        $([$currentPageEl[0], $previousPageEl[0]]).transform('');
+        if ($pageShadowEl && $pageShadowEl.length > 0) { $pageShadowEl.remove(); }
+        if ($pageOpacityEl && $pageOpacityEl.length > 0) { $pageOpacityEl.remove(); }
         if (dynamicNavbar) {
           setAnimatableNavElements({ reset: true });
         }
@@ -5966,19 +6101,19 @@
         (timeDiff < 300 && touchesDiff > 10)
         || (timeDiff >= 300 && touchesDiff > viewContainerWidth / 2)
       ) {
-        currentPage.removeClass('page-current').addClass(("page-next" + (app.theme === 'md' ? ' page-next-on-right' : '')));
-        previousPage.removeClass('page-previous').addClass('page-current').removeAttr('aria-hidden');
-        if (pageShadow) { pageShadow[0].style.opacity = ''; }
-        if (pageOpacity) { pageOpacity[0].style.opacity = ''; }
+        $currentPageEl.removeClass('page-current').addClass(("page-next" + (app.theme !== 'ios' ? ' page-next-on-right' : '')));
+        $previousPageEl.removeClass('page-previous').addClass('page-current').removeAttr('aria-hidden');
+        if ($pageShadowEl) { $pageShadowEl[0].style.opacity = ''; }
+        if ($pageOpacityEl) { $pageOpacityEl[0].style.opacity = ''; }
         if (dynamicNavbar) {
-          $currentNavbarInner.removeClass('navbar-current').addClass('navbar-next');
-          $previousNavbarInner.removeClass('navbar-previous').addClass('navbar-current').removeAttr('aria-hidden');
+          $currentNavbarInnerEl.removeClass('navbar-current').addClass('navbar-next');
+          $previousNavbarInnerEl.removeClass('navbar-previous').addClass('navbar-current').removeAttr('aria-hidden');
         }
         pageChanged = true;
       }
       // Reset custom styles
       // Add transitioning class for transition-duration
-      $([currentPage[0], previousPage[0]]).addClass('page-transitioning page-transitioning-swipeback').transform('');
+      $([$currentPageEl[0], $previousPageEl[0]]).addClass('page-transitioning page-transitioning-swipeback').transform('');
 
       if (dynamicNavbar) {
         setAnimatableNavElements({ progress: pageChanged ? 1 : 0, transition: true });
@@ -5988,20 +6123,20 @@
 
       // Swipe Back Callback
       var callbackData = {
-        currentPageEl: currentPage[0],
-        previousPageEl: previousPage[0],
-        currentNavbarEl: $currentNavbarInner[0],
-        previousNavbarEl: $previousNavbarInner[0],
+        currentPageEl: $currentPageEl[0],
+        previousPageEl: $previousPageEl[0],
+        currentNavbarEl: $currentNavbarInnerEl[0],
+        previousNavbarEl: $previousNavbarInnerEl[0],
       };
 
       if (pageChanged) {
         // Update Route
-        router.currentRoute = previousPage[0].f7Page.route;
-        router.currentPage = previousPage[0];
+        router.currentRoute = $previousPageEl[0].f7Page.route;
+        router.currentPage = $previousPageEl[0];
 
         // Page before animation callback
-        router.pageCallback('beforeOut', currentPage, $currentNavbarInner, 'current', 'next', { route: currentPage[0].f7Page.route, swipeBack: true });
-        router.pageCallback('beforeIn', previousPage, $previousNavbarInner, 'previous', 'current', { route: previousPage[0].f7Page.route, swipeBack: true });
+        router.pageCallback('beforeOut', $currentPageEl, $currentNavbarInnerEl, 'current', 'next', { route: $currentPageEl[0].f7Page.route, swipeBack: true });
+        router.pageCallback('beforeIn', $previousPageEl, $previousNavbarInnerEl, 'previous', 'current', { route: $previousPageEl[0].f7Page.route, swipeBack: true }, $currentPageEl[0]);
 
         $el.trigger('swipeback:beforechange', callbackData);
         router.emit('swipebackBeforeChange', callbackData);
@@ -6010,8 +6145,8 @@
         router.emit('swipebackBeforeReset', callbackData);
       }
 
-      currentPage.transitionEnd(function () {
-        $([currentPage[0], previousPage[0]]).removeClass('page-transitioning page-transitioning-swipeback');
+      $currentPageEl.transitionEnd(function () {
+        $([$currentPageEl[0], $previousPageEl[0]]).removeClass('page-transitioning page-transitioning-swipeback');
         if (dynamicNavbar) {
           setAnimatableNavElements({ reset: true, transition: false });
         }
@@ -6031,20 +6166,20 @@
           }
 
           // Page after animation callback
-          router.pageCallback('afterOut', currentPage, $currentNavbarInner, 'current', 'next', { route: currentPage[0].f7Page.route, swipeBack: true });
-          router.pageCallback('afterIn', previousPage, $previousNavbarInner, 'previous', 'current', { route: previousPage[0].f7Page.route, swipeBack: true });
+          router.pageCallback('afterOut', $currentPageEl, $currentNavbarInnerEl, 'current', 'next', { route: $currentPageEl[0].f7Page.route, swipeBack: true });
+          router.pageCallback('afterIn', $previousPageEl, $previousNavbarInnerEl, 'previous', 'current', { route: $previousPageEl[0].f7Page.route, swipeBack: true });
 
           // Remove Old Page
-          if (params.stackPages && router.initialPages.indexOf(currentPage[0]) >= 0) {
-            currentPage.addClass('stacked');
+          if (params.stackPages && router.initialPages.indexOf($currentPageEl[0]) >= 0) {
+            $currentPageEl.addClass('stacked');
             if (separateNavbar) {
-              $currentNavbarInner.addClass('stacked');
+              $currentNavbarInnerEl.addClass('stacked');
             }
           } else {
-            router.pageCallback('beforeRemove', currentPage, $currentNavbarInner, 'next', { swipeBack: true });
-            router.removePage(currentPage);
+            router.pageCallback('beforeRemove', $currentPageEl, $currentNavbarInnerEl, 'next', { swipeBack: true });
+            router.removePage($currentPageEl);
             if (separateNavbar) {
-              router.removeNavbar($currentNavbarInner);
+              router.removeNavbar($currentNavbarInnerEl);
             }
           }
 
@@ -6060,8 +6195,8 @@
           $el.trigger('swipeback:afterreset', callbackData);
           router.emit('swipebackAfterReset', callbackData);
         }
-        if (pageShadow && pageShadow.length > 0) { pageShadow.remove(); }
-        if (pageOpacity && pageOpacity.length > 0) { pageOpacity.remove(); }
+        if ($pageShadowEl && $pageShadowEl.length > 0) { $pageShadowEl.remove(); }
+        if ($pageOpacityEl && $pageOpacityEl.length > 0) { $pageOpacityEl.remove(); }
       });
     }
 
@@ -6368,6 +6503,7 @@
       newPagePosition = 'previous';
     }
     $newPage
+      .removeClass('page-previous page-current page-next')
       .addClass(("page-" + newPagePosition + (isMaster ? ' page-master' : '') + (isDetail ? ' page-master-detail' : '')))
       .removeClass('stacked')
       .trigger('page:unstack')
@@ -6379,6 +6515,7 @@
 
     if (dynamicNavbar && $newNavbarInner.length) {
       $newNavbarInner
+        .removeClass('navbar-previous navbar-current navbar-next')
         .addClass(("navbar-" + newPagePosition + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '')))
         .removeClass('stacked');
     }
@@ -6556,7 +6693,9 @@
         }
       } else {
         // Page remove event
-        router.pageCallback('beforeRemove', $oldPage, $oldNavbarInner, 'previous', undefined, options);
+        router.pageCallback('beforeOut', $oldPage, $oldNavbarInner, 'current', undefined, options);
+        router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', undefined, options);
+        router.pageCallback('beforeRemove', $oldPage, $oldNavbarInner, 'current', undefined, options);
         router.removePage($oldPage);
         if (separateNavbar && $oldNavbarInner && $oldNavbarInner.length) {
           router.removeNavbar($oldNavbarInner);
@@ -6574,6 +6713,10 @@
           }
         } else {
           // Page remove event
+          if ($oldPageEl.hasClass('page-current')) {
+            router.pageCallback('beforeOut', $oldPage, $oldNavbarInner, 'current', undefined, options);
+            router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', undefined, options);
+          }
           router.pageCallback('beforeRemove', $oldPageEl, $oldNavbarInner && $oldNavbarInner.eq(index), 'previous', undefined, options);
           router.removePage($oldPageEl);
           if (separateNavbar && $oldNavbarInnerEl.length) {
@@ -6612,6 +6755,10 @@
     if (options.reloadCurrent || options.reloadAll || reloadDetail) {
       router.allowPageChange = true;
       router.pageCallback('beforeIn', $newPage, $newNavbarInner, newPagePosition, 'current', options);
+      $newPage.removeAttr('aria-hidden');
+      if (dynamicNavbar && $newNavbarInner) {
+        $newNavbarInner.removeAttr('aria-hidden');
+      }
       router.pageCallback('afterIn', $newPage, $newNavbarInner, newPagePosition, 'current', options);
       if (options.reloadCurrent && options.clearPreviousHistory) { router.clearPreviousHistory(); }
       if (reloadDetail) {
@@ -6655,9 +6802,9 @@
       router.pageCallback('afterIn', $newPage, $newNavbarInner, 'next', 'current', options);
       router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', 'previous', options);
 
-      var keepOldPage = (router.params.preloadPreviousPage || (app.theme === 'ios' ? router.params.iosSwipeBack : router.params.mdSwipeBack)) && !isMaster;
+      var keepOldPage = (router.params.preloadPreviousPage || router.params[((app.theme) + "SwipeBack")]) && !isMaster;
       if (!keepOldPage) {
-        if ($newPage.hasClass('smart-select-page') || $newPage.hasClass('photo-browser-page') || $newPage.hasClass('autocomplete-page')) {
+        if ($newPage.hasClass('smart-select-page') || $newPage.hasClass('photo-browser-page') || $newPage.hasClass('autocomplete-page') || $newPage.hasClass('color-picker-page')) {
           keepOldPage = true;
         }
       }
@@ -6695,7 +6842,7 @@
       }
     }
     if (options.animate && !(isMaster && app.width >= router.params.masterDetailBreakpoint)) {
-      var delay = router.app.theme === 'md' ? router.params.mdPageLoadDelay : router.params.iosPageLoadDelay;
+      var delay = router.params[((router.app.theme) + "PageLoadDelay")];
       if (delay) {
         setTimeout(function () {
           setPositionClasses();
@@ -6760,6 +6907,13 @@
           return router.tabLoad(options.route.route.tab, options);
         }
         return false;
+      }
+      if (!sameParams
+        && options.route.route.tab
+        && router.currentRoute.route.tab
+        && router.currentRoute.parentPath === options.route.parentPath
+      ) {
+        return router.tabLoad(options.route.route.tab, options);
       }
     }
 
@@ -7788,7 +7942,7 @@
       router.emit('routeChanged', router.currentRoute, router.previousRoute, router);
 
       // Preload previous page
-      var preloadPreviousPage = router.params.preloadPreviousPage || (app.theme.ios ? router.params.iosSwipeBack : router.params.mdSwipeBack);
+      var preloadPreviousPage = router.params.preloadPreviousPage || router.params[((app.theme) + "SwipeBack")];
       if (preloadPreviousPage && router.history[router.history.length - 2] && !isMaster) {
         router.back(router.history[router.history.length - 2], { preload: true });
       }
@@ -8228,9 +8382,9 @@
     router.saveHistory();
   }
 
-  var Router = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Router = /*@__PURE__*/(function (Framework7Class) {
     function Router(app, view) {
-      Framework7Class$$1.call(this, {}, [typeof view === 'undefined' ? app : view]);
+      Framework7Class.call(this, {}, [typeof view === 'undefined' ? app : view]);
       var router = this;
 
       // Is App Router
@@ -8308,8 +8462,8 @@
       return router;
     }
 
-    if ( Framework7Class$$1 ) Router.__proto__ = Framework7Class$$1;
-    Router.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Router.__proto__ = Framework7Class;
+    Router.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Router.prototype.constructor = Router;
 
     Router.prototype.animatableNavElements = function animatableNavElements (newNavbarInner, oldNavbarInner, toLarge, fromLarge, direction) {
@@ -8892,7 +9046,15 @@
     Router.prototype.removeThemeElements = function removeThemeElements (el) {
       var router = this;
       var theme = router.app.theme;
-      $(el).find(("." + (theme === 'md' ? 'ios' : 'md') + "-only, .if-" + (theme === 'md' ? 'ios' : 'md'))).remove();
+      var toRemove;
+      if (theme === 'ios') {
+        toRemove = '.md-only, .aurora-only, .if-md, .if-aurora, .if-not-ios, .not-ios';
+      } else if (theme === 'md') {
+        toRemove = '.ios-only, .aurora-only, .if-ios, .if-aurora, .if-not-md, .not-md';
+      } else if (theme === 'aurora') {
+        toRemove = '.ios-only, .md-only, .if-ios, .if-md, .if-not-aurora, .not-aurora';
+      }
+      $(el).find(toRemove).remove();
     };
 
     Router.prototype.getPageData = function getPageData (pageEl, navbarEl, from, to, route, pageFromEl) {
@@ -9156,6 +9318,7 @@
         if (
           (view && router.params.iosSwipeBack && app.theme === 'ios')
           || (view && router.params.mdSwipeBack && app.theme === 'md')
+          || (view && router.params.auroraSwipeBack && app.theme === 'aurora')
         ) {
           SwipeBack(router);
         }
@@ -9181,7 +9344,6 @@
         console.warn('Framework7: wrong or not complete pushState configuration, trying to guess pushStateRoot');
         pushStateRoot = doc.location.pathname.split('index.html')[0];
       }
-
       if (!pushState || !pushStateOnLoad) {
         if (!initUrl) {
           initUrl = documentUrl;
@@ -9323,7 +9485,8 @@
             animate: pushStateAnimateOnLoad,
             once: {
               pageAfterIn: function pageAfterIn() {
-                if (router.history.length > 2) {
+                var preloadPreviousPage = router.params.preloadPreviousPage || router.params[((app.theme) + "SwipeBack")];
+                if (preloadPreviousPage && router.history.length > 2) {
                   router.back({ preload: true });
                 }
               },
@@ -9380,7 +9543,7 @@
   // Clear history
   Router.prototype.clearPreviousHistory = clearPreviousHistory;
 
-  var Router$1 = {
+  var RouterModule = {
     name: 'router',
     static: {
       Router: Router,
@@ -9406,11 +9569,11 @@
     },
   };
 
-  var View = /*@__PURE__*/(function (Framework7Class$$1) {
+  var View = /*@__PURE__*/(function (Framework7Class) {
     function View(appInstance, el, viewParams) {
       if ( viewParams === void 0 ) viewParams = {};
 
-      Framework7Class$$1.call(this, viewParams, [appInstance]);
+      Framework7Class.call(this, viewParams, [appInstance]);
 
       var app = appInstance;
       var $el = $(el);
@@ -9503,8 +9666,8 @@
       return view;
     }
 
-    if ( Framework7Class$$1 ) View.__proto__ = Framework7Class$$1;
-    View.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) View.__proto__ = Framework7Class;
+    View.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     View.prototype.constructor = View;
 
     View.prototype.destroy = function destroy () {
@@ -9587,7 +9750,7 @@
   }(Framework7Class));
 
   // Use Router
-  View.use(Router$1);
+  View.use(RouterModule);
 
   function initClicks(app) {
     function handleClicks(e) {
@@ -9619,6 +9782,7 @@
       Object.keys(app.modules).forEach(function (moduleName) {
         var moduleClicks = app.modules[moduleName].clicks;
         if (!moduleClicks) { return; }
+        if (e.preventF7Router) { return; }
         Object.keys(moduleClicks).forEach(function (clickSelector) {
           var matchingClickedElement = $clickedEl.closest(clickSelector).eq(0);
           if (matchingClickedElement.length > 0) {
@@ -9626,7 +9790,6 @@
           }
         });
       });
-
 
       // Load Page
       var clickedLinkData = {};
@@ -9636,6 +9799,7 @@
       }
 
       // Prevent Router
+      if (e.preventF7Router) { return; }
       if ($clickedLinkEl.hasClass('prevent-router') || $clickedLinkEl.hasClass('router-prevent')) { return; }
 
       var validUrl = url && url.length > 0 && url !== '#' && !isTabLink;
@@ -9729,6 +9893,7 @@
                 $theme: {
                   ios: router.app.theme === 'ios',
                   md: router.app.theme === 'md',
+                  aurora: router.app.theme === 'aurora',
                 },
               }));
             }
@@ -9814,6 +9979,7 @@
               $theme: {
                 ios: app.theme === 'ios',
                 md: app.theme === 'md',
+                aurora: app.theme === 'aurora',
               },
             }
           );
@@ -10033,8 +10199,8 @@
   /* eslint no-use-before-define: "off" */
 
   var selfClosing = 'area base br col command embed hr img input keygen link menuitem meta param source track wbr'.split(' ');
-  var propsAttrs = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple value'.split(' ');
-  var booleanProps = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple readOnly'.split(' ');
+  var propsAttrs = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple value indeterminate'.split(' ');
+  var booleanProps = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple readOnly indeterminate'.split(' ');
   var tempDom = doc.createElement('div');
 
   function getHooks(data, app, initial, isRoot) {
@@ -10096,7 +10262,6 @@
     var once = ref.once;
 
     var fired = false;
-
     var methodName;
     var method;
     var customArgs = [];
@@ -10145,7 +10310,13 @@
       if (handlerString.indexOf('(') < 0) {
         customArgs = args;
       } else {
-        handlerString.split('(')[1].split(')')[0].split(',').forEach(function (argument) {
+        var handlerArguments = handlerString
+          .split('(')[1]
+          .split(')')[0]
+          .replace(/'[^']*'|"[^"]*"/g, function (a) { return a.replace(/,/g, '<_comma_>'); })
+          .split(',')
+          .map(function (a) { return a.replace(/<_comma_>/g, ','); });
+        handlerArguments.forEach(function (argument) {
           var arg = argument.trim();
           // eslint-disable-next-line
           if (!isNaN(arg)) { arg = parseFloat(arg); }
@@ -10275,8 +10446,8 @@
 
   function elementToVNode(el, context, app, initial, isRoot) {
     if (el.nodeType === 1) {
-      // element
-      var tagName = el.nodeName.toLowerCase();
+      // element (statement adds inline SVG compatibility)
+      var tagName = (el instanceof win.SVGElement) ? el.nodeName : el.nodeName.toLowerCase();
       return h(
         tagName,
         getData(el, context, app, initial, isRoot),
@@ -10381,8 +10552,8 @@
   function sameVnode(vnode1, vnode2) {
       return vnode1.key === vnode2.key && vnode1.sel === vnode2.sel;
   }
-  function isVnode(vnode$$1) {
-      return vnode$$1.sel !== undefined;
+  function isVnode(vnode) {
+      return vnode.sel !== undefined;
   }
   function createKeyToOldIdx(children, beginIdx, endIdx) {
       var i, map = {}, key, ch;
@@ -10397,7 +10568,7 @@
       return map;
   }
   var hooks = ['create', 'update', 'remove', 'destroy', 'pre', 'post'];
-  function init$1(modules, domApi) {
+  function init(modules, domApi) {
       var i, j, cbs = {};
       var api = domApi !== undefined ? domApi : htmlDomApi;
       for (i = 0; i < hooks.length; ++i) {
@@ -10422,20 +10593,20 @@
               }
           };
       }
-      function createElm(vnode$$1, insertedVnodeQueue) {
-          var i, data = vnode$$1.data;
+      function createElm(vnode, insertedVnodeQueue) {
+          var i, data = vnode.data;
           if (data !== undefined) {
               if (isDef(i = data.hook) && isDef(i = i.init)) {
-                  i(vnode$$1);
-                  data = vnode$$1.data;
+                  i(vnode);
+                  data = vnode.data;
               }
           }
-          var children = vnode$$1.children, sel = vnode$$1.sel;
+          var children = vnode.children, sel = vnode.sel;
           if (sel === '!') {
-              if (isUndef(vnode$$1.text)) {
-                  vnode$$1.text = '';
+              if (isUndef(vnode.text)) {
+                  vnode.text = '';
               }
-              vnode$$1.elm = api.createComment(vnode$$1.text);
+              vnode.elm = api.createComment(vnode.text);
           }
           else if (sel !== undefined) {
               // Parse selector
@@ -10444,14 +10615,14 @@
               var hash = hashIdx > 0 ? hashIdx : sel.length;
               var dot = dotIdx > 0 ? dotIdx : sel.length;
               var tag = hashIdx !== -1 || dotIdx !== -1 ? sel.slice(0, Math.min(hash, dot)) : sel;
-              var elm = vnode$$1.elm = isDef(data) && isDef(i = data.ns) ? api.createElementNS(i, tag)
+              var elm = vnode.elm = isDef(data) && isDef(i = data.ns) ? api.createElementNS(i, tag)
                   : api.createElement(tag);
               if (hash < dot)
                   { elm.setAttribute('id', sel.slice(hash + 1, dot)); }
               if (dotIdx > 0)
                   { elm.setAttribute('class', sel.slice(dot + 1).replace(/\./g, ' ')); }
               for (i = 0; i < cbs.create.length; ++i)
-                  { cbs.create[i](emptyNode, vnode$$1); }
+                  { cbs.create[i](emptyNode, vnode); }
               if (array(children)) {
                   for (i = 0; i < children.length; ++i) {
                       var ch = children[i];
@@ -10460,21 +10631,21 @@
                       }
                   }
               }
-              else if (primitive(vnode$$1.text)) {
-                  api.appendChild(elm, api.createTextNode(vnode$$1.text));
+              else if (primitive(vnode.text)) {
+                  api.appendChild(elm, api.createTextNode(vnode.text));
               }
-              i = vnode$$1.data.hook; // Reuse variable
+              i = vnode.data.hook; // Reuse variable
               if (isDef(i)) {
                   if (i.create)
-                      { i.create(emptyNode, vnode$$1); }
+                      { i.create(emptyNode, vnode); }
                   if (i.insert)
-                      { insertedVnodeQueue.push(vnode$$1); }
+                      { insertedVnodeQueue.push(vnode); }
               }
           }
           else {
-              vnode$$1.elm = api.createTextNode(vnode$$1.text);
+              vnode.elm = api.createTextNode(vnode.text);
           }
-          return vnode$$1.elm;
+          return vnode.elm;
       }
       function addVnodes(parentElm, before, vnodes, startIdx, endIdx, insertedVnodeQueue) {
           for (; startIdx <= endIdx; ++startIdx) {
@@ -10484,16 +10655,16 @@
               }
           }
       }
-      function invokeDestroyHook(vnode$$1) {
-          var i, j, data = vnode$$1.data;
+      function invokeDestroyHook(vnode) {
+          var i, j, data = vnode.data;
           if (data !== undefined) {
               if (isDef(i = data.hook) && isDef(i = i.destroy))
-                  { i(vnode$$1); }
+                  { i(vnode); }
               for (i = 0; i < cbs.destroy.length; ++i)
-                  { cbs.destroy[i](vnode$$1); }
-              if (vnode$$1.children !== undefined) {
-                  for (j = 0; j < vnode$$1.children.length; ++j) {
-                      i = vnode$$1.children[j];
+                  { cbs.destroy[i](vnode); }
+              if (vnode.children !== undefined) {
+                  for (j = 0; j < vnode.children.length; ++j) {
+                      i = vnode.children[j];
                       if (i != null && typeof i !== "string") {
                           invokeDestroyHook(i);
                       }
@@ -10604,24 +10775,24 @@
               }
           }
       }
-      function patchVnode(oldVnode, vnode$$1, insertedVnodeQueue) {
+      function patchVnode(oldVnode, vnode, insertedVnodeQueue) {
           var i, hook;
-          if (isDef(i = vnode$$1.data) && isDef(hook = i.hook) && isDef(i = hook.prepatch)) {
-              i(oldVnode, vnode$$1);
+          if (isDef(i = vnode.data) && isDef(hook = i.hook) && isDef(i = hook.prepatch)) {
+              i(oldVnode, vnode);
           }
-          var elm = vnode$$1.elm = oldVnode.elm;
+          var elm = vnode.elm = oldVnode.elm;
           var oldCh = oldVnode.children;
-          var ch = vnode$$1.children;
-          if (oldVnode === vnode$$1)
+          var ch = vnode.children;
+          if (oldVnode === vnode)
               { return; }
-          if (vnode$$1.data !== undefined) {
+          if (vnode.data !== undefined) {
               for (i = 0; i < cbs.update.length; ++i)
-                  { cbs.update[i](oldVnode, vnode$$1); }
-              i = vnode$$1.data.hook;
+                  { cbs.update[i](oldVnode, vnode); }
+              i = vnode.data.hook;
               if (isDef(i) && isDef(i = i.update))
-                  { i(oldVnode, vnode$$1); }
+                  { i(oldVnode, vnode); }
           }
-          if (isUndef(vnode$$1.text)) {
+          if (isUndef(vnode.text)) {
               if (isDef(oldCh) && isDef(ch)) {
                   if (oldCh !== ch)
                       { updateChildren(elm, oldCh, ch, insertedVnodeQueue); }
@@ -10638,14 +10809,14 @@
                   api.setTextContent(elm, '');
               }
           }
-          else if (oldVnode.text !== vnode$$1.text) {
-              api.setTextContent(elm, vnode$$1.text);
+          else if (oldVnode.text !== vnode.text) {
+              api.setTextContent(elm, vnode.text);
           }
           if (isDef(hook) && isDef(i = hook.postpatch)) {
-              i(oldVnode, vnode$$1);
+              i(oldVnode, vnode);
           }
       }
-      return function patch(oldVnode, vnode$$1) {
+      return function patch(oldVnode, vnode) {
           var i, elm, parent;
           var insertedVnodeQueue = [];
           for (i = 0; i < cbs.pre.length; ++i)
@@ -10653,15 +10824,15 @@
           if (!isVnode(oldVnode)) {
               oldVnode = emptyNodeAt(oldVnode);
           }
-          if (sameVnode(oldVnode, vnode$$1)) {
-              patchVnode(oldVnode, vnode$$1, insertedVnodeQueue);
+          if (sameVnode(oldVnode, vnode)) {
+              patchVnode(oldVnode, vnode, insertedVnodeQueue);
           }
           else {
               elm = oldVnode.elm;
               parent = api.parentNode(elm);
-              createElm(vnode$$1, insertedVnodeQueue);
+              createElm(vnode, insertedVnodeQueue);
               if (parent !== null) {
-                  api.insertBefore(parent, vnode$$1.elm, api.nextSibling(elm));
+                  api.insertBefore(parent, vnode.elm, api.nextSibling(elm));
                   removeVnodes(parent, [oldVnode], 0, 0);
               }
           }
@@ -10670,7 +10841,7 @@
           }
           for (i = 0; i < cbs.post.length; ++i)
               { cbs.post[i](); }
-          return vnode$$1;
+          return vnode;
       };
   }
 
@@ -10909,7 +11080,7 @@
 
   /* eslint import/no-named-as-default: off */
 
-  var patch = init$1([
+  var patch = init([
     attributesModule,
     propsModule,
     styleModule,
@@ -10929,6 +11100,7 @@
         $app: app,
         $f7: app,
         $options: Utils.extend({ id: id }, options),
+        $id: options.id || id,
       }
     );
     var $options = self.$options;
@@ -11596,6 +11768,11 @@
         mdSwipeBackAnimateOpacity: false,
         mdSwipeBackActiveArea: 30,
         mdSwipeBackThreshold: 0,
+        auroraSwipeBack: false,
+        auroraSwipeBackAnimateShadow: false,
+        auroraSwipeBackAnimateOpacity: true,
+        auroraSwipeBackActiveArea: 30,
+        auroraSwipeBackThreshold: 0,
         // Push State
         pushState: false,
         pushStateRoot: undefined,
@@ -11613,6 +11790,7 @@
         // Delays
         iosPageLoadDelay: 0,
         mdPageLoadDelay: 0,
+        auroraPageLoadDelay: 0,
         // Routes hooks
         routesBeforeEnter: null,
         routesBeforeLeave: null,
@@ -11676,7 +11854,9 @@
   var Navbar = {
     size: function size(el) {
       var app = this;
-      if (app.theme === 'md' && !app.params.navbar.mdCenterTitle) { return; }
+      if (app.theme !== 'ios' && !app.params.navbar[((app.theme) + "CenterTitle")]) {
+        return;
+      }
       var $el = $(el);
       if ($el.hasClass('navbar')) {
         $el = $el.children('.navbar-inner').each(function (index, navbarEl) {
@@ -11694,7 +11874,7 @@
         return;
       }
 
-      if (app.theme === 'md' && app.params.navbar.mdCenterTitle) {
+      if (app.theme !== 'ios' && app.params.navbar[((app.theme) + "CenterTitle")]) {
         $el.addClass('navbar-inner-centered-title');
       }
       if (app.theme === 'ios' && !app.params.navbar.iosCenterTitle) {
@@ -11811,10 +11991,7 @@
       }
 
       // Center title
-      if (
-        (app.theme === 'ios' && app.params.navbar.iosCenterTitle)
-        || (app.theme === 'md' && app.params.navbar.mdCenterTitle)
-      ) {
+      if (app.params.navbar[((app.theme) + "CenterTitle")]) {
         var titleLeft = diff;
         if (app.rtl && noLeft && noRight && title.length > 0) { titleLeft = -titleLeft; }
         title.css({ left: (titleLeft + "px") });
@@ -11829,7 +12006,9 @@
       if (!$el.length) { return; }
       if ($el.hasClass('navbar-hidden')) { return; }
       var className = "navbar-hidden" + (animate ? ' navbar-transitioning' : '');
-      var currentIsLarge = app.theme === 'ios' ? $el.find('.navbar-current .title-large').length : $el.find('.title-large').length;
+      var currentIsLarge = app.theme === 'ios'
+        ? $el.find('.navbar-current .title-large').length
+        : $el.find('.title-large').length;
       if (currentIsLarge) {
         className += ' navbar-large-hidden';
       }
@@ -11837,11 +12016,14 @@
         $el.removeClass('navbar-transitioning');
       });
       $el.addClass(className);
+      $el.trigger('navbar:hide');
+      app.emit('navbarHide', $el[0]);
     },
     show: function show(el, animate) {
       if ( el === void 0 ) el = '.navbar-hidden';
       if ( animate === void 0 ) animate = true;
 
+      var app = this;
       var $el = $(el);
       if ($el.hasClass('navbar-inner')) { $el = $el.parents('.navbar'); }
       if (!$el.length) { return; }
@@ -11853,6 +12035,8 @@
         });
       }
       $el.removeClass('navbar-hidden navbar-large-hidden');
+      $el.trigger('navbar:show');
+      app.emit('navbarShow', $el[0]);
     },
     getElByPage: function getElByPage(page) {
       var $pageEl;
@@ -11903,10 +12087,15 @@
           return;
         }
       }
+      var $pageEl = $(app.navbar.getPageByEl($navbarInnerEl));
       $navbarInnerEl.addClass('navbar-inner-large-collapsed');
-      if (app.theme === 'md') {
-        $navbarInnerEl.parents('.navbar').addClass('navbar-large-collapsed');
+      $pageEl.eq(0).addClass('page-with-navbar-large-collapsed').trigger('page:navbarlargecollapsed');
+      var $navbarEl = $navbarInnerEl.parents('.navbar');
+      if (app.theme === 'md' || app.theme === 'aurora') {
+        $navbarEl.addClass('navbar-large-collapsed');
       }
+      $navbarEl.trigger('navbar:collapse');
+      app.emit('navbarCollapse', $navbarEl[0]);
     },
     expandLargeTitle: function expandLargeTitle(navbarInnerEl) {
       var app = this;
@@ -11920,10 +12109,15 @@
           return;
         }
       }
+      var $pageEl = $(app.navbar.getPageByEl($navbarInnerEl));
       $navbarInnerEl.removeClass('navbar-inner-large-collapsed');
-      if (app.theme === 'md') {
-        $navbarInnerEl.parents('.navbar').removeClass('navbar-large-collapsed');
+      $pageEl.eq(0).removeClass('page-with-navbar-large-collapsed').trigger('page:navbarlargeexpanded');
+      var $navbarEl = $navbarInnerEl.parents('.navbar');
+      if (app.theme === 'md' || app.theme === 'aurora') {
+        $navbarEl.removeClass('navbar-large-collapsed');
       }
+      $navbarEl.trigger('navbar:expand');
+      app.emit('navbarExpand', $navbarEl[0]);
     },
     toggleLargeTitle: function toggleLargeTitle(navbarInnerEl) {
       var app = this;
@@ -11947,7 +12141,7 @@
       var app = this;
       var $pageEl = $(pageEl);
       var $navbarInnerEl = $(navbarInnerEl);
-      var $navbarEl = app.theme === 'md'
+      var $navbarEl = app.theme === 'md' || app.theme === 'aurora'
         ? $navbarInnerEl.parents('.navbar')
         : $(navbarInnerEl || app.navbar.getElByPage(pageEl)).closest('.navbar');
       var isLarge = $navbarInnerEl.find('.title-large').length || $navbarInnerEl.hasClass('.navbar-inner-large');
@@ -11970,10 +12164,14 @@
         if (navbarTitleLargeHeight && navbarTitleLargeHeight.indexOf('px') >= 0) {
           navbarTitleLargeHeight = parseInt(navbarTitleLargeHeight, 10);
           if (Number.isNaN(navbarTitleLargeHeight)) {
-            navbarTitleLargeHeight = app.theme === 'ios' ? 52 : 48;
+            if (app.theme === 'ios') { navbarTitleLargeHeight = 52; }
+            else if (app.theme === 'md') { navbarTitleLargeHeight = 48; }
+            else if (app.theme === 'aurora') { navbarTitleLargeHeight = 38; }
           }
-        } else {
-          navbarTitleLargeHeight = app.theme === 'ios' ? 52 : 48;
+        } else { // eslint-disable-next-line
+          if (app.theme === 'ios') { navbarTitleLargeHeight = 52; }
+          else if (app.theme === 'md') { navbarTitleLargeHeight = 48; }
+          else if (app.theme === 'aurora') { navbarTitleLargeHeight = 38; }
         }
       }
       if (needHide && isLarge) {
@@ -12006,27 +12204,31 @@
         if (collapseProgress === 0 && navbarCollapsed) {
           app.navbar.expandLargeTitle($navbarInnerEl[0]);
           $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          $pageEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
           $navbarInnerEl[0].style.overflow = '';
-          if (app.theme === 'md') {
+          if (app.theme === 'md' || app.theme === 'aurora') {
             $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
           }
         } else if (collapseProgress === 1 && !navbarCollapsed) {
           app.navbar.collapseLargeTitle($navbarInnerEl[0]);
           $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
           $navbarInnerEl[0].style.overflow = '';
-          if (app.theme === 'md') {
+          $pageEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          if (app.theme === 'md' || app.theme === 'aurora') {
             $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
           }
         } else if ((collapseProgress === 1 && navbarCollapsed) || (collapseProgress === 0 && !navbarCollapsed)) {
           $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
           $navbarInnerEl[0].style.overflow = '';
-          if (app.theme === 'md') {
+          $pageEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          if (app.theme === 'md' || app.theme === 'aurora') {
             $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
           }
         } else {
           $navbarInnerEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
           $navbarInnerEl[0].style.overflow = 'visible';
-          if (app.theme === 'md') {
+          $pageEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
+          if (app.theme === 'md' || app.theme === 'aurora') {
             $navbarEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
           }
         }
@@ -12151,6 +12353,7 @@
         scrollTopOnTitleClick: true,
         iosCenterTitle: true,
         mdCenterTitle: false,
+        auroraCenterTitle: true,
         hideOnPageScroll: false,
         showOnPageScrollEnd: true,
         showOnPageScrollTop: true,
@@ -12159,7 +12362,7 @@
       },
     },
     on: {
-      'panelBreakpoint resize viewMasterDetailBreakpoint': function onResize() {
+      'panelBreakpoint panelResize resize viewMasterDetailBreakpoint': function onResize() {
         var app = this;
         $('.navbar').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
@@ -12209,7 +12412,7 @@
         }
         if ($navbarInnerEl.hasClass('navbar-inner-large')) {
           if (app.params.navbar.collapseLargeTitleOnScroll) { needCollapseOnScrollHandler = true; }
-          if (app.theme === 'md') {
+          if (app.theme === 'md' || app.theme === 'aurora') {
             $navbarInnerEl.parents('.navbar').addClass('navbar-large');
           }
           page.$el.addClass('page-with-navbar-large');
@@ -12242,10 +12445,7 @@
       },
       modalOpen: function modalOpen(modal) {
         var app = this;
-        if (
-          (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
-          || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
-        ) {
+        if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
           return;
         }
         modal.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
@@ -12254,10 +12454,7 @@
       },
       panelOpen: function panelOpen(panel) {
         var app = this;
-        if (
-          (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
-          || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
-        ) {
+        if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
           return;
         }
         panel.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
@@ -12266,10 +12463,7 @@
       },
       panelSwipeOpen: function panelSwipeOpen(panel) {
         var app = this;
-        if (
-          (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
-          || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
-        ) {
+        if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
           return;
         }
         panel.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
@@ -12278,10 +12472,7 @@
       },
       tabShow: function tabShow(tabEl) {
         var app = this;
-        if (
-          (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
-          || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
-        ) {
+        if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
           return;
         }
         $(tabEl).find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
@@ -12328,10 +12519,7 @@
       'navbar-inner': {
         postpatch: function postpatch(vnode) {
           var app = this;
-          if (
-            (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
-            || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
-          ) {
+          if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
             return;
           }
           app.navbar.size(vnode.elm);
@@ -12578,8 +12766,6 @@
 
     $el.prepend(ripple.$rippleWaveEl);
 
-    /* eslint no-underscore-dangle: ["error", { "allow": ["_clientLeft"] }] */
-    // ripple._clientLeft = ripple.$rippleWaveEl[0].clientLeft;
     ripple.rippleTransform = "translate3d(" + (-center.x + (width / 2)) + "px, " + (-center.y + (height / 2)) + "px, 0) scale(1)";
 
     Utils.nextFrame(function () {
@@ -12590,7 +12776,7 @@
     return ripple;
   };
 
-  TouchRipple.prototype.onRemove = function onRemove () {
+  TouchRipple.prototype.destroy = function destroy () {
     var ripple = this;
     if (ripple.$rippleWaveEl) {
       ripple.$rippleWaveEl.remove();
@@ -12608,7 +12794,7 @@
     var $rippleWaveEl = this.$rippleWaveEl;
     var rippleTransform = this.rippleTransform;
     var removeTimeout = Utils.nextTick(function () {
-      ripple.onRemove();
+      ripple.destroy();
     }, 400);
     ripple.removing = true;
     $rippleWaveEl
@@ -12622,12 +12808,12 @@
             .transform(rippleTransform.replace('scale(1)', 'scale(1.01)'));
 
           removeTimeout = Utils.nextTick(function () {
-            ripple.onRemove();
+            ripple.destroy();
           }, 700);
 
           $rippleWaveEl.transitionEnd(function () {
             clearTimeout(removeTimeout);
-            ripple.onRemove();
+            ripple.destroy();
           });
         });
       });
@@ -12658,9 +12844,9 @@
     var dialog = dialogsQueue.shift();
     dialog.open();
   }
-  var Modal = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Modal = /*@__PURE__*/(function (Framework7Class) {
     function Modal(app, params) {
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var modal = this;
 
@@ -12678,8 +12864,8 @@
       return this;
     }
 
-    if ( Framework7Class$$1 ) Modal.__proto__ = Framework7Class$$1;
-    Modal.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Modal.__proto__ = Framework7Class;
+    Modal.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Modal.prototype.constructor = Modal;
 
     Modal.prototype.onOpen = function onOpen () {
@@ -12896,7 +13082,7 @@
     return Modal;
   }(Framework7Class));
 
-  var CustomModal = /*@__PURE__*/(function (Modal$$1) {
+  var CustomModal = /*@__PURE__*/(function (Modal) {
     function CustomModal(app, params) {
       var extendedParams = Utils.extend({
         backdrop: true,
@@ -12905,7 +13091,7 @@
       }, params);
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var customModal = this;
 
@@ -12967,8 +13153,8 @@
       return customModal;
     }
 
-    if ( Modal$$1 ) CustomModal.__proto__ = Modal$$1;
-    CustomModal.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) CustomModal.__proto__ = Modal;
+    CustomModal.prototype = Object.create( Modal && Modal.prototype );
     CustomModal.prototype.constructor = CustomModal;
 
     return CustomModal;
@@ -12996,7 +13182,11 @@
     },
   };
 
-  var Dialog = /*@__PURE__*/(function (Modal$$1) {
+  var Appbar = {
+    name: 'appbar',
+  };
+
+  var Dialog = /*@__PURE__*/(function (Modal) {
     function Dialog(app, params) {
       var extendedParams = Utils.extend({
         title: app.params.dialog.title,
@@ -13014,7 +13204,7 @@
       }
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var dialog = this;
 
@@ -13071,7 +13261,7 @@
         if (button.close !== false) { dialog.close(); }
       }
       var addKeyboardHander;
-      function onKeyPress(e) {
+      function onKeyDown(e) {
         var keyCode = e.keyCode;
         buttons.forEach(function (button, index) {
           if (button.keyCodes && button.keyCodes.indexOf(keyCode) >= 0) {
@@ -13095,7 +13285,7 @@
             && !app.device.android
             && !app.device.cordova
           ) {
-            $(doc).on('keydown', onKeyPress);
+            $(doc).on('keydown', onKeyDown);
           }
         });
         dialog.on('close', function () {
@@ -13108,7 +13298,7 @@
             && !app.device.android
             && !app.device.cordova
           ) {
-            $(doc).off('keydown', onKeyPress);
+            $(doc).off('keydown', onKeyDown);
           }
           addKeyboardHander = false;
         });
@@ -13188,8 +13378,8 @@
       return dialog;
     }
 
-    if ( Modal$$1 ) Dialog.__proto__ = Modal$$1;
-    Dialog.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Dialog.__proto__ = Modal;
+    Dialog.prototype = Object.create( Modal && Modal.prototype );
     Dialog.prototype.constructor = Dialog;
 
     return Dialog;
@@ -13274,6 +13464,7 @@
                 {
                   text: app.params.dialog.buttonCancel,
                   keyCodes: keyboardActions ? [27] : null,
+                  color: app.theme === 'aurora' ? 'gray' : null,
                 },
                 {
                   text: app.params.dialog.buttonOk,
@@ -13308,6 +13499,7 @@
                   text: app.params.dialog.buttonCancel,
                   onClick: callbackCancel,
                   keyCodes: keyboardActions ? [27] : null,
+                  color: app.theme === 'aurora' ? 'gray' : null,
                 },
                 {
                   text: app.params.dialog.buttonOk,
@@ -13338,6 +13530,7 @@
                 {
                   text: app.params.dialog.buttonCancel,
                   keyCodes: keyboardActions ? [27] : null,
+                  color: app.theme === 'aurora' ? 'gray' : null,
                 },
                 {
                   text: app.params.dialog.buttonOk,
@@ -13373,6 +13566,7 @@
                 {
                   text: app.params.dialog.buttonCancel,
                   keyCodes: keyboardActions ? [27] : null,
+                  color: app.theme === 'aurora' ? 'gray' : null,
                 },
                 {
                   text: app.params.dialog.buttonOk,
@@ -13430,7 +13624,7 @@
     },
   };
 
-  var Popup = /*@__PURE__*/(function (Modal$$1) {
+  var Popup = /*@__PURE__*/(function (Modal) {
     function Popup(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -13439,7 +13633,7 @@
       );
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var popup = this;
 
@@ -13462,7 +13656,9 @@
       }
 
       var $backdropEl;
-      if (popup.params.backdrop) {
+      if (popup.params.backdrop && popup.params.backdropEl) {
+        $backdropEl = $(popup.params.backdropEl);
+      } else if (popup.params.backdrop) {
         $backdropEl = app.root.children('.popup-backdrop');
         if ($backdropEl.length === 0) {
           $backdropEl = $('<div class="popup-backdrop"></div>');
@@ -13482,6 +13678,8 @@
       function handleClick(e) {
         var target = e.target;
         var $target = $(target);
+        var keyboardOpened = !app.device.desktop && app.device.cordova && ((window.Keyboard && window.Keyboard.isVisible) || (window.cordova.plugins && window.cordova.plugins.Keyboard && window.cordova.plugins.Keyboard.isVisible));
+        if (keyboardOpened) { return; }
         if ($target.closest(popup.el).length === 0) {
           if (
             popup.params
@@ -13509,7 +13707,23 @@
         }
       }
 
+      function onKeyDown(e) {
+        var keyCode = e.keyCode;
+        if (keyCode === 27 && popup.params.closeOnEscape) {
+          popup.close();
+        }
+      }
+      if (popup.params.closeOnEscape) {
+        popup.on('popupOpen', function () {
+          $(document).on('keydown', onKeyDown);
+        });
+        popup.on('popupClose', function () {
+          $(document).off('keydown', onKeyDown);
+        });
+      }
+
       popup.on('popupOpened', function () {
+        $el.removeClass('swipe-close-to-bottom swipe-close-to-top');
         if (popup.params.closeByBackdropClick) {
           app.on('click', handleClick);
         }
@@ -13520,13 +13734,134 @@
         }
       });
 
+      var allowSwipeToClose = true;
+      var isTouched = false;
+      var startTouch;
+      var currentTouch;
+      var isScrolling;
+      var touchStartTime;
+      var touchesDiff;
+      var isMoved = false;
+      var pageContentEl;
+      var pageContentScrollTop;
+      var pageContentOffsetHeight;
+      var pageContentScrollHeight;
+
+      function handleTouchStart(e) {
+        if (isTouched || !allowSwipeToClose || !popup.params.swipeToClose) { return; }
+        if (popup.params.swipeHandler && $(e.target).closest(popup.params.swipeHandler).length === 0) {
+          return;
+        }
+        isTouched = true;
+        isMoved = false;
+        startTouch = {
+          x: e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX,
+          y: e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY,
+        };
+        touchStartTime = Utils.now();
+        isScrolling = undefined;
+        if (!popup.params.swipeHandler && e.type === 'touchstart') {
+          pageContentEl = $(e.target).closest('.page-content')[0];
+        }
+      }
+      function handleTouchMove(e) {
+        if (!isTouched) { return; }
+        currentTouch = {
+          x: e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX,
+          y: e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY,
+        };
+
+        if (typeof isScrolling === 'undefined') {
+          isScrolling = !!(isScrolling || Math.abs(currentTouch.x - startTouch.x) > Math.abs(currentTouch.y - startTouch.y));
+        }
+        if (isScrolling) {
+          isTouched = false;
+          isMoved = false;
+          return;
+        }
+
+        touchesDiff = startTouch.y - currentTouch.y;
+        var direction = touchesDiff < 0 ? 'to-bottom' : 'to-top';
+        $el.transition(0);
+
+        if (typeof popup.params.swipeToClose === 'string' && direction !== popup.params.swipeToClose) {
+          $el.transform('');
+          return;
+        }
+
+        if (!isMoved) {
+          if (pageContentEl) {
+            pageContentScrollTop = pageContentEl.scrollTop;
+            pageContentScrollHeight = pageContentEl.scrollHeight;
+            pageContentOffsetHeight = pageContentEl.offsetHeight;
+            if (
+              !(pageContentScrollHeight === pageContentOffsetHeight)
+              && !(direction === 'to-bottom' && pageContentScrollTop === 0)
+              && !(direction === 'to-top' && pageContentScrollTop === (pageContentScrollHeight - pageContentOffsetHeight))
+            ) {
+              $el.transform('');
+              isTouched = false;
+              isMoved = false;
+              return;
+            }
+          }
+          isMoved = true;
+        }
+        e.preventDefault();
+        $el.transition(0).transform(("translate3d(0," + (-touchesDiff) + "px,0)"));
+      }
+      function handleTouchEnd() {
+        isTouched = false;
+        if (!isMoved) {
+          return;
+        }
+        isMoved = false;
+        allowSwipeToClose = false;
+        $el.transition('');
+        var direction = touchesDiff < 0 ? 'to-bottom' : 'to-top';
+        if ((typeof popup.params.swipeToClose === 'string' && direction !== popup.params.swipeToClose)) {
+          $el.transform('');
+          allowSwipeToClose = true;
+          return;
+        }
+        var diff = Math.abs(touchesDiff);
+        var timeDiff = (new Date()).getTime() - touchStartTime;
+        if ((timeDiff < 300 && diff > 20) || (timeDiff >= 300 && diff > 100)) {
+          Utils.nextTick(function () {
+            if (direction === 'to-bottom') {
+              $el.addClass('swipe-close-to-bottom');
+            } else {
+              $el.addClass('swipe-close-to-top');
+            }
+            $el.transform('');
+            popup.close();
+            allowSwipeToClose = true;
+          });
+          return;
+        }
+        allowSwipeToClose = true;
+        $el.transform('');
+      }
+
+      var passive = Support.passiveListener ? { passive: true } : false;
+      if (popup.params.swipeToClose) {
+        $el.on(app.touchEvents.start, handleTouchStart, passive);
+        app.on('touchmove', handleTouchMove);
+        app.on('touchend:passive', handleTouchEnd);
+        popup.once('popupDestroy', function () {
+          $el.off(app.touchEvents.start, handleTouchStart, passive);
+          app.off('touchmove', handleTouchMove);
+          app.off('touchend:passive', handleTouchEnd);
+        });
+      }
+
       $el[0].f7Modal = popup;
 
       return popup;
     }
 
-    if ( Modal$$1 ) Popup.__proto__ = Modal$$1;
-    Popup.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Popup.__proto__ = Modal;
+    Popup.prototype = Object.create( Modal && Modal.prototype );
     Popup.prototype.constructor = Popup;
 
     return Popup;
@@ -13537,7 +13872,11 @@
     params: {
       popup: {
         backdrop: true,
+        backdropEl: undefined,
         closeByBackdropClick: true,
+        closeOnEscape: false,
+        swipeToClose: false,
+        swipeHandler: null,
       },
     },
     static: {
@@ -13567,14 +13906,14 @@
     },
   };
 
-  var LoginScreen = /*@__PURE__*/(function (Modal$$1) {
+  var LoginScreen = /*@__PURE__*/(function (Modal) {
     function LoginScreen(app, params) {
       var extendedParams = Utils.extend({
         on: {},
       }, params);
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var loginScreen = this;
 
@@ -13608,8 +13947,8 @@
       return loginScreen;
     }
 
-    if ( Modal$$1 ) LoginScreen.__proto__ = Modal$$1;
-    LoginScreen.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) LoginScreen.__proto__ = Modal;
+    LoginScreen.prototype = Object.create( Modal && Modal.prototype );
     LoginScreen.prototype.constructor = LoginScreen;
 
     return LoginScreen;
@@ -13644,7 +13983,7 @@
     },
   };
 
-  var Popover = /*@__PURE__*/(function (Modal$$1) {
+  var Popover = /*@__PURE__*/(function (Modal) {
     function Popover(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -13653,7 +13992,7 @@
       );
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var popover = this;
 
@@ -13680,7 +14019,9 @@
 
       // Backdrop
       var $backdropEl;
-      if (popover.params.backdrop) {
+      if (popover.params.backdrop && popover.params.backdropEl) {
+        $backdropEl = $(popover.params.backdropEl);
+      } else if (popover.params.backdrop) {
         $backdropEl = app.root.children('.popover-backdrop');
         if ($backdropEl.length === 0) {
           $backdropEl = $('<div class="popover-backdrop"></div>');
@@ -13733,14 +14074,18 @@
       popover.on('popoverOpen', function () {
         popover.resize();
         app.on('resize', handleResize);
+        $(window).on('keyboardDidShow keyboardDidHide', handleResize);
         popover.on('popoverClose popoverBeforeDestroy', function () {
           app.off('resize', handleResize);
+          $(window).off('keyboardDidShow keyboardDidHide', handleResize);
         });
       });
 
       function handleClick(e) {
         var target = e.target;
         var $target = $(target);
+        var keyboardOpened = !app.device.desktop && app.device.cordova && ((window.Keyboard && window.Keyboard.isVisible) || (window.cordova.plugins && window.cordova.plugins.Keyboard && window.cordova.plugins.Keyboard.isVisible));
+        if (keyboardOpened) { return; }
         if ($target.closest(popover.el).length === 0) {
           if (
             popover.params.closeByBackdropClick
@@ -13753,6 +14098,22 @@
             popover.close();
           }
         }
+      }
+
+      function onKeyDown(e) {
+        var keyCode = e.keyCode;
+        if (keyCode === 27 && popover.params.closeOnEscape) {
+          popover.close();
+        }
+      }
+
+      if (popover.params.closeOnEscape) {
+        popover.on('popoverOpen', function () {
+          $(document).on('keydown', onKeyDown);
+        });
+        popover.on('popoverClose', function () {
+          $(document).off('keydown', onKeyDown);
+        });
       }
 
       popover.on('popoverOpened', function () {
@@ -13771,8 +14132,8 @@
       return popover;
     }
 
-    if ( Modal$$1 ) Popover.__proto__ = Modal$$1;
-    Popover.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Popover.__proto__ = Modal;
+    Popover.prototype = Object.create( Modal && Modal.prototype );
     Popover.prototype.constructor = Popover;
 
     Popover.prototype.resize = function resize () {
@@ -13791,11 +14152,11 @@
       var angleSize = 0;
       var angleLeft;
       var angleTop;
-      if (app.theme === 'ios') {
+      if (app.theme === 'ios' || app.theme === 'aurora') {
         $angleEl.removeClass('on-left on-right on-top on-bottom').css({ left: '', top: '' });
         angleSize = $angleEl.width() / 2;
       } else {
-        $el.removeClass('popover-on-left popover-on-right popover-on-top popover-on-bottom').css({ left: '', top: '' });
+        $el.removeClass('popover-on-left popover-on-right popover-on-top popover-on-bottom popover-on-middle').css({ left: '', top: '' });
       }
 
       var targetWidth;
@@ -13831,38 +14192,35 @@
         if (height < app.height - targetOffsetTop - targetHeight) {
           // On bottom
           position = 'bottom';
-          top = targetOffsetTop;
+          top = targetOffsetTop + targetHeight;
         } else if (height < targetOffsetTop) {
           // On top
-          top = (targetOffsetTop - height) + targetHeight;
+          top = targetOffsetTop - height;
           position = 'top';
         } else {
           // On middle
-          position = 'bottom';
-          top = targetOffsetTop;
+          position = 'middle';
+          top = ((targetHeight / 2) + targetOffsetTop) - (height / 2);
         }
-
-        if (top <= 0) {
-          top = 8;
-        } else if (top + height >= app.height) {
-          top = app.height - height - 8;
-        }
+        top = Math.max(8, Math.min(top, app.height - height - 8));
 
         // Horizontal Position
-        left = (targetOffsetLeft + targetWidth) - width - 8;
-        if (left + width >= app.width - 8) {
-          left = (targetOffsetLeft + targetWidth) - width - 8;
+        var hPosition;
+        if (targetOffsetLeft < app.width / 2) {
+          hPosition = 'right';
+          left = position === 'middle'
+            ? targetOffsetLeft + targetWidth
+            : targetOffsetLeft;
+        } else {
+          hPosition = 'left';
+          left = position === 'middle'
+            ? targetOffsetLeft - width
+            : (targetOffsetLeft + targetWidth) - width;
         }
-        if (left < 8) {
-          left = 8;
-        }
-        if (position === 'top') {
-          $el.addClass('popover-on-top');
-        }
-        if (position === 'bottom') {
-          $el.addClass('popover-on-bottom');
-        }
+        left = Math.max(8, Math.min(left, app.width - width - 8));
+        $el.addClass(("popover-on-" + position + " popover-on-" + hPosition));
       } else {
+        // ios and aurora
         if ((height + angleSize) < targetOffsetTop) {
           // On top
           top = targetOffsetTop - height - angleSize;
@@ -13875,11 +14233,7 @@
           position = 'middle';
           top = ((targetHeight / 2) + targetOffsetTop) - (height / 2);
           diff = top;
-          if (top <= 0) {
-            top = 5;
-          } else if (top + height >= app.height) {
-            top = app.height - height - 5;
-          }
+          top = Math.max(5, Math.min(top, app.height - height - 5));
           diff -= top;
         }
 
@@ -13887,9 +14241,7 @@
         if (position === 'top' || position === 'bottom') {
           left = ((targetWidth / 2) + targetOffsetLeft) - (width / 2);
           diff = left;
-          if (left < 5) { left = 5; }
-          if (left + width > app.width) { left = app.width - width - 5; }
-          if (left < 0) { left = 0; }
+          left = Math.max(5, Math.min(left, app.width - width - 5));
           if (position === 'top') {
             $angleEl.addClass('on-bottom');
           }
@@ -13925,9 +14277,11 @@
     name: 'popover',
     params: {
       popover: {
+        backdrop: true,
+        backdropEl: undefined,
         closeByBackdropClick: true,
         closeByOutsideClick: true,
-        backdrop: true,
+        closeOnEscape: false,
       },
     },
     static: {
@@ -13969,7 +14323,7 @@
 
   /* eslint indent: ["off"] */
 
-  var Actions = /*@__PURE__*/(function (Modal$$1) {
+  var Actions = /*@__PURE__*/(function (Modal) {
     function Actions(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -13978,7 +14332,7 @@
       );
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var actions = this;
 
@@ -14015,7 +14369,9 @@
 
       // Backdrop
       var $backdropEl;
-      if (actions.params.backdrop) {
+      if (actions.params.backdrop && actions.params.backdropEl) {
+        $backdropEl = $(actions.params.backdropEl);
+      } else if (actions.params.backdrop) {
         $backdropEl = app.root.children('.actions-backdrop');
         if ($backdropEl.length === 0) {
           $backdropEl = $('<div class="actions-backdrop"></div>');
@@ -14028,15 +14384,15 @@
 
       var popover;
       function buttonOnClick(e) {
-        var buttonEl = this;
+        var $buttonEl = $(this);
         var buttonIndex;
         var groupIndex;
-        if ($(buttonEl).hasClass('list-button')) {
-          buttonIndex = $(buttonEl).parents('li').index();
-          groupIndex = $(buttonEl).parents('.list').index();
+        if ($buttonEl.hasClass('list-button') || $buttonEl.hasClass('item-link')) {
+          buttonIndex = $buttonEl.parents('li').index();
+          groupIndex = $buttonEl.parents('.list').index();
         } else {
-          buttonIndex = $(buttonEl).index();
-          groupIndex = $(buttonEl).parents('.actions-group').index();
+          buttonIndex = $buttonEl.index();
+          groupIndex = $buttonEl.parents('.actions-group').index();
         }
         if (typeof groups !== 'undefined') {
           var button = groups[groupIndex][buttonIndex];
@@ -14059,6 +14415,7 @@
             actions.params.forceToPopover
             || (app.device.ios && app.device.ipad)
             || app.width >= 768
+            || (app.device.desktop && app.theme === 'aurora')
           ) {
             convertToPopover = true;
           }
@@ -14075,12 +14432,12 @@
           });
           popover.open(animate);
           popover.once('popoverOpened', function () {
-            popover.$el.find('.list-button').each(function (groupIndex, buttonEl) {
+            popover.$el.find('.list-button, .item-link').each(function (groupIndex, buttonEl) {
               $(buttonEl).on('click', buttonOnClick);
             });
           });
           popover.once('popoverClosed', function () {
-            popover.$el.find('.list-button').each(function (groupIndex, buttonEl) {
+            popover.$el.find('.list-button, .item-link').each(function (groupIndex, buttonEl) {
               $(buttonEl).off('click', buttonOnClick);
             });
             Utils.nextTick(function () {
@@ -14128,6 +14485,8 @@
       function handleClick(e) {
         var target = e.target;
         var $target = $(target);
+        var keyboardOpened = !app.device.desktop && app.device.cordova && ((window.Keyboard && window.Keyboard.isVisible) || (window.cordova.plugins && window.cordova.plugins.Keyboard && window.cordova.plugins.Keyboard.isVisible));
+        if (keyboardOpened) { return; }
         if ($target.closest(actions.el).length === 0) {
           if (
             actions.params.closeByBackdropClick
@@ -14140,6 +14499,22 @@
             actions.close();
           }
         }
+      }
+
+      function onKeyDown(e) {
+        var keyCode = e.keyCode;
+        if (keyCode === 27 && actions.params.closeOnEscape) {
+          actions.close();
+        }
+      }
+
+      if (actions.params.closeOnEscape) {
+        actions.on('open', function () {
+          $(document).on('keydown', onKeyDown);
+        });
+        actions.on('close', function () {
+          $(document).off('keydown', onKeyDown);
+        });
       }
 
       actions.on('opened', function () {
@@ -14160,8 +14535,8 @@
       return actions;
     }
 
-    if ( Modal$$1 ) Actions.__proto__ = Modal$$1;
-    Actions.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Actions.__proto__ = Modal;
+    Actions.prototype = Object.create( Modal && Modal.prototype );
     Actions.prototype.constructor = Actions;
 
     Actions.prototype.render = function render () {
@@ -14214,7 +14589,7 @@
                       return ("\n                      <li>\n                        <a class=\"" + (itemClasses.join(' ')) + "\">\n                          <div class=\"item-media\">\n                            " + icon + "\n                          </div>\n                          <div class=\"item-inner\">\n                            <div class=\"item-title\">\n                              " + text + "\n                            </div>\n                          </div>\n                        </a>\n                      </li>\n                    ");
                     }
                     itemClasses.push('list-button');
-                    return ("\n                    <li>\n                      <a href=\"#\" class=\"" + (itemClasses.join(' ')) + "\">" + text + "</a>\n                    </li>\n                  ");
+                    return ("\n                    <li>\n                      <a class=\"" + (itemClasses.join(' ')) + "\">" + text + "</a>\n                    </li>\n                  ");
                   }).join('')) + "\n              </ul>\n            </div>\n          "); }).join('')) + "\n        </div>\n      </div>\n    ").trim();
     };
 
@@ -14227,10 +14602,12 @@
       actions: {
         convertToPopover: true,
         forceToPopover: false,
+        backdrop: true,
+        backdropEl: undefined,
         closeByBackdropClick: true,
+        closeOnEscape: false,
         render: null,
         renderPopover: null,
-        backdrop: true,
       },
     },
     static: {
@@ -14260,7 +14637,7 @@
     },
   };
 
-  var Sheet = /*@__PURE__*/(function (Modal$$1) {
+  var Sheet = /*@__PURE__*/(function (Modal) {
     function Sheet(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -14269,11 +14646,14 @@
       );
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var sheet = this;
 
       sheet.params = extendedParams;
+      if (typeof sheet.params.backdrop === 'undefined') {
+        sheet.params.backdrop = app.theme !== 'ios';
+      }
 
       // Find Element
       var $el;
@@ -14291,7 +14671,10 @@
         return sheet.destroy();
       }
       var $backdropEl;
-      if (sheet.params.backdrop) {
+
+      if (sheet.params.backdrop && sheet.params.backdropEl) {
+        $backdropEl = $(sheet.params.backdropEl);
+      } else if (sheet.params.backdrop) {
         $backdropEl = app.root.children('.sheet-backdrop');
         if ($backdropEl.length === 0) {
           $backdropEl = $('<div class="sheet-backdrop"></div>');
@@ -14299,8 +14682,17 @@
         }
       }
 
+      Utils.extend(sheet, {
+        app: app,
+        $el: $el,
+        el: $el[0],
+        $backdropEl: $backdropEl,
+        backdropEl: $backdropEl && $backdropEl[0],
+        type: 'sheet',
+      });
+
       var $pageContentEl;
-      function scrollToOpen() {
+      function scrollToElementOnOpen() {
         var $scrollEl = $(sheet.params.scrollToEl).eq(0);
         if ($scrollEl.length === 0) { return; }
         $pageContentEl = $scrollEl.parents('.page-content');
@@ -14330,7 +14722,7 @@
         }
       }
 
-      function scrollToClose() {
+      function scrollToElementOnClose() {
         if ($pageContentEl && $pageContentEl.length > 0) {
           $pageContentEl.css({
             'padding-bottom': '',
@@ -14340,6 +14732,8 @@
       function handleClick(e) {
         var target = e.target;
         var $target = $(target);
+        var keyboardOpened = !app.device.desktop && app.device.cordova && ((window.Keyboard && window.Keyboard.isVisible) || (window.cordova.plugins && window.cordova.plugins.Keyboard && window.cordova.plugins.Keyboard.isVisible));
+        if (keyboardOpened) { return; }
         if ($target.closest(sheet.el).length === 0) {
           if (
             sheet.params.closeByBackdropClick
@@ -14354,9 +14748,203 @@
         }
       }
 
+      function onKeyDown(e) {
+        var keyCode = e.keyCode;
+        if (keyCode === 27 && sheet.params.closeOnEscape) {
+          sheet.close();
+        }
+      }
+
+
+      var isTouched = false;
+      var startTouch;
+      var currentTouch;
+      var isScrolling;
+      var touchStartTime;
+      var touchesDiff;
+      var isMoved = false;
+      var isTopSheetModal;
+      var swipeStepTranslate;
+      var startTranslate;
+      var currentTranslate;
+      var sheetElOffsetHeight;
+      var minTranslate;
+      var maxTranslate;
+
+      function handleTouchStart(e) {
+        if (isTouched || !(sheet.params.swipeToClose || sheet.params.swipeToStep)) { return; }
+        if (sheet.params.swipeHandler && $(e.target).closest(sheet.params.swipeHandler).length === 0) {
+          return;
+        }
+        isTouched = true;
+        isMoved = false;
+        startTouch = {
+          x: e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX,
+          y: e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY,
+        };
+        touchStartTime = Utils.now();
+        isScrolling = undefined;
+        isTopSheetModal = $el.hasClass('sheet-modal-top');
+      }
+      function handleTouchMove(e) {
+        if (!isTouched) { return; }
+        currentTouch = {
+          x: e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX,
+          y: e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY,
+        };
+
+        if (typeof isScrolling === 'undefined') {
+          isScrolling = !!(isScrolling || Math.abs(currentTouch.x - startTouch.x) > Math.abs(currentTouch.y - startTouch.y));
+        }
+        if (isScrolling) {
+          isTouched = false;
+          isMoved = false;
+          return;
+        }
+
+        touchesDiff = startTouch.y - currentTouch.y;
+
+        if (!isMoved) {
+          sheetElOffsetHeight = $el[0].offsetHeight;
+          startTranslate = Utils.getTranslate($el[0], 'y');
+          if (isTopSheetModal) {
+            minTranslate = sheet.params.swipeToClose ? -sheetElOffsetHeight : -swipeStepTranslate;
+            maxTranslate = 0;
+          } else {
+            minTranslate = 0;
+            maxTranslate = sheet.params.swipeToClose ? sheetElOffsetHeight : swipeStepTranslate;
+          }
+          isMoved = true;
+        }
+        currentTranslate = startTranslate - touchesDiff;
+        currentTranslate = Math.min(Math.max(currentTranslate, minTranslate), maxTranslate);
+        e.preventDefault();
+        $el
+          .transition(0)
+          .transform(("translate3d(0," + currentTranslate + "px,0)"));
+      }
+      function handleTouchEnd() {
+        isTouched = false;
+        if (!isMoved) {
+          return;
+        }
+        isMoved = false;
+        $el.transform('').transition('');
+
+        var direction = touchesDiff < 0 ? 'to-bottom' : 'to-top';
+
+        var diff = Math.abs(touchesDiff);
+        if (diff === 0 || currentTranslate === startTranslate) { return; }
+
+        var timeDiff = (new Date()).getTime() - touchStartTime;
+
+        if (!sheet.params.swipeToStep) {
+          if (direction !== (isTopSheetModal ? 'to-top' : 'to-bottom')) {
+            return;
+          }
+          if ((timeDiff < 300 && diff > 20) || (timeDiff >= 300 && diff > (sheetElOffsetHeight / 2))) {
+            sheet.close();
+          }
+          return;
+        }
+
+        var openDirection = isTopSheetModal ? 'to-bottom' : 'to-top';
+        var closeDirection = isTopSheetModal ? 'to-top' : 'to-bottom';
+        var absCurrentTranslate = Math.abs(currentTranslate);
+        var absSwipeStepTranslate = Math.abs(swipeStepTranslate);
+
+        if (timeDiff < 300 && diff > 10) {
+          if (direction === openDirection && absCurrentTranslate < absSwipeStepTranslate) {
+            // open step
+            $el.removeClass('modal-in-swipe-step');
+            $el.trigger('sheet:stepopen');
+            sheet.emit('local::stepOpen sheetStepOpen', sheet);
+          }
+          if (direction === closeDirection && absCurrentTranslate > absSwipeStepTranslate) {
+            // close sheet
+            if (sheet.params.swipeToClose) {
+              sheet.close();
+            } else {
+              // close step
+              $el.addClass('modal-in-swipe-step');
+              $el.trigger('sheet:stepclose');
+              sheet.emit('local::stepClose sheetStepClose', sheet);
+            }
+          }
+          if (direction === closeDirection && absCurrentTranslate <= absSwipeStepTranslate) {
+            // close step
+            $el.addClass('modal-in-swipe-step');
+            $el.trigger('sheet:stepclose');
+            sheet.emit('local::stepClose sheetStepClose', sheet);
+          }
+          return;
+        }
+        if (timeDiff >= 300) {
+          var stepOpened = !$el.hasClass('modal-in-swipe-step');
+          if (!stepOpened) {
+            if (absCurrentTranslate < (absSwipeStepTranslate / 2)) {
+              // open step
+              $el.removeClass('modal-in-swipe-step');
+              $el.trigger('sheet:stepopen');
+              sheet.emit('local::stepOpen sheetStepOpen', sheet);
+            } else if ((absCurrentTranslate - absSwipeStepTranslate) > (sheetElOffsetHeight - absSwipeStepTranslate) / 2) {
+              // close sheet
+              if (sheet.params.swipeToClose) { sheet.close(); }
+            }
+          } else if (stepOpened) {
+            if (absCurrentTranslate > absSwipeStepTranslate + (sheetElOffsetHeight - absSwipeStepTranslate) / 2) {
+              // close sheet
+              if (sheet.params.swipeToClose) { sheet.close(); }
+            } else if (absCurrentTranslate > absSwipeStepTranslate / 2) {
+              // close step
+              $el.addClass('modal-in-swipe-step');
+              $el.trigger('sheet:stepclose');
+              sheet.emit('local::stepClose sheetStepClose', sheet);
+            }
+          }
+        }
+      }
+
+      function setSwipeStep(byResize) {
+        var $swipeStepEl = $el.find('.sheet-modal-swipe-step').eq(0);
+        if (!$swipeStepEl.length) { return; }
+        if ($el.hasClass('sheet-modal-top')) {
+          swipeStepTranslate = -($swipeStepEl.offset().top - $el.offset().top + $swipeStepEl[0].offsetHeight);
+        } else {
+          swipeStepTranslate = $el[0].offsetHeight - ($swipeStepEl.offset().top - $el.offset().top + $swipeStepEl[0].offsetHeight);
+        }
+        $el[0].style.setProperty('--f7-sheet-swipe-step', (swipeStepTranslate + "px"));
+        if (!byResize) {
+          $el.addClass('modal-in-swipe-step');
+        }
+      }
+
+      function onResize() {
+        setSwipeStep(true);
+      }
+
+      var passive = Support.passiveListener ? { passive: true } : false;
+      if (sheet.params.swipeToClose || sheet.params.swipeToStep) {
+        $el.on(app.touchEvents.start, handleTouchStart, passive);
+        app.on('touchmove', handleTouchMove);
+        app.on('touchend:passive', handleTouchEnd);
+        sheet.once('sheetDestroy', function () {
+          $el.off(app.touchEvents.start, handleTouchStart, passive);
+          app.off('touchmove', handleTouchMove);
+          app.off('touchend:passive', handleTouchEnd);
+        });
+      }
+
       sheet.on('sheetOpen', function () {
+        if (sheet.params.closeOnEscape) {
+          $(document).on('keydown', onKeyDown);
+        }
+        if (sheet.params.swipeToStep) {
+          setSwipeStep();
+          app.on('resize', onResize);
+        }
         if (sheet.params.scrollToEl) {
-          scrollToOpen();
+          scrollToElementOnOpen();
         }
       });
       sheet.on('sheetOpened', function () {
@@ -14365,30 +14953,38 @@
         }
       });
       sheet.on('sheetClose', function () {
+        if (sheet.params.swipeToStep) {
+          $el.removeClass('modal-in-swipe-step');
+          app.off('resize', onResize);
+        }
+        if (sheet.params.closeOnEscape) {
+          $(document).off('keydown', onKeyDown);
+        }
         if (sheet.params.scrollToEl) {
-          scrollToClose();
+          scrollToElementOnClose();
         }
         if (sheet.params.closeByOutsideClick || sheet.params.closeByBackdropClick) {
           app.off('click', handleClick);
         }
       });
 
-      Utils.extend(sheet, {
-        app: app,
-        $el: $el,
-        el: $el[0],
-        $backdropEl: $backdropEl,
-        backdropEl: $backdropEl && $backdropEl[0],
-        type: 'sheet',
-      });
+      sheet.stepOpen = function stepOpen() {
+        $el.removeClass('modal-in-swipe-step');
+      };
+      sheet.stepClose = function stepClose() {
+        $el.addClass('modal-in-swipe-step');
+      };
+      sheet.stepToggle = function stepToggle() {
+        $el.toggleClass('modal-in-swipe-step');
+      };
 
       $el[0].f7Modal = sheet;
 
       return sheet;
     }
 
-    if ( Modal$$1 ) Sheet.__proto__ = Modal$$1;
-    Sheet.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Sheet.__proto__ = Modal;
+    Sheet.prototype = Object.create( Modal && Modal.prototype );
     Sheet.prototype.constructor = Sheet;
 
     return Sheet;
@@ -14398,8 +14994,14 @@
     name: 'sheet',
     params: {
       sheet: {
+        backdrop: undefined,
+        backdropEl: undefined,
         closeByBackdropClick: true,
         closeByOutsideClick: false,
+        closeOnEscape: false,
+        swipeToClose: false,
+        swipeToStep: false,
+        swipeHandler: null,
       },
     },
     static: {
@@ -14407,16 +15009,30 @@
     },
     create: function create() {
       var app = this;
-      if (!app.passedParams.sheet || app.passedParams.sheet.backdrop === undefined) {
-        app.params.sheet.backdrop = app.theme === 'md';
-      }
       app.sheet = Utils.extend(
         {},
         ModalMethods({
           app: app,
           constructor: Sheet,
           defaultSelector: '.sheet-modal.modal-in',
-        })
+        }),
+        {
+          stepOpen: function stepOpen(sheet) {
+            var sheetInstance = app.sheet.get(sheet);
+            if (sheetInstance && sheetInstance.stepOpen) { return sheetInstance.stepOpen(); }
+            return undefined;
+          },
+          stepClose: function stepClose(sheet) {
+            var sheetInstance = app.sheet.get(sheet);
+            if (sheetInstance && sheetInstance.stepClose) { return sheetInstance.stepClose(); }
+            return undefined;
+          },
+          stepToggle: function stepToggle(sheet) {
+            var sheetInstance = app.sheet.get(sheet);
+            if (sheetInstance && sheetInstance.stepToggle) { return sheetInstance.stepToggle(); }
+            return undefined;
+          },
+        }
       );
     },
     clicks: {
@@ -14438,14 +15054,14 @@
     },
   };
 
-  var Toast = /*@__PURE__*/(function (Modal$$1) {
+  var Toast = /*@__PURE__*/(function (Modal) {
     function Toast(app, params) {
       var extendedParams = Utils.extend({
         on: {},
       }, app.params.toast, params);
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var toast = this;
 
@@ -14523,8 +15139,8 @@
       return toast;
     }
 
-    if ( Modal$$1 ) Toast.__proto__ = Modal$$1;
-    Toast.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Toast.__proto__ = Modal;
+    Toast.prototype = Object.create( Modal && Modal.prototype );
     Toast.prototype.constructor = Toast;
 
     Toast.prototype.render = function render () {
@@ -15616,8 +16232,6 @@
     },
   };
 
-  /* eslint no-underscore-dangle: ["error", { "allow": ["_clientLeft"] }] */
-
   var Accordion = {
     toggleClicked: function toggleClicked($clickedEl) {
       var app = this;
@@ -15743,16 +16357,25 @@
     name: 'contactsList',
   };
 
-  var VirtualList = /*@__PURE__*/(function (Framework7Class$$1) {
+  var VirtualList = /*@__PURE__*/(function (Framework7Class) {
     function VirtualList(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var vl = this;
+
+      var defaultHeight;
+      if (app.theme === 'md') {
+        defaultHeight = 48;
+      } else if (app.theme === 'ios') {
+        defaultHeight = 44;
+      } else if (app.theme === 'aurora') {
+        defaultHeight = 38;
+      }
 
       var defaults = {
         cols: 1,
-        height: app.theme === 'md' ? 48 : 44,
+        height: defaultHeight,
         cache: true,
         dynamicHeightBufferSize: 1,
         showFilteredItemsOnly: false,
@@ -15774,7 +16397,7 @@
 
       vl.params = Utils.extend(defaults, params);
       if (vl.params.height === undefined || !vl.params.height) {
-        vl.params.height = app.theme === 'md' ? 48 : 44;
+        vl.params.height = defaultHeight;
       }
 
       vl.$el = $(params.el);
@@ -15879,8 +16502,8 @@
       return vl;
     }
 
-    if ( Framework7Class$$1 ) VirtualList.__proto__ = Framework7Class$$1;
-    VirtualList.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) VirtualList.__proto__ = Framework7Class;
+    VirtualList.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     VirtualList.prototype.constructor = VirtualList;
 
     VirtualList.prototype.setListSize = function setListSize () {
@@ -16326,11 +16949,11 @@
     },
   };
 
-  var ListIndex = /*@__PURE__*/(function (Framework7Class$$1) {
+  var ListIndex = /*@__PURE__*/(function (Framework7Class) {
     function ListIndex(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var index = this;
 
       var defaults = {
@@ -16339,6 +16962,7 @@
         indexes: 'auto', // or array of indexes
         iosItemHeight: 14,
         mdItemHeight: 14,
+        auroraItemHeight: 14,
         scrollList: true,
         label: false,
         // eslint-disable-next-line
@@ -16542,14 +17166,15 @@
       return index;
     }
 
-    if ( Framework7Class$$1 ) ListIndex.__proto__ = Framework7Class$$1;
-    ListIndex.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) ListIndex.__proto__ = Framework7Class;
+    ListIndex.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     ListIndex.prototype.constructor = ListIndex;
     // eslint-disable-next-line
     ListIndex.prototype.scrollListToIndex = function scrollListToIndex (itemContent, itemIndex) {
       var index = this;
       var $listEl = index.$listEl;
       var $pageContentEl = index.$pageContentEl;
+      var app = index.app;
       if (!$listEl || !$pageContentEl || $pageContentEl.length === 0) { return index; }
 
       var $scrollToEl;
@@ -16566,6 +17191,13 @@
       var paddingTop = parseInt($pageContentEl.css('padding-top'), 10);
       var scrollTop = $pageContentEl[0].scrollTop;
       var scrollToElTop = $scrollToEl.offset().top;
+      if ($pageContentEl.parents('.page-with-navbar-large').length) {
+        var navbarInnerEl = app.navbar.getElByPage($pageContentEl.parents('.page-with-navbar-large').eq(0));
+        var $titleLargeEl = $(navbarInnerEl).find('.title-large');
+        if ($titleLargeEl.length) {
+          paddingTop -= $titleLargeEl[0].offsetHeight || 0;
+        }
+      }
 
       if (parentTop <= paddingTop) {
         $pageContentEl.scrollTop((parentTop + scrollTop) - paddingTop);
@@ -16617,7 +17249,7 @@
       var el = index.el;
       var indexes = index.indexes;
       var height = el.offsetHeight;
-      var itemHeight = app.theme === 'ios' ? params.iosItemHeight : params.mdItemHeight;
+      var itemHeight = params[((app.theme) + "ItemHeight")];
       var maxItems = Math.floor(height / itemHeight);
       var items = indexes.length;
       var skipRate = 0;
@@ -17140,8 +17772,8 @@
 
       if (!isMoved) {
         if (!panel.opened) {
-          $el.show();
-          $backdropEl.show();
+          $el.css('display', 'block');
+          $backdropEl.css('display', 'block');
           $el.trigger('panel:swipeopen', panel);
           panel.emit('local::swipeOpen panelSwipeOpen', panel);
         }
@@ -17295,12 +17927,181 @@
     });
   }
 
-  var Panel = /*@__PURE__*/(function (Framework7Class$$1) {
+  function resizablePanel(panel) {
+    var app = panel.app;
+    Utils.extend(panel, {
+      resizable: true,
+      resizableWidth: null,
+      resizableInitialized: true,
+    });
+    var $htmlEl = $('html');
+    var $el = panel.$el;
+    var $backdropEl = panel.$backdropEl;
+    var side = panel.side;
+    var effect = panel.effect;
+    if (!$el) { return; }
+
+    var isTouched;
+    var isMoved;
+    var touchesStart = {};
+    var touchesDiff;
+    var panelWidth;
+
+    var $viewEl;
+
+    var panelMinWidth;
+    var panelMaxWidth;
+    var visibleByBreakpoint;
+
+    function transformCSSWidth(v) {
+      if (!v) { return null; }
+      if (v.indexOf('%') >= 0 || v.indexOf('vw') >= 0) {
+        return parseInt(v, 10) / 100 * app.width;
+      }
+      var newV = parseInt(v, 10);
+      if (Number.isNaN(newV)) { return null; }
+      return newV;
+    }
+
+    function isResizable() {
+      return panel.resizable && $el.hasClass('panel-resizable');
+    }
+
+    function handleTouchStart(e) {
+      if (!isResizable()) { return; }
+      touchesStart.x = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
+      touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+      isMoved = false;
+      isTouched = true;
+      panelMinWidth = transformCSSWidth($el.css('min-width'));
+      panelMaxWidth = transformCSSWidth($el.css('max-width'));
+      visibleByBreakpoint = $el.hasClass('panel-visible-by-breakpoint');
+    }
+    function handleTouchMove(e) {
+      if (!isTouched) { return; }
+      var pageX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
+
+      if (!isMoved) {
+        panelWidth = $el[0].offsetWidth;
+        $el.transition(0);
+        $el.addClass('panel-resizing');
+        $htmlEl.css('cursor', 'col-resize');
+        if (effect === 'reveal' || visibleByBreakpoint) {
+          $viewEl = $(panel.getViewEl());
+        }
+        if (effect === 'reveal' && !visibleByBreakpoint) {
+          $backdropEl.transition(0);
+          $viewEl.transition(0);
+        }
+      }
+
+      isMoved = true;
+
+      e.preventDefault();
+
+      touchesDiff = (pageX - touchesStart.x);
+
+      var newPanelWidth = side === 'left' ? panelWidth + touchesDiff : panelWidth - touchesDiff;
+      if (panelMinWidth && !Number.isNaN(panelMinWidth)) {
+        newPanelWidth = Math.max(newPanelWidth, panelMinWidth);
+      }
+      if (panelMaxWidth && !Number.isNaN(panelMaxWidth)) {
+        newPanelWidth = Math.min(newPanelWidth, panelMaxWidth);
+      }
+      newPanelWidth = Math.min(Math.max(newPanelWidth, 0), app.width);
+
+      panel.resizableWidth = newPanelWidth;
+      $el[0].style.width = newPanelWidth + "px";
+      if (effect === 'reveal' && !visibleByBreakpoint) {
+        if ($viewEl) {
+          $viewEl.transform(("translate3d(" + (side === 'left' ? newPanelWidth : -newPanelWidth) + "px, 0, 0)"));
+        }
+        if ($backdropEl) {
+          $backdropEl.transform(("translate3d(" + (side === 'left' ? newPanelWidth : -newPanelWidth) + "px, 0, 0)"));
+        }
+      } else if (visibleByBreakpoint && $viewEl) {
+        $viewEl.css(("margin-" + side), (newPanelWidth + "px"));
+      }
+
+      $el.trigger('panel:resize', panel, newPanelWidth);
+      panel.emit('local::resize panelResize', panel, newPanelWidth);
+    }
+    function handleTouchEnd() {
+      $('html').css('cursor', '');
+      if (!isTouched || !isMoved) {
+        isTouched = false;
+        isMoved = false;
+        return;
+      }
+      isTouched = false;
+      isMoved = false;
+
+      $htmlEl[0].style.setProperty(("--f7-panel-" + side + "-width"), ((panel.resizableWidth) + "px"));
+      $el[0].style.width = '';
+      if (effect === 'reveal' && !visibleByBreakpoint) {
+        $viewEl.transform('');
+        $backdropEl.transform('');
+      }
+      $el.removeClass('panel-resizing');
+      Utils.nextFrame(function () {
+        if (visibleByBreakpoint) { return; }
+        $el.transition('');
+        if (effect === 'reveal') {
+          $backdropEl.transition('');
+          if ($viewEl) { $viewEl.transition(''); }
+        }
+      });
+    }
+
+    function handleResize() {
+      if (!panel.opened || !panel.resizableWidth) { return; }
+      panelMinWidth = transformCSSWidth($el.css('min-width'));
+      panelMaxWidth = transformCSSWidth($el.css('max-width'));
+
+      if (panelMinWidth && !Number.isNaN(panelMinWidth) && panel.resizableWidth < panelMinWidth) {
+        panel.resizableWidth = Math.max(panel.resizableWidth, panelMinWidth);
+      }
+      if (panelMaxWidth && !Number.isNaN(panelMaxWidth) && panel.resizableWidth > panelMaxWidth) {
+        panel.resizableWidth = Math.min(panel.resizableWidth, panelMaxWidth);
+      }
+      panel.resizableWidth = Math.min(Math.max(panel.resizableWidth, 0), app.width);
+
+      $htmlEl[0].style.setProperty(("--f7-panel-" + side + "-width"), ((panel.resizableWidth) + "px"));
+    }
+
+    if (panel.$el.find('.panel-resize-handler').length === 0) {
+      panel.$el.append('<div class="panel-resize-handler"></div>');
+    }
+    panel.$resizeHandlerEl = panel.$el.children('.panel-resize-handler');
+
+    $el.addClass('panel-resizable');
+
+    // Add Events
+    var passive = Support.passiveListener ? { passive: true } : false;
+
+    panel.$el.on(app.touchEvents.start, '.panel-resize-handler', handleTouchStart, passive);
+    app.on('touchmove:active', handleTouchMove);
+    app.on('touchend:passive', handleTouchEnd);
+    app.on('resize', handleResize);
+    panel.on('beforeOpen', handleResize);
+
+    panel.once('panelDestroy', function () {
+      $el.removeClass('panel-resizable');
+      panel.$resizeHandlerEl.remove();
+      panel.$el.off(app.touchEvents.start, '.panel-resize-handler', handleTouchStart, passive);
+      app.off('touchmove:active', handleTouchMove);
+      app.off('touchend:passive', handleTouchEnd);
+      app.off('resize', handleResize);
+      panel.off('beforeOpen', handleResize);
+    });
+  }
+
+  var Panel = /*@__PURE__*/(function (Framework7Class) {
     function Panel(app, params) {
       var obj;
 
       if ( params === void 0 ) params = {};
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var panel = this;
 
       var el = params.el;
@@ -17344,6 +18145,7 @@
         opened: opened,
         $backdropEl: $backdropEl,
         backdropEl: $backdropEl[0],
+        params: params,
       });
 
       // Install Modules
@@ -17355,26 +18157,9 @@
       return panel;
     }
 
-    if ( Framework7Class$$1 ) Panel.__proto__ = Framework7Class$$1;
-    Panel.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Panel.__proto__ = Framework7Class;
+    Panel.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Panel.prototype.constructor = Panel;
-
-    Panel.prototype.init = function init () {
-      var panel = this;
-      var app = panel.app;
-      if (app.params.panel[((panel.side) + "Breakpoint")]) {
-        panel.initBreakpoints();
-      }
-      {
-        if (
-          (app.params.panel.swipe === panel.side)
-          || (app.params.panel.swipe === 'both')
-          || (app.params.panel.swipe && app.params.panel.swipe !== panel.side && app.params.panel.swipeCloseOpposite)
-        ) {
-          panel.initSwipePanel();
-        }
-      }
-    };
 
     Panel.prototype.getViewEl = function getViewEl () {
       var panel = this;
@@ -17388,9 +18173,10 @@
       return viewEl;
     };
 
-    Panel.prototype.setBreakpoint = function setBreakpoint () {
-      var obj, obj$1;
+    Panel.prototype.setBreakpoint = function setBreakpoint (emitEvents) {
+      var obj, obj$1, obj$2;
 
+      if ( emitEvents === void 0 ) emitEvents = true;
       var panel = this;
       var app = panel.app;
       var side = panel.side;
@@ -17407,16 +18193,22 @@
           panel.onOpened();
           $viewEl.css(( obj = {}, obj[("margin-" + side)] = (($el.width()) + "px"), obj ));
           app.allowPanelOpen = true;
-          app.emit('local::breakpoint panelBreakpoint');
-          panel.$el.trigger('panel:breakpoint', panel);
+          if (emitEvents) {
+            app.emit('local::breakpoint panelBreakpoint');
+            panel.$el.trigger('panel:breakpoint', panel);
+          }
+        } else {
+          $viewEl.css(( obj$1 = {}, obj$1[("margin-" + side)] = (($el.width()) + "px"), obj$1 ));
         }
       } else if (wasVisible) {
         $el.css('display', '').removeClass('panel-visible-by-breakpoint panel-active');
         panel.onClose();
         panel.onClosed();
-        $viewEl.css(( obj$1 = {}, obj$1[("margin-" + side)] = '', obj$1 ));
-        app.emit('local::breakpoint panelBreakpoint');
-        panel.$el.trigger('panel:breakpoint', panel);
+        $viewEl.css(( obj$2 = {}, obj$2[("margin-" + side)] = '', obj$2 ));
+        if (emitEvents) {
+          app.emit('local::breakpoint panelBreakpoint');
+          panel.$el.trigger('panel:breakpoint', panel);
+        }
       }
     };
 
@@ -17439,30 +18231,57 @@
       }
     };
 
-    Panel.prototype.destroy = function destroy () {
+    Panel.prototype.initResizablePanel = function initResizablePanel () {
+      resizablePanel(this);
+    };
+
+    Panel.prototype.toggle = function toggle (animate) {
+      if ( animate === void 0 ) animate = true;
+
+      var panel = this;
+      if (panel.opened) { panel.close(animate); }
+      else { panel.open(animate); }
+    };
+
+    Panel.prototype.onOpen = function onOpen () {
+      var panel = this;
+      panel.opened = true;
+
+      panel.$el.trigger('panel:beforeopen', panel);
+      panel.emit('local::beforeOpen panelBeforeOpen', panel);
+
+      panel.$el.trigger('panel:open', panel);
+      panel.emit('local::open panelOpen', panel);
+    };
+
+    Panel.prototype.onOpened = function onOpened () {
       var panel = this;
       var app = panel.app;
+      app.panel.allowOpen = true;
 
-      if (!panel.$el) {
-        // Panel already destroyed
-        return;
-      }
+      panel.$el.trigger('panel:opened', panel);
+      panel.emit('local::opened panelOpened', panel);
+    };
 
-      panel.emit('local::beforeDestroy panelBeforeDestroy', panel);
-      panel.$el.trigger('panel:beforedestroy', panel);
+    Panel.prototype.onClose = function onClose () {
+      var panel = this;
+      panel.opened = false;
+      panel.$el.addClass('panel-closing');
 
-      if (panel.resizeHandler) {
-        app.off('resize', panel.resizeHandler);
-      }
-      panel.$el.trigger('panel:destroy', panel);
-      panel.emit('local::destroy panelDestroy');
-      delete app.panel[panel.side];
-      if (panel.el) {
-        panel.el.f7Panel = null;
-        delete panel.el.f7Panel;
-      }
-      Utils.deleteProps(panel);
-      panel = null;
+      panel.$el.trigger('panel:beforeclose', panel);
+      panel.emit('local::beforeClose panelBeforeClose', panel);
+
+      panel.$el.trigger('panel:close', panel);
+      panel.emit('local::close panelClose', panel);
+    };
+
+    Panel.prototype.onClosed = function onClosed () {
+      var panel = this;
+      var app = panel.app;
+      app.panel.allowOpen = true;
+      panel.$el.removeClass('panel-closing');
+      panel.$el.trigger('panel:closed', panel);
+      panel.emit('local::closed panelClosed', panel);
     };
 
     Panel.prototype.open = function open (animate) {
@@ -17532,13 +18351,10 @@
         .addClass('panel-active');
 
       $backdropEl[animate ? 'removeClass' : 'addClass']('not-animated');
-      $backdropEl.show();
+      $backdropEl.css({ display: 'block' });
 
       /* eslint no-underscore-dangle: ["error", { "allow": ["_clientLeft"] }] */
-      panel._clientLeft = $el[0].clientLeft;
-
-      $('html').addClass(("with-panel with-panel-" + side + "-" + effect));
-      panel.onOpen();
+      // panel._clientLeft = $el[0].clientLeft;
 
       // Transition End;
       var transitionEndTarget = effect === 'reveal' ? $el.nextAll('.view, .views').eq(0) : $el;
@@ -17556,9 +18372,16 @@
           } else { panelTransitionEnd(); }
         });
       }
+
       if (animate) {
-        panelTransitionEnd();
+        Utils.nextFrame(function () {
+          $('html').addClass(("with-panel with-panel-" + side + "-" + effect));
+          panel.onOpen();
+          panelTransitionEnd();
+        });
       } else {
+        $('html').addClass(("with-panel with-panel-" + side + "-" + effect));
+        panel.onOpen();
         panel.onOpened();
         $backdropEl.css({ display: '' });
       }
@@ -17577,7 +18400,6 @@
       var $el = panel.$el;
       var $backdropEl = panel.$backdropEl;
       var opened = panel.opened;
-
       if (!opened || $el.hasClass('panel-visible-by-breakpoint') || !$el.hasClass('panel-active')) { return false; }
 
       $el[animate ? 'removeClass' : 'addClass']('not-animated');
@@ -17609,37 +18431,61 @@
       return true;
     };
 
-    Panel.prototype.onOpen = function onOpen () {
-      var panel = this;
-      panel.opened = true;
-      panel.$el.trigger('panel:open', panel);
-      panel.emit('local::open panelOpen', panel);
-    };
-
-    Panel.prototype.onOpened = function onOpened () {
+    Panel.prototype.init = function init () {
       var panel = this;
       var app = panel.app;
-      app.panel.allowOpen = true;
-
-      panel.$el.trigger('panel:opened', panel);
-      panel.emit('local::opened panelOpened', panel);
+      if (app.params.panel[((panel.side) + "Breakpoint")]) {
+        panel.initBreakpoints();
+      }
+      {
+        if (
+          (app.params.panel.swipe === panel.side)
+          || (app.params.panel.swipe === 'both')
+          || (app.params.panel.swipe && app.params.panel.swipe !== panel.side && app.params.panel.swipeCloseOpposite)
+        ) {
+          panel.initSwipePanel();
+        }
+      }
+      if (panel.params.resizable || panel.$el.hasClass('panel-resizable')) {
+        panel.initResizablePanel();
+      }
     };
 
-    Panel.prototype.onClose = function onClose () {
-      var panel = this;
-      panel.opened = false;
-      panel.$el.addClass('panel-closing');
-      panel.$el.trigger('panel:close', panel);
-      panel.emit('local::close panelClose', panel);
-    };
+    Panel.prototype.destroy = function destroy () {
+      var obj;
 
-    Panel.prototype.onClosed = function onClosed () {
       var panel = this;
       var app = panel.app;
-      app.panel.allowOpen = true;
-      panel.$el.removeClass('panel-closing');
-      panel.$el.trigger('panel:closed', panel);
-      panel.emit('local::closed panelClosed', panel);
+
+      if (!panel.$el) {
+        // Panel already destroyed
+        return;
+      }
+
+      panel.emit('local::beforeDestroy panelBeforeDestroy', panel);
+      panel.$el.trigger('panel:beforedestroy', panel);
+
+      if (panel.resizeHandler) {
+        app.off('resize', panel.resizeHandler);
+      }
+
+      if (panel.$el.hasClass('panel-visible-by-breakpoint')) {
+        var $viewEl = $(panel.getViewEl());
+        panel.$el.css('display', '').removeClass('panel-visible-by-breakpoint panel-active');
+        $viewEl.css(( obj = {}, obj[("margin-" + (panel.side))] = '', obj ));
+        app.emit('local::breakpoint panelBreakpoint');
+        panel.$el.trigger('panel:breakpoint', panel);
+      }
+
+      panel.$el.trigger('panel:destroy', panel);
+      panel.emit('local::destroy panelDestroy');
+      delete app.panel[panel.side];
+      if (panel.el) {
+        panel.el.f7Panel = null;
+        delete panel.el.f7Panel;
+      }
+      Utils.deleteProps(panel);
+      panel = null;
     };
 
     return Panel;
@@ -17672,6 +18518,53 @@
     create: function create() {
       var app = this;
       Utils.extend(app.panel, {
+        disableResizable: function disableResizable(panel) {
+          if ( panel === void 0 ) panel = 'both';
+
+          var side;
+          var panels = [];
+          if (typeof panel === 'string') {
+            if (panel === 'both') {
+              side = 'both';
+              panels = [app.panel.left, app.panel.right];
+            } else {
+              side = panel;
+              panels.push(app.panel[side]);
+            }
+          } else {
+            panels = [panel];
+          }
+          panels.forEach(function (panelInstance) {
+            panelInstance.resizable = false;
+            panelInstance.$el.removeClass('panel-resizable');
+          });
+        },
+        enableResizable: function enableResizable(panel) {
+          if ( panel === void 0 ) panel = 'both';
+
+          var side;
+          var panels = [];
+          if (typeof panel === 'string') {
+            if (panel === 'both') {
+              side = 'both';
+              panels = [app.panel.left, app.panel.right];
+            } else {
+              side = panel;
+              panels.push(app.panel[side]);
+            }
+          } else {
+            panels = [panel];
+          }
+          panels.forEach(function (panelInstance) {
+            if (!panelInstance) { return; }
+            if (!panelInstance.resizableInitialized) {
+              panelInstance.initResizablePanel();
+            } else {
+              panelInstance.resizable = true;
+              panelInstance.$el.addClass('panel-resizable');
+            }
+          });
+        },
         disableSwipe: function disableSwipe(panel) {
           if ( panel === void 0 ) panel = 'both';
 
@@ -17689,7 +18582,7 @@
             panels = [panel];
           }
           panels.forEach(function (panelInstance) {
-            if (panelInstance) { Utils.extend(panelInstance, { swipeable: false }); }
+            panelInstance.swipeable = false;
           });
         },
         enableSwipe: function enableSwipe(panel) {
@@ -17714,16 +18607,14 @@
           } else if (panel) {
             panels.push(panel);
           }
-          if (panels.length) {
-            panels.forEach(function (panelInstance) {
-              if (!panelInstance) { return; }
-              if (!panelInstance.swipeInitialized) {
-                panelInstance.initSwipePanel();
-              } else {
-                Utils.extend(panelInstance, { swipeable: true });
-              }
-            });
-          }
+          panels.forEach(function (panelInstance) {
+            if (!panelInstance) { return; }
+            if (!panelInstance.swipeInitialized) {
+              panelInstance.initSwipePanel();
+            } else {
+              panelInstance.swipeable = true;
+            }
+          });
         },
         create: function create(params) {
           return new Panel(app, params);
@@ -17762,6 +18653,31 @@
           }
           if ($panelEl.length > 0) {
             return app.panel.create({ el: $panelEl }).close(animate);
+          }
+          return false;
+        },
+        toggle: function toggle(side, animate) {
+          var $panelEl;
+          var panelSide = side;
+          if (side) {
+            panelSide = side;
+            $panelEl = $((".panel-" + panelSide));
+          } else if ($('.panel.panel-active').length) {
+            $panelEl = $('.panel.panel-active');
+            panelSide = $panelEl.hasClass('panel-left') ? 'left' : 'right';
+          } else {
+            if ($('.panel').length > 1) {
+              return false;
+            }
+            panelSide = $('.panel').hasClass('panel-left') ? 'left' : 'right';
+            $panelEl = $((".panel-" + panelSide));
+          }
+          if (!panelSide) { return false; }
+          if (app.panel[panelSide]) {
+            return app.panel[panelSide].toggle(animate);
+          }
+          if ($panelEl.length > 0) {
+            return app.panel.create({ el: $panelEl }).toggle(animate);
           }
           return false;
         },
@@ -17814,6 +18730,13 @@
         var side = data.panel;
         app.panel.close(side, data.animate);
       },
+      '.panel-toggle': function close(clickedEl, data) {
+        if ( data === void 0 ) data = {};
+
+        var app = this;
+        var side = data.panel;
+        app.panel.toggle(side, data.animate);
+      },
       '.panel-backdrop': function close() {
         var app = this;
         var $panelEl = $('.panel-active');
@@ -17828,6 +18751,8 @@
     },
   };
 
+  /* eslint no-param-reassign: "off" */
+
   var CardExpandable = {
     open: function open(cardEl, animate) {
       var assign;
@@ -17835,6 +18760,7 @@
       if ( cardEl === void 0 ) cardEl = '.card-expandable';
       if ( animate === void 0 ) animate = true;
       var app = this;
+
       if ($('.card-opened').length) { return; }
       var $cardEl = $(cardEl).eq(0);
 
@@ -17855,24 +18781,31 @@
 
       if (prevented) { return; }
 
-      var $backropEl;
-      if (app.params.card.backrop) {
-        $backropEl = $cardEl.parents('.page-content').find('.card-backdrop');
-        if (!$backropEl.length) {
-          $backropEl = $('<div class="card-backdrop"></div>');
-          $cardEl.parents('.page-content').append($backropEl);
+      var cardParams = Object.assign({ animate: animate }, app.params.card, $cardEl.dataset());
+
+      var $pageContentEl = $cardEl.parents('.page-content');
+
+      var $backdropEl;
+      if ($cardEl.attr('data-backdrop-el')) {
+        $backdropEl = $($cardEl.attr('data-backdrop-el'));
+      }
+      if (!$backdropEl && cardParams.backdrop) {
+        $backdropEl = $pageContentEl.find('.card-backdrop');
+        if (!$backdropEl.length) {
+          $backdropEl = $('<div class="card-backdrop"></div>');
+          $pageContentEl.append($backdropEl);
         }
       }
 
       var $navbarEl;
       var $toolbarEl;
-      if (app.params.card.hideNavbarOnOpen) {
+      if (cardParams.hideNavbarOnOpen) {
         $navbarEl = $pageEl.children('.navbar');
         if (!$navbarEl.length) {
           if ($pageEl[0].f7Page) { $navbarEl = $pageEl[0].f7Page.$navbarEl; }
         }
       }
-      if (app.params.card.hideToolbarOnOpen) {
+      if (cardParams.hideToolbarOnOpen) {
         $toolbarEl = $pageEl.children('.toolbar');
         if (!$toolbarEl.length) {
           $toolbarEl = $pageEl.parents('.view').children('.toolbar');
@@ -17904,16 +18837,29 @@
       var scaleY = maxHeight / cardHeight;
 
       var offset = $cardEl.offset();
+      var pageOffset = $pageEl.offset();
+      offset.left -= pageOffset.left;
 
       var cardLeftOffset;
       var cardTopOffset;
 
       if (hasTransform) {
-        cardLeftOffset = $cardEl[0].offsetLeft;
-        cardTopOffset = $cardEl[0].offsetTop - $cardEl.parents('.page-content')[0].scrollTop;
+        var transformValues = currTransform
+          .replace(/matrix\(|\)/g, '')
+          .split(',')
+          .map(function (el) { return el.trim(); });
+        if (transformValues && transformValues.length > 1) {
+          var scale = parseFloat(transformValues[0]);
+          cardLeftOffset = offset.left - cardWidth * (1 - scale) / 2;
+          cardTopOffset = offset.top - pageOffset.top - cardHeight * (1 - scale) / 2;
+          if (app.rtl) { cardLeftOffset -= $cardEl[0].scrollLeft; }
+        } else {
+          cardLeftOffset = $cardEl[0].offsetLeft;
+          cardTopOffset = $cardEl[0].offsetTop - ($pageContentEl.length ? $pageContentEl[0].scrollTop : 0);
+        }
       } else {
         cardLeftOffset = offset.left;
-        cardTopOffset = offset.top - $pageEl.offset().top;
+        cardTopOffset = offset.top - pageOffset.top;
         if (app.rtl) { cardLeftOffset -= $cardEl[0].scrollLeft; }
       }
 
@@ -17927,22 +18873,29 @@
       var cardBottomOffset = maxHeight - cardHeight - cardTopOffset;
       var translateX = (cardRightOffset - cardLeftOffset) / 2;
       var translateY = (cardBottomOffset - cardTopOffset) / 2;
-      if (app.params.card.hideNavbarOnOpen && $navbarEl && $navbarEl.length) {
-        app.navbar.hide($navbarEl, animate);
+      if (cardParams.hideNavbarOnOpen && $navbarEl && $navbarEl.length) {
+        app.navbar.hide($navbarEl, cardParams.animate);
       }
-      if (app.params.card.hideToolbarOnOpen && $toolbarEl && $toolbarEl.length) {
-        app.toolbar.hide($toolbarEl, animate);
+      if (cardParams.hideToolbarOnOpen && $toolbarEl && $toolbarEl.length) {
+        app.toolbar.hide($toolbarEl, cardParams.animate);
       }
-      if ($backropEl) {
-        $backropEl.removeClass('card-backdrop-out').addClass('card-backdrop-in');
+      if ($backdropEl) {
+        $backdropEl.removeClass('card-backdrop-out').addClass('card-backdrop-in');
       }
       $cardEl.removeClass('card-transitioning');
-      if (animate) {
+      if (cardParams.animate) {
         $cardEl.addClass('card-opening');
       }
       $cardEl.trigger('card:open');
       app.emit('cardOpen', $cardEl[0]);
       function transitionEnd() {
+        $pageEl.addClass('page-with-card-opened');
+        if (app.device.ios && $pageContentEl.length) {
+          $pageContentEl.css('height', (($pageContentEl[0].offsetHeight + 1) + "px"));
+          setTimeout(function () {
+            $pageContentEl.css('height', '');
+          });
+        }
         $cardEl.addClass('card-opened');
         $cardEl.removeClass('card-opening');
         $cardEl.trigger('card:opened');
@@ -17957,15 +18910,13 @@
 
       $cardEl
         .transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
-      if (animate) {
+      if (cardParams.animate) {
         $cardEl.transitionEnd(function () {
           transitionEnd();
         });
       } else {
         transitionEnd();
       }
-
-      $pageEl.addClass('page-with-card-opened');
 
       function onResize() {
         var assign;
@@ -17983,6 +18934,9 @@
 
         $cardEl.transform('translate3d(0px, 0px, 0) scale(1)');
         offset = $cardEl.offset();
+        pageOffset = $pageEl.offset();
+        offset.left -= pageOffset.left;
+        offset.top -= pageOffset.top;
 
         cardLeftOffset = offset.left - (pageWidth - maxWidth) / 2;
         if (app.rtl) { cardLeftOffset -= $cardEl[0].scrollLeft; }
@@ -18088,7 +19042,7 @@
 
       $cardEl[0].detachEventHandlers = function detachEventHandlers() {
         app.off('resize', onResize);
-        if (Support.touch && app.params.card.swipeToClose) {
+        if (Support.touch && cardParams.swipeToClose) {
           app.off('touchstart:passive', onTouchStart);
           app.off('touchmove:active', onTouchMove);
           app.off('touchend:passive', onTouchEnd);
@@ -18096,7 +19050,7 @@
       };
 
       app.on('resize', onResize);
-      if (Support.touch && app.params.card.swipeToClose) {
+      if (Support.touch && cardParams.swipeToClose) {
         app.on('touchstart:passive', onTouchStart);
         app.on('touchmove:active', onTouchMove);
         app.on('touchend:passive', onTouchEnd);
@@ -18112,27 +19066,34 @@
       if (!$cardEl.hasClass('card-opened') || $cardEl.hasClass('card-opening') || $cardEl.hasClass('card-closing')) { return; }
 
       var $cardContentEl = $cardEl.children('.card-content');
+      var $pageContentEl = $cardEl.parents('.page-content');
 
       var $pageEl = $cardEl.parents('.page').eq(0);
       if (!$pageEl.length) { return; }
+
+      var cardParams = Object.assign({ animate: animate }, app.params.card, $cardEl.dataset());
+
       var $navbarEl;
       var $toolbarEl;
 
-      var $backropEl;
-      if (app.params.card.backrop) {
-        $backropEl = $cardEl.parents('.page-content').find('.card-backdrop');
+      var $backdropEl;
+      if ($cardEl.attr('data-backdrop-el')) {
+        $backdropEl = $($cardEl.attr('data-backdrop-el'));
+      }
+      if (cardParams.backdrop) {
+        $backdropEl = $cardEl.parents('.page-content').find('.card-backdrop');
       }
 
-      if (app.params.card.hideNavbarOnOpen) {
+      if (cardParams.hideNavbarOnOpen) {
         $navbarEl = $pageEl.children('.navbar');
         if (!$navbarEl.length) {
           if ($pageEl[0].f7Page) { $navbarEl = $pageEl[0].f7Page.$navbarEl; }
         }
         if ($navbarEl && $navbarEl.length) {
-          app.navbar.show($navbarEl, animate);
+          app.navbar.show($navbarEl, cardParams.animate);
         }
       }
-      if (app.params.card.hideToolbarOnOpen) {
+      if (cardParams.hideToolbarOnOpen) {
         $toolbarEl = $pageEl.children('.toolbar');
         if (!$toolbarEl.length) {
           $toolbarEl = $pageEl.parents('.view').children('.toolbar');
@@ -18141,18 +19102,25 @@
           $toolbarEl = $pageEl.parents('.views').children('.toolbar');
         }
         if ($toolbarEl && $toolbarEl.length) {
-          app.toolbar.show($toolbarEl, animate);
+          app.toolbar.show($toolbarEl, cardParams.animate);
         }
       }
+
       $pageEl.removeClass('page-with-card-opened');
 
+      if (app.device.ios && $pageContentEl.length) {
+        $pageContentEl.css('height', (($pageContentEl[0].offsetHeight + 1) + "px"));
+        setTimeout(function () {
+          $pageContentEl.css('height', '');
+        });
+      }
 
-      if ($backropEl && $backropEl.length) {
-        $backropEl.removeClass('card-backdrop-in').addClass('card-backdrop-out');
+      if ($backdropEl && $backdropEl.length) {
+        $backdropEl.removeClass('card-backdrop-in').addClass('card-backdrop-out');
       }
 
       $cardEl.removeClass('card-opened card-transitioning');
-      if (animate) {
+      if (cardParams.animate) {
         $cardEl.addClass('card-closing');
       } else {
         $cardEl.addClass('card-no-transition');
@@ -18209,7 +19177,7 @@
         hideToolbarOnOpen: true,
         swipeToClose: true,
         closeByBackdropClick: true,
-        backrop: true,
+        backdrop: true,
       },
     },
     create: function create() {
@@ -18222,18 +19190,40 @@
         },
       });
     },
+    on: {
+      pageBeforeIn: function pageBeforeIn(page) {
+        var app = this;
+        if (app.params.card.hideNavbarOnOpen && page.navbarEl && page.$el.find('.card-opened.card-expandable').length) {
+          app.navbar.hide(page.navbarEl);
+        }
+
+        if (app.params.card.hideToolbarOnOpen && page.$el.find('.card-opened.card-expandable').length) {
+          var $toolbarEl = page.$el.children('.toolbar');
+          if (!$toolbarEl.length) {
+            $toolbarEl = page.$el.parents('.view').children('.toolbar');
+          }
+          if (!$toolbarEl.length) {
+            $toolbarEl = page.$el.parents('.views').children('.toolbar');
+          }
+          if ($toolbarEl && $toolbarEl.length) {
+            app.toolbar.hide($toolbarEl);
+          }
+        }
+      },
+    },
     clicks: {
       '.card-close': function closeCard($clickedEl, data) {
         var app = this;
-        app.card.close(data.card);
+        app.card.close(data.card, data.animate);
       },
       '.card-open': function closeCard($clickedEl, data) {
         var app = this;
-        app.card.open(data.card);
+        app.card.open(data.card, data.animate);
       },
-      '.card-expandable': function toggleExpandableCard($clickedEl) {
+      '.card-expandable': function toggleExpandableCard($clickedEl, data, e) {
         var app = this;
         if ($clickedEl.hasClass('card-opened') || $clickedEl.hasClass('card-opening') || $clickedEl.hasClass('card-closing')) { return; }
+        if ($(e.target).closest('.card-prevent-open, .card-close').length) { return; }
         app.card.open($clickedEl);
       },
       '.card-backdrop-in': function onBackdropClick() {
@@ -18504,19 +19494,19 @@
         contentType: contentType,
         data: data,
         beforeSend: function beforeSend(xhr) {
-          $formEl.trigger('formajax:beforesend', data, xhr);
+          $formEl.trigger('formajax:beforesend', { data: data, xhr: xhr });
           app.emit('formAjaxBeforeSend', $formEl[0], data, xhr);
         },
         error: function error(xhr) {
-          $formEl.trigger('formajax:error', data, xhr);
+          $formEl.trigger('formajax:error', { data: data, xhr: xhr });
           app.emit('formAjaxError', $formEl[0], data, xhr);
         },
         complete: function complete(xhr) {
-          $formEl.trigger('formajax:complete', data, xhr);
+          $formEl.trigger('formajax:complete', { data: data, xhr: xhr });
           app.emit('formAjaxComplete', $formEl[0], data, xhr);
         },
         success: function success(response, status, xhr) {
-          $formEl.trigger('formajax:success', data, xhr);
+          $formEl.trigger('formajax:success', { data: data, xhr: xhr });
           app.emit('formAjaxSuccess', $formEl[0], data, xhr);
         },
       });
@@ -18646,7 +19636,7 @@
         }
         if ($errorEl.length > 0) {
           $itemInputEl.addClass('item-input-with-error-message');
-          $inputWrapEl.addClass('input-with-eror-message');
+          $inputWrapEl.addClass('input-with-error-message');
         }
         $itemInputEl.addClass('item-input-invalid');
         $inputWrapEl.addClass('input-invalid');
@@ -18878,11 +19868,11 @@
     name: 'radio',
   };
 
-  var Toggle = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Toggle = /*@__PURE__*/(function (Framework7Class) {
     function Toggle(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var toggle = this;
 
       var defaults = {};
@@ -19037,8 +20027,8 @@
       toggle.init();
     }
 
-    if ( Framework7Class$$1 ) Toggle.__proto__ = Framework7Class$$1;
-    Toggle.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Toggle.__proto__ = Framework7Class;
+    Toggle.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Toggle.prototype.constructor = Toggle;
 
     Toggle.prototype.toggle = function toggle () {
@@ -19113,9 +20103,9 @@
     },
   };
 
-  var Range = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Range = /*@__PURE__*/(function (Framework7Class) {
     function Range(app, params) {
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var range = this;
 
@@ -19136,6 +20126,7 @@
         scaleSteps: 5,
         scaleSubSteps: 0,
         formatScaleLabel: null,
+        limitKnobPosition: app.theme === 'ios',
       };
 
       // Extend defaults with modules params
@@ -19192,6 +20183,7 @@
       var scale = ref.scale;
       var scaleSteps = ref.scaleSteps;
       var scaleSubSteps = ref.scaleSubSteps;
+      var limitKnobPosition = ref.limitKnobPosition;
 
       Utils.extend(range, {
         app: app,
@@ -19211,6 +20203,7 @@
         scale: scale,
         scaleSteps: scaleSteps,
         scaleSubSteps: scaleSubSteps,
+        limitKnobPosition: limitKnobPosition,
       });
 
       if ($inputEl) {
@@ -19298,6 +20291,7 @@
       var $touchedKnobEl;
       var dualValueIndex;
       var valueChangedByTouch;
+      var targetTouchIdentifier;
       function onTouchChange() {
         valueChangedByTouch = true;
       }
@@ -19311,6 +20305,9 @@
         valueChangedByTouch = false;
         touchesStart.x = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
         touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+        if (e.type === 'touchstart') {
+          targetTouchIdentifier = e.targetTouches[0].identifier;
+        }
 
         isTouched = true;
         isScrolling = undefined;
@@ -19351,15 +20348,23 @@
       }
       function handleTouchMove(e) {
         if (!isTouched) { return; }
-        var pageX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
-        var pageY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
-
-        if (typeof isScrolling === 'undefined') {
-          if (range.vertical) {
-            isScrolling = !(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
-          } else {
-            isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
+        var pageX;
+        var pageY;
+        if (e.type === 'touchmove') {
+          for (var i = 0; i < e.targetTouches.length; i += 1) {
+            if (e.targetTouches[i].identifier === targetTouchIdentifier) {
+              pageX = e.targetTouches[i].pageX;
+              pageY = e.targetTouches[i].pageY;
+            }
           }
+        } else {
+          pageX = e.pageX;
+          pageY = e.pageY;
+        }
+        if (typeof pageX === 'undefined' && typeof pageY === 'undefined') { return; }
+
+        if (typeof isScrolling === 'undefined' && !range.vertical) {
+          isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
         }
         if (isScrolling) {
           isTouched = false;
@@ -19398,7 +20403,14 @@
         }
         range.setValue(newValue, true);
       }
-      function handleTouchEnd() {
+      function handleTouchEnd(e) {
+        if (e.type === 'touchend') {
+          var touchEnded;
+          for (var i = 0; i < e.changedTouches.length; i += 1) {
+            if (e.changedTouches[i].identifier === targetTouchIdentifier) { touchEnded = true; }
+          }
+          if (!touchEnded) { return; }
+        }
         if (!isTouched) {
           if (isScrolling) { $touchedKnobEl.removeClass('range-knob-active-state'); }
           isTouched = false;
@@ -19482,8 +20494,8 @@
       return range;
     }
 
-    if ( Framework7Class$$1 ) Range.__proto__ = Framework7Class$$1;
-    Range.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Range.__proto__ = Framework7Class;
+    Range.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Range.prototype.constructor = Range;
 
     Range.prototype.calcSize = function calcSize () {
@@ -19519,6 +20531,7 @@
       var labels = range.labels;
       var vertical = range.vertical;
       var verticalReversed = range.verticalReversed;
+      var limitKnobPosition = range.limitKnobPosition;
       var knobSize = vertical ? knobHeight : knobWidth;
       var rangeSize = vertical ? rangeHeight : rangeWidth;
       // eslint-disable-next-line
@@ -19530,7 +20543,7 @@
         $barActiveEl.css(( obj = {}, obj[positionProperty] = ((progress[0] * 100) + "%"), obj[vertical ? 'height' : 'width'] = (((progress[1] - progress[0]) * 100) + "%"), obj ));
         knobs.forEach(function ($knobEl, knobIndex) {
           var startPos = rangeSize * progress[knobIndex];
-          if (app.theme === 'ios') {
+          if (limitKnobPosition) {
             var realStartPos = (rangeSize * progress[knobIndex]) - (knobSize / 2);
             if (realStartPos < 0) { startPos = knobSize / 2; }
             if ((realStartPos + knobSize) > rangeSize) { startPos = rangeSize - (knobSize / 2); }
@@ -19543,7 +20556,7 @@
         $barActiveEl.css(vertical ? 'height' : 'width', ((progress$1 * 100) + "%"));
 
         var startPos = rangeSize * progress$1;
-        if (app.theme === 'ios') {
+        if (limitKnobPosition) {
           var realStartPos = (rangeSize * progress$1) - (knobSize / 2);
           if (realStartPos < 0) { startPos = knobSize / 2; }
           if ((realStartPos + knobSize) > rangeSize) { startPos = rangeSize - (knobSize / 2); }
@@ -19775,9 +20788,9 @@
     },
   };
 
-  var Stepper = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Stepper = /*@__PURE__*/(function (Framework7Class) {
     function Stepper(app, params) {
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var stepper = this;
 
       var defaults = {
@@ -20048,8 +21061,8 @@
       return stepper;
     }
 
-    if ( Framework7Class$$1 ) Stepper.__proto__ = Framework7Class$$1;
-    Stepper.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Stepper.__proto__ = Framework7Class;
+    Stepper.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Stepper.prototype.constructor = Stepper;
 
     Stepper.prototype.minus = function minus () {
@@ -20283,16 +21296,20 @@
     },
   };
 
-  var SmartSelect = /*@__PURE__*/(function (Framework7Class$$1) {
+  var SmartSelect = /*@__PURE__*/(function (Framework7Class) {
     function SmartSelect(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var ss = this;
 
       var defaults = Utils.extend({
         on: {},
       }, app.params.smartSelect);
+
+      if (typeof defaults.searchbarDisableButton === 'undefined') {
+        defaults.searchbarDisableButton = app.theme !== 'aurora';
+      }
 
       // Extend defaults with modules params
       ss.useModulesParams(defaults);
@@ -20424,8 +21441,8 @@
       return ss;
     }
 
-    if ( Framework7Class$$1 ) SmartSelect.__proto__ = Framework7Class$$1;
-    SmartSelect.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) SmartSelect.__proto__ = Framework7Class;
+    SmartSelect.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     SmartSelect.prototype.constructor = SmartSelect;
 
     SmartSelect.prototype.setValue = function setValue (value) {
@@ -20458,6 +21475,7 @@
         ss.selectEl.value = newValue;
       }
       ss.$valueEl.text(optionText.join(', '));
+      return ss;
     };
 
     SmartSelect.prototype.getValue = function getValue () {
@@ -20572,7 +21590,7 @@
     SmartSelect.prototype.renderSearchbar = function renderSearchbar () {
       var ss = this;
       if (ss.params.renderSearchbar) { return ss.params.renderSearchbar.call(ss); }
-      var searchbarHTML = "\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" placeholder=\"" + (ss.params.searchbarPlaceholder) + "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          <span class=\"searchbar-disable-button\">" + (ss.params.searchbarDisableText) + "</span>\n        </div>\n      </form>\n    ";
+      var searchbarHTML = "\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" placeholder=\"" + (ss.params.searchbarPlaceholder) + "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          " + (ss.params.searchbarDisableButton ? ("\n          <span class=\"searchbar-disable-button\">" + (ss.params.searchbarDisableText) + "</span>\n          ") : '') + "\n        </div>\n      </form>\n    ";
       return searchbarHTML;
     };
 
@@ -20604,7 +21622,7 @@
         pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
       }
       var cssClass = ss.params.cssClass;
-      var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"ios-only\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
+      var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"if-not-md\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
       return pageHtml;
     };
 
@@ -20617,7 +21635,7 @@
         pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
       }
       var cssClass = ss.params.cssClass || '';
-      var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                <div class=\"left\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">\n                    <i class=\"icon icon-back\"></i>\n                    <span class=\"ios-only\">" + (ss.params.popupCloseLinkText) + "</span>\n                  </a>\n                </div>\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
+      var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                <div class=\"right\">\n                  <a class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">" + (ss.params.popupCloseLinkText) + "</span></a>\n                </div>\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
       return popupHtml;
     };
 
@@ -20635,6 +21653,29 @@
       var cssClass = ss.params.cssClass;
       var popoverHtml = "\n      <div class=\"popover smart-select-popover " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"popover-inner\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
       return popoverHtml;
+    };
+
+    SmartSelect.prototype.scrollToSelectedItem = function scrollToSelectedItem () {
+      var ss = this;
+      var params = ss.params;
+      var $containerEl = ss.$containerEl;
+      if (!ss.opened) { return ss; }
+      if (params.virtualList) {
+        var selectedIndex;
+        ss.vl.items.forEach(function (item, index) {
+          if (typeof selectedIndex === 'undefined' && item.selected) {
+            selectedIndex = index;
+          }
+        });
+        if (typeof selectedIndex !== 'undefined') {
+          ss.vl.scrollToItem(selectedIndex);
+        }
+      } else {
+        var $selectedItemEl = $containerEl.find('input:checked').parents('li');
+        var $pageContentEl = $containerEl.find('.page-content');
+        $pageContentEl.scrollTop($selectedItemEl.offset().top - $pageContentEl.offset().top - parseInt($pageContentEl.css('padding-top'), 10));
+      }
+      return ss;
     };
 
     SmartSelect.prototype.onOpen = function onOpen (type, containerEl) {
@@ -20657,6 +21698,9 @@
             return false;
           },
         });
+      }
+      if (ss.params.scrollToSelectedItem) {
+        ss.scrollToSelectedItem();
       }
 
       // Init SB
@@ -20966,9 +22010,11 @@
         searchbar: false,
         searchbarPlaceholder: 'Search',
         searchbarDisableText: 'Cancel',
+        searchbarDisableButton: undefined,
         closeOnSelect: false,
         virtualList: false,
         virtualListHeight: undefined,
+        scrollToSelectedItem: false,
         formColorTheme: undefined,
         navbarColorTheme: undefined,
         routableModals: true,
@@ -21373,10 +22419,12 @@
 
   var IDate = /*@__PURE__*/(function (Date) {
     function IDate () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
       Date.call(this);
 
       var date;
-      var args = Array.from(arguments);
       if (args.length === 0) {
         date = Date.now();
       } else if (args.length === 1) {
@@ -21469,11 +22517,11 @@
     return IDate;
   }(Date));
 
-  var Calendar = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Calendar = /*@__PURE__*/(function (Framework7Class) {
     function Calendar(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var calendar = this;
 
       calendar.params = Utils.extend({}, app.params.calendar, params);
@@ -21764,8 +22812,8 @@
       return calendar;
     }
 
-    if ( Framework7Class$$1 ) Calendar.__proto__ = Framework7Class$$1;
-    Calendar.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Calendar.__proto__ = Framework7Class;
+    Calendar.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Calendar.prototype.constructor = Calendar;
     // eslint-disable-next-line
     Calendar.prototype.normalizeDate = function normalizeDate (date) {
@@ -21803,6 +22851,9 @@
           return !!app.device.ipad;
         }
         if (app.width >= 768) {
+          return true;
+        }
+        if (app.device.desktop && app.theme === 'aurora') {
           return true;
         }
       }
@@ -21889,6 +22940,14 @@
 
     Calendar.prototype.setValue = function setValue (values) {
       var calendar = this;
+      var currentValue = calendar.value;
+      if (Array.isArray(currentValue) && Array.isArray(values) && currentValue.length === values.length) {
+        var equal = true;
+        currentValue.forEach(function (v, index) {
+          if (v !== values[index]) { equal = false; }
+        });
+        if (equal) { return; }
+      }
       calendar.value = values;
       calendar.updateValue();
     };
@@ -22514,7 +23573,7 @@
         return calendar.params.renderMonthSelector.call(calendar);
       }
 
-      return "\n    <div class=\"calendar-month-selector\">\n      <a href=\"#\" class=\"link icon-only calendar-prev-month-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-month-value\"></span>\n      <a href=\"#\" class=\"link icon-only calendar-next-month-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
+      return "\n    <div class=\"calendar-month-selector\">\n      <a class=\"link icon-only calendar-prev-month-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-month-value\"></span>\n      <a class=\"link icon-only calendar-next-month-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
     };
 
     Calendar.prototype.renderYearSelector = function renderYearSelector () {
@@ -22522,7 +23581,7 @@
       if (calendar.params.renderYearSelector) {
         return calendar.params.renderYearSelector.call(calendar);
       }
-      return "\n    <div class=\"calendar-year-selector\">\n      <a href=\"#\" class=\"link icon-only calendar-prev-year-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-year-value\"></span>\n      <a href=\"#\" class=\"link icon-only calendar-next-year-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
+      return "\n    <div class=\"calendar-year-selector\">\n      <a class=\"link icon-only calendar-prev-year-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-year-value\"></span>\n      <a class=\"link icon-only calendar-next-year-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
     };
 
     Calendar.prototype.renderHeader = function renderHeader () {
@@ -22539,7 +23598,7 @@
       if (calendar.params.renderFooter) {
         return calendar.params.renderFooter.call(calendar);
       }
-      return ("\n    <div class=\"calendar-footer\">\n      <a href=\"#\" class=\"" + (app.theme === 'md' ? 'button' : 'link') + " calendar-close sheet-close popover-close\">" + (calendar.params.toolbarCloseText) + "</a>\n    </div>\n  ").trim();
+      return ("\n    <div class=\"calendar-footer\">\n      <a class=\"" + (app.theme === 'md' ? 'button' : 'link') + " calendar-close sheet-close popover-close\">" + (calendar.params.toolbarCloseText) + "</a>\n    </div>\n  ").trim();
     };
 
     Calendar.prototype.renderToolbar = function renderToolbar () {
@@ -22547,7 +23606,7 @@
       if (calendar.params.renderToolbar) {
         return calendar.params.renderToolbar.call(calendar, calendar);
       }
-      return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        " + (calendar.renderMonthSelector()) + "\n        " + (calendar.renderYearSelector()) + "\n      </div>\n    </div>\n  ").trim();
+      return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        " + (calendar.params.monthSelector ? calendar.renderMonthSelector() : '') + "\n        " + (calendar.params.yearSelector ? calendar.renderYearSelector() : '') + "\n      </div>\n    </div>\n  ").trim();
     };
     // eslint-disable-next-line
     Calendar.prototype.renderInline = function renderInline () {
@@ -23194,7 +24253,9 @@
       if (returnTo) {
         if (returnTo === 'min') {
           col.$itemsEl.transform(("translate3d(0," + minTranslate + "px,0)"));
-        } else { col.$itemsEl.transform(("translate3d(0," + maxTranslate + "px,0)")); }
+        } else {
+          col.$itemsEl.transform(("translate3d(0," + maxTranslate + "px,0)"));
+        }
       }
       touchEndTime = new Date().getTime();
       var newTranslate;
@@ -23207,7 +24268,7 @@
       newTranslate = Math.max(Math.min(newTranslate, maxTranslate), minTranslate);
 
       // Active Index
-      var activeIndex = -Math.floor((newTranslate - maxTranslate) / itemHeight);
+      var activeIndex = Math.round(Math.abs(((newTranslate - maxTranslate) / itemHeight)));
 
       // Normalize translate
       if (!picker.params.freeMode) { newTranslate = (-activeIndex * itemHeight) + maxTranslate; }
@@ -23232,6 +24293,65 @@
       }, 100);
     }
 
+    var mousewheelTimeout;
+    function handleMouseWheel(e) {
+      var deltaX = e.deltaX;
+      var deltaY = e.deltaY;
+      if (Math.abs(deltaX) > Math.abs(deltaY)) { return; }
+      clearTimeout(mousewheelTimeout);
+
+      e.preventDefault();
+
+      Utils.cancelAnimationFrame(animationFrameId);
+      startTranslate = Utils.getTranslate(col.$itemsEl[0], 'y');
+      col.$itemsEl.transition(0);
+
+      currentTranslate = startTranslate - deltaY;
+      returnTo = undefined;
+
+      // Normalize translate
+      if (currentTranslate < minTranslate) {
+        currentTranslate = minTranslate;
+        returnTo = 'min';
+      }
+      if (currentTranslate > maxTranslate) {
+        currentTranslate = maxTranslate;
+        returnTo = 'max';
+      }
+      // Transform wrapper
+      col.$itemsEl.transform(("translate3d(0," + currentTranslate + "px,0)"));
+
+      // Update items
+      col.updateItems(undefined, currentTranslate, 0, picker.params.updateValuesOnMousewheel);
+
+      // On end
+      mousewheelTimeout = setTimeout(function () {
+        col.$itemsEl.transition('');
+        if (returnTo) {
+          if (returnTo === 'min') {
+            col.$itemsEl.transform(("translate3d(0," + minTranslate + "px,0)"));
+          } else {
+            col.$itemsEl.transform(("translate3d(0," + maxTranslate + "px,0)"));
+          }
+        }
+        touchEndTime = new Date().getTime();
+        var newTranslate = currentTranslate;
+        newTranslate = Math.max(Math.min(newTranslate, maxTranslate), minTranslate);
+
+        // Active Index
+        var activeIndex = Math.round(Math.abs(((newTranslate - maxTranslate) / itemHeight)));
+
+        // Normalize translate
+        if (!picker.params.freeMode) { newTranslate = (-activeIndex * itemHeight) + maxTranslate; }
+
+        // Transform wrapper
+        col.$itemsEl.transform(("translate3d(0," + (parseInt(newTranslate, 10)) + "px,0)"));
+
+        // Update items
+        col.updateItems(activeIndex, newTranslate, '', true);
+      }, 200);
+    }
+
     function handleClick() {
       if (!allowItemClick) { return; }
       Utils.cancelAnimationFrame(animationFrameId);
@@ -23244,12 +24364,18 @@
       col.$el.on(app.touchEvents.start, handleTouchStart, activeListener);
       app.on('touchmove:active', handleTouchMove);
       app.on('touchend:passive', handleTouchEnd);
+      if (picker.params.mousewheel) {
+        col.$el.on('wheel', handleMouseWheel);
+      }
       col.items.on('click', handleClick);
     };
     col.detachEvents = function detachColEvents() {
       col.$el.off(app.touchEvents.start, handleTouchStart, activeListener);
       app.off('touchmove:active', handleTouchMove);
       app.off('touchend:passive', handleTouchEnd);
+      if (picker.params.mousewheel) {
+        col.$el.off('wheel', handleMouseWheel);
+      }
       col.items.off('click', handleClick);
     };
 
@@ -23271,11 +24397,11 @@
     col.init();
   }
 
-  var Picker = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Picker = /*@__PURE__*/(function (Framework7Class) {
     function Picker(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var picker = this;
       picker.params = Utils.extend({}, app.params.picker, params);
 
@@ -23367,8 +24493,8 @@
       return picker;
     }
 
-    if ( Framework7Class$$1 ) Picker.__proto__ = Framework7Class$$1;
-    Picker.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Picker.__proto__ = Framework7Class;
+    Picker.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Picker.prototype.constructor = Picker;
 
     Picker.prototype.initInput = function initInput () {
@@ -23400,7 +24526,11 @@
         if (params.openIn === 'popover') { return true; }
         if (app.device.ios) {
           return !!app.device.ipad;
-        } if (app.width >= 768) {
+        }
+        if (app.width >= 768) {
+          return true;
+        }
+        if (app.device.desktop && app.theme === 'aurora') {
           return true;
         }
       }
@@ -23491,7 +24621,7 @@
     Picker.prototype.renderToolbar = function renderToolbar () {
       var picker = this;
       if (picker.params.renderToolbar) { return picker.params.renderToolbar.call(picker, picker); }
-      return ("\n      <div class=\"toolbar toolbar-top no-shadow\">\n        <div class=\"toolbar-inner\">\n          <div class=\"left\"></div>\n          <div class=\"right\">\n            <a href=\"#\" class=\"link sheet-close popover-close\">" + (picker.params.toolbarCloseText) + "</a>\n          </div>\n        </div>\n      </div>\n    ").trim();
+      return ("\n      <div class=\"toolbar toolbar-top no-shadow\">\n        <div class=\"toolbar-inner\">\n          <div class=\"left\"></div>\n          <div class=\"right\">\n            <a class=\"link sheet-close popover-close\">" + (picker.params.toolbarCloseText) + "</a>\n          </div>\n        </div>\n      </div>\n    ").trim();
     };
     // eslint-disable-next-line
     Picker.prototype.renderColumn = function renderColumn (col, onlyItems) {
@@ -23820,6 +24950,8 @@
         // Picker settings
         updateValuesOnMomentum: false,
         updateValuesOnTouchmove: true,
+        updateValuesOnMousewheel: true,
+        mousewheel: true,
         rotateEffect: false,
         momentumRatio: 7,
         freeMode: false,
@@ -23933,9 +25065,9 @@
     },
   };
 
-  var PullToRefresh = /*@__PURE__*/(function (Framework7Class$$1) {
+  var PullToRefresh = /*@__PURE__*/(function (Framework7Class) {
     function PullToRefresh(app, el) {
-      Framework7Class$$1.call(this, {}, [app]);
+      Framework7Class.call(this, {}, [app]);
       var ptr = this;
       var $el = $(el);
       var $preloaderEl = $el.find('.ptr-preloader');
@@ -23950,6 +25082,8 @@
       ptr.useModulesParams({});
 
       var isMaterial = app.theme === 'md';
+      var isIos = app.theme === 'ios';
+      var isAurora = app.theme === 'aurora';
 
       // Done
       ptr.done = function done() {
@@ -23970,6 +25104,9 @@
         ptr.emit('local::refresh ptrRefresh', $el[0], ptr.done);
         return ptr;
       };
+
+      // Mousewheel
+      ptr.mousewheel = $el.attr('data-ptr-mousewheel') === 'true';
 
       // Events handling
       var touchId;
@@ -24001,8 +25138,12 @@
       // Define trigger distance
       if ($el.attr('data-ptr-distance')) {
         dynamicTriggerDistance = true;
-      } else {
-        triggerDistance = isMaterial ? 66 : 44;
+      } else if (isMaterial) {
+        triggerDistance = 66;
+      } else if (isIos) {
+        triggerDistance = 44;
+      } else if (isAurora) {
+        triggerDistance = 38;
       }
 
       function handleTouchStart(e) {
@@ -24015,7 +25156,7 @@
         if ($el.hasClass('ptr-refreshing')) {
           return;
         }
-        if ($(e.target).closest('.sortable-handler').length) { return; }
+        if ($(e.target).closest('.sortable-handler, .ptr-ignore, .card-expandable.card-opened').length) { return; }
 
         isMoved = false;
         pullStarted = false;
@@ -24224,6 +25365,160 @@
         }
       }
 
+      var mousewheelTimeout;
+      var mousewheelMoved;
+      var mousewheelAllow = true;
+      var mousewheelTranslate = 0;
+
+      function handleMouseWheelRelease() {
+        mousewheelAllow = true;
+        mousewheelMoved = false;
+        mousewheelTranslate = 0;
+        if (translate) {
+          $el.addClass('ptr-transitioning');
+          translate = 0;
+        }
+        if (isMaterial) {
+          $preloaderEl.transform('')
+            .find('.ptr-arrow').transform('');
+        } else {
+          // eslint-disable-next-line
+          if (ptr.bottom) {
+            $el.children().transform('');
+          } else {
+            $el.transform('');
+          }
+        }
+
+        if (refresh) {
+          $el.addClass('ptr-refreshing');
+          $el.trigger('ptr:refresh', ptr.done);
+          ptr.emit('local::refresh ptrRefresh', $el[0], ptr.done);
+        } else {
+          $el.removeClass('ptr-pull-down');
+        }
+        if (pullStarted) {
+          $el.trigger('ptr:pullend');
+          ptr.emit('local::pullEnd ptrPullEnd', $el[0]);
+        }
+      }
+      function handleMouseWheel(e) {
+        if (!mousewheelAllow) { return; }
+        var deltaX = e.deltaX;
+        var deltaY = e.deltaY;
+        if (Math.abs(deltaX) > Math.abs(deltaY)) { return; }
+        if ($el.hasClass('ptr-refreshing')) {
+          return;
+        }
+        if ($(e.target).closest('.sortable-handler, .ptr-ignore, .card-expandable.card-opened').length) { return; }
+
+        clearTimeout(mousewheelTimeout);
+
+        scrollTop = $el[0].scrollTop;
+
+        if (!mousewheelMoved) {
+          $el.removeClass('ptr-transitioning');
+          var targetIsScrollable;
+          scrollHeight = $el[0].scrollHeight;
+          offsetHeight = $el[0].offsetHeight;
+          if (ptr.bottom) {
+            maxScrollTop = scrollHeight - offsetHeight;
+          }
+          if (scrollTop > scrollHeight) {
+            mousewheelAllow = false;
+            return;
+          }
+          var $ptrWatchScrollable = $(e.target).closest('.ptr-watch-scroll');
+          if ($ptrWatchScrollable.length) {
+            $ptrWatchScrollable.each(function (ptrScrollableIndex, ptrScrollableEl) {
+              if (ptrScrollableEl === el) { return; }
+              if (
+                (ptrScrollableEl.scrollHeight > ptrScrollableEl.offsetHeight)
+                && $(ptrScrollableEl).css('overflow') === 'auto'
+                && (
+                  (!ptr.bottom && ptrScrollableEl.scrollTop > 0)
+                  || (ptr.bottom && ptrScrollableEl.scrollTop < ptrScrollableEl.scrollHeight - ptrScrollableEl.offsetHeight)
+                )
+              ) {
+                targetIsScrollable = true;
+              }
+            });
+          }
+          if (targetIsScrollable) {
+            mousewheelAllow = false;
+            return;
+          }
+          if (dynamicTriggerDistance) {
+            triggerDistance = $el.attr('data-ptr-distance');
+            if (triggerDistance.indexOf('%') >= 0) { triggerDistance = (scrollHeight * parseInt(triggerDistance, 10)) / 100; }
+          }
+        }
+        isMoved = true;
+        mousewheelTranslate -= deltaY;
+        touchesDiff = mousewheelTranslate; // pageY - touchesStart.y;
+
+        if (typeof wasScrolled === 'undefined' && (ptr.bottom ? scrollTop !== maxScrollTop : scrollTop !== 0)) { wasScrolled = true; }
+
+        var ptrStarted = ptr.bottom
+          ? (touchesDiff < 0 && scrollTop >= maxScrollTop) || scrollTop > maxScrollTop
+          : (touchesDiff > 0 && scrollTop <= 0) || scrollTop < 0;
+
+        if (ptrStarted) {
+          if (e.cancelable) {
+            e.preventDefault();
+          }
+
+          translate = touchesDiff;
+          if (Math.abs(translate) > triggerDistance) {
+            translate = triggerDistance + (Math.pow( (Math.abs(translate) - triggerDistance), 0.7 ));
+            if (ptr.bottom) { translate = -translate; }
+          }
+
+          if (isMaterial) {
+            $preloaderEl.transform(("translate3d(0," + translate + "px,0)"))
+              .find('.ptr-arrow').transform(("rotate(" + ((180 * (Math.abs(touchesDiff) / 66)) + 100) + "deg)"));
+          } else {
+            // eslint-disable-next-line
+            if (ptr.bottom) {
+              $el.children().transform(("translate3d(0," + translate + "px,0)"));
+            } else {
+              $el.transform(("translate3d(0," + translate + "px,0)"));
+            }
+          }
+
+          if (Math.abs(translate) > triggerDistance) {
+            refresh = true;
+            $el.addClass('ptr-pull-up').removeClass('ptr-pull-down');
+          } else {
+            refresh = false;
+            $el.removeClass('ptr-pull-up').addClass('ptr-pull-down');
+          }
+          if (!pullStarted) {
+            $el.trigger('ptr:pullstart');
+            ptr.emit('local::pullStart ptrPullStart', $el[0]);
+            pullStarted = true;
+          }
+          $el.trigger('ptr:pullmove', {
+            event: e,
+            scrollTop: scrollTop,
+            translate: translate,
+            touchesDiff: touchesDiff,
+          });
+          ptr.emit('local::pullMove ptrPullMove', $el[0], {
+            event: e,
+            scrollTop: scrollTop,
+            translate: translate,
+            touchesDiff: touchesDiff,
+          });
+        } else {
+          pullStarted = false;
+          $el.removeClass('ptr-pull-up ptr-pull-down');
+          refresh = false;
+        }
+
+        mousewheelTimeout = setTimeout(handleMouseWheelRelease, 300);
+      }
+
       if (!$pageEl.length || !$el.length) { return ptr; }
 
       $el[0].f7PullToRefresh = ptr;
@@ -24234,12 +25529,18 @@
         $el.on(app.touchEvents.start, handleTouchStart, passive);
         app.on('touchmove:active', handleTouchMove);
         app.on('touchend:passive', handleTouchEnd);
+        if (ptr.mousewheel && !ptr.bottom) {
+          $el.on('wheel', handleMouseWheel);
+        }
       };
       ptr.detachEvents = function detachEvents() {
         var passive = Support.passiveListener ? { passive: true } : false;
         $el.off(app.touchEvents.start, handleTouchStart, passive);
         app.off('touchmove:active', handleTouchMove);
         app.off('touchend:passive', handleTouchEnd);
+        if (ptr.mousewheel && !ptr.bottom) {
+          $el.off('wheel', handleMouseWheel);
+        }
       };
 
       // Install Modules
@@ -24251,8 +25552,8 @@
       return ptr;
     }
 
-    if ( Framework7Class$$1 ) PullToRefresh.__proto__ = Framework7Class$$1;
-    PullToRefresh.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) PullToRefresh.__proto__ = Framework7Class;
+    PullToRefresh.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     PullToRefresh.prototype.constructor = PullToRefresh;
 
     PullToRefresh.prototype.init = function init () {
@@ -24581,11 +25882,11 @@
     },
   };
 
-  var DataTable = /*@__PURE__*/(function (Framework7Class$$1) {
+  var DataTable = /*@__PURE__*/(function (Framework7Class) {
     function DataTable(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var table = this;
 
@@ -24639,16 +25940,20 @@
             .find(("tbody tr td:nth-child(" + (columnIndex + 1) + ") input"))
             .prop('checked', checked)
             .trigger('change', { sentByF7DataTable: true });
+          $inputEl.prop('indeterminate', false);
         } else {
           if (columnIndex === 0) {
             $inputEl.parents('tr')[checked ? 'addClass' : 'removeClass']('data-table-row-selected');
           }
-
+          var checkedRows = $el.find(("tbody .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]:checked")).length;
+          var totalRows = $el.find('tbody tr').length;
+          var $headCheckboxEl = $el.find(("thead .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]"));
           if (!checked) {
-            $el.find(("thead .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]")).prop('checked', false);
-          } else if ($el.find(("tbody .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]:checked")).length === $el.find('tbody tr').length) {
-            $el.find(("thead .checkbox-cell:nth-child(" + (columnIndex + 1) + ") input[type=\"checkbox\"]")).prop('checked', true).trigger('change', { sentByF7DataTable: true });
+            $headCheckboxEl.prop('checked', false);
+          } else if (checkedRows === totalRows) {
+            $headCheckboxEl.prop('checked', true).trigger('change', { sentByF7DataTable: true });
           }
+          $headCheckboxEl.prop('indeterminate', checkedRows > 0 && checkedRows < totalRows);
         }
         table.checkSelectedHeader();
       }
@@ -24686,8 +25991,8 @@
       return table;
     }
 
-    if ( Framework7Class$$1 ) DataTable.__proto__ = Framework7Class$$1;
-    DataTable.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) DataTable.__proto__ = Framework7Class;
+    DataTable.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     DataTable.prototype.constructor = DataTable;
 
     DataTable.prototype.setCollapsibleLabels = function setCollapsibleLabels () {
@@ -25030,13 +26335,14 @@
         notFoundEl: '.searchbar-not-found',
         hideOnEnableEl: '.searchbar-hide-on-enable',
         hideOnSearchEl: '.searchbar-hide-on-search',
-        backdrop: true,
+        backdrop: undefined,
         removeDiacritics: true,
         customSearch: false,
         hideDividers: true,
         hideGroups: true,
         disableOnBackdropClick: true,
         expandable: false,
+        inline: false,
       };
 
       // Extend defaults with modules params
@@ -25052,18 +26358,15 @@
       $el[0].f7Searchbar = sb;
 
       var $pageEl;
-      var $navbarEl;
+      var $navbarEl = $el.parents('.navbar-inner');
       if ($el.parents('.page').length > 0) {
         $pageEl = $el.parents('.page');
-      } else {
-        $navbarEl = $el.parents('.navbar-inner');
-        if ($navbarEl.length > 0) {
-          $pageEl = $(app.navbar.getPageByEl($navbarEl[0]));
-          if (!$pageEl.length) {
-            var $currentPageEl = $el.parents('.view').find('.page-current');
-            if ($currentPageEl[0] && $currentPageEl[0].f7Page && $currentPageEl[0].f7Page.navbarEl === $navbarEl[0]) {
-              $pageEl = $currentPageEl;
-            }
+      } else if ($navbarEl.length > 0) {
+        $pageEl = $(app.navbar.getPageByEl($navbarEl[0]));
+        if (!$pageEl.length) {
+          var $currentPageEl = $el.parents('.view').find('.page-current');
+          if ($currentPageEl[0] && $currentPageEl[0].f7Page && $currentPageEl[0].f7Page.navbarEl === $navbarEl[0]) {
+            $pageEl = $currentPageEl;
           }
         }
       }
@@ -25094,6 +26397,15 @@
         $hideOnSearchEl = $(params.hideOnSearchEl);
       } else if (typeof sb.params.hideOnSearchEl === 'string' && $pageEl) {
         $hideOnSearchEl = $pageEl.find(sb.params.hideOnSearchEl);
+      }
+
+
+      var expandable = sb.params.expandable || $el.hasClass('searchbar-expandable');
+      var inline = sb.params.inline || $el.hasClass('searchbar-inline');
+
+      if (typeof sb.params.backdrop === 'undefined') {
+        if (!inline) { sb.params.backdrop = app.theme !== 'aurora'; }
+        else { sb.params.backdrop = false; }
       }
 
       var $backdropEl;
@@ -25171,7 +26483,8 @@
         isVirtualList: $searchContainer && $searchContainer.hasClass('virtual-list'),
         virtualList: undefined,
         enabled: false,
-        expandable: sb.params.expandable || $el.hasClass('searchbar-expandable'),
+        expandable: expandable,
+        inline: inline,
       });
 
       // Events
@@ -25184,6 +26497,9 @@
       }
       function onInputBlur() {
         sb.$el.removeClass('searchbar-focused');
+        if (app.theme === 'aurora' && (!$disableButtonEl || !$disableButtonEl.length || !sb.params.disableButton) && !sb.query) {
+          sb.disable();
+        }
       }
       function onInputChange() {
         var value = sb.$inputEl.val().trim();
@@ -25230,7 +26546,7 @@
         if (sb.params.disableOnBackdropClick && sb.$backdropEl) {
           sb.$backdropEl.on('click', disableOnClick);
         }
-        if (sb.expandable && app.theme === 'ios' && sb.view && $navbarEl && sb.$pageEl) {
+        if (sb.expandable && app.theme === 'ios' && sb.view && $navbarEl.length && sb.$pageEl) {
           sb.$pageEl.on('page:beforeout', onPageBeforeOut);
           sb.$pageEl.on('page:beforein', onPageBeforeIn);
         }
@@ -25247,7 +26563,7 @@
         if (sb.params.disableOnBackdropClick && sb.$backdropEl) {
           sb.$backdropEl.off('click', disableOnClick);
         }
-        if (sb.expandable && app.theme === 'ios' && sb.view && $navbarEl && sb.$pageEl) {
+        if (sb.expandable && app.theme === 'ios' && sb.view && $navbarEl.length && sb.$pageEl) {
           sb.$pageEl.off('page:beforeout', onPageBeforeOut);
           sb.$pageEl.off('page:beforein', onPageBeforeIn);
         }
@@ -25308,7 +26624,7 @@
         if (!sb.$disableButtonEl || (sb.$disableButtonEl && sb.$disableButtonEl.length === 0)) {
           sb.$el.addClass('searchbar-enabled-no-disable-button');
         }
-        if (!sb.expandable && sb.$disableButtonEl && sb.$disableButtonEl.length > 0 && app.theme === 'ios') {
+        if (!sb.expandable && sb.$disableButtonEl && sb.$disableButtonEl.length > 0 && app.theme !== 'md') {
           if (!sb.disableButtonHasMargin) {
             sb.setDisableButtonMargin();
           }
@@ -25379,7 +26695,7 @@
           }
         }
       }
-      if (!sb.expandable && sb.$disableButtonEl && sb.$disableButtonEl.length > 0 && app.theme === 'ios') {
+      if (!sb.expandable && sb.$disableButtonEl && sb.$disableButtonEl.length > 0 && app.theme !== 'md') {
         sb.$disableButtonEl.css(("margin-" + (app.rtl ? 'left' : 'right')), ((-sb.disableButtonEl.offsetWidth) + "px"));
       }
       if (sb.$backdropEl && ((sb.$searchContainer && sb.$searchContainer.length) || sb.params.customSearch)) {
@@ -25571,6 +26887,8 @@
 
     Searchbar.prototype.init = function init () {
       var sb = this;
+      if (sb.expandable && sb.$el) { sb.$el.addClass('searchbar-expandable'); }
+      if (sb.inline && sb.$el) { sb.$el.addClass('searchbar-inline'); }
       sb.attachEvents();
     };
 
@@ -25696,11 +27014,11 @@
     },
   };
 
-  var Messages = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Messages = /*@__PURE__*/(function (Framework7Class) {
     function Messages(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var m = this;
 
@@ -25752,8 +27070,8 @@
       return m;
     }
 
-    if ( Framework7Class$$1 ) Messages.__proto__ = Framework7Class$$1;
-    Messages.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Messages.__proto__ = Framework7Class;
+    Messages.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Messages.prototype.constructor = Messages;
     // eslint-disable-next-line
     Messages.prototype.getMessageData = function getMessageData (messageEl) {
@@ -26251,11 +27569,11 @@
     },
   };
 
-  var Messagebar = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Messagebar = /*@__PURE__*/(function (Framework7Class) {
     function Messagebar(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var messagebar = this;
 
@@ -26392,8 +27710,8 @@
       return messagebar;
     }
 
-    if ( Framework7Class$$1 ) Messagebar.__proto__ = Framework7Class$$1;
-    Messagebar.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Messagebar.__proto__ = Framework7Class;
+    Messagebar.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Messagebar.prototype.constructor = Messagebar;
 
     Messagebar.prototype.focus = function focus () {
@@ -26678,6 +27996,18 @@
       },
     },
   };
+
+  var Browser = (function Browser() {
+    function isSafari() {
+      var ua = win.navigator.userAgent.toLowerCase();
+      return (ua.indexOf('safari') >= 0 && ua.indexOf('chrome') < 0 && ua.indexOf('android') < 0);
+    }
+    return {
+      isIE: !!win.navigator.userAgent.match(/Trident/g) || !!win.navigator.userAgent.match(/MSIE/g),
+      isSafari: isSafari(),
+      isUiWebView: /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(win.navigator.userAgent),
+    };
+  }());
 
   function updateSize () {
     var swiper = this;
@@ -28725,7 +30055,12 @@
       }
 
       var breakpointParams = breakpointOnlyParams || swiper.originalParams;
-      var needsReLoop = params.loop && (breakpointParams.slidesPerView !== params.slidesPerView);
+      var directionChanged = breakpointParams.direction && breakpointParams.direction !== params.direction;
+      var needsReLoop = params.loop && (breakpointParams.slidesPerView !== params.slidesPerView || directionChanged);
+
+      if (directionChanged && initialized) {
+        swiper.changeDirection();
+      }
 
       Utils.extend(swiper.params, breakpointParams);
 
@@ -28743,6 +30078,7 @@
         swiper.updateSlides();
         swiper.slideTo((activeIndex - loopedSlides) + swiper.loopedSlides, 0, false);
       }
+
       swiper.emit('breakpoint', breakpointParams);
     }
   }
@@ -28772,18 +30108,6 @@
 
   var breakpoints = { setBreakpoint: setBreakpoint, getBreakpoint: getBreakpoint };
 
-  var Browser = (function Browser() {
-    function isSafari() {
-      var ua = win.navigator.userAgent.toLowerCase();
-      return (ua.indexOf('safari') >= 0 && ua.indexOf('chrome') < 0 && ua.indexOf('android') < 0);
-    }
-    return {
-      isIE: !!win.navigator.userAgent.match(/Trident/g) || !!win.navigator.userAgent.match(/MSIE/g),
-      isSafari: isSafari(),
-      isUiWebView: /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(win.navigator.userAgent),
-    };
-  }());
-
   function addClasses () {
     var swiper = this;
     var classNames = swiper.classNames;
@@ -28792,6 +30116,7 @@
     var $el = swiper.$el;
     var suffixes = [];
 
+    suffixes.push('initialized');
     suffixes.push(params.direction);
 
     if (params.freeMode) {
@@ -29043,6 +30368,8 @@
     // Callbacks
     runCallbacksOnInit: true,
   };
+
+  /* eslint no-param-reassign: "off" */
 
   var prototypes = {
     update: update,
@@ -29311,7 +30638,7 @@
       return spv;
     };
 
-    Swiper.prototype.update = function update$$1 () {
+    Swiper.prototype.update = function update () {
       var swiper = this;
       if (!swiper || swiper.destroyed) { return; }
       var snapGrid = swiper.snapGrid;
@@ -29352,6 +30679,54 @@
         swiper.checkOverflow();
       }
       swiper.emit('update');
+    };
+
+    Swiper.prototype.changeDirection = function changeDirection (newDirection, needUpdate) {
+      if ( needUpdate === void 0 ) needUpdate = true;
+
+      var swiper = this;
+      var currentDirection = swiper.params.direction;
+      if (!newDirection) {
+        // eslint-disable-next-line
+        newDirection = currentDirection === 'horizontal' ? 'vertical' : 'horizontal';
+      }
+      if ((newDirection === currentDirection) || (newDirection !== 'horizontal' && newDirection !== 'vertical')) {
+        return swiper;
+      }
+
+      if (currentDirection === 'vertical') {
+        swiper.$el
+          .removeClass(((swiper.params.containerModifierClass) + "vertical wp8-vertical"))
+          .addClass(("" + (swiper.params.containerModifierClass) + newDirection));
+
+        if ((Browser.isIE || Browser.isEdge) && (Support.pointerEvents || Support.prefixedPointerEvents)) {
+          swiper.$el.addClass(((swiper.params.containerModifierClass) + "wp8-" + newDirection));
+        }
+      }
+      if (currentDirection === 'horizontal') {
+        swiper.$el
+          .removeClass(((swiper.params.containerModifierClass) + "horizontal wp8-horizontal"))
+          .addClass(("" + (swiper.params.containerModifierClass) + newDirection));
+
+        if ((Browser.isIE || Browser.isEdge) && (Support.pointerEvents || Support.prefixedPointerEvents)) {
+          swiper.$el.addClass(((swiper.params.containerModifierClass) + "wp8-" + newDirection));
+        }
+      }
+
+      swiper.params.direction = newDirection;
+
+      swiper.slides.each(function (slideIndex, slideEl) {
+        if (newDirection === 'vertical') {
+          slideEl.style.width = '';
+        } else {
+          slideEl.style.height = '';
+        }
+      });
+
+      swiper.emit('changeDirection');
+      if (needUpdate) { swiper.update(); }
+
+      return swiper;
     };
 
     Swiper.prototype.init = function init () {
@@ -29770,24 +31145,75 @@
       if (params.cache) { swiper.virtual.cache[index] = $slideEl; }
       return $slideEl;
     },
-    appendSlide: function appendSlide(slide) {
+    appendSlide: function appendSlide(slides) {
       var swiper = this;
-      swiper.virtual.slides.push(slide);
+      if (typeof slides === 'object' && 'length' in slides) {
+        for (var i = 0; i < slides.length; i += 1) {
+          if (slides[i]) { swiper.virtual.slides.push(slides[i]); }
+        }
+      } else {
+        swiper.virtual.slides.push(slides);
+      }
       swiper.virtual.update(true);
     },
-    prependSlide: function prependSlide(slide) {
+    prependSlide: function prependSlide(slides) {
       var swiper = this;
-      swiper.virtual.slides.unshift(slide);
+      var activeIndex = swiper.activeIndex;
+      var newActiveIndex = activeIndex + 1;
+      var numberOfNewSlides = 1;
+
+      if (Array.isArray(slides)) {
+        for (var i = 0; i < slides.length; i += 1) {
+          if (slides[i]) { swiper.virtual.slides.unshift(slides[i]); }
+        }
+        newActiveIndex = activeIndex + slides.length;
+        numberOfNewSlides = slides.length;
+      } else {
+        swiper.virtual.slides.unshift(slides);
+      }
       if (swiper.params.virtual.cache) {
         var cache = swiper.virtual.cache;
         var newCache = {};
         Object.keys(cache).forEach(function (cachedIndex) {
-          newCache[cachedIndex + 1] = cache[cachedIndex];
+          newCache[parseInt(cachedIndex, 10) + numberOfNewSlides] = cache[cachedIndex];
         });
         swiper.virtual.cache = newCache;
       }
       swiper.virtual.update(true);
-      swiper.slideNext(0);
+      swiper.slideTo(newActiveIndex, 0);
+    },
+    removeSlide: function removeSlide(slidesIndexes) {
+      var swiper = this;
+      if (typeof slidesIndexes === 'undefined' || slidesIndexes === null) { return; }
+      var activeIndex = swiper.activeIndex;
+      if (Array.isArray(slidesIndexes)) {
+        for (var i = slidesIndexes.length - 1; i >= 0; i -= 1) {
+          swiper.virtual.slides.splice(slidesIndexes[i], 1);
+          if (swiper.params.virtual.cache) {
+            delete swiper.virtual.cache[slidesIndexes[i]];
+          }
+          if (slidesIndexes[i] < activeIndex) { activeIndex -= 1; }
+          activeIndex = Math.max(activeIndex, 0);
+        }
+      } else {
+        swiper.virtual.slides.splice(slidesIndexes, 1);
+        if (swiper.params.virtual.cache) {
+          delete swiper.virtual.cache[slidesIndexes];
+        }
+        if (slidesIndexes < activeIndex) { activeIndex -= 1; }
+        activeIndex = Math.max(activeIndex, 0);
+      }
+      swiper.virtual.update(true);
+      swiper.slideTo(activeIndex, 0);
+    },
+    removeAllSlides: function removeAllSlides() {
+      var swiper = this;
+      swiper.virtual.slides = [];
+      if (swiper.params.virtual.cache) {
+        swiper.virtual.cache = {};
+      }
+      swiper.virtual.update(true);
+      swiper.slideTo(0, 0);
     },
   };
 
@@ -29811,6 +31237,8 @@
           update: Virtual.update.bind(swiper),
           appendSlide: Virtual.appendSlide.bind(swiper),
           prependSlide: Virtual.prependSlide.bind(swiper),
+          removeSlide: Virtual.removeSlide.bind(swiper),
+          removeAllSlides: Virtual.removeAllSlides.bind(swiper),
           renderSlide: Virtual.renderSlide.bind(swiper),
           slides: swiper.params.virtual.slides,
           cache: {},
@@ -29993,8 +31421,23 @@
           && !$(e.target).is($prevEl)
           && !$(e.target).is($nextEl)
         ) {
-          if ($nextEl) { $nextEl.toggleClass(swiper.params.navigation.hiddenClass); }
-          if ($prevEl) { $prevEl.toggleClass(swiper.params.navigation.hiddenClass); }
+          var isHidden;
+          if ($nextEl) {
+            isHidden = $nextEl.hasClass(swiper.params.navigation.hiddenClass);
+          } else if ($prevEl) {
+            isHidden = $prevEl.hasClass(swiper.params.navigation.hiddenClass);
+          }
+          if (isHidden === true) {
+            swiper.emit('navigationShow', swiper);
+          } else {
+            swiper.emit('navigationHide', swiper);
+          }
+          if ($nextEl) {
+            $nextEl.toggleClass(swiper.params.navigation.hiddenClass);
+          }
+          if ($prevEl) {
+            $prevEl.toggleClass(swiper.params.navigation.hiddenClass);
+          }
         }
       },
     },
@@ -30325,6 +31768,12 @@
           && swiper.pagination.$el.length > 0
           && !$(e.target).hasClass(swiper.params.pagination.bulletClass)
         ) {
+          var isHidden = swiper.pagination.$el.hasClass(swiper.params.pagination.hiddenClass);
+          if (isHidden === true) {
+            swiper.emit('paginationShow', swiper);
+          } else {
+            swiper.emit('paginationHide', swiper);
+          }
           swiper.pagination.$el.toggleClass(swiper.params.pagination.hiddenClass);
         }
       },
@@ -30421,7 +31870,7 @@
       } else {
         $el[0].style.display = '';
       }
-      if (swiper.params.scrollbarHide) {
+      if (swiper.params.scrollbar.hide) {
         $el[0].style.opacity = 0;
       }
       Utils.extend(scrollbar, {
@@ -30775,17 +32224,17 @@
       },
       init: function init() {
         var swiper = this;
-        if (!swiper.params.parallax) { return; }
+        if (!swiper.params.parallax.enabled) { return; }
         swiper.parallax.setTranslate();
       },
       setTranslate: function setTranslate() {
         var swiper = this;
-        if (!swiper.params.parallax) { return; }
+        if (!swiper.params.parallax.enabled) { return; }
         swiper.parallax.setTranslate();
       },
       setTransition: function setTransition(duration) {
         var swiper = this;
-        if (!swiper.params.parallax) { return; }
+        if (!swiper.params.parallax.enabled) { return; }
         swiper.parallax.setTransition(duration);
       },
     },
@@ -32944,11 +34393,11 @@
 
   /* eslint indent: ["off"] */
 
-  var PhotoBrowser = /*@__PURE__*/(function (Framework7Class$$1) {
+  var PhotoBrowser = /*@__PURE__*/(function (Framework7Class) {
     function PhotoBrowser(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var pb = this;
       pb.app = app;
@@ -32987,8 +34436,8 @@
       pb.init();
     }
 
-    if ( Framework7Class$$1 ) PhotoBrowser.__proto__ = Framework7Class$$1;
-    PhotoBrowser.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) PhotoBrowser.__proto__ = Framework7Class;
+    PhotoBrowser.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     PhotoBrowser.prototype.constructor = PhotoBrowser;
 
     PhotoBrowser.prototype.onSlideChange = function onSlideChange (swiper) {
@@ -33112,10 +34561,10 @@
       var iconsColor = pb.params.iconsColor;
       if (!pb.params.iconsColor && pb.params.theme === 'dark') { iconsColor = 'white'; }
 
-      var backLinkText = pb.app.theme === 'ios' && pb.params.backLinkText ? pb.params.backLinkText : '';
+      var backLinkText = (pb.app.theme === 'ios' || pb.app.theme === 'aurora') && pb.params.backLinkText ? pb.params.backLinkText : '';
 
       var isPopup = pb.params.type !== 'page';
-      var navbarHtml = ("\n      <div class=\"navbar\">\n        <div class=\"navbar-inner sliding\">\n          <div class=\"left\">\n            <a href=\"#\" class=\"link " + (isPopup ? 'popup-close' : '') + " " + (!backLinkText ? 'icon-only' : '') + " " + (!isPopup ? 'back' : '') + "\" " + (isPopup ? 'data-popup=".photo-browser-popup"' : '') + ">\n              <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n              " + (backLinkText ? ("<span>" + backLinkText + "</span>") : '') + "\n            </a>\n          </div>\n          <div class=\"title\">\n            <span class=\"photo-browser-current\"></span>\n            <span class=\"photo-browser-of\">" + (pb.params.navbarOfText) + "</span>\n            <span class=\"photo-browser-total\"></span>\n          </div>\n          <div class=\"right\"></div>\n        </div>\n      </div>\n    ").trim();
+      var navbarHtml = ("\n      <div class=\"navbar\">\n        <div class=\"navbar-inner sliding\">\n          <div class=\"left\">\n            <a class=\"link " + (isPopup ? 'popup-close' : '') + " " + (!backLinkText ? 'icon-only' : '') + " " + (!isPopup ? 'back' : '') + "\" " + (isPopup ? 'data-popup=".photo-browser-popup"' : '') + ">\n              <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n              " + (backLinkText ? ("<span>" + backLinkText + "</span>") : '') + "\n            </a>\n          </div>\n          <div class=\"title\">\n            <span class=\"photo-browser-current\"></span>\n            <span class=\"photo-browser-of\">" + (pb.params.navbarOfText) + "</span>\n            <span class=\"photo-browser-total\"></span>\n          </div>\n          <div class=\"right\"></div>\n        </div>\n      </div>\n    ").trim();
       return navbarHtml;
     };
 
@@ -33126,7 +34575,7 @@
       var iconsColor = pb.params.iconsColor;
       if (!pb.params.iconsColor && pb.params.theme === 'dark') { iconsColor = 'white'; }
 
-      var toolbarHtml = ("\n      <div class=\"toolbar toolbar-bottom tabbar\">\n        <div class=\"toolbar-inner\">\n          <a href=\"#\" class=\"link photo-browser-prev\">\n            <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n          <a href=\"#\" class=\"link photo-browser-next\">\n            <i class=\"icon icon-forward " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n        </div>\n      </div>\n    ").trim();
+      var toolbarHtml = ("\n      <div class=\"toolbar toolbar-bottom tabbar\">\n        <div class=\"toolbar-inner\">\n          <a class=\"link photo-browser-prev\">\n            <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n          <a class=\"link photo-browser-next\">\n            <i class=\"icon icon-forward " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n        </div>\n      </div>\n    ").trim();
       return toolbarHtml;
     };
 
@@ -33633,14 +35082,14 @@
     },
   };
 
-  var Notification = /*@__PURE__*/(function (Modal$$1) {
+  var Notification = /*@__PURE__*/(function (Modal) {
     function Notification(app, params) {
       var extendedParams = Utils.extend({
         on: {},
       }, app.params.notification, params);
 
       // Extends with open/close Modal methods;
-      Modal$$1.call(this, app, extendedParams);
+      Modal.call(this, app, extendedParams);
 
       var notification = this;
 
@@ -33826,8 +35275,8 @@
       return notification;
     }
 
-    if ( Modal$$1 ) Notification.__proto__ = Modal$$1;
-    Notification.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
+    if ( Modal ) Notification.__proto__ = Modal;
+    Notification.prototype = Object.create( Modal && Modal.prototype );
     Notification.prototype.constructor = Notification;
 
     Notification.prototype.render = function render () {
@@ -33882,11 +35331,11 @@
 
   /* eslint "no-useless-escape": "off" */
 
-  var Autocomplete = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Autocomplete = /*@__PURE__*/(function (Framework7Class) {
     function Autocomplete(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
 
       var ac = this;
       ac.app = app;
@@ -33895,6 +35344,9 @@
         on: {},
       }, app.params.autocomplete);
 
+      if (typeof defaults.searchbarDisableButton === 'undefined') {
+        defaults.searchbarDisableButton = app.theme !== 'aurora';
+      }
 
       // Extend defaults with modules params
       ac.useModulesParams(defaults);
@@ -34075,19 +35527,54 @@
       }
       function onInputBlur() {
         if (ac.$dropdownEl.find('label.active-state').length > 0) { return; }
-        ac.close();
+        setTimeout(function () {
+          ac.close();
+        }, 0);
       }
       function onResize() {
         ac.positionDropdown();
       }
 
       function onKeyDown(e) {
-        if (ac.opened && e.keyCode === 13) {
+        if (!ac.opened) { return; }
+        if (e.keyCode === 27) {
+          // ESC
           e.preventDefault();
           ac.$inputEl.blur();
+          return;
         }
+        if (e.keyCode === 13) {
+          // Enter
+          var $selectedItemLabel = ac.$dropdownEl.find('.autocomplete-dropdown-selected label');
+          if ($selectedItemLabel.length) {
+            e.preventDefault();
+            $selectedItemLabel.trigger('click');
+            ac.$inputEl.blur();
+            return;
+          }
+          if (ac.params.typeahead) {
+            e.preventDefault();
+            ac.$inputEl.blur();
+          }
+          return;
+        }
+        if (e.keyCode !== 40 && e.keyCode !== 38) { return; }
+        e.preventDefault();
+        var $selectedItem = ac.$dropdownEl.find('.autocomplete-dropdown-selected');
+        var $newItem;
+        if ($selectedItem.length) {
+          $newItem = $selectedItem[e.keyCode === 40 ? 'next' : 'prev']('li');
+          if (!$newItem.length) {
+            $newItem = ac.$dropdownEl.find('li').eq(e.keyCode === 40 ? 0 : ac.$dropdownEl.find('li').length - 1);
+          }
+        } else {
+          $newItem = ac.$dropdownEl.find('li').eq(e.keyCode === 40 ? 0 : ac.$dropdownEl.find('li').length - 1);
+        }
+        if ($newItem.hasClass('autocomplete-dropdown-placeholder')) { return; }
+        $selectedItem.removeClass('autocomplete-dropdown-selected');
+        $newItem.addClass('autocomplete-dropdown-selected');
       }
-      function onDropdownclick() {
+      function onDropdownClick() {
         var $clickedEl = $(this);
         var clickedItem;
         for (var i = 0; i < ac.items.length; i += 1) {
@@ -34103,7 +35590,6 @@
         }
         ac.value = [clickedItem];
         ac.emit('local::change autocompleteChange', [clickedItem]);
-
         ac.close();
       }
 
@@ -34119,9 +35605,7 @@
           } else {
             ac.$inputEl.on('blur', onInputBlur);
           }
-          if (ac.params.typeahead) {
-            ac.$inputEl.on('keydown', onKeyDown);
-          }
+          ac.$inputEl.on('keydown', onKeyDown);
         }
       };
       ac.detachEvents = function attachEvents() {
@@ -34136,17 +35620,15 @@
           } else {
             ac.$inputEl.off('blur', onInputBlur);
           }
-          if (ac.params.typeahead) {
-            ac.$inputEl.off('keydown', onKeyDown);
-          }
+          ac.$inputEl.off('keydown', onKeyDown);
         }
       };
       ac.attachDropdownEvents = function attachDropdownEvents() {
-        ac.$dropdownEl.on('click', 'label', onDropdownclick);
+        ac.$dropdownEl.on('click', 'label', onDropdownClick);
         app.on('resize', onResize);
       };
       ac.detachDropdownEvents = function detachDropdownEvents() {
-        ac.$dropdownEl.off('click', 'label', onDropdownclick);
+        ac.$dropdownEl.off('click', 'label', onDropdownClick);
         app.off('resize', onResize);
       };
 
@@ -34173,8 +35655,8 @@
       return ac;
     }
 
-    if ( Framework7Class$$1 ) Autocomplete.__proto__ = Framework7Class$$1;
-    Autocomplete.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Autocomplete.__proto__ = Framework7Class;
+    Autocomplete.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Autocomplete.prototype.constructor = Autocomplete;
 
     Autocomplete.prototype.positionDropdown = function positionDropdown () {
@@ -34312,7 +35794,7 @@
     Autocomplete.prototype.renderSearchbar = function renderSearchbar () {
       var ac = this;
       if (ac.params.renderSearchbar) { return ac.params.renderSearchbar.call(ac); }
-      var searchbarHTML = ("\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" placeholder=\"" + (ac.params.searchbarPlaceholder) + "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          <span class=\"searchbar-disable-button\">" + (ac.params.searchbarDisableText) + "</span>\n        </div>\n      </form>\n    ").trim();
+      var searchbarHTML = ("\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" placeholder=\"" + (ac.params.searchbarPlaceholder) + "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          " + (ac.params.searchbarDisableButton ? ("\n          <span class=\"searchbar-disable-button\">" + (ac.params.searchbarDisableText) + "</span>\n          ") : '') + "\n        </div>\n      </form>\n    ").trim();
       return searchbarHTML;
     };
 
@@ -34340,7 +35822,14 @@
       if (typeof pageTitle === 'undefined' && ac.$openerEl && ac.$openerEl.length) {
         pageTitle = ac.$openerEl.find('.item-title').text().trim();
       }
-      var navbarHtml = ("\n      <div class=\"navbar " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n        <div class=\"navbar-inner " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n          <div class=\"left sliding\">\n            <a href=\"#\" class=\"link " + (ac.params.openIn === 'page' ? 'back' : 'popup-close') + "\" " + (ac.params.openIn === 'popup' ? 'data-popup=".autocomplete-popup"' : '') + ">\n              <i class=\"icon icon-back\"></i>\n              <span class=\"ios-only\">" + (ac.params.openIn === 'page' ? ac.params.pageBackLinkText : ac.params.popupCloseLinkText) + "</span>\n            </a>\n          </div>\n          " + (pageTitle ? ("<div class=\"title sliding\">" + pageTitle + "</div>") : '') + "\n          " + (ac.params.preloader ? ("\n          <div class=\"right\">\n            " + (ac.renderPreloader()) + "\n          </div>\n          ") : '') + "\n          <div class=\"subnavbar sliding\">" + (ac.renderSearchbar()) + "</div>\n        </div>\n      </div>\n    ").trim();
+      var inPopup = ac.params.openIn === 'popup';
+      var navbarLeft = inPopup
+        ? ("\n        " + (ac.params.preloader ? ("\n        <div class=\"left\">\n          " + (ac.renderPreloader()) + "\n        </div>\n        ") : '') + "\n      ")
+        : ("\n        <div class=\"left sliding\">\n          <a class=\"link back\">\n            <i class=\"icon icon-back\"></i>\n            <span class=\"if-not-md\">" + (ac.params.pageBackLinkText) + "</span>\n          </a>\n        </div>\n      ");
+      var navbarRight = inPopup
+        ? ("\n        <div class=\"right\">\n          <a class=\"link popup-close\" data-popup=\".autocomplete-popup\">\n            " + (ac.params.popupCloseLinkText) + "\n          </a>\n        </div>\n      ")
+        : ("\n        " + (ac.params.preloader ? ("\n        <div class=\"right\">\n          " + (ac.renderPreloader()) + "\n        </div>\n        ") : '') + "\n      ");
+      var navbarHtml = ("\n      <div class=\"navbar " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n        <div class=\"navbar-inner " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n          " + navbarLeft + "\n          " + (pageTitle ? ("<div class=\"title sliding\">" + pageTitle + "</div>") : '') + "\n          " + navbarRight + "\n          <div class=\"subnavbar sliding\">" + (ac.renderSearchbar()) + "</div>\n        </div>\n      </div>\n    ").trim();
       return navbarHtml;
     };
 
@@ -34351,18 +35840,18 @@
       return dropdownHtml;
     };
 
-    Autocomplete.prototype.renderPage = function renderPage () {
+    Autocomplete.prototype.renderPage = function renderPage (inPopup) {
       var ac = this;
       if (ac.params.renderPage) { return ac.params.renderPage.call(ac, ac.items); }
 
-      var pageHtml = ("\n      <div class=\"page page-with-subnavbar autocomplete-page\" data-name=\"autocomplete-page\">\n        " + (ac.renderNavbar()) + "\n        <div class=\"searchbar-backdrop\"></div>\n        <div class=\"page-content\">\n          <div class=\"list autocomplete-list autocomplete-found autocomplete-list-" + (ac.id) + " " + (ac.params.formColorTheme ? ("color-" + (ac.params.formColorTheme)) : '') + "\">\n            <ul></ul>\n          </div>\n          <div class=\"list autocomplete-not-found\">\n            <ul>\n              <li class=\"item-content\"><div class=\"item-inner\"><div class=\"item-title\">" + (ac.params.notFoundText) + "</div></div></li>\n            </ul>\n          </div>\n          <div class=\"list autocomplete-values\">\n            <ul></ul>\n          </div>\n        </div>\n      </div>\n    ").trim();
+      var pageHtml = ("\n      <div class=\"page page-with-subnavbar autocomplete-page\" data-name=\"autocomplete-page\">\n        " + (ac.renderNavbar(inPopup)) + "\n        <div class=\"searchbar-backdrop\"></div>\n        <div class=\"page-content\">\n          <div class=\"list autocomplete-list autocomplete-found autocomplete-list-" + (ac.id) + " " + (ac.params.formColorTheme ? ("color-" + (ac.params.formColorTheme)) : '') + "\">\n            <ul></ul>\n          </div>\n          <div class=\"list autocomplete-not-found\">\n            <ul>\n              <li class=\"item-content\"><div class=\"item-inner\"><div class=\"item-title\">" + (ac.params.notFoundText) + "</div></div></li>\n            </ul>\n          </div>\n          <div class=\"list autocomplete-values\">\n            <ul></ul>\n          </div>\n        </div>\n      </div>\n    ").trim();
       return pageHtml;
     };
 
     Autocomplete.prototype.renderPopup = function renderPopup () {
       var ac = this;
       if (ac.params.renderPopup) { return ac.params.renderPopup.call(ac, ac.items); }
-      var popupHtml = ("\n      <div class=\"popup autocomplete-popup\">\n        <div class=\"view\">\n          " + (ac.renderPage()) + ";\n        </div>\n      </div>\n    ").trim();
+      var popupHtml = ("\n      <div class=\"popup autocomplete-popup\">\n        <div class=\"view\">\n          " + (ac.renderPage(true)) + ";\n        </div>\n      </div>\n    ").trim();
       return popupHtml;
     };
 
@@ -34642,6 +36131,7 @@
         pageTitle: undefined,
         searchbarPlaceholder: 'Search...',
         searchbarDisableText: 'Cancel',
+        searchbarDisableButton: undefined,
 
         animate: true,
 
@@ -34700,11 +36190,11 @@
     },
   };
 
-  var Tooltip = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Tooltip = /*@__PURE__*/(function (Framework7Class) {
     function Tooltip(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, app, params);
+      Framework7Class.call(this, app, params);
 
       var tooltip = this;
 
@@ -34811,8 +36301,8 @@
       return tooltip;
     }
 
-    if ( Framework7Class$$1 ) Tooltip.__proto__ = Framework7Class$$1;
-    Tooltip.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Tooltip.__proto__ = Framework7Class;
+    Tooltip.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Tooltip.prototype.constructor = Tooltip;
 
     Tooltip.prototype.position = function position (targetEl) {
@@ -35032,11 +36522,24 @@
           if (!text) { return; }
           app.tooltip.create({ targetEl: el, text: text });
         });
+        if (app.theme === 'ios' && page.view && page.view.router.separateNavbar && page.$navbarEl && page.$navbarEl.length > 0) {
+          page.$navbarEl.find('.tooltip-init').each(function (index, el) {
+            var text = $(el).attr('data-tooltip');
+            if (!text) { return; }
+            app.tooltip.create({ targetEl: el, text: text });
+          });
+        }
       },
       pageBeforeRemove: function pageBeforeRemove(page) {
+        var app = this;
         page.$el.find('.tooltip-init').each(function (index, el) {
           if (el.f7Tooltip) { el.f7Tooltip.destroy(); }
         });
+        if (app.theme === 'ios' && page.view && page.view.router.separateNavbar && page.$navbarEl && page.$navbarEl.length > 0) {
+          page.$navbarEl.find('.tooltip-init').each(function (index, el) {
+            if (el.f7Tooltip) { el.f7Tooltip.destroy(); }
+          });
+        }
       },
     },
     vnode: {
@@ -35058,12 +36561,12 @@
 
   /* eslint no-nested-ternary: off */
 
-  var Gauge = /*@__PURE__*/(function (Framework7Class$$1) {
+  var Gauge = /*@__PURE__*/(function (Framework7Class) {
     function Gauge(app, params) {
       if ( params === void 0 ) params = {};
 
       // Extends with open/close Modal methods;
-      Framework7Class$$1.call(this, app, params);
+      Framework7Class.call(this, app, params);
 
       var gauge = this;
 
@@ -35099,8 +36602,8 @@
       return gauge;
     }
 
-    if ( Framework7Class$$1 ) Gauge.__proto__ = Framework7Class$$1;
-    Gauge.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) Gauge.__proto__ = Framework7Class;
+    Gauge.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Gauge.prototype.constructor = Gauge;
 
     Gauge.prototype.calcRadius = function calcRadius () {
@@ -35400,6 +36903,13 @@
       if (!el) { return; }
       var $el = $(el).closest('.menu-item-dropdown');
       if (!$el.length) { return; }
+      var $menuEl = $el.closest('.menu').eq(0);
+      if ($menuEl.length) {
+        var zIndex = $menuEl.css('z-index');
+        var originalZIndex = $menuEl[0].style.zIndex;
+        $menuEl.css('z-index', parseInt(zIndex || 0, 0) + 1);
+        $menuEl[0].f7MenuZIndex = originalZIndex;
+      }
       $el.eq(0).addClass('menu-item-dropdown-opened').trigger('menu:opened');
       app.emit('menuOpened', $el.eq(0)[0]);
     },
@@ -35410,6 +36920,12 @@
       if (!el) { return; }
       var $el = $(el).closest('.menu-item-dropdown-opened');
       if (!$el.length) { return; }
+      var $menuEl = $el.closest('.menu').eq(0);
+      if ($menuEl.length) {
+        var zIndex = $menuEl[0].f7MenuZIndex;
+        $menuEl.css('z-index', zIndex);
+        delete $menuEl[0].f7MenuZIndex;
+      }
       $el.eq(0).removeClass('menu-item-dropdown-opened').trigger('menu:closed');
       app.emit('menuClosed', $el.eq(0)[0]);
     },
@@ -35453,11 +36969,1903 @@
     },
   };
 
-  var ViAd = /*@__PURE__*/(function (Framework7Class$$1) {
+  var moduleAlphaSlider = {
+    render: function render(self) {
+      var ref = self.params;
+      var sliderLabel = ref.sliderLabel;
+      var sliderValue = ref.sliderValue;
+      var sliderValueEditable = ref.sliderValueEditable;
+      var alphaLabelText = ref.alphaLabelText;
+      return ("\n      <div class=\"color-picker-module color-picker-module-alpha-slider\">\n        <div class=\"color-picker-slider-wrap\">\n          " + (sliderLabel ? ("\n            <div class=\"color-picker-slider-label\">" + alphaLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-slider color-picker-slider-alpha\"></div>\n          " + (sliderValue ? ("\n            <div class=\"color-picker-slider-value\">\n              " + (sliderValueEditable ? "\n                <input type=\"number\" step=\"0.01\" min=\"0\" max=\"1\" class=\"color-picker-value-alpha\">\n              " : "\n                <span class=\"color-picker-value-alpha\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n      </div>\n    ");
+    },
+    init: function init(self) {
+      self.alphaRangeSlider = self.app.range.create({
+        el: self.$el.find('.color-picker-slider-alpha'),
+        min: 0,
+        max: 1,
+        step: 0.01,
+        value: 1,
+        on: {
+          change: function change(range, value) {
+            var alpha = Math.floor(value * 100) / 100;
+            self.setValue({ alpha: alpha });
+          },
+        },
+      });
+      function handleInputChange(e) {
+        var alpha = self.value.alpha;
+        var value = parseFloat(e.target.value);
+        if (Number.isNaN(value)) {
+          e.target.value = alpha;
+          return;
+        }
+        value = Math.max(0, Math.min(1, value));
+        self.setValue({ alpha: value });
+      }
+
+      self.$el.on('change', '.color-picker-module-alpha-slider input', handleInputChange);
+
+      self.destroyAlphaSliderEvents = function destroyAlphaSliderEvents() {
+        self.$el.off('change', '.color-picker-module-alpha-slider input', handleInputChange);
+      };
+    },
+    update: function update(self) {
+      var value = self.value;
+      var ref = self.params;
+      var sliderValue = ref.sliderValue;
+      var sliderValueEditable = ref.sliderValueEditable;
+
+      var alpha = value.alpha;
+      self.alphaRangeSlider.value = alpha;
+      self.alphaRangeSlider.layout();
+      if (sliderValue && sliderValueEditable) {
+        self.$el.find('input.color-picker-value-alpha').val(alpha);
+      } else {
+        self.$el.find('span.color-picker-value-alpha').text(alpha);
+      }
+    },
+    destroy: function destroy(self) {
+      if (self.alphaRangeSlider && self.alphaRangeSlider.destroy) {
+        self.alphaRangeSlider.destroy();
+      }
+      delete self.alphaRangeSlider;
+
+      if (self.destroyAlphaSliderEvents) { self.destroyAlphaSliderEvents(); }
+      delete self.destroyAlphaSliderEvents;
+    },
+  };
+
+  var moduleCurrentColor = {
+    render: function render() {
+      return "\n      <div class=\"color-picker-module color-picker-module-current-color\">\n        <div class=\"color-picker-current-color\"></div>\n      </div>\n    ";
+    },
+    update: function update(self) {
+      self.$el.find('.color-picker-module-current-color .color-picker-current-color').css(
+        'background-color',
+        self.value.hex
+      );
+    },
+  };
+
+  var moduleHex = {
+    render: function render(self) {
+      var ref = self.params;
+      var hexLabel = ref.hexLabel;
+      var hexLabelText = ref.hexLabelText;
+      var hexValueEditable = ref.hexValueEditable;
+      return ("\n      <div class=\"color-picker-module color-picker-module-hex\">\n        <div class=\"color-picker-hex-wrap\">\n          " + (hexLabel ? ("\n            <div class=\"color-picker-hex-label\">" + hexLabelText + "</div>\n          ") : '') + "\n          <div class=\"color-picker-hex-value\">\n            " + (hexValueEditable ? "\n              <input type=\"text\" class=\"color-picker-value-hex\">\n            " : "\n              <span class=\"color-picker-value-hex\"></span>\n            ") + "\n          </div>\n        </div>\n      </div>\n    ");
+    },
+    init: function init(self) {
+      function handleInputChange(e) {
+        var hex = self.value.hex;
+        var value = e.target.value.replace(/#/g, '');
+        if (Number.isNaN(value) || !value || (value.length !== 3 && value.length !== 6)) {
+          e.target.value = hex;
+          return;
+        }
+        var min = 0;
+        var current = parseInt(value, 16);
+        var max = parseInt('ffffff', 16); // eslint-disable-line
+        if (current > max) {
+          value = 'fff';
+        }
+        if (current < min) {
+          value = '000';
+        }
+        self.setValue({ hex: value });
+      }
+
+      self.$el.on('change', '.color-picker-module-hex input', handleInputChange);
+
+      self.destroyHexEvents = function destroyHexEvents() {
+        self.$el.off('change', '.color-picker-module-hex input', handleInputChange);
+      };
+    },
+    update: function update(self) {
+      var value = self.value;
+
+      var ref = self.params;
+      var hexValueEditable = ref.hexValueEditable;
+
+      var hex = value.hex;
+      if (hexValueEditable) {
+        self.$el.find('input.color-picker-value-hex').val(hex);
+      } else {
+        self.$el.find('span.color-picker-value-hex').text(hex);
+      }
+    },
+    destroy: function destroy(self) {
+      if (self.destroyHexEvents) { self.destroyHexEvents(); }
+      delete self.destroyHexEvents;
+    },
+  };
+
+  var moduleHsbSliders = {
+    render: function render(self) {
+      var ref = self.params;
+      var sliderLabel = ref.sliderLabel;
+      var sliderValue = ref.sliderValue;
+      var sliderValueEditable = ref.sliderValueEditable;
+      var hueLabelText = ref.hueLabelText;
+      var saturationLabelText = ref.saturationLabelText;
+      var brightnessLabelText = ref.brightnessLabelText;
+      return ("\n      <div class=\"color-picker-module color-picker-module-hsb-sliders\">\n        <div class=\"color-picker-slider-wrap\">\n          " + (sliderLabel ? ("\n            <div class=\"color-picker-slider-label\">" + hueLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-slider color-picker-slider-hue\"></div>\n          " + (sliderValue ? ("\n            <div class=\"color-picker-slider-value\">\n              " + (sliderValueEditable ? "\n                <input type=\"number\" step=\"0.1\" min=\"0\" max=\"360\" class=\"color-picker-value-hue\" data-color-index=\"0\">\n              " : "\n                <span class=\"color-picker-value-hue\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n        <div class=\"color-picker-slider-wrap\">\n          " + (sliderLabel ? ("\n            <div class=\"color-picker-slider-label\">" + saturationLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-slider color-picker-slider-saturation\"></div>\n          " + (sliderValue ? ("\n            <div class=\"color-picker-slider-value\">\n              " + (sliderValueEditable ? "\n                <input type=\"number\" step=\"0.1\" min=\"0\" max=\"100\" class=\"color-picker-value-saturation\" data-color-index=\"1\">\n              " : "\n                <span class=\"color-picker-value-saturation\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n        <div class=\"color-picker-slider-wrap\">\n          " + (sliderLabel ? ("\n            <div class=\"color-picker-slider-label\">" + brightnessLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-slider color-picker-slider-brightness\"></div>\n          " + (sliderValue ? ("\n            <div class=\"color-picker-slider-value\">\n              " + (sliderValueEditable ? "\n                <input type=\"number\" step=\"0.1\" min=\"0\" max=\"100\" class=\"color-picker-value-brightness\" data-color-index=\"2\">\n              " : "\n                <span class=\"color-picker-value-brightness\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n      </div>\n    ");
+    },
+    init: function init(self) {
+      self.hueRangeSlider = self.app.range.create({
+        el: self.$el.find('.color-picker-slider-hue'),
+        min: 0,
+        max: 360,
+        step: 0.1,
+        value: 0,
+        on: {
+          change: function change(range, value) {
+            self.setValue({ hue: value });
+          },
+        },
+      });
+      self.saturationRangeSlider = self.app.range.create({
+        el: self.$el.find('.color-picker-slider-saturation'),
+        min: 0,
+        max: 1,
+        step: 0.001,
+        value: 0,
+        on: {
+          change: function change(range, value) {
+            var s = Math.floor(value * 1000) / 1000;
+            self.setValue({ hsb: [self.value.hsb[0], s, self.value.hsb[2]] });
+          },
+        },
+      });
+      self.brightnessRangeSlider = self.app.range.create({
+        el: self.$el.find('.color-picker-slider-brightness'),
+        min: 0,
+        max: 1,
+        step: 0.001,
+        value: 0,
+        on: {
+          change: function change(range, value) {
+            var b = Math.floor(value * 1000) / 1000;
+            self.setValue({ hsb: [self.value.hsb[0], self.value.hsb[1], b] });
+          },
+        },
+      });
+
+      function handleInputChange(e) {
+        var hsb = [].concat( self.value.hsb );
+        var index = parseInt($(e.target).attr('data-color-index'), 10);
+        var value = parseFloat(e.target.value);
+        if (Number.isNaN(value)) {
+          e.target.value = hsb[index];
+          return;
+        }
+        if (index === 0) {
+          value = Math.max(0, Math.min(360, value));
+        } else {
+          value = Math.max(0, Math.min(100, value)) / 100;
+        }
+
+        hsb[index] = value;
+        self.setValue({ hsb: hsb });
+      }
+
+      self.$el.on('change', '.color-picker-module-hsb-sliders input', handleInputChange);
+
+      self.destroyHsbSlidersEvents = function destroyHsbSlidersEvents() {
+        self.$el.off('change', '.color-picker-module-hsb-sliders input', handleInputChange);
+      };
+    },
+    update: function update(self) {
+      var app = self.app;
+      var value = self.value;
+      var ref = self.params;
+      var sliderValue = ref.sliderValue;
+      var sliderValueEditable = ref.sliderValueEditable;
+
+      var hsb = value.hsb;
+      var hue = value.hue;
+
+      self.hueRangeSlider.value = hue;
+      self.saturationRangeSlider.value = hsb[1];
+      self.brightnessRangeSlider.value = hsb[2];
+
+      self.hueRangeSlider.layout();
+      self.saturationRangeSlider.layout();
+      self.brightnessRangeSlider.layout();
+
+      var hslCurrent = Utils.colorHsbToHsl(hsb[0], hsb[1], 1);
+      var hslLeft = Utils.colorHsbToHsl(hsb[0], 0, 1);
+      var hslRight = Utils.colorHsbToHsl(hsb[0], 1, 1);
+      var brightness = hsb[2];
+
+      self.hueRangeSlider.$el[0].style.setProperty(
+        '--f7-range-knob-color',
+        ("hsl(" + hue + ", 100%, 50%)")
+      );
+      self.saturationRangeSlider.$el[0].style.setProperty(
+        '--f7-range-knob-color',
+        ("hsl(" + (hslCurrent[0]) + ", " + (hslCurrent[1] * 100) + "%, " + (hslCurrent[2] * 100) + "%)")
+      );
+      self.brightnessRangeSlider.$el[0].style.setProperty(
+        '--f7-range-knob-color',
+        ("rgb(" + (brightness * 255) + ", " + (brightness * 255) + ", " + (brightness * 255) + ")")
+      );
+      self.saturationRangeSlider.$el.find('.range-bar').css(
+        'background-image',
+        ("linear-gradient(" + (app.rtl ? 'to left' : 'to right') + ", hsl(" + (hslLeft[0]) + ", " + (hslLeft[1] * 100) + "%, " + (hslLeft[2] * 100) + "%), hsl(" + (hslRight[0]) + ", " + (hslRight[1] * 100) + "%, " + (hslRight[2] * 100) + "%))")
+      );
+
+      if (sliderValue && sliderValueEditable) {
+        self.$el.find('input.color-picker-value-hue').val(("" + hue));
+        self.$el.find('input.color-picker-value-saturation').val(("" + (hsb[1] * 1000 / 10)));
+        self.$el.find('input.color-picker-value-brightness').val(("" + (hsb[2] * 1000 / 10)));
+      } else if (sliderValue) {
+        self.$el.find('span.color-picker-value-hue').text(("" + hue));
+        self.$el.find('span.color-picker-value-saturation').text(("" + (hsb[1] * 1000 / 10)));
+        self.$el.find('span.color-picker-value-brightness').text(("" + (hsb[2] * 1000 / 10)));
+      }
+    },
+    destroy: function destroy(self) {
+      if (self.hueRangeSlider && self.hueRangeSlider.destroy) {
+        self.hueRangeSlider.destroy();
+      }
+      if (self.saturationRangeSlider && self.saturationRangeSlider.destroy) {
+        self.saturationRangeSlider.destroy();
+      }
+      if (self.brightnessRangeSlider && self.brightnessRangeSlider.destroy) {
+        self.brightnessRangeSlider.destroy();
+      }
+
+      delete self.hueRangeSlider;
+      delete self.saturationRangeSlider;
+      delete self.brightnessRangeSlider;
+
+      if (self.destroyHsbSlidersEvents) { self.destroyHsbSlidersEvents(); }
+      delete self.destroyHsbSlidersEvents;
+    },
+  };
+
+  var moduleHueSlider = {
+    render: function render(self) {
+      var ref = self.params;
+      var sliderLabel = ref.sliderLabel;
+      var sliderValue = ref.sliderValue;
+      var sliderValueEditable = ref.sliderValueEditable;
+      var hueLabelText = ref.hueLabelText;
+      return ("\n      <div class=\"color-picker-module color-picker-module-hue-slider\">\n        <div class=\"color-picker-slider-wrap\">\n          " + (sliderLabel ? ("\n            <div class=\"color-picker-slider-label\">" + hueLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-slider color-picker-slider-hue\"></div>\n          " + (sliderValue ? ("\n            <div class=\"color-picker-slider-value\">\n              " + (sliderValueEditable ? "\n                <input type=\"number\" step=\"0.1\" min=\"0\" max=\"360\" class=\"color-picker-value-hue\">\n              " : "\n                <span class=\"color-picker-value-hue\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n      </div>\n    ");
+    },
+    init: function init(self) {
+      self.hueRangeSlider = self.app.range.create({
+        el: self.$el.find('.color-picker-slider-hue'),
+        min: 0,
+        max: 360,
+        step: 0.1,
+        value: 0,
+        on: {
+          change: function change(range, value) {
+            self.setValue({ hue: value });
+          },
+        },
+      });
+    },
+    update: function update(self) {
+      var value = self.value;
+      var ref = self.params;
+      var sliderValue = ref.sliderValue;
+      var sliderValueEditable = ref.sliderValueEditable;
+
+      var hue = value.hue;
+
+      self.hueRangeSlider.value = hue;
+      self.hueRangeSlider.layout();
+      self.hueRangeSlider.$el[0].style.setProperty(
+        '--f7-range-knob-color',
+        ("hsl(" + hue + ", 100%, 50%)")
+      );
+      if (sliderValue && sliderValueEditable) {
+        self.$el.find('input.color-picker-value-hue').val(("" + hue));
+      } else if (sliderValue) {
+        self.$el.find('span.color-picker-value-hue').text(("" + hue));
+      }
+    },
+    destroy: function destroy(self) {
+      if (self.hueRangeSlider && self.hueRangeSlider.destroy) {
+        self.hueRangeSlider.destroy();
+      }
+      delete self.hueRangeSlider;
+    },
+  };
+
+  /* eslint indent: ["off"] */
+
+  var modulePalette = {
+    render: function render(self) {
+      return ("\n      <div class=\"color-picker-module color-picker-module-palette\">\n        <div class=\"color-picker-palette\">\n          " + (self.params.palette.map(function (p) {
+              if (Array.isArray(p)) {
+                var row = '<div class="color-picker-palette-row">';
+                row += p.map(function (c) { return ("\n                <div class=\"color-picker-palette-value\" data-palette-color=\"" + c + "\" style=\"background-color: " + c + "\"></div>\n              "); }).join('');
+                row += '</div>';
+                return row;
+              }
+              return ("\n              <div class=\"color-picker-palette-value\" data-palette-color=\"" + p + "\" style=\"background-color: " + p + "\"></div>\n            ");
+            }).join('')) + "\n        </div>\n      </div>\n    ");
+    },
+    init: function init(self) {
+      function handlePaletteClick(e) {
+        var hex = $(e.target).attr('data-palette-color');
+        self.setValue({
+          hex: hex,
+        });
+      }
+
+      self.$el.on('click', '.color-picker-module-palette .color-picker-palette-value', handlePaletteClick);
+
+      self.destroyPaletteEvents = function destroyPaletteEvents() {
+        self.$el.off('click', '.color-picker-module-hex input', handlePaletteClick);
+      };
+    },
+    destroy: function destroy(self) {
+      if (self.destroyPaletteEvents) {
+        self.destroyPaletteEvents();
+      }
+      delete self.destroyPaletteEvents;
+    },
+  };
+
+  var moduleInitialCurrentColors = {
+    render: function render() {
+      return "\n      <div class=\"color-picker-module color-picker-module-initial-current-colors\">\n        <div class=\"color-picker-initial-current-colors\">\n          <div class=\"color-picker-initial-color\"></div>\n          <div class=\"color-picker-current-color\"></div>\n        </div>\n      </div>\n    ";
+    },
+    init: function init(self) {
+      function handleInitialColorClick() {
+        if (self.initialValue) {
+          var ref = self.initialValue;
+          var hex = ref.hex;
+          var alpha = ref.alpha;
+          self.setValue({
+            hex: hex,
+            alpha: alpha,
+          });
+        }
+      }
+      self.$el.on('click', '.color-picker-initial-color', handleInitialColorClick);
+      self.destroyInitialCurrentEvents = function destroyInitialCurrentEvents() {
+        self.$el.off('click', '.color-picker-initial-color', handleInitialColorClick);
+      };
+    },
+    update: function update(self) {
+      self.$el.find('.color-picker-module-initial-current-colors .color-picker-initial-color').css(
+        'background-color',
+        self.initialValue.hex
+      );
+      self.$el.find('.color-picker-module-initial-current-colors .color-picker-current-color').css(
+        'background-color',
+        self.value.hex
+      );
+    },
+    destroy: function destroy(self) {
+      if (self.destroyInitialCurrentEvents) {
+        self.destroyInitialCurrentEvents();
+      }
+      delete self.destroyInitialCurrentEvents;
+    },
+  };
+
+  var moduleRgbBars = {
+    render: function render(self) {
+      var ref = self.params;
+      var barLabel = ref.barLabel;
+      var barValue = ref.barValue;
+      var barValueEditable = ref.barValueEditable;
+      var redLabelText = ref.redLabelText;
+      var greenLabelText = ref.greenLabelText;
+      var blueLabelText = ref.blueLabelText;
+      return ("\n      <div class=\"color-picker-module color-picker-module-rgb-bars\">\n        <div class=\"color-picker-bar-wrap\">\n          " + (barLabel ? ("\n            <div class=\"color-picker-bar-label\">" + redLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-bar color-picker-bar-red\"></div>\n          " + (barValue ? ("\n            <div class=\"color-picker-bar-value\">\n              " + (barValueEditable ? "\n                <input type=\"number\" step=\"1\" min=\"0\" max=\"255\" class=\"color-picker-value-bar-red\" data-color-index=\"0\">\n              " : "\n                <span class=\"color-picker-value-bar-red\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n        <div class=\"color-picker-bar-wrap\">\n          " + (barLabel ? ("\n            <div class=\"color-picker-bar-label\">" + greenLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-bar color-picker-bar-green\"></div>\n          " + (barValue ? ("\n            <div class=\"color-picker-bar-value\">\n              " + (barValueEditable ? "\n                <input type=\"number\" step=\"1\" min=\"0\" max=\"255\" class=\"color-picker-value-bar-green\" data-color-index=\"1\">\n              " : "\n                <span class=\"color-picker-value-bar-green\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n        <div class=\"color-picker-bar-wrap\">\n          " + (barLabel ? ("\n            <div class=\"color-picker-bar-label\">" + blueLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-bar color-picker-bar-blue\"></div>\n          " + (barValue ? ("\n            <div class=\"color-picker-bar-value\">\n              " + (barValueEditable ? "\n                <input type=\"number\" step=\"1\" min=\"0\" max=\"255\" class=\"color-picker-value-bar-blue\" data-color-index=\"2\">\n              " : "\n                <span class=\"color-picker-value-bar-blue\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n      </div>\n    ");
+    },
+    init: function init(self) {
+      self.redBar = self.app.range.create({
+        el: self.$el.find('.color-picker-bar-red'),
+        min: 0,
+        max: 255,
+        step: 1,
+        value: 0,
+        vertical: true,
+        on: {
+          change: function change(range, value) {
+            self.setValue({ rgb: [value, self.value.rgb[1], self.value.rgb[2]] });
+          },
+        },
+      });
+      self.greenBar = self.app.range.create({
+        el: self.$el.find('.color-picker-bar-green'),
+        min: 0,
+        max: 255,
+        step: 1,
+        value: 0,
+        vertical: true,
+        on: {
+          change: function change(range, value) {
+            self.setValue({ rgb: [self.value.rgb[0], value, self.value.rgb[2]] });
+          },
+        },
+      });
+      self.blueBar = self.app.range.create({
+        el: self.$el.find('.color-picker-bar-blue'),
+        min: 0,
+        max: 255,
+        step: 1,
+        value: 0,
+        vertical: true,
+        on: {
+          change: function change(range, value) {
+            self.setValue({ rgb: [self.value.rgb[0], self.value.rgb[1], value] });
+          },
+        },
+      });
+
+      function handleInputChange(e) {
+        var rgb = [].concat( self.value.rgb );
+        var index = parseInt($(e.target).attr('data-color-index'), 10);
+        var value = parseInt(e.target.value, 10);
+        if (Number.isNaN(value)) {
+          e.target.value = rgb[index];
+          return;
+        }
+        value = Math.max(0, Math.min(255, value));
+        rgb[index] = value;
+        self.setValue({ rgb: rgb });
+      }
+
+      self.$el.on('change', '.color-picker-module-rgb-bars input', handleInputChange);
+
+      self.destroyRgbBarsEvents = function destroyRgbBarsEvents() {
+        self.$el.off('change', '.color-picker-module-rgb-bars input', handleInputChange);
+      };
+    },
+    update: function update(self) {
+      var value = self.value;
+      var redBar = self.redBar;
+      var greenBar = self.greenBar;
+      var blueBar = self.blueBar;
+
+      var ref = self.params;
+      var barValue = ref.barValue;
+      var barValueEditable = ref.barValueEditable;
+
+      var rgb = value.rgb;
+
+      redBar.value = rgb[0];
+      greenBar.value = rgb[1];
+      blueBar.value = rgb[2];
+
+      redBar.layout();
+      greenBar.layout();
+      blueBar.layout();
+
+      redBar.$el.find('.range-bar').css('background-image', ("linear-gradient(to top, rgb(0, " + (rgb[1]) + ", " + (rgb[2]) + "), rgb(255, " + (rgb[1]) + ", " + (rgb[2]) + "))"));
+      greenBar.$el.find('.range-bar').css('background-image', ("linear-gradient(to top, rgb(" + (rgb[0]) + ", 0, " + (rgb[2]) + "), rgb(" + (rgb[0]) + ", 255, " + (rgb[2]) + "))"));
+      blueBar.$el.find('.range-bar').css('background-image', ("linear-gradient(to top, rgb(" + (rgb[0]) + ", " + (rgb[1]) + ", 0), rgb(" + (rgb[0]) + ", " + (rgb[1]) + ", 255))"));
+
+      if (barValue && barValueEditable) {
+        self.$el.find('input.color-picker-value-bar-red').val(rgb[0]);
+        self.$el.find('input.color-picker-value-bar-green').val(rgb[1]);
+        self.$el.find('input.color-picker-value-bar-blue').val(rgb[2]);
+      } else if (barValue) {
+        self.$el.find('span.color-picker-value-bar-red').text(rgb[0]);
+        self.$el.find('span.color-picker-value-bar-green').text(rgb[1]);
+        self.$el.find('span.color-picker-value-bar-blue').text(rgb[2]);
+      }
+    },
+    destroy: function destroy(self) {
+      if (self.redBar && self.redBar.destroy) {
+        self.redBar.destroy();
+      }
+      if (self.greenBar && self.greenBar.destroy) {
+        self.greenBar.destroy();
+      }
+      if (self.blueBar && self.blueBar.destroy) {
+        self.blueBar.destroy();
+      }
+
+      delete self.redBar;
+      delete self.greenBar;
+      delete self.blueBar;
+
+      if (self.destroyRgbBarsEvents) { self.destroyRgbBarsEvents(); }
+      delete self.destroyRgbBarsEvents;
+    },
+  };
+
+  var moduleRgbSliders = {
+    render: function render(self) {
+      var ref = self.params;
+      var sliderLabel = ref.sliderLabel;
+      var sliderValue = ref.sliderValue;
+      var sliderValueEditable = ref.sliderValueEditable;
+      var redLabelText = ref.redLabelText;
+      var greenLabelText = ref.greenLabelText;
+      var blueLabelText = ref.blueLabelText;
+      return ("\n      <div class=\"color-picker-module color-picker-module-rgb-sliders\">\n        <div class=\"color-picker-slider-wrap\">\n          " + (sliderLabel ? ("\n            <div class=\"color-picker-slider-label\">" + redLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-slider color-picker-slider-red\"></div>\n          " + (sliderValue ? ("\n            <div class=\"color-picker-slider-value\">\n              " + (sliderValueEditable ? "\n                <input type=\"number\" step=\"1\" min=\"0\" max=\"255\" class=\"color-picker-value-red\" data-color-index=\"0\">\n              " : "\n                <span class=\"color-picker-value-red\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n        <div class=\"color-picker-slider-wrap\">\n          " + (sliderLabel ? ("\n            <div class=\"color-picker-slider-label\">" + greenLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-slider color-picker-slider-green\"></div>\n          " + (sliderValue ? ("\n            <div class=\"color-picker-slider-value\">\n              " + (sliderValueEditable ? "\n                <input type=\"number\" step=\"1\" min=\"0\" max=\"255\" class=\"color-picker-value-green\" data-color-index=\"1\">\n              " : "\n                <span class=\"color-picker-value-green\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n        <div class=\"color-picker-slider-wrap\">\n          " + (sliderLabel ? ("\n            <div class=\"color-picker-slider-label\">" + blueLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-slider color-picker-slider-blue\"></div>\n          " + (sliderValue ? ("\n            <div class=\"color-picker-slider-value\">\n              " + (sliderValueEditable ? "\n                <input type=\"number\" step=\"1\" min=\"0\" max=\"255\" class=\"color-picker-value-blue\" data-color-index=\"2\">\n              " : "\n                <span class=\"color-picker-value-blue\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n      </div>\n    ");
+    },
+    init: function init(self) {
+      self.redRangeSlider = self.app.range.create({
+        el: self.$el.find('.color-picker-slider-red'),
+        min: 0,
+        max: 255,
+        step: 1,
+        value: 0,
+        on: {
+          change: function change(range, value) {
+            self.setValue({ rgb: [value, self.value.rgb[1], self.value.rgb[2]] });
+          },
+        },
+      });
+      self.greenRangeSlider = self.app.range.create({
+        el: self.$el.find('.color-picker-slider-green'),
+        min: 0,
+        max: 255,
+        step: 1,
+        value: 0,
+        on: {
+          change: function change(range, value) {
+            self.setValue({ rgb: [self.value.rgb[0], value, self.value.rgb[2]] });
+          },
+        },
+      });
+      self.blueRangeSlider = self.app.range.create({
+        el: self.$el.find('.color-picker-slider-blue'),
+        min: 0,
+        max: 255,
+        step: 1,
+        value: 0,
+        on: {
+          change: function change(range, value) {
+            self.setValue({ rgb: [self.value.rgb[0], self.value.rgb[1], value] });
+          },
+        },
+      });
+
+      function handleInputChange(e) {
+        var rgb = [].concat( self.value.rgb );
+        var index = parseInt($(e.target).attr('data-color-index'), 10);
+        var value = parseInt(e.target.value, 10);
+        if (Number.isNaN(value)) {
+          e.target.value = rgb[index];
+          return;
+        }
+        value = Math.max(0, Math.min(255, value));
+        rgb[index] = value;
+        self.setValue({ rgb: rgb });
+      }
+
+      self.$el.on('change', '.color-picker-module-rgb-sliders input', handleInputChange);
+
+      self.destroyRgbSlidersEvents = function destroyRgbSlidersEvents() {
+        self.$el.off('change', '.color-picker-module-rgb-sliders input', handleInputChange);
+      };
+    },
+    update: function update(self) {
+      var app = self.app;
+      var value = self.value;
+      var redRangeSlider = self.redRangeSlider;
+      var greenRangeSlider = self.greenRangeSlider;
+      var blueRangeSlider = self.blueRangeSlider;
+
+      var ref = self.params;
+      var sliderValue = ref.sliderValue;
+      var sliderValueEditable = ref.sliderValueEditable;
+
+      var rgb = value.rgb;
+
+      redRangeSlider.value = rgb[0];
+      greenRangeSlider.value = rgb[1];
+      blueRangeSlider.value = rgb[2];
+
+      redRangeSlider.layout();
+      greenRangeSlider.layout();
+      blueRangeSlider.layout();
+
+      redRangeSlider.$el[0].style.setProperty('--f7-range-knob-color', ("rgb(" + (rgb[0]) + ", " + (rgb[1]) + ", " + (rgb[2]) + ")"));
+      greenRangeSlider.$el[0].style.setProperty('--f7-range-knob-color', ("rgb(" + (rgb[0]) + ", " + (rgb[1]) + ", " + (rgb[2]) + ")"));
+      blueRangeSlider.$el[0].style.setProperty('--f7-range-knob-color', ("rgb(" + (rgb[0]) + ", " + (rgb[1]) + ", " + (rgb[2]) + ")"));
+
+      var direction = app.rtl ? 'to left' : 'to right';
+
+      redRangeSlider.$el.find('.range-bar').css('background-image', ("linear-gradient(" + direction + ", rgb(0, " + (rgb[1]) + ", " + (rgb[2]) + "), rgb(255, " + (rgb[1]) + ", " + (rgb[2]) + "))"));
+      greenRangeSlider.$el.find('.range-bar').css('background-image', ("linear-gradient(" + direction + ", rgb(" + (rgb[0]) + ", 0, " + (rgb[2]) + "), rgb(" + (rgb[0]) + ", 255, " + (rgb[2]) + "))"));
+      blueRangeSlider.$el.find('.range-bar').css('background-image', ("linear-gradient(" + direction + ", rgb(" + (rgb[0]) + ", " + (rgb[1]) + ", 0), rgb(" + (rgb[0]) + ", " + (rgb[1]) + ", 255))"));
+
+      if (sliderValue && sliderValueEditable) {
+        self.$el.find('input.color-picker-value-red').val(rgb[0]);
+        self.$el.find('input.color-picker-value-green').val(rgb[1]);
+        self.$el.find('input.color-picker-value-blue').val(rgb[2]);
+      } else if (sliderValue) {
+        self.$el.find('span.color-picker-value-red').text(rgb[0]);
+        self.$el.find('span.color-picker-value-green').text(rgb[1]);
+        self.$el.find('span.color-picker-value-blue').text(rgb[2]);
+      }
+    },
+    destroy: function destroy(self) {
+      if (self.redRangeSlider && self.redRangeSlider.destroy) {
+        self.redRangeSlider.destroy();
+      }
+      if (self.greenRangeSlider && self.greenRangeSlider.destroy) {
+        self.greenRangeSlider.destroy();
+      }
+      if (self.blueRangeSlider && self.blueRangeSlider.destroy) {
+        self.blueRangeSlider.destroy();
+      }
+
+      delete self.redRangeSlider;
+      delete self.greenRangeSlider;
+      delete self.blueRangeSlider;
+
+      if (self.destroyRgbSlidersEvents) { self.destroyRgbSlidersEvents(); }
+      delete self.destroyRgbSlidersEvents;
+    },
+  };
+
+  var moduleSbSpectrum = {
+    render: function render() {
+      return "\n      <div class=\"color-picker-module color-picker-module-sb-spectrum\">\n        <div class=\"color-picker-sb-spectrum\" style=\"background-color: hsl(0, 100%, 50%)\">\n          <div class=\"color-picker-sb-spectrum-handle\"></div>\n        </div>\n      </div>\n    ";
+    },
+    init: function init(self) {
+      var app = self.app;
+
+      var isTouched;
+      var isMoved;
+      var touchStartX;
+      var touchStartY;
+      var touchCurrentX;
+      var touchCurrentY;
+
+      var specterRect;
+      var specterIsTouched;
+      var specterHandleIsTouched;
+
+      var $el = self.$el;
+
+      function setSBFromSpecterCoords(x, y) {
+        var s = (x - specterRect.left) / specterRect.width;
+        var b = (y - specterRect.top) / specterRect.height;
+        s = Math.max(0, Math.min(1, s));
+        b = 1 - Math.max(0, Math.min(1, b));
+
+        self.setValue({ hsb: [self.value.hue, s, b] });
+      }
+
+      function handleTouchStart(e) {
+        if (isMoved || isTouched) { return; }
+        touchStartX = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
+        touchCurrentX = touchStartX;
+        touchStartY = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+        touchCurrentY = touchStartY;
+        var $targetEl = $(e.target);
+        specterHandleIsTouched = $targetEl.closest('.color-picker-sb-spectrum-handle').length > 0;
+        if (!specterHandleIsTouched) {
+          specterIsTouched = $targetEl.closest('.color-picker-sb-spectrum').length > 0;
+        }
+        if (specterIsTouched) {
+          specterRect = $el.find('.color-picker-sb-spectrum')[0].getBoundingClientRect();
+          setSBFromSpecterCoords(touchStartX, touchStartY);
+        }
+        if (specterHandleIsTouched || specterIsTouched) {
+          $el.find('.color-picker-sb-spectrum-handle').addClass('color-picker-sb-spectrum-handle-pressed');
+        }
+      }
+      function handleTouchMove(e) {
+        if (!(specterIsTouched || specterHandleIsTouched)) { return; }
+        touchCurrentX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
+        touchCurrentY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+        e.preventDefault();
+        if (!isMoved) {
+          // First move
+          isMoved = true;
+          if (specterHandleIsTouched) {
+            specterRect = $el.find('.color-picker-sb-spectrum')[0].getBoundingClientRect();
+          }
+        }
+        if (specterIsTouched || specterHandleIsTouched) {
+          setSBFromSpecterCoords(touchCurrentX, touchCurrentY);
+        }
+      }
+      function handleTouchEnd() {
+        isMoved = false;
+        if (specterIsTouched || specterHandleIsTouched) {
+          $el.find('.color-picker-sb-spectrum-handle').removeClass('color-picker-sb-spectrum-handle-pressed');
+        }
+        specterIsTouched = false;
+        specterHandleIsTouched = false;
+      }
+
+      function handleResize() {
+        self.modules['sb-spectrum'].update(self);
+      }
+
+      var passiveListener = app.touchEvents.start === 'touchstart' && app.support.passiveListener ? { passive: true, capture: false } : false;
+
+      self.$el.on(app.touchEvents.start, handleTouchStart, passiveListener);
+      app.on('touchmove:active', handleTouchMove);
+      app.on('touchend:passive', handleTouchEnd);
+      app.on('resize', handleResize);
+
+      self.destroySpectrumEvents = function destroySpectrumEvents() {
+        self.$el.off(app.touchEvents.start, handleTouchStart, passiveListener);
+        app.off('touchmove:active', handleTouchMove);
+        app.off('touchend:passive', handleTouchEnd);
+        app.off('resize', handleResize);
+      };
+    },
+    update: function update(self) {
+      var value = self.value;
+
+      var hsl = value.hsl;
+      var hsb = value.hsb;
+
+      var specterWidth = self.$el.find('.color-picker-sb-spectrum')[0].offsetWidth;
+      var specterHeight = self.$el.find('.color-picker-sb-spectrum')[0].offsetHeight;
+
+      self.$el.find('.color-picker-sb-spectrum')
+        .css('background-color', ("hsl(" + (hsl[0]) + ", 100%, 50%)"));
+
+      self.$el.find('.color-picker-sb-spectrum-handle')
+        .css('background-color', ("hsl(" + (hsl[0]) + ", " + (hsl[1] * 100) + "%, " + (hsl[2] * 100) + "%)"))
+        .transform(("translate(" + (specterWidth * hsb[1]) + "px, " + (specterHeight * (1 - hsb[2])) + "px)"));
+    },
+    destroy: function destroy(self) {
+      if (self.destroySpectrumEvents) { self.destroySpectrumEvents(); }
+      delete self.destroySpectrumEvents;
+    },
+  };
+
+  function svgWheelCircles() {
+    var total = 256;
+    var circles = '';
+    for (var i = total; i > 0; i -= 1) {
+      var angle = i * Math.PI / (total / 2);
+      var hue = 360 / total * i;
+      circles += "<circle cx=\"" + (150 - Math.sin(angle) * 125) + "\" cy=\"" + (150 - Math.cos(angle) * 125) + "\" r=\"25\" fill=\"hsl(" + hue + ", 100%, 50%)\"></circle>";
+    }
+    return circles;
+  }
+  var moduleWheel = {
+    render: function render() {
+      return ("\n      <div class=\"color-picker-module color-picker-module-wheel\">\n        <div class=\"color-picker-wheel\">\n          <svg viewBox=\"0 0 300 300\" width=\"300\" height=\"300\">" + (svgWheelCircles()) + "</svg>\n          <div class=\"color-picker-wheel-handle\"></div>\n          <div class=\"color-picker-sb-spectrum\" style=\"background-color: hsl(0, 100%, 50%)\">\n            <div class=\"color-picker-sb-spectrum-handle\"></div>\n          </div>\n        </div>\n      </div>\n    ");
+    },
+    init: function init(self) {
+      var app = self.app;
+
+      var isTouched;
+      var isMoved;
+      var touchStartX;
+      var touchStartY;
+      var touchCurrentX;
+      var touchCurrentY;
+
+      var wheelRect;
+      var wheelIsTouched;
+      var wheelHandleIsTouched;
+      var specterRect;
+      var specterIsTouched;
+      var specterHandleIsTouched;
+
+      var $el = self.$el;
+
+      function setHueFromWheelCoords(x, y) {
+        var wheelCenterX = wheelRect.left + wheelRect.width / 2;
+        var wheelCenterY = wheelRect.top + wheelRect.height / 2;
+        var angleRad = Math.atan2(y - wheelCenterY, x - wheelCenterX);
+        var angleDeg = angleRad * 180 / Math.PI + 90;
+        if (angleDeg < 0) { angleDeg += 360; }
+        angleDeg = 360 - angleDeg;
+        self.setValue({ hue: angleDeg });
+      }
+      function setSBFromSpecterCoords(x, y) {
+        var s = (x - specterRect.left) / specterRect.width;
+        var b = (y - specterRect.top) / specterRect.height;
+        s = Math.max(0, Math.min(1, s));
+        b = 1 - Math.max(0, Math.min(1, b));
+
+        self.setValue({ hsb: [self.value.hue, s, b] });
+      }
+
+      function handleTouchStart(e) {
+        if (isMoved || isTouched) { return; }
+        touchStartX = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
+        touchCurrentX = touchStartX;
+        touchStartY = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+        touchCurrentY = touchStartY;
+        var $targetEl = $(e.target);
+        wheelHandleIsTouched = $targetEl.closest('.color-picker-wheel-handle').length > 0;
+        wheelIsTouched = $targetEl.closest('circle').length > 0;
+        specterHandleIsTouched = $targetEl.closest('.color-picker-sb-spectrum-handle').length > 0;
+        if (!specterHandleIsTouched) {
+          specterIsTouched = $targetEl.closest('.color-picker-sb-spectrum').length > 0;
+        }
+        if (wheelIsTouched) {
+          wheelRect = $el.find('.color-picker-wheel')[0].getBoundingClientRect();
+          setHueFromWheelCoords(touchStartX, touchStartY);
+        }
+        if (specterIsTouched) {
+          specterRect = $el.find('.color-picker-sb-spectrum')[0].getBoundingClientRect();
+          setSBFromSpecterCoords(touchStartX, touchStartY);
+        }
+        if (specterHandleIsTouched || specterIsTouched) {
+          $el.find('.color-picker-sb-spectrum-handle').addClass('color-picker-sb-spectrum-handle-pressed');
+        }
+      }
+      function handleTouchMove(e) {
+        if (!(wheelIsTouched || wheelHandleIsTouched) && !(specterIsTouched || specterHandleIsTouched)) { return; }
+        touchCurrentX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
+        touchCurrentY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+        e.preventDefault();
+        if (!isMoved) {
+          // First move
+          isMoved = true;
+          if (wheelHandleIsTouched) {
+            wheelRect = $el.find('.color-picker-wheel')[0].getBoundingClientRect();
+          }
+          if (specterHandleIsTouched) {
+            specterRect = $el.find('.color-picker-sb-spectrum')[0].getBoundingClientRect();
+          }
+        }
+        if (wheelIsTouched || wheelHandleIsTouched) {
+          setHueFromWheelCoords(touchCurrentX, touchCurrentY);
+        }
+        if (specterIsTouched || specterHandleIsTouched) {
+          setSBFromSpecterCoords(touchCurrentX, touchCurrentY);
+        }
+      }
+      function handleTouchEnd() {
+        isMoved = false;
+        if (specterIsTouched || specterHandleIsTouched) {
+          $el.find('.color-picker-sb-spectrum-handle').removeClass('color-picker-sb-spectrum-handle-pressed');
+        }
+        wheelIsTouched = false;
+        wheelHandleIsTouched = false;
+        specterIsTouched = false;
+        specterHandleIsTouched = false;
+      }
+
+      function handleResize() {
+        self.modules.wheel.update(self);
+      }
+
+      var passiveListener = app.touchEvents.start === 'touchstart' && app.support.passiveListener ? { passive: true, capture: false } : false;
+
+      self.$el.on(app.touchEvents.start, handleTouchStart, passiveListener);
+      app.on('touchmove:active', handleTouchMove);
+      app.on('touchend:passive', handleTouchEnd);
+      app.on('resize', handleResize);
+
+      self.destroyWheelEvents = function destroyWheelEvents() {
+        self.$el.off(app.touchEvents.start, handleTouchStart, passiveListener);
+        app.off('touchmove:active', handleTouchMove);
+        app.off('touchend:passive', handleTouchEnd);
+        app.off('resize', handleResize);
+      };
+    },
+    update: function update(self) {
+      var value = self.value;
+
+      var hsl = value.hsl;
+      var hsb = value.hsb;
+
+      var specterWidth = self.$el.find('.color-picker-sb-spectrum')[0].offsetWidth;
+      var specterHeight = self.$el.find('.color-picker-sb-spectrum')[0].offsetHeight;
+      var wheelSize = self.$el.find('.color-picker-wheel')[0].offsetWidth;
+      var wheelHalfSize = wheelSize / 2;
+      var angleRad = value.hue * Math.PI / 180;
+      var handleSize = wheelSize / 6;
+      var handleHalfSize = handleSize / 2;
+      var tX = wheelHalfSize - Math.sin(angleRad) * (wheelHalfSize - handleHalfSize) - handleHalfSize;
+      var tY = wheelHalfSize - Math.cos(angleRad) * (wheelHalfSize - handleHalfSize) - handleHalfSize;
+      self.$el.find('.color-picker-wheel-handle')
+        .css('background-color', ("hsl(" + (hsl[0]) + ", 100%, 50%)"))
+        .transform(("translate(" + tX + "px, " + tY + "px)"));
+
+      self.$el.find('.color-picker-sb-spectrum')
+        .css('background-color', ("hsl(" + (hsl[0]) + ", 100%, 50%)"));
+
+      self.$el.find('.color-picker-sb-spectrum-handle')
+        .css('background-color', ("hsl(" + (hsl[0]) + ", " + (hsl[1] * 100) + "%, " + (hsl[2] * 100) + "%)"))
+        .transform(("translate(" + (specterWidth * hsb[1]) + "px, " + (specterHeight * (1 - hsb[2])) + "px)"));
+    },
+    destroy: function destroy(self) {
+      if (self.destroyWheelEvents) { self.destroyWheelEvents(); }
+      delete self.destroyWheelEvents;
+    },
+  };
+
+  var ColorPicker = /*@__PURE__*/(function (Framework7Class) {
+    function ColorPicker(app, params) {
+      if ( params === void 0 ) params = {};
+
+      Framework7Class.call(this, params, [app]);
+      var self = this;
+
+      self.params = Utils.extend({}, app.params.colorPicker, params);
+
+      var $containerEl;
+      if (self.params.containerEl) {
+        $containerEl = $(self.params.containerEl);
+        if ($containerEl.length === 0) { return self; }
+      }
+
+      var $inputEl;
+      if (self.params.inputEl) {
+        $inputEl = $(self.params.inputEl);
+      }
+
+      var $targetEl;
+      if (self.params.targetEl) {
+        $targetEl = $(self.params.targetEl);
+      }
+
+      var view;
+      if ($inputEl) {
+        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+      }
+      if (!view && $targetEl) {
+        view = $targetEl.parents('.view').length && $targetEl.parents('.view')[0].f7View;
+      }
+      if (!view) { view = app.views.main; }
+
+      Utils.extend(self, {
+        app: app,
+        $containerEl: $containerEl,
+        containerEl: $containerEl && $containerEl[0],
+        inline: $containerEl && $containerEl.length > 0,
+        $inputEl: $inputEl,
+        inputEl: $inputEl && $inputEl[0],
+        $targetEl: $targetEl,
+        targetEl: $targetEl && $targetEl[0],
+        initialized: false,
+        opened: false,
+        url: self.params.url,
+        view: view,
+        modules: {
+          'alpha-slider': moduleAlphaSlider,
+          'current-color': moduleCurrentColor,
+          'hex': moduleHex, // eslint-disable-line
+          'hsb-sliders': moduleHsbSliders,
+          'hue-slider': moduleHueSlider,
+          'palette': modulePalette, // eslint-disable-line
+          'initial-current-colors': moduleInitialCurrentColors,
+          'rgb-bars': moduleRgbBars,
+          'rgb-sliders': moduleRgbSliders,
+          'sb-spectrum': moduleSbSpectrum,
+          'wheel': moduleWheel, // eslint-disable-line
+        },
+      });
+
+      function onInputClick() {
+        self.open();
+      }
+      function onInputFocus(e) {
+        e.preventDefault();
+      }
+      function onTargetClick() {
+        self.open();
+      }
+      function onHtmlClick(e) {
+        if (self.params.openIn === 'page') { return; }
+        var $clickTargetEl = $(e.target);
+        if (!self.opened || self.closing) { return; }
+        if ($clickTargetEl.closest('[class*="backdrop"]').length) { return; }
+        if ($clickTargetEl.closest('.color-picker-popup, .color-picker-popover').length) { return; }
+        if ($inputEl && $inputEl.length > 0) {
+          if ($clickTargetEl[0] !== $inputEl[0] && $clickTargetEl.closest('.sheet-modal').length === 0) {
+            self.close();
+          }
+        } else if ($(e.target).closest('.sheet-modal').length === 0) {
+          self.close();
+        }
+      }
+
+      // Events
+      Utils.extend(self, {
+        attachInputEvents: function attachInputEvents() {
+          self.$inputEl.on('click', onInputClick);
+          if (self.params.inputReadOnly) {
+            self.$inputEl.on('focus mousedown', onInputFocus);
+          }
+        },
+        detachInputEvents: function detachInputEvents() {
+          self.$inputEl.off('click', onInputClick);
+          if (self.params.inputReadOnly) {
+            self.$inputEl.off('focus mousedown', onInputFocus);
+          }
+        },
+        attachTargetEvents: function attachTargetEvents() {
+          self.$targetEl.on('click', onTargetClick);
+        },
+        detachTargetEvents: function detachTargetEvents() {
+          self.$targetEl.off('click', onTargetClick);
+        },
+        attachHtmlEvents: function attachHtmlEvents() {
+          app.on('click', onHtmlClick);
+        },
+        detachHtmlEvents: function detachHtmlEvents() {
+          app.off('click', onHtmlClick);
+        },
+      });
+
+      self.init();
+
+      return self;
+    }
+
+    if ( Framework7Class ) ColorPicker.__proto__ = Framework7Class;
+    ColorPicker.prototype = Object.create( Framework7Class && Framework7Class.prototype );
+    ColorPicker.prototype.constructor = ColorPicker;
+
+    ColorPicker.prototype.attachEvents = function attachEvents () {
+      var self = this;
+      self.centerModules = self.centerModules.bind(self);
+      if (self.params.centerModules) {
+        self.app.on('resize', self.centerModules);
+      }
+    };
+
+    ColorPicker.prototype.detachEvents = function detachEvents () {
+      var self = this;
+      if (self.params.centerModules) {
+        self.app.off('resize', self.centerModules);
+      }
+    };
+
+    ColorPicker.prototype.centerModules = function centerModules () {
+      var self = this;
+      if (!self.opened || !self.$el || self.inline) { return; }
+      var $pageContentEl = self.$el.find('.page-content');
+      if (!$pageContentEl.length) { return; }
+      var ref = $pageContentEl[0];
+      var scrollHeight = ref.scrollHeight;
+      var offsetHeight = ref.offsetHeight;
+      if (scrollHeight <= offsetHeight) {
+        $pageContentEl.addClass('justify-content-center');
+      } else {
+        $pageContentEl.removeClass('justify-content-center');
+      }
+    };
+
+    ColorPicker.prototype.initInput = function initInput () {
+      var self = this;
+      if (!self.$inputEl) { return; }
+      if (self.params.inputReadOnly) { self.$inputEl.prop('readOnly', true); }
+    };
+
+    ColorPicker.prototype.getModalType = function getModalType () {
+      var self = this;
+      var app = self.app;
+      var modal = self.modal;
+      var params = self.params;
+      var openIn = params.openIn;
+      var openInPhone = params.openInPhone;
+      if (modal && modal.type) { return modal.type; }
+      if (openIn !== 'auto') { return openIn; }
+      if (self.inline) { return null; }
+      if (app.device.ios) {
+        return app.device.ipad ? 'popover' : openInPhone;
+      }
+      if (app.width >= 768 || (app.device.desktop && app.theme === 'aurora')) {
+        return 'popover';
+      }
+
+      return openInPhone;
+    };
+
+    ColorPicker.prototype.formatValue = function formatValue () {
+      var self = this;
+      var value = self.value;
+      if (self.params.formatValue) {
+        return self.params.formatValue.call(self, value);
+      }
+      return value.hex;
+    };
+
+    // eslint-disable-next-line
+    ColorPicker.prototype.normalizeHsValues = function normalizeHsValues (arr) {
+      return [
+        Math.floor(arr[0] * 10) / 10,
+        Math.floor(arr[1] * 1000) / 1000,
+        Math.floor(arr[2] * 1000) / 1000 ];
+    };
+
+    ColorPicker.prototype.setValue = function setValue (value, updateModules) {
+      if ( value === void 0 ) value = {};
+      if ( updateModules === void 0 ) updateModules = true;
+
+      var self = this;
+      if (typeof value === 'undefined') { return; }
+
+      var ref = (self.value || {});
+      var hex = ref.hex;
+      var rgb = ref.rgb;
+      var hsl = ref.hsl;
+      var hsb = ref.hsb;
+      var alpha = ref.alpha; if ( alpha === void 0 ) alpha = 1;
+      var hue = ref.hue;
+      var rgba = ref.rgba;
+      var hsla = ref.hsla;
+
+      var needChangeEvent = self.value || (!self.value && !self.params.value);
+      var valueChanged;
+      Object.keys(value).forEach(function (k) {
+        if (!self.value || typeof self.value[k] === 'undefined') {
+          valueChanged = true;
+          return;
+        }
+        var v = value[k];
+        if (Array.isArray(v)) {
+          v.forEach(function (subV, subIndex) {
+            if (subV !== self.value[k][subIndex]) {
+              valueChanged = true;
+            }
+          });
+        } else if (v !== self.value[k]) {
+          valueChanged = true;
+        }
+      });
+      if (!valueChanged) { return; }
+
+      if (value.rgb || value.rgba) {
+        var ref$1 = (value.rgb || value.rgba);
+        var r = ref$1[0];
+        var g = ref$1[1];
+        var b = ref$1[2];
+        var a = ref$1[3]; if ( a === void 0 ) a = alpha;
+        rgb = [r, g, b];
+        hex = Utils.colorRgbToHex.apply(Utils, rgb);
+        hsl = Utils.colorRgbToHsl.apply(Utils, rgb);
+        hsb = Utils.colorHslToHsb.apply(Utils, hsl);
+        hsl = self.normalizeHsValues(hsl);
+        hsb = self.normalizeHsValues(hsb);
+        hue = hsb[0];
+        alpha = a;
+        rgba = [rgb[0], rgb[1], rgb[2], a];
+        hsla = [hsl[0], hsl[1], hsl[2], a];
+      }
+
+      if (value.hsl || value.hsla) {
+        var ref$2 = (value.hsl || value.hsla);
+        var h = ref$2[0];
+        var s = ref$2[1];
+        var l = ref$2[2];
+        var a$1 = ref$2[3]; if ( a$1 === void 0 ) a$1 = alpha;
+        hsl = [h, s, l];
+        rgb = Utils.colorHslToRgb.apply(Utils, hsl);
+        hex = Utils.colorRgbToHex.apply(Utils, rgb);
+        hsb = Utils.colorHslToHsb.apply(Utils, hsl);
+        hsl = self.normalizeHsValues(hsl);
+        hsb = self.normalizeHsValues(hsb);
+        hue = hsb[0];
+        alpha = a$1;
+        rgba = [rgb[0], rgb[1], rgb[2], a$1];
+        hsla = [hsl[0], hsl[1], hsl[2], a$1];
+      }
+
+      if (value.hsb) {
+        var ref$3 = value.hsb;
+        var h$1 = ref$3[0];
+        var s$1 = ref$3[1];
+        var b$1 = ref$3[2];
+        var a$2 = ref$3[3]; if ( a$2 === void 0 ) a$2 = alpha;
+        hsb = [h$1, s$1, b$1];
+        hsl = Utils.colorHsbToHsl.apply(Utils, hsb);
+        rgb = Utils.colorHslToRgb.apply(Utils, hsl);
+        hex = Utils.colorRgbToHex.apply(Utils, rgb);
+        hsl = self.normalizeHsValues(hsl);
+        hsb = self.normalizeHsValues(hsb);
+        hue = hsb[0];
+        alpha = a$2;
+        rgba = [rgb[0], rgb[1], rgb[2], a$2];
+        hsla = [hsl[0], hsl[1], hsl[2], a$2];
+      }
+
+      if (value.hex) {
+        rgb = Utils.colorHexToRgb(value.hex);
+        hex = Utils.colorRgbToHex.apply(Utils, rgb);
+        hsl = Utils.colorRgbToHsl.apply(Utils, rgb);
+        hsb = Utils.colorHslToHsb.apply(Utils, hsl);
+        hsl = self.normalizeHsValues(hsl);
+        hsb = self.normalizeHsValues(hsb);
+        hue = hsb[0];
+        rgba = [rgb[0], rgb[1], rgb[2], alpha];
+        hsla = [hsl[0], hsl[1], hsl[2], alpha];
+      }
+
+      if (typeof value.alpha !== 'undefined') {
+        alpha = value.alpha;
+        if (typeof rgb !== 'undefined') {
+          rgba = [rgb[0], rgb[1], rgb[2], alpha];
+        }
+        if (typeof hsl !== 'undefined') {
+          hsla = [hsl[0], hsl[1], hsl[2], alpha];
+        }
+      }
+
+      if (typeof value.hue !== 'undefined') {
+        var h$2 = hsl[0];
+        var s$2 = hsl[1];
+        var l$1 = hsl[2]; // eslint-disable-line
+        hsl = [value.hue, s$2, l$1];
+        hsb = Utils.colorHslToHsb.apply(Utils, hsl);
+        rgb = Utils.colorHslToRgb.apply(Utils, hsl);
+        hex = Utils.colorRgbToHex.apply(Utils, rgb);
+        hsl = self.normalizeHsValues(hsl);
+        hsb = self.normalizeHsValues(hsb);
+        hue = hsb[0];
+        rgba = [rgb[0], rgb[1], rgb[2], alpha];
+        hsla = [hsl[0], hsl[1], hsl[2], alpha];
+      }
+      self.value = {
+        hex: hex,
+        alpha: alpha,
+        hue: hue,
+        rgb: rgb,
+        hsl: hsl,
+        hsb: hsb,
+        rgba: rgba,
+        hsla: hsla,
+      };
+      if (!self.initialValue) { self.initialValue = Utils.extend({}, self.value); }
+      self.updateValue(needChangeEvent);
+      if (self.opened && updateModules) {
+        self.updateModules();
+      }
+    };
+
+    ColorPicker.prototype.getValue = function getValue () {
+      var self = this;
+      return self.value;
+    };
+
+    ColorPicker.prototype.updateValue = function updateValue (fireEvents) {
+      if ( fireEvents === void 0 ) fireEvents = true;
+
+      var self = this;
+      var $inputEl = self.$inputEl;
+      var value = self.value;
+      var $targetEl = self.$targetEl;
+      if ($targetEl && self.params.targetElSetBackgroundColor) {
+        var rgba = value.rgba;
+        $targetEl.css('background-color', ("rgba(" + (rgba.join(', ')) + ")"));
+      }
+      if (fireEvents) {
+        self.emit('local::change colorPickerChange', self, value);
+      }
+
+      if ($inputEl && $inputEl.length) {
+        var inputValue = self.formatValue(value);
+        if ($inputEl && $inputEl.length) {
+          $inputEl.val(inputValue);
+          if (fireEvents) {
+            $inputEl.trigger('change');
+          }
+        }
+      }
+    };
+
+    ColorPicker.prototype.updateModules = function updateModules () {
+      var self = this;
+      var modules = self.modules;
+      self.params.modules.forEach(function (m) {
+        if (typeof m === 'string' && modules[m] && modules[m].update) {
+          modules[m].update(self);
+        } else if (m && m.update) {
+          m.update(self);
+        }
+      });
+    };
+
+    ColorPicker.prototype.update = function update () {
+      var self = this;
+      self.updateModules();
+    };
+
+    ColorPicker.prototype.renderPicker = function renderPicker () {
+      var self = this;
+      var params = self.params;
+      var modules = self.modules;
+      var html = '';
+
+      params.modules.forEach(function (m) {
+        if (typeof m === 'string' && modules[m] && modules[m].render) {
+          html += modules[m].render(self);
+        } else if (m && m.render) {
+          html += m.render(self);
+        }
+      });
+
+      return html;
+    };
+
+    ColorPicker.prototype.renderNavbar = function renderNavbar () {
+      var self = this;
+      if (self.params.renderNavbar) {
+        return self.params.renderNavbar.call(self, self);
+      }
+      var ref = self.params;
+      var openIn = ref.openIn;
+      var navbarTitleText = ref.navbarTitleText;
+      var navbarBackLinkText = ref.navbarBackLinkText;
+      var navbarCloseText = ref.navbarCloseText;
+      return ("\n    <div class=\"navbar\">\n      <div class=\"navbar-inner sliding\">\n        " + (openIn === 'page' ? ("\n        <div class=\"left\">\n          <a class=\"link back\">\n            <i class=\"icon icon-back\"></i>\n            <span class=\"if-not-md\">" + navbarBackLinkText + "</span>\n          </a>\n        </div>\n        ") : '') + "\n        <div class=\"title\">" + navbarTitleText + "</div>\n        " + (openIn !== 'page' ? ("\n        <div class=\"right\">\n          <a class=\"link popup-close\" data-popup=\".color-picker-popup\">" + navbarCloseText + "</a>\n        </div>\n        ") : '') + "\n      </div>\n    </div>\n  ").trim();
+    };
+
+    ColorPicker.prototype.renderToolbar = function renderToolbar () {
+      var self = this;
+      if (self.params.renderToolbar) {
+        return self.params.renderToolbar.call(self, self);
+      }
+      return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        <div class=\"left\"></div>\n        <div class=\"right\">\n          <a class=\"link sheet-close popover-close\" data-sheet=\".color-picker-sheet-modal\" data-popover=\".color-picker-popover\">" + (self.params.toolbarCloseText) + "</a>\n        </div>\n      </div>\n    </div>\n  ").trim();
+    };
+
+    ColorPicker.prototype.renderInline = function renderInline () {
+      var self = this;
+      var ref = self.params;
+      var cssClass = ref.cssClass;
+      var groupedModules = ref.groupedModules;
+      var inlineHtml = ("\n    <div class=\"color-picker color-picker-inline " + (groupedModules ? 'color-picker-grouped-modules' : '') + " " + (cssClass || '') + "\">\n      " + (self.renderPicker()) + "\n    </div>\n  ").trim();
+
+      return inlineHtml;
+    };
+
+    ColorPicker.prototype.renderSheet = function renderSheet () {
+      var self = this;
+      var ref = self.params;
+      var cssClass = ref.cssClass;
+      var toolbarSheet = ref.toolbarSheet;
+      var groupedModules = ref.groupedModules;
+      var sheetHtml = ("\n    <div class=\"sheet-modal color-picker color-picker-sheet-modal " + (groupedModules ? 'color-picker-grouped-modules' : '') + " " + (cssClass || '') + "\">\n      " + (toolbarSheet ? self.renderToolbar() : '') + "\n      <div class=\"sheet-modal-inner\">\n        <div class=\"page-content\">\n          " + (self.renderPicker()) + "\n        </div>\n      </div>\n    </div>\n  ").trim();
+
+      return sheetHtml;
+    };
+
+    ColorPicker.prototype.renderPopover = function renderPopover () {
+      var self = this;
+      var ref = self.params;
+      var cssClass = ref.cssClass;
+      var toolbarPopover = ref.toolbarPopover;
+      var groupedModules = ref.groupedModules;
+      var popoverHtml = ("\n    <div class=\"popover color-picker-popover " + (cssClass || '') + "\">\n      <div class=\"popover-inner\">\n        <div class=\"color-picker " + (groupedModules ? 'color-picker-grouped-modules' : '') + "\">\n          " + (toolbarPopover ? self.renderToolbar() : '') + "\n          <div class=\"page-content\">\n            " + (self.renderPicker()) + "\n          </div>\n        </div>\n      </div>\n    </div>\n  ").trim();
+
+      return popoverHtml;
+    };
+
+    ColorPicker.prototype.renderPopup = function renderPopup () {
+      var self = this;
+      var ref = self.params;
+      var cssClass = ref.cssClass;
+      var navbarPopup = ref.navbarPopup;
+      var groupedModules = ref.groupedModules;
+      var popupHtml = ("\n    <div class=\"popup color-picker-popup " + (cssClass || '') + "\">\n      <div class=\"page\">\n        " + (navbarPopup ? self.renderNavbar() : '') + "\n        <div class=\"color-picker " + (groupedModules ? 'color-picker-grouped-modules' : '') + "\">\n          <div class=\"page-content\">\n            " + (self.renderPicker()) + "\n          </div>\n        </div>\n      </div>\n    </div>\n  ").trim();
+
+      return popupHtml;
+    };
+
+    ColorPicker.prototype.renderPage = function renderPage () {
+      var self = this;
+      var ref = self.params;
+      var cssClass = ref.cssClass;
+      var groupedModules = ref.groupedModules;
+      var pageHtml = ("\n    <div class=\"page color-picker-page " + (cssClass || '') + "\" data-name=\"color-picker-page\">\n      " + (self.renderNavbar()) + "\n      <div class=\"color-picker " + (groupedModules ? 'color-picker-grouped-modules' : '') + "\">\n        <div class=\"page-content\">\n          " + (self.renderPicker()) + "\n        </div>\n      </div>\n    </div>\n  ").trim();
+      return pageHtml;
+    };
+
+    // eslint-disable-next-line
+    ColorPicker.prototype.render = function render () {
+      var self = this;
+      var params = self.params;
+      if (params.render) { return params.render.call(self); }
+      if (self.inline) { return self.renderInline(); }
+      if (params.openIn === 'page') {
+        return self.renderPage();
+      }
+
+      var modalType = self.getModalType();
+      if (modalType === 'popover') { return self.renderPopover(); }
+      if (modalType === 'sheet') { return self.renderSheet(); }
+      if (modalType === 'popup') { return self.renderPopup(); }
+    };
+
+    ColorPicker.prototype.onOpen = function onOpen () {
+      var self = this;
+      var initialized = self.initialized;
+      var $el = self.$el;
+      var app = self.app;
+      var $inputEl = self.$inputEl;
+      var inline = self.inline;
+      var value = self.value;
+      var params = self.params;
+      var modules = self.modules;
+      self.closing = false;
+      self.opened = true;
+      self.opening = true;
+
+      // Init main events
+      self.attachEvents();
+
+      params.modules.forEach(function (m) {
+        if (typeof m === 'string' && modules[m] && modules[m].render) {
+          modules[m].init(self);
+        } else if (m && m.init) {
+          m.init(self);
+        }
+      });
+
+      var updateValue = !value && params.value;
+
+      // Set value
+      if (!initialized) {
+        if (value) { self.setValue(value); }
+        else if (params.value) {
+          self.setValue(params.value, false);
+        } else if (!params.value) {
+          self.setValue({ hex: '#ff0000' }, false);
+        }
+      } else if (value) {
+        self.initialValue = Utils.extend({}, value);
+        self.setValue(value, false);
+      }
+
+      // Update input value
+      if (updateValue) { self.updateValue(); }
+      self.updateModules();
+
+      // Center modules
+      if (params.centerModules) {
+        self.centerModules();
+      }
+
+      // Extra focus
+      if (!inline && $inputEl && $inputEl.length && app.theme === 'md') {
+        $inputEl.trigger('focus');
+      }
+
+      self.initialized = true;
+
+      // Trigger events
+      if ($el) {
+        $el.trigger('colorpicker:open', self);
+      }
+      if ($inputEl) {
+        $inputEl.trigger('colorpicker:open', self);
+      }
+      self.emit('local::open colorPickerOpen', self);
+    };
+
+    ColorPicker.prototype.onOpened = function onOpened () {
+      var self = this;
+      self.opening = false;
+      if (self.$el) {
+        self.$el.trigger('colorpicker:opened', self);
+      }
+      if (self.$inputEl) {
+        self.$inputEl.trigger('colorpicker:opened', self);
+      }
+      self.emit('local::opened colorPickerOpened', self);
+    };
+
+    ColorPicker.prototype.onClose = function onClose () {
+      var self = this;
+      var app = self.app;
+      var params = self.params;
+      var modules = self.modules;
+      self.opening = false;
+      self.closing = true;
+
+      // Detach events
+      self.detachEvents();
+
+      if (self.$inputEl && app.theme === 'md') {
+        self.$inputEl.trigger('blur');
+      }
+      params.modules.forEach(function (m) {
+        if (typeof m === 'string' && modules[m] && modules[m].update) {
+          modules[m].destroy(self);
+        } else if (m && m.destroy) {
+          m.destroy(self);
+        }
+      });
+
+      if (self.$el) {
+        self.$el.trigger('colorpicker:close', self);
+      }
+      if (self.$inputEl) {
+        self.$inputEl.trigger('colorpicker:close', self);
+      }
+      self.emit('local::close colorPickerClose', self);
+    };
+
+    ColorPicker.prototype.onClosed = function onClosed () {
+      var self = this;
+      self.opened = false;
+      self.closing = false;
+
+      if (!self.inline) {
+        Utils.nextTick(function () {
+          if (self.modal && self.modal.el && self.modal.destroy) {
+            if (!self.params.routableModals) {
+              self.modal.destroy();
+            }
+          }
+          delete self.modal;
+        });
+      }
+      if (self.$el) {
+        self.$el.trigger('colorpicker:closed', self);
+      }
+      if (self.$inputEl) {
+        self.$inputEl.trigger('colorpicker:closed', self);
+      }
+      self.emit('local::closed colorPickerClosed', self);
+    };
+
+    ColorPicker.prototype.open = function open () {
+      var obj;
+
+      var self = this;
+      var app = self.app;
+      var opened = self.opened;
+      var inline = self.inline;
+      var $inputEl = self.$inputEl;
+      var $targetEl = self.$targetEl;
+      var params = self.params;
+      if (opened) { return; }
+
+      if (inline) {
+        self.$el = $(self.render());
+        self.$el[0].f7ColorPicker = self;
+        self.$containerEl.append(self.$el);
+        self.onOpen();
+        self.onOpened();
+        return;
+      }
+
+      var colorPickerContent = self.render();
+
+      if (params.openIn === 'page') {
+        self.view.router.navigate({
+          url: self.url,
+          route: {
+            content: colorPickerContent,
+            path: self.url,
+            on: {
+              pageBeforeIn: function pageBeforeIn(e, page) {
+                self.$el = page.$el.find('.color-picker');
+                self.$el[0].f7ColorPicker = self;
+                self.onOpen();
+              },
+              pageAfterIn: function pageAfterIn() {
+                self.onOpened();
+              },
+              pageBeforeOut: function pageBeforeOut() {
+                self.onClose();
+              },
+              pageAfterOut: function pageAfterOut() {
+                self.onClosed();
+                if (self.$el && self.$el[0]) {
+                  self.$el[0].f7ColorPicker = null;
+                  delete self.$el[0].f7ColorPicker;
+                }
+              },
+            },
+          },
+        });
+      } else {
+        var modalType = self.getModalType();
+        var backdrop = params.backdrop;
+        if (backdrop === null || typeof backdrop === 'undefined') {
+          if (modalType === 'popover' && app.params.popover.backdrop !== false) { backdrop = true; }
+          if (modalType === 'popup') { backdrop = true; }
+        }
+        var modalParams = {
+          targetEl: ($targetEl || $inputEl),
+          scrollToEl: params.scrollToInput ? ($targetEl || $inputEl) : undefined,
+          content: colorPickerContent,
+          backdrop: backdrop,
+          closeByBackdropClick: params.closeByBackdropClick,
+          on: {
+            open: function open() {
+              var modal = this;
+              self.modal = modal;
+              self.$el = modalType === 'popover' || modalType === 'popup' ? modal.$el.find('.color-picker') : modal.$el;
+              self.$el[0].f7ColorPicker = self;
+              self.onOpen();
+            },
+            opened: function opened() { self.onOpened(); },
+            close: function close() { self.onClose(); },
+            closed: function closed() {
+              self.onClosed();
+              if (self.$el && self.$el[0]) {
+                self.$el[0].f7ColorPicker = null;
+                delete self.$el[0].f7ColorPicker;
+              }
+            },
+          },
+        };
+        if (params.routableModals) {
+          self.view.router.navigate({
+            url: self.url,
+            route: ( obj = {
+              path: self.url
+            }, obj[modalType] = modalParams, obj ),
+          });
+        } else {
+          self.modal = app[modalType].create(modalParams);
+          self.modal.open();
+        }
+      }
+    };
+
+    ColorPicker.prototype.close = function close () {
+      var self = this;
+      var opened = self.opened;
+      var inline = self.inline;
+      if (!opened) { return; }
+      if (inline) {
+        self.onClose();
+        self.onClosed();
+        return;
+      }
+      if (self.params.routableModals) {
+        self.view.router.back();
+      } else {
+        self.modal.close();
+      }
+    };
+
+    ColorPicker.prototype.init = function init () {
+      var self = this;
+
+      self.initInput();
+
+      if (self.inline) {
+        self.open();
+        self.emit('local::init colorPickerInit', self);
+        return;
+      }
+
+      if (!self.initialized && self.params.value) {
+        self.setValue(self.params.value);
+      }
+
+      // Attach input Events
+      if (self.$inputEl) {
+        self.attachInputEvents();
+      }
+      if (self.$targetEl) {
+        self.attachTargetEvents();
+      }
+      if (self.params.closeByOutsideClick) {
+        self.attachHtmlEvents();
+      }
+      self.emit('local::init colorPickerInit', self);
+    };
+
+    ColorPicker.prototype.destroy = function destroy () {
+      var self = this;
+      if (self.destroyed) { return; }
+      var $el = self.$el;
+      self.emit('local::beforeDestroy colorPickerBeforeDestroy', self);
+      if ($el) { $el.trigger('colorpicker:beforedestroy', self); }
+
+      self.close();
+
+      // Detach Events
+      self.detachEvents();
+      if (self.$inputEl) {
+        self.detachInputEvents();
+      }
+      if (self.$targetEl) {
+        self.detachTargetEvents();
+      }
+      if (self.params.closeByOutsideClick) {
+        self.detachHtmlEvents();
+      }
+
+      if ($el && $el.length) { delete self.$el[0].f7ColorPicker; }
+      Utils.deleteProps(self);
+      self.destroyed = true;
+    };
+
+    return ColorPicker;
+  }(Framework7Class));
+
+  var ColorPicker$1 = {
+    name: 'colorPicker',
+    static: {
+      ColorPicker: ColorPicker,
+    },
+    create: function create() {
+      var app = this;
+      app.colorPicker = ConstructorMethods({
+        defaultSelector: '.color-picker',
+        constructor: ColorPicker,
+        app: app,
+        domProp: 'f7ColorPicker',
+      });
+      app.colorPicker.close = function close(el) {
+        if ( el === void 0 ) el = '.color-picker';
+
+        var $el = $(el);
+        if ($el.length === 0) { return; }
+        var colorPicker = $el[0].f7ColorPicker;
+        if (!colorPicker || (colorPicker && !colorPicker.opened)) { return; }
+        colorPicker.close();
+      };
+    },
+    params: {
+      colorPicker: {
+        // Color picker settings
+        value: null,
+        modules: [
+          'wheel' ],
+        palette: [
+          ['#FFEBEE', '#FFCDD2', '#EF9A9A', '#E57373', '#EF5350', '#F44336', '#E53935', '#D32F2F', '#C62828', '#B71C1C'],
+          ['#F3E5F5', '#E1BEE7', '#CE93D8', '#BA68C8', '#AB47BC', '#9C27B0', '#8E24AA', '#7B1FA2', '#6A1B9A', '#4A148C'],
+          ['#E8EAF6', '#C5CAE9', '#9FA8DA', '#7986CB', '#5C6BC0', '#3F51B5', '#3949AB', '#303F9F', '#283593', '#1A237E'],
+          ['#E1F5FE', '#B3E5FC', '#81D4FA', '#4FC3F7', '#29B6F6', '#03A9F4', '#039BE5', '#0288D1', '#0277BD', '#01579B'],
+          ['#E0F2F1', '#B2DFDB', '#80CBC4', '#4DB6AC', '#26A69A', '#009688', '#00897B', '#00796B', '#00695C', '#004D40'],
+          ['#F1F8E9', '#DCEDC8', '#C5E1A5', '#AED581', '#9CCC65', '#8BC34A', '#7CB342', '#689F38', '#558B2F', '#33691E'],
+          ['#FFFDE7', '#FFF9C4', '#FFF59D', '#FFF176', '#FFEE58', '#FFEB3B', '#FDD835', '#FBC02D', '#F9A825', '#F57F17'],
+          ['#FFF3E0', '#FFE0B2', '#FFCC80', '#FFB74D', '#FFA726', '#FF9800', '#FB8C00', '#F57C00', '#EF6C00', '#E65100'] ],
+        groupedModules: false,
+        centerModules: true,
+
+        sliderLabel: false,
+        sliderValue: false,
+        sliderValueEdiable: false,
+
+        barLabel: false,
+        barValue: false,
+        barValueEdiable: false,
+
+        hexLabel: false,
+        hexValueEditable: false,
+
+        redLabelText: 'R',
+        greenLabelText: 'G',
+        blueLabelText: 'B',
+        hueLabelText: 'H',
+        saturationLabelText: 'S',
+        brightnessLabelText: 'B',
+        hexLabelText: 'HEX',
+        alphaLabelText: 'A',
+
+        // Common opener settings
+        containerEl: null,
+        openIn: 'popover', // or 'popover' or 'sheet' or 'popup' or 'page' or 'auto'
+        openInPhone: 'popup', // or 'popover' or 'sheet' or 'popup' or 'page'
+        formatValue: null,
+        targetEl: null,
+        targetElSetBackgroundColor: false,
+        inputEl: null,
+        inputReadOnly: true,
+        closeByOutsideClick: true,
+        scrollToInput: true,
+        toolbarSheet: true,
+        toolbarPopover: false,
+        toolbarCloseText: 'Done',
+        navbarPopup: true,
+        navbarCloseText: 'Done',
+        navbarTitleText: 'Color',
+        navbarBackLinkText: 'Back',
+        cssClass: null,
+        routableModals: true,
+        view: null,
+        url: 'color/',
+        backdrop: null,
+        closeByBackdropClick: true,
+        // Render functions
+        renderToolbar: null,
+        renderNavbar: null,
+        renderInline: null,
+        renderPopover: null,
+        renderSheet: null,
+        renderPopup: null,
+        render: null,
+      },
+    },
+  };
+
+  var Treeview = {
+    open: function open(itemEl) {
+      var app = this;
+      var $itemEl = $(itemEl).eq(0);
+      if (!$itemEl.length) { return; }
+      $itemEl.addClass('treeview-item-opened');
+      $itemEl.trigger('treeview:open');
+      app.emit('treeviewOpen', $itemEl[0]);
+      function done() {
+        $itemEl[0].f7TreeviewChildrenLoaded = true;
+        $itemEl.find('.treeview-toggle').removeClass('treeview-toggle-hidden');
+        $itemEl.find('.treeview-preloader').remove();
+      }
+
+      if ($itemEl.hasClass('treeview-load-children') && !$itemEl[0].f7TreeviewChildrenLoaded) {
+        $itemEl.trigger('treeview:loadchildren', done);
+        app.emit('treeviewLoadChildren', $itemEl[0], done);
+        $itemEl.find('.treeview-toggle').addClass('treeview-toggle-hidden');
+        $itemEl.find('.treeview-item-root').prepend(("<div class=\"preloader treeview-preloader\">" + (Utils[((app.theme) + "PreloaderContent")]) + "</div>"));
+      }
+    },
+    close: function close(itemEl) {
+      var app = this;
+      var $itemEl = $(itemEl).eq(0);
+      if (!$itemEl.length) { return; }
+      $itemEl.removeClass('treeview-item-opened');
+      $itemEl.trigger('treeview:close');
+      app.emit('treeviewClose', $itemEl[0]);
+    },
+    toggle: function toggle(itemEl) {
+      var app = this;
+      var $itemEl = $(itemEl).eq(0);
+      if (!$itemEl.length) { return; }
+      var wasOpened = $itemEl.hasClass('treeview-item-opened');
+      app.treeview[wasOpened ? 'close' : 'open']($itemEl);
+    },
+  };
+
+  var Treeview$1 = {
+    name: 'treeview',
+    create: function create() {
+      var app = this;
+      Utils.extend(app, {
+        treeview: {
+          open: Treeview.open.bind(app),
+          close: Treeview.close.bind(app),
+          toggle: Treeview.toggle.bind(app),
+        },
+      });
+    },
+    clicks: {
+      '.treeview-toggle': function toggle($clickedEl, clickedData, e) {
+        var app = this;
+        if ($clickedEl.parents('.treeview-item-toggle').length) { return; }
+        var $treeviewItemEl = $clickedEl.parents('.treeview-item').eq(0);
+        if (!$treeviewItemEl.length) { return; }
+        e.preventF7Router = true;
+        app.treeview.toggle($treeviewItemEl[0]);
+      },
+      '.treeview-item-toggle': function toggle($clickedEl, clickedData, e) {
+        var app = this;
+        var $treeviewItemEl = $clickedEl.closest('.treeview-item').eq(0);
+        if (!$treeviewItemEl.length) { return; }
+        e.preventF7Router = true;
+        app.treeview.toggle($treeviewItemEl[0]);
+      },
+    },
+  };
+
+  var ViAd = /*@__PURE__*/(function (Framework7Class) {
     function ViAd(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class$$1.call(this, params, [app]);
+      Framework7Class.call(this, params, [app]);
       var vi = this;
       if (!win.vi) {
         throw new Error('Framework7: vi SDK not found.');
@@ -35595,8 +39003,8 @@
       });
     }
 
-    if ( Framework7Class$$1 ) ViAd.__proto__ = Framework7Class$$1;
-    ViAd.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
+    if ( Framework7Class ) ViAd.__proto__ = Framework7Class;
+    ViAd.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     ViAd.prototype.constructor = ViAd;
 
     ViAd.prototype.start = function start () {
@@ -35734,7 +39142,7 @@
     RequestModule,
     TouchModule,
     ClicksModule,
-    Router$1,
+    RouterModule,
     HistoryModule,
     StorageModule,
     ComponentModule,
@@ -35746,6 +39154,7 @@
     Subnavbar,
     TouchRipple$1,
     Modal$1,
+    Appbar,
     Dialog$1,
     Popup$1,
     LoginScreen$1,
@@ -35793,6 +39202,8 @@
     Gauge$1,
     Skeleton,
     Menu$1,
+    ColorPicker$1,
+    Treeview$1,
     Vi,
     Elevation,
     Typography

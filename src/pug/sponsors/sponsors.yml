@@ -1,11 +1,11 @@
 diamond:
 platinum:
 gold:
--
-  title: Yakaz
-  link: https://yakaz.com
-  imageUrl: "#{cdn}/i/sponsors/yakaz.png"
 silver:
+-
+  title: Thorium Builder - full visual Framework7 app builder
+  link: https://www.thoriumbuilder.com/
+  imageUrl: "#{cdn}/i/sponsors/thorium.png"
 -
   title: AppValley
   link: https://appvalley.vip/
@@ -19,6 +19,30 @@ silver:
   link: https://www.securcom.me/
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
+-
+  title: Kidoverse - App for kids to learn, play, create and explore
+  link: https://kidoverse.app/
+  imageUrl: "#{cdn}/i/sponsors/kidoverse.png"
+-
+  title: CyberBrain IT Services
+  link: https://www.cyberbrain.nl/
+  imageUrl: "#{cdn}/i/sponsors/cyberbrain.png"
+-
+  title: HICAPPS - Health Informatics Custom APPs
+  link: https://hicapps.cl/web/
+  imageUrl: "#{cdn}/i/sponsors/hicapps.png"
+-
+  title: EduBirdie - Professional Essay Writing Service
+  link: https://edubirdie.com/
+  imageUrl: "#{cdn}/i/sponsors/birdie.png"
+-
+  title: Blokt - Cryptocurrency News
+  link: https://blokt.com/
+  imageUrl: "#{cdn}/i/sponsors/blokt.png"
+-
+  title: ActiveWaiter
+  link: https://www.activewaiter.com/
+  imageUrl: "#{cdn}/i/sponsors/activewaiter.png"
 -
   title: Wappler - The Visual Web App Creator
   link: https://wappler.io/

@@ -59,6 +59,21 @@ block content
         li <code>item-content</code> must be a <code><b>&lt;label&gt;</b></code> element with additional <code><b>item-checkbox</b></code> class
         li Checkbox input (<code>&lt;input type="checkbox"&gt;</code>) must be a first child of <code>item-content</code>
         li Checkbox icon must be <b>after</b> checkbox input
+    h2 Indeterminate State
+    p Framework7 comes with visual support for indeterminate checkbox state.
+    p In HTML it is not possible to set this state with attribute, it can be set only via JavaScript:
+    :code(lang="html")
+      <input type="checkbox" id="my-checkbox">
+    :code(lang="js")
+      var checkboxEl = document.querySelector('#my-checkbox');
+      checkboxEl.indeterminate = true;
+    p Or with Dom7
+    :code(lang="js")
+      var $checkboxEl = $('#my-checkbox');
+      $checkboxEl.prop('indeterminate', true);
+    p But if you use it with <a href="./router-component.html">Router Component</a> then it will automatically detect this attribute and set it as element property, so it can be used in templates:
+    :code(lang="html")
+      <input type="checkbox" {{#if something}}indeterminate{{/if}} id="my-checkbox" />
 
     +cssVars('checkbox')
 
@@ -66,9 +81,9 @@ block content
       h2(data-device-preview="../docs-demos/core/checkbox.html") Examples
       h4 Inline
       :code(lang="html")
-            <div class="block block-strong">
-              <p>Lorem <label class="checkbox"><input type="checkbox"><i class="icon-checkbox"></i></label> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <label class="checkbox"><input type="checkbox"><i class="icon-checkbox"></i></label> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
-            </div>
+        <div class="block block-strong">
+          <p>Lorem <label class="checkbox"><input type="checkbox"><i class="icon-checkbox"></i></label> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <label class="checkbox"><input type="checkbox"><i class="icon-checkbox"></i></label> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
+        </div>
       h4 Checkbox Group
       :code(lang="html")
             <div class="list">
@@ -111,6 +126,68 @@ block content
                 </li>
               </ul>
             </div>
+      h4 Indeterminate State
+      :code(lang="html")
+        <div class="list">
+          <ul>
+            <li>
+              <label class="item-checkbox item-content">
+                <input type="checkbox" name="demo-checkbox-movies" />
+                <i class="icon icon-checkbox"></i>
+                <div class="item-inner">
+                  <div class="item-title">Movies</div>
+                </div>
+              </label>
+              <ul>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" name="demo-checkbox-movie" value="Movie 1"/>
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Movie 1</div>
+                    </div>
+                  </label>
+                </li>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" name="demo-checkbox-movie" value="Movie 2"/>
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Movie 2</div>
+                    </div>
+                  </label>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var $ = Dom7;
+
+        // Child checkbox change
+        $('[name="demo-checkbox-movie"]').on('change', function (e) {
+          var totalChecked = $('[name="demo-checkbox-movie"]:checked').length;
+          if (totalChecked === 0) {
+            $('[name="demo-checkbox-movies"]').prop('checked', false);
+          } else if (totalChecked === 2) {
+            $('[name="demo-checkbox-movies"]').prop('checked', true);
+          }
+          if (totalChecked === 1) {
+            $('[name="demo-checkbox-movies"]').prop('indeterminate', true);
+          } else {
+            $('[name="demo-checkbox-movies"]').prop('indeterminate', false);
+          }
+        });
+
+        // Parent checkbox change
+        $('[name="demo-checkbox-movies"]').on('change', function (e) {
+          if (e.target.checked) {
+            $('[name="demo-checkbox-movie"]').prop('checked', true);
+          } else {
+            $('[name="demo-checkbox-movie"]').prop('checked', false);
+          }
+        });
+
       h4 With Media Lists
       :code(lang="html")
             <div class="list media-list">

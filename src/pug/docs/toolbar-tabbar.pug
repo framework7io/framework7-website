@@ -45,7 +45,7 @@ block content
           <a href="#" class="link">Link 3</a>
         </div>
       </div>
-    p We can also use different positions for iOS & MD themes at the same time by using the following classes: #[code toolbar-top-ios], #[code toolbar-top-md], #[code toolbar-bottom-ios], #[code toolbar-bottom-md].
+    p We can also use different positions for iOS, MD and Aurora themes at the same time by using the following classes: #[code toolbar-top-ios], #[code toolbar-top-md], #[code toolbar-top-aurora], #[code toolbar-bottom-ios], #[code toolbar-bottom-md], #[code toolbar-bottom-aurora].
 
     h2 Theme-Specific Styling
     p In iOS theme, by default, Toolbar/Tabbar has thin border on the top. To disable this border you need to add <code><b>no-hairline</b></code> class to toolbar element:
@@ -418,18 +418,18 @@ block content
             <div class="toolbar-inner">
               <a href="#tab-1" class="tab-link tab-link-active">
                 <!-- Different icons for iOS and MD themes -->
-                <i class="icon f7-icons ios-only">email_fill</i>
+                <i class="icon f7-icons if-not-md">email_fill</i>
                 <i class="icon material-icons md-only">email</i>
                 <!-- Label text -->
                 <span class="tabbar-label">Inbox</span>
               </a>
               <a href="#tab-2" class="tab-link">
-                <i class="icon f7-icons ios-only">today_fill<span class="badge color-red">5</span></i>
+                <i class="icon f7-icons if-not-md">today_fill<span class="badge color-red">5</span></i>
                 <i class="icon material-icons md-only">today<span class="badge color-red">5</span></i>
                 <span class="tabbar-label">Calendar</span>
               </a>
               <a href="#tab-3" class="tab-link">
-                <i class="icon f7-icons ios-only">cloud_fill</i>
+                <i class="icon f7-icons if-not-md">cloud_fill</i>
                 <i class="icon material-icons md-only">file_upload</i>
                 <span class="tabbar-label">Upload</span>
               </a>

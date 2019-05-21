@@ -494,7 +494,7 @@ block content
                           return date.getMonth() === 9
                       }
                   },
-                  //Add "day-holiday" class for 1-10th January 2015
+                  //Add "day-holiday" class for 1-10th January 2016
                   {
                       cssClass: 'day-holiday',
                       range: {
@@ -556,7 +556,7 @@ block content
         tr
           th(colspan="2") Methods
         tr
-          td calendar.setValue(values)
+          td calendar.setValue(<span>values</span>)
           td Set new selected dates. <code>values</code> is array where each item represents selected date
         tr
           td calendar.getValue()
@@ -568,11 +568,11 @@ block content
           td calendar.update()
           td Rerenders calendar. Useful in case you added/changed values dynamically and need to update calendar layout
         tr
-          td calendar.nextMonth(duration)
-          td Calendar transition to next month for specified duration in ms
+          td calendar.nextMonth(<span>duration</span>)
+          td Calendar transition to next month for specified <code>duration</code> in ms
         tr
-          td calendar.prevMonth(duration)
-          td Calendar transition to previous month for specified duration in ms
+          td calendar.prevMonth(<span>duration</span>)
+          td Calendar transition to previous month for specified <code>duration</code> in ms
         tr
           td calendar.nextYear()
           td Calendar transition to next year
@@ -580,8 +580,8 @@ block content
           td calendar.prevYear()
           td Calendar transition to previous year
         tr
-          td calendar.setYearMonth(year, month, duration)
-          td Calendar transition to specified year, month for specified duration in ms
+          td calendar.setYearMonth(<span>year</span>, <span>month</span>, <span>duration</span>)
+          td Calendar transition to specified <code>year</code>, <code>month</code> for specified <code>duration</code> in ms
         tr
           td calendar.open()
           td Open Calendar

@@ -42,13 +42,29 @@ block content
           td boolean
           td Enables Popup backdrop (dark semi transparent layer behind). By default inherits same app parameter value (<code>true</code>)
         tr
+          td backdropEl
+          td string<br>object
+          td HTML element or string CSS selector of custom backdrop element
+        tr
           td closeByBackdropClick
           td boolean
           td When enabled, popup will be closed on backdrop click. By default inherits same app parameter value (<code>true</code>)
         tr
+          td closeOnEscape
+          td boolean
+          td When enabled, popup will be closed on ESC keyboard key press
+        tr
           td animate
           td boolean
           td Whether the Popup should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods. By default inherits same app parameter value (<code>true</code>)
+        tr
+          td swipeToClose
+          td boolean<br>string
+          td Whether the Popup can be closed with swipe gesture. Can be <code>true</code> to allow to close popup with swipes to top and to bottom, or can be <code>to-top</code> (string) to allow only swipe to top to close popup, or <code>to-bottom</code> (string) to allow only swipe to bottom to close.
+        tr
+          td swipeHandler
+          td HTMLElement<br>string
+          td If not passed, then whole popup can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (<code>swipeToClose</code> must be also enabled)
     h2 Popup Methods
     table.methods-table
       tr
@@ -91,78 +107,108 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/vue/popup.html") Examples
       :code
-            <template>
-              <f7-page @page:beforeremove="onPageBeforeRemove">
-                <f7-navbar title="Popup"></f7-navbar>
+        <template>
+          <f7-page @page:beforeremove="onPageBeforeRemove">
+            <f7-navbar title="Popup"></f7-navbar>
+            <f7-block>
+              <p>
+                <f7-button fill popup-open=".demo-popup">Open Popup</f7-button>
+              </p>
+              <p>
+                <f7-button fill @click="popupOpened = true">Open Via Prop Change</f7-button>
+              </p>
+              <p>
+                <f7-button fill @click="createPopup">Create Dynamic Popup</f7-button>
+              </p>
+              <p>
+                <f7-button fill popup-open=".demo-popup-swipe">Swipe To Close</f7-button>
+              </p>
+              <p>
+                <f7-button fill popup-open=".demo-popup-swipe-handler">With Swipe Handler</f7-button>
+              </p>
+            </f7-block>
+            <f7-popup class="demo-popup" :opened="popupOpened" @popup:closed="popupOpened = false">
+              <f7-page>
+                <f7-navbar title="Popup Title">
+                  <f7-nav-right>
+                    <f7-link popup-close>Close</f7-link>
+                  </f7-nav-right>
+                </f7-navbar>
                 <f7-block>
-                  <p>
-                    <f7-button raised popup-open=".demo-popup">Open Popup</f7-button>
-                  </p>
-                  <p>
-                    <f7-button raised @click="popupOpened = true">Open Via Prop Change</f7-button>
-                  </p>
-                  <p>
-                    <f7-button raised @click="createPopup">Create Dynamic Popup</f7-button>
-                  </p>
+                  <p>Here comes popup. You can put here anything, even independent view with its own navigation. Also not, that by default popup looks a bit different on iPhone/iPod and iPad, on iPhone it is fullscreen.</p>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                  <p>Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula...</p>
                 </f7-block>
-                <f7-popup class="demo-popup" :opened="popupOpened" @popup:closed="popupOpened = false">
-                  <f7-page>
-                    <f7-navbar title="Popup Title">
-                      <f7-nav-right>
-                        <f7-link popup-close>Close</f7-link>
-                      </f7-nav-right>
-                    </f7-navbar>
-                    <f7-block>
-                      <p>Here comes popup. You can put here anything, even independent view with its own navigation. Also not, that by default popup looks a bit different on iPhone/iPod and iPad, on iPhone it is fullscreen.</p>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-                      <p>Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula...</p>
-                    </f7-block>
-                  </f7-page>
-                </f7-popup>
               </f7-page>
-            </template>
+            </f7-popup>
 
-            <script>
-              export default {
-                data() {
-                  return {
-                    popupOpened: false,
-                  };
-                },
-                methods: {
-                  createPopup() {
-                    const self = this;
-                    // Create popup
-                    if (!self.popup) {
-                      self.popup = self.$f7.popup.create({
-                        content: `
-                          <div class="popup">
-                            <div class="page">
-                              <div class="navbar">
-                                <div class="navbar-inner">
-                                  <div class="title">Dynamic Popup</div>
-                                  <div class="right"><a href="#" class="link popup-close">Close</a></div>
-                                </div>
-                              </div>
-                              <div class="page-content">
-                                <div class="block">
-                                  <p>This popup was created dynamically</p>
-                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non...</p>
-                                </div>
-                              </div>
+            <f7-popup class="demo-popup-swipe" swipe-to-close>
+              <f7-page>
+                <f7-navbar title="Swipe To Close">
+                  <f7-nav-right>
+                    <f7-link popup-close>Close</f7-link>
+                  </f7-nav-right>
+                </f7-navbar>
+
+                <div style="height: 100%" class="display-flex justify-content-center align-items-center">
+                  <p>Swipe me up or down</p>
+                </div>
+              </f7-page>
+            </f7-popup>
+
+            <f7-popup class="demo-popup-swipe-handler" swipe-to-close swipe-handler=".swipe-handler">
+              <f7-page>
+                <f7-block-title large>Hello!</f7-block-title>
+                <f7-block strong>
+                  <p class="swipe-handler"><b>Swipe works only on this paragraph</b></p>
+                  <p>Lorem ipsum dolor sit amet...</p>
+                </f7-block>
+              </f7-page>
+            </f7-popup>
+          </f7-page>
+        </template>
+
+        <script>
+          export default {
+            data() {
+              return {
+                popupOpened: false,
+              };
+            },
+            methods: {
+              createPopup() {
+                const self = this;
+                // Create popup
+                if (!self.popup) {
+                  self.popup = self.$f7.popup.create({
+                    content: `
+                      <div class="popup">
+                        <div class="page">
+                          <div class="navbar">
+                            <div class="navbar-inner">
+                              <div class="title">Dynamic Popup</div>
+                              <div class="right"><a href="#" class="link popup-close">Close</a></div>
                             </div>
                           </div>
-                        `.trim(),
-                      });
-                    }
-                    // Open it
-                    self.popup.open();
-                  },
-                  onPageBeforeRemove() {
-                    const self = this;
-                    // Destroy popup when page removed
-                    if (self.popup) self.popup.destroy();
-                  },
-                },
-              };
-            </script>
+                          <div class="page-content">
+                            <div class="block">
+                              <p>This popup was created dynamically</p>
+                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non...</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    `.trim(),
+                  });
+                }
+                // Open it
+                self.popup.open();
+              },
+              onPageBeforeRemove() {
+                const self = this;
+                // Destroy popup when page removed
+                if (self.popup) self.popup.destroy();
+              },
+            },
+          };
+        </script>

@@ -1,0 +1,1041 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Color Picker | Framework7 Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Color Picker
+    ul.docs-index
+    p Framework7 comes with ultimate modular Color Picker component that allows to create color picker with limitless combinations of "color modules".
+    h2 Color Picker App Methods
+    p Let's look at related App methods to work with Color Picker:
+    .method-wrap
+      p
+        span.method app.colorPicker.create(<span>parameters</span>)
+        | - create Color Picker instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with Color Picker parameters
+      p.method-returns Method returns created Color Picker instance
+
+    .method-wrap
+      p
+        span.method app.colorPicker.destroy(<span>el</span>)
+        | - destroy Color Picker instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Color Picker element or Color Picker instance to destroy.
+    .method-wrap
+      p
+        span.method app.colorPicker.get(<span>el</span>)
+        | - get Color Picker instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Color Picker element.
+      p.method-returns Method returns Color Picker's instance
+    .method-wrap
+      p
+        span.method app.colorPicker.close(<span>el</span>)
+        | - close Color Picker
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Color Picker element to close.
+      p.method-returns Method returns Color Picker's instance
+    p For example:
+    :code(lang="js")
+      var colorPicker = app.colorPicker.create({
+        inputEl: '#color-input',
+        value: {
+          hex: '#ff000',
+        },
+      });
+    h2 Color Picker Parameters
+    p Let's look on list of all available Color Picker parameters:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td value
+          td object
+          td
+          td Object with <a href="#color-picker-value">Color Picker value</a>
+        tr
+          td modules
+          td array
+          td ['wheel']
+          td Array with <a href="#color-picker-modules">Color Picker modules</a> in order of their appearance
+        tr
+          td palette
+          td array
+          td
+          td
+            p Array with palette module colors where each palette color must be specified as a HEX string.
+            p It can be a plain array with palette values like:
+            :code(lang="js")
+              palette: ['#ff0000', '#00ff00', ...]
+            p Or it can be an array of palette "rows" where each item specified as array with colors:
+            :code(lang="js")
+              palette: [
+                // first row
+                ['#ff0000', '#00ff00', ...]
+                // second row
+                ['#0000ff', '#f0000f', ...]
+                ...
+              ]
+            p By default it is:
+            :code(lang="js")
+              [
+                ['#FFEBEE', '#FFCDD2', '#EF9A9A', '#E57373', '#EF5350', '#F44336', '#E53935', '#D32F2F', '#C62828', '#B71C1C'],
+                ['#F3E5F5', '#E1BEE7', '#CE93D8', '#BA68C8', '#AB47BC', '#9C27B0', '#8E24AA', '#7B1FA2', '#6A1B9A', '#4A148C'],
+                ['#E8EAF6', '#C5CAE9', '#9FA8DA', '#7986CB', '#5C6BC0', '#3F51B5', '#3949AB', '#303F9F', '#283593', '#1A237E'],
+                ['#E1F5FE', '#B3E5FC', '#81D4FA', '#4FC3F7', '#29B6F6', '#03A9F4', '#039BE5', '#0288D1', '#0277BD', '#01579B'],
+                ['#E0F2F1', '#B2DFDB', '#80CBC4', '#4DB6AC', '#26A69A', '#009688', '#00897B', '#00796B', '#00695C', '#004D40'],
+                ['#F1F8E9', '#DCEDC8', '#C5E1A5', '#AED581', '#9CCC65', '#8BC34A', '#7CB342', '#689F38', '#558B2F', '#33691E'],
+                ['#FFFDE7', '#FFF9C4', '#FFF59D', '#FFF176', '#FFEE58', '#FFEB3B', '#FDD835', '#FBC02D', '#F9A825', '#F57F17'],
+                ['#FFF3E0', '#FFE0B2', '#FFCC80', '#FFB74D', '#FFA726', '#FF9800', '#FB8C00', '#F57C00', '#EF6C00', '#E65100'],
+              ]
+        tr
+          td groupedModules
+          td boolean
+          td false
+          td When enabled it will add more exposure to sliders modules to make them look more separated
+        tr
+          td centerModules
+          td boolean
+          td true
+          td When enabled it will try to center vertically modules if there is enough space
+        tr
+          td sliderLabel
+          td boolean
+          td false
+          td When enabled, it will display sliders labels with text
+        tr
+          td sliderValue
+          td boolean
+          td false
+          td When enabled, it will display sliders values
+        tr
+          td sliderValueEdiable
+          td boolean
+          td false
+          td When enabled, it will display sliders values as <code>&lt;input&gt;</code> elements to edit directly
+        tr
+          td barLabel
+          td boolean
+          td false
+          td When enabled, it will display bars labels with text
+        tr
+          td barValue
+          td boolean
+          td false
+          td When enabled, it will display bars values
+        tr
+          td barValueEdiable
+          td boolean
+          td false
+          td When enabled, it will display bars values as <code>&lt;input&gt;</code> elements to edit directly
+        tr
+          td hexLabel
+          td boolean
+          td false
+          td When enabled, it will display HEX module label text, e.g. <code>HEX</code>
+        tr
+          td hexValueEditable
+          td boolean
+          td false
+          td When enabled, it will display HEX module value as <code>&lt;input&gt;</code> element to edit directly
+        tr
+          th(colspan="4") Labels Texts
+        tr
+          td redLabelText
+          td string
+          td 'R'
+          td Red slider/bar label text
+        tr
+          td greenLabelText
+          td string
+          td 'G'
+          td Green slider/bar label text
+        tr
+          td blueLabelText
+          td string
+          td 'B'
+          td Blue slider/bar label text
+        tr
+          td hueLabelText
+          td string
+          td 'H'
+          td Hue slider label text
+        tr
+          td saturationLabelText
+          td string
+          td 'S'
+          td Saturation slider label text
+        tr
+          td brightnessLabelText
+          td string
+          td 'B'
+          td Brightness slider label text
+        tr
+          td hexLabelText
+          td string
+          td 'HEX'
+          td
+        tr
+          td alphaLabelText
+          td string
+          td 'A'
+          td Alpha (opacity) slider label text
+
+        tr
+          td formatValue
+          td function (value)
+          td
+          td Function to format input value, should return new/formatted string value. <b>value</b> is the <a href="#color-picker-value">Color Picker value</a> object. By default it returns HEX value.
+
+
+        tr
+          th(colspan="4") Container/opener-specific parameters
+        tr
+          td containerEl
+          td string<br>HTMLElement
+          td
+          td String with CSS selector or HTMLElement where to place generated Color Picker HTML. <b>Use only for inline color picker</b>
+        tr
+          td openIn
+          td string
+          td popover
+          td Can be <code>auto</code>, <code>popover</code> (to open color picker in popover), <code>sheet</code> (to open in sheet modal), <code>popup</code> (to open in Popup) or <code>page</code> (to open in Page). In case of <code>auto</code> it will as specified <code>openInPhone</code> parameter on small screens and in popover on large screens.
+        tr
+          td openInPhone
+          td string
+          td popup
+          td Defines how to open Color Picker on small screens when <code>openIn: "auto"</code>
+        tr
+          td inputEl
+          td string or HTMLElement
+          td
+          td String with CSS selector or HTMLElement with related input element
+        tr
+          td targetEl
+          td string or HTMLElement
+          td
+          td String with CSS selector or HTMLElement with related target element. In addition to input element, you will probably want to place additional element that displays currently selected color. Such element can be specified as target element. If Color Picker opened in Popover, it will be positioned around this target element. Click on specified target element will also open Color Picker.
+        tr
+          td targetElSetBackgroundColor
+          td boolean
+          td false
+          td When enabled and you have passed <code>targetEl</code> then it will set <code>background-color</code> with currently selected value to target element.
+        tr
+          td scrollToInput
+          td boolean
+          td true
+          td Scroll viewport (page-content) to input when color picker opened
+        tr
+          td inputReadOnly
+          td boolean
+          td true
+          td Sets "readonly" attribute on specified input
+        tr
+          td cssClass
+          td string
+          td
+          td Additional CSS class name to be set on color picker container
+        tr
+          td closeByOutsideClick
+          td boolean
+          td true
+          td If enabled, picker will be closed by clicking outside of picker or related input element
+        tr
+          td toolbarSheet
+          td boolean
+          td true
+          td Displays Toolbar when opened in Sheet modal
+        tr
+          td toolbarPopover
+          td boolean
+          td false
+          td Displays Toolbar when opened in Popover modal
+        tr
+          td toolbarCloseText
+          td string
+          td Done
+          td Text for Done/Close toolbar button
+        tr
+          td navbarPopup
+          td boolean
+          td true
+          td Displays Navbar when opened in Popup modal
+        tr
+          td navbarCloseText
+          td string
+          td Done
+          td Text for Done/Close navbar button
+        tr
+          td navbarTitleText
+          td string
+          td Color
+          td Navbar title's text
+        tr
+          td navbarBackLinkText
+          td string
+          td Back
+          td Navbar back link's text, available when Color Picker opened in Page
+        tr
+          td routableModals
+          td boolean
+          td true
+          td Will add opened color picker to router history which gives ability to close it by going back in router history and set current route to the color picker modal
+        tr
+          td url
+          td string
+          td color/
+          td Color Picker modal URL that will be set as a current route
+        tr
+          td view
+          td object
+          td
+          td View where to set routing when <code>routableModals</code> enabled. Defaults to parent view of <code>inputEl</code> or main view if not found parent view
+        tr
+          td backdrop
+          td boolean
+          td
+          td Enables Color Picker backdrop (dark semi transparent layer behind). By default it is enabled when Color Picker opened in Popover or Popup.
+        tr
+          td closeByBackdropClick
+          td boolean
+          td true
+          td When enabled, Color Picker will be closed on backdrop click
+        tr
+          th(colspan="4") Render Functions
+        tr
+          td renderToolbar
+          td function
+          td
+          td Function to render toolbar. Must return toolbar HTML string
+        tr
+          td renderNavbar
+          td function(date)
+          td
+          td Function to render navbar. Must return navbar HTML string
+        tr
+          td render
+          td function
+          td
+          td Function to render color picker. Must return full color picker HTML string
+        tr
+          th(colspan="4") Events
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            :code(lang="js")
+              var colorPicker = app.colorPicker.create({
+                ...
+                on: {
+                  opened: function () {
+                    console.log('Color Picker opened')
+                  }
+                }
+              })
+    .important-note
+      p Note that all following parameters can be used in global app parameters under <code>colorPicker</code> property to set defaults for all color pickers. For example:
+      :code(lang="js")
+        var app = new Framework7({
+          colorPicker: {
+            modules: ['hb-spectrum', 'hue-slider'],
+            url: 'select-color/',
+          }
+        });
+    h2 Color Picker Modules
+    p You can create your own Color Picker layout by specifing modules you want to use in <code>modules</code> array parameter on Color Picker creation. There are following modules available:
+    table.methods-table
+      tbody
+        tr
+          td wheel
+          td
+            p Hue weel with Saturation-Brightness spectrum inside
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-wheel.png")
+        tr
+          td sb-spectrum
+          td
+            p Saturation-Brightness spectrum. It is recommended to use it with <code>hue-slider</code>
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-sb-spectrum.png")
+        tr
+          td hue-slider
+          td
+            p Single hue slider
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-hue-slider.png")
+        tr
+          td rgb-sliders
+          td
+            p Red, green and blue sliders
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-rgb-sliders.png")
+        tr
+          td hsb-sliders
+          td
+            p Hue, saturation and brightness sliders
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-hsb-sliders.png")
+        tr
+          td alpha-slider
+          td
+            p Alpha (opacity) single slider
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-alpha-slider.png")
+        tr
+          td rgb-bars
+          td
+            p Vertical red, green and blue sliders
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-rgb-bars.png")
+        tr
+          td palette
+          td
+            p Module displays palette colors specified in <code>palette</code> parameter
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-palette.png")
+        tr
+          td hex
+          td
+            p Module with current HEX value
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-hex.png")
+        tr
+          td current-color
+          td
+            p Modules displays currently selected color
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-current-color.png")
+        tr
+          td initial-current-colors
+          td
+            p Modules displays currently selected color, and initial color (color that was selected before Color Picker was opened). Clicking on initial color will set Color Picker value to initial color.
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-initial-current-colors.png")
+    h3 Custom Modules
+    p It is also possible to use and create custom color picker modules. Such custom modules can be used to create custom pickers or just to add some custom content between modules.
+    p To add custom color picker module, we need to pass an object instead of string to <code>modules</code> array parameter. Custom module object can contain following methods. Each method receives color picker instance as an argument.
+    table.methods-table
+      tbody
+        tr
+          td render(<span>colorPicker</span>)
+          td Module render function. It must return module HTML content
+        tr
+          td init(<span>colorPicker</span>)
+          td Module init function. It is executed when module rendered and added to DOM. You should define here any custom event listeners
+        tr
+          td update(<span>colorPicker</span>)
+          td This method executed when color picker value updated
+        tr
+          td destroy(<span>colorPicker</span>)
+          td This method executed on module destroy. You should detach all event listeners here
+    p For, example if we need to add some custom text between modules, we can use such simple module:
+    :code(lang="js")
+      var colorPicker = app.colorPicker.create({
+        // ...
+        modules: [
+          'sb-spectrum',
+          // custom module with only render function
+          {
+            render: function() {
+              return '<p class="text-align-center">Enter HUE value:</p>'
+            },
+          },
+          'hue-slider',
+        ]
+      })
+    p For inspiration and how things work in modules, check the <a href="https://github.com/framework7io/framework7/tree/master/src/core/components/color-picker/modules" target="_blank">built-in modules source code</a>.
+
+
+    h2 Color Picker Value
+    p Color Picker instance value represented as Object with the following properties.
+    table.params-table
+      tbody
+        tr
+          td hex
+          td string
+          td HEX color value, e.g. <code>#ff0000</code>
+        tr
+          td rgb
+          td array
+          td Array with RGB ([Red, Green, Blue]) color, e.g. <code>[255, 100, 20]</code>
+        tr
+          td hsl
+          td array
+          td Array with HSL ([Hue, Saturation, Lightness]) color, e.g. <code>[320, 0.1, 0.9]</code>
+        tr
+          td hsb
+          td array
+          td Array with HSB/V ([Hue, Saturation, Brightness]) color, e.g. <code>[180, 0.5, 0.3]</code>
+        tr
+          td alpha
+          td number
+          td Alpha (opacity) value (from 0 to 1), e.g. <code>0.6</code>
+        tr
+          td hue
+          td number
+          td Hue value (from 0 to 360), e.g. <code>320</code>
+        tr
+          td rgba
+          td array
+          td Array with RGBA ([Red, Green, Blue, Alpha]) color, e.g. <code>[255, 100, 20, 0.5]</code>
+        tr
+          td hsla
+          td array
+          td Array with HSLA ([Hue, Saturation, Lightness, Alpha]) color, e.g. <code>[320, 0.1, 0.9, 0.2]</code>
+    p For example:
+    :code(lang="js")
+      var colorPicker = app.colorPicker.create({
+        ...
+        on: {
+          change: function (value) {
+            console.log(`HEX value is ${value.hex}. Opacity is ${value.alpha}`);
+            $('.some-element').css('background-color', `rgba(${value.rgba.join(', ')})`);
+          }
+        }
+      })
+
+    h2 Color Picker Methods & Properties
+    p After we initialize Color Picker we have its initialized instance in variable (like <code>colorPicker</code> variable in examples above) with helpful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td colorPicker.app
+          td Link to global app instance
+        tr
+          td colorPicker.containerEl
+          td Color Picker wrapping container HTML element (when inline color picker is in use)
+        tr
+          td colorPicker.$containerEl
+          td Dom7 instance with color picker wrapping container HTML element (when inline color picker is in use)
+        tr
+          td colorPicker.el
+          td Color Picker HTML element
+        tr
+          td colorPicker.$el
+          td Dom7 instance with color picker HTML element
+        tr
+          td colorPicker.inputEl
+          td Color Picker input HTML element (passed in <code>inputEl</code> parameter)
+        tr
+          td colorPicker.$inputEl
+          td Dom7 instance with color picker input HTML element (passed in <code>inputEl</code> parameter)
+        tr
+          td colorPicker.targetEl
+          td Color Picker target HTML element (passed in <code>targetEl</code> parameter)
+        tr
+          td colorPicker.$targetEl
+          td Dom7 instance with color picker target HTML element (passed in <code>targetEl</code> parameter)
+        tr
+          td colorPicker.value
+          td Object with <a href="#color-picker-value">color picker value</a>
+        tr
+          td colorPicker.opened
+          td <code>true</code> if color picker is currently opened
+        tr
+          td colorPicker.inline
+          td <code>true</code> when inline color picker is in use
+        tr
+          td colorPicker.url
+          td Color Picker URL (that was passed in <code>url</code> parameter)
+        tr
+          td colorPicker.view
+          td Color Picker View (that was passed in <code>view</code> parameter) or found parent view
+        tr
+          td colorPicker.params
+          td Object with initialization parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td colorPicker.setValue(<span>value</span>)
+          td Set new color picker value. <code>value</code> is the <a href="#color-picker-value">color picker value</a> object which can be specified partially:
+            :code(lang="js")
+              var colorPicker = app.colorPicker.create({
+                value: '#ff0000',
+              });
+
+              // update only hue
+              colorPicker.setValue({ hue: 200 });
+
+              // update only alpha
+              colorPicker.setValue({ alpha: 0.2 });
+
+              // set value by hex
+              colorPicker.setValue({ hex: '#ff00ff' });
+        tr
+          td colorPicker.getValue()
+          td Returns current color picker value
+        tr
+          td colorPicker.update()
+          td Updates color picker modules layout (when opened or inline)
+        tr
+          td colorPicker.open()
+          td Open Color Picker
+        tr
+          td colorPicker.close()
+          td Close Color Picker
+        tr
+          td colorPicker.destroy()
+          td Destroy Color Picker instance and remove all events
+        tr
+          td colorPicker.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td colorPicker.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td colorPicker.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td colorPicker.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td colorPicker.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+    h2 Color Picker Events
+    p Color Picker will fire the following DOM events on color picker element and events on app andcolor picker instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          td colorpicker:open
+          td Event will be triggered when Color Picker starts its opening animation
+        tr
+          td colorpicker:opened
+          td Event will be triggered after Color Picker completes its opening animation
+        tr
+          td colorpicker:close
+          td Event will be triggered when Color Picker starts its closing animation
+        tr
+          td colorpicker:closed
+          td Event will be triggered after Color Picker completes its closing animation
+    h3 App and Color Picker Instance Events
+    p Color Picker instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>colorPicker</code>.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Arguments
+          th Description
+      tbody
+        tr
+          td change
+          td colorPicker
+          td(rowspan="2")
+            span (colorPicker, value)
+          td(rowspan="2") Event will be triggered when color picker value changes
+        tr
+          td colorPickerChange
+          td app
+
+        tr
+          td init
+          td colorPicker
+          td(rowspan="2")
+            span (colorPicker)
+          td(rowspan="2") Event will be triggered when color picker initialized
+        tr
+          td colorPickerInit
+          td app
+        tr
+          td open
+          td colorPicker
+          td(rowspan="2") <span>(colorPicker)</span>
+          td(rowspan="2") Event will be triggered when Color Picker starts its opening animation. As an argument event handler receives color picker instance
+        tr
+          td colorPickerOpen
+          td app
+        tr
+          td opened
+          td colorPicker
+          td(rowspan="2") <span>(colorPicker)</span>
+          td(rowspan="2") Event will be triggered after Color Picker completes its opening animation. As an argument event handler receives color picker instance
+        tr
+          td colorPickerOpened
+          td app
+        tr
+          td close
+          td colorPicker
+          td(rowspan="2") <span>(colorPicker)</span>
+          td(rowspan="2") Event will be triggered when Color Picker starts its closing animation. As an argument event handler receives color picker instance
+        tr
+          td colorPickerClose
+          td app
+        tr
+          td closed
+          td colorPicker
+          td(rowspan="2") <span>(colorPicker)</span>
+          td(rowspan="2") Event will be triggered after Color Picker completes its closing animation. As an argument event handler receives color picker instance
+        tr
+          td colorPickerClosed
+          td app
+        tr
+          td beforeDestroy
+          td colorPicker
+          td(rowspan="2") <span>(colorPicker)</span>
+          td(rowspan="2") Event will be triggered right before Color Picker instance will be destroyed. As an argument event handler receives color picker instance
+        tr
+          td colorPickerBeforeDestroy
+          td app
+
+    +cssVars('color-picker')
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/color-picker.html") Examples
+      h4 Color Wheel
+      :code(lang="html")
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-media">
+                  <i class="icon demo-list-icon" id="demo-color-picker-wheel-value"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Color" readonly="readonly" id="demo-color-picker-wheel"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var colorPickerWheel = app.colorPicker.create({
+          inputEl: '#demo-color-picker-wheel',
+          targetEl: '#demo-color-picker-wheel-value',
+          targetElSetBackgroundColor: true,
+          modules: ['wheel'],
+          openIn: 'popover',
+          value: {
+            hex: '#00ff00',
+          },
+        });
+      h4 Saturation-Brightness Spectrum
+      :code(lang="html")
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-media">
+                  <i class="icon demo-list-icon" id="demo-color-picker-spectrum-value"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Color" readonly="readonly" id="demo-color-picker-spectrum"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var colorPickerSpectrum = app.colorPicker.create({
+          inputEl: '#demo-color-picker-spectrum',
+          targetEl: '#demo-color-picker-spectrum-value',
+          targetElSetBackgroundColor: true,
+          modules: ['sb-spectrum', 'hue-slider'],
+          openIn: 'popover',
+          value: {
+            hex: '#ff0000',
+          },
+        });
+      h4 RGB Sliders
+      :code(lang="html")
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-media">
+                  <i class="icon demo-list-icon" id="demo-color-picker-rgb-value"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Color" readonly="readonly" id="demo-color-picker-rgb"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var colorPickerRgb = app.colorPicker.create({
+          inputEl: '#demo-color-picker-rgb',
+          targetEl: '#demo-color-picker-rgb-value',
+          targetElSetBackgroundColor: true,
+          modules: ['rgb-sliders'],
+          openIn: 'popover',
+          sliderValue: true,
+          sliderLabel: true,
+          value: {
+            hex: '#0000ff',
+          },
+        });
+      h4 RGBA Sliders
+      :code(lang="html")
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-media">
+                  <i class="icon demo-list-icon" id="demo-color-picker-rgba-value"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Color" readonly="readonly" id="demo-color-picker-rgba"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var colorPickerRgba = app.colorPicker.create({
+          inputEl: '#demo-color-picker-rgba',
+          targetEl: '#demo-color-picker-rgba-value',
+          targetElSetBackgroundColor: true,
+          modules: ['rgb-sliders', 'alpha-slider'],
+          openIn: 'popover',
+          sliderValue: true,
+          sliderLabel: true,
+          value: {
+            hex: '#ff00ff',
+          },
+          formatValue: function (value) {
+            return 'rgba(' + value.rgba.join(', ') + ')';
+          },
+        });
+      h4 HSB Sliders
+      :code(lang="html")
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-media">
+                  <i class="icon demo-list-icon" id="demo-color-picker-hsb-value"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Color" readonly="readonly" id="demo-color-picker-hsb"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var colorPickerHsb = app.colorPicker.create({
+          inputEl: '#demo-color-picker-hsb',
+          targetEl: '#demo-color-picker-hsb-value',
+          targetElSetBackgroundColor: true,
+          modules: ['hsb-sliders'],
+          openIn: 'popover',
+          sliderValue: true,
+          sliderLabel: true,
+          formatValue: function (value) {
+            return 'hsb(' + value.hsb[0] + (', ' + value.hsb[1] * 1000 / 10 + '%') + (', ' + value.hsb[2] * 1000 / 10 + '%') + ')';
+          },
+          value: {
+            hex: '#00ff00',
+          },
+        });
+      h4 RGB Bars
+      :code(lang="html")
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-media">
+                  <i class="icon demo-list-icon" id="demo-color-picker-rgb-bars-value"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Color" readonly="readonly" id="demo-color-picker-rgb-bars"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var colorPickerRgbBars = app.colorPicker.create({
+          inputEl: '#demo-color-picker-rgb-bars',
+          targetEl: '#demo-color-picker-rgb-bars-value',
+          targetElSetBackgroundColor: true,
+          modules: ['rgb-bars'],
+          openIn: 'auto',
+          barValue: true,
+          barLabel: true,
+          formatValue: function (value) {
+            return 'rgb(' + value.rgb.join(', ') + ')';
+          },
+          value: {
+            hex: '#0000ff',
+          },
+        });
+      h4 RGB Sliders + Colors
+      :code(lang="html")
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-media">
+                  <i class="icon demo-list-icon" id="demo-color-picker-rgb-initial-current-colors-value"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Color" readonly="readonly" id="demo-color-picker-rgb-initial-current-colors"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var colorPickerRgbInitialCurrentColors = app.colorPicker.create({
+          inputEl: '#demo-color-picker-rgb-initial-current-colors',
+          targetEl: '#demo-color-picker-rgb-initial-current-colors-value',
+          targetElSetBackgroundColor: true,
+          modules: ['initial-current-colors', 'rgb-sliders'],
+          openIn: 'popover',
+          sliderValue: true,
+          sliderLabel: true,
+          formatValue: function (value) {
+            return 'rgb(' + value.rgb.join(', ') + ')';
+          },
+          value: {
+            hex: '#ffff00',
+          },
+        });
+      h4 Palette
+      :code(lang="html")
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-media">
+                  <i class="icon demo-list-icon" id="demo-color-picker-palette-value"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Color" readonly="readonly" id="demo-color-picker-palette"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var colorPickerPalette = app.colorPicker.create({
+          inputEl: '#demo-color-picker-palette',
+          targetEl: '#demo-color-picker-palette-value',
+          targetElSetBackgroundColor: true,
+          modules: ['palette'],
+          openIn: 'auto',
+          openInPhone: 'sheet',
+          palette: [
+            ['#FFEBEE', '#FFCDD2', '#EF9A9A', '#E57373', '#EF5350', '#F44336', '#E53935', '#D32F2F', '#C62828', '#B71C1C'],
+            ['#F3E5F5', '#E1BEE7', '#CE93D8', '#BA68C8', '#AB47BC', '#9C27B0', '#8E24AA', '#7B1FA2', '#6A1B9A', '#4A148C'],
+            ['#E8EAF6', '#C5CAE9', '#9FA8DA', '#7986CB', '#5C6BC0', '#3F51B5', '#3949AB', '#303F9F', '#283593', '#1A237E'],
+            ['#E1F5FE', '#B3E5FC', '#81D4FA', '#4FC3F7', '#29B6F6', '#03A9F4', '#039BE5', '#0288D1', '#0277BD', '#01579B'],
+            ['#E0F2F1', '#B2DFDB', '#80CBC4', '#4DB6AC', '#26A69A', '#009688', '#00897B', '#00796B', '#00695C', '#004D40'],
+            ['#F1F8E9', '#DCEDC8', '#C5E1A5', '#AED581', '#9CCC65', '#8BC34A', '#7CB342', '#689F38', '#558B2F', '#33691E'],
+            ['#FFFDE7', '#FFF9C4', '#FFF59D', '#FFF176', '#FFEE58', '#FFEB3B', '#FDD835', '#FBC02D', '#F9A825', '#F57F17'],
+            ['#FFF3E0', '#FFE0B2', '#FFCC80', '#FFB74D', '#FFA726', '#FF9800', '#FB8C00', '#F57C00', '#EF6C00', '#E65100'],
+          ],
+          value: {
+            hex: '#FFEBEE',
+          },
+          formatValue: function (value) {
+            return value.hex;
+          },
+        });
+      h4 Pro Mode
+      :code(lang="html")
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-media">
+                  <i class="icon demo-list-icon" id="demo-color-picker-pro-value"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Color" readonly="readonly" id="demo-color-picker-pro"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var colorPickerRgbPro = app.colorPicker.create({
+          inputEl: '#demo-color-picker-pro',
+          targetEl: '#demo-color-picker-pro-value',
+          targetElSetBackgroundColor: true,
+          modules: ['initial-current-colors', 'sb-spectrum', 'hsb-sliders', 'rgb-sliders', 'alpha-slider', 'hex', 'palette'],
+          openIn: 'auto',
+          sliderValue: true,
+          sliderValueEditable: true,
+          sliderLabel: true,
+          hexLabel: true,
+          hexValueEditable: true,
+          groupedModules: true,
+          palette: [
+            ['#FFEBEE', '#FFCDD2', '#EF9A9A', '#E57373', '#EF5350', '#F44336', '#E53935', '#D32F2F', '#C62828', '#B71C1C'],
+            ['#F3E5F5', '#E1BEE7', '#CE93D8', '#BA68C8', '#AB47BC', '#9C27B0', '#8E24AA', '#7B1FA2', '#6A1B9A', '#4A148C'],
+            ['#E8EAF6', '#C5CAE9', '#9FA8DA', '#7986CB', '#5C6BC0', '#3F51B5', '#3949AB', '#303F9F', '#283593', '#1A237E'],
+            ['#E1F5FE', '#B3E5FC', '#81D4FA', '#4FC3F7', '#29B6F6', '#03A9F4', '#039BE5', '#0288D1', '#0277BD', '#01579B'],
+            ['#E0F2F1', '#B2DFDB', '#80CBC4', '#4DB6AC', '#26A69A', '#009688', '#00897B', '#00796B', '#00695C', '#004D40'],
+            ['#F1F8E9', '#DCEDC8', '#C5E1A5', '#AED581', '#9CCC65', '#8BC34A', '#7CB342', '#689F38', '#558B2F', '#33691E'],
+            ['#FFFDE7', '#FFF9C4', '#FFF59D', '#FFF176', '#FFEE58', '#FFEB3B', '#FDD835', '#FBC02D', '#F9A825', '#F57F17'],
+            ['#FFF3E0', '#FFE0B2', '#FFCC80', '#FFB74D', '#FFA726', '#FF9800', '#FB8C00', '#F57C00', '#EF6C00', '#E65100'],
+          ],
+          formatValue: function (value) {
+            return 'rgba(' + value.rgba.join(', ') + ')';
+          },
+          value: {
+            hex: '#00ffff',
+          },
+        });
+      h4 Inline Color Picker
+      :code(lang="html")
+        <div class="block block-strong no-padding">
+          <div id="demo-color-picker-inline"></div>
+        </div>
+      :code(lang="js")
+        var colorPickerInline = app.colorPicker.create({
+          containerEl: '#demo-color-picker-inline',
+          modules: ['sb-spectrum', 'hsb-sliders', 'alpha-slider'],
+          value: {
+            hex: '#77ff66',
+          },
+        });

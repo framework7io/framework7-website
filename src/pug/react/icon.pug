@@ -58,31 +58,35 @@ block content
           td string
           td Icon to be used in case of Material theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
         tr
+          td aurora
+          td string
+          td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>ion:home</code>
+        tr
           td tooltip
           td string
           td Icon <a href="../docs/tooltip.html">tooltip</a> text to show on icon hover/press
     h2 Examples
     :code(lang="jsx")
-          {/*  Default back icon */}
-          &lt;Icon icon="icon-back"&gt;&lt;/Icon&gt;
+      {/*  Default back icon */}
+      &lt;Icon icon="icon-back"&gt;&lt;/Icon&gt;
 
-          {/*  Some custom icon */}
-          &lt;Icon icon="icon-home"&gt;&lt;/Icon&gt;
+      {/*  Some custom icon */}
+      &lt;Icon icon="icon-home"&gt;&lt;/Icon&gt;
 
-          {/*  F7 Icons font icon */}
-          &lt;Icon f7="home"&gt;&lt;/Icon&gt;
+      {/*  F7 Icons font icon */}
+      &lt;Icon f7="home"&gt;&lt;/Icon&gt;
 
-          {/*  Material Icons font icon */}
-          &lt;Icon material="home"&gt;&lt;/Icon&gt;
+      {/*  Material Icons font icon */}
+      &lt;Icon material="home"&gt;&lt;/Icon&gt;
 
-          {/*  Font Awesome icons font icon */}
-          &lt;Icon fa="home"&gt;&lt;/Icon&gt;
+      {/*  Font Awesome icons font icon */}
+      &lt;Icon fa="home"&gt;&lt;/Icon&gt;
 
-          {/*  Ionicons icons font icon */}
-          &lt;Icon ion="home"&gt;&lt;/Icon&gt;
+      {/*  Ionicons icons font icon */}
+      &lt;Icon ion="home"&gt;&lt;/Icon&gt;
 
-          {/*  F7 icons font icon with custom size and color */}
-          &lt;Icon f7="home" size="44px" color="blue"&gt;&lt;/Icon&gt;
+      {/*  F7 icons font icon with custom size and color */}
+      &lt;Icon f7="home" size="44px" color="blue"&gt;&lt;/Icon&gt;
 
-          {/*  Conditional icon */}
-          &lt;Icon ios="f7:home" md="material:home"&gt;&lt;/Icon&gt;
+      {/*  Conditional icon */}
+      &lt;Icon ios="f7:home" aurora="f7:home" md="material:home"&gt;&lt;/Icon&gt;

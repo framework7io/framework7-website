@@ -72,11 +72,17 @@ block content
           td edge
           td <code>true</code> for Edge browser
         tr
+          td electron
+          td <code>true</code> when app is running under Electron environment
+        tr
           td webView
-          td <code>true</code> if app runs in web view - webapp installed to home screen
+          td <code>true</code> if app runs in web view - webapp installed to home screen, valid for desktop PWAs installed to desktop
+        tr
+          td standalone
+          td Same as <code>webView</code>
         tr
           td os
-          td Contains OS can be <code>ios</code>, <code>android</code> or <code>windows</code> (for Windows Phone)
+          td Contains OS can be <code>ios</code>, <code>android</code> or <code>windowsPhone</code> (for Windows Phone)
         tr
           td osVersion
           td Contains OS version, e.g. <code>11.2.0</code>
@@ -91,6 +97,9 @@ block content
         tr
           td needsStatusbarOverlay()
           td Returns <code>true</code> if app running in full-screen mode and requires <a href="status-bar.html">Status Bar</a> overlay
+        tr
+          td prefersColorScheme()
+          td Returns pereferd user system color scheme. Returns <code>"light"</code> or <code>"dark"</code> where this feature supported or <code>undefined</code> otherwise. This feature support is based on <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank"><code>(prefers-color-scheme)</code> media query support</a>.
     h2 Device Related Classes
     p Also this Device detecting library adds additional classes on <code>&lt;html&gt;</code> element which can help you with different CSS styles for different OS and platforms.
     p So if you open app with iOS 7.1 device you may have the following classes:
