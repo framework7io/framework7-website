@@ -140,6 +140,7 @@ block content
 
     h2 Router API
     p To access router instance and use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>$f7router</b> property of component:
+    p For using router and route to a page, you should assing <code>name</code> attribute to each <code>Page</code> component in each page's root component as well.
     :code(lang="jsx")
           <Link onClick={() => this.$f7router.navigate('/about/')}>About</Link>
           <Link onClick={() => this.$f7router.back()}>Go Back</Link>
