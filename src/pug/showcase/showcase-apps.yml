@@ -1,3 +1,27 @@
+-
+  iconUrl: "#{cdn}/i/showcase/colorize-my-photos-icon.png"
+  iconRounded: true
+  title: "Colorize My photos"
+  author:
+    url: https://play.google.com/store/apps/dev?id=7208816986263048508
+    name: Anas Programmer
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.colourise8.anaspro
+    website: https://www.facebook.com/Colorize-My-photos-%D8%AA%D9%84%D9%88%D9%8A%D9%86-%D8%A7%D9%84%D8%B5%D9%88%D8%B1-%D8%A7%D9%84%D9%82%D8%AF%D9%8A%D9%85%D8%A9-2035969666712647/?modal=admin_todo_tour
+  description: |
+    An application that helps you to color old images in just 10 seconds, you can resurrect any old photos and save them on your phone,
+    Get rid of the hassle of expensive image processing software with long time coloring for your manual photos.
+    "Colorize My photos" it's easy and free for use for ever .
+    - Easy to use (select an image and will color it)
+    - saves you time and costs to recolor your old photos
+    - Save the image in the phone after coloring
+    - smooth graphical interfaces
+
+  screenshots:
+  - "#{cdn}/i/showcase/colorize-my-photos1.png"
+  - "#{cdn}/i/showcase/colorize-my-photos2.png"
+  - "#{cdn}/i/showcase/colorize-my-photos3.png"
+  - "#{cdn}/i/showcase/colorize-my-photos4.png"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/kidoverse.png"
