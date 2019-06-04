@@ -386,6 +386,18 @@ block content
             p
               img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-hue-slider.png")
         tr
+          td hs-spectrum
+          td
+            p Hue-Saturation spectrum. It is recommended to use it with <code>brightness-slider</code>
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-hs-spectrum.png")
+        tr
+          td brightness-slider
+          td
+            p Single brightness slider
+            p
+              img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-brightness-slider.png")
+        tr
           td rgb-sliders
           td
             p Red, green and blue sliders
@@ -768,6 +780,36 @@ block content
             hex: '#ff0000',
           },
         });
+      h4 Hue-Saturation Spectrum
+      :code(lang="html")
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-media">
+                  <i class="icon demo-list-icon" id="demo-color-picker-hs-spectrum-value"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Color" readonly="readonly" id="demo-color-picker-hs-spectrum"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var colorPickerHsSpectrum = app.colorPicker.create({
+          inputEl: '#demo-color-picker-hs-spectrum',
+          targetEl: '#demo-color-picker-hs-spectrum-value',
+          targetElSetBackgroundColor: true,
+          modules: ['hs-spectrum', 'brightness-slider'],
+          openIn: 'popover',
+          value: {
+            hex: '#ff0000',
+          },
+        });
+
       h4 RGB Sliders
       :code(lang="html")
         <div class="list no-hairlines-md">
