@@ -21,7 +21,7 @@ silver:
 topSupporter:
 -
   title: usave - compare broadband deals on usave.co.uk
-  link: usave.co.uk/utilities/broadband
+  link: https://usave.co.uk/utilities/broadband
   imageUrl: "#{cdn}/i/sponsors/usave.png"
 -
   title: Unlikely IT
