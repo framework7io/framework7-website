@@ -20,6 +20,10 @@ silver:
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
 -
+  title: usave - compare broadband deals on usave.co.uk
+  link: usave.co.uk/utilities/broadband
+  imageUrl: "#{cdn}/i/sponsors/usave.png"
+-
   title: Unlikely IT
   link: https://unlikelyit.com/
   imageUrl: "#{cdn}/i/sponsors/unlikely-it.png"
