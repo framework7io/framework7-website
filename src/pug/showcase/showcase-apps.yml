@@ -1,3 +1,25 @@
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/ps-link-icon.png"
+  iconRounded: true
+  title: "Link"
+  author:
+    url: https://rise.co/
+    name: Rise
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.petstop.link
+    appstore: https://itunes.apple.com/us/app/pet-stop-link/id1273612569?mt=8
+    website: https://petstop.com/link-dog-fence-phone-app/
+  description: |
+    Imagine a pet fence system that Links to your smart phone. That monitors your pet’s behavior and sends you a notification if a setting needs to be changed. A setting you send to your dog’s collar with a quick click.
+
+    Now there’s Link™, an amazing breakthrough in pet fencing. With Link you’ll have access to real-time information at your fingertips and so will your Pet Stop Dealer. Information like letting you know the collar needs to be charged or prompting you to making an adjustment to the over 1000 available settings.
+  screenshots:
+  - "#{cdn}/i/showcase/ps-link-1.png"
+  - "#{cdn}/i/showcase/ps-link-2.png"
+  - "#{cdn}/i/showcase/ps-link-3.png"
+  - "#{cdn}/i/showcase/ps-link-4.png"
+##########
 -
   iconUrl: "#{cdn}/i/showcase/colorize-my-photos-icon.png"
   iconRounded: true
@@ -2980,24 +3002,3 @@
   - "#{cdn}/i/showcase/tanahalhaperek3.png"
   - "#{cdn}/i/showcase/tanahalhaperek4.png"
   - "#{cdn}/i/showcase/tanahalhaperek5.png"
-##########
--
-  iconUrl: "#{cdn}/i/showcase/ps-link-icon.png"
-  iconRounded: true
-  title: "Link"
-  author:
-    url: https://rise.co/
-    name: Rise
-  links:
-    googleplay: https://play.google.com/store/apps/details?id=com.petstop.link
-    appstore: https://itunes.apple.com/us/app/pet-stop-link/id1273612569?mt=8
-    website: https://petstop.com/link-dog-fence-phone-app/
-  description: |
-    Imagine a pet fence system that Links to your smart phone. That monitors your pet’s behavior and sends you a notification if a setting needs to be changed. A setting you send to your dog’s collar with a quick click.
-    
-    Now there’s Link™, an amazing breakthrough in pet fencing. With Link you’ll have access to real-time information at your fingertips and so will your Pet Stop Dealer. Information like letting you know the collar needs to be charged or prompting you to making an adjustment to the over 1000 available settings.
-  screenshots:
-  - "#{cdn}/i/showcase/ps-link-1.png"
-  - "#{cdn}/i/showcase/ps-link-2.png"
-  - "#{cdn}/i/showcase/ps-link-3.png"
-  - "#{cdn}/i/showcase/ps-link-4.png"
