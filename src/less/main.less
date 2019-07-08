@@ -93,9 +93,15 @@ h1, h2, h3, h4, h5 {
 
 // Content
 main {
-  padding-top: 40px;
+  padding-top: 60px;
   padding-bottom: 40px;
   box-sizing: border-box;
+  @media (min-width: 601px) {
+    padding-top: 50px;
+  }
+  @media (min-width: 961px) {
+    padding-top: 40px;
+  }
   img {
     max-width: 100%;
   }
