@@ -114,6 +114,9 @@ block content
         tr
           td sheet:stepclose
           td Event will be triggered on Sheet swipe step close/collapse
+        tr
+          td sheet:stepprogress
+          td Event will be triggered on Sheet swipe step between step opened and closed state. As <code>event.detail</code> it receives step open progress number (from <code>0</code> to <code>1</code>)
 
     h2 Open And Close Sheet Modal
     p You can control Sheet Modal state, open and closing it:
