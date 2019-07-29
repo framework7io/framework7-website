@@ -4726,7 +4726,7 @@
 	        classNames.push('device-retina');
 	      }
 	      // OS classes
-	      if (Device.os) {
+	      if (Device.os && !Device.desktop) {
 	        classNames.push(
 	          ("device-" + (Device.os)),
 	          ("device-" + (Device.os) + "-" + (Device.osVersion.split('.')[0])),
@@ -4743,8 +4743,9 @@
 	        }
 	      } else if (Device.desktop) {
 	        classNames.push('device-desktop');
-	        if (Device.macos) { classNames.push('device-macos'); }
-	        else if (Device.windows) { classNames.push('device-windows'); }
+	        if (Device.os) {
+	          classNames.push(("device-" + (Device.os)));
+	        }
 	      }
 	      if (Device.cordova || Device.phonegap) {
 	        classNames.push('device-cordova');
@@ -39909,7 +39910,7 @@
 	};
 
 	/**
-	 * Framework7 4.4.9
+	 * Framework7 4.4.10
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -53881,7 +53882,7 @@
 	};
 
 	/**
-	 * Framework7 React 4.4.9
+	 * Framework7 React 4.4.10
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
