@@ -3498,6 +3498,12 @@
 	    device.electron = electron;
 	    device.macos = macos;
 	    device.windows = windows;
+	    if (device.macos) {
+	      device.os = 'macos';
+	    }
+	    if (device.windows) {
+	      device.os = 'windows';
+	    }
 	  }
 
 	  // Meta statusbar
@@ -12833,8 +12839,11 @@
 	      previousScrollTop = currentScrollTop;
 	    }
 
-	    function handleScroll() {
+	    function handleScroll(e) {
 	      scrollContent = this;
+	      if (e && e.target && e.target !== scrollContent) {
+	        return;
+	      }
 	      currentScrollTop = scrollContent.scrollTop;
 	      scrollChanged = currentScrollTop;
 
@@ -13170,8 +13179,11 @@
 	    var reachEnd;
 	    var action;
 	    var toolbarHidden;
-	    function handleScroll() {
+	    function handleScroll(e) {
 	      var scrollContent = this;
+	      if (e && e.target && e.target !== scrollContent) {
+	        return;
+	      }
 	      if ($pageEl.hasClass('page-previous')) { return; }
 	      currentScrollTop = scrollContent.scrollTop;
 	      scrollHeight = scrollContent.scrollHeight;
@@ -25607,13 +25619,20 @@
 	  create: function create(el) {
 	    var $el = $(el);
 	    var app = this;
-	    $el.on('scroll', function handle(e) {
+	    function scrollHandler(e) {
 	      app.infiniteScroll.handle(this, e);
+	    }
+	    $el.each(function (index, element) {
+	      element.f7InfiniteScrollHandler = scrollHandler;
+	      element.addEventListener('scroll', element.f7InfiniteScrollHandler);
 	    });
 	  },
 	  destroy: function destroy(el) {
 	    var $el = $(el);
-	    $el.off('scroll');
+	    $el.each(function (index, element) {
+	      element.removeEventListener('scroll', element.f7InfiniteScrollHandler);
+	      delete element.f7InfiniteScrollHandler;
+	    });
 	  },
 	};
 	var InfiniteScroll$1 = {
@@ -39890,7 +39909,7 @@
 	};
 
 	/**
-	 * Framework7 4.4.7
+	 * Framework7 4.4.9
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -39898,7 +39917,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: July 19, 2019
+	 * Released on: July 29, 2019
 	 */
 
 	// Install Core Modules & Components
@@ -42416,6 +42435,7 @@
 	    var swipeToClose = props.swipeToClose;
 	    var closeByBackdropClick = props.closeByBackdropClick;
 	    var backdrop = props.backdrop;
+	    var backdropEl = props.backdropEl;
 	    var noShadow = props.noShadow;
 	    var noBorder = props.noBorder;
 	    var headerEl;
@@ -42455,7 +42475,8 @@
 	      'data-hide-toolbar-on-open': typeof hideToolbarOnOpen === 'undefined' ? hideToolbarOnOpen : hideToolbarOnOpen.toString(),
 	      'data-swipe-to-close': typeof swipeToClose === 'undefined' ? swipeToClose : swipeToClose.toString(),
 	      'data-close-by-backdrop-click': typeof closeByBackdropClick === 'undefined' ? closeByBackdropClick : closeByBackdropClick.toString(),
-	      'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString()
+	      'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString(),
+	      'data-backdrop-el': backdropEl
 	    }, headerEl, contentEl, footerEl, this.slots['default']);
 	  };
 
@@ -42558,6 +42579,10 @@
 	  },
 	  backdrop: {
 	    type: Boolean,
+	    default: undefined
+	  },
+	  backdropEl: {
+	    type: String,
 	    default: undefined
 	  },
 	  noShadow: Boolean,
@@ -53856,7 +53881,7 @@
 	};
 
 	/**
-	 * Framework7 React 4.4.7
+	 * Framework7 React 4.4.9
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -53864,7 +53889,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: July 19, 2019
+	 * Released on: July 29, 2019
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -59899,13 +59924,13 @@
 	      var items = ref.items;
 	      var songs = ref.songs;
 	      var authors = ref.authors;
-	      var picURL = "https://cdn.framework7.io/placeholder/abstract-88x88-" + (Math.round(Math.random() * 10)) + ".jpg";
+	      var picURL = "https://cdn.framework7.io/placeholder/abstract-88x88-" + ((Math.floor(Math.random() * 10) + 1)) + ".jpg";
 	      var song = songs[Math.floor(Math.random() * songs.length)];
 	      var author = authors[Math.floor(Math.random() * authors.length)];
 	      items.push({
 	        title: song,
 	        author: author,
-	        img: picURL,
+	        cover: picURL,
 	      });
 	      self.setState({ items: items });
 
