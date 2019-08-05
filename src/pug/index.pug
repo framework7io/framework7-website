@@ -159,19 +159,22 @@ html
           - var sponsors = getYamlData('sponsors/sponsors.yml');
           if (sponsors.diamond)
             each sponsor in sponsors.diamond
-              a(href=sponsor.link, target="_blank")
+              a(href=sponsor.link, target="_blank").home-sponsor-diamond
                 .sponsor-badge.sponsor-badge-diamond(title="Diamond Sponsor")
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+            .home-sponsors-separator
           if (sponsors.platinum)
             each sponsor in sponsors.platinum
-              a(href=sponsor.link, target="_blank")
+              a(href=sponsor.link, target="_blank").home-sponsor-platinum
                 .sponsor-badge.sponsor-badge-platinum(title="Platinum Sponsor")
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+            .home-sponsors-separator
           if (sponsors.gold)
             each sponsor in sponsors.gold
-              a(href=sponsor.link, target="_blank")
+              a(href=sponsor.link, target="_blank").home-sponsor-gold
                 .sponsor-badge.sponsor-badge-gold(title="Gold Sponsor")
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+            .home-sponsors-separator
           if (sponsors.silver)
             each sponsor in sponsors.silver
               a(href=sponsor.link, target="_blank")
