@@ -24,6 +24,10 @@ silver:
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
 -
+  title: COLOGNE WEBDESIGN
+  link: https://www.colognewebdesign.de/
+  imageUrl: "#{cdn}/i/sponsors/colognewebdesign.png"
+-
   title: Rise — Creative Web Development Agency
   link: https://rise.co
   imageUrl: "#{cdn}/i/sponsors/rise.png"
