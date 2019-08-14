@@ -1,5 +1,58 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/kidoverse-solarsystem.png"
+  iconRounded: true
+  title: "Kidoverse Solar System"
+  author:
+    url: https://kidoverse.app
+    name: Kidoverse
+  links:
+    appstore: https://apps.apple.com/us/app/kidoverse-solar-system/id1475660662
+    googleplay: https://play.google.com/store/apps/details?id=app.kidoverse.solarsystem
+    website: https://kidoverse.app
+  description: |
+    Kidoverse Solar System is an educational application about the Solar System, its objects and planets, and is an interactive three-dimensional model of our Solar System, where you can make an exciting journey through the expanse of our Solar System.
+
+    Wonderful visual effects and musical accompaniment will allow you to enjoy the beauty and feel all the greatness of our Solar System with pleasure and interest.
+
+    All information is voiced, and the child will not have to be distracted by reading the information during the trip and the exploration of the planets and stars.
+
+    With each new update we will add more planets, satellites and other Solar System objects.
+  screenshots:
+    - "#{cdn}/i/showcase/kidoverse-solarsystem1.png"
+    - "#{cdn}/i/showcase/kidoverse-solarsystem2.png"
+    - "#{cdn}/i/showcase/kidoverse-solarsystem3.png"
+    - "#{cdn}/i/showcase/kidoverse-solarsystem4.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/kidoverse-lite.png"
+  iconRounded: true
+  title: "Kidoverse Lite"
+  author:
+    url: https://kidoverse.app
+    name: Kidoverse
+  links:
+    appstore: https://apps.apple.com/us/app/kidoverse-lite/id1475660641
+    googleplay: https://play.google.com/store/apps/details?id=app.kidoverse.lite
+    website: https://kidoverse.app
+  description: |
+    Kidoverse - application for young children, where they can learn, play, explore the world around us or just have fun.
+    Kidoverse is based on different "sets":
+    - Educational sets, like Alphabet and Numbers
+    - Cognitive sets: Animals, Vehicles, Fruits, Vegetables, Rainbow Colors
+    - Musical instruments: Piano, Violin, Guitar, Saxophone, Marimba and others
+    - DJ sets: special musical sets where child can feel like a little DJ
+    The collection of sets is constantly being replenished.
+    New sets every month!
+  screenshots:
+    - "#{cdn}/i/showcase/kidoverse1.png"
+    - "#{cdn}/i/showcase/kidoverse2.png"
+    - "#{cdn}/i/showcase/kidoverse3.png"
+    - "#{cdn}/i/showcase/kidoverse4.png"
+    - "#{cdn}/i/showcase/kidoverse5.png"
+    - "#{cdn}/i/showcase/kidoverse6.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/onepile.png"
   iconRounded: true
   title: "OnePile"
@@ -103,6 +156,8 @@
     - "#{cdn}/i/showcase/kidoverse4.png"
     - "#{cdn}/i/showcase/kidoverse5.png"
     - "#{cdn}/i/showcase/kidoverse6.png"
+    - "#{cdn}/i/showcase/kidoverse7.png"
+    - "#{cdn}/i/showcase/kidoverse8.png"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/vetcalculators.png"
