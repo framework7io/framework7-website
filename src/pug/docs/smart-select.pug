@@ -221,6 +221,16 @@ block content
           td
           td Visual element where to insert selected value. If not passed then it will look for <code>&lt;div class="item-after"&gt;</code> element
         tr
+          td setValueText
+          td boolean
+          td true
+          td When enabled then smart select will automaticall insert value text into specified "valueEl" in format returned by "formatValueText" 
+        tr
+          td formatValueText
+          td function(values)
+          td 
+          td Custom function to format smart select text value that appears on list item (in <code>&lt;div class="item-after"&gt;</code>). <code>values</code> is the array of current values
+        tr
           td openIn
           td string
           td page
@@ -470,6 +480,10 @@ block content
           th Description
       tbody
         tr
+          td smartselect:beforeopen
+          td Smart Select Element<span>&lt;a class="item-link smart-select"&gt;</span>
+          td Event will be triggered before Smart Select open. <code>event.detail.prevent</code> contains function that will prevent Smart Select from opening when called
+        tr
           td smartselect:open
           td Smart Select Element<span>&lt;a class="item-link smart-select"&gt;</span>
           td Event will be triggered when Smart Select page (or modal) starts its opening animation
@@ -500,9 +514,17 @@ block content
           th Description
       tbody
         tr
+          td beforeOpen
+          td smartSelect
+          td(rowspan="2") <span>(smartSelect, prevent)</span>
+          td(rowspan="2") Event will be triggered before Smart Select open. As an argument event handler receives smart select instance and function that will prevent Smart Select from opening when called
+        tr
+          td smartSelectBeforeOpen
+          td app
+        tr
           td open
           td smartSelect
-          td(rowspan="2") <span>(smartSelect)</span>
+          td(rowspan="2") <span>(smartSelect, prevent)</span>
           td(rowspan="2") Event will be triggered when Smart Select starts its opening animation. As an argument event handler receives smart select instance
         tr
           td smartSelectOpen

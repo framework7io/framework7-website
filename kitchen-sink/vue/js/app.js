@@ -18759,7 +18759,7 @@
     if (html && typeof html === 'string') {
       html = html.trim();
       self.$vnode = vdom(html, self, app, true);
-      self.el = doc.createElement('div');
+      self.el = doc.createElement(self.$vnode.sel || 'div');
       patch$1(self.el, self.$vnode);
     } else if (html) {
       self.el = html;
@@ -20598,6 +20598,9 @@
       }
 
       if (!$el || !$el.hasClass('modal-in')) {
+        if (dialogsQueue.indexOf(modal) >= 0) {
+          dialogsQueue.splice(dialogsQueue.indexOf(modal), 1);
+        }
         return modal;
       }
 
@@ -21761,6 +21764,8 @@
       var targetHeight;
       var targetOffsetLeft;
       var targetOffsetTop;
+      var safeAreaTop = parseInt($('html').css('--f7-safe-area-top'), 10);
+      if (Number.isNaN(safeAreaTop)) { safeAreaTop = 0; }
       if ($targetEl && $targetEl.length > 0) {
         targetWidth = $targetEl.outerWidth();
         targetHeight = $targetEl.outerHeight();
@@ -21791,7 +21796,7 @@
           // On bottom
           position = 'bottom';
           top = targetOffsetTop + targetHeight;
-        } else if (height < targetOffsetTop) {
+        } else if (height < targetOffsetTop - safeAreaTop) {
           // On top
           top = targetOffsetTop - height;
           position = 'top';
@@ -21819,7 +21824,7 @@
         $el.addClass(("popover-on-" + position + " popover-on-" + hPosition));
       } else {
         // ios and aurora
-        if ((height + angleSize) < targetOffsetTop) {
+        if ((height + angleSize) < targetOffsetTop - safeAreaTop) {
           // On top
           top = targetOffsetTop - height - angleSize;
         } else if ((height + angleSize) < app.height - targetOffsetTop - targetHeight) {
@@ -22864,6 +22869,12 @@
           app.preloader.init(preloaderEl);
         });
       },
+      tabMounted: function tabMounted(tabEl) {
+        var app = this;
+        $(tabEl).find('.preloader').each(function (index, preloaderEl) {
+          app.preloader.init(preloaderEl);
+        });
+      },
       pageInit: function pageInit(page) {
         var app = this;
         page.$el.find('.preloader').each(function (index, preloaderEl) {
@@ -23020,6 +23031,13 @@
       });
     },
     on: {
+      tabMounted: function tabMounted(tabEl) {
+        var app = this;
+        $(tabEl).find('.progressbar').each(function (index, progressbarEl) {
+          var $progressbarEl = $(progressbarEl);
+          app.progressbar.set($progressbarEl, $progressbarEl.attr('data-progress'));
+        });
+      },
       pageInit: function pageInit(page) {
         var app = this;
         page.$el.find('.progressbar').each(function (index, progressbarEl) {
@@ -23079,7 +23097,7 @@
         if ($listGroup.length && $listGroup.parents($sortableContainer).length) {
           $sortableContainer = $listGroup;
         }
-        $sortingItems = $sortableContainer.children('ul').children('li');
+        $sortingItems = $sortableContainer.children('ul').children('li:not(.disallow-sorting):not(.no-sorting)');
         if (app.panel) { app.panel.allowOpen = false; }
         if (app.swipeout) { app.swipeout.allow = false; }
       }
@@ -23181,7 +23199,12 @@
         if ($insertAfterEl) { indexTo = $insertAfterEl.index(); }
         else if ($insertBeforeEl) { indexTo = $insertBeforeEl.index(); }
 
-        if (app.params.sortable.moveElements) {
+        var moveElements = $sortableContainer.dataset().sortableMoveElements;
+        if (typeof moveElements === 'undefined') {
+          moveElements = app.params.sortable.moveElements;
+        }
+
+        if (moveElements) {
           if ($insertAfterEl) {
             $sortingEl.insertAfter($insertAfterEl);
           }
@@ -28965,13 +28988,16 @@
       var $selectEl = $el.find('select').eq(0);
       if ($selectEl.length === 0) { return ss; }
 
-      var $valueEl = $(ss.params.valueEl);
-      if ($valueEl.length === 0) {
-        $valueEl = $el.find('.item-after');
-      }
-      if ($valueEl.length === 0) {
-        $valueEl = $('<div class="item-after"></div>');
-        $valueEl.insertAfter($el.find('.item-title'));
+      var $valueEl;
+      if (ss.params.setValueText) {
+        $valueEl = $(ss.params.valueEl);
+        if ($valueEl.length === 0) {
+          $valueEl = $el.find('.item-after');
+        }
+        if ($valueEl.length === 0) {
+          $valueEl = $('<div class="item-after"></div>');
+          $valueEl.insertAfter($el.find('.item-title'));
+        }
       }
 
       // View
@@ -28995,7 +29021,7 @@
         $selectEl: $selectEl,
         selectEl: $selectEl[0],
         $valueEl: $valueEl,
-        valueEl: $valueEl[0],
+        valueEl: $valueEl && $valueEl[0],
         url: url,
         multiple: multiple,
         inputType: inputType,
@@ -29016,7 +29042,7 @@
         var value = ss.$selectEl.val();
         ss.$el.trigger('smartselect:change', ss, value);
         ss.emit('local::change smartSelectChange', ss, value);
-        ss.setTextValue();
+        ss.setValueText();
       }
       ss.attachEvents = function attachEvents() {
         $el.on('click', onClick);
@@ -29058,7 +29084,9 @@
         }
 
         ss.$selectEl.trigger('change');
-        ss.$valueEl.text(optionText.join(', '));
+        if (ss.params.setValueText) {
+          ss.$valueEl.text(ss.formatValueText(optionText));
+        }
         if (ss.params.closeOnSelect && ss.inputType === 'radio') {
           ss.close();
         }
@@ -29115,7 +29143,9 @@
         }
         ss.selectEl.value = newValue;
       }
-      ss.$valueEl.text(optionText.join(', '));
+      if (ss.params.setValueText) {
+        ss.$valueEl.text(ss.formatValueText(optionText));
+      }
       return ss;
     };
 
@@ -29153,7 +29183,18 @@
       }
     };
 
-    SmartSelect.prototype.setTextValue = function setTextValue (value) {
+    SmartSelect.prototype.formatValueText = function formatValueText (values) {
+      var ss = this;
+      var textValue;
+      if (ss.params.formatValueText) {
+        textValue = ss.params.formatValueText.call(ss, values, ss);
+      } else {
+        textValue = values.join(', ');
+      }
+      return textValue;
+    };
+
+    SmartSelect.prototype.setValueText = function setValueText (value) {
       var ss = this;
       var valueArray = [];
       if (typeof value !== 'undefined') {
@@ -29175,7 +29216,9 @@
           }
         });
       }
-      ss.$valueEl.text(valueArray.join(', '));
+      if (ss.params.setValueText) {
+        ss.$valueEl.text(ss.formatValueText(valueArray));
+      }
     };
 
     SmartSelect.prototype.getItemsData = function getItemsData () {
@@ -29591,6 +29634,15 @@
     SmartSelect.prototype.open = function open (type) {
       var ss = this;
       if (ss.opened) { return ss; }
+      var prevented = false;
+      function prevent() {
+        prevented = true;
+      }
+      if (ss.$el) {
+        ss.$el.trigger('smartselect:beforeopen', { prevent: prevent });
+      }
+      ss.emit('local::beforeOpen smartSelectBeforeOpen', ss, prevent);
+      if (prevented) { return ss; }
       var openIn = type || ss.params.openIn;
       ss[("open" + (openIn.split('').map(function (el, index) {
         if (index === 0) { return el.toUpperCase(); }
@@ -29620,7 +29672,7 @@
     SmartSelect.prototype.init = function init () {
       var ss = this;
       ss.attachEvents();
-      ss.setTextValue();
+      ss.setValueText();
     };
 
     SmartSelect.prototype.destroy = function destroy () {
@@ -29642,6 +29694,8 @@
       smartSelect: {
         el: undefined,
         valueEl: undefined,
+        setValueText: true,
+        formatValueText: null,
         openIn: 'page', // or 'popup' or 'sheet' or 'popover'
         pageTitle: undefined,
         pageBackLinkText: 'Back',
@@ -32687,14 +32741,18 @@
       tabMounted: function tabMounted(tabEl) {
         var app = this;
         var $tabEl = $(tabEl);
-        $tabEl.find('.infinite-scroll-content').each(function (index, el) {
+        var $isEls = $tabEl.find('.infinite-scroll-content');
+        if ($tabEl.is('.infinite-scroll-content')) { $isEls.add($tabEl); }
+        $isEls.each(function (index, el) {
           app.infiniteScroll.create(el);
         });
       },
       tabBeforeRemove: function tabBeforeRemove(tabEl) {
         var $tabEl = $(tabEl);
         var app = this;
-        $tabEl.find('.infinite-scroll-content').each(function (index, el) {
+        var $isEls = $tabEl.find('.infinite-scroll-content');
+        if ($tabEl.is('.infinite-scroll-content')) { $isEls.add($tabEl); }
+        $isEls.each(function (index, el) {
           app.infiniteScroll.destroy(el);
         });
       },
@@ -33254,14 +33312,18 @@
       tabMounted: function tabMounted(tabEl) {
         var app = this;
         var $tabEl = $(tabEl);
-        $tabEl.find('.ptr-content').each(function (index, el) {
+        var $ptrEls = $tabEl.find('.ptr-content');
+        if ($tabEl.is('.ptr-content')) { $ptrEls.add($tabEl); }
+        $ptrEls.each(function (index, el) {
           app.ptr.create(el);
         });
       },
       tabBeforeRemove: function tabBeforeRemove(tabEl) {
         var $tabEl = $(tabEl);
         var app = this;
-        $tabEl.find('.ptr-content').each(function (index, el) {
+        var $ptrEls = $tabEl.find('.ptr-content');
+        if ($tabEl.is('.ptr-content')) { $ptrEls.add($tabEl); }
+        $ptrEls.each(function (index, el) {
           app.ptr.destroy(el);
         });
       },
@@ -34317,7 +34379,7 @@
       } else {
         if (needsFocus) { sb.$inputEl.focus(); }
         if (app.theme === 'md' && sb.expandable) {
-          sb.$el.parents('.page, .view, .navbar-inner').scrollLeft(0);
+          sb.$el.parents('.page, .view, .navbar-inner').scrollLeft(app.rtl ? 100 : 0);
         }
         enable();
       }
@@ -46234,7 +46296,7 @@
       self.attachEvents();
 
       params.modules.forEach(function (m) {
-        if (typeof m === 'string' && modules[m] && modules[m].render) {
+        if (typeof m === 'string' && modules[m] && modules[m].init) {
           modules[m].init(self);
         } else if (m && m.init) {
           m.init(self);
@@ -46945,7 +47007,7 @@
   };
 
   /**
-   * Framework7 4.4.10
+   * Framework7 4.5.0
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -46953,7 +47015,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: July 29, 2019
+   * Released on: August 21, 2019
    */
 
   // Install Core Modules & Components
@@ -48425,6 +48487,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -48789,6 +48867,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -49547,6 +49641,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -49681,6 +49791,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -50894,6 +51020,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -51106,6 +51248,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -51181,7 +51339,11 @@
     props: Object.assign({
       id: [String, Number],
       mediaList: Boolean,
-      sortable: Boolean
+      sortable: Boolean,
+      sortableMoveElements: {
+        type: Boolean,
+        default: undefined
+      }
     }, Mixins.colorProps),
 
     render: function render() {
@@ -51193,6 +51355,7 @@
       var style = props.style;
       var mediaList = props.mediaList;
       var sortable = props.sortable;
+      var sortableMoveElements = props.sortableMoveElements;
       var classes = Utils$1.classNames(className, 'list-group', {
         'media-list': mediaList,
         sortable: sortable
@@ -51201,7 +51364,8 @@
         style: style,
         class: classes,
         attrs: {
-          id: id
+          id: id,
+          'data-sortable-move-elements': typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined
         }
       }, [_h('ul', [this.$slots['default']])]);
     },
@@ -51344,7 +51508,10 @@
     name: 'f7-list-input',
     props: Object.assign({
       id: [String, Number],
-      sortable: Boolean,
+      sortable: {
+        type: Boolean,
+        default: undefined
+      },
       media: String,
       dropdown: {
         type: [String, Boolean],
@@ -52269,7 +52436,10 @@
       groupTitle: Boolean,
       swipeout: Boolean,
       swipeoutOpened: Boolean,
-      sortable: Boolean,
+      sortable: {
+        type: Boolean,
+        default: undefined
+      },
       accordionItem: Boolean,
       accordionItemOpened: Boolean,
       smartSelect: Boolean,
@@ -52412,7 +52582,8 @@
         'accordion-item-opened': accordionItemOpened,
         disabled: disabled && !(radio || checkbox),
         'no-chevron': noChevron,
-        'chevron-center': chevronCenter
+        'chevron-center': chevronCenter,
+        'disallow-sorting': sortable === false
       }, Mixins.colorClasses(props));
 
       if (divider || groupTitle) {
@@ -52450,7 +52621,7 @@
         }
       }, [this.$slots['root-start'], swipeout ? _h('div', {
         class: 'swipeout-content'
-      }, [linkItemEl]) : linkItemEl, isSortable && _h('div', {
+      }, [linkItemEl]) : linkItemEl, isSortable && sortable !== false && _h('div', {
         class: 'sortable-handler'
       }), (swipeout || accordionItem) && self.$slots.default, this.$slots['root'], this.$slots['root-end']]);
     },
@@ -52458,6 +52629,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       },
@@ -52753,6 +52940,10 @@
       mediaList: Boolean,
       sortable: Boolean,
       sortableEnabled: Boolean,
+      sortableMoveElements: {
+        type: Boolean,
+        default: undefined
+      },
       accordionList: Boolean,
       contactsList: Boolean,
       simpleList: Boolean,
@@ -52783,6 +52974,7 @@
       var id = props.id;
       var style = props.style;
       var form = props.form;
+      var sortableMoveElements = props.sortableMoveElements;
       var ref = self.$slots;
       var slotsList = ref.list;
       var slotsDefault = ref.default;
@@ -52813,7 +53005,8 @@
           style: style,
           class: self.classes,
           attrs: {
-            id: id
+            id: id,
+            'data-sortable-move-elements': typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined
           }
         }, [self.$slots['before-list'], rootChildrenBeforeList, _h('ul', [ulChildren]), self.$slots['after-list'], rootChildrenAfterList]);
       } else {
@@ -52822,7 +53015,8 @@
           style: style,
           class: self.classes,
           attrs: {
-            id: id
+            id: id,
+            'data-sortable-move-elements': typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined
           }
         }, [self.$slots['before-list'], rootChildrenBeforeList, self.$slots['after-list'], rootChildrenAfterList]);
       }
@@ -54637,8 +54831,9 @@
       if (typeof needBackLinkText === 'undefined') { needBackLinkText = !this.$theme.md; }
 
       if (backLink) {
+        var text = backLink !== true && needBackLinkText ? backLink : undefined;
         linkEl = _h(f7Link, {
-          class: backLink === true || backLink && this.$theme.md ? 'icon-only' : undefined,
+          class: !text ? 'icon-only' : undefined,
           on: {
             click: this.onBackClick
           },
@@ -54647,7 +54842,7 @@
             back: true,
             icon: 'icon-back',
             force: backLinkForce || undefined,
-            text: backLink !== true && needBackLinkText ? backLink : undefined
+            text: text
           }
         });
       }
@@ -54892,7 +55087,6 @@
       var noHairline = props.noHairline;
       var large = props.large;
       var titleLarge = props.titleLarge;
-      var innerEl;
       var leftEl;
       var titleEl;
       var rightEl;
@@ -54918,7 +55112,7 @@
         }, [this.$slots['default']]);
       }
 
-      if (backLink || slots['nav-left']) {
+      if (backLink || slots['nav-left'] || slots.left) {
         leftEl = _h(f7NavLeft, {
           on: {
             backClick: self.onBackClick
@@ -54929,7 +55123,7 @@
             backLinkForce: backLinkForce,
             backLinkShowText: backLinkShowText
           }
-        }, [slots['nav-left']]);
+        }, [slots['nav-left'], slots.left]);
       }
 
       if (title || subtitle || slots.title) {
@@ -54941,22 +55135,22 @@
         }, [slots.title]);
       }
 
-      if (slots['nav-right']) {
-        rightEl = _h(f7NavRight, [slots['nav-right']]);
+      if (slots['nav-right'] || slots.right) {
+        rightEl = _h(f7NavRight, [slots['nav-right'], slots.right]);
       }
 
       var largeTitle = titleLarge;
       if (!largeTitle && large && title) { largeTitle = title; }
 
-      if (largeTitle) {
+      if (largeTitle || slots['title-large']) {
         titleLargeEl = _h('div', {
           class: 'title-large'
         }, [_h('div', {
           class: 'title-large-text'
-        }, [largeTitle])]);
+        }, [largeTitle || '', this.$slots['title-large']])]);
       }
 
-      innerEl = _h('div', {
+      var innerEl = _h('div', {
         ref: 'innerEl',
         class: Utils$1.classNames('navbar-inner', innerClass, innerClassName, {
           sliding: sliding,
@@ -54965,6 +55159,7 @@
           'navbar-inner-large': large
         })
       }, [leftEl, titleEl, rightEl, titleLargeEl, this.$slots['default']]);
+
       return _h('div', {
         ref: 'el',
         style: style,
@@ -59399,7 +59594,7 @@
   };
 
   /**
-   * Framework7 Vue 4.4.10
+   * Framework7 Vue 4.5.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -59407,7 +59602,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: July 29, 2019
+   * Released on: August 21, 2019
    */
 
   //
@@ -65519,7 +65714,7 @@
   var __vue_script__$1s = script$1s;
 
   /* template */
-  var __vue_render__$1s = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:init":_vm.onPageInit,"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"navbar-tooltip"},[_c('f7-icon',{attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info_outline"}})],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Tooltips display informative text when users hover over, or tap an target element.")]),_vm._v(" "),_c('p',[_vm._v("Tooltip can be positioned around any element with any HTML content inside.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec.")],1),_vm._v(" "),_c('p',[_vm._v("Vestibulum "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt.")],1),_vm._v(" "),_c('p',[_vm._v("Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" massa.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Initialization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("For simple cases when you don't need a lot of control over the Tooltip, it can be set on buttons and links automatically with "),_c('code',[_vm._v("tooltip")]),_vm._v(" prop: "),_c('f7-button',{staticStyle:{"display":"inline-block"},attrs:{"round":"","outline":"","small":"","tooltip":"Button tooltip text"}},[_vm._v("Button with Tooltip")])],1)])],1)};
+  var __vue_render__$1s = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:init":_vm.onPageInit,"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Tooltip","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"navbar-tooltip"},[_c('f7-icon',{attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info_outline"}})],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Tooltips display informative text when users hover over, or tap an target element.")]),_vm._v(" "),_c('p',[_vm._v("Tooltip can be positioned around any element with any HTML content inside.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec.")],1),_vm._v(" "),_c('p',[_vm._v("Vestibulum "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt.")],1),_vm._v(" "),_c('p',[_vm._v("Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" massa.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Initialization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("For simple cases when you don't need a lot of control over the Tooltip, it can be set on buttons and links automatically with "),_c('code',[_vm._v("tooltip")]),_vm._v(" prop: "),_c('f7-button',{staticStyle:{"display":"inline-block"},attrs:{"round":"","outline":"","small":"","tooltip":"Button tooltip text"}},[_vm._v("Button with Tooltip")])],1)])],1)};
   var __vue_staticRenderFns__$1s = [];
 
     /* style */
