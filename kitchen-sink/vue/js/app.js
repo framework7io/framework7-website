@@ -1340,8 +1340,8 @@
       child = child.options;
     }
 
-    normalizeProps(child, vm);
-    normalizeInject(child, vm);
+    normalizeProps(child);
+    normalizeInject(child);
     normalizeDirectives(child);
 
     // Apply extends and mixins on the child options,
@@ -1552,11 +1552,11 @@
         // if the user intentionally throws the original error in the handler,
         // do not log it twice
         if (e !== err) {
-          logError(e, null, 'config.errorHandler');
+          logError(e);
         }
       }
     }
-    logError(err, vm, info);
+    logError(err);
   }
 
   function logError (err, vm, info) {
@@ -2228,7 +2228,7 @@
    * Runtime helper for resolving filters
    */
   function resolveFilter (id) {
-    return resolveAsset(this.$options, 'filters', id, true) || identity
+    return resolveAsset(this.$options, 'filters', id) || identity
   }
 
   /*  */
@@ -2568,12 +2568,12 @@
     var vnode = options.render.call(null, renderContext._c, renderContext);
 
     if (vnode instanceof VNode) {
-      return cloneAndMarkFunctionalResult(vnode, data, renderContext.parent, options, renderContext)
+      return cloneAndMarkFunctionalResult(vnode, data, renderContext.parent, options)
     } else if (Array.isArray(vnode)) {
       var vnodes = normalizeChildren(vnode) || [];
       var res = new Array(vnodes.length);
       for (var i = 0; i < vnodes.length; i++) {
-        res[i] = cloneAndMarkFunctionalResult(vnodes[i], data, renderContext.parent, options, renderContext);
+        res[i] = cloneAndMarkFunctionalResult(vnodes[i], data, renderContext.parent, options);
       }
       return res
     }
@@ -2728,7 +2728,7 @@
     }
 
     // extract props
-    var propsData = extractPropsFromVNodeData(data, Ctor, tag);
+    var propsData = extractPropsFromVNodeData(data, Ctor);
 
     // functional component
     if (isTrue(Ctor.options.functional)) {
@@ -3174,7 +3174,7 @@
               timerTimeout = null;
               if (isUndef(factory.resolved)) {
                 reject(
-                  null
+                   null
                 );
               }
             }, res.timeout);
@@ -3817,7 +3817,7 @@
     this.newDeps = [];
     this.depIds = new _Set();
     this.newDepIds = new _Set();
-    this.expression = '';
+    this.expression =  '';
     // parse expression for getter
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn;
@@ -5786,7 +5786,7 @@
         dir.modifiers = emptyModifiers;
       }
       res[getRawDirName(dir)] = dir;
-      dir.def = resolveAsset(vm.$options, 'directives', dir.name, true);
+      dir.def = resolveAsset(vm.$options, 'directives', dir.name);
     }
     // $flow-disable-line
     return res
@@ -6986,11 +6986,11 @@
   };
 
   function setSelected (el, binding, vm) {
-    actuallySetSelected(el, binding, vm);
+    actuallySetSelected(el, binding);
     /* istanbul ignore if */
     if (isIE || isEdge) {
       setTimeout(function () {
-        actuallySetSelected(el, binding, vm);
+        actuallySetSelected(el, binding);
       }, 0);
     }
   }
@@ -7498,7 +7498,7 @@
   }
 
   /**
-   * Template7 1.4.1
+   * Template7 1.4.2
    * Mobile-first HTML template engine
    * 
    * http://www.idangero.us/template7/
@@ -7509,7 +7509,7 @@
    * 
    * Licensed under MIT
    * 
-   * Released on: February 5, 2019
+   * Released on: June 14, 2019
    */
 
   var t7ctx;
@@ -7741,7 +7741,11 @@
             else { variable = undefined; }
           });
         }
-        if (typeof variable === 'string') {
+        if (
+          (typeof variable === 'string')
+          || Array.isArray(variable)
+          || (variable.constructor && variable.constructor === Object)
+        ) {
           variable = JSON.stringify(variable);
         }
         if (variable === undefined) { variable = 'undefined'; }
@@ -7749,6 +7753,7 @@
         arr.push(variable);
         return arr;
       }, []).join('');
+
     },
     parseJsParents: function parseJsParents(expression, parents) {
       return expression.split(/([+ \-*^()&=|<>!%:?])/g).reduce(function (arr, part) {
@@ -7860,6 +7865,7 @@
       return p.compiled(ctx, options.data, options.root);
     },
     escape: function escape(context) {
+      if (typeof context === 'undefined' || context === null) { return ''; }
       if (typeof context !== 'string') {
         throw new Error('Template7: Passed context to "escape" helper should be a string');
       }
@@ -10356,6 +10362,65 @@
     },
   };
 
+  var Support = (function Support() {
+    var testDiv = doc.createElement('div');
+
+    return {
+      touch: (function checkTouch() {
+        return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
+      }()),
+
+      pointerEvents: !!(win.navigator.pointerEnabled || win.PointerEvent || ('maxTouchPoints' in win.navigator && win.navigator.maxTouchPoints > 0)),
+      prefixedPointerEvents: !!win.navigator.msPointerEnabled,
+
+      transition: (function checkTransition() {
+        var style = testDiv.style;
+        return ('transition' in style || 'webkitTransition' in style || 'MozTransition' in style);
+      }()),
+      transforms3d: (win.Modernizr && win.Modernizr.csstransforms3d === true) || (function checkTransforms3d() {
+        var style = testDiv.style;
+        return ('webkitPerspective' in style || 'MozPerspective' in style || 'OPerspective' in style || 'MsPerspective' in style || 'perspective' in style);
+      }()),
+
+      flexbox: (function checkFlexbox() {
+        var div = doc.createElement('div').style;
+        var styles = ('alignItems webkitAlignItems webkitBoxAlign msFlexAlign mozBoxAlign webkitFlexDirection msFlexDirection mozBoxDirection mozBoxOrient webkitBoxDirection webkitBoxOrient').split(' ');
+        for (var i = 0; i < styles.length; i += 1) {
+          if (styles[i] in div) { return true; }
+        }
+        return false;
+      }()),
+
+      observer: (function checkObserver() {
+        return ('MutationObserver' in win || 'WebkitMutationObserver' in win);
+      }()),
+
+      passiveListener: (function checkPassiveListener() {
+        var supportsPassive = false;
+        try {
+          var opts = Object.defineProperty({}, 'passive', {
+            // eslint-disable-next-line
+            get: function get() {
+              supportsPassive = true;
+            },
+          });
+          win.addEventListener('testPassiveListener', null, opts);
+        } catch (e) {
+          // No support
+        }
+        return supportsPassive;
+      }()),
+
+      gestures: (function checkGestures() {
+        return 'ongesturestart' in win;
+      }()),
+
+      intersectionObserver: (function checkObserver() {
+        return ('IntersectionObserver' in win);
+      }()),
+    };
+  }());
+
   var Device = (function Device() {
     var platform = win.navigator.platform;
     var ua = win.navigator.userAgent;
@@ -10395,9 +10460,24 @@
     var ie = ua.indexOf('MSIE ') >= 0 || ua.indexOf('Trident/') >= 0;
     var edge = ua.indexOf('Edge/') >= 0;
     var firefox = ua.indexOf('Gecko/') >= 0 && ua.indexOf('Firefox/') >= 0;
-    var macos = platform === 'MacIntel';
     var windows = platform === 'Win32';
     var electron = ua.toLowerCase().indexOf('electron') >= 0;
+    var macos = platform === 'MacIntel';
+
+    // iPadOs 13 fix
+    if (!ipad
+      && macos
+      && Support.touch
+      && (
+        (screenWidth === 1024 && screenHeight === 1366) // Pro 12.9
+        || (screenWidth === 834 && screenHeight === 1194) // Pro 11
+        || (screenWidth === 834 && screenHeight === 1112) // Pro 10.5
+        || (screenWidth === 768 && screenHeight === 1024) // other
+      )
+    ) {
+      ipad = ua.match(/(Version)\/([\d.]+)/);
+      macos = false;
+    }
 
     device.ie = ie;
     device.edge = edge;
@@ -10453,6 +10533,12 @@
       device.electron = electron;
       device.macos = macos;
       device.windows = windows;
+      if (device.macos) {
+        device.os = 'macos';
+      }
+      if (device.windows) {
+        device.os = 'windows';
+      }
     }
 
     // Meta statusbar
@@ -11651,65 +11737,6 @@
     Utils.extend(globals, options);
   };
 
-  var Support = (function Support() {
-    var testDiv = doc.createElement('div');
-
-    return {
-      touch: (function checkTouch() {
-        return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
-      }()),
-
-      pointerEvents: !!(win.navigator.pointerEnabled || win.PointerEvent || ('maxTouchPoints' in win.navigator && win.navigator.maxTouchPoints > 0)),
-      prefixedPointerEvents: !!win.navigator.msPointerEnabled,
-
-      transition: (function checkTransition() {
-        var style = testDiv.style;
-        return ('transition' in style || 'webkitTransition' in style || 'MozTransition' in style);
-      }()),
-      transforms3d: (win.Modernizr && win.Modernizr.csstransforms3d === true) || (function checkTransforms3d() {
-        var style = testDiv.style;
-        return ('webkitPerspective' in style || 'MozPerspective' in style || 'OPerspective' in style || 'MsPerspective' in style || 'perspective' in style);
-      }()),
-
-      flexbox: (function checkFlexbox() {
-        var div = doc.createElement('div').style;
-        var styles = ('alignItems webkitAlignItems webkitBoxAlign msFlexAlign mozBoxAlign webkitFlexDirection msFlexDirection mozBoxDirection mozBoxOrient webkitBoxDirection webkitBoxOrient').split(' ');
-        for (var i = 0; i < styles.length; i += 1) {
-          if (styles[i] in div) { return true; }
-        }
-        return false;
-      }()),
-
-      observer: (function checkObserver() {
-        return ('MutationObserver' in win || 'WebkitMutationObserver' in win);
-      }()),
-
-      passiveListener: (function checkPassiveListener() {
-        var supportsPassive = false;
-        try {
-          var opts = Object.defineProperty({}, 'passive', {
-            // eslint-disable-next-line
-            get: function get() {
-              supportsPassive = true;
-            },
-          });
-          win.addEventListener('testPassiveListener', null, opts);
-        } catch (e) {
-          // No support
-        }
-        return supportsPassive;
-      }()),
-
-      gestures: (function checkGestures() {
-        return 'ongesturestart' in win;
-      }()),
-
-      intersectionObserver: (function checkObserver() {
-        return ('IntersectionObserver' in win);
-      }()),
-    };
-  }());
-
   var DeviceModule = {
     name: 'device',
     proto: {
@@ -11734,7 +11761,7 @@
           classNames.push('device-retina');
         }
         // OS classes
-        if (Device.os) {
+        if (Device.os && !Device.desktop) {
           classNames.push(
             ("device-" + (Device.os)),
             ("device-" + (Device.os) + "-" + (Device.osVersion.split('.')[0])),
@@ -11751,8 +11778,9 @@
           }
         } else if (Device.desktop) {
           classNames.push('device-desktop');
-          if (Device.macos) { classNames.push('device-macos'); }
-          else if (Device.windows) { classNames.push('device-windows'); }
+          if (Device.os) {
+            classNames.push(("device-" + (Device.os)));
+          }
         }
         if (Device.cordova || Device.phonegap) {
           classNames.push('device-cordova');
@@ -12210,7 +12238,7 @@
         activeTimeout = setTimeout(addActive, 0);
       }
       if (useRipple) {
-        rippleTouchStart(targetElement, touchStartX, touchStartY);
+        rippleTouchStart(targetElement);
       }
       return true;
     }
@@ -12432,7 +12460,7 @@
         }
       }
       if (useRipple) {
-        rippleTouchStart(targetElement, touchStartX, touchStartY);
+        rippleTouchStart(targetElement);
       }
       return true;
     }
@@ -13491,7 +13519,7 @@
             $previousNavbarInnerEl = $previousNavbarInnerEl.eq($previousNavbarInnerEl.length - 1);
           }
 
-          animatableNavEls = animatableNavElements($previousNavbarInnerEl, $currentNavbarInnerEl);
+          animatableNavEls = animatableNavElements();
         }
 
         // Close/Hide Any Picker
@@ -13989,6 +14017,9 @@
       .removeClass('stacked')
       .trigger('page:unstack')
       .trigger('page:position', { position: newPagePosition });
+    router.emit('pageUnstack', $newPage[0]);
+    router.emit('pagePosition', $newPage[0], newPagePosition);
+
     if (isMaster || isDetail) {
       $newPage.trigger('page:role', { role: isMaster ? 'master' : 'detail' });
     }
@@ -14028,6 +14059,7 @@
           ) {
             $pagesInView.eq(i$2).addClass('page-master-stacked');
             $pagesInView.eq(i$2).trigger('page:masterstack');
+            router.emit('pageMasterStack', $pagesInView[i$2]);
             if (separateNavbar) {
               $(app.navbar.getElByPage(masterPageEl)).addClass('navbar-master-stacked');
             }
@@ -14037,6 +14069,7 @@
           if (router.params.stackPages) {
             $pagesInView.eq(i$2).addClass('stacked');
             $pagesInView.eq(i$2).trigger('page:stack');
+            router.emit('pageStack', $pagesInView[i$2]);
             if (separateNavbar) {
               $(oldNavbarInnerEl).addClass('stacked');
             }
@@ -14169,6 +14202,7 @@
       if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
         $oldPage.addClass('stacked');
         $oldPage.trigger('page:stack');
+        router.emit('pageStack', $oldPage[0]);
         if (separateNavbar) {
           $oldNavbarInner.addClass('stacked');
         }
@@ -14189,6 +14223,7 @@
         if (router.params.stackPages && router.initialPages.indexOf($oldPageEl[0]) >= 0) {
           $oldPageEl.addClass('stacked');
           $oldPageEl.trigger('page:stack');
+          router.emit('pageStack', $oldPageEl[0]);
           if (separateNavbar) {
             $oldNavbarInnerEl.addClass('stacked');
           }
@@ -14209,6 +14244,7 @@
       if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
         $oldPage.addClass('stacked');
         $oldPage.trigger('page:stack');
+        router.emit('pageStack', $oldPage[0]);
         if (separateNavbar) {
           $oldNavbarInner.addClass('stacked');
         }
@@ -14246,6 +14282,8 @@
         masterPageEl.classList.add('page-previous');
         masterPageEl.classList.remove('page-current');
         $(masterPageEl).trigger('page:position', { position: 'previous' });
+        router.emit('pagePosition', masterPageEl, 'previous');
+
         if (masterPageEl.f7Page && masterPageEl.f7Page.navbarEl) {
           masterPageEl.f7Page.navbarEl.classList.add('navbar-previous');
           masterPageEl.f7Page.navbarEl.classList.remove('navbar-current');
@@ -14259,15 +14297,18 @@
     }
 
     // Before animation event
-    router.pageCallback('beforeIn', $newPage, $newNavbarInner, 'next', 'current', options);
     router.pageCallback('beforeOut', $oldPage, $oldNavbarInner, 'current', 'previous', options);
+    router.pageCallback('beforeIn', $newPage, $newNavbarInner, 'next', 'current', options);
 
     // Animation
     function afterAnimation() {
       var pageClasses = 'page-previous page-current page-next';
       var navbarClasses = 'navbar-previous navbar-current navbar-next';
       $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
+      router.emit('pagePosition', $newPage[0], 'current');
       $oldPage.removeClass(pageClasses).addClass('page-previous').trigger('page:position', { position: 'previous' });
+      router.emit('pagePosition', $oldPage[0], 'previous');
+
       if (!$oldPage.hasClass('page-master')) {
         $oldPage.attr('aria-hidden', 'true');
       }
@@ -14280,8 +14321,8 @@
       }
       // After animation event
       router.allowPageChange = true;
-      router.pageCallback('afterIn', $newPage, $newNavbarInner, 'next', 'current', options);
       router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', 'previous', options);
+      router.pageCallback('afterIn', $newPage, $newNavbarInner, 'next', 'current', options);
 
       var keepOldPage = (router.params.preloadPreviousPage || router.params[((app.theme) + "SwipeBack")]) && !isMaster;
       if (!keepOldPage) {
@@ -14293,6 +14334,7 @@
         if (router.params.stackPages) {
           $oldPage.addClass('stacked');
           $oldPage.trigger('page:stack');
+          router.emit('pageStack', $oldPage[0]);
           if (separateNavbar) {
             $oldNavbarInner.addClass('stacked');
           }
@@ -14316,7 +14358,9 @@
       var pageClasses = 'page-previous page-current page-next';
       var navbarClasses = 'navbar-previous navbar-current navbar-next';
       $oldPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
+      router.emit('pagePosition', $oldPage[0], 'current');
       $newPage.removeClass(pageClasses).addClass('page-next').removeAttr('aria-hidden').trigger('page:position', { position: 'next' });
+      router.emit('pagePosition', $newPage[0], 'next');
       if (dynamicNavbar) {
         $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
         $newNavbarInner.removeClass(navbarClasses).addClass('navbar-next').removeAttr('aria-hidden');
@@ -14600,20 +14644,35 @@
     if (router.params.masterDetailBreakpoint > 0 && route.route.masterRoute) {
       // load detail route
       var preloadMaster = true;
+      var masterLoaded = false;
       if (router.currentRoute && router.currentRoute.route) {
-        if (router.currentRoute.route.master && (router.currentRoute.route === route.route.masterRoute || router.currentRoute.route.path === route.route.masterRoute.path)) {
+        if (
+          router.currentRoute.route.master
+          && (
+            router.currentRoute.route === route.route.masterRoute
+            || router.currentRoute.route.path === route.route.masterRoute.path
+          )
+        ) {
           preloadMaster = false;
         }
-        if (router.currentRoute.route.masterRoute && ((router.currentRoute.route.masterRoute === route.route.masterRoute) || (router.currentRoute.route.masterRoute.path === route.route.masterRoute.path))) {
+        if (
+          router.currentRoute.route.masterRoute
+          && (router.currentRoute.route.masterRoute === route.route.masterRoute
+            || router.currentRoute.route.masterRoute.path === route.route.masterRoute.path
+          )
+        ) {
           preloadMaster = false;
+          masterLoaded = true;
         }
       }
-      if (preloadMaster) {
+      if (preloadMaster || (masterLoaded && navigateOptions.reloadAll)) {
         router.navigate(route.route.masterRoute.path, {
           animate: false,
           reloadAll: navigateOptions.reloadAll,
           reloadCurrent: navigateOptions.reloadCurrent,
           reloadPrevious: navigateOptions.reloadPrevious,
+          pushState: !navigateOptions.initial,
+          history: !navigateOptions.initial,
           once: {
             pageAfterIn: function pageAfterIn() {
               router.navigate(navigateParams, Utils.extend({}, navigateOptions, {
@@ -14621,6 +14680,8 @@
                 reloadAll: false,
                 reloadCurrent: false,
                 reloadPrevious: false,
+                history: !navigateOptions.initial,
+                pushState: !navigateOptions.initial,
               }));
             },
           },
@@ -15095,6 +15156,7 @@
     var options = Utils.extend({
       animate: router.params.animate,
       pushState: true,
+      replaceState: false,
     }, backwardOptions);
 
     var masterDetailEnabled = router.params.masterDetailBreakpoint > 0;
@@ -15170,6 +15232,10 @@
       isDetail = !isMaster
         && masterPageEl
         && (router.history.indexOf(options.route.url) > router.history.indexOf(masterPageEl.f7Page.route.url));
+
+      if (!isDetail && !isMaster && masterPageEl && masterPageEl.f7Page && options.route.route.masterRoute) {
+        isDetail = options.route.route.masterRoute.path === masterPageEl.f7Page.route.route.path;
+      }
     }
 
 
@@ -15180,6 +15246,8 @@
       .removeAttr('aria-hidden')
       .trigger('page:unstack')
       .trigger('page:position', { position: 'previous' });
+    router.emit('pageUnstack', $newPage[0]);
+    router.emit('pagePosition', $newPage[0], 'previous');
     if (isMaster || isDetail) {
       $newPage.trigger('page:role', { role: isMaster ? 'master' : 'detail' });
     }
@@ -15217,6 +15285,7 @@
               if (router.initialPages.indexOf($pageToRemove[0]) >= 0) {
                 $pageToRemove.addClass('stacked');
                 $pageToRemove.trigger('page:stack');
+                router.emit('pageStack', $pageToRemove[0]);
                 if (separateNavbar) {
                   $navbarToRemove.addClass('stacked');
                 }
@@ -15239,6 +15308,7 @@
           if (router.params.stackPages && router.initialPages.indexOf($pageToRemove[0]) >= 0) {
             $pageToRemove.addClass('stacked');
             $pageToRemove.trigger('page:stack');
+            router.emit('pageStack', $pageToRemove[0]);
             $navbarToRemove.addClass('stacked');
           } else if ($pageToRemove.length > 0) {
             router.pageCallback('beforeRemove', $pageToRemove, $navbarToRemove, 'previous', undefined, options);
@@ -15302,6 +15372,7 @@
         $newPage
           .removeClass('page-master-stacked')
           .trigger('page:masterunstack');
+        router.emit('pageMasterUnstack', $newPage[0]);
         if (separateNavbar) {
           $(app.navbar.getElByPage($newPage)).removeClass('navbar-master-stacked');
         }
@@ -15320,6 +15391,7 @@
           if (router.params.stackPages && router.initialPages.indexOf(pageToRemove) >= 0) {
             $pageToRemove.addClass('stacked');
             $pageToRemove.trigger('page:stack');
+            router.emit('pageStack', $pageToRemove[0]);
             if (separateNavbar) {
               $navbarToRemove.addClass('stacked');
             }
@@ -15339,16 +15411,32 @@
     // History State
     if (!(Device.ie || Device.edge || (Device.firefox && !Device.ios))) {
       if (router.params.pushState && options.pushState) {
-        if (backIndex) { History.go(-backIndex); }
-        else { History.back(); }
+        if (options.replaceState) {
+          var pushStateRoot = router.params.pushStateRoot || '';
+          History.replace(
+            view.id,
+            {
+              url: options.route.url,
+            },
+            pushStateRoot + router.params.pushStateSeparator + options.route.url
+          );
+        } else if (backIndex) {
+          History.go(-backIndex);
+        } else {
+          History.back();
+        }
       }
     }
 
     // Update History
-    if (router.history.length === 1) {
-      router.history.unshift(router.url);
+    if (options.replaceState) {
+      router.history[router.history.length - 1] = options.route.url;
+    } else {
+      if (router.history.length === 1) {
+        router.history.unshift(router.url);
+      }
+      router.history.pop();
     }
-    router.history.pop();
     router.saveHistory();
 
     // Current Page & Navbar
@@ -15365,8 +15453,20 @@
     // History State
     if (Device.ie || Device.edge || (Device.firefox && !Device.ios)) {
       if (router.params.pushState && options.pushState) {
-        if (backIndex) { History.go(-backIndex); }
-        else { History.back(); }
+        if (options.replaceState) {
+          var pushStateRoot$1 = router.params.pushStateRoot || '';
+          History.replace(
+            view.id,
+            {
+              url: options.route.url,
+            },
+            pushStateRoot$1 + router.params.pushStateSeparator + options.route.url
+          );
+        } else if (backIndex) {
+          History.go(-backIndex);
+        } else {
+          History.back();
+        }
       }
     }
 
@@ -15385,8 +15485,8 @@
     router.pageCallback('init', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
 
     // Before animation callback
-    router.pageCallback('beforeIn', $newPage, $newNavbarInner, 'previous', 'current', options);
     router.pageCallback('beforeOut', $oldPage, $oldNavbarInner, 'current', 'next', options);
+    router.pageCallback('beforeIn', $newPage, $newNavbarInner, 'previous', 'current', options);
 
     // Animation
     function afterAnimation() {
@@ -15394,20 +15494,23 @@
       var pageClasses = 'page-previous page-current page-next';
       var navbarClasses = 'navbar-previous navbar-current navbar-next';
       $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
+      router.emit('pagePosition', $newPage[0], 'current');
       $oldPage.removeClass(pageClasses).addClass('page-next').attr('aria-hidden', 'true').trigger('page:position', { position: 'next' });
+      router.emit('pagePosition', $oldPage[0], 'next');
       if (dynamicNavbar) {
         $newNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
         $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-next').attr('aria-hidden', 'true');
       }
 
       // After animation event
-      router.pageCallback('afterIn', $newPage, $newNavbarInner, 'previous', 'current', options);
       router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', 'next', options);
+      router.pageCallback('afterIn', $newPage, $newNavbarInner, 'previous', 'current', options);
 
       // Remove Old Page
       if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
         $oldPage.addClass('stacked');
         $oldPage.trigger('page:stack');
+        router.emit('pageStack', $oldPage[0]);
         if (separateNavbar) {
           $oldNavbarInner.addClass('stacked');
         }
@@ -15436,7 +15539,9 @@
       var pageClasses = 'page-previous page-current page-next';
       var navbarClasses = 'navbar-previous navbar-current navbar-next';
       $oldPage.removeClass(pageClasses).addClass('page-current').trigger('page:position', { position: 'current' });
+      router.emit('pagePosition', $oldPage[0], 'current');
       $newPage.removeClass(pageClasses).addClass('page-previous').removeAttr('aria-hidden').trigger('page:position', { position: 'previous' });
+      router.emit('pagePosition', $newPage[0], 'previous');
       if (dynamicNavbar) {
         $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-current');
         $newNavbarInner.removeClass(navbarClasses).addClass('navbar-previous').removeAttr('aria-hidden');
@@ -16389,7 +16494,11 @@
           keys.forEach(function (keyObj, index) {
             if (typeof keyObj.name === 'number') { return; }
             var paramValue = matched[index + 1];
-            params[keyObj.name] = paramValue;
+            if (typeof paramValue === 'undefined' || paramValue === null) {
+              params[keyObj.name] = paramValue;
+            } else {
+              params[keyObj.name] = decodeURIComponent(paramValue);
+            }
           });
 
           var parentPath;
@@ -17239,7 +17348,7 @@
       var $clickedLinkEl = $clickedEl.closest('a');
       var isLink = $clickedLinkEl.length > 0;
       var url = isLink && $clickedLinkEl.attr('href');
-      var isTabLink = isLink && $clickedLinkEl.hasClass('tab-link') && ($clickedLinkEl.attr('data-tab') || (url && url.indexOf('#') === 0));
+      // const isTabLink = isLink && $clickedLinkEl.hasClass('tab-link') && ($clickedLinkEl.attr('data-tab') || (url && url.indexOf('#') === 0));
 
       // Check if link is external
       if (isLink) {
@@ -17283,7 +17392,7 @@
       if (e.preventF7Router) { return; }
       if ($clickedLinkEl.hasClass('prevent-router') || $clickedLinkEl.hasClass('router-prevent')) { return; }
 
-      var validUrl = url && url.length > 0 && url !== '#' && !isTabLink;
+      var validUrl = url && url.length > 0 && url[0] !== '#';
       if (validUrl || $clickedLinkEl.hasClass('back')) {
         var view;
         if (clickedLinkData.view) {
@@ -18495,7 +18604,7 @@
     var on = vnode.data.on;
     // call event handler(s) if exists
     if (on && on[name]) {
-      invokeHandler(on[name], event, args, vnode);
+      invokeHandler(on[name], event, args);
     }
   }
   function createListener() {
@@ -18650,7 +18759,7 @@
     if (html && typeof html === 'string') {
       html = html.trim();
       self.$vnode = vdom(html, self, app, true);
-      self.el = doc.createElement('div');
+      self.el = doc.createElement(self.$vnode.sel || 'div');
       patch$1(self.el, self.$vnode);
     } else if (html) {
       self.el = html;
@@ -19187,26 +19296,26 @@
   };
 
   function getCurrentView(app) {
-    var popoverView = $('.popover.modal-in .view');
-    var popupView = $('.popup.modal-in .view');
-    var panelView = $('.panel.panel-active .view');
-    var appViews = $('.views');
-    if (appViews.length === 0) { appViews = app.root; }
+    var $popoverView = $('.popover.modal-in .view');
+    var $popupView = $('.popup.modal-in .view');
+    var $panelView = $('.panel.panel-active .view');
+    var $viewsEl = $('.views');
+    if ($viewsEl.length === 0) { $viewsEl = app.root; }
     // Find active view as tab
-    var appView = appViews.children('.view');
+    var $viewEl = $viewsEl.children('.view');
     // Propably in tabs or split view
-    if (appView.length > 1) {
-      if (appView.hasClass('tab')) {
+    if ($viewEl.length > 1) {
+      if ($viewEl.hasClass('tab')) {
         // Tabs
-        appView = appViews.children('.view.tab-active');
+        $viewEl = $viewsEl.children('.view.tab-active');
       }
     }
-    if (popoverView.length > 0 && popoverView[0].f7View) { return popoverView[0].f7View; }
-    if (popupView.length > 0 && popupView[0].f7View) { return popupView[0].f7View; }
-    if (panelView.length > 0 && panelView[0].f7View) { return panelView[0].f7View; }
-    if (appView.length > 0) {
-      if (appView.length === 1 && appView[0].f7View) { return appView[0].f7View; }
-      if (appView.length > 1) {
+    if ($popoverView.length > 0 && $popoverView[0].f7View) { return $popoverView[0].f7View; }
+    if ($popupView.length > 0 && $popupView[0].f7View) { return $popupView[0].f7View; }
+    if ($panelView.length > 0 && $panelView[0].f7View) { return $panelView[0].f7View; }
+    if ($viewEl.length > 0) {
+      if ($viewEl.length === 1 && $viewEl[0].f7View) { return $viewEl[0].f7View; }
+      if ($viewEl.length > 1) {
         return app.views.main;
       }
     }
@@ -19571,6 +19680,7 @@
       var $pageEl = $(app.navbar.getPageByEl($navbarInnerEl));
       $navbarInnerEl.addClass('navbar-inner-large-collapsed');
       $pageEl.eq(0).addClass('page-with-navbar-large-collapsed').trigger('page:navbarlargecollapsed');
+      app.emit('pageNavbarLargeCollapsed', $pageEl[0]);
       var $navbarEl = $navbarInnerEl.parents('.navbar');
       if (app.theme === 'md' || app.theme === 'aurora') {
         $navbarEl.addClass('navbar-large-collapsed');
@@ -19593,6 +19703,7 @@
       var $pageEl = $(app.navbar.getPageByEl($navbarInnerEl));
       $navbarInnerEl.removeClass('navbar-inner-large-collapsed');
       $pageEl.eq(0).removeClass('page-with-navbar-large-collapsed').trigger('page:navbarlargeexpanded');
+      app.emit('pageNavbarLargeExpanded', $pageEl[0]);
       var $navbarEl = $navbarInnerEl.parents('.navbar');
       if (app.theme === 'md' || app.theme === 'aurora') {
         $navbarEl.removeClass('navbar-large-collapsed');
@@ -19764,8 +19875,11 @@
         previousScrollTop = currentScrollTop;
       }
 
-      function handleScroll() {
+      function handleScroll(e) {
         scrollContent = this;
+        if (e && e.target && e.target !== scrollContent) {
+          return;
+        }
         currentScrollTop = scrollContent.scrollTop;
         scrollChanged = currentScrollTop;
 
@@ -20101,8 +20215,11 @@
       var reachEnd;
       var action;
       var toolbarHidden;
-      function handleScroll() {
+      function handleScroll(e) {
         var scrollContent = this;
+        if (e && e.target && e.target !== scrollContent) {
+          return;
+        }
         if ($pageEl.hasClass('page-previous')) { return; }
         currentScrollTop = scrollContent.scrollTop;
         scrollHeight = scrollContent.scrollHeight;
@@ -20481,6 +20598,9 @@
       }
 
       if (!$el || !$el.hasClass('modal-in')) {
+        if (dialogsQueue.indexOf(modal) >= 0) {
+          dialogsQueue.splice(dialogsQueue.indexOf(modal), 1);
+        }
         return modal;
       }
 
@@ -21123,9 +21243,9 @@
       // Find Element
       var $el;
       if (!popup.params.el) {
-        $el = $(popup.params.content);
+        $el = $(popup.params.content).filter(function (elIndex, node) { return node.nodeType === 1; }).eq(0);
       } else {
-        $el = $(popup.params.el);
+        $el = $(popup.params.el).eq(0);
       }
 
       if ($el && $el.length > 0 && $el[0].f7Modal) {
@@ -21403,9 +21523,9 @@
       // Find Element
       var $el;
       if (!loginScreen.params.el) {
-        $el = $(loginScreen.params.content);
+        $el = $(loginScreen.params.content).filter(function (elIndex, node) { return node.nodeType === 1; }).eq(0);
       } else {
-        $el = $(loginScreen.params.el);
+        $el = $(loginScreen.params.el).eq(0);
       }
 
       if ($el && $el.length > 0 && $el[0].f7Modal) {
@@ -21482,9 +21602,9 @@
       // Find Element
       var $el;
       if (!popover.params.el) {
-        $el = $(popover.params.content);
+        $el = $(popover.params.content).filter(function (elIndex, node) { return node.nodeType === 1; }).eq(0);
       } else {
-        $el = $(popover.params.el);
+        $el = $(popover.params.el).eq(0);
       }
 
       if ($el && $el.length > 0 && $el[0].f7Modal) {
@@ -21644,6 +21764,8 @@
       var targetHeight;
       var targetOffsetLeft;
       var targetOffsetTop;
+      var safeAreaTop = parseInt($('html').css('--f7-safe-area-top'), 10);
+      if (Number.isNaN(safeAreaTop)) { safeAreaTop = 0; }
       if ($targetEl && $targetEl.length > 0) {
         targetWidth = $targetEl.outerWidth();
         targetHeight = $targetEl.outerHeight();
@@ -21674,7 +21796,7 @@
           // On bottom
           position = 'bottom';
           top = targetOffsetTop + targetHeight;
-        } else if (height < targetOffsetTop) {
+        } else if (height < targetOffsetTop - safeAreaTop) {
           // On top
           top = targetOffsetTop - height;
           position = 'top';
@@ -21702,7 +21824,7 @@
         $el.addClass(("popover-on-" + position + " popover-on-" + hPosition));
       } else {
         // ios and aurora
-        if ((height + angleSize) < targetOffsetTop) {
+        if ((height + angleSize) < targetOffsetTop - safeAreaTop) {
           // On top
           top = targetOffsetTop - height - angleSize;
         } else if ((height + angleSize) < app.height - targetOffsetTop - targetHeight) {
@@ -21830,9 +21952,9 @@
       // Find Element
       var $el;
       if (actions.params.el) {
-        $el = $(actions.params.el);
+        $el = $(actions.params.el).eq(0);
       } else if (actions.params.content) {
-        $el = $(actions.params.content);
+        $el = $(actions.params.content).filter(function (elIndex, node) { return node.nodeType === 1; }).eq(0);
       } else if (actions.params.buttons) {
         if (actions.params.convertToPopover) {
           actions.popoverHtml = actions.renderPopover();
@@ -22139,9 +22261,9 @@
       // Find Element
       var $el;
       if (!sheet.params.el) {
-        $el = $(sheet.params.content);
+        $el = $(sheet.params.content).filter(function (elIndex, node) { return node.nodeType === 1; }).eq(0);
       } else {
-        $el = $(sheet.params.el);
+        $el = $(sheet.params.el).eq(0);
       }
 
       if ($el && $el.length > 0 && $el[0].f7Modal) {
@@ -22284,7 +22406,6 @@
         }
 
         touchesDiff = startTouch.y - currentTouch.y;
-
         if (!isMoved) {
           sheetElOffsetHeight = $el[0].offsetHeight;
           startTranslate = Utils.getTranslate($el[0], 'y');
@@ -22303,6 +22424,17 @@
         $el
           .transition(0)
           .transform(("translate3d(0," + currentTranslate + "px,0)"));
+        if (sheet.params.swipeToStep) {
+          var progress;
+          if (isTopSheetModal) {
+            progress = 1 - (currentTranslate / swipeStepTranslate);
+          } else {
+            progress = (swipeStepTranslate - currentTranslate) / swipeStepTranslate;
+          }
+          progress = Math.min(Math.max(progress, 0), 1);
+          $el.trigger('sheet:stepprogress', progress);
+          sheet.emit('local::stepProgress sheetStepProgress', sheet, progress);
+        }
       }
       function handleTouchEnd() {
         isTouched = false;
@@ -22338,6 +22470,8 @@
           if (direction === openDirection && absCurrentTranslate < absSwipeStepTranslate) {
             // open step
             $el.removeClass('modal-in-swipe-step');
+            $el.trigger('sheet:stepprogress', 1);
+            sheet.emit('local::stepProgress sheetStepProgress', sheet, 1);
             $el.trigger('sheet:stepopen');
             sheet.emit('local::stepOpen sheetStepOpen', sheet);
           }
@@ -22348,6 +22482,8 @@
             } else {
               // close step
               $el.addClass('modal-in-swipe-step');
+              $el.trigger('sheet:stepprogress', 0);
+              sheet.emit('local::stepProgress sheetStepProgress', sheet, 0);
               $el.trigger('sheet:stepclose');
               sheet.emit('local::stepClose sheetStepClose', sheet);
             }
@@ -22355,6 +22491,8 @@
           if (direction === closeDirection && absCurrentTranslate <= absSwipeStepTranslate) {
             // close step
             $el.addClass('modal-in-swipe-step');
+            $el.trigger('sheet:stepprogress', 0);
+            sheet.emit('local::stepProgress sheetStepProgress', sheet, 0);
             $el.trigger('sheet:stepclose');
             sheet.emit('local::stepClose sheetStepClose', sheet);
           }
@@ -22366,6 +22504,8 @@
             if (absCurrentTranslate < (absSwipeStepTranslate / 2)) {
               // open step
               $el.removeClass('modal-in-swipe-step');
+              $el.trigger('sheet:stepprogress', 1);
+              sheet.emit('local::stepProgress sheetStepProgress', sheet, 1);
               $el.trigger('sheet:stepopen');
               sheet.emit('local::stepOpen sheetStepOpen', sheet);
             } else if ((absCurrentTranslate - absSwipeStepTranslate) > (sheetElOffsetHeight - absSwipeStepTranslate) / 2) {
@@ -22379,6 +22519,8 @@
             } else if (absCurrentTranslate > absSwipeStepTranslate / 2) {
               // close step
               $el.addClass('modal-in-swipe-step');
+              $el.trigger('sheet:stepprogress', 0);
+              sheet.emit('local::stepProgress sheetStepProgress', sheet, 0);
               $el.trigger('sheet:stepclose');
               sheet.emit('local::stepClose sheetStepClose', sheet);
             }
@@ -22727,6 +22869,12 @@
           app.preloader.init(preloaderEl);
         });
       },
+      tabMounted: function tabMounted(tabEl) {
+        var app = this;
+        $(tabEl).find('.preloader').each(function (index, preloaderEl) {
+          app.preloader.init(preloaderEl);
+        });
+      },
       pageInit: function pageInit(page) {
         var app = this;
         page.$el.find('.preloader').each(function (index, preloaderEl) {
@@ -22883,12 +23031,33 @@
       });
     },
     on: {
+      tabMounted: function tabMounted(tabEl) {
+        var app = this;
+        $(tabEl).find('.progressbar').each(function (index, progressbarEl) {
+          var $progressbarEl = $(progressbarEl);
+          app.progressbar.set($progressbarEl, $progressbarEl.attr('data-progress'));
+        });
+      },
       pageInit: function pageInit(page) {
         var app = this;
         page.$el.find('.progressbar').each(function (index, progressbarEl) {
           var $progressbarEl = $(progressbarEl);
           app.progressbar.set($progressbarEl, $progressbarEl.attr('data-progress'));
         });
+      },
+    },
+    vnode: {
+      progressbar: {
+        insert: function insert(vnode) {
+          var app = this;
+          var el = vnode.elm;
+          app.progressbar.set(el, el.getAttribute('data-progress'));
+        },
+        update: function update(vnode) {
+          var app = this;
+          var el = vnode.elm;
+          app.progressbar.set(el, el.getAttribute('data-progress'));
+        },
       },
     },
   };
@@ -22928,7 +23097,7 @@
         if ($listGroup.length && $listGroup.parents($sortableContainer).length) {
           $sortableContainer = $listGroup;
         }
-        $sortingItems = $sortableContainer.children('ul').children('li');
+        $sortingItems = $sortableContainer.children('ul').children('li:not(.disallow-sorting):not(.no-sorting)');
         if (app.panel) { app.panel.allowOpen = false; }
         if (app.swipeout) { app.swipeout.allow = false; }
       }
@@ -23030,7 +23199,12 @@
         if ($insertAfterEl) { indexTo = $insertAfterEl.index(); }
         else if ($insertBeforeEl) { indexTo = $insertBeforeEl.index(); }
 
-        if (app.params.sortable.moveElements) {
+        var moveElements = $sortableContainer.dataset().sortableMoveElements;
+        if (typeof moveElements === 'undefined') {
+          moveElements = app.params.sortable.moveElements;
+        }
+
+        if (moveElements) {
           if ($insertAfterEl) {
             $sortingEl.insertAfter($insertAfterEl);
           }
@@ -23867,6 +24041,7 @@
         itemTemplate: undefined,
         ul: null,
         createUl: true,
+        scrollableParentEl: undefined,
         renderItem: function renderItem(item) {
           return ("\n          <li>\n            <div class=\"item-content\">\n              <div class=\"item-inner\">\n                <div class=\"item-title\">" + item + "</div>\n              </div>\n            </div>\n          </li>\n        ").trim();
         },
@@ -23899,6 +24074,12 @@
       }
       vl.$pageContentEl = vl.$el.parents('.page-content');
       vl.pageContentEl = vl.$pageContentEl[0];
+
+      vl.$scrollableParentEl = vl.params.scrollableParentEl ? $(vl.params.scrollableParentEl).eq(0) : vl.$pageContentEl;
+      if (!vl.$scrollableParentEl.length && vl.$pageContentEl.length) {
+        vl.$scrollableParentEl = vl.$pageContentEl;
+      }
+      vl.scrollableParentEl = vl.$scrollableParentEl[0];
 
       // Bad scroll
       if (typeof vl.params.updatableScroll !== 'undefined') {
@@ -23962,7 +24143,7 @@
         $panelEl = vl.$el.parents('.panel').eq(0);
         $popupEl = vl.$el.parents('.popup').eq(0);
 
-        vl.$pageContentEl.on('scroll', handleScrollBound);
+        vl.$scrollableParentEl.on('scroll', handleScrollBound);
         if ($pageEl) { $pageEl.on('page:reinit', handleResizeBound); }
         if ($tabEl) { $tabEl.on('tab:show', handleResizeBound); }
         if ($panelEl) { $panelEl.on('panel:open', handleResizeBound); }
@@ -23970,7 +24151,7 @@
         app.on('resize', handleResizeBound);
       };
       vl.detachEvents = function attachEvents() {
-        vl.$pageContentEl.off('scroll', handleScrollBound);
+        vl.$scrollableParentEl.off('scroll', handleScrollBound);
         if ($pageEl) { $pageEl.off('page:reinit', handleResizeBound); }
         if ($tabEl) { $tabEl.off('tab:show', handleResizeBound); }
         if ($panelEl) { $panelEl.off('panel:open', handleResizeBound); }
@@ -23990,7 +24171,7 @@
     VirtualList.prototype.setListSize = function setListSize () {
       var vl = this;
       var items = vl.filteredItems || vl.items;
-      vl.pageHeight = vl.$pageContentEl[0].offsetHeight;
+      vl.pageHeight = vl.$scrollableParentEl[0].offsetHeight;
       if (vl.dynamicHeight) {
         vl.listHeight = 0;
         vl.heights = [];
@@ -24017,10 +24198,10 @@
       var vl = this;
       if (force) { vl.lastRepaintY = null; }
 
-      var scrollTop = -(vl.$el[0].getBoundingClientRect().top - vl.$pageContentEl[0].getBoundingClientRect().top);
+      var scrollTop = -(vl.$el[0].getBoundingClientRect().top - vl.$scrollableParentEl[0].getBoundingClientRect().top);
 
       if (typeof forceScrollTop !== 'undefined') { scrollTop = forceScrollTop; }
-      if (vl.lastRepaintY === null || Math.abs(scrollTop - vl.lastRepaintY) > vl.maxBufferHeight || (!vl.updatableScroll && (vl.$pageContentEl[0].scrollTop + vl.pageHeight >= vl.$pageContentEl[0].scrollHeight))) {
+      if (vl.lastRepaintY === null || Math.abs(scrollTop - vl.lastRepaintY) > vl.maxBufferHeight || (!vl.updatableScroll && (vl.$scrollableParentEl[0].scrollTop + vl.pageHeight >= vl.$scrollableParentEl[0].scrollHeight))) {
         vl.lastRepaintY = scrollTop;
       } else {
         return;
@@ -24140,7 +24321,7 @@
       }
 
       if (typeof forceScrollTop !== 'undefined' && force) {
-        vl.$pageContentEl.scrollTop(forceScrollTop, 0);
+        vl.$scrollableParentEl.scrollTop(forceScrollTop, 0);
       }
       if (vl.params.renderExternal) {
         vl.params.renderExternal(vl, {
@@ -24163,7 +24344,7 @@
         vl.filteredItems.push(vl.items[indexes[i]]);
       }
       if (resetScrollTop) {
-        vl.$pageContentEl[0].scrollTop = 0;
+        vl.$scrollableParentEl[0].scrollTop = 0;
       }
       vl.update();
     };
@@ -24191,7 +24372,7 @@
         itemTop = index * vl.params.height;
       }
       var listTop = vl.$el[0].offsetTop;
-      vl.render(true, (listTop + itemTop) - parseInt(vl.$pageContentEl.css('padding-top'), 10));
+      vl.render(true, (listTop + itemTop) - parseInt(vl.$scrollableParentEl.css('padding-top'), 10));
       return true;
     };
 
@@ -25579,9 +25760,8 @@
 
   var Panel = /*@__PURE__*/(function (Framework7Class) {
     function Panel(app, params) {
-      var obj;
-
       if ( params === void 0 ) params = {};
+
       Framework7Class.call(this, params, [app]);
       var panel = this;
 
@@ -25605,7 +25785,7 @@
       if (typeof effect === 'undefined') { effect = $el.hasClass('panel-cover') ? 'cover' : 'reveal'; }
 
       if (!app.panel[side]) {
-        Utils.extend(app.panel, ( obj = {}, obj[side] = panel, obj ));
+        app.panel[side] = panel;
       } else {
         throw new Error(("Framework7: Can't create panel; app already has a " + side + " panel!"));
       }
@@ -25966,6 +26146,7 @@
         delete panel.el.f7Panel;
       }
       Utils.deleteProps(panel);
+
       panel = null;
     };
 
@@ -26380,7 +26561,7 @@
         $cardEl.addClass('card-opened');
         $cardEl.removeClass('card-opening');
         $cardEl.trigger('card:opened');
-        app.emit('cardOpened', $cardEl[0]);
+        app.emit('cardOpened', $cardEl[0], $pageEl[0]);
       }
       $cardContentEl
         .css({
@@ -26614,7 +26795,7 @@
         $cardEl.removeClass('card-closing card-no-transition');
         $cardEl.trigger('card:closed');
         $cardEl.find('.card-expandable-size').remove();
-        app.emit('cardClosed', $cardEl[0]);
+        app.emit('cardClosed', $cardEl[0], $pageEl[0]);
       }
       $cardContentEl
         .css({
@@ -26713,9 +26894,9 @@
         if (app.params.card.closeByBackdropClick) { needToClose = true; }
         var $openedCardEl = $('.card-opened');
         if (!$openedCardEl.length) { return; }
-        if ($openedCardEl.attr('data-close-on-backdrop-click') === 'true') {
+        if ($openedCardEl.attr('data-close-by-backdrop-click') === 'true') {
           needToClose = true;
-        } else if ($openedCardEl.attr('data-close-on-backdrop-click') === 'false') {
+        } else if ($openedCardEl.attr('data-close-by-backdrop-click') === 'false') {
           needToClose = false;
         }
         if (needToClose) { app.card.close($openedCardEl); }
@@ -27483,7 +27664,7 @@
         toggle.emit('local::change toggleChange', toggle);
       }
       toggle.attachEvents = function attachEvents() {
-        if (Support.touch) {
+        if ( Support.touch) {
           var passive = Support.passiveListener ? { passive: true } : false;
           $el.on(app.touchEvents.start, handleTouchStart, passive);
           app.on('touchmove', handleTouchMove);
@@ -27492,7 +27673,7 @@
         toggle.$inputEl.on('change', handleInputChange);
       };
       toggle.detachEvents = function detachEvents() {
-        if (Support.touch) {
+        if ( Support.touch) {
           var passive = Support.passiveListener ? { passive: true } : false;
           $el.off(app.touchEvents.start, handleTouchStart, passive);
           app.off('touchmove', handleTouchMove);
@@ -28807,13 +28988,16 @@
       var $selectEl = $el.find('select').eq(0);
       if ($selectEl.length === 0) { return ss; }
 
-      var $valueEl = $(ss.params.valueEl);
-      if ($valueEl.length === 0) {
-        $valueEl = $el.find('.item-after');
-      }
-      if ($valueEl.length === 0) {
-        $valueEl = $('<div class="item-after"></div>');
-        $valueEl.insertAfter($el.find('.item-title'));
+      var $valueEl;
+      if (ss.params.setValueText) {
+        $valueEl = $(ss.params.valueEl);
+        if ($valueEl.length === 0) {
+          $valueEl = $el.find('.item-after');
+        }
+        if ($valueEl.length === 0) {
+          $valueEl = $('<div class="item-after"></div>');
+          $valueEl.insertAfter($el.find('.item-title'));
+        }
       }
 
       // View
@@ -28837,7 +29021,7 @@
         $selectEl: $selectEl,
         selectEl: $selectEl[0],
         $valueEl: $valueEl,
-        valueEl: $valueEl[0],
+        valueEl: $valueEl && $valueEl[0],
         url: url,
         multiple: multiple,
         inputType: inputType,
@@ -28858,7 +29042,7 @@
         var value = ss.$selectEl.val();
         ss.$el.trigger('smartselect:change', ss, value);
         ss.emit('local::change smartSelectChange', ss, value);
-        ss.setTextValue();
+        ss.setValueText();
       }
       ss.attachEvents = function attachEvents() {
         $el.on('click', onClick);
@@ -28900,7 +29084,9 @@
         }
 
         ss.$selectEl.trigger('change');
-        ss.$valueEl.text(optionText.join(', '));
+        if (ss.params.setValueText) {
+          ss.$valueEl.text(ss.formatValueText(optionText));
+        }
         if (ss.params.closeOnSelect && ss.inputType === 'radio') {
           ss.close();
         }
@@ -28950,12 +29136,16 @@
         }
       } else {
         optionEl = ss.$selectEl.find(("option[value=\"" + newValue + "\"]"))[0];
-        displayAs = optionEl.dataset ? optionEl.dataset.displayAs : $(optionEl).data('display-as');
-        text = displayAs && typeof displayAs !== 'undefined' ? displayAs : optionEl.textContent;
-        optionText = [text];
+        if (optionEl) {
+          displayAs = optionEl.dataset ? optionEl.dataset.displayAs : $(optionEl).data('display-as');
+          text = displayAs && typeof displayAs !== 'undefined' ? displayAs : optionEl.textContent;
+          optionText = [text];
+        }
         ss.selectEl.value = newValue;
       }
-      ss.$valueEl.text(optionText.join(', '));
+      if (ss.params.setValueText) {
+        ss.$valueEl.text(ss.formatValueText(optionText));
+      }
       return ss;
     };
 
@@ -28993,7 +29183,18 @@
       }
     };
 
-    SmartSelect.prototype.setTextValue = function setTextValue (value) {
+    SmartSelect.prototype.formatValueText = function formatValueText (values) {
+      var ss = this;
+      var textValue;
+      if (ss.params.formatValueText) {
+        textValue = ss.params.formatValueText.call(ss, values, ss);
+      } else {
+        textValue = values.join(', ');
+      }
+      return textValue;
+    };
+
+    SmartSelect.prototype.setValueText = function setValueText (value) {
       var ss = this;
       var valueArray = [];
       if (typeof value !== 'undefined') {
@@ -29015,7 +29216,9 @@
           }
         });
       }
-      ss.$valueEl.text(valueArray.join(', '));
+      if (ss.params.setValueText) {
+        ss.$valueEl.text(ss.formatValueText(valueArray));
+      }
     };
 
     SmartSelect.prototype.getItemsData = function getItemsData () {
@@ -29431,6 +29634,15 @@
     SmartSelect.prototype.open = function open (type) {
       var ss = this;
       if (ss.opened) { return ss; }
+      var prevented = false;
+      function prevent() {
+        prevented = true;
+      }
+      if (ss.$el) {
+        ss.$el.trigger('smartselect:beforeopen', { prevent: prevent });
+      }
+      ss.emit('local::beforeOpen smartSelectBeforeOpen', ss, prevent);
+      if (prevented) { return ss; }
       var openIn = type || ss.params.openIn;
       ss[("open" + (openIn.split('').map(function (el, index) {
         if (index === 0) { return el.toUpperCase(); }
@@ -29460,7 +29672,7 @@
     SmartSelect.prototype.init = function init () {
       var ss = this;
       ss.attachEvents();
-      ss.setTextValue();
+      ss.setValueText();
     };
 
     SmartSelect.prototype.destroy = function destroy () {
@@ -29482,6 +29694,8 @@
       smartSelect: {
         el: undefined,
         valueEl: undefined,
+        setValueText: true,
+        formatValueText: null,
         openIn: 'page', // or 'popup' or 'sheet' or 'popover'
         pageTitle: undefined,
         pageBackLinkText: 'Back',
@@ -32495,13 +32709,20 @@
     create: function create(el) {
       var $el = $(el);
       var app = this;
-      $el.on('scroll', function handle(e) {
+      function scrollHandler(e) {
         app.infiniteScroll.handle(this, e);
+      }
+      $el.each(function (index, element) {
+        element.f7InfiniteScrollHandler = scrollHandler;
+        element.addEventListener('scroll', element.f7InfiniteScrollHandler);
       });
     },
     destroy: function destroy(el) {
       var $el = $(el);
-      $el.off('scroll');
+      $el.each(function (index, element) {
+        element.removeEventListener('scroll', element.f7InfiniteScrollHandler);
+        delete element.f7InfiniteScrollHandler;
+      });
     },
   };
   var InfiniteScroll$1 = {
@@ -32520,14 +32741,18 @@
       tabMounted: function tabMounted(tabEl) {
         var app = this;
         var $tabEl = $(tabEl);
-        $tabEl.find('.infinite-scroll-content').each(function (index, el) {
+        var $isEls = $tabEl.find('.infinite-scroll-content');
+        if ($tabEl.is('.infinite-scroll-content')) { $isEls.add($tabEl); }
+        $isEls.each(function (index, el) {
           app.infiniteScroll.create(el);
         });
       },
       tabBeforeRemove: function tabBeforeRemove(tabEl) {
         var $tabEl = $(tabEl);
         var app = this;
-        $tabEl.find('.infinite-scroll-content').each(function (index, el) {
+        var $isEls = $tabEl.find('.infinite-scroll-content');
+        if ($tabEl.is('.infinite-scroll-content')) { $isEls.add($tabEl); }
+        $isEls.each(function (index, el) {
           app.infiniteScroll.destroy(el);
         });
       },
@@ -33087,14 +33312,18 @@
       tabMounted: function tabMounted(tabEl) {
         var app = this;
         var $tabEl = $(tabEl);
-        $tabEl.find('.ptr-content').each(function (index, el) {
+        var $ptrEls = $tabEl.find('.ptr-content');
+        if ($tabEl.is('.ptr-content')) { $ptrEls.add($tabEl); }
+        $ptrEls.each(function (index, el) {
           app.ptr.create(el);
         });
       },
       tabBeforeRemove: function tabBeforeRemove(tabEl) {
         var $tabEl = $(tabEl);
         var app = this;
-        $tabEl.find('.ptr-content').each(function (index, el) {
+        var $ptrEls = $tabEl.find('.ptr-content');
+        if ($tabEl.is('.ptr-content')) { $ptrEls.add($tabEl); }
+        $ptrEls.each(function (index, el) {
           app.ptr.destroy(el);
         });
       },
@@ -34150,7 +34379,7 @@
       } else {
         if (needsFocus) { sb.$inputEl.focus(); }
         if (app.theme === 'md' && sb.expandable) {
-          sb.$el.parents('.page, .view, .navbar-inner').scrollLeft(0);
+          sb.$el.parents('.page, .view, .navbar-inner').scrollLeft(app.rtl ? 100 : 0);
         }
         enable();
       }
@@ -42844,7 +43073,8 @@
       if (ac.params.view) {
         view = ac.params.view;
       } else if ($openerEl || $inputEl) {
-        view = app.views.get($openerEl || $inputEl);
+        var $el = $openerEl || $inputEl;
+        view = $el.closest('.view').length && $el.closest('.view')[0].f7View;
       }
       if (!view) { view = app.views.main; }
 
@@ -43669,7 +43899,7 @@
     function Tooltip(app, params) {
       if ( params === void 0 ) params = {};
 
-      Framework7Class.call(this, app, params);
+      Framework7Class.call(this, params, [app]);
 
       var tooltip = this;
 
@@ -44026,6 +44256,13 @@
           if (!text) { return; }
           app.tooltip.create({ targetEl: el, text: text });
         },
+        update: function update(vnode) {
+          var el = vnode.elm;
+          if (!el.f7Tooltip) { return; }
+          if (vnode && vnode.data && vnode.data.attrs && vnode.data.attrs['data-tooltip']) {
+            el.f7Tooltip.setText(vnode.data.attrs['data-tooltip']);
+          }
+        },
         destroy: function destroy(vnode) {
           var el = vnode.elm;
           if (el.f7Tooltip) { el.f7Tooltip.destroy(); }
@@ -44041,7 +44278,7 @@
       if ( params === void 0 ) params = {};
 
       // Extends with open/close Modal methods;
-      Framework7Class.call(this, app, params);
+      Framework7Class.call(this, params, [app]);
 
       var gauge = this;
 
@@ -44771,6 +45008,68 @@
     },
   };
 
+  var moduleBrightnessSlider = {
+    render: function render(self) {
+      var ref = self.params;
+      var sliderLabel = ref.sliderLabel;
+      var sliderValue = ref.sliderValue;
+      var sliderValueEditable = ref.sliderValueEditable;
+      var brightnessLabelText = ref.brightnessLabelText;
+      return ("\n      <div class=\"color-picker-module color-picker-module-brightness-slider\">\n        <div class=\"color-picker-slider-wrap\">\n          " + (sliderLabel ? ("\n            <div class=\"color-picker-slider-label\">" + brightnessLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-slider color-picker-slider-brightness\"></div>\n          " + (sliderValue ? ("\n            <div class=\"color-picker-slider-value\">\n              " + (sliderValueEditable ? "\n                <input type=\"number\" step=\"0.1\" min=\"0\" max=\"100\" class=\"color-picker-value-brightness\">\n              " : "\n                <span class=\"color-picker-value-brightness\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n      </div>\n    ");
+    },
+    init: function init(self) {
+      self.brightnessRangeSlider = self.app.range.create({
+        el: self.$el.find('.color-picker-slider-brightness'),
+        min: 0,
+        max: 1,
+        step: 0.001,
+        value: 0,
+        on: {
+          change: function change(range, value) {
+            var b = Math.floor(value * 1000) / 1000;
+            self.setValue({ hsb: [self.value.hsb[0], self.value.hsb[1], b] });
+          },
+        },
+      });
+    },
+    update: function update(self) {
+      var value = self.value;
+      var app = self.app;
+      var ref = self.params;
+      var sliderValue = ref.sliderValue;
+      var sliderValueEditable = ref.sliderValueEditable;
+
+      var hsb = value.hsb;
+
+      self.brightnessRangeSlider.value = hsb[2];
+      self.brightnessRangeSlider.layout();
+
+      var hslCurrent = Utils.colorHsbToHsl(hsb[0], hsb[1], hsb[2]);
+      var hslLeft = Utils.colorHsbToHsl(hsb[0], hsb[1], 0);
+      var hslRight = Utils.colorHsbToHsl(hsb[0], hsb[1], 1);
+
+      self.brightnessRangeSlider.$el[0].style.setProperty(
+        '--f7-range-knob-color',
+        ("hsl(" + (hslCurrent[0]) + ", " + (hslCurrent[1] * 100) + "%, " + (hslCurrent[2] * 100) + "%)")
+      );
+      self.brightnessRangeSlider.$el.find('.range-bar').css(
+        'background-image',
+        ("linear-gradient(" + (app.rtl ? 'to left' : 'to right') + ", hsl(" + (hslLeft[0]) + ", " + (hslLeft[1] * 100) + "%, " + (hslLeft[2] * 100) + "%), hsl(" + (hslRight[0]) + ", " + (hslRight[1] * 100) + "%, " + (hslRight[2] * 100) + "%))")
+      );
+      if (sliderValue && sliderValueEditable) {
+        self.$el.find('input.color-picker-value-brightness').val(("" + (hsb[2] * 1000 / 10)));
+      } else if (sliderValue) {
+        self.$el.find('span.color-picker-value-brightness').text(("" + (hsb[2] * 1000 / 10)));
+      }
+    },
+    destroy: function destroy(self) {
+      if (self.brightnessRangeSlider && self.brightnessRangeSlider.destroy) {
+        self.brightnessRangeSlider.destroy();
+      }
+      delete self.brightnessRangeSlider;
+    },
+  };
+
   /* eslint indent: ["off"] */
 
   var modulePalette = {
@@ -45213,6 +45512,117 @@
     },
   };
 
+  var moduleHsSpectrum = {
+    render: function render() {
+      return "\n      <div class=\"color-picker-module color-picker-module-hs-spectrum\">\n        <div class=\"color-picker-hs-spectrum\">\n          <div class=\"color-picker-hs-spectrum-handle\"></div>\n        </div>\n      </div>\n    ";
+    },
+    init: function init(self) {
+      var app = self.app;
+
+      var isTouched;
+      var isMoved;
+      var touchStartX;
+      var touchStartY;
+      var touchCurrentX;
+      var touchCurrentY;
+
+      var specterRect;
+      var specterIsTouched;
+      var specterHandleIsTouched;
+
+      var $el = self.$el;
+
+      function setHSFromSpecterCoords(x, y) {
+        var h = (x - specterRect.left) / specterRect.width * 360;
+        var s = (y - specterRect.top) / specterRect.height;
+        h = Math.max(0, Math.min(360, h));
+        s = 1 - Math.max(0, Math.min(1, s));
+
+        self.setValue({ hsb: [h, s, self.value.hsb[2]] });
+      }
+
+      function handleTouchStart(e) {
+        if (isMoved || isTouched) { return; }
+        touchStartX = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
+        touchCurrentX = touchStartX;
+        touchStartY = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+        touchCurrentY = touchStartY;
+        var $targetEl = $(e.target);
+        specterHandleIsTouched = $targetEl.closest('.color-picker-hs-spectrum-handle').length > 0;
+        if (!specterHandleIsTouched) {
+          specterIsTouched = $targetEl.closest('.color-picker-hs-spectrum').length > 0;
+        }
+        if (specterIsTouched) {
+          specterRect = $el.find('.color-picker-hs-spectrum')[0].getBoundingClientRect();
+          setHSFromSpecterCoords(touchStartX, touchStartY);
+        }
+        if (specterHandleIsTouched || specterIsTouched) {
+          $el.find('.color-picker-hs-spectrum-handle').addClass('color-picker-hs-spectrum-handle-pressed');
+        }
+      }
+      function handleTouchMove(e) {
+        if (!(specterIsTouched || specterHandleIsTouched)) { return; }
+        touchCurrentX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
+        touchCurrentY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+        e.preventDefault();
+        if (!isMoved) {
+          // First move
+          isMoved = true;
+          if (specterHandleIsTouched) {
+            specterRect = $el.find('.color-picker-hs-spectrum')[0].getBoundingClientRect();
+          }
+        }
+        if (specterIsTouched || specterHandleIsTouched) {
+          setHSFromSpecterCoords(touchCurrentX, touchCurrentY);
+        }
+      }
+      function handleTouchEnd() {
+        isMoved = false;
+        if (specterIsTouched || specterHandleIsTouched) {
+          $el.find('.color-picker-hs-spectrum-handle').removeClass('color-picker-hs-spectrum-handle-pressed');
+        }
+        specterIsTouched = false;
+        specterHandleIsTouched = false;
+      }
+
+      function handleResize() {
+        self.modules['hs-spectrum'].update(self);
+      }
+
+      var passiveListener = app.touchEvents.start === 'touchstart' && app.support.passiveListener ? { passive: true, capture: false } : false;
+
+      self.$el.on(app.touchEvents.start, handleTouchStart, passiveListener);
+      app.on('touchmove:active', handleTouchMove);
+      app.on('touchend:passive', handleTouchEnd);
+      app.on('resize', handleResize);
+
+      self.destroySpectrumEvents = function destroySpectrumEvents() {
+        self.$el.off(app.touchEvents.start, handleTouchStart, passiveListener);
+        app.off('touchmove:active', handleTouchMove);
+        app.off('touchend:passive', handleTouchEnd);
+        app.off('resize', handleResize);
+      };
+    },
+    update: function update(self) {
+      var value = self.value;
+
+      var hsb = value.hsb;
+
+      var specterWidth = self.$el.find('.color-picker-hs-spectrum')[0].offsetWidth;
+      var specterHeight = self.$el.find('.color-picker-hs-spectrum')[0].offsetHeight;
+
+      var hslBright = Utils.colorHsbToHsl(hsb[0], hsb[1], 1);
+
+      self.$el.find('.color-picker-hs-spectrum-handle')
+        .css('background-color', ("hsl(" + (hslBright[0]) + ", " + (hslBright[1] * 100) + "%, " + (hslBright[2] * 100) + "%)"))
+        .transform(("translate(" + (specterWidth * (hsb[0] / 360)) + "px, " + (specterHeight * (1 - hsb[1])) + "px)"));
+    },
+    destroy: function destroy(self) {
+      if (self.destroySpectrumEvents) { self.destroySpectrumEvents(); }
+      delete self.destroySpectrumEvents;
+    },
+  };
+
   function svgWheelCircles() {
     var total = 256;
     var circles = '';
@@ -45425,11 +45835,13 @@
           'hex': moduleHex, // eslint-disable-line
           'hsb-sliders': moduleHsbSliders,
           'hue-slider': moduleHueSlider,
+          'brightness-slider': moduleBrightnessSlider,
           'palette': modulePalette, // eslint-disable-line
           'initial-current-colors': moduleInitialCurrentColors,
           'rgb-bars': moduleRgbBars,
           'rgb-sliders': moduleRgbSliders,
           'sb-spectrum': moduleSbSpectrum,
+          'hs-spectrum': moduleHsSpectrum,
           'wheel': moduleWheel, // eslint-disable-line
         },
       });
@@ -45884,7 +46296,7 @@
       self.attachEvents();
 
       params.modules.forEach(function (m) {
-        if (typeof m === 'string' && modules[m] && modules[m].render) {
+        if (typeof m === 'string' && modules[m] && modules[m].init) {
           modules[m].init(self);
         } else if (m && m.init) {
           m.init(self);
@@ -46595,7 +47007,7 @@
   };
 
   /**
-   * Framework7 4.4.0
+   * Framework7 4.5.0
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -46603,7 +47015,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: May 13, 2019
+   * Released on: August 21, 2019
    */
 
   // Install Core Modules & Components
@@ -47580,76 +47992,28 @@
     }
   };
 
-  var eventsEmitter = {
-    listeners: {},
-    on: function on(events, handler) {
-      events.split(' ').forEach(function (event) {
-        if (!eventsEmitter.listeners[event]) { eventsEmitter.listeners[event] = []; }
-        eventsEmitter.listeners[event].unshift(handler);
-      });
-    },
-    off: function off(events, handler) {
-      events.split(' ').forEach(function (event) {
-        if (!eventsEmitter.listeners[event]) { return; }
-        if (typeof handler === 'undefined') {
-          eventsEmitter.listeners[event] = [];
-        } else {
-          eventsEmitter.listeners[event].forEach(function (eventHandler, index) {
-            if (eventHandler === handler) {
-              eventsEmitter.listeners[event].splice(index, 1);
-            }
-          });
-        }
-      });
-    },
-    once: function once(events, handler) {
-      if (typeof handler !== 'function') { return; }
-      function onceHandler() {
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
-
-        handler.apply(void 0, args);
-        eventsEmitter.off(events, onceHandler);
-      }
-      eventsEmitter.on(events, onceHandler);
-    },
-    emit: function emit(events) {
-      var args = [], len = arguments.length - 1;
-      while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
-
-      events.split(' ').forEach(function (event) {
-        if (eventsEmitter.listeners && eventsEmitter.listeners[event]) {
-          var handlers = [];
-          eventsEmitter.listeners[event].forEach(function (eventHandler) {
-            handlers.push(eventHandler);
-          });
-          handlers.forEach(function (eventHandler) {
-            eventHandler.apply(void 0, args);
-          });
-        }
-      });
-    },
-  };
-
   var f7 = {
     instance: null,
     Framework7: null,
+    events: null,
     init: function init(rootEl, params, routes) {
       if ( params === void 0 ) params = {};
 
+      var events = f7.events;
+      var Framework7 = f7.Framework7;
       var f7Params = Utils$1.extend({}, params, {
         root: rootEl,
       });
       if (routes && routes.length && !f7Params.routes) { f7Params.routes = routes; }
 
-      var instance = new f7.Framework7(f7Params);
+      var instance = new Framework7(f7Params);
       if (instance.initialized) {
         f7.instance = instance;
-        eventsEmitter.emit('ready', f7.instance);
+        events.emit('ready', f7.instance);
       } else {
         instance.on('init', function () {
           f7.instance = instance;
-          eventsEmitter.emit('ready', f7.instance);
+          events.emit('ready', f7.instance);
         });
       }
     },
@@ -47657,7 +48021,7 @@
       if (!callback) { return; }
       if (f7.instance) { callback(f7.instance); }
       else {
-        eventsEmitter.once('ready', callback);
+        f7.events.once('ready', callback);
       }
     },
     routers: {
@@ -47715,7 +48079,7 @@
     updated: function updated() {
       var self = this;
       if (!self.routerData) { return; }
-      eventsEmitter.emit('modalsRouterDidUpdate', self.routerData);
+      f7.events.emit('modalsRouterDidUpdate', self.routerData);
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -47729,12 +48093,17 @@
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
-      self.setState({
-        modals: []
-      });
       self.routerData = {
+        modals: self.state.modals,
         el: el,
-        component: self
+        component: self,
+
+        setModals: function setModals(modals) {
+          self.setState({
+            modals: modals
+          });
+        }
+
       };
       f7.routers.modals = self.routerData;
     },
@@ -47754,20 +48123,6 @@
       params: Object,
       routes: Array
     }, Mixins.colorProps),
-
-    data: function data() {
-      var props = __vueComponentProps(this);
-
-      var state = (function () {
-        return {
-          modals: []
-        };
-      })();
-
-      return {
-        state: state
-      };
-    },
 
     render: function render() {
       var _h = this.$createElement;
@@ -48132,6 +48487,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -48496,6 +48867,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -48684,6 +49071,10 @@
         type: Boolean,
         default: undefined
       },
+      backdropEl: {
+        type: String,
+        default: undefined
+      },
       noShadow: Boolean,
       noBorder: Boolean,
       padding: {
@@ -48757,6 +49148,7 @@
       var swipeToClose = props.swipeToClose;
       var closeByBackdropClick = props.closeByBackdropClick;
       var backdrop = props.backdrop;
+      var backdropEl = props.backdropEl;
       var noShadow = props.noShadow;
       var noBorder = props.noBorder;
       var headerEl;
@@ -48797,7 +49189,8 @@
           'data-hide-toolbar-on-open': typeof hideToolbarOnOpen === 'undefined' ? hideToolbarOnOpen : hideToolbarOnOpen.toString(),
           'data-swipe-to-close': typeof swipeToClose === 'undefined' ? swipeToClose : swipeToClose.toString(),
           'data-close-by-backdrop-click': typeof closeByBackdropClick === 'undefined' ? closeByBackdropClick : closeByBackdropClick.toString(),
-          'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString()
+          'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString(),
+          'data-backdrop-el': backdropEl
         }
       }, [headerEl, contentEl, footerEl, this.$slots['default']]);
     },
@@ -49248,6 +49641,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -49382,6 +49791,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -50595,6 +51020,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -50743,7 +51184,8 @@
       tabLinkActive: Boolean,
       link: [Boolean, String],
       href: [Boolean, String],
-      target: String
+      target: String,
+      tooltip: String
     }, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps),
 
     render: function render() {
@@ -50803,6 +51245,29 @@
       }
 
     },
+    watch: {
+      'props.tooltip': function watchTooltip(newText) {
+        var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
+        if (!newText || !self.f7Tooltip) { return; }
+        self.f7Tooltip.setText(newText);
+      }
+    },
 
     created: function created() {
       Utils$1.bindMethods(this, ['onClick']);
@@ -50813,12 +51278,21 @@
       var linkEl = self.$refs.linkEl;
       var ref = self.props;
       var routeProps = ref.routeProps;
+      var tooltip = ref.tooltip;
 
       if (routeProps) {
         linkEl.f7RouteProps = routeProps;
       }
 
       linkEl.addEventListener('click', self.onClick);
+      self.$f7ready(function (f7) {
+        if (tooltip) {
+          self.f7Tooltip = f7.tooltip.create({
+            targetEl: linkEl,
+            text: tooltip
+          });
+        }
+      });
     },
 
     updated: function updated() {
@@ -50837,6 +51311,12 @@
       var linkEl = self.$refs.linkEl;
       linkEl.removeEventListener('click', this.onClick);
       delete linkEl.f7RouteProps;
+
+      if (self.f7Tooltip && self.f7Tooltip.destroy) {
+        self.f7Tooltip.destroy();
+        self.f7Tooltip = null;
+        delete self.f7Tooltip;
+      }
     },
 
     methods: {
@@ -50859,7 +51339,11 @@
     props: Object.assign({
       id: [String, Number],
       mediaList: Boolean,
-      sortable: Boolean
+      sortable: Boolean,
+      sortableMoveElements: {
+        type: Boolean,
+        default: undefined
+      }
     }, Mixins.colorProps),
 
     render: function render() {
@@ -50871,6 +51355,7 @@
       var style = props.style;
       var mediaList = props.mediaList;
       var sortable = props.sortable;
+      var sortableMoveElements = props.sortableMoveElements;
       var classes = Utils$1.classNames(className, 'list-group', {
         'media-list': mediaList,
         sortable: sortable
@@ -50879,7 +51364,8 @@
         style: style,
         class: classes,
         attrs: {
-          id: id
+          id: id,
+          'data-sortable-move-elements': typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined
         }
       }, [_h('ul', [this.$slots['default']])]);
     },
@@ -51022,7 +51508,10 @@
     name: 'f7-list-input',
     props: Object.assign({
       id: [String, Number],
-      sortable: Boolean,
+      sortable: {
+        type: Boolean,
+        default: undefined
+      },
       media: String,
       dropdown: {
         type: [String, Boolean],
@@ -51933,6 +52422,7 @@
       subtitle: [String, Number],
       header: [String, Number],
       footer: [String, Number],
+      tooltip: String,
       link: [Boolean, String],
       target: String,
       noFastclick: Boolean,
@@ -51946,7 +52436,10 @@
       groupTitle: Boolean,
       swipeout: Boolean,
       swipeoutOpened: Boolean,
-      sortable: Boolean,
+      sortable: {
+        type: Boolean,
+        default: undefined
+      },
       accordionItem: Boolean,
       accordionItemOpened: Boolean,
       smartSelect: Boolean,
@@ -52089,7 +52582,8 @@
         'accordion-item-opened': accordionItemOpened,
         disabled: disabled && !(radio || checkbox),
         'no-chevron': noChevron,
-        'chevron-center': chevronCenter
+        'chevron-center': chevronCenter,
+        'disallow-sorting': sortable === false
       }, Mixins.colorClasses(props));
 
       if (divider || groupTitle) {
@@ -52127,12 +52621,33 @@
         }
       }, [this.$slots['root-start'], swipeout ? _h('div', {
         class: 'swipeout-content'
-      }, [linkItemEl]) : linkItemEl, isSortable && _h('div', {
+      }, [linkItemEl]) : linkItemEl, isSortable && sortable !== false && _h('div', {
         class: 'sortable-handler'
       }), (swipeout || accordionItem) && self.$slots.default, this.$slots['root'], this.$slots['root-end']]);
     },
 
     watch: {
+      'props.tooltip': function watchTooltip(newText) {
+        var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
+        if (!newText || !self.f7Tooltip) { return; }
+        self.f7Tooltip.setText(newText);
+      },
       'props.swipeoutOpened': function watchSwipeoutOpened(opened) {
         var self = this;
         if (!self.props.swipeout) { return; }
@@ -52165,6 +52680,7 @@
       var accordionItem = ref$1.accordionItem;
       var smartSelectParams = ref$1.smartSelectParams;
       var routeProps = ref$1.routeProps;
+      var tooltip = ref$1.tooltip;
       var needsEvents = !(link || href || accordionItem || smartSelect);
 
       if (!needsEvents && linkEl) {
@@ -52216,6 +52732,13 @@
 
         if (swipeoutOpened) {
           f7.swipeout.open(el);
+        }
+
+        if (tooltip) {
+          self.f7Tooltip = f7.tooltip.create({
+            targetEl: el,
+            text: tooltip
+          });
         }
       });
     },
@@ -52302,6 +52825,12 @@
 
       if (smartSelect && self.f7SmartSelect) {
         self.f7SmartSelect.destroy();
+      }
+
+      if (self.f7Tooltip && self.f7Tooltip.destroy) {
+        self.f7Tooltip.destroy();
+        self.f7Tooltip = null;
+        delete self.f7Tooltip;
       }
     },
 
@@ -52411,6 +52940,10 @@
       mediaList: Boolean,
       sortable: Boolean,
       sortableEnabled: Boolean,
+      sortableMoveElements: {
+        type: Boolean,
+        default: undefined
+      },
       accordionList: Boolean,
       contactsList: Boolean,
       simpleList: Boolean,
@@ -52441,6 +52974,7 @@
       var id = props.id;
       var style = props.style;
       var form = props.form;
+      var sortableMoveElements = props.sortableMoveElements;
       var ref = self.$slots;
       var slotsList = ref.list;
       var slotsDefault = ref.default;
@@ -52471,7 +53005,8 @@
           style: style,
           class: self.classes,
           attrs: {
-            id: id
+            id: id,
+            'data-sortable-move-elements': typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined
           }
         }, [self.$slots['before-list'], rootChildrenBeforeList, _h('ul', [ulChildren]), self.$slots['after-list'], rootChildrenAfterList]);
       } else {
@@ -52480,7 +53015,8 @@
           style: style,
           class: self.classes,
           attrs: {
-            id: id
+            id: id,
+            'data-sortable-move-elements': typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined
           }
         }, [self.$slots['before-list'], rootChildrenBeforeList, self.$slots['after-list'], rootChildrenAfterList]);
       }
@@ -53720,6 +54256,8 @@
         });
       }
 
+      var valueProps = {};
+      if ('value' in self.props) { valueProps.value = value; }
       return _h('div', {
         ref: 'el',
         style: style,
@@ -53731,8 +54269,9 @@
         class: 'toolbar-inner'
       }, [slotsInnerStart, _h('div', {
         class: 'messagebar-area'
-      }, [slotsBeforeArea, messagebarAttachmentsEl, _h(F7Input, {
-        ref: 'area',
+      }, [slotsBeforeArea, messagebarAttachmentsEl, _h(F7Input, __vueComponentTransformJSXProps(Object.assign({
+        ref: 'area'
+      }, valueProps, {
         on: {
           input: self.onInput,
           change: self.onChange,
@@ -53746,10 +54285,9 @@
           disabled: disabled,
           name: name,
           readonly: readonly,
-          resizable: resizable,
-          value: value
+          resizable: resizable
         }
-      }), slotsAfterArea]), (sendLink && sendLink.length > 0 || slotsSendLink) && _h(f7Link, {
+      }))), slotsAfterArea]), (sendLink && sendLink.length > 0 || slotsSendLink) && _h(f7Link, {
         on: {
           click: self.onClick
         }
@@ -54293,8 +54831,9 @@
       if (typeof needBackLinkText === 'undefined') { needBackLinkText = !this.$theme.md; }
 
       if (backLink) {
+        var text = backLink !== true && needBackLinkText ? backLink : undefined;
         linkEl = _h(f7Link, {
-          class: backLink === true || backLink && this.$theme.md ? 'icon-only' : undefined,
+          class: !text ? 'icon-only' : undefined,
           on: {
             click: this.onBackClick
           },
@@ -54303,7 +54842,7 @@
             back: true,
             icon: 'icon-back',
             force: backLinkForce || undefined,
-            text: backLink !== true && needBackLinkText ? backLink : undefined
+            text: text
           }
         });
       }
@@ -54548,7 +55087,6 @@
       var noHairline = props.noHairline;
       var large = props.large;
       var titleLarge = props.titleLarge;
-      var innerEl;
       var leftEl;
       var titleEl;
       var rightEl;
@@ -54574,7 +55112,7 @@
         }, [this.$slots['default']]);
       }
 
-      if (backLink || slots['nav-left']) {
+      if (backLink || slots['nav-left'] || slots.left) {
         leftEl = _h(f7NavLeft, {
           on: {
             backClick: self.onBackClick
@@ -54585,7 +55123,7 @@
             backLinkForce: backLinkForce,
             backLinkShowText: backLinkShowText
           }
-        }, [slots['nav-left']]);
+        }, [slots['nav-left'], slots.left]);
       }
 
       if (title || subtitle || slots.title) {
@@ -54597,22 +55135,22 @@
         }, [slots.title]);
       }
 
-      if (slots['nav-right']) {
-        rightEl = _h(f7NavRight, [slots['nav-right']]);
+      if (slots['nav-right'] || slots.right) {
+        rightEl = _h(f7NavRight, [slots['nav-right'], slots.right]);
       }
 
       var largeTitle = titleLarge;
       if (!largeTitle && large && title) { largeTitle = title; }
 
-      if (largeTitle) {
+      if (largeTitle || slots['title-large']) {
         titleLargeEl = _h('div', {
           class: 'title-large'
         }, [_h('div', {
           class: 'title-large-text'
-        }, [largeTitle])]);
+        }, [largeTitle || '', this.$slots['title-large']])]);
       }
 
-      innerEl = _h('div', {
+      var innerEl = _h('div', {
         ref: 'innerEl',
         class: Utils$1.classNames('navbar-inner', innerClass, innerClassName, {
           sliding: sliding,
@@ -54621,6 +55159,7 @@
           'navbar-inner-large': large
         })
       }, [leftEl, titleEl, rightEl, titleLargeEl, this.$slots['default']]);
+
       return _h('div', {
         ref: 'el',
         style: style,
@@ -54757,6 +55296,110 @@
     }
   };
 
+  var f7Preloader = {
+    name: 'f7-preloader',
+    props: Object.assign({
+      id: [String, Number],
+      size: [Number, String]
+    }, Mixins.colorProps),
+
+    render: function render() {
+      var _h = this.$createElement;
+      var self = this;
+      var sizeComputed = self.sizeComputed;
+      var props = self.props;
+      var id = props.id;
+      var style = props.style;
+      var className = props.className;
+      var preloaderStyle = {};
+
+      if (sizeComputed) {
+        preloaderStyle.width = sizeComputed + "px";
+        preloaderStyle.height = sizeComputed + "px";
+        preloaderStyle['--f7-preloader-size'] = sizeComputed + "px";
+      }
+
+      if (style) { Utils$1.extend(preloaderStyle, style || {}); }
+      var innerEl;
+
+      if (self.$theme.md) {
+        innerEl = _h('span', {
+          class: 'preloader-inner'
+        }, [_h('span', {
+          class: 'preloader-inner-gap'
+        }), _h('span', {
+          class: 'preloader-inner-left'
+        }, [_h('span', {
+          class: 'preloader-inner-half-circle'
+        })]), _h('span', {
+          class: 'preloader-inner-right'
+        }, [_h('span', {
+          class: 'preloader-inner-half-circle'
+        })])]);
+      } else if (self.$theme.ios) {
+        innerEl = _h('span', {
+          class: 'preloader-inner'
+        }, [_h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        })]);
+      } else if (self.$theme.aurora) {
+        innerEl = _h('span', {
+          class: 'preloader-inner'
+        }, [_h('span', {
+          class: 'preloader-inner-circle'
+        })]);
+      }
+
+      var classes = Utils$1.classNames(className, 'preloader', Mixins.colorClasses(props));
+      return _h('span', {
+        style: preloaderStyle,
+        class: classes,
+        attrs: {
+          id: id
+        }
+      }, [innerEl]);
+    },
+
+    computed: {
+      sizeComputed: function sizeComputed() {
+        var s = this.props.size;
+
+        if (s && typeof s === 'string' && s.indexOf('px') >= 0) {
+          s = s.replace('px', '');
+        }
+
+        return s;
+      },
+
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    }
+  };
+
   var f7PageContent = {
     name: 'f7-page-content',
     props: Object.assign({
@@ -54806,16 +55449,14 @@
       if (ptr && ptrPreloader) {
         ptrEl = _h('div', {
           class: 'ptr-preloader'
-        }, [_h('div', {
-          class: 'preloader'
-        }), _h('div', {
+        }, [_h(f7Preloader), _h('div', {
           class: 'ptr-arrow'
         })]);
       }
 
       if (infinite && infinitePreloader) {
-        infiniteEl = _h('div', {
-          class: 'preloader infinite-scroll-preloader'
+        infiniteEl = _h(f7Preloader, {
+          class: 'infinite-scroll-preloader'
         });
       }
 
@@ -55512,7 +56153,7 @@
         if (opened) {
           self.$f7.panel.open(side);
         } else {
-          self.$f7.panel.open(side);
+          self.$f7.panel.close(side);
         }
       }
     },
@@ -55531,19 +56172,6 @@
       var left = ref.left;
       var reveal = ref.reveal;
       var resizable = ref.resizable;
-
-      if (el) {
-        el.addEventListener('panel:open', self.onOpen);
-        el.addEventListener('panel:opened', self.onOpened);
-        el.addEventListener('panel:close', self.onClose);
-        el.addEventListener('panel:closed', self.onClosed);
-        el.addEventListener('panel:backdrop-click', self.onBackdropClick);
-        el.addEventListener('panel:swipe', self.onPanelSwipe);
-        el.addEventListener('panel:swipeopen', self.onPanelSwipeOpen);
-        el.addEventListener('panel:breakpoint', self.onBreakpoint);
-        el.addEventListener('panel:resize', self.onResize);
-      }
-
       self.$f7ready(function () {
         var $ = self.$$;
         if (!$) { return; }
@@ -55555,6 +56183,20 @@
         self.f7Panel = self.$f7.panel.create({
           el: el,
           resizable: resizable
+        });
+        var events = {
+          open: self.onOpen,
+          opened: self.onOpened,
+          close: self.onClose,
+          closed: self.onClosed,
+          backdropClick: self.onBackdropClick,
+          swipe: self.onPanelSwipe,
+          swipeOpen: self.onPanelSwipeOpen,
+          breakpoint: self.onBreakpoint,
+          resize: self.onResize
+        };
+        Object.keys(events).forEach(function (ev) {
+          self.f7Panel.on(ev, events[ev]);
         });
       });
 
@@ -55574,18 +56216,10 @@
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      if (self.f7Panel) { self.f7Panel.destroy(); }
-      var el = self.$refs.el;
-      if (!el) { return; }
-      el.removeEventListener('panel:open', self.onOpen);
-      el.removeEventListener('panel:opened', self.onOpened);
-      el.removeEventListener('panel:close', self.onClose);
-      el.removeEventListener('panel:closed', self.onClosed);
-      el.removeEventListener('panel:backdrop-click', self.onBackdropClick);
-      el.removeEventListener('panel:swipe', self.onPanelSwipe);
-      el.removeEventListener('panel:swipeopen', self.onPanelSwipeOpen);
-      el.removeEventListener('panel:breakpoint', self.onBreakpoint);
-      el.removeEventListener('panel:resize', self.onResize);
+
+      if (self.f7Panel) {
+        self.f7Panel.destroy();
+      }
     },
 
     methods: {
@@ -56113,110 +56747,6 @@
 
     },
     computed: {
-      props: function props() {
-        return __vueComponentProps(this);
-      }
-
-    }
-  };
-
-  var f7Preloader = {
-    name: 'f7-preloader',
-    props: Object.assign({
-      id: [String, Number],
-      size: [Number, String]
-    }, Mixins.colorProps),
-
-    render: function render() {
-      var _h = this.$createElement;
-      var self = this;
-      var sizeComputed = self.sizeComputed;
-      var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
-      var preloaderStyle = {};
-
-      if (sizeComputed) {
-        preloaderStyle.width = sizeComputed + "px";
-        preloaderStyle.height = sizeComputed + "px";
-        preloaderStyle['--f7-preloader-size'] = sizeComputed + "px";
-      }
-
-      if (style) { Utils$1.extend(preloaderStyle, style || {}); }
-      var innerEl;
-
-      if (self.$theme.md) {
-        innerEl = _h('span', {
-          class: 'preloader-inner'
-        }, [_h('span', {
-          class: 'preloader-inner-gap'
-        }), _h('span', {
-          class: 'preloader-inner-left'
-        }, [_h('span', {
-          class: 'preloader-inner-half-circle'
-        })]), _h('span', {
-          class: 'preloader-inner-right'
-        }, [_h('span', {
-          class: 'preloader-inner-half-circle'
-        })])]);
-      } else if (self.$theme.ios) {
-        innerEl = _h('span', {
-          class: 'preloader-inner'
-        }, [_h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        })]);
-      } else if (self.$theme.aurora) {
-        innerEl = _h('span', {
-          class: 'preloader-inner'
-        }, [_h('span', {
-          class: 'preloader-inner-circle'
-        })]);
-      }
-
-      var classes = Utils$1.classNames(className, 'preloader', Mixins.colorClasses(props));
-      return _h('span', {
-        style: preloaderStyle,
-        class: classes,
-        attrs: {
-          id: id
-        }
-      }, [innerEl]);
-    },
-
-    computed: {
-      sizeComputed: function sizeComputed() {
-        var s = this.props.size;
-
-        if (s && typeof s === 'string' && s.indexOf('px') >= 0) {
-          s = s.replace('px', '');
-        }
-
-        return s;
-      },
-
       props: function props() {
         return __vueComponentProps(this);
       }
@@ -56942,7 +57472,7 @@
     },
 
     created: function created() {
-      Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onStepOpen', 'onStepClose']);
+      Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onStepOpen', 'onStepClose', 'onStepProgress']);
     },
 
     mounted: function mounted() {
@@ -56955,6 +57485,7 @@
       el.addEventListener('sheet:closed', self.onClosed);
       el.addEventListener('sheet:stepopen', self.onStepOpen);
       el.addEventListener('sheet:stepclose', self.onStepClose);
+      el.addEventListener('sheet:stepprogress', self.onStepProgress);
       var props = self.props;
       var opened = props.opened;
       var backdrop = props.backdrop;
@@ -56998,9 +57529,14 @@
       el.removeEventListener('sheet:closed', self.onClosed);
       el.removeEventListener('sheet:stepopen', self.onStepOpen);
       el.removeEventListener('sheet:stepclose', self.onStepClose);
+      el.removeEventListener('sheet:stepprogress', self.onStepProgress);
     },
 
     methods: {
+      onStepProgress: function onStepProgress(event) {
+        this.dispatchEvent('sheet:stepprogress sheetStepProgress', event.detail);
+      },
+
       onStepOpen: function onStepOpen(event) {
         this.dispatchEvent('sheet:stepopen sheetStepOpen', event);
       },
@@ -57256,6 +57792,8 @@
         default: 1
       },
       formatValue: Function,
+      name: String,
+      inputId: String,
       input: {
         type: Boolean,
         default: true
@@ -57330,6 +57868,8 @@
       var step = props.step;
       var id = props.id;
       var style = props.style;
+      var name = props.name;
+      var inputId = props.inputId;
       var inputWrapEl;
       var valueEl;
 
@@ -57343,9 +57883,12 @@
               value: value
             },
             on: {
-              input: self.onInput
+              input: self.onInput,
+              change: self.onChange
             },
             attrs: {
+              name: name,
+              id: inputId,
               type: inputType,
               min: inputType === 'number' ? min : undefined,
               max: inputType === 'number' ? max : undefined,
@@ -57543,6 +58086,11 @@
       onInput: function onInput(event) {
         var stepper = this.f7Stepper;
         this.dispatchEvent('input', event, stepper);
+      },
+
+      onChange: function onChange(event) {
+        var stepper = this.f7Stepper;
+        this.dispatchEvent('change', event, stepper);
       },
 
       onMinusClick: function onMinusClick(event) {
@@ -57944,7 +58492,7 @@
     updated: function updated() {
       var self = this;
       if (!self.routerData) { return; }
-      eventsEmitter.emit('tabRouterDidUpdate', self.routerData);
+      f7.events.emit('tabRouterDidUpdate', self.routerData);
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -57977,7 +58525,14 @@
       self.$f7ready(function () {
         self.routerData = {
           el: el,
-          component: self
+          component: self,
+
+          setTabContent: function setTabContent(tabContent) {
+            self.setState({
+              tabContent: tabContent
+            });
+          }
+
         };
         f7.routers.tabs.push(self.routerData);
       });
@@ -58532,49 +59087,62 @@
     },
 
     created: function created() {
-      Utils$1.bindMethods(this, ['onSwipeBackMove', 'onSwipeBackBeforeChange', 'onSwipeBackAfterChange', 'onSwipeBackBeforeReset', 'onSwipeBackAfterReset', 'onTabShow', 'onTabHide', 'onViewInit']);
+      var self = this;
+      Utils$1.bindMethods(self, ['onSwipeBackMove', 'onSwipeBackBeforeChange', 'onSwipeBackAfterChange', 'onSwipeBackBeforeReset', 'onSwipeBackAfterReset', 'onTabShow', 'onTabHide', 'onViewInit']);
     },
 
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
-      el.addEventListener('swipeback:move', self.onSwipeBackMove);
-      el.addEventListener('swipeback:beforechange', self.onSwipeBackBeforeChange);
-      el.addEventListener('swipeback:afterchange', self.onSwipeBackAfterChange);
-      el.addEventListener('swipeback:beforereset', self.onSwipeBackBeforeReset);
-      el.addEventListener('swipeback:afterreset', self.onSwipeBackAfterReset);
-      el.addEventListener('tab:show', self.onTabShow);
-      el.addEventListener('tab:hide', self.onTabHide);
-      el.addEventListener('view:init', self.onViewInit);
-      self.setState({
-        pages: []
-      });
       self.$f7ready(function (f7Instance) {
+        f7Instance.on('tabShow', self.onTabShow);
+        f7Instance.on('tabHide', self.onTabHide);
         self.routerData = {
           el: el,
           component: self,
-          instance: null
+          pages: self.state.pages,
+          instance: null,
+
+          setPages: function setPages(pages) {
+            self.setState({
+              pages: pages
+            });
+          }
+
         };
         f7.routers.views.push(self.routerData);
         if (!self.props.init) { return; }
-        self.routerData.instance = f7Instance.views.create(el, Utils$1.noUndefinedProps(self.$options.propsData || {}));
+        self.routerData.instance = f7Instance.views.create(el, Object.assign({
+          on: {
+            init: self.onViewInit
+          }
+        }, Utils$1.noUndefinedProps(self.$options.propsData || {})));
         self.f7View = self.routerData.instance;
+        self.f7View.on('swipebackMove', self.onSwipeBackMove);
+        self.f7View.on('swipebackBeforeChange', self.onSwipeBackBeforeChange);
+        self.f7View.on('swipebackAfterChange', self.onSwipeBackAfterChange);
+        self.f7View.on('swipebackBeforeReset', self.onSwipeBackBeforeReset);
+        self.f7View.on('swipebackAfterReset', self.onSwipeBackAfterReset);
       });
     },
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var el = self.$refs.el;
-      el.removeEventListener('swipeback:move', self.onSwipeBackMove);
-      el.removeEventListener('swipeback:beforechange', self.onSwipeBackBeforeChange);
-      el.removeEventListener('swipeback:afterchange', self.onSwipeBackAfterChange);
-      el.removeEventListener('swipeback:beforereset', self.onSwipeBackBeforeReset);
-      el.removeEventListener('swipeback:afterreset', self.onSwipeBackAfterReset);
-      el.removeEventListener('tab:show', self.onTabShow);
-      el.removeEventListener('tab:hide', self.onTabHide);
-      el.removeEventListener('view:init', self.onViewInit);
-      if (!self.props.init) { return; }
-      if (self.f7View && self.f7View.destroy) { self.f7View.destroy(); }
+
+      if (f7.instance) {
+        f7.instance.off('tabShow', self.onTabShow);
+        f7.instance.off('tabHide', self.onTabHide);
+      }
+
+      if (self.f7View) {
+        self.f7View.off('swipebackMove', self.onSwipeBackMove);
+        self.f7View.off('swipebackBeforeChange', self.onSwipeBackBeforeChange);
+        self.f7View.off('swipebackAfterChange', self.onSwipeBackAfterChange);
+        self.f7View.off('swipebackBeforeReset', self.onSwipeBackBeforeReset);
+        self.f7View.off('swipebackAfterReset', self.onSwipeBackAfterReset);
+        if (self.f7View.destroy) { self.f7View.destroy(); }
+      }
+
       f7.routers.views.splice(f7.routers.views.indexOf(self.routerData), 1);
       self.routerData = null;
       delete self.routerData;
@@ -58583,14 +59151,13 @@
     updated: function updated() {
       var self = this;
       if (!self.routerData) { return; }
-      eventsEmitter.emit('viewRouterDidUpdate', self.routerData);
+      f7.events.emit('viewRouterDidUpdate', self.routerData);
     },
 
     methods: {
-      onViewInit: function onViewInit(event) {
+      onViewInit: function onViewInit(view) {
         var self = this;
-        var view = event.detail;
-        self.dispatchEvent('view:init viewInit', event, view);
+        self.dispatchEvent('view:init viewInit', view);
 
         if (!self.props.init) {
           self.routerData.instance = view;
@@ -58598,37 +59165,41 @@
         }
       },
 
-      onSwipeBackMove: function onSwipeBackMove(event) {
-        var swipeBackData = event.detail;
-        this.dispatchEvent('swipeback:move swipeBackMove', event, swipeBackData);
+      onSwipeBackMove: function onSwipeBackMove(data) {
+        var swipeBackData = data;
+        this.dispatchEvent('swipeback:move swipeBackMove', swipeBackData);
       },
 
-      onSwipeBackBeforeChange: function onSwipeBackBeforeChange(event) {
-        var swipeBackData = event.detail;
-        this.dispatchEvent('swipeback:beforechange swipeBackBeforeChange', event, swipeBackData);
+      onSwipeBackBeforeChange: function onSwipeBackBeforeChange(data) {
+        var swipeBackData = data;
+        this.dispatchEvent('swipeback:beforechange swipeBackBeforeChange', swipeBackData);
       },
 
-      onSwipeBackAfterChange: function onSwipeBackAfterChange(event) {
-        var swipeBackData = event.detail;
-        this.dispatchEvent('swipeback:afterchange swipeBackAfterChange', event, swipeBackData);
+      onSwipeBackAfterChange: function onSwipeBackAfterChange(data) {
+        var swipeBackData = data;
+        this.dispatchEvent('swipeback:afterchange swipeBackAfterChange', swipeBackData);
       },
 
-      onSwipeBackBeforeReset: function onSwipeBackBeforeReset(event) {
-        var swipeBackData = event.detail;
-        this.dispatchEvent('swipeback:beforereset swipeBackBeforeReset', event, swipeBackData);
+      onSwipeBackBeforeReset: function onSwipeBackBeforeReset(data) {
+        var swipeBackData = data;
+        this.dispatchEvent('swipeback:beforereset swipeBackBeforeReset', swipeBackData);
       },
 
-      onSwipeBackAfterReset: function onSwipeBackAfterReset(event) {
-        var swipeBackData = event.detail;
-        this.dispatchEvent('swipeback:afterreset swipeBackAfterReset', event, swipeBackData);
+      onSwipeBackAfterReset: function onSwipeBackAfterReset(data) {
+        var swipeBackData = data;
+        this.dispatchEvent('swipeback:afterreset swipeBackAfterReset', swipeBackData);
       },
 
-      onTabShow: function onTabShow(event) {
-        this.dispatchEvent('tab:show tabShow', event);
+      onTabShow: function onTabShow(el) {
+        if (el === this.$refs.el) {
+          this.dispatchEvent('tab:show tabShow');
+        }
       },
 
-      onTabHide: function onTabHide(event) {
-        this.dispatchEvent('tab:hide tabHide', event);
+      onTabHide: function onTabHide(el) {
+        if (el === this.$refs.el) {
+          this.dispatchEvent('tab:hide tabHide');
+        }
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -58695,14 +59266,14 @@
       pageComponentLoader: function pageComponentLoader(routerEl, component, componentUrl, options, resolve, reject) {
         var router = this;
         var el = routerEl;
-        var routerComponent;
+        var viewRouter;
         f7.routers.views.forEach(function (data) {
           if (data.el && data.el === routerEl) {
-            routerComponent = data.component;
+            viewRouter = data;
           }
         });
 
-        if (!routerComponent || !routerComponent.state.pages) {
+        if (!viewRouter) {
           reject();
           return;
         }
@@ -58720,13 +59291,15 @@
             options.props || {}
           ),
         };
-        routerComponent.$f7router = router;
-        routerComponent.$f7route = options.route;
+        if (viewRouter.component) {
+          viewRouter.component.$f7router = router;
+          viewRouter.component.$f7route = options.route;
+        }
 
         var resolved;
         function onDidUpdate(componentRouterData) {
-          if (componentRouterData.component !== routerComponent || resolved) { return; }
-          eventsEmitter.off('viewRouterDidUpdate', onDidUpdate);
+          if (componentRouterData !== viewRouter || resolved) { return; }
+          f7.events.off('viewRouterDidUpdate', onDidUpdate);
 
           var pageEl = el.children[el.children.length - 1];
           pageData.el = pageEl;
@@ -58735,10 +59308,10 @@
           resolved = true;
         }
 
-        eventsEmitter.on('viewRouterDidUpdate', onDidUpdate);
+        f7.events.on('viewRouterDidUpdate', onDidUpdate);
 
-        routerComponent.state.pages.push(pageData);
-        routerComponent.setState({ pages: routerComponent.state.pages });
+        viewRouter.pages.push(pageData);
+        viewRouter.setPages(viewRouter.pages);
       },
       removePage: function removePage($pageEl) {
         if (!$pageEl) { return; }
@@ -58750,10 +59323,10 @@
           router.app.$($pageEl).remove();
           return;
         }
-        var routerComponent;
+        var viewRouter;
         f7.routers.views.forEach(function (data) {
           if (data.el && data.el === router.el) {
-            routerComponent = data.component;
+            viewRouter = data;
           }
         });
 
@@ -58768,11 +59341,11 @@
         if (!pageEl) { return; }
 
         var pageComponentFound;
-        routerComponent.state.pages.forEach(function (page, index) {
+        viewRouter.pages.forEach(function (page, index) {
           if (page.el === pageEl) {
             pageComponentFound = true;
-            routerComponent.state.pages.splice(index, 1);
-            routerComponent.setState({ pages: routerComponent.state.pages });
+            viewRouter.pages.splice(index, 1);
+            viewRouter.setPages(viewRouter.pages);
           }
         });
         if (!pageComponentFound) {
@@ -58783,13 +59356,13 @@
         var router = this;
         if (!tabEl) { reject(); }
 
-        var tabsComponent;
+        var tabRouter;
         f7.routers.tabs.forEach(function (tabData) {
           if (tabData.el && tabData.el === tabEl) {
-            tabsComponent = tabData.component;
+            tabRouter = tabData;
           }
         });
-        if (!tabsComponent) {
+        if (!tabRouter) {
           reject();
           return;
         }
@@ -58808,13 +59381,15 @@
           ),
         };
 
-        tabsComponent.$f7router = router;
-        tabsComponent.$f7route = options.route;
+        if (tabRouter.component) {
+          tabRouter.component.$f7router = router;
+          tabRouter.component.$f7route = options.route;
+        }
 
         var resolved;
         function onDidUpdate(componentRouterData) {
-          if (componentRouterData.component !== tabsComponent || resolved) { return; }
-          eventsEmitter.off('tabRouterDidUpdate', onDidUpdate);
+          if (componentRouterData !== tabRouter || resolved) { return; }
+          f7.events.off('tabRouterDidUpdate', onDidUpdate);
 
           var tabContentEl = tabEl.children[0];
           resolve(tabContentEl);
@@ -58822,32 +59397,31 @@
           resolved = true;
         }
 
-        eventsEmitter.on('tabRouterDidUpdate', onDidUpdate);
+        f7.events.on('tabRouterDidUpdate', onDidUpdate);
 
-        tabsComponent.setState({ tabContent: tabContent });
+        tabRouter.setTabContent(tabContent);
       },
       removeTabContent: function removeTabContent(tabEl) {
         if (!tabEl) { return; }
 
-        var tabComponent;
+        var tabRouter;
         f7.routers.tabs.forEach(function (tabData) {
           if (tabData.el && tabData.el === tabEl) {
-            tabComponent = tabData.component;
+            tabRouter = tabData;
           }
         });
-        var hasComponent = !!tabComponent.state.tabContent;
-        if (!tabComponent || !hasComponent) {
+        var hasComponent = tabRouter && tabRouter.component;
+        if (!tabRouter || !hasComponent) {
           tabEl.innerHTML = ''; // eslint-disable-line
           return;
         }
-        tabComponent.setState({ tabContent: null });
+        tabRouter.setTabContent(null);
       },
       modalComponentLoader: function modalComponentLoader(rootEl, component, componentUrl, options, resolve, reject) {
         var router = this;
-        var modalsComponent = f7.routers.modals && f7.routers.modals.component;
-        var modalsComponentEl = f7.routers.modals && f7.routers.modals.el;
+        var modalsRouter = f7.routers.modals;
 
-        if (!modalsComponent || !modalsComponent.state.modals) {
+        if (!modalsRouter) {
           reject();
           return;
         }
@@ -58865,37 +59439,39 @@
             options.props || {}
           ),
         };
-        modalsComponent.$f7router = router;
-        modalsComponent.$f7route = options.route;
+        if (modalsRouter.component) {
+          modalsRouter.component.$f7router = router;
+          modalsRouter.component.$f7route = options.route;
+        }
 
         var resolved;
-        function onDidUpdate(componentRouterData) {
-          if (componentRouterData.component !== modalsComponent || resolved) { return; }
-          eventsEmitter.off('modalsRouterDidUpdate', onDidUpdate);
+        function onDidUpdate() {
+          if (resolved) { return; }
+          f7.events.off('modalsRouterDidUpdate', onDidUpdate);
 
-          var modalEl = modalsComponentEl.children[modalsComponentEl.children.length - 1];
+          var modalEl = modalsRouter.el.children[modalsRouter.el.children.length - 1];
           modalData.el = modalEl;
 
           resolve(modalEl);
           resolved = true;
         }
 
-        eventsEmitter.on('modalsRouterDidUpdate', onDidUpdate);
+        f7.events.on('modalsRouterDidUpdate', onDidUpdate);
 
-        modalsComponent.state.modals.push(modalData);
-        modalsComponent.setState({ modals: modalsComponent.state.modals });
+        modalsRouter.modals.push(modalData);
+        modalsRouter.setModals(modalsRouter.modals);
       },
       removeModal: function removeModal(modalEl) {
-        var modalsComponent = f7.routers.modals && f7.routers.modals.component;
-        if (!modalsComponent) { return; }
+        var modalsRouter = f7.routers.modals;
+        if (!modalsRouter) { return; }
 
         var modalDataToRemove;
-        modalsComponent.state.modals.forEach(function (modalData) {
+        modalsRouter.modals.forEach(function (modalData) {
           if (modalData.el === modalEl) { modalDataToRemove = modalData; }
         });
 
-        modalsComponent.state.modals.splice(modalsComponent.state.modals.indexOf(modalDataToRemove), 1);
-        modalsComponent.setState({ modals: modalsComponent.state.modals });
+        modalsRouter.modals.splice(modalsRouter.modals.indexOf(modalDataToRemove), 1);
+        modalsRouter.setModals(modalsRouter.modals);
       },
     },
   };
@@ -58911,6 +59487,7 @@
 
       var Framework7 = this;
       f7.Framework7 = Framework7;
+      f7.events = new Framework7.Events();
 
       var Extend = params.Vue || Vue; // eslint-disable-line
 
@@ -59017,7 +59594,7 @@
   };
 
   /**
-   * Framework7 Vue 4.4.0
+   * Framework7 Vue 4.5.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -59025,7 +59602,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: May 13, 2019
+   * Released on: August 21, 2019
    */
 
   //
@@ -60497,6 +61074,7 @@
       return {
         wheePickerValue: { hex: '#00ff00' },
         spectrumPickerValue: { hex: '#ff0000' },
+        hsSpectrumPickerValue: { hex: '#ff0000' },
         rgbPickerValue: { hex: '#0000ff' },
         rgbaPickerValue: { hex: '#ff00ff' },
         hsbPickerValue: { hex: '#00ff00' },
@@ -60537,7 +61115,10 @@
         }},on:{"colorpicker:change":function (value) { return _vm.wheePickerValue = value; }}},[_c('i',{staticClass:"icon demo-list-icon wheel-picker-target",style:(("background-color: " + (_vm.wheePickerValue.hex))),attrs:{"slot":"media"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Saturation-Brightness Spectrum")]),_vm._v(" "),_c('f7-block-header',[_vm._v("SB Spectrum + Hue Slider in Popover")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"colorpicker","placeholder":"Color","readonly":"","value":_vm.spectrumPickerValue,"color-picker-params":{
           modules: ['sb-spectrum', 'hue-slider'],
           targetEl: '.spectrum-picker-target'
-        }},on:{"colorpicker:change":function (value) { return _vm.spectrumPickerValue = value; }}},[_c('i',{staticClass:"icon demo-list-icon spectrum-picker-target",style:(("background-color: " + (_vm.spectrumPickerValue.hex))),attrs:{"slot":"media"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("RGB Sliders")]),_vm._v(" "),_c('f7-block-header',[_vm._v("RGB sliders with labels and values in Popover")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"colorpicker","placeholder":"Color","readonly":"","value":_vm.rgbPickerValue,"color-picker-params":{
+        }},on:{"colorpicker:change":function (value) { return _vm.spectrumPickerValue = value; }}},[_c('i',{staticClass:"icon demo-list-icon spectrum-picker-target",style:(("background-color: " + (_vm.spectrumPickerValue.hex))),attrs:{"slot":"media"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Hue-Saturation Spectrum")]),_vm._v(" "),_c('f7-block-header',[_vm._v("HS Spectrum + Brightness Slider in Popover")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"colorpicker","placeholder":"Color","readonly":"","value":_vm.hsSpectrumPickerValue,"color-picker-params":{
+          modules: ['hs-spectrum', 'brightness-slider'],
+          targetEl: '.hs-spectrum-picker-target'
+        }},on:{"colorpicker:change":function (value) { return _vm.hsSpectrumPickerValue = value; }}},[_c('i',{staticClass:"icon demo-list-icon hs-spectrum-picker-target",style:(("background-color: " + (_vm.hsSpectrumPickerValue.hex))),attrs:{"slot":"media"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("RGB Sliders")]),_vm._v(" "),_c('f7-block-header',[_vm._v("RGB sliders with labels and values in Popover")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"colorpicker","placeholder":"Color","readonly":"","value":_vm.rgbPickerValue,"color-picker-params":{
           modules: ['rgb-sliders'],
           sliderValue: true,
           sliderLabel: true,
@@ -62839,14 +63420,14 @@
         var self = this;
 
         setTimeout(function () {
-          var picURL = "https://cdn.framework7.io/placeholder/abstract-88x88-" + (Math.round(Math.random() * 10)) + ".jpg";
+          var picURL = "https://cdn.framework7.io/placeholder/abstract-88x88-" + ((Math.floor(Math.random() * 10) + 1)) + ".jpg";
           var song = self.songs[Math.floor(Math.random() * self.songs.length)];
           var author = self.authors[Math.floor(Math.random() * self.authors.length)];
 
           self.items.push({
             title: song,
             author: author,
-            img: picURL,
+            cover: picURL,
           });
 
           done();
@@ -65133,7 +65714,7 @@
   var __vue_script__$1s = script$1s;
 
   /* template */
-  var __vue_render__$1s = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:init":_vm.onPageInit,"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"navbar-tooltip"},[_c('f7-icon',{attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info_outline"}})],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Tooltips display informative text when users hover over, or tap an target element.")]),_vm._v(" "),_c('p',[_vm._v("Tooltip can be positioned around any element with any HTML content inside.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec.")],1),_vm._v(" "),_c('p',[_vm._v("Vestibulum "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt.")],1),_vm._v(" "),_c('p',[_vm._v("Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" massa.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Initialization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("For simple cases when you don't need a lot of control over the Tooltip, it can be set on buttons and links automatically with "),_c('code',[_vm._v("tooltip")]),_vm._v(" prop: "),_c('f7-button',{staticStyle:{"display":"inline-block"},attrs:{"round":"","outline":"","small":"","tooltip":"Button tooltip text"}},[_vm._v("Button with Tooltip")])],1)])],1)};
+  var __vue_render__$1s = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:init":_vm.onPageInit,"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Tooltip","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"navbar-tooltip"},[_c('f7-icon',{attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info_outline"}})],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Tooltips display informative text when users hover over, or tap an target element.")]),_vm._v(" "),_c('p',[_vm._v("Tooltip can be positioned around any element with any HTML content inside.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec.")],1),_vm._v(" "),_c('p',[_vm._v("Vestibulum "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt.")],1),_vm._v(" "),_c('p',[_vm._v("Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","aurora":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" massa.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Initialization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("For simple cases when you don't need a lot of control over the Tooltip, it can be set on buttons and links automatically with "),_c('code',[_vm._v("tooltip")]),_vm._v(" prop: "),_c('f7-button',{staticStyle:{"display":"inline-block"},attrs:{"round":"","outline":"","small":"","tooltip":"Button tooltip text"}},[_vm._v("Button with Tooltip")])],1)])],1)};
   var __vue_staticRenderFns__$1s = [];
 
     /* style */

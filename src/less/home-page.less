@@ -141,11 +141,24 @@
       width: 120px;
       height: 120px;
       font-size: 0;
-      line-height: 100px;
+      line-height: 110px;
       text-align: center;
       box-sizing: border-box;
-      padding: 10px;
+      padding: 5px;
       position: relative;
+      margin: 10px 0;
+    }
+    .home-sponsor-gold,
+    .home-sponsor-platinum,
+    .home-sponsor-diamond {
+      width: 140px;
+      height: 140px;
+      line-height: 130px;
+    }
+    @media (max-width: 380px) {
+      a {
+        width: 50%;
+      }
     }
     img {
       width: auto;
@@ -154,13 +167,18 @@
       vertical-align: middle;
     }
   }
+  .home-sponsors-separator {
+    height: 1px;
+    width: 100%;
+    margin: 10px 0;
+  }
   .sponsor-badge {
     position: absolute;
     width: 18px;
     height: 18px;
     position: absolute;
-    left: 0;
-    top: 0;
+    left: 5px;
+    top: 5px;
     border-radius: 4px;
     box-sizing: border-box;
     &.sponsor-badge-platinum {

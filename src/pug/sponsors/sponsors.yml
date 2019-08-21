@@ -1,6 +1,10 @@
 diamond:
 platinum:
 gold:
+-
+  title: Sparheld.de - save shopping online
+  link: https://www.sparheld.de/
+  imageUrl: "#{cdn}/i/sponsors/sparheld.jpg"
 silver:
 -
   title: Thorium Builder - full visual Framework7 app builder
@@ -8,7 +12,7 @@ silver:
   imageUrl: "#{cdn}/i/sponsors/thorium.png"
 -
   title: AppValley
-  link: https://appvalley.vip/
+  link: https://app-valley.vip/
   imageUrl: "#{cdn}/i/sponsors/appvalley.jpg"
 -
   title: Tommy
@@ -19,6 +23,22 @@ silver:
   link: https://www.securcom.me/
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
+-
+  title: COLOGNE WEBDESIGN
+  link: https://www.colognewebdesign.de/
+  imageUrl: "#{cdn}/i/sponsors/colognewebdesign.png"
+-
+  title: Rise — Creative Web Development Agency
+  link: https://rise.co
+  imageUrl: "#{cdn}/i/sponsors/rise.png"
+-
+  title: usave - compare broadband deals on usave.co.uk
+  link: https://usave.co.uk/utilities/broadband
+  imageUrl: "#{cdn}/i/sponsors/usave.png"
+-
+  title: Unlikely IT
+  link: https://unlikelyit.com/
+  imageUrl: "#{cdn}/i/sponsors/unlikely-it.png"
 -
   title: Kidoverse - App for kids to learn, play, create and explore
   link: https://kidoverse.app/

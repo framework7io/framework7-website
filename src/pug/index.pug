@@ -83,7 +83,7 @@ html
           img(src=cdn + "/i/brand-logos/webpack-red.svg")
         .text
           p You can use any tools you love when working with Framework7. It doesn’t force you to use anything except plain HTML, CSS and JavaScript. Creating apps with Framework7 is easy as creating website.
-          p And In addition to vanilla JavaScript library, Framework7 comes with Vue.js & React components to bring components-syntax, structured data and data bindings with power and simplicity of Vue.js & React.
+          p And in addition to vanilla JavaScript library, Framework7 comes with Vue.js & React components to bring components-syntax, structured data and data bindings with power and simplicity of Vue.js & React.
     .home-block.home-block-red
       .center
         h2 Stunning Set Of UI Elements
@@ -114,7 +114,7 @@ html
             .link-text Ultimate tool to start Framework7 app development
           a(href="/icons/")
             .link-title Framework7 Icons
-            .link-text Ultimate collection fo ready to use icons
+            .link-text Ultimate collection of ready to use icons
           a(href="/templates/")
             .link-title Templates
             .link-text Official and community starter apps and templates
@@ -159,19 +159,22 @@ html
           - var sponsors = getYamlData('sponsors/sponsors.yml');
           if (sponsors.diamond)
             each sponsor in sponsors.diamond
-              a(href=sponsor.link, target="_blank")
+              a(href=sponsor.link, target="_blank").home-sponsor-diamond
                 .sponsor-badge.sponsor-badge-diamond(title="Diamond Sponsor")
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+            .home-sponsors-separator
           if (sponsors.platinum)
             each sponsor in sponsors.platinum
-              a(href=sponsor.link, target="_blank")
+              a(href=sponsor.link, target="_blank").home-sponsor-platinum
                 .sponsor-badge.sponsor-badge-platinum(title="Platinum Sponsor")
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+            .home-sponsors-separator
           if (sponsors.gold)
             each sponsor in sponsors.gold
-              a(href=sponsor.link, target="_blank")
+              a(href=sponsor.link, target="_blank").home-sponsor-gold
                 .sponsor-badge.sponsor-badge-gold(title="Gold Sponsor")
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+            .home-sponsors-separator
           if (sponsors.silver)
             each sponsor in sponsors.silver
               a(href=sponsor.link, target="_blank")

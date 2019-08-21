@@ -151,6 +151,11 @@ block content
           td false
           td Option to show filtered items only set by #[filter()] method
         tr
+          td scrollableParentEl
+          td HTMLElement<br>string
+          td
+          td Virtual list's scrollable parent. If not specified, then it will look for parent <code>&lt;div class="page-content"&gt;</code> element
+        tr
           th(colspan="4") Searchbar
         tr
           td searchByItem
@@ -226,7 +231,7 @@ block content
           td virtualList.prependItems(<span>items</span>);
           td Prepend array with items to virtual list
         tr
-          td virtualList.replaceItem(<span>index, items</span>);
+          td virtualList.replaceItem(<span>index, item</span>);
           td Replace item at specified index with the new one
         tr
           td virtualList.replaceAllItems(<span>items</span>);

@@ -392,6 +392,10 @@ block content
           td sheet:stepclose
           td Sheet Element<span>&lt;div class="sheet"&gt;</span>
           td Event will be triggered on Sheet swipe step close/collapse
+        tr
+          td sheet:stepprogress
+          td Sheet Element<span>&lt;div class="sheet"&gt;</span>
+          td Event will be triggered on Sheet swipe step between step opened and closed state. As <code>event.detail</code> it receives step open progress number (from <code>0</code> to <code>1</code>)
     h3 App and Sheet Instance Events
     p Sheet instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>popup</code>.
     table.events-table
@@ -465,6 +469,15 @@ block content
         tr
           td sheetStepClose
           td <span>sheet</span>
+          td app
+        tr
+          td stepProgress
+          td <span>sheet,progress</span>
+          td sheet
+          td(rowspan="2") Event will be triggered on Sheet swipe step between step opened and closed state. As <code>progress</code> it receives step open progress number (from <code>0</code> to <code>1</code>)
+        tr
+          td sheetStepProgress
+          td <span>sheet,progress</span>
           td app
 
     +cssVars('sheet')

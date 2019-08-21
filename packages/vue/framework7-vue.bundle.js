@@ -1,5 +1,5 @@
 /**
- * Framework7 Vue 4.4.0
+ * Framework7 Vue 4.5.0
  * Build full featured iOS & Android apps using Framework7 & Vue
  * http://framework7.io/vue/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: May 13, 2019
+ * Released on: August 21, 2019
  */
 
 (function (global, factory) {
@@ -912,76 +912,28 @@
     }
   };
 
-  var eventsEmitter = {
-    listeners: {},
-    on: function on(events, handler) {
-      events.split(' ').forEach(function (event) {
-        if (!eventsEmitter.listeners[event]) { eventsEmitter.listeners[event] = []; }
-        eventsEmitter.listeners[event].unshift(handler);
-      });
-    },
-    off: function off(events, handler) {
-      events.split(' ').forEach(function (event) {
-        if (!eventsEmitter.listeners[event]) { return; }
-        if (typeof handler === 'undefined') {
-          eventsEmitter.listeners[event] = [];
-        } else {
-          eventsEmitter.listeners[event].forEach(function (eventHandler, index) {
-            if (eventHandler === handler) {
-              eventsEmitter.listeners[event].splice(index, 1);
-            }
-          });
-        }
-      });
-    },
-    once: function once(events, handler) {
-      if (typeof handler !== 'function') { return; }
-      function onceHandler() {
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
-
-        handler.apply(void 0, args);
-        eventsEmitter.off(events, onceHandler);
-      }
-      eventsEmitter.on(events, onceHandler);
-    },
-    emit: function emit(events) {
-      var args = [], len = arguments.length - 1;
-      while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
-
-      events.split(' ').forEach(function (event) {
-        if (eventsEmitter.listeners && eventsEmitter.listeners[event]) {
-          var handlers = [];
-          eventsEmitter.listeners[event].forEach(function (eventHandler) {
-            handlers.push(eventHandler);
-          });
-          handlers.forEach(function (eventHandler) {
-            eventHandler.apply(void 0, args);
-          });
-        }
-      });
-    },
-  };
-
   var f7 = {
     instance: null,
     Framework7: null,
+    events: null,
     init: function init(rootEl, params, routes) {
       if ( params === void 0 ) params = {};
 
+      var events = f7.events;
+      var Framework7 = f7.Framework7;
       var f7Params = Utils.extend({}, params, {
         root: rootEl,
       });
       if (routes && routes.length && !f7Params.routes) { f7Params.routes = routes; }
 
-      var instance = new f7.Framework7(f7Params);
+      var instance = new Framework7(f7Params);
       if (instance.initialized) {
         f7.instance = instance;
-        eventsEmitter.emit('ready', f7.instance);
+        events.emit('ready', f7.instance);
       } else {
         instance.on('init', function () {
           f7.instance = instance;
-          eventsEmitter.emit('ready', f7.instance);
+          events.emit('ready', f7.instance);
         });
       }
     },
@@ -989,7 +941,7 @@
       if (!callback) { return; }
       if (f7.instance) { callback(f7.instance); }
       else {
-        eventsEmitter.once('ready', callback);
+        f7.events.once('ready', callback);
       }
     },
     routers: {
@@ -1047,7 +999,7 @@
     updated: function updated() {
       var self = this;
       if (!self.routerData) { return; }
-      eventsEmitter.emit('modalsRouterDidUpdate', self.routerData);
+      f7.events.emit('modalsRouterDidUpdate', self.routerData);
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -1061,12 +1013,17 @@
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
-      self.setState({
-        modals: []
-      });
       self.routerData = {
+        modals: self.state.modals,
         el: el,
-        component: self
+        component: self,
+
+        setModals: function setModals(modals) {
+          self.setState({
+            modals: modals
+          });
+        }
+
       };
       f7.routers.modals = self.routerData;
     },
@@ -1086,20 +1043,6 @@
       params: Object,
       routes: Array
     }, Mixins.colorProps),
-
-    data: function data() {
-      var props = __vueComponentProps(this);
-
-      var state = (function () {
-        return {
-          modals: []
-        };
-      })();
-
-      return {
-        state: state
-      };
-    },
 
     render: function render() {
       var _h = this.$createElement;
@@ -1464,6 +1407,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -1828,6 +1787,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -2016,6 +1991,10 @@
         type: Boolean,
         default: undefined
       },
+      backdropEl: {
+        type: String,
+        default: undefined
+      },
       noShadow: Boolean,
       noBorder: Boolean,
       padding: {
@@ -2089,6 +2068,7 @@
       var swipeToClose = props.swipeToClose;
       var closeByBackdropClick = props.closeByBackdropClick;
       var backdrop = props.backdrop;
+      var backdropEl = props.backdropEl;
       var noShadow = props.noShadow;
       var noBorder = props.noBorder;
       var headerEl;
@@ -2129,7 +2109,8 @@
           'data-hide-toolbar-on-open': typeof hideToolbarOnOpen === 'undefined' ? hideToolbarOnOpen : hideToolbarOnOpen.toString(),
           'data-swipe-to-close': typeof swipeToClose === 'undefined' ? swipeToClose : swipeToClose.toString(),
           'data-close-by-backdrop-click': typeof closeByBackdropClick === 'undefined' ? closeByBackdropClick : closeByBackdropClick.toString(),
-          'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString()
+          'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString(),
+          'data-backdrop-el': backdropEl
         }
       }, [headerEl, contentEl, footerEl, this.$slots['default']]);
     },
@@ -2580,6 +2561,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -2714,6 +2711,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -3927,6 +3940,22 @@
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
         if (!newText || !self.f7Tooltip) { return; }
         self.f7Tooltip.setText(newText);
       }
@@ -4075,7 +4104,8 @@
       tabLinkActive: Boolean,
       link: [Boolean, String],
       href: [Boolean, String],
-      target: String
+      target: String,
+      tooltip: String
     }, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps),
 
     render: function render() {
@@ -4135,6 +4165,29 @@
       }
 
     },
+    watch: {
+      'props.tooltip': function watchTooltip(newText) {
+        var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
+        if (!newText || !self.f7Tooltip) { return; }
+        self.f7Tooltip.setText(newText);
+      }
+    },
 
     created: function created() {
       Utils.bindMethods(this, ['onClick']);
@@ -4145,12 +4198,21 @@
       var linkEl = self.$refs.linkEl;
       var ref = self.props;
       var routeProps = ref.routeProps;
+      var tooltip = ref.tooltip;
 
       if (routeProps) {
         linkEl.f7RouteProps = routeProps;
       }
 
       linkEl.addEventListener('click', self.onClick);
+      self.$f7ready(function (f7) {
+        if (tooltip) {
+          self.f7Tooltip = f7.tooltip.create({
+            targetEl: linkEl,
+            text: tooltip
+          });
+        }
+      });
     },
 
     updated: function updated() {
@@ -4169,6 +4231,12 @@
       var linkEl = self.$refs.linkEl;
       linkEl.removeEventListener('click', this.onClick);
       delete linkEl.f7RouteProps;
+
+      if (self.f7Tooltip && self.f7Tooltip.destroy) {
+        self.f7Tooltip.destroy();
+        self.f7Tooltip = null;
+        delete self.f7Tooltip;
+      }
     },
 
     methods: {
@@ -4191,7 +4259,11 @@
     props: Object.assign({
       id: [String, Number],
       mediaList: Boolean,
-      sortable: Boolean
+      sortable: Boolean,
+      sortableMoveElements: {
+        type: Boolean,
+        default: undefined
+      }
     }, Mixins.colorProps),
 
     render: function render() {
@@ -4203,6 +4275,7 @@
       var style = props.style;
       var mediaList = props.mediaList;
       var sortable = props.sortable;
+      var sortableMoveElements = props.sortableMoveElements;
       var classes = Utils.classNames(className, 'list-group', {
         'media-list': mediaList,
         sortable: sortable
@@ -4211,7 +4284,8 @@
         style: style,
         class: classes,
         attrs: {
-          id: id
+          id: id,
+          'data-sortable-move-elements': typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined
         }
       }, [_h('ul', [this.$slots['default']])]);
     },
@@ -4354,7 +4428,10 @@
     name: 'f7-list-input',
     props: Object.assign({
       id: [String, Number],
-      sortable: Boolean,
+      sortable: {
+        type: Boolean,
+        default: undefined
+      },
       media: String,
       dropdown: {
         type: [String, Boolean],
@@ -5265,6 +5342,7 @@
       subtitle: [String, Number],
       header: [String, Number],
       footer: [String, Number],
+      tooltip: String,
       link: [Boolean, String],
       target: String,
       noFastclick: Boolean,
@@ -5278,7 +5356,10 @@
       groupTitle: Boolean,
       swipeout: Boolean,
       swipeoutOpened: Boolean,
-      sortable: Boolean,
+      sortable: {
+        type: Boolean,
+        default: undefined
+      },
       accordionItem: Boolean,
       accordionItemOpened: Boolean,
       smartSelect: Boolean,
@@ -5421,7 +5502,8 @@
         'accordion-item-opened': accordionItemOpened,
         disabled: disabled && !(radio || checkbox),
         'no-chevron': noChevron,
-        'chevron-center': chevronCenter
+        'chevron-center': chevronCenter,
+        'disallow-sorting': sortable === false
       }, Mixins.colorClasses(props));
 
       if (divider || groupTitle) {
@@ -5459,12 +5541,33 @@
         }
       }, [this.$slots['root-start'], swipeout ? _h('div', {
         class: 'swipeout-content'
-      }, [linkItemEl]) : linkItemEl, isSortable && _h('div', {
+      }, [linkItemEl]) : linkItemEl, isSortable && sortable !== false && _h('div', {
         class: 'sortable-handler'
       }), (swipeout || accordionItem) && self.$slots.default, this.$slots['root'], this.$slots['root-end']]);
     },
 
     watch: {
+      'props.tooltip': function watchTooltip(newText) {
+        var self = this;
+
+        if (!newText && self.f7Tooltip) {
+          self.f7Tooltip.destroy();
+          self.f7Tooltip = null;
+          delete self.f7Tooltip;
+          return;
+        }
+
+        if (newText && !self.f7Tooltip && self.$f7) {
+          self.f7Tooltip = self.$f7.tooltip.create({
+            targetEl: self.$refs.el,
+            text: newText
+          });
+          return;
+        }
+
+        if (!newText || !self.f7Tooltip) { return; }
+        self.f7Tooltip.setText(newText);
+      },
       'props.swipeoutOpened': function watchSwipeoutOpened(opened) {
         var self = this;
         if (!self.props.swipeout) { return; }
@@ -5497,6 +5600,7 @@
       var accordionItem = ref$1.accordionItem;
       var smartSelectParams = ref$1.smartSelectParams;
       var routeProps = ref$1.routeProps;
+      var tooltip = ref$1.tooltip;
       var needsEvents = !(link || href || accordionItem || smartSelect);
 
       if (!needsEvents && linkEl) {
@@ -5548,6 +5652,13 @@
 
         if (swipeoutOpened) {
           f7.swipeout.open(el);
+        }
+
+        if (tooltip) {
+          self.f7Tooltip = f7.tooltip.create({
+            targetEl: el,
+            text: tooltip
+          });
         }
       });
     },
@@ -5634,6 +5745,12 @@
 
       if (smartSelect && self.f7SmartSelect) {
         self.f7SmartSelect.destroy();
+      }
+
+      if (self.f7Tooltip && self.f7Tooltip.destroy) {
+        self.f7Tooltip.destroy();
+        self.f7Tooltip = null;
+        delete self.f7Tooltip;
       }
     },
 
@@ -5743,6 +5860,10 @@
       mediaList: Boolean,
       sortable: Boolean,
       sortableEnabled: Boolean,
+      sortableMoveElements: {
+        type: Boolean,
+        default: undefined
+      },
       accordionList: Boolean,
       contactsList: Boolean,
       simpleList: Boolean,
@@ -5773,6 +5894,7 @@
       var id = props.id;
       var style = props.style;
       var form = props.form;
+      var sortableMoveElements = props.sortableMoveElements;
       var ref = self.$slots;
       var slotsList = ref.list;
       var slotsDefault = ref.default;
@@ -5803,7 +5925,8 @@
           style: style,
           class: self.classes,
           attrs: {
-            id: id
+            id: id,
+            'data-sortable-move-elements': typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined
           }
         }, [self.$slots['before-list'], rootChildrenBeforeList, _h('ul', [ulChildren]), self.$slots['after-list'], rootChildrenAfterList]);
       } else {
@@ -5812,7 +5935,8 @@
           style: style,
           class: self.classes,
           attrs: {
-            id: id
+            id: id,
+            'data-sortable-move-elements': typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined
           }
         }, [self.$slots['before-list'], rootChildrenBeforeList, self.$slots['after-list'], rootChildrenAfterList]);
       }
@@ -7052,6 +7176,8 @@
         });
       }
 
+      var valueProps = {};
+      if ('value' in self.props) { valueProps.value = value; }
       return _h('div', {
         ref: 'el',
         style: style,
@@ -7063,8 +7189,9 @@
         class: 'toolbar-inner'
       }, [slotsInnerStart, _h('div', {
         class: 'messagebar-area'
-      }, [slotsBeforeArea, messagebarAttachmentsEl, _h(f7Input, {
-        ref: 'area',
+      }, [slotsBeforeArea, messagebarAttachmentsEl, _h(f7Input, __vueComponentTransformJSXProps(Object.assign({
+        ref: 'area'
+      }, valueProps, {
         on: {
           input: self.onInput,
           change: self.onChange,
@@ -7078,10 +7205,9 @@
           disabled: disabled,
           name: name,
           readonly: readonly,
-          resizable: resizable,
-          value: value
+          resizable: resizable
         }
-      }), slotsAfterArea]), (sendLink && sendLink.length > 0 || slotsSendLink) && _h(f7Link, {
+      }))), slotsAfterArea]), (sendLink && sendLink.length > 0 || slotsSendLink) && _h(f7Link, {
         on: {
           click: self.onClick
         }
@@ -7625,8 +7751,9 @@
       if (typeof needBackLinkText === 'undefined') { needBackLinkText = !this.$theme.md; }
 
       if (backLink) {
+        var text = backLink !== true && needBackLinkText ? backLink : undefined;
         linkEl = _h(f7Link, {
-          class: backLink === true || backLink && this.$theme.md ? 'icon-only' : undefined,
+          class: !text ? 'icon-only' : undefined,
           on: {
             click: this.onBackClick
           },
@@ -7635,7 +7762,7 @@
             back: true,
             icon: 'icon-back',
             force: backLinkForce || undefined,
-            text: backLink !== true && needBackLinkText ? backLink : undefined
+            text: text
           }
         });
       }
@@ -7880,7 +8007,6 @@
       var noHairline = props.noHairline;
       var large = props.large;
       var titleLarge = props.titleLarge;
-      var innerEl;
       var leftEl;
       var titleEl;
       var rightEl;
@@ -7906,7 +8032,7 @@
         }, [this.$slots['default']]);
       }
 
-      if (backLink || slots['nav-left']) {
+      if (backLink || slots['nav-left'] || slots.left) {
         leftEl = _h(f7NavLeft, {
           on: {
             backClick: self.onBackClick
@@ -7917,7 +8043,7 @@
             backLinkForce: backLinkForce,
             backLinkShowText: backLinkShowText
           }
-        }, [slots['nav-left']]);
+        }, [slots['nav-left'], slots.left]);
       }
 
       if (title || subtitle || slots.title) {
@@ -7929,22 +8055,22 @@
         }, [slots.title]);
       }
 
-      if (slots['nav-right']) {
-        rightEl = _h(f7NavRight, [slots['nav-right']]);
+      if (slots['nav-right'] || slots.right) {
+        rightEl = _h(f7NavRight, [slots['nav-right'], slots.right]);
       }
 
       var largeTitle = titleLarge;
       if (!largeTitle && large && title) { largeTitle = title; }
 
-      if (largeTitle) {
+      if (largeTitle || slots['title-large']) {
         titleLargeEl = _h('div', {
           class: 'title-large'
         }, [_h('div', {
           class: 'title-large-text'
-        }, [largeTitle])]);
+        }, [largeTitle || '', this.$slots['title-large']])]);
       }
 
-      innerEl = _h('div', {
+      var innerEl = _h('div', {
         ref: 'innerEl',
         class: Utils.classNames('navbar-inner', innerClass, innerClassName, {
           sliding: sliding,
@@ -7953,6 +8079,7 @@
           'navbar-inner-large': large
         })
       }, [leftEl, titleEl, rightEl, titleLargeEl, this.$slots['default']]);
+
       return _h('div', {
         ref: 'el',
         style: style,
@@ -8089,6 +8216,110 @@
     }
   };
 
+  var f7Preloader = {
+    name: 'f7-preloader',
+    props: Object.assign({
+      id: [String, Number],
+      size: [Number, String]
+    }, Mixins.colorProps),
+
+    render: function render() {
+      var _h = this.$createElement;
+      var self = this;
+      var sizeComputed = self.sizeComputed;
+      var props = self.props;
+      var id = props.id;
+      var style = props.style;
+      var className = props.className;
+      var preloaderStyle = {};
+
+      if (sizeComputed) {
+        preloaderStyle.width = sizeComputed + "px";
+        preloaderStyle.height = sizeComputed + "px";
+        preloaderStyle['--f7-preloader-size'] = sizeComputed + "px";
+      }
+
+      if (style) { Utils.extend(preloaderStyle, style || {}); }
+      var innerEl;
+
+      if (self.$theme.md) {
+        innerEl = _h('span', {
+          class: 'preloader-inner'
+        }, [_h('span', {
+          class: 'preloader-inner-gap'
+        }), _h('span', {
+          class: 'preloader-inner-left'
+        }, [_h('span', {
+          class: 'preloader-inner-half-circle'
+        })]), _h('span', {
+          class: 'preloader-inner-right'
+        }, [_h('span', {
+          class: 'preloader-inner-half-circle'
+        })])]);
+      } else if (self.$theme.ios) {
+        innerEl = _h('span', {
+          class: 'preloader-inner'
+        }, [_h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        })]);
+      } else if (self.$theme.aurora) {
+        innerEl = _h('span', {
+          class: 'preloader-inner'
+        }, [_h('span', {
+          class: 'preloader-inner-circle'
+        })]);
+      }
+
+      var classes = Utils.classNames(className, 'preloader', Mixins.colorClasses(props));
+      return _h('span', {
+        style: preloaderStyle,
+        class: classes,
+        attrs: {
+          id: id
+        }
+      }, [innerEl]);
+    },
+
+    computed: {
+      sizeComputed: function sizeComputed() {
+        var s = this.props.size;
+
+        if (s && typeof s === 'string' && s.indexOf('px') >= 0) {
+          s = s.replace('px', '');
+        }
+
+        return s;
+      },
+
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    }
+  };
+
   var f7PageContent = {
     name: 'f7-page-content',
     props: Object.assign({
@@ -8138,16 +8369,14 @@
       if (ptr && ptrPreloader) {
         ptrEl = _h('div', {
           class: 'ptr-preloader'
-        }, [_h('div', {
-          class: 'preloader'
-        }), _h('div', {
+        }, [_h(f7Preloader), _h('div', {
           class: 'ptr-arrow'
         })]);
       }
 
       if (infinite && infinitePreloader) {
-        infiniteEl = _h('div', {
-          class: 'preloader infinite-scroll-preloader'
+        infiniteEl = _h(f7Preloader, {
+          class: 'infinite-scroll-preloader'
         });
       }
 
@@ -8844,7 +9073,7 @@
         if (opened) {
           self.$f7.panel.open(side);
         } else {
-          self.$f7.panel.open(side);
+          self.$f7.panel.close(side);
         }
       }
     },
@@ -8863,19 +9092,6 @@
       var left = ref.left;
       var reveal = ref.reveal;
       var resizable = ref.resizable;
-
-      if (el) {
-        el.addEventListener('panel:open', self.onOpen);
-        el.addEventListener('panel:opened', self.onOpened);
-        el.addEventListener('panel:close', self.onClose);
-        el.addEventListener('panel:closed', self.onClosed);
-        el.addEventListener('panel:backdrop-click', self.onBackdropClick);
-        el.addEventListener('panel:swipe', self.onPanelSwipe);
-        el.addEventListener('panel:swipeopen', self.onPanelSwipeOpen);
-        el.addEventListener('panel:breakpoint', self.onBreakpoint);
-        el.addEventListener('panel:resize', self.onResize);
-      }
-
       self.$f7ready(function () {
         var $ = self.$$;
         if (!$) { return; }
@@ -8887,6 +9103,20 @@
         self.f7Panel = self.$f7.panel.create({
           el: el,
           resizable: resizable
+        });
+        var events = {
+          open: self.onOpen,
+          opened: self.onOpened,
+          close: self.onClose,
+          closed: self.onClosed,
+          backdropClick: self.onBackdropClick,
+          swipe: self.onPanelSwipe,
+          swipeOpen: self.onPanelSwipeOpen,
+          breakpoint: self.onBreakpoint,
+          resize: self.onResize
+        };
+        Object.keys(events).forEach(function (ev) {
+          self.f7Panel.on(ev, events[ev]);
         });
       });
 
@@ -8906,18 +9136,10 @@
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      if (self.f7Panel) { self.f7Panel.destroy(); }
-      var el = self.$refs.el;
-      if (!el) { return; }
-      el.removeEventListener('panel:open', self.onOpen);
-      el.removeEventListener('panel:opened', self.onOpened);
-      el.removeEventListener('panel:close', self.onClose);
-      el.removeEventListener('panel:closed', self.onClosed);
-      el.removeEventListener('panel:backdrop-click', self.onBackdropClick);
-      el.removeEventListener('panel:swipe', self.onPanelSwipe);
-      el.removeEventListener('panel:swipeopen', self.onPanelSwipeOpen);
-      el.removeEventListener('panel:breakpoint', self.onBreakpoint);
-      el.removeEventListener('panel:resize', self.onResize);
+
+      if (self.f7Panel) {
+        self.f7Panel.destroy();
+      }
     },
 
     methods: {
@@ -9445,110 +9667,6 @@
 
     },
     computed: {
-      props: function props() {
-        return __vueComponentProps(this);
-      }
-
-    }
-  };
-
-  var f7Preloader = {
-    name: 'f7-preloader',
-    props: Object.assign({
-      id: [String, Number],
-      size: [Number, String]
-    }, Mixins.colorProps),
-
-    render: function render() {
-      var _h = this.$createElement;
-      var self = this;
-      var sizeComputed = self.sizeComputed;
-      var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
-      var preloaderStyle = {};
-
-      if (sizeComputed) {
-        preloaderStyle.width = sizeComputed + "px";
-        preloaderStyle.height = sizeComputed + "px";
-        preloaderStyle['--f7-preloader-size'] = sizeComputed + "px";
-      }
-
-      if (style) { Utils.extend(preloaderStyle, style || {}); }
-      var innerEl;
-
-      if (self.$theme.md) {
-        innerEl = _h('span', {
-          class: 'preloader-inner'
-        }, [_h('span', {
-          class: 'preloader-inner-gap'
-        }), _h('span', {
-          class: 'preloader-inner-left'
-        }, [_h('span', {
-          class: 'preloader-inner-half-circle'
-        })]), _h('span', {
-          class: 'preloader-inner-right'
-        }, [_h('span', {
-          class: 'preloader-inner-half-circle'
-        })])]);
-      } else if (self.$theme.ios) {
-        innerEl = _h('span', {
-          class: 'preloader-inner'
-        }, [_h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        }), _h('span', {
-          class: 'preloader-inner-line'
-        })]);
-      } else if (self.$theme.aurora) {
-        innerEl = _h('span', {
-          class: 'preloader-inner'
-        }, [_h('span', {
-          class: 'preloader-inner-circle'
-        })]);
-      }
-
-      var classes = Utils.classNames(className, 'preloader', Mixins.colorClasses(props));
-      return _h('span', {
-        style: preloaderStyle,
-        class: classes,
-        attrs: {
-          id: id
-        }
-      }, [innerEl]);
-    },
-
-    computed: {
-      sizeComputed: function sizeComputed() {
-        var s = this.props.size;
-
-        if (s && typeof s === 'string' && s.indexOf('px') >= 0) {
-          s = s.replace('px', '');
-        }
-
-        return s;
-      },
-
       props: function props() {
         return __vueComponentProps(this);
       }
@@ -10274,7 +10392,7 @@
     },
 
     created: function created() {
-      Utils.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onStepOpen', 'onStepClose']);
+      Utils.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onStepOpen', 'onStepClose', 'onStepProgress']);
     },
 
     mounted: function mounted() {
@@ -10287,6 +10405,7 @@
       el.addEventListener('sheet:closed', self.onClosed);
       el.addEventListener('sheet:stepopen', self.onStepOpen);
       el.addEventListener('sheet:stepclose', self.onStepClose);
+      el.addEventListener('sheet:stepprogress', self.onStepProgress);
       var props = self.props;
       var opened = props.opened;
       var backdrop = props.backdrop;
@@ -10330,9 +10449,14 @@
       el.removeEventListener('sheet:closed', self.onClosed);
       el.removeEventListener('sheet:stepopen', self.onStepOpen);
       el.removeEventListener('sheet:stepclose', self.onStepClose);
+      el.removeEventListener('sheet:stepprogress', self.onStepProgress);
     },
 
     methods: {
+      onStepProgress: function onStepProgress(event) {
+        this.dispatchEvent('sheet:stepprogress sheetStepProgress', event.detail);
+      },
+
       onStepOpen: function onStepOpen(event) {
         this.dispatchEvent('sheet:stepopen sheetStepOpen', event);
       },
@@ -10588,6 +10712,8 @@
         default: 1
       },
       formatValue: Function,
+      name: String,
+      inputId: String,
       input: {
         type: Boolean,
         default: true
@@ -10662,6 +10788,8 @@
       var step = props.step;
       var id = props.id;
       var style = props.style;
+      var name = props.name;
+      var inputId = props.inputId;
       var inputWrapEl;
       var valueEl;
 
@@ -10675,9 +10803,12 @@
               value: value
             },
             on: {
-              input: self.onInput
+              input: self.onInput,
+              change: self.onChange
             },
             attrs: {
+              name: name,
+              id: inputId,
               type: inputType,
               min: inputType === 'number' ? min : undefined,
               max: inputType === 'number' ? max : undefined,
@@ -10875,6 +11006,11 @@
       onInput: function onInput(event) {
         var stepper = this.f7Stepper;
         this.dispatchEvent('input', event, stepper);
+      },
+
+      onChange: function onChange(event) {
+        var stepper = this.f7Stepper;
+        this.dispatchEvent('change', event, stepper);
       },
 
       onMinusClick: function onMinusClick(event) {
@@ -11310,7 +11446,7 @@
     updated: function updated() {
       var self = this;
       if (!self.routerData) { return; }
-      eventsEmitter.emit('tabRouterDidUpdate', self.routerData);
+      f7.events.emit('tabRouterDidUpdate', self.routerData);
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -11343,7 +11479,14 @@
       self.$f7ready(function () {
         self.routerData = {
           el: el,
-          component: self
+          component: self,
+
+          setTabContent: function setTabContent(tabContent) {
+            self.setState({
+              tabContent: tabContent
+            });
+          }
+
         };
         f7.routers.tabs.push(self.routerData);
       });
@@ -11898,49 +12041,62 @@
     },
 
     created: function created() {
-      Utils.bindMethods(this, ['onSwipeBackMove', 'onSwipeBackBeforeChange', 'onSwipeBackAfterChange', 'onSwipeBackBeforeReset', 'onSwipeBackAfterReset', 'onTabShow', 'onTabHide', 'onViewInit']);
+      var self = this;
+      Utils.bindMethods(self, ['onSwipeBackMove', 'onSwipeBackBeforeChange', 'onSwipeBackAfterChange', 'onSwipeBackBeforeReset', 'onSwipeBackAfterReset', 'onTabShow', 'onTabHide', 'onViewInit']);
     },
 
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
-      el.addEventListener('swipeback:move', self.onSwipeBackMove);
-      el.addEventListener('swipeback:beforechange', self.onSwipeBackBeforeChange);
-      el.addEventListener('swipeback:afterchange', self.onSwipeBackAfterChange);
-      el.addEventListener('swipeback:beforereset', self.onSwipeBackBeforeReset);
-      el.addEventListener('swipeback:afterreset', self.onSwipeBackAfterReset);
-      el.addEventListener('tab:show', self.onTabShow);
-      el.addEventListener('tab:hide', self.onTabHide);
-      el.addEventListener('view:init', self.onViewInit);
-      self.setState({
-        pages: []
-      });
       self.$f7ready(function (f7Instance) {
+        f7Instance.on('tabShow', self.onTabShow);
+        f7Instance.on('tabHide', self.onTabHide);
         self.routerData = {
           el: el,
           component: self,
-          instance: null
+          pages: self.state.pages,
+          instance: null,
+
+          setPages: function setPages(pages) {
+            self.setState({
+              pages: pages
+            });
+          }
+
         };
         f7.routers.views.push(self.routerData);
         if (!self.props.init) { return; }
-        self.routerData.instance = f7Instance.views.create(el, Utils.noUndefinedProps(self.$options.propsData || {}));
+        self.routerData.instance = f7Instance.views.create(el, Object.assign({
+          on: {
+            init: self.onViewInit
+          }
+        }, Utils.noUndefinedProps(self.$options.propsData || {})));
         self.f7View = self.routerData.instance;
+        self.f7View.on('swipebackMove', self.onSwipeBackMove);
+        self.f7View.on('swipebackBeforeChange', self.onSwipeBackBeforeChange);
+        self.f7View.on('swipebackAfterChange', self.onSwipeBackAfterChange);
+        self.f7View.on('swipebackBeforeReset', self.onSwipeBackBeforeReset);
+        self.f7View.on('swipebackAfterReset', self.onSwipeBackAfterReset);
       });
     },
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var el = self.$refs.el;
-      el.removeEventListener('swipeback:move', self.onSwipeBackMove);
-      el.removeEventListener('swipeback:beforechange', self.onSwipeBackBeforeChange);
-      el.removeEventListener('swipeback:afterchange', self.onSwipeBackAfterChange);
-      el.removeEventListener('swipeback:beforereset', self.onSwipeBackBeforeReset);
-      el.removeEventListener('swipeback:afterreset', self.onSwipeBackAfterReset);
-      el.removeEventListener('tab:show', self.onTabShow);
-      el.removeEventListener('tab:hide', self.onTabHide);
-      el.removeEventListener('view:init', self.onViewInit);
-      if (!self.props.init) { return; }
-      if (self.f7View && self.f7View.destroy) { self.f7View.destroy(); }
+
+      if (f7.instance) {
+        f7.instance.off('tabShow', self.onTabShow);
+        f7.instance.off('tabHide', self.onTabHide);
+      }
+
+      if (self.f7View) {
+        self.f7View.off('swipebackMove', self.onSwipeBackMove);
+        self.f7View.off('swipebackBeforeChange', self.onSwipeBackBeforeChange);
+        self.f7View.off('swipebackAfterChange', self.onSwipeBackAfterChange);
+        self.f7View.off('swipebackBeforeReset', self.onSwipeBackBeforeReset);
+        self.f7View.off('swipebackAfterReset', self.onSwipeBackAfterReset);
+        if (self.f7View.destroy) { self.f7View.destroy(); }
+      }
+
       f7.routers.views.splice(f7.routers.views.indexOf(self.routerData), 1);
       self.routerData = null;
       delete self.routerData;
@@ -11949,14 +12105,13 @@
     updated: function updated() {
       var self = this;
       if (!self.routerData) { return; }
-      eventsEmitter.emit('viewRouterDidUpdate', self.routerData);
+      f7.events.emit('viewRouterDidUpdate', self.routerData);
     },
 
     methods: {
-      onViewInit: function onViewInit(event) {
+      onViewInit: function onViewInit(view) {
         var self = this;
-        var view = event.detail;
-        self.dispatchEvent('view:init viewInit', event, view);
+        self.dispatchEvent('view:init viewInit', view);
 
         if (!self.props.init) {
           self.routerData.instance = view;
@@ -11964,37 +12119,41 @@
         }
       },
 
-      onSwipeBackMove: function onSwipeBackMove(event) {
-        var swipeBackData = event.detail;
-        this.dispatchEvent('swipeback:move swipeBackMove', event, swipeBackData);
+      onSwipeBackMove: function onSwipeBackMove(data) {
+        var swipeBackData = data;
+        this.dispatchEvent('swipeback:move swipeBackMove', swipeBackData);
       },
 
-      onSwipeBackBeforeChange: function onSwipeBackBeforeChange(event) {
-        var swipeBackData = event.detail;
-        this.dispatchEvent('swipeback:beforechange swipeBackBeforeChange', event, swipeBackData);
+      onSwipeBackBeforeChange: function onSwipeBackBeforeChange(data) {
+        var swipeBackData = data;
+        this.dispatchEvent('swipeback:beforechange swipeBackBeforeChange', swipeBackData);
       },
 
-      onSwipeBackAfterChange: function onSwipeBackAfterChange(event) {
-        var swipeBackData = event.detail;
-        this.dispatchEvent('swipeback:afterchange swipeBackAfterChange', event, swipeBackData);
+      onSwipeBackAfterChange: function onSwipeBackAfterChange(data) {
+        var swipeBackData = data;
+        this.dispatchEvent('swipeback:afterchange swipeBackAfterChange', swipeBackData);
       },
 
-      onSwipeBackBeforeReset: function onSwipeBackBeforeReset(event) {
-        var swipeBackData = event.detail;
-        this.dispatchEvent('swipeback:beforereset swipeBackBeforeReset', event, swipeBackData);
+      onSwipeBackBeforeReset: function onSwipeBackBeforeReset(data) {
+        var swipeBackData = data;
+        this.dispatchEvent('swipeback:beforereset swipeBackBeforeReset', swipeBackData);
       },
 
-      onSwipeBackAfterReset: function onSwipeBackAfterReset(event) {
-        var swipeBackData = event.detail;
-        this.dispatchEvent('swipeback:afterreset swipeBackAfterReset', event, swipeBackData);
+      onSwipeBackAfterReset: function onSwipeBackAfterReset(data) {
+        var swipeBackData = data;
+        this.dispatchEvent('swipeback:afterreset swipeBackAfterReset', swipeBackData);
       },
 
-      onTabShow: function onTabShow(event) {
-        this.dispatchEvent('tab:show tabShow', event);
+      onTabShow: function onTabShow(el) {
+        if (el === this.$refs.el) {
+          this.dispatchEvent('tab:show tabShow');
+        }
       },
 
-      onTabHide: function onTabHide(event) {
-        this.dispatchEvent('tab:hide tabHide', event);
+      onTabHide: function onTabHide(el) {
+        if (el === this.$refs.el) {
+          this.dispatchEvent('tab:hide tabHide');
+        }
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -12061,14 +12220,14 @@
       pageComponentLoader: function pageComponentLoader(routerEl, component, componentUrl, options, resolve, reject) {
         var router = this;
         var el = routerEl;
-        var routerComponent;
+        var viewRouter;
         f7.routers.views.forEach(function (data) {
           if (data.el && data.el === routerEl) {
-            routerComponent = data.component;
+            viewRouter = data;
           }
         });
 
-        if (!routerComponent || !routerComponent.state.pages) {
+        if (!viewRouter) {
           reject();
           return;
         }
@@ -12086,13 +12245,15 @@
             options.props || {}
           ),
         };
-        routerComponent.$f7router = router;
-        routerComponent.$f7route = options.route;
+        if (viewRouter.component) {
+          viewRouter.component.$f7router = router;
+          viewRouter.component.$f7route = options.route;
+        }
 
         var resolved;
         function onDidUpdate(componentRouterData) {
-          if (componentRouterData.component !== routerComponent || resolved) { return; }
-          eventsEmitter.off('viewRouterDidUpdate', onDidUpdate);
+          if (componentRouterData !== viewRouter || resolved) { return; }
+          f7.events.off('viewRouterDidUpdate', onDidUpdate);
 
           var pageEl = el.children[el.children.length - 1];
           pageData.el = pageEl;
@@ -12101,10 +12262,10 @@
           resolved = true;
         }
 
-        eventsEmitter.on('viewRouterDidUpdate', onDidUpdate);
+        f7.events.on('viewRouterDidUpdate', onDidUpdate);
 
-        routerComponent.state.pages.push(pageData);
-        routerComponent.setState({ pages: routerComponent.state.pages });
+        viewRouter.pages.push(pageData);
+        viewRouter.setPages(viewRouter.pages);
       },
       removePage: function removePage($pageEl) {
         if (!$pageEl) { return; }
@@ -12116,10 +12277,10 @@
           router.app.$($pageEl).remove();
           return;
         }
-        var routerComponent;
+        var viewRouter;
         f7.routers.views.forEach(function (data) {
           if (data.el && data.el === router.el) {
-            routerComponent = data.component;
+            viewRouter = data;
           }
         });
 
@@ -12134,11 +12295,11 @@
         if (!pageEl) { return; }
 
         var pageComponentFound;
-        routerComponent.state.pages.forEach(function (page, index) {
+        viewRouter.pages.forEach(function (page, index) {
           if (page.el === pageEl) {
             pageComponentFound = true;
-            routerComponent.state.pages.splice(index, 1);
-            routerComponent.setState({ pages: routerComponent.state.pages });
+            viewRouter.pages.splice(index, 1);
+            viewRouter.setPages(viewRouter.pages);
           }
         });
         if (!pageComponentFound) {
@@ -12149,13 +12310,13 @@
         var router = this;
         if (!tabEl) { reject(); }
 
-        var tabsComponent;
+        var tabRouter;
         f7.routers.tabs.forEach(function (tabData) {
           if (tabData.el && tabData.el === tabEl) {
-            tabsComponent = tabData.component;
+            tabRouter = tabData;
           }
         });
-        if (!tabsComponent) {
+        if (!tabRouter) {
           reject();
           return;
         }
@@ -12174,13 +12335,15 @@
           ),
         };
 
-        tabsComponent.$f7router = router;
-        tabsComponent.$f7route = options.route;
+        if (tabRouter.component) {
+          tabRouter.component.$f7router = router;
+          tabRouter.component.$f7route = options.route;
+        }
 
         var resolved;
         function onDidUpdate(componentRouterData) {
-          if (componentRouterData.component !== tabsComponent || resolved) { return; }
-          eventsEmitter.off('tabRouterDidUpdate', onDidUpdate);
+          if (componentRouterData !== tabRouter || resolved) { return; }
+          f7.events.off('tabRouterDidUpdate', onDidUpdate);
 
           var tabContentEl = tabEl.children[0];
           resolve(tabContentEl);
@@ -12188,32 +12351,31 @@
           resolved = true;
         }
 
-        eventsEmitter.on('tabRouterDidUpdate', onDidUpdate);
+        f7.events.on('tabRouterDidUpdate', onDidUpdate);
 
-        tabsComponent.setState({ tabContent: tabContent });
+        tabRouter.setTabContent(tabContent);
       },
       removeTabContent: function removeTabContent(tabEl) {
         if (!tabEl) { return; }
 
-        var tabComponent;
+        var tabRouter;
         f7.routers.tabs.forEach(function (tabData) {
           if (tabData.el && tabData.el === tabEl) {
-            tabComponent = tabData.component;
+            tabRouter = tabData;
           }
         });
-        var hasComponent = !!tabComponent.state.tabContent;
-        if (!tabComponent || !hasComponent) {
+        var hasComponent = tabRouter && tabRouter.component;
+        if (!tabRouter || !hasComponent) {
           tabEl.innerHTML = ''; // eslint-disable-line
           return;
         }
-        tabComponent.setState({ tabContent: null });
+        tabRouter.setTabContent(null);
       },
       modalComponentLoader: function modalComponentLoader(rootEl, component, componentUrl, options, resolve, reject) {
         var router = this;
-        var modalsComponent = f7.routers.modals && f7.routers.modals.component;
-        var modalsComponentEl = f7.routers.modals && f7.routers.modals.el;
+        var modalsRouter = f7.routers.modals;
 
-        if (!modalsComponent || !modalsComponent.state.modals) {
+        if (!modalsRouter) {
           reject();
           return;
         }
@@ -12231,43 +12393,45 @@
             options.props || {}
           ),
         };
-        modalsComponent.$f7router = router;
-        modalsComponent.$f7route = options.route;
+        if (modalsRouter.component) {
+          modalsRouter.component.$f7router = router;
+          modalsRouter.component.$f7route = options.route;
+        }
 
         var resolved;
-        function onDidUpdate(componentRouterData) {
-          if (componentRouterData.component !== modalsComponent || resolved) { return; }
-          eventsEmitter.off('modalsRouterDidUpdate', onDidUpdate);
+        function onDidUpdate() {
+          if (resolved) { return; }
+          f7.events.off('modalsRouterDidUpdate', onDidUpdate);
 
-          var modalEl = modalsComponentEl.children[modalsComponentEl.children.length - 1];
+          var modalEl = modalsRouter.el.children[modalsRouter.el.children.length - 1];
           modalData.el = modalEl;
 
           resolve(modalEl);
           resolved = true;
         }
 
-        eventsEmitter.on('modalsRouterDidUpdate', onDidUpdate);
+        f7.events.on('modalsRouterDidUpdate', onDidUpdate);
 
-        modalsComponent.state.modals.push(modalData);
-        modalsComponent.setState({ modals: modalsComponent.state.modals });
+        modalsRouter.modals.push(modalData);
+        modalsRouter.setModals(modalsRouter.modals);
       },
       removeModal: function removeModal(modalEl) {
-        var modalsComponent = f7.routers.modals && f7.routers.modals.component;
-        if (!modalsComponent) { return; }
+        var modalsRouter = f7.routers.modals;
+        if (!modalsRouter) { return; }
 
         var modalDataToRemove;
-        modalsComponent.state.modals.forEach(function (modalData) {
+        modalsRouter.modals.forEach(function (modalData) {
           if (modalData.el === modalEl) { modalDataToRemove = modalData; }
         });
 
-        modalsComponent.state.modals.splice(modalsComponent.state.modals.indexOf(modalDataToRemove), 1);
-        modalsComponent.setState({ modals: modalsComponent.state.modals });
+        modalsRouter.modals.splice(modalsRouter.modals.indexOf(modalDataToRemove), 1);
+        modalsRouter.setModals(modalsRouter.modals);
       },
     },
   };
 
   /**
-   * Framework7 Vue 4.4.0
+   * Framework7 Vue 4.5.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -12275,7 +12439,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: May 13, 2019
+   * Released on: August 21, 2019
    */
 
   var Plugin = {
@@ -12289,6 +12453,7 @@
 
       var Framework7 = this;
       f7.Framework7 = Framework7;
+      f7.events = new Framework7.Events();
 
       var Extend = params.Vue || Vue; // eslint-disable-line
 

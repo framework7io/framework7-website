@@ -240,23 +240,23 @@ block content
 
       app.utils.id('xxxx-xxxx', 'abcd') // -> aabc-ccda
 
-    h3 #[code preloaderContent()]
-    p There are methods to return theme-related (iOS, MD or Aurora) content of <a href="preloader.html#preloader-layout">Preloader</a> element. This method can be useful if you create preloaders dynamically.
+    h3 #[code preloaderContent]
+    p There are properties that contain theme-related (iOS, MD or Aurora) content of <a href="preloader.html#preloader-layout">Preloader</a> element. Theses properties can be useful if you create preloaders dynamically.
     .method-wrap
       p
-        span.method app.utils.iosPreloaderContent()
-        span - returns required preloader inner content (HTML string) for iOS theme
+        span.method app.utils.iosPreloaderContent
+        span - contains required preloader inner content (HTML string) for iOS theme
     .method-wrap
       p
-        span.method app.utils.mdPreloaderContent()
-        span - returns required preloader inner content (HTML string) for MD theme
+        span.method app.utils.mdPreloaderContent
+        span - contains required preloader inner content (HTML string) for MD theme
     .method-wrap
       p
-        span.method app.utils.auroraPreloaderContent()
-        span - returns required preloader inner content (HTML string) for Aurora theme
+        span.method app.utils.auroraPreloaderContent
+        span - contains required preloader inner content (HTML string) for Aurora theme
     :code(lang="js")
       // call method dynamically based on current app theme
-      var preloaderContent = app.utils[app.theme + 'PreloaderContent']();
+      var preloaderContent = app.utils[app.theme + 'PreloaderContent'];
 
       // create required preloader content
       var myPreloader = '<div class="preloader">' + preloaderContent + '</div>';

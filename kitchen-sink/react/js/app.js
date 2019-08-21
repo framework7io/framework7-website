@@ -277,9 +277,9 @@
 	var ye="function"===typeof setTimeout?setTimeout:void 0,ze="function"===typeof clearTimeout?clearTimeout:void 0,Ae=scheduler.unstable_scheduleCallback,Be=scheduler.unstable_cancelCallback;
 	function Ce(a,b,c,d,e){a[Ga]=e;"input"===c&&"radio"===e.type&&null!=e.name&&xc(a,e);re(c,d);d=re(c,e);for(var f=0;f<b.length;f+=2){var g=b[f],h=b[f+1];"style"===g?oe(a,h):"dangerouslySetInnerHTML"===g?je(a,h):"children"===g?ke(a,h):tc(a,g,h,d);}switch(c){case "input":yc(a,e);break;case "textarea":de(a,e);break;case "select":b=a._wrapperState.wasMultiple,a._wrapperState.wasMultiple=!!e.multiple,c=e.value,null!=c?ae(a,!!e.multiple,c,!1):b!==!!e.multiple&&(null!=e.defaultValue?ae(a,!!e.multiple,e.defaultValue,
 	!0):ae(a,!!e.multiple,e.multiple?[]:"",!1));}}function De(a){for(a=a.nextSibling;a&&1!==a.nodeType&&3!==a.nodeType;){ a=a.nextSibling; }return a}function Ee(a){for(a=a.firstChild;a&&1!==a.nodeType&&3!==a.nodeType;){ a=a.nextSibling; }return a}var Fe=[],Ge=-1;function F$1(a){0>Ge||(a.current=Fe[Ge],Fe[Ge]=null,Ge--);}function G$1(a,b){Ge++;Fe[Ge]=a.current;a.current=b;}var He={},H$1={current:He},I$1={current:!1},Ie=He;
-	function Je(a,b){var c=a.type.contextTypes;if(!c){ return He; }var d=a.stateNode;if(d&&d.__reactInternalMemoizedUnmaskedChildContext===b){ return d.__reactInternalMemoizedMaskedChildContext; }var e={},f;for(f in c){ e[f]=b[f]; }d&&(a=a.stateNode,a.__reactInternalMemoizedUnmaskedChildContext=b,a.__reactInternalMemoizedMaskedChildContext=e);return e}function J$1(a){a=a.childContextTypes;return null!==a&&void 0!==a}function Ke(a){F$1(I$1,a);F$1(H$1,a);}function Le(a){F$1(I$1,a);F$1(H$1,a);}
-	function Me(a,b,c){H$1.current!==He?x$1("168"):void 0;G$1(H$1,b,a);G$1(I$1,c,a);}function Ne(a,b,c){var d=a.stateNode;a=b.childContextTypes;if("function"!==typeof d.getChildContext){ return c; }d=d.getChildContext();for(var e in d){ e in a?void 0:x$1("108",ic(b)||"Unknown",e); }return objectAssign({},c,d)}function Oe(a){var b=a.stateNode;b=b&&b.__reactInternalMemoizedMergedChildContext||He;Ie=H$1.current;G$1(H$1,b,a);G$1(I$1,I$1.current,a);return !0}
-	function Pe(a,b,c){var d=a.stateNode;d?void 0:x$1("169");c?(b=Ne(a,b,Ie),d.__reactInternalMemoizedMergedChildContext=b,F$1(I$1,a),F$1(H$1,a),G$1(H$1,b,a)):F$1(I$1,a);G$1(I$1,c,a);}var Qe=null,Re=null;function Se(a){return function(b){try{return a(b)}catch(c){}}}
+	function Je(a,b){var c=a.type.contextTypes;if(!c){ return He; }var d=a.stateNode;if(d&&d.__reactInternalMemoizedUnmaskedChildContext===b){ return d.__reactInternalMemoizedMaskedChildContext; }var e={},f;for(f in c){ e[f]=b[f]; }d&&(a=a.stateNode,a.__reactInternalMemoizedUnmaskedChildContext=b,a.__reactInternalMemoizedMaskedChildContext=e);return e}function J$1(a){a=a.childContextTypes;return null!==a&&void 0!==a}function Ke(a){F$1(I$1);F$1(H$1);}function Le(a){F$1(I$1);F$1(H$1);}
+	function Me(a,b,c){H$1.current!==He?x$1("168"):void 0;G$1(H$1,b);G$1(I$1,c);}function Ne(a,b,c){var d=a.stateNode;a=b.childContextTypes;if("function"!==typeof d.getChildContext){ return c; }d=d.getChildContext();for(var e in d){ e in a?void 0:x$1("108",ic(b)||"Unknown",e); }return objectAssign({},c,d)}function Oe(a){var b=a.stateNode;b=b&&b.__reactInternalMemoizedMergedChildContext||He;Ie=H$1.current;G$1(H$1,b);G$1(I$1,I$1.current);return !0}
+	function Pe(a,b,c){var d=a.stateNode;d?void 0:x$1("169");c?(b=Ne(a,b,Ie),d.__reactInternalMemoizedMergedChildContext=b,F$1(I$1),F$1(H$1),G$1(H$1,b)):F$1(I$1);G$1(I$1,c);}var Qe=null,Re=null;function Se(a){return function(b){try{return a(b)}catch(c){}}}
 	function Te(a){if("undefined"===typeof __REACT_DEVTOOLS_GLOBAL_HOOK__){ return !1; }var b=__REACT_DEVTOOLS_GLOBAL_HOOK__;if(b.isDisabled||!b.supportsFiber){ return !0; }try{var c=b.inject(a);Qe=Se(function(a){return b.onCommitFiberRoot(c,a)});Re=Se(function(a){return b.onCommitFiberUnmount(c,a)});}catch(d){}return !0}
 	function Ue(a,b,c,d){this.tag=a;this.key=c;this.sibling=this.child=this.return=this.stateNode=this.type=this.elementType=null;this.index=0;this.ref=null;this.pendingProps=b;this.contextDependencies=this.memoizedState=this.updateQueue=this.memoizedProps=null;this.mode=d;this.effectTag=0;this.lastEffect=this.firstEffect=this.nextEffect=null;this.childExpirationTime=this.expirationTime=0;this.alternate=null;}function K$1(a,b,c,d){return new Ue(a,b,c,d)}
 	function Ve(a){a=a.prototype;return !(!a||!a.isReactComponent)}function We(a){if("function"===typeof a){ return Ve(a)?1:0; }if(void 0!==a&&null!==a){a=a.$$typeof;if(a===cc){ return 11; }if(a===ec){ return 14 }}return 2}
@@ -301,17 +301,17 @@
 	typeof e.componentWillMount||(b=e.state,"function"===typeof e.componentWillMount&&e.componentWillMount(),"function"===typeof e.UNSAFE_componentWillMount&&e.UNSAFE_componentWillMount(),b!==e.state&&tf.enqueueReplaceState(e,e.state,null),f=a.updateQueue,null!==f&&(yf(a,f,c,e,d),e.state=a.memoizedState));"function"===typeof e.componentDidMount&&(a.effectTag|=4);}var zf=Array.isArray;
 	function Af(a,b,c){a=c.ref;if(null!==a&&"function"!==typeof a&&"object"!==typeof a){if(c._owner){c=c._owner;var d=void 0;c&&(1!==c.tag?x$1("309"):void 0,d=c.stateNode);d?void 0:x$1("147",a);var e=""+a;if(null!==b&&null!==b.ref&&"function"===typeof b.ref&&b.ref._stringRef===e){ return b.ref; }b=function(a){var b=d.refs;b===jf&&(b=d.refs={});null===a?delete b[e]:b[e]=a;};b._stringRef=e;return b}"string"!==typeof a?x$1("284"):void 0;c._owner?void 0:x$1("290",a);}return a}
 	function Bf(a,b){"textarea"!==a.type&&x$1("31","[object Object]"===Object.prototype.toString.call(b)?"object with keys {"+Object.keys(b).join(", ")+"}":b,"");}
-	function Cf(a){function b(b,c){if(a){var d=b.lastEffect;null!==d?(d.nextEffect=c,b.lastEffect=c):b.firstEffect=b.lastEffect=c;c.nextEffect=null;c.effectTag=8;}}function c(c,d){if(!a){ return null; }for(;null!==d;){ b(c,d),d=d.sibling; }return null}function d(a,b){for(a=new Map;null!==b;){ null!==b.key?a.set(b.key,b):a.set(b.index,b),b=b.sibling; }return a}function e(a,b,c){a=Xe(a,b,c);a.index=0;a.sibling=null;return a}function f(b,c,d){b.index=d;if(!a){ return c; }d=b.alternate;if(null!==d){ return d=d.index,d<c?(b.effectTag=
-	2,c):d; }b.effectTag=2;return c}function g(b){a&&null===b.alternate&&(b.effectTag=2);return b}function h(a,b,c,d){if(null===b||6!==b.tag){ return b=af(c,a.mode,d),b.return=a,b; }b=e(b,c,d);b.return=a;return b}function l(a,b,c,d){if(null!==b&&b.elementType===c.type){ return d=e(b,c.props,d),d.ref=Af(a,b,c),d.return=a,d; }d=Ye(c.type,c.key,c.props,null,a.mode,d);d.ref=Af(a,b,c);d.return=a;return d}function k(a,b,c,d){if(null===b||4!==b.tag||b.stateNode.containerInfo!==c.containerInfo||b.stateNode.implementation!==
-	c.implementation){ return b=bf(c,a.mode,d),b.return=a,b; }b=e(b,c.children||[],d);b.return=a;return b}function m(a,b,c,d,f){if(null===b||7!==b.tag){ return b=Ze(c,a.mode,d,f),b.return=a,b; }b=e(b,c,d);b.return=a;return b}function p(a,b,c){if("string"===typeof b||"number"===typeof b){ return b=af(""+b,a.mode,c),b.return=a,b; }if("object"===typeof b&&null!==b){switch(b.$$typeof){case Vb:return c=Ye(b.type,b.key,b.props,null,a.mode,c),c.ref=Af(a,null,b),c.return=a,c;case Wb:return b=bf(b,a.mode,c),b.return=a,b}if(zf(b)||
+	function Cf(a){function b(b,c){if(a){var d=b.lastEffect;null!==d?(d.nextEffect=c,b.lastEffect=c):b.firstEffect=b.lastEffect=c;c.nextEffect=null;c.effectTag=8;}}function c(c,d){if(!a){ return null; }for(;null!==d;){ b(c,d),d=d.sibling; }return null}function d(a,b){for(a=new Map;null!==b;){ null!==b.key?a.set(b.key,b):a.set(b.index,b),b=b.sibling; }return a}function e(a,b,c){a=Xe(a,b);a.index=0;a.sibling=null;return a}function f(b,c,d){b.index=d;if(!a){ return c; }d=b.alternate;if(null!==d){ return d=d.index,d<c?(b.effectTag=
+	2,c):d; }b.effectTag=2;return c}function g(b){a&&null===b.alternate&&(b.effectTag=2);return b}function h(a,b,c,d){if(null===b||6!==b.tag){ return b=af(c,a.mode,d),b.return=a,b; }b=e(b,c);b.return=a;return b}function l(a,b,c,d){if(null!==b&&b.elementType===c.type){ return d=e(b,c.props),d.ref=Af(a,b,c),d.return=a,d; }d=Ye(c.type,c.key,c.props,null,a.mode,d);d.ref=Af(a,b,c);d.return=a;return d}function k(a,b,c,d){if(null===b||4!==b.tag||b.stateNode.containerInfo!==c.containerInfo||b.stateNode.implementation!==
+	c.implementation){ return b=bf(c,a.mode,d),b.return=a,b; }b=e(b,c.children||[]);b.return=a;return b}function m(a,b,c,d,f){if(null===b||7!==b.tag){ return b=Ze(c,a.mode,d,f),b.return=a,b; }b=e(b,c);b.return=a;return b}function p(a,b,c){if("string"===typeof b||"number"===typeof b){ return b=af(""+b,a.mode,c),b.return=a,b; }if("object"===typeof b&&null!==b){switch(b.$$typeof){case Vb:return c=Ye(b.type,b.key,b.props,null,a.mode,c),c.ref=Af(a,null,b),c.return=a,c;case Wb:return b=bf(b,a.mode,c),b.return=a,b}if(zf(b)||
 	hc(b)){ return b=Ze(b,a.mode,c,null),b.return=a,b; }Bf(a,b);}return null}function t(a,b,c,d){var e=null!==b?b.key:null;if("string"===typeof c||"number"===typeof c){ return null!==e?null:h(a,b,""+c,d); }if("object"===typeof c&&null!==c){switch(c.$$typeof){case Vb:return c.key===e?c.type===Xb?m(a,b,c.props.children,d,e):l(a,b,c,d):null;case Wb:return c.key===e?k(a,b,c,d):null}if(zf(c)||hc(c)){ return null!==e?null:m(a,b,c,d,null); }Bf(a,c);}return null}function A(a,b,c,d,e){if("string"===typeof d||"number"===typeof d){ return a=
 	a.get(c)||null,h(b,a,""+d,e); }if("object"===typeof d&&null!==d){switch(d.$$typeof){case Vb:return a=a.get(null===d.key?c:d.key)||null,d.type===Xb?m(b,a,d.props.children,e,d.key):l(b,a,d,e);case Wb:return a=a.get(null===d.key?c:d.key)||null,k(b,a,d,e)}if(zf(d)||hc(d)){ return a=a.get(c)||null,m(b,a,d,e,null); }Bf(b,d);}return null}function v(e,g,h,k){for(var l=null,m=null,q=g,u=g=0,B=null;null!==q&&u<h.length;u++){q.index>u?(B=q,q=null):B=q.sibling;var w=t(e,q,h[u],k);if(null===w){null===q&&(q=B);break}a&&
 	q&&null===w.alternate&&b(e,q);g=f(w,g,u);null===m?l=w:m.sibling=w;m=w;q=B;}if(u===h.length){ return c(e,q),l; }if(null===q){for(;u<h.length;u++){ if(q=p(e,h[u],k)){ g=f(q,g,u),null===m?l=q:m.sibling=q,m=q; } }return l}for(q=d(e,q);u<h.length;u++){ if(B=A(q,e,u,h[u],k)){ a&&null!==B.alternate&&q.delete(null===B.key?u:B.key),g=f(B,g,u),null===m?l=B:m.sibling=B,m=B; } }a&&q.forEach(function(a){return b(e,a)});return l}function R(e,g,h,k){var l=hc(h);"function"!==typeof l?x$1("150"):void 0;h=l.call(h);null==h?x$1("151"):void 0;
 	for(var m=l=null,q=g,u=g=0,B=null,w=h.next();null!==q&&!w.done;u++,w=h.next()){q.index>u?(B=q,q=null):B=q.sibling;var v=t(e,q,w.value,k);if(null===v){q||(q=B);break}a&&q&&null===v.alternate&&b(e,q);g=f(v,g,u);null===m?l=v:m.sibling=v;m=v;q=B;}if(w.done){ return c(e,q),l; }if(null===q){for(;!w.done;u++,w=h.next()){ w=p(e,w.value,k),null!==w&&(g=f(w,g,u),null===m?l=w:m.sibling=w,m=w); }return l}for(q=d(e,q);!w.done;u++,w=h.next()){ w=A(q,e,u,w.value,k),null!==w&&(a&&null!==w.alternate&&q.delete(null===w.key?u:
-	w.key),g=f(w,g,u),null===m?l=w:m.sibling=w,m=w); }a&&q.forEach(function(a){return b(e,a)});return l}return function(a,d,f,h){var k="object"===typeof f&&null!==f&&f.type===Xb&&null===f.key;k&&(f=f.props.children);var l="object"===typeof f&&null!==f;if(l){ switch(f.$$typeof){case Vb:a:{l=f.key;for(k=d;null!==k;){if(k.key===l){ if(7===k.tag?f.type===Xb:k.elementType===f.type){c(a,k.sibling);d=e(k,f.type===Xb?f.props.children:f.props,h);d.ref=Af(a,k,f);d.return=a;a=d;break a}else{c(a,k);break} }else { b(a,k); }k=
-	k.sibling;}f.type===Xb?(d=Ze(f.props.children,a.mode,h,f.key),d.return=a,a=d):(h=Ye(f.type,f.key,f.props,null,a.mode,h),h.ref=Af(a,d,f),h.return=a,a=h);}return g(a);case Wb:a:{for(k=f.key;null!==d;){if(d.key===k){ if(4===d.tag&&d.stateNode.containerInfo===f.containerInfo&&d.stateNode.implementation===f.implementation){c(a,d.sibling);d=e(d,f.children||[],h);d.return=a;a=d;break a}else{c(a,d);break} }else { b(a,d); }d=d.sibling;}d=bf(f,a.mode,h);d.return=a;a=d;}return g(a)} }if("string"===typeof f||"number"===typeof f){ return f=
-	""+f,null!==d&&6===d.tag?(c(a,d.sibling),d=e(d,f,h),d.return=a,a=d):(c(a,d),d=af(f,a.mode,h),d.return=a,a=d),g(a); }if(zf(f)){ return v(a,d,f,h); }if(hc(f)){ return R(a,d,f,h); }l&&Bf(a,f);if("undefined"===typeof f&&!k){ switch(a.tag){case 1:case 0:h=a.type,x$1("152",h.displayName||h.name||"Component");} }return c(a,d)}}var Df=Cf(!0),Ef=Cf(!1),Ff={},N$1={current:Ff},Gf={current:Ff},Hf={current:Ff};function If(a){a===Ff?x$1("174"):void 0;return a}
-	function Jf(a,b){G$1(Hf,b,a);G$1(Gf,a,a);G$1(N$1,Ff,a);var c=b.nodeType;switch(c){case 9:case 11:b=(b=b.documentElement)?b.namespaceURI:he(null,"");break;default:c=8===c?b.parentNode:b,b=c.namespaceURI||null,c=c.tagName,b=he(b,c);}F$1(N$1,a);G$1(N$1,b,a);}function Kf(a){F$1(N$1,a);F$1(Gf,a);F$1(Hf,a);}function Lf(a){If(Hf.current);var b=If(N$1.current);var c=he(b,a.type);b!==c&&(G$1(Gf,a,a),G$1(N$1,c,a));}function Mf(a){Gf.current===a&&(F$1(N$1,a),F$1(Gf,a));}
+	w.key),g=f(w,g,u),null===m?l=w:m.sibling=w,m=w); }a&&q.forEach(function(a){return b(e,a)});return l}return function(a,d,f,h){var k="object"===typeof f&&null!==f&&f.type===Xb&&null===f.key;k&&(f=f.props.children);var l="object"===typeof f&&null!==f;if(l){ switch(f.$$typeof){case Vb:a:{l=f.key;for(k=d;null!==k;){if(k.key===l){ if(7===k.tag?f.type===Xb:k.elementType===f.type){c(a,k.sibling);d=e(k,f.type===Xb?f.props.children:f.props);d.ref=Af(a,k,f);d.return=a;a=d;break a}else{c(a,k);break} }else { b(a,k); }k=
+	k.sibling;}f.type===Xb?(d=Ze(f.props.children,a.mode,h,f.key),d.return=a,a=d):(h=Ye(f.type,f.key,f.props,null,a.mode,h),h.ref=Af(a,d,f),h.return=a,a=h);}return g(a);case Wb:a:{for(k=f.key;null!==d;){if(d.key===k){ if(4===d.tag&&d.stateNode.containerInfo===f.containerInfo&&d.stateNode.implementation===f.implementation){c(a,d.sibling);d=e(d,f.children||[]);d.return=a;a=d;break a}else{c(a,d);break} }else { b(a,d); }d=d.sibling;}d=bf(f,a.mode,h);d.return=a;a=d;}return g(a)} }if("string"===typeof f||"number"===typeof f){ return f=
+	""+f,null!==d&&6===d.tag?(c(a,d.sibling),d=e(d,f),d.return=a,a=d):(c(a,d),d=af(f,a.mode,h),d.return=a,a=d),g(a); }if(zf(f)){ return v(a,d,f,h); }if(hc(f)){ return R(a,d,f,h); }l&&Bf(a,f);if("undefined"===typeof f&&!k){ switch(a.tag){case 1:case 0:h=a.type,x$1("152",h.displayName||h.name||"Component");} }return c(a,d)}}var Df=Cf(!0),Ef=Cf(!1),Ff={},N$1={current:Ff},Gf={current:Ff},Hf={current:Ff};function If(a){a===Ff?x$1("174"):void 0;return a}
+	function Jf(a,b){G$1(Hf,b);G$1(Gf,a);G$1(N$1,Ff);var c=b.nodeType;switch(c){case 9:case 11:b=(b=b.documentElement)?b.namespaceURI:he(null,"");break;default:c=8===c?b.parentNode:b,b=c.namespaceURI||null,c=c.tagName,b=he(b,c);}F$1(N$1);G$1(N$1,b);}function Kf(a){F$1(N$1);F$1(Gf);F$1(Hf);}function Lf(a){If(Hf.current);var b=If(N$1.current);var c=he(b,a.type);b!==c&&(G$1(Gf,a),G$1(N$1,c));}function Mf(a){Gf.current===a&&(F$1(N$1),F$1(Gf));}
 	var Nf=0,Of=2,Pf=4,Qf=8,Rf=16,Sf=32,Tf=64,Uf=128,Vf=Tb.ReactCurrentDispatcher,Wf=0,Xf=null,O$1=null,P$1=null,Yf=null,Q$1=null,Zf=null,$f=0,ag=null,bg=0,cg=!1,dg=null,eg=0;function fg(){x$1("321");}function gg(a,b){if(null===b){ return !1; }for(var c=0;c<b.length&&c<a.length;c++){ if(!bd(a[c],b[c])){ return !1; } }return !0}
 	function hg(a,b,c,d,e,f){Wf=f;Xf=b;P$1=null!==a?a.memoizedState:null;Vf.current=null===P$1?ig:jg;b=c(d,e);if(cg){do { cg=!1,eg+=1,P$1=null!==a?a.memoizedState:null,Zf=Yf,ag=Q$1=O$1=null,Vf.current=jg,b=c(d,e); }while(cg);dg=null;eg=0;}Vf.current=kg;a=Xf;a.memoizedState=Yf;a.expirationTime=$f;a.updateQueue=ag;a.effectTag|=bg;a=null!==O$1&&null!==O$1.next;Wf=0;Zf=Q$1=Yf=P$1=O$1=Xf=null;$f=0;ag=null;bg=0;a?x$1("300"):void 0;return b}function lg(){Vf.current=kg;Wf=0;Zf=Q$1=Yf=P$1=O$1=Xf=null;$f=0;ag=null;bg=0;cg=!1;dg=null;eg=0;}
 	function mg(){var a={memoizedState:null,baseState:null,queue:null,baseUpdate:null,next:null};null===Q$1?Yf=Q$1=a:Q$1=Q$1.next=a;return Q$1}function ng(){if(null!==Zf){ Q$1=Zf,Zf=Q$1.next,O$1=P$1,P$1=null!==O$1?O$1.next:null; }else{null===P$1?x$1("310"):void 0;O$1=P$1;var a={memoizedState:O$1.memoizedState,baseState:O$1.baseState,queue:O$1.queue,baseUpdate:O$1.baseUpdate,next:null};Q$1=null===Q$1?Yf=a:Q$1.next=a;P$1=O$1.next;}return Q$1}function og(a,b){return "function"===typeof b?b(a):b}
@@ -324,20 +324,20 @@
 	var kg={readContext:M$1,useCallback:fg,useContext:fg,useEffect:fg,useImperativeHandle:fg,useLayoutEffect:fg,useMemo:fg,useReducer:fg,useRef:fg,useState:fg,useDebugValue:fg},ig={readContext:M$1,useCallback:function(a,b){mg().memoizedState=[a,void 0===b?null:b];return a},useContext:M$1,useEffect:function(a,b){return sg(516,Uf|Tf,a,b)},useImperativeHandle:function(a,b,c){c=null!==c&&void 0!==c?c.concat([a]):null;return sg(4,Pf|Sf,ug.bind(null,b,a),c)},useLayoutEffect:function(a,b){return sg(4,Pf|Sf,a,b)},
 	useMemo:function(a,b){var c=mg();b=void 0===b?null:b;a=a();c.memoizedState=[a,b];return a},useReducer:function(a,b,c){var d=mg();b=void 0!==c?c(b):b;d.memoizedState=d.baseState=b;a=d.queue={last:null,dispatch:null,lastRenderedReducer:a,lastRenderedState:b};a=a.dispatch=wg.bind(null,Xf,a);return [d.memoizedState,a]},useRef:function(a){var b=mg();a={current:a};return b.memoizedState=a},useState:function(a){var b=mg();"function"===typeof a&&(a=a());b.memoizedState=b.baseState=a;a=b.queue={last:null,dispatch:null,
 	lastRenderedReducer:og,lastRenderedState:a};a=a.dispatch=wg.bind(null,Xf,a);return [b.memoizedState,a]},useDebugValue:vg},jg={readContext:M$1,useCallback:function(a,b){var c=ng();b=void 0===b?null:b;var d=c.memoizedState;if(null!==d&&null!==b&&gg(b,d[1])){ return d[0]; }c.memoizedState=[a,b];return a},useContext:M$1,useEffect:function(a,b){return tg(516,Uf|Tf,a,b)},useImperativeHandle:function(a,b,c){c=null!==c&&void 0!==c?c.concat([a]):null;return tg(4,Pf|Sf,ug.bind(null,b,a),c)},useLayoutEffect:function(a,
-	b){return tg(4,Pf|Sf,a,b)},useMemo:function(a,b){var c=ng();b=void 0===b?null:b;var d=c.memoizedState;if(null!==d&&null!==b&&gg(b,d[1])){ return d[0]; }a=a();c.memoizedState=[a,b];return a},useReducer:pg,useRef:function(){return ng().memoizedState},useState:function(a){return pg(og,a)},useDebugValue:vg},xg=null,yg=null,zg=!1;
+	b){return tg(4,Pf|Sf,a,b)},useMemo:function(a,b){var c=ng();b=void 0===b?null:b;var d=c.memoizedState;if(null!==d&&null!==b&&gg(b,d[1])){ return d[0]; }a=a();c.memoizedState=[a,b];return a},useReducer:pg,useRef:function(){return ng().memoizedState},useState:function(a){return pg(og)},useDebugValue:vg},xg=null,yg=null,zg=!1;
 	function Ag(a,b){var c=K$1(5,null,null,0);c.elementType="DELETED";c.type="DELETED";c.stateNode=b;c.return=a;c.effectTag=8;null!==a.lastEffect?(a.lastEffect.nextEffect=c,a.lastEffect=c):a.firstEffect=a.lastEffect=c;}function Bg(a,b){switch(a.tag){case 5:var c=a.type;b=1!==b.nodeType||c.toLowerCase()!==b.nodeName.toLowerCase()?null:b;return null!==b?(a.stateNode=b,!0):!1;case 6:return b=""===a.pendingProps||3!==b.nodeType?null:b,null!==b?(a.stateNode=b,!0):!1;case 13:return !1;default:return !1}}
 	function Cg(a){if(zg){var b=yg;if(b){var c=b;if(!Bg(a,b)){b=De(c);if(!b||!Bg(a,b)){a.effectTag|=2;zg=!1;xg=a;return}Ag(xg,c);}xg=a;yg=Ee(b);}else { a.effectTag|=2,zg=!1,xg=a; }}}function Dg(a){for(a=a.return;null!==a&&5!==a.tag&&3!==a.tag&&18!==a.tag;){ a=a.return; }xg=a;}function Eg(a){if(a!==xg){ return !1; }if(!zg){ return Dg(a),zg=!0,!1; }var b=a.type;if(5!==a.tag||"head"!==b&&"body"!==b&&!xe(b,a.memoizedProps)){ for(b=yg;b;){ Ag(a,b),b=De(b); } }Dg(a);yg=xg?De(a.stateNode):null;return !0}function Fg(){yg=xg=null;zg=!1;}
 	var Gg=Tb.ReactCurrentOwner,qg=!1;function S$1(a,b,c,d){b.child=null===a?Ef(b,null,c,d):Df(b,a.child,c,d);}function Hg(a,b,c,d,e){c=c.render;var f=b.ref;Ig(b,e);d=hg(a,b,c,d,f,e);if(null!==a&&!qg){ return b.updateQueue=a.updateQueue,b.effectTag&=-517,a.expirationTime<=e&&(a.expirationTime=0),Jg(a,b,e); }b.effectTag|=1;S$1(a,b,d,e);return b.child}
-	function Kg(a,b,c,d,e,f){if(null===a){var g=c.type;if("function"===typeof g&&!Ve(g)&&void 0===g.defaultProps&&null===c.compare&&void 0===c.defaultProps){ return b.tag=15,b.type=g,Lg(a,b,g,d,e,f); }a=Ye(c.type,null,d,null,b.mode,f);a.ref=b.ref;a.return=b;return b.child=a}g=a.child;if(e<f&&(e=g.memoizedProps,c=c.compare,c=null!==c?c:dd,c(e,d)&&a.ref===b.ref)){ return Jg(a,b,f); }b.effectTag|=1;a=Xe(g,d,f);a.ref=b.ref;a.return=b;return b.child=a}
+	function Kg(a,b,c,d,e,f){if(null===a){var g=c.type;if("function"===typeof g&&!Ve(g)&&void 0===g.defaultProps&&null===c.compare&&void 0===c.defaultProps){ return b.tag=15,b.type=g,Lg(a,b,g,d,e,f); }a=Ye(c.type,null,d,null,b.mode,f);a.ref=b.ref;a.return=b;return b.child=a}g=a.child;if(e<f&&(e=g.memoizedProps,c=c.compare,c=null!==c?c:dd,c(e,d)&&a.ref===b.ref)){ return Jg(a,b,f); }b.effectTag|=1;a=Xe(g,d);a.ref=b.ref;a.return=b;return b.child=a}
 	function Lg(a,b,c,d,e,f){return null!==a&&dd(a.memoizedProps,d)&&a.ref===b.ref&&(qg=!1,e<f)?Jg(a,b,f):Mg(a,b,c,d,f)}function Ng(a,b){var c=b.ref;if(null===a&&null!==c||null!==a&&a.ref!==c){ b.effectTag|=128; }}function Mg(a,b,c,d,e){var f=J$1(c)?Ie:H$1.current;f=Je(b,f);Ig(b,e);c=hg(a,b,c,d,f,e);if(null!==a&&!qg){ return b.updateQueue=a.updateQueue,b.effectTag&=-517,a.expirationTime<=e&&(a.expirationTime=0),Jg(a,b,e); }b.effectTag|=1;S$1(a,b,c,e);return b.child}
-	function Og(a,b,c,d,e){if(J$1(c)){var f=!0;Oe(b);}else { f=!1; }Ig(b,e);if(null===b.stateNode){ null!==a&&(a.alternate=null,b.alternate=null,b.effectTag|=2),vf(b,c,d,e),xf(b,c,d,e),d=!0; }else if(null===a){var g=b.stateNode,h=b.memoizedProps;g.props=h;var l=g.context,k=c.contextType;"object"===typeof k&&null!==k?k=M$1(k):(k=J$1(c)?Ie:H$1.current,k=Je(b,k));var m=c.getDerivedStateFromProps,p="function"===typeof m||"function"===typeof g.getSnapshotBeforeUpdate;p||"function"!==typeof g.UNSAFE_componentWillReceiveProps&&
+	function Og(a,b,c,d,e){if(J$1(c)){var f=!0;Oe(b);}else { f=!1; }Ig(b,e);if(null===b.stateNode){ null!==a&&(a.alternate=null,b.alternate=null,b.effectTag|=2),vf(b,c,d),xf(b,c,d,e),d=!0; }else if(null===a){var g=b.stateNode,h=b.memoizedProps;g.props=h;var l=g.context,k=c.contextType;"object"===typeof k&&null!==k?k=M$1(k):(k=J$1(c)?Ie:H$1.current,k=Je(b,k));var m=c.getDerivedStateFromProps,p="function"===typeof m||"function"===typeof g.getSnapshotBeforeUpdate;p||"function"!==typeof g.UNSAFE_componentWillReceiveProps&&
 	"function"!==typeof g.componentWillReceiveProps||(h!==d||l!==k)&&wf(b,g,d,k);Pg=!1;var t=b.memoizedState;l=g.state=t;var A=b.updateQueue;null!==A&&(yf(b,A,d,g,e),l=b.memoizedState);h!==d||t!==l||I$1.current||Pg?("function"===typeof m&&(kf(b,c,m,d),l=b.memoizedState),(h=Pg||uf(b,c,h,d,t,l,k))?(p||"function"!==typeof g.UNSAFE_componentWillMount&&"function"!==typeof g.componentWillMount||("function"===typeof g.componentWillMount&&g.componentWillMount(),"function"===typeof g.UNSAFE_componentWillMount&&
 	g.UNSAFE_componentWillMount()),"function"===typeof g.componentDidMount&&(b.effectTag|=4)):("function"===typeof g.componentDidMount&&(b.effectTag|=4),b.memoizedProps=d,b.memoizedState=l),g.props=d,g.state=l,g.context=k,d=h):("function"===typeof g.componentDidMount&&(b.effectTag|=4),d=!1);}else { g=b.stateNode,h=b.memoizedProps,g.props=b.type===b.elementType?h:L$2(b.type,h),l=g.context,k=c.contextType,"object"===typeof k&&null!==k?k=M$1(k):(k=J$1(c)?Ie:H$1.current,k=Je(b,k)),m=c.getDerivedStateFromProps,(p="function"===
 	typeof m||"function"===typeof g.getSnapshotBeforeUpdate)||"function"!==typeof g.UNSAFE_componentWillReceiveProps&&"function"!==typeof g.componentWillReceiveProps||(h!==d||l!==k)&&wf(b,g,d,k),Pg=!1,l=b.memoizedState,t=g.state=l,A=b.updateQueue,null!==A&&(yf(b,A,d,g,e),t=b.memoizedState),h!==d||l!==t||I$1.current||Pg?("function"===typeof m&&(kf(b,c,m,d),t=b.memoizedState),(m=Pg||uf(b,c,h,d,l,t,k))?(p||"function"!==typeof g.UNSAFE_componentWillUpdate&&"function"!==typeof g.componentWillUpdate||("function"===
 	typeof g.componentWillUpdate&&g.componentWillUpdate(d,t,k),"function"===typeof g.UNSAFE_componentWillUpdate&&g.UNSAFE_componentWillUpdate(d,t,k)),"function"===typeof g.componentDidUpdate&&(b.effectTag|=4),"function"===typeof g.getSnapshotBeforeUpdate&&(b.effectTag|=256)):("function"!==typeof g.componentDidUpdate||h===a.memoizedProps&&l===a.memoizedState||(b.effectTag|=4),"function"!==typeof g.getSnapshotBeforeUpdate||h===a.memoizedProps&&l===a.memoizedState||(b.effectTag|=256),b.memoizedProps=d,b.memoizedState=
 	t),g.props=d,g.state=t,g.context=k,d=m):("function"!==typeof g.componentDidUpdate||h===a.memoizedProps&&l===a.memoizedState||(b.effectTag|=4),"function"!==typeof g.getSnapshotBeforeUpdate||h===a.memoizedProps&&l===a.memoizedState||(b.effectTag|=256),d=!1); }return Qg(a,b,c,d,f,e)}
 	function Qg(a,b,c,d,e,f){Ng(a,b);var g=0!==(b.effectTag&64);if(!d&&!g){ return e&&Pe(b,c,!1),Jg(a,b,f); }d=b.stateNode;Gg.current=b;var h=g&&"function"!==typeof c.getDerivedStateFromError?null:d.render();b.effectTag|=1;null!==a&&g?(b.child=Df(b,a.child,null,f),b.child=Df(b,null,h,f)):S$1(a,b,h,f);b.memoizedState=d.state;e&&Pe(b,c,!0);return b.child}function Rg(a){var b=a.stateNode;b.pendingContext?Me(a,b.pendingContext,b.pendingContext!==b.context):b.context&&Me(a,b.context,!1);Jf(a,b.containerInfo);}
-	function Sg(a,b,c){var d=b.mode,e=b.pendingProps,f=b.memoizedState;if(0===(b.effectTag&64)){f=null;var g=!1;}else { f={timedOutAt:null!==f?f.timedOutAt:0},g=!0,b.effectTag&=-65; }if(null===a){ if(g){var h=e.fallback;a=Ze(null,d,0,null);0===(b.mode&1)&&(a.child=null!==b.memoizedState?b.child.child:b.child);d=Ze(h,d,c,null);a.sibling=d;c=a;c.return=d.return=b;}else { c=d=Ef(b,null,e.children,c); } }else { null!==a.memoizedState?(d=a.child,h=d.sibling,g?(c=e.fallback,e=Xe(d,d.pendingProps,0),0===(b.mode&1)&&(g=null!==
+	function Sg(a,b,c){var d=b.mode,e=b.pendingProps,f=b.memoizedState;if(0===(b.effectTag&64)){f=null;var g=!1;}else { f={timedOutAt:null!==f?f.timedOutAt:0},g=!0,b.effectTag&=-65; }if(null===a){ if(g){var h=e.fallback;a=Ze(null,d,0,null);0===(b.mode&1)&&(a.child=null!==b.memoizedState?b.child.child:b.child);d=Ze(h,d,c,null);a.sibling=d;c=a;c.return=d.return=b;}else { c=d=Ef(b,null,e.children,c); } }else { null!==a.memoizedState?(d=a.child,h=d.sibling,g?(c=e.fallback,e=Xe(d,d.pendingProps),0===(b.mode&1)&&(g=null!==
 	b.memoizedState?b.child.child:b.child,g!==d.child&&(e.child=g)),d=e.sibling=Xe(h,c,h.expirationTime),c=e,e.childExpirationTime=0,c.return=d.return=b):c=d=Df(b,d.child,e.children,c)):(h=a.child,g?(g=e.fallback,e=Ze(null,d,0,null),e.child=h,0===(b.mode&1)&&(e.child=null!==b.memoizedState?b.child.child:b.child),d=e.sibling=Ze(g,d,c,null),d.effectTag|=2,c=e,e.childExpirationTime=0,c.return=d.return=b):d=c=Df(b,h,e.children,c)),b.stateNode=a.stateNode; }b.memoizedState=f;b.child=c;return d}
 	function Jg(a,b,c){null!==a&&(b.contextDependencies=a.contextDependencies);if(b.childExpirationTime<c){ return null; }null!==a&&b.child!==a.child?x$1("153"):void 0;if(null!==b.child){a=b.child;c=Xe(a,a.pendingProps,a.expirationTime);b.child=c;for(c.return=b;null!==a.sibling;){ a=a.sibling,c=c.sibling=Xe(a,a.pendingProps,a.expirationTime),c.return=b; }c.sibling=null;}return b.child}
 	function Tg(a,b,c){var d=b.expirationTime;if(null!==a){ if(a.memoizedProps!==b.pendingProps||I$1.current){ qg=!0; }else{if(d<c){qg=!1;switch(b.tag){case 3:Rg(b);Fg();break;case 5:Lf(b);break;case 1:J$1(b.type)&&Oe(b);break;case 4:Jf(b,b.stateNode.containerInfo);break;case 10:Ug(b,b.memoizedProps.value);break;case 13:if(null!==b.memoizedState){d=b.child.childExpirationTime;if(0!==d&&d>=c){ return Sg(a,b,c); }b=Jg(a,b,c);return null!==b?b.sibling:null}}return Jg(a,b,c)}} }else { qg=!1; }b.expirationTime=0;switch(b.tag){case 2:d=
@@ -348,7 +348,7 @@
 	c),b.child;case 12:return S$1(a,b,b.pendingProps.children,c),b.child;case 10:a:{d=b.type._context;e=b.pendingProps;g=b.memoizedProps;f=e.value;Ug(b,f);if(null!==g){var h=g.value;f=bd(h,f)?0:("function"===typeof d._calculateChangedBits?d._calculateChangedBits(h,f):1073741823)|0;if(0===f){if(g.children===e.children&&!I$1.current){b=Jg(a,b,c);break a}}else { for(h=b.child,null!==h&&(h.return=b);null!==h;){var l=h.contextDependencies;if(null!==l){g=h.child;for(var k=l.first;null!==k;){if(k.context===d&&0!==
 	(k.observedBits&f)){1===h.tag&&(k=nf(c),k.tag=sf,pf(h,k));h.expirationTime<c&&(h.expirationTime=c);k=h.alternate;null!==k&&k.expirationTime<c&&(k.expirationTime=c);k=c;for(var m=h.return;null!==m;){var p=m.alternate;if(m.childExpirationTime<k){ m.childExpirationTime=k,null!==p&&p.childExpirationTime<k&&(p.childExpirationTime=k); }else if(null!==p&&p.childExpirationTime<k){ p.childExpirationTime=k; }else { break; }m=m.return;}l.expirationTime<c&&(l.expirationTime=c);break}k=k.next;}}else { g=10===h.tag?h.type===b.type?
 	null:h.child:h.child; }if(null!==g){ g.return=h; }else { for(g=h;null!==g;){if(g===b){g=null;break}h=g.sibling;if(null!==h){h.return=g.return;g=h;break}g=g.return;} }h=g;} }}S$1(a,b,e.children,c);b=b.child;}return b;case 9:return e=b.type,f=b.pendingProps,d=f.children,Ig(b,c),e=M$1(e,f.unstable_observedBits),d=d(e),b.effectTag|=1,S$1(a,b,d,c),b.child;case 14:return e=b.type,f=L$2(e,b.pendingProps),f=L$2(e.type,f),Kg(a,b,e,f,d,c);case 15:return Lg(a,b,b.type,b.pendingProps,d,c);case 17:return d=b.type,e=b.pendingProps,e=b.elementType===
-	d?e:L$2(d,e),null!==a&&(a.alternate=null,b.alternate=null,b.effectTag|=2),b.tag=1,J$1(d)?(a=!0,Oe(b)):a=!1,Ig(b,c),vf(b,d,e,c),xf(b,d,e,c),Qg(null,b,d,!0,a,c)}x$1("156");}var Vg={current:null},Wg=null,Xg=null,Yg=null;function Ug(a,b){var c=a.type._context;G$1(Vg,c._currentValue,a);c._currentValue=b;}function Zg(a){var b=Vg.current;F$1(Vg,a);a.type._context._currentValue=b;}function Ig(a,b){Wg=a;Yg=Xg=null;var c=a.contextDependencies;null!==c&&c.expirationTime>=b&&(qg=!0);a.contextDependencies=null;}
+	d?e:L$2(d,e),null!==a&&(a.alternate=null,b.alternate=null,b.effectTag|=2),b.tag=1,J$1(d)?(a=!0,Oe(b)):a=!1,Ig(b,c),vf(b,d,e),xf(b,d,e,c),Qg(null,b,d,!0,a,c)}x$1("156");}var Vg={current:null},Wg=null,Xg=null,Yg=null;function Ug(a,b){var c=a.type._context;G$1(Vg,c._currentValue);c._currentValue=b;}function Zg(a){var b=Vg.current;F$1(Vg);a.type._context._currentValue=b;}function Ig(a,b){Wg=a;Yg=Xg=null;var c=a.contextDependencies;null!==c&&c.expirationTime>=b&&(qg=!0);a.contextDependencies=null;}
 	function M$1(a,b){if(Yg!==a&&!1!==b&&0!==b){if("number"!==typeof b||1073741823===b){ Yg=a,b=1073741823; }b={context:a,observedBits:b,next:null};null===Xg?(null===Wg?x$1("308"):void 0,Xg=b,Wg.contextDependencies={first:b,expirationTime:0}):Xg=Xg.next=b;}return a._currentValue}var $g=0,rf=1,sf=2,ah=3,Pg=!1;function bh(a){return {baseState:a,firstUpdate:null,lastUpdate:null,firstCapturedUpdate:null,lastCapturedUpdate:null,firstEffect:null,lastEffect:null,firstCapturedEffect:null,lastCapturedEffect:null}}
 	function ch(a){return {baseState:a.baseState,firstUpdate:a.firstUpdate,lastUpdate:a.lastUpdate,firstCapturedUpdate:null,lastCapturedUpdate:null,firstEffect:null,lastEffect:null,firstCapturedEffect:null,lastCapturedEffect:null}}function nf(a){return {expirationTime:a,tag:$g,payload:null,callback:null,next:null,nextEffect:null}}function dh(a,b){null===a.lastUpdate?a.firstUpdate=a.lastUpdate=b:(a.lastUpdate.next=b,a.lastUpdate=b);}
 	function pf(a,b){var c=a.alternate;if(null===c){var d=a.updateQueue;var e=null;null===d&&(d=a.updateQueue=bh(a.memoizedState));}else { d=a.updateQueue,e=c.updateQueue,null===d?null===e?(d=a.updateQueue=bh(a.memoizedState),e=c.updateQueue=bh(c.memoizedState)):d=a.updateQueue=ch(e):null===e&&(e=c.updateQueue=ch(d)); }null===e||d===e?dh(d,b):null===d.lastUpdate||null===e.lastUpdate?(dh(d,b),dh(e,b)):(dh(d,b),e.lastUpdate=b);}
@@ -372,31 +372,31 @@
 	else if(4!==e.tag&&null!==e.child){e.child.return=e;e=e.child;continue}if(e===a){ break; }for(;null===e.sibling;){if(null===e.return||e.return===a){ return; }e=e.return;}e.sibling.return=e.return;e=e.sibling;}}
 	function wh(a){for(var b=a,c=!1,d=void 0,e=void 0;;){if(!c){c=b.return;a:for(;;){null===c?x$1("160"):void 0;switch(c.tag){case 5:d=c.stateNode;e=!1;break a;case 3:d=c.stateNode.containerInfo;e=!0;break a;case 4:d=c.stateNode.containerInfo;e=!0;break a}c=c.return;}c=!0;}if(5===b.tag||6===b.tag){a:for(var f=b,g=f;;){ if(vh(g),null!==g.child&&4!==g.tag){ g.child.return=g,g=g.child; }else{if(g===f){ break; }for(;null===g.sibling;){if(null===g.return||g.return===f){ break a; }g=g.return;}g.sibling.return=g.return;g=g.sibling;} }e?
 	(f=d,g=b.stateNode,8===f.nodeType?f.parentNode.removeChild(g):f.removeChild(g)):d.removeChild(b.stateNode);}else if(4===b.tag){if(null!==b.child){d=b.stateNode.containerInfo;e=!0;b.child.return=b;b=b.child;continue}}else if(vh(b),null!==b.child){b.child.return=b;b=b.child;continue}if(b===a){ break; }for(;null===b.sibling;){if(null===b.return||b.return===a){ return; }b=b.return;4===b.tag&&(c=!1);}b.sibling.return=b.return;b=b.sibling;}}
-	function zh(a,b){switch(b.tag){case 0:case 11:case 14:case 15:th(Pf,Qf,b);break;case 1:break;case 5:var c=b.stateNode;if(null!=c){var d=b.memoizedProps;a=null!==a?a.memoizedProps:d;var e=b.type,f=b.updateQueue;b.updateQueue=null;null!==f&&Ce(c,f,e,a,d,b);}break;case 6:null===b.stateNode?x$1("162"):void 0;b.stateNode.nodeValue=b.memoizedProps;break;case 3:break;case 12:break;case 13:c=b.memoizedState;d=void 0;a=b;null===c?d=!1:(d=!0,a=b.child,0===c.timedOutAt&&(c.timedOutAt=lf()));null!==a&&uh(a,d);c=
+	function zh(a,b){switch(b.tag){case 0:case 11:case 14:case 15:th(Pf,Qf,b);break;case 1:break;case 5:var c=b.stateNode;if(null!=c){var d=b.memoizedProps;a=null!==a?a.memoizedProps:d;var e=b.type,f=b.updateQueue;b.updateQueue=null;null!==f&&Ce(c,f,e,a,d);}break;case 6:null===b.stateNode?x$1("162"):void 0;b.stateNode.nodeValue=b.memoizedProps;break;case 3:break;case 12:break;case 13:c=b.memoizedState;d=void 0;a=b;null===c?d=!1:(d=!0,a=b.child,0===c.timedOutAt&&(c.timedOutAt=lf()));null!==a&&uh(a,d);c=
 	b.updateQueue;if(null!==c){b.updateQueue=null;var g=b.stateNode;null===g&&(g=b.stateNode=new ph);c.forEach(function(a){var c=Ah.bind(null,b,a);g.has(a)||(g.add(a),a.then(c,c));});}break;case 17:break;default:x$1("163");}}var Bh="function"===typeof WeakMap?WeakMap:Map;function Ch(a,b,c){c=nf(c);c.tag=ah;c.payload={element:null};var d=b.value;c.callback=function(){Dh(d);qh(a,b);};return c}
 	function Eh(a,b,c){c=nf(c);c.tag=ah;var d=a.type.getDerivedStateFromError;if("function"===typeof d){var e=b.value;c.payload=function(){return d(e)};}var f=a.stateNode;null!==f&&"function"===typeof f.componentDidCatch&&(c.callback=function(){"function"!==typeof d&&(null===Fh?Fh=new Set([this]):Fh.add(this));var c=b.value,e=b.stack;qh(a,b);this.componentDidCatch(c,{componentStack:null!==e?e:""});});return c}
-	function Gh(a){switch(a.tag){case 1:J$1(a.type)&&Ke(a);var b=a.effectTag;return b&2048?(a.effectTag=b&-2049|64,a):null;case 3:return Kf(a),Le(a),b=a.effectTag,0!==(b&64)?x$1("285"):void 0,a.effectTag=b&-2049|64,a;case 5:return Mf(a),null;case 13:return b=a.effectTag,b&2048?(a.effectTag=b&-2049|64,a):null;case 18:return null;case 4:return Kf(a),null;case 10:return Zg(a),null;default:return null}}
-	var Hh=Tb.ReactCurrentDispatcher,Ih=Tb.ReactCurrentOwner,Jh=1073741822,Kh=!1,T$1=null,Lh=null,U$1=0,Mh=-1,Nh=!1,V$1=null,Oh=!1,Ph=null,Qh=null,Rh=null,Fh=null;function Sh(){if(null!==T$1){ for(var a=T$1.return;null!==a;){var b=a;switch(b.tag){case 1:var c=b.type.childContextTypes;null!==c&&void 0!==c&&Ke(b);break;case 3:Kf(b);Le(b);break;case 5:Mf(b);break;case 4:Kf(b);break;case 10:Zg(b);}a=a.return;} }Lh=null;U$1=0;Mh=-1;Nh=!1;T$1=null;}
+	function Gh(a){switch(a.tag){case 1:J$1(a.type)&&Ke();var b=a.effectTag;return b&2048?(a.effectTag=b&-2049|64,a):null;case 3:return Kf(),Le(),b=a.effectTag,0!==(b&64)?x$1("285"):void 0,a.effectTag=b&-2049|64,a;case 5:return Mf(a),null;case 13:return b=a.effectTag,b&2048?(a.effectTag=b&-2049|64,a):null;case 18:return null;case 4:return Kf(),null;case 10:return Zg(a),null;default:return null}}
+	var Hh=Tb.ReactCurrentDispatcher,Ih=Tb.ReactCurrentOwner,Jh=1073741822,Kh=!1,T$1=null,Lh=null,U$1=0,Mh=-1,Nh=!1,V$1=null,Oh=!1,Ph=null,Qh=null,Rh=null,Fh=null;function Sh(){if(null!==T$1){ for(var a=T$1.return;null!==a;){var b=a;switch(b.tag){case 1:var c=b.type.childContextTypes;null!==c&&void 0!==c&&Ke();break;case 3:Kf();Le();break;case 5:Mf(b);break;case 4:Kf();break;case 10:Zg(b);}a=a.return;} }Lh=null;U$1=0;Mh=-1;Nh=!1;T$1=null;}
 	function Th(){for(;null!==V$1;){var a=V$1.effectTag;a&16&&ke(V$1.stateNode,"");if(a&128){var b=V$1.alternate;null!==b&&(b=b.ref,null!==b&&("function"===typeof b?b(null):b.current=null));}switch(a&14){case 2:yh(V$1);V$1.effectTag&=-3;break;case 6:yh(V$1);V$1.effectTag&=-3;zh(V$1.alternate,V$1);break;case 4:zh(V$1.alternate,V$1);break;case 8:a=V$1,wh(a),a.return=null,a.child=null,a.memoizedState=null,a.updateQueue=null,a=a.alternate,null!==a&&(a.return=null,a.child=null,a.memoizedState=null,a.updateQueue=null);}V$1=V$1.nextEffect;}}
 	function Uh(){for(;null!==V$1;){if(V$1.effectTag&256){ a:{var a=V$1.alternate,b=V$1;switch(b.tag){case 0:case 11:case 15:th(Of,Nf,b);break a;case 1:if(b.effectTag&256&&null!==a){var c=a.memoizedProps,d=a.memoizedState;a=b.stateNode;b=a.getSnapshotBeforeUpdate(b.elementType===b.type?c:L$2(b.type,c),d);a.__reactInternalSnapshotBeforeUpdate=b;}break a;case 3:case 5:case 6:case 4:case 17:break a;default:x$1("163");}} }V$1=V$1.nextEffect;}}
-	function Vh(a,b){for(;null!==V$1;){var c=V$1.effectTag;if(c&36){var d=V$1.alternate,e=V$1,f=b;switch(e.tag){case 0:case 11:case 15:th(Rf,Sf,e);break;case 1:var g=e.stateNode;if(e.effectTag&4){ if(null===d){ g.componentDidMount(); }else{var h=e.elementType===e.type?d.memoizedProps:L$2(e.type,d.memoizedProps);g.componentDidUpdate(h,d.memoizedState,g.__reactInternalSnapshotBeforeUpdate);} }d=e.updateQueue;null!==d&&hh(e,d,g,f);break;case 3:d=e.updateQueue;if(null!==d){g=null;if(null!==e.child){ switch(e.child.tag){case 5:g=
-	e.child.stateNode;break;case 1:g=e.child.stateNode;} }hh(e,d,g,f);}break;case 5:f=e.stateNode;null===d&&e.effectTag&4&&we(e.type,e.memoizedProps)&&f.focus();break;case 6:break;case 4:break;case 12:break;case 13:break;case 17:break;default:x$1("163");}}c&128&&(e=V$1.ref,null!==e&&(f=V$1.stateNode,"function"===typeof e?e(f):e.current=f));c&512&&(Ph=a);V$1=V$1.nextEffect;}}
+	function Vh(a,b){for(;null!==V$1;){var c=V$1.effectTag;if(c&36){var d=V$1.alternate,e=V$1,f=b;switch(e.tag){case 0:case 11:case 15:th(Rf,Sf,e);break;case 1:var g=e.stateNode;if(e.effectTag&4){ if(null===d){ g.componentDidMount(); }else{var h=e.elementType===e.type?d.memoizedProps:L$2(e.type,d.memoizedProps);g.componentDidUpdate(h,d.memoizedState,g.__reactInternalSnapshotBeforeUpdate);} }d=e.updateQueue;null!==d&&hh(e,d,g);break;case 3:d=e.updateQueue;if(null!==d){g=null;if(null!==e.child){ switch(e.child.tag){case 5:g=
+	e.child.stateNode;break;case 1:g=e.child.stateNode;} }hh(e,d,g);}break;case 5:f=e.stateNode;null===d&&e.effectTag&4&&we(e.type,e.memoizedProps)&&f.focus();break;case 6:break;case 4:break;case 12:break;case 13:break;case 17:break;default:x$1("163");}}c&128&&(e=V$1.ref,null!==e&&(f=V$1.stateNode,"function"===typeof e?e(f):e.current=f));c&512&&(Ph=a);V$1=V$1.nextEffect;}}
 	function Wh(a,b){Rh=Qh=Ph=null;var c=W$1;W$1=!0;do{if(b.effectTag&512){var d=!1,e=void 0;try{var f=b;th(Uf,Nf,f);th(Nf,Tf,f);}catch(g){d=!0,e=g;}d&&sh(b,e);}b=b.nextEffect;}while(null!==b);W$1=c;c=a.expirationTime;0!==c&&Xh(a,c);X$1||W$1||Yh(1073741823,!1);}function of(){null!==Qh&&Be(Qh);null!==Rh&&Rh();}
 	function Zh(a,b){Oh=Kh=!0;a.current===b?x$1("177"):void 0;var c=a.pendingCommitExpirationTime;0===c?x$1("261"):void 0;a.pendingCommitExpirationTime=0;var d=b.expirationTime,e=b.childExpirationTime;ef(a,e>d?e:d);Ih.current=null;d=void 0;1<b.effectTag?null!==b.lastEffect?(b.lastEffect.nextEffect=b,d=b.firstEffect):d=b:d=b.firstEffect;ue=Bd;ve=Pd();Bd=!1;for(V$1=d;null!==V$1;){e=!1;var f=void 0;try{Uh();}catch(h){e=!0,f=h;}e&&(null===V$1?x$1("178"):void 0,sh(V$1,f),null!==V$1&&(V$1=V$1.nextEffect));}for(V$1=d;null!==V$1;){e=!1;
 	f=void 0;try{Th();}catch(h){e=!0,f=h;}e&&(null===V$1?x$1("178"):void 0,sh(V$1,f),null!==V$1&&(V$1=V$1.nextEffect));}Qd(ve);ve=null;Bd=!!ue;ue=null;a.current=b;for(V$1=d;null!==V$1;){e=!1;f=void 0;try{Vh(a,c);}catch(h){e=!0,f=h;}e&&(null===V$1?x$1("178"):void 0,sh(V$1,f),null!==V$1&&(V$1=V$1.nextEffect));}if(null!==d&&null!==Ph){var g=Wh.bind(null,a,d);Qh=scheduler.unstable_runWithPriority(scheduler.unstable_NormalPriority,function(){return Ae(g)});Rh=g;}Kh=Oh=!1;"function"===typeof Qe&&Qe(b.stateNode);c=b.expirationTime;b=b.childExpirationTime;b=
 	b>c?b:c;0===b&&(Fh=null);$h(a,b);}
-	function ai(a){for(;;){var b=a.alternate,c=a.return,d=a.sibling;if(0===(a.effectTag&1024)){T$1=a;a:{var e=b;b=a;var f=U$1;var g=b.pendingProps;switch(b.tag){case 2:break;case 16:break;case 15:case 0:break;case 1:J$1(b.type)&&Ke(b);break;case 3:Kf(b);Le(b);g=b.stateNode;g.pendingContext&&(g.context=g.pendingContext,g.pendingContext=null);if(null===e||null===e.child){ Eg(b),b.effectTag&=-3; }mh(b);break;case 5:Mf(b);var h=If(Hf.current);f=b.type;if(null!==e&&null!=b.stateNode){ nh(e,b,f,g,h),e.ref!==b.ref&&(b.effectTag|=
+	function ai(a){for(;;){var b=a.alternate,c=a.return,d=a.sibling;if(0===(a.effectTag&1024)){T$1=a;a:{var e=b;b=a;var f=U$1;var g=b.pendingProps;switch(b.tag){case 2:break;case 16:break;case 15:case 0:break;case 1:J$1(b.type)&&Ke();break;case 3:Kf();Le();g=b.stateNode;g.pendingContext&&(g.context=g.pendingContext,g.pendingContext=null);if(null===e||null===e.child){ Eg(b),b.effectTag&=-3; }mh(b);break;case 5:Mf(b);var h=If(Hf.current);f=b.type;if(null!==e&&null!=b.stateNode){ nh(e,b,f,g,h),e.ref!==b.ref&&(b.effectTag|=
 	128); }else if(g){var l=If(N$1.current);if(Eg(b)){g=b;e=g.stateNode;var k=g.type,m=g.memoizedProps,p=h;e[Fa]=g;e[Ga]=m;f=void 0;h=k;switch(h){case "iframe":case "object":E$1("load",e);break;case "video":case "audio":for(k=0;k<ab.length;k++){ E$1(ab[k],e); }break;case "source":E$1("error",e);break;case "img":case "image":case "link":E$1("error",e);E$1("load",e);break;case "form":E$1("reset",e);E$1("submit",e);break;case "details":E$1("toggle",e);break;case "input":wc(e,m);E$1("invalid",e);se(p,"onChange");break;case "select":e._wrapperState=
-	{wasMultiple:!!m.multiple};E$1("invalid",e);se(p,"onChange");break;case "textarea":ce(e,m),E$1("invalid",e),se(p,"onChange");}qe(h,m);k=null;for(f in m){ m.hasOwnProperty(f)&&(l=m[f],"children"===f?"string"===typeof l?e.textContent!==l&&(k=["children",l]):"number"===typeof l&&e.textContent!==""+l&&(k=["children",""+l]):ra.hasOwnProperty(f)&&null!=l&&se(p,f)); }switch(h){case "input":Rb(e);Ac(e,m,!0);break;case "textarea":Rb(e);ee(e,m);break;case "select":case "option":break;default:"function"===typeof m.onClick&&
+	{wasMultiple:!!m.multiple};E$1("invalid",e);se(p,"onChange");break;case "textarea":ce(e,m),E$1("invalid",e),se(p,"onChange");}qe(h,m);k=null;for(f in m){ m.hasOwnProperty(f)&&(l=m[f],"children"===f?"string"===typeof l?e.textContent!==l&&(k=["children",l]):"number"===typeof l&&e.textContent!==""+l&&(k=["children",""+l]):ra.hasOwnProperty(f)&&null!=l&&se(p,f)); }switch(h){case "input":Rb(e);Ac(e,m,!0);break;case "textarea":Rb(e);ee(e);break;case "select":case "option":break;default:"function"===typeof m.onClick&&
 	(e.onclick=te);}f=k;g.updateQueue=f;g=null!==f?!0:!1;g&&kh(b);}else{m=b;p=f;e=g;k=9===h.nodeType?h:h.ownerDocument;l===fe.html&&(l=ge(p));l===fe.html?"script"===p?(e=k.createElement("div"),e.innerHTML="<script>\x3c/script>",k=e.removeChild(e.firstChild)):"string"===typeof e.is?k=k.createElement(p,{is:e.is}):(k=k.createElement(p),"select"===p&&(p=k,e.multiple?p.multiple=!0:e.size&&(p.size=e.size))):k=k.createElementNS(l,p);e=k;e[Fa]=m;e[Ga]=g;lh(e,b,!1,!1);p=e;k=f;m=g;var t=h,A=re(k,m);switch(k){case "iframe":case "object":E$1("load",
 	p);h=m;break;case "video":case "audio":for(h=0;h<ab.length;h++){ E$1(ab[h],p); }h=m;break;case "source":E$1("error",p);h=m;break;case "img":case "image":case "link":E$1("error",p);E$1("load",p);h=m;break;case "form":E$1("reset",p);E$1("submit",p);h=m;break;case "details":E$1("toggle",p);h=m;break;case "input":wc(p,m);h=vc(p,m);E$1("invalid",p);se(t,"onChange");break;case "option":h=$d(p,m);break;case "select":p._wrapperState={wasMultiple:!!m.multiple};h=objectAssign({},m,{value:void 0});E$1("invalid",p);se(t,"onChange");break;case "textarea":ce(p,
 	m);h=be(p,m);E$1("invalid",p);se(t,"onChange");break;default:h=m;}qe(k,h);l=void 0;var v=k,R=p,u=h;for(l in u){ if(u.hasOwnProperty(l)){var q=u[l];"style"===l?oe(R,q):"dangerouslySetInnerHTML"===l?(q=q?q.__html:void 0,null!=q&&je(R,q)):"children"===l?"string"===typeof q?("textarea"!==v||""!==q)&&ke(R,q):"number"===typeof q&&ke(R,""+q):"suppressContentEditableWarning"!==l&&"suppressHydrationWarning"!==l&&"autoFocus"!==l&&(ra.hasOwnProperty(l)?null!=q&&se(t,l):null!=q&&tc(R,l,q,A));} }switch(k){case "input":Rb(p);
-	Ac(p,m,!1);break;case "textarea":Rb(p);ee(p,m);break;case "option":null!=m.value&&p.setAttribute("value",""+uc(m.value));break;case "select":h=p;h.multiple=!!m.multiple;p=m.value;null!=p?ae(h,!!m.multiple,p,!1):null!=m.defaultValue&&ae(h,!!m.multiple,m.defaultValue,!0);break;default:"function"===typeof h.onClick&&(p.onclick=te);}(g=we(f,g))&&kh(b);b.stateNode=e;}null!==b.ref&&(b.effectTag|=128);}else { null===b.stateNode?x$1("166"):void 0; }break;case 6:e&&null!=b.stateNode?oh(e,b,e.memoizedProps,g):("string"!==
+	Ac(p,m,!1);break;case "textarea":Rb(p);ee(p);break;case "option":null!=m.value&&p.setAttribute("value",""+uc(m.value));break;case "select":h=p;h.multiple=!!m.multiple;p=m.value;null!=p?ae(h,!!m.multiple,p,!1):null!=m.defaultValue&&ae(h,!!m.multiple,m.defaultValue,!0);break;default:"function"===typeof h.onClick&&(p.onclick=te);}(g=we(f,g))&&kh(b);b.stateNode=e;}null!==b.ref&&(b.effectTag|=128);}else { null===b.stateNode?x$1("166"):void 0; }break;case 6:e&&null!=b.stateNode?oh(e,b,e.memoizedProps,g):("string"!==
 	typeof g&&(null===b.stateNode?x$1("166"):void 0),e=If(Hf.current),If(N$1.current),Eg(b)?(g=b,f=g.stateNode,e=g.memoizedProps,f[Fa]=g,(g=f.nodeValue!==e)&&kh(b)):(f=b,g=(9===e.nodeType?e:e.ownerDocument).createTextNode(g),g[Fa]=b,f.stateNode=g));break;case 11:break;case 13:g=b.memoizedState;if(0!==(b.effectTag&64)){b.expirationTime=f;T$1=b;break a}g=null!==g;f=null!==e&&null!==e.memoizedState;null!==e&&!g&&f&&(e=e.child.sibling,null!==e&&(h=b.firstEffect,null!==h?(b.firstEffect=e,e.nextEffect=h):(b.firstEffect=
-	b.lastEffect=e,e.nextEffect=null),e.effectTag=8));if(g||f){ b.effectTag|=4; }break;case 7:break;case 8:break;case 12:break;case 4:Kf(b);mh(b);break;case 10:Zg(b);break;case 9:break;case 14:break;case 17:J$1(b.type)&&Ke(b);break;case 18:break;default:x$1("156");}T$1=null;}b=a;if(1===U$1||1!==b.childExpirationTime){g=0;for(f=b.child;null!==f;){ e=f.expirationTime,h=f.childExpirationTime,e>g&&(g=e),h>g&&(g=h),f=f.sibling; }b.childExpirationTime=g;}if(null!==T$1){ return T$1; }null!==c&&0===(c.effectTag&1024)&&(null===c.firstEffect&&
-	(c.firstEffect=a.firstEffect),null!==a.lastEffect&&(null!==c.lastEffect&&(c.lastEffect.nextEffect=a.firstEffect),c.lastEffect=a.lastEffect),1<a.effectTag&&(null!==c.lastEffect?c.lastEffect.nextEffect=a:c.firstEffect=a,c.lastEffect=a));}else{a=Gh(a,U$1);if(null!==a){ return a.effectTag&=1023,a; }null!==c&&(c.firstEffect=c.lastEffect=null,c.effectTag|=1024);}if(null!==d){ return d; }if(null!==c){ a=c; }else { break }}return null}
+	b.lastEffect=e,e.nextEffect=null),e.effectTag=8));if(g||f){ b.effectTag|=4; }break;case 7:break;case 8:break;case 12:break;case 4:Kf();mh(b);break;case 10:Zg(b);break;case 9:break;case 14:break;case 17:J$1(b.type)&&Ke();break;case 18:break;default:x$1("156");}T$1=null;}b=a;if(1===U$1||1!==b.childExpirationTime){g=0;for(f=b.child;null!==f;){ e=f.expirationTime,h=f.childExpirationTime,e>g&&(g=e),h>g&&(g=h),f=f.sibling; }b.childExpirationTime=g;}if(null!==T$1){ return T$1; }null!==c&&0===(c.effectTag&1024)&&(null===c.firstEffect&&
+	(c.firstEffect=a.firstEffect),null!==a.lastEffect&&(null!==c.lastEffect&&(c.lastEffect.nextEffect=a.firstEffect),c.lastEffect=a.lastEffect),1<a.effectTag&&(null!==c.lastEffect?c.lastEffect.nextEffect=a:c.firstEffect=a,c.lastEffect=a));}else{a=Gh(a);if(null!==a){ return a.effectTag&=1023,a; }null!==c&&(c.firstEffect=c.lastEffect=null,c.effectTag|=1024);}if(null!==d){ return d; }if(null!==c){ a=c; }else { break }}return null}
 	function bi(a){var b=Tg(a.alternate,a,U$1);a.memoizedProps=a.pendingProps;null===b&&(b=ai(a));Ih.current=null;return b}
-	function ci(a,b){Kh?x$1("243"):void 0;of();Kh=!0;var c=Hh.current;Hh.current=kg;var d=a.nextExpirationTimeToWorkOn;if(d!==U$1||a!==Lh||null===T$1){ Sh(),Lh=a,U$1=d,T$1=Xe(Lh.current,null,U$1),a.pendingCommitExpirationTime=0; }var e=!1;do{try{if(b){ for(;null!==T$1&&!di();){ T$1=bi(T$1); } }else { for(;null!==T$1;){ T$1=bi(T$1); } }}catch(u){if(Yg=Xg=Wg=null,lg(),null===T$1){ e=!0,Dh(u); }else{null===T$1?x$1("271"):void 0;var f=T$1,g=f.return;if(null===g){ e=!0,Dh(u); }else{a:{var h=a,l=g,k=f,m=u;g=U$1;k.effectTag|=1024;k.firstEffect=k.lastEffect=null;if(null!==
+	function ci(a,b){Kh?x$1("243"):void 0;of();Kh=!0;var c=Hh.current;Hh.current=kg;var d=a.nextExpirationTimeToWorkOn;if(d!==U$1||a!==Lh||null===T$1){ Sh(),Lh=a,U$1=d,T$1=Xe(Lh.current,null),a.pendingCommitExpirationTime=0; }var e=!1;do{try{if(b){ for(;null!==T$1&&!di();){ T$1=bi(T$1); } }else { for(;null!==T$1;){ T$1=bi(T$1); } }}catch(u){if(Yg=Xg=Wg=null,lg(),null===T$1){ e=!0,Dh(u); }else{null===T$1?x$1("271"):void 0;var f=T$1,g=f.return;if(null===g){ e=!0,Dh(u); }else{a:{var h=a,l=g,k=f,m=u;g=U$1;k.effectTag|=1024;k.firstEffect=k.lastEffect=null;if(null!==
 	m&&"object"===typeof m&&"function"===typeof m.then){var p=m;m=l;var t=-1,A=-1;do{if(13===m.tag){var v=m.alternate;if(null!==v&&(v=v.memoizedState,null!==v)){A=10*(1073741822-v.timedOutAt);break}v=m.pendingProps.maxDuration;if("number"===typeof v){ if(0>=v){ t=0; }else if(-1===t||v<t){ t=v; } }}m=m.return;}while(null!==m);m=l;do{if(v=13===m.tag){ v=void 0===m.memoizedProps.fallback?!1:null===m.memoizedState; }if(v){l=m.updateQueue;null===l?(l=new Set,l.add(p),m.updateQueue=l):l.add(p);if(0===(m.mode&1)){m.effectTag|=
 	64;k.effectTag&=-1957;1===k.tag&&(null===k.alternate?k.tag=17:(g=nf(1073741823),g.tag=sf,pf(k,g)));k.expirationTime=1073741823;break a}k=h;l=g;var R=k.pingCache;null===R?(R=k.pingCache=new Bh,v=new Set,R.set(p,v)):(v=R.get(p),void 0===v&&(v=new Set,R.set(p,v)));v.has(l)||(v.add(l),k=ei.bind(null,k,p,l),p.then(k,k));-1===t?h=1073741823:(-1===A&&(A=10*(1073741822-gf(h,g))-5E3),h=A+t);0<=h&&Mh<h&&(Mh=h);m.effectTag|=2048;m.expirationTime=g;break a}m=m.return;}while(null!==m);m=Error((ic(k.type)||"A React component")+
 	" suspended while rendering, but no fallback UI was specified.\n\nAdd a <Suspense fallback=...> component higher in the tree to provide a loading indicator or placeholder to display."+jc(k));}Nh=!0;m=jh(m,k);h=l;do{switch(h.tag){case 3:h.effectTag|=2048;h.expirationTime=g;g=Ch(h,m,g);eh(h,g);break a;case 1:if(t=m,A=h.type,k=h.stateNode,0===(h.effectTag&64)&&("function"===typeof A.getDerivedStateFromError||null!==k&&"function"===typeof k.componentDidCatch&&(null===Fh||!Fh.has(k)))){h.effectTag|=2048;
@@ -463,7 +463,7 @@
 	});
 
 	/**
-	 * Template7 1.4.1
+	 * Template7 1.4.2
 	 * Mobile-first HTML template engine
 	 * 
 	 * http://www.idangero.us/template7/
@@ -474,7 +474,7 @@
 	 * 
 	 * Licensed under MIT
 	 * 
-	 * Released on: February 5, 2019
+	 * Released on: June 14, 2019
 	 */
 
 	var t7ctx;
@@ -706,7 +706,11 @@
 	          else { variable = undefined; }
 	        });
 	      }
-	      if (typeof variable === 'string') {
+	      if (
+	        (typeof variable === 'string')
+	        || Array.isArray(variable)
+	        || (variable.constructor && variable.constructor === Object)
+	      ) {
 	        variable = JSON.stringify(variable);
 	      }
 	      if (variable === undefined) { variable = 'undefined'; }
@@ -714,6 +718,7 @@
 	      arr.push(variable);
 	      return arr;
 	    }, []).join('');
+
 	  },
 	  parseJsParents: function parseJsParents(expression, parents) {
 	    return expression.split(/([+ \-*^()&=|<>!%:?])/g).reduce(function (arr, part) {
@@ -825,6 +830,7 @@
 	    return p.compiled(ctx, options.data, options.root);
 	  },
 	  escape: function escape(context) {
+	    if (typeof context === 'undefined' || context === null) { return ''; }
 	    if (typeof context !== 'string') {
 	      throw new Error('Template7: Passed context to "escape" helper should be a string');
 	    }
@@ -3321,6 +3327,65 @@
 	  },
 	};
 
+	var Support = (function Support() {
+	  var testDiv = doc.createElement('div');
+
+	  return {
+	    touch: (function checkTouch() {
+	      return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
+	    }()),
+
+	    pointerEvents: !!(win.navigator.pointerEnabled || win.PointerEvent || ('maxTouchPoints' in win.navigator && win.navigator.maxTouchPoints > 0)),
+	    prefixedPointerEvents: !!win.navigator.msPointerEnabled,
+
+	    transition: (function checkTransition() {
+	      var style = testDiv.style;
+	      return ('transition' in style || 'webkitTransition' in style || 'MozTransition' in style);
+	    }()),
+	    transforms3d: (win.Modernizr && win.Modernizr.csstransforms3d === true) || (function checkTransforms3d() {
+	      var style = testDiv.style;
+	      return ('webkitPerspective' in style || 'MozPerspective' in style || 'OPerspective' in style || 'MsPerspective' in style || 'perspective' in style);
+	    }()),
+
+	    flexbox: (function checkFlexbox() {
+	      var div = doc.createElement('div').style;
+	      var styles = ('alignItems webkitAlignItems webkitBoxAlign msFlexAlign mozBoxAlign webkitFlexDirection msFlexDirection mozBoxDirection mozBoxOrient webkitBoxDirection webkitBoxOrient').split(' ');
+	      for (var i = 0; i < styles.length; i += 1) {
+	        if (styles[i] in div) { return true; }
+	      }
+	      return false;
+	    }()),
+
+	    observer: (function checkObserver() {
+	      return ('MutationObserver' in win || 'WebkitMutationObserver' in win);
+	    }()),
+
+	    passiveListener: (function checkPassiveListener() {
+	      var supportsPassive = false;
+	      try {
+	        var opts = Object.defineProperty({}, 'passive', {
+	          // eslint-disable-next-line
+	          get: function get() {
+	            supportsPassive = true;
+	          },
+	        });
+	        win.addEventListener('testPassiveListener', null, opts);
+	      } catch (e) {
+	        // No support
+	      }
+	      return supportsPassive;
+	    }()),
+
+	    gestures: (function checkGestures() {
+	      return 'ongesturestart' in win;
+	    }()),
+
+	    intersectionObserver: (function checkObserver() {
+	      return ('IntersectionObserver' in win);
+	    }()),
+	  };
+	}());
+
 	var Device = (function Device() {
 	  var platform = win.navigator.platform;
 	  var ua = win.navigator.userAgent;
@@ -3360,9 +3425,24 @@
 	  var ie = ua.indexOf('MSIE ') >= 0 || ua.indexOf('Trident/') >= 0;
 	  var edge = ua.indexOf('Edge/') >= 0;
 	  var firefox = ua.indexOf('Gecko/') >= 0 && ua.indexOf('Firefox/') >= 0;
-	  var macos = platform === 'MacIntel';
 	  var windows = platform === 'Win32';
 	  var electron = ua.toLowerCase().indexOf('electron') >= 0;
+	  var macos = platform === 'MacIntel';
+
+	  // iPadOs 13 fix
+	  if (!ipad
+	    && macos
+	    && Support.touch
+	    && (
+	      (screenWidth === 1024 && screenHeight === 1366) // Pro 12.9
+	      || (screenWidth === 834 && screenHeight === 1194) // Pro 11
+	      || (screenWidth === 834 && screenHeight === 1112) // Pro 10.5
+	      || (screenWidth === 768 && screenHeight === 1024) // other
+	    )
+	  ) {
+	    ipad = ua.match(/(Version)\/([\d.]+)/);
+	    macos = false;
+	  }
 
 	  device.ie = ie;
 	  device.edge = edge;
@@ -3418,6 +3498,12 @@
 	    device.electron = electron;
 	    device.macos = macos;
 	    device.windows = windows;
+	    if (device.macos) {
+	      device.os = 'macos';
+	    }
+	    if (device.windows) {
+	      device.os = 'windows';
+	    }
 	  }
 
 	  // Meta statusbar
@@ -4616,65 +4702,6 @@
 	  Utils.extend(globals, options);
 	};
 
-	var Support = (function Support() {
-	  var testDiv = doc.createElement('div');
-
-	  return {
-	    touch: (function checkTouch() {
-	      return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
-	    }()),
-
-	    pointerEvents: !!(win.navigator.pointerEnabled || win.PointerEvent || ('maxTouchPoints' in win.navigator && win.navigator.maxTouchPoints > 0)),
-	    prefixedPointerEvents: !!win.navigator.msPointerEnabled,
-
-	    transition: (function checkTransition() {
-	      var style = testDiv.style;
-	      return ('transition' in style || 'webkitTransition' in style || 'MozTransition' in style);
-	    }()),
-	    transforms3d: (win.Modernizr && win.Modernizr.csstransforms3d === true) || (function checkTransforms3d() {
-	      var style = testDiv.style;
-	      return ('webkitPerspective' in style || 'MozPerspective' in style || 'OPerspective' in style || 'MsPerspective' in style || 'perspective' in style);
-	    }()),
-
-	    flexbox: (function checkFlexbox() {
-	      var div = doc.createElement('div').style;
-	      var styles = ('alignItems webkitAlignItems webkitBoxAlign msFlexAlign mozBoxAlign webkitFlexDirection msFlexDirection mozBoxDirection mozBoxOrient webkitBoxDirection webkitBoxOrient').split(' ');
-	      for (var i = 0; i < styles.length; i += 1) {
-	        if (styles[i] in div) { return true; }
-	      }
-	      return false;
-	    }()),
-
-	    observer: (function checkObserver() {
-	      return ('MutationObserver' in win || 'WebkitMutationObserver' in win);
-	    }()),
-
-	    passiveListener: (function checkPassiveListener() {
-	      var supportsPassive = false;
-	      try {
-	        var opts = Object.defineProperty({}, 'passive', {
-	          // eslint-disable-next-line
-	          get: function get() {
-	            supportsPassive = true;
-	          },
-	        });
-	        win.addEventListener('testPassiveListener', null, opts);
-	      } catch (e) {
-	        // No support
-	      }
-	      return supportsPassive;
-	    }()),
-
-	    gestures: (function checkGestures() {
-	      return 'ongesturestart' in win;
-	    }()),
-
-	    intersectionObserver: (function checkObserver() {
-	      return ('IntersectionObserver' in win);
-	    }()),
-	  };
-	}());
-
 	var DeviceModule = {
 	  name: 'device',
 	  proto: {
@@ -4699,7 +4726,7 @@
 	        classNames.push('device-retina');
 	      }
 	      // OS classes
-	      if (Device.os) {
+	      if (Device.os && !Device.desktop) {
 	        classNames.push(
 	          ("device-" + (Device.os)),
 	          ("device-" + (Device.os) + "-" + (Device.osVersion.split('.')[0])),
@@ -4716,8 +4743,9 @@
 	        }
 	      } else if (Device.desktop) {
 	        classNames.push('device-desktop');
-	        if (Device.macos) { classNames.push('device-macos'); }
-	        else if (Device.windows) { classNames.push('device-windows'); }
+	        if (Device.os) {
+	          classNames.push(("device-" + (Device.os)));
+	        }
 	      }
 	      if (Device.cordova || Device.phonegap) {
 	        classNames.push('device-cordova');
@@ -5175,7 +5203,7 @@
 	      activeTimeout = setTimeout(addActive, 0);
 	    }
 	    if (useRipple) {
-	      rippleTouchStart(targetElement, touchStartX, touchStartY);
+	      rippleTouchStart(targetElement);
 	    }
 	    return true;
 	  }
@@ -5397,7 +5425,7 @@
 	      }
 	    }
 	    if (useRipple) {
-	      rippleTouchStart(targetElement, touchStartX, touchStartY);
+	      rippleTouchStart(targetElement);
 	    }
 	    return true;
 	  }
@@ -6456,7 +6484,7 @@
 	          $previousNavbarInnerEl = $previousNavbarInnerEl.eq($previousNavbarInnerEl.length - 1);
 	        }
 
-	        animatableNavEls = animatableNavElements($previousNavbarInnerEl, $currentNavbarInnerEl);
+	        animatableNavEls = animatableNavElements();
 	      }
 
 	      // Close/Hide Any Picker
@@ -6954,6 +6982,9 @@
 	    .removeClass('stacked')
 	    .trigger('page:unstack')
 	    .trigger('page:position', { position: newPagePosition });
+	  router.emit('pageUnstack', $newPage[0]);
+	  router.emit('pagePosition', $newPage[0], newPagePosition);
+
 	  if (isMaster || isDetail) {
 	    $newPage.trigger('page:role', { role: isMaster ? 'master' : 'detail' });
 	  }
@@ -6993,6 +7024,7 @@
 	        ) {
 	          $pagesInView.eq(i$2).addClass('page-master-stacked');
 	          $pagesInView.eq(i$2).trigger('page:masterstack');
+	          router.emit('pageMasterStack', $pagesInView[i$2]);
 	          if (separateNavbar) {
 	            $(app.navbar.getElByPage(masterPageEl)).addClass('navbar-master-stacked');
 	          }
@@ -7002,6 +7034,7 @@
 	        if (router.params.stackPages) {
 	          $pagesInView.eq(i$2).addClass('stacked');
 	          $pagesInView.eq(i$2).trigger('page:stack');
+	          router.emit('pageStack', $pagesInView[i$2]);
 	          if (separateNavbar) {
 	            $(oldNavbarInnerEl).addClass('stacked');
 	          }
@@ -7134,6 +7167,7 @@
 	    if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
 	      $oldPage.addClass('stacked');
 	      $oldPage.trigger('page:stack');
+	      router.emit('pageStack', $oldPage[0]);
 	      if (separateNavbar) {
 	        $oldNavbarInner.addClass('stacked');
 	      }
@@ -7154,6 +7188,7 @@
 	      if (router.params.stackPages && router.initialPages.indexOf($oldPageEl[0]) >= 0) {
 	        $oldPageEl.addClass('stacked');
 	        $oldPageEl.trigger('page:stack');
+	        router.emit('pageStack', $oldPageEl[0]);
 	        if (separateNavbar) {
 	          $oldNavbarInnerEl.addClass('stacked');
 	        }
@@ -7174,6 +7209,7 @@
 	    if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
 	      $oldPage.addClass('stacked');
 	      $oldPage.trigger('page:stack');
+	      router.emit('pageStack', $oldPage[0]);
 	      if (separateNavbar) {
 	        $oldNavbarInner.addClass('stacked');
 	      }
@@ -7211,6 +7247,8 @@
 	      masterPageEl.classList.add('page-previous');
 	      masterPageEl.classList.remove('page-current');
 	      $(masterPageEl).trigger('page:position', { position: 'previous' });
+	      router.emit('pagePosition', masterPageEl, 'previous');
+
 	      if (masterPageEl.f7Page && masterPageEl.f7Page.navbarEl) {
 	        masterPageEl.f7Page.navbarEl.classList.add('navbar-previous');
 	        masterPageEl.f7Page.navbarEl.classList.remove('navbar-current');
@@ -7224,15 +7262,18 @@
 	  }
 
 	  // Before animation event
-	  router.pageCallback('beforeIn', $newPage, $newNavbarInner, 'next', 'current', options);
 	  router.pageCallback('beforeOut', $oldPage, $oldNavbarInner, 'current', 'previous', options);
+	  router.pageCallback('beforeIn', $newPage, $newNavbarInner, 'next', 'current', options);
 
 	  // Animation
 	  function afterAnimation() {
 	    var pageClasses = 'page-previous page-current page-next';
 	    var navbarClasses = 'navbar-previous navbar-current navbar-next';
 	    $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
+	    router.emit('pagePosition', $newPage[0], 'current');
 	    $oldPage.removeClass(pageClasses).addClass('page-previous').trigger('page:position', { position: 'previous' });
+	    router.emit('pagePosition', $oldPage[0], 'previous');
+
 	    if (!$oldPage.hasClass('page-master')) {
 	      $oldPage.attr('aria-hidden', 'true');
 	    }
@@ -7245,8 +7286,8 @@
 	    }
 	    // After animation event
 	    router.allowPageChange = true;
-	    router.pageCallback('afterIn', $newPage, $newNavbarInner, 'next', 'current', options);
 	    router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', 'previous', options);
+	    router.pageCallback('afterIn', $newPage, $newNavbarInner, 'next', 'current', options);
 
 	    var keepOldPage = (router.params.preloadPreviousPage || router.params[((app.theme) + "SwipeBack")]) && !isMaster;
 	    if (!keepOldPage) {
@@ -7258,6 +7299,7 @@
 	      if (router.params.stackPages) {
 	        $oldPage.addClass('stacked');
 	        $oldPage.trigger('page:stack');
+	        router.emit('pageStack', $oldPage[0]);
 	        if (separateNavbar) {
 	          $oldNavbarInner.addClass('stacked');
 	        }
@@ -7281,7 +7323,9 @@
 	    var pageClasses = 'page-previous page-current page-next';
 	    var navbarClasses = 'navbar-previous navbar-current navbar-next';
 	    $oldPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
+	    router.emit('pagePosition', $oldPage[0], 'current');
 	    $newPage.removeClass(pageClasses).addClass('page-next').removeAttr('aria-hidden').trigger('page:position', { position: 'next' });
+	    router.emit('pagePosition', $newPage[0], 'next');
 	    if (dynamicNavbar) {
 	      $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
 	      $newNavbarInner.removeClass(navbarClasses).addClass('navbar-next').removeAttr('aria-hidden');
@@ -7565,20 +7609,35 @@
 	  if (router.params.masterDetailBreakpoint > 0 && route.route.masterRoute) {
 	    // load detail route
 	    var preloadMaster = true;
+	    var masterLoaded = false;
 	    if (router.currentRoute && router.currentRoute.route) {
-	      if (router.currentRoute.route.master && (router.currentRoute.route === route.route.masterRoute || router.currentRoute.route.path === route.route.masterRoute.path)) {
+	      if (
+	        router.currentRoute.route.master
+	        && (
+	          router.currentRoute.route === route.route.masterRoute
+	          || router.currentRoute.route.path === route.route.masterRoute.path
+	        )
+	      ) {
 	        preloadMaster = false;
 	      }
-	      if (router.currentRoute.route.masterRoute && ((router.currentRoute.route.masterRoute === route.route.masterRoute) || (router.currentRoute.route.masterRoute.path === route.route.masterRoute.path))) {
+	      if (
+	        router.currentRoute.route.masterRoute
+	        && (router.currentRoute.route.masterRoute === route.route.masterRoute
+	          || router.currentRoute.route.masterRoute.path === route.route.masterRoute.path
+	        )
+	      ) {
 	        preloadMaster = false;
+	        masterLoaded = true;
 	      }
 	    }
-	    if (preloadMaster) {
+	    if (preloadMaster || (masterLoaded && navigateOptions.reloadAll)) {
 	      router.navigate(route.route.masterRoute.path, {
 	        animate: false,
 	        reloadAll: navigateOptions.reloadAll,
 	        reloadCurrent: navigateOptions.reloadCurrent,
 	        reloadPrevious: navigateOptions.reloadPrevious,
+	        pushState: !navigateOptions.initial,
+	        history: !navigateOptions.initial,
 	        once: {
 	          pageAfterIn: function pageAfterIn() {
 	            router.navigate(navigateParams, Utils.extend({}, navigateOptions, {
@@ -7586,6 +7645,8 @@
 	              reloadAll: false,
 	              reloadCurrent: false,
 	              reloadPrevious: false,
+	              history: !navigateOptions.initial,
+	              pushState: !navigateOptions.initial,
 	            }));
 	          },
 	        },
@@ -8060,6 +8121,7 @@
 	  var options = Utils.extend({
 	    animate: router.params.animate,
 	    pushState: true,
+	    replaceState: false,
 	  }, backwardOptions);
 
 	  var masterDetailEnabled = router.params.masterDetailBreakpoint > 0;
@@ -8135,6 +8197,10 @@
 	    isDetail = !isMaster
 	      && masterPageEl
 	      && (router.history.indexOf(options.route.url) > router.history.indexOf(masterPageEl.f7Page.route.url));
+
+	    if (!isDetail && !isMaster && masterPageEl && masterPageEl.f7Page && options.route.route.masterRoute) {
+	      isDetail = options.route.route.masterRoute.path === masterPageEl.f7Page.route.route.path;
+	    }
 	  }
 
 
@@ -8145,6 +8211,8 @@
 	    .removeAttr('aria-hidden')
 	    .trigger('page:unstack')
 	    .trigger('page:position', { position: 'previous' });
+	  router.emit('pageUnstack', $newPage[0]);
+	  router.emit('pagePosition', $newPage[0], 'previous');
 	  if (isMaster || isDetail) {
 	    $newPage.trigger('page:role', { role: isMaster ? 'master' : 'detail' });
 	  }
@@ -8182,6 +8250,7 @@
 	            if (router.initialPages.indexOf($pageToRemove[0]) >= 0) {
 	              $pageToRemove.addClass('stacked');
 	              $pageToRemove.trigger('page:stack');
+	              router.emit('pageStack', $pageToRemove[0]);
 	              if (separateNavbar) {
 	                $navbarToRemove.addClass('stacked');
 	              }
@@ -8204,6 +8273,7 @@
 	        if (router.params.stackPages && router.initialPages.indexOf($pageToRemove[0]) >= 0) {
 	          $pageToRemove.addClass('stacked');
 	          $pageToRemove.trigger('page:stack');
+	          router.emit('pageStack', $pageToRemove[0]);
 	          $navbarToRemove.addClass('stacked');
 	        } else if ($pageToRemove.length > 0) {
 	          router.pageCallback('beforeRemove', $pageToRemove, $navbarToRemove, 'previous', undefined, options);
@@ -8267,6 +8337,7 @@
 	      $newPage
 	        .removeClass('page-master-stacked')
 	        .trigger('page:masterunstack');
+	      router.emit('pageMasterUnstack', $newPage[0]);
 	      if (separateNavbar) {
 	        $(app.navbar.getElByPage($newPage)).removeClass('navbar-master-stacked');
 	      }
@@ -8285,6 +8356,7 @@
 	        if (router.params.stackPages && router.initialPages.indexOf(pageToRemove) >= 0) {
 	          $pageToRemove.addClass('stacked');
 	          $pageToRemove.trigger('page:stack');
+	          router.emit('pageStack', $pageToRemove[0]);
 	          if (separateNavbar) {
 	            $navbarToRemove.addClass('stacked');
 	          }
@@ -8304,16 +8376,32 @@
 	  // History State
 	  if (!(Device.ie || Device.edge || (Device.firefox && !Device.ios))) {
 	    if (router.params.pushState && options.pushState) {
-	      if (backIndex) { History.go(-backIndex); }
-	      else { History.back(); }
+	      if (options.replaceState) {
+	        var pushStateRoot = router.params.pushStateRoot || '';
+	        History.replace(
+	          view.id,
+	          {
+	            url: options.route.url,
+	          },
+	          pushStateRoot + router.params.pushStateSeparator + options.route.url
+	        );
+	      } else if (backIndex) {
+	        History.go(-backIndex);
+	      } else {
+	        History.back();
+	      }
 	    }
 	  }
 
 	  // Update History
-	  if (router.history.length === 1) {
-	    router.history.unshift(router.url);
+	  if (options.replaceState) {
+	    router.history[router.history.length - 1] = options.route.url;
+	  } else {
+	    if (router.history.length === 1) {
+	      router.history.unshift(router.url);
+	    }
+	    router.history.pop();
 	  }
-	  router.history.pop();
 	  router.saveHistory();
 
 	  // Current Page & Navbar
@@ -8330,8 +8418,20 @@
 	  // History State
 	  if (Device.ie || Device.edge || (Device.firefox && !Device.ios)) {
 	    if (router.params.pushState && options.pushState) {
-	      if (backIndex) { History.go(-backIndex); }
-	      else { History.back(); }
+	      if (options.replaceState) {
+	        var pushStateRoot$1 = router.params.pushStateRoot || '';
+	        History.replace(
+	          view.id,
+	          {
+	            url: options.route.url,
+	          },
+	          pushStateRoot$1 + router.params.pushStateSeparator + options.route.url
+	        );
+	      } else if (backIndex) {
+	        History.go(-backIndex);
+	      } else {
+	        History.back();
+	      }
 	    }
 	  }
 
@@ -8350,8 +8450,8 @@
 	  router.pageCallback('init', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
 
 	  // Before animation callback
-	  router.pageCallback('beforeIn', $newPage, $newNavbarInner, 'previous', 'current', options);
 	  router.pageCallback('beforeOut', $oldPage, $oldNavbarInner, 'current', 'next', options);
+	  router.pageCallback('beforeIn', $newPage, $newNavbarInner, 'previous', 'current', options);
 
 	  // Animation
 	  function afterAnimation() {
@@ -8359,20 +8459,23 @@
 	    var pageClasses = 'page-previous page-current page-next';
 	    var navbarClasses = 'navbar-previous navbar-current navbar-next';
 	    $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
+	    router.emit('pagePosition', $newPage[0], 'current');
 	    $oldPage.removeClass(pageClasses).addClass('page-next').attr('aria-hidden', 'true').trigger('page:position', { position: 'next' });
+	    router.emit('pagePosition', $oldPage[0], 'next');
 	    if (dynamicNavbar) {
 	      $newNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
 	      $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-next').attr('aria-hidden', 'true');
 	    }
 
 	    // After animation event
-	    router.pageCallback('afterIn', $newPage, $newNavbarInner, 'previous', 'current', options);
 	    router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', 'next', options);
+	    router.pageCallback('afterIn', $newPage, $newNavbarInner, 'previous', 'current', options);
 
 	    // Remove Old Page
 	    if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
 	      $oldPage.addClass('stacked');
 	      $oldPage.trigger('page:stack');
+	      router.emit('pageStack', $oldPage[0]);
 	      if (separateNavbar) {
 	        $oldNavbarInner.addClass('stacked');
 	      }
@@ -8401,7 +8504,9 @@
 	    var pageClasses = 'page-previous page-current page-next';
 	    var navbarClasses = 'navbar-previous navbar-current navbar-next';
 	    $oldPage.removeClass(pageClasses).addClass('page-current').trigger('page:position', { position: 'current' });
+	    router.emit('pagePosition', $oldPage[0], 'current');
 	    $newPage.removeClass(pageClasses).addClass('page-previous').removeAttr('aria-hidden').trigger('page:position', { position: 'previous' });
+	    router.emit('pagePosition', $newPage[0], 'previous');
 	    if (dynamicNavbar) {
 	      $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-current');
 	      $newNavbarInner.removeClass(navbarClasses).addClass('navbar-previous').removeAttr('aria-hidden');
@@ -9354,7 +9459,11 @@
 	        keys.forEach(function (keyObj, index) {
 	          if (typeof keyObj.name === 'number') { return; }
 	          var paramValue = matched[index + 1];
-	          params[keyObj.name] = paramValue;
+	          if (typeof paramValue === 'undefined' || paramValue === null) {
+	            params[keyObj.name] = paramValue;
+	          } else {
+	            params[keyObj.name] = decodeURIComponent(paramValue);
+	          }
 	        });
 
 	        var parentPath;
@@ -10204,7 +10313,7 @@
 	    var $clickedLinkEl = $clickedEl.closest('a');
 	    var isLink = $clickedLinkEl.length > 0;
 	    var url = isLink && $clickedLinkEl.attr('href');
-	    var isTabLink = isLink && $clickedLinkEl.hasClass('tab-link') && ($clickedLinkEl.attr('data-tab') || (url && url.indexOf('#') === 0));
+	    // const isTabLink = isLink && $clickedLinkEl.hasClass('tab-link') && ($clickedLinkEl.attr('data-tab') || (url && url.indexOf('#') === 0));
 
 	    // Check if link is external
 	    if (isLink) {
@@ -10248,7 +10357,7 @@
 	    if (e.preventF7Router) { return; }
 	    if ($clickedLinkEl.hasClass('prevent-router') || $clickedLinkEl.hasClass('router-prevent')) { return; }
 
-	    var validUrl = url && url.length > 0 && url !== '#' && !isTabLink;
+	    var validUrl = url && url.length > 0 && url[0] !== '#';
 	    if (validUrl || $clickedLinkEl.hasClass('back')) {
 	      var view;
 	      if (clickedLinkData.view) {
@@ -11460,7 +11569,7 @@
 	  var on = vnode.data.on;
 	  // call event handler(s) if exists
 	  if (on && on[name]) {
-	    invokeHandler(on[name], event, args, vnode);
+	    invokeHandler(on[name], event, args);
 	  }
 	}
 	function createListener() {
@@ -11615,7 +11724,7 @@
 	  if (html && typeof html === 'string') {
 	    html = html.trim();
 	    self.$vnode = vdom(html, self, app, true);
-	    self.el = doc.createElement('div');
+	    self.el = doc.createElement(self.$vnode.sel || 'div');
 	    patch(self.el, self.$vnode);
 	  } else if (html) {
 	    self.el = html;
@@ -12152,26 +12261,26 @@
 	};
 
 	function getCurrentView(app) {
-	  var popoverView = $('.popover.modal-in .view');
-	  var popupView = $('.popup.modal-in .view');
-	  var panelView = $('.panel.panel-active .view');
-	  var appViews = $('.views');
-	  if (appViews.length === 0) { appViews = app.root; }
+	  var $popoverView = $('.popover.modal-in .view');
+	  var $popupView = $('.popup.modal-in .view');
+	  var $panelView = $('.panel.panel-active .view');
+	  var $viewsEl = $('.views');
+	  if ($viewsEl.length === 0) { $viewsEl = app.root; }
 	  // Find active view as tab
-	  var appView = appViews.children('.view');
+	  var $viewEl = $viewsEl.children('.view');
 	  // Propably in tabs or split view
-	  if (appView.length > 1) {
-	    if (appView.hasClass('tab')) {
+	  if ($viewEl.length > 1) {
+	    if ($viewEl.hasClass('tab')) {
 	      // Tabs
-	      appView = appViews.children('.view.tab-active');
+	      $viewEl = $viewsEl.children('.view.tab-active');
 	    }
 	  }
-	  if (popoverView.length > 0 && popoverView[0].f7View) { return popoverView[0].f7View; }
-	  if (popupView.length > 0 && popupView[0].f7View) { return popupView[0].f7View; }
-	  if (panelView.length > 0 && panelView[0].f7View) { return panelView[0].f7View; }
-	  if (appView.length > 0) {
-	    if (appView.length === 1 && appView[0].f7View) { return appView[0].f7View; }
-	    if (appView.length > 1) {
+	  if ($popoverView.length > 0 && $popoverView[0].f7View) { return $popoverView[0].f7View; }
+	  if ($popupView.length > 0 && $popupView[0].f7View) { return $popupView[0].f7View; }
+	  if ($panelView.length > 0 && $panelView[0].f7View) { return $panelView[0].f7View; }
+	  if ($viewEl.length > 0) {
+	    if ($viewEl.length === 1 && $viewEl[0].f7View) { return $viewEl[0].f7View; }
+	    if ($viewEl.length > 1) {
 	      return app.views.main;
 	    }
 	  }
@@ -12536,6 +12645,7 @@
 	    var $pageEl = $(app.navbar.getPageByEl($navbarInnerEl));
 	    $navbarInnerEl.addClass('navbar-inner-large-collapsed');
 	    $pageEl.eq(0).addClass('page-with-navbar-large-collapsed').trigger('page:navbarlargecollapsed');
+	    app.emit('pageNavbarLargeCollapsed', $pageEl[0]);
 	    var $navbarEl = $navbarInnerEl.parents('.navbar');
 	    if (app.theme === 'md' || app.theme === 'aurora') {
 	      $navbarEl.addClass('navbar-large-collapsed');
@@ -12558,6 +12668,7 @@
 	    var $pageEl = $(app.navbar.getPageByEl($navbarInnerEl));
 	    $navbarInnerEl.removeClass('navbar-inner-large-collapsed');
 	    $pageEl.eq(0).removeClass('page-with-navbar-large-collapsed').trigger('page:navbarlargeexpanded');
+	    app.emit('pageNavbarLargeExpanded', $pageEl[0]);
 	    var $navbarEl = $navbarInnerEl.parents('.navbar');
 	    if (app.theme === 'md' || app.theme === 'aurora') {
 	      $navbarEl.removeClass('navbar-large-collapsed');
@@ -12729,8 +12840,11 @@
 	      previousScrollTop = currentScrollTop;
 	    }
 
-	    function handleScroll() {
+	    function handleScroll(e) {
 	      scrollContent = this;
+	      if (e && e.target && e.target !== scrollContent) {
+	        return;
+	      }
 	      currentScrollTop = scrollContent.scrollTop;
 	      scrollChanged = currentScrollTop;
 
@@ -13066,8 +13180,11 @@
 	    var reachEnd;
 	    var action;
 	    var toolbarHidden;
-	    function handleScroll() {
+	    function handleScroll(e) {
 	      var scrollContent = this;
+	      if (e && e.target && e.target !== scrollContent) {
+	        return;
+	      }
 	      if ($pageEl.hasClass('page-previous')) { return; }
 	      currentScrollTop = scrollContent.scrollTop;
 	      scrollHeight = scrollContent.scrollHeight;
@@ -13446,6 +13563,9 @@
 	    }
 
 	    if (!$el || !$el.hasClass('modal-in')) {
+	      if (dialogsQueue.indexOf(modal) >= 0) {
+	        dialogsQueue.splice(dialogsQueue.indexOf(modal), 1);
+	      }
 	      return modal;
 	    }
 
@@ -14088,9 +14208,9 @@
 	    // Find Element
 	    var $el;
 	    if (!popup.params.el) {
-	      $el = $(popup.params.content);
+	      $el = $(popup.params.content).filter(function (elIndex, node) { return node.nodeType === 1; }).eq(0);
 	    } else {
-	      $el = $(popup.params.el);
+	      $el = $(popup.params.el).eq(0);
 	    }
 
 	    if ($el && $el.length > 0 && $el[0].f7Modal) {
@@ -14368,9 +14488,9 @@
 	    // Find Element
 	    var $el;
 	    if (!loginScreen.params.el) {
-	      $el = $(loginScreen.params.content);
+	      $el = $(loginScreen.params.content).filter(function (elIndex, node) { return node.nodeType === 1; }).eq(0);
 	    } else {
-	      $el = $(loginScreen.params.el);
+	      $el = $(loginScreen.params.el).eq(0);
 	    }
 
 	    if ($el && $el.length > 0 && $el[0].f7Modal) {
@@ -14447,9 +14567,9 @@
 	    // Find Element
 	    var $el;
 	    if (!popover.params.el) {
-	      $el = $(popover.params.content);
+	      $el = $(popover.params.content).filter(function (elIndex, node) { return node.nodeType === 1; }).eq(0);
 	    } else {
-	      $el = $(popover.params.el);
+	      $el = $(popover.params.el).eq(0);
 	    }
 
 	    if ($el && $el.length > 0 && $el[0].f7Modal) {
@@ -14609,6 +14729,8 @@
 	    var targetHeight;
 	    var targetOffsetLeft;
 	    var targetOffsetTop;
+	    var safeAreaTop = parseInt($('html').css('--f7-safe-area-top'), 10);
+	    if (Number.isNaN(safeAreaTop)) { safeAreaTop = 0; }
 	    if ($targetEl && $targetEl.length > 0) {
 	      targetWidth = $targetEl.outerWidth();
 	      targetHeight = $targetEl.outerHeight();
@@ -14639,7 +14761,7 @@
 	        // On bottom
 	        position = 'bottom';
 	        top = targetOffsetTop + targetHeight;
-	      } else if (height < targetOffsetTop) {
+	      } else if (height < targetOffsetTop - safeAreaTop) {
 	        // On top
 	        top = targetOffsetTop - height;
 	        position = 'top';
@@ -14667,7 +14789,7 @@
 	      $el.addClass(("popover-on-" + position + " popover-on-" + hPosition));
 	    } else {
 	      // ios and aurora
-	      if ((height + angleSize) < targetOffsetTop) {
+	      if ((height + angleSize) < targetOffsetTop - safeAreaTop) {
 	        // On top
 	        top = targetOffsetTop - height - angleSize;
 	      } else if ((height + angleSize) < app.height - targetOffsetTop - targetHeight) {
@@ -14795,9 +14917,9 @@
 	    // Find Element
 	    var $el;
 	    if (actions.params.el) {
-	      $el = $(actions.params.el);
+	      $el = $(actions.params.el).eq(0);
 	    } else if (actions.params.content) {
-	      $el = $(actions.params.content);
+	      $el = $(actions.params.content).filter(function (elIndex, node) { return node.nodeType === 1; }).eq(0);
 	    } else if (actions.params.buttons) {
 	      if (actions.params.convertToPopover) {
 	        actions.popoverHtml = actions.renderPopover();
@@ -15104,9 +15226,9 @@
 	    // Find Element
 	    var $el;
 	    if (!sheet.params.el) {
-	      $el = $(sheet.params.content);
+	      $el = $(sheet.params.content).filter(function (elIndex, node) { return node.nodeType === 1; }).eq(0);
 	    } else {
-	      $el = $(sheet.params.el);
+	      $el = $(sheet.params.el).eq(0);
 	    }
 
 	    if ($el && $el.length > 0 && $el[0].f7Modal) {
@@ -15249,7 +15371,6 @@
 	      }
 
 	      touchesDiff = startTouch.y - currentTouch.y;
-
 	      if (!isMoved) {
 	        sheetElOffsetHeight = $el[0].offsetHeight;
 	        startTranslate = Utils.getTranslate($el[0], 'y');
@@ -15268,6 +15389,17 @@
 	      $el
 	        .transition(0)
 	        .transform(("translate3d(0," + currentTranslate + "px,0)"));
+	      if (sheet.params.swipeToStep) {
+	        var progress;
+	        if (isTopSheetModal) {
+	          progress = 1 - (currentTranslate / swipeStepTranslate);
+	        } else {
+	          progress = (swipeStepTranslate - currentTranslate) / swipeStepTranslate;
+	        }
+	        progress = Math.min(Math.max(progress, 0), 1);
+	        $el.trigger('sheet:stepprogress', progress);
+	        sheet.emit('local::stepProgress sheetStepProgress', sheet, progress);
+	      }
 	    }
 	    function handleTouchEnd() {
 	      isTouched = false;
@@ -15303,6 +15435,8 @@
 	        if (direction === openDirection && absCurrentTranslate < absSwipeStepTranslate) {
 	          // open step
 	          $el.removeClass('modal-in-swipe-step');
+	          $el.trigger('sheet:stepprogress', 1);
+	          sheet.emit('local::stepProgress sheetStepProgress', sheet, 1);
 	          $el.trigger('sheet:stepopen');
 	          sheet.emit('local::stepOpen sheetStepOpen', sheet);
 	        }
@@ -15313,6 +15447,8 @@
 	          } else {
 	            // close step
 	            $el.addClass('modal-in-swipe-step');
+	            $el.trigger('sheet:stepprogress', 0);
+	            sheet.emit('local::stepProgress sheetStepProgress', sheet, 0);
 	            $el.trigger('sheet:stepclose');
 	            sheet.emit('local::stepClose sheetStepClose', sheet);
 	          }
@@ -15320,6 +15456,8 @@
 	        if (direction === closeDirection && absCurrentTranslate <= absSwipeStepTranslate) {
 	          // close step
 	          $el.addClass('modal-in-swipe-step');
+	          $el.trigger('sheet:stepprogress', 0);
+	          sheet.emit('local::stepProgress sheetStepProgress', sheet, 0);
 	          $el.trigger('sheet:stepclose');
 	          sheet.emit('local::stepClose sheetStepClose', sheet);
 	        }
@@ -15331,6 +15469,8 @@
 	          if (absCurrentTranslate < (absSwipeStepTranslate / 2)) {
 	            // open step
 	            $el.removeClass('modal-in-swipe-step');
+	            $el.trigger('sheet:stepprogress', 1);
+	            sheet.emit('local::stepProgress sheetStepProgress', sheet, 1);
 	            $el.trigger('sheet:stepopen');
 	            sheet.emit('local::stepOpen sheetStepOpen', sheet);
 	          } else if ((absCurrentTranslate - absSwipeStepTranslate) > (sheetElOffsetHeight - absSwipeStepTranslate) / 2) {
@@ -15344,6 +15484,8 @@
 	          } else if (absCurrentTranslate > absSwipeStepTranslate / 2) {
 	            // close step
 	            $el.addClass('modal-in-swipe-step');
+	            $el.trigger('sheet:stepprogress', 0);
+	            sheet.emit('local::stepProgress sheetStepProgress', sheet, 0);
 	            $el.trigger('sheet:stepclose');
 	            sheet.emit('local::stepClose sheetStepClose', sheet);
 	          }
@@ -15692,6 +15834,12 @@
 	        app.preloader.init(preloaderEl);
 	      });
 	    },
+	    tabMounted: function tabMounted(tabEl) {
+	      var app = this;
+	      $(tabEl).find('.preloader').each(function (index, preloaderEl) {
+	        app.preloader.init(preloaderEl);
+	      });
+	    },
 	    pageInit: function pageInit(page) {
 	      var app = this;
 	      page.$el.find('.preloader').each(function (index, preloaderEl) {
@@ -15848,12 +15996,33 @@
 	    });
 	  },
 	  on: {
+	    tabMounted: function tabMounted(tabEl) {
+	      var app = this;
+	      $(tabEl).find('.progressbar').each(function (index, progressbarEl) {
+	        var $progressbarEl = $(progressbarEl);
+	        app.progressbar.set($progressbarEl, $progressbarEl.attr('data-progress'));
+	      });
+	    },
 	    pageInit: function pageInit(page) {
 	      var app = this;
 	      page.$el.find('.progressbar').each(function (index, progressbarEl) {
 	        var $progressbarEl = $(progressbarEl);
 	        app.progressbar.set($progressbarEl, $progressbarEl.attr('data-progress'));
 	      });
+	    },
+	  },
+	  vnode: {
+	    progressbar: {
+	      insert: function insert(vnode) {
+	        var app = this;
+	        var el = vnode.elm;
+	        app.progressbar.set(el, el.getAttribute('data-progress'));
+	      },
+	      update: function update(vnode) {
+	        var app = this;
+	        var el = vnode.elm;
+	        app.progressbar.set(el, el.getAttribute('data-progress'));
+	      },
 	    },
 	  },
 	};
@@ -15893,7 +16062,7 @@
 	      if ($listGroup.length && $listGroup.parents($sortableContainer).length) {
 	        $sortableContainer = $listGroup;
 	      }
-	      $sortingItems = $sortableContainer.children('ul').children('li');
+	      $sortingItems = $sortableContainer.children('ul').children('li:not(.disallow-sorting):not(.no-sorting)');
 	      if (app.panel) { app.panel.allowOpen = false; }
 	      if (app.swipeout) { app.swipeout.allow = false; }
 	    }
@@ -15995,7 +16164,12 @@
 	      if ($insertAfterEl) { indexTo = $insertAfterEl.index(); }
 	      else if ($insertBeforeEl) { indexTo = $insertBeforeEl.index(); }
 
-	      if (app.params.sortable.moveElements) {
+	      var moveElements = $sortableContainer.dataset().sortableMoveElements;
+	      if (typeof moveElements === 'undefined') {
+	        moveElements = app.params.sortable.moveElements;
+	      }
+
+	      if (moveElements) {
 	        if ($insertAfterEl) {
 	          $sortingEl.insertAfter($insertAfterEl);
 	        }
@@ -16832,6 +17006,7 @@
 	      itemTemplate: undefined,
 	      ul: null,
 	      createUl: true,
+	      scrollableParentEl: undefined,
 	      renderItem: function renderItem(item) {
 	        return ("\n          <li>\n            <div class=\"item-content\">\n              <div class=\"item-inner\">\n                <div class=\"item-title\">" + item + "</div>\n              </div>\n            </div>\n          </li>\n        ").trim();
 	      },
@@ -16864,6 +17039,12 @@
 	    }
 	    vl.$pageContentEl = vl.$el.parents('.page-content');
 	    vl.pageContentEl = vl.$pageContentEl[0];
+
+	    vl.$scrollableParentEl = vl.params.scrollableParentEl ? $(vl.params.scrollableParentEl).eq(0) : vl.$pageContentEl;
+	    if (!vl.$scrollableParentEl.length && vl.$pageContentEl.length) {
+	      vl.$scrollableParentEl = vl.$pageContentEl;
+	    }
+	    vl.scrollableParentEl = vl.$scrollableParentEl[0];
 
 	    // Bad scroll
 	    if (typeof vl.params.updatableScroll !== 'undefined') {
@@ -16927,7 +17108,7 @@
 	      $panelEl = vl.$el.parents('.panel').eq(0);
 	      $popupEl = vl.$el.parents('.popup').eq(0);
 
-	      vl.$pageContentEl.on('scroll', handleScrollBound);
+	      vl.$scrollableParentEl.on('scroll', handleScrollBound);
 	      if ($pageEl) { $pageEl.on('page:reinit', handleResizeBound); }
 	      if ($tabEl) { $tabEl.on('tab:show', handleResizeBound); }
 	      if ($panelEl) { $panelEl.on('panel:open', handleResizeBound); }
@@ -16935,7 +17116,7 @@
 	      app.on('resize', handleResizeBound);
 	    };
 	    vl.detachEvents = function attachEvents() {
-	      vl.$pageContentEl.off('scroll', handleScrollBound);
+	      vl.$scrollableParentEl.off('scroll', handleScrollBound);
 	      if ($pageEl) { $pageEl.off('page:reinit', handleResizeBound); }
 	      if ($tabEl) { $tabEl.off('tab:show', handleResizeBound); }
 	      if ($panelEl) { $panelEl.off('panel:open', handleResizeBound); }
@@ -16955,7 +17136,7 @@
 	  VirtualList.prototype.setListSize = function setListSize () {
 	    var vl = this;
 	    var items = vl.filteredItems || vl.items;
-	    vl.pageHeight = vl.$pageContentEl[0].offsetHeight;
+	    vl.pageHeight = vl.$scrollableParentEl[0].offsetHeight;
 	    if (vl.dynamicHeight) {
 	      vl.listHeight = 0;
 	      vl.heights = [];
@@ -16982,10 +17163,10 @@
 	    var vl = this;
 	    if (force) { vl.lastRepaintY = null; }
 
-	    var scrollTop = -(vl.$el[0].getBoundingClientRect().top - vl.$pageContentEl[0].getBoundingClientRect().top);
+	    var scrollTop = -(vl.$el[0].getBoundingClientRect().top - vl.$scrollableParentEl[0].getBoundingClientRect().top);
 
 	    if (typeof forceScrollTop !== 'undefined') { scrollTop = forceScrollTop; }
-	    if (vl.lastRepaintY === null || Math.abs(scrollTop - vl.lastRepaintY) > vl.maxBufferHeight || (!vl.updatableScroll && (vl.$pageContentEl[0].scrollTop + vl.pageHeight >= vl.$pageContentEl[0].scrollHeight))) {
+	    if (vl.lastRepaintY === null || Math.abs(scrollTop - vl.lastRepaintY) > vl.maxBufferHeight || (!vl.updatableScroll && (vl.$scrollableParentEl[0].scrollTop + vl.pageHeight >= vl.$scrollableParentEl[0].scrollHeight))) {
 	      vl.lastRepaintY = scrollTop;
 	    } else {
 	      return;
@@ -17105,7 +17286,7 @@
 	    }
 
 	    if (typeof forceScrollTop !== 'undefined' && force) {
-	      vl.$pageContentEl.scrollTop(forceScrollTop, 0);
+	      vl.$scrollableParentEl.scrollTop(forceScrollTop, 0);
 	    }
 	    if (vl.params.renderExternal) {
 	      vl.params.renderExternal(vl, {
@@ -17128,7 +17309,7 @@
 	      vl.filteredItems.push(vl.items[indexes[i]]);
 	    }
 	    if (resetScrollTop) {
-	      vl.$pageContentEl[0].scrollTop = 0;
+	      vl.$scrollableParentEl[0].scrollTop = 0;
 	    }
 	    vl.update();
 	  };
@@ -17156,7 +17337,7 @@
 	      itemTop = index * vl.params.height;
 	    }
 	    var listTop = vl.$el[0].offsetTop;
-	    vl.render(true, (listTop + itemTop) - parseInt(vl.$pageContentEl.css('padding-top'), 10));
+	    vl.render(true, (listTop + itemTop) - parseInt(vl.$scrollableParentEl.css('padding-top'), 10));
 	    return true;
 	  };
 
@@ -18544,9 +18725,8 @@
 
 	var Panel = /*@__PURE__*/(function (Framework7Class) {
 	  function Panel(app, params) {
-	    var obj;
-
 	    if ( params === void 0 ) params = {};
+
 	    Framework7Class.call(this, params, [app]);
 	    var panel = this;
 
@@ -18570,7 +18750,7 @@
 	    if (typeof effect === 'undefined') { effect = $el.hasClass('panel-cover') ? 'cover' : 'reveal'; }
 
 	    if (!app.panel[side]) {
-	      Utils.extend(app.panel, ( obj = {}, obj[side] = panel, obj ));
+	      app.panel[side] = panel;
 	    } else {
 	      throw new Error(("Framework7: Can't create panel; app already has a " + side + " panel!"));
 	    }
@@ -18931,6 +19111,7 @@
 	      delete panel.el.f7Panel;
 	    }
 	    Utils.deleteProps(panel);
+
 	    panel = null;
 	  };
 
@@ -19345,7 +19526,7 @@
 	      $cardEl.addClass('card-opened');
 	      $cardEl.removeClass('card-opening');
 	      $cardEl.trigger('card:opened');
-	      app.emit('cardOpened', $cardEl[0]);
+	      app.emit('cardOpened', $cardEl[0], $pageEl[0]);
 	    }
 	    $cardContentEl
 	      .css({
@@ -19579,7 +19760,7 @@
 	      $cardEl.removeClass('card-closing card-no-transition');
 	      $cardEl.trigger('card:closed');
 	      $cardEl.find('.card-expandable-size').remove();
-	      app.emit('cardClosed', $cardEl[0]);
+	      app.emit('cardClosed', $cardEl[0], $pageEl[0]);
 	    }
 	    $cardContentEl
 	      .css({
@@ -19678,9 +19859,9 @@
 	      if (app.params.card.closeByBackdropClick) { needToClose = true; }
 	      var $openedCardEl = $('.card-opened');
 	      if (!$openedCardEl.length) { return; }
-	      if ($openedCardEl.attr('data-close-on-backdrop-click') === 'true') {
+	      if ($openedCardEl.attr('data-close-by-backdrop-click') === 'true') {
 	        needToClose = true;
-	      } else if ($openedCardEl.attr('data-close-on-backdrop-click') === 'false') {
+	      } else if ($openedCardEl.attr('data-close-by-backdrop-click') === 'false') {
 	        needToClose = false;
 	      }
 	      if (needToClose) { app.card.close($openedCardEl); }
@@ -20448,7 +20629,7 @@
 	      toggle.emit('local::change toggleChange', toggle);
 	    }
 	    toggle.attachEvents = function attachEvents() {
-	      if (Support.touch) {
+	      if ( Support.touch) {
 	        var passive = Support.passiveListener ? { passive: true } : false;
 	        $el.on(app.touchEvents.start, handleTouchStart, passive);
 	        app.on('touchmove', handleTouchMove);
@@ -20457,7 +20638,7 @@
 	      toggle.$inputEl.on('change', handleInputChange);
 	    };
 	    toggle.detachEvents = function detachEvents() {
-	      if (Support.touch) {
+	      if ( Support.touch) {
 	        var passive = Support.passiveListener ? { passive: true } : false;
 	        $el.off(app.touchEvents.start, handleTouchStart, passive);
 	        app.off('touchmove', handleTouchMove);
@@ -21772,13 +21953,16 @@
 	    var $selectEl = $el.find('select').eq(0);
 	    if ($selectEl.length === 0) { return ss; }
 
-	    var $valueEl = $(ss.params.valueEl);
-	    if ($valueEl.length === 0) {
-	      $valueEl = $el.find('.item-after');
-	    }
-	    if ($valueEl.length === 0) {
-	      $valueEl = $('<div class="item-after"></div>');
-	      $valueEl.insertAfter($el.find('.item-title'));
+	    var $valueEl;
+	    if (ss.params.setValueText) {
+	      $valueEl = $(ss.params.valueEl);
+	      if ($valueEl.length === 0) {
+	        $valueEl = $el.find('.item-after');
+	      }
+	      if ($valueEl.length === 0) {
+	        $valueEl = $('<div class="item-after"></div>');
+	        $valueEl.insertAfter($el.find('.item-title'));
+	      }
 	    }
 
 	    // View
@@ -21802,7 +21986,7 @@
 	      $selectEl: $selectEl,
 	      selectEl: $selectEl[0],
 	      $valueEl: $valueEl,
-	      valueEl: $valueEl[0],
+	      valueEl: $valueEl && $valueEl[0],
 	      url: url,
 	      multiple: multiple,
 	      inputType: inputType,
@@ -21823,7 +22007,7 @@
 	      var value = ss.$selectEl.val();
 	      ss.$el.trigger('smartselect:change', ss, value);
 	      ss.emit('local::change smartSelectChange', ss, value);
-	      ss.setTextValue();
+	      ss.setValueText();
 	    }
 	    ss.attachEvents = function attachEvents() {
 	      $el.on('click', onClick);
@@ -21865,7 +22049,9 @@
 	      }
 
 	      ss.$selectEl.trigger('change');
-	      ss.$valueEl.text(optionText.join(', '));
+	      if (ss.params.setValueText) {
+	        ss.$valueEl.text(ss.formatValueText(optionText));
+	      }
 	      if (ss.params.closeOnSelect && ss.inputType === 'radio') {
 	        ss.close();
 	      }
@@ -21915,12 +22101,16 @@
 	      }
 	    } else {
 	      optionEl = ss.$selectEl.find(("option[value=\"" + newValue + "\"]"))[0];
-	      displayAs = optionEl.dataset ? optionEl.dataset.displayAs : $(optionEl).data('display-as');
-	      text = displayAs && typeof displayAs !== 'undefined' ? displayAs : optionEl.textContent;
-	      optionText = [text];
+	      if (optionEl) {
+	        displayAs = optionEl.dataset ? optionEl.dataset.displayAs : $(optionEl).data('display-as');
+	        text = displayAs && typeof displayAs !== 'undefined' ? displayAs : optionEl.textContent;
+	        optionText = [text];
+	      }
 	      ss.selectEl.value = newValue;
 	    }
-	    ss.$valueEl.text(optionText.join(', '));
+	    if (ss.params.setValueText) {
+	      ss.$valueEl.text(ss.formatValueText(optionText));
+	    }
 	    return ss;
 	  };
 
@@ -21958,7 +22148,18 @@
 	    }
 	  };
 
-	  SmartSelect.prototype.setTextValue = function setTextValue (value) {
+	  SmartSelect.prototype.formatValueText = function formatValueText (values) {
+	    var ss = this;
+	    var textValue;
+	    if (ss.params.formatValueText) {
+	      textValue = ss.params.formatValueText.call(ss, values, ss);
+	    } else {
+	      textValue = values.join(', ');
+	    }
+	    return textValue;
+	  };
+
+	  SmartSelect.prototype.setValueText = function setValueText (value) {
 	    var ss = this;
 	    var valueArray = [];
 	    if (typeof value !== 'undefined') {
@@ -21980,7 +22181,9 @@
 	        }
 	      });
 	    }
-	    ss.$valueEl.text(valueArray.join(', '));
+	    if (ss.params.setValueText) {
+	      ss.$valueEl.text(ss.formatValueText(valueArray));
+	    }
 	  };
 
 	  SmartSelect.prototype.getItemsData = function getItemsData () {
@@ -22396,6 +22599,15 @@
 	  SmartSelect.prototype.open = function open (type) {
 	    var ss = this;
 	    if (ss.opened) { return ss; }
+	    var prevented = false;
+	    function prevent() {
+	      prevented = true;
+	    }
+	    if (ss.$el) {
+	      ss.$el.trigger('smartselect:beforeopen', { prevent: prevent });
+	    }
+	    ss.emit('local::beforeOpen smartSelectBeforeOpen', ss, prevent);
+	    if (prevented) { return ss; }
 	    var openIn = type || ss.params.openIn;
 	    ss[("open" + (openIn.split('').map(function (el, index) {
 	      if (index === 0) { return el.toUpperCase(); }
@@ -22425,7 +22637,7 @@
 	  SmartSelect.prototype.init = function init () {
 	    var ss = this;
 	    ss.attachEvents();
-	    ss.setTextValue();
+	    ss.setValueText();
 	  };
 
 	  SmartSelect.prototype.destroy = function destroy () {
@@ -22447,6 +22659,8 @@
 	    smartSelect: {
 	      el: undefined,
 	      valueEl: undefined,
+	      setValueText: true,
+	      formatValueText: null,
 	      openIn: 'page', // or 'popup' or 'sheet' or 'popover'
 	      pageTitle: undefined,
 	      pageBackLinkText: 'Back',
@@ -25460,13 +25674,20 @@
 	  create: function create(el) {
 	    var $el = $(el);
 	    var app = this;
-	    $el.on('scroll', function handle(e) {
+	    function scrollHandler(e) {
 	      app.infiniteScroll.handle(this, e);
+	    }
+	    $el.each(function (index, element) {
+	      element.f7InfiniteScrollHandler = scrollHandler;
+	      element.addEventListener('scroll', element.f7InfiniteScrollHandler);
 	    });
 	  },
 	  destroy: function destroy(el) {
 	    var $el = $(el);
-	    $el.off('scroll');
+	    $el.each(function (index, element) {
+	      element.removeEventListener('scroll', element.f7InfiniteScrollHandler);
+	      delete element.f7InfiniteScrollHandler;
+	    });
 	  },
 	};
 	var InfiniteScroll$1 = {
@@ -25485,14 +25706,18 @@
 	    tabMounted: function tabMounted(tabEl) {
 	      var app = this;
 	      var $tabEl = $(tabEl);
-	      $tabEl.find('.infinite-scroll-content').each(function (index, el) {
+	      var $isEls = $tabEl.find('.infinite-scroll-content');
+	      if ($tabEl.is('.infinite-scroll-content')) { $isEls.add($tabEl); }
+	      $isEls.each(function (index, el) {
 	        app.infiniteScroll.create(el);
 	      });
 	    },
 	    tabBeforeRemove: function tabBeforeRemove(tabEl) {
 	      var $tabEl = $(tabEl);
 	      var app = this;
-	      $tabEl.find('.infinite-scroll-content').each(function (index, el) {
+	      var $isEls = $tabEl.find('.infinite-scroll-content');
+	      if ($tabEl.is('.infinite-scroll-content')) { $isEls.add($tabEl); }
+	      $isEls.each(function (index, el) {
 	        app.infiniteScroll.destroy(el);
 	      });
 	    },
@@ -26052,14 +26277,18 @@
 	    tabMounted: function tabMounted(tabEl) {
 	      var app = this;
 	      var $tabEl = $(tabEl);
-	      $tabEl.find('.ptr-content').each(function (index, el) {
+	      var $ptrEls = $tabEl.find('.ptr-content');
+	      if ($tabEl.is('.ptr-content')) { $ptrEls.add($tabEl); }
+	      $ptrEls.each(function (index, el) {
 	        app.ptr.create(el);
 	      });
 	    },
 	    tabBeforeRemove: function tabBeforeRemove(tabEl) {
 	      var $tabEl = $(tabEl);
 	      var app = this;
-	      $tabEl.find('.ptr-content').each(function (index, el) {
+	      var $ptrEls = $tabEl.find('.ptr-content');
+	      if ($tabEl.is('.ptr-content')) { $ptrEls.add($tabEl); }
+	      $ptrEls.each(function (index, el) {
 	        app.ptr.destroy(el);
 	      });
 	    },
@@ -27115,7 +27344,7 @@
 	    } else {
 	      if (needsFocus) { sb.$inputEl.focus(); }
 	      if (app.theme === 'md' && sb.expandable) {
-	        sb.$el.parents('.page, .view, .navbar-inner').scrollLeft(0);
+	        sb.$el.parents('.page, .view, .navbar-inner').scrollLeft(app.rtl ? 100 : 0);
 	      }
 	      enable();
 	    }
@@ -35809,7 +36038,8 @@
 	    if (ac.params.view) {
 	      view = ac.params.view;
 	    } else if ($openerEl || $inputEl) {
-	      view = app.views.get($openerEl || $inputEl);
+	      var $el = $openerEl || $inputEl;
+	      view = $el.closest('.view').length && $el.closest('.view')[0].f7View;
 	    }
 	    if (!view) { view = app.views.main; }
 
@@ -36634,7 +36864,7 @@
 	  function Tooltip(app, params) {
 	    if ( params === void 0 ) params = {};
 
-	    Framework7Class.call(this, app, params);
+	    Framework7Class.call(this, params, [app]);
 
 	    var tooltip = this;
 
@@ -36991,6 +37221,13 @@
 	        if (!text) { return; }
 	        app.tooltip.create({ targetEl: el, text: text });
 	      },
+	      update: function update(vnode) {
+	        var el = vnode.elm;
+	        if (!el.f7Tooltip) { return; }
+	        if (vnode && vnode.data && vnode.data.attrs && vnode.data.attrs['data-tooltip']) {
+	          el.f7Tooltip.setText(vnode.data.attrs['data-tooltip']);
+	        }
+	      },
 	      destroy: function destroy(vnode) {
 	        var el = vnode.elm;
 	        if (el.f7Tooltip) { el.f7Tooltip.destroy(); }
@@ -37006,7 +37243,7 @@
 	    if ( params === void 0 ) params = {};
 
 	    // Extends with open/close Modal methods;
-	    Framework7Class.call(this, app, params);
+	    Framework7Class.call(this, params, [app]);
 
 	    var gauge = this;
 
@@ -37736,6 +37973,68 @@
 	  },
 	};
 
+	var moduleBrightnessSlider = {
+	  render: function render(self) {
+	    var ref = self.params;
+	    var sliderLabel = ref.sliderLabel;
+	    var sliderValue = ref.sliderValue;
+	    var sliderValueEditable = ref.sliderValueEditable;
+	    var brightnessLabelText = ref.brightnessLabelText;
+	    return ("\n      <div class=\"color-picker-module color-picker-module-brightness-slider\">\n        <div class=\"color-picker-slider-wrap\">\n          " + (sliderLabel ? ("\n            <div class=\"color-picker-slider-label\">" + brightnessLabelText + "</div>\n          ") : '') + "\n          <div class=\"range-slider color-picker-slider color-picker-slider-brightness\"></div>\n          " + (sliderValue ? ("\n            <div class=\"color-picker-slider-value\">\n              " + (sliderValueEditable ? "\n                <input type=\"number\" step=\"0.1\" min=\"0\" max=\"100\" class=\"color-picker-value-brightness\">\n              " : "\n                <span class=\"color-picker-value-brightness\"></span>\n              ") + "\n            </div>\n          ") : '') + "\n        </div>\n      </div>\n    ");
+	  },
+	  init: function init(self) {
+	    self.brightnessRangeSlider = self.app.range.create({
+	      el: self.$el.find('.color-picker-slider-brightness'),
+	      min: 0,
+	      max: 1,
+	      step: 0.001,
+	      value: 0,
+	      on: {
+	        change: function change(range, value) {
+	          var b = Math.floor(value * 1000) / 1000;
+	          self.setValue({ hsb: [self.value.hsb[0], self.value.hsb[1], b] });
+	        },
+	      },
+	    });
+	  },
+	  update: function update(self) {
+	    var value = self.value;
+	    var app = self.app;
+	    var ref = self.params;
+	    var sliderValue = ref.sliderValue;
+	    var sliderValueEditable = ref.sliderValueEditable;
+
+	    var hsb = value.hsb;
+
+	    self.brightnessRangeSlider.value = hsb[2];
+	    self.brightnessRangeSlider.layout();
+
+	    var hslCurrent = Utils.colorHsbToHsl(hsb[0], hsb[1], hsb[2]);
+	    var hslLeft = Utils.colorHsbToHsl(hsb[0], hsb[1], 0);
+	    var hslRight = Utils.colorHsbToHsl(hsb[0], hsb[1], 1);
+
+	    self.brightnessRangeSlider.$el[0].style.setProperty(
+	      '--f7-range-knob-color',
+	      ("hsl(" + (hslCurrent[0]) + ", " + (hslCurrent[1] * 100) + "%, " + (hslCurrent[2] * 100) + "%)")
+	    );
+	    self.brightnessRangeSlider.$el.find('.range-bar').css(
+	      'background-image',
+	      ("linear-gradient(" + (app.rtl ? 'to left' : 'to right') + ", hsl(" + (hslLeft[0]) + ", " + (hslLeft[1] * 100) + "%, " + (hslLeft[2] * 100) + "%), hsl(" + (hslRight[0]) + ", " + (hslRight[1] * 100) + "%, " + (hslRight[2] * 100) + "%))")
+	    );
+	    if (sliderValue && sliderValueEditable) {
+	      self.$el.find('input.color-picker-value-brightness').val(("" + (hsb[2] * 1000 / 10)));
+	    } else if (sliderValue) {
+	      self.$el.find('span.color-picker-value-brightness').text(("" + (hsb[2] * 1000 / 10)));
+	    }
+	  },
+	  destroy: function destroy(self) {
+	    if (self.brightnessRangeSlider && self.brightnessRangeSlider.destroy) {
+	      self.brightnessRangeSlider.destroy();
+	    }
+	    delete self.brightnessRangeSlider;
+	  },
+	};
+
 	/* eslint indent: ["off"] */
 
 	var modulePalette = {
@@ -38178,6 +38477,117 @@
 	  },
 	};
 
+	var moduleHsSpectrum = {
+	  render: function render() {
+	    return "\n      <div class=\"color-picker-module color-picker-module-hs-spectrum\">\n        <div class=\"color-picker-hs-spectrum\">\n          <div class=\"color-picker-hs-spectrum-handle\"></div>\n        </div>\n      </div>\n    ";
+	  },
+	  init: function init(self) {
+	    var app = self.app;
+
+	    var isTouched;
+	    var isMoved;
+	    var touchStartX;
+	    var touchStartY;
+	    var touchCurrentX;
+	    var touchCurrentY;
+
+	    var specterRect;
+	    var specterIsTouched;
+	    var specterHandleIsTouched;
+
+	    var $el = self.$el;
+
+	    function setHSFromSpecterCoords(x, y) {
+	      var h = (x - specterRect.left) / specterRect.width * 360;
+	      var s = (y - specterRect.top) / specterRect.height;
+	      h = Math.max(0, Math.min(360, h));
+	      s = 1 - Math.max(0, Math.min(1, s));
+
+	      self.setValue({ hsb: [h, s, self.value.hsb[2]] });
+	    }
+
+	    function handleTouchStart(e) {
+	      if (isMoved || isTouched) { return; }
+	      touchStartX = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
+	      touchCurrentX = touchStartX;
+	      touchStartY = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+	      touchCurrentY = touchStartY;
+	      var $targetEl = $(e.target);
+	      specterHandleIsTouched = $targetEl.closest('.color-picker-hs-spectrum-handle').length > 0;
+	      if (!specterHandleIsTouched) {
+	        specterIsTouched = $targetEl.closest('.color-picker-hs-spectrum').length > 0;
+	      }
+	      if (specterIsTouched) {
+	        specterRect = $el.find('.color-picker-hs-spectrum')[0].getBoundingClientRect();
+	        setHSFromSpecterCoords(touchStartX, touchStartY);
+	      }
+	      if (specterHandleIsTouched || specterIsTouched) {
+	        $el.find('.color-picker-hs-spectrum-handle').addClass('color-picker-hs-spectrum-handle-pressed');
+	      }
+	    }
+	    function handleTouchMove(e) {
+	      if (!(specterIsTouched || specterHandleIsTouched)) { return; }
+	      touchCurrentX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
+	      touchCurrentY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+	      e.preventDefault();
+	      if (!isMoved) {
+	        // First move
+	        isMoved = true;
+	        if (specterHandleIsTouched) {
+	          specterRect = $el.find('.color-picker-hs-spectrum')[0].getBoundingClientRect();
+	        }
+	      }
+	      if (specterIsTouched || specterHandleIsTouched) {
+	        setHSFromSpecterCoords(touchCurrentX, touchCurrentY);
+	      }
+	    }
+	    function handleTouchEnd() {
+	      isMoved = false;
+	      if (specterIsTouched || specterHandleIsTouched) {
+	        $el.find('.color-picker-hs-spectrum-handle').removeClass('color-picker-hs-spectrum-handle-pressed');
+	      }
+	      specterIsTouched = false;
+	      specterHandleIsTouched = false;
+	    }
+
+	    function handleResize() {
+	      self.modules['hs-spectrum'].update(self);
+	    }
+
+	    var passiveListener = app.touchEvents.start === 'touchstart' && app.support.passiveListener ? { passive: true, capture: false } : false;
+
+	    self.$el.on(app.touchEvents.start, handleTouchStart, passiveListener);
+	    app.on('touchmove:active', handleTouchMove);
+	    app.on('touchend:passive', handleTouchEnd);
+	    app.on('resize', handleResize);
+
+	    self.destroySpectrumEvents = function destroySpectrumEvents() {
+	      self.$el.off(app.touchEvents.start, handleTouchStart, passiveListener);
+	      app.off('touchmove:active', handleTouchMove);
+	      app.off('touchend:passive', handleTouchEnd);
+	      app.off('resize', handleResize);
+	    };
+	  },
+	  update: function update(self) {
+	    var value = self.value;
+
+	    var hsb = value.hsb;
+
+	    var specterWidth = self.$el.find('.color-picker-hs-spectrum')[0].offsetWidth;
+	    var specterHeight = self.$el.find('.color-picker-hs-spectrum')[0].offsetHeight;
+
+	    var hslBright = Utils.colorHsbToHsl(hsb[0], hsb[1], 1);
+
+	    self.$el.find('.color-picker-hs-spectrum-handle')
+	      .css('background-color', ("hsl(" + (hslBright[0]) + ", " + (hslBright[1] * 100) + "%, " + (hslBright[2] * 100) + "%)"))
+	      .transform(("translate(" + (specterWidth * (hsb[0] / 360)) + "px, " + (specterHeight * (1 - hsb[1])) + "px)"));
+	  },
+	  destroy: function destroy(self) {
+	    if (self.destroySpectrumEvents) { self.destroySpectrumEvents(); }
+	    delete self.destroySpectrumEvents;
+	  },
+	};
+
 	function svgWheelCircles() {
 	  var total = 256;
 	  var circles = '';
@@ -38390,11 +38800,13 @@
 	        'hex': moduleHex, // eslint-disable-line
 	        'hsb-sliders': moduleHsbSliders,
 	        'hue-slider': moduleHueSlider,
+	        'brightness-slider': moduleBrightnessSlider,
 	        'palette': modulePalette, // eslint-disable-line
 	        'initial-current-colors': moduleInitialCurrentColors,
 	        'rgb-bars': moduleRgbBars,
 	        'rgb-sliders': moduleRgbSliders,
 	        'sb-spectrum': moduleSbSpectrum,
+	        'hs-spectrum': moduleHsSpectrum,
 	        'wheel': moduleWheel, // eslint-disable-line
 	      },
 	    });
@@ -38849,7 +39261,7 @@
 	    self.attachEvents();
 
 	    params.modules.forEach(function (m) {
-	      if (typeof m === 'string' && modules[m] && modules[m].render) {
+	      if (typeof m === 'string' && modules[m] && modules[m].init) {
 	        modules[m].init(self);
 	      } else if (m && m.init) {
 	        m.init(self);
@@ -39560,7 +39972,7 @@
 	};
 
 	/**
-	 * Framework7 4.4.0
+	 * Framework7 4.5.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -39568,7 +39980,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: May 13, 2019
+	 * Released on: August 21, 2019
 	 */
 
 	// Install Core Modules & Components
@@ -40857,76 +41269,28 @@
 
 	F7Actions.displayName = 'f7-actions';
 
-	var eventsEmitter = {
-	  listeners: {},
-	  on: function on(events, handler) {
-	    events.split(' ').forEach(function (event) {
-	      if (!eventsEmitter.listeners[event]) { eventsEmitter.listeners[event] = []; }
-	      eventsEmitter.listeners[event].unshift(handler);
-	    });
-	  },
-	  off: function off(events, handler) {
-	    events.split(' ').forEach(function (event) {
-	      if (!eventsEmitter.listeners[event]) { return; }
-	      if (typeof handler === 'undefined') {
-	        eventsEmitter.listeners[event] = [];
-	      } else {
-	        eventsEmitter.listeners[event].forEach(function (eventHandler, index) {
-	          if (eventHandler === handler) {
-	            eventsEmitter.listeners[event].splice(index, 1);
-	          }
-	        });
-	      }
-	    });
-	  },
-	  once: function once(events, handler) {
-	    if (typeof handler !== 'function') { return; }
-	    function onceHandler() {
-	      var args = [], len = arguments.length;
-	      while ( len-- ) args[ len ] = arguments[ len ];
-
-	      handler.apply(void 0, args);
-	      eventsEmitter.off(events, onceHandler);
-	    }
-	    eventsEmitter.on(events, onceHandler);
-	  },
-	  emit: function emit(events) {
-	    var args = [], len = arguments.length - 1;
-	    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
-
-	    events.split(' ').forEach(function (event) {
-	      if (eventsEmitter.listeners && eventsEmitter.listeners[event]) {
-	        var handlers = [];
-	        eventsEmitter.listeners[event].forEach(function (eventHandler) {
-	          handlers.push(eventHandler);
-	        });
-	        handlers.forEach(function (eventHandler) {
-	          eventHandler.apply(void 0, args);
-	        });
-	      }
-	    });
-	  },
-	};
-
 	var f7 = {
 	  instance: null,
 	  Framework7: null,
+	  events: null,
 	  init: function init(rootEl, params, routes) {
 	    if ( params === void 0 ) params = {};
 
+	    var events = f7.events;
+	    var Framework7 = f7.Framework7;
 	    var f7Params = Utils$1.extend({}, params, {
 	      root: rootEl,
 	    });
 	    if (routes && routes.length && !f7Params.routes) { f7Params.routes = routes; }
 
-	    var instance = new f7.Framework7(f7Params);
+	    var instance = new Framework7(f7Params);
 	    if (instance.initialized) {
 	      f7.instance = instance;
-	      eventsEmitter.emit('ready', f7.instance);
+	      events.emit('ready', f7.instance);
 	    } else {
 	      instance.on('init', function () {
 	        f7.instance = instance;
-	        eventsEmitter.emit('ready', f7.instance);
+	        events.emit('ready', f7.instance);
 	      });
 	    }
 	  },
@@ -40934,7 +41298,7 @@
 	    if (!callback) { return; }
 	    if (f7.instance) { callback(f7.instance); }
 	    else {
-	      eventsEmitter.once('ready', callback);
+	      f7.events.once('ready', callback);
 	    }
 	  },
 	  routers: {
@@ -40983,12 +41347,17 @@
 	  F7RoutableModals.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
-	    self.setState({
-	      modals: []
-	    });
 	    self.routerData = {
+	      modals: self.state.modals,
 	      el: el,
-	      component: self
+	      component: self,
+
+	      setModals: function setModals(modals) {
+	        self.setState({
+	          modals: modals
+	        });
+	      }
+
 	    };
 	    f7.routers.modals = self.routerData;
 	  };
@@ -41004,7 +41373,7 @@
 	  F7RoutableModals.prototype.componentDidUpdate = function componentDidUpdate () {
 	    var self = this;
 	    if (!self.routerData) { return; }
-	    eventsEmitter.emit('modalsRouterDidUpdate', self.routerData);
+	    f7.events.emit('modalsRouterDidUpdate', self.routerData);
 	  };
 
 	  prototypeAccessors.refs.get = function () {
@@ -41024,12 +41393,6 @@
 	  function F7App(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
-
-	    this.state = (function () {
-	      return {
-	        modals: []
-	      };
-	    })();
 	  }
 
 	  if ( superclass ) F7App.__proto__ = superclass;
@@ -41626,6 +41989,22 @@
 
 	    __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
 	      var self = this$1;
+
+	      if (!newText && self.f7Tooltip) {
+	        self.f7Tooltip.destroy();
+	        self.f7Tooltip = null;
+	        delete self.f7Tooltip;
+	        return;
+	      }
+
+	      if (newText && !self.f7Tooltip && self.$f7) {
+	        self.f7Tooltip = self.$f7.tooltip.create({
+	          targetEl: self.refs.el,
+	          text: newText
+	        });
+	        return;
+	      }
+
 	      if (!newText || !self.f7Tooltip) { return; }
 	      self.f7Tooltip.setText(newText);
 	    });
@@ -41831,6 +42210,22 @@
 
 	    __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
 	      var self = this$1;
+
+	      if (!newText && self.f7Tooltip) {
+	        self.f7Tooltip.destroy();
+	        self.f7Tooltip = null;
+	        delete self.f7Tooltip;
+	        return;
+	      }
+
+	      if (newText && !self.f7Tooltip && self.$f7) {
+	        self.f7Tooltip = self.$f7.tooltip.create({
+	          targetEl: self.refs.el,
+	          text: newText
+	        });
+	        return;
+	      }
+
 	      if (!newText || !self.f7Tooltip) { return; }
 	      self.f7Tooltip.setText(newText);
 	    });
@@ -42135,6 +42530,7 @@
 	    var swipeToClose = props.swipeToClose;
 	    var closeByBackdropClick = props.closeByBackdropClick;
 	    var backdrop = props.backdrop;
+	    var backdropEl = props.backdropEl;
 	    var noShadow = props.noShadow;
 	    var noBorder = props.noBorder;
 	    var headerEl;
@@ -42174,7 +42570,8 @@
 	      'data-hide-toolbar-on-open': typeof hideToolbarOnOpen === 'undefined' ? hideToolbarOnOpen : hideToolbarOnOpen.toString(),
 	      'data-swipe-to-close': typeof swipeToClose === 'undefined' ? swipeToClose : swipeToClose.toString(),
 	      'data-close-by-backdrop-click': typeof closeByBackdropClick === 'undefined' ? closeByBackdropClick : closeByBackdropClick.toString(),
-	      'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString()
+	      'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString(),
+	      'data-backdrop-el': backdropEl
 	    }, headerEl, contentEl, footerEl, this.slots['default']);
 	  };
 
@@ -42277,6 +42674,10 @@
 	  },
 	  backdrop: {
 	    type: Boolean,
+	    default: undefined
+	  },
+	  backdropEl: {
+	    type: String,
 	    default: undefined
 	  },
 	  noShadow: Boolean,
@@ -42760,6 +43161,22 @@
 
 	    __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
 	      var self = this$1;
+
+	      if (!newText && self.f7Tooltip) {
+	        self.f7Tooltip.destroy();
+	        self.f7Tooltip = null;
+	        delete self.f7Tooltip;
+	        return;
+	      }
+
+	      if (newText && !self.f7Tooltip && self.$f7) {
+	        self.f7Tooltip = self.$f7.tooltip.create({
+	          targetEl: self.refs.el,
+	          text: newText
+	        });
+	        return;
+	      }
+
 	      if (!newText || !self.f7Tooltip) { return; }
 	      self.f7Tooltip.setText(newText);
 	    });
@@ -42974,6 +43391,22 @@
 
 	    __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
 	      var self = this$1;
+
+	      if (!newText && self.f7Tooltip) {
+	        self.f7Tooltip.destroy();
+	        self.f7Tooltip = null;
+	        delete self.f7Tooltip;
+	        return;
+	      }
+
+	      if (newText && !self.f7Tooltip && self.$f7) {
+	        self.f7Tooltip = self.$f7.tooltip.create({
+	          targetEl: self.refs.el,
+	          text: newText
+	        });
+	        return;
+	      }
+
 	      if (!newText || !self.f7Tooltip) { return; }
 	      self.f7Tooltip.setText(newText);
 	    });
@@ -44213,6 +44646,22 @@
 
 	    __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
 	      var self = this$1;
+
+	      if (!newText && self.f7Tooltip) {
+	        self.f7Tooltip.destroy();
+	        self.f7Tooltip = null;
+	        delete self.f7Tooltip;
+	        return;
+	      }
+
+	      if (newText && !self.f7Tooltip && self.$f7) {
+	        self.f7Tooltip = self.$f7.tooltip.create({
+	          targetEl: self.refs.el,
+	          text: newText
+	        });
+	        return;
+	      }
+
 	      if (!newText || !self.f7Tooltip) { return; }
 	      self.f7Tooltip.setText(newText);
 	    });
@@ -44393,9 +44842,39 @@
 	    var linkEl = self.refs.linkEl;
 	    linkEl.removeEventListener('click', this.onClick);
 	    delete linkEl.f7RouteProps;
+
+	    if (self.f7Tooltip && self.f7Tooltip.destroy) {
+	      self.f7Tooltip.destroy();
+	      self.f7Tooltip = null;
+	      delete self.f7Tooltip;
+	    }
 	  };
 
-	  F7ListButton.prototype.componentDidUpdate = function componentDidUpdate () {
+	  F7ListButton.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
+	    var this$1 = this;
+
+	    __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
+	      var self = this$1;
+
+	      if (!newText && self.f7Tooltip) {
+	        self.f7Tooltip.destroy();
+	        self.f7Tooltip = null;
+	        delete self.f7Tooltip;
+	        return;
+	      }
+
+	      if (newText && !self.f7Tooltip && self.$f7) {
+	        self.f7Tooltip = self.$f7.tooltip.create({
+	          targetEl: self.refs.el,
+	          text: newText
+	        });
+	        return;
+	      }
+
+	      if (!newText || !self.f7Tooltip) { return; }
+	      self.f7Tooltip.setText(newText);
+	    });
+
 	    var self = this;
 	    var linkEl = self.refs.linkEl;
 	    var ref = self.props;
@@ -44411,12 +44890,21 @@
 	    var linkEl = self.refs.linkEl;
 	    var ref = self.props;
 	    var routeProps = ref.routeProps;
+	    var tooltip = ref.tooltip;
 
 	    if (routeProps) {
 	      linkEl.f7RouteProps = routeProps;
 	    }
 
 	    linkEl.addEventListener('click', self.onClick);
+	    self.$f7ready(function (f7) {
+	      if (tooltip) {
+	        self.f7Tooltip = f7.tooltip.create({
+	          targetEl: linkEl,
+	          text: tooltip
+	        });
+	      }
+	    });
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -44453,7 +44941,8 @@
 	  tabLinkActive: Boolean,
 	  link: [Boolean, String],
 	  href: [Boolean, String],
-	  target: String
+	  target: String,
+	  tooltip: String
 	}, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps));
 
 	F7ListButton.displayName = 'f7-list-button';
@@ -44477,6 +44966,7 @@
 	    var style = props.style;
 	    var mediaList = props.mediaList;
 	    var sortable = props.sortable;
+	    var sortableMoveElements = props.sortableMoveElements;
 	    var classes = Utils$1.classNames(className, 'list-group', {
 	      'media-list': mediaList,
 	      sortable: sortable
@@ -44484,7 +44974,8 @@
 	    return react.createElement('div', {
 	      id: id,
 	      style: style,
-	      className: classes
+	      className: classes,
+	      'data-sortable-move-elements': typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined
 	    }, react.createElement('ul', null, this.slots['default']));
 	  };
 
@@ -44502,7 +44993,11 @@
 	  className: String,
 	  style: Object,
 	  mediaList: Boolean,
-	  sortable: Boolean
+	  sortable: Boolean,
+	  sortableMoveElements: {
+	    type: Boolean,
+	    default: undefined
+	  }
 	}, Mixins.colorProps));
 
 	F7ListGroup.displayName = 'f7-list-group';
@@ -45143,7 +45638,10 @@
 	  id: [String, Number],
 	  style: Object,
 	  className: String,
-	  sortable: Boolean,
+	  sortable: {
+	    type: Boolean,
+	    default: undefined
+	  },
 	  media: String,
 	  dropdown: {
 	    type: [String, Boolean],
@@ -45815,7 +46313,8 @@
 	      'accordion-item-opened': accordionItemOpened,
 	      disabled: disabled && !(radio || checkbox),
 	      'no-chevron': noChevron,
-	      'chevron-center': chevronCenter
+	      'chevron-center': chevronCenter,
+	      'disallow-sorting': sortable === false
 	    }, Mixins.colorClasses(props));
 
 	    if (divider || groupTitle) {
@@ -45853,7 +46352,7 @@
 	      'data-virtual-list-index': virtualListIndex
 	    }, this.slots['root-start'], swipeout ? react.createElement('div', {
 	      className: 'swipeout-content'
-	    }, linkItemEl) : linkItemEl, isSortable && react.createElement('div', {
+	    }, linkItemEl) : linkItemEl, isSortable && sortable !== false && react.createElement('div', {
 	      className: 'sortable-handler'
 	    }), (swipeout || accordionItem) && self.slots.default, this.slots['root'], this.slots['root-end']);
 	  };
@@ -45905,10 +46404,38 @@
 	    if (smartSelect && self.f7SmartSelect) {
 	      self.f7SmartSelect.destroy();
 	    }
+
+	    if (self.f7Tooltip && self.f7Tooltip.destroy) {
+	      self.f7Tooltip.destroy();
+	      self.f7Tooltip = null;
+	      delete self.f7Tooltip;
+	    }
 	  };
 
 	  F7ListItem.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
 	    var this$1 = this;
+
+	    __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
+	      var self = this$1;
+
+	      if (!newText && self.f7Tooltip) {
+	        self.f7Tooltip.destroy();
+	        self.f7Tooltip = null;
+	        delete self.f7Tooltip;
+	        return;
+	      }
+
+	      if (newText && !self.f7Tooltip && self.$f7) {
+	        self.f7Tooltip = self.$f7.tooltip.create({
+	          targetEl: self.refs.el,
+	          text: newText
+	        });
+	        return;
+	      }
+
+	      if (!newText || !self.f7Tooltip) { return; }
+	      self.f7Tooltip.setText(newText);
+	    });
 
 	    __reactComponentWatch(this, 'props.swipeoutOpened', prevProps, prevState, function (opened) {
 	      var self = this$1;
@@ -45972,6 +46499,7 @@
 	    var accordionItem = ref$1.accordionItem;
 	    var smartSelectParams = ref$1.smartSelectParams;
 	    var routeProps = ref$1.routeProps;
+	    var tooltip = ref$1.tooltip;
 	    var needsEvents = !(link || href || accordionItem || smartSelect);
 
 	    if (!needsEvents && linkEl) {
@@ -46024,6 +46552,13 @@
 	      if (swipeoutOpened) {
 	        f7.swipeout.open(el);
 	      }
+
+	      if (tooltip) {
+	        self.f7Tooltip = f7.tooltip.create({
+	          targetEl: el,
+	          text: tooltip
+	        });
+	      }
 	    });
 	  };
 
@@ -46059,6 +46594,7 @@
 	  subtitle: [String, Number],
 	  header: [String, Number],
 	  footer: [String, Number],
+	  tooltip: String,
 	  link: [Boolean, String],
 	  target: String,
 	  noFastclick: Boolean,
@@ -46072,7 +46608,10 @@
 	  groupTitle: Boolean,
 	  swipeout: Boolean,
 	  swipeoutOpened: Boolean,
-	  sortable: Boolean,
+	  sortable: {
+	    type: Boolean,
+	    default: undefined
+	  },
 	  accordionItem: Boolean,
 	  accordionItemOpened: Boolean,
 	  smartSelect: Boolean,
@@ -46201,6 +46740,7 @@
 	    var id = props.id;
 	    var style = props.style;
 	    var form = props.form;
+	    var sortableMoveElements = props.sortableMoveElements;
 	    var ref = self.slots;
 	    var slotsList = ref.list;
 	    var slotsDefault = ref.default;
@@ -46236,7 +46776,8 @@
 	          this$1.__reactRefs['el'] = __reactNode;
 	        },
 	        style: style,
-	        className: self.classes
+	        className: self.classes,
+	        'data-sortable-move-elements': typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined
 	      }, self.slots['before-list'], rootChildrenBeforeList, react.createElement('ul', null, ulChildren), self.slots['after-list'], rootChildrenAfterList);
 	    } else {
 	      return react.createElement(ListTag, {
@@ -46245,7 +46786,8 @@
 	          this$1.__reactRefs['el'] = __reactNode;
 	        },
 	        style: style,
-	        className: self.classes
+	        className: self.classes,
+	        'data-sortable-move-elements': typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined
 	      }, self.slots['before-list'], rootChildrenBeforeList, self.slots['after-list'], rootChildrenAfterList);
 	    }
 	  };
@@ -46365,6 +46907,10 @@
 	  mediaList: Boolean,
 	  sortable: Boolean,
 	  sortableEnabled: Boolean,
+	  sortableMoveElements: {
+	    type: Boolean,
+	    default: undefined
+	  },
 	  accordionList: Boolean,
 	  contactsList: Boolean,
 	  simpleList: Boolean,
@@ -47782,6 +48328,8 @@
 	      });
 	    }
 
+	    var valueProps = {};
+	    if ('value' in self.props) { valueProps.value = value; }
 	    return react.createElement('div', {
 	      ref: function (__reactNode) {
 	        this$1.__reactRefs['el'] = __reactNode;
@@ -47793,7 +48341,7 @@
 	      className: 'toolbar-inner'
 	    }, slotsInnerStart, react.createElement('div', {
 	      className: 'messagebar-area'
-	    }, slotsBeforeArea, messagebarAttachmentsEl, react.createElement(F7Input, {
+	    }, slotsBeforeArea, messagebarAttachmentsEl, react.createElement(F7Input, Object.assign({
 	      ref: function (__reactNode) {
 	        this$1.__reactRefs['area'] = __reactNode;
 	      },
@@ -47804,12 +48352,11 @@
 	      name: name,
 	      readonly: readonly,
 	      resizable: resizable,
-	      value: value,
 	      onInput: self.onInput,
 	      onChange: self.onChange,
 	      onFocus: self.onFocus,
 	      onBlur: self.onBlur
-	    }), slotsAfterArea), (sendLink && sendLink.length > 0 || slotsSendLink) && react.createElement(F7Link, {
+	    }, valueProps)), slotsAfterArea), (sendLink && sendLink.length > 0 || slotsSendLink) && react.createElement(F7Link, {
 	      onClick: self.onClick
 	    }, slotsSendLink || sendLink), slotsInnerEnd, innerEndEls), slotsAfterInner, messagebarSheetEl);
 	  };
@@ -48265,13 +48812,14 @@
 	    if (typeof needBackLinkText === 'undefined') { needBackLinkText = !this.$theme.md; }
 
 	    if (backLink) {
+	      var text = backLink !== true && needBackLinkText ? backLink : undefined;
 	      linkEl = react.createElement(F7Link, {
 	        href: backLinkUrl || '#',
 	        back: true,
 	        icon: 'icon-back',
 	        force: backLinkForce || undefined,
-	        className: backLink === true || backLink && this.$theme.md ? 'icon-only' : undefined,
-	        text: backLink !== true && needBackLinkText ? backLink : undefined,
+	        className: !text ? 'icon-only' : undefined,
+	        text: text,
 	        onClick: this.onBackClick
 	      });
 	    }
@@ -48609,7 +49157,6 @@
 	    var noHairline = props.noHairline;
 	    var large = props.large;
 	    var titleLarge = props.titleLarge;
-	    var innerEl;
 	    var leftEl;
 	    var titleEl;
 	    var rightEl;
@@ -48635,14 +49182,14 @@
 	      }, this.slots['default']);
 	    }
 
-	    if (backLink || slots['nav-left']) {
+	    if (backLink || slots['nav-left'] || slots.left) {
 	      leftEl = react.createElement(F7NavLeft, {
 	        backLink: backLink,
 	        backLinkUrl: backLinkUrl,
 	        backLinkForce: backLinkForce,
 	        backLinkShowText: backLinkShowText,
 	        onBackClick: self.onBackClick
-	      }, slots['nav-left']);
+	      }, slots['nav-left'], slots.left);
 	    }
 
 	    if (title || subtitle || slots.title) {
@@ -48652,22 +49199,22 @@
 	      }, slots.title);
 	    }
 
-	    if (slots['nav-right']) {
-	      rightEl = react.createElement(F7NavRight, null, slots['nav-right']);
+	    if (slots['nav-right'] || slots.right) {
+	      rightEl = react.createElement(F7NavRight, null, slots['nav-right'], slots.right);
 	    }
 
 	    var largeTitle = titleLarge;
 	    if (!largeTitle && large && title) { largeTitle = title; }
 
-	    if (largeTitle) {
+	    if (largeTitle || slots['title-large']) {
 	      titleLargeEl = react.createElement('div', {
 	        className: 'title-large'
 	      }, react.createElement('div', {
 	        className: 'title-large-text'
-	      }, largeTitle));
+	      }, largeTitle || '', this.slots['title-large']));
 	    }
 
-	    innerEl = react.createElement('div', {
+	    var innerEl = react.createElement('div', {
 	      ref: function (__reactNode) {
 	        this$1.__reactRefs['innerEl'] = __reactNode;
 	      },
@@ -48781,6 +49328,117 @@
 
 	F7Navbar.displayName = 'f7-navbar';
 
+	var F7Preloader = /*@__PURE__*/(function (superclass) {
+	  function F7Preloader(props, context) {
+	    superclass.call(this, props, context);
+	  }
+
+	  if ( superclass ) F7Preloader.__proto__ = superclass;
+	  F7Preloader.prototype = Object.create( superclass && superclass.prototype );
+	  F7Preloader.prototype.constructor = F7Preloader;
+
+	  var prototypeAccessors = { sizeComputed: { configurable: true } };
+
+	  prototypeAccessors.sizeComputed.get = function () {
+	    var s = this.props.size;
+
+	    if (s && typeof s === 'string' && s.indexOf('px') >= 0) {
+	      s = s.replace('px', '');
+	    }
+
+	    return s;
+	  };
+
+	  F7Preloader.prototype.render = function render () {
+	    var self = this;
+	    var sizeComputed = self.sizeComputed;
+	    var props = self.props;
+	    var id = props.id;
+	    var style = props.style;
+	    var className = props.className;
+	    var preloaderStyle = {};
+
+	    if (sizeComputed) {
+	      preloaderStyle.width = sizeComputed + "px";
+	      preloaderStyle.height = sizeComputed + "px";
+	      preloaderStyle['--f7-preloader-size'] = sizeComputed + "px";
+	    }
+
+	    if (style) { Utils$1.extend(preloaderStyle, style || {}); }
+	    var innerEl;
+
+	    if (self.$theme.md) {
+	      innerEl = react.createElement('span', {
+	        className: 'preloader-inner'
+	      }, react.createElement('span', {
+	        className: 'preloader-inner-gap'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-left'
+	      }, react.createElement('span', {
+	        className: 'preloader-inner-half-circle'
+	      })), react.createElement('span', {
+	        className: 'preloader-inner-right'
+	      }, react.createElement('span', {
+	        className: 'preloader-inner-half-circle'
+	      })));
+	    } else if (self.$theme.ios) {
+	      innerEl = react.createElement('span', {
+	        className: 'preloader-inner'
+	      }, react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }));
+	    } else if (self.$theme.aurora) {
+	      innerEl = react.createElement('span', {
+	        className: 'preloader-inner'
+	      }, react.createElement('span', {
+	        className: 'preloader-inner-circle'
+	      }));
+	    }
+
+	    var classes = Utils$1.classNames(className, 'preloader', Mixins.colorClasses(props));
+	    return react.createElement('span', {
+	      id: id,
+	      style: preloaderStyle,
+	      className: classes
+	    }, innerEl);
+	  };
+
+	  Object.defineProperties( F7Preloader.prototype, prototypeAccessors );
+
+	  return F7Preloader;
+	}(react.Component));
+
+	__reactComponentSetProps(F7Preloader, Object.assign({
+	  id: [String, Number],
+	  className: String,
+	  style: Object,
+	  size: [Number, String]
+	}, Mixins.colorProps));
+
+	F7Preloader.displayName = 'f7-preloader';
+
 	var F7PageContent = /*@__PURE__*/(function (superclass) {
 	  function F7PageContent(props, context) {
 	    var this$1 = this;
@@ -48884,16 +49542,14 @@
 	    if (ptr && ptrPreloader) {
 	      ptrEl = react.createElement('div', {
 	        className: 'ptr-preloader'
-	      }, react.createElement('div', {
-	        className: 'preloader'
-	      }), react.createElement('div', {
+	      }, react.createElement(F7Preloader, null), react.createElement('div', {
 	        className: 'ptr-arrow'
 	      }));
 	    }
 
 	    if (infinite && infinitePreloader) {
-	      infiniteEl = react.createElement('div', {
-	        className: 'preloader infinite-scroll-preloader'
+	      infiniteEl = react.createElement(F7Preloader, {
+	        className: 'infinite-scroll-preloader'
 	      });
 	    }
 
@@ -49603,18 +50259,10 @@
 
 	  F7Panel.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
-	    if (self.f7Panel) { self.f7Panel.destroy(); }
-	    var el = self.refs.el;
-	    if (!el) { return; }
-	    el.removeEventListener('panel:open', self.onOpen);
-	    el.removeEventListener('panel:opened', self.onOpened);
-	    el.removeEventListener('panel:close', self.onClose);
-	    el.removeEventListener('panel:closed', self.onClosed);
-	    el.removeEventListener('panel:backdrop-click', self.onBackdropClick);
-	    el.removeEventListener('panel:swipe', self.onPanelSwipe);
-	    el.removeEventListener('panel:swipeopen', self.onPanelSwipeOpen);
-	    el.removeEventListener('panel:breakpoint', self.onBreakpoint);
-	    el.removeEventListener('panel:resize', self.onResize);
+
+	    if (self.f7Panel) {
+	      self.f7Panel.destroy();
+	    }
 	  };
 
 	  F7Panel.prototype.componentDidMount = function componentDidMount () {
@@ -49627,19 +50275,6 @@
 	    var left = ref.left;
 	    var reveal = ref.reveal;
 	    var resizable = ref.resizable;
-
-	    if (el) {
-	      el.addEventListener('panel:open', self.onOpen);
-	      el.addEventListener('panel:opened', self.onOpened);
-	      el.addEventListener('panel:close', self.onClose);
-	      el.addEventListener('panel:closed', self.onClosed);
-	      el.addEventListener('panel:backdrop-click', self.onBackdropClick);
-	      el.addEventListener('panel:swipe', self.onPanelSwipe);
-	      el.addEventListener('panel:swipeopen', self.onPanelSwipeOpen);
-	      el.addEventListener('panel:breakpoint', self.onBreakpoint);
-	      el.addEventListener('panel:resize', self.onResize);
-	    }
-
 	    self.$f7ready(function () {
 	      var $ = self.$$;
 	      if (!$) { return; }
@@ -49651,6 +50286,20 @@
 	      self.f7Panel = self.$f7.panel.create({
 	        el: el,
 	        resizable: resizable
+	      });
+	      var events = {
+	        open: self.onOpen,
+	        opened: self.onOpened,
+	        close: self.onClose,
+	        closed: self.onClosed,
+	        backdropClick: self.onBackdropClick,
+	        swipe: self.onPanelSwipe,
+	        swipeOpen: self.onPanelSwipeOpen,
+	        breakpoint: self.onBreakpoint,
+	        resize: self.onResize
+	      };
+	      Object.keys(events).forEach(function (ev) {
+	        self.f7Panel.on(ev, events[ev]);
 	      });
 	    });
 
@@ -49705,7 +50354,7 @@
 	      if (opened) {
 	        self.$f7.panel.open(side);
 	      } else {
-	        self.$f7.panel.open(side);
+	        self.$f7.panel.close(side);
 	      }
 	    });
 	  };
@@ -50247,117 +50896,6 @@
 	}, Mixins.colorProps));
 
 	F7Popup.displayName = 'f7-popup';
-
-	var F7Preloader = /*@__PURE__*/(function (superclass) {
-	  function F7Preloader(props, context) {
-	    superclass.call(this, props, context);
-	  }
-
-	  if ( superclass ) F7Preloader.__proto__ = superclass;
-	  F7Preloader.prototype = Object.create( superclass && superclass.prototype );
-	  F7Preloader.prototype.constructor = F7Preloader;
-
-	  var prototypeAccessors = { sizeComputed: { configurable: true } };
-
-	  prototypeAccessors.sizeComputed.get = function () {
-	    var s = this.props.size;
-
-	    if (s && typeof s === 'string' && s.indexOf('px') >= 0) {
-	      s = s.replace('px', '');
-	    }
-
-	    return s;
-	  };
-
-	  F7Preloader.prototype.render = function render () {
-	    var self = this;
-	    var sizeComputed = self.sizeComputed;
-	    var props = self.props;
-	    var id = props.id;
-	    var style = props.style;
-	    var className = props.className;
-	    var preloaderStyle = {};
-
-	    if (sizeComputed) {
-	      preloaderStyle.width = sizeComputed + "px";
-	      preloaderStyle.height = sizeComputed + "px";
-	      preloaderStyle['--f7-preloader-size'] = sizeComputed + "px";
-	    }
-
-	    if (style) { Utils$1.extend(preloaderStyle, style || {}); }
-	    var innerEl;
-
-	    if (self.$theme.md) {
-	      innerEl = react.createElement('span', {
-	        className: 'preloader-inner'
-	      }, react.createElement('span', {
-	        className: 'preloader-inner-gap'
-	      }), react.createElement('span', {
-	        className: 'preloader-inner-left'
-	      }, react.createElement('span', {
-	        className: 'preloader-inner-half-circle'
-	      })), react.createElement('span', {
-	        className: 'preloader-inner-right'
-	      }, react.createElement('span', {
-	        className: 'preloader-inner-half-circle'
-	      })));
-	    } else if (self.$theme.ios) {
-	      innerEl = react.createElement('span', {
-	        className: 'preloader-inner'
-	      }, react.createElement('span', {
-	        className: 'preloader-inner-line'
-	      }), react.createElement('span', {
-	        className: 'preloader-inner-line'
-	      }), react.createElement('span', {
-	        className: 'preloader-inner-line'
-	      }), react.createElement('span', {
-	        className: 'preloader-inner-line'
-	      }), react.createElement('span', {
-	        className: 'preloader-inner-line'
-	      }), react.createElement('span', {
-	        className: 'preloader-inner-line'
-	      }), react.createElement('span', {
-	        className: 'preloader-inner-line'
-	      }), react.createElement('span', {
-	        className: 'preloader-inner-line'
-	      }), react.createElement('span', {
-	        className: 'preloader-inner-line'
-	      }), react.createElement('span', {
-	        className: 'preloader-inner-line'
-	      }), react.createElement('span', {
-	        className: 'preloader-inner-line'
-	      }), react.createElement('span', {
-	        className: 'preloader-inner-line'
-	      }));
-	    } else if (self.$theme.aurora) {
-	      innerEl = react.createElement('span', {
-	        className: 'preloader-inner'
-	      }, react.createElement('span', {
-	        className: 'preloader-inner-circle'
-	      }));
-	    }
-
-	    var classes = Utils$1.classNames(className, 'preloader', Mixins.colorClasses(props));
-	    return react.createElement('span', {
-	      id: id,
-	      style: preloaderStyle,
-	      className: classes
-	    }, innerEl);
-	  };
-
-	  Object.defineProperties( F7Preloader.prototype, prototypeAccessors );
-
-	  return F7Preloader;
-	}(react.Component));
-
-	__reactComponentSetProps(F7Preloader, Object.assign({
-	  id: [String, Number],
-	  className: String,
-	  style: Object,
-	  size: [Number, String]
-	}, Mixins.colorProps));
-
-	F7Preloader.displayName = 'f7-preloader';
 
 	var F7Progressbar = /*@__PURE__*/(function (superclass) {
 	  function F7Progressbar(props, context) {
@@ -51085,7 +51623,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(this$1, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onStepOpen', 'onStepClose']);
+	      Utils$1.bindMethods(this$1, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onStepOpen', 'onStepClose', 'onStepProgress']);
 	    })();
 	  }
 
@@ -51094,6 +51632,10 @@
 	  F7Sheet.prototype.constructor = F7Sheet;
 
 	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
+
+	  F7Sheet.prototype.onStepProgress = function onStepProgress (event) {
+	    this.dispatchEvent('sheet:stepprogress sheetStepProgress', event.detail);
+	  };
 
 	  F7Sheet.prototype.onStepOpen = function onStepOpen (event) {
 	    this.dispatchEvent('sheet:stepopen sheetStepOpen', event);
@@ -51195,6 +51737,7 @@
 	    el.removeEventListener('sheet:closed', self.onClosed);
 	    el.removeEventListener('sheet:stepopen', self.onStepOpen);
 	    el.removeEventListener('sheet:stepclose', self.onStepClose);
+	    el.removeEventListener('sheet:stepprogress', self.onStepProgress);
 	  };
 
 	  F7Sheet.prototype.componentDidMount = function componentDidMount () {
@@ -51207,6 +51750,7 @@
 	    el.addEventListener('sheet:closed', self.onClosed);
 	    el.addEventListener('sheet:stepopen', self.onStepOpen);
 	    el.addEventListener('sheet:stepclose', self.onStepClose);
+	    el.addEventListener('sheet:stepprogress', self.onStepProgress);
 	    var props = self.props;
 	    var opened = props.opened;
 	    var backdrop = props.backdrop;
@@ -51555,6 +52099,11 @@
 	    this.dispatchEvent('input', event, stepper);
 	  };
 
+	  F7Stepper.prototype.onChange = function onChange (event) {
+	    var stepper = this.f7Stepper;
+	    this.dispatchEvent('change', event, stepper);
+	  };
+
 	  F7Stepper.prototype.onMinusClick = function onMinusClick (event) {
 	    var stepper = this.f7Stepper;
 	    this.dispatchEvent('stepper:minusclick stepperMinusClick', event, stepper);
@@ -51629,6 +52178,8 @@
 	    var step = props.step;
 	    var id = props.id;
 	    var style = props.style;
+	    var name = props.name;
+	    var inputId = props.inputId;
 	    var inputWrapEl;
 	    var valueEl;
 
@@ -51639,11 +52190,14 @@
 	          ref: function (__reactNode) {
 	            this$1.__reactRefs['inputEl'] = __reactNode;
 	          },
+	          name: name,
+	          id: inputId,
 	          type: inputType,
 	          min: inputType === 'number' ? min : undefined,
 	          max: inputType === 'number' ? max : undefined,
 	          step: inputType === 'number' ? step : undefined,
 	          onInput: self.onInput,
+	          onChange: self.onChange,
 	          value: value,
 	          readOnly: inputReadonly
 	        });
@@ -51796,6 +52350,8 @@
 	    default: 1
 	  },
 	  formatValue: Function,
+	  name: String,
+	  inputId: String,
 	  input: {
 	    type: Boolean,
 	    default: true
@@ -52379,7 +52935,14 @@
 	    self.$f7ready(function () {
 	      self.routerData = {
 	        el: el,
-	        component: self
+	        component: self,
+
+	        setTabContent: function setTabContent(tabContent) {
+	          self.setState({
+	            tabContent: tabContent
+	          });
+	        }
+
 	      };
 	      f7.routers.tabs.push(self.routerData);
 	    });
@@ -52403,7 +52966,7 @@
 	  F7Tab.prototype.componentDidUpdate = function componentDidUpdate () {
 	    var self = this;
 	    if (!self.routerData) { return; }
-	    eventsEmitter.emit('tabRouterDidUpdate', self.routerData);
+	    f7.events.emit('tabRouterDidUpdate', self.routerData);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -52916,7 +53479,8 @@
 	    })();
 
 	    (function () {
-	      Utils$1.bindMethods(this$1, ['onSwipeBackMove', 'onSwipeBackBeforeChange', 'onSwipeBackAfterChange', 'onSwipeBackBeforeReset', 'onSwipeBackAfterReset', 'onTabShow', 'onTabHide', 'onViewInit']);
+	      var self = this$1;
+	      Utils$1.bindMethods(self, ['onSwipeBackMove', 'onSwipeBackBeforeChange', 'onSwipeBackAfterChange', 'onSwipeBackBeforeReset', 'onSwipeBackAfterReset', 'onTabShow', 'onTabHide', 'onViewInit']);
 	    })();
 	  }
 
@@ -52926,10 +53490,9 @@
 
 	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
-	  F7View.prototype.onViewInit = function onViewInit (event) {
+	  F7View.prototype.onViewInit = function onViewInit (view) {
 	    var self = this;
-	    var view = event.detail;
-	    self.dispatchEvent('view:init viewInit', event, view);
+	    self.dispatchEvent('view:init viewInit', view);
 
 	    if (!self.props.init) {
 	      self.routerData.instance = view;
@@ -52937,37 +53500,41 @@
 	    }
 	  };
 
-	  F7View.prototype.onSwipeBackMove = function onSwipeBackMove (event) {
-	    var swipeBackData = event.detail;
-	    this.dispatchEvent('swipeback:move swipeBackMove', event, swipeBackData);
+	  F7View.prototype.onSwipeBackMove = function onSwipeBackMove (data) {
+	    var swipeBackData = data;
+	    this.dispatchEvent('swipeback:move swipeBackMove', swipeBackData);
 	  };
 
-	  F7View.prototype.onSwipeBackBeforeChange = function onSwipeBackBeforeChange (event) {
-	    var swipeBackData = event.detail;
-	    this.dispatchEvent('swipeback:beforechange swipeBackBeforeChange', event, swipeBackData);
+	  F7View.prototype.onSwipeBackBeforeChange = function onSwipeBackBeforeChange (data) {
+	    var swipeBackData = data;
+	    this.dispatchEvent('swipeback:beforechange swipeBackBeforeChange', swipeBackData);
 	  };
 
-	  F7View.prototype.onSwipeBackAfterChange = function onSwipeBackAfterChange (event) {
-	    var swipeBackData = event.detail;
-	    this.dispatchEvent('swipeback:afterchange swipeBackAfterChange', event, swipeBackData);
+	  F7View.prototype.onSwipeBackAfterChange = function onSwipeBackAfterChange (data) {
+	    var swipeBackData = data;
+	    this.dispatchEvent('swipeback:afterchange swipeBackAfterChange', swipeBackData);
 	  };
 
-	  F7View.prototype.onSwipeBackBeforeReset = function onSwipeBackBeforeReset (event) {
-	    var swipeBackData = event.detail;
-	    this.dispatchEvent('swipeback:beforereset swipeBackBeforeReset', event, swipeBackData);
+	  F7View.prototype.onSwipeBackBeforeReset = function onSwipeBackBeforeReset (data) {
+	    var swipeBackData = data;
+	    this.dispatchEvent('swipeback:beforereset swipeBackBeforeReset', swipeBackData);
 	  };
 
-	  F7View.prototype.onSwipeBackAfterReset = function onSwipeBackAfterReset (event) {
-	    var swipeBackData = event.detail;
-	    this.dispatchEvent('swipeback:afterreset swipeBackAfterReset', event, swipeBackData);
+	  F7View.prototype.onSwipeBackAfterReset = function onSwipeBackAfterReset (data) {
+	    var swipeBackData = data;
+	    this.dispatchEvent('swipeback:afterreset swipeBackAfterReset', swipeBackData);
 	  };
 
-	  F7View.prototype.onTabShow = function onTabShow (event) {
-	    this.dispatchEvent('tab:show tabShow', event);
+	  F7View.prototype.onTabShow = function onTabShow (el) {
+	    if (el === this.refs.el) {
+	      this.dispatchEvent('tab:show tabShow');
+	    }
 	  };
 
-	  F7View.prototype.onTabHide = function onTabHide (event) {
-	    this.dispatchEvent('tab:hide tabHide', event);
+	  F7View.prototype.onTabHide = function onTabHide (el) {
+	    if (el === this.refs.el) {
+	      this.dispatchEvent('tab:hide tabHide');
+	    }
 	  };
 
 	  F7View.prototype.render = function render () {
@@ -53006,22 +53573,26 @@
 	  F7View.prototype.componentDidUpdate = function componentDidUpdate () {
 	    var self = this;
 	    if (!self.routerData) { return; }
-	    eventsEmitter.emit('viewRouterDidUpdate', self.routerData);
+	    f7.events.emit('viewRouterDidUpdate', self.routerData);
 	  };
 
 	  F7View.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
-	    var el = self.refs.el;
-	    el.removeEventListener('swipeback:move', self.onSwipeBackMove);
-	    el.removeEventListener('swipeback:beforechange', self.onSwipeBackBeforeChange);
-	    el.removeEventListener('swipeback:afterchange', self.onSwipeBackAfterChange);
-	    el.removeEventListener('swipeback:beforereset', self.onSwipeBackBeforeReset);
-	    el.removeEventListener('swipeback:afterreset', self.onSwipeBackAfterReset);
-	    el.removeEventListener('tab:show', self.onTabShow);
-	    el.removeEventListener('tab:hide', self.onTabHide);
-	    el.removeEventListener('view:init', self.onViewInit);
-	    if (!self.props.init) { return; }
-	    if (self.f7View && self.f7View.destroy) { self.f7View.destroy(); }
+
+	    if (f7.instance) {
+	      f7.instance.off('tabShow', self.onTabShow);
+	      f7.instance.off('tabHide', self.onTabHide);
+	    }
+
+	    if (self.f7View) {
+	      self.f7View.off('swipebackMove', self.onSwipeBackMove);
+	      self.f7View.off('swipebackBeforeChange', self.onSwipeBackBeforeChange);
+	      self.f7View.off('swipebackAfterChange', self.onSwipeBackAfterChange);
+	      self.f7View.off('swipebackBeforeReset', self.onSwipeBackBeforeReset);
+	      self.f7View.off('swipebackAfterReset', self.onSwipeBackAfterReset);
+	      if (self.f7View.destroy) { self.f7View.destroy(); }
+	    }
+
 	    f7.routers.views.splice(f7.routers.views.indexOf(self.routerData), 1);
 	    self.routerData = null;
 	    delete self.routerData;
@@ -53030,27 +53601,35 @@
 	  F7View.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
-	    el.addEventListener('swipeback:move', self.onSwipeBackMove);
-	    el.addEventListener('swipeback:beforechange', self.onSwipeBackBeforeChange);
-	    el.addEventListener('swipeback:afterchange', self.onSwipeBackAfterChange);
-	    el.addEventListener('swipeback:beforereset', self.onSwipeBackBeforeReset);
-	    el.addEventListener('swipeback:afterreset', self.onSwipeBackAfterReset);
-	    el.addEventListener('tab:show', self.onTabShow);
-	    el.addEventListener('tab:hide', self.onTabHide);
-	    el.addEventListener('view:init', self.onViewInit);
-	    self.setState({
-	      pages: []
-	    });
 	    self.$f7ready(function (f7Instance) {
+	      f7Instance.on('tabShow', self.onTabShow);
+	      f7Instance.on('tabHide', self.onTabHide);
 	      self.routerData = {
 	        el: el,
 	        component: self,
-	        instance: null
+	        pages: self.state.pages,
+	        instance: null,
+
+	        setPages: function setPages(pages) {
+	          self.setState({
+	            pages: pages
+	          });
+	        }
+
 	      };
 	      f7.routers.views.push(self.routerData);
 	      if (!self.props.init) { return; }
-	      self.routerData.instance = f7Instance.views.create(el, Utils$1.noUndefinedProps(self.props));
+	      self.routerData.instance = f7Instance.views.create(el, Object.assign({
+	        on: {
+	          init: self.onViewInit
+	        }
+	      }, Utils$1.noUndefinedProps(self.props)));
 	      self.f7View = self.routerData.instance;
+	      self.f7View.on('swipebackMove', self.onSwipeBackMove);
+	      self.f7View.on('swipebackBeforeChange', self.onSwipeBackBeforeChange);
+	      self.f7View.on('swipebackAfterChange', self.onSwipeBackAfterChange);
+	      self.f7View.on('swipebackBeforeReset', self.onSwipeBackBeforeReset);
+	      self.f7View.on('swipebackAfterReset', self.onSwipeBackAfterReset);
 	    });
 	  };
 
@@ -53196,14 +53775,14 @@
 	    pageComponentLoader: function pageComponentLoader(routerEl, component, componentUrl, options, resolve, reject) {
 	      var router = this;
 	      var el = routerEl;
-	      var routerComponent;
+	      var viewRouter;
 	      f7.routers.views.forEach(function (data) {
 	        if (data.el && data.el === routerEl) {
-	          routerComponent = data.component;
+	          viewRouter = data;
 	        }
 	      });
 
-	      if (!routerComponent || !routerComponent.state.pages) {
+	      if (!viewRouter) {
 	        reject();
 	        return;
 	      }
@@ -53221,13 +53800,15 @@
 	          options.props || {}
 	        ),
 	      };
-	      routerComponent.$f7router = router;
-	      routerComponent.$f7route = options.route;
+	      if (viewRouter.component) {
+	        viewRouter.component.$f7router = router;
+	        viewRouter.component.$f7route = options.route;
+	      }
 
 	      var resolved;
 	      function onDidUpdate(componentRouterData) {
-	        if (componentRouterData.component !== routerComponent || resolved) { return; }
-	        eventsEmitter.off('viewRouterDidUpdate', onDidUpdate);
+	        if (componentRouterData !== viewRouter || resolved) { return; }
+	        f7.events.off('viewRouterDidUpdate', onDidUpdate);
 
 	        var pageEl = el.children[el.children.length - 1];
 	        pageData.el = pageEl;
@@ -53236,10 +53817,10 @@
 	        resolved = true;
 	      }
 
-	      eventsEmitter.on('viewRouterDidUpdate', onDidUpdate);
+	      f7.events.on('viewRouterDidUpdate', onDidUpdate);
 
-	      routerComponent.state.pages.push(pageData);
-	      routerComponent.setState({ pages: routerComponent.state.pages });
+	      viewRouter.pages.push(pageData);
+	      viewRouter.setPages(viewRouter.pages);
 	    },
 	    removePage: function removePage($pageEl) {
 	      if (!$pageEl) { return; }
@@ -53251,10 +53832,10 @@
 	        router.app.$($pageEl).remove();
 	        return;
 	      }
-	      var routerComponent;
+	      var viewRouter;
 	      f7.routers.views.forEach(function (data) {
 	        if (data.el && data.el === router.el) {
-	          routerComponent = data.component;
+	          viewRouter = data;
 	        }
 	      });
 
@@ -53269,11 +53850,11 @@
 	      if (!pageEl) { return; }
 
 	      var pageComponentFound;
-	      routerComponent.state.pages.forEach(function (page, index) {
+	      viewRouter.pages.forEach(function (page, index) {
 	        if (page.el === pageEl) {
 	          pageComponentFound = true;
-	          routerComponent.state.pages.splice(index, 1);
-	          routerComponent.setState({ pages: routerComponent.state.pages });
+	          viewRouter.pages.splice(index, 1);
+	          viewRouter.setPages(viewRouter.pages);
 	        }
 	      });
 	      if (!pageComponentFound) {
@@ -53284,13 +53865,13 @@
 	      var router = this;
 	      if (!tabEl) { reject(); }
 
-	      var tabsComponent;
+	      var tabRouter;
 	      f7.routers.tabs.forEach(function (tabData) {
 	        if (tabData.el && tabData.el === tabEl) {
-	          tabsComponent = tabData.component;
+	          tabRouter = tabData;
 	        }
 	      });
-	      if (!tabsComponent) {
+	      if (!tabRouter) {
 	        reject();
 	        return;
 	      }
@@ -53309,13 +53890,15 @@
 	        ),
 	      };
 
-	      tabsComponent.$f7router = router;
-	      tabsComponent.$f7route = options.route;
+	      if (tabRouter.component) {
+	        tabRouter.component.$f7router = router;
+	        tabRouter.component.$f7route = options.route;
+	      }
 
 	      var resolved;
 	      function onDidUpdate(componentRouterData) {
-	        if (componentRouterData.component !== tabsComponent || resolved) { return; }
-	        eventsEmitter.off('tabRouterDidUpdate', onDidUpdate);
+	        if (componentRouterData !== tabRouter || resolved) { return; }
+	        f7.events.off('tabRouterDidUpdate', onDidUpdate);
 
 	        var tabContentEl = tabEl.children[0];
 	        resolve(tabContentEl);
@@ -53323,32 +53906,31 @@
 	        resolved = true;
 	      }
 
-	      eventsEmitter.on('tabRouterDidUpdate', onDidUpdate);
+	      f7.events.on('tabRouterDidUpdate', onDidUpdate);
 
-	      tabsComponent.setState({ tabContent: tabContent });
+	      tabRouter.setTabContent(tabContent);
 	    },
 	    removeTabContent: function removeTabContent(tabEl) {
 	      if (!tabEl) { return; }
 
-	      var tabComponent;
+	      var tabRouter;
 	      f7.routers.tabs.forEach(function (tabData) {
 	        if (tabData.el && tabData.el === tabEl) {
-	          tabComponent = tabData.component;
+	          tabRouter = tabData;
 	        }
 	      });
-	      var hasComponent = !!tabComponent.state.tabContent;
-	      if (!tabComponent || !hasComponent) {
+	      var hasComponent = tabRouter && tabRouter.component;
+	      if (!tabRouter || !hasComponent) {
 	        tabEl.innerHTML = ''; // eslint-disable-line
 	        return;
 	      }
-	      tabComponent.setState({ tabContent: null });
+	      tabRouter.setTabContent(null);
 	    },
 	    modalComponentLoader: function modalComponentLoader(rootEl, component, componentUrl, options, resolve, reject) {
 	      var router = this;
-	      var modalsComponent = f7.routers.modals && f7.routers.modals.component;
-	      var modalsComponentEl = f7.routers.modals && f7.routers.modals.el;
+	      var modalsRouter = f7.routers.modals;
 
-	      if (!modalsComponent || !modalsComponent.state.modals) {
+	      if (!modalsRouter) {
 	        reject();
 	        return;
 	      }
@@ -53366,37 +53948,39 @@
 	          options.props || {}
 	        ),
 	      };
-	      modalsComponent.$f7router = router;
-	      modalsComponent.$f7route = options.route;
+	      if (modalsRouter.component) {
+	        modalsRouter.component.$f7router = router;
+	        modalsRouter.component.$f7route = options.route;
+	      }
 
 	      var resolved;
-	      function onDidUpdate(componentRouterData) {
-	        if (componentRouterData.component !== modalsComponent || resolved) { return; }
-	        eventsEmitter.off('modalsRouterDidUpdate', onDidUpdate);
+	      function onDidUpdate() {
+	        if (resolved) { return; }
+	        f7.events.off('modalsRouterDidUpdate', onDidUpdate);
 
-	        var modalEl = modalsComponentEl.children[modalsComponentEl.children.length - 1];
+	        var modalEl = modalsRouter.el.children[modalsRouter.el.children.length - 1];
 	        modalData.el = modalEl;
 
 	        resolve(modalEl);
 	        resolved = true;
 	      }
 
-	      eventsEmitter.on('modalsRouterDidUpdate', onDidUpdate);
+	      f7.events.on('modalsRouterDidUpdate', onDidUpdate);
 
-	      modalsComponent.state.modals.push(modalData);
-	      modalsComponent.setState({ modals: modalsComponent.state.modals });
+	      modalsRouter.modals.push(modalData);
+	      modalsRouter.setModals(modalsRouter.modals);
 	    },
 	    removeModal: function removeModal(modalEl) {
-	      var modalsComponent = f7.routers.modals && f7.routers.modals.component;
-	      if (!modalsComponent) { return; }
+	      var modalsRouter = f7.routers.modals;
+	      if (!modalsRouter) { return; }
 
 	      var modalDataToRemove;
-	      modalsComponent.state.modals.forEach(function (modalData) {
+	      modalsRouter.modals.forEach(function (modalData) {
 	        if (modalData.el === modalEl) { modalDataToRemove = modalData; }
 	      });
 
-	      modalsComponent.state.modals.splice(modalsComponent.state.modals.indexOf(modalDataToRemove), 1);
-	      modalsComponent.setState({ modals: modalsComponent.state.modals });
+	      modalsRouter.modals.splice(modalsRouter.modals.indexOf(modalDataToRemove), 1);
+	      modalsRouter.setModals(modalsRouter.modals);
 	    },
 	  },
 	};
@@ -53412,6 +53996,7 @@
 
 	    var Framework7 = this;
 	    f7.Framework7 = Framework7;
+	    f7.events = new Framework7.Events();
 
 	    var Extend = params.React ? params.React.Component : react.Component; // eslint-disable-line
 
@@ -53491,7 +54076,7 @@
 	};
 
 	/**
-	 * Framework7 React 4.4.0
+	 * Framework7 React 4.5.0
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -53499,7 +54084,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: May 13, 2019
+	 * Released on: August 21, 2019
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -55481,6 +56066,7 @@
 	    this.state = {
 	      wheePickerValue: { hex: '#00ff00' },
 	      spectrumPickerValue: { hex: '#ff0000' },
+	      hsSpectrumPickerValue: { hex: '#ff0000' },
 	      rgbPickerValue: { hex: '#0000ff' },
 	      rgbaPickerValue: { hex: '#ff00ff' },
 	      hsbPickerValue: { hex: '#00ff00' },
@@ -55547,6 +56133,19 @@
 	            } },
 	            react.createElement( 'i', {
 	              slot: "media", style: {backgroundColor: ("" + (this.state.spectrumPickerValue.hex))}, className: "icon demo-list-icon spectrum-picker-target" })
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "Hue-Saturation Spectrum" ),
+	        react.createElement( BlockHeader, null, "HS Spectrum + Brightness Slider in Popover" ),
+	        react.createElement( List, { noHairlinesMd: true },
+	          react.createElement( ListInput, {
+	            type: "colorpicker", placeholder: "Color", readonly: true, value: this.state.hsSpectrumPickerValue, onColorPickerChange: function (value) { return this$1.setState({hsSpectrumPickerValue: value}); }, colorPickerParams: {
+	              modules: ['hs-spectrum', 'brightness-slider'],
+	              targetEl: '.hs-spectrum-picker-target'
+	            } },
+	            react.createElement( 'i', {
+	              slot: "media", style: {backgroundColor: ("" + (this.state.hsSpectrumPickerValue.hex))}, className: "icon demo-list-icon hs-spectrum-picker-target" })
 	          )
 	        ),
 
@@ -59520,13 +60119,13 @@
 	      var items = ref.items;
 	      var songs = ref.songs;
 	      var authors = ref.authors;
-	      var picURL = "https://cdn.framework7.io/placeholder/abstract-88x88-" + (Math.round(Math.random() * 10)) + ".jpg";
+	      var picURL = "https://cdn.framework7.io/placeholder/abstract-88x88-" + ((Math.floor(Math.random() * 10) + 1)) + ".jpg";
 	      var song = songs[Math.floor(Math.random() * songs.length)];
 	      var author = authors[Math.floor(Math.random() * authors.length)];
 	      items.push({
 	        title: song,
 	        author: author,
-	        img: picURL,
+	        cover: picURL,
 	      });
 	      self.setState({ items: items });
 
@@ -62094,7 +62693,7 @@
 	  defaultExport.prototype.render = function render () {
 	    return (
 	      react.createElement( Page, { onPageInit: this.onPageInit.bind(this), onPageBeforeRemove: this.onPageBeforeRemove.bind(this) },
-	        react.createElement( Navbar$2, { title: "Action Sheet", backLink: "Back" },
+	        react.createElement( Navbar$2, { title: "Tooltip", backLink: "Back" },
 	          react.createElement( NavRight, null,
 	            react.createElement( Link, { className: "navbar-tooltip" },
 	              react.createElement( Icon, { ios: "f7:info_round_fill", aurora: "f7:info_round_fill", md: "material:info_outline" })

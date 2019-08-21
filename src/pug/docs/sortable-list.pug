@@ -16,21 +16,34 @@ block content
     h2 Sortable List Layout
     p Let's look at layout structure of sortable lists in your list views:
     :code(lang="html")
-          &lt;!-- Additional "sortable" class on list block --&gt;
-          &lt;div class="list sortable"&gt;
-              &lt;li&gt;
-                  &lt;div class="item-content"&gt;
-                      &lt;div class="item-media"&gt;...&lt;/div&gt;
-                      &lt;div class="item-inner"&gt;...&lt;/div&gt;
-                  &lt;/div&gt;
-                  &lt;!-- Sortable handler element --&gt;
-                  &lt;div class="sortable-handler"&gt;&lt;/div&gt;
-              &lt;/li&gt;
-          &lt;/div&gt;
+      <!-- Additional "sortable" class on list block -->
+      <div class="list sortable">
+          <li>
+              <div class="item-content">
+                  <div class="item-media">...</div>
+                  <div class="item-inner">...</div>
+              </div>
+              <!-- Sortable handler element -->
+              <div class="sortable-handler"></div>
+          </li>
+      </div>
     p Where:
     ul
       li <code>sortable-handler</code> - "draggable" element (hidden by default) that allows you to sort current list view element
-    p As you may see it is pretty simple, all you need is to add <code><b>sortable</b></code> class to list block and put <code><b>&lt;div class="sortable-handler"&gt;&lt;/div&gt;</b></code> as a direct child of <code>&lt;li&gt;</code>
+    p As you may see it is pretty simple, all you need is to add <code><b>sortable</b></code> class to list block and put <code><b>&lt;div class="sortable-handler"&gt;&lt;/div&gt;</b></code> as a direct child of <code>&lt;li&gt;</code>.
+    p If we need to disable sorting on some specific items we can add <code>no-sorting</code> or <code>disallow-sorting</code> class to those items:
+    :code(lang="html")
+      <!-- Additional "sortable" class on list block -->
+      <div class="list sortable">
+          <!-- disable sorting for this item -->
+          <li class="no-sorting">...</li>
+          
+          <!-- sortable items -->
+          <li>...</li>
+          <li>...</li>
+      </div>
+    p Note, that it makes sense and work only on first or last items in the list and won't work correctly if you disable sortable for some of the items in the middle.
+
     h2 Sortable App Methods
     p To enable/disable sorting mode on sortable list we need to use following app methods:
     .method-wrap
@@ -71,7 +84,9 @@ block content
           td moveElements
           td boolean
           td true
-          td When enabled then it will move (reorder) HTML elements according to new sortable order. It is useful to disable it if you use other library for DOM manipulation, like React or Vue
+          td
+            p When enabled then it will move (reorder) HTML elements according to new sortable order. It is useful to disable it if you use other library for DOM manipulation, like React or Vue.
+            p It is also possible to overwrite this behavior for specific lists by adding <code>data-sortable-move-elements="true"</code> or <code>data-sortable-move-elements="false"</code> attribute to list element.
     p To change these parameters we need to pass them on app init under <code>sortable</code> property, for example:
     :code(lang="js")
           var app = new Framework7({

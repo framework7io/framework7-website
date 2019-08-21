@@ -6,7 +6,7 @@ block content
       <f7-view main>
         <f7-page>
           <f7-navbar title="Form Inputs"></f7-navbar>
-
+          <div v-if="showPage">
           <f7-block-title>Full Layout / Inline Labels</f7-block-title>
           <f7-list inline-labels no-hairlines-md>
             <f7-list-input
@@ -743,6 +743,7 @@ block content
               clear-button
             ></f7-list-input>
           </f7-list>
+          </div>
         </f7-page>
       </f7-view>
     </f7-app>
@@ -771,4 +772,16 @@ block content
     }
 
   script.
-    var component = {}
+    var component = {
+      data() {
+        return {
+          showPage: false,
+        };
+      },
+      mounted() {
+        const self = this;
+        setTimeout(()=>{
+          self.showPage = true;
+        },0);
+      },
+    }

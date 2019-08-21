@@ -59,7 +59,7 @@ block scripts
     $ptrContent.on('ptr:refresh', function (e) {
       // Emulate 2s loading
       setTimeout(function () {
-        var picURL = 'https://cdn.framework7.io/placeholder/abstract-88x88-' + (Math.round(Math.random() * 10)) + '.jpg';
+        var picURL = 'https://cdn.framework7.io/placeholder/abstract-88x88-' + (Math.floor(Math.random() * 10) + 1) + '.jpg';
         var song = songs[Math.floor(Math.random() * songs.length)];
         var author = authors[Math.floor(Math.random() * authors.length)];
         var itemHTML =
