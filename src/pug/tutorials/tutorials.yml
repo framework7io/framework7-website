@@ -1,4 +1,14 @@
 -
+  date: Aug 21, 2019
+  video: true
+  title: "User Authentication for Framework7 with Firebase"
+  url: https://youtu.be/cYlSZLV5qN4
+  author:
+    name: Timo Ernst
+    url: https://www.timo-ernst.net
+  badges:
+  - v4
+-
   date: May 21, 2019
   video: true
   title: "Get Started with Framework7 in 2019 using CLI Tutorial"
