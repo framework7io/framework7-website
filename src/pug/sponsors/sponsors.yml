@@ -36,10 +36,6 @@ topSupporter:
   link: https://usave.co.uk/utilities/broadband
   imageUrl: "#{cdn}/i/sponsors/usave.png"
 -
-  title: Unlikely IT
-  link: https://unlikelyit.com/
-  imageUrl: "#{cdn}/i/sponsors/unlikely-it.png"
--
   title: Kidoverse - App for kids to learn, play, create and explore
   link: https://kidoverse.app/
   imageUrl: "#{cdn}/i/sponsors/kidoverse.png"
