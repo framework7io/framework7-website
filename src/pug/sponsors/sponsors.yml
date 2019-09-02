@@ -24,6 +24,10 @@ silver:
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
 -
+  title: Bid4Papers - Write My Essay
+  link: https://bid4papers.com/write-my-essay.html
+  imageUrl: "#{cdn}/i/sponsors/bid4papers.png"
+-
   title: COLOGNE WEBDESIGN
   link: https://www.colognewebdesign.de/
   imageUrl: "#{cdn}/i/sponsors/colognewebdesign.png"
@@ -47,10 +51,6 @@ topSupporter:
   title: HICAPPS - Health Informatics Custom APPs
   link: https://hicapps.cl/web/
   imageUrl: "#{cdn}/i/sponsors/hicapps.png"
--
-  title: EduBirdie - Professional Essay Writing Service
-  link: https://edubirdie.com/
-  imageUrl: "#{cdn}/i/sponsors/birdie.png"
 -
   title: Blokt - Cryptocurrency News
   link: https://blokt.com/
