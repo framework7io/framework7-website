@@ -25,6 +25,13 @@ $('.home-header .mobile-preview-button').click((e) => {
   e.preventDefault();
   $('.home-header').toggleClass('mobile-preview-enabled');
 });
+$('.home-header a[href="#get-started"]').click((e) => {
+  e.preventDefault();
+  $('#get-started')[0].scrollIntoView({
+    behavior: 'smooth',
+    block: 'center',
+  });
+});
 
 
 // Docs clickable titles

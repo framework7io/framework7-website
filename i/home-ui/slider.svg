@@ -8,9 +8,9 @@
             <g id="Stunning-UI" transform="translate(360.000000, 2696.000000)">
                 <g id="UI-White" transform="translate(39.000000, 110.000000)">
                     <g id="slider" transform="translate(230.000000, 4.000000)">
-                        <rect id="Rectangle" fill="#FFFFFF" x="0" y="13" width="71" height="8" rx="4"></rect>
+                        <rect id="Rectangle" fill="#EE350F" x="0" y="13" width="71" height="8" rx="4"></rect>
                         <rect id="Rectangle" fill="#80030C" x="63" y="13" width="67" height="8" rx="4"></rect>
-                        <circle id="Oval" fill="#FFFFFF" cx="65" cy="17" r="17"></circle>
+                        <circle id="Oval" fill="#EE350F" cx="65" cy="17" r="17"></circle>
                     </g>
                 </g>
             </g>

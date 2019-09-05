@@ -133,6 +133,7 @@ main {
 .github-buttons {
   font-size: 0;
   line-height: 18px;
+  color: rgba(0, 0 ,0, 0.7);
   i {
     width: 20px;
     height: 20px;
@@ -141,7 +142,7 @@ main {
   }
   a {
     display: inline-block;
-    color: #fff;
+    color: inherit;
     text-decoration: none;
     vertical-align: middle;
     font-size: 12px;
@@ -150,7 +151,7 @@ main {
       font-size: 15px;
     }
     &:hover {
-      opacity: 0.7;
+      text-decoration: underline;
     }
   }
   a:first-child {
@@ -243,15 +244,13 @@ main {
 }
 
 .patreon-button {
-  color: #fff;
   font-size: 0;
   line-height: 22px;
-  padding: 0 10px;
   display: inline-block;
   border-radius: 11px;
-  font-weight: bold;
-  &:hover {
-    background: @lightBrownColor;
+  font-weight: 500;
+  &:hover .patreon-text {
+    text-decoration: underline;
   }
   .patreon-logo {
     display: inline-block;
@@ -273,7 +272,7 @@ main {
       width: @size * 0.75;
       height: @size * 0.75;
       position: absolute;
-      background: #fff;
+      background: @redColor;
       border-radius: 10px;
       content: '';
       right: 0;

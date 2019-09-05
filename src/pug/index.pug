@@ -3,14 +3,18 @@ html
   head
     meta(charset="utf-8")
     title Framework7 - Full Featured Framework For Building iOS, Android & Desktop Apps
-    meta(property="og:image", content=cdn + "/i/share-banner.jpg")
     meta(name="viewport" content="width=device-width, viewport-fit=cover")
-    meta(name="twitter:card", content="summary")
+    meta(name="theme-color", content="#EE350F")
+    meta(property="og:title" content="Framework7 - Full Featured Framework For Building iOS, Android & Desktop Apps")
+    meta(property="og:description" content="Build full featured iOS, Android & Desktop apps")
+    meta(property="og:image", content=cdn + "/i/share-banner.jpg")
+    meta(property="og:site_name", content="Framework7")
+    meta(name="twitter:card", content="summary_large_image")
     meta(name="twitter:site", content="@framework7io")
     meta(name="twitter:creator", content="@framework7io")
     meta(name="twitter:title", content="Framework7")
-    meta(name="twitter:description", content="Full featured framework for building iOS, Android & Desktop apps")
-    meta(name="twitter:image", content=cdn + "/i/logo.svg")
+    meta(name="twitter:description", content="Build full featured iOS, Android & Desktop apps")
+    meta(name="twitter:image", content=cdn + "/i/share-banner.jpg")
     link(rel="stylesheet", href=cdn + "/css/main.css")
     link(rel="shortcut icon" href="/i/favicon.png")
   body
@@ -18,18 +22,18 @@ html
       .center
         .content
           .logo-title
-            | !{inlineSvg('i/logo-text-white.svg')}
-          .slogan Full featured framework<br>for building <b>iOS</b>, <b>Android</b> & <b>Desktop</b> apps
+            | !{inlineSvg('i/logo-text-icon.svg')}
+          .slogan Build full featured iOS, Android & Desktop apps
           .buttons-links
             .buttons
-              a(href="#get-started") Get Started
-              a(href="https://github.com/framework7io/Framework7/releases/", target="_blank") Download
+              a(href="#get-started")
+                i.f7-icons rocket_fill
+                span Get Started
             .links
               a(href="/docs/") Docs
               a(href="/templates/") Templates
               a(href="/showcase/") Apps Showcase
               a(href="http://forum.framework7.io") Forum
-          include _carbon
           .release-info MIT Licensed, <b>v#{release.version}</b> released on #{release.date}
           .patreon-github
             include _github-buttons
@@ -42,36 +46,37 @@ html
               .theme-icon
                 i.f7-icons logo_ios
               .fullscreen
-                i.f7-icons enter
+                i.f7-icons expand
             a(href="kitchen-sink/core/?theme=md", target="_blank")
               .theme-icon
                 i.f7-icons logo_android
               .fullscreen
-                i.f7-icons enter
+                i.f7-icons expand
             a(href="kitchen-sink/core/?theme=aurora", target="_blank")
               .theme-icon
                 i.f7-icons device_desktop
               .fullscreen
-                i.f7-icons enter
+                i.f7-icons expand
         .mobile-preview-button
           i.f7-icons arrow_left
-          i.f7-icons phone_portrait
+          i.f7-icons device_phone_portrait
 
-    .home-block
+    .home-block.home-block-red
       .center
+        include _carbon
         .text
           p Framework7 - is a <b>free and open source</b> framework to develop mobile, desktop or web apps with <b>native look and feel</b>. It is also an indispensable prototyping tool to show working app prototype as soon as possible in case you need to.
-    .home-block.home-block-red
+    .home-block.home-block-left
       .center
         h2 Build Apps For Any Platform
         .logos.logos-platforms
-          img(src=cdn + "/i/brand-logos/pwa-white.svg")
-          img(src=cdn + "/i/brand-logos/cordova-white.svg")
-          img(src=cdn + "/i/brand-logos/electron-white.svg")
+          img(src=cdn + "/i/brand-logos/pwa-red.svg")
+          img(src=cdn + "/i/brand-logos/cordova-red.svg")
+          img(src=cdn + "/i/brand-logos/electron-red.svg")
         .text
           p With such stunning set of UI components that Framework7 provides right from the box, it allows to create web apps, progressive web apps (PWA) and iOS and Android apps with native look and feel.
           p Framework7 paired with extra tools like Electron and NW.js allows to build native desktop apps.
-    .home-block
+    .home-block.home-block-right
       .center
         h2 Use Anything You Love!
         .logos.logos-tools
@@ -84,7 +89,7 @@ html
         .text
           p You can use any tools you love when working with Framework7. It doesn’t force you to use anything except plain HTML, CSS and JavaScript. Creating apps with Framework7 is easy as creating website.
           p And in addition to vanilla JavaScript library, Framework7 comes with Vue.js & React components to bring components-syntax, structured data and data bindings with power and simplicity of Vue.js & React.
-    .home-block.home-block-red
+    .home-block.home-block-left
       .center
         h2 Stunning Set Of UI Elements
         .ui
@@ -135,56 +140,62 @@ html
             .link-text Showcase of apps made with Framework7
 
 
-    .home-block.home-block-red.home-get-started#get-started
+    .home-block.home-get-started#get-started
       .center
         h2 Let’s Get Started <i class="f7-icons">rocket_fill</i>
         .terminal
           | <span>$</span> npm i framework7-cli cordova -g
           <br>
           | <span>$</span> framework7 create --ui
-        h3 Documentation
         .buttons
           a(href="/docs/") Framework7 Core
           a(href="/vue/") Framework7 Vue
           a(href="/react/") Framework7 React
-    .home-block.home-sponsors
+
+    .home-block.home-support
       .center
         h2 Support Framework7
         .text
           p Framework7 is an MIT-licensed open source project with its ongoing development made possible entirely by the support of #[a(href="/sponsors/") sponsors] and  #[a(href="https://github.com/framework7io/framework7/blob/master/BACKERS.md" target="_blank") these awesome backers].
           p
-            a(href="https://www.patreon.com/vladimirkharlampidi", target="_blank").home-sponsors-button Support Framework7 #[i.f7-icons thumbs_up]
-        h3 Sponsors
+            a(href="https://www.patreon.com/vladimirkharlampidi", target="_blank").home-support-button Support Framework7 #[i.f7-icons hand_thumbsup_fill]
+    .home-block.home-sponsors
+      .center
+        h2 Sponsors
         .home-sponsors-list
           - var sponsors = getYamlData('sponsors/sponsors.yml');
           if (sponsors.diamond)
             each sponsor in sponsors.diamond
-              a(href=sponsor.link, target="_blank").home-sponsor-diamond
-                .sponsor-badge.sponsor-badge-diamond(title="Diamond Sponsor")
-                img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+              .home-sponsors-item.home-sponsor-diamond
+                a(href=sponsor.link, target="_blank")
+                  .sponsor-badge.sponsor-badge-diamond(title="Diamond Sponsor")
+                  img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.platinum)
             each sponsor in sponsors.platinum
-              a(href=sponsor.link, target="_blank").home-sponsor-platinum
-                .sponsor-badge.sponsor-badge-platinum(title="Platinum Sponsor")
-                img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+              .home-sponsors-item.home-sponsor-platinum
+                a(href=sponsor.link, target="_blank")
+                  .sponsor-badge.sponsor-badge-platinum(title="Platinum Sponsor")
+                  img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.gold)
             each sponsor in sponsors.gold
-              a(href=sponsor.link, target="_blank").home-sponsor-gold
-                .sponsor-badge.sponsor-badge-gold(title="Gold Sponsor")
-                img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+              .home-sponsors-item.home-sponsor-gold
+                a(href=sponsor.link, target="_blank")
+                  img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.silver)
             each sponsor in sponsors.silver
-              a(href=sponsor.link, target="_blank")
-                .sponsor-badge.sponsor-badge-silver(title="Silver Sponsor")
-                img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+              .home-sponsors-item.home-sponsor-silver
+                a(href=sponsor.link, target="_blank")
+                  img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+            .home-sponsors-separator
           if (sponsors.topSupporter)
             each sponsor in sponsors.topSupporter
-              a(href=sponsor.link, target="_blank")
-                .sponsor-badge.sponsor-badge-topSupporter(title="Top Supporter")
-                img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+              .home-sponsors-item
+                a(href=sponsor.link, target="_blank")
+                  .sponsor-badge.sponsor-badge-topSupporter(title="Top Supporter")
+                  img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
 
     include _footer
     include _footer-scripts

@@ -1,48 +1,40 @@
 .home-header {
   height: 700px;
   position: relative;
-  overflow: hidden;
   box-sizing: border-box;
   position: relative;
-  color:#fff;
+  color:#000;
   z-index: 1;
-  background-image: linear-gradient(to bottom, @pinkColor, @redColor 30%);
+  background: #fff;
   .mobile-preview-button {
     display: none;
   }
   > .center {
-    padding-top: 30px;
-    padding-bottom: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     height: 100%;
     position: relative;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
   }
-  .rocket {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    color: @brownColor;
-    opacity: 0.1;
-    font-size: 800px;
-  }
   .logo-title {
-    display: flex;
-    align-items: center;
+    margin-bottom: auto;
     svg {
-      width: 600px;
+      width: 400px;
       height: auto;
-      max-width: 90%;
+      max-width: 107%;
+      margin-top: -2%;
+      margin-bottom: -6.5%;
+      margin-right: -4%;
     }
   }
   .slogan {
-    font-size: 31px;
+    font-size: 44px;
     margin: 0;
-    font-weight: 500;
+    font-weight: bold;
     line-height: 1.2;
-    margin: 20px 0 60px;
+    margin: 20px 0 20px;
   }
   .content {
     float: left;
@@ -50,43 +42,48 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    height: 100%;
     flex-shrink: 10;
+    width: 60%;
+    height: 100%;
   }
   .buttons-links {
     align-self: flex-start;
+    width: 100%;
   }
   .buttons {
     a {
-      background: #fff;
+      background: @redColor;
+      color: #fff;
       text-align: center;
       box-sizing: border-box;
-      display: inline-block;
-      line-height: 44px;
-      width: 200px;
-      height: 44px;
-      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 200px;
+      height: 60px;
+      font-size: 24px;
       text-decoration: none;
       border-radius: 44px;
       transition: 200ms;
       font-weight: bold;
-      + a {
-        margin-left: 20px;
+      padding: 0 30px;
+      box-shadow: 0px 10px 20px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.3);
+      i {
+        font-size: 34px;
+        margin-right: 5px;
       }
     }
     a:hover {
-      background: rgba(255,255,255,0.8);
+      box-shadow: 0px 10px 20px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.5);
     }
     a:active {
-      background: rgba(255,255,255,0.65);
+      box-shadow: 0px 5px 10px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.2);
     }
   }
 
   .links {
     margin: 20px 0;
-    text-align: center;
     a {
-      color:#fff;
       border: none;
       border-radius: 0;
       padding: 0;
@@ -95,13 +92,13 @@
       border-radius: 50px;
       transition: 200ms;
       text-align: center;
-      font-weight: bold;
+      font-weight: 500;
       font-size: 16px;
       + a {
         margin-left: 15px;
       }
       &:hover {
-        opacity: 0.5;
+        text-decoration: underline;
       }
     }
   }
@@ -109,10 +106,10 @@
     flex-shrink: 0;
     box-shadow: 0px 0px 20px 10px rgba(0,0,0,0.2);
     width: 375px;
-    height: 667px;
-    padding: 10px 7px;
-    border-radius: 20px;
-    background: @darkBrownColor;
+    height: 680px;
+    padding: 5px;
+    border-radius: 15px;
+    background: #000;
     align-self: center;
     margin-left: 60px;
     position: relative;
@@ -138,35 +135,44 @@
       right: 100%;
       top: 70px;
       white-space: nowrap;
+      background: #fff;
+      box-shadow: -8px 2px 7px rgba(0,0,0,0.1);
+      border-radius: 5px 0 0 5px;
+      padding: 3px;
       i {
-        font-size: 28px;
-        width: 28px;
-        height: 28px;
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
         display: block;
       }
       a {
         text-align: center;
-        background: @darkBrownColor;
+        background: #fff;
         text-decoration: none;
-        color:#fff;
-        padding: 5px 5px 5px 15px;
-        border-radius: 35px 0 0 35px;
+        color:#777;
+        padding: 5px;
         display: block;
         font-size: 12px;
-        transition: 200ms;
-        opacity: 0.5;
         position: relative;
-        box-shadow: -8px 2px 7px rgba(0,0,0,0.1);
         font-weight: bold;
+        background: #ddd;
         span {
           display: block;
         }
-        &.active,
         &:hover {
-          opacity: 1;
+          background: #ddd;
+          color: #555;
         }
-        + a {
-          margin-top: 10px;
+        &:first-child {
+          border-radius: 4px 4px 0 0;
+        }
+        &:last-child {
+          border-radius: 0 0 4px 4px;
+        }
+        &.active {
+          background: @redColor;
+          color: #fff;
+          box-shadow: 0px 0px 5px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.5);
         }
         &.active:hover {
           .theme-icon {
@@ -176,10 +182,6 @@
             opacity: 1;
           }
         }
-      }
-      .theme-icon,
-      .fullscreen {
-        transition: 100ms;
       }
       .fullscreen {
         position: absolute;
@@ -194,27 +196,16 @@
         display: flex;
         align-content: center;
         align-items: center;
-        justify-content: flex-end;
-        padding-right: 5px;
+        justify-content: center;
         box-sizing: border-box;
       }
     }
   }
 
-
-
-  .carbon {
-    float: none;
-    margin: 0;
-    margin-top: auto;
-    border: none;
-    background: rgba(255,255,255,0.1);
-  }
-
   .release-info {
-    font-size: 14px;
-    margin-top: 40px;
-    color: #fff;
+    font-size: 12px;
+    margin-top: auto;
+    color: rgba(0, 0 ,0, 0.7);
     a {
       color:inherit;
       text-decoration: none;
@@ -228,6 +219,7 @@
     align-items: center;
     margin-top: 10px;
     flex-wrap: nowrap;
+    justify-content: flex-start;
   }
   .github-buttons {
     margin-right: 20px;
@@ -248,38 +240,41 @@
 @media (max-width: 900px) {
   .home-header {
     .slogan {
-      font-size: 24px;
-    }
-    .buttons a {
-      width: 160px;
+      font-size: 32px;
     }
   }
 }
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .home-header {
     height: auto;
+    overflow: hidden;
 
     .release-info {
       text-align: center;
-    }
-    .carbon {
-      max-width: 100%;
-      box-sizing: border-box;
     }
     .content {
       width: 100%;
       align-items: center;
     }
     .logo-title {
-      justify-content: center;
+      text-align: center;
+      max-width: 500px;
+      svg {
+        max-width: 100%;
+      }
     }
     .slogan {
       text-align: center;
-      margin-bottom: 20px;
-      line-height: 1.5;
+      margin: 40px 0;
+      font-size: 44px;
     }
     .buttons-links {
       align-self: center;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .links {
+      text-align: center;
     }
     .patreon-github {
       flex-wrap: wrap;
@@ -293,14 +288,6 @@
     }
     .buttons {
       text-align: center;
-      a {
-        margin-left: 10px;
-        margin-right: 10px;
-        margin-top: 10px;
-        + a {
-          margin-left: 10px;
-        }
-      }
     }
     .phone {
       position: absolute;
@@ -325,20 +312,24 @@
       justify-content: center;
       align-items: center;
       position: absolute;
-      right: 0;
+      right: 2px;
       top: 40%;
-      height: 40px;
-      margin-top: -20px;
-      width: 40px;
-      color: @yellowColor;
+      height: 34px;
+      margin-top: -17px;
+      width: 34px;
+      background-color: @redColor;
+      color: #fff;
+      border-radius: 50%;
+      box-shadow: 0px 5px 10px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.3);
       cursor: pointer;
       i:first-child {
         position: absolute;
         font-size: 24px;
-        right: 30px;
+        right: 26px;
+        color: @redColor;
       }
       i {
-        font-size: 32px;
+        font-size: 24px;
       }
     }
     .content,
@@ -366,6 +357,30 @@
       i:first-child {
         transform: translateX(40px) rotate(180deg);
       }
+    }
+  }
+}
+@media (max-width: 480px) {
+  .home-header {
+    .logo-title {
+      max-width: 320px;
+    }
+    .buttons, .links, .release-info {
+    }
+    .slogan {
+      font-size: 34px;
+    }
+    .patreon-github {
+      width: 100%;
+      .github-buttons,
+      .patreon-button {
+        margin-left: 0;
+        margin-top: 10px;
+        margin-right: 10px;
+      }
+    }
+    .links {
+      margin-bottom: 0;
     }
   }
 }

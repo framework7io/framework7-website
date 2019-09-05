@@ -8,8 +8,8 @@
             <g id="Stunning-UI" transform="translate(360.000000, 2696.000000)">
                 <g id="UI-White" transform="translate(39.000000, 110.000000)">
                     <g id="toggle-ios">
-                        <rect id="Rectangle" stroke="#FFFFFF" stroke-width="2" x="1" y="1" width="78" height="40" rx="20"></rect>
-                        <circle id="Oval" fill="#FFFFFF" cx="58" cy="21" r="17"></circle>
+                        <rect id="Rectangle" stroke="#EE350F" stroke-width="2" x="1" y="1" width="78" height="40" rx="20"></rect>
+                        <circle id="Oval" fill="#EE350F" cx="58" cy="21" r="17"></circle>
                     </g>
                 </g>
             </g>

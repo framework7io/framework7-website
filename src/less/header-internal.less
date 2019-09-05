@@ -1,11 +1,9 @@
 .internal-header {
-  color: #fff;
   box-sizing: border-box;
   position: relative;
   z-index: 500;
-  background: linear-gradient(to bottom, @pinkColor 0%, @redColor 40%);
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 15px;
+  padding-bottom: 20px;
 
   > .center {
     display: flex;
@@ -14,14 +12,15 @@
     height: 100%;
   }
   .logo-holder {
+    margin-top: -10px;
     margin-right: 30px;
-    margin-bottom: -30px;
+    margin-bottom: -10px;
     width: 160px;
     height: 140px;
     flex-shrink: 0;
   }
   .logo {
-    background: url('../i/logo.svg') no-repeat center;
+    background: #fff url('../i/logo.svg') no-repeat center;
     background-size: contain;
     display: block;
     width: 140px;
@@ -30,12 +29,11 @@
     margin-right: auto;
     border-radius: 50%;
     box-sizing: border-box;
-    box-shadow: 0px 10px 50px rgba(0,0,0,0.3);
+    box-shadow: 0px 10px 20px rgba(red(@redColor),green(@redColor),blue(@redColor), 0.4);
     transition: 600ms;
     transition-property: box-shadow, transform;
-    border: 4px solid #fff;
     &:hover {
-      box-shadow: 0px 30px 100px rgba(0,0,0,0.3);
+      box-shadow: 0px 30px 100px rgba(red(@redColor),green(@redColor),blue(@redColor), 0.4);
       transform: scale(1.05);
     }
   }
@@ -65,7 +63,6 @@
     margin: 0;
     padding: 0;
     display: flex;
-    margin-left: -10px;
     font-weight: 500;
     font-size: 15px;
     li {
@@ -138,17 +135,16 @@
 
     }
     > li + li {
-      margin-left: 5px;
+      margin-left: 15px;
     }
     > li > a {
       color: inherit;
       text-decoration: none;
-      padding: 0 10px;
       display: block;
-      border-radius: 10px;
     }
-    > li:hover > a, > li.active > a {
-      background: @lightBrownColor;
+    > li:hover > a,
+    > li.active > a {
+      color: @redColor;
     }
   }
   .carbon {
@@ -160,20 +156,14 @@
     bottom: 0;
     flex-shrink: 0;
     border: none;
-    background: rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.1);
+    a {
+      color: #000;
+    }
   }
   .patreon-github {
     display: flex;
     margin-top: 20px;
-    margin-bottom: -10px;
-
-  }
-  .patreon-button {
-    margin-left: -10px;
-    font-weight: bold;
-    &:not(:hover) {
-      background: none;
-    }
   }
   .github-buttons {
     margin-left: 20px;
@@ -343,7 +333,8 @@
       width: 55px;
       height: 55px;
       margin-left: -10px;
-      margin-top: -5px;
+      margin-top: 0;
+      box-shadow: 0px 5px 10px rgba(red(@redColor),green(@redColor),blue(@redColor), 0.4);
     }
     .title img {
       width: calc(100% - 50px);

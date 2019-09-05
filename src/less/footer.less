@@ -2,7 +2,8 @@
 footer {
   background: #fff;
   color: #000;
-  border-top: 1px solid rgba(0,0,0,0.05);
+  // border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: 10px solid @redColor;
   position: relative;
   z-index: 100;
   font-size: 14px;
@@ -14,16 +15,13 @@ footer {
     text-decoration: none;
   }
   a:hover {
-    text-decoration: none;
+    text-decoration: underline;
   }
   .links {
     display: flex;
     justify-content: space-between;
     a {
       color: inherit;
-    }
-    a:hover {
-      color: @redColor;
     }
   }
   .links-block {
