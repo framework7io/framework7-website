@@ -96,7 +96,7 @@ block content
           // later remove tabShow handler:
           app.off('tabShow', onTabShow);
     h4 Remove All Handlers
-    p If we don't pass second handler argument to <code>.off</code> method then we will remove all handlers assigned for this event:
+    p If we don't pass second handler argument to `.off` method then we will remove all handlers assigned for this event:
     :code(lang="js")
           // Remove all tabShow handlers
           app.off('tabShow');
@@ -128,7 +128,7 @@ block content
           popup.emit('local::something'); // will only trigger "something" event assigned to popup instance above
 
     h2 Event Handler Context
-    p Event handler context (<code>this</code>) will always point to instance where it was assigned:
+    p Event handler context (`this`) will always point to instance where it was assigned:
     :code(lang="js")
           app.on('popupOpen', function () {
             console.log(this); // -> app instance

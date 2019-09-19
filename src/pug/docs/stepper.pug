@@ -180,7 +180,7 @@ block content
           td inputEl
           td HTMLElement<br>string
           td
-          td Stepper input element or CSS selector of input element. If not specified, will try to look for <code>&lt;input&gt;</code> inside of stepper element
+          td Stepper input element or CSS selector of input element. If not specified, will try to look for `&lt;input&gt;` inside of stepper element
         tr
           td step
           td number
@@ -220,7 +220,7 @@ block content
           td valueEl
           td HTMLElement<br>string
           td
-          td Stepper value element or CSS selector of this element where Stepper will insert value. If not specified, and there is no <code>inputEl</code> passed will try to look for <code>&lt;div class="stepper-value"&gt;</code> inside of stepper element
+          td Stepper value element or CSS selector of this element where Stepper will insert value. If not specified, and there is no `inputEl` passed will try to look for `&lt;div class="stepper-value"&gt;` inside of stepper element
         tr
           td formatValue
           td function (value)
@@ -230,7 +230,7 @@ block content
           td manualInputMode
           td boolean
           td false
-          td Enables manual input mode. This mode allows to type value from keyboar and check fractional part with defined accurancy. Also, <code>step</code> parameter is ignored when typing in this mode.
+          td Enables manual input mode. This mode allows to type value from keyboar and check fractional part with defined accurancy. Also, `step` parameter is ignored when typing in this mode.
         tr
           td decimalPoint
           td number
@@ -260,7 +260,7 @@ block content
     p So to create Stepper we have to call:
     :code(lang="js")
           var stepper = app.stepper.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>stepper</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `stepper` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -314,10 +314,10 @@ block content
           td Decrement stepper value, similar to clicking on its "minus" button
         tr
           td stepper.plus()
-          td Alias for <code>stepper.increment()</code>
+          td Alias for `stepper.increment()`
         tr
           td stepper.minus()
-          td Alias for <code>stepper.decrement()</code>
+          td Alias for `stepper.decrement()`
         tr
           td stepper.destroy()
           td Destroys stepper instance
@@ -356,7 +356,7 @@ block content
           td Stepper Element<span>&lt;div class="stepper"&gt;</span>
           td Event will be triggered right before Stepper instance will be destroyed
     h3 App and Stepper Instance Events
-    p Stepper instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>stepper</code>.
+    p Stepper instance emits events on both self instance and app instance. App instance events has same names prefixed with `stepper`.
     table.events-table.double-events-table
       thead
         tr
@@ -384,7 +384,7 @@ block content
           td <span>(stepper)</span>
           td app
     h2 Stepper Auto Initialization
-    p If you don't need to use Stepper API and your Stepper is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>stepper-init</code> class:
+    p If you don't need to use Stepper API and your Stepper is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional `stepper-init` class:
     :code(lang="html")
           <!-- Add stepper-init class -->
           <div class="stepper stepper-init">
@@ -394,7 +394,7 @@ block content
             </div>
             <div class="stepper-button-plus"></div>
           </div>
-    p In this case if you need to access created Stepper instance you can use the <code>app.stepper.get</code> app method:
+    p In this case if you need to access created Stepper instance you can use the `app.stepper.get` app method:
     :code(lang="js")
           var stepper = app.stepper.get('.stepper');
 
@@ -404,7 +404,7 @@ block content
     p When using auto init you may need to pass additional parameters. It can be done with two ways:
     ul
       li
-        p If you use stepper with input then <code>step</code>, <code>min</code>, <code>max</code>, <code>value</code> parameters can be set from same input attributes:
+        p If you use stepper with input then `step`, `min`, `max`, `value` parameters can be set from same input attributes:
         :code(lang="html")
               <!-- min, max, step, value parameters will be set for same input attributes -->
               <div class="stepper stepper-init">
@@ -415,7 +415,7 @@ block content
                 <div class="stepper-button-plus"></div>
               </div>
       li
-        p Otherwise, if you don't have input inside, you can set all available parameters via <code>data-</code> attributes on stepper element.
+        p Otherwise, if you don't have input inside, you can set all available parameters via `data-` attributes on stepper element.
         :code(lang="html")
               <!-- parameters set via data- attributes -->
               <div

@@ -134,7 +134,7 @@ block content
           td openIn
           td string
           td auto
-          td Can be <code>auto</code>, <code>popover</code> (to open picker in popover), <code>sheet</code> (to open in sheet modal). In case of <code>auto</code> will open in sheet modal on small screens and in popover on large screens.
+          td Can be `auto`, `popover` (to open picker in popover), `sheet` (to open in sheet modal). In case of `auto` will open in sheet modal on small screens and in popover on large screens.
         tr
           td inputEl
           td string or HTMLElement
@@ -184,7 +184,7 @@ block content
           td view
           td object
           td
-          td View where to set routing when <code>routableModals</code> enabled. Defaults to parent view of <code>inputEl</code> or main view if not found parent view
+          td View where to set routing when `routableModals` enabled. Defaults to parent view of `inputEl` or main view if not found parent view
         tr
           th(colspan="4") Render Functions
         tr
@@ -214,7 +214,7 @@ block content
                     }
                   })
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>picker</code> property to set defaults for all pickers. For example:
+      p Note that all following parameters can be used in global app parameters under `picker` property to set defaults for all pickers. For example:
       :code(lang="js")
             var app = new Framework7({
               picker: {
@@ -223,7 +223,7 @@ block content
               }
             });
     h3 Column Parameters
-    p When we configure Picker we need to pass <code>cols</code> parameter. It is an array where each item is an object with column parameters:
+    p When we configure Picker we need to pass `cols` parameter. It is an array where each item is an object with column parameters:
     table.params-table
       thead
         tr
@@ -266,14 +266,14 @@ block content
           td content
           td string
           td
-          td Should be specified for divider-column (<code>divider:true</code>) with content of the column
+          td Should be specified for divider-column (`divider:true`) with content of the column
         tr
           td onChange
           td function(picker, value, displayValue)
           td
           td Callback function that will be executed when picker value changed.
     h2 Picker Methods & Properties
-    p After we initialize Picker we have its initialized instance in variable (like <code>picker</code> variable in examples above) with helpful methods and properties:
+    p After we initialize Picker we have its initialized instance in variable (like `picker` variable in examples above) with helpful methods and properties:
     table.methods-table
       tbody
         tr
@@ -295,10 +295,10 @@ block content
           td Dom7 instance with picker HTML element
         tr
           td picker.inputEl
-          td Picker input HTML element (passed in <code>inputEl</code> parameter)
+          td Picker input HTML element (passed in `inputEl` parameter)
         tr
           td picker.$inputEl
-          td Dom7 instance with picker input HTML element (passed in <code>inputEl</code> parameter)
+          td Dom7 instance with picker input HTML element (passed in `inputEl` parameter)
         tr
           td picker.value
           td Array where each item represents current selected value for each column
@@ -307,16 +307,16 @@ block content
           td Array with specified Picker columns. Each column also has its own methods and properties (look below)
         tr
           td picker.opened
-          td <code>true</code> if Picker is currently opened
+          td `true` if Picker is currently opened
         tr
           td picker.inline
-          td <code>true</code> when inline picker is in use
+          td `true` when inline picker is in use
         tr
           td picker.url
-          td Picker URL (that was passed in <code>url</code> parameter)
+          td Picker URL (that was passed in `url` parameter)
         tr
           td picker.view
-          td Picker View (that was passed in <code>view</code> parameter) or found parent view
+          td Picker View (that was passed in `view` parameter) or found parent view
         tr
           td picker.params
           td Object with initialization parameters
@@ -324,13 +324,13 @@ block content
           th(colspan="2") Methods
         tr
           td picker.setValue(values, duration)
-          td Set new picker value. <code>values</code> is array where each item represents value for each column. <code>duration</code> - transition duration in ms
+          td Set new picker value. `values` is array where each item represents value for each column. `duration` - transition duration in ms
         tr
           td picker.getValue()
           td Returns current picker value
         tr
           td picker.addValue()
-          td Adds value to the values array. Useful in case if multiple selection is enabled (with <code>multiple: true</code> parameter)
+          td Adds value to the values array. Useful in case if multiple selection is enabled (with `multiple: true` parameter)
         tr
           td picker.open()
           td Open Picker
@@ -356,7 +356,7 @@ block content
           td picker.emit(<span>event</span>, <span>...args</span>)
           td Fire event on instance
     h3 Column Methods & Properties
-    p Each column in <code>picker.cols</code> array also has its own useful methods and properties.
+    p Each column in `picker.cols` array also has its own useful methods and properties.
     :code(lang="js")
       //Get first column
       var col = picker.cols[0];
@@ -387,7 +387,7 @@ block content
           th(colspan="2") Methods
         tr
           td col.setValue(value, duration)
-          td Set new value for current column. <code>value</code> is a new value, <code>duration</code> - transition duration in ms
+          td Set new value for current column. `value` is a new value, `duration` - transition duration in ms
         tr
           td col.replaceValues(values, displayValues)
           td Replace column values and displayValues with new ones
@@ -418,7 +418,7 @@ block content
           td Picker Element<span>&lt;div class="picker"&gt;</span>
           td Event will be triggered after Picker completes its closing animation
     h3 App and Picker Instance Events
-    p Picker instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>picker</code>.
+    p Picker instance emits events on both self instance and app instance. App instance events has same names prefixed with `picker`.
     table.events-table
       thead
         tr

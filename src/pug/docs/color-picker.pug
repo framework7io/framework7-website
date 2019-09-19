@@ -133,7 +133,7 @@ block content
           td sliderValueEdiable
           td boolean
           td false
-          td When enabled, it will display sliders values as <code>&lt;input&gt;</code> elements to edit directly
+          td When enabled, it will display sliders values as `&lt;input&gt;` elements to edit directly
         tr
           td barLabel
           td boolean
@@ -148,17 +148,17 @@ block content
           td barValueEdiable
           td boolean
           td false
-          td When enabled, it will display bars values as <code>&lt;input&gt;</code> elements to edit directly
+          td When enabled, it will display bars values as `&lt;input&gt;` elements to edit directly
         tr
           td hexLabel
           td boolean
           td false
-          td When enabled, it will display HEX module label text, e.g. <code>HEX</code>
+          td When enabled, it will display HEX module label text, e.g. `HEX`
         tr
           td hexValueEditable
           td boolean
           td false
-          td When enabled, it will display HEX module value as <code>&lt;input&gt;</code> element to edit directly
+          td When enabled, it will display HEX module value as `&lt;input&gt;` element to edit directly
         tr
           th(colspan="4") Labels Texts
         tr
@@ -220,12 +220,12 @@ block content
           td openIn
           td string
           td popover
-          td Can be <code>auto</code>, <code>popover</code> (to open color picker in popover), <code>sheet</code> (to open in sheet modal), <code>popup</code> (to open in Popup) or <code>page</code> (to open in Page). In case of <code>auto</code> it will as specified <code>openInPhone</code> parameter on small screens and in popover on large screens.
+          td Can be `auto`, `popover` (to open color picker in popover), `sheet` (to open in sheet modal), `popup` (to open in Popup) or `page` (to open in Page). In case of `auto` it will as specified `openInPhone` parameter on small screens and in popover on large screens.
         tr
           td openInPhone
           td string
           td popup
-          td Defines how to open Color Picker on small screens when <code>openIn: "auto"</code>
+          td Defines how to open Color Picker on small screens when `openIn: "auto"`
         tr
           td inputEl
           td string or HTMLElement
@@ -240,7 +240,7 @@ block content
           td targetElSetBackgroundColor
           td boolean
           td false
-          td When enabled and you have passed <code>targetEl</code> then it will set <code>background-color</code> with currently selected value to target element.
+          td When enabled and you have passed `targetEl` then it will set `background-color` with currently selected value to target element.
         tr
           td scrollToInput
           td boolean
@@ -310,7 +310,7 @@ block content
           td view
           td object
           td
-          td View where to set routing when <code>routableModals</code> enabled. Defaults to parent view of <code>inputEl</code> or main view if not found parent view
+          td View where to set routing when `routableModals` enabled. Defaults to parent view of `inputEl` or main view if not found parent view
         tr
           td backdrop
           td boolean
@@ -355,7 +355,7 @@ block content
                 }
               })
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>colorPicker</code> property to set defaults for all color pickers. For example:
+      p Note that all following parameters can be used in global app parameters under `colorPicker` property to set defaults for all color pickers. For example:
       :code(lang="js")
         var app = new Framework7({
           colorPicker: {
@@ -364,7 +364,7 @@ block content
           }
         });
     h2 Color Picker Modules
-    p You can create your own Color Picker layout by specifing modules you want to use in <code>modules</code> array parameter on Color Picker creation. There are following modules available:
+    p You can create your own Color Picker layout by specifing modules you want to use in `modules` array parameter on Color Picker creation. There are following modules available:
     table.methods-table
       tbody
         tr
@@ -376,7 +376,7 @@ block content
         tr
           td sb-spectrum
           td
-            p Saturation-Brightness spectrum. It is recommended to use it with <code>hue-slider</code>
+            p Saturation-Brightness spectrum. It is recommended to use it with `hue-slider`
             p
               img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-sb-spectrum.png")
         tr
@@ -388,7 +388,7 @@ block content
         tr
           td hs-spectrum
           td
-            p Hue-Saturation spectrum. It is recommended to use it with <code>brightness-slider</code>
+            p Hue-Saturation spectrum. It is recommended to use it with `brightness-slider`
             p
               img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-hs-spectrum.png")
         tr
@@ -424,7 +424,7 @@ block content
         tr
           td palette
           td
-            p Module displays palette colors specified in <code>palette</code> parameter
+            p Module displays palette colors specified in `palette` parameter
             p
               img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-palette.png")
         tr
@@ -447,7 +447,7 @@ block content
               img(width="320" style="max-width: 100%" src=cdn+"/i/docs/color-picker-initial-current-colors.png")
     h3 Custom Modules
     p It is also possible to use and create custom color picker modules. Such custom modules can be used to create custom pickers or just to add some custom content between modules.
-    p To add custom color picker module, we need to pass an object instead of string to <code>modules</code> array parameter. Custom module object can contain following methods. Each method receives color picker instance as an argument.
+    p To add custom color picker module, we need to pass an object instead of string to `modules` array parameter. Custom module object can contain following methods. Each method receives color picker instance as an argument.
     table.methods-table
       tbody
         tr
@@ -487,35 +487,35 @@ block content
         tr
           td hex
           td string
-          td HEX color value, e.g. <code>#ff0000</code>
+          td HEX color value, e.g. `#ff0000`
         tr
           td rgb
           td array
-          td Array with RGB ([Red, Green, Blue]) color, e.g. <code>[255, 100, 20]</code>
+          td Array with RGB ([Red, Green, Blue]) color, e.g. `[255, 100, 20]`
         tr
           td hsl
           td array
-          td Array with HSL ([Hue, Saturation, Lightness]) color, e.g. <code>[320, 0.1, 0.9]</code>
+          td Array with HSL ([Hue, Saturation, Lightness]) color, e.g. `[320, 0.1, 0.9]`
         tr
           td hsb
           td array
-          td Array with HSB/V ([Hue, Saturation, Brightness]) color, e.g. <code>[180, 0.5, 0.3]</code>
+          td Array with HSB/V ([Hue, Saturation, Brightness]) color, e.g. `[180, 0.5, 0.3]`
         tr
           td alpha
           td number
-          td Alpha (opacity) value (from 0 to 1), e.g. <code>0.6</code>
+          td Alpha (opacity) value (from 0 to 1), e.g. `0.6`
         tr
           td hue
           td number
-          td Hue value (from 0 to 360), e.g. <code>320</code>
+          td Hue value (from 0 to 360), e.g. `320`
         tr
           td rgba
           td array
-          td Array with RGBA ([Red, Green, Blue, Alpha]) color, e.g. <code>[255, 100, 20, 0.5]</code>
+          td Array with RGBA ([Red, Green, Blue, Alpha]) color, e.g. `[255, 100, 20, 0.5]`
         tr
           td hsla
           td array
-          td Array with HSLA ([Hue, Saturation, Lightness, Alpha]) color, e.g. <code>[320, 0.1, 0.9, 0.2]</code>
+          td Array with HSLA ([Hue, Saturation, Lightness, Alpha]) color, e.g. `[320, 0.1, 0.9, 0.2]`
     p For example:
     :code(lang="js")
       var colorPicker = app.colorPicker.create({
@@ -529,7 +529,7 @@ block content
       })
 
     h2 Color Picker Methods & Properties
-    p After we initialize Color Picker we have its initialized instance in variable (like <code>colorPicker</code> variable in examples above) with helpful methods and properties:
+    p After we initialize Color Picker we have its initialized instance in variable (like `colorPicker` variable in examples above) with helpful methods and properties:
     table.methods-table
       tbody
         tr
@@ -551,31 +551,31 @@ block content
           td Dom7 instance with color picker HTML element
         tr
           td colorPicker.inputEl
-          td Color Picker input HTML element (passed in <code>inputEl</code> parameter)
+          td Color Picker input HTML element (passed in `inputEl` parameter)
         tr
           td colorPicker.$inputEl
-          td Dom7 instance with color picker input HTML element (passed in <code>inputEl</code> parameter)
+          td Dom7 instance with color picker input HTML element (passed in `inputEl` parameter)
         tr
           td colorPicker.targetEl
-          td Color Picker target HTML element (passed in <code>targetEl</code> parameter)
+          td Color Picker target HTML element (passed in `targetEl` parameter)
         tr
           td colorPicker.$targetEl
-          td Dom7 instance with color picker target HTML element (passed in <code>targetEl</code> parameter)
+          td Dom7 instance with color picker target HTML element (passed in `targetEl` parameter)
         tr
           td colorPicker.value
           td Object with <a href="#color-picker-value">color picker value</a>
         tr
           td colorPicker.opened
-          td <code>true</code> if color picker is currently opened
+          td `true` if color picker is currently opened
         tr
           td colorPicker.inline
-          td <code>true</code> when inline color picker is in use
+          td `true` when inline color picker is in use
         tr
           td colorPicker.url
-          td Color Picker URL (that was passed in <code>url</code> parameter)
+          td Color Picker URL (that was passed in `url` parameter)
         tr
           td colorPicker.view
-          td Color Picker View (that was passed in <code>view</code> parameter) or found parent view
+          td Color Picker View (that was passed in `view` parameter) or found parent view
         tr
           td colorPicker.params
           td Object with initialization parameters
@@ -583,7 +583,7 @@ block content
           th(colspan="2") Methods
         tr
           td colorPicker.setValue(<span>value</span>)
-          td Set new color picker value. <code>value</code> is the <a href="#color-picker-value">color picker value</a> object which can be specified partially:
+          td Set new color picker value. `value` is the <a href="#color-picker-value">color picker value</a> object which can be specified partially:
             :code(lang="js")
               var colorPicker = app.colorPicker.create({
                 value: '#ff0000',
@@ -649,7 +649,7 @@ block content
           td colorpicker:closed
           td Event will be triggered after Color Picker completes its closing animation
     h3 App and Color Picker Instance Events
-    p Color Picker instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>colorPicker</code>.
+    p Color Picker instance emits events on both self instance and app instance. App instance events has same names prefixed with `colorPicker`.
     table.events-table
       thead
         tr

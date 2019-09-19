@@ -83,13 +83,13 @@ block content
         tr
           td openIn
           td string
-          td <code>page</code>
-          td Defines how to open Autocomplete, can be <code>page</code> or <code>popup</code> (for Standalone) or <code>dropdown</code>
+          td `page`
+          td Defines how to open Autocomplete, can be `page` or `popup` (for Standalone) or `dropdown`
         tr
           td source
           td function (query, render)
           td
-          td Function which accepts search <code>query</code> and <code>render</code> function where you need to pass array with matched items
+          td Function which accepts search `query` and `render` function where you need to pass array with matched items
         tr
           td limit
           td number
@@ -99,7 +99,7 @@ block content
           td preloader
           td boolean
           td false
-          td Set to <code>true</code> to include Preloader to autocomplete layout
+          td Set to `true` to include Preloader to autocomplete layout
         tr
           td preloaderColor
           td string
@@ -126,7 +126,7 @@ block content
           td requestSourceOnOpen
           td boolean
           td false
-          td If enabled, then it will request passed to <code>source</code> function on autocomplete open
+          td If enabled, then it will request passed to `source` function on autocomplete open
         tr
           td openerEl
           td string<br>HTMLElement
@@ -146,7 +146,7 @@ block content
           td pageTitle
           td string
           td
-          td Autocomplete page title. If nothing is specified and passed <code>openerEl</code> is an item of List View, then text value of <code>item-title</code> element will be used
+          td Autocomplete page title. If nothing is specified and passed `openerEl` is an item of List View, then text value of `item-title` element will be used
         tr
           td searchbarPlaceholder
           td string
@@ -166,22 +166,22 @@ block content
           td multiple
           td boolean
           td false
-          td Set to <code>true</code> to allow multiple selections
+          td Set to `true` to allow multiple selections
         tr
           td closeOnSelect
           td boolean
           td false
-          td Set to <code>true</code> and autocomplete will be closed when user picks value. Not available if <code>multiple</code> is enabled
+          td Set to `true` and autocomplete will be closed when user picks value. Not available if `multiple` is enabled
         tr
           td autoFocus
           td boolean
           td false
-          td Set to <code>true</code> to auto focus search field on autocomplete open
+          td Set to `true` to auto focus search field on autocomplete open
         tr
           td animate
           td boolean
           td true
-          td Set to <code>false</code> to open standalone autocomplete without animation
+          td Set to `false` to open standalone autocomplete without animation
         tr
           td navbarColorTheme
           td string
@@ -196,7 +196,7 @@ block content
           td routableModals
           td boolean
           td true
-          td Will add opened autocomplete modal (when <code>openIn: 'popup'</code>) to router history which gives ability to close autocomplete by going back in router history and set current route to the autocomplete modal
+          td Will add opened autocomplete modal (when `openIn: 'popup'`) to router history which gives ability to close autocomplete by going back in router history and set current route to the autocomplete modal
         tr
           td url
           td string
@@ -218,7 +218,7 @@ block content
           td inputEvents
           td string
           td input
-          td Allows to configure input events used to handle Autcomplete actions and source request. Can be changed for example to <code>change keyup compositionend</code> if you use keyboard with composition of Chinese characters
+          td Allows to configure input events used to handle Autcomplete actions and source request. Can be changed for example to `change keyup compositionend` if you use keyboard with composition of Chinese characters
         tr
           td highlightMatches
           td boolean
@@ -238,12 +238,12 @@ block content
           td updateInputValueOnSelect
           td boolean
           td true
-          td If <code>true</code> then value of related input will be update as well
+          td If `true` then value of related input will be update as well
         tr
           td expandInput
           td boolean
           td false
-          td If <code>true</code> then input which is used as <b>item-input</b> in List View will be expanded to full screen wide during dropdown visible.
+          td If `true` then input which is used as <b>item-input</b> in List View will be expanded to full screen wide during dropdown visible.
         tr
           td dropdownContainerEl
           td string<br>HTMLElement
@@ -298,7 +298,7 @@ block content
                     }
                   })
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>autocomplete</code> property to set defaults for all autcompletes. For example:
+      p Note that all following parameters can be used in global app parameters under `autocomplete` property to set defaults for all autcompletes. For example:
       :code(lang="js")
             var app = new Framework7({
               autocomplete: {
@@ -307,7 +307,7 @@ block content
               }
             });
     h2 Autocomplete Methods & Properties
-    p After we initialize Autocomplete we have its initialized instance in variable (like <code>autocomplete</code> variable in example above) with helpful methods and properties:
+    p After we initialize Autocomplete we have its initialized instance in variable (like `autocomplete` variable in example above) with helpful methods and properties:
     table.methods-table
       tbody
         tr
@@ -338,10 +338,10 @@ block content
           td Dom7 instance of Autcomplete dropdown
         tr
           td autocomplete.url
-          td Autcomplete URL (that was passed in <code>url</code> parameter)
+          td Autcomplete URL (that was passed in `url` parameter)
         tr
           td autocomplete.view
-          td Autcomplete View (that was passed in <code>view</code> parameter) or found parent view
+          td Autcomplete View (that was passed in `view` parameter) or found parent view
         tr
           td autocomplete.el
           td HTML element of Autcomplete container: dropdown element, or popup element, or page element. Available when Autocomplete opened
@@ -384,7 +384,7 @@ block content
           td autocomplete.emit(<span>event</span>, <span>...args</span>)
           td Fire event on instance
     h2 Autocomplete Events
-    p Autocomplete instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>autocomplete</code>.
+    p Autocomplete instance emits events on both self instance and app instance. App instance events has same names prefixed with `autocomplete`.
     table.events-table
       thead
         tr
@@ -397,7 +397,7 @@ block content
           td change
           td autocomplete
           td(rowspan="2") <span>autocomplete, value</span>
-          td(rowspan="2") Event will be triggered when Autocomplete value changed. Returned <code>value</code> is an array with selected items
+          td(rowspan="2") Event will be triggered when Autocomplete value changed. Returned `value` is an array with selected items
         tr
           td autocompleteChange
           td app
@@ -743,6 +743,7 @@ block content
       :code(lang="html")
             <div class="page">
               <div class="navbar">
+                <div class="navbar-bg"></div>
                 <div class="navbar-inner sliding">
                   ...
                   <!-- Put searchbar in subnavbar -->

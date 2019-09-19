@@ -46,11 +46,11 @@ block content
           </div>
     p Where:
     ul
-      li <code>swipeout-content</code> - wrapper for your list element. This container will move during swipe over the list item
-      li <code>swipeout-actions-left</code> - container with left swipeout action buttons/links
-      li <code>swipeout-actions-right</code> - container with right swipeout action buttons/links
-      li <code>swipeout-close</code> - additional class on swipeout link that will close swipeout element when you click this link
-      li <code>swipeout-delete</code> - additional class on swipeout link that will delete swipeout list item when you click this link
+      li `swipeout-content` - wrapper for your list element. This container will move during swipe over the list item
+      li `swipeout-actions-left` - container with left swipeout action buttons/links
+      li `swipeout-actions-right` - container with right swipeout action buttons/links
+      li `swipeout-close` - additional class on swipeout link that will close swipeout element when you click this link
+      li `swipeout-delete` - additional class on swipeout link that will delete swipeout list item when you click this link
     .important-note
       p Note that <code><strong>swipeout-content</strong></code> and <code><strong>swipeout-actions-left/right</strong></code> should be direct children of <strong>&lt;li&gt;</strong>
     p If you have only "item-content" you can simplify layout by adding "item-content" class to "swipeout-content":
@@ -180,11 +180,11 @@ block content
           |  - <span class="parameter-type">function</span> - callback function will be executed after swipeout element completes its delete animation right before it will be removed from DOM
     .method-wrap
       p
-        span.method app.swipeout.el</span> - property. Currently opened swipeout HTMLElement. Or <code>undefined</code> if there is no opened swipeout element
+        span.method app.swipeout.el</span> - property. Currently opened swipeout HTMLElement. Or `undefined` if there is no opened swipeout element
 
 
     h2 Swipeout App Parameters
-    p It is possible to configure global swipeout behavior on app initialisation by passing swipeout related paremeters under <code>swipeout</code> property.
+    p It is possible to configure global swipeout behavior on app initialisation by passing swipeout related paremeters under `swipeout` property.
     table.params-table
       thead
         tr
@@ -212,8 +212,8 @@ block content
           td removeElementsTimeout
           td number
           td 0
-          td Delay in ms to remove swipeout item if <code>removeElementsWithTimeout</code> is enabled.
-    p To change these parameters we need to pass them on app init under <code>swipeout</code> property, for example:
+          td Delay in ms to remove swipeout item if `removeElementsWithTimeout` is enabled.
+    p To change these parameters we need to pass them on app init under `swipeout` property, for example:
     :code(lang="js")
           var app = new Framework7({
             swipeout: {

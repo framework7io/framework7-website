@@ -96,22 +96,22 @@ block content
           td view
           td object
           td
-          td Link to initialized View instance if you want use "page" Photo Browser type or where to set routing when <code>routableModals</code> enabled. By default, if not specified, it will be opened in Main View.
+          td Link to initialized View instance if you want use "page" Photo Browser type or where to set routing when `routableModals` enabled. By default, if not specified, it will be opened in Main View.
         tr
           td type
           td string
           td standalone
-          td Define how Photo Browser should be opened. Could be <code>standalone</code> (will be opened as an overlay with custom transition effect), <code>popup</code> (will be opened as <a href="popup.html">popup</a>), <code>page</code> (will be injected to View and loaded as a new page).
+          td Define how Photo Browser should be opened. Could be `standalone` (will be opened as an overlay with custom transition effect), `popup` (will be opened as <a href="popup.html">popup</a>), `page` (will be injected to View and loaded as a new page).
         tr
           td theme
           td string
           td light
-          td Photo Browser color theme, could be <code>light</code> or <code>dark</code>
+          td Photo Browser color theme, could be `light` or `dark`
         tr
           td captionsTheme
           td string
           td
-          td Captions color theme, could be also <code>light</code> or <code>dark</code>. By default, equal to <code>theme</code> parameter
+          td Captions color theme, could be also `light` or `dark`. By default, equal to `theme` parameter
         tr
           td navbar
           td boolean
@@ -227,7 +227,7 @@ block content
                   })
 
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>photoBrowser</code> property to set defaults for all photo browsers. For example:
+      p Note that all following parameters can be used in global app parameters under `photoBrowser` property to set defaults for all photo browsers. For example:
       :code(lang="js")
             var app = new Framework7({
               photoBrowser: {
@@ -235,7 +235,7 @@ block content
               }
             });
     h3 Photos Array
-    p When we initialize Photo Browser we need to pass array with photos/videos in <code>photos</code> parameter. Let's look at different variations of this array:
+    p When we initialize Photo Browser we need to pass array with photos/videos in `photos` parameter. Let's look at different variations of this array:
     :code(lang="js")
           // If we need photo browser with just photos we may pass array with string urls:
           var photos = [
@@ -282,7 +282,7 @@ block content
               '&lt;video src="video2.mp4"&gt;&lt;/video&gt;'
           ];
     h2 Photo Browser Methods & Properties
-    p After we initialize Photo Browser we have its initialized instance in variable (like <code>photoBrowser</code> variable in examples above) with helpful methods and properties:
+    p After we initialize Photo Browser we have its initialized instance in variable (like `photoBrowser` variable in examples above) with helpful methods and properties:
     table.methods-table
       tbody
         tr
@@ -301,16 +301,16 @@ block content
           td Index number of currently active photo slide
         tr
           td photoBrowser.exposed
-          td <code>true</code> if Photo Browser in exposition mode
+          td `true` if Photo Browser in exposition mode
         tr
           td photoBrowser.opened
-          td <code>true</code> if Photo Browser is currently opened
+          td `true` if Photo Browser is currently opened
         tr
           td photoBrowser.url
-          td Photo Browser URL (that was passed in <code>url</code> parameter)
+          td Photo Browser URL (that was passed in `url` parameter)
         tr
           td photoBrowser.view
-          td Photo Browser View (that was passed in <code>view</code> parameter) or found parent view
+          td Photo Browser View (that was passed in `view` parameter) or found parent view
         tr
           td photoBrowser.swiper
           td Contains initialized Swiper instance with all available Swiper <a href="http://idangero.us/swiper/api/#methods" target="_blank">methods and properties</a>
@@ -379,7 +379,7 @@ block content
           td Photo Browser Element
           td Event will be triggered after Photo Browser completes its closing animation
     h3 App and Photo Browser Instance Events
-    p Photo Browser instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>photoBrowser</code>.
+    p Photo Browser instance emits events on both self instance and app instance. App instance events has same names prefixed with `photoBrowser`.
     table.events-table
       thead
         tr

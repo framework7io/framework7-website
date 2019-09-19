@@ -60,13 +60,13 @@ block content
       b Messages page layout:
     ul
       li
-        p <code>messages-content</code> - required additional class for messages wrapper. Should be added to <code>page-content</code>
+        p `messages-content` - required additional class for messages wrapper. Should be added to `page-content`
       li
-        p <code>messages</code> - required additional wrapper for messages bubbles. Required element.
+        p `messages` - required additional wrapper for messages bubbles. Required element.
       li
-        p <code>messages-title</code> - messages title
+        p `messages-title` - messages title
       li
-        p <code>message</code> - single message
+        p `message` - single message
     h3 Single Message Layout
     p Here is a full single message layout:
     :code(lang="html")
@@ -88,41 +88,41 @@ block content
           </div>
     ul
       li
-        p <code>message-avatar</code> - sender avatar, <em>optional</em>
+        p `message-avatar` - sender avatar, <em>optional</em>
       li
-        p <code>message-name</code> - sender name, <em>optional</em>
+        p `message-name` - sender name, <em>optional</em>
       li
-        p <code>message-header</code> - single message header, <em>optional</em>
+        p `message-header` - single message header, <em>optional</em>
       li
-        p <code>message-text-header</code> - text header inside of bubble, <em>optional</em>
+        p `message-text-header` - text header inside of bubble, <em>optional</em>
       li
-        p <code>message-image</code> - message image, <em>optional</em>
+        p `message-image` - message image, <em>optional</em>
       li
-        p <code>message-text</code> - message text, <em>optional</em>
+        p `message-text` - message text, <em>optional</em>
       li
-        p <code>message-text-footer</code> - text footer inside of bubble, <em>optional</em>
+        p `message-text-footer` - text footer inside of bubble, <em>optional</em>
       li
-        p <code>message-footer</code> - footer text after bubble, <em>optional</em>
+        p `message-footer` - footer text after bubble, <em>optional</em>
     h4 Additional classes for single message container
     ul
       li
-        p <code>message-sent</code> - additional class for single message which indicates that this message was sent by user. It stays on right side with green background color.
+        p `message-sent` - additional class for single message which indicates that this message was sent by user. It stays on right side with green background color.
       li
-        p <code>message-received</code> - additional class for single message which indicates that this message was received by user. It stays on left side with grey background color.
+        p `message-received` - additional class for single message which indicates that this message was received by user. It stays on left side with grey background color.
       li
-        p <code>message-tail</code> - additional class for single message (received or sent) to add bubble "tail"
+        p `message-tail` - additional class for single message (received or sent) to add bubble "tail"
       li
-        p <code>message-same-name</code> - additional class for indicating that message has same sender name as previous message
+        p `message-same-name` - additional class for indicating that message has same sender name as previous message
       li
-        p <code>message-same-avatar</code> - additional class for indicating that message has same avatar as previous message
+        p `message-same-avatar` - additional class for indicating that message has same avatar as previous message
       li
-        p <code>message-same-header</code> - additional class for indicating that message has same message-header as previous message
+        p `message-same-header` - additional class for indicating that message has same message-header as previous message
       li
-        p <code>message-same-footer</code> - additional class for indicating that message has same message-footer as previous message
+        p `message-same-footer` - additional class for indicating that message has same message-footer as previous message
       li
-        p <code>message-last</code> - additional class for single message (received or sent) to indicate last received or last sent message in current conversation by one sender
+        p `message-last` - additional class for single message (received or sent) to indicate last received or last sent message in current conversation by one sender
       li
-        p <code>message-first</code> - additional class for single message (received or sent) to indicate first received or first sent message in current conversation by one sender
+        p `message-first` - additional class for single message (received or sent) to indicate first received or first sent message in current conversation by one sender
     h2 Messages App Methods
     p Now, when we have Messages' HTML, we need to initialize it. We need to use related App's method:
     table.methods-table
@@ -211,44 +211,44 @@ block content
           td firstMessageRule
           td function(message, previousMessage, nextMessage)
           td
-          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-first</code> class will be added to message
+          td Function that must return boolean `true` or `false` based on required condition depending on previous and next messages. In case of match then `message-first` class will be added to message
         tr
           td lastMessageRule
           td function(message, previousMessage, nextMessage)
           td
-          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-last</code> class will be added to message
+          td Function that must return boolean `true` or `false` based on required condition depending on previous and next messages. In case of match then `message-last` class will be added to message
         tr
           td tailMessageRule
           td function(message, previousMessage, nextMessage)
           td
-          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-tail</code> class will be added to message
+          td Function that must return boolean `true` or `false` based on required condition depending on previous and next messages. In case of match then `message-tail` class will be added to message
         tr
           td sameNameMessageRule
           td function(message, previousMessage, nextMessage)
           td
-          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-same-name</code> class will be added to message
+          td Function that must return boolean `true` or `false` based on required condition depending on previous and next messages. In case of match then `message-same-name` class will be added to message
         tr
           td sameHeaderMessageRule
           td function(message, previousMessage, nextMessage)
           td
-          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-same-header</code> class will be added to message
+          td Function that must return boolean `true` or `false` based on required condition depending on previous and next messages. In case of match then `message-same-header` class will be added to message
         tr
           td sameFooterMessageRule
           td function(message, previousMessage, nextMessage)
           td
-          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-same-footer</code> class will be added to message
+          td Function that must return boolean `true` or `false` based on required condition depending on previous and next messages. In case of match then `message-same-footer` class will be added to message
         tr
           td sameAvatarMessageRule
           td function(message, previousMessage, nextMessage)
           td
-          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-same-avatar</code> class will be added to message
+          td Function that must return boolean `true` or `false` based on required condition depending on previous and next messages. In case of match then `message-same-avatar` class will be added to message
         tr
           td customClassMessageRule
           td function(message, previousMessage, nextMessage)
           td
           td Function that must return additional message classes as string, based on required condition depending on previous and next messages.
     h2 Single Message Parameters
-    p Let's look on single message parameters object that we should use when we pass <code>messages</code> array:
+    p Let's look on single message parameters object that we should use when we pass `messages` array:
     table.params-table
       thead
         tr
@@ -286,7 +286,7 @@ block content
           td type
           td string
           td sent
-          td Message type - <code>sent</code> or <code>received</code>
+          td Message type - `sent` or `received`
         tr
           td textHeader
           td string
@@ -301,12 +301,12 @@ block content
           td image
           td string
           td
-          td Message image HTML string, e.g. <code>&lt;img src="path/to/image"&gt;</code>. Can be used instead of <code>imageSrc</code> parameter
+          td Message image HTML string, e.g. `&lt;img src="path/to/image"&gt;`. Can be used instead of `imageSrc` parameter
         tr
           td imageSrc
           td string
           td
-          td Message image URL string. Can be used instead of <code>image</code> parameter
+          td Message image URL string. Can be used instead of `image` parameter
         tr
           td isTitle
           td boolean
@@ -321,7 +321,7 @@ block content
           td attrs
           td object
           td
-          td Object with additional HTML attributes to be set on message HTML element. For example to set extra <code>data</code> attributes it should look like:
+          td Object with additional HTML attributes to be set on message HTML element. For example to set extra `data` attributes it should look like:
             :code(lang="js")
               var message = {
                 text: 'Hello!',
@@ -334,7 +334,7 @@ block content
     p So to create Messages we have to call:
     :code(lang="js")
           var messages = app.messages.create({ /* parameters */ })
-    p After we initialize Messages we have its initialized instance in variable (like <code>messages</code> variable in example above) with helpful methods and properties:
+    p After we initialize Messages we have its initialized instance in variable (like `messages` variable in example above) with helpful methods and properties:
     table.methods-table
       tbody
         tr
@@ -344,7 +344,7 @@ block content
           td Object with passed initialization parameters
         tr
           td messages.el
-          td Messages container HTML element (<code>&lt;div class="messages"&gt;</code>)
+          td Messages container HTML element (`&lt;div class="messages"&gt;`)
         tr
           td messages.$el
           td Dom7 element with messages HTML element
@@ -373,7 +373,7 @@ block content
                 |  - <span class="parameter-type">object</span> - <a href="#single-message-parameters">parameters of message</a> to add. Required.
               li
                 span.parameter method
-                |  - <span class="parameter-type">string</span> - (<code>append</code> or <code>prepend</code>) dictates to add new message in the end or in the beginning of messages container. Optional, if not specified, then it will add message depending on <code>newMessagesFirst</code> parameter
+                |  - <span class="parameter-type">string</span> - (`append` or `prepend`) dictates to add new message in the end or in the beginning of messages container. Optional, if not specified, then it will add message depending on `newMessagesFirst` parameter
               li
                 span.parameter animate
                 |  - <span class="parameter-type">boolean</span> - (by default <b>true</b>) You may pass here <b>false</b> and message will be added immediately without any transiton and scrolling animation. Optional.
@@ -393,7 +393,7 @@ block content
             ul.method-parameters
               li
                 span.parameter message
-                |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">number</span> (with index number of message from <code>messages</code> array) of message to remove
+                |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">number</span> (with index number of message from `messages` array) of message to remove
               li.method-returns Method returns Messages instance
         tr
           td messages.removeMessages(<span>messages</span>);
@@ -405,7 +405,7 @@ block content
               li.method-returns Method returns Messages instance
         tr
           td messages.scroll(<span>duration, position</span>);
-          td Scroll messages to top/bottom depending on <code>newMessagesFirst</code> parameter
+          td Scroll messages to top/bottom depending on `newMessagesFirst` parameter
             ul.method-parameters
               li
                 span.parameter duration
@@ -415,7 +415,7 @@ block content
                 |  - <span class="parameter-type">number</span> scroll position in px
         tr
           td messages.renderMessages()
-          td Render messages HTML depending on <code>messages</code> array
+          td Render messages HTML depending on `messages` array
         tr
           td messages.layout();
           td Force messages auto layout
@@ -440,7 +440,7 @@ block content
           td Messages Element<span>&lt;div class="messages"&gt;</span>
           td Event will be triggered right before Messages instance will be destroyed
     h3 App and Messages Instance Events
-    p Messages instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>messages</code>.
+    p Messages instance emits events on both self instance and app instance. App instance events has same names prefixed with `messages`.
     table.events-table.double-events-table
       thead
         tr
@@ -473,6 +473,7 @@ block content
       :code(lang="html")
             <div class="page">
               <div class="navbar">
+                <div class="navbar-bg"></div>
                 <div class="navbar-inner">
                   <div class="title">Messages</div>
                 </div>

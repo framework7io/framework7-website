@@ -52,15 +52,15 @@ block content
             </div>
       p Where
       ul
-        li <code>data-table</code> - main Data Table wrapper. Required
+        li `data-table` - main Data Table wrapper. Required
           ul
-            li <code>table</code> - table itself. Required
+            li `table` - table itself. Required
               ul
-                li <code>thead</code> - table head
-                li <code>tbody</code> - table body. Required
-                li <code>label-cell</code> - main label cell (only one such kind of cell per row, usually first cell)
-                li <code>numeric-cell</code> - cell to display numeric data (right-aligned)
-                li <code>tablet-only</code> - additional class to show this cell/column only on wide tablet devices (iPad)
+                li `thead` - table head
+                li `tbody` - table body. Required
+                li `label-cell` - main label cell (only one such kind of cell per row, usually first cell)
+                li `numeric-cell` - cell to display numeric data (right-aligned)
+                li `tablet-only` - additional class to show this cell/column only on wide tablet devices (iPad)
       h2(data-device-preview="../docs-demos/core/data-table-pagination-footer.html") Pagination Footer
       :code(lang="html")
             <div class="card data-table">
@@ -110,12 +110,12 @@ block content
             </div>
       p Where
       ul
-        li <code>data-table-footer</code> - data table footer main element
+        li `data-table-footer` - data table footer main element
           ul
-            li <code>data-table-rows-select</code> - container with amount per page select
-            li <code>data-table-pagination</code> - container with information about current page and prev/next navigation buttons
+            li `data-table-rows-select` - container with amount per page select
+            li `data-table-pagination` - container with information about current page and prev/next navigation buttons
               ul
-                li <code>data-table-pagination-label</code> - current paging label
+                li `data-table-pagination-label` - current paging label
       h2(data-device-preview="../docs-demos/core/data-table-selectable.html") Selectable Rows
       :code(lang="html")
             <div class="data-table data-table-init card">
@@ -153,7 +153,7 @@ block content
             </div>
       p Where
       ul
-        li <code>data-table-init</code> - additional class to enable JavaScript action required for selectable rows
+        li `data-table-init` - additional class to enable JavaScript action required for selectable rows
         li
           p Checkbox cell. Such cell in table header will select/deselect all rows in table body:
           :code(lang="html")
@@ -209,11 +209,11 @@ block content
       p Where
       ul
         li
-          p <code>input-cell</code> - additional class on table cell required to display input
+          p `input-cell` - additional class on table cell required to display input
         li
-          p <code>&lt;span class="table-head-label"&gt;</code> - input label
+          p `&lt;span class="table-head-label"&gt;` - input label
         li
-          p <code>&lt;div class="input"&gt;</code> - input container
+          p `&lt;div class="input"&gt;` - input container
 
       h2(data-device-preview="../docs-demos/core/data-table-title.html") Table Title/Header
       p When data table is used within <a href="./cards.html">Card</a> it is possible to use additional data table title with actions in card header.
@@ -271,8 +271,8 @@ block content
             </div>
       p Where
       ul
-        li <code>data-table-title</code> - table title
-        li <code>data-table-actions</code> - main table actions
+        li `data-table-title` - table title
+        li `data-table-actions` - main table actions
       h4 Different actions on select
       :code(lang="html")
             <div class="data-table data-table-init card">
@@ -345,9 +345,9 @@ block content
             </div>
       p Where
       ul
-        li <code>data-table-header</code> - default table header. Visible when there are no selected rows
-        li <code>data-table-header-selected</code> - selected table header. Visible when there are selected rows
-        li <code>data-table-selected-count</code> - count of selected table rows. Number will be placed here by JavaScript
+        li `data-table-header` - default table header. Visible when there are no selected rows
+        li `data-table-header-selected` - selected table header. Visible when there are selected rows
+        li `data-table-selected-count` - count of selected table rows. Number will be placed here by JavaScript
       h3 Alternate header with row actions
       :code(lang="html")
             <div class="data-table data-table-init card">
@@ -414,8 +414,8 @@ block content
             </div>
       p Where
       ul
-        li <code>data-table-links</code> - alternate/additional table actions
-        li <code>actions-cell</code> - action links/icons cell
+        li `data-table-links` - alternate/additional table actions
+        li `actions-cell` - action links/icons cell
 
       h2(data-device-preview="../docs-demos/core/data-table-sortable.html") Sortable
       :code(lang="html")
@@ -471,10 +471,10 @@ block content
             </div>
       p Where
       ul
-        li <code>sortable-cell</code> - additional class to make cell/column is sortable
-        li <code>sortable-cell-active</code> - additional class to specify active/default sortable cell/column
-        li <code>sortable-asc</code> - additional class to specify current sorting as ascending (default)
-        li <code>sortable-desc</code> - additional class to specify current sorting as descending
+        li `sortable-cell` - additional class to make cell/column is sortable
+        li `sortable-cell-active` - additional class to specify active/default sortable cell/column
+        li `sortable-asc` - additional class to specify current sorting as ascending (default)
+        li `sortable-desc` - additional class to specify current sorting as descending
       .important-note
         p Note, <b>there is no actual sortable logic</b> provided by framework. Actual sorting logic should be realized manually
 
@@ -519,7 +519,7 @@ block content
             </div>
       p Where
       ul
-        li <code>data-table-collapsible</code> - additional table class to enable collapsible logic. Note that "data-table-init" class is also required for this.
+        li `data-table-collapsible` - additional table class to enable collapsible logic. Note that "data-table-init" class is also required for this.
     h2 Data Table App Methods
     p In case you add data table dynamically and you need such selecting rows or switching headers logic you need to init it manually. Let's look at related app methods to work with data table:
     .method-wrap

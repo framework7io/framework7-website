@@ -130,17 +130,17 @@ block content
           td animate
           td boolean
           td true
-          td Whether the Popup should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods
+          td Whether the Popup should be opened/closed with animation or not. Can be overwritten in `.open()` and `.close()` methods
         tr
           td swipeToClose
           td boolean<br>string
           td false
-          td Whether the Popup can be closed with swipe gesture. Can be <code>true</code> to allow to close popup with swipes to top and to bottom, or can be <code>to-top</code> (string) to allow only swipe to top to close popup, or <code>to-bottom</code> (string) to allow only swipe to bottom to close.
+          td Whether the Popup can be closed with swipe gesture. Can be `true` to allow to close popup with swipes to top and to bottom, or can be `to-top` (string) to allow only swipe to top to close popup, or `to-bottom` (string) to allow only swipe to bottom to close.
         tr
           td swipeHandler
           td HTMLElement<br>string
           td
-          td If not passed, then whole popup can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (<code>swipeToClose</code> must be also enabled)
+          td If not passed, then whole popup can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (`swipeToClose` must be also enabled)
         tr
           td on
           td object
@@ -156,7 +156,7 @@ block content
                     }
                   })
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>popup</code> property to set defaults for all popups. For example:
+      p Note that all following parameters can be used in global app parameters under `popup` property to set defaults for all popups. For example:
       :code(lang="js")
             var app = new Framework7({
               popup: {
@@ -167,7 +167,7 @@ block content
     p So to create Popup we have to call:
     :code(lang="js")
           var popup = app.popup.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>popup</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `popup` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -201,14 +201,14 @@ block content
             ul.method-parameters
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be opened with animation
         tr
           td popup.close(<span>animate</span>)
           td Close popup. Where
             ul.method-parameters
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be closed with animation
         tr
           td popup.destroy()
           td Destroy popup
@@ -247,6 +247,7 @@ block content
             <div class="view">
               <div class="page">
                 <div class="navbar">
+                  <div class="navbar-bg"></div>
                   <div class="navbar-inner">
                     <div class="title">Popup</div>
                     <div class="right">
@@ -291,7 +292,7 @@ block content
           td Popup Element<span>&lt;div class="popup"&gt;</span>
           td Event will be triggered after Popup completes its closing animation
     h3 App and Popup Instance Events
-    p Popup instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>popup</code>.
+    p Popup instance emits events on both self instance and app instance. App instance events has same names prefixed with `popup`.
     table.events-table
       thead
         tr

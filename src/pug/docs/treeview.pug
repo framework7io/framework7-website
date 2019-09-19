@@ -59,7 +59,7 @@ block content
         </div>
       </div>
     h3 Treeview Item Link
-    p If we need some treeview item to be just a link, we just need to use <code>&lt;a&gt;</code> tag for treeview-item-root element:
+    p If we need some treeview item to be just a link, we just need to use `&lt;a&gt;` tag for treeview-item-root element:
     :code(lang="html")
       <div class="treeview">
         ...
@@ -74,7 +74,7 @@ block content
         ...
       </div>
     h3 Treeview Item Toggle
-    p Instead of toggle (or in addition) button, we can make whole treeview item work like a toggle. In this case we need to add <code>treeview-item-toggle</code> to treeview item root element:
+    p Instead of toggle (or in addition) button, we can make whole treeview item work like a toggle. In this case we need to add `treeview-item-toggle` to treeview item root element:
     :code(lang="html")
       <div class="treeview">
         ...
@@ -94,7 +94,7 @@ block content
         ...
       </div>
     h3 Treeview Selectable Item
-    p We can also make treeview item selectable. In this case we need to add <code>treeview-item-selectable</code> to treeview item root element, and <code>treeview-item-selected</code> to selected item root element:
+    p We can also make treeview item selectable. In this case we need to add `treeview-item-selectable` to treeview item root element, and `treeview-item-selected` to selected item root element:
     :code(lang="html")
       <div class="treeview">
         ...
@@ -174,7 +174,7 @@ block content
         tr
           td treeview:loadchildren
           td Treeview Item Element<span>&lt;div class="treeview-item"&gt;</span>
-          td Event will be triggered on first open of Treeview item with <code>treeview-load-children</code> class. In <code>event.detail</code> it contains function to hide loading preloader.
+          td Event will be triggered on first open of Treeview item with `treeview-load-children` class. In `event.detail` it contains function to hide loading preloader.
     h3 App Events
     p Treeview also emits events on app instance.
     table.events-table
@@ -198,10 +198,10 @@ block content
           td treeviewLoadChildren
           td <span>(itemEl, done)</span>
           td app
-          td Event will be triggered on first open of Treeview item with <code>treeview-load-children</code> class. As second argument it has function to hide loading preloader.
+          td Event will be triggered on first open of Treeview item with `treeview-load-children` class. As second argument it has function to hide loading preloader.
 
     h2 Load Children
-    p It is also possible to load children on treeview item open. To make it work, we, at first, need to add <code>treeview-load-children</code> class to such treeview item. And then listen for <code>treeview:loadchildren</code> event to proceed with loading. Check the examples below for implementation example.
+    p It is also possible to load children on treeview item open. To make it work, we, at first, need to add `treeview-load-children` class to such treeview item. And then listen for `treeview:loadchildren` event to proceed with loading. Check the examples below for implementation example.
 
     +cssVars('treeview')
 

@@ -33,8 +33,8 @@ block content
     h4 3. Configure vi in Framework7 app
     p After we set the things up at vi dashboard we will have:
     ul
-      li App bundle id (e.g. <code>io.framework7.testapp</code>)
-      li Placement id (e.g. <code>pltd4o7ibb9rc653x14</code>)
+      li App bundle id (e.g. `io.framework7.testapp`)
+      li Placement id (e.g. `pltd4o7ibb9rc653x14`)
     p Now when we have our vi placement id we may set it up in Framework7 on the app initialization:
     :code(lang="js")
           var app = new Framework7({
@@ -82,12 +82,12 @@ block content
           td enabled
           td boolean
           td false
-          td Global app parameter which enables vi API and vi SDK to load. If you pass any vi parameters under <code>vi</code> app parameters then it will enable vi api as well
+          td Global app parameter which enables vi API and vi SDK to load. If you pass any vi parameters under `vi` app parameters then it will enable vi api as well
         tr
           td appId
           td string
           td
-          td App bundle id, if not specified then equal to <code>id</code> <a href="app.html#app-parameters">app parameter</a>
+          td App bundle id, if not specified then equal to `id` <a href="app.html#app-parameters">app parameter</a>
         tr
           td placementId
           td string
@@ -97,7 +97,7 @@ block content
           td placementType
           td string
           td interstitial
-          td Ad type. Can be <code>interstitial</code> (when ad runs as full screen video) or <code>instream</code> (when ad video )
+          td Ad type. Can be `interstitial` (when ad runs as full screen video) or `instream` (when ad video )
         tr
           td autoplay
           td boolean
@@ -107,7 +107,7 @@ block content
           td startMuted
           td boolean
           td
-          td Defines whether the ad must start muted or not. By default is <code>true</code> when app is running as a web app (not Cordova) under mobile device (iOS or Android). It is required because on mobile device video autoplay usually requires additional user interaction
+          td Defines whether the ad must start muted or not. By default is `true` when app is running as a web app (not Cordova) under mobile device (iOS or Android). It is required because on mobile device video autoplay usually requires additional user interaction
         tr
           td fallbackOverlay
           td boolean
@@ -122,12 +122,12 @@ block content
           td appVer
           td string
           td
-          td App version, if not specified then equal to <code>version</code> <a href="app.html#app-parameters">app parameter</a>
+          td App version, if not specified then equal to `version` <a href="app.html#app-parameters">app parameter</a>
         tr
           td language
           td boolean
           td null
-          td App language, if not specified then equal to <code>language</code> <a href="app.html#app-parameters">app parameter</a>
+          td App language, if not specified then equal to `language` <a href="app.html#app-parameters">app parameter</a>
         tr
           td width
           td number
@@ -157,17 +157,17 @@ block content
           td os
           td string
           td
-          td Operating system, if not specified then will be equal to <code>app.device.os</code>
+          td Operating system, if not specified then will be equal to `app.device.os`
         tr
           td osVersion
           td string
           td
-          td Operating system version, if not specified then will be equal to <code>app.device.osVersion</code>
+          td Operating system version, if not specified then will be equal to `app.device.osVersion`
         tr
           td orientation
           td string
           td
-          td Device orientation, if not specified then will be detected based on <code>window.orientation</code>
+          td Device orientation, if not specified then will be detected based on `window.orientation`
         tr
           td age
           td number
@@ -237,7 +237,7 @@ block content
                     }
                   })
     .important-note
-      p All parameters can be used in global app parameters under <code>vi</code> property to set defaults for all vi ads. For example:
+      p All parameters can be used in global app parameters under `vi` property to set defaults for all vi ads. For example:
       :code(lang="js")
             var app = new Framework7({
               /*
@@ -261,7 +261,7 @@ block content
     p So to create vi ad we have to call:
     :code(lang="js")
       var viAd = app.vi.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>viAd</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `viAd` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -318,7 +318,7 @@ block content
           td ready
           td viAd
           td <span></span>
-          td Event will be triggered when ad created, requested and ready to be played. In case of disabled autplay, you to listen for this event and call <code>viAd.start()</code> when ad becomes ready
+          td Event will be triggered when ad created, requested and ready to be played. In case of disabled autplay, you to listen for this event and call `viAd.start()` when ad becomes ready
         tr
           td started
           td viAd
@@ -343,7 +343,7 @@ block content
           td stopped
           td viAd
           td <span>reason</span>
-          td Event will be triggered when video ad stopped. As an argument it receives string <code>reason</code>, which can be, for example, <code>userexit</code> (when video was interrupted by user) or <code>complete</code> when ad video completed
+          td Event will be triggered when video ad stopped. As an argument it receives string `reason`, which can be, for example, `userexit` (when video was interrupted by user) or `complete` when ad video completed
         tr
           td complete
           td viAd

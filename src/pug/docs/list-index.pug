@@ -80,7 +80,7 @@ block content
           td indexes
           td array<br>string
           td auto
-          td Array with indexes. If not passed then it will automatically generate it based on <code>item-divider</code> and <code>list-group-title</code> elements inside of passed List View element in <code>listEl</code> parameter
+          td Array with indexes. If not passed then it will automatically generate it based on `item-divider` and `list-group-title` elements inside of passed List View element in `listEl` parameter
         tr
           td scrollList
           td boolean
@@ -125,7 +125,7 @@ block content
     p So to create List Index we have to call:
     :code(lang="js")
           var listIndex = app.listIndex.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>listIndex</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `listIndex` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -141,16 +141,16 @@ block content
           td Dom7 instance with list index HTML element
         tr
           td listIndex.ul
-          td Dynamically created inner <code>&lt;ul&gt;</code> HTML element
+          td Dynamically created inner `&lt;ul&gt;` HTML element
         tr
           td listIndex.$ul
-          td Dom7 instance with dynamically created inner <code>&lt;ul&gt;</code> HTML element
+          td Dom7 instance with dynamically created inner `&lt;ul&gt;` HTML element
         tr
           td listIndex.listEl
-          td Related List HTML element, passed in <code>listEl</code> parameter
+          td Related List HTML element, passed in `listEl` parameter
         tr
           td listIndex.$listEl
-          td Dom7 instance with related List HTML element, passed in <code>listEl</code> parameter
+          td Dom7 instance with related List HTML element, passed in `listEl` parameter
         tr
           td listIndex.indexes
           td Array with calculated indexes
@@ -207,7 +207,7 @@ block content
           td List Index Element<span>&lt;div class="list-index"&gt;</span>
           td Event will be triggered right before List Index instance will be destroyed
     h3 App and List Index Instance Events
-    p List Index instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>listIndex</code>.
+    p List Index instance emits events on both self instance and app instance. App instance events has same names prefixed with `listIndex`.
     table.events-table.double-events-table
       thead
         tr
@@ -244,18 +244,18 @@ block content
           td <span>(listIndex)</span>
           td app
     h2 List Index Auto Initialization
-    p If you don't need to use List Index API and your List Index is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>list-index-init</code> class:
+    p If you don't need to use List Index API and your List Index is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional `list-index-init` class:
     :code(lang="html")
           <!-- Add list-index-init class -->
           <div class="list-index list-index-init"></div>
 
-    p In this case if you need to access created List Index instance you can use the <code>app.listIndex.get</code> app method:
+    p In this case if you need to access created List Index instance you can use the `app.listIndex.get` app method:
     :code(lang="js")
           var listIndex = app.listIndex.get('.list-index');
 
           var indexes = listIndex.indexes;
           // do something with indexes
-    p When using auto init you may need to pass additional parameters. you can set all available parameters via <code>data-</code> attributes on list index element:
+    p When using auto init you may need to pass additional parameters. you can set all available parameters via `data-` attributes on list index element:
     :code(lang="html")
           <div class="page">
             ...

@@ -21,7 +21,7 @@ block content
         p
           strong Good!
         img(src=cdn + "/i/docs/statusbar2.png", width="320")
-    p Framework7 helps you to solve this issue. It automatically detects if your app in full screen mode, and automatically adds <code><strong>with-statusbar</strong></code> class to <code>&lt;html&gt;</code> element if app is in full screen mode (or removes this class if app is not in full screen mode).
+    p Framework7 helps you to solve this issue. It automatically detects if your app in full screen mode, and automatically adds <code><strong>with-statusbar</strong></code> class to `&lt;html&gt;` element if app is in full screen mode (or removes this class if app is not in full screen mode).
     p With this <code><strong>with-statusbar</strong></code> class (when app in full screen mode) the app root element has additional padding on top to move a whole app's content on size of Statusbar.
     h2 Statusbar Layout
     p Now, when Framework7 did its job on this part, we can control Statusbar behavior, we need to add <code><b>&lt;div class="statusbar"&gt;</b></code> as a direct child of app root element:
@@ -34,7 +34,7 @@ block content
               ...
             </div>
           </body>
-    p This <code><strong>statusbar</strong></code> div is always fixed on top of screen and hidden by default. It becomes visible only when app is in full screen mode and <code>html</code> has <code>with-statusbar</code> class.
+    p This <code><strong>statusbar</strong></code> div is always fixed on top of screen and hidden by default. It becomes visible only when app is in full screen mode and `html` has `with-statusbar` class.
     h2 Statusbar Styling
     p If we need to change statusbar background color we may use simple CSS rule:
     :code(lang="css")
@@ -62,7 +62,7 @@ block content
         li
           p In cordova apps Statusbar text color is always black by default. It can be with cordova plugin <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a> and using its api or Framework7 Statusbar API
     h2 Statusbar App Parameters
-    p It is possible to control some default statusbar behavior by passing statusbar related parameters on app init under <code>statusbar</code> property:
+    p It is possible to control some default statusbar behavior by passing statusbar related parameters on app init under `statusbar` property:
     :code(lang="js")
           var app = new Framework7({
             statusbar: {
@@ -87,17 +87,17 @@ block content
           td overlay
           td string<br>boolean
           td auto
-          td Can be <code>true</code>, <code>false</code>, <code>auto</code>. Defines whether the statusbar overlay should be visible or not. In case of <code>auto</code> Framework7 will detect it automatically depending whether the app is in fullscreen mode or not
+          td Can be `true`, `false`, `auto`. Defines whether the statusbar overlay should be visible or not. In case of `auto` Framework7 will detect it automatically depending whether the app is in fullscreen mode or not
         tr
           td iosBackgroundColor
           td string
           td
-          td Hex string (<code>#RRGGBB</code>) with background color when app running on iOS device. If passed then it will override CSS value
+          td Hex string (`#RRGGBB`) with background color when app running on iOS device. If passed then it will override CSS value
         tr
           td androidBackgroundColor
           td string
           td
-          td Hex string (<code>#RRGGBB</code>) with background color when app running on Android device. If passed then it will override CSS value
+          td Hex string (`#RRGGBB`) with background color when app running on Android device. If passed then it will override CSS value
         tr
           td scrollTopOnClick
           td boolean
@@ -123,14 +123,14 @@ block content
           td string
           td black
           td
-            p Statusbar text color when app is running on iOS device. Can be <code>white</code> or <code>black</code>
+            p Statusbar text color when app is running on iOS device. Can be `white` or `black`
             p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
         tr
           td androidTextColor
           td string
           td black
           td
-            p Statusbar text color when app is running on Android device. Can be <code>white</code> or <code>black</code>
+            p Statusbar text color when app is running on Android device. Can be `white` or `black`
             p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
     h2 Statusbar App Methods
     p After app initialization we can control statusbar by using statusbar related app methods:
@@ -157,7 +157,7 @@ block content
           ul.method-parameters
             li
               span.parameter color
-              |  - <span class="parameter-type">string</span> - text color, can be <code>white</code> or <code>black</code>
+              |  - <span class="parameter-type">string</span> - text color, can be `white` or `black`
           p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
       tr
         td app.statusbar.setBackgroundColor(<span>hex</span>)
@@ -165,10 +165,10 @@ block content
           ul.method-parameters
             li
               span.parameter hex
-              |  - <span class="parameter-type">string</span> - Hex string (<code>#RRGGBB</code>) with background color
+              |  - <span class="parameter-type">string</span> - Hex string (`#RRGGBB`) with background color
       tr
         td app.statusbar.isVisible()
-        td Returns <code>true</code> if system statusbar is visible and <code>false</code> when it is not visible
+        td Returns `true` if system statusbar is visible and `false` when it is not visible
           p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
 
     +cssVars('statusbar')

@@ -32,13 +32,13 @@ block content
       &lt;/div&gt;
     p Where
     ul
-      li <code>accordion-list</code> - list of accordion items set. Optional class
+      li `accordion-list` - list of accordion items set. Optional class
         ul
-          li <code>accordion-item</code> - single accordion item. Required
+          li `accordion-item` - single accordion item. Required
             ul
-              li <code>accordion-item-toggle</code> - link to expand/collapse accordion item content. Required
-              li <code>accordion-item-content</code> - hidden accordion item content. Required
-          li <code>accordion-item-opened</code> - single opened accordion item
+              li `accordion-item-toggle` - link to expand/collapse accordion item content. Required
+              li `accordion-item-content` - hidden accordion item content. Required
+          li `accordion-item-opened` - single opened accordion item
     h2 Collapsible Layout
     p If you want to use single separate collapsible element you may just omit "accordion-list" wrapper element:
     :code(lang="html")
@@ -198,7 +198,7 @@ block content
         tr
           td accordion:beforeopen
           td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
-          td Event will be triggered right before accordion content starts its opening animation. <code>event.detail.prevent</code> contains function that will prevent accordion from opening when called
+          td Event will be triggered right before accordion content starts its opening animation. `event.detail.prevent` contains function that will prevent accordion from opening when called
         tr
           td accordion:open
           td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
@@ -210,7 +210,7 @@ block content
         tr
           td accordion:beforeclose
           td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
-          td Event will be triggered right before accordion content starts its closing animation. <code>event.detail.prevent</code> contains function that will prevent accordion from closing when called
+          td Event will be triggered right before accordion content starts its closing animation. `event.detail.prevent` contains function that will prevent accordion from closing when called
         tr
           td accordion:close
           td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
@@ -231,7 +231,7 @@ block content
         tr
           td accordionBeforeOpen
           td <span>(el, prevent)</span>
-          td Event will be triggered right before accordion content starts its opening animation. <code>prevent</code> contains function that will prevent accordion from opening when called
+          td Event will be triggered right before accordion content starts its opening animation. `prevent` contains function that will prevent accordion from opening when called
         tr
           td accordionOpen
           td <span>(el)</span>
@@ -243,7 +243,7 @@ block content
         tr
           td accordionBeforeClose
           td <span>(el, prevent)</span>
-          td Event will be triggered right before accordion content starts its closing animation. <code>prevent</code> contains function that will prevent accordion from closing when called
+          td Event will be triggered right before accordion content starts its closing animation. `prevent` contains function that will prevent accordion from closing when called
         tr
           td accordionClose
           td <span>(el)</span>

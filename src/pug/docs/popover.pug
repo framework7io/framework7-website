@@ -139,7 +139,7 @@ block content
           td animate
           td boolean
           td true
-          td Whether the Popover should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods
+          td Whether the Popover should be opened/closed with animation or not. Can be overwritten in `.open()` and `.close()` methods
         tr
           td targetEl
           td HTMLElement<br>string
@@ -149,22 +149,22 @@ block content
           td targetX
           td number
           td
-          td Virtual target element horizontal offset from left side of the screen. Required without using real target element (<code>targetEl</code>)
+          td Virtual target element horizontal offset from left side of the screen. Required without using real target element (`targetEl`)
         tr
           td targetY
           td number
           td
-          td Virtual target element vertical offset from top of the screen. Required without using real target element (<code>targetEl</code>)
+          td Virtual target element vertical offset from top of the screen. Required without using real target element (`targetEl`)
         tr
           td targetWidth
           td number
           td 0
-          td Virtual target element width (in px). Required without using real target element (<code>targetEl</code>)
+          td Virtual target element width (in px). Required without using real target element (`targetEl`)
         tr
           td targetHeight
           td number
           td 0
-          td Virtual target element height (in px). Required without using real target element (<code>targetEl</code>)
+          td Virtual target element height (in px). Required without using real target element (`targetEl`)
         tr
           td on
           td object
@@ -180,7 +180,7 @@ block content
                     }
                   })
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>popover</code> property to set defaults for all popovers. For example:
+      p Note that all following parameters can be used in global app parameters under `popover` property to set defaults for all popovers. For example:
       :code(lang="js")
             var app = new Framework7({
               popover: {
@@ -191,7 +191,7 @@ block content
     p So to create Popover we have to call:
     :code(lang="js")
           var popover = app.popover.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>popover</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `popover` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -234,21 +234,21 @@ block content
                 |  - <span class="parameter-type">HTMLElement or string</span> - target element to set popover position around this element
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be opened with animation
         tr
           td popover.open(<span>animate</span>)
           td Open popover around target element passed on popover creation. Where
             ul.method-parameters
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be opened with animation
         tr
           td popover.close(<span>animate</span>)
           td Close popover. Where
             ul.method-parameters
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be closed with animation
         tr
           td popover.destroy()
           td Destroy popover
@@ -318,7 +318,7 @@ block content
           td Popover Element<span>&lt;div class="popover"&gt;</span>
           td Event will be triggered after Popover completes its closing animation
     h3 App and Popover Instance Events
-    p Popover instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>popover</code>.
+    p Popover instance emits events on both self instance and app instance. App instance events has same names prefixed with `popover`.
     table.events-table
       thead
         tr
@@ -382,6 +382,7 @@ block content
               ...
                 <div class="page">
                   <div class="navbar">
+                    <div class="navbar-bg"></div>
                     <div class="navbar-inner">
                       <div class="left">
                         <!-- Additional "popover-open" class to open popover on link click -->

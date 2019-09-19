@@ -11,18 +11,19 @@ block content
   .docs-content
     +improveDocsLink
     h1 Theme Based Rendering
-    p When we develop Framework7 app for multiple platforms with mutliple themes (<code>ios</code>, <code>md</code>, <code>aurora</code>) we need to control which elements will appear for one or another theme, like showing different icon for iOS and MD themes.
+    p When we develop Framework7 app for multiple platforms with mutliple themes (`ios`, `md`, `aurora`) we need to control which elements will appear for one or another theme, like showing different icon for iOS and MD themes.
     p There are special classes that allow to control this:
     ul
-      li <code>if-ios</code> - element will be rendered only for iOS theme
-      li <code>if-not-ios</code> - element will be removed/hidden for theme other than iOS
-      li <code>if-md</code> - element will be rendered only for MD theme
-      li <code>if-not-md</code> - element will be removed/hidden for theme other than MD
-      li <code>if-aurora</code> - element will be rendered only for Aurora theme
-      li <code>if-not-aurora</code> - element will be removed/hidden for theme other than Aurora
+      li `if-ios` - element will be rendered only for iOS theme
+      li `if-not-ios` - element will be removed/hidden for theme other than iOS
+      li `if-md` - element will be rendered only for MD theme
+      li `if-not-md` - element will be removed/hidden for theme other than MD
+      li `if-aurora` - element will be rendered only for Aurora theme
+      li `if-not-aurora` - element will be removed/hidden for theme other than Aurora
     p This is, for example how we hide Navbar's back button text for MD theme:
     :code(lang="html")
       <div class="navbar">
+        <div class="navbar-bg"></div>
         <div class="navbar-inner sliding">
           <div class="left">
             <a href="#" class="link back">

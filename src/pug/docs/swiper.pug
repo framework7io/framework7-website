@@ -32,15 +32,15 @@ block content
     p Where:
     ul
       li
-        p <code>swiper-container</code> - main slider container with slides and paginations. Required element
+        p `swiper-container` - main slider container with slides and paginations. Required element
         ul
           li
-            p <code>swiper-wrapper</code> - additional wrapper for slides. Required element
+            p `swiper-wrapper` - additional wrapper for slides. Required element
             ul
               li
-                p <code>swiper-slide</code> - single slide element. Could contain any HTML inside
+                p `swiper-slide` - single slide element. Could contain any HTML inside
           li
-            p <code>swiper-pagination</code> - container with pagination bullets. Note, that pagination bullets will be created automatically. Optional element
+            p `swiper-pagination` - container with pagination bullets. Note, that pagination bullets will be created automatically. Optional element
 
     h2 Swiper App Methods
     p Now, when we have Swiper' HTML, we need to initialize it. We need to use related App's method:
@@ -85,7 +85,7 @@ block content
     .important-note
       p Note that Framework7's version of Swiper doesn't contain <b>Keyboard, History, Hash Navigation and Mousewheel</b> modules as they are desktop only things
     h2 Swiper Auto Initialization
-    p If you don't need to use Swiper API and your Swiper is inside of the page and <b>presented in DOM on moment of page initialization</b> then it can be auto initialized with just adding additional <code>swiper-init</code> class:
+    p If you don't need to use Swiper API and your Swiper is inside of the page and <b>presented in DOM on moment of page initialization</b> then it can be auto initialized with just adding additional `swiper-init` class:
     :code(lang="html")
           &lt;!-- swiper-init to initialize swiper automatically --&gt;
           &lt;div class="swiper-container swiper-init"&gt;
@@ -96,14 +96,14 @@ block content
                   ... other slides ...
               &lt;/div&gt;
           &lt;/div&gt;
-    p In this case if you need to access created Swiper instance you can use the <code>app.swiper.get</code> app method:
+    p In this case if you need to access created Swiper instance you can use the `app.swiper.get` app method:
     :code(lang="js")
           var swiper = app.swiper.get('.swiper-container');
 
           swiper.slideNext();
-    p But what about Swiper parameters. In this case we need to pass them in <code>data-</code> attributes.
+    p But what about Swiper parameters. In this case we need to pass them in `data-` attributes.
     .important-note
-      p Parameters that used in camelCase, for example <code>slidesPerView</code>, in data- attributes should be used as kebab-case as <b>data-slides-per-view</b>
+      p Parameters that used in camelCase, for example `slidesPerView`, in data- attributes should be used as kebab-case as <b>data-slides-per-view</b>
     :code(lang="html")
           &lt;!-- swiper properties in data- attributes --&gt;
           &lt;div class="swiper-container swiper-init" data-speed="400" data-space-between="40"&gt;
@@ -114,7 +114,7 @@ block content
                   ... other slides ...
               &lt;/div&gt;
           &lt;/div&gt;
-    p Or we can pass all Swiper parameters in <strong>valid JSON format</strong> in <code>data-swiper</code> attribute:
+    p Or we can pass all Swiper parameters in <strong>valid JSON format</strong> in `data-swiper` attribute:
     :code(lang="html")
           &lt;!-- swiper properties in JSON format in data-swiper attribute --&gt;
           &lt;div class="swiper-container swiper-init" data-swiper='{"speed":"400", "spaceBetween":"40"}'&gt;

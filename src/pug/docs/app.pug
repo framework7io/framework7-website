@@ -11,7 +11,7 @@ block content
     +improveDocsLink
     h1 App / Core
     ul.docs-index
-    p When we init the app we can use the <code>new Framework7</code> constructor and pass an object with main app parameters:
+    p When we init the app we can use the `new Framework7` constructor and pass an object with main app parameters:
     :code(lang="js")
           var app = new Framework7({
             // App id
@@ -37,7 +37,7 @@ block content
           td root
           td string
           td body
-          td App root element. If you main app layout is not a direct child of the <code>&lt;body&gt;</code> then it is required to specify root element here
+          td App root element. If you main app layout is not a direct child of the `&lt;body&gt;` then it is required to specify root element here
         tr
           td id
           td string
@@ -57,12 +57,12 @@ block content
           td theme
           td string
           td auto
-          td App theme. Can be <code>ios</code>, <code>md</code>, <code>aurora</code> or <code>auto</code>. In case of <code>auto</code> it will use iOS theme for iOS devices, Aurora theme for desktop device running in Electron environment, and MD theme for all other devices.
+          td App theme. Can be `ios`, `md`, `aurora` or `auto`. In case of `auto` it will use iOS theme for iOS devices, Aurora theme for desktop device running in Electron environment, and MD theme for all other devices.
         tr
           td language
           td string
           td
-          td App language. Can be used by other components. By default equal to the current browser/webview language (i.e. <code>navigator.language</code>).
+          td App language. Can be used by other components. By default equal to the current browser/webview language (i.e. `navigator.language`).
         tr
           td routes
           td array
@@ -83,7 +83,7 @@ block content
                       };
                     },
                   });
-            p Note, that <code>this</code> inside of this data function points to <code>app</code> Framework7 instance.
+            p Note, that `this` inside of this data function points to `app` Framework7 instance.
         tr
           td methods
           td object
@@ -97,7 +97,7 @@ block content
                       }
                     }
                   });
-            p Note, that <code>this</code> inside of each method points to app Framework7 instance.
+            p Note, that `this` inside of each method points to app Framework7 instance.
         tr
           td lazyModulesPath
           td string
@@ -107,17 +107,17 @@ block content
           td autoDarkTheme
           td boolean
           td false
-          td Automatically enables dark theme based on user system color scheme preference. This feature support is based on <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank"><code>(prefers-color-scheme)</code> media query support</a>.
+          td Automatically enables dark theme based on user system color scheme preference. This feature support is based on <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank">`(prefers-color-scheme)` media query support</a>.
         tr
           td init
           td boolean
           td true
-          td By default Framework7 will be initialized automatically when you call <code>new Framework7()</code>. If you want to prevent this behavior you can disable it with this option and then initialize it manually with <code>app.init()</code> when you need it.
+          td By default Framework7 will be initialized automatically when you call `new Framework7()`. If you want to prevent this behavior you can disable it with this option and then initialize it manually with `app.init()` when you need it.
         tr
           td initOnDeviceReady
           td boolean
           td true
-          td If automatic initialization is enabled with <code>init: true</code> parameter and app is running under cordova environment then it will be initialized on <code>deviceready</code> event.
+          td If automatic initialization is enabled with `init: true` parameter and app is running under cordova environment then it will be initialized on `deviceready` event.
         tr
           td on
           td object
@@ -153,7 +153,7 @@ block content
           td externalLinks
           td string
           td '.external'
-          td CSS selector for links that should be treated as external and shouldn't be handled by Framework7. For example such '.external' value will match to links like <code>&lt;a href="somepage.html" class="external"&gt;</code> (with class "external")
+          td CSS selector for links that should be treated as external and shouldn't be handled by Framework7. For example such '.external' value will match to links like `&lt;a href="somepage.html" class="external"&gt;` (with class "external")
         tr.subparam-close-row
           td(colspan="4") }
         tr
@@ -225,7 +225,7 @@ block content
           td activeStateElements
           td string
           td a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item, .link, .item-link
-          td CSS selector of elements where enabled <code>activeState</code> will add appropriate active class
+          td CSS selector of elements where enabled `activeState` will add appropriate active class
         tr.subparam-row
           td iosTouchRipple
           td boolean
@@ -275,7 +275,7 @@ block content
         tr.subparam-close-row
           td(colspan="4") }
     p These are default app parameters for app core module.
-    p Most of components that has JavaScript API may extend this list of parameters with the property named as component. For example <a href="#">Panel</a> component extends app parameters with <code>panel</code> property that accepts Panel specific parameters.
+    p Most of components that has JavaScript API may extend this list of parameters with the property named as component. For example <a href="#">Panel</a> component extends app parameters with `panel` property that accepts Panel specific parameters.
     p Example:
     :code(lang="js")
           var app = new Framework7({
@@ -296,7 +296,7 @@ block content
             },
           });
     h2 App Methods & Properties
-    p Returned Framework7 instance <code>app</code> contains a lot of useful properties and methods:
+    p Returned Framework7 instance `app` contains a lot of useful properties and methods:
     table.methods-table
       tbody
         tr
@@ -324,7 +324,7 @@ block content
           td Boolean property indicating app is in RTL layout or not
         tr
           td app.theme
-          td String with current app theme. Can be <code>md</code>, <code>ios</code> or <code>aurora</code>
+          td String with current app theme. Can be `md`, `ios` or `aurora`
         tr
           td app.data
           td Object with app root data passed on intialization
@@ -395,14 +395,14 @@ block content
           td Fire event on instance
         tr
           td app.init()
-          td Initialize app. In case you disabled auto initialization with <code>init: false</code> parameter
+          td Initialize app. In case you disabled auto initialization with `init: false` parameter
         tr
           td app.serviceWorker.register(<span>path</span>, <span>scope</span>)
           td Register service worker. It returns promise that will be resolved with #[a(href="https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration", target="_blank") ServiceWorkerRegistration]
         tr
           td app.serviceWorker.unregister(<span>registration</span>)
           td Unregister service worker. It returns promise that will be resolved when service worker unregistered.
-    p Same as with app parameters most of components that has JavaScript API may extend this list of properties with the property named as component. For example Panel component extends app instance properties with <code>panel</code> property that accepts Panel specific properties and methods.
+    p Same as with app parameters most of components that has JavaScript API may extend this list of properties with the property named as component. For example Panel component extends app instance properties with `panel` property that accepts Panel specific properties and methods.
     p Example:
     :code(lang="js")
           // Open panel
@@ -422,7 +422,7 @@ block content
         tr
           td init
           td
-          td Event will be fired on app initialization. Automatically after <code>new Framework7()</code> or after <code>app.init()</code> if you disabled auto init.
+          td Event will be fired on app initialization. Automatically after `new Framework7()` or after `app.init()` if you disabled auto init.
         tr
           td resize
           td

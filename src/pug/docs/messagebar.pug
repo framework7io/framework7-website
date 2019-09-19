@@ -32,7 +32,7 @@ block content
     ul
       li <code><b>messagebar-attachments</b></code> - block with messagebar attachments. Optional
       li <code><b>messagebar-sheet</b></code> - block with messagebar sheet. Optional
-    p Messagebar place is very important, it should be inside of <code>page</code> and right before <code>page-content</code>:
+    p Messagebar place is very important, it should be inside of `page` and right before `page-content`:
     :code(lang="html")
           <div class="page">
             <!-- navbar -->
@@ -126,12 +126,12 @@ block content
           td el
           td string<br>HTMLElement
           td
-          td CSS selector or HTML element of messagebar element (<code>div class="messagebar"</code>)
+          td CSS selector or HTML element of messagebar element (`div class="messagebar"`)
         tr
           td textareaEl
           td string<br>HTMLElement
           td
-          td CSS selector or HTML element of messagebar textarea element. By default (if not passed) will try to look for <code>textarea</code> inside of messagebar
+          td CSS selector or HTML element of messagebar textarea element. By default (if not passed) will try to look for `textarea` inside of messagebar
         tr
           td maxHeight
           td number
@@ -141,7 +141,7 @@ block content
           td attachments
           td array
           td []
-          td Array with attachments. For example <code>['path/to/image1.png', 'path/to/image2.png']</code>
+          td Array with attachments. For example `['path/to/image1.png', 'path/to/image2.png']`
         tr
           td resizePage
           td boolean
@@ -178,7 +178,7 @@ block content
     p So to create Messagebar we have to call:
     :code(lang="js")
           var messagebar = app.messagebar.create({ /* parameters */ })
-    p After we initialize Messagebar we have its initialized instance in variable (like <code>messagebar</code> variable in example above) with helpful methods and properties:
+    p After we initialize Messagebar we have its initialized instance in variable (like `messagebar` variable in example above) with helpful methods and properties:
     table.methods-table
       tbody
         tr
@@ -293,7 +293,7 @@ block content
           td Messagebar Element<span>&lt;div class="messagebar"&gt;</span>
           td Event will be triggered right before Messagebar instance will be destroyed
     h3 App and Messagebar Instance Events
-    p Messagebar instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>messagebar</code>.
+    p Messagebar instance emits events on both self instance and app instance. App instance events has same names prefixed with `messagebar`.
     table.events-table.double-events-table
       thead
         tr
@@ -385,6 +385,7 @@ block content
       :code(lang="html")
             <div class="page">
               <div class="navbar">
+                <div class="navbar-bg"></div>
                 <div class="navbar-inner">
                   <div class="title">Messages</div>
                 </div>

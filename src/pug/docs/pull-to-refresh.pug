@@ -45,10 +45,10 @@ block content
       ul
         li <code><b>ptr-content</b></code> class. This is required to enable pull to refresh
         li <code><b>div class="ptr-preloader"</b></code> hidden layer with pull to refresh visual elements: preloader and arrow
-        li <code>data-ptr-distance="55"</code> additional attribute that allows to set custom pull to refresh trigger distance. By default (if not specified) it is 44px
-        li <code>data-ptr-mousewheel="true"</code> additional attribute that enables pull to refresh with mousewheel (for desktop apps). Works only for PTR top.
-        li <code>ptr-watch-scrollable</code> - additional class that must be added on nested scrollable elements to prevent pull to refresh on such elements scrolling
-        li <code>ptr-ignore</code> - additional class that must be added on nested scrollable elements or other elements that will to prevent pull to refresh on such elements scrolling or touchmove
+        li `data-ptr-distance="55"` additional attribute that allows to set custom pull to refresh trigger distance. By default (if not specified) it is 44px
+        li `data-ptr-mousewheel="true"` additional attribute that enables pull to refresh with mousewheel (for desktop apps). Works only for PTR top.
+        li `ptr-watch-scrollable` - additional class that must be added on nested scrollable elements to prevent pull to refresh on such elements scrolling
+        li `ptr-ignore` - additional class that must be added on nested scrollable elements or other elements that will to prevent pull to refresh on such elements scrolling or touchmove
     h2 Pull To Refresh From Bottom
     p It is also possible to make it work like pull from bottom. In this case we need to move #[code ptr-preloader] element to the bottom of page content and add additional #[code ptr-bottom] class to pull to refresh content:
     :code(lang="html")
@@ -79,7 +79,7 @@ block content
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - PTR element (<code>ptr-content</code>). Required.
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - PTR element (`ptr-content`). Required.
       p.method-returns Method returns created PTR instance
       .important-note Use this method only in case you have added ptr content after page init or if you want to enable it later. Otherwise if there is "ptr-content" element on page init it will be created automatically
     .method-wrap
@@ -89,7 +89,7 @@ block content
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - PTR element (<code>ptr-content</code>). Required.
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - PTR element (`ptr-content`). Required.
     .method-wrap
       p
         span.method app.ptr.get(<span>el</span>)
@@ -97,7 +97,7 @@ block content
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (<code>ptr-content</code>).
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (`ptr-content`).
       p.method-returns Method returns PTR instance
     .method-wrap
       p
@@ -106,7 +106,7 @@ block content
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (<code>ptr-content</code>). Required.
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (`ptr-content`). Required.
     .method-wrap
       p
         span.method app.ptr.refresh(<span>el</span>)
@@ -114,9 +114,9 @@ block content
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (<code>ptr-content</code>). Required.
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (`ptr-content`). Required.
     h2 Pull To Refresh Methods & Properties
-    p If we created PTR manually or used <code>app.ptr.get</code> method we will PTR initialized instance with useful methods and properties:
+    p If we created PTR manually or used `app.ptr.get` method we will PTR initialized instance with useful methods and properties:
     :code(lang="js")
           // init ptr manually
           var ptr = app.ptr.create('.ptr-content');
@@ -132,10 +132,10 @@ block content
           td Link to global app instance
         tr
           td ptr.el
-          td PTR HTML element (<code>ptr-content</code>)
+          td PTR HTML element (`ptr-content`)
         tr
           td ptr.$el
-          td Dom7 instance with PTR HTML element (<code>ptr-content</code>)
+          td Dom7 instance with PTR HTML element (`ptr-content`)
         tr
           th(colspan="2") Methods
         tr
@@ -172,17 +172,17 @@ block content
         tr
           td ptr:refresh
           td Pull To Refresh content<span>&lt;div class="ptr-content"&gt;</span>
-          td Event will be triggered when pull to refresh enters in "refreshing" state. <code>event.detail</code> contain <code>ptr.done</code> method to reset its state after loading completed
+          td Event will be triggered when pull to refresh enters in "refreshing" state. `event.detail` contain `ptr.done` method to reset its state after loading completed
         tr
           td ptr:done
           td Pull To Refresh content<span>&lt;div class="ptr-content"&gt;</span>
-          td Event will be triggered after pull to refresh is done and it is back to initial state (after calling <code>ptr.done</code> method)
+          td Event will be triggered after pull to refresh is done and it is back to initial state (after calling `ptr.done` method)
         tr
           td ptr:beforedestroy
           td Pull To Refresh content<span>&lt;div class="ptr-content"&gt;</span>
           td Event will be triggered right before PTR instance will be destroyed
     h3 App and Pull To Refresh Instance Events
-    p PTR instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>ptr</code>.
+    p PTR instance emits events on both self instance and app instance. App instance events has same names prefixed with `ptr`.
     table.events-table.double-events-table
       thead
         tr
@@ -207,10 +207,10 @@ block content
           td <span>(el, data)</span>
           td(rowspan="2") Event will be triggered when you start to move pull to refresh content. As an argument event handler receives ptr element and ptr data containing the following properties:
             ul
-              li <code>event</code> - touchmove event
-              li <code>scrollTop</code> - current scroll top position
-              li <code>translate</code> - current translateY offset
-              li <code>touchesDiff</code> - touches difference (in px)
+              li `event` - touchmove event
+              li `scrollTop` - current scroll top position
+              li `translate` - current translateY offset
+              li `touchesDiff` - touches difference (in px)
         tr
           td ptrPullMove
           td app
@@ -230,7 +230,7 @@ block content
           td refresh
           td ptr
           td <span>(el, done)</span>
-          td(rowspan="2") Event will be triggered when pull to refresh enters. As an argument event handler receives ptr element and <code>done</code> function to reset PTR state
+          td(rowspan="2") Event will be triggered when pull to refresh enters. As an argument event handler receives ptr element and `done` function to reset PTR state
         tr
           td ptrRefresh
           td app

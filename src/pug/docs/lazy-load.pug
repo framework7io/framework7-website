@@ -20,7 +20,7 @@ block content
     h3 With Images
     p To use lazy load on images:
     ol
-      li specify image source into <code><b>data-src</b></code> attribute instead of <code>src</code> attribute
+      li specify image source into <code><b>data-src</b></code> attribute instead of `src` attribute
       li add <code><b>lazy</b></code> class to the image
     :code(lang="html")
       &lt;div class="page-content"&gt;
@@ -28,7 +28,7 @@ block content
         &lt;img data-src="path/to/image.jpg" class="lazy"&gt;
         ...
       &lt;/div&gt;
-    .important-note After lazy image successfully loaded, <em>or in case of error loading the image file</em>, the <code>lazy</code> class will be replaced with <code>lazy-loaded</code> class.
+    .important-note After lazy image successfully loaded, <em>or in case of error loading the image file</em>, the `lazy` class will be replaced with `lazy-loaded` class.
     h3 With Background Images
     p It is also possible to use lazy load for background images, in this case:
     ol
@@ -42,7 +42,7 @@ block content
         &lt;/div&gt;
         ...
       &lt;/div&gt;
-    .important-note After lazy image successfully loaded, <em>or in case of error loading the image file</em>, the <code>lazy</code> class will be replaced with <code>lazy-loaded</code> class.
+    .important-note After lazy image successfully loaded, <em>or in case of error loading the image file</em>, the `lazy` class will be replaced with `lazy-loaded` class.
 
     h3 With Fade-in Effect
     p If you want to add fade-in effect when image is loaded, you need to add additional <code><b>lazy-fade-in</b></code> class to image/element:
@@ -56,7 +56,7 @@ block content
         ...
       &lt;/div&gt;
     h2 Lazy Load App Parameters
-    p It is possible to control some default lazy loading behavior using global <a href="app.html#app-parameters">app parameters</a> by passing lazy loading related parameters under <code>lazy</code> parameter:
+    p It is possible to control some default lazy loading behavior using global <a href="app.html#app-parameters">app parameters</a> by passing lazy loading related parameters under `lazy` parameter:
     table.params-table
       thead
         tr
@@ -120,7 +120,7 @@ block content
       ul.method-parameters
         li
           span.parameter imageEl
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of lazy image or element (element with <code>lazy</code> class). Required.
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of lazy image or element (element with `lazy` class). Required.
         li
           span.parameter callback
           |  - <span class="parameter-type">function</span> - callback function that will be executed when image file loaded or in case of error loading this file.

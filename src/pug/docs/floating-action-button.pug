@@ -14,12 +14,13 @@ block content
     ul.docs-index
     p Floating action button (FAB) is used for a promoted action. They are distinguished by a circled icon floating above the UI and have motion behaviors that include morphing, launching, and a transferring anchor point.
     h2 FAB Layout
-    p Layout of floating action button is very simple. Just put it as the direct child of <code>page</code> or <code>view</code>:
+    p Layout of floating action button is very simple. Just put it as the direct child of `page` or `view`:
     :code(lang="html")
           <!-- Page-->
           <div class="page">
             <!-- Navbar-->
             <div class="navbar">
+              <div class="navbar-bg"></div>
               <div class="navbar-inner">
                 <div class="center">Floating Action Button</div>
               </div>
@@ -43,19 +44,19 @@ block content
               </div>
             </div>
           </div>
-    p FAB position is configured via additional <code>fab-[horizontal]-[vertical]</code> class. The following clases are avaialble:
+    p FAB position is configured via additional `fab-[horizontal]-[vertical]` class. The following clases are avaialble:
     ul
-      li <code>fab-right-bottom</code>
-      li <code>fab-center-bottom</code>
-      li <code>fab-left-bottom</code>
-      li <code>fab-right-center</code>
-      li <code>fab-center-center</code>
-      li <code>fab-left-center</code>
-      li <code>fab-right-top</code>
-      li <code>fab-center-top</code>
-      li <code>fab-left-top</code>
+      li `fab-right-bottom`
+      li `fab-center-bottom`
+      li `fab-left-bottom`
+      li `fab-right-center`
+      li `fab-center-center`
+      li `fab-left-center`
+      li `fab-right-top`
+      li `fab-center-top`
+      li `fab-left-top`
     h2 FAB Colors
-    p FAB supports all <a href="color-themes.html">default colors</a>. To change its color just add <code>color-[color]</code> class to FAB element.
+    p FAB supports all <a href="color-themes.html">default colors</a>. To change its color just add `color-[color]` class to FAB element.
     pre.html
       code
         :code(lang="html")
@@ -65,7 +66,7 @@ block content
           <!-- Green FAB -->
           <div class="fab fab-right-bottom color-green"></div>
     h2 Extended FAB
-    p The extended FAB is wider, and it includes a text label. To make extended FAB we need to add additional <code>fab-extended</code> class to FAB element and put its extra text in <code>&lt;div class="fab-text"&gt;</code> element inside:
+    p The extended FAB is wider, and it includes a text label. To make extended FAB we need to add additional `fab-extended` class to FAB element and put its extra text in `&lt;div class="fab-text"&gt;` element inside:
     :code(lang="html")
           <!-- Additional fab-extended class -->
           <div class="fab fab-extended fab-center-bottom">
@@ -95,11 +96,11 @@ block content
           </div>
     p Speed dial buttons container position is configured via additional class:
     ul
-      li <code>fab-buttons-top</code> - buttons will appear on top of FAB
-      li <code>fab-buttons-right</code> - buttons will appear on right of FAB
-      li <code>fab-buttons-bottom</code> - buttons will appear on bottom of FAB
-      li <code>fab-buttons-left</code> - buttons will appear on left of FAB
-      li <code>fab-buttons-center</code> - buttons will appear around of FAB
+      li `fab-buttons-top` - buttons will appear on top of FAB
+      li `fab-buttons-right` - buttons will appear on right of FAB
+      li `fab-buttons-bottom` - buttons will appear on bottom of FAB
+      li `fab-buttons-left` - buttons will appear on left of FAB
+      li `fab-buttons-center` - buttons will appear around of FAB
     .important-note
       ul
         li
@@ -147,8 +148,8 @@ block content
       </div>
     p Where
     ul
-      li <code>data-morph-to</code> - additional attribute on FAB where target element's CSS selector must be specified. In this example it points to Toolbar
-      li <code>fab-morph-target</code> - additional required class on FAB morph target, in this example it is added to Toolbar
+      li `data-morph-to` - additional attribute on FAB where target element's CSS selector must be specified. In this example it points to Toolbar
+      li `fab-morph-target` - additional required class on FAB morph target, in this example it is added to Toolbar
     h2 FAB App Methods
     p We can use following app methods to control FABs:
     table.methods-table
@@ -203,6 +204,7 @@ block content
       :code(lang="html")
             <div class="page">
               <div class="navbar">
+                <div class="navbar-bg"></div>
                 <div class="navbar-inner">
                   <div class="title">Floating Action Button</div>
                 </div>

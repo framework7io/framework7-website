@@ -75,12 +75,12 @@ block content
           td type
           td string
           td circle
-          td Gauge type. Can be <code>circle</code> or <code>semicircle</code>
+          td Gauge type. Can be `circle` or `semicircle`
         tr
           td value
           td number
           td 0
-          td Gauge value/percentage. Must be a number between <code>0</code> and <code>1</code>
+          td Gauge value/percentage. Must be a number between `0` and `1`
         tr
           td size
           td number
@@ -90,7 +90,7 @@ block content
           td bgColor
           td string
           td transparent
-          td Gauge background color. Can be any valid color string, e.g. <code>#ff00ff</code>, <code>rgb(0,0,255)</code>, etc.
+          td Gauge background color. Can be any valid color string, e.g. `#ff00ff`, `rgb(0,0,255)`, etc.
         tr
           td borderBgColor
           td string
@@ -167,7 +167,7 @@ block content
     p So to create Gauge we have to call:
     :code(lang="js")
           var gauge = app.gauge.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>gauge</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `gauge` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -239,7 +239,7 @@ block content
           td Gauge Element<span>&lt;div class="gauge"&gt;</span>
           td Event will be triggered right before Gauge instance will be destroyed
     h3 App and Gauge Instance Events
-    p Gauge instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>gauge</code>.
+    p Gauge instance emits events on both self instance and app instance. App instance events has same names prefixed with `gauge`.
     table.events-table.double-events-table
       thead
         tr
@@ -258,7 +258,7 @@ block content
           td <span>(gauge)</span>
           td app
     h2 Gauge Auto Initialization
-    p If you don't need to use Gauge API and your Gauge is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>gauge-init</code> class, and specifying all parameters with <code>data-</code> attributes:
+    p If you don't need to use Gauge API and your Gauge is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional `gauge-init` class, and specifying all parameters with `data-` attributes:
     :code(lang="html")
           <!-- Add gauge-init class, and specify parameters in data- attributes -->
           <div
@@ -269,7 +269,7 @@ block content
             data-value-text-color="#ff9800"
             data-border-color="#ff9800"
           ></div>
-    p In this case if you need to access automatically created Gauge instance you can use the <code>app.gauge.get</code> app method:
+    p In this case if you need to access automatically created Gauge instance you can use the `app.gauge.get` app method:
     :code(lang="js")
           var gauge = app.gauge.get('.my-gauge');
 

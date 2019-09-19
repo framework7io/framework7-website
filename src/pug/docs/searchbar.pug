@@ -34,7 +34,7 @@ block content
           li <code><b>&lt;i class="searchbar-icon"&gt;</b></code> - search icon
           li <code><b>&lt;span class="input-clear-button"&gt;</b></code> - button to clear field value and reset search results. Optional element
       li <code><b>&lt;span class="searchbar-disable-button"&gt;</b></code> - Searchbar "Cancel" button that will deactivate Searchbar, reset search results and clear search field. Optional element
-      li <code><b>&lt;div class="searchbar-backdrop"&gt;</b></code> - semi transparent searchbar backdrop that becomes visible when we enable searchbar. It is recommended to place this element inside of scrollable page's <code>page-content</code>
+      li <code><b>&lt;div class="searchbar-backdrop"&gt;</b></code> - semi transparent searchbar backdrop that becomes visible when we enable searchbar. It is recommended to place this element inside of scrollable page's `page-content`
     h2 Searchbar Type
     p Now let's see where we can place Searchbar in page structure. There are few options:
     h3 Fixed Searchbar
@@ -57,6 +57,7 @@ block content
         :code(lang="html")
               <div class="page page-with-subnavbar">
                 <div class="navbar">
+                  <div class="navbar-bg"></div>
                   <div class="navbar-inner">
                     ...
                     <div class="subnavbar">
@@ -89,6 +90,7 @@ block content
     :code(lang="html")
           <div class="page">
             <div class="navbar">
+              <div class="navbar-bg"></div>
               <div class="navbar-inner">
                 <div class="left">...</div>
                 <div class="title">...</div>
@@ -122,8 +124,8 @@ block content
       li Searchbar has additional <code><b>searchbar-expandable</b></code> class. It is required for expandable Searchbar to work
 
     h3 Inline Searchbar
-    p Inline Searchbar is designed to be used inside of other components, specifically inside of <a href="./appbar.html">Appbar</a>. It has simplified layout - without <code>.searchbar-inner</code>, and it is recommended to use it without disable button.
-    p We just need to add <code>searchbar-inline</code> class to Searchbar to make it inline
+    p Inline Searchbar is designed to be used inside of other components, specifically inside of <a href="./appbar.html">Appbar</a>. It has simplified layout - without `.searchbar-inner`, and it is recommended to use it without disable button.
+    p We just need to add `searchbar-inline` class to Searchbar to make it inline
     :code(lang="html")
       <!-- Additional "searchbar-inline" class -->
       <div class="searchbar searchbar-inline">
@@ -256,12 +258,12 @@ block content
           td el
           td string<br>HTMLElement
           td
-          td CSS selector or HTML element of searchbar element (<code>form class="searchbar"</code>)
+          td CSS selector or HTML element of searchbar element (`form class="searchbar"`)
         tr
           td inputEl
           td string<br>HTMLElement
           td
-          td CSS selector or HTML element of searchbar input element. By default (if not passed) will try to look for <code>input type="search"</code> inside of searchbar
+          td CSS selector or HTML element of searchbar input element. By default (if not passed) will try to look for `input type="search"` inside of searchbar
         tr
           td disableButton
           td boolean
@@ -271,7 +273,7 @@ block content
           td disableButtonEl
           td string<br>HTMLElement
           td
-          td CSS selector or HTML element of searchbar disable button. By default (if not passed) will try to look for element with <code>search-disable-button</code> class inside of searchbar
+          td CSS selector or HTML element of searchbar disable button. By default (if not passed) will try to look for element with `search-disable-button` class inside of searchbar
         tr
           td searchContainer
           td string<br>HTMLElement
@@ -281,22 +283,22 @@ block content
           td searchIn
           td string
           td
-          td CSS selector of List View element's field where we need to search. Usually we search through element titles, in this case we need to pass <code>.item-title</code>. It is also possible to pass few elements for search like <code>.item-title, .item-text</code>
+          td CSS selector of List View element's field where we need to search. Usually we search through element titles, in this case we need to pass `.item-title`. It is also possible to pass few elements for search like `.item-title, .item-text`
         tr
           td searchItem
           td string
           td li
-          td CSS selector of single search item. If we do a search in List View, then it must be a single list element <code>li</code>
+          td CSS selector of single search item. If we do a search in List View, then it must be a single list element `li`
         tr
           td searchGroup
           td string
           td .list-group
-          td CSS selector of group element. Used when <code>hideGroups</code> enabled to hide groups. If we do a search in List View, then it usually a list group.
+          td CSS selector of group element. Used when `hideGroups` enabled to hide groups. If we do a search in List View, then it usually a list group.
         tr
           td searchGroupTitle
           td string
           td .list-group-title, .item-divider
-          td CSS selector of group titles and dividers. Used when <code>hideDividers</code> enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider.
+          td CSS selector of group titles and dividers. Used when `hideDividers` enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider.
         tr
           td foundEl
           td string<br>HTMLElement
@@ -326,7 +328,7 @@ block content
           td backdropEl
           td string<br>HTMLElement
           td
-          td CSS selector or HTMLElement of searchbar backdrop element. If not passed and <code>backdrop</code> parameter is <code>true</code> then it will look for <code>.searchbar-backdrop</code> element. In case none found it will create one automatically
+          td CSS selector or HTMLElement of searchbar backdrop element. If not passed and `backdrop` parameter is `true` then it will look for `.searchbar-backdrop` element. In case none found it will create one automatically
         tr
           td ignore
           td string
@@ -336,7 +338,7 @@ block content
           td customSearch
           td boolean
           td false
-          td When enabled searchbar will not search through any of list blocks specified by <code>searchContainer</code> and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
+          td When enabled searchbar will not search through any of list blocks specified by `searchContainer` and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
         tr
           td removeDiacritics
           td boolean
@@ -370,7 +372,7 @@ block content
     p To create a Searchbar we have to call:
     :code(lang="js")
           var searchbar = app.searchbar.create({ /* parameters */ })
-    p After we initialize Searchbar we have its initialized instance in variable (like <code>searchbar</code> variable in example above) with helpful methods and properties:
+    p After we initialize Searchbar we have its initialized instance in variable (like `searchbar` variable in example above) with helpful methods and properties:
     table.methods-table
       tbody
         tr
@@ -475,7 +477,7 @@ block content
           td Searchbar Element<span>&lt;form class="searchbar"&gt;</span>
           td Event will be triggered right before Searchbar instance will be destroyed
     h3 App and Searchbar Instance Events
-    p Searchbar instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>searchbar</code>.
+    p Searchbar instance emits events on both self instance and app instance. App instance events has same names prefixed with `searchbar`.
     table.events-table.double-events-table
       thead
         tr
@@ -563,6 +565,7 @@ block content
       :code(lang="html")
             <div class="page">
               <div class="navbar">
+                <div class="navbar-bg"></div>
                 <div class="navbar-inner">
                   <div class="title">Search Bar</div>
                   <div class="subnavbar">

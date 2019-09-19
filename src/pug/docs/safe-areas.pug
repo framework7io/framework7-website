@@ -13,12 +13,12 @@ block content
     p On devices with safe areas (like with top screen notch), app UI must include additional top/bottom spacing (to consider top notch and new bottom bar) in portrait orientation and additional left/righ spacing (to consider left/right notch) in landscape orientation.
     p In portrait orientation Framework7 will do required styles modifications automatically, but in landscape orientation some additional classes must be added to elements:
     ul
-      li <code>safe-areas</code> - add to element that is stick to both left and right screen edges in landscape orientation
-      li <code>safe-area-left</code> - add to element that is stick to the left screen edge in landscape orientation
-      li <code>safe-area-right</code> - add to element that is stick to the right screen edge in landscape orientation
-      li <code>no-safe-areas</code> - add to element which is is inside of <code>safe-areas</code> to remove additional horizontal spacing
-      li <code>no-safe-area-left</code> - add to element which is is inside of <code>safe-areas</code> to remove additional left spacing
-      li <code>no-safe-area-right</code> - add to element which is is inside of <code>safe-areas</code> to remove additional right spacing
+      li `safe-areas` - add to element that is stick to both left and right screen edges in landscape orientation
+      li `safe-area-left` - add to element that is stick to the left screen edge in landscape orientation
+      li `safe-area-right` - add to element that is stick to the right screen edge in landscape orientation
+      li `no-safe-areas` - add to element which is is inside of `safe-areas` to remove additional horizontal spacing
+      li `no-safe-area-left` - add to element which is is inside of `safe-areas` to remove additional left spacing
+      li `no-safe-area-right` - add to element which is is inside of `safe-areas` to remove additional right spacing
     p The following elements don't require such classes:
     ul
       li Popup, Sheet - already considered as full screen elements that is required extra spacing on both left and right sides

@@ -11,7 +11,7 @@ block content
     +improveDocsLink
     h1 Icons
     ul.docs-index
-    p By default Framework7 contains pretty limited set of icons used internally, such are <code>back</code>, <code>forward</code>, <code>prev</code> and <code>next</code> icons:
+    p By default Framework7 contains pretty limited set of icons used internally, such are `back`, `forward`, `prev` and `next` icons:
     :code(lang="html")
             &lt;i class="icon icon-back"&gt;&lt;/i&gt;
             &lt;i class="icon icon-forward"&gt;&lt;/i&gt;
@@ -25,10 +25,10 @@ block content
     h3 Install font
     ol
       li Download and extract the font pack from the <a href="https://github.com/framework7io/framework7-icons" target="_blank"><b>Framework7 Icons</b></a> repository
-      li Copy the <code>framework7-icons.css</code> to your project
-      li Copy the <code>fonts</code> folder to your project
-      li Ensure the font urls within <code>framework7-icons.css</code> properly reference the <code>fonts</code> path within your project
-      li Include a reference to the <code>framework7-icons.css</code> file where you reference app stylesheets:
+      li Copy the `framework7-icons.css` to your project
+      li Copy the `fonts` folder to your project
+      li Ensure the font urls within `framework7-icons.css` properly reference the `fonts` path within your project
+      li Include a reference to the `framework7-icons.css` file where you reference app stylesheets:
         :code(lang="html")
               &lt;link rel="stylesheet" href="path/to/framework7-icons.css"&gt;
     h3 Cheatsheet
@@ -61,10 +61,10 @@ block content
           &lt;i class="icon f7-icons color-custom"&gt;home&lt;/i&gt;
     h2 Using Both F7 Icons & Material Icons
     p To keep best practise its better to use F7 Icons font for iOS theme and Material Icons font for MD theme. But what to do in case you develop your app for both MD and iOS themes?
-    p In this case we may use router's <code>${theme}-only</code> and <code>if-${theme}</code> and <code>if-not-${theme}</code> helper classes to have F7 icon in iOS theme and Material icons in MD theme:
+    p In this case we may use router's `${theme}-only` and `if-${theme}` and `if-not-${theme}` helper classes to have F7 icon in iOS theme and Material icons in MD theme:
     :code(lang="html")
       <i class="f7-icons if-not-md">home</i>
       <i class="material-icons md-only">home</i>
-    p In this case we will have only <code>&lt;i class="f7-icons if-not-md"&gt;home&lt;/i&gt;</code> when app running with iOS or Aurora themes and only <code>&lt;i class="material-icons md-only"&gt;home&lt;/i&gt;</code> when app is in MD theme.
+    p In this case we will have only `&lt;i class="f7-icons if-not-md"&gt;home&lt;/i&gt;` when app running with iOS or Aurora themes and only `&lt;i class="material-icons md-only"&gt;home&lt;/i&gt;` when app is in MD theme.
 
     +cssVars('icon')

@@ -85,7 +85,7 @@ block content
           td icon
           td string
           td
-          td Notification icon HTML layout, e.g. <code>&lt;i class="f7-icons"&gt;home&lt;/i&gt;</code> or image <code>&lt;img src="path/to/icon.png"&gt;</code>
+          td Notification icon HTML layout, e.g. `&lt;i class="f7-icons"&gt;home&lt;/i&gt;` or image `&lt;img src="path/to/icon.png"&gt;`
         tr
           td title
           td string
@@ -152,7 +152,7 @@ block content
                     }
                   })
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>notification</code> property to set defaults for all notifications. For example:
+      p Note that all following parameters can be used in global app parameters under `notification` property to set defaults for all notifications. For example:
       :code(lang="js")
             var app = new Framework7({
               notification: {
@@ -164,7 +164,7 @@ block content
     p So to create Notification we have to call:
     :code(lang="js")
           var notification = app.notification.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>notification</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `notification` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -232,7 +232,7 @@ block content
           td Notification Element<span>&lt;div class="notification"&gt;</span>
           td Event will be triggered after Notification completes its closing animation
     h3 App and Notification Instance Events
-    p Notification instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>notification</code>.
+    p Notification instance emits events on both self instance and app instance. App instance events has same names prefixed with `notification`.
     table.events-table
       thead
         tr
