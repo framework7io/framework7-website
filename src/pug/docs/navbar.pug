@@ -26,6 +26,7 @@ block content
     p Navbar layout is pretty simple and self explaining:
     :code(lang="html")
           &lt;div class="navbar"&gt;
+              <div class="navbar-bg"></div>
               &lt;div class="navbar-inner"&gt;
                   &lt;div class="left"&gt;Left&lt;/div&gt;
                   &lt;div class="title"&gt;Page Title&lt;/div&gt;
@@ -39,6 +40,7 @@ block content
     p To add links in Left or Right part you just need to add the plain <code>&lt;a&gt;</code> tag with additional <code>link</code> class:
     :code(lang="html")
           &lt;div class="navbar"&gt;
+              <div class="navbar-bg"></div>
               &lt;div class="navbar-inner"&gt;
                   &lt;div class="left"&gt;
                       &lt;a href="#" class="link"&gt;Left Link&lt;/a&gt;
@@ -53,6 +55,7 @@ block content
     p Nothing extraordinary. Just add more <code>&lt;a class="link"</code> to the required part:
     :code(lang="html")
           &lt;div class="navbar"&gt;
+              <div class="navbar-bg"></div>
               &lt;div class="navbar-inner"&gt;
                   &lt;div class="left"&gt;
                       &lt;a href="#" class="link"&gt;Left 1&lt;/a&gt;
@@ -68,6 +71,7 @@ block content
     p Here comes a little difference. In this case we need to <strong>wrap link's text with</strong> <code>&lt;span&gt;</code> element. It is required for correct spacing between icon and "word", and for animation:
     :code(lang="html")
           &lt;div class="navbar"&gt;
+              <div class="navbar-bg"></div>
               &lt;div class="navbar-inner"&gt;
                   &lt;div class="left"&gt;
                       &lt;a href="#" class="link"&gt;
@@ -88,6 +92,7 @@ block content
     p If need links with icons and without text we need to additional <code><b>icon-only</b></code> class to links. With this class link will have fixed size so we can't miss it with finger:
     :code(lang="html")
           &lt;div class="navbar"&gt;
+              <div class="navbar-bg"></div>
               &lt;div class="navbar-inner"&gt;
                   &lt;div class="left"&gt;
                       &lt;a href="#" class="link icon-only"&gt;
@@ -107,6 +112,7 @@ block content
     p Large-title navbar has additional "row" (or "bar") with large title text, which is get collapsed on page scroll. To make it large we need to add additional #[code navbar-inner-large] class to navbar-inner and add additional #[code title-large] element to it:
     :code(lang="html")
       <div class="navbar">
+        <div class="navbar-bg"></div>
         <!-- additional "navbar-inner-large" class -->
         <div class="navbar-inner navbar-inner-large">
           <div class="left">
@@ -222,6 +228,7 @@ block content
     :code(lang="html")
       <!-- No additional classes, all elements will have "fade" effect on page transition -->
       <div class="navbar">
+        <div class="navbar-bg"></div>
         <div class="navbar-inner">
           <div class="left">
             <a href="#" class="link">Home Left</a>
@@ -235,6 +242,7 @@ block content
 
       <!-- Title and Left will have "sliding" effect on page transition -->
       <div class="navbar">
+        <div class="navbar-bg"></div>
         <div class="navbar-inner">
           <!-- Additional "sliding" class -->
           <div class="left sliding">
@@ -250,6 +258,7 @@ block content
 
       <!-- All parts will have "sliding" effect on page transition -->
       <div class="navbar">
+        <div class="navbar-bg"></div>
         <!-- Additional "sliding" class -->
         <div class="navbar-inner sliding">
           <div class="left">
@@ -452,6 +461,7 @@ block content
               <div class="page-content">
                 <!-- Static Navbar -->
                 <div class="navbar">
+                  <div class="navbar-bg"></div>
                   <div class="navbar-inner">
                     <div class="left">
                       <a class="link back">
@@ -474,6 +484,7 @@ block content
         <div class="page">
           <!-- Fixed/Dynamic Navbar -->
           <div class="navbar">
+            <div class="navbar-bg"></div>
             <div class="navbar-inner sliding">
               <div class="left">
                 <a class="link back">
@@ -496,6 +507,7 @@ block content
       :code(lang="html")
         <div class="page">
           <div class="navbar">
+            <div class="navbar-bg"></div>
             <!-- Additional "navbar-inner-large" class on navbar-inner -->
             <div class="navbar-inner navbar-inner-large sliding">
               <div class="left">
@@ -523,6 +535,7 @@ block content
       :code(lang="html")
             <div class="page">
               <div class="navbar">
+                <div class="navbar-bg"></div>
                 <div class="navbar-inner sliding">
                   <div class="left">
                     <a class="link back">
@@ -557,6 +570,7 @@ block content
       :code(lang="html")
             <div class="page">
               <div class="navbar">
+                <div class="navbar-bg"></div>
                 <div class="navbar-inner sliding">
                   <div class="left">
                     <a class="link back">
