@@ -180,6 +180,7 @@ html
               a(href=sponsor.link, target="_blank")
                 .sponsor-badge.sponsor-badge-silver(title="Silver Sponsor")
                 img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+            .home-sponsors-separator
           if (sponsors.topSupporter)
             each sponsor in sponsors.topSupporter
               a(href=sponsor.link, target="_blank")

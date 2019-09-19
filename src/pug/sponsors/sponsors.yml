@@ -24,6 +24,10 @@ silver:
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
 -
+  title: Staff Augmentation - Recruit Top Staff in Romania
+  link: https://staffaugmentation.ro
+  imageUrl: "#{cdn}/i/sponsors/staffaugmentation.png"
+-
   title: Bid4Papers - Write My Essay
   link: https://bid4papers.com/write-my-essay.html
   imageUrl: "#{cdn}/i/sponsors/bid4papers.png"
