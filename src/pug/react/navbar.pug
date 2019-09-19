@@ -17,11 +17,11 @@ block content
     h2 Navbar Components
     p There are following components included:
     ul
-      li <code><b>Navbar</b></code> / <code><b>F7Navbar</b></code>
-      li <code><b>NavLeft</b></code> / <code><b>F7NavLeft</b></code>
-      li <code><b>NavRight</b></code> / <code><b>F7NavRight</b></code>
-      li <code><b>NavTitle</b></code> / <code><b>F7NavTitle</b></code>
-      li <code><b>NavTitleLarge</b></code> / <code><b>F7NavTitleLarge</b></code>
+      li `Navbar` / `F7Navbar`
+      li `NavLeft` / `F7NavLeft`
+      li `NavRight` / `F7NavRight`
+      li `NavTitle` / `F7NavTitle`
+      li `NavTitleLarge` / `F7NavTitleLarge`
     h2 Navbar Properties
     table.params-table
       thead
@@ -52,7 +52,7 @@ block content
           td backLink
           td boolean<br>string
           td
-          td Adds back-link with text (if <code>string</code> value is specified)
+          td Adds back-link with text (if `string` value is specified)
         tr
           td backLinkUrl
           td string
@@ -92,7 +92,7 @@ block content
           td innerClass
           td string
           td
-          td Adds additional class to <code>navbar-inner</code> element
+          td Adds additional class to `navbar-inner` element
         tr
           td large
           td boolean
@@ -102,7 +102,7 @@ block content
           td titleLarge
           td string
           td
-          td Navbar large title text. If not specified then will be equal to <code>title</code> prop
+          td Navbar large title text. If not specified then will be equal to `title` prop
         tr
           th(colspan="4") &lt;NavLeft&gt; properties
         tr
@@ -129,7 +129,7 @@ block content
           td sliding
           td boolean
           td
-          td Enables "sliding" effect. By default inhertis <code>sliding</code> prop of parent <code>Navbar</code>
+          td Enables "sliding" effect. By default inhertis `sliding` prop of parent `Navbar`
         tr
           th(colspan="4") &lt;NavTitle&gt; properties
         tr
@@ -146,14 +146,14 @@ block content
           td sliding
           td boolean
           td
-          td Enables "sliding" effect. By default inhertis <code>sliding</code> prop of parent <code>Navbar</code>
+          td Enables "sliding" effect. By default inhertis `sliding` prop of parent `Navbar`
         tr
           th(colspan="4") &lt;NavRight&gt; properties
         tr
           td sliding
           td boolean
           td
-          td Enables "sliding" effect. By default inhertis <code>sliding</code> prop of parent <code>Navbar</code>
+          td Enables "sliding" effect. By default inhertis `sliding` prop of parent `Navbar`
     h2 Navbar Methods
     table.methods-table
       tr
@@ -199,14 +199,14 @@ block content
           td Event will be triggered after click on navbar back link
 
     h2 Navbar Slots
-    p Navbar React component (<code>&lt;Navbar&gt;</code>) has additional slots for custom elements:
+    p Navbar React component (`&lt;Navbar&gt;`) has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="navbar-inner"&gt;</code> element
-      li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="navbar-inner"&gt;</code> element
-      li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="navbar-inner"&gt;</code> element
-      li <code><b>nav-left</b></code> - element will be inserted in navbar's left element
-      li <code><b>nav-right</b></code> - element will be inserted in navbar's right element
-      li <code><b>title</b></code> - element will be inserted in navbar's title element
+      li `default` - element will be inserted as a child of `&lt;div class="navbar-inner"&gt;` element
+      li `before-inner` - element will be inserted right before `&lt;div class="navbar-inner"&gt;` element
+      li `after-inner` - element will be inserted right after `&lt;div class="navbar-inner"&gt;` element
+      li `nav-left` - element will be inserted in navbar's left element
+      li `nav-right` - element will be inserted in navbar's right element
+      li `title` - element will be inserted in navbar's title element
     :code(lang="jsx")
       <Navbar title="My App">
         <a href="#" slot="nav-left">Left Link</a>

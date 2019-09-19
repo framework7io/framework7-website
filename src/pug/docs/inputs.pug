@@ -34,13 +34,13 @@ block content
     p Where:
     ul
       li
-        p <code>item-input</code> - required additional class on <code>item-content</code>. Required for correct input item layout
+        p `item-input` - required additional class on `item-content`. Required for correct input item layout
       li
-        p <code>item-label</code> - additional class on <code>item-title</code> required to display label correctly
+        p `item-label` - additional class on `item-title` required to display label correctly
       li
-        p <code>item-input-wrap</code> - required additional input wrapper. Must be a direct child of <code>item-inner</code>
+        p `item-input-wrap` - required additional input wrapper. Must be a direct child of `item-inner`
       li
-        p <code>&lt;span class="input-clear-button"&gt;</code> - button that will clear input value in click. <em>Optional</em>
+        p `&lt;span class="input-clear-button"&gt;` - button that will clear input value in click. <em>Optional</em>
     h3 Stacked Labels
     p By default inputs list is displayed with stacked labels. Stacked labels always appear on top of the input:
     :code(lang="html")
@@ -63,9 +63,9 @@ block content
     p Where:
     ul
       li
-        p <code>item-title item-label</code> - input label
+        p `item-title item-label` - input label
     h3 Inline Labels
-    p If you want to use inline labels then you can additional <code>inline-labels</code> class to the whole list or <code>inline-label</code> class to the single item:
+    p If you want to use inline labels then you can additional `inline-labels` class to the whole list or `inline-label` class to the single item:
     :code(lang="html")
       <div class="list inline-labels">
         <ul>
@@ -95,7 +95,7 @@ block content
         </ul>
       </div>
     h3 Floating Labels
-    p To add floating label, we need to use <code>item-floating-label</code> class instead of item-label.
+    p To add floating label, we need to use `item-floating-label` class instead of item-label.
     :code(lang="html")
       <div class="list">
         <ul>
@@ -115,7 +115,7 @@ block content
         </ul>
       </div>
     h3 Outline Inputs
-    p To make input "outline" (with border around input) we need to add #[code item-input-outline] class to main list input element:
+    p To make input "outline" (with border around input) we need to add `item-input-outline` class to main list input element:
     :code(lang="html")
       <div class="list">
         <ul>
@@ -160,11 +160,11 @@ block content
     p Where:
     ul
       li
-        p <code>item-input-with-info</code> - required additional class on input item
+        p `item-input-with-info` - required additional class on input item
       li
-        p <code>&lt;div class="item-input-info"&gt;...&lt;/div&gt;</code> - element with additional information
+        p `&lt;div class="item-input-info"&gt;...&lt;/div&gt;` - element with additional information
     h3 Input Dropdown
-    p It is also possible to indicate dropdown input (like select) with additional <code>input-dropdown-wrap</code> class. It will add small dropdown icon on the right (▼):
+    p It is also possible to indicate dropdown input (like select) with additional `input-dropdown-wrap` class. It will add small dropdown icon on the right (▼):
     :code
       <div class="list">
         <ul>
@@ -185,13 +185,13 @@ block content
         </ul>
       </div>
     h2 Supported Inputs
-    p Here is the list of input elements that you can put inside of <code>item-input-wrap</code>:
+    p Here is the list of input elements that you can put inside of `item-input-wrap`:
     table
       tbody
         tr
           td(valign="top")
             b All text inputs
-          td Supported types: <code><b>text</code></b>, <code><b>password</code></b>, <code><b>email</code></b>, <code><b>tel</code></b>, <code><b>url</code></b>, <code><b>date</code></b>, <code><b>number</code></b>, <code><b>datetime-local</code></b>
+          td Supported types: `text`, `password`, `email`, `tel`, `url`, `date`, `number`, `datetime-local`
             :code(lang="html")
               ...
                 <div class="item-input-wrap">
@@ -236,14 +236,14 @@ block content
                 &lt;/div&gt;
               ...
     h2 Resizable Textarea
-    p To make textarea automatically resize based on its content we may just add <code>resizable</code> class:
+    p To make textarea automatically resize based on its content we may just add `resizable` class:
     :code(lang="html")
           <textarea class="resizable"></textarea>
     h2 Validation
-    p Framework7 supports <a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Form_validation" target="_blank">HTML5 validation</a> based on <code>validity</code> input property. With enabled validation, there will appear validation error messages in case of input has invalid value.
-    p To enable validation we must add: <code>required</code> and <code>validate</code> attributes to the input element.
-    p If we need input validation #[b only] on #[code blur] event, then we need to add #[code data-validate-on-blur="true"] attribute.
-    p Value validation depends on input <code>type</code>. For example <code>input type="email"</code> will be validated to match email pattern, etc. It is default browser behavior. In case you want to add custom rule to validate input value, then it must be done using <code>pattern</code> input attribute:
+    p Framework7 supports <a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Form_validation" target="_blank">HTML5 validation</a> based on `validity` input property. With enabled validation, there will appear validation error messages in case of input has invalid value.
+    p To enable validation we must add: `required` and `validate` attributes to the input element.
+    p If we need input validation #[b only] on `blur` event, then we need to add `data-validate-on-blur="true"` attribute.
+    p Value validation depends on input `type`. For example `input type="email"` will be validated to match email pattern, etc. It is default browser behavior. In case you want to add custom rule to validate input value, then it must be done using `pattern` input attribute:
     :code(lang="html")
       <!-- default validation, check for value is not empty -->
       <input type="text" placeholder="Your name" required validate>
@@ -266,17 +266,17 @@ block content
     h2 Input State Classes
     p There are several classes that can be added to input element depending on its state and content:
     ul
-      li <code>input-with-value</code> - will be added to input when it has value
-      li <code>input-focused</code> - will be added to input when it is focused
-      li <code>input-invalid</code> - will be added to input when its value is not valid
-    p Same states will be added to input's parent <code>item-input</code> element:
+      li `input-with-value` - will be added to input when it has value
+      li `input-focused` - will be added to input when it is focused
+      li `input-invalid` - will be added to input when its value is not valid
+    p Same states will be added to input's parent `item-input` element:
     ul
-      li <code>item-input-with-value</code> - will be added to input item when its input has value
-      li <code>item-input-focused</code> - will be added to input item when its input is focused
-      li <code>item-input-invalid</code> - will be added to input item when its input's value is not valid
+      li `item-input-with-value` - will be added to input item when its input has value
+      li `item-input-focused` - will be added to input item when its input is focused
+      li `item-input-invalid` - will be added to input item when its input's value is not valid
 
     h2 Input App Parameters
-    p It is possible to control some default input behavior using global app parameters where we can pass input-related parameters under <code>input</code> property:
+    p It is possible to control some default input behavior using global app parameters where we can pass input-related parameters under `input` property:
     table.params-table
       thead
         tr
@@ -369,7 +369,7 @@ block content
         tr
           td textarea:resize
           td Textarea Element<span>&lt;textarea class="resizable"&gt;</span>
-          td Event will be triggered after resizable textarea resized. <code>event.detail</code> will contain object with the <code>initialHeight</code>, <code>currentHeight</code> and <code>scrollHeight</code> properties
+          td Event will be triggered after resizable textarea resized. `event.detail` will contain object with the `initialHeight`, `currentHeight` and `scrollHeight` properties
         tr
           td input:notempty
           td Input Element<span>&lt;input/textarea&gt;</span>

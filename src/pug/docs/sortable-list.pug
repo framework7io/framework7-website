@@ -30,7 +30,7 @@ block content
     p Where:
     ul
       li `sortable-handler` - "draggable" element (hidden by default) that allows you to sort current list view element
-    p As you may see it is pretty simple, all you need is to add <code><b>sortable</b></code> class to list block and put <code><b>&lt;div class="sortable-handler"&gt;&lt;/div&gt;</b></code> as a direct child of `&lt;li&gt;`.
+    p As you may see it is pretty simple, all you need is to add `sortable` class to list block and put `&lt;div class="sortable-handler"&gt;&lt;/div&gt;` as a direct child of `&lt;li&gt;`.
     p If we need to disable sorting on some specific items we can add `no-sorting` or `disallow-sorting` class to those items:
     :code(lang="html")
       <!-- Additional "sortable" class on list block -->
@@ -147,13 +147,13 @@ block content
     .important-note
       ul
         li
-          p To enable sortable mode we need to add <code><b>sortable-enable</b></code> class to any HTML element (prefered to link)
+          p To enable sortable mode we need to add `sortable-enable` class to any HTML element (prefered to link)
         li
-          p To disable sortable mode we need to add <code><b>sortable-disable</b></code> class to any HTML element (prefered to link)
+          p To disable sortable mode we need to add `sortable-disable` class to any HTML element (prefered to link)
         li
-          p To toggle sortable mode we need to add <code><b>sortable-toggle</b></code> class to any HTML element (prefered to link)
+          p To toggle sortable mode we need to add `sortable-toggle` class to any HTML element (prefered to link)
         li
-          p If you have more than one sortable list in app, you need to specify appropriate sortable list via additional <code><b>data-sortable=".sortable"</b></code> attribute on this HTML element with CSS selector of required sortable list
+          p If you have more than one sortable list in app, you need to specify appropriate sortable list via additional `data-sortable=".sortable"` attribute on this HTML element with CSS selector of required sortable list
 
     +cssVars('sortable')
 

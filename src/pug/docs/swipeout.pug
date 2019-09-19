@@ -52,7 +52,7 @@ block content
       li `swipeout-close` - additional class on swipeout link that will close swipeout element when you click this link
       li `swipeout-delete` - additional class on swipeout link that will delete swipeout list item when you click this link
     .important-note
-      p Note that <code><strong>swipeout-content</strong></code> and <code><strong>swipeout-actions-left/right</strong></code> should be direct children of <strong>&lt;li&gt;</strong>
+      p Note that `swipeout-content` and `swipeout-actions-left/right` should be direct children of <strong>&lt;li&gt;</strong>
     p If you have only "item-content" you can simplify layout by adding "item-content" class to "swipeout-content":
     :code(lang="html")
           <li class="swipeout">
@@ -80,7 +80,7 @@ block content
             &lt;/div&gt;
           &lt;/li&gt;
     h2 Swipe To Delete
-    p Framework7 supports this frequently used feature from the box without single line of JavaScript. All you need is to add <code><b>swipeout-delete</b></code> class to swipeout actions buttons:
+    p Framework7 supports this frequently used feature from the box without single line of JavaScript. All you need is to add `swipeout-delete` class to swipeout actions buttons:
     :code(lang="html")
           &lt;li class="swipeout"&gt;
             &lt;div class="swipeout-content item-content"&gt;
@@ -92,7 +92,7 @@ block content
               &lt;a href="#" class="swipeout-delete"&gt;Delete&lt;/a&gt;
             &lt;/div&gt;
           &lt;/li&gt;
-    p It is also possible to call Confirm modal when user clicks on "Delete" button, and element will be removed only after confirmation. To make delete on confirmation you need to add additional <code><b>data-confirm</b></code> and <code><b>data-confirm-title</b></code> (optional) attributes to Delete link:
+    p It is also possible to call Confirm modal when user clicks on "Delete" button, and element will be removed only after confirmation. To make delete on confirmation you need to add additional `data-confirm` and `data-confirm-title` (optional) attributes to Delete link:
     :code(lang="html")
           &lt;li class="swipeout"&gt;
             &lt;div class="swipeout-content item-content"&gt;
@@ -105,7 +105,7 @@ block content
             &lt;/div&gt;
           &lt;/li&gt;
     h2 Overswipe
-    p Swipeouts also support "overswipe" actions that will be triggered automatically if you swipe actions too much. In this case we need to add <code><b>swipeout-overswipe</b></code> class to required actions button:
+    p Swipeouts also support "overswipe" actions that will be triggered automatically if you swipe actions too much. In this case we need to add `swipeout-overswipe` class to required actions button:
     :code(lang="html")
           &lt;li class="swipeout"&gt;
             &lt;div class="swipeout-content item-content"&gt;
@@ -125,7 +125,7 @@ block content
         li
           p With overswipe, script will automatically trigger "click" event on overswipe button, so you need to add appropriate event listener to this button
         li
-          p Overswipe button will have additonal <code><b>swipeout-overswipe-active</b></code> class during overswipe which you can use for additional styling of such state
+          p Overswipe button will have additonal `swipeout-overswipe-active` class during overswipe which you can use for additional styling of such state
     :code(lang="html")
           <li class="swipeout">
             <div class="swipeout-content">
@@ -235,7 +235,7 @@ block content
         tr
           td swipeout
           td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
-          td Event will be triggered while you move swipeout element. <code><b>event.detail</b></code> contains current opening progress percentage
+          td Event will be triggered while you move swipeout element. `event.detail` contains current opening progress percentage
         tr
           td swipeout:open
           td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>

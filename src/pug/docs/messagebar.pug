@@ -30,8 +30,8 @@ block content
           </div>
     p Where
     ul
-      li <code><b>messagebar-attachments</b></code> - block with messagebar attachments. Optional
-      li <code><b>messagebar-sheet</b></code> - block with messagebar sheet. Optional
+      li `messagebar-attachments` - block with messagebar attachments. Optional
+      li `messagebar-sheet` - block with messagebar sheet. Optional
     p Messagebar place is very important, it should be inside of `page` and right before `page-content`:
     :code(lang="html")
           <div class="page">
@@ -365,7 +365,7 @@ block content
           td messagebarBeforeDestroy
           td app
     h2 Messagebar Auto Initialization
-    p If you don't need to use Messagebar API and your Messagebar is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code><b>messagebar-init</b></code> class to messagebar element, and all required parameters can be passed using <code><b>data-</b></code> attributes:
+    p If you don't need to use Messagebar API and your Messagebar is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional `messagebar-init` class to messagebar element, and all required parameters can be passed using `data-` attributes:
     :code(lang="html")
           <div class="toolbar messagebar messagebar-init" data-max-height="200">
             <div class="toolbar-inner">

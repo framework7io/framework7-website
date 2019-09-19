@@ -31,11 +31,11 @@ block content
           framework7-vue.esm.js
 
     h2 Browser Script (UMD)
-    p #[code framework7-vue.bundle.js] is so called #[a(href="https://github.com/umdjs/umd", target="_blank") UMD]-format JavaScript intended to be used directly in browser (e.g. with #[code &lt;script src="..."&gt;]) or with libraries like Require.js. It already contains all Framework7-Vue components registered.
+    p `framework7-vue.bundle.js` is so called #[a(href="https://github.com/umdjs/umd", target="_blank") UMD]-format JavaScript intended to be used directly in browser (e.g. with `&lt;script src="..."&gt;`) or with libraries like Require.js. It already contains all Framework7-Vue components registered.
     p It is not recommended to use this version for production, just for development and testing
 
     h2 Components
-    p All Vue components are located in #[code components/] folder and can be used with core (not bundle) version. These components are ES modules.
+    p All Vue components are located in `components/` folder and can be used with core (not bundle) version. These components are ES modules.
     :code(lang="js")
       import App from 'framework7-vue/components/app.js';
       import Navbar from 'framework7-vue/components/navbar.js';
@@ -92,6 +92,6 @@ block content
       Framework7.use(Framework7Vue);
 
     h2 ES-Next
-    p Note, that Framework7 and Framework7-Vue ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile them as well, as well as <code>template7</code>, <code>dom7</code> and <code>ssr-window</code> modules that used as dependencies.
+    p Note, that Framework7 and Framework7-Vue ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile them as well, as well as `template7`, `dom7` and `ssr-window` modules that used as dependencies.
 
 

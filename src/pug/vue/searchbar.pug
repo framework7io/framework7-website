@@ -18,11 +18,11 @@ block content
     h2 Searchbar Components
     p There are following components included:
     ul
-      li <code><b>f7-searchbar</b></code>
+      li `f7-searchbar`
 
 
     h2 Searchbar Properties
-    p You can pass all parameters in single <code>params</code> property or use separate props for each parameter to specify them via component attributes:
+    p You can pass all parameters in single `params` property or use separate props for each parameter to specify them via component attributes:
     table.params-table
       thead
         tr
@@ -42,12 +42,12 @@ block content
           td value
           td string<br>number
           td
-          td Allows to specify Searchbar input's value. Can be usefule when used with <code>custom-search</code> enabled
+          td Allows to specify Searchbar input's value. Can be usefule when used with `custom-search` enabled
         tr
           td form
           td boolean
           td true
-          td Main searchbar element will be used as a <code>form</code> tag instead of <code>div</code>
+          td Main searchbar element will be used as a `form` tag instead of `div`
         tr
           td placeholder
           td string
@@ -87,32 +87,32 @@ block content
           td search-in
           td string
           td .item-title
-          td CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like <code>'.item-title, .item-text'</code>
+          td CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like `'.item-title, .item-text'`
         tr
           td search-item
           td string
           td li
-          td CSS selector of single search item. If we do a search in List View, then it must be a single list element <code>li</code>
+          td CSS selector of single search item. If we do a search in List View, then it must be a single list element `li`
         tr
           td search-group
           td string
           td .list-group
-          td CSS selector of group element. Used when <code>hide-groups</code> enabled to hide groups. If we do a search in List View, then it usually a list group.
+          td CSS selector of group element. Used when `hide-groups` enabled to hide groups. If we do a search in List View, then it usually a list group.
         tr
           td search-group-title
           td string
           td .list-group-title, .item-divider
-          td CSS selector of group titles and dividers. Used when <code>hide-dividers</code> enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider.
+          td CSS selector of group titles and dividers. Used when `hide-dividers` enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider.
         tr
           td found-el
           td string<br>object
           td .searchbar-found
-          td CSS selector or HTMLElement of searchbar "found" element. If not specified, searchbar will look for <code>.searchbar-found</code> element on page
+          td CSS selector or HTMLElement of searchbar "found" element. If not specified, searchbar will look for `.searchbar-found` element on page
         tr
           td not-found-el
           td string<br>object
           td .searchbar-not-found
-          td CSS selector or HTMLElement of searchbar "not-found" element. If not specified, searchbar will look for <code>.searchbar-not-found</code> element on page
+          td CSS selector or HTMLElement of searchbar "not-found" element. If not specified, searchbar will look for `.searchbar-not-found` element on page
         tr
           td backdrop
           td boolean
@@ -122,7 +122,7 @@ block content
           td backdrop-el
           td string<br>object
           td
-          td CSS selector or HTMLElement of searchbar backdrop element. If not passed and  <code>backdrop</code> parameter is true then it will look for <code>.searchbar-backdrop</code> element. In case none found it will create one automatically
+          td CSS selector or HTMLElement of searchbar backdrop element. If not passed and  `backdrop` parameter is true then it will look for `.searchbar-backdrop` element. In case none found it will create one automatically
         tr
           td ignore
           td string
@@ -132,7 +132,7 @@ block content
           td custom-search
           td boolean
           td false
-          td When enabled searchbar will not search through any of list blocks specified by <code>search-container</code> and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
+          td When enabled searchbar will not search through any of list blocks specified by `search-container` and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
         tr
           td remove-diacritics
           td boolean
@@ -232,13 +232,13 @@ block content
     h2 Searchbar Slots
     p Searchbar Vue component has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-inner"&gt;</code> element in the end. Same as <code><b>inner-end</b></code> slot
-      li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="searchbar-inner"&gt;</code> element
-      li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="searchbar-inner"&gt;</code> element
-      li <code><b>inner-start</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-inner"&gt;</code> element in the beginning
-      li <code><b>inner-end</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-inner"&gt;</code> element in the end
-      li <code><b>input-wrap-start</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-input-wrap"&gt;</code> element in the beginning
-      li <code><b>input-wrap-end</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-input-wrap"&gt;</code> element in the end
+      li `default` - element will be inserted as a child of `&lt;div class="searchbar-inner"&gt;` element in the end. Same as `inner-end` slot
+      li `before-inner` - element will be inserted right before `&lt;div class="searchbar-inner"&gt;` element
+      li `after-inner` - element will be inserted right after `&lt;div class="searchbar-inner"&gt;` element
+      li `inner-start` - element will be inserted as a child of `&lt;div class="searchbar-inner"&gt;` element in the beginning
+      li `inner-end` - element will be inserted as a child of `&lt;div class="searchbar-inner"&gt;` element in the end
+      li `input-wrap-start` - element will be inserted as a child of `&lt;div class="searchbar-input-wrap"&gt;` element in the beginning
+      li `input-wrap-end` - element will be inserted as a child of `&lt;div class="searchbar-input-wrap"&gt;` element in the end
     h4 Without Slots:
     :code(lang="html")
           <f7-searchbar
@@ -294,7 +294,7 @@ block content
           </form>
 
     h2 Access To Searchbar Instance
-    p If you use automatic initalization to init Searchbar (with <code>init:true</code> prop) and need to use Searchbar API you can access its initialized instance by accessing <code><b>.f7Searchbar</b></code> component's property.
+    p If you use automatic initalization to init Searchbar (with `init:true` prop) and need to use Searchbar API you can access its initialized instance by accessing `.f7Searchbar` component's property.
 
     .with-device
       h2 Examples

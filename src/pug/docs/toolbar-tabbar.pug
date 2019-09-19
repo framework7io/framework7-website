@@ -25,7 +25,7 @@ block content
       </div>
     h2 Toolbar Position
     p Toolbar can be placed on top of the page, or on bottom. So we always also need to specify its position by addition class.
-    p To make it on the top, we need to add #[code toolbar-top] class to Toolbar element:
+    p To make it on the top, we need to add `toolbar-top` class to Toolbar element:
     :code(lang="html")
       <!-- Top Toolbar -->
       <div class="toolbar toolbar-top">
@@ -35,7 +35,7 @@ block content
           <a href="#" class="link">Link 3</a>
         </div>
       </div>
-    p To make it on the bottom, we need to add #[code toolbar-bottom] class to Toolbar element:
+    p To make it on the bottom, we need to add `toolbar-bottom` class to Toolbar element:
     :code(lang="html")
       <!-- Bottom Toolbar -->
       <div class="toolbar toolbar-bottom">
@@ -45,13 +45,13 @@ block content
           <a href="#" class="link">Link 3</a>
         </div>
       </div>
-    p We can also use different positions for iOS, MD and Aurora themes at the same time by using the following classes: #[code toolbar-top-ios], #[code toolbar-top-md], #[code toolbar-top-aurora], #[code toolbar-bottom-ios], #[code toolbar-bottom-md], #[code toolbar-bottom-aurora].
+    p We can also use different positions for iOS, MD and Aurora themes at the same time by using the following classes: `toolbar-top-ios`, `toolbar-top-md`, `toolbar-top-aurora`, `toolbar-bottom-ios`, `toolbar-bottom-md`, `toolbar-bottom-aurora`.
 
     h2 Theme-Specific Styling
-    p In iOS theme, by default, Toolbar/Tabbar has thin border on the top. To disable this border you need to add <code><b>no-hairline</b></code> class to toolbar element:
+    p In iOS theme, by default, Toolbar/Tabbar has thin border on the top. To disable this border you need to add `no-hairline` class to toolbar element:
     :code(lang="html")
       <div class="toolbar no-hairline">...</div>
-    p In MD theme, by default, Toolbar/Tabbar has shadow. To disable this shadow you need to add <code><b>no-shadow</b></code> class to toolbar element:
+    p In MD theme, by default, Toolbar/Tabbar has shadow. To disable this shadow you need to add `no-shadow` class to toolbar element:
     :code(lang="html")
       <div class="toolbar no-shadow">...</div>
 
@@ -121,20 +121,20 @@ block content
           td Hide toolbar
             ul.method-parameters
               li <span class="parameter">toolbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required toolbar. Required.
-              li <span class="parameter">animated</span> - <span class="parameter-type">Boolean</span> - wheter it should be hidden with animation or not. By default is <code>true</code>
+              li <span class="parameter">animated</span> - <span class="parameter-type">Boolean</span> - wheter it should be hidden with animation or not. By default is `true`
         tr
           td app.toolbar.show(<span>toolbarEl</span>, <span>isAnimated</span>)
           td Show toolbar
             ul.method-parameters
               li <span class="parameter">toolbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required toolbar. Required.
-              li <span class="parameter">animated</span> - <span class="parameter-type">Boolean</span> - wheter it should be shown with animation or not. By default is <code>true</code>
+              li <span class="parameter">animated</span> - <span class="parameter-type">Boolean</span> - wheter it should be shown with animation or not. By default is `true`
         tr
           td app.toolbar.setHighlight(<span>tabbarEl</span>)
           td Set highlight on tab links according to active one. <span class="md-only">This will have effect only in MD theme</span>
             ul.method-parameters
               li <span class="parameter">tabbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required tabbar. Required.
     h2 Toolbar App Parameters
-    p It is possible to control some default toolbar behavior using global <a href="app.html#app-parameters">app parameters</a> by passing toolbar related parameters under <code>toolbar</code> parameter:
+    p It is possible to control some default toolbar behavior using global <a href="app.html#app-parameters">app parameters</a> by passing toolbar related parameters under `toolbar` parameter:
     table.params-table
       thead
         tr
@@ -152,12 +152,12 @@ block content
           td showOnPageScrollEnd
           td boolean
           td true
-          td Set to <code>true</code> to show hidden Toolbar/Tabbar when scrolling reaches end of the page
+          td Set to `true` to show hidden Toolbar/Tabbar when scrolling reaches end of the page
         tr
           td showOnPageScrollTop
           td boolean
           td true
-          td Set to <code>false</code> and hidden Toolbar/Tabbar will not become visible when you scroll page to top everytime. They will become visible only at the most top scroll position, in the beginning of the page
+          td Set to `false` and hidden Toolbar/Tabbar will not become visible when you scroll page to top everytime. They will become visible only at the most top scroll position, in the beginning of the page
     p For example:
     :code(lang="js")
       var app = new Framework7({
@@ -169,7 +169,7 @@ block content
     h2 Tabbar
     p Tabbar is a particular case of Toolbar, but it contains icons (or icons with labels) instead of plain links and inteded to be used with <a href="tabs.html">Tabs</a>.
     h3 Tabbar Layout
-    p Tabbar layout is almost the same as for Toolbar, but Tabbar has additional <code><b>tabbar</b></code> class:
+    p Tabbar layout is almost the same as for Toolbar, but Tabbar has additional `tabbar` class:
     :code(lang="html")
       <div class="toolbar tabbar toolbar-bottom">
         <div class="toolbar-inner">
@@ -191,7 +191,7 @@ block content
         li
           p On wide screen (tablet) all links will be centered with minimal width equal to 105px
     h3 Tabbar With Labels
-    p If you need to use Tabbar icons with labels we need one more "tabbar-labels" class on Tabbar, and to put #[code &lt;span class="tabbar-label"&gt;] inside of link:
+    p If you need to use Tabbar icons with labels we need one more "tabbar-labels" class on Tabbar, and to put `&lt;span class="tabbar-label"&gt;` inside of link:
     :code(lang="html")
       <div class="toolbar tabbar tabbar-labels toolbar-bottom">
         <div class="toolbar-inner">
@@ -209,7 +209,7 @@ block content
 
     h3 Scrollable Tabbar
     p When you have a lot of links and they all don't fit into view, then it could be useful to use scrollable Tabbar. It allows to swipe/scroll through tab links.
-    p All we need to make Tabbar scrollable is just to add additional <code><b>tabbar-scrollable</b></code> class to the Tabbar:
+    p All we need to make Tabbar scrollable is just to add additional `tabbar-scrollable` class to the Tabbar:
     :code(lang="html")
       <!-- Additional "tabbar-scrollable" class -->
       <div class="toolbar tabbar tabbar-scrollable toolbar-bottom">
@@ -225,15 +225,15 @@ block content
     h2 Control Toolbar/Tabbar With Page Classes
     p Framework7 allows you to hide/show Toolbar/Tabbar on specific page or on specific page scoll by using additional classes.
 
-    p If you want to hide toolbar/tabbar on page scroll on some specific page use additional classes on this page's <code>&lt;div class="page-content"&gt;</code> element:
+    p If you want to hide toolbar/tabbar on page scroll on some specific page use additional classes on this page's `&lt;div class="page-content"&gt;` element:
     ul
-      li <code><b>hide-bars-on-scroll</b></code> - to hide both Navbar and Toolbar on page scroll
-      li <code><b>hide-toolbar-on-scroll</b></code> - to hide Toolbar/Tabbar on page scroll
+      li `hide-bars-on-scroll` - to hide both Navbar and Toolbar on page scroll
+      li `hide-toolbar-on-scroll` - to hide Toolbar/Tabbar on page scroll
 
     p To disable this behavior on specific pages you may use the following additional classes:
     ul
-      li <code><b>keep-bars-on-scroll</b></code> - to keep Navbar and Toolbar on page scroll
-      li <code><b>keep-toolbar-on-scroll</b></code> - to keep Toolbar on page scroll
+      li `keep-bars-on-scroll` - to keep Navbar and Toolbar on page scroll
+      li `keep-toolbar-on-scroll` - to keep Toolbar on page scroll
     p For example:
     :code(lang="html")
       <div class="page">
@@ -256,7 +256,7 @@ block content
       </div>
 
     p If you have common single Toolbar / Tabbar across all pages/views of your app you can hide/show Toolbar/Tabbar automatically for some pages where you don't need it.
-    p To make it work all you need is to add <code><b>no-toolbar</b></code> class to loaded page (<code>&lt;div class="page no-toolbar"&gt;</code>):
+    p To make it work all you need is to add `no-toolbar` class to loaded page (`&lt;div class="page no-toolbar"&gt;`):
     :code(lang="html")
       &lt;!-- Page has additional "no-toolbar" class --&gt;
       &lt;div class="page no-toolbar"&gt;

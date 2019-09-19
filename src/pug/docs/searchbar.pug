@@ -28,13 +28,13 @@ block content
           </form>
     p Where:
     ul
-      li <code><b>&lt;div class="searchbar-input-wrap"&gt;</b></code> - wrapper for search field and clear button
+      li `&lt;div class="searchbar-input-wrap"&gt;` - wrapper for search field and clear button
         ul
-          li <code><b>&lt;input type="search"&gt;</b></code> - search field
-          li <code><b>&lt;i class="searchbar-icon"&gt;</b></code> - search icon
-          li <code><b>&lt;span class="input-clear-button"&gt;</b></code> - button to clear field value and reset search results. Optional element
-      li <code><b>&lt;span class="searchbar-disable-button"&gt;</b></code> - Searchbar "Cancel" button that will deactivate Searchbar, reset search results and clear search field. Optional element
-      li <code><b>&lt;div class="searchbar-backdrop"&gt;</b></code> - semi transparent searchbar backdrop that becomes visible when we enable searchbar. It is recommended to place this element inside of scrollable page's `page-content`
+          li `&lt;input type="search"&gt;` - search field
+          li `&lt;i class="searchbar-icon"&gt;` - search icon
+          li `&lt;span class="input-clear-button"&gt;` - button to clear field value and reset search results. Optional element
+      li `&lt;span class="searchbar-disable-button"&gt;` - Searchbar "Cancel" button that will deactivate Searchbar, reset search results and clear search field. Optional element
+      li `&lt;div class="searchbar-backdrop"&gt;` - semi transparent searchbar backdrop that becomes visible when we enable searchbar. It is recommended to place this element inside of scrollable page's `page-content`
     h2 Searchbar Type
     p Now let's see where we can place Searchbar in page structure. There are few options:
     h3 Fixed Searchbar
@@ -120,8 +120,8 @@ block content
 
     p Where:
     ul
-      li <code><b>&lt;a class="link icon-only searchbar-enable" data-searchbar=".searchbar"&gt;</b></code> - link to enable/expand Searchbar. Optional or can be placed in any other place. <code><b>data-searchbar</b></code> attribute contains CSS selector of Searchbar to enable.
-      li Searchbar has additional <code><b>searchbar-expandable</b></code> class. It is required for expandable Searchbar to work
+      li `&lt;a class="link icon-only searchbar-enable" data-searchbar=".searchbar"&gt;` - link to enable/expand Searchbar. Optional or can be placed in any other place. `data-searchbar` attribute contains CSS selector of Searchbar to enable.
+      li Searchbar has additional `searchbar-expandable` class. It is required for expandable Searchbar to work
 
     h3 Inline Searchbar
     p Inline Searchbar is designed to be used inside of other components, specifically inside of <a href="./appbar.html">Appbar</a>. It has simplified layout - without `.searchbar-inner`, and it is recommended to use it without disable button.
@@ -139,11 +139,11 @@ block content
     h2 Searchbar Behavior Classes
     p There are also several CSS classes that can be added to elements that will define their behavior when Searchbar is active:
     ul
-      li <code><b>searchbar-hide-on-enable</b></code> - elements with such class on page will be hidden when searchbar is enabled
-      li <code><b>searchbar-hide-on-search</b></code> - elements with such class on page will be hidden during search
-      li <code><b>searchbar-not-found</b></code> - elements with such class are hidden by default and become visible when there is not any search results
-      li <code><b>searchbar-found</b></code> - elements with such class are visible by default and become hidden when there is not any search results
-      li <code><b>searchbar-ignore</b></code> - searchbar will not consider this elements in search results
+      li `searchbar-hide-on-enable` - elements with such class on page will be hidden when searchbar is enabled
+      li `searchbar-hide-on-search` - elements with such class on page will be hidden during search
+      li `searchbar-not-found` - elements with such class are hidden by default and become visible when there is not any search results
+      li `searchbar-found` - elements with such class are visible by default and become hidden when there is not any search results
+      li `searchbar-ignore` - searchbar will not consider this elements in search results
     p For example:
     :code(lang="html")
           <div class="page">
@@ -531,7 +531,7 @@ block content
           td searchbarBeforeDestroy
           td app
     h2 Searchbar Auto Initialization
-    p If you don't need to use Searchbar API and your Searchbar is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code><b>searchbar-init</b></code> class to searchbar element, and all required parameters can be passed using <code><b>data-</b></code> attributes:
+    p If you don't need to use Searchbar API and your Searchbar is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional `searchbar-init` class to searchbar element, and all required parameters can be passed using `data-` attributes:
     :code(lang="html")
           <div class="page">
             <div class="navbar">...</div>

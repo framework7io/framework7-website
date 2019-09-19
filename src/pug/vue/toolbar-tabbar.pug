@@ -19,7 +19,7 @@ block content
     h2 Toolbar Components
     p There are following components included:
     ul
-      li <code><b>f7-toolbar</b></code>
+      li `f7-toolbar`
 
     h2 Toolbar Properties
     table.params-table
@@ -41,12 +41,12 @@ block content
           td position
           td string
           td
-          td #[a(href="/docs/toolbar-tabbar.html#toolbar-position") Toolbar position], can be #[code top] or #[code bottom]
+          td #[a(href="/docs/toolbar-tabbar.html#toolbar-position") Toolbar position], can be `top` or `bottom`
         tr
           td top
           td boolean
           td
-          td Top positioned toolbar. Shortening for #[code position="top"]
+          td Top positioned toolbar. Shortening for `position="top"`
         tr
           td top-ios
           td boolean
@@ -66,7 +66,7 @@ block content
           td bottom
           td boolean
           td
-          td Bottom positioned toolbar. Shortening for #[code position="bottom"]
+          td Bottom positioned toolbar. Shortening for `position="bottom"`
         tr
           td bottom-ios
           td boolean
@@ -91,12 +91,12 @@ block content
           td labels
           td boolean
           td false
-          td Enables Tabbar with labels (affects only when <code>tabbar: true</code>)
+          td Enables Tabbar with labels (affects only when `tabbar: true`)
         tr
           td scrollable
           td boolean
           td false
-          td Enables scrollable Tabbar (affects only when <code>tabbar: true</code>)
+          td Enables scrollable Tabbar (affects only when `tabbar: true`)
         tr
           td no-shadow
           td boolean
@@ -125,11 +125,11 @@ block content
         td Show toolbar
 
     h2 Toolbar Slots
-    p Toolbar Vue component (<code>&lt;f7-toolbar&gt;</code>) has additional slots for custom elements:
+    p Toolbar Vue component (`&lt;f7-toolbar&gt;`) has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="toolbar-inner"&gt;</code> element
-      li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="toolbar-inner"&gt;</code> element
-      li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="toolbar-inner"&gt;</code> element
+      li `default` - element will be inserted as a child of `&lt;div class="toolbar-inner"&gt;` element
+      li `before-inner` - element will be inserted right before `&lt;div class="toolbar-inner"&gt;` element
+      li `after-inner` - element will be inserted right after `&lt;div class="toolbar-inner"&gt;` element
     :code(lang="html")
           <f7-toolbar>
             <div slot="before-inner">Before Inner</div>

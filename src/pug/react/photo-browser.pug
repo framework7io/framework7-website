@@ -20,9 +20,9 @@ block content
     h2 Photo Browser Component
     p There are following components included:
     ul
-      li <code><b>PhotoBrowser</b></code> / <code><b>F7PhotoBrowser</b></code>
+      li `PhotoBrowser` / `F7PhotoBrowser`
     h2 Photo Browser Properties
-    p You can pass all parameters in single <code>params</code> property or use separate props for each parameter to specify them via component properties:
+    p You can pass all parameters in single `params` property or use separate props for each parameter to specify them via component properties:
     table.params-table
       thead
         tr
@@ -107,17 +107,17 @@ block content
           td type
           td string
           td standalone
-          td Define how Photo Browser should be opened. Could be <code>standalone</code> (will be opened as an overlay with custom transition effect), <code>popup</code> (will be opened as popup), <code>page</code> (will be injected to View and loaded as a new page).
+          td Define how Photo Browser should be opened. Could be `standalone` (will be opened as an overlay with custom transition effect), `popup` (will be opened as popup), `page` (will be injected to View and loaded as a new page).
         tr
           td theme
           td string
           td light
-          td Photo Browser color theme, could be <code>light</code> or <code>dark</code>
+          td Photo Browser color theme, could be `light` or `dark`
         tr
           td captionsTheme
           td string
           td
-          td Captions color theme, could be also <code>dark</code> or <code>light</code>. By default, equal to "theme" parameter
+          td Captions color theme, could be also `dark` or `light`. By default, equal to "theme" parameter
         tr
           td navbar
           td boolean
@@ -189,7 +189,7 @@ block content
           td .expositionDisable();
           td Disable exposition mode
     h2 Access To Photo Browser Instance
-    p You can access Photo Browser initialized instance by accessing <code><b>.f7PhotoBrowser</b></code> component's property.
+    p You can access Photo Browser initialized instance by accessing `.f7PhotoBrowser` component's property.
     .with-device
       h2(data-device-preview="../docs-demos/react/photo-browser.html") Examples
       :code(lang="jsx")

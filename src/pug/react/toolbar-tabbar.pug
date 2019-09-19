@@ -19,7 +19,7 @@ block content
     h2 Toolbar Components
     p There are following components included:
     ul
-      li <code><b>Toolbar</b></code> / <code><b>F7Toolbar</b></code>
+      li `Toolbar` / `F7Toolbar`
 
     h2 Toolbar Properties
     table.params-table
@@ -41,12 +41,12 @@ block content
           td position
           td string
           td
-          td #[a(href="/docs/toolbar-tabbar.html#toolbar-position") Toolbar position], can be #[code top] or #[code bottom]
+          td #[a(href="/docs/toolbar-tabbar.html#toolbar-position") Toolbar position], can be `top` or `bottom`
         tr
           td top
           td boolean
           td
-          td Top positioned toolbar. Shortening for #[code position="top"]
+          td Top positioned toolbar. Shortening for `position="top"`
         tr
           td topIos
           td boolean
@@ -66,7 +66,7 @@ block content
           td bottom
           td boolean
           td
-          td Bottom positioned toolbar. Shortening for #[code position="bottom"]
+          td Bottom positioned toolbar. Shortening for `position="bottom"`
         tr
           td bottomIos
           td boolean
@@ -91,12 +91,12 @@ block content
           td labels
           td boolean
           td false
-          td Enables Tabbar with labels (affects only when <code>tabbar: true</code>)
+          td Enables Tabbar with labels (affects only when `tabbar: true`)
         tr
           td scrollable
           td boolean
           td false
-          td Enables scrollable Tabbar (affects only when <code>tabbar: true</code>)
+          td Enables scrollable Tabbar (affects only when `tabbar: true`)
         tr
           td noShadow
           td boolean
@@ -125,11 +125,11 @@ block content
         td Show toolbar
 
     h2 Toolbar Slots
-    p Toolbar React component (<code>&lt;Toolbar&gt;</code>) has additional slots for custom elements:
+    p Toolbar React component (`&lt;Toolbar&gt;`) has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="toolbarInner"&gt;</code> element
-      li <code><b>beforeInner</b></code> - element will be inserted right before <code>&lt;div class="toolbarInner"&gt;</code> element
-      li <code><b>afterInner</b></code> - element will be inserted right after <code>&lt;div class="toolbarInner"&gt;</code> element
+      li `default` - element will be inserted as a child of `&lt;div class="toolbarInner"&gt;` element
+      li `beforeInner` - element will be inserted right before `&lt;div class="toolbarInner"&gt;` element
+      li `afterInner` - element will be inserted right after `&lt;div class="toolbarInner"&gt;` element
     :code(lang="jsx")
           <Toolbar>
             <div slot="beforeInner">Before Inner</div>

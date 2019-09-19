@@ -17,7 +17,7 @@ block content
     h2 Radio Components
     p There are following components included:
     ul
-      li <code><b>f7-radio</b></code>
+      li `f7-radio`
     h2 Radio Properties
     table.params-table
       thead
@@ -67,7 +67,7 @@ block content
           td change
           td Event will be triggered when radio input state changed
     h2 Radios List
-    p Radios List is not a separate component, but just a particular case of using <code><a href="list-view.html">&lt;f7-list&gt;</a></code>, <code><a href="list-item.html">&lt;f7-list-item&gt;</a></code>.
+    p Radios List is not a separate component, but just a particular case of using <a href="list-view.html">`&lt;f7-list&gt;`</a>, <a href="list-item.html">`&lt;f7-list-item&gt;`</a>.
     :code(lang="html")
           <f7-list>
             <!-- Additional "radio" prop to enable radio list item -->
@@ -75,7 +75,7 @@ block content
             <f7-list-item radio value="check_2" name="demo-radio" title="Radio 2"></f7-list-item>
           </f7-list>
     h2 Radio v-model
-    p <code>v-model</code> <b>is not supported</b> on Radio vue component. Instead, just use the combination of <code>checked</code> property and <code>@change</code> event:
+    p `v-model` <b>is not supported</b> on Radio vue component. Instead, just use the combination of `checked` property and `@change` event:
     :code(lang="html")
           <template>
             <f7-radio

@@ -12,7 +12,7 @@ block content
     h1 Request / Ajax
     ul.docs-index
     p Framework7 comes with handy Request library to work with XHR requests (Ajax) right from the box.
-    p It is available as a <code><b>request</b></code> property of Framework7 class (<code>Framework7.request</code>) and same property on initialized app instance (<code>app.request</code>):
+    p It is available as a `request` property of Framework7 class (`Framework7.request`) and same property on initialized app instance (`app.request`):
     :code(lang="js")
       // If we need it in place where we don't have access to app instance or before we init the app
       Framework7.request.get('somepage.html', function (data) {
@@ -81,7 +81,7 @@ block content
           td async
           td boolean
           td true
-          td If you need synchronous requests, set this option to <code>false</code>
+          td If you need synchronous requests, set this option to `false`
         tr
           td method
           td string
@@ -91,32 +91,32 @@ block content
           td cache
           td boolean
           td true
-          td If set to false, it will force requested pages not to be cached by the browser. Setting cache to false will only work correctly with HEAD and GET requests. It works by appending <code>_nocache={timestamp}</code> to the GET parameters
+          td If set to false, it will force requested pages not to be cached by the browser. Setting cache to false will only work correctly with HEAD and GET requests. It works by appending `_nocache={timestamp}` to the GET parameters
         tr
           td contentType
           td string
           td application/x-www-form-urlencoded
-          td Content type. Also could be <code>multipart/form-data</code> or <code>text/plain</code>. For cross-domain requests, setting the content type to anything other than application/x-www-form-urlencoded, multipart/form-data, or text/plain will trigger the browser to send a preflight OPTIONS request to the server
+          td Content type. Also could be `multipart/form-data` or `text/plain`. For cross-domain requests, setting the content type to anything other than application/x-www-form-urlencoded, multipart/form-data, or text/plain will trigger the browser to send a preflight OPTIONS request to the server
         tr
           td crossDomain
           td boolean
           td
-          td If you wish to force a crossDomain request (such as JSONP) on the same domain, set the value of crossDomain to true. When <code>true</code> additional <code>X-Requested-With: XMLHttpRequest</code> header will not be added to request. By default it will try to guess depending on app and request hosts
+          td If you wish to force a crossDomain request (such as JSONP) on the same domain, set the value of crossDomain to true. When `true` additional `X-Requested-With: XMLHttpRequest` header will not be added to request. By default it will try to guess depending on app and request hosts
         tr
           td data
           td object<br>string<br>array
           td
-          td Data to be sent to the server. It is converted to a query string, if not already a string. It's appended to the url for GET-requests. See processData option to prevent this automatic processing. For POST requests could be <code>FormData</code> instance
+          td Data to be sent to the server. It is converted to a query string, if not already a string. It's appended to the url for GET-requests. See processData option to prevent this automatic processing. For POST requests could be `FormData` instance
         tr
           td processData
           td boolean
           td true
-          td By default, data passed in to the data option as an object (technically, anything other than a string) will be processed and transformed into a query string, fitting to the default content-type "application/x-www-form-urlencoded". If you want to send a DOMDocument, or other non-processed data, set this option to <code>false</code>
+          td By default, data passed in to the data option as an object (technically, anything other than a string) will be processed and transformed into a query string, fitting to the default content-type "application/x-www-form-urlencoded". If you want to send a DOMDocument, or other non-processed data, set this option to `false`
         tr
           td dataType
           td string
           td text
-          td The type of data that you're expecting back from the server. Could be <code>text</code> or <code>json</code>
+          td The type of data that you're expecting back from the server. Could be `text` or `json`
         tr
           td headers
           td object
@@ -154,13 +154,13 @@ block content
           td function (xhr, parameters)
           td
           td A pre-request callback function that will be called before XHR opened. Can be used to modify XHR object
-            p.important-note If you <code>return false</code> in this callback it will cancel the request
+            p.important-note If you `return false` in this callback it will cancel the request
         tr
           td beforeSend
           td function (xhr)
           td
           td A pre-request callback function that will be called after XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc.
-            p.important-note If you <code>return false</code> in this callback it will cancel the request
+            p.important-note If you `return false` in this callback it will cancel the request
         tr
           td error
           td function (xhr, status)
@@ -195,7 +195,7 @@ block content
 
     h2 Shorthand Methods
     p Request comes with some pre configured methods for ease of use.
-    h3 #[code get()]
+    h3 `get()`
     .method-wrap
       p
         span.method app.request.get(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
@@ -215,7 +215,7 @@ block content
           |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
         li
           span.parameter dataType
-          |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be <code>text</code> or <code>json</code>. <em>Optional</em>
+          |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be `text` or `json`. <em>Optional</em>
       p.method-returns Returns plain XHR object
     .method-wrap
       p
@@ -249,7 +249,7 @@ block content
           $$('.articles').html(data);
           console.log('Load was performed');
         })
-    h3 #[code post()]
+    h3 `post()`
     .method-wrap
       p
         span.method app.request.post(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
@@ -269,7 +269,7 @@ block content
           |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
         li
           span.parameter dataType
-          |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be <code>text</code> or <code>json</code>. <em>Optional</em>
+          |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be `text` or `json`. <em>Optional</em>
       p.method-returns Returns plain XHR object
     .method-wrap
       p
@@ -303,7 +303,7 @@ block content
           $$('.login').html(data);
           console.log('Load was performed');
         });
-    h3 #[code json()]
+    h3 `json()`
     .method-wrap
       p
         span.method app.request.json(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
@@ -354,7 +354,7 @@ block content
           console.log(data);
         });
 
-    h3 #[code postJSON()]
+    h3 `postJSON()`
     .method-wrap
       p
         span.method app.request.postJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
@@ -374,7 +374,7 @@ block content
           |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
         li
           span.parameter dataType
-          |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be <code>text</code> or <code>json</code>. By default is <code>json</code>. <em>Optional</em>
+          |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be `text` or `json`. By default is `json`. <em>Optional</em>
       p.method-returns Returns plain XHR object
     .method-wrap
       p

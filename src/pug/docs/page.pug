@@ -84,26 +84,26 @@ block content
     p When a new page is loading and transitioned into the view (main visible part of the app) it has different classes on page element.
     p When we load/open new page the following happens:
     ol
-      li Currently active page has <code><b>page-current</b></code> class.
+      li Currently active page has `page-current` class.
       li If page we load not in DOM (e.g. loaded via Ajax or using template or from component) it will be added to DOM.
-      li Page that we load/open will have additional <code><b>page-next</b></code> class set on its element.
-      li Router element (`&lt;div class="view"&gt;`) will have additional <code><b>router-transition-forward</b></code> class that does the following:
+      li Page that we load/open will have additional `page-next` class set on its element.
+      li Router element (`&lt;div class="view"&gt;`) will have additional `router-transition-forward` class that does the following:
         ul
           li page with `page-next` (new page) class moves into the view
           li page with `page-current` (current page) class moves out of the view
-      li After transition completed, the new page that we loaded will have <code><b>page-current</b></code> class
-      li And the page that was previously active will have <code><b>page-previous</b></code> class
+      li After transition completed, the new page that we loaded will have `page-current` class
+      li And the page that was previously active will have `page-previous` class
     p When we load/open previous page (go back) the following happens:
     ol
-      li Currently active page has <code><b>page-current</b></code> class.
+      li Currently active page has `page-current` class.
       li If page we go back to not in DOM (e.g. loaded via Ajax or using template or from component) it will be added to DOM.
-      li Page that we go back to will have additional <code><b>page-previous</b></code> class set on its element.
-      li Router element (`&lt;div class="view"&gt;`) will have additional <code><b>router-transition-backward</b></code> class that does the following:
+      li Page that we go back to will have additional `page-previous` class set on its element.
+      li Router element (`&lt;div class="view"&gt;`) will have additional `router-transition-backward` class that does the following:
         ul
           li page with `page-previous` (page that we go back to) class moves into the view
           li page with `page-current` (current page) class moves out of the view
-      li After transition completed, the new page that we returned to will have <code><b>page-current</b></code> class
-      li And the page that was previously active will have <code><b>page-next</b></code> class. In case this page was added to DOM dynamically, it will be removed from DOM.
+      li After transition completed, the new page that we returned to will have `page-current` class
+      li And the page that was previously active will have `page-next` class. In case this page was added to DOM dynamically, it will be removed from DOM.
 
     h2 Page Data
     p As you may see it is pretty easy, but how do you determine which page is loaded when we use only one handler? For this case we have Page Data in the event details:
@@ -119,7 +119,7 @@ block content
           $$(document).on('page:init', function (e, page) {
             console.log(page);
           })
-    p Now, in the example above we have page data in <code><b>page</b></code> variable. It is an object with the following properties:
+    p Now, in the example above we have page data in `page` variable. It is an object with the following properties:
     table.methods-table
       thead
         tr

@@ -103,7 +103,7 @@ block content
           td inputEl
           td HTMLElement<br>string
           td
-          td Range Slider input element or CSS selector of input element. If not specified, will try to look for <code>input type="range"</code> inside of range slider element
+          td Range Slider input element or CSS selector of input element. If not specified, will try to look for `input type="range"` inside of range slider element
         tr
           td dual
           td boolean
@@ -153,7 +153,7 @@ block content
           td verticalReversed
           td boolean
           td false
-          td Makes vertical range slider reversed (#[code vertical] must be also enabled)
+          td Makes vertical range slider reversed (`vertical` must be also enabled)
         tr
           td scale
           td boolean
@@ -198,7 +198,7 @@ block content
     p So to create Range Slider we have to call:
     :code(lang="js")
           var range = app.range.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>range</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `range` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -235,7 +235,7 @@ block content
           td Range value
         tr
           td range.scale
-          td Boolean property indicating whether #[code scale] is enabled or not
+          td Boolean property indicating whether `scale` is enabled or not
         tr
           td range.scaleSteps
           td Number of scale steps
@@ -307,7 +307,7 @@ block content
           td Range Slider Element<span>&lt;div class="range-slider"&gt;</span>
           td Event will be triggered right before Range Slider instance will be destroyed
     h3 App and Range Slider Instance Events
-    p Range Slider instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>range</code>.
+    p Range Slider instance emits events on both self instance and app instance. App instance events has same names prefixed with `range`.
     table.events-table.double-events-table
       thead
         tr
@@ -344,13 +344,13 @@ block content
           td <span>(range)</span>
           td app
     h2 Range Slider Auto Initialization
-    p If you don't need to use Range Slider API and your Range Slider is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>range-slider-init</code> class:
+    p If you don't need to use Range Slider API and your Range Slider is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional `range-slider-init` class:
     :code(lang="html")
           <!-- Add range-slider-init class -->
           <div class="range-slider range-slider-init">
             <input type="range" min="0" max="100" step="1" value="10">
           </div>
-    p In this case if you need to access created Range Slider instance you can use the <code>app.range.get</code> app method:
+    p In this case if you need to access created Range Slider instance you can use the `app.range.get` app method:
     :code(lang="js")
           var range = app.range.get('.range-slider');
 
@@ -360,14 +360,14 @@ block content
     p When using auto init you may need to pass additional parameters. It can be done with two ways:
     ul
       li
-        p In you case you use single-range slider and you have input:range inside, then <code>step</code>, <code>min</code>, <code>max</code>, <code>value</code> parameters can be set from same input attributes:
+        p In you case you use single-range slider and you have input:range inside, then `step`, `min`, `max`, `value` parameters can be set from same input attributes:
         :code(lang="html")
               <!-- min, max, step, value parameters will be set for same input attributes -->
               <div class="range-slider range-slider-init">
                 <input type="range" min="0" max="100" step="1" value="10">
               </div>
       li
-        p Otherwise, if you don't have input:range inside or you use dual range input you can set all available parameters via <code>data-</code> attributes on range slider element.
+        p Otherwise, if you don't have input:range inside or you use dual range input you can set all available parameters via `data-` attributes on range slider element.
         :code(lang="html")
               <!-- parameters set via data- attributes -->
               <div
@@ -378,7 +378,7 @@ block content
                 data-label="true"
                 data-value="50"
               ></div>
-        p In case you have dual range slider, then you need to pass to values using <code>data-value-left</code> and <code>data-value-right</code> attributes:
+        p In case you have dual range slider, then you need to pass to values using `data-value-left` and `data-value-right` attributes:
         :code(lang="html")
               <!-- parameters set via data- attributes -->
               <div

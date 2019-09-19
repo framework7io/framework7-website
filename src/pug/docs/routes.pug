@@ -11,7 +11,7 @@ block content
     h1 Routes
     ul.docs-index
     h2 Define Routes
-    p First of all, when we init the Framework7 app we should pass default routes using <code>routes</code> array parameter:
+    p First of all, when we init the Framework7 app we should pass default routes using `routes` array parameter:
     :code(lang="js")
           var app = new Framework7({
             routes: [
@@ -54,7 +54,7 @@ block content
             ],
           });
     p Routes defined on app init are default routes, they will be available for any View/Router in the app.
-    p If you have a multi-view/router app and you want to have some View/Router to have <b>own strict routes</b> and don't want default routes be available in this <a href="view.html">View</a>, then you may specify the same <code>routes</code> parameter on View init:
+    p If you have a multi-view/router app and you want to have some View/Router to have <b>own strict routes</b> and don't want default routes be available in this <a href="view.html">View</a>, then you may specify the same `routes` parameter on View init:
     :code(lang="js")
           var view1 = app.views.create('.view-1', {
             routes: [
@@ -68,7 +68,7 @@ block content
               },
             ],
           });
-    p If you have a multi-view/router app and you want to have some View/Router to have <b>additional routes</b> and don't want these additional routes are available in other Views, then you may specify the <code>routesAdd</code> parameter on View init:
+    p If you have a multi-view/router app and you want to have some View/Router to have <b>additional routes</b> and don't want these additional routes are available in other Views, then you may specify the `routesAdd` parameter on View init:
     :code(lang="js")
           // This view will support all global routes + own additional routes
           var view2 = app.views.create('.view-2', {
@@ -96,7 +96,7 @@ block content
         tr
           td name
           td string
-          td Route name, e.g. <code>home</code>
+          td Route name, e.g. `home`
         tr
           td path
           td string
@@ -130,11 +130,11 @@ block content
         tr
           td el
           td HTMLElement
-          td Load page from DOM by passed HTMLElement. Can be used only with enabled <code>stackPages</code> on View.
+          td Load page from DOM by passed HTMLElement. Can be used only with enabled `stackPages` on View.
         tr
           td pageName
           td string
-          td Load page from DOM that has same data-name attribute. Can be used only with enabled <code>stackPages</code> on View.
+          td Load page from DOM that has same data-name attribute. Can be used only with enabled `stackPages` on View.
         tr
           td content
           td string
@@ -143,7 +143,7 @@ block content
           td url
           td string
           td Load page content via Ajax.
-            p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression, e.g.
+            p Also supports dynamic route params from <a href="#route-path">route path</a> using `{{paramName}}` expression, e.g.
             :code(lang="js")
                   {
                     path: '/users/:userId/posts/:postId',
@@ -157,7 +157,7 @@ block content
           td templateUrl
           td string
           td Load page content from url via Ajax, and compile it using Template7
-            p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression
+            p Also supports dynamic route params from <a href="#route-path">route path</a> using `{{paramName}}` expression
         tr
           td component
           td object
@@ -166,7 +166,7 @@ block content
           td componentUrl
           td string
           td load pages as a component via Ajax
-            p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression
+            p Also supports dynamic route params from <a href="#route-path">route path</a> using `{{paramName}}` expression
         tr
           td async
           td function(routeTo, routeFrom, resolve, reject)
@@ -236,7 +236,7 @@ block content
             br
             br
             | array
-          td Function (or array of functions) that will be executed before route load/enter. To proceed route loading <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+          td Function (or array of functions) that will be executed before route load/enter. To proceed route loading `resolve` must be called. In case of `array` then every function in array must be resolved to proceed.
         tr
           td beforeLeave
           td
@@ -244,13 +244,13 @@ block content
             br
             br
             | array
-          td Function (or array of functions) that will be executed before route unload/leave. To proceed navigation <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+          td Function (or array of functions) that will be executed before route unload/leave. To proceed navigation `resolve` must be called. In case of `array` then every function in array must be resolved to proceed.
         tr
           th(colspan="4") keepAlive
         tr
           td keepAlive
           td boolean
-          td Enables so called <code>keepAlive</code> route. When enabled then once loaded page and its component (Vue, React or Router component) will be never destroyed. Instead, it will be detached from DOM and reused again when required.
+          td Enables so called `keepAlive` route. When enabled then once loaded page and its component (Vue, React or Router component) will be never destroyed. Instead, it will be detached from DOM and reused again when required.
     p Here is an example for most of the possible options:
     :code(lang="js")
           routes: [
@@ -337,8 +337,8 @@ block content
             }
           ],
     h2 Route Path
-    p As stated above, the route's <code>path</code> property means the path/url that will be displayed in browser window address bar (if <code>pushState</code> enabled) when the following route will be loaded either by api or clicking on a link with same path.
-    p There is also support for dynamic paths. So if you have the following path in your route <code>/blog/users/:userId/posts/:postId/</code> and click the link with the with the <code>/blog/users/12/posts/25</code> href then on loaded page we access <code>route.params</code> object containing <code>{ userId: 12, postId: 25 }</code>
+    p As stated above, the route's `path` property means the path/url that will be displayed in browser window address bar (if `pushState` enabled) when the following route will be loaded either by api or clicking on a link with same path.
+    p There is also support for dynamic paths. So if you have the following path in your route `/blog/users/:userId/posts/:postId/` and click the link with the with the `/blog/users/12/posts/25` href then on loaded page we access `route.params` object containing `{ userId: 12, postId: 25 }`
     p Route path matching is handled by <a href="https://github.com/pillarjs/path-to-regexp" target="_blank">Path To Regexp</a> library, so everything what is supported there is supported in Framework7 as well. For example, if you want to add default route which match all paths, we can use regular expression like:
     :code(lang="js")
           // Default route, match to all pages (e.g. 404 page)
@@ -348,7 +348,7 @@ block content
           },
 
     h2 Route Options
-    p Lets look at additional route options that can be passed in <code>options</code> property:
+    p Lets look at additional route options that can be passed in `options` property:
     table.params-table
       thead
         tr
@@ -367,7 +367,7 @@ block content
       tr
         td pushState
         td boolean
-        td whether the page should be saved in browser state. In case you are using <code>pushState</code>, then you can pass here <code>false</code> to prevent route getting in browser history
+        td whether the page should be saved in browser state. In case you are using `pushState`, then you can pass here `false` to prevent route getting in browser history
       tr
         td reloadCurrent
         td boolean
@@ -383,13 +383,13 @@ block content
       tr
         td context
         td object
-        td custom/extended context for Template7/Component page (when route loaded from <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>)
+        td custom/extended context for Template7/Component page (when route loaded from `template`, `templateUrl`, `component` or `componentUrl`)
       tr
         td props
         td object
         td props that will be passed as Vue/React page component props
     h2 Async Route
-    p <code>async</code> route property is very powerful tool designed to return dynamic route properties. It is a function with the following arguments:
+    p `async` route property is very powerful tool designed to return dynamic route properties. It is a function with the following arguments:
     .method-wrap
       p.method async(<span>routeTo, routeFrom, resolve, reject</span>)
       ul.method-parameters
@@ -398,17 +398,17 @@ block content
         li <span class="parameter">resolve</span> - callback function that you need to call to proceed route loading
         li <span class="parameter">reject</span> - callback function that you need to call to abort route loading
     .method-wrap
-      p <code>resolve</code> callback function accepts two arguments:
+      p `resolve` callback function accepts two arguments:
       p.method resolve(<span>parameters, options</span>)
       ul.method-parameters
-        li <span class="parameter">parameters</span> <span class="parameter-type">object</span> - object with resolved route content. Must contain one of <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code> properties
+        li <span class="parameter">parameters</span> <span class="parameter-type">object</span> - object with resolved route content. Must contain one of `url`, `content`, `template`, `templateUrl`, `component` or `componentUrl` properties
         li <span class="parameter">options</span> <span class="parameter-type">object</span> - object with <a href="#route-options">Route Options</a>
     .method-wrap
-      p <code>reject</code> callback function doesn't have arguments:
+      p `reject` callback function doesn't have arguments:
       p.method reject()
     .important-note
       p
-        b Note that until you call <code>resolve</code> or <code>reject</code> in async method, routing will be blocked!
+        b Note that until you call `resolve` or `reject` in async method, routing will be blocked!
     p For example:
     :code(lang="js")
           routes = [
@@ -424,7 +424,7 @@ block content
             }
           ]
     h2 Route Events
-    p It is possible to add all page events inside of route for this page using <code>on</code> route property. For example:
+    p It is possible to add all page events inside of route for this page using `on` route property. For example:
     :code(lang="js")
           var app = new Framework7({
             routes: [
@@ -451,8 +451,8 @@ block content
             ],
           });
     .important-note
-      p Please note, that such route events are actually DOM events, so each such handler will accept <code>event</code> as a first argument with the event itself and <code>page</code> as the second argument with <a href="page.html#page-data">page data</a>.
-      p Also, context of such event handler (<code>this</code>) will point to related <a href="view.html#router-api-methods-properties">Router instance</a>.
+      p Please note, that such route events are actually DOM events, so each such handler will accept `event` as a first argument with the event itself and `page` as the second argument with <a href="page.html#page-data">page data</a>.
+      p Also, context of such event handler (`this`) will point to related <a href="view.html#router-api-methods-properties">Router instance</a>.
     h2 Nested Routes
     p It is possible to have nested routes (routes in routes) as well:
     :code(lang="js")
@@ -497,21 +497,21 @@ block content
               url: './pages/monitors.html',
             },
           ];
-    p So lets say we are on a <code>/catalog/</code> page and have the following links:
+    p So lets say we are on a `/catalog/` page and have the following links:
     ol
       li
-        p <code>&lt;a href="computers/"&gt;Computers</a></code> - will work as expected. Link will be merged with the current route (<code>/catalog/</code> + <code>computers/</code>) and we will have <code>/catalog/computers/</code> which we have in our routes.
+        p `&lt;a href="computers/"&gt;Computers&lt;/a&gt;` - will work as expected. Link will be merged with the current route (`/catalog/` + `computers/`) and we will have `/catalog/computers/` which we have in our routes.
       li
-        p <code>&lt;a href="./computers/"&gt;Computers&lt;/a&gt;</code> - will work the same as case 1 because <code>./</code> in the beginning of path means same sub level.
+        p `&lt;a href="./computers/"&gt;Computers&lt;/a&gt;` - will work the same as case 1 because `./` in the beginning of path means same sub level.
       li
-        p <code>&lt;a href="/catalog/computers/"&gt;Computers&lt;/a&gt;</code> - will also work as expected the same as case 1 because <code>/</code> (slash) in the beginning means root. And we have such root route in merged routes.
+        p `&lt;a href="/catalog/computers/"&gt;Computers&lt;/a&gt;` - will also work as expected the same as case 1 because `/` (slash) in the beginning means root. And we have such root route in merged routes.
       li
-        p <code>&lt;a href="/computers/"&gt;Computers&lt;/a&gt;</code> - <b>won't work</b> as expected because <code>/</code> (slash) in the beginning means root. And we don't have such <code>/computers/</code> root route in our routes.
+        p `&lt;a href="/computers/"&gt;Computers&lt;/a&gt;` - <b>won't work</b> as expected because `/` (slash) in the beginning means root. And we don't have such `/computers/` root route in our routes.
 
     h2 Detail Routes
-    p For Master Detail view, it is also possible to specify #[code detailRoutes] in addition to #[code master: true] on master route.
-    p When #[code detailRoutes] are specified then navigating to detail route will also preload its master route.
-    p But unlike nested routes (specified in #[code routes] parameters), detail routes #[code path]s don't merged with master route #[code path].
+    p For Master Detail view, it is also possible to specify `detailRoutes` in addition to `master: true` on master route.
+    p When `detailRoutes` are specified then navigating to detail route will also preload its master route.
+    p But unlike nested routes (specified in `routes` parameters), detail routes `path`s don't merged with master route `path`.
 
     :code(lang="js")
       routes = [
@@ -536,7 +536,7 @@ block content
       li First of all, it provides opportunity to navigate to tabs by usual links instead of so called special tab-links.
       li Second, when navigating to such route you can load a page with required tab opened.
       li Third, with enabled Push State, the same tab will be opened when you navigate back and forward in history.
-      li And the last but not least, when using routable tabs you can load tabs content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
+      li And the last but not least, when using routable tabs you can load tabs content in the same ways as for pages, i.e. using `url`, `content`, `template`, `templateUrl`, `component` or `componentUrl`
     p First of all we need to specify tabs routes in app routes. Lets assume we have a page with routable tabs on /tabs/ route:
     :code(lang="js")
       routes = [
@@ -574,7 +574,7 @@ block content
           ],
         }
       ]
-    p On the <code>/about-me/</code> page we may have the following structure for example:
+    p On the `/about-me/` page we may have the following structure for example:
     :code(lang="html")
       <div class="page">
         <div class="navbar">
@@ -596,7 +596,7 @@ block content
           <div class="tab page-content" id="cv"></div>
         </div>
       </div>
-    p Almost the same as with usual <a href="tabs.html">Tabs</a> but with the difference that there is no more <code>tab-link-active</code> and <code>tab-active</code> classes on tab links and tabs. These classes and tabs will be switched by router. And there is a new <code>data-route-tab-id</code> attribute, it is required for tabs switcher to understand which link related to the selected route.
+    p Almost the same as with usual <a href="tabs.html">Tabs</a> but with the difference that there is no more `tab-link-active` and `tab-active` classes on tab links and tabs. These classes and tabs will be switched by router. And there is a new `data-route-tab-id` attribute, it is required for tabs switcher to understand which link related to the selected route.
     p You can learn more about Routable Tabs and their additional events in appropriate sections of <a href="tabs.html#routable-tabs">Tabs</a> component page.
 
     h2 Routable Modals
@@ -605,7 +605,7 @@ block content
     ul
       li it provides opportunity to open modals by usual links instead of so called special links or API,
       li with enabled Push State, the same modal will be opened when you refresh browser, navigate back and forward in history,
-      li with routable modals you can load modal itself and its content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
+      li with routable modals you can load modal itself and its content in the same ways as for pages, i.e. using `url`, `content`, `template`, `templateUrl`, `component` or `componentUrl`
     :code(lang="js")
       routes = [
         ...
@@ -680,10 +680,10 @@ block content
       ]
     p According to example above:
     ul
-      li when you click on link with <code>/popup-content/</code> href attribute it will open Popup from specified string content,
-      li when you click on link with <code>/login-screen-ajax/</code> href attribute it will perform Ajax request to <code>login-screen.html</code> file and open it as a Login Screen,
-      li when you click on link with <code>/popup-component/</code> href attribute it will perform Ajax request to <code>popup-component.html</code> file, parse it as a Router Component and open it as a Popup,
-      li when you click on link with <code>/secured-content/</code> href attribute it will load page from <code>secured-page.html</code> if user is logged in or open Login Screen from <code>login-screen.html</code> file is user is not logged in.
+      li when you click on link with `/popup-content/` href attribute it will open Popup from specified string content,
+      li when you click on link with `/login-screen-ajax/` href attribute it will perform Ajax request to `login-screen.html` file and open it as a Login Screen,
+      li when you click on link with `/popup-component/` href attribute it will perform Ajax request to `popup-component.html` file, parse it as a Router Component and open it as a Popup,
+      li when you click on link with `/secured-content/` href attribute it will load page from `secured-page.html` if user is logged in or open Login Screen from `login-screen.html` file is user is not logged in.
 
     h2 Routable Panels
     .important-note
@@ -693,7 +693,7 @@ block content
     ul
       li it provides opportunity to open Panel by usual links instead of so called special links or API,
       li with enabled Push State, the same Panel will be opened when you refresh browser, navigate back and forward in history,
-      li with routable Panels you can load Panel itself and its content in the same ways as for pages and modals, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
+      li with routable Panels you can load Panel itself and its content in the same ways as for pages and modals, i.e. using `url`, `content`, `template`, `templateUrl`, `component` or `componentUrl`
     :code(lang="js")
       routes = [
         ...
@@ -751,14 +751,14 @@ block content
       ]
     p According to example above:
     ul
-      li when you click on link with <code>/left-panel/</code> href attribute it will open Panel from specified string content,
-      li when you click on link with <code>/right-panel-ajax/</code> href attribute it will perform Ajax request to <code>right-panel.html</code> file and open it as a Right Panel,
-      li when you click on link with <code>/panel-component/</code> href attribute it will perform Ajax request to <code>panel-component.html</code> file, parse it as a Router Component and open it as a Panel,
+      li when you click on link with `/left-panel/` href attribute it will open Panel from specified string content,
+      li when you click on link with `/right-panel-ajax/` href attribute it will perform Ajax request to `right-panel.html` file and open it as a Right Panel,
+      li when you click on link with `/panel-component/` href attribute it will perform Ajax request to `panel-component.html` file, parse it as a Router Component and open it as a Panel,
     .important-note
       p Note that <b>routable Panels can't be mixed with static Panels</b>. So if you have static left panel in the app, then only right panel can be loaded as routable panel.
 
     h2 Route Before Enter/Leave
-    p <code>beforeEnter</code> and <code>beforeLeave</code> route hooks can be very useful if you need to do additional checks, execute additional actions or load/send something before route load (enter) and unload (leave). It can be single method or array of methods to be executed. For example:
+    p `beforeEnter` and `beforeLeave` route hooks can be very useful if you need to do additional checks, execute additional actions or load/send something before route load (enter) and unload (leave). It can be single method or array of methods to be executed. For example:
     :code(lang="js")
       routes = [
         {
@@ -831,7 +831,7 @@ block content
 
     h2 Redirect & Alias
     h4 Alias
-    p We can pass route alias using route <code>alias</code> property. Alias in this case basically means that same route can have multiple <b>paths</b> to access:
+    p We can pass route alias using route `alias` property. Alias in this case basically means that same route can have multiple <b>paths</b> to access:
     :code(lang="js")
       routes = [
         {
@@ -847,13 +847,13 @@ block content
       ]
     p According to the example above:
     ul
-      li if we request page by <code>/foo/</code> or <code>/bar/</code> URL then first route will match and we get the page loaded from <code>somepage.html</code>
-      li if we request page by <code>/foo2/</code> , <code>/bar2/</code>, <code>/baz/</code>, <code>/baz2/</code> URL then second route will match and we the page loaded from <code>anotherpage.html</code>
+      li if we request page by `/foo/` or `/bar/` URL then first route will match and we get the page loaded from `somepage.html`
+      li if we request page by `/foo2/` , `/bar2/`, `/baz/`, `/baz2/` URL then second route will match and we the page loaded from `anotherpage.html`
     h4 Redirect
-    p We can pass route redirect using <code>redirect</code> property:
+    p We can pass route redirect using `redirect` property:
     ul
-      li if we pass <code>redirect</code> as a <code>string</code>, we must pass here direct redirect url
-      li if we pass <code>redirect</code> as a <code>function</code>, we need to call function's resolve parameter with redirect url
+      li if we pass `redirect` as a `string`, we must pass here direct redirect url
+      li if we pass `redirect` as a `function`, we need to call function's resolve parameter with redirect url
     p For example:
     :code(lang="js")
       routes = [
@@ -880,9 +880,9 @@ block content
       ]
     p Above example means:
     ul
-      li when we request <code>/bar/</code> URL then router will redirect to <code>/foo/</code> URL and then search for route that match to this new URL. In this case it will match to the first route with path <code>/foo/</code> and load the page from <code>somepage.html</code>
-      li when we request <code>/baz/?user=john</code> we will redirect to URL <code>/foo/?user=john</code> that will match to first route
-      li when we request <code>/baz/</code> (without query) nothing will happen
+      li when we request `/bar/` URL then router will redirect to `/foo/` URL and then search for route that match to this new URL. In this case it will match to the first route with path `/foo/` and load the page from `somepage.html`
+      li when we request `/baz/?user=john` we will redirect to URL `/foo/?user=john` that will match to first route
+      li when we request `/baz/` (without query) nothing will happen
     .important-note
       p Note in redirects we pass URL, not the route path like in alias
 
@@ -890,25 +890,25 @@ block content
     .important-note
       p
        b keepAlive routes available from Framework7 version 3.6.0.
-    p When <code>keepAlive</code> enabled, then once router loads such page, the page and, if applicable, its component (Vue, React or Router component) will be never destroyed. Instead, it will be detached from DOM and reused again when required.
+    p When `keepAlive` enabled, then once router loads such page, the page and, if applicable, its component (Vue, React or Router component) will be never destroyed. Instead, it will be detached from DOM and reused again when required.
     p It can be useful to enable for "heavy" pages which are not too often updated. For example, page with map, or with heavy canvas or other computation. With usual logic, all those heavy computations will happen each time this page is visited. But with keepAlive it will be done once, and with all next visits, router will reuse already rendered page DOM element.
     p It also can be useful if you really need to preserve page state. With enabled keepAlive, the next time page will be loaded, all DOM modifications and form elements state will be preserved.
     p But there are things to pay attention:
     ul
-      li It is not supported for <code>async</code> routes
+      li It is not supported for `async` routes
       li It is supported only for pages (not for panels and modals)
-      li If you have dynamic route path (like <code>/some-page/:foo/:bar</code>) or you rely on page route query (<code>?foo=bar</code>), then query and route params won't be changed after its initial load.
-      li <code>page:beforeremove</code>,<code>pageBeforeRemove</code> page events will never be fired for such page
-      li If you use it as Vue component, then <code>beforeDestroy</code>,<code>destroyed</code> hooks will never be fired for such component. <code>created</code>, <code>mounted</code> hooks will fire only once.
-      li If you use it as React component, then <code>componentWillUnmount</code> method will never be fired for such component. <code>componentWillMount</code>, <code>componentDidMount</code> methods will fire only once.
-      li If you use it as F7's Router component, then <code>beforeDestroy</code>, <code>destroyed</code> hooks will never be fired for such component. <code>created</code>, <code>mounted</code> hooks will fire only once.
+      li If you have dynamic route path (like `/some-page/:foo/:bar`) or you rely on page route query (`?foo=bar`), then query and route params won't be changed after its initial load.
+      li `page:beforeremove`,`pageBeforeRemove` page events will never be fired for such page
+      li If you use it as Vue component, then `beforeDestroy`,`destroyed` hooks will never be fired for such component. `created`, `mounted` hooks will fire only once.
+      li If you use it as React component, then `componentWillUnmount` method will never be fired for such component. `componentWillMount`, `componentDidMount` methods will fire only once.
+      li If you use it as F7's Router component, then `beforeDestroy`, `destroyed` hooks will never be fired for such component. `created`, `mounted` hooks will fire only once.
     p To avoid pitfalls with component's and page lifecycle, it is recommend to rely on following page events:
     ul
       li
-        p <code>page:mounted</code> - will be always called for keepAlive route page when its DOM element attached or reattached again.
+        p `page:mounted` - will be always called for keepAlive route page when its DOM element attached or reattached again.
       li
-        p <code>page:beforeunmount</code> - will be always called for keepAlive route page when its DOM element is going to be detached from DOM.
-    p To make keepAlive route we just need to pass <code>keepAlive: true</code> to its parameters:
+        p `page:beforeunmount` - will be always called for keepAlive route page when its DOM element is going to be detached from DOM.
+    p To make keepAlive route we just need to pass `keepAlive: true` to its parameters:
     :code(lang="js")
       import SomPageComponent from './some-page.js';
 

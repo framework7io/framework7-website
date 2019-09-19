@@ -12,7 +12,7 @@ block content
     h1 Utils
     ul.docs-index
     p Framework7 utils is a set of helper methods that used internally and can be handy during development as well.
-    p It is avaialable as a <code><b>utils</b></code> property of Framework7 class (<code>Framework7.utils</code>) and same property on initialized app instance (<code>app.utils</code>):
+    p It is avaialable as a `utils` property of Framework7 class (`Framework7.utils`) and same property on initialized app instance (`app.utils`):
     :code(lang="js")
           // If we need it in place where we don't have access to app instance or before we init the app
           var now = Framework7.utils.now();
@@ -24,7 +24,7 @@ block content
 
     h2 Utils Methods
 
-    h3 #[code parseUrlQuery()]
+    h3 `parseUrlQuery()`
     .method-wrap
       p
         span.method app.utils.parseUrlQuery(<span>url</span>)
@@ -38,7 +38,7 @@ block content
           var query = app.utils.parseUrlQuery('http://google.com/?id=5&foo=bar');
           console.log(query); // { id: 5, foo: 'bar' }
 
-    h3 #[code serializeObject()]
+    h3 `serializeObject()`
     .method-wrap
       p
         span.method app.utils.serializeObject(<span>object</span>)
@@ -52,7 +52,7 @@ block content
           var params = { foo: 'bar', id: 5 };
           console.log(app.utils.serializeObject(params)); // 'foo=bar&id=5'
 
-    h3 #[code requestAnimationFrame()]
+    h3 `requestAnimationFrame()`
     .method-wrap
       p
         span.method app.utils.requestAnimationFrame(<span>callback</span>)
@@ -71,7 +71,7 @@ block content
           }
           animId = app.utils.requestAnimationFrame(anim);
 
-    h3 #[code cancelAnimationFrame()]
+    h3 `cancelAnimationFrame()`
     .method-wrap
       p
         span.method app.utils.cancelAnimationFrame(<span>requestID</span>)
@@ -83,7 +83,7 @@ block content
     :code(lang="js")
           app.utils.cancelAnimationFrame(animId);
 
-    h3 #[code removeDiacritics()]
+    h3 `removeDiacritics()`
     .method-wrap
       p
         span.method app.utils.removeDiacritics(<span>text</span>)
@@ -97,7 +97,7 @@ block content
           var text = app.utils.removeDiacritics('ÁÓL');
           console.log(text); //-&gt; 'AOL'
 
-    h3 #[code nextFrame()]
+    h3 `nextFrame()`
     .method-wrap
       p
         span.method app.utils.nextFrame(<span>callback</span>)
@@ -112,25 +112,25 @@ block content
             // do something on next frame
           });
 
-    h3 #[code nextTick()]
+    h3 `nextTick()`
     .method-wrap
       p
         span.method app.utils.nextTick(<span>callback</span>, <span>delay</span>)
-        span - executes code after required delay. Basically alias for <code>setTimeout</code>
+        span - executes code after required delay. Basically alias for `setTimeout`
       ul.method-parameters
         li
           span.parameter callback
           |  - <span class="parameter-type">string</span> - function to call after specified delay
         li
           span.parameter delay
-          |  - <span class="parameter-type">number</span> - delay in ms. <em>Optional, by deault is <code>0</code></em>
+          |  - <span class="parameter-type">number</span> - delay in ms. <em>Optional, by deault is `0`</em>
       p.method-returns returns timeout ID
     :code(lang="js")
           app.utils.nextTick(function() {
             // do something on next tick
           });
 
-    h3 #[code now()]
+    h3 `now()`
     .method-wrap
       p
         span.method app.utils.now()
@@ -141,11 +141,11 @@ block content
             var timeDiff = app.utils.now() - now;
             console.log(timeDiff + 'ms past');
           }, 2000);
-    h3 #[code extend()]
+    h3 `extend()`
     .method-wrap
       p
         span.method app.utils.extend(<span>target</span>, <span>...from</span>)
-        span - extends <code>target</code> object with properties and methods from <code>from</code> objects
+        span - extends `target` object with properties and methods from `from` objects
       ul.method-parameters
         li
           span.parameter target
@@ -208,7 +208,7 @@ block content
 
           console.log(a); // { apple: 10, cherry: 97, pineapple: 20 }
 
-    h3 #[code uniqueNumber()]
+    h3 `uniqueNumber()`
     .method-wrap
       p
         span.method app.utils.uniqueNumber()
@@ -220,7 +220,7 @@ block content
 
       app.utils.uniqueNumber(); // -> 4
 
-    h3 #[code id()]
+    h3 `id()`
     .method-wrap
       p
         span.method app.utils.id(<span>mask</span>, <span>map</span>)
@@ -228,10 +228,10 @@ block content
       ul.method-parameters
         li
           span.parameter mask
-          |  - <span class="parameter-type">string</span> - ID string mask, by default is <code>xxxxxxxxxx</code>
+          |  - <span class="parameter-type">string</span> - ID string mask, by default is `xxxxxxxxxx`
         li
           span.parameter map
-          |  - <span class="parameter-type">string</span> - characters that will be used for generation, by default is <code>0123456789abcdef</code>
+          |  - <span class="parameter-type">string</span> - characters that will be used for generation, by default is `0123456789abcdef`
       p.method-returns returns randomly generated string
     :code(lang="js")
       app.utils.id() // -> ffe28ab56e
@@ -240,7 +240,7 @@ block content
 
       app.utils.id('xxxx-xxxx', 'abcd') // -> aabc-ccda
 
-    h3 #[code preloaderContent]
+    h3 `preloaderContent`
     p There are properties that contain theme-related (iOS, MD or Aurora) content of <a href="preloader.html#preloader-layout">Preloader</a> element. Theses properties can be useful if you create preloaders dynamically.
     .method-wrap
       p
@@ -265,7 +265,7 @@ block content
       $('.something').append(myPreloader);
 
 
-    h3 #[code colorHexToRgb()]
+    h3 `colorHexToRgb()`
     .method-wrap
       p
         span.method app.utils.colorHexToRgb(<span>hexColor</span>)
@@ -274,11 +274,11 @@ block content
         li
           span.parameter hexColor
           |  - <span class="parameter-type">string</span> - HEX color string
-      p.method-returns returns <code>[R, G, B]</code> array
+      p.method-returns returns `[R, G, B]` array
     :code(lang="js")
       app.utils.colorHexToRgb('#f00') // -> [255, 0, 0]
 
-    h3 #[code colorRgbToHex()]
+    h3 `colorRgbToHex()`
     .method-wrap
       p
         span.method app.utils.colorRgbToHex(<span>R</span>, <span>G</span>, <span>B</span>)
@@ -297,7 +297,7 @@ block content
     :code(lang="js")
       app.utils.colorHexToRgb(255, 0, 0) // -> '#ff0000'
 
-    h3 #[code colorRgbToHsl()]
+    h3 `colorRgbToHsl()`
     .method-wrap
       p
         span.method app.utils.colorRgbToHsl(<span>R</span>, <span>G</span>, <span>B</span>)
@@ -312,11 +312,11 @@ block content
         li
           span.parameter B
           |  - <span class="parameter-type">number</span> - blue value (0 - 255)
-      p.method-returns returns <code>[H, S, L]</code> array
+      p.method-returns returns `[H, S, L]` array
     :code(lang="js")
       app.utils.colorRgbToHsl(255, 0, 0) // -> [0, 1, 0.5]
 
-    h3 #[code colorHslToRgb()]
+    h3 `colorHslToRgb()`
     .method-wrap
       p
         span.method app.utils.colorHslToRgb(<span>H</span>, <span>S</span>, <span>L</span>)
@@ -331,11 +331,11 @@ block content
         li
           span.parameter L
           |  - <span class="parameter-type">number</span> - lightness value (0 - 1)
-      p.method-returns returns <code>[R, G, B]</code> array
+      p.method-returns returns `[R, G, B]` array
     :code(lang="js")
       app.utils.colorHslToRgb(0, 1, 0.5) // -> [255, 0, 0]
 
-    h3 #[code colorHsbToHsl()]
+    h3 `colorHsbToHsl()`
     .method-wrap
       p
         span.method app.utils.colorHsbToHsl(<span>H</span>, <span>S</span>, <span>B</span>)
@@ -350,11 +350,11 @@ block content
         li
           span.parameter B
           |  - <span class="parameter-type">number</span> - brightness value (0 - 1)
-      p.method-returns returns <code>[H, S, L]</code> array
+      p.method-returns returns `[H, S, L]` array
     :code(lang="js")
       app.utils.colorHsbToHsl(360, 0.5, 0.5) // -> [360, 0.33, 0.375]
 
-    h3 #[code colorHslToHsb()]
+    h3 `colorHslToHsb()`
     .method-wrap
       p
         span.method app.utils.colorHslToHsb(<span>H</span>, <span>S</span>, <span>L</span>)
@@ -369,11 +369,11 @@ block content
         li
           span.parameter L
           |  - <span class="parameter-type">number</span> - lightness value (0 - 1)
-      p.method-returns returns <code>[H, S, L]</code> array
+      p.method-returns returns `[H, S, L]` array
     :code(lang="js")
       app.utils.colorHslToHsb(360, 0.5, 0.5) // -> [360, 0.66, 0.75]
 
-    h3 #[code colorThemeCSSProperties()]
+    h3 `colorThemeCSSProperties()`
     .method-wrap
       p
         span.method app.utils.colorThemeCSSProperties(<span>hexColor</span>)

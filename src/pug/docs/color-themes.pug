@@ -51,7 +51,7 @@ block content
                   b=color
 
       h2 Apply Color Themes
-      p It is easy to apply color themes. All you need is just to add <code>color-theme-[color]</code> class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
+      p It is easy to apply color themes. All you need is just to add `color-theme-[color]` class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
       :code(lang="html")
            &lt;body class="color-theme-red"&gt;
                ...
@@ -75,7 +75,7 @@ block content
       .important-note
         p Note, that applied color theme affects only interractive elements such as links, buttons, form elements, icons. It doesn't change basic text color or background colors on other blocks.
       h2 Dark Theme
-      p Framework7 also has additional dark theme layout. To apply dark theme we need to add <code>theme-dark</code> class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
+      p Framework7 also has additional dark theme layout. To apply dark theme we need to add `theme-dark` class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
       :code(lang="html")
            &lt;html class="theme-dark"&gt;
                ...
@@ -97,19 +97,19 @@ block content
     p There are also additional helper classes that could be used without/outside color themes:
     ul
       li
-        p <code>color-[color]</code> - if you want to change color of individual button, link or icon, for example:
+        p `color-[color]` - if you want to change color of individual button, link or icon, for example:
         :code(lang="html")
               &lt;a class="button color-red"&gt;Red button&lt;/a&gt;
       li
-        p <code>text-color-[color]</code> - if you want to change text color of required element:
+        p `text-color-[color]` - if you want to change text color of required element:
         :code(lang="html")
               &lt;p class="text-color-red"&gt;Red color text&lt;/p&gt;
       li
-        p <code>bg-color-[color]</code> - if you want quickly to set predefined background color on some block or element:
+        p `bg-color-[color]` - if you want quickly to set predefined background color on some block or element:
         :code(lang="html")
               &lt;span class="badge bg-color-pink"&gt;14&lt;/span&gt; - pink badge
       li
-        p <code>border-color-[color]</code> - if you want to set predefined border color:
+        p `border-color-[color]` - if you want to set predefined border color:
         :code(lang="html")
               &lt;div class="button border-color-red"&gt;...&lt;/div&gt;
     p And of course, you can mix these helper classes:
@@ -117,22 +117,22 @@ block content
       &lt;a class="button bg-color-blue text-color-white border-color-gray"&gt;...&lt;/a&gt;
 
     h2 Primary Color Classes
-    p Helper classes support additional <code>primary</code> color which is equal to context color theme.
+    p Helper classes support additional `primary` color which is equal to context color theme.
     ul
       li
-        p <code>text-color-primary</code> - to change text color of element to theme color.
+        p `text-color-primary` - to change text color of element to theme color.
       li
-        p <code>bg-color-primary</code> - to change background color of element to theme color.
+        p `bg-color-primary` - to change background color of element to theme color.
       li
-        p <code>border-color-primary</code> - to change border color of element to theme color.
+        p `border-color-primary` - to change border color of element to theme color.
 
     h2 Custom Color Theme
     p To set custom color theme, we need to specify few CSS variables:
     ul
-      li #[code --f7-theme-color] — HEX value of theme color.
-      li #[code --f7-theme-color-shade] — 8% darken theme color. Required, for example, for pressed buttons state.
-      li #[code --f7-theme-color-tint] — 8% lighten theme color. Required, for example, for pressed buttons state.
-      li #[code --f7-theme-color-rgb] — RGB value of theme color. Required for semitransparent elements.
+      li `--f7-theme-color` — HEX value of theme color.
+      li `--f7-theme-color-shade` — 8% darken theme color. Required, for example, for pressed buttons state.
+      li `--f7-theme-color-tint` — 8% lighten theme color. Required, for example, for pressed buttons state.
+      li `--f7-theme-color-rgb` — RGB value of theme color. Required for semitransparent elements.
     p For example, if custom theme color is #f00 (red), we just need to add following variables to our CSS:
     :code(lang="css")
       :root {

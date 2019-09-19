@@ -48,21 +48,21 @@ block content
           framework7.less
 
     h2 Styles
-    p Main Framework7 styles are located in #[code css/] folder:
+    p Main Framework7 styles are located in `css/` folder:
     ul
-      li #[code framework7.css] - contains minimal (core) Framework7 styles with minimal required set of components.
-      li #[code framework7.rtl.css] - same but for RTL layout.
-      li #[code framework7.bundle.css] - contains styles for Framework7 core version and includes styles for all components.
-      li #[code framework7.bundle.rtl.css] - same but for RTL layout.
+      li `framework7.css` - contains minimal (core) Framework7 styles with minimal required set of components.
+      li `framework7.rtl.css` - same but for RTL layout.
+      li `framework7.bundle.css` - contains styles for Framework7 core version and includes styles for all components.
+      li `framework7.bundle.rtl.css` - same but for RTL layout.
 
     h2 Scripts (UMD)
-    p In #[code js/] folder there are so called #[a(href="https://github.com/umdjs/umd", target="_blank") UMD] JavaScript files intended to be used directly in browser (e.g. with #[code &lt;script src="..."&gt;]) or with libraries like Require.js:
+    p In `js/` folder there are so called #[a(href="https://github.com/umdjs/umd", target="_blank") UMD] JavaScript files intended to be used directly in browser (e.g. with `&lt;script src="..."&gt;`) or with libraries like Require.js:
     ul
-      li #[code framework7.js] - contains minimal (core) Framework7 version with minimal required set of components.
-      li #[code framework7.bundle.js] - contains whole Framework7 with all its components.
+      li `framework7.js` - contains minimal (core) Framework7 version with minimal required set of components.
+      li `framework7.bundle.js` - contains whole Framework7 with all its components.
 
     h2 Components
-    p All components are located in #[code components/] folder and required to be used with core (not bundle) version. You can learn more about how to use them in #[a(href="lazy-modules.html") lazy modules] section.
+    p All components are located in `components/` folder and required to be used with core (not bundle) version. You can learn more about how to use them in #[a(href="lazy-modules.html") lazy modules] section.
 
     h2 ES Module
     .important-note
@@ -87,7 +87,7 @@ block content
           // Init app
           var app = new Framework7({/*...*/});
     p Such modular structure provides best tree-shaking results and package size optimization.
-    p In addition to <code>default</code> export it has named export for <code>Template7</code>, <code>Dom7</code>, <code>Request</code>, <code>Device</code>, <code>Utils</code> and <code>Support</code> libraries:
+    p In addition to `default` export it has named export for `Template7`, `Dom7`, `Request`, `Device`, `Utils` and `Support` libraries:
     :code(lang="js")
           import Framework7, { Device, Request } from 'framework7';
 
@@ -107,6 +107,6 @@ block content
           var app = new Framework7({/*...*/});
 
     h2 ES-Next
-    p Note, that Framework7 ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile them as well, as well as <code>template7</code>, <code>dom7</code> and <code>ssr-window</code> modules that used as dependencies.
+    p Note, that Framework7 ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile them as well, as well as `template7`, `dom7` and `ssr-window` modules that used as dependencies.
 
 

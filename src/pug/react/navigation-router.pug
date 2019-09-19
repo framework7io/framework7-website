@@ -13,7 +13,7 @@ block content
     h1 Navigation Router
     ul.docs-index
     p Framework7-React as Framework7 itself comes with powerful and flexible router. And to make it work we must specify <a href="../docs/routes.html">Routes</a>.
-    p The only difference in Framework7-React is that in React.js we are already composing our application with React components, so we need to map our Pages (React components) to the routes. It can be done by passing React component in <code>component</code> property of the route. Here's a basic example:
+    p The only difference in Framework7-React is that in React.js we are already composing our application with React components, so we need to map our Pages (React components) to the routes. It can be done by passing React component in `component` property of the route. Here's a basic example:
     :code(lang="jsx")
           // App.jsx
 
@@ -95,13 +95,13 @@ block content
         path: '/blog/:postId/comments/:commentId/',
         component: BlogPost,
       }
-    p So if we navigate by <code>/blog/45/comments/122/</code> URL, then the following data will be passed to props:
+    p So if we navigate by `/blog/45/comments/122/` URL, then the following data will be passed to props:
     :code(lang="js")
       {
         postId: '45',
         commentId: '122',
       }
-    p Another option is to specify props in route's <code>options</code>:
+    p Another option is to specify props in route's `options`:
     :code(lang="js")
       {
         path: '/some-page/',
@@ -144,4 +144,4 @@ block content
           <Link onClick={() => this.$f7router.navigate('/about/')}>About</Link>
           <Link onClick={() => this.$f7router.back()}>Go Back</Link>
     .important-note
-      p Please note, that <code>$f7route</code> and <code>$f7router</code> component properties are only available inside of custom page components that you load according to routes. In parent components (like in View, or where you init your React app instance) and in child components they are not accessible. So in this case use access to initialized <a href="view.html#access-to-view-instance">View Instance</a>, e.g. <code>$f7.views.main.router</code>
+      p Please note, that `$f7route` and `$f7router` component properties are only available inside of custom page components that you load according to routes. In parent components (like in View, or where you init your React app instance) and in child components they are not accessible. So in this case use access to initialized <a href="view.html#access-to-view-instance">View Instance</a>, e.g. `$f7.views.main.router`

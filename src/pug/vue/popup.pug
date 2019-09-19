@@ -18,7 +18,7 @@ block content
     h2 Popup Components
     p There are following components included:
     ul
-      li <code><b>f7-popup</b></code> - popup element
+      li `f7-popup` - popup element
     h2 Popup Properties
     table.params-table.cols-3
       thead
@@ -40,7 +40,7 @@ block content
         tr
           td backdrop
           td boolean
-          td Enables Popup backdrop (dark semi transparent layer behind). By default inherits same app parameter value (<code>true</code>)
+          td Enables Popup backdrop (dark semi transparent layer behind). By default inherits same app parameter value (`true`)
         tr
           td backdropEl
           td string<br>object
@@ -48,7 +48,7 @@ block content
         tr
           td closeByBackdropClick
           td boolean
-          td When enabled, popup will be closed on backdrop click. By default inherits same app parameter value (<code>true</code>)
+          td When enabled, popup will be closed on backdrop click. By default inherits same app parameter value (`true`)
         tr
           td closeOnEscape
           td boolean
@@ -56,15 +56,15 @@ block content
         tr
           td animate
           td boolean
-          td Whether the Popup should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods. By default inherits same app parameter value (<code>true</code>)
+          td Whether the Popup should be opened/closed with animation or not. Can be overwritten in `.open()` and `.close()` methods. By default inherits same app parameter value (`true`)
         tr
           td swipeToClose
           td boolean<br>string
-          td Whether the Popup can be closed with swipe gesture. Can be <code>true</code> to allow to close popup with swipes to top and to bottom, or can be <code>to-top</code> (string) to allow only swipe to top to close popup, or <code>to-bottom</code> (string) to allow only swipe to bottom to close.
+          td Whether the Popup can be closed with swipe gesture. Can be `true` to allow to close popup with swipes to top and to bottom, or can be `to-top` (string) to allow only swipe to top to close popup, or `to-bottom` (string) to allow only swipe to bottom to close.
         tr
           td swipeHandler
           td HTMLElement<br>string
-          td If not passed, then whole popup can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (<code>swipeToClose</code> must be also enabled)
+          td If not passed, then whole popup can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (`swipeToClose` must be also enabled)
     h2 Popup Methods
     table.methods-table
       tr
@@ -100,10 +100,10 @@ block content
     p You can control Popup state, open and closing it:
     ul
       li using <a href="../docs/popup.html">Popup API</a>
-      li by passing <code>true</code> or <code>false</code> to its <code>opened</code> prop
-      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>popup-open</code> property (to open it) and <code>popup-close</code> property to close it
+      li by passing `true` or `false` to its `opened` prop
+      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant `popup-open` property (to open it) and `popup-close` property to close it
     h2 Access To Popup Instance
-    p You can access Popup initialized instance by accessing <code><b>.f7Popup</b></code> component's property.
+    p You can access Popup initialized instance by accessing `.f7Popup` component's property.
     .with-device
       h2(data-device-preview="../docs-demos/vue/popup.html") Examples
       :code

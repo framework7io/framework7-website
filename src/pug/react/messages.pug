@@ -18,9 +18,9 @@ block content
     h2 Messages Components
     p There are following components included:
     ul
-      li <code><b>Messages</b></code> / <code><b>F7Messages</b></code> - main Messages container
-      li <code><b>Message</b></code> / <code><b>F7Message</b></code> - single message element
-      li <code><b>MessagesTitle</b></code> / <code><b>F7MessagesTitle</b></code> - single messages title element
+      li `Messages` / `F7Messages` - main Messages container
+      li `Message` / `F7Message` - single message element
+      li `MessagesTitle` / `F7MessagesTitle` - single messages title element
 
     h2 Messages Properties
     table.params-table
@@ -74,7 +74,7 @@ block content
             | same-avatar-message-rule<br><br>
           td function(message, previousMessage, nextMessage)
           td
-          td Functions that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then the appropriage class will be added to message:
+          td Functions that must return boolean `true` or `false` based on required condition depending on previous and next messages. In case of match then the appropriage class will be added to message:
             ul
               li message-first
               li message-last
@@ -94,7 +94,7 @@ block content
           td type
           td string
           td sent
-          td Message type: <code>sent</code> (default) or <code>received</code>
+          td Message type: `sent` (default) or `received`
         tr
           td text
           td string
@@ -177,7 +177,7 @@ block content
         th(colspan="2") &lt;Messages&gt; methods
       tr
         td .scroll(<span>duration, position</span>);
-        td Scroll messages to top/bottom depending on <code>newMessagesFirst</code> parameter
+        td Scroll messages to top/bottom depending on `newMessagesFirst` parameter
           ul.method-parameters
             li
               span.parameter duration
@@ -228,24 +228,24 @@ block content
           td Event will be triggered when user clicks on message bubble
 
     h2 Messages Slots
-    p Single message React component (<code>&lt;Message&gt;</code>) has additional slots for custom elements:
+    p Single message React component (`&lt;Message&gt;`) has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="message-bubble"&gt;</code> element in the end
-      li <code><b>start</b></code> - element will be inserted in the beginning and direct child of main message element <code>&lt;div class="message"&gt;</code>
-      li <code><b>end</b></code> - element will be inserted in the end and direct child of main message element <code>&lt;div class="message"&gt;</code>
-      li <code><b>content-start</b></code> - element will be inserted in the beginning and direct child of the <code>&lt;div class="message-content"&gt;</code> element
-      li <code><b>content-end</b></code> - element will be inserted in the end and direct child of the <code>&lt;div class="message-content"&gt;</code> element
-      li <code><b>bubble-start</b></code> - element will be inserted in the beginning and direct child of the <code>&lt;div class="message-bubble"&gt;</code> element
-      li <code><b>bubble-end</b></code> - element will be inserted in the end and direct child of the <code>&lt;div class="message-bubble"&gt;</code> element. Same as <code><b>default</b></code> slot
+      li `default` - element will be inserted as a child of `&lt;div class="message-bubble"&gt;` element in the end
+      li `start` - element will be inserted in the beginning and direct child of main message element `&lt;div class="message"&gt;`
+      li `end` - element will be inserted in the end and direct child of main message element `&lt;div class="message"&gt;`
+      li `content-start` - element will be inserted in the beginning and direct child of the `&lt;div class="message-content"&gt;` element
+      li `content-end` - element will be inserted in the end and direct child of the `&lt;div class="message-content"&gt;` element
+      li `bubble-start` - element will be inserted in the beginning and direct child of the `&lt;div class="message-bubble"&gt;` element
+      li `bubble-end` - element will be inserted in the end and direct child of the `&lt;div class="message-bubble"&gt;` element. Same as `default` slot
     p The following slots can be used inside of single message instead of same props if you need to pass there more complext layout:
     ul
-      li <code><b>header</b></code> - element will be inserted in message header
-      li <code><b>footer</b></code> - element will be inserted in message footer
-      li <code><b>text</b></code> - element will be inserted in message text
-      li <code><b>name</b></code> - element will be inserted in message name
-      li <code><b>image</b></code> - element will be inserted in message image (supposed tp be an <code>&lt;img&gt;</code> element)
-      li <code><b>text-header</b></code> - element will be inserted in message text header
-      li <code><b>text-footer</b></code> - element will be inserted in message text footer
+      li `header` - element will be inserted in message header
+      li `footer` - element will be inserted in message footer
+      li `text` - element will be inserted in message text
+      li `name` - element will be inserted in message name
+      li `image` - element will be inserted in message image (supposed tp be an `&lt;img&gt;` element)
+      li `text-header` - element will be inserted in message text header
+      li `text-footer` - element will be inserted in message text footer
     :code(lang="jsx")
           <Message
             type="sent"
@@ -280,7 +280,7 @@ block content
           </div>
 
     h2 Access To Messages Instance
-    p If you use automatic initalization to init Messages (with <code>init={true}</code> prop) and need to use <a href="../docs/messages.html">Messages API</a> you can access its initialized instance by accessing <code><b>.f7Messages</b></code> component's property.
+    p If you use automatic initalization to init Messages (with `init={true}` prop) and need to use <a href="../docs/messages.html">Messages API</a> you can access its initialized instance by accessing `.f7Messages` component's property.
 
     .with-device
       h2(data-device-preview="../docs-demos/react/messages.html") Examples

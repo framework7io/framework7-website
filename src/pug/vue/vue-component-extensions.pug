@@ -48,7 +48,7 @@ block content
           td Access to <a href="../docs/utils.html">Utils</a> object with few useful utilities
         tr
           td this.$theme
-          td Object with boolean properties with information about currently used theme (iOS, MD or Aurora ): <code>this.$theme.ios</code>, <code>this.$theme.material</code> and <code>this.$theme.aurora</code>
+          td Object with boolean properties with information about currently used theme (iOS, MD or Aurora ): `this.$theme.ios`, `this.$theme.material` and `this.$theme.aurora`
         tr
           td this.$f7router
           td
@@ -60,12 +60,12 @@ block content
             p.important-note This property only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
             p Object with current route data that was used to load this page, tab or modal. It has the following properties
             ul
-              li <code>url</code> - route URL
-              li <code>path</code> - route path
-              li <code>query</code> - object with route query. If the url is <code>/page/?id=5&foo=bar</code> then it will contain the following object <code>{id: '5', foo: 'bar'}</code>
-              li <code>params</code> - route params. If we have matching route with <code>/page/user/:userId/post/:postId/</code> path and url of the page is <code>/page/user/55/post/12/</code> then it will be the following object <code>{userId: '55', postId: '12'}</code>
-              li <code>name</code> - route name
-              li <code>hash</code> - route URL hash
-              li <code>route</code> - object with matching route from available routes
-              li <code>context</code> - context that was passed to the route
+              li `url` - route URL
+              li `path` - route path
+              li `query` - object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{id: '5', foo: 'bar'}`
+              li `params` - route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{userId: '55', postId: '12'}`
+              li `name` - route name
+              li `hash` - route URL hash
+              li `route` - object with matching route from available routes
+              li `context` - context that was passed to the route
 

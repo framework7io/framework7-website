@@ -6,7 +6,10 @@ module.exports = (content = '') => {
     return content;
   }
   function replaceText(text) {
-    return text.replace(/#\[code([^\]]*)]/g, '$1').trim();
+    return text
+      .replace(/#\[code([^\]]*)]/g, '$1')
+      .replace(/`([^`]*)`/g, '$1')
+      .trim();
   }
 
   const headings = [];

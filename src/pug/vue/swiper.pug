@@ -18,8 +18,8 @@ block content
     h2 Swiper Components
     p There are following components included:
     ul
-      li <code><b>f7-swiper</b></code> - main FAB element
-      li <code><b>f7-swiper-slide</b></code> - wrapper for multiple FAB buttons used as Speed Dial FAB
+      li `f7-swiper` - main FAB element
+      li `f7-swiper-slide` - wrapper for multiple FAB buttons used as Speed Dial FAB
     h2 Swiper Properties
     table.params-table
       thead
@@ -64,10 +64,10 @@ block content
           td
           td Adds additional slide inner wrapping required for zoom-in functionality (should be also enabled via params on Swiper initialization)
     h2 Swiper Slots
-    p Swiper Vue component (<code>&lt;f7-swiper&gt;</code>) has additional slots for custom elements:
+    p Swiper Vue component (`&lt;f7-swiper&gt;`) has additional slots for custom elements:
     ul
-      li <code><b>before-wrapper</b></code> - element will be inserted right before <code>&lt;div class="swiper-wrapper"&gt;</code> element
-      li <code><b>after-wrapper</b></code> - element will be inserted right after <code>&lt;div class="swiper-wrapper"&gt;</code> element
+      li `before-wrapper` - element will be inserted right before `&lt;div class="swiper-wrapper"&gt;` element
+      li `after-wrapper` - element will be inserted right after `&lt;div class="swiper-wrapper"&gt;` element
     :code(lang="html")
           <f7-swiper>
             <div slot="before-wrapper">Before Wrapper</div>
@@ -85,7 +85,7 @@ block content
             <div>After Wrapper</div>
           </div>
     h2 Access To Swiper Instance
-    p If you use automatic initalization to init Swiper (with <code>init:true</code> prop) and need to use Swiper API you can access its initialized instance by accessing <code><b>.swiper</b></code> component's property.
+    p If you use automatic initalization to init Swiper (with `init:true` prop) and need to use Swiper API you can access its initialized instance by accessing `.swiper` component's property.
     .with-device
       h2(data-device-preview="../docs-demos/vue/swiper.html") Examples
       h4 Minimal layout
@@ -104,7 +104,7 @@ block content
             </f7-swiper>
 
       h4 With additional parameters
-      p You can pass any additional <a href="http://idangero.us/swiper/api" target="_blank">Swiper API</a> parameters using <code>params</code> property:
+      p You can pass any additional <a href="http://idangero.us/swiper/api" target="_blank">Swiper API</a> parameters using `params` property:
       :code(lang="html")
             <f7-swiper navigation :params="{speed:500, slidesPerView: 3, spaceBetween: 20}">
               <f7-swiper-slide>Slide 1</f7-swiper-slide>

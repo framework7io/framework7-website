@@ -13,7 +13,7 @@ block content
     p Most of Framework7 components that is built with classes/constructors (including Framework7 class itself) have event emitter API.
     p It allows us easily to emit and handle all kind of events, including events between components.
     h2 Events Handlers in Parameters
-    p When you create app instance or any other component using API, you can pass event handler on app/component initialization in <code><b>on</b></code> parameter:
+    p When you create app instance or any other component using API, you can pass event handler on app/component initialization in `on` parameter:
     :code(lang="js")
           var app = new Framework7({
             ...
@@ -119,7 +119,7 @@ block content
 
           popup.emit('something'); // will trigger "something" event assigned to both app and popup instances
 
-    p If this is not what you want, it is possible to emit so called <b>local</b> events on components. In this case we need to prefix event name with <code><b>local::</b></code>
+    p If this is not what you want, it is possible to emit so called <b>local</b> events on components. In this case we need to prefix event name with `local::`
     :code(lang="js")
           app.on('something', function () {/*...*/});
 
@@ -140,7 +140,7 @@ block content
     h2 Events Bus
     p Current events emitter API on Framework7 classes is also very useful to create custom events for communication between app components and modules.
     p And there is an additional helper class that is designed to be used like event bus only and not to flood main app or some components instances.
-    p To create new events bus we need to call #[code new Framework7.Events()]:
+    p To create new events bus we need to call `new Framework7.Events()`:
     :code(lang="js")
       // Create custom events bus
       var myEvents = new Framework7.Events();

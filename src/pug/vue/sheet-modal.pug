@@ -18,7 +18,7 @@ block content
     h2 Sheet Modal Components
     p There are following components included:
     ul
-      li <code><b>f7-sheet</b></code> - sheet modal element
+      li `f7-sheet` - sheet modal element
     h2 Sheet Modal Properties
     table.params-table.cols-3
       thead
@@ -76,7 +76,7 @@ block content
         tr
           td swipeHandler
           td HTMLElement<br>string
-          td If not passed, then whole Sheet can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (<code>swipeToClose</code> or <code>swipeToStep</code> must be also enabled)
+          td If not passed, then whole Sheet can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (`swipeToClose` or `swipeToStep` must be also enabled)
     h2 Sheet Modal Methods
     table.methods-table
       tr
@@ -116,17 +116,17 @@ block content
           td Event will be triggered on Sheet swipe step close/collapse
         tr
           td sheet:stepprogress
-          td Event will be triggered on Sheet swipe step between step opened and closed state. As <code>event.detail</code> it receives step open progress number (from <code>0</code> to <code>1</code>)
+          td Event will be triggered on Sheet swipe step between step opened and closed state. As `event.detail` it receives step open progress number (from `0` to `1`)
 
     h2 Open And Close Sheet Modal
     p You can control Sheet Modal state, open and closing it:
     ul
       li using its <a href="../docs/sheet-modal.html">Sheet Modal API</a>
-      li by passing <code>true</code> or <code>false</code> to its <code>opened</code> prop
-      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>sheet-open</code> property (to open it) and <code>sheet-close</code> property to close it
+      li by passing `true` or `false` to its `opened` prop
+      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant `sheet-open` property (to open it) and `sheet-close` property to close it
 
     h2 Access To Sheet Modal Instance
-    p You can access Sheet Modal initialized instance by accessing <code><b>.f7Sheet</b></code> component's property.
+    p You can access Sheet Modal initialized instance by accessing `.f7Sheet` component's property.
 
     .with-device
       h2(data-device-preview="../docs-demos/vue/sheet-modal.html") Examples

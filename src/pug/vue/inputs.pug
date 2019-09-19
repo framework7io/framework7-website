@@ -19,8 +19,8 @@ block content
     h2 Input Components
     p There are following components included:
     ul
-      li <code><b>f7-list-input</b></code> - list item input element
-      li <code><b>f7-input</b></code> - input element
+      li `f7-list-input` - list item input element
+      li `f7-input` - input element
 
     h2 Input Properties
     table.params-table
@@ -97,7 +97,7 @@ block content
           td validate
           td boolean
           td false
-          td When enabled then input value will be validated on change based on passed "pattern" or based on input type. If you use custom validation and need more control on where to show/hide error message, then it is better to disable validation and use <code>error-message</code> together with <code>error-message-force</code> props.
+          td When enabled then input value will be validated on change based on passed "pattern" or based on input type. If you use custom validation and need more control on where to show/hide error message, then it is better to disable validation and use `error-message` together with `error-message-force` props.
         tr
           td validate-on-blur
           td boolean
@@ -140,8 +140,8 @@ block content
           td
           td
             p Input value.
-            p If <code>type="datepicker"</code> then value must be passed as what <a href="/docs/calendar.html" target="_blank">Calendar</a> accepts - Array with dates, for example <code>:value="[new Date()]"</code>
-            p If <code>type="colorpicker"</code> then value must be passed as what <a href="/docs/color-picker.html" target="_blank">Color Picker</a> accepts - Object with colors, for example <code>:value="{hex: '#ff0000'}"</code>
+            p If `type="datepicker"` then value must be passed as what <a href="/docs/calendar.html" target="_blank">Calendar</a> accepts - Array with dates, for example `:value="[new Date()]"`
+            p If `type="colorpicker"` then value must be passed as what <a href="/docs/color-picker.html" target="_blank">Color Picker</a> accepts - Object with colors, for example `:value="{hex: '#ff0000'}"`
         tr
           td default-value
           td string<br>number
@@ -246,17 +246,17 @@ block content
           td wrap
           td boolean
           td true
-          td When enabled it will be wrapped in #[code &lt;li&gt;] element
+          td When enabled it will be wrapped in `&lt;li&gt;` element
         tr
           td calendar-params
           td object
           td
-          td Object with <a href="../docs/calendar.html#calendar-parameters" target="_blank">Calendar Parameters</a> which is used when <code>type="datepicker"</code>
+          td Object with <a href="../docs/calendar.html#calendar-parameters" target="_blank">Calendar Parameters</a> which is used when `type="datepicker"`
         tr
           td color-picker-params
           td object
           td
-          td Object with <a href="../docs/color-picker.html#color-picker-parameters" target="_blank">Color Picker Parameters</a> which is used when <code>type="colorpicker"</code>
+          td Object with <a href="../docs/color-picker.html#color-picker-parameters" target="_blank">Color Picker Parameters</a> which is used when `type="colorpicker"`
         tr
           th(colspan="4") &lt;f7-input&gt; properties
         tr
@@ -268,7 +268,7 @@ block content
           td wrap
           td boolean
           td true
-          td Defines should the input be wraped with #[code &lt;div class="input"&gt;] element or not.
+          td Defines should the input be wraped with `&lt;div class="input"&gt;` element or not.
         tr
           td type
           td string
@@ -298,7 +298,7 @@ block content
           td validate
           td boolean
           td false
-          td When enabled then input value will be validated on change based on passed "pattern" or based on input type. If you use custom validation and need more control on where to show/hide error message, then it is better to disable validation and use <code>error-message</code> together with <code>error-message-force</code> props.
+          td When enabled then input value will be validated on change based on passed "pattern" or based on input type. If you use custom validation and need more control on where to show/hide error message, then it is better to disable validation and use `error-message` together with `error-message-force` props.
         tr
           td validate-on-blur
           td boolean
@@ -345,8 +345,8 @@ block content
           td
           td
             p Input value.
-            p If <code>type="datepicker"</code> then value must be passed as what <a href="/docs/calendar.html" target="_blank">Calendar</a> accepts - Array with dates, for example <code>:value="[new Date()]"</code>
-            p If <code>type="colorpicker"</code> then value must be passed as what <a href="/docs/color-picker.html" target="_blank">Color Picker</a> accepts - Object with colors, for example <code>:value="{hex: '#ff0000'}"</code>
+            p If `type="datepicker"` then value must be passed as what <a href="/docs/calendar.html" target="_blank">Calendar</a> accepts - Array with dates, for example `:value="[new Date()]"`
+            p If `type="colorpicker"` then value must be passed as what <a href="/docs/color-picker.html" target="_blank">Color Picker</a> accepts - Object with colors, for example `:value="{hex: '#ff0000'}"`
         tr
           td size
           td string<br>number
@@ -446,12 +446,12 @@ block content
           td calendar-params
           td object
           td
-          td Object with <a href="../docs/calendar.html#calendar-parameters" target="_blank">Calendar Parameters</a> which is used when <code>type="datepicker"</code>
+          td Object with <a href="../docs/calendar.html#calendar-parameters" target="_blank">Calendar Parameters</a> which is used when `type="datepicker"`
         tr
           td color-picker-params
           td object
           td
-          td Object with <a href="../docs/color-picker.html#color-picker-parameters" target="_blank">Color Picker Parameters</a> which is used when <code>type="colorpicker"</code>
+          td Object with <a href="../docs/color-picker.html#color-picker-parameters" target="_blank">Color Picker Parameters</a> which is used when `type="colorpicker"`
 
     h2 Input Events
     table.events-table
@@ -486,7 +486,7 @@ block content
         tr
           td textarea:resize
           td <span>(event)</span>
-          td Fired if resizable textarea resized. <code>event.detail</code> will contain object with the <code>initialHeight</code>, <code>currentHeight</code> and <code>scrollHeight</code> properties
+          td Fired if resizable textarea resized. `event.detail` will contain object with the `initialHeight`, `currentHeight` and `scrollHeight` properties
         tr
           td input:empty
           td <span>(event)</span>
@@ -498,31 +498,31 @@ block content
         tr
           td calendar:change
           td <span>(value)</span>
-          td Fired when <code>type="datepicker"</code> Calendar value changed. As an argument it receives array with selected dates.
+          td Fired when `type="datepicker"` Calendar value changed. As an argument it receives array with selected dates.
         tr
           td colorpicker:change
           td <span>(value)</span>
-          td Fired when <code>type="colorpicker"</code> Color Picker value changed. As an argument it receives object with Color Picker value.
+          td Fired when `type="colorpicker"` Color Picker value changed. As an argument it receives object with Color Picker value.
 
     h2 Input Slots
-    p <code>&lt;f7-list-input&gt;</code> has additional slots for custom elements:
+    p `&lt;f7-list-input&gt;` has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - in case of <code>type="select"</code> or <code>type="textarea"</code> - element will be placed inside of <code>select</code> or <code>textarea</code> tags.
-      li <code><b>info</b></code> - element will be inserted into container with info message
-      li <code><b>error-message</b></code> - element will be inserted into container with error message
-      li <code><b>label</b></code> - element will be inserted into container with input's label
-      li <code><b>input</b></code> - element will be inserted instead of input element (<code>input</code> prop must be also set to <code>false</code>)
+      li `default` - in case of `type="select"` or `type="textarea"` - element will be placed inside of `select` or `textarea` tags.
+      li `info` - element will be inserted into container with info message
+      li `error-message` - element will be inserted into container with error message
+      li `label` - element will be inserted into container with input's label
+      li `input` - element will be inserted instead of input element (`input` prop must be also set to `false`)
 
-      li <code><b>root-start</b></code> - element will be inserted in the beginning of <code>&lt;li&gt;</code> element
-      li <code><b>root</b></code> / <code><b>root-end</b></code> - element will be inserted in the end of <code>&lt;li&gt;</code> element
-      li <code><b>content-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="item-content"&gt;</code> element
-      li <code><b>content</b></code> / <code><b>content-end</b></code> - element will be inserted in the end of <code>&lt;div class="item-content"&gt;</code> element
-      li <code><b>inner-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="item-inner"&gt;</code> element
-      li <code><b>inner</b></code> / <code><b>inner-end</b></code> - element will be inserted in the end of <code>&lt;div class="item-inner"&gt;</code> element
-      li <code><b>media</b></code> - element will be inserted inside of <code>&lt;div class="item-media"&gt;</code> element
+      li `root-start` - element will be inserted in the beginning of `&lt;li&gt;` element
+      li `root` / `root-end` - element will be inserted in the end of `&lt;li&gt;` element
+      li `content-start` - element will be inserted in the beginning of `&lt;div class="item-content"&gt;` element
+      li `content` / `content-end` - element will be inserted in the end of `&lt;div class="item-content"&gt;` element
+      li `inner-start` - element will be inserted in the beginning of `&lt;div class="item-inner"&gt;` element
+      li `inner` / `inner-end` - element will be inserted in the end of `&lt;div class="item-inner"&gt;` element
+      li `media` - element will be inserted inside of `&lt;div class="item-media"&gt;` element
 
     h2 Input v-model
-    p <code>v-model</code> <b>is not supported</b> on <code>f7-list-input</code> / <code>f7-input</code> vue components. Instead, just use the combination of <code>value</code> property and <code>@input</code> event:
+    p `v-model` <b>is not supported</b> on `f7-list-input` / `f7-input` vue components. Instead, just use the combination of `value` property and `@input` event:
     :code(lang="html")
       <template>
         ...

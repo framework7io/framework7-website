@@ -43,14 +43,14 @@ block content
       </div>
     p Where:
       ul
-        li <code><b>ptr-content</b></code> class. This is required to enable pull to refresh
-        li <code><b>div class="ptr-preloader"</b></code> hidden layer with pull to refresh visual elements: preloader and arrow
+        li `ptr-content` class. This is required to enable pull to refresh
+        li `div class="ptr-preloader"` hidden layer with pull to refresh visual elements: preloader and arrow
         li `data-ptr-distance="55"` additional attribute that allows to set custom pull to refresh trigger distance. By default (if not specified) it is 44px
         li `data-ptr-mousewheel="true"` additional attribute that enables pull to refresh with mousewheel (for desktop apps). Works only for PTR top.
         li `ptr-watch-scrollable` - additional class that must be added on nested scrollable elements to prevent pull to refresh on such elements scrolling
         li `ptr-ignore` - additional class that must be added on nested scrollable elements or other elements that will to prevent pull to refresh on such elements scrolling or touchmove
     h2 Pull To Refresh From Bottom
-    p It is also possible to make it work like pull from bottom. In this case we need to move #[code ptr-preloader] element to the bottom of page content and add additional #[code ptr-bottom] class to pull to refresh content:
+    p It is also possible to make it work like pull from bottom. In this case we need to move `ptr-preloader` element to the bottom of page content and add additional `ptr-bottom` class to pull to refresh content:
     :code(lang="html")
       <div class="page">
         <!-- ptr-content must have additional "ptr-bottom" class -->
@@ -67,9 +67,9 @@ block content
         </div>
       </div>
     h2 Pull To Refresh Sequence
-    p When user starts to pull <b>ptr-content</b> down, then <b>ptr-preloader</b> will receive additional <code><b>ptr-pull-down</code></b> class.
-    p When user pulls down <b>ptr-content</b> on a distance more than 44px (when <b>ptr-preloader</b> will be fully visible), then <b>ptr-preloader</b> will receive additional <code><b>ptr-pull-up</code></b> class which changes arrow rotation to notify user about refresh action on release.
-    p When user release pull to refresh content when it is in "ptr-pull-up" state, then <b>ptr-preloader</b> will receive additional <code><b>ptr-refreshing</code></b> class. In "refreshing" state arrow will be hidden and user will see preloader indicator. On this stage you probably need to do Ajax request and refresh page content.
+    p When user starts to pull <b>ptr-content</b> down, then <b>ptr-preloader</b> will receive additional `ptr-pull-down` class.
+    p When user pulls down <b>ptr-content</b> on a distance more than 44px (when <b>ptr-preloader</b> will be fully visible), then <b>ptr-preloader</b> will receive additional `ptr-pull-up` class which changes arrow rotation to notify user about refresh action on release.
+    p When user release pull to refresh content when it is in "ptr-pull-up" state, then <b>ptr-preloader</b> will receive additional `ptr-refreshing` class. In "refreshing" state arrow will be hidden and user will see preloader indicator. On this stage you probably need to do Ajax request and refresh page content.
     h2 Pull To Refresh App Methods
     p There are few App's methods that can be used with pull to refresh container:
     .method-wrap

@@ -17,12 +17,12 @@ block content
     h2 Messagebar Components
     p There are following components included:
     ul
-      li <code><b>Messagebar</b></code> / <code><b>F7Messagebar</b></code> - main messagebar element
-      li <code><b>MessagebarSheet</b></code> / <code><b>F7MessagebarSheet</b></code> - messagebar sheet element
-      li <code><b>MessagebarSheetImage</b></code> / <code><b>F7MessagebarSheetImage</b></code> - messagebar sheet image item
-      li <code><b>MessagebarSheetItem</b></code> / <code><b>F7MessagebarSheetItem</b></code> - messagebar sheet item
-      li <code><b>MessagebarAttachments</b></code> / <code><b>F7MessagebarAttachments</b></code> - messagebar attachments element
-      li <code><b>MessagebarAttachment</b></code> / <code><b>F7MessagebarAttachment</b></code> - single messagebar attachment element
+      li `Messagebar` / `F7Messagebar` - main messagebar element
+      li `MessagebarSheet` / `F7MessagebarSheet` - messagebar sheet element
+      li `MessagebarSheetImage` / `F7MessagebarSheetImage` - messagebar sheet image item
+      li `MessagebarSheetItem` / `F7MessagebarSheetItem` - messagebar sheet item
+      li `MessagebarAttachments` / `F7MessagebarAttachments` - messagebar attachments element
+      li `MessagebarAttachment` / `F7MessagebarAttachment` - single messagebar attachment element
     p
       img(src=cdn + "/i/docs/messagebar-vue.jpg", style="max-width: 950px; width: 100%")
     h2 Messagebar Properties
@@ -75,7 +75,7 @@ block content
           td sendLink
           td string
           td
-          td Enables Send link and specifies its text. This property will be ignored in case you use <code>send-link</code> slot
+          td Enables Send link and specifies its text. This property will be ignored in case you use `send-link` slot
         tr
           td maxHeight
           td number
@@ -199,14 +199,14 @@ block content
     h2 Messagebar Slots
     p Messagebar React component has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - element will be inserted in the end of <code>&lt;div class="toolbar-inner"&gt;</code>. element
-      li <code><b>before-area</b></code> - element will be inserted right before textarea. Messagebar attachments go here
-      li <code><b>after-area</b></code> - element will be inserted right after textarea
-      li <code><b>send-link</b></code> - element will be inserted inside of send link
-      li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="toolbar-inner"&gt;</code>. element
-      li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="toolbar-inner"&gt;</code>. element. Messagebar sheet goes here
-      li <code><b>inner-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="toolbar-inner"&gt;</code>. element
-      li <code><b>inner-end</b></code> - element will be inserted in the end of <code>&lt;div class="toolbar-inner"&gt;</code>. element. Same as <code>default</code> slot
+      li `default` - element will be inserted in the end of `&lt;div class="toolbar-inner"&gt;`. element
+      li `before-area` - element will be inserted right before textarea. Messagebar attachments go here
+      li `after-area` - element will be inserted right after textarea
+      li `send-link` - element will be inserted inside of send link
+      li `before-inner` - element will be inserted right before `&lt;div class="toolbar-inner"&gt;`. element
+      li `after-inner` - element will be inserted right after `&lt;div class="toolbar-inner"&gt;`. element. Messagebar sheet goes here
+      li `inner-start` - element will be inserted in the beginning of `&lt;div class="toolbar-inner"&gt;`. element
+      li `inner-end` - element will be inserted in the end of `&lt;div class="toolbar-inner"&gt;`. element. Same as `default` slot
     :code(lang="jsx")
           <Messagebar placeholder="Message" onSubmit="this.onSubmit">
             <div slot="before-inner">Before inner</div>
@@ -233,7 +233,7 @@ block content
           </div>
 
     h2 Access To Messagebar Instance
-    p If you use automatic initalization to init Messagebar (with <code>init={true}</code> prop) and need to use its <a href="../docs/messagebar.html#messagebar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Messagebar</b></code> component's property.
+    p If you use automatic initalization to init Messagebar (with `init={true}` prop) and need to use its <a href="../docs/messagebar.html#messagebar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing `.f7Messagebar` component's property.
 
     .with-device
       h2(data-device-preview="../docs-demos/react/messages.html") Examples

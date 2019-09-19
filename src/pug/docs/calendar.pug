@@ -71,7 +71,7 @@ block content
           td calendarType
           td string
           td gregorian
-          td Calendar type, can be <code>gregorian</code> or <code>jalali</code>
+          td Calendar type, can be `gregorian` or `jalali`
         tr
           td value
           td array
@@ -88,7 +88,7 @@ block content
           td
           td
             p Dates with events. Will be marked with additonal "dot" on calendar day. Parameter accepts so called <b>Date Range</b> (look below for details).
-            p If you want to indicate that day has few different events, it is possible to indicate this with multiple different color dots. In this case, you need to pass date range as array where each object will have #[code date] and #[code color] properties, e.g.
+            p If you want to indicate that day has few different events, it is possible to indicate this with multiple different color dots. In this case, you need to pass date range as array where each object will have `date` and `color` properties, e.g.
             :code(lang="js")
                   [
                     {
@@ -190,17 +190,17 @@ block content
           td rangePicker
           td boolean
           td false
-          td Enable to enable range picker. Not compatible with <code>multiple</code>
+          td Enable to enable range picker. Not compatible with `multiple`
         tr
           td rangePickerMinDays
           td number
           td 1
-          td Minimum days that need to be selected when <code>rangePicker</code> enabled
+          td Minimum days that need to be selected when `rangePicker` enabled
         tr
           td rangePickerMaxDays
           td number
           td 0
-          td Maximum days allowed to be selected when <code>rangePicker</code> enabled. <code>0</code> means no maximum
+          td Maximum days allowed to be selected when `rangePicker` enabled. `0` means no maximum
         tr
           td direction
           td string
@@ -257,7 +257,7 @@ block content
           td openIn
           td string
           td auto
-          td Can be <code>auto</code>, <code>popover</code> (to open calendar in popover), <code>sheet</code> (to open in sheet modal) or <code>customModal</code> (to open in custom Calendar modal overlay). In case of <code>auto</code> will open in sheet modal on small screens and in popover on large screens.
+          td Can be `auto`, `popover` (to open calendar in popover), `sheet` (to open in sheet modal) or `customModal` (to open in custom Calendar modal overlay). In case of `auto` will open in sheet modal on small screens and in popover on large screens.
         tr
           td inputEl
           td string or HTMLElement
@@ -317,7 +317,7 @@ block content
           td view
           td object
           td
-          td View where to set routing when <code>routableModals</code> enabled. Defaults to parent view of <code>inputEl</code> or main view if not found parent view
+          td View where to set routing when `routableModals` enabled. Defaults to parent view of `inputEl` or main view if not found parent view
         tr
           td backdrop
           td boolean
@@ -387,7 +387,7 @@ block content
                     }
                   })
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>calendar</code> property to set defaults for all calendars. For example:
+      p Note that all following parameters can be used in global app parameters under `calendar` property to set defaults for all calendars. For example:
       :code(lang="js")
             var app = new Framework7({
               calendar: {
@@ -441,7 +441,7 @@ block content
               },
               ...
           });
-    p Or object with #[code date] property:
+    p Or object with `date` property:
     :code(lang="js")
           var calendar = app.calendar.create({
               ...
@@ -506,7 +506,7 @@ block content
               ...
           });
     h2 Calendar Methods & Properties
-    p After we initialize Calendar we have its initialized instance in variable (like <code>calendar</code> variable in examples above) with helpful methods and properties:
+    p After we initialize Calendar we have its initialized instance in variable (like `calendar` variable in examples above) with helpful methods and properties:
     table.methods-table
       tbody
         tr
@@ -528,34 +528,34 @@ block content
           td Dom7 instance with calendar HTML element
         tr
           td calendar.inputEl
-          td Calendar input HTML element (passed in <code>inputEl</code> parameter)
+          td Calendar input HTML element (passed in `inputEl` parameter)
         tr
           td calendar.$inputEl
-          td Dom7 instance with calendar input HTML element (passed in <code>inputEl</code> parameter)
+          td Dom7 instance with calendar input HTML element (passed in `inputEl` parameter)
         tr
           td calendar.value
           td Array where each item represents selected date
         tr
           td calendar.currentMonth
-          td Calendar view current month. Number, from <code>0</code> to <code>11</code>
+          td Calendar view current month. Number, from `0` to `11`
         tr
           td calendar.currentYear
-          td Calendar view current year. Number, for example <code>2020</code>
+          td Calendar view current year. Number, for example `2020`
         tr
           td calendar.opened
-          td <code>true</code> if Calendar is currently opened
+          td `true` if Calendar is currently opened
         tr
           td calendar.inline
-          td <code>true</code> when inline calendar is in use
+          td `true` when inline calendar is in use
         tr
           td calendar.cols
           td Array with specified Calendar columns. Each column also has its own methods and properties (look below)
         tr
           td calendar.url
-          td Calendar URL (that was passed in <code>url</code> parameter)
+          td Calendar URL (that was passed in `url` parameter)
         tr
           td calendar.view
-          td Calendar View (that was passed in <code>view</code> parameter) or found parent view
+          td Calendar View (that was passed in `view` parameter) or found parent view
         tr
           td calendar.params
           td Object with initialization parameters
@@ -563,22 +563,22 @@ block content
           th(colspan="2") Methods
         tr
           td calendar.setValue(<span>values</span>)
-          td Set new selected dates. <code>values</code> is array where each item represents selected date
+          td Set new selected dates. `values` is array where each item represents selected date
         tr
           td calendar.getValue()
           td Returns current calendar value
         tr
           td calendar.addValue()
-          td Adds value to the values array. Useful in case if multiple selection is enabled (with <code>multiple: true</code> parameter)
+          td Adds value to the values array. Useful in case if multiple selection is enabled (with `multiple: true` parameter)
         tr
           td calendar.update()
           td Rerenders calendar. Useful in case you added/changed values dynamically and need to update calendar layout
         tr
           td calendar.nextMonth(<span>duration</span>)
-          td Calendar transition to next month for specified <code>duration</code> in ms
+          td Calendar transition to next month for specified `duration` in ms
         tr
           td calendar.prevMonth(<span>duration</span>)
-          td Calendar transition to previous month for specified <code>duration</code> in ms
+          td Calendar transition to previous month for specified `duration` in ms
         tr
           td calendar.nextYear()
           td Calendar transition to next year
@@ -587,7 +587,7 @@ block content
           td Calendar transition to previous year
         tr
           td calendar.setYearMonth(<span>year</span>, <span>month</span>, <span>duration</span>)
-          td Calendar transition to specified <code>year</code>, <code>month</code> for specified <code>duration</code> in ms
+          td Calendar transition to specified `year`, `month` for specified `duration` in ms
         tr
           td calendar.open()
           td Open Calendar
@@ -639,7 +639,7 @@ block content
           td Calendar Element<span>&lt;div class="calendar"&gt;</span>
           td Event will be triggered after Calendar completes its closing animation
     h3 App and Calendar Instance Events
-    p Calendar instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>calendar</code>.
+    p Calendar instance emits events on both self instance and app instance. App instance events has same names prefixed with `calendar`.
     table.events-table
       thead
         tr

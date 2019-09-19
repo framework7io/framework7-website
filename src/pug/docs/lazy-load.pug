@@ -15,13 +15,13 @@ block content
     p Lazy Load delays loading of images on page while they are outside of viewport until user scrolls to them.
     p It will make the page load faster, improve scrolling performance and also save traffic.
     .important-note
-      p Note, that lazy images and elements should be inside of scrollable <code><b>&lt;div class="page-content"&gt;</b></code> to work correctly
+      p Note, that lazy images and elements should be inside of scrollable `&lt;div class="page-content"&gt;` to work correctly
     h2 Usage
     h3 With Images
     p To use lazy load on images:
     ol
-      li specify image source into <code><b>data-src</b></code> attribute instead of `src` attribute
-      li add <code><b>lazy</b></code> class to the image
+      li specify image source into `data-src` attribute instead of `src` attribute
+      li add `lazy` class to the image
     :code(lang="html")
       &lt;div class="page-content"&gt;
         ...
@@ -32,8 +32,8 @@ block content
     h3 With Background Images
     p It is also possible to use lazy load for background images, in this case:
     ol
-      li specify element's background image source into <code><b>data-background</b></code>
-      li add <code><b>lazy</b></code> class to element
+      li specify element's background image source into `data-background`
+      li add `lazy` class to element
     :code(lang="html")
       &lt;div class="page-content"&gt;
         ...
@@ -45,7 +45,7 @@ block content
     .important-note After lazy image successfully loaded, <em>or in case of error loading the image file</em>, the `lazy` class will be replaced with `lazy-loaded` class.
 
     h3 With Fade-in Effect
-    p If you want to add fade-in effect when image is loaded, you need to add additional <code><b>lazy-fade-in</b></code> class to image/element:
+    p If you want to add fade-in effect when image is loaded, you need to add additional `lazy-fade-in` class to image/element:
     :code(lang="html")
       &lt;div class="page-content"&gt;
         ...
@@ -174,7 +174,7 @@ block content
 
 
     h2 Trigger Lazy Load Manually
-    p It is possible to force lazy handler to check lazy images by triggering <code><b>lazy</b></code> event on lazy image/element. It is useful in case you have added lazy elements dynamically and want to check should them be loaded or not without scrolling the page. For example:
+    p It is possible to force lazy handler to check lazy images by triggering `lazy` event on lazy image/element. It is useful in case you have added lazy elements dynamically and want to check should them be loaded or not without scrolling the page. For example:
     :code(lang="js")
       $$('img.lazy').trigger('lazy');
       $$('div.lazy').trigger('lazy');

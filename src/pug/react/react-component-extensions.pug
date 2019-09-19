@@ -49,7 +49,7 @@ block content
           td Access to <a href="../docs/utils.html">Utils</a> object with few useful utilities
         tr
           td this.$theme
-          td Object with boolean properties with information about currently used theme (iOS, MD or Aurora): <code>this.$theme.ios</code>, <code>this.$theme.material</code> and <code>this.$theme.aurora</code>
+          td Object with boolean properties with information about currently used theme (iOS, MD or Aurora): `this.$theme.ios`, `this.$theme.material` and `this.$theme.aurora`
         tr
           td this.$f7router
           td
@@ -61,18 +61,18 @@ block content
             p.important-note This property only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
             p Object with current route data that was used to load this page, tab or modal. It has the following properties
             ul
-              li <code>url</code> - route URL
-              li <code>path</code> - route path
-              li <code>query</code> - object with route query. If the url is <code>/page/?id=5&foo=bar</code> then it will contain the following object <code>{id: '5', foo: 'bar'}</code>
-              li <code>params</code> - route params. If we have matching route with <code>/page/user/:userId/post/:postId/</code> path and url of the page is <code>/page/user/55/post/12/</code> then it will be the following object <code>{userId: '55', postId: '12'}</code>
-              li <code>name</code> - route name
-              li <code>hash</code> - route URL hash
-              li <code>route</code> - object with matching route from available routes
-              li <code>context</code> - context that was passed to the route
+              li `url` - route URL
+              li `path` - route path
+              li `query` - object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{id: '5', foo: 'bar'}`
+              li `params` - route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{userId: '55', postId: '12'}`
+              li `name` - route name
+              li `hash` - route URL hash
+              li `route` - object with matching route from available routes
+              li `context` - context that was passed to the route
     h2 Phenome.js
     p Framework7-React components are build with <a target="_blank" href="https://github.com/phenomejs/phenome">Phenome.js</a>, so they are empowered with some extra features like Slots and Events.
     h2 Slots
-    p All Framework7-React components use <code>slots</code> to distribute children across component structure. They work exactly the same as <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots">Web Component Slots</a> and <a href="https://vuejs.org/v2/guide/components-slots.html" target="_blank">Vue.js Slots</a>.
+    p All Framework7-React components use `slots` to distribute children across component structure. They work exactly the same as <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots">Web Component Slots</a> and <a href="https://vuejs.org/v2/guide/components-slots.html" target="_blank">Vue.js Slots</a>.
     p For example
     :code(lang="jsx")
           export default () => (
@@ -114,8 +114,8 @@ block content
             </div>
           </div>
     h2 Events
-    p All Framework7-React components support events, which are actually props, and their listeners must be assigned as <code>on$Event</code> prop.
-    p For example <code>&lt;Page&gt;</code> component supports <code>pageInit</code>, <code>pageBeforeIn</code> and other <a href="page.html#page-events">events</a>, so to handle such events:
+    p All Framework7-React components support events, which are actually props, and their listeners must be assigned as `on$Event` prop.
+    p For example `&lt;Page&gt;` component supports `pageInit`, `pageBeforeIn` and other <a href="page.html#page-events">events</a>, so to handle such events:
     :code(lang="jsx")
           export default class extends React.Component {
             render() {

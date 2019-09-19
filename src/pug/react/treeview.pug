@@ -18,8 +18,8 @@ block content
     h2 Treeview Components
     p There are following components included:
     ul
-      li <code><b>Treeview</b></code> - main treeview container
-      li <code><b>TreeviewItem</b></code> - treeview item
+      li `Treeview` - main treeview container
+      li `TreeviewItem` - treeview item
 
     h2 Treeview Properties
     table.params-table
@@ -71,7 +71,7 @@ block content
           td link
           td string<br>boolean
           td
-          td Enables link and link URL if specified as string. Same as <code>href</code> attribute
+          td Enables link and link URL if specified as string. Same as `href` attribute
 
         tr
           th(colspan="4") &lt;TreeviewItem&gt; icon related properties
@@ -103,20 +103,20 @@ block content
           td Event will be triggered on item close
         tr
           td treeviewLoadChildren
-          td Event will be triggered on first open of Treeview item with <code>loadChildren</code> prop. In <code>event.detail</code> it contains function to hide loading preloader.
+          td Event will be triggered on first open of Treeview item with `loadChildren` prop. In `event.detail` it contains function to hide loading preloader.
 
     h2 Treeview Item Slots
-    p Treeview React component (<code>&lt;TreeviewItem&gt;</code>) has additional slots for custom elements:
+    p Treeview React component (`&lt;TreeviewItem&gt;`) has additional slots for custom elements:
     ul
-      li <code><b>root-start</b></code> - element will be inserted in the beginning of treeview item element
-      li <code><b>root</b></code> / <code><b>root-end</b></code> - element will be inserted in the end of treeview item element
-      li <code><b>content-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="treeview-item-content"&gt;</code> element
-      li <code><b>content</b></code> / <code><b>content-end</b></code> - element will be inserted in the end of <code>&lt;div class="treeview-item-content"&gt;</code> element
-      li <code><b>children-start</b></code> - element will be inserted in the beginning of the <code>&lt;div class="treeview-item-children"&gt;</code> element
-      li <code><b>default</b></code> - element will be inserted in the end of the <code>&lt;div class="treeview-item-children"&gt;</code> element
-      li <code><b>media</b></code> - element will be inserted before <code>&lt;div class="treeview-item-label"&gt;</code> element
-      li <code><b>label-start</b></code> - element will be inserted in the beginning <code>&lt;div class="treeview-item-label"&gt;</code> element
-      li <code><b>label</b></code> - element will be inserted in the end of <code>&lt;div class="treeview-item-label"&gt;</code> element
+      li `root-start` - element will be inserted in the beginning of treeview item element
+      li `root` / `root-end` - element will be inserted in the end of treeview item element
+      li `content-start` - element will be inserted in the beginning of `&lt;div class="treeview-item-content"&gt;` element
+      li `content` / `content-end` - element will be inserted in the end of `&lt;div class="treeview-item-content"&gt;` element
+      li `children-start` - element will be inserted in the beginning of the `&lt;div class="treeview-item-children"&gt;` element
+      li `default` - element will be inserted in the end of the `&lt;div class="treeview-item-children"&gt;` element
+      li `media` - element will be inserted before `&lt;div class="treeview-item-label"&gt;` element
+      li `label-start` - element will be inserted in the beginning `&lt;div class="treeview-item-label"&gt;` element
+      li `label` - element will be inserted in the end of `&lt;div class="treeview-item-label"&gt;` element
     :code(lang="html")
       <TreeviewItem label="Item 1">
         <img src="path-to-my-image.jpg" slot="media">

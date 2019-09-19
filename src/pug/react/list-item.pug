@@ -17,9 +17,9 @@ block content
     h2 List Item Components
     p There are following components included:
     ul
-      li <code><b>ListItem</b></code> / <code><b>F7ListItem</b></code> - main list item element
-      li <code><b>ListItemRow</b></code> / <code><b>F7ListItemRow</b></code> - list item row element for custom layout
-      li <code><b>ListItemCell</b></code> / <code><b>F7ListItemCell</b></code> - list item cell element for custom layout
+      li `ListItem` / `F7ListItem` - main list item element
+      li `ListItemRow` / `F7ListItemRow` - list item row element for custom layout
+      li `ListItemCell` / `F7ListItemCell` - list item cell element for custom layout
 
     h2 List Item Properties
     table.params-table
@@ -123,7 +123,7 @@ block content
           td inlineLabel
           td boolean
           td false
-          td Enables inline-styled labels for <a href="inputs.html">Form Inputs</a>. By default inherirt <code>inlineLabels</code> prop on parent <code>&lt;List&gt;</code>
+          td Enables inline-styled labels for <a href="inputs.html">Form Inputs</a>. By default inherirt `inlineLabels` prop on parent `&lt;List&gt;`
         tr
           td itemInput
           td boolean
@@ -164,7 +164,7 @@ block content
           td sortable
           td boolean
           td
-          td Allows to disable (when <code>false</code>) sorting of specific list item. Note, that it makes sense and work only on first or last items in the list and won't work correctly if you disable sortable for some of the items in the middle.
+          td Allows to disable (when `false`) sorting of specific list item. Note, that it makes sense and work only on first or last items in the list and won't work correctly if you disable sortable for some of the items in the middle.
         tr
           th(colspan="4") &lt;ListItem&gt; Virtual List specific properties
         tr
@@ -242,7 +242,7 @@ block content
           td link
           td boolean<br>string
           td
-          td Enables link and link URL if specified as string. Same as <code>href</code> prop
+          td Enables link and link URL if specified as string. Same as `href` prop
         tr
         +reactLinkRouterProps
         tr
@@ -287,7 +287,7 @@ block content
           td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
         tr
           td accordionBeforeOpen
-          td Event will be triggered right before accordion content starts its opening animation. <code>event.detail.prevent</code> contains function that will prevent accordion from opening when called
+          td Event will be triggered right before accordion content starts its opening animation. `event.detail.prevent` contains function that will prevent accordion from opening when called
         tr
           td accordionOpen
           td Event will be triggered when accordion content starts its opening animation.
@@ -296,7 +296,7 @@ block content
           td Event will be triggered after accordion content completes its opening animation.
         tr
           td accordionBeforeClose
-          td Event will be triggered right before accordion content starts its closing animation. <code>event.detail.prevent</code> contains function that will prevent accordion from closing when called
+          td Event will be triggered right before accordion content starts its closing animation. `event.detail.prevent` contains function that will prevent accordion from closing when called
         tr
           td accordionClose
           td Event will be triggered when accordion content starts its closing animation.
@@ -305,24 +305,24 @@ block content
           td Event will be triggered after accordion content completes its closing animation.
 
     h2 List Item Slots
-    p List Item React component (<code>&lt;ListItem&gt;</code>) has additional slots for custom elements:
+    p List Item React component (`&lt;ListItem&gt;`) has additional slots for custom elements:
     ul
-      li <code><b>root-start</b></code> - element will be inserted in the beginning of <code>&lt;li&gt;</code> element
-      li <code><b>root</b></code> / <code><b>root-end</b></code> - element will be inserted in the end of <code>&lt;li&gt;</code> element
-      li <code><b>content-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="item-content"&gt;</code> element
-      li <code><b>content</b></code> / <code><b>content-end</b></code> - element will be inserted in the end of <code>&lt;div class="item-content"&gt;</code> element
-      li <code><b>inner-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="item-inner"&gt;</code> element
-      li <code><b>default</b></code> / <code><b>inner</b></code> / <code><b>inner-end</b></code> - element will be inserted in the end of <code>&lt;div class="item-inner"&gt;</code> element
-      li <code><b>media</b></code> - element will be inserted inside of <code>&lt;div class="item-media"&gt;</code> element
-      li <code><b>before-title</b></code> - element will be inserted before <code>&lt;div class="item-title"&gt;</code> element
-      li <code><b>title</b></code> - element will be inserted inside of <code>&lt;div class="item-title"&gt;</code> element
-      li <code><b>after-title</b></code> - element will be inserted after <code>&lt;div class="item-title"&gt;</code> element
-      li <code><b>subtitle</b></code> - element will be inserted inside of <code>&lt;div class="item-subtitle"&gt;</code> element
-      li <code><b>text</b></code> - element will be inserted inside of <code>&lt;div class="item-text"&gt;</code> element
-      li <code><b>header</b></code> - element will be inserted inside of <code>&lt;div class="item-header"&gt;</code> element
-      li <code><b>footer</b></code> - element will be inserted inside of <code>&lt;div class="item-footer"&gt;</code> element
-      li <code><b>after-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="item-after"&gt;</code> element
-      li <code><b>after</b></code> / <code><b>after-end</b></code> - element will be inserted in the end of <code>&lt;div class="item-after"&gt;</code> element
+      li `root-start` - element will be inserted in the beginning of `&lt;li&gt;` element
+      li `root` / `root-end` - element will be inserted in the end of `&lt;li&gt;` element
+      li `content-start` - element will be inserted in the beginning of `&lt;div class="item-content"&gt;` element
+      li `content` / `content-end` - element will be inserted in the end of `&lt;div class="item-content"&gt;` element
+      li `inner-start` - element will be inserted in the beginning of `&lt;div class="item-inner"&gt;` element
+      li `default` / `inner` / `inner-end` - element will be inserted in the end of `&lt;div class="item-inner"&gt;` element
+      li `media` - element will be inserted inside of `&lt;div class="item-media"&gt;` element
+      li `before-title` - element will be inserted before `&lt;div class="item-title"&gt;` element
+      li `title` - element will be inserted inside of `&lt;div class="item-title"&gt;` element
+      li `after-title` - element will be inserted after `&lt;div class="item-title"&gt;` element
+      li `subtitle` - element will be inserted inside of `&lt;div class="item-subtitle"&gt;` element
+      li `text` - element will be inserted inside of `&lt;div class="item-text"&gt;` element
+      li `header` - element will be inserted inside of `&lt;div class="item-header"&gt;` element
+      li `footer` - element will be inserted inside of `&lt;div class="item-footer"&gt;` element
+      li `after-start` - element will be inserted in the beginning of `&lt;div class="item-after"&gt;` element
+      li `after` / `after-end` - element will be inserted in the end of `&lt;div class="item-after"&gt;` element
     :code(lang="jsx")
           <List media-list>
             <ListItem

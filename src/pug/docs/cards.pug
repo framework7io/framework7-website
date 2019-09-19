@@ -42,22 +42,22 @@ block content
     p Where:
     ul
       li
-        p <code>&lt;div class="card"&gt;</code> - Card container
+        p `&lt;div class="card"&gt;` - Card container
         ul
           li
-            p <code>&lt;div class="card-header"&gt;</code> - Card header. Mostly used to display card title. Optional
+            p `&lt;div class="card-header"&gt;` - Card header. Mostly used to display card title. Optional
           li
-            p <code>&lt;div class="card-footer"&gt;</code> - Card footer is used for some additional information or for custom actions/links. Optional
+            p `&lt;div class="card-footer"&gt;` - Card footer is used for some additional information or for custom actions/links. Optional
           li
-            p <code>&lt;div class="card-content"&gt;</code> - Main container for card content. Required
+            p `&lt;div class="card-content"&gt;` - Main container for card content. Required
           li
-            p <code>&lt;div class="card-content card-content-padding"&gt;</code> - Additional <b>card-content-padding</b> used to add extra padding to card-content
+            p `&lt;div class="card-content card-content-padding"&gt;` - Additional <b>card-content-padding</b> used to add extra padding to card-content
           li
-            p <code>card-outline</code> - additional class that can be added to card element to make it outline
+            p `card-outline` - additional class that can be added to card element to make it outline
           li
-            p <code>no-shadow</code> - additional class that can be added to card element to remove its shadow
+            p `no-shadow` - additional class that can be added to card element to remove its shadow
           li
-            p <code>no-border</code> - additional class that can be added to card element to remove its border (for outline card)
+            p `no-border` - additional class that can be added to card element to remove its border (for outline card)
     .important-note
       p Note that "card-header" and "card-footer" have a flexbox layout (<em>display:flex</em>) where as items have a center vertical alignment. If you need to align items to top or to bottom of header/footer, then you may use additional <a href="typography.html">typography</a> classes, for example:
       p <b>&lt;div class="card-header align-items-flex-start"&gt;</b> - align header items by header top line
@@ -77,19 +77,19 @@ block content
       </div>
     p Where
       ul
-        li #[code card-expandable] - addition class on card element to make it expandable
-        li #[code card-content] - only place here to put any card content
-    p So all the extra elements like #[code card-content-padding], #[code card-header], #[code card-footer] must be placed inside of #[code card-content] when card is expandable.
+        li `card-expandable` - addition class on card element to make it expandable
+        li `card-content` - only place here to put any card content
+    p So all the extra elements like `card-content-padding`, `card-header`, `card-footer` must be placed inside of `card-content` when card is expandable.
 
     h4 Expandable Card Size
-    p By default expandable card opens to fixed size on tablet/desktops. To make expandable card to open to full screen size on tablet/desktop screen additional #[code card-tablet-fullscreen] class required on card element. Otherwise you can configure this size using #[code --f7-card-expandable-tablet-width] and #[code --f7-card-expandable-tablet-height] CSS variables.
-    p Expandable card content (#[code card-content]) is set to #[code 100vw] width when collapsed (closed). It is done to improve card open/close transition performance, so you need to take care about its content positioning. You can make its content width also animatable and responsive by adding additional #[code card-expandable-animate-width] class to card element, but performance can be worse in this case.
+    p By default expandable card opens to fixed size on tablet/desktops. To make expandable card to open to full screen size on tablet/desktop screen additional `card-tablet-fullscreen` class required on card element. Otherwise you can configure this size using `--f7-card-expandable-tablet-width` and `--f7-card-expandable-tablet-height` CSS variables.
+    p Expandable card content (`card-content`) is set to `100vw` width when collapsed (closed). It is done to improve card open/close transition performance, so you need to take care about its content positioning. You can make its content width also animatable and responsive by adding additional `card-expandable-animate-width` class to card element, but performance can be worse in this case.
 
     h4 Hide Elements On Open/Close
     p Expandable card has 2 states: closed and opened. And it is possible to hide/show card's elements by using these two classes:
     ul
-      li #[code card-opened-fade-in] - element with such class inside of card-content will have #[code 0] opacity when card closed, and it will fade to #[code 1] opacity on card open.
-      li #[code card-opened-fade-out] - element with such class inside of card-content will have #[code 1] opacity when card closed, and it will fade to #[code 0] opacity on card open.
+      li `card-opened-fade-in` - element with such class inside of card-content will have `0` opacity when card closed, and it will fade to `1` opacity on card open.
+      li `card-opened-fade-out` - element with such class inside of card-content will have `1` opacity when card closed, and it will fade to `0` opacity on card open.
 
     h4 Prevent Card From Opening
     p In some layouts you may have a button or link in visible area or expandable card when it is collapsed. To allow click on such button or link and to prevent expandable card from opening, we need to add `card-prevent-open` class to this button:
@@ -105,7 +105,7 @@ block content
 
     h4 Expandable Card Backdrop
     p If you have enabled expandable card backdrop (enabled by default, see parameters below), then it will automatically add backdrop element (darken overlay behind the card) on card open to card parent page.
-    p In some layouts you may need to place such backdrop element in custom place. In this case we need to manually add this element and specify it in card's <code>data-backdrop-el</code> attribute:
+    p In some layouts you may need to place such backdrop element in custom place. In this case we need to manually add this element and specify it in card's `data-backdrop-el` attribute:
     :code(lang="html")
       <div class="block">
         <!-- custom backdrop element -->
@@ -129,7 +129,7 @@ block content
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Expandable card to open.
         li
           span.parameter animate
-          |  - <span class="parameter-type">boolean</span>. Opens expandable card with animation. By default is #[code true]
+          |  - <span class="parameter-type">boolean</span>. Opens expandable card with animation. By default is `true`
     .method-wrap
       p
         span.method app.card.close(<span>el</span>, <span>animate</span>)
@@ -140,7 +140,7 @@ block content
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Expandable card to close.
         li
           span.parameter animate
-          |  - <span class="parameter-type">boolean</span>. Closes expandable card with animation. By default is #[code true]
+          |  - <span class="parameter-type">boolean</span>. Closes expandable card with animation. By default is `true`
 
     .method-wrap
       p
@@ -152,10 +152,10 @@ block content
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Expandable card to toggle.
         li
           span.parameter animate
-          |  - <span class="parameter-type">boolean</span>. Toggle expandable card with animation. By default is #[code true]
+          |  - <span class="parameter-type">boolean</span>. Toggle expandable card with animation. By default is `true`
 
     h2 Card App Parameters
-    p It is possible to control some default Cards behavior using global <a href="app.html#app-parameters">app parameters</a> by passing Cards related parameters under <code>card</code> parameter:
+    p It is possible to control some default Cards behavior using global <a href="app.html#app-parameters">app parameters</a> by passing Cards related parameters under `card` parameter:
     table.params-table
       thead
         tr
@@ -197,7 +197,7 @@ block content
           closeByBackdropClick: false,
         },
       });
-    p In addition, all these paramteres can be set on each expandable card individually with same <code>data-</code> attributes, including additional <code>data-animate</code> attribute:
+    p In addition, all these paramteres can be set on each expandable card individually with same `data-` attributes, including additional `data-animate` attribute:
     :code(lang="html")
       <!-- this card will opened without animation -->
       <div class="card card-expandable" data-animate="false">
@@ -232,7 +232,7 @@ block content
         tr
           td card:beforeopen
           td Card Element<span>&lt;div class="card"&gt;</span>
-          td Event will be triggered right before expandable card starts its opening animation. <code>event.detail.prevent</code> contains function that will prevent card from opening when called
+          td Event will be triggered right before expandable card starts its opening animation. `event.detail.prevent` contains function that will prevent card from opening when called
         tr
           td card:open
           td Card Element<span>&lt;div class="card"&gt;</span>
@@ -260,7 +260,7 @@ block content
         tr
           td cardBeforeOpen
           td <span>(el, prevent)</span>
-          td Event will be triggered right before expandable card starts its opening animation. <code>prevent</code> contains function that will prevent expandable card from opening when called
+          td Event will be triggered right before expandable card starts its opening animation. `prevent` contains function that will prevent expandable card from opening when called
         tr
           td cardOpen
           td <span>(el)</span>

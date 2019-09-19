@@ -17,10 +17,10 @@ block content
     h2 Accordion Components
     p There are following components included:
     ul
-      li <code><b>f7-accordion</b></code>
-      li <code><b>f7-accordion-item</b></code>
-      li <code><b>f7-accordion-toggle</b></code>
-      li <code><b>f7-accordion-content</b></code>
+      li `f7-accordion`
+      li `f7-accordion-item`
+      li `f7-accordion-toggle`
+      li `f7-accordion-content`
     h2 Accordion Properties
     table.params-table
       thead
@@ -49,7 +49,7 @@ block content
           th(colspan="2") &lt;f7-accordion-item&gt; events
         tr
           td accordion:beforeopen
-          td Event will be triggered right before accordion content starts its opening animation. <code>event.detail.prevent</code> contains function that will prevent accordion from opening when called
+          td Event will be triggered right before accordion content starts its opening animation. `event.detail.prevent` contains function that will prevent accordion from opening when called
         tr
           td accordion:open
           td Event will be triggered when accordion content starts its opening animation.
@@ -58,7 +58,7 @@ block content
           td Event will be triggered after accordion content completes its opening animation.
         tr
           td accordion:beforeclose
-          td Event will be triggered right before accordion content starts its closing animation. <code>event.detail.prevent</code> contains function that will prevent accordion from closing when called
+          td Event will be triggered right before accordion content starts its closing animation. `event.detail.prevent` contains function that will prevent accordion from closing when called
         tr
           td accordion:close
           td Event will be triggered when accordion content starts its closing animation.
@@ -67,8 +67,8 @@ block content
           td Event will be triggered after accordion content completes its closing animation.
 
     h2 Accordion List
-    p Accordion List is not a separate component, but just a particular case of using <code><a href="list-view.html">&lt;f7-list&gt;</a></code>, <code><a href="list-item.html">&lt;f7-list-item&gt;</a></code> and <code>&lt;f7-accordion-content&gt;</code> components.
-    p In this case accordion events will be fired on <code>f7-list-item</code>.
+    p Accordion List is not a separate component, but just a particular case of using <a href="list-view.html">`&lt;f7-list&gt;`</a>, <a href="list-item.html">`&lt;f7-list-item&gt;`</a> and `&lt;f7-accordion-content&gt;` components.
+    p In this case accordion events will be fired on `f7-list-item`.
     .with-device
       h2(data-device-preview="../docs-demos/vue/accordion.html") Examples
       :code(lang="html")

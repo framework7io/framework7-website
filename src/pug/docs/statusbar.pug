@@ -21,10 +21,10 @@ block content
         p
           strong Good!
         img(src=cdn + "/i/docs/statusbar2.png", width="320")
-    p Framework7 helps you to solve this issue. It automatically detects if your app in full screen mode, and automatically adds <code><strong>with-statusbar</strong></code> class to `&lt;html&gt;` element if app is in full screen mode (or removes this class if app is not in full screen mode).
-    p With this <code><strong>with-statusbar</strong></code> class (when app in full screen mode) the app root element has additional padding on top to move a whole app's content on size of Statusbar.
+    p Framework7 helps you to solve this issue. It automatically detects if your app in full screen mode, and automatically adds `with-statusbar` class to `&lt;html&gt;` element if app is in full screen mode (or removes this class if app is not in full screen mode).
+    p With this `with-statusbar` class (when app in full screen mode) the app root element has additional padding on top to move a whole app's content on size of Statusbar.
     h2 Statusbar Layout
-    p Now, when Framework7 did its job on this part, we can control Statusbar behavior, we need to add <code><b>&lt;div class="statusbar"&gt;</b></code> as a direct child of app root element:
+    p Now, when Framework7 did its job on this part, we can control Statusbar behavior, we need to add `&lt;div class="statusbar"&gt;` as a direct child of app root element:
     :code(lang="html")
           <body>
             <!-- App root element -->
@@ -34,7 +34,7 @@ block content
               ...
             </div>
           </body>
-    p This <code><strong>statusbar</strong></code> div is always fixed on top of screen and hidden by default. It becomes visible only when app is in full screen mode and `html` has `with-statusbar` class.
+    p This `statusbar` div is always fixed on top of screen and hidden by default. It becomes visible only when app is in full screen mode and `html` has `with-statusbar` class.
     h2 Statusbar Styling
     p If we need to change statusbar background color we may use simple CSS rule:
     :code(lang="css")

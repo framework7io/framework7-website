@@ -36,7 +36,7 @@ block content
     ul
       li `div class="tabs"` - required wrapper for all tabs. If you miss this element, tabs will not work!
       li `div class="tab"` - single tab. Should have <strong>unique</strong> `id` attribute
-      li `div class="tab tab-active"` - single active tab. Tab which is active (visible) by default, should have additional <code><b>tab-active</b></code> class
+      li `div class="tab tab-active"` - single active tab. Tab which is active (visible) by default, should have additional `tab-active` class
     h3 Scrollable Tabs
     p If you put tabs inside of scrollable `&lt;div class="page-content"&gt;` then they will have mutual scrolling - scrolling one tab will basically scroll the all tabs as well. To avoid this (if this is a case), it is recommended to make each tab as page-content, in this case each tab will have own scrolling:
     :code(lang="html")
@@ -59,7 +59,7 @@ block content
           </div>
     h2 Switching Between Tabs
     p After we have our tabs layout we need some contoller so user can switch between them.
-    p To make it work we need to create links (`&lt;a&gt;` tags) with <code><strong>tab-link</strong></code> class and `href` attribute equal to the `id` attribute of target tab:
+    p To make it work we need to create links (`&lt;a&gt;` tags) with `tab-link` class and `href` attribute equal to the `id` attribute of target tab:
     :code(lang="html")
            &lt;!-- Link that activates first tab, has the same href attribute (#tab1) as the id attribute of first tab (tab1)  --&gt;
            &lt;a href="#tab1" class="tab-link tab-link-active"&gt;Tab 1&lt;/a&gt;
@@ -70,9 +70,9 @@ block content
            &lt;!-- Link that activates 3rd tab, has the same href attribute (#tab2) as the id attribute of 3rd tab (tab3)  --&gt;
            &lt;a href="#tab3" class="tab-link"&gt;Tab 3&lt;/a&gt;
     .important-note
-      p As you may see, first link also has <code><strong>tab-link-active</strong></code> class. It is not required, but if all such links will be on the same DOM tree level (the same-level children of mutual parent), then script will also change this `tab-link-active` class on link related to the active tab. It is useful when your "active" link has different visual style (like buttons in <a href="button.html#segmented-control">Segmented Control</a> or links in <a href="toolbar-tabbar.html#tabbar">Tabbar</a>)
+      p As you may see, first link also has `tab-link-active` class. It is not required, but if all such links will be on the same DOM tree level (the same-level children of mutual parent), then script will also change this `tab-link-active` class on link related to the active tab. It is useful when your "active" link has different visual style (like buttons in <a href="button.html#segmented-control">Segmented Control</a> or links in <a href="toolbar-tabbar.html#tabbar">Tabbar</a>)
     h2 Switch Multiple Tabs
-    p Such notation as above uses ID attributes to specify tabs we need to switch to. But sometimes we may have situation when we need to switch few tabs using one tab-link, for this case we may use classes instead of IDs and <code><b>data-tab</b></code> attribute for tab-link. For example:
+    p Such notation as above uses ID attributes to specify tabs we need to switch to. But sometimes we may have situation when we need to switch few tabs using one tab-link, for this case we may use classes instead of IDs and `data-tab` attribute for tab-link. For example:
     :code(lang="html")
           <!-- Top Tabs -->
           <div class="tabs tabs-top">
@@ -95,7 +95,7 @@ block content
             <!-- This links will switch top and bottom tabs to .tab3 -->
             <a href="#" class="tab-link" data-tab=".tab3">Tab 3</a>
           </div>
-    p Where <code><b>data-tab</b></code> attribute of tab-link with CSS selector of target tab/tabs
+    p Where `data-tab` attribute of tab-link with CSS selector of target tab/tabs
     h2 Views As Tabs
     p Why single Tab could not be a seprate View with its own navigation and layout? It can, so you can just switch Views as tabs. In this case we will have kind of Tabbed app structure, where each tab represents separate View:
     :code(lang="html")
@@ -142,7 +142,7 @@ block content
 
 
     h2 Animated Tabs
-    p It is also possible to switch tabs with simple transition. This requires additional <code><b>div class="tabs-animated-wrap"</b></code> wrapper for `div class="tabs"`:
+    p It is also possible to switch tabs with simple transition. This requires additional `div class="tabs-animated-wrap"` wrapper for `div class="tabs"`:
     :code(lang="html")
           <!-- Tabs animated wrapper, required to switch tabs with transition -->
           <div class="tabs-animated-wrap">
@@ -169,7 +169,7 @@ block content
       p Note that animted tabs wrapper `div class="tabs-animated-wrap"` must have <b>fixed height</b>. By default, it is 100% height of its parent
 
     h2 Swipeable Tabs
-    p It is also possible to switch tabs with swipes. This requires additional <code><b>div class="tabs-swipeable-wrap"</b></code> wrapper for `div class="tabs"`.
+    p It is also possible to switch tabs with swipes. This requires additional `div class="tabs-swipeable-wrap"` wrapper for `div class="tabs"`.
     p In this example let's put tab links in Subnavbar and we will use <b>page-content</b> as <b>tab</b> to keep scrolling position for each tab separately:
     :code(lang="html")
           <!-- Tabs swipeable wrapper, required to switch tabs with swipes -->

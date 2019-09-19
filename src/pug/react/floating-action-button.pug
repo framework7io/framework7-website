@@ -18,9 +18,9 @@ block content
     h2 FAB Components
     p There are following components included:
     ul
-      li <code><b>Fab</b></code> / <code><b>F7Fab</b></code> - main FAB element
-      li <code><b>FabButtons</b></code> / <code><b>F7FabButtons</b></code> - wrapper for multiple FAB buttons used as Speed Dial FAB
-      li <code><b>FabButton</b></code> / <code><b>F7FabButton</b></code> - single FAB Speed Dial button
+      li `Fab` / `F7Fab` - main FAB element
+      li `FabButtons` / `F7FabButtons` - wrapper for multiple FAB buttons used as Speed Dial FAB
+      li `FabButton` / `F7FabButton` - single FAB Speed Dial button
     h2 FAB Properties
     table.params-table
       thead
@@ -36,27 +36,27 @@ block content
           td href
           td string<br>boolean
           td
-          td URL of the page to load (if set). Will set <code>href</code> attribute on main FAB link. In case of boolean <code>href="false"</code> it won't add <code>href</code> tag
+          td URL of the page to load (if set). Will set `href` attribute on main FAB link. In case of boolean `href="false"` it won't add `href` tag
         tr
           td target
           td string
           td
-          td Value of link target attribute, e.g. <code>_blank</code>, <code>_self</code>, etc.
+          td Value of link target attribute, e.g. `_blank`, `_self`, etc.
         tr
           td position
           td string
           td right-bottom
           td FAB position. Can be one of the following:
             ul
-              li <code>right-bottom</code>
-              li <code>center-bottom</code>
-              li <code>left-bottom</code>
-              li <code>right-center</code>
-              li <code>center-center</code>
-              li <code>left-center</code>
-              li <code>right-top</code>
-              li <code>center-top</code>
-              li <code>left-top</code>
+              li `right-bottom`
+              li `center-bottom`
+              li `left-bottom`
+              li `right-center`
+              li `center-center`
+              li `left-center`
+              li `right-top`
+              li `center-top`
+              li `left-top`
         tr
           td morphTo
           td string
@@ -80,11 +80,11 @@ block content
           td top
           td Speed dial buttons position, can be one of the following:
             ul
-              li <code>top</code> - buttons will appear on top of FAB
-              li <code>right</code> - buttons will appear on right of FAB
-              li <code>bottom</code> - buttons will appear on bottom of FAB
-              li <code>left</code> - buttons will appear on left of FAB
-              li <code>center</code> - buttons will appear around of FAB
+              li `top` - buttons will appear on top of FAB
+              li `right` - buttons will appear on right of FAB
+              li `bottom` - buttons will appear on bottom of FAB
+              li `left` - buttons will appear on left of FAB
+              li `center` - buttons will appear around of FAB
         tr
           th(colspan="4") &lt;FabButton&gt; properties
         tr
@@ -96,7 +96,7 @@ block content
           td target
           td string
           td
-          td Value of link target attribute, e.g. <code>_blank</code>, <code>_self</code>, etc.
+          td Value of link target attribute, e.g. `_blank`, `_self`, etc.
         tr
           td label
           td string
@@ -125,12 +125,12 @@ block content
           td click
           td Event will be triggered after click on FAB Speed Dial button
     h2 FAB Slots
-    p FAB React component (<code>&lt;Fab&gt;</code>) has additional slots for custom elements:
+    p FAB React component (`&lt;Fab&gt;`) has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - child element will be inserted inside of the main FAB link <code>&lt;a&gt;</code> element. But if the child is <code>FabButtons</code>, then it will be inserted in the end of the main FAB element
-      li <code><b>link</b></code> - child element will be inserted inside of the main FAB link <code>&lt;a&gt;</code> element
-      li <code><b>root</b></code> - child element will be inserted in the end of the main FAB element
-      li <code><b>text</b></code> - child element will be inserted in the text element of the Extended FAB
+      li `default` - child element will be inserted inside of the main FAB link `&lt;a&gt;` element. But if the child is `FabButtons`, then it will be inserted in the end of the main FAB element
+      li `link` - child element will be inserted inside of the main FAB link `&lt;a&gt;` element
+      li `root` - child element will be inserted in the end of the main FAB element
+      li `text` - child element will be inserted in the text element of the Extended FAB
 
     .with-device
       h2(data-device-preview="../docs-demos/react/floating-action-button.html") Examples

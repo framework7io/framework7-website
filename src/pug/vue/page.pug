@@ -18,8 +18,8 @@ block content
     h2 Page Components
     p There are following components included:
     ul
-      li <code><b>f7-page</b></code> - main page element
-      li <code><b>f7-page-content</b></code> - additional inner page content element
+      li `f7-page` - main page element
+      li `f7-page-content` - additional inner page content element
 
     h2 Page Properties
     table.params-table
@@ -41,7 +41,7 @@ block content
           td stacked
           td boolean
           td
-          td Enable for not currently active page if you use <code>stackedPages</code> Router parameter that keeps all pages in DOM
+          td Enable for not currently active page if you use `stackedPages` Router parameter that keeps all pages in DOM
         tr
           td messages-content
           td boolean
@@ -51,7 +51,7 @@ block content
           td page-content
           td boolean
           td true
-          td When enabled it automatically adds <code>page-content</code> element inside. Usefule to disable when you need to use few page-content elements for tabs
+          td When enabled it automatically adds `page-content` element inside. Usefule to disable when you need to use few page-content elements for tabs
         tr
           td tabs
           td boolean
@@ -171,7 +171,7 @@ block content
             <br> login-screen
           td
           td
-          td Same as <code>&lt;f7-page&gt;</code> properties
+          td Same as `&lt;f7-page&gt;` properties
 
     h2 Page Events
     table.events-table
@@ -184,7 +184,7 @@ block content
           th(colspan="2") &lt;f7-page&gt; events
         tr
           td page:mounted
-          td Event will be triggered when page with <code>keepAlive</code> route is mounted/attached to DOM
+          td Event will be triggered when page with `keepAlive` route is mounted/attached to DOM
         tr
           td page:init
           td Event will be triggered after Framework7 initialize required page's components and navbar
@@ -205,10 +205,10 @@ block content
           td Event will be triggered after page transitioned out of view
         tr
           td page:beforeunmount
-          td Event will be triggered when page with <code>keepAlive</code> route is going to be unmounted/detached from DOM
+          td Event will be triggered when page with `keepAlive` route is going to be unmounted/detached from DOM
         tr
           td page:beforeremove
-          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. This event won't be triggered for <code>keepAlive</code> routes.
+          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. This event won't be triggered for `keepAlive` routes.
         tr
           td ptr:pullstart
           td Event will be triggered when you start to move pull to refresh content
@@ -242,12 +242,12 @@ block content
             | <br> ptr:refresh
             | <br> ptr:done
             | <br> infinite
-          td Same as <code>&lt;f7-page&gt;</code> events
+          td Same as `&lt;f7-page&gt;` events
     h2 Page Slots
-    p Page Vue component (<code>&lt;f7-page&gt;</code>) has additional slots for custom elements:
+    p Page Vue component (`&lt;f7-page&gt;`) has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - element will be inserted as a child of  "page-content", if <code>page-content</code> prop is enabled (by default)
-      li <code><b>fixed</b></code> - element will be inserted as a direct child of "page" right before "page-content"
+      li `default` - element will be inserted as a child of  "page-content", if `page-content` prop is enabled (by default)
+      li `fixed` - element will be inserted as a direct child of "page" right before "page-content"
     :code(lang="html")
           <f7-page>
             <div slot="fixed">Fixed element</div>

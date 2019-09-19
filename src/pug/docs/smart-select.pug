@@ -14,7 +14,7 @@ block content
     ul.docs-index
     p Smart select allows you to easily convert your usual form selects to dynamic pages with grouped radio or checkbox inputs. You can see such feature in many native iOS apps
     h2 Smart Select Layout
-    p Smart select layout is pretty simple. It is a well known <a href="list-view.html">List View</a> link with <code>&lt;select&gt;</code> inside and additional <code><b>smart-select</b></code> class on <code>item-link</code>:
+    p Smart select layout is pretty simple. It is a well known <a href="list-view.html">List View</a> link with `&lt;select&gt;` inside and additional `smart-select` class on `item-link`:
     :code(lang="html")
       <div class="list">
         <ul>
@@ -45,8 +45,8 @@ block content
     .important-note
       p Note that smart select works only in initialized Views, because it used Router to load smart select pages or open modals!
     h3 Custom Option Icons, Colors and Images
-    p You can also specify Smart Select page' list view element custom icon, image or color. We need to use additional <code><b>data-option-icon</b></code>, <code><b>data-option-image</b></code> attributes on smart select <code>&lt;select&gt;</code> (to set default image for all options) or on <code>&lt;option&gt;</code> to set image or icon on single option.
-    p For single option we may also use <code><b>data-option-color</b></code> and <code><b>data-option-class</b></code> attributes to add specific option color or css class for additional styling
+    p You can also specify Smart Select page' list view element custom icon, image or color. We need to use additional `data-option-icon`, `data-option-image` attributes on smart select `&lt;select&gt;` (to set default image for all options) or on `&lt;option&gt;` to set image or icon on single option.
+    p For single option we may also use `data-option-color` and `data-option-class` attributes to add specific option color or css class for additional styling
     :code(lang="html")
       <li>
         <a href="#" class="item-link smart-select">
@@ -65,7 +65,7 @@ block content
       </li>
 
     h3 Multiple Select And &lt;optgroup&gt;
-    p We can also use multiple select and group options using <code>&lt;optgroup&gt;</code>. So if we add <code>multiple</code> attribute to our select then radio buttons on smart select page will be automatically converted to checkboxes:
+    p We can also use multiple select and group options using `&lt;optgroup&gt;`. So if we add `multiple` attribute to our select then radio buttons on smart select page will be automatically converted to checkboxes:
     :code(lang="html")
       <li>
         <a href="#" class="item-link smart-select">
@@ -127,7 +127,7 @@ block content
         </a>
       </li>
     h3 Different Display Value
-    p Using <code><b>data-display-as</b></code> attribute on options we can show selected value in different way:
+    p Using `data-display-as` attribute on options we can show selected value in different way:
     :code(lang="html")
       <li>
         <a href="#" class="item-link smart-select">
@@ -219,27 +219,27 @@ block content
           td valueEl
           td HTMLElement
           td
-          td Visual element where to insert selected value. If not passed then it will look for <code>&lt;div class="item-after"&gt;</code> element
+          td Visual element where to insert selected value. If not passed then it will look for `&lt;div class="item-after"&gt;` element
         tr
           td setValueText
           td boolean
           td true
-          td When enabled then smart select will automaticall insert value text into specified "valueEl" in format returned by "formatValueText" 
+          td When enabled then smart select will automaticall insert value text into specified "valueEl" in format returned by "formatValueText"
         tr
           td formatValueText
           td function(values)
-          td 
-          td Custom function to format smart select text value that appears on list item (in <code>&lt;div class="item-after"&gt;</code>). <code>values</code> is the array of current values
+          td
+          td Custom function to format smart select text value that appears on list item (in `&lt;div class="item-after"&gt;`). `values` is the array of current values
         tr
           td openIn
           td string
           td page
-          td Defines how to open Smart Select. Can be <code>page</code> or <code>popup</code> or <code>popover</code> or <code>sheet</code>
+          td Defines how to open Smart Select. Can be `page` or `popup` or `popover` or `sheet`
         tr
           td pageTitle
           td string
           td
-          td Smart select page title. If not passed then it will be the <code>&lt;div class="item-title"&gt;</code> text
+          td Smart select page title. If not passed then it will be the `&lt;div class="item-title"&gt;` text
         tr
           td pageBackLinkText
           td string
@@ -283,10 +283,10 @@ block content
             p If specified as string then it will append:
             :code(lang="html")
               <div class="block searchbar-not-found">{{appendSearchbarNotFound}}</div>
-            p If specified as <code>true</code> then:
+            p If specified as `true` then:
             :code(lang="html")
               <div class="block searchbar-not-found">Nothing found</div>
-            p If <code>HTMLElement</code> passed then it will add that element.
+            p If `HTMLElement` passed then it will add that element.
         tr
           td closeOnSelect
           td boolean
@@ -301,7 +301,7 @@ block content
           td virtualListHeight
           td number<br>function
           td
-          td Virtual list item height. If <code>number</code> - list item height in px. If <code>function</code> then function should return item height.
+          td Virtual list item height. If `number` - list item height in px. If `function` then function should return item height.
         tr
           td scrollToSelectedItem
           td boolean
@@ -321,7 +321,7 @@ block content
           td routableModals
           td boolean
           td true
-          td Will add opened smart select modal (when <code>openIn</code> is <code>popup</code>, <code>popover</code> or <code>sheet</code>) to router history which gives ability to close smart select by going back in router history and set current route to the smart select modal.
+          td Will add opened smart select modal (when `openIn` is `popup`, `popover` or `sheet`) to router history which gives ability to close smart select by going back in router history and set current route to the smart select modal.
         tr
           td url
           td string
@@ -387,7 +387,7 @@ block content
               })
 
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>smartSelect</code> property to set defaults for all smart selects. For example:
+      p Note that all following parameters can be used in global app parameters under `smartSelect` property to set defaults for all smart selects. For example:
       :code(lang="js")
         var app = new Framework7({
           smartSelect: {
@@ -399,7 +399,7 @@ block content
     p So to create Smart Select we have to call:
     :code(lang="js")
           var smartSelect = app.smartSelect.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>smartSelect</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `smartSelect` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -421,16 +421,16 @@ block content
           td Dom7 instance with HTML element used to display value
         tr
           td smartSelect.selectEl
-          td Child select element <code>&lt;select&gt;</code>
+          td Child select element `&lt;select&gt;`
         tr
           td smartSelect.$selectEl
           td Dom7 instance with child select element
         tr
           td smartSelect.url
-          td Smart Select URL (that was passed in <code>url</code> parameter)
+          td Smart Select URL (that was passed in `url` parameter)
         tr
           td smartSelect.view
-          td Smart Select View (that was passed in <code>view</code> parameter) or found parent view
+          td Smart Select View (that was passed in `view` parameter) or found parent view
         tr
           td smartSelect.params
           td Smart Select parameters
@@ -444,10 +444,10 @@ block content
           td Close smart select
         tr
           td smartSelect.getValue()
-          td Returns smart select value. In case of select is <code>multiple</code> it returns array with selected values
+          td Returns smart select value. In case of select is `multiple` it returns array with selected values
         tr
           td smartSelect.setValue(<span>newValue</span>)
-          td Set new smart select value. In case of select is <code>multiple</code> it must be an array with new values
+          td Set new smart select value. In case of select is `multiple` it must be an array with new values
         tr
           td smartSelect.scrollToSelectedItem()
           td Scroll smart select content to first selected item (when opened)
@@ -482,7 +482,7 @@ block content
         tr
           td smartselect:beforeopen
           td Smart Select Element<span>&lt;a class="item-link smart-select"&gt;</span>
-          td Event will be triggered before Smart Select open. <code>event.detail.prevent</code> contains function that will prevent Smart Select from opening when called
+          td Event will be triggered before Smart Select open. `event.detail.prevent` contains function that will prevent Smart Select from opening when called
         tr
           td smartselect:open
           td Smart Select Element<span>&lt;a class="item-link smart-select"&gt;</span>
@@ -504,7 +504,7 @@ block content
           td Smart Select Element<span>&lt;a class="item-link smart-select"&gt;</span>
           td Event will be triggered right before Smart Select instance will be destroyed
     h3 App and Smart Select Instance Events
-    p Smart Select instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>smartSelect</code>.
+    p Smart Select instance emits events on both self instance and app instance. App instance events has same names prefixed with `smartSelect`.
     table.events-table.double-events-table
       thead
         tr
@@ -563,7 +563,7 @@ block content
           td app
 
     h2 Smart Select Auto Initialization
-    p If you don't need to use Smart Select API and your Smart Select is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>smart-select-init</code> class:
+    p If you don't need to use Smart Select API and your Smart Select is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional `smart-select-init` class:
     :code(lang="html")
       <li>
         <!-- Add smart-select-init class -->
@@ -582,11 +582,11 @@ block content
           </div>
         </a>
       </li>
-    p In this case if you need to access created Smart Select instance you can use the <code>app.smartSelect.get</code> app method:
+    p In this case if you need to access created Smart Select instance you can use the `app.smartSelect.get` app method:
     :code(lang="js")
           var smartSelect = app.smartSelect.get('.smart-select');
 
-    p When using auto init you may need to pass additional parameters. In this case you may pass all additional parameters via <code>data-</code> attributes on smart select element:
+    p When using auto init you may need to pass additional parameters. In this case you may pass all additional parameters via `data-` attributes on smart select element:
     :code(lang="html")
       <li>
         <!-- Pass parameters as kebab-case data attributes -->

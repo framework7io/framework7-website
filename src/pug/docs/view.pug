@@ -33,9 +33,9 @@ block content
           </body>
     p As you see <strong>View</strong> may be almost in any part of your app.
     h4 Main View
-    p Your main view should have additional <strong>view-main</strong> class. Why we need main view? By default all links (which is not in any initialized view) will load pages in main view. Also if you use <code>pushState</code> hash navigation then it works only for main view's navigation.
+    p Your main view should have additional <strong>view-main</strong> class. Why we need main view? By default all links (which is not in any initialized view) will load pages in main view. Also if you use `pushState` hash navigation then it works only for main view's navigation.
     h2 Multiple Views Layout
-    p In case we have the app with multiple views in app root, so called "Tabbed Views" app, we must wrap our views with additional <code>&lt;div class="views"&gt;</code> element.
+    p In case we have the app with multiple views in app root, so called "Tabbed Views" app, we must wrap our views with additional `&lt;div class="views"&gt;` element.
     .important-note
       p Only one "Views" element is allowed!
     :code(lang="html")
@@ -113,12 +113,12 @@ block content
           td name
           td string
           td
-          td View name. If view was created with name, then it may be accessed via <code>app.views.[name]</code>
+          td View name. If view was created with name, then it may be accessed via `app.views.[name]`
         tr
           td main
           td boolean
           td false
-          td Specify whether this is View is main or not. If not passed then will be determined based on whether its element has <code>view-main</code> class or not
+          td Specify whether this is View is main or not. If not passed then will be determined based on whether its element has `view-main` class or not
         tr
           td router
           td boolean
@@ -183,17 +183,17 @@ block content
           td passRouteQueryToRequest
           td boolean
           td true
-          td When enabled then router will pass route url query to request url query (for <code>url</code>, <code>templateUrl</code> and <code>componentUrl</code> <a href="routes.html#route-properties">route properties</a>)
+          td When enabled then router will pass route url query to request url query (for `url`, `templateUrl` and `componentUrl` <a href="routes.html#route-properties">route properties</a>)
             p If you have the following route:
-            p <code>{ path: '/somepage/', url: 'http://myserver/page/' }</code>
+            p `{ path: '/somepage/', url: 'http://myserver/page/' }`
             p and you will click link with <b>/somepage/?foo=bar</b> url then it will load page from <b>http://myserver/page/?foo=bar</b> url
         tr
           td passRouteParamsToRequest
           td boolean
           td false
-          td When enabled then router will pass current route parameters to request url query (for <code>url</code>, <code>templateUrl</code> and <code>componentUrl</code> <a href="routes.html#route-properties">route properties</a>)
+          td When enabled then router will pass current route parameters to request url query (for `url`, `templateUrl` and `componentUrl` <a href="routes.html#route-properties">route properties</a>)
             p If you have the following route:
-            p <code>{ path: '/user/:userId/posts/:postId/', url: 'http://myserver/userpost/' }</code>
+            p `{ path: '/user/:userId/posts/:postId/', url: 'http://myserver/userpost/' }`
             p and you will click link with <b>/user/11/posts/12/</b> url then it will load page from <b>http://myserver/userpost/?userId=11&postId=12</b> url
         tr
           th(colspan="4") Master Detail
@@ -201,7 +201,7 @@ block content
           td masterDetailBreakpoint
           td number
           td 0
-          td Minimum app width to enable Master Detail view for master routes (routes with #[code master: true] parameter)
+          td Minimum app width to enable Master Detail view for master routes (routes with `master: true` parameter)
         tr
           td reloadDetail
           td boolean
@@ -227,7 +227,7 @@ block content
             br
             | array
           td
-          td Function (or array of functions) that will be executed before <b>every</b> route load/enter. To proceed route loading <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+          td Function (or array of functions) that will be executed before <b>every</b> route load/enter. To proceed route loading `resolve` must be called. In case of `array` then every function in array must be resolved to proceed.
             p Same as <a href="routes.html#route-before-enter-leave">route beforeEnter</a> but will work for every route
         tr
           td routesBeforeLeave
@@ -237,7 +237,7 @@ block content
             br
             | array
           td
-          td Function (or array of functions) that will be executed before <b>every</b> route unload/leave. To proceed navigation <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+          td Function (or array of functions) that will be executed before <b>every</b> route unload/leave. To proceed navigation `resolve` must be called. In case of `array` then every function in array must be resolved to proceed.
             p Same as <a href="routes.html#route-before-enter-leave">route beforeLeave</a> but will work for every route
         tr
           th(colspan="4") Elements Removal
@@ -255,7 +255,7 @@ block content
           td removeElementsTimeout
           td number
           td 0
-          td Timeout to remove elements (in case of <code>removeElementsWithTimeout: true</code>)
+          td Timeout to remove elements (in case of `removeElementsWithTimeout: true`)
         tr
           td unloadTabContent
           td boolean
@@ -425,7 +425,7 @@ block content
                     }
                   })
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>view</code> property to set defaults for all views. For example:
+      p Note that all following parameters can be used in global app parameters under `view` property to set defaults for all views. For example:
       :code(lang="js")
             var app = new Framework7({
               view: {
@@ -437,7 +437,7 @@ block content
     p So to create View we have to call:
     :code(lang="js")
           var view = app.views.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>view</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `view` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -453,7 +453,7 @@ block content
           td Dom7 instance with view HTML element
         tr
           td view.name
-          td View name that was passed <code>name</code> parameter
+          td View name that was passed `name` parameter
         tr
           td view.main
           td Boolean property indicating is it a main view or not
@@ -504,7 +504,7 @@ block content
           td View Element<span>&lt;div class="view"&gt;</span>
           td Event will be triggered on view initialization
     h3 View Instance Events
-    p View instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>view</code>.
+    p View instance emits events on both self instance and app instance. App instance events has same names prefixed with `view`.
     table.events-table
       thead
         tr
@@ -523,7 +523,7 @@ block content
           td viewInit
           td app
     h2 Router API / Methods & Properties
-    p View's main purpose is a navigating/routing between pages. We can access its router instance by <code>view.router</code>. It has a lot of useful methods and properties to take control over routing and navigation:
+    p View's main purpose is a navigating/routing between pages. We can access its router instance by `view.router`. It has a lot of useful methods and properties to take control over routing and navigation:
     table.methods-table
       tbody
         tr
@@ -559,17 +559,17 @@ block content
           td router.currentRoute
           td Object with current route data. It has the following properties
             ul
-              li <code>url</code> - route URL
-              li <code>path</code> - route path
-              li <code>query</code> - object with route query. If the url is <code>/page/?id=5&foo=bar</code> then it will contain the following object <code>{id: '5', foo: 'bar'}</code>
-              li <code>params</code> - route params. If we have matching route with <code>/page/user/:userId/post/:postId/</code> path and url of the page is <code>/page/user/55/post/12/</code> then it will be the following object <code>{userId: '55', postId: '12'}</code>
-              li <code>name</code> - route name
-              li <code>hash</code> - route URL hash
-              li <code>route</code> - object with matching route from available routes
-              li <code>context</code> - context that was passed to the route
+              li `url` - route URL
+              li `path` - route path
+              li `query` - object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{id: '5', foo: 'bar'}`
+              li `params` - route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{userId: '55', postId: '12'}`
+              li `name` - route name
+              li `hash` - route URL hash
+              li `route` - object with matching route from available routes
+              li `context` - context that was passed to the route
         tr
           td router.previousRoute
-          td Object with previously active route data. Same object format as <code>currentRoute</code>
+          td Object with previously active route data. Same object format as `currentRoute`
         tr
           td router.allowPageChange
           td Boolean property indicating is it allowed to change page / navigate or not
@@ -588,15 +588,15 @@ block content
                   li <span class="parameter">clearPreviousHistory</span> (<span class="parameter-type">boolean</span>) - previous pages history will be cleared after reloading/navigate to the specified route
                   li <span class="parameter">animate</span> (<span class="parameter-type">boolean</span>) - whether the page should be animated or not (overwrites default router settings)
                   li <span class="parameter">history</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in router history
-                  li <span class="parameter">pushState</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using <code>pushState</code>, then you can pass here <code>false</code> to prevent route getting in browser history
-                  li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to <code>true</code> then it will ignore if such URL in cache and reload it using XHR again
+                  li <span class="parameter">pushState</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using `pushState`, then you can pass here `false` to prevent route getting in browser history
+                  li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to `true` then it will ignore if such URL in cache and reload it using XHR again
                   li <span class="parameter">context</span> (<span class="parameter-type">object</span>) - additional Router component or Template7 page context
                   li <span class="parameter">props</span> (<span class="parameter-type">object</span>) - props that will be passed as Vue/React page component props
         tr
           td router.navigate(<span>parameters, options</span>)
-          td Navigate to (load) new page by parameters. This method allows to navigate to route by its <code>name</code>.
+          td Navigate to (load) new page by parameters. This method allows to navigate to route by its `name`.
             ul.method-parameters
-              li <span class="parameter">parameters</span> <span class="parameter-type">object</span> - object with route <code>name</code>, <code>query</code>, <code>params</code> to navigate to.
+              li <span class="parameter">parameters</span> <span class="parameter-type">object</span> - object with route `name`, `query`, `params` to navigate to.
               li <span class="parameter">options</span> - <span class="parameter-type">object</span> with additional navigation properties (optional). Same as in previous example.
             p For example, if we have the following route:
             :code(lang="js")
@@ -629,13 +629,13 @@ block content
                 ul
                   li If not specified, then it will go back to the previous page in history.
                   li If specified and there is previous page in history then it will be ignored.
-                  li If specified and there is a <code>force: true</code> option then will remove previous page from DOM and navigate back to the specified page URL
+                  li If specified and there is a `force: true` option then will remove previous page from DOM and navigate back to the specified page URL
               li <span class="parameter">options</span> - <span class="parameter-type">object</span> with additional navigation properties (optional):
                 ul
                   li <span class="parameter">animate</span> (<span class="parameter-type">boolean</span>) - whether the page should be animated or not (overwrites default router settings)
-                  li <span class="parameter">pushState</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using <code>pushState</code>, then you can pass here <code>false</code> to prevent route getting in browser history
-                  li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to <code>true</code> then it will ignore if such URL in cache and reload it using XHR again
-                  li <span class="parameter">force</span> (<span class="parameter-type">boolean</span>) - if set to <code>true</code> then it will ignore previous page in history and load specified one
+                  li <span class="parameter">pushState</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using `pushState`, then you can pass here `false` to prevent route getting in browser history
+                  li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to `true` then it will ignore if such URL in cache and reload it using XHR again
+                  li <span class="parameter">force</span> (<span class="parameter-type">boolean</span>) - if set to `true` then it will ignore previous page in history and load specified one
         tr
           td router.refreshPage()
           td Refresh/reload current page. Actually same as:
@@ -649,10 +649,10 @@ block content
           td Clear router previous pages history and remove all previous pages from DOM
         tr
           td router.clearPreviousPages()
-          td Works mostly like <code>clearPreviousHistory</code> but only removes previous pages from DOM
+          td Works mostly like `clearPreviousHistory` but only removes previous pages from DOM
         tr
           td router.updateCurrentUrl(<span>url</span>)
-          td Updates current route url, and updates #[code router.currentRoute] properties (query, params, hash, etc.) based on passed url. This method doesn't load or reload any content. It just changes current route url.
+          td Updates current route url, and updates `router.currentRoute` properties (query, params, hash, etc.) based on passed url. This method doesn't load or reload any content. It just changes current route url.
         tr
           td router.on(<span>event</span>, <span>handler</span>)
           td Add event handler
@@ -669,7 +669,7 @@ block content
           td router.emit(<span>event</span>, <span>...args</span>)
           td Fire event on instance
     h2 Linking Between Pages & Views
-    p It may be not very comfortable to use router methods all the time to navigate between pages. In many cases we can just use <a href="link.html">links</a> to navigate between pages. And we can pass additional navigation parameters using <code>data-</code> attributes:
+    p It may be not very comfortable to use router methods all the time to navigate between pages. In many cases we can just use <a href="link.html">links</a> to navigate between pages. And we can pass additional navigation parameters using `data-` attributes:
     :code(lang="html")
       <!-- same as router.navigate('/somepage/'); -->
       <a href="/somepage/">Some Page</a>
@@ -685,8 +685,8 @@ block content
     p Links default behavior:
     ul
       li If link is in inside of not initialized view then it will load page in main view
-      li If link is in inside of initialized view then it will load page in this view (if other view is not specified in view's <code>linksView</code> parameter)
-    p But if we need to load page in another view we can specify this view's CSS selector in link's <code>data-view</code> attribute
+      li If link is in inside of initialized view then it will load page in this view (if other view is not specified in view's `linksView` parameter)
+    p But if we need to load page in another view we can specify this view's CSS selector in link's `data-view` attribute
     :code(lang="html")
       <!-- left view -->
       <div class="view view-init view-left" data-name="left">
@@ -702,7 +702,7 @@ block content
         <a href="/another-page/" data-view=".view-left">Another Page</a>
         ...
       </div>
-    p If we need to prevent router from handling specific links, we can add #[code prevent-router] class to such links:
+    p If we need to prevent router from handling specific links, we can add `prevent-router` class to such links:
     :code(lang="html")
       <!-- This link will be ignored by router -->
       <a href="/some-page/" class="prevent-router">Some Page</a>
@@ -759,53 +759,53 @@ block content
         tr
           td routeUrlUpdate
           td <span>(newRoute, router)</span>
-          td Event will be fired when #[code router.updateCurrentUrl] method called
+          td Event will be fired when `router.updateCurrentUrl` method called
         tr
           th(colspan="3") XHR Events
         tr
           td routerAjaxStart
           td <span>(xhr, options)</span>
-          td Event will be fired after router XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc. As an arguments receives XHR object and navigating <code>options</code> object
+          td Event will be fired after router XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc. As an arguments receives XHR object and navigating `options` object
         tr
           td routerAjaxSuccess
           td <span>(xhr, options)</span>
-          td Event will be fired when the request succeeds. As an arguments receives XHR object and navigating <code>options</code> object
+          td Event will be fired when the request succeeds. As an arguments receives XHR object and navigating `options` object
         tr
           td routerAjaxError
           td <span>(xhr, options)</span>
-          td Event will be fired if the request fails. As an arguments receives XHR object and navigating <code>options</code> object
+          td Event will be fired if the request fails. As an arguments receives XHR object and navigating `options` object
         tr
           td routerAjaxComplete
           td <span>(xhr, options)</span>
-          td Event will be fired when the request finishes. As an arguments receives XHR object and navigating <code>options</code> object
+          td Event will be fired when the request finishes. As an arguments receives XHR object and navigating `options` object
         tr
           th(colspan="3") Swipe Back Events
         tr
           td swipebackMove
           td <span>(data)</span>
-          td Event will be triggered during swipe back move. <code>data</code> contains object with the following properties: <code>percentage</code>, <code>currentPageEl</code>, <code>previousPageEl</code>, <code>currentNavbarEl</code>, <code>previousNavbarEl</code>
+          td Event will be triggered during swipe back move. `data` contains object with the following properties: `percentage`, `currentPageEl`, `previousPageEl`, `currentNavbarEl`, `previousNavbarEl`
         tr
           td swipebackBeforeChange
           td <span>(data)</span>
-          td Event will be triggered right before swipe back animation to previous page when you release it. <code>data</code> contains object with the following properties: <code>currentPageEl</code>, <code>previousPageEl</code>, <code>currentNavbarEl</code>, <code>previousNavbarEl</code>
+          td Event will be triggered right before swipe back animation to previous page when you release it. `data` contains object with the following properties: `currentPageEl`, `previousPageEl`, `currentNavbarEl`, `previousNavbarEl`
         tr
           td swipebackAfterChange
           td <span>(data)</span>
-          td Event will be triggered after swipe back animation to previous page when you release it. <code>data</code> contains object with the following properties: <code>currentPageEl</code>, <code>previousPageEl</code>, <code>currentNavbarEl</code>, <code>previousNavbarEl</code>
+          td Event will be triggered after swipe back animation to previous page when you release it. `data` contains object with the following properties: `currentPageEl`, `previousPageEl`, `currentNavbarEl`, `previousNavbarEl`
         tr
           td swipebackBeforeReset
           td <span>(data)</span>
-          td Event will be triggered right before swipe back animation to current page when you release it. <code>data</code> contains object with the following properties: <code>currentPageEl</code>, <code>previousPageEl</code>, <code>currentNavbarEl</code>, <code>previousNavbarEl</code>
+          td Event will be triggered right before swipe back animation to current page when you release it. `data` contains object with the following properties: `currentPageEl`, `previousPageEl`, `currentNavbarEl`, `previousNavbarEl`
         tr
           td swipebackAfterReset
           td <span>(data)</span>
-          td Event will be triggered after swipe back animation to current page when you release it. <code>data</code> contains object with the following properties: <code>currentPageEl</code>, <code>previousPageEl</code>, <code>currentNavbarEl</code>, <code>previousNavbarEl</code>
+          td Event will be triggered after swipe back animation to current page when you release it. `data` contains object with the following properties: `currentPageEl`, `previousPageEl`, `currentNavbarEl`, `previousNavbarEl`
         tr
           th(colspan="3") Page Events
         tr
           td pageMounted
           td <span>(pageData)</span>
-          td Event will be triggered when new page just inserted to DOM. Or when page with <code>keepAlive</code> route is mounted/attached to DOM. As an argument event receives <a href="page.html#page-data">Page Data</a>
+          td Event will be triggered when new page just inserted to DOM. Or when page with `keepAlive` route is mounted/attached to DOM. As an argument event receives <a href="page.html#page-data">Page Data</a>
         tr
           td pageInit
           td <span>(pageData)</span>
@@ -833,11 +833,11 @@ block content
         tr
           td pageBeforeUnmount
           td <span>(pageData)</span>
-          td Event will be triggered when page with <code>keepAlive</code> route is going to be unmounted/detached from DOM. As an argument event receives <a href="page.html#page-data">Page Data</a>
+          td Event will be triggered when page with `keepAlive` route is going to be unmounted/detached from DOM. As an argument event receives <a href="page.html#page-data">Page Data</a>
         tr
           td pageBeforeRemove
           td <span>(pageData)</span>
-          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. As an argument event receives <a href="page.html#page-data">Page Data</a>. This event won't be triggered for <code>keepAlive</code> routes.
+          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. As an argument event receives <a href="page.html#page-data">Page Data</a>. This event won't be triggered for `keepAlive` routes.
         tr
           th(colspan="3") Routable Tabs Events
         tr
@@ -845,16 +845,16 @@ block content
           td <span>(newTabEl, tabRoute)</span>
           td Event will be triggered right after routable Tab content will be loaded. As an argument event handler receives:
             ul
-              li <code>newTabEl</code> - tab HTML element where route content was just loaded (new tab)
-              li <code>tabRoute</code> - new tab route
+              li `newTabEl` - tab HTML element where route content was just loaded (new tab)
+              li `tabRoute` - new tab route
         tr
           td tabBeforeRemove
           td <span>(oldTabEl, newTabEl, tabRoute)</span>
           td Event will be triggered right after routable Tab content will be loaded. As an argument event handler receives:
             ul
-              li <code>oldTabEl</code> - tab HTML element where route content was just removed (old tab)
-              li <code>newTabEl</code> - tab HTML element where route content was just loaded (new tab)
-              li <code>tabRoute</code> - new tab route
+              li `oldTabEl` - tab HTML element where route content was just removed (old tab)
+              li `newTabEl` - tab HTML element where route content was just loaded (new tab)
+              li `tabRoute` - new tab route
         tr
           th(colspan="3") Routable Modals Events
         tr
@@ -862,27 +862,27 @@ block content
           td <span>(modalEl, modalRoute, modal)</span>
           td Event will be triggered right after routable modal content will be loaded and added to DOM. As an argument event handler receives:
             ul
-              li <code>modalEl</code> - loaded modal HTML element
-              li <code>modalRoute</code> - modal route
-              li <code>modal</code> - created modal instance
+              li `modalEl` - loaded modal HTML element
+              li `modalRoute` - modal route
+              li `modal` - created modal instance
         tr
           td modalBeforeRemove
           td <span>(modalEl, modalRoute, modal)</span>
           td Event will be triggered right before routable modal will be removed from DOM and destroyed. As an argument event handler receives:
             ul
-              li <code>modalEl</code> - modal HTML element
-              li <code>modalRoute</code> - modal route
-              li <code>modal</code> - modal instance
+              li `modalEl` - modal HTML element
+              li `modalRoute` - modal route
+              li `modal` - modal instance
     h2 View Auto Initialization
-    p If you don't need to use View API and your View is inside of DOM on a moment of app initialization then it can be auto initialized with just adding additional <code>view-init</code> class:
+    p If you don't need to use View API and your View is inside of DOM on a moment of app initialization then it can be auto initialized with just adding additional `view-init` class:
     :code(lang="html")
           <!-- Add view-init class -->
           <div class="view view-init">
             ...
           </div>
-    p But what about View parameters. In this case we may pass them in <code>data-</code> attributes.
+    p But what about View parameters. In this case we may pass them in `data-` attributes.
     .important-note
-      p Parameters that used in camelCase, for example <code>pushState</code>, in data- attributes should be used as kebab-case as <b>data-push-state</b>
+      p Parameters that used in camelCase, for example `pushState`, in data- attributes should be used as kebab-case as <b>data-push-state</b>
     :code(lang="html")
           &lt;!-- view parameters in data- attributes --&gt;
           &lt;div class="view view-init" data-url="/" data-name="home" data-push-state="true"&gt;
@@ -890,8 +890,8 @@ block content
           &lt;/div&gt;
     p In this case if you need to access created View instance you can use:
     ul
-      li In case if it is main view, we may use <code>app.views.main</code> to get main view instance
-      li Otherwise, we can access it by passed <code>name</code> parameter like <code>app.views.home</code>
+      li In case if it is main view, we may use `app.views.main` to get main view instance
+      li Otherwise, we can access it by passed `name` parameter like `app.views.home`
     :code(lang="html")
           <!-- main view -->
           <div class="view view-main view-init">
@@ -937,12 +937,12 @@ block content
     p When collapsed (on narrow screen) navigation between such pages will behave as usual routing.
     .important-note
       p Navigation to/from Master-Detail view happens without transition.
-      p When Master page is loaded all other pages will be loaded as Detail pages. To "navigate away" from Master Detail view it is recommended to use #[code reloadAll] navigation parameter.
+      p When Master page is loaded all other pages will be loaded as Detail pages. To "navigate away" from Master Detail view it is recommended to use `reloadAll` navigation parameter.
     p To enable Master Detail:
     ul
-      li you need to specify #[code masterDetailBreakpoint] View's parameter
-      li set <a href="routes.html#route-properties">#[code master: true] property</a> on Master route
-      li in addition we can put all detail routes in <a href="routes.html#detail-routes">#[code detailRoutes] property</a> of master route
+      li you need to specify `masterDetailBreakpoint` View's parameter
+      li set <a href="routes.html#route-properties">`master: true` property</a> on Master route
+      li in addition we can put all detail routes in <a href="routes.html#detail-routes">`detailRoutes` property</a> of master route
     p For example:
     :code(lang="js")
       const mainView = app.views.create('.view-main', {
