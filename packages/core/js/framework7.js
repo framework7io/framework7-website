@@ -1,5 +1,5 @@
 /**
- * Framework7 4.5.0
+ * Framework7 5.0.0-beta.16
  * Full featured mobile HTML framework for building iOS & Android apps
  * http://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: August 21, 2019
+ * Released on: September 19, 2019
  */
 
 (function (global, factory) {
@@ -2326,113 +2326,6 @@
     });
   });
 
-  /**
-   * https://github.com/gre/bezier-easing
-   * BezierEasing - use bezier curve for transition easing function
-   * by Gaëtan Renaudeau 2014 - 2015 – MIT License
-   */
-
-  /* eslint-disable */
-
-  // These values are established by empiricism with tests (tradeoff: performance VS precision)
-  var NEWTON_ITERATIONS = 4;
-  var NEWTON_MIN_SLOPE = 0.001;
-  var SUBDIVISION_PRECISION = 0.0000001;
-  var SUBDIVISION_MAX_ITERATIONS = 10;
-
-  var kSplineTableSize = 11;
-  var kSampleStepSize = 1.0 / (kSplineTableSize - 1.0);
-
-  var float32ArraySupported = typeof Float32Array === 'function';
-
-  function A (aA1, aA2) { return 1.0 - 3.0 * aA2 + 3.0 * aA1; }
-  function B (aA1, aA2) { return 3.0 * aA2 - 6.0 * aA1; }
-  function C (aA1)      { return 3.0 * aA1; }
-
-  // Returns x(t) given t, x1, and x2, or y(t) given t, y1, and y2.
-  function calcBezier (aT, aA1, aA2) { return ((A(aA1, aA2) * aT + B(aA1, aA2)) * aT + C(aA1)) * aT; }
-
-  // Returns dx/dt given t, x1, and x2, or dy/dt given t, y1, and y2.
-  function getSlope (aT, aA1, aA2) { return 3.0 * A(aA1, aA2) * aT * aT + 2.0 * B(aA1, aA2) * aT + C(aA1); }
-
-  function binarySubdivide (aX, aA, aB, mX1, mX2) {
-    var currentX, currentT, i = 0;
-    do {
-      currentT = aA + (aB - aA) / 2.0;
-      currentX = calcBezier(currentT, mX1, mX2) - aX;
-      if (currentX > 0.0) {
-        aB = currentT;
-      } else {
-        aA = currentT;
-      }
-    } while (Math.abs(currentX) > SUBDIVISION_PRECISION && ++i < SUBDIVISION_MAX_ITERATIONS);
-    return currentT;
-  }
-
-  function newtonRaphsonIterate (aX, aGuessT, mX1, mX2) {
-   for (var i = 0; i < NEWTON_ITERATIONS; ++i) {
-     var currentSlope = getSlope(aGuessT, mX1, mX2);
-     if (currentSlope === 0.0) {
-       return aGuessT;
-     }
-     var currentX = calcBezier(aGuessT, mX1, mX2) - aX;
-     aGuessT -= currentX / currentSlope;
-   }
-   return aGuessT;
-  }
-
-  function bezier (mX1, mY1, mX2, mY2) {
-    if (!(0 <= mX1 && mX1 <= 1 && 0 <= mX2 && mX2 <= 1)) {
-      throw new Error('bezier x values must be in [0, 1] range');
-    }
-
-    // Precompute samples table
-    var sampleValues = float32ArraySupported ? new Float32Array(kSplineTableSize) : new Array(kSplineTableSize);
-    if (mX1 !== mY1 || mX2 !== mY2) {
-      for (var i = 0; i < kSplineTableSize; ++i) {
-        sampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2);
-      }
-    }
-
-    function getTForX (aX) {
-      var intervalStart = 0.0;
-      var currentSample = 1;
-      var lastSample = kSplineTableSize - 1;
-
-      for (; currentSample !== lastSample && sampleValues[currentSample] <= aX; ++currentSample) {
-        intervalStart += kSampleStepSize;
-      }
-      --currentSample;
-
-      // Interpolate to provide an initial guess for t
-      var dist = (aX - sampleValues[currentSample]) / (sampleValues[currentSample + 1] - sampleValues[currentSample]);
-      var guessForT = intervalStart + dist * kSampleStepSize;
-
-      var initialSlope = getSlope(guessForT, mX1, mX2);
-      if (initialSlope >= NEWTON_MIN_SLOPE) {
-        return newtonRaphsonIterate(aX, guessForT, mX1, mX2);
-      } else if (initialSlope === 0.0) {
-        return guessForT;
-      } else {
-        return binarySubdivide(aX, intervalStart, intervalStart + kSampleStepSize, mX1, mX2);
-      }
-    }
-
-    return function BezierEasing (x) {
-      if (mX1 === mY1 && mX2 === mY2) {
-        return x; // linear
-      }
-      // Because JavaScript number are imprecise, we should guarantee the extremes are right.
-      if (x === 0) {
-        return 0;
-      }
-      if (x === 1) {
-        return 1;
-      }
-      return calcBezier(getTForX(x), mY1, mY2);
-    };
-  }
-
   /* eslint no-control-regex: "off" */
 
   // Remove Diacritics
@@ -2573,12 +2466,6 @@
           // something got wrong
         }
       });
-    },
-    bezier: function bezier$1() {
-      var args = [], len = arguments.length;
-      while ( len-- ) args[ len ] = arguments[ len ];
-
-      return bezier.apply(void 0, args);
     },
     nextTick: function nextTick(callback, delay) {
       if ( delay === void 0 ) delay = 0;
@@ -2882,8 +2769,6 @@
   };
 
   var Support = (function Support() {
-    var testDiv = doc.createElement('div');
-
     return {
       touch: (function checkTouch() {
         return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
@@ -2891,24 +2776,6 @@
 
       pointerEvents: !!(win.navigator.pointerEnabled || win.PointerEvent || ('maxTouchPoints' in win.navigator && win.navigator.maxTouchPoints > 0)),
       prefixedPointerEvents: !!win.navigator.msPointerEnabled,
-
-      transition: (function checkTransition() {
-        var style = testDiv.style;
-        return ('transition' in style || 'webkitTransition' in style || 'MozTransition' in style);
-      }()),
-      transforms3d: (win.Modernizr && win.Modernizr.csstransforms3d === true) || (function checkTransforms3d() {
-        var style = testDiv.style;
-        return ('webkitPerspective' in style || 'MozPerspective' in style || 'OPerspective' in style || 'MsPerspective' in style || 'perspective' in style);
-      }()),
-
-      flexbox: (function checkFlexbox() {
-        var div = doc.createElement('div').style;
-        var styles = ('alignItems webkitAlignItems webkitBoxAlign msFlexAlign mozBoxAlign webkitFlexDirection msFlexDirection mozBoxDirection mozBoxOrient webkitBoxDirection webkitBoxOrient').split(' ');
-        for (var i = 0; i < styles.length; i += 1) {
-          if (styles[i] in div) { return true; }
-        }
-        return false;
-      }()),
 
       observer: (function checkObserver() {
         return ('MutationObserver' in win || 'WebkitMutationObserver' in win);
@@ -2949,9 +2816,7 @@
       android: false,
       androidChrome: false,
       desktop: false,
-      windowsPhone: false,
       iphone: false,
-      iphoneX: false,
       ipod: false,
       ipad: false,
       edge: false,
@@ -2972,10 +2837,6 @@
     var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
     var ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/);
     var iphone = !ipad && ua.match(/(iPhone\sOS|iOS)\s([\d_]+)/);
-    var iphoneX = iphone && (
-      (screenWidth === 375 && screenHeight === 812) // X/XS
-      || (screenWidth === 414 && screenHeight === 896) // XR / XS Max
-    );
     var ie = ua.indexOf('MSIE ') >= 0 || ua.indexOf('Trident/') >= 0;
     var edge = ua.indexOf('Edge/') >= 0;
     var firefox = ua.indexOf('Gecko/') >= 0 && ua.indexOf('Firefox/') >= 0;
@@ -3002,12 +2863,6 @@
     device.edge = edge;
     device.firefox = firefox;
 
-    // Windows
-    if (windowsPhone) {
-      device.os = 'windowsPhone';
-      device.osVersion = windowsPhone[2];
-      device.windowsPhone = true;
-    }
     // Android
     if (android && !windows) {
       device.os = 'android';
@@ -3023,7 +2878,6 @@
     if (iphone && !ipod) {
       device.osVersion = iphone[2].replace(/_/g, '.');
       device.iphone = true;
-      device.iphoneX = iphoneX;
     }
     if (ipad) {
       device.osVersion = ipad[2].replace(/_/g, '.');
@@ -3047,7 +2901,7 @@
     device.standalone = device.webView;
 
     // Desktop
-    device.desktop = !(device.ios || device.android || device.windowsPhone) || electron;
+    device.desktop = !(device.ios || device.android || windowsPhone) || electron;
     if (device.desktop) {
       device.electron = electron;
       device.macos = macos;
@@ -3059,25 +2913,6 @@
         device.os = 'windows';
       }
     }
-
-    // Meta statusbar
-    var metaStatusbar = doc.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-
-    // Check for status bar and fullscreen app mode
-    device.needsStatusbarOverlay = function needsStatusbarOverlay() {
-      if (device.desktop) { return false; }
-      if (device.standalone && device.ios && metaStatusbar && metaStatusbar.content === 'black-translucent') {
-        return true;
-      }
-      if ((device.webView || (device.android && device.cordova)) && (win.innerWidth * win.innerHeight === win.screen.width * win.screen.height)) {
-        if (device.iphoneX && (win.orientation === 90 || win.orientation === -90)) {
-          return false;
-        }
-        return true;
-      }
-      return false;
-    };
-    device.statusbar = device.needsStatusbarOverlay();
 
     // Pixel Ratio
     device.pixelRatio = win.devicePixelRatio || 1;
@@ -3599,6 +3434,8 @@
         initOnDeviceReady: true,
         init: true,
         autoDarkTheme: false,
+        iosTranslucentBars: true,
+        iosTranslucentModals: true,
       };
 
       // Extend defaults with modules params
@@ -3635,6 +3472,7 @@
         }()),
         // Initially passed parameters
         passedParams: passedParams,
+        online: win.navigator.onLine,
       });
 
       // Save Root
@@ -3752,11 +3590,31 @@
         app.enableAutoDarkTheme();
       }
 
+      // Watch for online/offline state
+      win.addEventListener('offline', function () {
+        app.online = false;
+        app.emit('offline');
+        app.emit('connection', false);
+      });
+      win.addEventListener('online', function () {
+        app.online = true;
+        app.emit('online');
+        app.emit('connection', true);
+      });
+
       // Root class
       app.root.addClass('framework7-root');
 
       // Theme class
-      $('html').removeClass('ios md').addClass(app.theme);
+      $('html').removeClass('ios md aurora').addClass(app.theme);
+
+      // iOS Translucent
+      if (app.params.iosTranslucentBars && app.theme === 'ios' && Device.ios) {
+        $('html').addClass('ios-translucent-bars');
+      }
+      if (app.params.iosTranslucentModals && app.theme === 'ios' && Device.ios) {
+        $('html').addClass('ios-translucent-modals');
+      }
 
       // Init class
       Utils.nextFrame(function () {
@@ -3860,19 +3718,8 @@
         // OS classes
         if (Device.os && !Device.desktop) {
           classNames.push(
-            ("device-" + (Device.os)),
-            ("device-" + (Device.os) + "-" + (Device.osVersion.split('.')[0])),
-            ("device-" + (Device.os) + "-" + (Device.osVersion.replace(/\./g, '-')))
+            ("device-" + (Device.os))
           );
-          if (Device.os === 'ios') {
-            var major = parseInt(Device.osVersion.split('.')[0], 10);
-            for (var i = major - 1; i >= 6; i -= 1) {
-              classNames.push(("device-ios-gt-" + i));
-            }
-            if (Device.iphoneX) {
-              classNames.push('device-iphone-x');
-            }
-          }
         } else if (Device.desktop) {
           classNames.push('device-desktop');
           if (Device.os) {
@@ -3898,17 +3745,6 @@
     },
     static: {
       support: Support,
-    },
-    on: {
-      init: function init() {
-        var html = doc.querySelector('html');
-        if (!html) { return; }
-        var classNames = [];
-        // Add html classes
-        classNames.forEach(function (className) {
-          html.classList.add(className);
-        });
-      },
     },
   };
 
@@ -4013,7 +3849,7 @@
         beforeCreate (options),
         beforeOpen (xhr, options),
         beforeSend (xhr, options),
-        error (xhr, status),
+        error (xhr, status, message),
         complete (xhr, stautus),
         success (response, status, xhr),
         statusCode ()
@@ -4077,7 +3913,7 @@
       script.type = 'text/javascript';
       script.onerror = function onerror() {
         clearTimeout(abortTimeout);
-        fireCallback('error', null, 'scripterror');
+        fireCallback('error', null, 'scripterror', 'scripterror');
         fireCallback('complete', null, 'scripterror');
       };
       script.src = requestUrl;
@@ -4096,7 +3932,7 @@
         abortTimeout = setTimeout(function () {
           script.parentNode.removeChild(script);
           script = null;
-          fireCallback('error', null, 'timeout');
+          fireCallback('error', null, 'timeout', 'timeout');
         }, options.timeout);
       }
 
@@ -4204,14 +4040,14 @@
           if (!parseError) {
             fireCallback('success', responseData, xhr.status, xhr);
           } else {
-            fireCallback('error', xhr, 'parseerror');
+            fireCallback('error', xhr, 'parseerror', 'parseerror');
           }
         } else {
           responseData = xhr.responseType === 'text' || xhr.responseType === '' ? xhr.responseText : xhr.response;
           fireCallback('success', responseData, xhr.status, xhr);
         }
       } else {
-        fireCallback('error', xhr, xhr.status);
+        fireCallback('error', xhr, xhr.status, xhr.statusText);
       }
       if (options.statusCode) {
         if (globals.statusCode && globals.statusCode[xhr.status]) { globals.statusCode[xhr.status](xhr); }
@@ -4222,7 +4058,7 @@
 
     xhr.onerror = function onerror() {
       if (xhrTimeout) { clearTimeout(xhrTimeout); }
-      fireCallback('error', xhr, xhr.status);
+      fireCallback('error', xhr, xhr.status, xhr.status);
       fireCallback('complete', xhr, 'error');
     };
 
@@ -4233,7 +4069,7 @@
       };
       xhrTimeout = setTimeout(function () {
         xhr.abort();
-        fireCallback('error', xhr, 'timeout');
+        fireCallback('error', xhr, 'timeout', 'timeout');
         fireCallback('complete', xhr, 'timeout');
       }, options.timeout);
     }
@@ -4302,11 +4138,12 @@
         method,
         url,
         data,
-        function (response) {
-          resolve(response);
+        function (responseData, status, xhr) {
+          resolve({ data: responseData, status: status, xhr: xhr });
         },
-        function (xhr, status) {
-          reject(status);
+        function (xhr, status, message) {
+          // eslint-disable-next-line
+          reject({ xhr: xhr, status: status, message: message });
         },
         dataType
       );
@@ -4348,11 +4185,12 @@
   Request.promise = function requestPromise(requestOptions) {
     return new Promise(function (resolve, reject) {
       Request(Object.assign(requestOptions, {
-        success: function success(data) {
-          resolve(data);
+        success: function success(data, status, xhr) {
+          resolve({ data: data, status: status, xhr: xhr });
         },
-        error: function error(xhr, status) {
-          reject(status);
+        error: function error(xhr, status, message) {
+          // eslint-disable-next-line
+          reject({ xhr: xhr, status: status, message: message });
         },
       }));
     });
@@ -4421,12 +4259,7 @@
 
     var touchStartX;
     var touchStartY;
-    var touchStartTime;
     var targetElement;
-    var trackClick;
-    var activeSelection;
-    var scrollParent;
-    var lastClickTime;
     var isMoved;
     var tapHoldFired;
     var tapHoldTimeout;
@@ -4435,9 +4268,6 @@
     var activableElement;
     var activeTimeout;
 
-    var needsFastClick;
-    var needsFastClickTimeOut;
-
     var rippleWave;
     var rippleTarget;
     var rippleTimeout;
@@ -4445,6 +4275,9 @@
     function findActivableElement(el) {
       var target = $(el);
       var parents = target.parents(params.activeStateElements);
+      if (target.closest('.no-active-state').length) {
+        return null;
+      }
       var activable;
       if (target.is(params.activeStateElements)) {
         activable = target;
@@ -4470,28 +4303,11 @@
       return activable || target;
     }
 
-    function isInsideScrollableViewLight(el) {
+    function isInsideScrollableView(el) {
       var pageContent = el.parents('.page-content');
       return pageContent.length > 0;
     }
-    function isInsideScrollableView(el) {
-      var pageContent = el.parents('.page-content');
 
-      if (pageContent.length === 0) {
-        return false;
-      }
-
-      // This event handler covers the "tap to stop scrolling".
-      if (pageContent.prop('scrollHandlerSet') !== 'yes') {
-        pageContent.on('scroll', function () {
-          clearTimeout(activeTimeout);
-          clearTimeout(rippleTimeout);
-        });
-        pageContent.prop('scrollHandlerSet', 'yes');
-      }
-
-      return true;
-    }
     function addActive() {
       if (!activableElement) { return; }
       activableElement.addClass('active-state');
@@ -4500,70 +4316,6 @@
       if (!activableElement) { return; }
       activableElement.removeClass('active-state');
       activableElement = null;
-    }
-    function isFormElement(el) {
-      var nodes = ('input select textarea label').split(' ');
-      if (el.nodeName && nodes.indexOf(el.nodeName.toLowerCase()) >= 0) { return true; }
-      return false;
-    }
-    function androidNeedsBlur(el) {
-      var noBlur = ('button input textarea select').split(' ');
-      if (doc.activeElement && el !== doc.activeElement && doc.activeElement !== doc.body) {
-        if (noBlur.indexOf(el.nodeName.toLowerCase()) >= 0) {
-          return false;
-        }
-        return true;
-      }
-      return false;
-    }
-    function targetNeedsFastClick(el) {
-      /*
-      if (
-        Device.ios
-        &&
-        (
-          Device.osVersion.split('.')[0] > 9
-          ||
-          (Device.osVersion.split('.')[0] * 1 === 9 && Device.osVersion.split('.')[1] >= 1)
-        )
-      ) {
-        return false;
-      }
-      */
-      var $el = $(el);
-      if (el.nodeName.toLowerCase() === 'input' && (el.type === 'file' || el.type === 'range')) { return false; }
-      if (el.nodeName.toLowerCase() === 'select' && Device.android) { return false; }
-      if ($el.hasClass('no-fastclick') || $el.parents('.no-fastclick').length > 0) { return false; }
-      if (params.fastClicksExclude && $el.closest(params.fastClicksExclude).length > 0) { return false; }
-
-      return true;
-    }
-    function targetNeedsFocus(el) {
-      if (doc.activeElement === el) {
-        return false;
-      }
-      var tag = el.nodeName.toLowerCase();
-      var skipInputs = ('button checkbox file image radio submit').split(' ');
-      if (el.disabled || el.readOnly) { return false; }
-      if (tag === 'textarea') { return true; }
-      if (tag === 'select') {
-        if (Device.android) { return false; }
-        return true;
-      }
-      if (tag === 'input' && skipInputs.indexOf(el.type) < 0) { return true; }
-      return false;
-    }
-    function targetNeedsPrevent(el) {
-      var $el = $(el);
-      var prevent = true;
-      if ($el.is('label') || $el.parents('label').length > 0) {
-        if (Device.android) {
-          prevent = false;
-        } else if (Device.ios && $el.is('input')) {
-          prevent = true;
-        } else { prevent = false; }
-      }
-      return prevent;
     }
 
     // Ripple handlers
@@ -4602,9 +4354,7 @@
         rippleTarget = undefined;
         return;
       }
-      var inScrollable = params.fastClicks
-        ? isInsideScrollableView(rippleTarget)
-        : isInsideScrollableViewLight(rippleTarget);
+      var inScrollable = isInsideScrollableView(rippleTarget);
 
       if (!inScrollable) {
         removeRipple();
@@ -4633,12 +4383,16 @@
 
     // Mouse Handlers
     function handleMouseDown(e) {
-      findActivableElement(e.target).addClass('active-state');
-      if ('which' in e && e.which === 3) {
-        setTimeout(function () {
-          $('.active-state').removeClass('active-state');
-        }, 0);
+      var $activableEl = findActivableElement(e.target);
+      if ($activableEl) {
+        $activableEl.addClass('active-state');
+        if ('which' in e && e.which === 3) {
+          setTimeout(function () {
+            $('.active-state').removeClass('active-state');
+          }, 0);
+        }
       }
+
       if (useRipple) {
         touchStartX = e.pageX;
         touchStartY = e.pageY;
@@ -4658,223 +4412,7 @@
       }
     }
 
-    // Send Click
-    function sendClick(e) {
-      var touch = e.changedTouches[0];
-      var evt = doc.createEvent('MouseEvents');
-      var eventType = 'click';
-      if (Device.android && targetElement.nodeName.toLowerCase() === 'select') {
-        eventType = 'mousedown';
-      }
-      evt.initMouseEvent(eventType, true, true, win, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY, false, false, false, false, 0, null);
-      evt.forwardedTouchEvent = true;
-
-      if (app.device.ios && win.navigator.standalone) {
-        // Fix the issue happens in iOS home screen apps where the wrong element is selected during a momentum scroll.
-        // Upon tapping, we give the scrolling time to stop, then we grab the element based where the user tapped.
-        setTimeout(function () {
-          targetElement = doc.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-          if (targetElement) {
-            targetElement.dispatchEvent(evt);
-          }
-        }, 10);
-      } else {
-        targetElement.dispatchEvent(evt);
-      }
-    }
-
-    // Touch Handlers
-    function handleTouchStart(e) {
-      var this$1 = this;
-
-      isMoved = false;
-      tapHoldFired = false;
-      if (e.targetTouches.length > 1) {
-        if (activableElement) { removeActive(); }
-        return true;
-      }
-      if (e.touches.length > 1 && activableElement) {
-        removeActive();
-      }
-      if (params.tapHold) {
-        if (tapHoldTimeout) { clearTimeout(tapHoldTimeout); }
-        tapHoldTimeout = setTimeout(function () {
-          if (e && e.touches && e.touches.length > 1) { return; }
-          tapHoldFired = true;
-          e.preventDefault();
-          $(e.target).trigger('taphold');
-        }, params.tapHoldDelay);
-      }
-      if (needsFastClickTimeOut) { clearTimeout(needsFastClickTimeOut); }
-      needsFastClick = targetNeedsFastClick(e.target);
-
-      if (!needsFastClick) {
-        trackClick = false;
-        return true;
-      }
-      if (Device.ios || (Device.android && 'getSelection' in win)) {
-        var selection = win.getSelection();
-        if (
-          selection.rangeCount
-          && selection.focusNode !== doc.body
-          && (!selection.isCollapsed || doc.activeElement === selection.focusNode)
-        ) {
-          activeSelection = true;
-          return true;
-        }
-
-        activeSelection = false;
-      }
-      if (Device.android) {
-        if (androidNeedsBlur(e.target)) {
-          doc.activeElement.blur();
-        }
-      }
-
-      trackClick = true;
-      targetElement = e.target;
-      touchStartTime = (new Date()).getTime();
-      touchStartX = e.targetTouches[0].pageX;
-      touchStartY = e.targetTouches[0].pageY;
-
-      // Detect scroll parent
-      if (Device.ios) {
-        scrollParent = undefined;
-        $(targetElement).parents().each(function () {
-          var parent = this$1;
-          if (parent.scrollHeight > parent.offsetHeight && !scrollParent) {
-            scrollParent = parent;
-            scrollParent.f7ScrollTop = scrollParent.scrollTop;
-          }
-        });
-      }
-      if ((touchStartTime - lastClickTime) < params.fastClicksDelayBetweenClicks) {
-        e.preventDefault();
-      }
-
-      if (params.activeState) {
-        activableElement = findActivableElement(targetElement);
-        activeTimeout = setTimeout(addActive, 0);
-      }
-      if (useRipple) {
-        rippleTouchStart(targetElement);
-      }
-      return true;
-    }
-    function handleTouchMove(e) {
-      if (!trackClick) { return; }
-      var distance = params.fastClicksDistanceThreshold;
-      if (distance) {
-        var pageX = e.targetTouches[0].pageX;
-        var pageY = e.targetTouches[0].pageY;
-        if (Math.abs(pageX - touchStartX) > distance || Math.abs(pageY - touchStartY) > distance) {
-          isMoved = true;
-        }
-      } else {
-        isMoved = true;
-      }
-      if (isMoved) {
-        trackClick = false;
-        targetElement = null;
-        isMoved = true;
-        if (params.tapHold) {
-          clearTimeout(tapHoldTimeout);
-        }
-        if (params.activeState) {
-          clearTimeout(activeTimeout);
-          removeActive();
-        }
-        if (useRipple) {
-          rippleTouchMove();
-        }
-      }
-    }
-    function handleTouchEnd(e) {
-      clearTimeout(activeTimeout);
-      clearTimeout(tapHoldTimeout);
-
-      var touchEndTime = (new Date()).getTime();
-
-      if (!trackClick) {
-        if (!activeSelection && needsFastClick) {
-          if (!(Device.android && !e.cancelable) && e.cancelable) {
-            e.preventDefault();
-          }
-        }
-        if (params.activeState) { removeActive(); }
-        if (useRipple) {
-          rippleTouchEnd();
-        }
-        return true;
-      }
-
-      if (doc.activeElement === e.target) {
-        if (params.activeState) { removeActive(); }
-        if (useRipple) {
-          rippleTouchEnd();
-        }
-        return true;
-      }
-
-      if (!activeSelection) {
-        e.preventDefault();
-      }
-
-      if ((touchEndTime - lastClickTime) < params.fastClicksDelayBetweenClicks) {
-        setTimeout(removeActive, 0);
-        if (useRipple) {
-          rippleTouchEnd();
-        }
-        return true;
-      }
-
-      lastClickTime = touchEndTime;
-
-      trackClick = false;
-
-      if (Device.ios && scrollParent) {
-        if (scrollParent.scrollTop !== scrollParent.f7ScrollTop) {
-          return false;
-        }
-      }
-
-      // Add active-state here because, in a very fast tap, the timeout didn't
-      // have the chance to execute. Removing active-state in a timeout gives
-      // the chance to the animation execute.
-      if (params.activeState) {
-        addActive();
-        setTimeout(removeActive, 0);
-      }
-      // Remove Ripple
-      if (useRipple) {
-        rippleTouchEnd();
-      }
-
-      // Trigger focus when required
-      if (targetNeedsFocus(targetElement)) {
-        if (Device.ios && Device.webView) {
-          targetElement.focus();
-          return false;
-        }
-
-        targetElement.focus();
-      }
-
-      // Blur active elements
-      if (doc.activeElement && targetElement !== doc.activeElement && doc.activeElement !== doc.body && targetElement.nodeName.toLowerCase() !== 'label') {
-        doc.activeElement.blur();
-      }
-
-      // Send click
-      e.preventDefault();
-      if (params.tapHoldPreventClicks && tapHoldFired) {
-        return false;
-      }
-      sendClick(e);
-      return false;
-    }
     function handleTouchCancel() {
-      trackClick = false;
       targetElement = null;
 
       // Remove Active State
@@ -4890,62 +4428,7 @@
       }
     }
 
-    function handleClick(e) {
-      var allowClick = false;
-      if (trackClick) {
-        targetElement = null;
-        trackClick = false;
-        return true;
-      }
-      if ((e.target.type === 'submit' && e.detail === 0) || e.target.type === 'file') {
-        return true;
-      }
-      if (!targetElement) {
-        if (!isFormElement(e.target)) {
-          allowClick = true;
-        }
-      }
-      if (!needsFastClick) {
-        allowClick = true;
-      }
-      if (doc.activeElement === targetElement) {
-        allowClick = true;
-      }
-      if (e.forwardedTouchEvent) {
-        allowClick = true;
-      }
-      if (!e.cancelable) {
-        allowClick = true;
-      }
-      if (params.tapHold && params.tapHoldPreventClicks && tapHoldFired) {
-        allowClick = false;
-      }
-      if (!allowClick) {
-        e.stopImmediatePropagation();
-        e.stopPropagation();
-        if (targetElement) {
-          if (targetNeedsPrevent(targetElement) || isMoved) {
-            e.preventDefault();
-          }
-        } else {
-          e.preventDefault();
-        }
-        targetElement = null;
-      }
-      needsFastClickTimeOut = setTimeout(function () {
-        needsFastClick = false;
-      }, (Device.ios || Device.androidChrome ? 100 : 400));
-
-      if (params.tapHold) {
-        tapHoldTimeout = setTimeout(function () {
-          tapHoldFired = false;
-        }, (Device.ios || Device.androidChrome ? 100 : 400));
-      }
-
-      return allowClick;
-    }
-
-    function handleTouchStartLight(e) {
+    function handleTouchStart(e) {
       isMoved = false;
       tapHoldFired = false;
       preventClick = false;
@@ -4972,9 +4455,9 @@
 
       if (params.activeState) {
         activableElement = findActivableElement(targetElement);
-        if (!isInsideScrollableViewLight(activableElement)) {
+        if (activableElement && !isInsideScrollableView(activableElement)) {
           addActive();
-        } else {
+        } else if (activableElement) {
           activeTimeout = setTimeout(addActive, 80);
         }
       }
@@ -4983,17 +4466,12 @@
       }
       return true;
     }
-    function handleTouchMoveLight(e) {
+    function handleTouchMove(e) {
       var touch;
       var distance;
       if (e.type === 'touchmove') {
         touch = e.targetTouches[0];
         distance = params.touchClicksDistanceThreshold;
-        // if (touch && touch.touchType === 'stylus') {
-        //   distance = 5;
-        // } else {
-        //   distance = 3;
-        // }
       }
 
       if (distance && touch) {
@@ -5019,7 +4497,7 @@
         }
       }
     }
-    function handleTouchEndLight(e) {
+    function handleTouchEnd(e) {
       clearTimeout(activeTimeout);
       clearTimeout(tapHoldTimeout);
       if (doc.activeElement === e.target) {
@@ -5043,7 +4521,7 @@
       }
       return true;
     }
-    function handleClickLight(e) {
+    function handleClick(e) {
       var localPreventClick = preventClick;
       if (targetElement && e.target !== targetElement) {
         localPreventClick = true;
@@ -5128,17 +4606,10 @@
     }
 
     if (Support.touch) {
-      if (params.fastClicks) {
-        app.on('click', handleClick);
-        app.on('touchstart', handleTouchStart);
-        app.on('touchmove', handleTouchMove);
-        app.on('touchend', handleTouchEnd);
-      } else {
-        app.on('click', handleClickLight);
-        app.on('touchstart', handleTouchStartLight);
-        app.on('touchmove', handleTouchMoveLight);
-        app.on('touchend', handleTouchEndLight);
-      }
+      app.on('click', handleClick);
+      app.on('touchstart', handleTouchStart);
+      app.on('touchmove', handleTouchMove);
+      app.on('touchend', handleTouchEnd);
 
       doc.addEventListener('touchcancel', handleTouchCancel, { passive: true });
     } else if (params.activeState) {
@@ -5161,11 +4632,6 @@
     name: 'touch',
     params: {
       touch: {
-        // Fast clicks
-        fastClicks: false,
-        fastClicksDistanceThreshold: 10,
-        fastClicksDelayBetweenClicks: 50,
-        fastClicksExclude: '', // CSS selector
         // Clicks
         touchClicksDistanceThreshold: 5,
         // ContextMenu
@@ -5709,7 +5175,7 @@
   function SwipeBack(r) {
     var router = r;
     var $el = router.$el;
-    var $navbarEl = router.$navbarEl;
+    var $navbarsEl = router.$navbarsEl;
     var app = router.app;
     var params = router.params;
     var isTouched = false;
@@ -5722,10 +5188,9 @@
     var touchesDiff;
     var allowViewTouchMove = true;
     var touchStartTime;
-    var $currentNavbarInnerEl = [];
-    var $previousNavbarInnerEl = [];
+    var $currentNavbarEl = [];
+    var $previousNavbarEl = [];
     var dynamicNavbar;
-    var separateNavbar;
     var $pageShadowEl;
     var $pageOpacityEl;
 
@@ -5737,29 +5202,37 @@
     var paramsSwipeBackThreshold = params[((app.theme) + "SwipeBackThreshold")];
 
     var transformOrigin = app.rtl ? 'right center' : 'left center';
+    var transformOriginTitleLarge = app.rtl
+      ? 'calc(100% - var(--f7-navbar-large-title-padding-left) - var(--f7-safe-area-left)) center'
+      : 'calc(var(--f7-navbar-large-title-padding-left) + var(--f7-safe-area-left)) center';
+
 
     function animatableNavElements() {
       var els = [];
       var inverter = app.rtl ? -1 : 1;
-      var currentNavIsLarge = $currentNavbarInnerEl.hasClass('navbar-inner-large');
-      var previousNavIsLarge = $previousNavbarInnerEl.hasClass('navbar-inner-large');
-      var fromLarge = currentNavIsLarge && !$currentNavbarInnerEl.hasClass('navbar-inner-large-collapsed');
-      var toLarge = previousNavIsLarge && !$previousNavbarInnerEl.hasClass('navbar-inner-large-collapsed');
-      var $currentNavElements = $currentNavbarInnerEl.children('.left, .title, .right, .subnavbar, .fading, .title-large');
-      var $previousNavElements = $previousNavbarInnerEl.children('.left, .title, .right, .subnavbar, .fading, .title-large');
+      var currentNavIsLarge = $currentNavbarEl.hasClass('navbar-large');
+      var currentNavIsCollapsed = $currentNavbarEl.hasClass('navbar-large-collapsed');
+      var currentNavIsTransparent = $currentNavbarEl.hasClass('navbar-large-transparent');
+      var previousNavIsLarge = $previousNavbarEl.hasClass('navbar-large');
+      var previousNavIsCollapsed = $previousNavbarEl.hasClass('navbar-large-collapsed');
+      var previousNavIsTransparent = $previousNavbarEl.hasClass('navbar-large-transparent');
+      var fromLarge = currentNavIsLarge && !currentNavIsCollapsed;
+      var toLarge = previousNavIsLarge && !previousNavIsCollapsed;
+      var $currentNavElements = $currentNavbarEl.find('.left, .title, .right, .subnavbar, .fading, .title-large, .navbar-bg');
+      var $previousNavElements = $previousNavbarEl.find('.left, .title, .right, .subnavbar, .fading, .title-large, .navbar-bg');
       var activeNavBackIconText;
       var previousNavBackIconText;
 
       if (params.iosAnimateNavbarBackIcon) {
-        if ($currentNavbarInnerEl.hasClass('sliding')) {
-          activeNavBackIconText = $currentNavbarInnerEl.children('.left').find('.back .icon + span').eq(0);
+        if ($currentNavbarEl.hasClass('sliding') || $currentNavbarEl.find('.navbar-inner.sliding').length) {
+          activeNavBackIconText = $currentNavbarEl.find('.left').find('.back .icon + span').eq(0);
         } else {
-          activeNavBackIconText = $currentNavbarInnerEl.children('.left.sliding').find('.back .icon + span').eq(0);
+          activeNavBackIconText = $currentNavbarEl.find('.left.sliding').find('.back .icon + span').eq(0);
         }
-        if ($previousNavbarInnerEl.hasClass('sliding')) {
-          previousNavBackIconText = $previousNavbarInnerEl.children('.left').find('.back .icon + span').eq(0);
+        if ($previousNavbarEl.hasClass('sliding') || $previousNavbarEl.find('.navbar-inner.sliding').length) {
+          previousNavBackIconText = $previousNavbarEl.find('.left').find('.back .icon + span').eq(0);
         } else {
-          previousNavBackIconText = $previousNavbarInnerEl.children('.left.sliding').find('.back .icon + span').eq(0);
+          previousNavBackIconText = $previousNavbarEl.find('.left.sliding').find('.back .icon + span').eq(0);
         }
         if (activeNavBackIconText.length) {
           $previousNavElements.each(function (index, el) {
@@ -5774,6 +5247,7 @@
           var isSubnavbar = $navEl.hasClass('subnavbar');
           var isLeft = $navEl.hasClass('left');
           var isTitle = $navEl.hasClass('title');
+          var isBg = $navEl.hasClass('navbar-bg');
           if (!fromLarge && $navEl.hasClass('.title-large')) { return; }
           var el = {
             el: navEl,
@@ -5781,54 +5255,63 @@
           if (fromLarge) {
             if (isTitle) { return; }
             if ($navEl.hasClass('title-large')) {
-              if (!separateNavbar) { return; }
-              if (toLarge) {
-                if (els.indexOf(el) < 0) { els.push(el); }
-                el.overflow = 'visible';
-                el.transform = 'translateX(100%)';
-                $navEl.find('.title-large-text, .title-large-inner').each(function (subIndex, subNavEl) {
-                  els.push({
-                    el: subNavEl,
-                    transform: function (progress) { return ("translateX(" + (-100 + progress * 100 * inverter) + "%)"); },
-                  });
+              if (els.indexOf(el) < 0) { els.push(el); }
+              el.overflow = 'visible';
+              $navEl.find('.title-large-text').each(function (subIndex, subNavEl) {
+                els.push({
+                  el: subNavEl,
+                  transform: function (progress) { return ("translateX(" + (progress * 100 * inverter) + "%)"); },
                 });
-              } else {
-                if (els.indexOf(el) < 0) { els.push(el); }
-                el.overflow = 'hidden';
-                el.transform = function (progress) { return ("translateY(calc(" + (-progress) + " * var(--f7-navbar-large-title-height)))"); };
-                $navEl.find('.title-large-text, .title-large-inner').each(function (subIndex, subNavEl) {
-                  els.push({
-                    el: subNavEl,
-                    transform: function (progress) { return ("translateX(" + (progress * 100 * inverter) + "%) translateY(calc(" + progress + " * var(--f7-navbar-large-title-height)))"); },
-                  });
-                });
-              }
+              });
               return;
             }
           }
           if (toLarge) {
             if (!fromLarge) {
               if ($navEl.hasClass('title-large')) {
-                if (!separateNavbar) { return; }
                 if (els.indexOf(el) < 0) { els.push(el); }
                 el.opacity = 0;
               }
             }
-            if (isLeft && separateNavbar) {
+            if (isLeft) {
               if (els.indexOf(el) < 0) { els.push(el); }
               el.opacity = function (progress) { return (1 - (Math.pow( progress, 0.33 ))); };
               $navEl.find('.back span').each(function (subIndex, subNavEl) {
                 els.push({
                   el: subNavEl,
                   'transform-origin': transformOrigin,
-                  transform: function (progress) { return ("translateY(calc(var(--f7-navbar-height) * " + progress + ")) scale(" + (1 + (1 * progress)) + ")"); },
+                  transform: function (progress) { return ("translateX(calc(" + progress + " * (var(--f7-navbarTitleLargeOffset) - var(--f7-navbarLeftTextOffset)))) translateY(calc(" + progress + " * (var(--f7-navbar-large-title-height) - var(--f7-navbar-large-title-padding-vertical) / 2))) scale(" + (1 + (1 * progress)) + ")"); },
                 });
               });
               return;
             }
           }
+          if (isBg) {
+            if (els.indexOf(el) < 0) { els.push(el); }
+            if (!fromLarge && !toLarge) {
+              if (currentNavIsCollapsed) {
+                if (currentNavIsTransparent) {
+                  el.className = 'ios-swipeback-navbar-bg-large';
+                }
+                el.transform = function (progress) { return ("translateX(" + (100 * progress * inverter) + "%) translateY(calc(-1 * var(--f7-navbar-large-title-height)))"); };
+              } else {
+                el.transform = function (progress) { return ("translateX(" + (100 * progress * inverter) + "%)"); };
+              }
+            }
+            if (!fromLarge && toLarge) {
+              el.className = 'ios-swipeback-navbar-bg-large';
+              el.transform = function (progress) { return ("translateX(" + (100 * progress * inverter) + "%) translateY(calc(-1 * " + (1 - progress) + " * var(--f7-navbar-large-title-height)))"); };
+            }
+            if (fromLarge && toLarge) {
+              el.transform = function (progress) { return ("translateX(" + (100 * progress * inverter) + "%)"); };
+            }
+            if (fromLarge && !toLarge) {
+              el.transform = function (progress) { return ("translateX(" + (100 * progress * inverter) + "%) translateY(calc(-" + progress + " * var(--f7-navbar-large-title-height)))"); };
+            }
+            return;
+          }
           if ($navEl.hasClass('title-large')) { return; }
-          var isSliding = $navEl.hasClass('sliding') || $currentNavbarInnerEl.hasClass('sliding');
+          var isSliding = $navEl.hasClass('sliding') || $navEl.parents('.navbar-inner.sliding').length;
           if (els.indexOf(el) < 0) { els.push(el); }
           if (!isSubnavbar || (isSubnavbar && !isSliding)) {
             el.opacity = function (progress) { return (1 - (Math.pow( progress, 0.33 ))); };
@@ -5843,7 +5326,7 @@
             transformTarget.transform = function (progress) {
               var activeNavTranslate = progress * transformTarget.el.f7NavbarRightOffset;
               if (Device.pixelRatio === 1) { activeNavTranslate = Math.round(activeNavTranslate); }
-              if (isSubnavbar && currentNavIsLarge && separateNavbar) {
+              if (isSubnavbar && currentNavIsLarge) {
                 return ("translate3d(" + activeNavTranslate + "px, calc(-1 * var(--f7-navbar-large-collapse-progress) * var(--f7-navbar-large-title-height)), 0)");
               }
               return ("translate3d(" + activeNavTranslate + "px,0,0)");
@@ -5856,6 +5339,7 @@
           var isSubnavbar = $navEl.hasClass('subnavbar');
           var isLeft = $navEl.hasClass('left');
           var isTitle = $navEl.hasClass('title');
+          var isBg = $navEl.hasClass('navbar-bg');
           var el = {
             el: navEl,
           };
@@ -5864,45 +5348,46 @@
             if (els.indexOf(el) < 0) { els.push(el); }
 
             if ($navEl.hasClass('title-large')) {
-              if (!separateNavbar) { return; }
-              if (fromLarge) {
-                el.opacity = 1;
-                el.overflow = 'visible';
-                el.transform = 'translateY(0)';
-                $navEl.find('.title-large-text').each(function (subIndex, subNavEl) {
-                  els.push({
-                    el: subNavEl,
-                    'transform-origin': transformOrigin,
-                    opacity: function (progress) { return (Math.pow( progress, 3 )); },
-                    transform: function (progress) { return ("translateY(calc(" + (-1 + progress * 1) + " * var(--f7-navbar-large-title-height))) scale(" + (0.5 + progress * 0.5) + ")"); },
-                  });
-                });
-              } else {
-                el.transform = function (progress) { return ("translateY(calc(" + (progress - 1) + " * var(--f7-navbar-large-title-height)))"); };
-                el.opacity = 1;
-                el.overflow = 'hidden';
-                $navEl.find('.title-large-text').each(function (subIndex, subNavEl) {
-                  els.push({
-                    el: subNavEl,
-                    'transform-origin': transformOrigin,
-                    opacity: function (progress) { return (Math.pow( progress, 3 )); },
-                    transform: function (progress) { return ("scale(" + (0.5 + progress * 0.5) + ")"); },
-                  });
-                });
-              }
-              $navEl.find('.title-large-inner').each(function (subIndex, subNavEl) {
+              el.opacity = 1;
+              el.overflow = 'visible';
+              $navEl.find('.title-large-text').each(function (subIndex, subNavEl) {
                 els.push({
                   el: subNavEl,
-                  'transform-origin': transformOrigin,
+                  'transform-origin': transformOriginTitleLarge,
                   opacity: function (progress) { return (Math.pow( progress, 3 )); },
-                  transform: function (progress) { return ("translateX(" + (-100 * (1 - progress) * inverter) + "%)"); },
+                  transform: function (progress) { return ("translateX(calc(" + (1 - progress) + " * (var(--f7-navbarLeftTextOffset) - var(--f7-navbarTitleLargeOffset)))) translateY(calc(" + (progress - 1) + " * var(--f7-navbar-large-title-height) + " + (1 - progress) + " * var(--f7-navbar-large-title-padding-vertical))) scale(" + (0.5 + progress * 0.5) + ")"); },
                 });
               });
               return;
             }
           }
+          if (isBg) {
+            if (els.indexOf(el) < 0) { els.push(el); }
+            if (!fromLarge && !toLarge) {
+              if (previousNavIsCollapsed) {
+                if (previousNavIsTransparent) {
+                  el.className = 'ios-swipeback-navbar-bg-large';
+                }
+                el.transform = function (progress) { return ("translateX(" + ((-100 + 100 * progress) * inverter) + "%) translateY(calc(-1 * var(--f7-navbar-large-title-height)))"); };
+              } else {
+                el.transform = function (progress) { return ("translateX(" + ((-100 + 100 * progress) * inverter) + "%)"); };
+              }
+            }
+            if (!fromLarge && toLarge) {
+              el.transform = function (progress) { return ("translateX(" + ((-100 + 100 * progress) * inverter) + "%) translateY(calc(-1 * " + (1 - progress) + " * var(--f7-navbar-large-title-height)))"); };
+            }
+            if (fromLarge && !toLarge) {
+              el.className = 'ios-swipeback-navbar-bg-large';
+              el.transform = function (progress) { return ("translateX(" + ((-100 + 100 * progress) * inverter) + "%) translateY(calc(-" + progress + " * var(--f7-navbar-large-title-height)))"); };
+            }
+            if (fromLarge && toLarge) {
+              el.transform = function (progress) { return ("translateX(" + ((-100 + 100 * progress) * inverter) + "%)"); };
+            }
+
+            return;
+          }
           if ($navEl.hasClass('title-large')) { return; }
-          var isSliding = $navEl.hasClass('sliding') || $previousNavbarInnerEl.hasClass('sliding');
+          var isSliding = $navEl.hasClass('sliding') || $previousNavbarEl.children('.navbar-inner.sliding').length;
           if (els.indexOf(el) < 0) { els.push(el); }
           if (!isSubnavbar || (isSubnavbar && !isSliding)) {
             el.opacity = function (progress) { return (Math.pow( progress, 3 )); };
@@ -5917,7 +5402,7 @@
             transformTarget.transform = function (progress) {
               var previousNavTranslate = transformTarget.el.f7NavbarLeftOffset * (1 - progress);
               if (Device.pixelRatio === 1) { previousNavTranslate = Math.round(previousNavTranslate); }
-              if (isSubnavbar && previousNavIsLarge && separateNavbar) {
+              if (isSubnavbar && previousNavIsLarge) {
                 return ("translate3d(" + previousNavTranslate + "px, calc(-1 * var(--f7-navbar-large-collapse-progress) * var(--f7-navbar-large-title-height)), 0)");
               }
               return ("translate3d(" + previousNavTranslate + "px,0,0)");
@@ -5939,6 +5424,13 @@
         if (el && el.el) {
           if (transition === true) { el.el.classList.add('navbar-page-transitioning'); }
           if (transition === false) { el.el.classList.remove('navbar-page-transitioning'); }
+          if (el.className && !el.classNameSet && !reset) {
+            el.el.classList.add(el.className);
+            el.classNameSet = true;
+          }
+          if (el.className && reset) {
+            el.el.classList.remove(el.className);
+          }
           for (var j = 0; j < styles.length; j += 1) {
             var styleProp = styles[j];
             if (el[styleProp]) {
@@ -5967,7 +5459,6 @@
       touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
       touchStartTime = Utils.now();
       dynamicNavbar = router.dynamicNavbar;
-      separateNavbar = router.separateNavbar;
     }
     function handleTouchMove(e) {
       if (!isTouched) { return; }
@@ -6027,15 +5518,10 @@
         }
 
         if (dynamicNavbar) {
-          if (separateNavbar) {
-            $currentNavbarInnerEl = $navbarEl.find('.navbar-current:not(.stacked)');
-            $previousNavbarInnerEl = $navbarEl.find('.navbar-previous:not(.stacked)');
-          } else {
-            $currentNavbarInnerEl = $currentPageEl.children('.navbar').children('.navbar-inner');
-            $previousNavbarInnerEl = $previousPageEl.children('.navbar').children('.navbar-inner');
-          }
-          if ($previousNavbarInnerEl.length > 1) {
-            $previousNavbarInnerEl = $previousNavbarInnerEl.eq($previousNavbarInnerEl.length - 1);
+          $currentNavbarEl = $navbarsEl.find('.navbar-current:not(.stacked)');
+          $previousNavbarEl = $navbarsEl.find('.navbar-previous:not(.stacked)');
+          if ($previousNavbarEl.length > 1) {
+            $previousNavbarEl = $previousNavbarEl.eq($previousNavbarEl.length - 1);
           }
 
           animatableNavEls = animatableNavElements();
@@ -6046,7 +5532,7 @@
           app.sheet.close($('.sheet.modal-in'));
         }
       }
-      e.f7PreventPanelSwipe = true;
+      e.f7PreventSwipePanel = true;
       isMoved = true;
       app.preventSwipePanelBySwipeBack = true;
       e.preventDefault();
@@ -6065,8 +5551,8 @@
         progress: percentage,
         currentPageEl: $currentPageEl[0],
         previousPageEl: $previousPageEl[0],
-        currentNavbarEl: $currentNavbarInnerEl[0],
-        previousNavbarEl: $previousNavbarInnerEl[0],
+        currentNavbarEl: $currentNavbarEl[0],
+        previousNavbarEl: $previousNavbarEl[0],
       };
       $el.trigger('swipeback:move', callbackData);
       router.emit('swipebackMove', callbackData);
@@ -6095,7 +5581,7 @@
       if (app.theme === 'ios') {
         $previousPageEl.transform(("translate3d(" + previousPageTranslate + "px,0,0)"));
       }
-      if (paramsSwipeBackAnimateOpacity) { $pageShadowEl[0].style.opacity = 1 - (1 * percentage); }
+      if (paramsSwipeBackAnimateOpacity) { $pageOpacityEl[0].style.opacity = 1 - (1 * percentage); }
 
       // Dynamic Navbars Animation
       if (!dynamicNavbar) { return; }
@@ -6134,8 +5620,8 @@
         if ($pageShadowEl) { $pageShadowEl[0].style.opacity = ''; }
         if ($pageOpacityEl) { $pageOpacityEl[0].style.opacity = ''; }
         if (dynamicNavbar) {
-          $currentNavbarInnerEl.removeClass('navbar-current').addClass('navbar-next');
-          $previousNavbarInnerEl.removeClass('navbar-previous').addClass('navbar-current').removeAttr('aria-hidden');
+          $currentNavbarEl.removeClass('navbar-current').addClass('navbar-next');
+          $previousNavbarEl.removeClass('navbar-previous').addClass('navbar-current').removeAttr('aria-hidden');
         }
         pageChanged = true;
       }
@@ -6153,8 +5639,8 @@
       var callbackData = {
         currentPageEl: $currentPageEl[0],
         previousPageEl: $previousPageEl[0],
-        currentNavbarEl: $currentNavbarInnerEl[0],
-        previousNavbarEl: $previousNavbarInnerEl[0],
+        currentNavbarEl: $currentNavbarEl[0],
+        previousNavbarEl: $previousNavbarEl[0],
       };
 
       if (pageChanged) {
@@ -6163,8 +5649,8 @@
         router.currentPage = $previousPageEl[0];
 
         // Page before animation callback
-        router.pageCallback('beforeOut', $currentPageEl, $currentNavbarInnerEl, 'current', 'next', { route: $currentPageEl[0].f7Page.route, swipeBack: true });
-        router.pageCallback('beforeIn', $previousPageEl, $previousNavbarInnerEl, 'previous', 'current', { route: $previousPageEl[0].f7Page.route, swipeBack: true }, $currentPageEl[0]);
+        router.pageCallback('beforeOut', $currentPageEl, $currentNavbarEl, 'current', 'next', { route: $currentPageEl[0].f7Page.route, swipeBack: true });
+        router.pageCallback('beforeIn', $previousPageEl, $previousNavbarEl, 'previous', 'current', { route: $previousPageEl[0].f7Page.route, swipeBack: true }, $currentPageEl[0]);
 
         $el.trigger('swipeback:beforechange', callbackData);
         router.emit('swipebackBeforeChange', callbackData);
@@ -6194,20 +5680,20 @@
           }
 
           // Page after animation callback
-          router.pageCallback('afterOut', $currentPageEl, $currentNavbarInnerEl, 'current', 'next', { route: $currentPageEl[0].f7Page.route, swipeBack: true });
-          router.pageCallback('afterIn', $previousPageEl, $previousNavbarInnerEl, 'previous', 'current', { route: $previousPageEl[0].f7Page.route, swipeBack: true });
+          router.pageCallback('afterOut', $currentPageEl, $currentNavbarEl, 'current', 'next', { route: $currentPageEl[0].f7Page.route, swipeBack: true });
+          router.pageCallback('afterIn', $previousPageEl, $previousNavbarEl, 'previous', 'current', { route: $previousPageEl[0].f7Page.route, swipeBack: true });
 
           // Remove Old Page
           if (params.stackPages && router.initialPages.indexOf($currentPageEl[0]) >= 0) {
             $currentPageEl.addClass('stacked');
-            if (separateNavbar) {
-              $currentNavbarInnerEl.addClass('stacked');
+            if (dynamicNavbar) {
+              $currentNavbarEl.addClass('stacked');
             }
           } else {
-            router.pageCallback('beforeRemove', $currentPageEl, $currentNavbarInnerEl, 'next', { swipeBack: true });
+            router.pageCallback('beforeRemove', $currentPageEl, $currentNavbarEl, 'next', { swipeBack: true });
             router.removePage($currentPageEl);
-            if (separateNavbar) {
-              router.removeNavbar($currentNavbarInnerEl);
+            if (dynamicNavbar) {
+              router.removeNavbar($currentNavbarEl);
             }
           }
 
@@ -6432,16 +5918,15 @@
     }
 
     var dynamicNavbar = router.dynamicNavbar;
-    var separateNavbar = router.separateNavbar;
 
     var $viewEl = router.$el;
     var $newPage = $el;
     var reload = options.reloadPrevious || options.reloadCurrent || options.reloadAll;
     var $oldPage;
 
-    var $navbarEl;
-    var $newNavbarInner;
-    var $oldNavbarInner;
+    var $navbarsEl;
+    var $newNavbarEl;
+    var $oldNavbarEl;
 
     router.allowPageChange = false;
     if ($newPage.length === 0) {
@@ -6455,16 +5940,11 @@
     }
 
     if (dynamicNavbar) {
-      $newNavbarInner = $newPage.children('.navbar').children('.navbar-inner');
-      if (separateNavbar) {
-        $navbarEl = router.$navbarEl;
-        if ($newNavbarInner.length > 0) {
-          $newPage.children('.navbar').remove();
-        }
-        if ($newNavbarInner.length === 0 && $newPage[0] && $newPage[0].f7Page) {
-          // Try from pageData
-          $newNavbarInner = $newPage[0].f7Page.$navbarEl;
-        }
+      $newNavbarEl = $newPage.children('.navbar');
+      $navbarsEl = router.$navbarsEl;
+      if ($newNavbarEl.length === 0 && $newPage[0] && $newPage[0].f7Page) {
+        // Try from pageData
+        $newNavbarEl = $newPage[0].f7Page.$navbarEl;
       }
     }
 
@@ -6482,10 +5962,10 @@
 
     // Navbars In View
     var $navbarsInView;
-    if (separateNavbar) {
-      $navbarsInView = $navbarEl
-        .children('.navbar-inner:not(.stacked)')
-        .filter(function (index, navbarInView) { return navbarInView !== $newNavbarInner[0]; });
+    if (dynamicNavbar) {
+      $navbarsInView = $navbarsEl
+        .children('.navbar:not(.stacked)')
+        .filter(function (index, navbarInView) { return navbarInView !== $newNavbarEl[0]; });
     }
 
     // Exit when reload previous and only 1 page in view so nothing ro reload
@@ -6497,6 +5977,7 @@
     // Find Detail' master page
     var isDetail;
     var reloadDetail;
+    var isDetailRoot;
     if (masterDetailEnabled && !options.reloadAll) {
       for (var i = 0; i < $pagesInView.length; i += 1) {
         if (!masterPageEl
@@ -6522,6 +6003,9 @@
       }
       reloadDetail = isDetail && options.reloadDetail && app.width >= router.params.masterDetailBreakpoint && masterPageEl;
     }
+    if (isDetail) {
+      isDetailRoot = !otherDetailPageEl || reloadDetail || options.reloadAll || options.reloadCurrent;
+    }
 
     // New Page
     var newPagePosition = 'next';
@@ -6532,7 +6016,7 @@
     }
     $newPage
       .removeClass('page-previous page-current page-next')
-      .addClass(("page-" + newPagePosition + (isMaster ? ' page-master' : '') + (isDetail ? ' page-master-detail' : '')))
+      .addClass(("page-" + newPagePosition + (isMaster ? ' page-master' : '') + (isDetail ? ' page-master-detail' : '') + (isDetailRoot ? ' page-master-detail-root' : '')))
       .removeClass('stacked')
       .trigger('page:unstack')
       .trigger('page:position', { position: newPagePosition });
@@ -6540,34 +6024,34 @@
     router.emit('pagePosition', $newPage[0], newPagePosition);
 
     if (isMaster || isDetail) {
-      $newPage.trigger('page:role', { role: isMaster ? 'master' : 'detail' });
+      $newPage.trigger('page:role', { role: isMaster ? 'master' : 'detail', root: !!isDetailRoot });
+      router.emit('pageRole', $newPage[0], { role: isMaster ? 'master' : 'detail', detailRoot: !!isDetailRoot });
     }
 
-
-    if (dynamicNavbar && $newNavbarInner.length) {
-      $newNavbarInner
+    if (dynamicNavbar && $newNavbarEl.length) {
+      $newNavbarEl
         .removeClass('navbar-previous navbar-current navbar-next')
-        .addClass(("navbar-" + newPagePosition + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '')))
+        .addClass(("navbar-" + newPagePosition + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '') + (isDetailRoot ? ' navbar-master-detail-root' : '')))
         .removeClass('stacked');
     }
 
     // Find Old Page
     if (options.reloadCurrent || reloadDetail) {
       $oldPage = $pagesInView.eq($pagesInView.length - 1);
-      if (separateNavbar) {
-        // $oldNavbarInner = $navbarsInView.eq($pagesInView.length - 1);
-        $oldNavbarInner = $(app.navbar.getElByPage($oldPage));
+      if (dynamicNavbar) {
+        // $oldNavbarEl = $navbarsInView.eq($pagesInView.length - 1);
+        $oldNavbarEl = $(app.navbar.getElByPage($oldPage));
       }
     } else if (options.reloadPrevious) {
       $oldPage = $pagesInView.eq($pagesInView.length - 2);
-      if (separateNavbar) {
-        // $oldNavbarInner = $navbarsInView.eq($pagesInView.length - 2);
-        $oldNavbarInner = $(app.navbar.getElByPage($oldPage));
+      if (dynamicNavbar) {
+        // $oldNavbarEl = $navbarsInView.eq($pagesInView.length - 2);
+        $oldNavbarEl = $(app.navbar.getElByPage($oldPage));
       }
     } else if (options.reloadAll) {
       $oldPage = $pagesInView.filter(function (index, pageEl) { return pageEl !== $newPage[0]; });
-      if (separateNavbar) {
-        $oldNavbarInner = $navbarsInView.filter(function (index, navbarEl) { return navbarEl !== $newNavbarInner[0]; });
+      if (dynamicNavbar) {
+        $oldNavbarEl = $navbarsInView.filter(function (index, navbarEl) { return navbarEl !== $newNavbarEl[0]; });
       }
     } else {
       if ($pagesInView.length > 1) {
@@ -6579,25 +6063,25 @@
             $pagesInView.eq(i$2).addClass('page-master-stacked');
             $pagesInView.eq(i$2).trigger('page:masterstack');
             router.emit('pageMasterStack', $pagesInView[i$2]);
-            if (separateNavbar) {
+            if (dynamicNavbar) {
               $(app.navbar.getElByPage(masterPageEl)).addClass('navbar-master-stacked');
             }
             continue; // eslint-disable-line
           }
-          var oldNavbarInnerEl = app.navbar.getElByPage($pagesInView.eq(i$2));
+          var oldNavbarEl = app.navbar.getElByPage($pagesInView.eq(i$2));
           if (router.params.stackPages) {
             $pagesInView.eq(i$2).addClass('stacked');
             $pagesInView.eq(i$2).trigger('page:stack');
             router.emit('pageStack', $pagesInView[i$2]);
-            if (separateNavbar) {
-              $(oldNavbarInnerEl).addClass('stacked');
+            if (dynamicNavbar) {
+              $(oldNavbarEl).addClass('stacked');
             }
           } else {
             // Page remove event
             router.pageCallback('beforeRemove', $pagesInView[i$2], $navbarsInView && $navbarsInView[i$2], 'previous', undefined, options);
             router.removePage($pagesInView[i$2]);
-            if (separateNavbar && oldNavbarInnerEl) {
-              router.removeNavbar(oldNavbarInnerEl);
+            if (dynamicNavbar && oldNavbarEl) {
+              router.removeNavbar(oldNavbarEl);
             }
           }
         }
@@ -6605,22 +6089,19 @@
       $oldPage = $viewEl
         .children('.page:not(.stacked)')
         .filter(function (index, page) { return page !== $newPage[0]; });
-      if (separateNavbar) {
-        $oldNavbarInner = $navbarEl
-          .children('.navbar-inner:not(.stacked)')
-          .filter(function (index, navbarInner) { return navbarInner !== $newNavbarInner[0]; });
+      if (dynamicNavbar) {
+        $oldNavbarEl = $navbarsEl
+          .children('.navbar:not(.stacked)')
+          .filter(function (index, navbarEl) { return navbarEl !== $newNavbarEl[0]; });
       }
     }
 
-    if (dynamicNavbar && !separateNavbar) {
-      $oldNavbarInner = $oldPage.children('.navbar').children('.navbar-inner');
-    }
     if (isDetail && !options.reloadAll) {
       if ($oldPage.length > 1 || reloadDetail) {
         $oldPage = $oldPage.filter(function (pageIndex, pageEl) { return !pageEl.classList.contains('page-master'); });
       }
-      if ($oldNavbarInner && ($oldNavbarInner.length > 1 || reloadDetail)) {
-        $oldNavbarInner = $oldNavbarInner.filter(function (navbarIndex, navbarEl) { return !navbarEl.classList.contains('navbar-master'); });
+      if ($oldNavbarEl && ($oldNavbarEl.length > 1 || reloadDetail)) {
+        $oldNavbarEl = $oldNavbarEl.filter(function (navbarIndex, navbarEl) { return !navbarEl.classList.contains('navbar-master'); });
       }
     }
 
@@ -6639,8 +6120,8 @@
     if (!options.reloadPrevious) {
       // Current Page & Navbar
       router.currentPageEl = $newPage[0];
-      if (dynamicNavbar && $newNavbarInner.length) {
-        router.currentNavbarEl = $newNavbarInner[0];
+      if (dynamicNavbar && $newNavbarEl.length) {
+        router.currentNavbarEl = $newNavbarEl[0];
       } else {
         delete router.currentNavbarEl;
       }
@@ -6676,17 +6157,17 @@
       } else {
         $newPage.insertBefore($oldPage);
       }
-      if (separateNavbar && $newNavbarInner.length) {
-        if ($newNavbarInner.children('.title-large').length) {
-          $newNavbarInner.addClass('navbar-inner-large');
+      if (dynamicNavbar && $newNavbarEl.length) {
+        if ($newNavbarEl.find('.title-large').length) {
+          $newNavbarEl.addClass('navbar-large');
         }
-        if ($oldNavbarInner.length) {
-          $newNavbarInner.insertBefore($oldNavbarInner);
+        if ($oldNavbarEl.length) {
+          $newNavbarEl.insertBefore($oldNavbarEl);
         } else {
-          if (!router.$navbarEl.parents(doc).length) {
-            router.$el.prepend(router.$navbarEl);
+          if (!router.$navbarsEl.parents(doc).length) {
+            router.$el.prepend(router.$navbarsEl);
           }
-          $navbarEl.append($newNavbarInner);
+          $navbarsEl.append($newNavbarEl);
         }
       }
     } else {
@@ -6699,21 +6180,21 @@
           $viewEl.append($newPage[0]);
         }
       }
-      if (separateNavbar && $newNavbarInner.length) {
-        if ($newNavbarInner.children('.title-large').length) {
-          $newNavbarInner.addClass('navbar-inner-large');
+      if (dynamicNavbar && $newNavbarEl.length) {
+        if ($newNavbarEl.find('.title-large').length) {
+          $newNavbarEl.addClass('navbar-large');
         }
-        if (!router.$navbarEl.parents(doc).length) {
-          router.$el.prepend(router.$navbarEl);
+        if (!router.$navbarsEl.parents(doc).length) {
+          router.$el.prepend(router.$navbarsEl);
         }
-        $navbarEl.append($newNavbarInner[0]);
+        $navbarsEl.append($newNavbarEl[0]);
       }
     }
     if (!newPageInDom) {
-      router.pageCallback('mounted', $newPage, $newNavbarInner, newPagePosition, reload ? newPagePosition : 'current', options, $oldPage);
+      router.pageCallback('mounted', $newPage, $newNavbarEl, newPagePosition, (reload ? newPagePosition : 'current'), options, $oldPage);
     } else if (options.route && options.route.route && options.route.route.keepAlive && !$newPage[0].f7PageMounted) {
       $newPage[0].f7PageMounted = true;
-      router.pageCallback('mounted', $newPage, $newNavbarInner, newPagePosition, reload ? newPagePosition : 'current', options, $oldPage);
+      router.pageCallback('mounted', $newPage, $newNavbarEl, newPagePosition, (reload ? newPagePosition : 'current'), options, $oldPage);
     }
 
     // Remove old page
@@ -6722,40 +6203,40 @@
         $oldPage.addClass('stacked');
         $oldPage.trigger('page:stack');
         router.emit('pageStack', $oldPage[0]);
-        if (separateNavbar) {
-          $oldNavbarInner.addClass('stacked');
+        if (dynamicNavbar) {
+          $oldNavbarEl.addClass('stacked');
         }
       } else {
         // Page remove event
-        router.pageCallback('beforeOut', $oldPage, $oldNavbarInner, 'current', undefined, options);
-        router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', undefined, options);
-        router.pageCallback('beforeRemove', $oldPage, $oldNavbarInner, 'current', undefined, options);
+        router.pageCallback('beforeOut', $oldPage, $oldNavbarEl, 'current', undefined, options);
+        router.pageCallback('afterOut', $oldPage, $oldNavbarEl, 'current', undefined, options);
+        router.pageCallback('beforeRemove', $oldPage, $oldNavbarEl, 'current', undefined, options);
         router.removePage($oldPage);
-        if (separateNavbar && $oldNavbarInner && $oldNavbarInner.length) {
-          router.removeNavbar($oldNavbarInner);
+        if (dynamicNavbar && $oldNavbarEl && $oldNavbarEl.length) {
+          router.removeNavbar($oldNavbarEl);
         }
       }
     } else if (options.reloadAll) {
       $oldPage.each(function (index, pageEl) {
         var $oldPageEl = $(pageEl);
-        var $oldNavbarInnerEl = $(app.navbar.getElByPage($oldPageEl));
+        var $oldNavbarElEl = $(app.navbar.getElByPage($oldPageEl));
         if (router.params.stackPages && router.initialPages.indexOf($oldPageEl[0]) >= 0) {
           $oldPageEl.addClass('stacked');
           $oldPageEl.trigger('page:stack');
           router.emit('pageStack', $oldPageEl[0]);
-          if (separateNavbar) {
-            $oldNavbarInnerEl.addClass('stacked');
+          if (dynamicNavbar) {
+            $oldNavbarElEl.addClass('stacked');
           }
         } else {
           // Page remove event
           if ($oldPageEl.hasClass('page-current')) {
-            router.pageCallback('beforeOut', $oldPage, $oldNavbarInner, 'current', undefined, options);
-            router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', undefined, options);
+            router.pageCallback('beforeOut', $oldPage, $oldNavbarEl, 'current', undefined, options);
+            router.pageCallback('afterOut', $oldPage, $oldNavbarEl, 'current', undefined, options);
           }
-          router.pageCallback('beforeRemove', $oldPageEl, $oldNavbarInner && $oldNavbarInner.eq(index), 'previous', undefined, options);
+          router.pageCallback('beforeRemove', $oldPageEl, $oldNavbarEl && $oldNavbarEl.eq(index), 'previous', undefined, options);
           router.removePage($oldPageEl);
-          if (separateNavbar && $oldNavbarInnerEl.length) {
-            router.removeNavbar($oldNavbarInnerEl);
+          if (dynamicNavbar && $oldNavbarElEl.length) {
+            router.removeNavbar($oldNavbarElEl);
           }
         }
       });
@@ -6764,15 +6245,15 @@
         $oldPage.addClass('stacked');
         $oldPage.trigger('page:stack');
         router.emit('pageStack', $oldPage[0]);
-        if (separateNavbar) {
-          $oldNavbarInner.addClass('stacked');
+        if (dynamicNavbar) {
+          $oldNavbarEl.addClass('stacked');
         }
       } else {
         // Page remove event
-        router.pageCallback('beforeRemove', $oldPage, $oldNavbarInner, 'previous', undefined, options);
+        router.pageCallback('beforeRemove', $oldPage, $oldNavbarEl, 'previous', undefined, options);
         router.removePage($oldPage);
-        if (separateNavbar && $oldNavbarInner && $oldNavbarInner.length) {
-          router.removeNavbar($oldNavbarInner);
+        if (dynamicNavbar && $oldNavbarEl && $oldNavbarEl.length) {
+          router.removeNavbar($oldNavbarEl);
         }
       }
     }
@@ -6785,17 +6266,22 @@
       }));
     }
 
+    // Check master detail
+    if (masterDetailEnabled) {
+      view.checkMasterDetailBreakpoint();
+    }
+
     // Page init and before init events
-    router.pageCallback('init', $newPage, $newNavbarInner, newPagePosition, reload ? newPagePosition : 'current', options, $oldPage);
+    router.pageCallback('init', $newPage, $newNavbarEl, newPagePosition, reload ? newPagePosition : 'current', options, $oldPage);
 
     if (options.reloadCurrent || options.reloadAll || reloadDetail) {
       router.allowPageChange = true;
-      router.pageCallback('beforeIn', $newPage, $newNavbarInner, newPagePosition, 'current', options);
+      router.pageCallback('beforeIn', $newPage, $newNavbarEl, newPagePosition, 'current', options);
       $newPage.removeAttr('aria-hidden');
-      if (dynamicNavbar && $newNavbarInner) {
-        $newNavbarInner.removeAttr('aria-hidden');
+      if (dynamicNavbar && $newNavbarEl) {
+        $newNavbarEl.removeAttr('aria-hidden');
       }
-      router.pageCallback('afterIn', $newPage, $newNavbarInner, newPagePosition, 'current', options);
+      router.pageCallback('afterIn', $newPage, $newNavbarEl, newPagePosition, 'current', options);
       if (options.reloadCurrent && options.clearPreviousHistory) { router.clearPreviousHistory(); }
       if (reloadDetail) {
         masterPageEl.classList.add('page-previous');
@@ -6816,8 +6302,8 @@
     }
 
     // Before animation event
-    router.pageCallback('beforeOut', $oldPage, $oldNavbarInner, 'current', 'previous', options);
-    router.pageCallback('beforeIn', $newPage, $newNavbarInner, 'next', 'current', options);
+    router.pageCallback('beforeOut', $oldPage, $oldNavbarEl, 'current', 'previous', options);
+    router.pageCallback('beforeIn', $newPage, $newNavbarEl, 'next', 'current', options);
 
     // Animation
     function afterAnimation() {
@@ -6832,16 +6318,16 @@
         $oldPage.attr('aria-hidden', 'true');
       }
       if (dynamicNavbar) {
-        $newNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
-        $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-previous');
-        if (!$oldNavbarInner.hasClass('navbar-master')) {
-          $oldNavbarInner.attr('aria-hidden', 'true');
+        $newNavbarEl.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
+        $oldNavbarEl.removeClass(navbarClasses).addClass('navbar-previous');
+        if (!$oldNavbarEl.hasClass('navbar-master')) {
+          $oldNavbarEl.attr('aria-hidden', 'true');
         }
       }
       // After animation event
       router.allowPageChange = true;
-      router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', 'previous', options);
-      router.pageCallback('afterIn', $newPage, $newNavbarInner, 'next', 'current', options);
+      router.pageCallback('afterOut', $oldPage, $oldNavbarEl, 'current', 'previous', options);
+      router.pageCallback('afterIn', $newPage, $newNavbarEl, 'next', 'current', options);
 
       var keepOldPage = (router.params.preloadPreviousPage || router.params[((app.theme) + "SwipeBack")]) && !isMaster;
       if (!keepOldPage) {
@@ -6854,15 +6340,15 @@
           $oldPage.addClass('stacked');
           $oldPage.trigger('page:stack');
           router.emit('pageStack', $oldPage[0]);
-          if (separateNavbar) {
-            $oldNavbarInner.addClass('stacked');
+          if (dynamicNavbar) {
+            $oldNavbarEl.addClass('stacked');
           }
         } else if (!($newPage.attr('data-name') && $newPage.attr('data-name') === 'smart-select-page')) {
           // Remove event
-          router.pageCallback('beforeRemove', $oldPage, $oldNavbarInner, 'previous', undefined, options);
+          router.pageCallback('beforeRemove', $oldPage, $oldNavbarEl, 'previous', undefined, options);
           router.removePage($oldPage);
-          if (separateNavbar && $oldNavbarInner.length) {
-            router.removeNavbar($oldNavbarInner);
+          if (dynamicNavbar && $oldNavbarEl.length) {
+            router.removeNavbar($oldNavbarEl);
           }
         }
       }
@@ -6881,22 +6367,34 @@
       $newPage.removeClass(pageClasses).addClass('page-next').removeAttr('aria-hidden').trigger('page:position', { position: 'next' });
       router.emit('pagePosition', $newPage[0], 'next');
       if (dynamicNavbar) {
-        $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
-        $newNavbarInner.removeClass(navbarClasses).addClass('navbar-next').removeAttr('aria-hidden');
+        $oldNavbarEl.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
+        $newNavbarEl.removeClass(navbarClasses).addClass('navbar-next').removeAttr('aria-hidden');
       }
     }
     if (options.animate && !(isMaster && app.width >= router.params.masterDetailBreakpoint)) {
       var delay = router.params[((router.app.theme) + "PageLoadDelay")];
+      var transition = router.params.transition;
+      if (options.transition) { transition = options.transition; }
+      if (!transition && router.currentRoute && router.currentRoute.route) {
+        transition = router.currentRoute.route.transition;
+      }
+      if (!transition && router.currentRoute && router.currentRoute.route.options) {
+        transition = router.currentRoute.route.options.transition;
+      }
+      if (transition) {
+        $newPage[0].f7PageTransition = transition;
+      }
+
       if (delay) {
         setTimeout(function () {
           setPositionClasses();
-          router.animate($oldPage, $newPage, $oldNavbarInner, $newNavbarInner, 'forward', function () {
+          router.animate($oldPage, $newPage, $oldNavbarEl, $newNavbarEl, 'forward', transition, function () {
             afterAnimation();
           });
         }, delay);
       } else {
         setPositionClasses();
-        router.animate($oldPage, $newPage, $oldNavbarInner, $newNavbarInner, 'forward', function () {
+        router.animate($oldPage, $newPage, $oldNavbarEl, $newNavbarEl, 'forward', transition, function () {
           afterAnimation();
         });
       }
@@ -7086,6 +6584,16 @@
 
     if (!route) {
       return router;
+    }
+    if (route.route && route.route.viewName) {
+      var anotherViewName = route.route.viewName;
+      var anotherView = app.views[anotherViewName];
+      if (!anotherView) {
+        throw new Error(("Framework7: There is no View with \"" + anotherViewName + "\" name that was specified in this route"));
+      }
+      if (anotherView !== router.view) {
+        return anotherView.router.navigate(navigateParams, navigateOptions);
+      }
     }
 
     if (route.route.redirect) {
@@ -7681,9 +7189,9 @@
     var masterDetailEnabled = router.params.masterDetailBreakpoint > 0;
     var isMaster = masterDetailEnabled && options.route && options.route.route && options.route.route.master === true;
     var masterPageEl;
+    var masterPageRemoved;
 
     var dynamicNavbar = router.dynamicNavbar;
-    var separateNavbar = router.separateNavbar;
 
     var $newPage = $el;
     var $oldPage = router.$el.children('.page-current');
@@ -7694,25 +7202,18 @@
       router.removeThemeElements($newPage);
     }
 
-    var $navbarEl;
-    var $newNavbarInner;
-    var $oldNavbarInner;
+    var $navbarsEl;
+    var $newNavbarEl;
+    var $oldNavbarEl;
 
     if (dynamicNavbar) {
-      $newNavbarInner = $newPage.children('.navbar').children('.navbar-inner');
-      if (separateNavbar) {
-        $navbarEl = router.$navbarEl;
-        if ($newNavbarInner.length > 0) {
-          $newPage.children('.navbar').remove();
-        }
-        if ($newNavbarInner.length === 0 && $newPage[0] && $newPage[0].f7Page) {
-          // Try from pageData
-          $newNavbarInner = $newPage[0].f7Page.$navbarEl;
-        }
-        $oldNavbarInner = $navbarEl.find('.navbar-current');
-      } else {
-        $oldNavbarInner = $oldPage.children('.navbar').children('.navbar-inner');
+      $newNavbarEl = $newPage.children('.navbar');
+      $navbarsEl = router.$navbarsEl;
+      if ($newNavbarEl.length === 0 && $newPage[0] && $newPage[0].f7Page) {
+        // Try from pageData
+        $newNavbarEl = $newPage[0].f7Page.$navbarEl;
       }
+      $oldNavbarEl = $navbarsEl.find('.navbar-current');
     }
 
     router.allowPageChange = false;
@@ -7733,6 +7234,7 @@
 
     // Pages In View
     var isDetail;
+    var isDetailRoot;
     if (masterDetailEnabled) {
       var $pagesInView = router.$el
         .children('.page:not(.stacked)')
@@ -7756,11 +7258,13 @@
         isDetail = options.route.route.masterRoute.path === masterPageEl.f7Page.route.route.path;
       }
     }
-
+    if (isDetail && masterPageEl && masterPageEl.f7Page) {
+      isDetailRoot = router.history.indexOf(options.route.url) - router.history.indexOf(masterPageEl.f7Page.route.url) === 1;
+    }
 
     // New Page
     $newPage
-      .addClass(("page-previous" + (isMaster ? ' page-master' : '') + (isDetail ? ' page-master-detail' : '')))
+      .addClass(("page-previous" + (isMaster ? ' page-master' : '') + (isDetail ? ' page-master-detail' : '') + (isDetailRoot ? ' page-master-detail-root' : '')))
       .removeClass('stacked')
       .removeAttr('aria-hidden')
       .trigger('page:unstack')
@@ -7768,12 +7272,13 @@
     router.emit('pageUnstack', $newPage[0]);
     router.emit('pagePosition', $newPage[0], 'previous');
     if (isMaster || isDetail) {
-      $newPage.trigger('page:role', { role: isMaster ? 'master' : 'detail' });
+      $newPage.trigger('page:role', { role: isMaster ? 'master' : 'detail', root: !!isDetailRoot });
+      router.emit('pageRole', $newPage[0], { role: isMaster ? 'master' : 'detail', detailRoot: !!isDetailRoot });
     }
 
-    if (dynamicNavbar && $newNavbarInner.length > 0) {
-      $newNavbarInner
-        .addClass(("navbar-previous" + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '')))
+    if (dynamicNavbar && $newNavbarEl.length > 0) {
+      $newNavbarEl
+        .addClass(("navbar-previous" + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '') + (isDetailRoot ? ' navbar-master-detail-root' : '')))
         .removeClass('stacked')
         .removeAttr('aria-hidden');
     }
@@ -7796,8 +7301,8 @@
           $oldPage.prevAll('.page-previous').each(function (index, pageToRemove) {
             var $pageToRemove = $(pageToRemove);
             var $navbarToRemove;
-            if (separateNavbar) {
-              // $navbarToRemove = $oldNavbarInner.prevAll('.navbar-previous').eq(index);
+            if (dynamicNavbar) {
+              // $navbarToRemove = $oldNavbarEl.prevAll('.navbar-previous').eq(index);
               $navbarToRemove = $(app.navbar.getElByPage($pageToRemove));
             }
             if ($pageToRemove[0] !== $newPage[0] && $pageToRemove.index() > $newPage.index()) {
@@ -7805,13 +7310,16 @@
                 $pageToRemove.addClass('stacked');
                 $pageToRemove.trigger('page:stack');
                 router.emit('pageStack', $pageToRemove[0]);
-                if (separateNavbar) {
+                if (dynamicNavbar) {
                   $navbarToRemove.addClass('stacked');
                 }
               } else {
                 router.pageCallback('beforeRemove', $pageToRemove, $navbarToRemove, 'previous', undefined, options);
+                if ($pageToRemove[0] === masterPageEl) {
+                  masterPageRemoved = true;
+                }
                 router.removePage($pageToRemove);
-                if (separateNavbar && $navbarToRemove.length > 0) {
+                if (dynamicNavbar && $navbarToRemove.length > 0) {
                   router.removeNavbar($navbarToRemove);
                 }
               }
@@ -7820,8 +7328,8 @@
         } else {
           var $pageToRemove = $oldPage.prev('.page-previous:not(.stacked)');
           var $navbarToRemove;
-          if (separateNavbar) {
-            // $navbarToRemove = $oldNavbarInner.prev('.navbar-inner:not(.stacked)');
+          if (dynamicNavbar) {
+            // $navbarToRemove = $oldNavbarEl.prev('.navbar-inner:not(.stacked)');
             $navbarToRemove = $(app.navbar.getElByPage($pageToRemove));
           }
           if (router.params.stackPages && router.initialPages.indexOf($pageToRemove[0]) >= 0) {
@@ -7831,8 +7339,11 @@
             $navbarToRemove.addClass('stacked');
           } else if ($pageToRemove.length > 0) {
             router.pageCallback('beforeRemove', $pageToRemove, $navbarToRemove, 'previous', undefined, options);
+            if ($pageToRemove[0] === masterPageEl) {
+              masterPageRemoved = true;
+            }
             router.removePage($pageToRemove);
-            if (separateNavbar && $navbarToRemove.length) {
+            if (dynamicNavbar && $navbarToRemove.length) {
               router.removeNavbar($navbarToRemove);
             }
           }
@@ -7854,25 +7365,25 @@
           $newPage.insertBefore($oldPage);
         }
       }
-      if (separateNavbar && $newNavbarInner.length) {
-        if ($newNavbarInner.children('.title-large').length) {
-          $newNavbarInner.addClass('navbar-inner-large');
+      if (dynamicNavbar && $newNavbarEl.length) {
+        if ($newNavbarEl.find('.title-large').length) {
+          $newNavbarEl.addClass('navbar-large');
         }
-        $newNavbarInner.insertBefore($oldNavbarInner);
-        if ($oldNavbarInner.length > 0) {
-          $newNavbarInner.insertBefore($oldNavbarInner);
+        $newNavbarEl.insertBefore($oldNavbarEl);
+        if ($oldNavbarEl.length > 0) {
+          $newNavbarEl.insertBefore($oldNavbarEl);
         } else {
-          if (!router.$navbarEl.parents(doc).length) {
-            router.$el.prepend(router.$navbarEl);
+          if (!router.$navbarsEl.parents(doc).length) {
+            router.$el.prepend(router.$navbarsEl);
           }
-          $navbarEl.append($newNavbarInner);
+          $navbarsEl.append($newNavbarEl);
         }
       }
       if (!newPageInDom) {
-        router.pageCallback('mounted', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
+        router.pageCallback('mounted', $newPage, $newNavbarEl, 'previous', 'current', options, $oldPage);
       } else if (options.route && options.route.route && options.route.route.keepAlive && !$newPage[0].f7PageMounted) {
         $newPage[0].f7PageMounted = true;
-        router.pageCallback('mounted', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
+        router.pageCallback('mounted', $newPage, $newNavbarEl, 'previous', 'current', options, $oldPage);
       }
     }
 
@@ -7892,32 +7403,32 @@
           .removeClass('page-master-stacked')
           .trigger('page:masterunstack');
         router.emit('pageMasterUnstack', $newPage[0]);
-        if (separateNavbar) {
+        if (dynamicNavbar) {
           $(app.navbar.getElByPage($newPage)).removeClass('navbar-master-stacked');
         }
       }
       // Page init and before init events
-      router.pageCallback('init', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
+      router.pageCallback('init', $newPage, $newNavbarEl, 'previous', 'current', options, $oldPage);
       var $previousPages = $newPage.prevAll('.page-previous:not(.stacked):not(.page-master)');
       if ($previousPages.length > 0) {
         $previousPages.each(function (index, pageToRemove) {
           var $pageToRemove = $(pageToRemove);
           var $navbarToRemove;
-          if (separateNavbar) {
-            // $navbarToRemove = $newNavbarInner.prevAll('.navbar-previous:not(.stacked)').eq(index);
+          if (dynamicNavbar) {
+            // $navbarToRemove = $newNavbarEl.prevAll('.navbar-previous:not(.stacked)').eq(index);
             $navbarToRemove = $(app.navbar.getElByPage($pageToRemove));
           }
           if (router.params.stackPages && router.initialPages.indexOf(pageToRemove) >= 0) {
             $pageToRemove.addClass('stacked');
             $pageToRemove.trigger('page:stack');
             router.emit('pageStack', $pageToRemove[0]);
-            if (separateNavbar) {
+            if (dynamicNavbar) {
               $navbarToRemove.addClass('stacked');
             }
           } else {
             router.pageCallback('beforeRemove', $pageToRemove, $navbarToRemove, 'previous', undefined);
             router.removePage($pageToRemove);
-            if (separateNavbar && $navbarToRemove.length) {
+            if (dynamicNavbar && $navbarToRemove.length) {
               router.removeNavbar($navbarToRemove);
             }
           }
@@ -7960,8 +7471,8 @@
 
     // Current Page & Navbar
     router.currentPageEl = $newPage[0];
-    if (dynamicNavbar && $newNavbarInner.length) {
-      router.currentNavbarEl = $newNavbarInner[0];
+    if (dynamicNavbar && $newNavbarEl.length) {
+      router.currentNavbarEl = $newNavbarEl[0];
     } else {
       delete router.currentNavbarEl;
     }
@@ -8000,12 +7511,18 @@
       }));
     }
 
+    // Check master detail
+
+    if (masterDetailEnabled && (currentIsMaster || masterPageRemoved)) {
+      view.checkMasterDetailBreakpoint(false);
+    }
+
     // Page init and before init events
-    router.pageCallback('init', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
+    router.pageCallback('init', $newPage, $newNavbarEl, 'previous', 'current', options, $oldPage);
 
     // Before animation callback
-    router.pageCallback('beforeOut', $oldPage, $oldNavbarInner, 'current', 'next', options);
-    router.pageCallback('beforeIn', $newPage, $newNavbarInner, 'previous', 'current', options);
+    router.pageCallback('beforeOut', $oldPage, $oldNavbarEl, 'current', 'next', options);
+    router.pageCallback('beforeIn', $newPage, $newNavbarEl, 'previous', 'current', options);
 
     // Animation
     function afterAnimation() {
@@ -8017,27 +7534,27 @@
       $oldPage.removeClass(pageClasses).addClass('page-next').attr('aria-hidden', 'true').trigger('page:position', { position: 'next' });
       router.emit('pagePosition', $oldPage[0], 'next');
       if (dynamicNavbar) {
-        $newNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
-        $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-next').attr('aria-hidden', 'true');
+        $newNavbarEl.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
+        $oldNavbarEl.removeClass(navbarClasses).addClass('navbar-next').attr('aria-hidden', 'true');
       }
 
       // After animation event
-      router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', 'next', options);
-      router.pageCallback('afterIn', $newPage, $newNavbarInner, 'previous', 'current', options);
+      router.pageCallback('afterOut', $oldPage, $oldNavbarEl, 'current', 'next', options);
+      router.pageCallback('afterIn', $newPage, $newNavbarEl, 'previous', 'current', options);
 
       // Remove Old Page
       if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
         $oldPage.addClass('stacked');
         $oldPage.trigger('page:stack');
         router.emit('pageStack', $oldPage[0]);
-        if (separateNavbar) {
-          $oldNavbarInner.addClass('stacked');
+        if (dynamicNavbar) {
+          $oldNavbarEl.addClass('stacked');
         }
       } else {
-        router.pageCallback('beforeRemove', $oldPage, $oldNavbarInner, 'next', undefined, options);
+        router.pageCallback('beforeRemove', $oldPage, $oldNavbarEl, 'next', undefined, options);
         router.removePage($oldPage);
-        if (separateNavbar && $oldNavbarInner.length) {
-          router.removeNavbar($oldNavbarInner);
+        if (dynamicNavbar && $oldNavbarEl.length) {
+          router.removeNavbar($oldNavbarEl);
         }
       }
 
@@ -8062,14 +7579,26 @@
       $newPage.removeClass(pageClasses).addClass('page-previous').removeAttr('aria-hidden').trigger('page:position', { position: 'previous' });
       router.emit('pagePosition', $newPage[0], 'previous');
       if (dynamicNavbar) {
-        $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-current');
-        $newNavbarInner.removeClass(navbarClasses).addClass('navbar-previous').removeAttr('aria-hidden');
+        $oldNavbarEl.removeClass(navbarClasses).addClass('navbar-current');
+        $newNavbarEl.removeClass(navbarClasses).addClass('navbar-previous').removeAttr('aria-hidden');
       }
     }
 
     if (options.animate && !(currentIsMaster && app.width >= router.params.masterDetailBreakpoint)) {
+      var transition = router.params.transition;
+      if ($oldPage[0] && $oldPage[0].f7PageTransition) {
+        transition = $oldPage[0].f7PageTransition;
+        delete $oldPage[0].f7PageTransition;
+      }
+      if (options.transition) { transition = options.transition; }
+      if (!transition && router.previousRoute && router.previousRoute.route) {
+        transition = router.previousRoute.route.transition;
+      }
+      if (!transition && router.previousRoute && router.previousRoute.route && router.previousRoute.route.options) {
+        transition = router.previousRoute.route.options.transition;
+      }
       setPositionClasses();
-      router.animate($oldPage, $newPage, $oldNavbarInner, $newNavbarInner, 'backward', function () {
+      router.animate($oldPage, $newPage, $oldNavbarEl, $newNavbarEl, 'backward', transition, function () {
         afterAnimation();
       });
     } else {
@@ -8443,11 +7972,10 @@
     return router;
   }
 
-  function clearPreviousPages() {
-    var router = this;
+  function clearPreviousPages(router) {
     appRouterCheck(router, 'clearPreviousPages');
     var app = router.app;
-    var separateNavbar = router.separateNavbar;
+    var dynamicNavbar = router.dynamicNavbar;
 
     var $pagesToRemove = router.$el
       .children('.page')
@@ -8458,18 +7986,18 @@
 
     $pagesToRemove.each(function (index, pageEl) {
       var $oldPageEl = $(pageEl);
-      var $oldNavbarInnerEl = $(app.navbar.getElByPage($oldPageEl));
+      var $oldNavbarEl = $(app.navbar.getElByPage($oldPageEl));
       if (router.params.stackPages && router.initialPages.indexOf($oldPageEl[0]) >= 0) {
         $oldPageEl.addClass('stacked');
-        if (separateNavbar) {
-          $oldNavbarInnerEl.addClass('stacked');
+        if (dynamicNavbar) {
+          $oldNavbarEl.addClass('stacked');
         }
       } else {
         // Page remove event
-        router.pageCallback('beforeRemove', $oldPageEl, $oldNavbarInnerEl, 'previous', undefined, {});
+        router.pageCallback('beforeRemove', $oldPageEl, $oldNavbarEl, 'previous', undefined, {});
         router.removePage($oldPageEl);
-        if (separateNavbar && $oldNavbarInnerEl.length) {
-          router.removeNavbar($oldNavbarInnerEl);
+        if (dynamicNavbar && $oldNavbarEl.length) {
+          router.removeNavbar($oldNavbarEl);
         }
       }
     });
@@ -8480,7 +8008,7 @@
     appRouterCheck(router, 'clearPreviousHistory');
     var url = router.history[router.history.length - 1];
 
-    router.clearPreviousPages();
+    clearPreviousPages(router);
 
     router.history = [url];
     router.view.history = [url];
@@ -8513,13 +8041,12 @@
           routes: view.routes,
           $el: view.$el,
           el: view.el,
-          $navbarEl: view.$navbarEl,
-          navbarEl: view.navbarEl,
+          $navbarsEl: view.$navbarsEl,
+          navbarsEl: view.navbarsEl,
           history: view.history,
           scrollHistory: view.scrollHistory,
           cache: app.cache,
           dynamicNavbar: app.theme === 'ios' && view.params.iosDynamicNavbar,
-          separateNavbar: app.theme === 'ios' && view.params.iosDynamicNavbar && view.params.iosSeparateDynamicNavbar,
           initialPages: [],
           initialNavbars: [],
         });
@@ -8571,16 +8098,15 @@
     Router.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Router.prototype.constructor = Router;
 
-    Router.prototype.animatableNavElements = function animatableNavElements (newNavbarInner, oldNavbarInner, toLarge, fromLarge, direction) {
+    Router.prototype.animatableNavElements = function animatableNavElements ($newNavbarEl, $oldNavbarEl, toLarge, fromLarge, direction) {
       var router = this;
       var dynamicNavbar = router.dynamicNavbar;
-      var separateNavbar = router.separateNavbar;
       var animateIcon = router.params.iosAnimateNavbarBackIcon;
 
       var newNavEls;
       var oldNavEls;
-      function animatableNavEl($el, navbarInner) {
-        var isSliding = $el.hasClass('sliding') || navbarInner.hasClass('sliding');
+      function animatableNavEl($el, $navbarInner) {
+        var isSliding = $el.hasClass('sliding') || $navbarInner.hasClass('sliding');
         var isSubnavbar = $el.hasClass('subnavbar');
         var needsOpacityTransition = isSliding ? !isSubnavbar : true;
         var $iconEl = $el.find('.back .icon');
@@ -8602,21 +8128,21 @@
       if (dynamicNavbar) {
         newNavEls = [];
         oldNavEls = [];
-        newNavbarInner.children('.left, .right, .title, .subnavbar').each(function (index, navEl) {
+        $newNavbarEl.children('.navbar-inner').children('.left, .right, .title, .subnavbar').each(function (index, navEl) {
           var $navEl = $(navEl);
-          if ($navEl.hasClass('left') && fromLarge && direction === 'forward' && separateNavbar) { return; }
+          if ($navEl.hasClass('left') && fromLarge && direction === 'forward') { return; }
           if ($navEl.hasClass('title') && toLarge) { return; }
-          newNavEls.push(animatableNavEl($navEl, newNavbarInner));
+          newNavEls.push(animatableNavEl($navEl, $newNavbarEl.children('.navbar-inner')));
         });
-        if (!(oldNavbarInner.hasClass('navbar-master') && router.params.masterDetailBreakpoint > 0 && router.app.width >= router.params.masterDetailBreakpoint)) {
-          oldNavbarInner.children('.left, .right, .title, .subnavbar').each(function (index, navEl) {
+        if (!($oldNavbarEl.hasClass('navbar-master') && router.params.masterDetailBreakpoint > 0 && router.app.width >= router.params.masterDetailBreakpoint)) {
+          $oldNavbarEl.children('.navbar-inner').children('.left, .right, .title, .subnavbar').each(function (index, navEl) {
             var $navEl = $(navEl);
-            if ($navEl.hasClass('left') && toLarge && !fromLarge && direction === 'forward' && separateNavbar) { return; }
-            if ($navEl.hasClass('left') && toLarge && direction === 'backward' && separateNavbar) { return; }
+            if ($navEl.hasClass('left') && toLarge && !fromLarge && direction === 'forward') { return; }
+            if ($navEl.hasClass('left') && toLarge && direction === 'backward') { return; }
             if ($navEl.hasClass('title') && fromLarge) {
               return;
             }
-            oldNavEls.push(animatableNavEl($navEl, oldNavbarInner));
+            oldNavEls.push(animatableNavEl($navEl, $oldNavbarEl.children('.navbar-inner')));
           });
         }
         [oldNavEls, newNavEls].forEach(function (navEls) {
@@ -8639,14 +8165,47 @@
       return { newNavEls: newNavEls, oldNavEls: oldNavEls };
     };
 
-    Router.prototype.animate = function animate (oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback) {
+    Router.prototype.animate = function animate ($oldPageEl, $newPageEl, $oldNavbarEl, $newNavbarEl, direction, transition, callback) {
       var router = this;
       if (router.params.animateCustom) {
-        router.params.animateCustom.apply(router, [oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback]);
+        router.params.animateCustom.apply(router, [$oldPageEl, $newPageEl, $oldNavbarEl, $newNavbarEl, direction, callback]);
         return;
       }
       var dynamicNavbar = router.dynamicNavbar;
       var ios = router.app.theme === 'ios';
+      if (transition) {
+        var routerCustomTransitionClass = "router-transition-custom router-transition-" + transition + "-" + direction;
+        // Animate
+        var onCustomTransitionDone = function () {
+          router.$el.removeClass(routerCustomTransitionClass);
+          if (dynamicNavbar && router.$navbarsEl.length) {
+            if ($newNavbarEl) {
+              router.$navbarsEl.prepend($newNavbarEl);
+            }
+            if ($oldNavbarEl) {
+              router.$navbarsEl.prepend($oldNavbarEl);
+            }
+          }
+          if (callback) { callback(); }
+        };
+
+        (direction === 'forward' ? $newPageEl : $oldPageEl).animationEnd(onCustomTransitionDone);
+        if (dynamicNavbar) {
+          if ($newNavbarEl && $newPageEl) {
+            $newNavbarEl.removeClass('navbar-next navbar-previous navbar-current');
+            $newPageEl.prepend($newNavbarEl);
+          }
+          if ($oldNavbarEl && $oldPageEl) {
+            $oldNavbarEl.removeClass('navbar-next navbar-previous navbar-current');
+            $oldPageEl.prepend($oldNavbarEl);
+          }
+        }
+
+        router.$el.addClass(routerCustomTransitionClass);
+        return;
+      }
+
+
       // Router Animation class
       var routerTransitionClass = "router-transition-" + direction + " router-transition";
 
@@ -8660,11 +8219,18 @@
       var newIsLarge;
 
       if (ios && dynamicNavbar) {
-        oldIsLarge = oldNavbarInner && oldNavbarInner.hasClass('navbar-inner-large');
-        newIsLarge = newNavbarInner && newNavbarInner.hasClass('navbar-inner-large');
-        fromLarge = oldIsLarge && !oldNavbarInner.hasClass('navbar-inner-large-collapsed');
-        toLarge = newIsLarge && !newNavbarInner.hasClass('navbar-inner-large-collapsed');
-        var navEls = router.animatableNavElements(newNavbarInner, oldNavbarInner, toLarge, fromLarge, direction);
+        var betweenMasterAndDetail = router.params.masterDetailBreakpoint > 0 && router.app.width >= router.params.masterDetailBreakpoint
+          && (
+            ($oldNavbarEl.hasClass('navbar-master') && $newNavbarEl.hasClass('navbar-master-detail'))
+            || ($oldNavbarEl.hasClass('navbar-master-detail') && $newNavbarEl.hasClass('navbar-master'))
+          );
+        if (!betweenMasterAndDetail) {
+          oldIsLarge = $oldNavbarEl && $oldNavbarEl.hasClass('navbar-large');
+          newIsLarge = $newNavbarEl && $newNavbarEl.hasClass('navbar-large');
+          fromLarge = oldIsLarge && !$oldNavbarEl.hasClass('navbar-large-collapsed');
+          toLarge = newIsLarge && !$newNavbarEl.hasClass('navbar-large-collapsed');
+        }
+        var navEls = router.animatableNavElements($newNavbarEl, $oldNavbarEl, toLarge, fromLarge, direction);
         newNavEls = navEls.newNavEls;
         oldNavEls = navEls.oldNavEls;
       }
@@ -8673,12 +8239,12 @@
         if (!(ios && dynamicNavbar)) { return; }
         if (progress === 1) {
           if (toLarge) {
-            newNavbarInner.addClass('router-navbar-transition-to-large');
-            oldNavbarInner.addClass('router-navbar-transition-to-large');
+            $newNavbarEl.addClass('router-navbar-transition-to-large');
+            $oldNavbarEl.addClass('router-navbar-transition-to-large');
           }
           if (fromLarge) {
-            newNavbarInner.addClass('router-navbar-transition-from-large');
-            oldNavbarInner.addClass('router-navbar-transition-from-large');
+            $newNavbarEl.addClass('router-navbar-transition-from-large');
+            $oldNavbarEl.addClass('router-navbar-transition-from-large');
           }
         }
         newNavEls.forEach(function (navEl) {
@@ -8708,32 +8274,32 @@
       // AnimationEnd Callback
       function onDone() {
         if (router.dynamicNavbar) {
-          if (newNavbarInner) {
-            newNavbarInner.removeClass('router-navbar-transition-to-large router-navbar-transition-from-large');
-            newNavbarInner.addClass('navbar-no-title-large-transition');
+          if ($newNavbarEl) {
+            $newNavbarEl.removeClass('router-navbar-transition-to-large router-navbar-transition-from-large');
+            $newNavbarEl.addClass('navbar-no-title-large-transition');
             Utils.nextFrame(function () {
-              newNavbarInner.removeClass('navbar-no-title-large-transition');
+              $newNavbarEl.removeClass('navbar-no-title-large-transition');
             });
           }
-          if (oldNavbarInner) {
-            oldNavbarInner.removeClass('router-navbar-transition-to-large router-navbar-transition-from-large');
+          if ($oldNavbarEl) {
+            $oldNavbarEl.removeClass('router-navbar-transition-to-large router-navbar-transition-from-large');
           }
-          if (newNavbarInner.hasClass('sliding')) {
-            newNavbarInner.find('.title, .left, .right, .left .icon, .subnavbar').transform('');
+          if ($newNavbarEl.hasClass('sliding')) {
+            $newNavbarEl.find('.title, .left, .right, .left .icon, .subnavbar').transform('');
           } else {
-            newNavbarInner.find('.sliding').transform('');
+            $newNavbarEl.find('.sliding').transform('');
           }
-          if (oldNavbarInner.hasClass('sliding')) {
-            oldNavbarInner.find('.title, .left, .right, .left .icon, .subnavbar').transform('');
+          if ($oldNavbarEl.hasClass('sliding')) {
+            $oldNavbarEl.find('.title, .left, .right, .left .icon, .subnavbar').transform('');
           } else {
-            oldNavbarInner.find('.sliding').transform('');
+            $oldNavbarEl.find('.sliding').transform('');
           }
         }
         router.$el.removeClass(routerTransitionClass);
         if (callback) { callback(); }
       }
 
-      (direction === 'forward' ? newPage : oldPage).animationEnd(function () {
+      (direction === 'forward' ? $newPageEl : $oldPageEl).animationEnd(function () {
         onDone();
       });
 
@@ -9423,19 +8989,12 @@
       var view = router.view;
 
       // Init Swipeback
-      {
-        if (
-          (view && router.params.iosSwipeBack && app.theme === 'ios')
-          || (view && router.params.mdSwipeBack && app.theme === 'md')
-          || (view && router.params.auroraSwipeBack && app.theme === 'aurora')
-        ) {
-          SwipeBack(router);
-        }
-      }
-
-      // Dynamic not separated navbbar
-      if (router.dynamicNavbar && !router.separateNavbar) {
-        router.$el.addClass('router-dynamic-navbar-inside');
+      if (
+        (view && router.params.iosSwipeBack && app.theme === 'ios')
+        || (view && router.params.mdSwipeBack && app.theme === 'md')
+        || (view && router.params.auroraSwipeBack && app.theme === 'aurora')
+      ) {
+        SwipeBack(router);
       }
 
       var initUrl = router.params.url;
@@ -9519,52 +9078,53 @@
         router.$el.children('.page').each(function (index, pageEl) {
           var $pageEl = $(pageEl);
           router.initialPages.push($pageEl[0]);
-          if (router.separateNavbar && $pageEl.children('.navbar').length > 0) {
-            router.initialNavbars.push($pageEl.children('.navbar').find('.navbar-inner')[0]);
+          if (router.dynamicNavbar && $pageEl.children('.navbar').length > 0) {
+            router.initialNavbars.push($pageEl.children('.navbar')[0]);
           }
         });
       }
 
-      if (router.$el.children('.page:not(.stacked)').length === 0 && initUrl) {
+      if (router.$el.children('.page:not(.stacked)').length === 0 && initUrl && router.params.loadInitialPage) {
         // No pages presented in DOM, reload new page
         router.navigate(initUrl, {
           initial: true,
           reloadCurrent: true,
           pushState: false,
         });
-      } else {
+      } else if (router.$el.children('.page:not(.stacked)').length) {
         // Init current DOM page
         var hasTabRoute;
         router.currentRoute = currentRoute;
         router.$el.children('.page:not(.stacked)').each(function (index, pageEl) {
           var $pageEl = $(pageEl);
-          var $navbarInnerEl;
+          var $navbarEl;
           $pageEl.addClass('page-current');
-          if (router.separateNavbar) {
-            $navbarInnerEl = $pageEl.children('.navbar').children('.navbar-inner');
-            if ($navbarInnerEl.length > 0) {
-              if (!router.$navbarEl.parents(doc).length) {
-                router.$el.prepend(router.$navbarEl);
+          if (router.dynamicNavbar) {
+            $navbarEl = $pageEl.children('.navbar');
+            if ($navbarEl.length > 0) {
+              if (!router.$navbarsEl.parents(doc).length) {
+                router.$el.prepend(router.$navbarsEl);
               }
-              $navbarInnerEl.addClass('navbar-current');
-              router.$navbarEl.append($navbarInnerEl);
-              if ($navbarInnerEl.children('.title-large').length) {
-                $navbarInnerEl.addClass('navbar-inner-large');
+              $navbarEl.addClass('navbar-current');
+              router.$navbarsEl.append($navbarEl);
+              if ($navbarEl.children('.title-large').length) {
+                $navbarEl.addClass('navbar-large');
               }
               $pageEl.children('.navbar').remove();
             } else {
-              router.$navbarEl.addClass('navbar-hidden');
-              if ($navbarInnerEl.children('.title-large').length) {
-                router.$navbarEl.addClass('navbar-hidden navbar-large-hidden');
+              router.$navbarsEl.addClass('navbar-hidden');
+              if ($navbarEl.children('.title-large').length) {
+                router.$navbarsEl.addClass('navbar-hidden navbar-large-hidden');
               }
             }
           }
           if (router.currentRoute && router.currentRoute.route && router.currentRoute.route.master && router.params.masterDetailBreakpoint > 0) {
             $pageEl.addClass('page-master');
             $pageEl.trigger('page:role', { role: 'master' });
-            if ($navbarInnerEl && $navbarInnerEl.length) {
-              $navbarInnerEl.addClass('navbar-master');
+            if ($navbarEl && $navbarEl.length) {
+              $navbarEl.addClass('navbar-master');
             }
+            view.checkMasterDetailBreakpoint();
           }
           var initOptions = {
             route: router.currentRoute,
@@ -9573,18 +9133,18 @@
             Utils.extend(initOptions, router.currentRoute.route.options);
           }
           router.currentPageEl = $pageEl[0];
-          if (router.separateNavbar && $navbarInnerEl.length) {
-            router.currentNavbarEl = $navbarInnerEl[0];
+          if (router.dynamicNavbar && $navbarEl.length) {
+            router.currentNavbarEl = $navbarEl[0];
           }
           router.removeThemeElements($pageEl);
-          if (router.separateNavbar && $navbarInnerEl.length) {
-            router.removeThemeElements($navbarInnerEl);
+          if (router.dynamicNavbar && $navbarEl.length) {
+            router.removeThemeElements($navbarEl);
           }
           if (initOptions.route.route.tab) {
             hasTabRoute = true;
             router.tabLoad(initOptions.route.route.tab, Utils.extend({}, initOptions));
           }
-          router.pageCallback('init', $pageEl, $navbarInnerEl, 'current', undefined, initOptions);
+          router.pageCallback('init', $pageEl, $navbarEl, 'current', undefined, initOptions);
         });
         if (historyRestored) {
           router.navigate(initUrl, {
@@ -9647,8 +9207,6 @@
   Router.prototype.backward = backward;
   Router.prototype.loadBack = loadBack;
   Router.prototype.back = back;
-  // Clear previoius pages from the DOM
-  Router.prototype.clearPreviousPages = clearPreviousPages;
   // Clear history
   Router.prototype.clearPreviousHistory = clearPreviousHistory;
 
@@ -9712,11 +9270,11 @@
       }
 
       // DynamicNavbar
-      var $navbarEl;
-      if (app.theme === 'ios' && view.params.iosDynamicNavbar && view.params.iosSeparateDynamicNavbar) {
-        $navbarEl = $el.children('.navbar').eq(0);
-        if ($navbarEl.length === 0) {
-          $navbarEl = $('<div class="navbar"></div>');
+      var $navbarsEl;
+      if (app.theme === 'ios' && view.params.iosDynamicNavbar) {
+        $navbarsEl = $el.children('.navbars').eq(0);
+        if ($navbarsEl.length === 0) {
+          $navbarsEl = $('<div class="navbars"></div>');
         }
       }
 
@@ -9727,8 +9285,8 @@
         el: $el[0],
         name: view.params.name,
         main: view.params.main || $el.hasClass('view-main'),
-        $navbarEl: $navbarEl,
-        navbarEl: $navbarEl ? $navbarEl[0] : undefined,
+        $navbarsEl: $navbarsEl,
+        navbarsEl: $navbarsEl ? $navbarsEl[0] : undefined,
         selector: selector,
         history: [],
         scrollHistory: {},
@@ -9783,10 +9341,10 @@
       var view = this;
       var app = view.app;
 
-      view.$el.trigger('view:beforedestroy', view);
+      view.$el.trigger('view:beforedestroy');
       view.emit('local::beforeDestroy viewBeforeDestroy', view);
 
-      app.off('resize', view.checkmasterDetailBreakpoint);
+      app.off('resize', view.checkMasterDetailBreakpoint);
 
       if (view.main) {
         app.views.main = null;
@@ -9816,21 +9374,22 @@
       view = null;
     };
 
-    View.prototype.checkmasterDetailBreakpoint = function checkmasterDetailBreakpoint () {
+    View.prototype.checkMasterDetailBreakpoint = function checkMasterDetailBreakpoint (force) {
       var view = this;
       var app = view.app;
       var wasMasterDetail = view.$el.hasClass('view-master-detail');
-      if (app.width >= view.params.masterDetailBreakpoint) {
+      var isMasterDetail = app.width >= view.params.masterDetailBreakpoint && view.$el.children('.page-master').length;
+      if ((typeof force === 'undefined' && isMasterDetail) || force === true) {
         view.$el.addClass('view-master-detail');
         if (!wasMasterDetail) {
-          view.emit('local::masterDetailBreakpoint viewMasterDetailBreakpoint');
-          view.$el.trigger('view:masterDetailBreakpoint', view);
+          view.emit('local::masterDetailBreakpoint viewMasterDetailBreakpoint', view);
+          view.$el.trigger('view:masterDetailBreakpoint');
         }
       } else {
         view.$el.removeClass('view-master-detail');
         if (wasMasterDetail) {
-          view.emit('local::masterDetailBreakpoint viewMasterDetailBreakpoint');
-          view.$el.trigger('view:masterDetailBreakpoint', view);
+          view.emit('local::masterDetailBreakpoint viewMasterDetailBreakpoint', view);
+          view.$el.trigger('view:masterDetailBreakpoint');
         }
       }
     };
@@ -9838,9 +9397,9 @@
     View.prototype.initMasterDetail = function initMasterDetail () {
       var view = this;
       var app = view.app;
-      view.checkmasterDetailBreakpoint = view.checkmasterDetailBreakpoint.bind(view);
-      view.checkmasterDetailBreakpoint();
-      app.on('resize', view.checkmasterDetailBreakpoint);
+      view.checkMasterDetailBreakpoint = view.checkMasterDetailBreakpoint.bind(view);
+      view.checkMasterDetailBreakpoint();
+      app.on('resize', view.checkMasterDetailBreakpoint);
     };
 
     View.prototype.init = function init () {
@@ -9850,7 +9409,7 @@
           view.initMasterDetail();
         }
         view.router.init();
-        view.$el.trigger('view:init', view);
+        view.$el.trigger('view:init');
         view.emit('local::init viewInit', view);
       }
     };
@@ -9914,7 +9473,9 @@
       var validUrl = url && url.length > 0 && url[0] !== '#';
       if (validUrl || $clickedLinkEl.hasClass('back')) {
         var view;
-        if (clickedLinkData.view) {
+        if (clickedLinkData.view && clickedLinkData.view === 'current') {
+          view = app.views.current;
+        } else if (clickedLinkData.view) {
           view = $(clickedLinkData.view)[0].f7View;
         } else {
           view = $clickedEl.parents('.view')[0] && $clickedEl.parents('.view')[0].f7View;
@@ -10092,11 +9653,17 @@
               },
             }
           );
-          var createdComponent = app.component.create(componentOptions, extendContext);
-          resolve(createdComponent.el);
+          app.component.create(componentOptions, extendContext)
+            .then(function (createdComponent) {
+              resolve(createdComponent.el);
+            })
+            .catch(function (err) {
+              reject();
+              throw new Error(err);
+            });
         }
         var cachedComponent;
-        if (compiledUrl) {
+        if (compiledUrl && router.params.componentCache) {
           router.cache.components.forEach(function (cached) {
             if (cached.url === compiledUrl) { cachedComponent = cached.component; }
           });
@@ -10113,10 +9680,12 @@
             .xhrRequest(url, options)
             .then(function (loadedComponent) {
               var parsedComponent = app.component.parse(loadedComponent);
-              router.cache.components.push({
-                url: compiledUrl,
-                component: parsedComponent,
-              });
+              if (router.params.componentCache) {
+                router.cache.components.push({
+                  url: compiledUrl,
+                  component: parsedComponent,
+                });
+              }
               compile(parsedComponent);
             })
             .catch(function (err) {
@@ -10162,83 +9731,6 @@
       init: function init() {
         History.init(this);
       },
-    },
-  };
-
-  var keyPrefix = 'f7storage-';
-  var Storage = {
-    get: function get(key) {
-      return new Promise(function (resolve, reject) {
-        try {
-          var value = JSON.parse(win.localStorage.getItem(("" + keyPrefix + key)));
-          resolve(value);
-        } catch (e) {
-          reject(e);
-        }
-      });
-    },
-    set: function set(key, value) {
-      return new Promise(function (resolve, reject) {
-        try {
-          win.localStorage.setItem(("" + keyPrefix + key), JSON.stringify(value));
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-      });
-    },
-    remove: function remove(key) {
-      return new Promise(function (resolve, reject) {
-        try {
-          win.localStorage.removeItem(("" + keyPrefix + key));
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-      });
-    },
-    clear: function clear() {
-
-    },
-    length: function length() {
-
-    },
-    keys: function keys() {
-      return new Promise(function (resolve, reject) {
-        try {
-          var keys = Object.keys(win.localStorage)
-            .filter(function (keyName) { return keyName.indexOf(keyPrefix) === 0; })
-            .map(function (keyName) { return keyName.replace(keyPrefix, ''); });
-          resolve(keys);
-        } catch (e) {
-          reject(e);
-        }
-      });
-    },
-    forEach: function forEach(callback) {
-      return new Promise(function (resolve, reject) {
-        try {
-          Object.keys(win.localStorage)
-            .filter(function (keyName) { return keyName.indexOf(keyPrefix) === 0; })
-            .forEach(function (keyName, index) {
-              var key = keyName.replace(keyPrefix, '');
-              Storage.get(key).then(function (value) {
-                callback(key, value, index);
-              });
-            });
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-      });
-    },
-  };
-
-  var StorageModule = {
-    name: 'storage',
-    static: {
-      Storage: Storage,
-      storage: Storage,
     },
   };
 
@@ -10305,6 +9797,8 @@
       return vnode(sel, data, children, text, undefined);
   }
 
+  var customComponents = {};
+
   /* eslint no-use-before-define: "off" */
 
   var selfClosing = 'area base br col command embed hr img input keygen link menuitem meta param source track wbr'.split(' ');
@@ -10312,22 +9806,85 @@
   var booleanProps = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple readOnly indeterminate'.split(' ');
   var tempDom = doc.createElement('div');
 
-  function getHooks(data, app, initial, isRoot) {
+  function toCamelCase$1(name) {
+    return name
+      .split('-')
+      .map(function (word, index) {
+        if (index === 0) { return word.toLowerCase(); }
+        return word[0].toUpperCase() + word.substr(1);
+      })
+      .join('');
+  }
+  function contextFromAttrs() {
+    var args = [], len = arguments.length;
+    while ( len-- ) args[ len ] = arguments[ len ];
+
+    var context = {};
+    args.forEach(function (obj) {
+      if ( obj === void 0 ) obj = {};
+
+      Object.keys(obj).forEach(function (key) {
+        context[toCamelCase$1(key)] = obj[key];
+      });
+    });
+
+    return context;
+  }
+
+  function getHooks(data, app, initial, isRoot, tagName) {
     var hooks = {};
-    if (!data || !data.attrs || !data.attrs.class) { return hooks; }
-    var classNames = data.attrs.class;
     var insert = [];
     var destroy = [];
     var update = [];
     var postpatch = [];
-    classNames.split(' ').forEach(function (className) {
-      if (!initial) {
-        insert.push.apply(insert, app.getVnodeHooks('insert', className));
-      }
-      destroy.push.apply(destroy, app.getVnodeHooks('destroy', className));
-      update.push.apply(update, app.getVnodeHooks('update', className));
-      postpatch.push.apply(postpatch, app.getVnodeHooks('postpatch', className));
-    });
+    var isCustomComponent = tagName && tagName.indexOf('-') > 0 && customComponents[tagName];
+
+    if (isCustomComponent) {
+      insert.push(function (vnode) {
+        if (vnode.sel !== tagName) { return; }
+        app.component.create(
+          Object.assign({ el: vnode.elm }, customComponents[tagName]),
+          {
+            $props: contextFromAttrs(data.attrs || {}, data.props || {}),
+          }
+        ).then(function (c) {
+          // eslint-disable-next-line
+          vnode.elm.__component__ = c;
+        });
+      });
+      destroy.push(function (vnode) {
+        // eslint-disable-next-line
+        var component = vnode && vnode.elm && vnode.elm.__component__;
+        if (component) {
+          var el = component.el;
+          if (component.$destroy) { component.$destroy(); }
+          if (el && el.parentNode) { el.parentNode.removeChild(el); }
+          delete vnode.elm.__component__; // eslint-disable-line
+        }
+      });
+      update.push(function (oldVnode, vnode) {
+        // eslint-disable-next-line
+        var component = vnode && vnode.elm && vnode.elm.__component__;
+        if (!component) { return; }
+        var newProps = contextFromAttrs(vnode.data.attrs || {}, vnode.data.props || {});
+        Object.assign(component.$props, newProps);
+        component.$update();
+      });
+    }
+
+    if (!isCustomComponent) {
+      if (!data || !data.attrs || !data.attrs.class) { return hooks; }
+
+      var classNames = data.attrs.class;
+      classNames.split(' ').forEach(function (className) {
+        if (!initial) {
+          insert.push.apply(insert, app.getVnodeHooks('insert', className));
+        }
+        destroy.push.apply(destroy, app.getVnodeHooks('destroy', className));
+        update.push.apply(update, app.getVnodeHooks('update', className));
+        postpatch.push.apply(postpatch, app.getVnodeHooks('postpatch', className));
+      });
+    }
 
     if (isRoot && !initial) {
       postpatch.push(function (oldVnode, vnode) {
@@ -10341,6 +9898,7 @@
     if (insert.length === 0 && destroy.length === 0 && update.length === 0 && postpatch.length === 0) {
       return hooks;
     }
+
     if (insert.length) {
       hooks.insert = function (vnode) {
         insert.forEach(function (f) { return f(vnode); });
@@ -10455,10 +10013,8 @@
     return handler;
   }
 
-  function getData(el, context, app, initial, isRoot) {
-    var data = {
-      context: context,
-    };
+  function getData(el, context, app, initial, isRoot, tagName) {
+    var data = { context: context };
     var attributes = el.attributes;
     Array.prototype.forEach.call(attributes, function (attr) {
       var attrName = attr.name;
@@ -10520,7 +10076,7 @@
         }
       }
     });
-    var hooks = getHooks(data, app, initial, isRoot);
+    var hooks = getHooks(data, app, initial, isRoot, tagName);
     hooks.prepatch = function (oldVnode, vnode) {
       if (!oldVnode || !vnode) { return; }
       if (oldVnode && oldVnode.data && oldVnode.data.props) {
@@ -10546,7 +10102,9 @@
     for (var i = 0; i < nodes.length; i += 1) {
       var childNode = nodes[i];
       var child = elementToVNode(childNode, context, app, initial);
-      if (child) {
+      if (Array.isArray(child)) {
+        children.push.apply(children, child);
+      } else if (child) {
         children.push(child);
       }
     }
@@ -10554,23 +10112,22 @@
   }
 
   function elementToVNode(el, context, app, initial, isRoot) {
-    if (el.nodeType === 1) {
-      // element (statement adds inline SVG compatibility)
-      var tagName = (el instanceof win.SVGElement) ? el.nodeName : el.nodeName.toLowerCase();
-      return h(
-        tagName,
-        getData(el, context, app, initial, isRoot),
-        selfClosing.indexOf(tagName) >= 0 ? [] : getChildren(el, context, app, initial)
-      );
-    }
     if (el.nodeType === 3) {
       // text
       return el.textContent;
     }
-    return null;
+    if (el.nodeType !== 1) { return null; }
+    // element (statement adds inline SVG compatibility)
+    var tagName = (el instanceof win.SVGElement) ? el.nodeName : el.nodeName.toLowerCase();
+
+    return h(
+      tagName,
+      getData(el, context, app, initial, isRoot, tagName),
+      selfClosing.indexOf(tagName) >= 0 ? [] : getChildren(el, context, app, initial)
+    );
   }
 
-  function vdom (html, context, app, initial) {
+  function vdom (html, context, initial) {
     if ( html === void 0 ) html = '';
 
     // Save to temp dom
@@ -10583,7 +10140,7 @@
         rootEl = tempDom.childNodes[i];
       }
     }
-    var result = elementToVNode(rootEl, context, app, initial, true);
+    var result = elementToVNode(rootEl, context, context.$app, initial, true);
 
     // Clean
     tempDom.innerHTML = '';
@@ -10604,6 +10161,9 @@
       return document.createComment(text);
   }
   function insertBefore$1(parentNode, newNode, referenceNode) {
+      if (referenceNode && referenceNode.parentNode !== parentNode) {
+        if (referenceNode.__component__) { referenceNode = referenceNode.__component__.el; }
+      }
       parentNode.insertBefore(newNode, referenceNode);
   }
   function removeChild(node, child) {
@@ -11195,12 +10755,19 @@
     styleModule,
     eventListenersModule ]);
 
-  var Framework7Component = function Framework7Component(app, options, extendContext) {
+  var componentMixins = {};
+
+  /* eslint no-underscore-dangle: "off" */
+
+  var Component = function Component(app, options, extendContext) {
+    if ( options === void 0 ) options = {};
     if ( extendContext === void 0 ) extendContext = {};
 
     var id = Utils.id();
-    var self = Utils.merge(
-      this,
+    var self = this;
+    Utils.merge(
+      self,
+      { $props: {} },
       extendContext,
       {
         $: $,
@@ -11209,10 +10776,21 @@
         $app: app,
         $f7: app,
         $options: Utils.extend({ id: id }, options),
-        $id: options.id || id,
+        $id: options.isClassComponent ? self.constructor.id : (options.id || id),
+        $mixins: options.isClassComponent ? self.constructor.mixins : options.mixins,
       }
     );
     var $options = self.$options;
+
+    if (self.$mixins && self.$mixins.length) {
+      for (var i = self.$mixins.length - 1; i >= 0; i -= 1) {
+        var mixin = self.$mixins[i];
+        if (typeof mixin === 'string') {
+          if (componentMixins[mixin]) { self.$mixins[i] = componentMixins[mixin]; }
+          else { self.$mixins.splice(i, 1); }
+        }
+      }
+    }
 
     // Root data and methods
     Object.defineProperty(self, '$root', {
@@ -11239,22 +10817,22 @@
       set: function set() {},
     });
 
-    // Apply context
-    ('beforeCreate created beforeMount mounted beforeDestroy destroyed updated').split(' ').forEach(function (cycleKey) {
-      if ($options[cycleKey]) { $options[cycleKey] = $options[cycleKey].bind(self); }
-    });
-
-    if ($options.data) {
-      $options.data = $options.data.bind(self);
-      // Data
-      Utils.extend(self, $options.data());
-    }
+    // Bind render
     if ($options.render) { $options.render = $options.render.bind(self); }
-    if ($options.methods) {
-      Object.keys($options.methods).forEach(function (methodName) {
-        self[methodName] = $options.methods[methodName].bind(self);
+
+    // Bind methods
+    var methods = {};
+    if (self.$mixins && self.$mixins.length) {
+      self.$mixins.forEach(function (mixin) {
+        if (mixin.methods) { Object.assign(methods, mixin.methods); }
       });
     }
+    if ($options.methods) {
+      Object.assign(methods, $options.methods);
+    }
+    Object.keys(methods).forEach(function (methodName) {
+      self[methodName] = methods[methodName].bind(self);
+    });
 
     // Bind Events
     if ($options.on) {
@@ -11268,47 +10846,103 @@
       });
     }
 
-    // Before create hook
-    if ($options.beforeCreate) { $options.beforeCreate(); }
+    return new Promise(function (resolve, reject) {
+      self.$hook('data', true)
+        .then(function (datas) {
+          var data = {};
+          datas.forEach(function (dt) {
+            Object.assign(data, dt || {});
+          });
+          Utils.extend(self, data);
+          self.$hook('beforeCreate');
+          var html = self.$render();
+          var style = $options.isClassComponent ? self.constructor.style : $options.style;
+          var styleScoped = $options.isClassComponent ? self.constructor.styleScoped : $options.styleScoped;
 
-    // Render
-    var html = self.$render();
+          if (self.$options.el) {
+            html = html.trim();
+            self.$vnode = vdom(html, self, true);
+            if (style) {
+              self.$styleEl = doc.createElement('style');
+              self.$styleEl.innerHTML = style;
+              if (styleScoped) {
+                self.$vnode.data.attrs[("data-f7-" + (self.$id))] = '';
+              }
+            }
+            self.el = self.$options.el;
+            patch(self.el, self.$vnode);
+            self.el = self.$vnode.elm;
+            self.$el = $(self.el);
 
-    // Make Dom
-    if (html && typeof html === 'string') {
-      html = html.trim();
-      self.$vnode = vdom(html, self, app, true);
-      self.el = doc.createElement(self.$vnode.sel || 'div');
-      patch(self.el, self.$vnode);
-    } else if (html) {
-      self.el = html;
-    }
-    self.$el = $(self.el);
+            self.$attachEvents();
+            self.el.f7Component = self;
+            self.$hook('created');
+            self.$mount();
+            resolve(self);
+            return;
+          }
+          // Make Dom
+          if (html && typeof html === 'string') {
+            html = html.trim();
+            self.$vnode = vdom(html, self, true);
+            if (style && styleScoped) {
+              self.$vnode.data.attrs[("data-f7-" + (self.$id))] = '';
+            }
+            self.el = doc.createElement(self.$vnode.sel || 'div');
+            patch(self.el, self.$vnode);
+            self.$el = $(self.el);
+          } else if (html) {
+            self.el = html;
+            self.$el = $(self.el);
+            if (style && styleScoped) {
+              self.el.setAttribute(("data-f7-" + (self.$id)), '');
+            }
+          }
+          if (style) {
+            self.$styleEl = doc.createElement('style');
+            self.$styleEl.innerHTML = style;
+          }
 
-    // Set styles scope ID
-    if ($options.style) {
-      self.$styleEl = doc.createElement('style');
-      self.$styleEl.innerHTML = $options.style;
-      if ($options.styleScoped) {
-        self.el.setAttribute(("data-f7-" + ($options.id)), '');
-      }
-    }
+          self.$attachEvents();
 
-    self.$attachEvents();
+          if (self.el) {
+            self.el.f7Component = self;
+          }
 
-    // Created callback
-    if ($options.created) { $options.created(); }
-
-    // Store component instance
-    self.el.f7Component = self;
-
-    return self;
+          self.$hook('created');
+          resolve(self);
+        })
+        .catch(function (err) {
+          reject(err);
+        });
+    });
   };
 
-  Framework7Component.prototype.$attachEvents = function $attachEvents () {
+  Component.prototype.$attachEvents = function $attachEvents () {
     var self = this;
     var $options = self.$options;
       var $el = self.$el;
+    if (self.$mixins && self.$mixins.length) {
+      self.$detachEventsHandlers = {};
+      self.$mixins.forEach(function (mixin) {
+        if (mixin.on) {
+          Object.keys(mixin.on).forEach(function (eventName) {
+            var handler = mixin.on[eventName].bind(self);
+            if (!self.$detachEventsHandlers[eventName]) { self.$detachEventsHandlers[eventName] = []; }
+            self.$detachEventsHandlers[eventName].push(handler);
+            $el.on(Utils.eventNameToColonCase(eventName), handler);
+          });
+        }
+        if (mixin.once) {
+          Object.keys(mixin.once).forEach(function (eventName) {
+            var handler = mixin.once[eventName].bind(self);
+            if (!self.$detachEventsHandlers[eventName]) { self.$detachEventsHandlers[eventName] = []; }
+            self.$detachEventsHandlers[eventName].push(handler);
+            $el.once(Utils.eventNameToColonCase(eventName), handler);
+          });
+        }
+      });
+    }
     if ($options.on) {
       Object.keys($options.on).forEach(function (eventName) {
         $el.on(Utils.eventNameToColonCase(eventName), $options.on[eventName]);
@@ -11321,7 +10955,7 @@
     }
   };
 
-  Framework7Component.prototype.$detachEvents = function $detachEvents () {
+  Component.prototype.$detachEvents = function $detachEvents () {
     var self = this;
     var $options = self.$options;
       var $el = self.$el;
@@ -11335,14 +10969,27 @@
         $el.off(Utils.eventNameToColonCase(eventName), $options.once[eventName]);
       });
     }
+    if (!self.$detachEventsHandlers) { return; }
+    Object.keys(self.$detachEventsHandlers).forEach(function (eventName) {
+      var handlers = self.$detachEventsHandlers[eventName];
+      handlers.forEach(function (handler) {
+        $el.off(Utils.eventNameToColonCase(eventName), handler);
+      });
+      self.$detachEventsHandlers[eventName] = [];
+      delete self.$detachEventsHandlers[eventName];
+    });
+    self.$detachEventsHandlers = null;
+    delete self.$detachEventsHandlers;
   };
 
-  Framework7Component.prototype.$render = function $render () {
+  Component.prototype.$render = function $render () {
     var self = this;
     var $options = self.$options;
     var html = '';
     if ($options.render) {
       html = $options.render();
+    } else if (self.render) {
+      html = self.render.call(self);
     } else if ($options.template) {
       if (typeof $options.template === 'string') {
         try {
@@ -11358,38 +11005,63 @@
     return html;
   };
 
-  Framework7Component.prototype.$forceUpdate = function $forceUpdate () {
+  Component.prototype.$tick = function $tick (callback) {
     var self = this;
-    var html = self.$render();
-
-    // Make Dom
-    if (html && typeof html === 'string') {
-      html = html.trim();
-      var newVNode = vdom(html, self, self.$app);
-      self.$vnode = patch(self.$vnode, newVNode);
-    }
+    return new Promise(function (resolve) {
+      win.requestAnimationFrame(function () {
+        if (self.__updateIsPending) {
+          win.requestAnimationFrame(function () {
+            resolve();
+            callback();
+          });
+        } else {
+          resolve();
+          callback();
+        }
+      });
+    });
   };
 
-  Framework7Component.prototype.$setState = function $setState (mergeState) {
+  Component.prototype.$update = function $update () {
+    var self = this;
+    win.cancelAnimationFrame(self.__requestAnimationFrameId);
+    delete self.__requestAnimationFrameId;
+    self.__updateIsPending = true;
+    self.__requestAnimationFrameId = win.requestAnimationFrame(function () {
+      var html = self.$render();
+
+      // Make Dom
+      if (html && typeof html === 'string') {
+        html = html.trim();
+        var newVNode = vdom(html, self, false);
+        self.$vnode = patch(self.$vnode, newVNode);
+      }
+      self.__updateIsPending = false;
+      delete self.__updateIsPending;
+    });
+  };
+
+  Component.prototype.$setState = function $setState (mergeState) {
     var self = this;
     Utils.merge(self, mergeState);
-    self.$forceUpdate();
+    self.$update();
   };
 
-  Framework7Component.prototype.$mount = function $mount (mountMethod) {
+  Component.prototype.$mount = function $mount (mountMethod) {
     var self = this;
-    if (self.$options.beforeMount) { self.$options.beforeMount(); }
+    self.$hook('beforeMount');
     if (self.$styleEl) { $('head').append(self.$styleEl); }
     if (mountMethod) { mountMethod(self.el); }
-    if (self.$options.mounted) { self.$options.mounted(); }
+    self.$hook('mounted');
   };
 
-  Framework7Component.prototype.$destroy = function $destroy () {
+  Component.prototype.$destroy = function $destroy () {
     var self = this;
-    if (self.$options.beforeDestroy) { self.$options.beforeDestroy(); }
+    self.$hook('beforeDestroy');
+
     if (self.$styleEl) { $(self.$styleEl).remove(); }
     self.$detachEvents();
-    if (self.$options.destroyed) { self.$options.destroyed(); }
+    self.$hook('destroyed');
     // Delete component instance
     if (self.el && self.el.f7Component) {
       self.el.f7Component = null;
@@ -11399,7 +11071,40 @@
     if (self.$vnode) {
       self.$vnode = patch(self.$vnode, { sel: self.$vnode.sel, data: {} });
     }
+    // Clear update queue
+    win.cancelAnimationFrame(self.__requestAnimationFrameId);
+
+    // Delete all props
     Utils.deleteProps(self);
+  };
+
+  Component.prototype.$hook = function $hook (name, async) {
+    var self = this;
+    if (async) {
+      var promises = [];
+      if (self.$mixins && self.$mixins.length) {
+        self.$mixins.forEach(function (mixin) {
+          if (mixin[name]) { promises.push(mixin[name].call(self)); }
+        });
+      }
+      if (self[name]) {
+        promises.push(self[name].call(self));
+      }
+      if (self.$options[name]) {
+        promises.push(self.$options[name].call(self));
+      }
+      return Promise.all(promises);
+    }
+    if (self.$mixins && self.$mixins.length) {
+      self.$mixins.forEach(function (mixin) {
+        if (mixin[name] && typeof mixin[name] === 'function') {
+          mixin[name].call(self);
+        }
+      });
+    }
+    if (self.$options[name]) { return self.$options[name].call(self); }
+    if (self[name]) { return self[name].call(self); }
+    return undefined;
   };
 
   function parseComponent(componentString) {
@@ -11434,17 +11139,20 @@
     } else if (componentString.indexOf('<style scoped>') >= 0) {
       styleScoped = true;
       style = componentString.split('<style scoped>')[1].split('</style>')[0];
-      style = style.split('\n').map(function (line) {
-        var trimmedLine = line.trim();
-        if (trimmedLine.indexOf('@') === 0) { return line; }
-        if (line.indexOf('{') >= 0) {
-          if (line.indexOf('{{this}}') >= 0) {
-            return line.replace('{{this}}', ("[data-f7-" + id + "]"));
-          }
-          return ("[data-f7-" + id + "] " + (line.trim()));
-        }
-        return line;
-      }).join('\n');
+      style = style
+        .replace(/{{this}}/g, ("[data-f7-" + id + "]"))
+        .replace(/[\n]?([^{^}]*){/ig, function (string, rules) {
+          // eslint-disable-next-line
+          rules = rules
+            .split(',')
+            .map(function (rule) {
+              if (rule.indexOf(("[data-f7-" + id + "]")) >= 0) { return rule; }
+              return ("[data-f7-" + id + "] " + (rule.trim()));
+            })
+            .join(', ');
+
+          return ("\n" + rules + " {");
+        });
     }
 
     // Parse Script
@@ -11466,6 +11174,7 @@
     $('head').append(scriptEl);
 
     var component = win[callbackCreateName]();
+    var isClassComponent = typeof component === 'function';
 
     // Remove Script El
     $(scriptEl).remove();
@@ -11479,7 +11188,14 @@
     }
     if (component.template) {
       if (component.templateType === 't7') {
-        component.template = Template7.compile(component.template);
+        if (isClassComponent) {
+          var templateFunction = Template7.compile(component.template);
+          component.prototype.render = function render() {
+            return templateFunction(this);
+          };
+        } else {
+          component.template = Template7.compile(component.template);
+        }
       }
       if (component.templateType === 'es') {
         var renderContent = "window." + callbackRenderName + " = function () {\n        return function render() {\n          return `" + (component.template) + "`;\n        }\n      }";
@@ -11487,13 +11203,22 @@
         scriptEl.innerHTML = renderContent;
         $('head').append(scriptEl);
 
-        component.render = win[callbackRenderName]();
+        if (isClassComponent) {
+          component.prototype.render = component.template;
+        } else {
+          component.render = win[callbackRenderName]();
+        }
 
         // Remove Script El
         $(scriptEl).remove();
         win[callbackRenderName] = null;
         delete win[callbackRenderName];
       }
+    }
+
+    if (isClassComponent) {
+      delete component.template;
+      delete component.templateType;
     }
 
     // Assign Style
@@ -11507,16 +11232,33 @@
     return component;
   }
 
+  function registerComponentMixin(name, mixin) {
+    componentMixins[name] = mixin;
+  }
+  function registerComponent(tagName, component) {
+    customComponents[tagName] = component;
+  }
   var ComponentModule = {
     name: 'component',
+    static: {
+      Component: Component,
+      registerComponentMixin: registerComponentMixin,
+      registerComponent: registerComponent,
+    },
     create: function create() {
       var app = this;
       app.component = {
+        registerComponentMixin: registerComponentMixin,
+        registerComponent: registerComponent,
         parse: function parse(componentString) {
           return parseComponent(componentString);
         },
-        create: function create(options, extendContext) {
-          return new Framework7Component(app, options, extendContext);
+        create: function create(options, context) {
+          if (typeof options === 'function') {
+            // eslint-disable-next-line
+            return new options(app, { isClassComponent: true }, context);
+          }
+          return new Component(app, options, context);
         },
       };
     },
@@ -11608,7 +11350,6 @@
 
   var Statusbar = {
     hide: function hide() {
-      $('html').removeClass('with-statusbar');
       if (Device.cordova && win.StatusBar) {
         win.StatusBar.hide();
       }
@@ -11616,14 +11357,7 @@
     show: function show() {
       if (Device.cordova && win.StatusBar) {
         win.StatusBar.show();
-        Utils.nextTick(function () {
-          if (Device.needsStatusbarOverlay()) {
-            $('html').addClass('with-statusbar');
-          }
-        });
-        return;
       }
-      $('html').addClass('with-statusbar');
     },
     onClick: function onClick() {
       var app = this;
@@ -11631,9 +11365,9 @@
       if ($('.popup.modal-in').length > 0) {
         // Check for opened popup
         pageContent = $('.popup.modal-in').find('.page:not(.page-previous):not(.page-next):not(.cached)').find('.page-content');
-      } else if ($('.panel.panel-active').length > 0) {
+      } else if ($('.panel.panel-in').length > 0) {
         // Check for opened panel
-        pageContent = $('.panel.panel-active').find('.page:not(.page-previous):not(.page-next):not(.cached)').find('.page-content');
+        pageContent = $('.panel.panel-in').find('.page:not(.page-previous):not(.page-next):not(.cached)').find('.page-content');
       } else if ($('.views > .view.tab-active').length > 0) {
         // View in tab bar app layout
         pageContent = $('.views > .view.tab-active').find('.page:not(.page-previous):not(.page-next):not(.cached)').find('.page-content');
@@ -11660,12 +11394,7 @@
         }
       }
     },
-    setIosTextColor: function setIosTextColor(color) {
-      if (!Device.ios) { return; }
-      Statusbar.setTextColor(color);
-    },
     setBackgroundColor: function setBackgroundColor(color) {
-      $('.statusbar').css('background-color', color);
       if (Device.cordova && win.StatusBar) {
         win.StatusBar.backgroundColorByHexString(color);
       }
@@ -11681,52 +11410,12 @@
 
       if (Device.cordova && win.StatusBar) {
         win.StatusBar.overlaysWebView(overlays);
-        if (overlays) {
-          $('html').addClass('with-statusbar');
-        } else {
-          $('html').removeClass('with-statusbar');
-        }
-      }
-    },
-    checkOverlay: function checkOverlay() {
-      if (Device.needsStatusbarOverlay()) {
-        $('html').addClass('with-statusbar');
-      } else {
-        $('html').removeClass('with-statusbar');
       }
     },
     init: function init() {
       var app = this;
       var params = app.params.statusbar;
       if (!params.enabled) { return; }
-
-      if (params.overlay === 'auto') {
-        if (Device.needsStatusbarOverlay()) {
-          $('html').addClass('with-statusbar');
-        } else {
-          $('html').removeClass('with-statusbar');
-        }
-
-        if (Device.ios && (Device.cordova || Device.webView)) {
-          if (win.orientation === 0) {
-            app.once('resize', function () {
-              Statusbar.checkOverlay();
-            });
-          }
-
-          $(doc).on('resume', function () {
-            Statusbar.checkOverlay();
-          }, false);
-
-          app.on(Device.ios ? 'orientationchange' : 'orientationchange resize', function () {
-            Statusbar.checkOverlay();
-          });
-        }
-      } else if (params.overlay === true) {
-        $('html').addClass('with-statusbar');
-      } else if (params.overlay === false) {
-        $('html').removeClass('with-statusbar');
-      }
 
       if (Device.cordova && win.StatusBar) {
         if (params.scrollTopOnClick) {
@@ -11760,8 +11449,8 @@
       if (params.iosBackgroundColor && Device.ios) {
         Statusbar.setBackgroundColor(params.iosBackgroundColor);
       }
-      if ((params.materialBackgroundColor || params.androidBackgroundColor) && Device.android) {
-        Statusbar.setBackgroundColor(params.materialBackgroundColor || params.androidBackgroundColor);
+      if (params.androidBackgroundColor && Device.android) {
+        Statusbar.setBackgroundColor(params.androidBackgroundColor);
       }
     },
   };
@@ -11771,7 +11460,7 @@
     params: {
       statusbar: {
         enabled: true,
-        overlay: 'auto',
+
         scrollTopOnClick: true,
 
         iosOverlaysWebView: true,
@@ -11787,7 +11476,6 @@
       var app = this;
       Utils.extend(app, {
         statusbar: {
-          checkOverlay: Statusbar.checkOverlay,
           hide: Statusbar.hide,
           show: Statusbar.show,
           overlaysWebView: Statusbar.overlaysWebView,
@@ -11804,20 +11492,12 @@
         Statusbar.init.call(app);
       },
     },
-    clicks: {
-      '.statusbar': function onStatusbarClick() {
-        var app = this;
-        if (!app.params.statusbar.enabled) { return; }
-        if (!app.params.statusbar.scrollTopOnClick) { return; }
-        Statusbar.onClick.call(app);
-      },
-    },
   };
 
   function getCurrentView(app) {
     var $popoverView = $('.popover.modal-in .view');
     var $popupView = $('.popup.modal-in .view');
-    var $panelView = $('.panel.panel-active .view');
+    var $panelView = $('.panel.panel-in .view');
     var $viewsEl = $('.views');
     if ($viewsEl.length === 0) { $viewsEl = app.root; }
     // Find active view as tab
@@ -11854,6 +11534,7 @@
         xhrCacheIgnore: [],
         xhrCacheIgnoreGetParameters: false,
         xhrCacheDuration: 1000 * 60 * 10, // Ten minutes
+        componentCache: true,
         preloadPreviousPage: true,
         allowDuplicateUrls: false,
         reloadPages: false,
@@ -11866,6 +11547,7 @@
         unloadTabContent: true,
         passRouteQueryToRequest: true,
         passRouteParamsToRequest: false,
+        loadInitialPage: true,
         // Swipe Back
         iosSwipeBack: true,
         iosSwipeBackAnimateShadow: true,
@@ -11893,7 +11575,6 @@
         animate: true,
         // iOS Dynamic Navbar
         iosDynamicNavbar: true,
-        iosSeparateDynamicNavbar: true,
         // Animate iOS Navbar Back Icon
         iosAnimateNavbarBackIcon: true,
         // Delays
@@ -11963,16 +11644,23 @@
   var Navbar = {
     size: function size(el) {
       var app = this;
-      if (app.theme !== 'ios' && !app.params.navbar[((app.theme) + "CenterTitle")]) {
-        return;
-      }
+
       var $el = $(el);
-      if ($el.hasClass('navbar')) {
-        $el = $el.children('.navbar-inner').each(function (index, navbarEl) {
+
+      if ($el.hasClass('navbars')) {
+        $el = $el.children('.navbar').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
         });
         return;
       }
+
+      var needCenterTitle = (
+        $el.children('.navbar-inner').hasClass('navbar-inner-centered-title')
+        || app.params.navbar[((app.theme) + "CenterTitle")]
+      );
+      var needLeftTitle = app.theme === 'ios' && !app.params.navbar[((app.theme) + "CenterTitle")];
+
+      if (!needCenterTitle && !needLeftTitle) { return; }
 
       if (
         $el.hasClass('stacked')
@@ -11984,42 +11672,35 @@
       }
 
       if (app.theme !== 'ios' && app.params.navbar[((app.theme) + "CenterTitle")]) {
-        $el.addClass('navbar-inner-centered-title');
+        $el.children('.navbar-inner').addClass('navbar-inner-centered-title');
       }
       if (app.theme === 'ios' && !app.params.navbar.iosCenterTitle) {
-        $el.addClass('navbar-inner-left-title');
+        $el.children('.navbar-inner').addClass('navbar-inner-left-title');
       }
 
       var $viewEl = $el.parents('.view').eq(0);
-      var left = app.rtl ? $el.children('.right') : $el.children('.left');
-      var right = app.rtl ? $el.children('.left') : $el.children('.right');
-      var title = $el.children('.title');
-      var subnavbar = $el.children('.subnavbar');
+      var $innerEl = $el.children('.navbar-inner');
+      var left = app.rtl ? $innerEl.children('.right') : $innerEl.children('.left');
+      var right = app.rtl ? $innerEl.children('.left') : $innerEl.children('.right');
+      var title = $innerEl.children('.title');
+      var subnavbar = $innerEl.children('.subnavbar');
       var noLeft = left.length === 0;
       var noRight = right.length === 0;
       var leftWidth = noLeft ? 0 : left.outerWidth(true);
       var rightWidth = noRight ? 0 : right.outerWidth(true);
       var titleWidth = title.outerWidth(true);
-      var navbarStyles = $el.styles();
-      var navbarWidth = $el[0].offsetWidth;
+      var navbarStyles = $innerEl.styles();
+      var navbarWidth = $innerEl[0].offsetWidth;
       var navbarInnerWidth = navbarWidth - parseInt(navbarStyles.paddingLeft, 10) - parseInt(navbarStyles.paddingRight, 10);
       var isPrevious = $el.hasClass('navbar-previous');
-      var sliding = $el.hasClass('sliding');
+      var sliding = $innerEl.hasClass('sliding');
 
       var router;
       var dynamicNavbar;
-      var separateNavbar;
-      var separateNavbarRightOffset = 0;
-      var separateNavbarLeftOffset = 0;
 
       if ($viewEl.length > 0 && $viewEl[0].f7View) {
         router = $viewEl[0].f7View.router;
         dynamicNavbar = router && router.dynamicNavbar;
-        separateNavbar = router && router.separateNavbar;
-        if (!separateNavbar) {
-          separateNavbarRightOffset = navbarWidth;
-          separateNavbarLeftOffset = navbarWidth / 5;
-        }
       }
 
       var currLeft;
@@ -12051,8 +11732,8 @@
 
       if (dynamicNavbar && app.theme === 'ios') {
         if (title.hasClass('sliding') || (title.length > 0 && sliding)) {
-          var titleLeftOffset = (-(currLeft + diff) * inverter) + separateNavbarLeftOffset;
-          var titleRightOffset = ((navbarInnerWidth - currLeft - diff - titleWidth) * inverter) - separateNavbarRightOffset;
+          var titleLeftOffset = -(currLeft + diff) * inverter;
+          var titleRightOffset = (navbarInnerWidth - currLeft - diff - titleWidth) * inverter;
 
           if (isPrevious) {
             if (router && router.params.iosAnimateNavbarBackIcon) {
@@ -12070,8 +11751,8 @@
             left[0].f7NavbarLeftOffset = (-(navbarInnerWidth - left[0].offsetWidth) / 2) * inverter;
             left[0].f7NavbarRightOffset = leftWidth * inverter;
           } else {
-            left[0].f7NavbarLeftOffset = -leftWidth + separateNavbarLeftOffset;
-            left[0].f7NavbarRightOffset = ((navbarInnerWidth - left[0].offsetWidth) / 2) - separateNavbarRightOffset;
+            left[0].f7NavbarLeftOffset = -leftWidth;
+            left[0].f7NavbarRightOffset = ((navbarInnerWidth - left[0].offsetWidth) / 2);
             if (router && router.params.iosAnimateNavbarBackIcon && left.find('.back .icon').length > 0) {
               if (left.find('.back .icon ~ span').length) {
                 var leftOffset = left[0].f7NavbarLeftOffset;
@@ -12089,44 +11770,56 @@
             right[0].f7NavbarLeftOffset = -rightWidth * inverter;
             right[0].f7NavbarRightOffset = ((navbarInnerWidth - right[0].offsetWidth) / 2) * inverter;
           } else {
-            right[0].f7NavbarLeftOffset = (-(navbarInnerWidth - right[0].offsetWidth) / 2) + separateNavbarLeftOffset;
-            right[0].f7NavbarRightOffset = rightWidth - separateNavbarRightOffset;
+            right[0].f7NavbarLeftOffset = -(navbarInnerWidth - right[0].offsetWidth) / 2;
+            right[0].f7NavbarRightOffset = rightWidth;
           }
         }
         if (subnavbar.length && (subnavbar.hasClass('sliding') || sliding)) {
-          subnavbar[0].f7NavbarLeftOffset = app.rtl ? subnavbar[0].offsetWidth : (-subnavbar[0].offsetWidth + separateNavbarLeftOffset);
-          subnavbar[0].f7NavbarRightOffset = (-subnavbar[0].f7NavbarLeftOffset - separateNavbarRightOffset) + separateNavbarLeftOffset;
+          subnavbar[0].f7NavbarLeftOffset = app.rtl ? subnavbar[0].offsetWidth : -subnavbar[0].offsetWidth;
+          subnavbar[0].f7NavbarRightOffset = -subnavbar[0].f7NavbarLeftOffset;
         }
       }
 
       // Center title
-      if (app.params.navbar[((app.theme) + "CenterTitle")]) {
+      if (needCenterTitle) {
         var titleLeft = diff;
         if (app.rtl && noLeft && noRight && title.length > 0) { titleLeft = -titleLeft; }
         title.css({ left: (titleLeft + "px") });
       }
     },
-    hide: function hide(el, animate) {
+    hide: function hide(el, animate, hideStatusbar) {
       if ( animate === void 0 ) animate = true;
+      if ( hideStatusbar === void 0 ) hideStatusbar = false;
 
       var app = this;
       var $el = $(el);
-      if ($el.hasClass('navbar-inner')) { $el = $el.parents('.navbar'); }
+      var isDynamic = $el.hasClass('navbar') && $el.parent('.navbars').length;
+      if (isDynamic) { $el = $el.parents('.navbars'); }
       if (!$el.length) { return; }
       if ($el.hasClass('navbar-hidden')) { return; }
       var className = "navbar-hidden" + (animate ? ' navbar-transitioning' : '');
-      var currentIsLarge = app.theme === 'ios'
+      var currentIsLarge = isDynamic
         ? $el.find('.navbar-current .title-large').length
         : $el.find('.title-large').length;
       if (currentIsLarge) {
         className += ' navbar-large-hidden';
       }
+      if (hideStatusbar) {
+        className += ' navbar-hidden-statusbar';
+      }
       $el.transitionEnd(function () {
         $el.removeClass('navbar-transitioning');
       });
       $el.addClass(className);
-      $el.trigger('navbar:hide');
-      app.emit('navbarHide', $el[0]);
+      if (isDynamic) {
+        $el.children('.navbar').each(function (index, subEl) {
+          $(subEl).trigger('navbar:hide');
+          app.emit('navbarHide', subEl);
+        });
+      } else {
+        $el.trigger('navbar:hide');
+        app.emit('navbarHide', $el[0]);
+      }
     },
     show: function show(el, animate) {
       if ( el === void 0 ) el = '.navbar-hidden';
@@ -12134,7 +11827,8 @@
 
       var app = this;
       var $el = $(el);
-      if ($el.hasClass('navbar-inner')) { $el = $el.parents('.navbar'); }
+      var isDynamic = $el.hasClass('navbar') && $el.parent('.navbars').length;
+      if (isDynamic) { $el = $el.parents('.navbars'); }
       if (!$el.length) { return; }
       if (!$el.hasClass('navbar-hidden')) { return; }
       if (animate) {
@@ -12143,13 +11837,20 @@
           $el.removeClass('navbar-transitioning');
         });
       }
-      $el.removeClass('navbar-hidden navbar-large-hidden');
-      $el.trigger('navbar:show');
-      app.emit('navbarShow', $el[0]);
+      $el.removeClass('navbar-hidden navbar-large-hidden navbar-hidden-statusbar');
+      if (isDynamic) {
+        $el.children('.navbar').each(function (index, subEl) {
+          $(subEl).trigger('navbar:show');
+          app.emit('navbarShow', subEl);
+        });
+      } else {
+        $el.trigger('navbar:show');
+        app.emit('navbarShow', $el[0]);
+      }
     },
     getElByPage: function getElByPage(page) {
       var $pageEl;
-      var $navbarInnerEl;
+      var $navbarEl;
       var pageData;
       if (page.$navbarEl || page.$el) {
         pageData = page;
@@ -12159,103 +11860,89 @@
         if ($pageEl.length > 0) { pageData = $pageEl[0].f7Page; }
       }
       if (pageData && pageData.$navbarEl && pageData.$navbarEl.length > 0) {
-        $navbarInnerEl = pageData.$navbarEl;
+        $navbarEl = pageData.$navbarEl;
       } else if ($pageEl) {
-        $navbarInnerEl = $pageEl.children('.navbar').children('.navbar-inner');
+        $navbarEl = $pageEl.children('.navbar');
       }
-      if (!$navbarInnerEl || ($navbarInnerEl && $navbarInnerEl.length === 0)) { return undefined; }
-      return $navbarInnerEl[0];
+      if (!$navbarEl || ($navbarEl && $navbarEl.length === 0)) { return undefined; }
+      return $navbarEl[0];
     },
-    getPageByEl: function getPageByEl(navbarInnerEl) {
-      var $navbarInnerEl = $(navbarInnerEl);
-      if ($navbarInnerEl.hasClass('navbar')) {
-        $navbarInnerEl = $navbarInnerEl.find('.navbar-inner');
-        if ($navbarInnerEl.length > 1) { return undefined; }
-      }
-      if ($navbarInnerEl.parents('.page').length) {
-        return $navbarInnerEl.parents('.page')[0];
+    getPageByEl: function getPageByEl(navbarEl) {
+      var $navbarEl = $(navbarEl);
+      if ($navbarEl.parents('.page').length) {
+        return $navbarEl.parents('.page')[0];
       }
       var pageEl;
-      $navbarInnerEl.parents('.view').find('.page').each(function (index, el) {
-        if (el && el.f7Page && el.f7Page.navbarEl && $navbarInnerEl[0] === el.f7Page.navbarEl) {
+      $navbarEl.parents('.view').find('.page').each(function (index, el) {
+        if (el && el.f7Page && el.f7Page.navbarEl && $navbarEl[0] === el.f7Page.navbarEl) {
           pageEl = el;
         }
       });
       return pageEl;
     },
 
-    collapseLargeTitle: function collapseLargeTitle(navbarInnerEl) {
+    collapseLargeTitle: function collapseLargeTitle(navbarEl) {
       var app = this;
-      var $navbarInnerEl = $(navbarInnerEl);
-      if ($navbarInnerEl.hasClass('navbar')) {
-        $navbarInnerEl = $navbarInnerEl.find('.navbar-inner-large');
-        if ($navbarInnerEl.length > 1) {
-          $navbarInnerEl = $(navbarInnerEl).find('.navbar-inner-large.navbar-current');
+      var $navbarEl = $(navbarEl);
+      if ($navbarEl.hasClass('navbars')) {
+        $navbarEl = $navbarEl.find('.navbar');
+        if ($navbarEl.length > 1) {
+          $navbarEl = $(navbarEl).find('.navbar-large.navbar-current');
         }
-        if ($navbarInnerEl.length > 1 || !$navbarInnerEl.length) {
+        if ($navbarEl.length > 1 || !$navbarEl.length) {
           return;
         }
       }
-      var $pageEl = $(app.navbar.getPageByEl($navbarInnerEl));
-      $navbarInnerEl.addClass('navbar-inner-large-collapsed');
+      var $pageEl = $(app.navbar.getPageByEl($navbarEl));
+      $navbarEl.addClass('navbar-large-collapsed');
       $pageEl.eq(0).addClass('page-with-navbar-large-collapsed').trigger('page:navbarlargecollapsed');
       app.emit('pageNavbarLargeCollapsed', $pageEl[0]);
-      var $navbarEl = $navbarInnerEl.parents('.navbar');
-      if (app.theme === 'md' || app.theme === 'aurora') {
-        $navbarEl.addClass('navbar-large-collapsed');
-      }
       $navbarEl.trigger('navbar:collapse');
       app.emit('navbarCollapse', $navbarEl[0]);
     },
-    expandLargeTitle: function expandLargeTitle(navbarInnerEl) {
+    expandLargeTitle: function expandLargeTitle(navbarEl) {
       var app = this;
-      var $navbarInnerEl = $(navbarInnerEl);
-      if ($navbarInnerEl.hasClass('navbar')) {
-        $navbarInnerEl = $navbarInnerEl.find('.navbar-inner-large');
-        if ($navbarInnerEl.length > 1) {
-          $navbarInnerEl = $(navbarInnerEl).find('.navbar-inner-large.navbar-current');
+      var $navbarEl = $(navbarEl);
+      if ($navbarEl.hasClass('navbars')) {
+        $navbarEl = $navbarEl.find('.navbar-large');
+        if ($navbarEl.length > 1) {
+          $navbarEl = $(navbarEl).find('.navbar-large.navbar-current');
         }
-        if ($navbarInnerEl.length > 1 || !$navbarInnerEl.length) {
+        if ($navbarEl.length > 1 || !$navbarEl.length) {
           return;
         }
       }
-      var $pageEl = $(app.navbar.getPageByEl($navbarInnerEl));
-      $navbarInnerEl.removeClass('navbar-inner-large-collapsed');
+      var $pageEl = $(app.navbar.getPageByEl($navbarEl));
+      $navbarEl.removeClass('navbar-large-collapsed');
       $pageEl.eq(0).removeClass('page-with-navbar-large-collapsed').trigger('page:navbarlargeexpanded');
       app.emit('pageNavbarLargeExpanded', $pageEl[0]);
-      var $navbarEl = $navbarInnerEl.parents('.navbar');
-      if (app.theme === 'md' || app.theme === 'aurora') {
-        $navbarEl.removeClass('navbar-large-collapsed');
-      }
       $navbarEl.trigger('navbar:expand');
       app.emit('navbarExpand', $navbarEl[0]);
     },
-    toggleLargeTitle: function toggleLargeTitle(navbarInnerEl) {
+    toggleLargeTitle: function toggleLargeTitle(navbarEl) {
       var app = this;
-      var $navbarInnerEl = $(navbarInnerEl);
-      if ($navbarInnerEl.hasClass('navbar')) {
-        $navbarInnerEl = $navbarInnerEl.find('.navbar-inner-large');
-        if ($navbarInnerEl.length > 1) {
-          $navbarInnerEl = $(navbarInnerEl).find('.navbar-inner-large.navbar-current');
+      var $navbarEl = $(navbarEl);
+      if ($navbarEl.hasClass('navbars')) {
+        $navbarEl = $navbarEl.find('.navbar-large');
+        if ($navbarEl.length > 1) {
+          $navbarEl = $(navbarEl).find('.navbar-large.navbar-current');
         }
-        if ($navbarInnerEl.length > 1 || !$navbarInnerEl.length) {
+        if ($navbarEl.length > 1 || !$navbarEl.length) {
           return;
         }
       }
-      if ($navbarInnerEl.hasClass('navbar-inner-large-collapsed')) {
-        app.navbar.expandLargeTitle($navbarInnerEl);
+      if ($navbarEl.hasClass('navbar-large-collapsed')) {
+        app.navbar.expandLargeTitle($navbarEl);
       } else {
-        app.navbar.collapseLargeTitle($navbarInnerEl);
+        app.navbar.collapseLargeTitle($navbarEl);
       }
     },
-    initNavbarOnScroll: function initNavbarOnScroll(pageEl, navbarInnerEl, needHide, needCollapse) {
+    initNavbarOnScroll: function initNavbarOnScroll(pageEl, navbarEl, needHide, needCollapse) {
       var app = this;
       var $pageEl = $(pageEl);
-      var $navbarInnerEl = $(navbarInnerEl);
-      var $navbarEl = app.theme === 'md' || app.theme === 'aurora'
-        ? $navbarInnerEl.parents('.navbar')
-        : $(navbarInnerEl || app.navbar.getElByPage(pageEl)).closest('.navbar');
-      var isLarge = $navbarInnerEl.find('.title-large').length || $navbarInnerEl.hasClass('.navbar-inner-large');
+      var $navbarEl = $(navbarEl);
+      var $titleLargeEl = $navbarEl.find('.title-large');
+      var isLarge = $titleLargeEl.length || $navbarEl.hasClass('.navbar-large');
       var navbarHideHeight = 44;
       var snapPageScrollToLargeTitle = app.params.navbar.snapPageScrollToLargeTitle;
 
@@ -12271,20 +11958,26 @@
       var navbarCollapsed;
       var navbarTitleLargeHeight;
       if (needCollapse || (needHide && isLarge)) {
-        navbarTitleLargeHeight = $navbarInnerEl.css('--f7-navbar-large-title-height');
+        navbarTitleLargeHeight = $navbarEl.css('--f7-navbar-large-title-height');
+
         if (navbarTitleLargeHeight && navbarTitleLargeHeight.indexOf('px') >= 0) {
           navbarTitleLargeHeight = parseInt(navbarTitleLargeHeight, 10);
-          if (Number.isNaN(navbarTitleLargeHeight)) {
+          if (Number.isNaN(navbarTitleLargeHeight) && $titleLargeEl.length) {
+            navbarTitleLargeHeight = $titleLargeEl[0].offsetHeight;
+          } else if (Number.isNaN(navbarTitleLargeHeight)) {
             if (app.theme === 'ios') { navbarTitleLargeHeight = 52; }
             else if (app.theme === 'md') { navbarTitleLargeHeight = 48; }
             else if (app.theme === 'aurora') { navbarTitleLargeHeight = 38; }
           }
+        } else if ($titleLargeEl.length) {
+          navbarTitleLargeHeight = $titleLargeEl[0].offsetHeight;
         } else { // eslint-disable-next-line
           if (app.theme === 'ios') { navbarTitleLargeHeight = 52; }
           else if (app.theme === 'md') { navbarTitleLargeHeight = 48; }
           else if (app.theme === 'aurora') { navbarTitleLargeHeight = 38; }
         }
       }
+
       if (needHide && isLarge) {
         navbarHideHeight += navbarTitleLargeHeight;
       }
@@ -12297,7 +11990,7 @@
       var desktopSnapTimeout = 300;
 
       function snapLargeNavbar() {
-        var inSearchbarExpanded = $navbarInnerEl.hasClass('with-searchbar-expandable-enabled');
+        var inSearchbarExpanded = $navbarEl.hasClass('with-searchbar-expandable-enabled');
         if (inSearchbarExpanded) { return; }
         if (!scrollContent || currentScrollTop < 0) { return; }
         if (currentScrollTop >= navbarTitleLargeHeight / 2 && currentScrollTop < navbarTitleLargeHeight) {
@@ -12308,39 +12001,44 @@
       }
 
       function handleLargeNavbarCollapse() {
+        var isHidden = $navbarEl.hasClass('navbar-hidden') || $navbarEl.parent('.navbars').hasClass('navbar-hidden');
+        if (isHidden) { return; }
+        var isLargeTransparent = $navbarEl.hasClass('navbar-large-transparent');
         var collapseProgress = Math.min(Math.max((currentScrollTop / navbarTitleLargeHeight), 0), 1);
-        var inSearchbarExpanded = $navbarInnerEl.hasClass('with-searchbar-expandable-enabled');
+        var inSearchbarExpanded = $navbarEl.hasClass('with-searchbar-expandable-enabled');
         if (inSearchbarExpanded) { return; }
-        navbarCollapsed = $navbarInnerEl.hasClass('navbar-inner-large-collapsed');
+        navbarCollapsed = $navbarEl.hasClass('navbar-large-collapsed');
+
         if (collapseProgress === 0 && navbarCollapsed) {
-          app.navbar.expandLargeTitle($navbarInnerEl[0]);
-          $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
-          $pageEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
-          $navbarInnerEl[0].style.overflow = '';
-          if (app.theme === 'md' || app.theme === 'aurora') {
-            $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
-          }
+          app.navbar.expandLargeTitle($navbarEl[0]);
         } else if (collapseProgress === 1 && !navbarCollapsed) {
-          app.navbar.collapseLargeTitle($navbarInnerEl[0]);
-          $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
-          $navbarInnerEl[0].style.overflow = '';
-          $pageEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
-          if (app.theme === 'md' || app.theme === 'aurora') {
-            $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          app.navbar.collapseLargeTitle($navbarEl[0]);
+        }
+        if (
+          (collapseProgress === 0 && navbarCollapsed)
+          || (collapseProgress === 1 && !navbarCollapsed)
+          // || ((collapseProgress === 1 && navbarCollapsed) || (collapseProgress === 0 && !navbarCollapsed))
+        ) {
+          if (app.theme === 'md') {
+            $navbarEl.find('.navbar-inner').css('overflow', '');
           }
-        } else if ((collapseProgress === 1 && navbarCollapsed) || (collapseProgress === 0 && !navbarCollapsed)) {
-          $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
-          $navbarInnerEl[0].style.overflow = '';
-          $pageEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
-          if (app.theme === 'md' || app.theme === 'aurora') {
-            $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          $navbarEl.find('.title').css('opacity', '');
+          $navbarEl.find('.title-large-text, .subnavbar').css('transform', '');
+          if (isLargeTransparent) {
+            $navbarEl.find('.navbar-bg').css('opacity', '');
+          } else {
+            $navbarEl.find('.navbar-bg').css('transform', '');
           }
-        } else {
-          $navbarInnerEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
-          $navbarInnerEl[0].style.overflow = 'visible';
-          $pageEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
-          if (app.theme === 'md' || app.theme === 'aurora') {
-            $navbarEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
+        } else if (collapseProgress > 0 && collapseProgress < 1) {
+          if (app.theme === 'md') {
+            $navbarEl.find('.navbar-inner').css('overflow', 'visible');
+          }
+          $navbarEl.find('.title').css('opacity', collapseProgress);
+          $navbarEl.find('.title-large-text, .subnavbar').css('transform', ("translate3d(0px, " + (-1 * collapseProgress * navbarTitleLargeHeight) + "px, 0)"));
+          if (isLargeTransparent) {
+            $navbarEl.find('.navbar-bg').css('opacity', collapseProgress);
+          } else {
+            $navbarEl.find('.navbar-bg').css('transform', ("translate3d(0px, " + (-1 * collapseProgress * navbarTitleLargeHeight) + "px, 0)"));
           }
         }
 
@@ -12366,8 +12064,7 @@
         scrollHeight = scrollContent.scrollHeight;
         offsetHeight = scrollContent.offsetHeight;
         reachEnd = currentScrollTop + offsetHeight >= scrollHeight;
-        navbarHidden = $navbarEl.hasClass('navbar-hidden');
-
+        navbarHidden = $navbarEl.hasClass('navbar-hidden') || $navbarEl.parent('.navbars').hasClass('navbar-hidden');
         if (reachEnd) {
           if (app.params.navbar.showOnPageScrollEnd) {
             action = 'show';
@@ -12476,7 +12173,7 @@
       },
     },
     on: {
-      'panelBreakpoint panelResize resize viewMasterDetailBreakpoint': function onResize() {
+      'panelBreakpoint panelCollapsedBreakpoint panelResize resize viewMasterDetailBreakpoint': function onPanelResize() {
         var app = this;
         $('.navbar').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
@@ -12490,45 +12187,42 @@
       pageBeforeIn: function pageBeforeIn(page) {
         var app = this;
         if (app.theme !== 'ios') { return; }
-        var $navbarEl;
+        var $navbarsEl;
         var view = page.$el.parents('.view')[0].f7View;
-        var navbarInnerEl = app.navbar.getElByPage(page);
-        if (!navbarInnerEl) {
-          $navbarEl = page.$el.parents('.view').children('.navbar');
+        var navbarEl = app.navbar.getElByPage(page);
+        if (!navbarEl) {
+          $navbarsEl = page.$el.parents('.view').children('.navbars');
         } else {
-          $navbarEl = $(navbarInnerEl).parents('.navbar');
+          $navbarsEl = $(navbarEl).parents('.navbars');
         }
-        if (page.$el.hasClass('no-navbar') || (view.router.dynamicNavbar && !navbarInnerEl)) {
+        if (page.$el.hasClass('no-navbar') || (view.router.dynamicNavbar && !navbarEl)) {
           var animate = !!(page.pageFrom && page.router.history.length > 0);
-          app.navbar.hide($navbarEl, animate);
+          app.navbar.hide($navbarsEl, animate);
         } else {
-          app.navbar.show($navbarEl);
+          app.navbar.show($navbarsEl);
         }
       },
       pageReinit: function pageReinit(page) {
         var app = this;
-        var $navbarInnerEl = $(app.navbar.getElByPage(page));
-        if (!$navbarInnerEl || $navbarInnerEl.length === 0) { return; }
-        app.navbar.size($navbarInnerEl);
+        var $navbarEl = $(app.navbar.getElByPage(page));
+        if (!$navbarEl || $navbarEl.length === 0) { return; }
+        app.navbar.size($navbarEl);
       },
       pageInit: function pageInit(page) {
         var app = this;
-        var $navbarInnerEl = $(app.navbar.getElByPage(page));
-        if (!$navbarInnerEl || $navbarInnerEl.length === 0) { return; }
+        var $navbarEl = $(app.navbar.getElByPage(page));
+        if (!$navbarEl || $navbarEl.length === 0) { return; }
 
         // Size
-        app.navbar.size($navbarInnerEl);
+        app.navbar.size($navbarEl);
 
         // Need Collapse On Scroll
         var needCollapseOnScrollHandler;
-        if ($navbarInnerEl.children('.title-large').length > 0) {
-          $navbarInnerEl.addClass('navbar-inner-large');
+        if ($navbarEl.find('.title-large').length > 0) {
+          $navbarEl.addClass('navbar-large');
         }
-        if ($navbarInnerEl.hasClass('navbar-inner-large')) {
+        if ($navbarEl.hasClass('navbar-large')) {
           if (app.params.navbar.collapseLargeTitleOnScroll) { needCollapseOnScrollHandler = true; }
-          if (app.theme === 'md' || app.theme === 'aurora') {
-            $navbarInnerEl.parents('.navbar').addClass('navbar-large');
-          }
           page.$el.addClass('page-with-navbar-large');
         }
 
@@ -12554,41 +12248,17 @@
         }
 
         if (needCollapseOnScrollHandler || needHideOnScrollHandler) {
-          app.navbar.initNavbarOnScroll(page.el, $navbarInnerEl[0], needHideOnScrollHandler, needCollapseOnScrollHandler);
+          app.navbar.initNavbarOnScroll(page.el, $navbarEl[0], needHideOnScrollHandler, needCollapseOnScrollHandler);
         }
       },
-      modalOpen: function modalOpen(modal) {
+      'panelOpen panelSwipeOpen modalOpen': function onPanelModalOpen(instance) {
         var app = this;
-        if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
-          return;
-        }
-        modal.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
-          app.navbar.size(navbarEl);
-        });
-      },
-      panelOpen: function panelOpen(panel) {
-        var app = this;
-        if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
-          return;
-        }
-        panel.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
-          app.navbar.size(navbarEl);
-        });
-      },
-      panelSwipeOpen: function panelSwipeOpen(panel) {
-        var app = this;
-        if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
-          return;
-        }
-        panel.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
+        instance.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
         });
       },
       tabShow: function tabShow(tabEl) {
         var app = this;
-        if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
-          return;
-        }
         $(tabEl).find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
         });
@@ -12630,12 +12300,9 @@
       },
     },
     vnode: {
-      'navbar-inner': {
+      navbar: {
         postpatch: function postpatch(vnode) {
           var app = this;
-          if (!app.params.navbar[((app.theme) + "CenterTitle")]) {
-            return;
-          }
           app.navbar.size(vnode.elm);
         },
       },
@@ -12990,13 +12657,13 @@
       modal.opened = true;
       openedModals.push(modal);
       $('html').addClass(("with-modal-" + (modal.type.toLowerCase())));
-      modal.$el.trigger(("modal:open " + (modal.type.toLowerCase()) + ":open"), modal);
+      modal.$el.trigger(("modal:open " + (modal.type.toLowerCase()) + ":open"));
       modal.emit(("local::open modalOpen " + (modal.type) + "Open"), modal);
     };
 
     Modal.prototype.onOpened = function onOpened () {
       var modal = this;
-      modal.$el.trigger(("modal:opened " + (modal.type.toLowerCase()) + ":opened"), modal);
+      modal.$el.trigger(("modal:opened " + (modal.type.toLowerCase()) + ":opened"));
       modal.emit(("local::opened modalOpened " + (modal.type) + "Opened"), modal);
     };
 
@@ -13006,7 +12673,7 @@
       if (!modal.type || !modal.$el) { return; }
       openedModals.splice(openedModals.indexOf(modal), 1);
       $('html').removeClass(("with-modal-" + (modal.type.toLowerCase())));
-      modal.$el.trigger(("modal:close " + (modal.type.toLowerCase()) + ":close"), modal);
+      modal.$el.trigger(("modal:close " + (modal.type.toLowerCase()) + ":close"));
       modal.emit(("local::close modalClose " + (modal.type) + "Close"), modal);
     };
 
@@ -13015,7 +12682,7 @@
       if (!modal.type || !modal.$el) { return; }
       modal.$el.removeClass('modal-out');
       modal.$el.hide();
-      modal.$el.trigger(("modal:closed " + (modal.type.toLowerCase()) + ":closed"), modal);
+      modal.$el.trigger(("modal:closed " + (modal.type.toLowerCase()) + ":closed"));
       modal.emit(("local::closed modalClosed " + (modal.type) + "Closed"), modal);
     };
 
@@ -13190,7 +12857,7 @@
       if (modal.destroyed) { return; }
       modal.emit(("local::beforeDestroy modalBeforeDestroy " + (modal.type) + "BeforeDestroy"), modal);
       if (modal.$el) {
-        modal.$el.trigger(("modal:beforedestroy " + (modal.type.toLowerCase()) + ":beforedestroy"), modal);
+        modal.$el.trigger(("modal:beforedestroy " + (modal.type.toLowerCase()) + ":beforedestroy"));
         if (modal.$el.length && modal.$el[0].f7Modal) {
           delete modal.$el[0].f7Modal;
         }
@@ -13327,7 +12994,6 @@
     ClicksModule,
     RouterModule,
     HistoryModule,
-    StorageModule,
     ComponentModule,
     ServiceWorkerModule,
     Statusbar$1,

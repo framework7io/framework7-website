@@ -1,5 +1,5 @@
 /**
- * Framework7 Vue 4.5.0
+ * Framework7 Vue 5.0.0-beta.16
  * Build full featured iOS & Android apps using Framework7 & Vue
  * http://framework7.io/vue/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: August 21, 2019
+ * Released on: September 19, 2019
  */
 
 (function (global, factory) {
@@ -145,8 +145,6 @@
     linkIconProps: {
       icon: String,
       iconMaterial: String,
-      iconIon: String,
-      iconFa: String,
       iconF7: String,
       iconIos: String,
       iconMd: String,
@@ -174,6 +172,7 @@
       view: String,
       routeProps: Object,
       preventRouter: Boolean,
+      transition: String,
     },
     linkRouterAttrs: function linkRouterAttrs(props) {
       var force = props.force;
@@ -185,6 +184,7 @@
       var ignoreCache = props.ignoreCache;
       var routeTabId = props.routeTabId;
       var view = props.view;
+      var transition = props.transition;
 
       var dataAnimate;
       if ('animate' in props && typeof animate !== 'undefined') {
@@ -206,6 +206,7 @@
         'data-ignore-cache': ignoreCache || undefined,
         'data-route-tab-id': routeTabId || undefined,
         'data-view': Utils.isStringProp(view) ? view : undefined,
+        'data-transition': Utils.isStringProp(transition) ? transition : undefined,
       };
     },
     linkRouterClasses: function linkRouterClasses(props) {
@@ -443,24 +444,29 @@
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      el.addEventListener('accordion:beforeopen', self.onBeforeOpen);
-      el.addEventListener('accordion:open', self.onOpen);
-      el.addEventListener('accordion:opened', self.onOpened);
-      el.addEventListener('accordion:beforeclose', self.onBeforeClose);
-      el.addEventListener('accordion:close', self.onClose);
-      el.addEventListener('accordion:closed', self.onClosed);
+      self.eventTargetEl = el;
+      self.$f7ready(function (f7) {
+        f7.on('accordionBeforeOpen', self.onBeforeOpen);
+        f7.on('accordionOpen', self.onOpen);
+        f7.on('accordionOpened', self.onOpened);
+        f7.on('accordionBeforeClose', self.onBeforeClose);
+        f7.on('accordionClose', self.onClose);
+        f7.on('accordionClosed', self.onClosed);
+      });
     },
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
-      if (!el) { return; }
-      el.removeEventListener('accordion:beforeopen', self.onBeforeOpen);
-      el.removeEventListener('accordion:open', self.onOpen);
-      el.removeEventListener('accordion:opened', self.onOpened);
-      el.removeEventListener('accordion:beforeclose', self.onBeforeClose);
-      el.removeEventListener('accordion:close', self.onClose);
-      el.removeEventListener('accordion:closed', self.onClosed);
+      if (!el || !self.$f7) { return; }
+      var f7 = self.$f7;
+      f7.off('accordionBeforeOpen', self.onBeforeOpen);
+      f7.off('accordionOpen', self.onOpen);
+      f7.off('accordionOpened', self.onOpened);
+      f7.off('accordionBeforeClose', self.onBeforeClose);
+      f7.off('accordionClose', self.onClose);
+      f7.off('accordionClosed', self.onClosed);
+      delete this.eventTargetEl;
     },
 
     render: function render() {
@@ -484,28 +490,34 @@
     },
 
     methods: {
-      onBeforeOpen: function onBeforeOpen(event) {
-        this.dispatchEvent('accordionBeforeOpen accordion:beforeopen', event, event.detail.prevent);
+      onBeforeOpen: function onBeforeOpen(el, prevent) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('accordionBeforeOpen accordion:beforeopen', prevent);
       },
 
-      onOpen: function onOpen(event) {
-        this.dispatchEvent('accordionOpen accordion:open', event);
+      onOpen: function onOpen(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('accordionOpen accordion:open');
       },
 
-      onOpened: function onOpened(event) {
-        this.dispatchEvent('accordionOpened accordion:opened', event);
+      onOpened: function onOpened(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('accordionOpened accordion:opened');
       },
 
-      onBeforeClose: function onBeforeClose(event) {
-        this.dispatchEvent('accordionBeforeClose accordion:beforeclose', event, event.detail.prevent);
+      onBeforeClose: function onBeforeClose(el, prevent) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('accordionBeforeClose accordion:beforeclose', prevent);
       },
 
-      onClose: function onClose(event) {
-        this.dispatchEvent('accordionClose accordion:close', event);
+      onClose: function onClose(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('accordionClose accordion:close');
       },
 
-      onClosed: function onClosed(event) {
-        this.dispatchEvent('accordionClosed accordion:closed', event);
+      onClosed: function onClosed(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('accordionClosed accordion:closed');
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -818,10 +830,6 @@
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      el.addEventListener('actions:open', self.onOpen);
-      el.addEventListener('actions:opened', self.onOpened);
-      el.addEventListener('actions:close', self.onClose);
-      el.addEventListener('actions:closed', self.onClosed);
       var props = self.props;
       var grid = props.grid;
       var target = props.target;
@@ -834,18 +842,25 @@
       var backdrop = props.backdrop;
       var backdropEl = props.backdropEl;
       var actionsParams = {
-        el: self.$refs.el,
-        grid: grid
+        el: el,
+        grid: grid,
+        on: {
+          open: self.onOpen,
+          opened: self.onOpened,
+          close: self.onClose,
+          closed: self.onClosed
+        }
       };
       if (target) { actionsParams.targetEl = target; }
       {
-        if (typeof self.$options.propsData.convertToPopover !== 'undefined') { actionsParams.convertToPopover = convertToPopover; }
-        if (typeof self.$options.propsData.forceToPopover !== 'undefined') { actionsParams.forceToPopover = forceToPopover; }
-        if (typeof self.$options.propsData.backdrop !== 'undefined') { actionsParams.backdrop = backdrop; }
-        if (typeof self.$options.propsData.backdropEl !== 'undefined') { actionsParams.backdropEl = backdropEl; }
-        if (typeof self.$options.propsData.closeByBackdropClick !== 'undefined') { actionsParams.closeByBackdropClick = closeByBackdropClick; }
-        if (typeof self.$options.propsData.closeByOutsideClick !== 'undefined') { actionsParams.closeByOutsideClick = closeByOutsideClick; }
-        if (typeof self.$options.propsData.closeOnEscape !== 'undefined') { actionsParams.closeOnEscape = closeOnEscape; }
+        var propsData = self.$options.propsData;
+        if (typeof propsData.convertToPopover !== 'undefined') { actionsParams.convertToPopover = convertToPopover; }
+        if (typeof propsData.forceToPopover !== 'undefined') { actionsParams.forceToPopover = forceToPopover; }
+        if (typeof propsData.backdrop !== 'undefined') { actionsParams.backdrop = backdrop; }
+        if (typeof propsData.backdropEl !== 'undefined') { actionsParams.backdropEl = backdropEl; }
+        if (typeof propsData.closeByBackdropClick !== 'undefined') { actionsParams.closeByBackdropClick = closeByBackdropClick; }
+        if (typeof propsData.closeByOutsideClick !== 'undefined') { actionsParams.closeByOutsideClick = closeByOutsideClick; }
+        if (typeof propsData.closeOnEscape !== 'undefined') { actionsParams.closeOnEscape = closeOnEscape; }
       }
       self.$f7ready(function () {
         self.f7Actions = self.$f7.actions.create(actionsParams);
@@ -859,41 +874,36 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Actions) { self.f7Actions.destroy(); }
-      var el = self.$refs.el;
-      if (!el) { return; }
-      el.removeEventListener('actions:open', self.onOpen);
-      el.removeEventListener('actions:opened', self.onOpened);
-      el.removeEventListener('actions:close', self.onClose);
-      el.removeEventListener('actions:closed', self.onClosed);
+      delete self.f7Actions;
     },
 
     methods: {
-      onOpen: function onOpen(event) {
-        this.dispatchEvent('actions:open actionsOpen', event);
+      onOpen: function onOpen(instance) {
+        this.dispatchEvent('actions:open actionsOpen', instance);
       },
 
-      onOpened: function onOpened(event) {
-        this.dispatchEvent('actions:opened actionsOpened', event);
+      onOpened: function onOpened(instance) {
+        this.dispatchEvent('actions:opened actionsOpened', instance);
       },
 
-      onClose: function onClose(event) {
-        this.dispatchEvent('actions:close actionsClose', event);
+      onClose: function onClose(instance) {
+        this.dispatchEvent('actions:close actionsClose', instance);
       },
 
-      onClosed: function onClosed(event) {
-        this.dispatchEvent('actions:closed actionsClosed', event);
+      onClosed: function onClosed(instance) {
+        this.dispatchEvent('actions:closed actionsClosed', instance);
       },
 
       open: function open(animate) {
         var self = this;
-        if (!self.$f7) { return undefined; }
-        return self.$f7.actions.open(self.$refs.el, animate);
+        if (!self.f7Actions) { return undefined; }
+        return self.f7Actions.open(animate);
       },
 
       close: function close(animate) {
         var self = this;
-        if (!self.$f7) { return undefined; }
-        return self.$f7.actions.close(self.$refs.el, animate);
+        if (!self.f7Actions) { return undefined; }
+        return self.f7Actions.close(animate);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -1274,7 +1284,11 @@
     props: Object.assign({
       id: [String, Number],
       inset: Boolean,
-      tabletInset: Boolean,
+      xsmallInset: Boolean,
+      smallInset: Boolean,
+      mediumInset: Boolean,
+      largeInset: Boolean,
+      xlargeInset: Boolean,
       strong: Boolean,
       tabs: Boolean,
       tab: Boolean,
@@ -1291,17 +1305,22 @@
     },
 
     mounted: function mounted() {
-      var el = this.$refs.el;
+      var self = this;
+      var el = self.$refs.el;
       if (!el) { return; }
-      el.addEventListener('tab:show', this.onTabShow);
-      el.addEventListener('tab:hide', this.onTabHide);
+      self.eventTargetEl = el;
+      self.$f7ready(function (f7) {
+        f7.on('tabShow', self.onTabShow);
+        f7.on('tabHide', self.onTabHide);
+      });
     },
 
     beforeDestroy: function beforeDestroy() {
       var el = this.$refs.el;
-      if (!el) { return; }
-      el.removeEventListener('tab:show', this.onTabShow);
-      el.removeEventListener('tab:hide', this.onTabHide);
+      if (!el || !this.$f7) { return; }
+      this.$f7.off('tabShow', this.onTabShow);
+      this.$f7.off('tabHide', this.onTabHide);
+      delete this.eventTargetEl;
     },
 
     render: function render() {
@@ -1310,9 +1329,13 @@
       var props = self.props;
       var className = props.className;
       var inset = props.inset;
+      var xsmallInset = props.xsmallInset;
+      var smallInset = props.smallInset;
+      var mediumInset = props.mediumInset;
+      var largeInset = props.largeInset;
+      var xlargeInset = props.xlargeInset;
       var strong = props.strong;
       var accordionList = props.accordionList;
-      var tabletInset = props.tabletInset;
       var tabs = props.tabs;
       var tab = props.tab;
       var tabActive = props.tabActive;
@@ -1324,9 +1347,13 @@
       var style = props.style;
       var classes = Utils.classNames(className, 'block', {
         inset: inset,
+        'xsmall-inset': xsmallInset,
+        'small-inset': smallInset,
+        'medium-inset': mediumInset,
+        'large-inset': largeInset,
+        'xlarge-inset': xlargeInset,
         'block-strong': strong,
         'accordion-list': accordionList,
-        'tablet-inset': tabletInset,
         tabs: tabs,
         tab: tab,
         'tab-active': tabActive,
@@ -1346,12 +1373,14 @@
     },
 
     methods: {
-      onTabShow: function onTabShow(event) {
-        this.dispatchEvent('tabShow tab:show', event);
+      onTabShow: function onTabShow(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('tabShow tab:show');
       },
 
-      onTabHide: function onTabHide(event) {
-        this.dispatchEvent('tabHide tab:hide', event);
+      onTabHide: function onTabHide(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('tabHide tab:hide');
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -1376,8 +1405,6 @@
       id: [String, Number],
       material: String,
       f7: String,
-      ion: String,
-      fa: String,
       icon: String,
       ios: String,
       aurora: String,
@@ -1392,10 +1419,18 @@
       var props = self.props;
       var id = props.id;
       var style = props.style;
+      var size = props.size;
+
+      if (typeof size === 'number' || parseFloat(size) === size * 1) {
+        size = size + "px";
+      }
+
       return _h('i', {
         ref: 'el',
         style: Utils.extend({
-          fontSize: self.sizeComputed
+          fontSize: size,
+          width: size,
+          height: size
         }, style),
         class: self.classes,
         attrs: {
@@ -1454,17 +1489,6 @@
     },
 
     computed: {
-      sizeComputed: function sizeComputed() {
-        var self = this;
-        var size = self.props.size;
-
-        if (typeof size === 'number' || parseFloat(size) === size * 1) {
-          size = size + "px";
-        }
-
-        return size;
-      },
-
       iconTextComputed: function iconTextComputed() {
         var self = this;
         var ref = self.props;
@@ -1494,8 +1518,6 @@
         var props = self.props;
         var material = props.material;
         var f7 = props.f7;
-        var fa = props.fa;
-        var ion = props.ion;
         var icon = props.icon;
         var md = props.md;
         var ios = props.ios;
@@ -1509,14 +1531,9 @@
           var prop = parts[0];
           var value = parts[1];
 
-          if (prop === 'material' || prop === 'fa' || prop === 'f7') {
-            classes.fa = prop === 'fa';
+          if (prop === 'material' || prop === 'f7') {
             classes['material-icons'] = prop === 'material';
             classes['f7-icons'] = prop === 'f7';
-          }
-
-          if (prop === 'fa' || prop === 'ion') {
-            classes[(prop + "-" + value)] = true;
           }
 
           if (prop === 'icon') {
@@ -1526,11 +1543,8 @@
           classes = {
             icon: true,
             'material-icons': material,
-            'f7-icons': f7,
-            fa: fa
+            'f7-icons': f7
           };
-          if (ion) { classes[("ion-" + ion)] = true; }
-          if (fa) { classes[("fa-" + fa)] = true; }
           if (icon) { classes[icon] = true; }
         }
 
@@ -1586,8 +1600,6 @@
     name: 'f7-button',
     props: Object.assign({
       id: [String, Number],
-      noFastclick: Boolean,
-      noFastClick: Boolean,
       text: String,
       tabLink: [Boolean, String],
       tabLinkActive: Boolean,
@@ -1635,8 +1647,6 @@
       var text = props.text;
       var icon = props.icon;
       var iconMaterial = props.iconMaterial;
-      var iconIon = props.iconIon;
-      var iconFa = props.iconFa;
       var iconF7 = props.iconF7;
       var iconMd = props.iconMd;
       var iconIos = props.iconIos;
@@ -1651,12 +1661,10 @@
         textEl = _h('span', [text]);
       }
 
-      if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
+      if (icon || iconMaterial || iconF7 || iconMd || iconIos || iconAurora) {
         iconEl = _h(f7Icon, {
           attrs: {
             material: iconMaterial,
-            ion: iconIon,
-            fa: iconFa,
             f7: iconF7,
             icon: icon,
             md: iconMd,
@@ -1702,8 +1710,6 @@
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var noFastclick = props.noFastclick;
-        var noFastClick = props.noFastClick;
         var tabLink = props.tabLink;
         var tabLinkActive = props.tabLinkActive;
         var round = props.round;
@@ -1736,7 +1742,6 @@
         return Utils.classNames(className, 'button', {
           'tab-link': tabLink || tabLink === '',
           'tab-link-active': tabLinkActive,
-          'no-fastclick': noFastclick || noFastClick,
           'button-round': round,
           'button-round-ios': roundIos,
           'button-round-aurora': roundAurora,
@@ -1979,6 +1984,10 @@
         type: Boolean,
         default: undefined
       },
+      hideStatusbarOnOpen: {
+        type: Boolean,
+        default: undefined
+      },
       swipeToClose: {
         type: Boolean,
         default: undefined
@@ -2023,29 +2032,32 @@
       if (!self.props.expandable) { return; }
       var el = self.$refs.el;
       if (!el) { return; }
-      el.addEventListener('card:beforeopen', self.onBeforeOpen);
-      el.addEventListener('card:open', self.onOpen);
-      el.addEventListener('card:opened', self.onOpened);
-      el.addEventListener('card:close', self.onClose);
-      el.addEventListener('card:closed', self.onClosed);
+      self.eventTargetEl = el;
+      self.$f7ready(function (f7) {
+        f7.on('cardBeforeOpen', self.onBeforeOpen);
+        f7.on('cardOpen', self.onOpen);
+        f7.on('cardOpened', self.onOpened);
+        f7.on('cardClose', self.onClose);
+        f7.on('cardClosed', self.onClosed);
 
-      if (self.props.expandable && self.props.expandableOpened) {
-        self.$f7ready(function () {
+        if (self.props.expandable && self.props.expandableOpened) {
           self.$f7.card.open(el, false);
-        });
-      }
+        }
+      });
     },
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (!self.props.expandable) { return; }
       var el = self.$refs.el;
-      if (!el) { return; }
-      el.removeEventListener('card:beforeopen', self.onBeforeOpen);
-      el.removeEventListener('card:open', self.onOpen);
-      el.removeEventListener('card:opened', self.onOpened);
-      el.removeEventListener('card:close', self.onClose);
-      el.removeEventListener('card:closed', self.onClosed);
+      if (!el || !self.$f7) { return; }
+      self.$f7.off('cardBeforeOpen', self.onBeforeOpen);
+      self.$f7.off('cardOpen', self.onOpen);
+      self.$f7.off('cardOpened', self.onOpened);
+      self.$f7.off('cardClose', self.onClose);
+      self.$f7.off('cardClosed', self.onClosed);
+      self.eventTargetEl = null;
+      delete self.eventTargetEl;
     },
 
     render: function render() {
@@ -2065,6 +2077,7 @@
       var animate = props.animate;
       var hideNavbarOnOpen = props.hideNavbarOnOpen;
       var hideToolbarOnOpen = props.hideToolbarOnOpen;
+      var hideStatusbarOnOpen = props.hideStatusbarOnOpen;
       var swipeToClose = props.swipeToClose;
       var closeByBackdropClick = props.closeByBackdropClick;
       var backdrop = props.backdrop;
@@ -2107,6 +2120,7 @@
           'data-animate': typeof animate === 'undefined' ? animate : animate.toString(),
           'data-hide-navbar-on-open': typeof hideNavbarOnOpen === 'undefined' ? hideNavbarOnOpen : hideNavbarOnOpen.toString(),
           'data-hide-toolbar-on-open': typeof hideToolbarOnOpen === 'undefined' ? hideToolbarOnOpen : hideToolbarOnOpen.toString(),
+          'data-hide-statusbar-on-open': typeof hideStatusbarOnOpen === 'undefined' ? hideStatusbarOnOpen : hideStatusbarOnOpen.toString(),
           'data-swipe-to-close': typeof swipeToClose === 'undefined' ? swipeToClose : swipeToClose.toString(),
           'data-close-by-backdrop-click': typeof closeByBackdropClick === 'undefined' ? closeByBackdropClick : closeByBackdropClick.toString(),
           'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString(),
@@ -2128,24 +2142,29 @@
         self.$f7.card.close(self.$refs.el);
       },
 
-      onBeforeOpen: function onBeforeOpen(e) {
-        this.dispatchEvent('cardBeforeOpen card:beforeopen', e, e.detail.prevent);
+      onBeforeOpen: function onBeforeOpen(el, prevent) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('cardBeforeOpen card:beforeopen', el, prevent);
       },
 
-      onOpen: function onOpen(e) {
-        this.dispatchEvent('cardOpen card:open', e);
+      onOpen: function onOpen(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('cardOpen card:open', el);
       },
 
-      onOpened: function onOpened(e) {
-        this.dispatchEvent('cardOpened card:opened', e);
+      onOpened: function onOpened(el, pageEl) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('cardOpened card:opened', el, pageEl);
       },
 
-      onClose: function onClose(e) {
-        this.dispatchEvent('cardClose card:close', e);
+      onClose: function onClose(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('cardClose card:close', el);
       },
 
-      onClosed: function onClosed(e) {
-        this.dispatchEvent('cardClosed card:closed', e);
+      onClosed: function onClosed(el, pageEl) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('cardClosed card:closed', el, pageEl);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -2402,10 +2421,19 @@
         type: [Number, String],
         default: 'auto'
       },
-      tabletWidth: {
+      xsmall: {
         type: [Number, String]
       },
-      desktopWidth: {
+      small: {
+        type: [Number, String]
+      },
+      medium: {
+        type: [Number, String]
+      },
+      large: {
+        type: [Number, String]
+      },
+      xlarge: {
         type: [Number, String]
       }
     }, Mixins.colorProps),
@@ -2421,12 +2449,15 @@
       var style = props.style;
       var tag = props.tag;
       var width = props.width;
-      var tabletWidth = props.tabletWidth;
-      var desktopWidth = props.desktopWidth;
+      var xsmall = props.xsmall;
+      var small = props.small;
+      var medium = props.medium;
+      var large = props.large;
+      var xlarge = props.xlarge;
       var ColTag = tag;
       var classes = Utils.classNames(className, ( obj = {
         col: width === 'auto'
-      }, obj[("col-" + width)] = width !== 'auto', obj[("tablet-" + tabletWidth)] = tabletWidth, obj[("desktop-" + desktopWidth)] = desktopWidth, obj ), Mixins.colorClasses(props));
+      }, obj[("col-" + width)] = width !== 'auto', obj[("xsmall-" + xsmall)] = xsmall, obj[("small-" + small)] = small, obj[("medium-" + medium)] = medium, obj[("large-" + large)] = large, obj[("xlarge-" + xlarge)] = xlarge, obj ), Mixins.colorClasses(props));
       return _h(ColTag, {
         style: style,
         class: classes,
@@ -2514,10 +2545,6 @@
 
     created: function created() {
       Utils.bindMethods(this, ['onClick']);
-    },
-
-    created: function created() {
-      this.onClick = this.onClick.bind(this);
     },
 
     mounted: function mounted() {
@@ -3289,6 +3316,184 @@
     }
   };
 
+  var f7TextEditor = {
+    name: 'f7-text-editor',
+    props: Object.assign({
+      id: [String, Number]
+    }, Mixins.colorProps, {
+      mode: {
+        type: String,
+        default: undefined
+      },
+      value: {
+        type: String,
+        default: undefined
+      },
+      buttons: Array,
+      customButtons: Object,
+      dividers: {
+        type: Boolean,
+        default: undefined
+      },
+      imageUrlText: {
+        type: String,
+        default: undefined
+      },
+      linkUrlText: {
+        type: String,
+        default: undefined
+      },
+      placeholder: {
+        type: String,
+        default: undefined
+      },
+      clearFormattingOnPaste: {
+        type: Boolean,
+        default: undefined
+      },
+      resizable: {
+        type: Boolean,
+        default: false
+      }
+    }),
+
+    created: function created() {
+      Utils.bindMethods(this, 'onChange onInput onFocus onBlur onButtonClick onKeyboardOpen onKeyboardClose onPopoverOpen onPopoverClose'.split(' '));
+    },
+
+    mounted: function mounted() {
+      var this$1 = this;
+
+      var props = this.props;
+      var mode = props.mode;
+      var value = props.value;
+      var palceholder = props.palceholder;
+      var buttons = props.buttons;
+      var customButtons = props.customButtons;
+      var dividers = props.dividers;
+      var imageUrlText = props.imageUrlText;
+      var linkUrlText = props.linkUrlText;
+      var placeholder = props.placeholder;
+      var clearFormattingOnPaste = props.clearFormattingOnPaste;
+      var params = Utils.noUndefinedProps({
+        el: this.$refs.el,
+        mode: mode,
+        value: value,
+        palceholder: palceholder,
+        buttons: buttons,
+        customButtons: customButtons,
+        dividers: dividers,
+        imageUrlText: imageUrlText,
+        linkUrlText: linkUrlText,
+        placeholder: placeholder,
+        clearFormattingOnPaste: clearFormattingOnPaste,
+        on: {
+          onChange: this.onChange,
+          onInput: this.onInput,
+          onFocus: this.onFocus,
+          onBlur: this.onBlur,
+          onButtonClick: this.onButtonClick,
+          onKeyboardOpen: this.onKeyboardOpen,
+          onKeyboardClose: this.onKeyboardClose,
+          onPopoverOpen: this.onPopoverOpen,
+          onPopoverClose: this.onPopoverClose
+        }
+      });
+      this.$f7ready(function (f7) {
+        this$1.f7TextEditor = f7.textEditor.create(params);
+      });
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      if (this.f7TextEditor && this.f7TextEditor.destroy) {
+        this.f7TextEditor.destroy();
+      }
+    },
+
+    watch: {
+      'props.value': function watchValue() {
+        if (this.f7TextEditor) {
+          this.f7TextEditor.setValue(this.props.value);
+        }
+      }
+    },
+
+    render: function render() {
+      var _h = this.$createElement;
+      var props = this.props;
+      var className = props.className;
+      var id = props.id;
+      var style = props.style;
+      var resizable = props.resizable;
+      var classes = Utils.classNames(className, 'text-editor', resizable && 'text-editor-resizable', Mixins.colorClasses(props));
+      return _h('div', {
+        ref: 'el',
+        style: style,
+        class: classes,
+        attrs: {
+          id: id
+        }
+      }, [this.$slots['root-start'], _h('div', {
+        class: 'text-editor-content',
+        attrs: {
+          contenteditable: true
+        }
+      }, [this.$slots['default']]), this.$slots['root-end'], this.$slots['root']]);
+    },
+
+    methods: {
+      onChange: function onChange(editor, value) {
+        this.dispatchEvent('texteditor:change textEditorChange', editor, value);
+      },
+
+      onInput: function onInput(editor) {
+        this.dispatchEvent('texteditor:change textEditorChange', editor);
+      },
+
+      onFocus: function onFocus(editor) {
+        this.dispatchEvent('texteditor:focus textEditorFocus', editor);
+      },
+
+      onBlur: function onBlur(editor) {
+        this.dispatchEvent('texteditor:blur textEditorBlur', editor);
+      },
+
+      onButtonClick: function onButtonClick(editor, button) {
+        this.dispatchEvent('texteditor:buttonclick textEditorButtonClick', editor, button);
+      },
+
+      onKeyboardOpen: function onKeyboardOpen(editor) {
+        this.dispatchEvent('texteditor:keyboardopen textEditorKeyboardOpen', editor);
+      },
+
+      onKeyboardClose: function onKeyboardClose(editor) {
+        this.dispatchEvent('texteditor:keyboardclose textEditorKeyboardClose', editor);
+      },
+
+      onPopoverOpen: function onPopoverOpen(editor) {
+        this.dispatchEvent('texteditor:popoveropen textEditorPopoverOpen', editor);
+      },
+
+      onPopoverClose: function onPopoverClose(editor) {
+        this.dispatchEvent('texteditor:popoverclose textEditorPopoverClose', editor);
+      },
+
+      dispatchEvent: function dispatchEvent(events) {
+        var args = [], len = arguments.length - 1;
+        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+      }
+
+    },
+    computed: {
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    }
+  };
+
   var f7Input = {
     name: 'f7-input',
     props: Object.assign({
@@ -3340,7 +3545,8 @@
         default: 'auto'
       },
       calendarParams: Object,
-      colorPickerParams: Object
+      colorPickerParams: Object,
+      textEditorParams: Object
     }, Mixins.colorProps),
 
     data: function data() {
@@ -3405,6 +3611,7 @@
       var noFormStoreData = props.noFormStoreData;
       var ignoreStoreData = props.ignoreStoreData;
       var outline = props.outline;
+      var textEditorParams = props.textEditorParams;
       var domValue = self.domValue();
       var inputHasValue = self.inputHasValue();
       var inputEl;
@@ -3531,6 +3738,20 @@
             input: true
           }
         });
+      } else if (type === 'texteditor') {
+        inputEl = _h(f7TextEditor, __vueComponentTransformJSXProps(Object.assign({}, textEditorParams, {
+          on: {
+            textEditorFocus: self.onFocus,
+            textEditorBlur: self.onBlur,
+            textEditorInput: self.onInput,
+            textEditorChange: self.onChange
+          },
+          attrs: {
+            value: value,
+            resizable: resizable,
+            placeholder: placeholder
+          }
+        })));
       } else {
         inputEl = createInput('input');
       }
@@ -3719,6 +3940,12 @@
         var self = this;
         var ref = self.props;
         var value = ref.value;
+        var type = ref.type;
+
+        if (type === 'datepicker' && Array.isArray(value) && value.length === 0) {
+          return false;
+        }
+
         var domValue = self.domValue();
         return typeof value === 'undefined' ? domValue || domValue === 0 : value || value === 0;
       },
@@ -3759,31 +3986,41 @@
         this.dispatchEvent('input:clear inputClear', event);
       },
 
-      onInput: function onInput(event) {
+      onInput: function onInput() {
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+
         var self = this;
         var ref = self.props;
         var validate = ref.validate;
         var validateOnBlur = ref.validateOnBlur;
-        self.dispatchEvent('input', event);
+        self.dispatchEvent.apply(self, [ 'input' ].concat( args ));
 
         if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
         }
       },
 
-      onFocus: function onFocus(event) {
-        this.dispatchEvent('focus', event);
+      onFocus: function onFocus() {
+        var ref;
+
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+        (ref = this).dispatchEvent.apply(ref, [ 'focus' ].concat( args ));
         this.setState({
           inputFocused: true
         });
       },
 
-      onBlur: function onBlur(event) {
+      onBlur: function onBlur() {
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+
         var self = this;
         var ref = self.props;
         var validate = ref.validate;
         var validateOnBlur = ref.validateOnBlur;
-        self.dispatchEvent('blur', event);
+        self.dispatchEvent.apply(self, [ 'blur' ].concat( args ));
 
         if ((validate || validate === '' || validateOnBlur || validateOnBlur === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
@@ -3794,8 +4031,16 @@
         });
       },
 
-      onChange: function onChange(event) {
-        this.dispatchEvent('change', event);
+      onChange: function onChange() {
+        var ref;
+
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+        (ref = this).dispatchEvent.apply(ref, [ 'change' ].concat( args ));
+
+        if (this.props.type === 'texteditor') {
+          this.dispatchEvent('texteditor:change textEditorChange', args[1]);
+        }
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -3823,8 +4068,6 @@
     props: Object.assign({
       id: [String, Number],
       noLinkClass: Boolean,
-      noFastClick: Boolean,
-      noFastclick: Boolean,
       text: String,
       tabLink: [Boolean, String],
       tabLinkActive: Boolean,
@@ -3870,8 +4113,6 @@
       var iconColor = props.iconColor;
       var iconSize = props.iconSize;
       var iconMaterial = props.iconMaterial;
-      var iconIon = props.iconIon;
-      var iconFa = props.iconFa;
       var iconF7 = props.iconF7;
       var iconMd = props.iconMd;
       var iconIos = props.iconIos;
@@ -3895,7 +4136,7 @@
         }, [text, badgeEl]);
       }
 
-      if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
+      if (icon || iconMaterial || iconF7 || iconMd || iconIos || iconAurora) {
         if (iconBadge) {
           iconBadgeEl = _h(f7Badge, {
             attrs: {
@@ -3908,8 +4149,6 @@
           attrs: {
             material: iconMaterial,
             f7: iconF7,
-            fa: iconFa,
-            ion: iconIon,
             icon: icon,
             md: iconMd,
             ios: iconIos,
@@ -4051,8 +4290,6 @@
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var noFastclick = props.noFastclick;
-        var noFastClick = props.noFastClick;
         var tabLink = props.tabLink;
         var tabLinkActive = props.tabLinkActive;
         var noLinkClass = props.noLinkClass;
@@ -4063,7 +4300,6 @@
           'icon-only': self.iconOnlyComputed,
           'tab-link': tabLink || tabLink === '',
           'tab-link-active': tabLinkActive,
-          'no-fastclick': noFastclick || noFastClick,
           'smart-select': smartSelect
         }, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
       },
@@ -4096,8 +4332,6 @@
     name: 'f7-list-button',
     props: Object.assign({
       id: [String, Number],
-      noFastclick: Boolean,
-      noFastClick: Boolean,
       title: [String, Number],
       text: [String, Number],
       tabLink: [Boolean, String],
@@ -4148,15 +4382,12 @@
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var noFastclick = props.noFastclick;
-        var noFastClick = props.noFastClick;
         var tabLink = props.tabLink;
         var tabLinkActive = props.tabLinkActive;
         return Utils.classNames({
           'list-button': true,
           'tab-link': tabLink || tabLink === '',
-          'tab-link-active': tabLinkActive,
-          'no-fastclick': noFastclick || noFastClick
+          'tab-link-active': tabLinkActive
         }, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
       },
 
@@ -4489,7 +4720,8 @@
       inlineLabel: Boolean,
       floatingLabel: Boolean,
       calendarParams: Object,
-      colorPickerParams: Object
+      colorPickerParams: Object,
+      textEditorParams: Object
     }, Mixins.colorProps),
 
     data: function data() {
@@ -4563,6 +4795,7 @@
       var label = props.label;
       var inlineLabel = props.inlineLabel;
       var floatingLabel = props.floatingLabel;
+      var textEditorParams = props.textEditorParams;
       var domValue = self.domValue();
       var inputHasValue = self.inputHasValue();
       var isSortable = sortable || self.state.isSortable;
@@ -4655,6 +4888,20 @@
           } else {
             inputEl = createInput('textarea');
           }
+        } else if (type === 'texteditor') {
+          inputEl = _h(f7TextEditor, __vueComponentTransformJSXProps(Object.assign({}, textEditorParams, {
+            on: {
+              textEditorFocus: self.onFocus,
+              textEditorBlur: self.onBlur,
+              textEditorInput: self.onInput,
+              textEditorChange: self.onChange
+            },
+            attrs: {
+              value: value,
+              resizable: resizable,
+              placeholder: placeholder
+            }
+          })));
         } else {
           inputEl = createInput('input');
         }
@@ -4873,6 +5120,12 @@
         var self = this;
         var ref = self.props;
         var value = ref.value;
+        var type = ref.type;
+
+        if (type === 'datepicker' && Array.isArray(value) && value.length === 0) {
+          return false;
+        }
+
         var domValue = self.domValue();
         return typeof value === 'undefined' ? domValue || domValue === 0 : value || value === 0;
       },
@@ -4913,31 +5166,41 @@
         this.dispatchEvent('input:clear inputClear', event);
       },
 
-      onInput: function onInput(event) {
+      onInput: function onInput() {
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+
         var self = this;
         var ref = self.props;
         var validate = ref.validate;
         var validateOnBlur = ref.validateOnBlur;
-        self.dispatchEvent('input', event);
+        self.dispatchEvent.apply(self, [ 'input' ].concat( args ));
 
         if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
         }
       },
 
-      onFocus: function onFocus(event) {
-        this.dispatchEvent('focus', event);
+      onFocus: function onFocus() {
+        var ref;
+
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+        (ref = this).dispatchEvent.apply(ref, [ 'focus' ].concat( args ));
         this.setState({
           inputFocused: true
         });
       },
 
-      onBlur: function onBlur(event) {
+      onBlur: function onBlur() {
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+
         var self = this;
         var ref = self.props;
         var validate = ref.validate;
         var validateOnBlur = ref.validateOnBlur;
-        self.dispatchEvent('blur', event);
+        self.dispatchEvent.apply(self, [ 'blur' ].concat( args ));
 
         if ((validate || validate === '' || validateOnBlur || validateOnBlur === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
@@ -4948,8 +5211,16 @@
         });
       },
 
-      onChange: function onChange(event) {
-        this.dispatchEvent('change', event);
+      onChange: function onChange() {
+        var ref;
+
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+        (ref = this).dispatchEvent.apply(ref, [ 'change' ].concat( args ));
+
+        if (this.props.type === 'texteditor') {
+          this.dispatchEvent('texteditor:change textEditorChange', args[1]);
+        }
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -5345,8 +5616,6 @@
       tooltip: String,
       link: [Boolean, String],
       target: String,
-      noFastclick: Boolean,
-      noFastClick: Boolean,
       after: [String, Number],
       badge: [String, Number],
       badgeColor: String,
@@ -5413,8 +5682,6 @@
       var link = props.link;
       var href = props.href;
       var target = props.target;
-      var noFastclick = props.noFastclick;
-      var noFastClick = props.noFastClick;
       var after = props.after;
       var badge = props.badge;
       var badgeColor = props.badgeColor;
@@ -5483,7 +5750,6 @@
           }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
           var linkClasses = Utils.classNames({
             'item-link': true,
-            'no-fastclick': noFastclick || noFastClick,
             'smart-select': smartSelect
           }, Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
           linkEl = _h('a', __vueComponentTransformJSXProps(Object.assign({
@@ -5621,28 +5887,30 @@
         });
       }
 
-      if (swipeout) {
-        el.addEventListener('swipeout:open', self.onSwipeoutOpen);
-        el.addEventListener('swipeout:opened', self.onSwipeoutOpened);
-        el.addEventListener('swipeout:close', self.onSwipeoutClose);
-        el.addEventListener('swipeout:closed', self.onSwipeoutClosed);
-        el.addEventListener('swipeout:delete', self.onSwipeoutDelete);
-        el.addEventListener('swipeout:deleted', self.onSwipeoutDeleted);
-        el.addEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnter);
-        el.addEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExit);
-        el.addEventListener('swipeout', self.onSwipeout);
-      }
-
-      if (accordionItem) {
-        el.addEventListener('accordion:beforeopen', self.onAccBeforeOpen);
-        el.addEventListener('accordion:open', self.onAccOpen);
-        el.addEventListener('accordion:opened', self.onAccOpened);
-        el.addEventListener('accordion:beforeclose', self.onAccBeforeClose);
-        el.addEventListener('accordion:close', self.onAccClose);
-        el.addEventListener('accordion:closed', self.onAccClosed);
-      }
-
       self.$f7ready(function (f7) {
+        self.eventTargetEl = el;
+
+        if (swipeout) {
+          f7.on('swipeoutOpen', self.onSwipeoutOpen);
+          f7.on('swipeoutOpened', self.onSwipeoutOpened);
+          f7.on('swipeoutClose', self.onSwipeoutClose);
+          f7.on('swipeoutClosed', self.onSwipeoutClosed);
+          f7.on('swipeoutDelete', self.onSwipeoutDelete);
+          f7.on('swipeoutDeleted', self.onSwipeoutDeleted);
+          f7.on('swipeoutOverswipeEnter', self.onSwipeoutOverswipeEnter);
+          f7.on('swipeoutOverswipeExit', self.onSwipeoutOverswipeExit);
+          f7.on('swipeout', self.onSwipeout);
+        }
+
+        if (accordionItem) {
+          f7.on('accordionBeforeOpen', self.onAccBeforeOpen);
+          f7.on('accordionOpen', self.onAccOpen);
+          f7.on('accordionOpened', self.onAccOpened);
+          f7.on('accordionBeforeClose', self.onAccBeforeClose);
+          f7.on('accordionClose', self.onAccClose);
+          f7.on('accordionClosed', self.onAccClosed);
+        }
+
         if (smartSelect) {
           var ssParams = Utils.extend({
             el: el.querySelector('a.smart-select')
@@ -5702,7 +5970,6 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var ref = self.$refs;
-      var el = ref.el;
       var linkEl = ref.linkEl;
       var ref$1 = self.props;
       var link = ref$1.link;
@@ -5720,26 +5987,28 @@
         delete linkEl.f7RouteProps;
       }
 
-      if (el) {
+      if (self.$f7) {
+        var f7 = self.$f7;
+
         if (swipeout) {
-          el.removeEventListener('swipeout:open', self.onSwipeoutOpen);
-          el.removeEventListener('swipeout:opened', self.onSwipeoutOpened);
-          el.removeEventListener('swipeout:close', self.onSwipeoutClose);
-          el.removeEventListener('swipeout:closed', self.onSwipeoutClosed);
-          el.removeEventListener('swipeout:delete', self.onSwipeoutDelete);
-          el.removeEventListener('swipeout:deleted', self.onSwipeoutDeleted);
-          el.removeEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnter);
-          el.removeEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExit);
-          el.removeEventListener('swipeout', self.onSwipeout);
+          f7.off('swipeoutOpen', self.onSwipeoutOpen);
+          f7.off('swipeoutOpened', self.onSwipeoutOpened);
+          f7.off('swipeoutClose', self.onSwipeoutClose);
+          f7.off('swipeoutClosed', self.onSwipeoutClosed);
+          f7.off('swipeoutDelete', self.onSwipeoutDelete);
+          f7.off('swipeoutDeleted', self.onSwipeoutDeleted);
+          f7.off('swipeoutOverswipeEnter', self.onSwipeoutOverswipeEnter);
+          f7.off('swipeoutOverswipeExit', self.onSwipeoutOverswipeExit);
+          f7.off('swipeout', self.onSwipeout);
         }
 
         if (accordionItem) {
-          el.removeEventListener('accordion:beforeopen', self.onAccBeforeOpen);
-          el.removeEventListener('accordion:open', self.onAccOpen);
-          el.removeEventListener('accordion:opened', self.onAccOpened);
-          el.removeEventListener('accordion:beforeclose', self.onAccBeforeClose);
-          el.removeEventListener('accordion:close', self.onAccClose);
-          el.removeEventListener('accordion:closed', self.onAccClosed);
+          f7.off('accordionBeforeOpen', self.onAccBeforeOpen);
+          f7.off('accordionOpen', self.onAccOpen);
+          f7.off('accordionOpened', self.onAccOpened);
+          f7.off('accordionBeforeClose', self.onAccBeforeClose);
+          f7.off('accordionClose', self.onAccClose);
+          f7.off('accordionClosed', self.onAccClosed);
         }
       }
 
@@ -5752,6 +6021,9 @@
         self.f7Tooltip = null;
         delete self.f7Tooltip;
       }
+
+      self.eventTargetEl = null;
+      delete self.eventTargetEl;
     },
 
     methods: {
@@ -5763,64 +6035,79 @@
         }
       },
 
-      onSwipeoutOverswipeEnter: function onSwipeoutOverswipeEnter(event) {
-        this.dispatchEvent('swipeout:overswipeenter swipeoutOverswipeEnter', event);
+      onSwipeoutOverswipeEnter: function onSwipeoutOverswipeEnter(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('swipeout:overswipeenter swipeoutOverswipeEnter');
       },
 
-      onSwipeoutOverswipeExit: function onSwipeoutOverswipeExit(event) {
-        this.dispatchEvent('swipeout:overswipeexit swipeoutOverswipeExit', event);
+      onSwipeoutOverswipeExit: function onSwipeoutOverswipeExit(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('swipeout:overswipeexit swipeoutOverswipeExit');
       },
 
-      onSwipeoutDeleted: function onSwipeoutDeleted(event) {
-        this.dispatchEvent('swipeout:deleted swipeoutDeleted', event);
+      onSwipeoutDeleted: function onSwipeoutDeleted(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('swipeout:deleted swipeoutDeleted');
       },
 
-      onSwipeoutDelete: function onSwipeoutDelete(event) {
-        this.dispatchEvent('swipeout:delete swipeoutDelete', event);
+      onSwipeoutDelete: function onSwipeoutDelete(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('swipeout:delete swipeoutDelete');
       },
 
-      onSwipeoutClose: function onSwipeoutClose(event) {
-        this.dispatchEvent('swipeout:close swipeoutClose', event);
+      onSwipeoutClose: function onSwipeoutClose(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('swipeout:close swipeoutClose');
       },
 
-      onSwipeoutClosed: function onSwipeoutClosed(event) {
-        this.dispatchEvent('swipeout:closed swipeoutClosed', event);
+      onSwipeoutClosed: function onSwipeoutClosed(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('swipeout:closed swipeoutClosed');
       },
 
-      onSwipeoutOpen: function onSwipeoutOpen(event) {
-        this.dispatchEvent('swipeout:open swipeoutOpen', event);
+      onSwipeoutOpen: function onSwipeoutOpen(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('swipeout:open swipeoutOpen');
       },
 
-      onSwipeoutOpened: function onSwipeoutOpened(event) {
-        this.dispatchEvent('swipeout:opened swipeoutOpened', event);
+      onSwipeoutOpened: function onSwipeoutOpened(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('swipeout:opened swipeoutOpened');
       },
 
-      onSwipeout: function onSwipeout(event) {
-        this.dispatchEvent('swipeout', event);
+      onSwipeout: function onSwipeout(el, progress) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('swipeout', progress);
       },
 
-      onAccBeforeClose: function onAccBeforeClose(event) {
-        this.dispatchEvent('accordion:beforeclose accordionBeforeClose', event, event.detail.prevent);
+      onAccBeforeClose: function onAccBeforeClose(el, prevent) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('accordion:beforeclose accordionBeforeClose', prevent);
       },
 
-      onAccClose: function onAccClose(event) {
-        this.dispatchEvent('accordion:close accordionClose', event);
+      onAccClose: function onAccClose(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('accordion:close accordionClose');
       },
 
-      onAccClosed: function onAccClosed(event) {
-        this.dispatchEvent('accordion:closed accordionClosed', event);
+      onAccClosed: function onAccClosed(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('accordion:closed accordionClosed');
       },
 
-      onAccBeforeOpen: function onAccBeforeOpen(event) {
-        this.dispatchEvent('accordion:beforeopen accordionBeforeOpen', event, event.detail.prevent);
+      onAccBeforeOpen: function onAccBeforeOpen(el, prevent) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('accordion:beforeopen accordionBeforeOpen', prevent);
       },
 
-      onAccOpen: function onAccOpen(event) {
-        this.dispatchEvent('accordion:open accordionOpen', event);
+      onAccOpen: function onAccOpen(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('accordion:open accordionOpen');
       },
 
-      onAccOpened: function onAccOpened(event) {
-        this.dispatchEvent('accordion:opened accordionOpened', event);
+      onAccOpened: function onAccOpened(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('accordion:opened accordionOpened');
       },
 
       onChange: function onChange(event) {
@@ -5856,7 +6143,11 @@
     props: Object.assign({
       id: [String, Number],
       inset: Boolean,
-      tabletInset: Boolean,
+      xsmallInset: Boolean,
+      smallInset: Boolean,
+      mediumInset: Boolean,
+      largeInset: Boolean,
+      xlargeInset: Boolean,
       mediaList: Boolean,
       sortable: Boolean,
       sortableEnabled: Boolean,
@@ -5947,7 +6238,11 @@
         var self = this;
         var props = self.props;
         var inset = props.inset;
-        var tabletInset = props.tabletInset;
+        var xsmallInset = props.xsmallInset;
+        var smallInset = props.smallInset;
+        var mediumInset = props.mediumInset;
+        var largeInset = props.largeInset;
+        var xlargeInset = props.xlargeInset;
         var mediaList = props.mediaList;
         var simpleList = props.simpleList;
         var linksList = props.linksList;
@@ -5973,7 +6268,11 @@
         var chevronCenter = props.chevronCenter;
         return Utils.classNames(className, 'list', {
           inset: inset,
-          'tablet-inset': tabletInset,
+          'xsmall-inset': xsmallInset,
+          'small-inset': smallInset,
+          'medium-inset': mediumInset,
+          'large-inset': largeInset,
+          'xlarge-inset': xlargeInset,
           'media-list': mediaList,
           'simple-list': simpleList,
           'links-list': linksList,
@@ -5985,12 +6284,12 @@
           tab: tab,
           'tab-active': tabActive,
           'no-hairlines': noHairlines,
-          'no-hairlines-between': noHairlinesBetween,
           'no-hairlines-md': noHairlinesMd,
-          'no-hairlines-between-md': noHairlinesBetweenMd,
           'no-hairlines-ios': noHairlinesIos,
-          'no-hairlines-between-ios': noHairlinesBetweenIos,
           'no-hairlines-aurora': noHairlinesAurora,
+          'no-hairlines-between': noHairlinesBetween,
+          'no-hairlines-between-md': noHairlinesBetweenMd,
+          'no-hairlines-between-ios': noHairlinesBetweenIos,
           'no-hairlines-between-aurora': noHairlinesBetweenAurora,
           'form-store-data': formStoreData,
           'inline-labels': inlineLabels,
@@ -6016,37 +6315,23 @@
       var virtualList = ref.virtualList;
       var virtualListParams = ref.virtualListParams;
       var form = ref.form;
-
-      if (el) {
-        el.addEventListener('sortable:enable', self.onSortableEnable);
-        el.addEventListener('sortable:disable', self.onSortableDisable);
-        el.addEventListener('sortable:sort', self.onSortableSort);
-        el.addEventListener('tab:show', self.onTabShow);
-        el.addEventListener('tab:hide', self.onTabHide);
+      self.$f7ready(function (f7) {
+        self.eventTargetEl = el;
+        f7.on('sortableEnable', self.onSortableEnable);
+        f7.on('sortableDisable', self.onSortableDisable);
+        f7.on('sortableSort', self.onSortableSort);
+        f7.on('tabShow', self.onTabShow);
+        f7.on('tabHide', self.onTabHide);
 
         if (form) {
           el.addEventListener('submit', self.onSubmit);
         }
-      }
 
-      if (!virtualList) { return; }
-      self.$f7ready(function (f7) {
-        var $$ = self.$$;
-        var $el = $$(el);
-        var templateScript = $el.find('script');
-        var template = templateScript.html();
-
-        if (!template && templateScript.length > 0) {
-          template = templateScript[0].outerHTML;
-          template = /\<script type="text\/template7"\>(.*)<\/script>/.exec(template)[1];
-        }
-
+        if (!virtualList) { return; }
         var vlParams = virtualListParams || {};
-        if (!template && !vlParams.renderItem && !vlParams.itemTemplate && !vlParams.renderExternal) { return; }
-        if (template) { template = self.$t7.compile(template); }
+        if (!vlParams.renderItem && !vlParams.itemTemplate && !vlParams.renderExternal) { return; }
         self.f7VirtualList = f7.virtualList.create(Utils.extend({
           el: el,
-          itemTemplate: template,
           on: {
             itemBeforeInsert: function itemBeforeInsert(itemEl, item) {
               var vl = this;
@@ -6076,19 +6361,16 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
-
-      if (el) {
-        el.removeEventListener('sortable:enable', self.onSortableEnable);
-        el.removeEventListener('sortable:disable', self.onSortableDisable);
-        el.removeEventListener('sortable:sort', self.onSortableSort);
-        el.removeEventListener('tab:show', self.onTabShow);
-        el.removeEventListener('tab:hide', self.onTabHide);
-
-        if (self.props.form) {
-          el.removeEventListener('submit', self.onSubmit);
-        }
-      }
-
+      var f7 = self.$f7;
+      if (!el || !f7) { return; }
+      f7.off('sortableEnable', self.onSortableEnable);
+      f7.off('sortableDisable', self.onSortableDisable);
+      f7.off('sortableSort', self.onSortableSort);
+      f7.off('tabShow', self.onTabShow);
+      f7.off('tabHide', self.onTabHide);
+      el.removeEventListener('submit', self.onSubmit);
+      self.eventTargetEl = null;
+      delete self.eventTargetEl;
       if (!(self.virtualList && self.f7VirtualList)) { return; }
       if (self.f7VirtualList.destroy) { self.f7VirtualList.destroy(); }
     },
@@ -6098,25 +6380,29 @@
         this.dispatchEvent('submit', event);
       },
 
-      onSortableEnable: function onSortableEnable(event) {
-        this.dispatchEvent('sortable:enable sortableEnable', event);
+      onSortableEnable: function onSortableEnable(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('sortable:enable sortableEnable');
       },
 
-      onSortableDisable: function onSortableDisable(event) {
-        this.dispatchEvent('sortable:disable sortableDisable', event);
+      onSortableDisable: function onSortableDisable(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('sortable:disable sortableDisable');
       },
 
-      onSortableSort: function onSortableSort(event) {
-        var sortData = event.detail;
-        this.dispatchEvent('sortable:sort sortableSort', event, sortData);
+      onSortableSort: function onSortableSort(el, sortData, listEl) {
+        if (this.eventTargetEl !== listEl) { return; }
+        this.dispatchEvent('sortable:sort sortableSort', sortData);
       },
 
-      onTabShow: function onTabShow(event) {
-        this.dispatchEvent('tab:show tabShow', event);
+      onTabShow: function onTabShow(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('tab:show tabShow');
       },
 
-      onTabHide: function onTabHide(event) {
-        this.dispatchEvent('tab:hide tabHide', event);
+      onTabHide: function onTabHide(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('tab:hide tabHide');
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -6205,13 +6491,15 @@
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      el.addEventListener('loginscreen:open', self.onOpen);
-      el.addEventListener('loginscreen:opened', self.onOpened);
-      el.addEventListener('loginscreen:close', self.onClose);
-      el.addEventListener('loginscreen:closed', self.onClosed);
       self.$f7ready(function () {
         self.f7LoginScreen = self.$f7.loginScreen.create({
-          el: el
+          el: el,
+          on: {
+            open: self.onOpen,
+            opened: self.onOpened,
+            close: self.onClose,
+            closed: self.onClosed
+          }
         });
 
         if (self.props.opened) {
@@ -6222,44 +6510,36 @@
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var el = self.$refs.el;
       if (self.f7LoginScreen) { self.f7LoginScreen.destroy(); }
-      if (!el) { return; }
-      el.removeEventListener('loginscreen:open', self.onOpen);
-      el.removeEventListener('loginscreen:opened', self.onOpened);
-      el.removeEventListener('loginscreen:close', self.onClose);
-      el.removeEventListener('loginscreen:closed', self.onClosed);
     },
 
     methods: {
-      onOpen: function onOpen(event) {
-        this.dispatchEvent('loginscreen:open loginScreenOpen', event);
+      onOpen: function onOpen(instance) {
+        this.dispatchEvent('loginscreen:open loginScreenOpen', instance);
       },
 
-      onOpened: function onOpened(event) {
-        this.dispatchEvent('loginscreen:opened loginScreenOpened', event);
+      onOpened: function onOpened(instance) {
+        this.dispatchEvent('loginscreen:opened loginScreenOpened', instance);
       },
 
-      onClose: function onClose(event) {
-        this.dispatchEvent('loginscreen:close loginScreenClose', event);
+      onClose: function onClose(instance) {
+        this.dispatchEvent('loginscreen:close loginScreenClose', instance);
       },
 
-      onClosed: function onClosed(event) {
-        this.dispatchEvent('loginscreen:closed loginScreenClosed', event);
+      onClosed: function onClosed(instance) {
+        this.dispatchEvent('loginscreen:closed loginScreenClosed', instance);
       },
 
       open: function open(animate) {
         var self = this;
-        var el = self.$refs.el;
-        if (!self.$f7 || !el) { return undefined; }
-        return self.$f7.loginScreen.open(el, animate);
+        if (!self.f7LoginScreen) { return undefined; }
+        return self.f7LoginScreen.open(animate);
       },
 
       close: function close(animate) {
         var self = this;
-        var el = self.$refs.el;
-        if (!self.$f7 || !el) { return undefined; }
-        return self.$f7.loginScreen.close(el, animate);
+        if (!self.f7LoginScreen) { return undefined; }
+        return self.f7LoginScreen.close(animate);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -6465,8 +6745,6 @@
       var iconColor = props.iconColor;
       var iconSize = props.iconSize;
       var iconMaterial = props.iconMaterial;
-      var iconIon = props.iconIon;
-      var iconFa = props.iconFa;
       var iconF7 = props.iconF7;
       var iconMd = props.iconMd;
       var iconIos = props.iconIos;
@@ -6475,13 +6753,11 @@
       var iconEl;
       var iconOnlyComputed;
 
-      if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
+      if (icon || iconMaterial || iconF7 || iconMd || iconIos || iconAurora) {
         iconEl = _h(f7Icon, {
           attrs: {
             material: iconMaterial,
             f7: iconF7,
-            fa: iconFa,
-            ion: iconIon,
             icon: icon,
             md: iconMd,
             ios: iconIos,
@@ -6527,12 +6803,15 @@
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
+      self.eventTargetEl = el;
       el.addEventListener('click', self.onClick);
-      el.addEventListener('menu:opened', self.onOpened);
-      el.addEventListener('menu:closed', self.onClosed);
       var ref = self.props;
       var routeProps = ref.routeProps;
       if (routeProps) { el.f7RouteProps = routeProps; }
+      self.$f7ready(function (f7) {
+        f7.on('menuOpened', self.onOpened);
+        f7.on('menuClosed', self.onClosed);
+      });
     },
 
     updated: function updated() {
@@ -6547,11 +6826,13 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
-      if (!el) { return; }
+      if (!el || !self.$f7) { return; }
       el.removeEventListener('click', self.onClick);
-      el.removeEventListener('menu:opened', self.onOpened);
-      el.removeEventListener('menu:closed', self.onClosed);
+      self.$f7.off('menuOpened', self.onOpened);
+      self.$f7.off('menuClosed', self.onOpened);
+      self.eventTargetEl = null;
       delete el.f7RouteProps;
+      delete self.eventTargetEl;
     },
 
     computed: {
@@ -6579,12 +6860,14 @@
         this.dispatchEvent('click', e);
       },
 
-      onOpened: function onOpened(e) {
-        this.dispatchEvent('menuOpened menu:opened', e);
+      onOpened: function onOpened(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('menuOpened menu:opened', el);
       },
 
-      onClosed: function onClosed(e) {
-        this.dispatchEvent('menuClosed menu:closed', e);
+      onClosed: function onClosed(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('menuClosed menu:closed', el);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -7131,7 +7414,7 @@
     }, Mixins.colorProps),
 
     created: function created() {
-      Utils.bindMethods(this, ['onChange', 'onInput', 'onFocus', 'onBlur', 'onClick', 'onDeleteAttachment', 'onClickAttachment', 'onResizePage']);
+      Utils.bindMethods(this, ['onChange', 'onInput', 'onFocus', 'onBlur', 'onClick', 'onAttachmentDelete', 'onAttachmentClick,', 'onResizePage']);
     },
 
     render: function render() {
@@ -7257,16 +7540,18 @@
       if (!init) { return; }
       var el = self.$refs.el;
       if (!el) { return; }
-      el.addEventListener('messagebar:attachmentdelete', self.onDeleteAttachment);
-      el.addEventListener('messagebar:attachmentclick', self.onClickAttachment);
-      el.addEventListener('messagebar:resizepage', self.onResizePage);
       var params = Utils.noUndefinedProps({
         el: el,
         top: top,
         resizePage: resizePage,
         bottomOffset: bottomOffset,
         topOffset: topOffset,
-        maxHeight: maxHeight
+        maxHeight: maxHeight,
+        on: {
+          attachmentDelete: self.onAttachmentDelete,
+          attachmentClick: self.onAttachmentClick,
+          resizePage: self.onResizePage
+        }
       });
       self.$f7ready(function () {
         self.f7Messagebar = self.$f7.messagebar.create(params);
@@ -7296,11 +7581,6 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Messagebar && self.f7Messagebar.destroy) { self.f7Messagebar.destroy(); }
-      var el = self.$refs.el;
-      if (!el) { return; }
-      el.removeEventListener('messagebar:attachmentdelete', self.onDeleteAttachment);
-      el.removeEventListener('messagebar:attachmentclick', self.onClickAttachment);
-      el.removeEventListener('messagebar:resizepage', self.onResizePage);
     },
 
     methods: {
@@ -7451,16 +7731,16 @@
         this.dispatchEvent('click', event);
       },
 
-      onDeleteAttachment: function onDeleteAttachment(event) {
-        this.dispatchEvent('messagebar:attachmentdelete messagebarAttachmentDelete', event);
+      onAttachmentDelete: function onAttachmentDelete(instance, attachmentEl, attachmentElIndex) {
+        this.dispatchEvent('messagebar:attachmentdelete messagebarAttachmentDelete', instance, attachmentEl, attachmentElIndex);
       },
 
-      onClickAttachment: function onClickAttachment(event) {
-        this.dispatchEvent('messagebar:attachmentclick messagebarAttachmentClick', event);
+      onAttachmentClick: function onAttachmentClick(instance, attachmentEl, attachmentElIndex) {
+        this.dispatchEvent('messagebar:attachmentclick messagebarAttachmentClick', instance, attachmentEl, attachmentElIndex);
       },
 
-      onResizePage: function onResizePage(event) {
-        this.dispatchEvent('messagebar:resizepage messagebarResizePage', event);
+      onResizePage: function onResizePage(instance) {
+        this.dispatchEvent('messagebar:resizepage messagebarResizePage', instance);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -7975,13 +8255,10 @@
       hidden: Boolean,
       noShadow: Boolean,
       noHairline: Boolean,
-      inner: {
-        type: Boolean,
-        default: true
-      },
       innerClass: String,
       innerClassName: String,
       large: Boolean,
+      largeTransparent: Boolean,
       titleLarge: String
     }, Mixins.colorProps),
 
@@ -7996,7 +8273,6 @@
       var sliding = props.sliding;
       var title = props.title;
       var subtitle = props.subtitle;
-      var inner = props.inner;
       var innerClass = props.innerClass;
       var innerClassName = props.innerClassName;
       var className = props.className;
@@ -8006,6 +8282,7 @@
       var noShadow = props.noShadow;
       var noHairline = props.noHairline;
       var large = props.large;
+      var largeTransparent = props.largeTransparent;
       var titleLarge = props.titleLarge;
       var leftEl;
       var titleEl;
@@ -8016,21 +8293,9 @@
       var slots = self.$slots;
       var classes = Utils.classNames(className, 'navbar', {
         'navbar-hidden': hidden,
-        'no-shadow': noShadow,
-        'no-hairline': noHairline,
-        'navbar-large': large
+        'navbar-large': large,
+        'navbar-large-transparent': largeTransparent
       }, Mixins.colorClasses(props));
-
-      if (!inner) {
-        return _h('div', {
-          ref: 'el',
-          style: style,
-          class: classes,
-          attrs: {
-            id: id
-          }
-        }, [this.$slots['default']]);
-      }
 
       if (backLink || slots['nav-left'] || slots.left) {
         leftEl = _h(f7NavLeft, {
@@ -8071,12 +8336,12 @@
       }
 
       var innerEl = _h('div', {
-        ref: 'innerEl',
         class: Utils.classNames('navbar-inner', innerClass, innerClassName, {
           sliding: sliding,
+          'no-shadow': noShadow,
+          'no-hairline': noHairline,
           'navbar-inner-left-title': addLeftTitleClass,
-          'navbar-inner-centered-title': addCenterTitleClass,
-          'navbar-inner-large': large
+          'navbar-inner-centered-title': addCenterTitleClass
         })
       }, [leftEl, titleEl, rightEl, titleLargeEl, this.$slots['default']]);
 
@@ -8087,7 +8352,9 @@
         attrs: {
           id: id
         }
-      }, [this.$slots['before-inner'], innerEl, this.$slots['after-inner']]);
+      }, [_h('div', {
+        class: 'navbar-bg'
+      }), this.$slots['before-inner'], innerEl, this.$slots['after-inner']]);
     },
 
     created: function created() {
@@ -8097,9 +8364,10 @@
     mounted: function mounted() {
       var self = this;
       var ref = self.$refs;
-      var innerEl = ref.innerEl;
-      if (!innerEl) { return; }
+      var el = ref.el;
+      if (!el) { return; }
       self.$f7ready(function (f7) {
+        self.eventTargetEl = el;
         f7.on('navbarShow', self.onShow);
         f7.on('navbarHide', self.onHide);
         f7.on('navbarCollapse', self.onCollapse);
@@ -8111,71 +8379,42 @@
       var self = this;
       if (!self.$f7) { return; }
       var el = self.$refs.el;
-
-      if (el && el.children && el.children.length) {
-        self.$f7.navbar.size(el);
-      } else if (self.$refs.innerEl) {
-        self.$f7.navbar.size(self.$refs.innerEl);
-      }
+      self.$f7.navbar.size(el);
     },
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      if (!self.props.inner) { return; }
       var ref = self.$refs;
-      var innerEl = ref.innerEl;
-      if (!innerEl) { return; }
+      var el = ref.el;
+      if (!el || !self.$f7) { return; }
       var f7 = self.$f7;
-      if (!f7) { return; }
       f7.off('navbarShow', self.onShow);
       f7.off('navbarHide', self.onHide);
       f7.off('navbarCollapse', self.onCollapse);
       f7.off('navbarExpand', self.onExpand);
+      self.eventTargetEl = null;
+      delete self.eventTargetEl;
     },
 
     methods: {
       onHide: function onHide(navbarEl) {
-        var self = this;
-        var ref = self.$refs;
-        var el = ref.el;
-        var innerEl = ref.innerEl;
-
-        if (navbarEl === el || innerEl && innerEl.parentNode === navbarEl) {
-          self.dispatchEvent('navbar:hide navbarHide');
-        }
+        if (this.eventTargetEl !== navbarEl) { return; }
+        this.dispatchEvent('navbar:hide navbarHide');
       },
 
       onShow: function onShow(navbarEl) {
-        var self = this;
-        var ref = self.$refs;
-        var el = ref.el;
-        var innerEl = ref.innerEl;
-
-        if (navbarEl === el || innerEl && innerEl.parentNode === navbarEl) {
-          self.dispatchEvent('navbar:show navbarShow');
-        }
+        if (this.eventTargetEl !== navbarEl) { return; }
+        this.dispatchEvent('navbar:show navbarShow');
       },
 
       onExpand: function onExpand(navbarEl) {
-        var self = this;
-        var ref = self.$refs;
-        var el = ref.el;
-        var innerEl = ref.innerEl;
-
-        if (navbarEl === el || innerEl && innerEl.parentNode === navbarEl) {
-          self.dispatchEvent('navbar:expand navbarExpand');
-        }
+        if (this.eventTargetEl !== navbarEl) { return; }
+        this.dispatchEvent('navbar:expand navbarExpand');
       },
 
       onCollapse: function onCollapse(navbarEl) {
-        var self = this;
-        var ref = self.$refs;
-        var el = ref.el;
-        var innerEl = ref.innerEl;
-
-        if (navbarEl === el || innerEl && innerEl.parentNode === navbarEl) {
-          self.dispatchEvent('navbar:collapse navbarCollapse');
-        }
+        if (this.eventTargetEl !== navbarEl) { return; }
+        this.dispatchEvent('navbar:collapse navbarCollapse');
       },
 
       hide: function hide(animate) {
@@ -8441,70 +8680,82 @@
       var ptr = ref.ptr;
       var infinite = ref.infinite;
       var tab = ref.tab;
+      self.$f7ready(function (f7) {
+        self.eventTargetEl = el;
 
-      if (ptr) {
-        el.addEventListener('ptr:pullstart', self.onPtrPullStart);
-        el.addEventListener('ptr:pullmove', self.onPtrPullMove);
-        el.addEventListener('ptr:pullend', self.onPtrPullEnd);
-        el.addEventListener('ptr:refresh', self.onPtrRefresh);
-        el.addEventListener('ptr:done', self.onPtrDone);
-      }
+        if (ptr) {
+          f7.on('ptrPullStart', self.onPtrPullStart);
+          f7.on('ptrPullMove', self.onPtrPullMove);
+          f7.on('ptrPullEnd', self.onPtrPullEnd);
+          f7.on('ptrRefresh', self.onPtrRefresh);
+          f7.on('ptrDone', self.onPtrDone);
+        }
 
-      if (infinite) {
-        el.addEventListener('infinite', self.onInfinite);
-      }
+        if (infinite) {
+          f7.on('infinite', self.onInfinite);
+        }
 
-      if (tab) {
-        el.addEventListener('tab:show', self.onTabShow);
-        el.addEventListener('tab:hide', self.onTabHide);
-      }
+        if (tab) {
+          f7.on('tabShow', self.onTabShow);
+          f7.on('tabHide', self.onTabHide);
+        }
+      });
     },
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var el = self.$refs.el;
-      el.removeEventListener('ptr:pullstart', self.onPtrPullStart);
-      el.removeEventListener('ptr:pullmove', self.onPtrPullMove);
-      el.removeEventListener('ptr:pullend', self.onPtrPullEnd);
-      el.removeEventListener('ptr:refresh', self.onPtrRefresh);
-      el.removeEventListener('ptr:done', self.onPtrDone);
-      el.removeEventListener('infinite', self.onInfinite);
-      el.removeEventListener('tab:show', self.onTabShow);
-      el.removeEventListener('tab:hide', self.onTabHide);
+      if (!self.$f7) { return; }
+      self.$f7.off('ptrPullStart', self.onPtrPullStart);
+      self.$f7.off('ptrPullMove', self.onPtrPullMove);
+      self.$f7.off('ptrPullEnd', self.onPtrPullEnd);
+      self.$f7.off('ptrRefresh', self.onPtrRefresh);
+      self.$f7.off('ptrDone', self.onPtrDone);
+      self.$f7.off('infinite', self.onInfinite);
+      self.$f7.off('tabShow', self.onTabShow);
+      self.$f7.off('tabHide', self.onTabHide);
+      self.eventTargetEl = null;
+      delete self.eventTargetEl;
     },
 
     methods: {
-      onPtrPullStart: function onPtrPullStart(event) {
-        this.dispatchEvent('ptr:pullstart ptrPullStart', event);
+      onPtrPullStart: function onPtrPullStart(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('ptr:pullstart ptrPullStart');
       },
 
-      onPtrPullMove: function onPtrPullMove(event) {
-        this.dispatchEvent('ptr:pullmove ptrPullMove', event);
+      onPtrPullMove: function onPtrPullMove(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('ptr:pullmove ptrPullMove');
       },
 
-      onPtrPullEnd: function onPtrPullEnd(event) {
-        this.dispatchEvent('ptr:pullend ptrPullEnd', event);
+      onPtrPullEnd: function onPtrPullEnd(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('ptr:pullend ptrPullEnd');
       },
 
-      onPtrRefresh: function onPtrRefresh(event) {
-        var done = event.detail;
-        this.dispatchEvent('ptr:refresh ptrRefresh', event, done);
+      onPtrRefresh: function onPtrRefresh(el, done) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('ptr:refresh ptrRefresh', done);
       },
 
-      onPtrDone: function onPtrDone(event) {
-        this.dispatchEvent('ptr:done ptrDone', event);
+      onPtrDone: function onPtrDone(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('ptr:done ptrDone');
       },
 
-      onInfinite: function onInfinite(event) {
-        this.dispatchEvent('infinite', event);
+      onInfinite: function onInfinite(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('infinite');
       },
 
-      onTabShow: function onTabShow(event) {
-        this.dispatchEvent('tab:show tabShow', event);
+      onTabShow: function onTabShow(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('tab:show tabShow');
       },
 
-      onTabHide: function onTabHide(event) {
-        this.dispatchEvent('tab:hide tabHide', event);
+      onTabHide: function onTabHide(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('tab:hide tabHide');
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -8581,6 +8832,7 @@
           routerPositionClass: '',
           routerForceUnstack: false,
           routerPageRole: null,
+          routerPageRoleDetailRoot: false,
           routerPageMasterStack: false
         };
       })();
@@ -8624,7 +8876,6 @@
       var noSwipeback = props.noSwipeback;
       var fixedList = [];
       var staticList = [];
-      var needsPageContent = pageContent;
       var ref = self.$slots;
       var slotsStatic = ref.static;
       var slotsFixed = ref.fixed;
@@ -8644,14 +8895,16 @@
             var tag = child.tag;
 
             if (!tag) {
-              if (needsPageContent) { staticList.push(child); }
+              if (pageContent) { staticList.push(child); }
               return;
             }
 
             if (tag.indexOf('subnavbar') >= 0) { hasSubnavbar = true; }
 
             if (tag.indexOf('navbar') >= 0) {
-              if (child.componentOptions && child.componentOptions.propsData && 'large' in child.componentOptions.propsData && child.componentOptions.propsData !== false) { hasNavbarLarge = true; }
+              if (child.componentOptions && child.componentOptions.propsData && 'large' in child.componentOptions.propsData && (child.componentOptions.propsData.large || child.componentOptions.propsData.large === '')) {
+                hasNavbarLarge = true;
+              }
             }
 
             if (typeof hasMessages === 'undefined' && tag.indexOf('messages') >= 0) { hasMessages = true; }
@@ -8663,7 +8916,7 @@
             }
           }
 
-          if (needsPageContent) {
+          if (pageContent) {
             if (isFixedTag) { fixedList.push(child); }else { staticList.push(child); }
           }
         });
@@ -8681,12 +8934,14 @@
         'no-swipeback': noSwipeback,
         'page-master': this.state.routerPageRole === 'master',
         'page-master-detail': this.state.routerPageRole === 'detail',
+        'page-master-detail-root': this.state.routerPageRoleDetailRoot === true,
         'page-master-stacked': this.state.routerPageMasterStack === true,
         'page-with-navbar-large-collapsed': this.state.hasNavbarLargeCollapsed === true,
-        'page-with-card-opened': this.state.hasCardExpandableOpened === true
+        'page-with-card-opened': this.state.hasCardExpandableOpened === true,
+        'login-screen-page': loginScreen
       }, Mixins.colorClasses(props));
 
-      if (!needsPageContent) {
+      if (!pageContent) {
         return _h('div', {
           ref: 'el',
           style: style,
@@ -8699,6 +8954,14 @@
       }
 
       var pageContentEl = _h(f7PageContent, {
+        on: {
+          ptrPullStart: self.onPtrPullStart,
+          ptrPullMove: self.onPtrPullMove,
+          ptrPullEnd: self.onPtrPullEnd,
+          ptrRefresh: self.onPtrRefresh,
+          ptrDone: self.onPtrDone,
+          infinite: self.onInfinite
+        },
         attrs: {
           ptr: ptr,
           ptrDistance: ptrDistance,
@@ -8735,153 +8998,111 @@
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
-      var ref = self.props;
-      var ptr = ref.ptr;
-      var infinite = ref.infinite;
-
-      if (ptr) {
-        el.addEventListener('ptr:pullstart', self.onPtrPullStart);
-        el.addEventListener('ptr:pullmove', self.onPtrPullMove);
-        el.addEventListener('ptr:pullend', self.onPtrPullEnd);
-        el.addEventListener('ptr:refresh', self.onPtrRefresh);
-        el.addEventListener('ptr:done', self.onPtrDone);
-      }
-
-      if (infinite) {
-        el.addEventListener('infinite', self.onInfinite);
-      }
-
-      el.addEventListener('page:mounted', self.onPageMounted);
-      el.addEventListener('page:init', self.onPageInit);
-      el.addEventListener('page:reinit', self.onPageReinit);
-      el.addEventListener('page:beforein', self.onPageBeforeIn);
-      el.addEventListener('page:beforeout', self.onPageBeforeOut);
-      el.addEventListener('page:afterout', self.onPageAfterOut);
-      el.addEventListener('page:afterin', self.onPageAfterIn);
-      el.addEventListener('page:beforeremove', self.onPageBeforeRemove);
-      el.addEventListener('page:stack', self.onPageStack);
-      el.addEventListener('page:unstack', self.onPageUnstack);
-      el.addEventListener('page:position', self.onPagePosition);
-      el.addEventListener('page:role', self.onPageRole);
-      el.addEventListener('page:masterstack', self.onPageMasterStack);
-      el.addEventListener('page:masterunstack', self.onPageMasterUnstack);
-      el.addEventListener('page:navbarlargecollapsed', self.onPageNavbarLargeCollapsed);
-      el.addEventListener('page:navbarlargeexpanded', self.onPageNavbarLargeExpanded);
-      el.addEventListener('card:opened', self.onCardOpened);
-      el.addEventListener('card:close', self.onCardClose);
+      self.$f7ready(function (f7) {
+        self.eventTargetEl = el;
+        f7.on('pageMounted', self.onPageMounted);
+        f7.on('pageInit', self.onPageInit);
+        f7.on('pageReinit', self.onPageReinit);
+        f7.on('pageBeforeOn', self.onPageBeforeIn);
+        f7.on('pageBeforeOut', self.onPageBeforeOut);
+        f7.on('pageAfterOut', self.onPageAfterOut);
+        f7.on('pageAfterIn', self.onPageAfterIn);
+        f7.on('pageBeforeRemove', self.onPageBeforeRemove);
+        f7.on('pageStack', self.onPageStack);
+        f7.on('pageUnstack', self.onPageUnstack);
+        f7.on('pagePosition', self.onPagePosition);
+        f7.on('pageRole', self.onPageRole);
+        f7.on('pageMasterStack', self.onPageMasterStack);
+        f7.on('pageMasterUnstack', self.onPageMasterUnstack);
+        f7.on('pageNavbarLargeCollapsed', self.onPageNavbarLargeCollapsed);
+        f7.on('pageNavbarLargeExpanded', self.onPageNavbarLargeExpanded);
+        f7.on('cardOpened', self.onCardOpened);
+        f7.on('cardClose', self.onCardClose);
+      });
     },
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var el = self.$refs.el;
-      el.removeEventListener('ptr:pullstart', self.onPtrPullStart);
-      el.removeEventListener('ptr:pullmove', self.onPtrPullMove);
-      el.removeEventListener('ptr:pullend', self.onPtrPullEnd);
-      el.removeEventListener('ptr:refresh', self.onPtrRefresh);
-      el.removeEventListener('ptr:done', self.onPtrDone);
-      el.removeEventListener('infinite', self.onInfinite);
-      el.removeEventListener('page:mounted', self.onPageMounted);
-      el.removeEventListener('page:init', self.onPageInit);
-      el.removeEventListener('page:reinit', self.onPageReinit);
-      el.removeEventListener('page:beforein', self.onPageBeforeIn);
-      el.removeEventListener('page:beforeout', self.onPageBeforeOut);
-      el.removeEventListener('page:afterout', self.onPageAfterOut);
-      el.removeEventListener('page:afterin', self.onPageAfterIn);
-      el.removeEventListener('page:beforeremove', self.onPageBeforeRemove);
-      el.removeEventListener('page:stack', self.onPageStack);
-      el.removeEventListener('page:unstack', self.onPageUnstack);
-      el.removeEventListener('page:position', self.onPagePosition);
-      el.removeEventListener('page:role', self.onPageRole);
-      el.removeEventListener('page:masterstack', self.onPageMasterStack);
-      el.removeEventListener('page:masterunstack', self.onPageMasterUnstack);
-      el.removeEventListener('page:navbarlargecollapsed', self.onPageNavbarLargeCollapsed);
-      el.removeEventListener('page:navbarlargeexpanded', self.onPageNavbarLargeExpanded);
-      el.removeEventListener('card:opened', self.onCardOpened);
-      el.removeEventListener('card:close', self.onCardClose);
+      if (!self.$f7) { return; }
+      var f7 = self.$f7;
+      f7.off('pageMounted', self.onPageMounted);
+      f7.off('pageInit', self.onPageInit);
+      f7.off('pageReinit', self.onPageReinit);
+      f7.off('pageBeforeOn', self.onPageBeforeIn);
+      f7.off('pageBeforeOut', self.onPageBeforeOut);
+      f7.off('pageAfterOut', self.onPageAfterOut);
+      f7.off('pageAfterIn', self.onPageAfterIn);
+      f7.off('pageBeforeRemove', self.onPageBeforeRemove);
+      f7.off('pageStack', self.onPageStack);
+      f7.off('pageUnstack', self.onPageUnstack);
+      f7.off('pagePosition', self.onPagePosition);
+      f7.off('pageRole', self.onPageRole);
+      f7.off('pageMasterStack', self.onPageMasterStack);
+      f7.off('pageMasterUnstack', self.onPageMasterUnstack);
+      f7.off('pageNavbarLargeCollapsed', self.onPageNavbarLargeCollapsed);
+      f7.off('pageNavbarLargeExpanded', self.onPageNavbarLargeExpanded);
+      f7.off('cardOpened', self.onCardOpened);
+      f7.off('cardClose', self.onCardClose);
+      self.eventTargetEl = null;
+      delete self.eventTargetEl;
     },
 
     methods: {
-      onPtrPullStart: function onPtrPullStart(event) {
-        this.dispatchEvent('ptr:pullstart ptrPullStart', event);
+      onPtrPullStart: function onPtrPullStart() {
+        var ref;
+
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+        (ref = this).dispatchEvent.apply(ref, [ 'ptr:pullstart ptrPullStart' ].concat( args ));
       },
 
-      onPtrPullMove: function onPtrPullMove(event) {
-        this.dispatchEvent('ptr:pullmove ptrPullMove', event);
+      onPtrPullMove: function onPtrPullMove() {
+        var ref;
+
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+        (ref = this).dispatchEvent.apply(ref, [ 'ptr:pullmove ptrPullMove' ].concat( args ));
       },
 
-      onPtrPullEnd: function onPtrPullEnd(event) {
-        this.dispatchEvent('ptr:pullend ptrPullEnd', event);
+      onPtrPullEnd: function onPtrPullEnd() {
+        var ref;
+
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+        (ref = this).dispatchEvent.apply(ref, [ 'ptr:pullend ptrPullEnd' ].concat( args ));
       },
 
-      onPtrRefresh: function onPtrRefresh(event) {
-        var done = event.detail;
-        this.dispatchEvent('ptr:refresh ptrRefresh', event, done);
+      onPtrRefresh: function onPtrRefresh() {
+        var ref;
+
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+        (ref = this).dispatchEvent.apply(ref, [ 'ptr:refresh ptrRefresh' ].concat( args ));
       },
 
-      onPtrDone: function onPtrDone(event) {
-        this.dispatchEvent('ptr:done ptrDone', event);
+      onPtrDone: function onPtrDone() {
+        var ref;
+
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+        (ref = this).dispatchEvent.apply(ref, [ 'ptr:done ptrDone' ].concat( args ));
       },
 
-      onInfinite: function onInfinite(event) {
-        this.dispatchEvent('infinite', event);
+      onInfinite: function onInfinite() {
+        var ref;
+
+        var args = [], len = arguments.length;
+        while ( len-- ) args[ len ] = arguments[ len ];
+        (ref = this).dispatchEvent.apply(ref, [ 'infinite' ].concat( args ));
       },
 
-      onPageMounted: function onPageMounted(event) {
-        var page = event.detail;
-        this.dispatchEvent('page:mounted pageMounted', event, page);
+      onPageMounted: function onPageMounted(page) {
+        if (this.eventTargetEl !== page.el) { return; }
+        this.dispatchEvent('page:mounted pageMounted', page);
       },
 
-      onPageStack: function onPageStack() {
-        this.setState({
-          routerForceUnstack: false
-        });
-      },
-
-      onPageUnstack: function onPageUnstack() {
-        this.setState({
-          routerForceUnstack: true
-        });
-      },
-
-      onPagePosition: function onPagePosition(event) {
-        var position = event.detail.position;
-        this.setState({
-          routerPositionClass: ("page-" + position)
-        });
-      },
-
-      onPageRole: function onPageRole(event) {
-        this.setState({
-          routerPageRole: event.detail.role
-        });
-      },
-
-      onPageMasterStack: function onPageMasterStack() {
-        this.setState({
-          routerPageMasterStack: true
-        });
-      },
-
-      onPageMasterUnstack: function onPageMasterUnstack() {
-        this.setState({
-          routerPageMasterStack: false
-        });
-      },
-
-      onPageNavbarLargeCollapsed: function onPageNavbarLargeCollapsed() {
-        this.setState({
-          hasNavbarLargeCollapsed: true
-        });
-      },
-
-      onPageNavbarLargeExpanded: function onPageNavbarLargeExpanded() {
-        this.setState({
-          hasNavbarLargeCollapsed: false
-        });
-      },
-
-      onPageInit: function onPageInit(event) {
-        var page = event.detail;
+      onPageInit: function onPageInit(page) {
+        if (this.eventTargetEl !== page.el) { return; }
         var ref = this.props;
         var withSubnavbar = ref.withSubnavbar;
         var subnavbar = ref.subnavbar;
@@ -8897,23 +9118,23 @@
         }
 
         if (typeof withNavbarLarge === 'undefined' && typeof navbarLarge === 'undefined') {
-          if (page.$navbarEl && page.$navbarEl.hasClass('navbar-inner-large')) {
+          if (page.$navbarEl && page.$navbarEl.hasClass('navbar-large')) {
             this.setState({
               hasNavbarLarge: true
             });
           }
         }
 
-        this.dispatchEvent('page:init pageInit', event, page);
+        this.dispatchEvent('page:init pageInit', page);
       },
 
-      onPageReinit: function onPageReinit(event) {
-        var page = event.detail;
-        this.dispatchEvent('page:reinit pageReinit', event, page);
+      onPageReinit: function onPageReinit(page) {
+        if (this.eventTargetEl !== page.el) { return; }
+        this.dispatchEvent('page:reinit pageReinit', page);
       },
 
-      onPageBeforeIn: function onPageBeforeIn(event) {
-        var page = event.detail;
+      onPageBeforeIn: function onPageBeforeIn(page) {
+        if (this.eventTargetEl !== page.el) { return; }
 
         if (page.from === 'next') {
           this.setState({
@@ -8927,16 +9148,16 @@
           });
         }
 
-        this.dispatchEvent('page:beforein pageBeforeIn', event, page);
+        this.dispatchEvent('page:beforein pageBeforeIn', page);
       },
 
-      onPageBeforeOut: function onPageBeforeOut(event) {
-        var page = event.detail;
-        this.dispatchEvent('page:beforeout pageBeforeOut', event, page);
+      onPageBeforeOut: function onPageBeforeOut(page) {
+        if (this.eventTargetEl !== page.el) { return; }
+        this.dispatchEvent('page:beforeout pageBeforeOut', page);
       },
 
-      onPageAfterOut: function onPageAfterOut(event) {
-        var page = event.detail;
+      onPageAfterOut: function onPageAfterOut(page) {
+        if (this.eventTargetEl !== page.el) { return; }
 
         if (page.to === 'next') {
           this.setState({
@@ -8950,29 +9171,88 @@
           });
         }
 
-        this.dispatchEvent('page:afterout pageAfterOut', event, page);
+        this.dispatchEvent('page:afterout pageAfterOut', page);
       },
 
-      onPageAfterIn: function onPageAfterIn(event) {
-        var page = event.detail;
+      onPageAfterIn: function onPageAfterIn(page) {
+        if (this.eventTargetEl !== page.el) { return; }
         this.setState({
           routerPositionClass: 'page-current'
         });
-        this.dispatchEvent('page:afterin pageAfterIn', event, page);
+        this.dispatchEvent('page:afterin pageAfterIn', page);
       },
 
-      onPageBeforeRemove: function onPageBeforeRemove(event) {
-        var page = event.detail;
-        this.dispatchEvent('page:beforeremove pageBeforeRemove', event, page);
+      onPageBeforeRemove: function onPageBeforeRemove(page) {
+        if (this.eventTargetEl !== page.el) { return; }
+        this.dispatchEvent('page:beforeremove pageBeforeRemove', page);
       },
 
-      onCardOpened: function onCardOpened() {
+      onPageStack: function onPageStack(pageEl) {
+        if (this.eventTargetEl !== pageEl) { return; }
+        this.setState({
+          routerForceUnstack: false
+        });
+      },
+
+      onPageUnstack: function onPageUnstack(pageEl) {
+        if (this.eventTargetEl !== pageEl) { return; }
+        this.setState({
+          routerForceUnstack: true
+        });
+      },
+
+      onPagePosition: function onPagePosition(pageEl, position) {
+        if (this.eventTargetEl !== pageEl) { return; }
+        this.setState({
+          routerPositionClass: ("page-" + position)
+        });
+      },
+
+      onPageRole: function onPageRole(pageEl, rolesData) {
+        if (this.eventTargetEl !== pageEl) { return; }
+        this.setState({
+          routerPageRole: rolesData.role,
+          routerPageRoleDetailRoot: rolesData.detailRoot
+        });
+      },
+
+      onPageMasterStack: function onPageMasterStack(pageEl) {
+        if (this.eventTargetEl !== pageEl) { return; }
+        this.setState({
+          routerPageMasterStack: true
+        });
+      },
+
+      onPageMasterUnstack: function onPageMasterUnstack(pageEl) {
+        if (this.eventTargetEl !== pageEl) { return; }
+        this.setState({
+          routerPageMasterStack: false
+        });
+      },
+
+      onPageNavbarLargeCollapsed: function onPageNavbarLargeCollapsed(pageEl) {
+        if (this.eventTargetEl !== pageEl) { return; }
+        this.setState({
+          hasNavbarLargeCollapsed: true
+        });
+      },
+
+      onPageNavbarLargeExpanded: function onPageNavbarLargeExpanded(pageEl) {
+        if (this.eventTargetEl !== pageEl) { return; }
+        this.setState({
+          hasNavbarLargeCollapsed: false
+        });
+      },
+
+      onCardOpened: function onCardOpened(cardEl, pageEl) {
+        if (this.eventTargetEl !== pageEl) { return; }
         this.setState({
           hasCardExpandableOpened: true
         });
       },
 
-      onCardClose: function onCardClose() {
+      onCardClose: function onCardClose(cardEl, pageEl) {
+        if (this.eventTargetEl !== pageEl) { return; }
         this.setState({
           hasCardExpandableOpened: false
         });
@@ -9009,7 +9289,33 @@
       left: Boolean,
       right: Boolean,
       opened: Boolean,
-      resizable: Boolean
+      resizable: Boolean,
+      backdrop: {
+        type: Boolean,
+        default: true
+      },
+      backdropEl: {
+        type: String,
+        default: undefined
+      },
+      visibleBreakpoint: {
+        type: Number,
+        default: undefined
+      },
+      collapsedBreakpoint: {
+        type: Number,
+        default: undefined
+      },
+      swipe: Boolean,
+      swipeOnlyClose: Boolean,
+      swipeActiveArea: {
+        type: Number,
+        default: 0
+      },
+      swipeThreshold: {
+        type: Number,
+        default: 0
+      }
     }, Mixins.colorProps),
 
     render: function render() {
@@ -9039,14 +9345,12 @@
         var left = props.left;
         var reveal = props.reveal;
         var className = props.className;
-        var opened = props.opened;
         var resizable = props.resizable;
         var side = props.side;
         var effect = props.effect;
         side = side || (left ? 'left' : 'right');
         effect = effect || (reveal ? 'reveal' : 'cover');
         return Utils.classNames(className, 'panel', ( obj = {
-          'panel-active': opened,
           'panel-resizable': resizable
         }, obj[("panel-" + side)] = side, obj[("panel-" + effect)] = effect, obj ), Mixins.colorClasses(props));
       },
@@ -9059,39 +9363,39 @@
     watch: {
       'props.resizable': function watchResizable(resizable) {
         var self = this;
-        if (!resizable) { return; }
-
-        if (self.f7Panel && !self.f7Panel.resizableInitialized) {
-          self.f7Panel.initResizablePanel();
-        }
+        if (!self.f7Panel) { return; }
+        if (resizable) { self.f7Panel.enableResizable(); }else { self.f7Panel.disableResizable(); }
       },
       'props.opened': function watchOpened(opened) {
         var self = this;
-        if (!self.$f7) { return; }
-        var side = self.props.side || (self.props.left ? 'left' : 'right');
+        if (!self.f7Panel) { return; }
 
         if (opened) {
-          self.$f7.panel.open(side);
+          self.f7Panel.open();
         } else {
-          self.$f7.panel.close(side);
+          self.f7Panel.close();
         }
       }
     },
 
     created: function created() {
-      Utils.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onBackdropClick', 'onPanelSwipe', 'onPanelSwipeOpen', 'onBreakpoint', 'onResize']);
+      Utils.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onBackdropClick', 'onSwipe', 'onSwipeOpen', 'onBreakpoint', 'onCollapsedBreakpoint', 'onResize']);
     },
 
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       var ref = self.props;
-      var side = ref.side;
-      var effect = ref.effect;
       var opened = ref.opened;
-      var left = ref.left;
-      var reveal = ref.reveal;
       var resizable = ref.resizable;
+      var backdrop = ref.backdrop;
+      var backdropEl = ref.backdropEl;
+      var visibleBreakpoint = ref.visibleBreakpoint;
+      var collapsedBreakpoint = ref.collapsedBreakpoint;
+      var swipe = ref.swipe;
+      var swipeOnlyClose = ref.swipeOnlyClose;
+      var swipeActiveArea = ref.swipeActiveArea;
+      var swipeThreshold = ref.swipeThreshold;
       self.$f7ready(function () {
         var $ = self.$$;
         if (!$) { return; }
@@ -9100,44 +9404,42 @@
           $('<div class="panel-backdrop"></div>').insertBefore(el);
         }
 
-        self.f7Panel = self.$f7.panel.create({
+        var params = Utils.noUndefinedProps({
           el: el,
-          resizable: resizable
+          resizable: resizable,
+          backdrop: backdrop,
+          backdropEl: backdropEl,
+          visibleBreakpoint: visibleBreakpoint,
+          collapsedBreakpoint: collapsedBreakpoint,
+          swipe: swipe,
+          swipeOnlyClose: swipeOnlyClose,
+          swipeActiveArea: swipeActiveArea,
+          swipeThreshold: swipeThreshold,
+          on: {
+            open: self.onOpen,
+            opened: self.onOpened,
+            close: self.onClose,
+            closed: self.onClosed,
+            backdropClick: self.onBackdropClick,
+            swipe: self.onSwipe,
+            swipeOpen: self.onSwipeOpen,
+            collapsedBreakpoint: self.onCollapsedBreakpoint,
+            breakpoint: self.onBreakpoint,
+            resize: self.onResize
+          }
         });
-        var events = {
-          open: self.onOpen,
-          opened: self.onOpened,
-          close: self.onClose,
-          closed: self.onClosed,
-          backdropClick: self.onBackdropClick,
-          swipe: self.onPanelSwipe,
-          swipeOpen: self.onPanelSwipeOpen,
-          breakpoint: self.onBreakpoint,
-          resize: self.onResize
-        };
-        Object.keys(events).forEach(function (ev) {
-          self.f7Panel.on(ev, events[ev]);
-        });
+        self.f7Panel = self.$f7.panel.create(params);
+
+        if (opened) {
+          self.f7Panel.open(false);
+        }
       });
-
-      if (opened) {
-        el.style.display = 'block';
-      }
-
-      var $ = self.$$;
-      if (!$) { return; }
-      var panelSide = side || (left ? 'left' : 'right');
-      var panelEffect = effect || (reveal ? 'reveal' : 'cover');
-
-      if (opened) {
-        $('html').addClass(("with-panel-" + panelSide + "-" + panelEffect));
-      }
     },
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
 
-      if (self.f7Panel) {
+      if (self.f7Panel && self.f7Panel.destroy) {
         self.f7Panel.destroy();
       }
     },
@@ -9163,16 +9465,20 @@
         this.dispatchEvent('panel:backdrop-click panelBackdropClick', event);
       },
 
-      onPanelSwipe: function onPanelSwipe(event) {
+      onSwipe: function onSwipe(event) {
         this.dispatchEvent('panel:swipe panelSwipe', event);
       },
 
-      onPanelSwipeOpen: function onPanelSwipeOpen(event) {
+      onSwipeOpen: function onSwipeOpen(event) {
         this.dispatchEvent('panel:swipeopen panelSwipeOpen', event);
       },
 
       onBreakpoint: function onBreakpoint(event) {
         this.dispatchEvent('panel:breakpoint panelBreakpoint', event);
+      },
+
+      onCollapsedBreakpoint: function onCollapsedBreakpoint(event) {
+        this.dispatchEvent('panel:collapsedbreakpoint panelCollapsedBreakpoint', event);
       },
 
       onResize: function onResize(event) {
@@ -9181,23 +9487,20 @@
 
       open: function open(animate) {
         var self = this;
-        if (!self.$f7) { return; }
-        var side = self.props.side || (self.props.left ? 'left' : 'right');
-        self.$f7.panel.open(side, animate);
+        if (!self.f7Panel) { return; }
+        self.f7Panel.open(animate);
       },
 
       close: function close(animate) {
         var self = this;
-        if (!self.$f7) { return; }
-        var side = self.props.side || (self.props.left ? 'left' : 'right');
-        self.$f7.panel.close(side, animate);
+        if (!self.f7Panel) { return; }
+        self.f7Panel.close(animate);
       },
 
       toggle: function toggle(animate) {
         var self = this;
-        if (!self.$f7) { return; }
-        var side = self.props.side || (self.props.left ? 'left' : 'right');
-        self.$f7.panel.toggle(side, animate);
+        if (!self.f7Panel) { return; }
+        self.f7Panel.toggle(animate);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -9252,11 +9555,21 @@
         type: Boolean,
         default: true
       },
-      backLinkText: {
-        type: String
+      pageBackLinkText: {
+        type: String,
+        default: undefined
+      },
+      popupCloseLinkText: {
+        type: String,
+        default: undefined
       },
       navbarOfText: {
-        type: String
+        type: String,
+        default: undefined
+      },
+      navbarShowCount: {
+        type: Boolean,
+        default: undefined
       },
       swiper: {
         type: Object
@@ -9294,7 +9607,7 @@
         var self = this;
         var pb = self.f7PhotoBrowser;
         if (!pb) { return; }
-        self.f7PhotoBrowser.photos = newValue;
+        self.f7PhotoBrowser.params.photos = newValue;
 
         if (pb.opened && pb.swiper) {
           pb.swiper.update();
@@ -9437,10 +9750,6 @@
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      el.addEventListener('popover:open', self.onOpen);
-      el.addEventListener('popover:opened', self.onOpened);
-      el.addEventListener('popover:close', self.onClose);
-      el.addEventListener('popover:closed', self.onClosed);
       var props = self.props;
       var target = props.target;
       var opened = props.opened;
@@ -9450,15 +9759,22 @@
       var closeByOutsideClick = props.closeByOutsideClick;
       var closeOnEscape = props.closeOnEscape;
       var popoverParams = {
-        el: el
+        el: el,
+        on: {
+          open: self.onOpen,
+          opened: self.onOpened,
+          close: self.onClose,
+          closed: self.onClosed
+        }
       };
       if (target) { popoverParams.targetEl = target; }
       {
-        if (typeof self.$options.propsData.closeByBackdropClick !== 'undefined') { popoverParams.closeByBackdropClick = closeByBackdropClick; }
-        if (typeof self.$options.propsData.closeByOutsideClick !== 'undefined') { popoverParams.closeByOutsideClick = closeByOutsideClick; }
-        if (typeof self.$options.propsData.closeOnEscape !== 'undefined') { popoverParams.closeOnEscape = closeOnEscape; }
-        if (typeof self.$options.propsData.backdrop !== 'undefined') { popoverParams.backdrop = backdrop; }
-        if (typeof self.$options.propsData.backdropEl !== 'undefined') { popoverParams.backdropEl = backdropEl; }
+        var propsData = self.$options.propsData;
+        if (typeof propsData.closeByBackdropClick !== 'undefined') { popoverParams.closeByBackdropClick = closeByBackdropClick; }
+        if (typeof propsData.closeByOutsideClick !== 'undefined') { popoverParams.closeByOutsideClick = closeByOutsideClick; }
+        if (typeof propsData.closeOnEscape !== 'undefined') { popoverParams.closeOnEscape = closeOnEscape; }
+        if (typeof propsData.backdrop !== 'undefined') { popoverParams.backdrop = backdrop; }
+        if (typeof propsData.backdropEl !== 'undefined') { popoverParams.backdropEl = backdropEl; }
       }
       self.$f7ready(function () {
         self.f7Popover = self.$f7.popover.create(popoverParams);
@@ -9472,41 +9788,35 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Popover) { self.f7Popover.destroy(); }
-      var el = self.$refs.el;
-      if (!el) { return; }
-      el.removeEventListener('popover:open', self.onOpen);
-      el.removeEventListener('popover:opened', self.onOpened);
-      el.removeEventListener('popover:close', self.onClose);
-      el.removeEventListener('popover:closed', self.onClosed);
     },
 
     methods: {
-      onOpen: function onOpen(event) {
-        this.dispatchEvent('popover:open popoverOpen', event);
+      onOpen: function onOpen(instance) {
+        this.dispatchEvent('popover:open popoverOpen', instance);
       },
 
-      onOpened: function onOpened(event) {
-        this.dispatchEvent('popover:opened popoverOpened', event);
+      onOpened: function onOpened(instance) {
+        this.dispatchEvent('popover:opened popoverOpened', instance);
       },
 
-      onClose: function onClose(event) {
-        this.dispatchEvent('popover:close popoverClose', event);
+      onClose: function onClose(instance) {
+        this.dispatchEvent('popover:close popoverClose', instance);
       },
 
-      onClosed: function onClosed(event) {
-        this.dispatchEvent('popover:closed popoverClosed', event);
+      onClosed: function onClosed(instance) {
+        this.dispatchEvent('popover:closed popoverClosed', instance);
       },
 
-      open: function open(target, animate) {
+      open: function open(animate) {
         var self = this;
-        if (!self.$f7) { return undefined; }
-        return self.$f7.popover.open(self.$refs.el, target, animate);
+        if (!self.f7Popover) { return undefined; }
+        return self.f7Popover.open(animate);
       },
 
       close: function close(animate) {
         var self = this;
-        if (!self.$f7) { return undefined; }
-        return self.$f7.sheet.close(self.$refs.el, animate);
+        if (!self.f7Popover) { return undefined; }
+        return self.f7Popover.close(animate);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -9540,7 +9850,8 @@
         type: [Boolean, String],
         default: false
       },
-      swipeHandler: [String, Object, window.HTMLElement]
+      swipeHandler: [String, Object, window.HTMLElement],
+      push: Boolean
     }, Mixins.colorProps),
 
     render: function render() {
@@ -9551,8 +9862,10 @@
       var id = props.id;
       var style = props.style;
       var tabletFullscreen = props.tabletFullscreen;
+      var push = props.push;
       var classes = Utils.classNames(className, 'popup', {
-        'popup-tablet-fullscreen': tabletFullscreen
+        'popup-tablet-fullscreen': tabletFullscreen,
+        'popup-push': push
       }, Mixins.colorClasses(props));
       return _h('div', {
         ref: 'el',
@@ -9585,10 +9898,6 @@
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      el.addEventListener('popup:open', self.onOpen);
-      el.addEventListener('popup:opened', self.onOpened);
-      el.addEventListener('popup:close', self.onClose);
-      el.addEventListener('popup:closed', self.onClosed);
       var props = self.props;
       var closeByBackdropClick = props.closeByBackdropClick;
       var backdrop = props.backdrop;
@@ -9598,16 +9907,23 @@
       var swipeToClose = props.swipeToClose;
       var swipeHandler = props.swipeHandler;
       var popupParams = {
-        el: el
+        el: el,
+        on: {
+          open: self.onOpen,
+          opened: self.onOpened,
+          close: self.onClose,
+          closed: self.onClosed
+        }
       };
       {
-        if (typeof self.$options.propsData.closeByBackdropClick !== 'undefined') { popupParams.closeByBackdropClick = closeByBackdropClick; }
-        if (typeof self.$options.propsData.closeOnEscape !== 'undefined') { popupParams.closeOnEscape = closeOnEscape; }
-        if (typeof self.$options.propsData.animate !== 'undefined') { popupParams.animate = animate; }
-        if (typeof self.$options.propsData.backdrop !== 'undefined') { popupParams.backdrop = backdrop; }
-        if (typeof self.$options.propsData.backdropEl !== 'undefined') { popupParams.backdropEl = backdropEl; }
-        if (typeof self.$options.propsData.swipeToClose !== 'undefined') { popupParams.swipeToClose = swipeToClose; }
-        if (typeof self.$options.propsData.swipeHandler !== 'undefined') { popupParams.swipeHandler = swipeHandler; }
+        var propsData = self.$options.propsData;
+        if (typeof propsData.closeByBackdropClick !== 'undefined') { popupParams.closeByBackdropClick = closeByBackdropClick; }
+        if (typeof propsData.closeOnEscape !== 'undefined') { popupParams.closeOnEscape = closeOnEscape; }
+        if (typeof propsData.animate !== 'undefined') { popupParams.animate = animate; }
+        if (typeof propsData.backdrop !== 'undefined') { popupParams.backdrop = backdrop; }
+        if (typeof propsData.backdropEl !== 'undefined') { popupParams.backdropEl = backdropEl; }
+        if (typeof propsData.swipeToClose !== 'undefined') { popupParams.swipeToClose = swipeToClose; }
+        if (typeof propsData.swipeHandler !== 'undefined') { popupParams.swipeHandler = swipeHandler; }
       }
       self.$f7ready(function () {
         self.f7Popup = self.$f7.popup.create(popupParams);
@@ -9621,41 +9937,35 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Popup) { self.f7Popup.destroy(); }
-      var el = self.$refs.el;
-      if (!el) { return; }
-      el.removeEventListener('popup:open', self.onOpen);
-      el.removeEventListener('popup:opened', self.onOpened);
-      el.removeEventListener('popup:close', self.onClose);
-      el.removeEventListener('popup:closed', self.onClosed);
     },
 
     methods: {
-      onOpen: function onOpen(event) {
-        this.dispatchEvent('popup:open popupOpen', event);
+      onOpen: function onOpen(instance) {
+        this.dispatchEvent('popup:open popupOpen', instance);
       },
 
-      onOpened: function onOpened(event) {
-        this.dispatchEvent('popup:opened popupOpened', event);
+      onOpened: function onOpened(instance) {
+        this.dispatchEvent('popup:opened popupOpened', instance);
       },
 
-      onClose: function onClose(event) {
-        this.dispatchEvent('popup:close popupClose', event);
+      onClose: function onClose(instance) {
+        this.dispatchEvent('popup:close popupClose', instance);
       },
 
-      onClosed: function onClosed(event) {
-        this.dispatchEvent('popup:closed popupClosed', event);
+      onClosed: function onClosed(instance) {
+        this.dispatchEvent('popup:closed popupClosed', instance);
       },
 
       open: function open(animate) {
         var self = this;
-        if (!self.$f7) { return undefined; }
-        return self.$f7.popup.open(self.$refs.el, animate);
+        if (!self.f7Popup) { return undefined; }
+        return self.f7Popup.open(animate);
       },
 
       close: function close(animate) {
         var self = this;
-        if (!self.$f7) { return undefined; }
-        return self.$f7.popup.close(self.$refs.el, animate);
+        if (!self.f7Popup) { return undefined; }
+        return self.f7Popup.close(animate);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -10255,6 +10565,10 @@
       roundIos: Boolean,
       roundMd: Boolean,
       roundAurora: Boolean,
+      strong: Boolean,
+      strongIos: Boolean,
+      strongMd: Boolean,
+      strongAurora: Boolean,
       tag: {
         type: String,
         default: 'div'
@@ -10274,6 +10588,10 @@
       var roundIos = props.roundIos;
       var roundAurora = props.roundAurora;
       var roundMd = props.roundMd;
+      var strong = props.strong;
+      var strongIos = props.strongIos;
+      var strongMd = props.strongMd;
+      var strongAurora = props.strongAurora;
       var id = props.id;
       var style = props.style;
       var tag = props.tag;
@@ -10286,7 +10604,11 @@
         'segmented-round': round,
         'segmented-round-ios': roundIos,
         'segmented-round-aurora': roundAurora,
-        'segmented-round-md': roundMd
+        'segmented-round-md': roundMd,
+        'segmented-strong': strong,
+        'segmented-strong-ios': strongIos,
+        'segmented-strong-md': strongMd,
+        'segmented-strong-aurora': strongAurora
       }, Mixins.colorClasses(props));
       var SegmentedTag = tag;
       return _h(SegmentedTag, {
@@ -10319,6 +10641,7 @@
       closeByBackdropClick: Boolean,
       closeByOutsideClick: Boolean,
       closeOnEscape: Boolean,
+      push: Boolean,
       swipeToClose: Boolean,
       swipeToStep: Boolean,
       swipeHandler: [String, Object, window.HTMLElement]
@@ -10336,6 +10659,7 @@
       var top = props.top;
       var bottom = props.bottom;
       var position = props.position;
+      var push = props.push;
       var fixedTags;
       fixedTags = 'navbar toolbar tabbar subnavbar searchbar messagebar fab list-index'.split(' ');
       var slotsDefault = self.$slots.default;
@@ -10367,7 +10691,9 @@
 
       var positionComputed = 'bottom';
       if (position) { positionComputed = position; }else if (top) { positionComputed = 'top'; }else if (bottom) { positionComputed = 'bottom'; }
-      var classes = Utils.classNames(className, 'sheet-modal', ("sheet-modal-" + positionComputed), Mixins.colorClasses(props));
+      var classes = Utils.classNames(className, 'sheet-modal', ("sheet-modal-" + positionComputed), {
+        'sheet-modal-push': push
+      }, Mixins.colorClasses(props));
       return _h('div', {
         ref: 'el',
         style: style,
@@ -10399,13 +10725,6 @@
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      el.addEventListener('sheet:open', self.onOpen);
-      el.addEventListener('sheet:opened', self.onOpened);
-      el.addEventListener('sheet:close', self.onClose);
-      el.addEventListener('sheet:closed', self.onClosed);
-      el.addEventListener('sheet:stepopen', self.onStepOpen);
-      el.addEventListener('sheet:stepclose', self.onStepClose);
-      el.addEventListener('sheet:stepprogress', self.onStepProgress);
       var props = self.props;
       var opened = props.opened;
       var backdrop = props.backdrop;
@@ -10417,17 +10736,27 @@
       var swipeToStep = props.swipeToStep;
       var swipeHandler = props.swipeHandler;
       var sheetParams = {
-        el: self.$refs.el
+        el: self.$refs.el,
+        on: {
+          open: self.onOpen,
+          opened: self.onOpened,
+          close: self.onClose,
+          closed: self.onClosed,
+          stepOpen: self.onStepOpen,
+          stepClose: self.onStepClose,
+          stepProgress: self.onStepProgress
+        }
       };
       {
-        if (typeof self.$options.propsData.backdrop !== 'undefined') { sheetParams.backdrop = backdrop; }
-        if (typeof self.$options.propsData.backdropEl !== 'undefined') { sheetParams.backdropEl = backdropEl; }
-        if (typeof self.$options.propsData.closeByBackdropClick !== 'undefined') { sheetParams.closeByBackdropClick = closeByBackdropClick; }
-        if (typeof self.$options.propsData.closeByOutsideClick !== 'undefined') { sheetParams.closeByOutsideClick = closeByOutsideClick; }
-        if (typeof self.$options.propsData.closeOnEscape !== 'undefined') { sheetParams.closeOnEscape = closeOnEscape; }
-        if (typeof self.$options.propsData.swipeToClose !== 'undefined') { sheetParams.swipeToClose = swipeToClose; }
-        if (typeof self.$options.propsData.swipeToStep !== 'undefined') { sheetParams.swipeToStep = swipeToStep; }
-        if (typeof self.$options.propsData.swipeHandler !== 'undefined') { sheetParams.swipeHandler = swipeHandler; }
+        var propsData = self.$options.propsData;
+        if (typeof propsData.backdrop !== 'undefined') { sheetParams.backdrop = backdrop; }
+        if (typeof propsData.backdropEl !== 'undefined') { sheetParams.backdropEl = backdropEl; }
+        if (typeof propsData.closeByBackdropClick !== 'undefined') { sheetParams.closeByBackdropClick = closeByBackdropClick; }
+        if (typeof propsData.closeByOutsideClick !== 'undefined') { sheetParams.closeByOutsideClick = closeByOutsideClick; }
+        if (typeof propsData.closeOnEscape !== 'undefined') { sheetParams.closeOnEscape = closeOnEscape; }
+        if (typeof propsData.swipeToClose !== 'undefined') { sheetParams.swipeToClose = swipeToClose; }
+        if (typeof propsData.swipeToStep !== 'undefined') { sheetParams.swipeToStep = swipeToStep; }
+        if (typeof propsData.swipeHandler !== 'undefined') { sheetParams.swipeHandler = swipeHandler; }
       }
       self.$f7ready(function () {
         self.f7Sheet = self.$f7.sheet.create(sheetParams);
@@ -10441,56 +10770,47 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Sheet) { self.f7Sheet.destroy(); }
-      var el = self.$refs.el;
-      if (!el) { return; }
-      el.removeEventListener('sheet:open', self.onOpen);
-      el.removeEventListener('sheet:opened', self.onOpened);
-      el.removeEventListener('sheet:close', self.onClose);
-      el.removeEventListener('sheet:closed', self.onClosed);
-      el.removeEventListener('sheet:stepopen', self.onStepOpen);
-      el.removeEventListener('sheet:stepclose', self.onStepClose);
-      el.removeEventListener('sheet:stepprogress', self.onStepProgress);
     },
 
     methods: {
-      onStepProgress: function onStepProgress(event) {
-        this.dispatchEvent('sheet:stepprogress sheetStepProgress', event.detail);
+      onStepProgress: function onStepProgress(instance, progress) {
+        this.dispatchEvent('sheet:stepprogress sheetStepProgress', instance, progress);
       },
 
-      onStepOpen: function onStepOpen(event) {
-        this.dispatchEvent('sheet:stepopen sheetStepOpen', event);
+      onStepOpen: function onStepOpen(instance) {
+        this.dispatchEvent('sheet:stepopen sheetStepOpen', instance);
       },
 
-      onStepClose: function onStepClose(event) {
-        this.dispatchEvent('sheet:stepclose sheetStepClose', event);
+      onStepClose: function onStepClose(instance) {
+        this.dispatchEvent('sheet:stepclose sheetStepClose', instance);
       },
 
-      onOpen: function onOpen(event) {
-        this.dispatchEvent('sheet:open sheetOpen', event);
+      onOpen: function onOpen(instance) {
+        this.dispatchEvent('sheet:open sheetOpen', instance);
       },
 
-      onOpened: function onOpened(event) {
-        this.dispatchEvent('sheet:opened sheetOpened', event);
+      onOpened: function onOpened(instance) {
+        this.dispatchEvent('sheet:opened sheetOpened', instance);
       },
 
-      onClose: function onClose(event) {
-        this.dispatchEvent('sheet:close sheetClose', event);
+      onClose: function onClose(instance) {
+        this.dispatchEvent('sheet:close sheetClose', instance);
       },
 
-      onClosed: function onClosed(event) {
-        this.dispatchEvent('sheet:closed sheetClosed', event);
+      onClosed: function onClosed(instance) {
+        this.dispatchEvent('sheet:closed sheetClosed', instance);
       },
 
       open: function open(animate) {
         var self = this;
-        if (!self.$f7) { return undefined; }
-        return self.$f7.sheet.open(self.$refs.el, animate);
+        if (!self.f7Sheet) { return undefined; }
+        return self.f7Sheet.open(animate);
       },
 
       close: function close(animate) {
         var self = this;
-        if (!self.$f7) { return undefined; }
-        return self.$f7.sheet.close(self.$refs.el, animate);
+        if (!self.f7Sheet) { return undefined; }
+        return self.f7Sheet.close(animate);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -11067,7 +11387,7 @@
       }, [inner ? _h('div', {
         class: 'subnavbar-inner'
       }, [title && _h('div', {
-        class: 'title'
+        class: 'subnavbar-title'
       }, [title]), this.$slots['default']]) : this.$slots['default']]);
     },
 
@@ -11451,32 +11771,30 @@
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var el = self.$refs.el;
 
-      if (el) {
-        el.removeEventListener('tab:show', self.onTabShow);
-        el.removeEventListener('tab:hide', self.onTabHide);
+      if (self.$f7) {
+        self.$f7.off('tabShow', self.onTabShow);
+        self.$f7.off('tabHide', self.onTabHide);
       }
 
       if (!self.routerData) { return; }
       f7.routers.tabs.splice(f7.routers.tabs.indexOf(self.routerData), 1);
       self.routerData = null;
+      self.eventTargetEl = null;
       delete self.routerData;
+      delete self.eventTargetEl;
     },
 
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
-
-      if (el) {
-        el.addEventListener('tab:show', self.onTabShow);
-        el.addEventListener('tab:hide', self.onTabHide);
-      }
-
       self.setState({
         tabContent: null
       });
       self.$f7ready(function () {
+        self.$f7.on('tabShow', self.onTabShow);
+        self.$f7.on('tabHide', self.onTabHide);
+        self.eventTargetEl = el;
         self.routerData = {
           el: el,
           component: self,
@@ -11498,12 +11816,14 @@
         this.$f7.tab.show(this.$refs.el, animate);
       },
 
-      onTabShow: function onTabShow(event) {
-        this.dispatchEvent('tab:show tabShow', event);
+      onTabShow: function onTabShow(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('tab:show tabShow');
       },
 
-      onTabHide: function onTabHide(event) {
-        this.dispatchEvent('tab:hide tabHide', event);
+      onTabHide: function onTabHide(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('tab:hide tabHide');
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -11532,7 +11852,11 @@
       id: [String, Number],
       animated: Boolean,
       swipeable: Boolean,
-      routable: Boolean
+      routable: Boolean,
+      swiperParams: {
+        type: Object,
+        default: undefined
+      }
     }, Mixins.colorProps),
 
     render: function render() {
@@ -11559,6 +11883,7 @@
         return _h('div', {
           style: style,
           class: Utils.classNames(wrapClasses, classes),
+          ref: 'wrapEl',
           attrs: {
             id: id
           }
@@ -11574,6 +11899,17 @@
           id: id
         }
       }, [this.$slots['default']]);
+    },
+
+    mounted: function mounted() {
+      var self = this;
+      var ref = self.props;
+      var swipeable = ref.swipeable;
+      var swiperParams = ref.swiperParams;
+      if (!swipeable || !swiperParams) { return; }
+      var wrapEl = self.$refs.wrapEl;
+      if (!wrapEl) { return; }
+      wrapEl.f7SwiperParams = swiperParams;
     },
 
     computed: {
@@ -11750,8 +12086,6 @@
       var label = props.label;
       var icon = props.icon;
       var iconMaterial = props.iconMaterial;
-      var iconIon = props.iconIon;
-      var iconFa = props.iconFa;
       var iconF7 = props.iconF7;
       var iconMd = props.iconMd;
       var iconIos = props.iconIos;
@@ -11764,13 +12098,11 @@
       var needToggle = typeof toggle === 'undefined' ? hasChildren : toggle;
       var iconEl;
 
-      if (icon || iconMaterial || iconIon || iconFa || iconF7 || iconMd || iconIos || iconAurora) {
+      if (icon || iconMaterial || iconF7 || iconMd || iconIos || iconAurora) {
         iconEl = _h(f7Icon, {
           attrs: {
             material: iconMaterial,
             f7: iconF7,
-            fa: iconFa,
-            ion: iconIon,
             icon: icon,
             md: iconMd,
             ios: iconIos,
@@ -11857,9 +12189,13 @@
       var el = ref.el;
       var rootEl = ref.rootEl;
       rootEl.addEventListener('click', self.onClick);
-      el.addEventListener('treeview:open', self.onOpen);
-      el.addEventListener('treeview:close', self.onClose);
-      el.addEventListener('treeview:loadchildren', self.onLoadChildren);
+      if (!el) { return; }
+      self.eventTargetEl = el;
+      self.$f7ready(function (f7) {
+        f7.on('treeviewOpen', self.onOpen);
+        f7.on('treeviewClose', self.onClose);
+        f7.on('treeviewLoadChildren', self.onLoadChildren);
+      });
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -11868,9 +12204,12 @@
       var el = ref.el;
       var rootEl = ref.rootEl;
       rootEl.removeEventListener('click', self.onClick);
-      el.removeEventListener('treeview:open', self.onOpen);
-      el.removeEventListener('treeview:close', self.onClose);
-      el.removeEventListener('treeview:loadchildren', self.onLoadChildren);
+      if (!el || self.$f7) { return; }
+      self.$f7.off('treeviewOpen', self.onOpen);
+      self.$f7.off('treeviewClose', self.onClose);
+      self.$f7.off('treeviewLoadChildren', self.onLoadChildren);
+      self.eventTargetEl = null;
+      delete self.eventTargetEl;
     },
 
     methods: {
@@ -11878,16 +12217,19 @@
         this.dispatchEvent('click', event);
       },
 
-      onOpen: function onOpen(event) {
-        this.dispatchEvent('treeview:open treeviewOpen', event);
+      onOpen: function onOpen(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('treeview:open treeviewOpen', el);
       },
 
-      onClose: function onClose(event) {
-        this.dispatchEvent('treeview:close treeviewClose', event);
+      onClose: function onClose(el) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('treeview:close treeviewClose', el);
       },
 
-      onLoadChildren: function onLoadChildren(event) {
-        this.dispatchEvent('treeview:loadchildren treeviewLoadChildren', event, event.detail);
+      onLoadChildren: function onLoadChildren(el, done) {
+        if (this.eventTargetEl !== el) { return; }
+        this.dispatchEvent('treeview:loadchildren treeviewLoadChildren', el, done);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -11955,6 +12297,7 @@
       removeElementsWithTimeout: Boolean,
       removeElementsTimeout: Number,
       restoreScrollTopOnBack: Boolean,
+      loadInitialPage: Boolean,
       iosSwipeBack: Boolean,
       iosSwipeBackAnimateShadow: Boolean,
       iosSwipeBackAnimateOpacity: Boolean,
@@ -11977,6 +12320,7 @@
       pushStateSeparator: String,
       pushStateOnLoad: Boolean,
       animate: Boolean,
+      transition: String,
       iosDynamicNavbar: Boolean,
       iosSeparateDynamicNavbar: Boolean,
       iosAnimateNavbarBackIcon: Boolean,
@@ -12239,7 +12583,9 @@
           props: Utils.extend(
             {
               f7route: options.route,
+              $f7route: options.route,
               f7router: router,
+              $f7router: router,
             },
             options.route.params,
             options.props || {}
@@ -12328,7 +12674,9 @@
           props: Utils.extend(
             {
               f7route: options.route,
+              $f7route: options.route,
               f7router: router,
+              $f7router: router,
             },
             options.route.params,
             options.props || {}
@@ -12387,7 +12735,9 @@
           props: Utils.extend(
             {
               f7route: options.route,
+              $f7route: options.route,
               f7router: router,
+              $f7router: router,
             },
             options.route.params,
             options.props || {}
@@ -12431,7 +12781,7 @@
   };
 
   /**
-   * Framework7 Vue 4.5.0
+   * Framework7 Vue 5.0.0-beta.16
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -12439,8 +12789,14 @@
    *
    * Released under the MIT License
    *
-   * Released on: August 21, 2019
+   * Released on: September 19, 2019
    */
+
+  function f7ready(callback) {
+    f7.ready(callback);
+  }
+
+  var f7Theme = {};
 
   var Plugin = {
     name: 'phenomePlugin',
@@ -12542,6 +12898,7 @@
       Vue.component('f7-swiper', f7Swiper);
       Vue.component('f7-tab', f7Tab);
       Vue.component('f7-tabs', f7Tabs);
+      Vue.component('f7-text-editor', f7TextEditor);
       Vue.component('f7-toggle', f7Toggle);
       Vue.component('f7-toolbar', f7Toolbar);
       Vue.component('f7-treeview-item', f7TreeviewItem);
@@ -12556,36 +12913,37 @@
         },
       });
 
-      var $theme = {};
       var theme = params.theme;
-      if (theme === 'md') { $theme.md = true; }
-      if (theme === 'ios') { $theme.ios = true; }
-      if (theme === 'aurora') { $theme.aurora = true; }
+      if (theme === 'md') { f7Theme.md = true; }
+      if (theme === 'ios') { f7Theme.ios = true; }
+      if (theme === 'aurora') { f7Theme.aurora = true; }
       if (!theme || theme === 'auto') {
-        $theme.ios = !!Framework7.device.ios;
-        $theme.aurora = Framework7.device.desktop && Framework7.device.electron;
-        $theme.md = !$theme.ios && !$theme.aurora;
+        f7Theme.ios = !!Framework7.device.ios;
+        f7Theme.aurora = Framework7.device.desktop && Framework7.device.electron;
+        f7Theme.md = !f7Theme.ios && !f7Theme.aurora;
       }
+      f7.ready(function () {
+        f7Theme.ios = f7.instance.theme === 'ios';
+        f7Theme.md = f7.instance.theme === 'md';
+        f7Theme.aurora = f7.instance.theme === 'aurora';
+      });
       Object.defineProperty(Extend.prototype, '$theme', {
         get: function get() {
           return {
-            ios: f7.instance ? f7.instance.theme === 'ios' : $theme.ios,
-            md: f7.instance ? f7.instance.theme === 'md' : $theme.md,
-            aurora: f7.instance ? f7.instance.theme === 'aurora' : $theme.aurora,
+            ios: f7.instance ? f7.instance.theme === 'ios' : f7Theme.ios,
+            md: f7.instance ? f7.instance.theme === 'md' : f7Theme.md,
+            aurora: f7.instance ? f7.instance.theme === 'aurora' : f7Theme.aurora,
           };
         },
       });
 
-      function f7ready(callback) {
-        f7.ready(callback);
-      }
+
       Extend.prototype.Dom7 = Framework7.$;
       Extend.prototype.$$ = Framework7.$;
       Extend.prototype.$device = Framework7.device;
       Extend.prototype.$request = Framework7.request;
       Extend.prototype.$utils = Framework7.utils;
       Extend.prototype.$f7ready = f7ready;
-      Extend.prototype.$f7Ready = f7ready;
 
       Object.defineProperty(Extend.prototype, '$f7route', {
         get: function get() {

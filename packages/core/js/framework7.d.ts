@@ -10,6 +10,7 @@ import Device from '../utils/device';
 
 // Modules
 import {Clicks as ClicksNamespace} from '../modules/clicks/clicks';
+import {Component as ComponentNamespace} from '../modules/component/component';
 import {Device as DeviceNamespace} from '../modules/device/device';
 import {Request as RequestNamespace} from '../modules/request/request';
 import {Resize as ResizeNamespace} from '../modules/resize/resize';
@@ -18,6 +19,7 @@ import {ServiceWorker as ServiceWorkerNamespace} from '../modules/service-worker
 import {Support as SupportNamespace} from '../modules/support/support';
 import {Touch as TouchNamespace} from '../modules/touch/touch';
 import {Utils as UtilsNamespace} from '../modules/utils/utils';
+import {ComponentClass as Component} from '../modules/component/component';
 
 // Components
 import {Accordion as AccordionNamespace} from '../components/accordion/accordion';
@@ -76,6 +78,7 @@ import {Subnavbar as SubnavbarNamespace} from '../components/subnavbar/subnavbar
 import {Swipeout as SwipeoutNamespace} from '../components/swipeout/swipeout';
 import {Swiper as SwiperNamespace} from '../components/swiper/swiper';
 import {Tabs as TabsNamespace} from '../components/tabs/tabs';
+import {TextEditor as TextEditorNamespace} from '../components/text-editor/text-editor';
 import {Timeline as TimelineNamespace} from '../components/timeline/timeline';
 import {Toast as ToastNamespace} from '../components/toast/toast';
 import {Toggle as ToggleNamespace} from '../components/toggle/toggle';
@@ -92,6 +95,9 @@ declare module '../components/app/app-class' {
   interface Framework7Class<Events> extends ClicksNamespace.AppMethods{}
   interface Framework7Params extends ClicksNamespace.AppParams{}
   interface Framework7Events extends ClicksNamespace.AppEvents{}
+  interface Framework7Class<Events> extends ComponentNamespace.AppMethods{}
+  interface Framework7Params extends ComponentNamespace.AppParams{}
+  interface Framework7Events extends ComponentNamespace.AppEvents{}
   interface Framework7Class<Events> extends DeviceNamespace.AppMethods{}
   interface Framework7Params extends DeviceNamespace.AppParams{}
   interface Framework7Events extends DeviceNamespace.AppEvents{}
@@ -284,6 +290,9 @@ declare module '../components/app/app-class' {
   interface Framework7Class<Events> extends TabsNamespace.AppMethods{}
   interface Framework7Params extends TabsNamespace.AppParams{}
   interface Framework7Events extends TabsNamespace.AppEvents{}
+  interface Framework7Class<Events> extends TextEditorNamespace.AppMethods{}
+  interface Framework7Params extends TextEditorNamespace.AppParams{}
+  interface Framework7Events extends TextEditorNamespace.AppEvents{}
   interface Framework7Class<Events> extends TimelineNamespace.AppMethods{}
   interface Framework7Params extends TimelineNamespace.AppParams{}
   interface Framework7Events extends TimelineNamespace.AppEvents{}
@@ -320,5 +329,5 @@ declare module '../components/app/app-class' {
 }
 
 export { Request, Utils, Support, Device };
-export { Template7, Dom7 };
+export { Template7, Dom7, Component };
 export default Framework7;
