@@ -25,6 +25,16 @@ module.exports = (component, info = true, title = 'CSS Variables') => {
     @ruleset();
   }
 }
+.dark-vars(@ruleset) {
+  .theme-dark, &.theme-dark {
+    @ruleset();
+  }
+}
+.light-vars(@ruleset) {
+  & {
+    @ruleset();
+  }
+}
 .ltr(@ruleset) {
   @ruleset();
 }
