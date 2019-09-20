@@ -49,13 +49,14 @@ block content
                   ... list elements here ...
               &lt;/ul&gt;
           &lt;/div&gt;
-    p To make block inset only on large screens we need to use `tablet-inset` class instead:
+    p To make block inset only on large screens we need to use `medium-inset` (>= 768px) class instead:
     :code(lang="html")
-          &lt;div class="list tablet-inset"&gt;
+          &lt;div class="list medium-inset"&gt;
               &lt;ul&gt;
                   ... list elements here ...
               &lt;/ul&gt;
           &lt;/div&gt;
+    p For full set of such responsive classes check #[a(href="grid.html#column-sizes") Grid docs]. They are `xsmall-inset`, `small-inset`, `medium-inset`, `large-inset`, `xlarge-inset`.
     h2 List Item
     p Single list element has pretty complex but flexible layout:
     :code(lang="html")
@@ -719,7 +720,7 @@ block content
             </div>
       h4 Tablet inset
       :code(lang="html")
-            <div class="list tablet-inset">
+            <div class="list medium-inset">
               <ul>
                 <li>
                   <a href="#" class="item-link item-content">

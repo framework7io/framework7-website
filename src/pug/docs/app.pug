@@ -119,6 +119,16 @@ block content
           td true
           td If automatic initialization is enabled with `init: true` parameter and app is running under cordova environment then it will be initialized on `deviceready` event.
         tr
+          td iosTranslucentBars
+          td boolean
+          td true
+          td Enable translucent effect (blur background) on navigation bars for iOS theme (on iOS devices)
+        tr
+          td iosTranslucentModals
+          td boolean
+          td true
+          td Enable translucent effect (blur background) on modals (Dialog, Popover, Actions) for iOS theme (on iOS devices)
+        tr
           td on
           td object
           td {}
@@ -171,26 +181,7 @@ block content
                   })
         tr.subparam-open-row
           td(colspan="4") {
-        tr.subparam-row
-          td fastClicks
-          td boolean
-          td false
-          td Fast clicks is a built-in library that removes 300ms delay from links and form elements in mobile browser while you click them. Modern browsers are smart enough to eliminate that click delay. You can enable this built-in library if you target old devices or experience click delays.
-        tr.subparam-row
-          td fastClicksDistanceThreshold
-          td number
-          td 10
-          td Distance threshold (in px) to prevent short taps. So if tap/move distance is larger than this value then "click" will not be triggered
-        tr.subparam-row
-          td fastClicksDelayBetweenClicks
-          td number
-          td 50
-          td Minimal allowed delay (in ms) between multiple clicks
-        tr.subparam-row
-          td fastClicksExclude
-          td string
-          td
-          td This parameter allows to specify elements not handled by fast clicks by passing CSS selector of such elements
+
         tr.subparam-row
           td touchClicksDistanceThreshold
           td number
@@ -371,6 +362,9 @@ block content
           td app.serviceWorker.registration
           td Array with registered service workers
         tr
+          td app.online
+          td Boolean property indication app conntection state. (`true` if online)
+        tr
           th(colspan="2") Methods
         tr
           td app.enableAutoDarkTheme()
@@ -475,6 +469,18 @@ block content
           td serviceWorkerUnregisterError
           td <span>(registration, error)</span>
           td Event will be triggered when service worker unregister failed
+        tr
+          td online
+          td
+          td Event will be fired when app goes online
+        tr
+          td offline
+          td
+          td Event will be fired when app goes offline
+        tr
+          td connection
+          td <span>(isOnline)</span>
+          td Event will be fired on network state change
     p And again, most of components that has JavaScript API may extend this list of events like Panel component will also trigger additional events on app instance.
     p Example:
     :code(lang="js")

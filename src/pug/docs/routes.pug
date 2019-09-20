@@ -110,6 +110,10 @@ block content
           td array
           td Array with nested routes
         tr
+          td viewName
+          td string
+          td View name where this route will be forced to load
+        tr
           th(colspan="4") Master Detail
         tr
           td master
@@ -388,6 +392,10 @@ block content
         td props
         td object
         td props that will be passed as Vue/React page component props
+      tr
+        td transition
+        td string
+        td <a href="./view.html#custom-page-transitions">Custom page transition name</a>
     h2 Async Route
     p `async` route property is very powerful tool designed to return dynamic route properties. It is a function with the following arguments:
     .method-wrap

@@ -10,57 +10,9 @@ block content
     +improveDocsLink
     h1 Statusbar
     ul.docs-index
-    p Framework7 comes with statusbar component that may help to customize app statusbar and its behavior and solve the following problem:
-    p iOS 7+ allows you to have make full screen apps. But there could be such problem when statusbar overlap your app:
-    .row
-      .col-50
-        p
-          strong Not good!
-        img(src=cdn + "/i/docs/statusbar1.png", width="320")
-      .col-50
-        p
-          strong Good!
-        img(src=cdn + "/i/docs/statusbar2.png", width="320")
-    p Framework7 helps you to solve this issue. It automatically detects if your app in full screen mode, and automatically adds `with-statusbar` class to `&lt;html&gt;` element if app is in full screen mode (or removes this class if app is not in full screen mode).
-    p With this `with-statusbar` class (when app in full screen mode) the app root element has additional padding on top to move a whole app's content on size of Statusbar.
-    h2 Statusbar Layout
-    p Now, when Framework7 did its job on this part, we can control Statusbar behavior, we need to add `&lt;div class="statusbar"&gt;` as a direct child of app root element:
-    :code(lang="html")
-          <body>
-            <!-- App root element -->
-            <div id="app">
-              <!-- Statusbar overlay element -->
-              <div class="statusbar"></div>
-              ...
-            </div>
-          </body>
-    p This `statusbar` div is always fixed on top of screen and hidden by default. It becomes visible only when app is in full screen mode and `html` has `with-statusbar` class.
-    h2 Statusbar Styling
-    p If we need to change statusbar background color we may use simple CSS rule:
-    :code(lang="css")
-          .statusbar {
-            background: pink;
-          }
-    p Such logic allows pretty flexible control over Statusbar background and we can change its background dynamically.
-    p For example, we have dark left-side panel with cover effect. We may change Statusbar background to more dark color when panel opened:
-    :code(lang="css")
-           /* Default Statusbar background */
-           .statusbar {
-             background: pink;
-             /* We can add transition for smooth color animation */
-             transition: 400ms;
-           }
+    p Framework7 comes with statusbar component (wrapper around <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>) that may help to customize app statusbar and its behavior.
+    p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
 
-           /* Change Statusbar background when panel opened */
-           html.with-panel-left-cover .statusbar {
-             background: #222;
-           }
-    .important-note
-      ul
-        li
-          p On home-screen web apps Statusbar text color is always white. There is no way to change it.
-        li
-          p In cordova apps Statusbar text color is always black by default. It can be with cordova plugin <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a> and using its api or Framework7 Statusbar API
     h2 Statusbar App Parameters
     p It is possible to control some default statusbar behavior by passing statusbar related parameters on app init under `statusbar` property:
     :code(lang="js")
@@ -84,11 +36,6 @@ block content
           td true
           td Enables statusbar handling by Framework7. Disable it if you don't want Framework7 to handle statusbar behavior
         tr
-          td overlay
-          td string<br>boolean
-          td auto
-          td Can be `true`, `false`, `auto`. Defines whether the statusbar overlay should be visible or not. In case of `auto` Framework7 will detect it automatically depending whether the app is in fullscreen mode or not
-        tr
           td iosBackgroundColor
           td string
           td
@@ -103,42 +50,36 @@ block content
           td boolean
           td true
           td If enabled, then click on statusbar overlay will scroll top page content to the top.
-            p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
         tr
           td iosOverlaysWebView
           td boolean
           td true
           td
             p Makes the statusbar overlay or not overlay the WebView when app is running on iOS device.
-            p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
         tr
           td androidOverlaysWebView
           td boolean
           td true
           td
             p Makes the statusbar overlay or not overlay the WebView when app is running on Android device.
-            p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
         tr
           td iosTextColor
           td string
           td black
           td
             p Statusbar text color when app is running on iOS device. Can be `white` or `black`
-            p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
         tr
           td androidTextColor
           td string
           td black
           td
             p Statusbar text color when app is running on Android device. Can be `white` or `black`
-            p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
     h2 Statusbar App Methods
     p After app initialization we can control statusbar by using statusbar related app methods:
     table.methods-table
       tr
         td app.statusbar.hide()
-        td Hide statusbar. In webapp it just hides statusbar overlay, but in cordova app it will hide statusbar at all.
-          p.important-note Hiding device statusbar is available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
+        td Hide statusbar
       tr
         td app.statusbar.show()
         td Show statusbar
@@ -150,7 +91,6 @@ block content
               span.parameter overlays
               |  - <span class="parameter-type">boolean</span> - does it overlay or not
 
-          p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
       tr
         td app.statusbar.setTextColor(<span>color</span>)
         td Set/change statusbar text color.
@@ -158,7 +98,6 @@ block content
             li
               span.parameter color
               |  - <span class="parameter-type">string</span> - text color, can be `white` or `black`
-          p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
       tr
         td app.statusbar.setBackgroundColor(<span>hex</span>)
         td Set/change statusbar background color
@@ -169,6 +108,5 @@ block content
       tr
         td app.statusbar.isVisible()
         td Returns `true` if system statusbar is visible and `false` when it is not visible
-          p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
 
     +cssVars('statusbar')

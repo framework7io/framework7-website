@@ -48,21 +48,30 @@ block content
       thead
         tr
           th Class
-          th Tablet Class <br><small>width >= 768px</small>
-          th Desktop Class <br><small>width >= 1025px</small>
+          th xsmall <br><small>width >= 480px</small>
+          th small <br><small>width >= 568px</small>
+          th medium <br><small>width >= 768px</small>
+          th large <br><small>width >= 1024px</small>
+          th xlarge <br><small>width >= 1200px</small>
           th Width
       tbody
         - for (var i = 0; i < cols.length; i++)
           - var className = Math.floor(cols[i]);
           tr
             td col-#{className}
-            td tablet-#{className}
-            td desktop-#{className}
+            td xsmall-#{className}
+            td small-#{className}
+            td medium-#{className}
+            td large-#{className}
+            td xlarge-#{className}
             td #{cols[i]}%
         tr
           td col
-          td tablet-auto
-          td desktop-auto
+          td xsmall-auto
+          td small-auto
+          td medium-auto
+          td large-auto
+          td xlarge-auto
           td Equal width
 
     +cssVars('grid')
@@ -189,19 +198,19 @@ block content
             <div class="block">
               <p>Grid cells have different size on Phone/Tablet</p>
               <div class="row">
-                <div class="col-100 tablet-50">.col-100.tablet-50</div>
-                <div class="col-100 tablet-50">.col-100.tablet-50</div>
+                <div class="col-100 medium-50">.col-100.medium-50</div>
+                <div class="col-100 medium-50">.col-100.medium-50</div>
               </div>
               <div class="row">
-                <div class="col-50 tablet-25">.col-50.tablet-25</div>
-                <div class="col-50 tablet-25">.col-50.tablet-25</div>
-                <div class="col-50 tablet-25">.col-50.tablet-25</div>
-                <div class="col-50 tablet-25">.col-50.tablet-25</div>
+                <div class="col-50 medium-25">.col-50.medium-25</div>
+                <div class="col-50 medium-25">.col-50.medium-25</div>
+                <div class="col-50 medium-25">.col-50.medium-25</div>
+                <div class="col-50 medium-25">.col-50.medium-25</div>
               </div>
               <div class="row">
-                <div class="col-100 tablet-40">.col-100.tablet-40</div>
-                <div class="col-50 tablet-60">.col-50.tablet-60</div>
-                <div class="col-50 tablet-66">.col-50.tablet-66</div>
-                <div class="col-100 tablet-33">.col-100.tablet-33</div>
+                <div class="col-100 medium-40">.col-100.medium-40</div>
+                <div class="col-50 medium-60">.col-50.medium-60</div>
+                <div class="col-50 medium-66">.col-50.medium-66</div>
+                <div class="col-100 medium-33">.col-100.medium-33</div>
               </div>
             </div>

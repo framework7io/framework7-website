@@ -4,6 +4,8 @@ block vars
   - var title = 'View / Router | Framework7 Documentation';
 
 block content
+  include ../_docs-demo-device
+
   .docs-nav
     include ../_docs-menu
   .docs-content
@@ -129,6 +131,11 @@ block content
           td string
           td
           td Default (initial) View's url. If not specified, then it is equal to document url
+        tr
+          td loadInitialPage
+          td boolean
+          td true
+          td When enabled, and there is no children pages inside of the View. It will load initial page that matches to initial URL
         tr
           td stackPages
           td boolean
@@ -261,6 +268,13 @@ block content
           td boolean
           td true
           td Unloads routable tab content (removes tab inner content) when tab becomes visible. Only for routable tabs
+        tr
+          th(colspan="4") Components Cache
+        tr
+          td componentCache
+          td boolean
+          td true
+          td When enabled, Router will cache components specified via `componentUrl`
         tr
           th(colspan="4") XHR Cache
         tr
@@ -592,6 +606,7 @@ block content
                   li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to `true` then it will ignore if such URL in cache and reload it using XHR again
                   li <span class="parameter">context</span> (<span class="parameter-type">object</span>) - additional Router component or Template7 page context
                   li <span class="parameter">props</span> (<span class="parameter-type">object</span>) - props that will be passed as Vue/React page component props
+                  li <span class="parameter">transition</span> (<span class="parameter-type">string</span>) - route <a href="#custom-page-transitions">custom page transition name</a>
         tr
           td router.navigate(<span>parameters, options</span>)
           td Navigate to (load) new page by parameters. This method allows to navigate to route by its `name`.
@@ -648,9 +663,6 @@ block content
           td router.clearPreviousHistory()
           td Clear router previous pages history and remove all previous pages from DOM
         tr
-          td router.clearPreviousPages()
-          td Works mostly like `clearPreviousHistory` but only removes previous pages from DOM
-        tr
           td router.updateCurrentUrl(<span>url</span>)
           td Updates current route url, and updates `router.currentRoute` properties (query, params, hash, etc.) based on passed url. This method doesn't load or reload any content. It just changes current route url.
         tr
@@ -702,6 +714,10 @@ block content
         <a href="/another-page/" data-view=".view-left">Another Page</a>
         ...
       </div>
+    p If we need to load page in "current" view (currently active/visible View instance), we need to set `data-view="current"` attribute:
+    :code(lang="html")
+      <!-- will load "another-page" in current view -->
+      <a href="/another-page/" data-view="current">Another Page</a>
     p If we need to prevent router from handling specific links, we can add `prevent-router` class to such links:
     :code(lang="html")
       <!-- This link will be ignored by router -->
@@ -943,6 +959,14 @@ block content
       li you need to specify `masterDetailBreakpoint` View's parameter
       li set <a href="routes.html#route-properties">`master: true` property</a> on Master route
       li in addition we can put all detail routes in <a href="routes.html#detail-routes">`detailRoutes` property</a> of master route
+    p When Master-Detail is enabled you can use following additional classes for custom styling:
+    ul
+      li `page-master` - will be set on Master page
+      li `page-master-detail` - will be set on every Detail page
+      li `page-master-detail-root` - will be set on first (root) Detail page
+      li `navbar-master` - will be set on Master navbar (only in iOS theme with `diosDnamicNavbar` enabled)
+      li `navbar-master-detail` - will be set on every Detail navbar (only in iOS theme with `iosDynamicNavbar` enabled)
+      li `navbar-master-detail-root` - will be set on first (root) Detail navbar (only in iOS theme with `iosDynamicNavbar` enabled)
     p For example:
     :code(lang="js")
       const mainView = app.views.create('.view-main', {
@@ -967,3 +991,137 @@ block content
     p And we should have something like below:
     p
       img(src=cdn + "/i/docs/master-detail.gif", style="max-width: 1000px; width: 100%")
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/view-page-transitions.html") Custom Page Transitions
+      p In addition to default theme-specific page transition it is possible to create custom page transition or use one of the additional transition effects.
+      p There are following additional custom page transitions built-in:
+      ul
+        li `f7-circle`
+        li `f7-cover`
+        li `f7-cover-v`
+        li `f7-dive`
+        li `f7-fade`
+        li `f7-flip`
+        li `f7-parallax`
+        li `f7-push`
+      p To use such transition on some specific route, we need to specify it in #[a(href="./routes.html#route-options") route options]:
+      :code(lang="js")
+        routes = [
+          ...
+          {
+            path: '/some-page/',
+            url: '...',
+            options: {
+              transition: 'f7-circle',
+            },
+          },
+          ...
+        ]
+      p To load existing route with custom transition, we need to pass it in `router.navigate()` method:
+      :code(lang="js")
+        // load /some-page/ with "f7-cover" transition
+        router.navigate('/some-page/', { transition: 'f7-cover' })
+      p Or we can directly specify it on link via `data-transition` attribute (like with any other route options):
+      :code(lang="html")
+        <!-- load /some-page/ with "f7-cover" transition -->
+        <a href="/some-page/" data-transition="f7-cover">...</a>
+
+      p In addition to built-in transition, we can create custom ones. It is possible to do with CSS animations.
+      p When we specify custom page transition, router adds following classes to its element (`<div class="view">`):
+      ul
+        li `router-transition-[name]-forward` - when navigating to new page
+        li `router-transition-[name]-backward` - when navigation to previous page (going back)
+      p And it waits for `animationend` event on `page-next` when navigating forward, and on `page-current` when going back.
+      p So if we name our custom transiton as `my-transition`, then it can be specified in the following way:
+      :code(lang="css")
+        .router-transition-my-transition-forward,
+        .router-transition-my-transition-backward {
+          /* Apply some styles for view element when custom transition is running */
+        }
+        .router-transition-my-transition-forward .page-current {
+          /* Animation when current page transforms to previous page */
+          animation: my-transition-current-to-prev 400ms;
+        }
+        .router-transition-my-transition-forward .page-next {
+          /* Animation when next page transforms to current page (new page comes into view) */
+          animation: my-transition-next-to-current 400ms;
+        }
+        .router-transition-my-transition-backward .page-current {
+          /* Animation when current page transforms to next page (going back) */
+          animation: my-transition-current-to-next 400ms;
+        }
+        .router-transition-my-transition-backward .page-previous {
+          /* Animation when previous page transforms to current page (previous page comes into view) */
+          animation: my-transition-prev-to-current 400ms;
+        }
+
+        /* Specify animations */
+        @keyframes my-transition-current-to-prev {
+          /* ... */
+        }
+        @keyframes my-transition-next-to-current {
+          /* ... */
+        }
+        @keyframes my-transition-current-to-next {
+          /* ... */
+        }
+        @keyframes my-transition-prev-to-current {
+          /* ... */
+        }
+      p Here is, for example, how built-in `f7-cover` transition specified:
+      :code(lang="css")
+        .router-transition-f7-cover-forward,
+        .router-transition-f7-cover-backward {
+          background: #000;
+          perspective: 1200px;
+        }
+        .router-transition-f7-cover-forward .page-next {
+          animation: f7-cover-next-to-current 450ms forwards;
+        }
+        .router-transition-f7-cover-forward .page-current {
+          animation: f7-cover-current-to-prev 450ms forwards;
+        }
+        .router-transition-f7-cover-backward .page-current {
+          animation: f7-cover-current-to-next 450ms forwards;
+        }
+        .router-transition-f7-cover-backward .page-previous {
+          animation: f7-cover-prev-to-current 450ms forwards;
+        }
+        @keyframes f7-cover-next-to-current {
+          from {
+            transform: translateX(100%);
+          }
+          to {
+            transform: translateX(0%);
+          }
+        }
+        @keyframes f7-cover-current-to-next {
+          from {
+            transform: translateX(0%);
+          }
+          to {
+            transform: translateX(100%);
+          }
+        }
+        @keyframes f7-cover-current-to-prev {
+          from {
+            transform: translateZ(0);
+            opacity: 1;
+          }
+          to {
+            transform: translateZ(-300px);
+            opacity: 0.5;
+          }
+        }
+        @keyframes f7-cover-prev-to-current {
+          from {
+            transform: translateZ(-300px);
+            opacity: 0.5;
+          }
+          to {
+            transform: translateZ(0);
+            opacity: 1;
+          }
+        }
+

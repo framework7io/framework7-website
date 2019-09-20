@@ -36,17 +36,11 @@ block content
           td android
           td `true` for Android device
         tr
-          td windowsPhone
-          td `true` for Windows Phone device
-        tr
           td desktop
           td `true` for desktop browser
         tr
           td iphone
           td `true` for iPhone
-        tr
-          td iphoneX
-          td `true` for iPhone X
         tr
           td ipod
           td `true` for iPod
@@ -82,7 +76,7 @@ block content
           td Same as `webView`
         tr
           td os
-          td Contains OS can be `ios`, `android` or `windowsPhone` (for Windows Phone)
+          td Contains OS can be `ios`, `android`, `macos`, `windows`
         tr
           td osVersion
           td Contains OS version, e.g. `11.2.0`
@@ -90,46 +84,17 @@ block content
           td pixelRatio
           td Device pixel ratio
         tr
-          td statusbar
-          td `true` if app running in full-screen mode and requires <a href="statusbar.html">Status Bar</a> overlay
-        tr
           th(colspan="2") Methods
-        tr
-          td needsStatusbarOverlay()
-          td Returns `true` if app running in full-screen mode and requires <a href="status-bar.html">Status Bar</a> overlay
         tr
           td prefersColorScheme()
           td Returns pereferd user system color scheme. Returns `"light"` or `"dark"` where this feature supported or `undefined` otherwise. This feature support is based on <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank">`(prefers-color-scheme)` media query support</a>.
     h2 Device Related Classes
-    p Also this Device detecting library adds additional classes on `&lt;html&gt;` element which can help you with different CSS styles for different OS and platforms.
-    p So if you open app with iOS 7.1 device you may have the following classes:
-    :code(lang="html")
-          &lt;html class="ios device-ios device-ios-7 device-ios-7-1 device-ios-gt-6 device-pixel-ratio-1"&gt;
-          ...
-    p If you open app with iOS 7.1 device with retina screen and your app running in full screen mode:
-    :code(lang="html")
-          &lt;html class="device-ios device-ios-7 device-ios-7-1 device-ios-gt-6 device-retina device-pixel-ratio-2 with-statusbar"&gt;
-          ...
-    p If you open app on iPhone X and your app running in full screen mode:
-    :code(lang="html")
-          &lt;html class="device-ios device-iphone-x device-ios-11 device-ios-11-0 device-ios-gt-6 device-ios-gt-7 device-ios-gt-8 device-ios-gt-9 device-ios-gt-10 device-retina device-pixel-ratio-3 with-statusbar"&gt;
-          ...
-    p If you open app with Android 4.4 device you will have the following classes:
-    :code(lang="html")
-          &lt;html class="device-android device-android-4 device-android-4-4"&gt;
-          ...
+    p Device detecting library adds additional classes on `&lt;html&gt;` element which can help you with different CSS styles for different OS and platforms.
     p In other words classes calculated by the following rule:
     :code
           device-[os]
-          device-[os major version]
-          device-[os full version]
-          [device-desktop]
-          [device-retina]
-          [device-iphone-x] - if it is iPhone X
-          [device-desktop]
-          [device-macos] - if desktop macOS device
-          [device-windows] - if desktop windows device
+          device-desktop
+          device-macos - if desktop macOS device
+          device-windows - if desktop windows device
           device-pixel-ratio-[pixel ratio]
-          [with-statusbar] - in case the app is running in full screen mode
-    .important-note
-      p Note that "greater than" (ios-gt-6: for all iOS greater than iOS 6) classes available only for iOS
+          device-cordova - if app running under cordova

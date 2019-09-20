@@ -235,6 +235,26 @@ block content
           td string
           td page
           td Defines how to open Smart Select. Can be `page` or `popup` or `popover` or `sheet`
+        td
+          td popupPush
+          td boolean
+          td false
+          td Enables smart select popup to push view/s behind on open
+        td
+          td popupSwipeToClose
+          td boolean
+          td undefined
+          td Enables ability to close smart select popup with swipe. When not specified it inherits app's Popup `swipeToClose` parameter
+        td
+          td sheetPush
+          td boolean
+          td false
+          td Enables smart select sheet to push view/s behind on open
+        td
+          td sheetSwipeToClose
+          td boolean
+          td undefined
+          td Enables ability to close smart select sheet with swipe. When not specified it inherits app's Sheet `swipeToClose` parameter
         tr
           td pageTitle
           td string
@@ -448,6 +468,9 @@ block content
         tr
           td smartSelect.setValue(<span>newValue</span>)
           td Set new smart select value. In case of select is `multiple` it must be an array with new values
+        tr
+          td smartSelect.unsetValue()
+          td Unset smart select value
         tr
           td smartSelect.scrollToSelectedItem()
           td Scroll smart select content to first selected item (when opened)

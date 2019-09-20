@@ -24,7 +24,7 @@ block content
                     <th class="label-cell">Desert (100g serving)</th>
                     <th class="numeric-cell">Calories</th>
                     ...
-                    <th class="tablet-only">Comment</th>
+                    <th class="medium-only">Comment</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -32,7 +32,7 @@ block content
                     <td class="label-cell">Frozen yogurt</td>
                     <td class="numeric-cell">159</td>
                     ...
-                    <td class="tablet-only">I like it!</td>
+                    <td class="medium-only">I like it!</td>
                   </tr>
                   ...
                 </tbody>
@@ -60,7 +60,7 @@ block content
                 li `tbody` - table body. Required
                 li `label-cell` - main label cell (only one such kind of cell per row, usually first cell)
                 li `numeric-cell` - cell to display numeric data (right-aligned)
-                li `tablet-only` - additional class to show this cell/column only on wide tablet devices (iPad)
+                li `medium-only` - additional class to show this cell/column only when app width >= 768px. For full set of such responsive classes check #[a(href="grid.html#column-sizes") Grid docs]. They are `xsmall-only`, `small-only`, `medium-only`, `large-only`, `xlarge-only`.
       h2(data-device-preview="../docs-demos/core/data-table-pagination-footer.html") Pagination Footer
       :code(lang="html")
             <div class="card data-table">
