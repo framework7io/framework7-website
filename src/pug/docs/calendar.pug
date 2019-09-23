@@ -68,10 +68,12 @@ block content
           th Description
       tbody
         tr
-          td calendarType
+          td locale
           td string
-          td gregorian
-          td Calendar type, can be `gregorian` or `jalali`
+          td
+          td
+            p Calendar locale. Should be a correct locale accepted by <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat#Parameters">`Inte.DateTimeFormat`</a>. If not specified (by default), it will use browser locale.
+            p For example `en-US`, `ru`, `en`, `en-US-u-ca-buddhist`, etc.
         tr
           td value
           td array
@@ -111,35 +113,27 @@ block content
           td formatValue
           td function (values)
           td
-          td Function to format input value, should return new/formatted string value. <b>values</b> is array where each item represents selected date
+          td Function to format input value, should return new/formatted string value. <b>values</b> is an array where each item represents selected date. Can be used instead of `dateFormat` parameter to specify custom formatting
         tr
           td monthNames
           td array
-          td
-            :code(lang="js")
-                  ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August' , 'September' , 'October', 'November', 'December']
-          td Array with full month names
+          td `auto`
+          td Array with full month names. If `auto` then it will display month names based on specified `locale` (or browser locale)
         tr
           td monthNamesShort
           td array
-          td
-            :code(lang="js")
-                  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-          td Array with short month names
+          td `auto`
+          td Array with short month names. If `auto` then it will display month names based on specified `locale` (or browser locale)
         tr
           td dayNames
           td array
-          td
-            :code(lang="js")
-                  ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-          td Array with week day names
+          td `auto`
+          td Array with week day names.  If `auto` then it will display day names based on specified `locale` (or browser locale)
         tr
           td dayNamesShort
           td array
-          td
-            :code(lang="js")
-                  ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-          td Array with week day short names
+          td `auto`
+          td Array with week day short names.  If `auto` then it will day names based on specified `locale` (or browser locale)
         tr
           td firstDay
           td number
@@ -151,36 +145,24 @@ block content
           td [0, 6]
           td Array with index numeber of weekend days, by default it is Saturday and Sunday
         tr
-          td jalali
-          td object
-          td
-            :code(lang="js")
-                  {
-                    monthNames: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
-                    monthNamesShort: ['فَر', 'اُر', 'خُر', 'تیر', 'مُر', 'شَه', 'مهر', 'آب', 'آذر', 'دی', 'بَه', 'اِس'],
-                    dayNames: ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'],
-                    dayNamesShort: ['1ش', '۲ش', '۳ش', '۴ش', '۵ش', 'ج', 'ش'],
-                    firstDay: 6, // Saturday
-                    weekendDays: [5], // Friday
-                    ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند']
-                  }
-          td Object with configuration for Jalali type calendar
-        tr
           td dateFormat
-          td string
-          td 'yyyy-mm-dd'
-          td Default date format, available expressions:
+          td string<br>object
+          td undefined
+          td
+            p If undefined, it will use format based on `locale` or (or browser locale).
+            p It can accept <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat#Parameters">`Inte.DateTimeFormat`.`options`</a>. For example `{ month: 'long', day: 'numeric' }`.
+            p Or you can pass string with special tokens, available expressions:
             ul
-              li 'yyyy' - 4 digits year
-              li 'yy' - 2 digits year
-              li 'mm' - 2 digits month number, from 01 to 12
-              li 'm' - month number, from 1 to 12
-              li 'MM' - full month name
-              li 'M' - short month name
-              li 'dd' - 2 digits day number, from 01 to 31
-              li 'd' - day number, from 1 to 31
-              li 'DD' - full week day name
-              li 'D' - short week day name
+              li `yyyy` - 4 digits year
+              li `yy` - 2 digits year
+              li `mm` - 2 digits month number, from 01 to 12
+              li `m` - month number, from 1 to 12
+              li `MM` - full month name
+              li `M` - short month name
+              li `dd` - 2 digits day number, from 01 to 31
+              li `d` - day number, from 1 to 31
+              li `DD` - full week day name
+              li `D` - short week day name
         tr
           td multiple
           td boolean
@@ -242,10 +224,45 @@ block content
           td true
           td Enable month selector in toolbar
         tr
+          td monthPicker
+          td boolean
+          td true
+          td Enables month picker to select a month when clicked on a month selector in toolbar
+        tr
           td yearSelector
           td boolean
           td true
           td Enable year picker in toolbar
+        tr
+          td yeadPicker
+          td boolean
+          td true
+          td Enables year picker to select a year when clicked on a year selector in toolbar
+        tr
+          td yearPickerMin
+          td number
+          td
+          td Minimum available year for year picker, by default is today minus 100 years
+        tr
+          td yearPickerMax
+          td number
+          td
+          td Maximum available year for year picker, by default is today plus 100 years
+        tr
+          td timePicker
+          td boolean
+          td false
+          td Enables time picker
+        tr
+          td timePickerFormat
+          td object
+          td {hour: 'numeric', minute: 'numeric'}
+          td Time format displayed in time selector. It accepts <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat#Parameters">`Inte.DateTimeFormat`.`options`</a>
+        tr
+          td timePickerPlaceholder
+          td string
+          td Select time
+          td Text to display in time selector placeholder.
         tr
           th(colspan="4") Container/opener-specific parameters
         tr
@@ -258,6 +275,16 @@ block content
           td string
           td auto
           td Can be `auto`, `popover` (to open calendar in popover), `sheet` (to open in sheet modal) or `customModal` (to open in custom Calendar modal overlay). In case of `auto` will open in sheet modal on small screens and in popover on large screens.
+        tr
+          td sheetPush
+          td boolean
+          td false
+          td Enables Calendar sheet to push view/s behind on open
+        tr
+          td sheetSwipeToClose
+          td boolean
+          td undefined
+          td Enables ability to close Calendar sheet with swipe. When not specified it inherits app's Sheet `swipeToClose` parameter
         tr
           td inputEl
           td string or HTMLElement
@@ -640,7 +667,7 @@ block content
           td Event will be triggered after Calendar completes its closing animation
     h3 App and Calendar Instance Events
     p Calendar instance emits events on both self instance and app instance. App instance events has same names prefixed with `calendar`.
-    table.events-table
+    table.events-table.double-events-table
       thead
         tr
           th Event
@@ -792,10 +819,31 @@ block content
       :code(lang="js")
             var calendarDateFormat = app.calendar.create({
               inputEl: '#demo-calendar-date-format',
-              dateFormat: 'DD, MM dd, yyyy'
+              dateFormat: { weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' },
             });
 
-
+      h4 Date + Time
+      :code(lang="html")
+        <div class="block-title">Date + Time</div>
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Select date and time" readonly="readonly" id="demo-calendar-date-time"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var calendarDateTime = app.calendar.create({
+          inputEl: '#demo-calendar-date-time',
+          timePicker: true,
+          dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' },
+        });
       h4 Multiple Values
       :code(lang="html")
             <div class="block-title">Multiple Values</div>
@@ -816,7 +864,7 @@ block content
       :code(lang="js")
             var calendarMultiple = app.calendar.create({
               inputEl: '#demo-calendar-multiple',
-              dateFormat: 'M dd yyyy',
+              dateFormat: { month: 'short', day: 'numeric' },
               multiple: true
             });
 
@@ -839,7 +887,6 @@ block content
       :code(lang="js")
             var calendarRange = app.calendar.create({
               inputEl: '#demo-calendar-range',
-              dateFormat: 'M dd yyyy',
               rangePicker: true
             });
       h4 Open In Modal
@@ -865,7 +912,6 @@ block content
               openIn: 'customModal',
               header: true,
               footer: true,
-              dateFormat: 'MM dd yyyy',
             });
 
       h4 With Events
@@ -891,7 +937,6 @@ block content
             var weekLater = new Date().setDate(today.getDate() + 7);
             var calendarEvents = app.calendar.create({
                 inputEl: '#demo-calendar-events',
-                dateFormat: 'M dd yyyy',
                 events: [
                   {
                     from: today,
@@ -931,7 +976,6 @@ block content
             var weekLater = new Date().setDate(today.getDate() + 7);
             var calendarDisabled = app.calendar.create({
                 inputEl: '#demo-calendar-disabled',
-                dateFormat: 'M dd yyyy',
                 disabled: {
                   from: today,
                   to: weekLater

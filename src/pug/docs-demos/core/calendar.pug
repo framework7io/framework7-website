@@ -37,6 +37,20 @@ block content
             </li>
           </ul>
         </div>
+        <div class="block-title">Date + Time</div>
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Select date and time" readonly="readonly" id="demo-calendar-date-time"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
         <div class="block-title">Multiple Values</div>
         <div class="list no-hairlines-md">
           <ul>
@@ -122,18 +136,23 @@ block scripts
     // With custom date format
     var calendarDateFormat = app.calendar.create({
       inputEl: '#demo-calendar-date-format',
-      dateFormat: 'DD, MM dd, yyyy'
+      dateFormat: { weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' },
+    });
+    // Date + Time
+    var calendarDateTime = app.calendar.create({
+      inputEl: '#demo-calendar-date-time',
+      timePicker: true,
+      dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' },
     });
     // With multiple values
     var calendarMultiple = app.calendar.create({
       inputEl: '#demo-calendar-multiple',
-      dateFormat: 'M dd yyyy',
+      dateFormat: { month: 'short', day: 'numeric' },
       multiple: true
     });
     // Range Picker
     var calendarRange = app.calendar.create({
       inputEl: '#demo-calendar-range',
-      dateFormat: 'M dd yyyy',
       rangePicker: true
     });
     // Custom modal
@@ -142,7 +161,6 @@ block scripts
       openIn: 'customModal',
       header: true,
       footer: true,
-      dateFormat: 'MM dd yyyy',
     });
     // With events
     var now = new Date();
@@ -150,7 +168,6 @@ block scripts
     var weekLater = new Date().setDate(today.getDate() + 7);
     var calendarEvents = app.calendar.create({
         inputEl: '#demo-calendar-events',
-        dateFormat: 'M dd yyyy',
         events: [
           {
             from: today,
@@ -172,7 +189,6 @@ block scripts
     var weekLater = new Date().setDate(today.getDate() + 7);
     var calendarDisabled = app.calendar.create({
         inputEl: '#demo-calendar-disabled',
-        dateFormat: 'M dd yyyy',
         disabled: {
           from: today,
           to: weekLater

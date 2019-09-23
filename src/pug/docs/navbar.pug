@@ -13,7 +13,7 @@ block content
     h1 Navbar
     ul.docs-index
     p Navbar is a fixed area at the top of a screen that contains Page title and navigation elements.
-    p Navbar has 3 main parts: Left, Title and Right. Each part may contain any HTML content, but it is recommended to use them in the following way:
+    p Navbar has 3 main parts: `Left`, `Title` and `Right`. Each part may contain any HTML content, but it is recommended to use them in the following way:
     ul
       li
         p <strong>Left</strong> part is designed to be used with "back link", icons or with single text link.
@@ -34,8 +34,8 @@ block content
               &lt;/div&gt;
           &lt;/div&gt;
     .important-note
-      p Note that Navbar's Title element has lowest width priority, and when window screen will not fit all three elements Title part will be cut.
-      p So if you use plain text in Title part it will have ellipsis (...) on the end when cuted. But you need to take care about it if you have some custom elements there.
+      p Note that Navbar's `Title` element has lowest width priority, and when window screen will not fit all three elements Title part will be cut.
+      p So if you use plain text in `Title` part it will have ellipsis (...) on the end when it is cut. But you need to take care about it if you have some custom elements there.
     h3 Navbar With Links
     p To add links in Left or Right part you just need to add the plain `&lt;a&gt;` tag with additional `link` class:
     :code(lang="html")
@@ -109,12 +109,12 @@ block content
           &lt;/div&gt;
 
     h3 Large Title
-    p Large-title navbar has additional "row" (or "bar") with large title text, which is get collapsed on page scroll. To make it large we need to add additional `navbar-inner-large` class to navbar-inner and add additional `title-large` element to it:
+    p Large-title navbar has additional "row" (or "bar") with large title text, which is get collapsed on page scroll. To make it large we need to add additional `navbar-large` class to `navbar` and add additional `title-large` element to it:
     :code(lang="html")
-      <div class="navbar">
+      <!-- additional "navbar-large" class -->
+      <div class="navbar navbar-large">
         <div class="navbar-bg"></div>
-        <!-- additional "navbar-inner-large" class -->
-        <div class="navbar-inner navbar-inner-large">
+        <div class="navbar-inner">
           <div class="left">
             <!-- ... -->
           </div>
@@ -130,11 +130,23 @@ block content
         </div>
       </div>
 
+    h3 Large Transparent Title
+    p We can also enabled large-title navbar to be "transparent". When it is enabled, navbar background and its main title are hidden until page scrolled.
+    p To make large title transparent we need additional `navbar-large-transparent` class:
+    :code(lang="html")
+      <!-- additional "navbar-large-transparent" class -->
+      <div class="navbar navbar-large navbar-large-transparent">
+        <div class="navbar-bg"></div>
+        <div class="navbar-inner">
+          ...
+        </div>
+      </div>
+
     h3 Theme-specific Styling
-    p In iOS theme Navbar has thin border on the bottom. To disable this border you need to add `no-hairline` class to navbar element:
+    p In `ios` and `aurora` themes Navbar has thin border on the bottom. To disable this border you need to add `no-hairline` class to navbar element:
     :code(lang="html")
           <div class="navbar no-hairline">...</div>
-    p In MD theme Navbar has shadow. To disable this shadow you need to add `no-shadow` class to navbar element:
+    p In `md` theme Navbar has shadow. To disable this shadow you need to add `no-shadow` class to navbar element:
     :code(lang="html")
           <div class="navbar no-shadow">...</div>
 
@@ -170,7 +182,7 @@ block content
       </div>
     .important-note
       p
-        strong Fixed Navbar must always be a direct child of a page and BEFORE the toolbar (if fixed toolbar is used on this page)
+        b Fixed Navbar must always be a direct child of a page and BEFORE the toolbar (if fixed toolbar is used on this page)
 
     h3 Common Navbar Type
     p If we need only one common navbar for all pages in View then it must be a direct child of this view and be BEFORE all pages in view:
@@ -194,11 +206,11 @@ block content
           </div>
     .important-note
       p
-        strong Common Navbar must always be a direct child of Views/View and BEFORE the navbar (if same common toolbar is used)
+        b Common Navbar must always be a direct child of Views/View and BEFORE the Toolbar (if common Toolbar is also used)
     h2 Dynamic Navbar
     p.ios-only Dynamic Navbar is supported only in iOS Theme
     p One of the iOS-theme awesome features is the dynamic navbar. Navbar's elements will slide and fade during pages transition and swipe back when dynamic navbar is enabled.
-    p It is enabled by default when you use `Fixed-positioned` navbars, when Navbar is a direct child of the page.
+    p It is enabled by default when you use "Fixed-positioned" navbars, when Navbar is a direct child of the page.
     p If you want to disable it you need to pass `iosDynamicNavbar: false` for required View on its initialisation or in global <a href="app.html#app-parameters">app parameters</a> for all views. For example:
     :code(lang="js")
       // Disable globally
@@ -213,7 +225,7 @@ block content
         iosDynamicNavbar: false,
       });
     .important-note
-      p Note that when Dynamic Navbar (`iosDynamicNavbar`) is enabled and `iosSeparateDynamicNavbar` parameter is enabled (by default), Navbar HTML element will be detached from the page and moved under View HTML element. In this case to access page related dynamic navbar element use `app.navbar.getElByPage(pageEl)` <a href="#navbar-app-methods">method</a>
+      p Note that when Dynamic Navbar (`iosDynamicNavbar`) is enabled, Navbar HTML element will be detached from the page and moved under View HTML element. In this case to access page related dynamic navbar element use `app.navbar.getElByPage(pageEl)` <a href="#navbar-app-methods">method</a>
     h3 Dynamic Navbar Layout
     p Dynamic Navbar layout is the same as for usual Navbar, the only difference is that you can add additional classes to the Navbar parts (Left, Title, Right) to tell which type of transition effect you want on this part:
     ul
@@ -297,6 +309,11 @@ block content
           td Get navbar HTML element by specified page element. Useful only when dynamic navbar is enabled. In this case it is out of the page container.
             ul.method-parameters
               li <span class="parameter">pageEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of page where to look for navbar. Required.
+        tr
+          td app.navbar.getPageByEl(<span>navbarEl</span>)
+          td Get page HTML element by specified navbar element. Useful only when dynamic navbar is enabled. In this case it is out of the page container.
+            ul.method-parameters
+              li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of navbar to find relative page. Required.
     h2 Navbar App Parameters
     p It is possible to control some default navbar behavior using global <a href="app.html#app-parameters">app parameters</a> by passing navbar related parameters under `navbar` parameter:
     table.params-table
@@ -382,7 +399,7 @@ block content
             </div>
             <!-- "hide-navbar-on-scroll" class to hide Navbar -->
             <div class="page-content hide-navbar-on-scroll">
-              <div class="content-block">
+              <div class="block">
                 <p>Scroll page down</p>
                 ...
               </div>
@@ -506,10 +523,10 @@ block content
       h3 Large Title
       :code(lang="html")
         <div class="page">
-          <div class="navbar">
+          <!-- Additional "navbar-large" class on navbar -->
+          <div class="navbar navbar-large">
             <div class="navbar-bg"></div>
-            <!-- Additional "navbar-inner-large" class on navbar-inner -->
-            <div class="navbar-inner navbar-inner-large sliding">
+            <div class="navbar-inner sliding">
               <div class="left">
                 <a class="link back">
                   <i class="icon icon-back"></i>
@@ -517,6 +534,34 @@ block content
                 </a>
               </div>
               <div class="title">Large Title</div>
+              <!-- Large title element -->
+              <div class="title-large">
+                <div class="title-large-text">Large Title</div>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="block">
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
+              ...
+            </div>
+          </div>
+        </div>
+
+      h3 Large Transparent
+      :code(lang="html")
+        <div class="page">
+          <!-- Additional "navbar-large-transparent" class -->
+          <div class="navbar navbar-large navbar-large-transparent">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner sliding">
+              <div class="left">
+                <a class="link back">
+                  <i class="icon icon-back"></i>
+                  <span class="if-not-md">Back</span>
+                </a>
+              </div>
+              <div class="title">Large Transparent</div>
               <!-- Large title element -->
               <div class="title-large">
                 <div class="title-large-text">Large Title</div>

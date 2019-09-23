@@ -131,7 +131,8 @@ block content
               &lt;/div&gt;
             &lt;/div&gt;
       h3(data-device-preview="../docs-demos/core/timeline-vertical-sides.html") Vertical Timeline Side By Side
-      p There is another "side-by-side" mode available for Vertical Timeline where each next item will be on different side. To enable "side-by-side" mode you need to add `timeline-sides` class to main `timeline` element. It is also possible to enable this mode only for tablet devices by adding `tablet-sides` class to main timeline element.
+      p There is another "side-by-side" mode available for Vertical Timeline where each next item will be on different side. To enable "side-by-side" mode you need to add `timeline-sides` class to main `timeline` element.
+      p It is also possible to enable this mode based on responsive breakpoint. For example, for tablet devices (width >= 786px) we need to add `medium-sides` class to main timeline element. For full set of such responsive classes check #[a(href="grid.html#column-sizes") Grid docs]. They are `xsmall-sides`, `small-sides`, `medium-sides`, `large-sides`, `xlarge-sides`.
       p To force timeline element to required side we may use additional `timeline-item-left` and `timeline-item-right` classes on single timeline item element `timeline-item`
       :code(lang="html")
             &lt;!-- Each next item will on different side --&gt;
@@ -168,7 +169,7 @@ block content
             &lt;/div&gt;
             &lt;!-- Each next item will on different side only on large tablet screens (iPad) --&gt;
             &lt;div class="block-title"&gt;Only Tablet Side By Side&lt;/div&gt;
-            &lt;div class="timeline tablet-sides"&gt;
+            &lt;div class="timeline medium-sides"&gt;
               &lt;div class="timeline-item"&gt;
                 &lt;div class="timeline-item-date"&gt;21 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
                 ...
