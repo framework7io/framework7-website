@@ -266,7 +266,7 @@ block content
           td Event will be triggeres when "change" event occurs on list item input (radio or checkbox)
         tr
           td swipeout
-          td Event will be triggered while you move swipeout element. <b>event.detail.progress</b> contains current opened progress percentage
+          td Event will be triggered while you move swipeout element. First handler argument contains `progress` object with current opened progress percentage
         tr
           td swipeoutOpen
           td Event will be triggered when swipeout element starts its opening animation
@@ -287,7 +287,7 @@ block content
           td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
         tr
           td accordionBeforeOpen
-          td Event will be triggered right before accordion content starts its opening animation. `event.detail.prevent` contains function that will prevent accordion from opening when called
+          td Event will be triggered right before accordion content starts its opening animation. First handler argument receives `prevent` function that will prevent accordion from opening when called.
         tr
           td accordionOpen
           td Event will be triggered when accordion content starts its opening animation.
@@ -296,7 +296,7 @@ block content
           td Event will be triggered after accordion content completes its opening animation.
         tr
           td accordionBeforeClose
-          td Event will be triggered right before accordion content starts its closing animation. `event.detail.prevent` contains function that will prevent accordion from closing when called
+          td Event will be triggered right before accordion content starts its closing animation. First handler argument receives `prevent` function that will prevent accordion from closing when called.
         tr
           td accordionClose
           td Event will be triggered when accordion content starts its closing animation.
@@ -544,7 +544,7 @@ block content
       h4 Tablet inset
       :code(lang="jsx")
             <BlockTitle>Tablet inset</BlockTitle>
-            <List tabletInset>
+            <List mediumInset>
               <ListItem link="#" title="Ivan Petrov" after="CEO">
                 <Icon slot="media" icon="demo-list-icon"></Icon>
               </ListItem>

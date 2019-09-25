@@ -129,10 +129,20 @@ block content
           td true
           td Set to false to remove Photo Browser's Toolbar
         tr
-          td back-link-text
+          td page-back-link-text
+          td string
+          td Back
+          td Text on back link in Photo Browser's navbar
+        tr
+          td popup-close-link-text
           td string
           td Close
-          td Text on back link in Photo Browser's Navbar
+          td Text on close link in Photo Browser's navbar when opened in Popup or as Standalone
+        tr
+          td navbar-show-count
+          td boolean
+          td undefined
+          td Defines should it display "3 of 5" text in navbar title or not. If not specified (undefined) then it will show this text if there is more than 1 item
         tr
           td navbar-of-text
           td string

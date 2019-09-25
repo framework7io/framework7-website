@@ -169,7 +169,8 @@ block content
           td on
           td object
           td
-          td Object with events handlers. For example:
+          td
+            p Object with events handlers. For example:
             :code(lang="js")
                   var popover = app.popover.create({
                     content: '<div class="popover">...</div>',
@@ -319,7 +320,7 @@ block content
           td Event will be triggered after Popover completes its closing animation
     h3 App and Popover Instance Events
     p Popover instance emits events on both self instance and app instance. App instance events has same names prefixed with `popover`.
-    table.events-table
+    table.events-table.double-events-table
       thead
         tr
           th Event

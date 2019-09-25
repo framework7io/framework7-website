@@ -424,7 +424,8 @@ block content
           td on
           td object
           td
-          td Object with events handlers. For example:
+          td
+            p Object with events handlers. For example:
             :code(lang="js")
                   var view = app.views.create('.view-main', {
                     on: {
@@ -514,7 +515,7 @@ block content
           td Event will be triggered on view initialization
     h3 View Instance Events
     p View instance emits events on both self instance and app instance. App instance events has same names prefixed with `view`.
-    table.events-table
+    table.events-table.double-events-table
       thead
         tr
           th Event

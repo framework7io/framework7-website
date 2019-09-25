@@ -77,6 +77,10 @@ block content
           td swipeHandler
           td HTMLElement<br>string
           td If not passed, then whole Sheet can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (`swipeToClose` or `swipeToStep` must be also enabled)
+        tr
+          td push
+          td boolean
+          td When enabled it will push view behind on open. Works only when top safe area is in place. It can also be enabled by adding `sheet-modal-push` class to Sheet element.
     h2 Sheet Modal Methods
     table.methods-table
       tr
@@ -160,6 +164,9 @@ block content
                   <p>
                     <Button fill sheetOpen=".demo-sheet-swipe-to-step">Swipe To Step</Button>
                   </p>
+                  <p>
+                    <Button fill sheetOpen=".demo-sheet-push">Sheet Push</Button>
+                  </p>
                 </Block>
 
                 <Sheet className="demo-sheet" opened={this.state.sheetOpened} onSheetClosed={() => {this.setState({sheetOpened: false})}}>
@@ -225,6 +232,21 @@ block content
                       <b slot="after" className="text-color-black">$120</b>
                     </ListItem>
                   </List>
+                </Sheet>
+
+                {/* Sheet Push */}
+                <Sheet className="demo-sheet-push" push>
+                  <Toolbar>
+                    <div className="left"></div>
+                    <div className="right">
+                      <Link sheetClose>Close</Link>
+                    </div>
+                  </Toolbar>
+                  <PageContent>
+                    <Block>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+                    </Block>
+                  </PageContent>
                 </Sheet>
               </Page>
             );

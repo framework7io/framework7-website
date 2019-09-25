@@ -29,7 +29,7 @@ block content
           <div id="app">
             <!-- Main Framework7 App component where we pass Framework7 params -->
             <f7-app :params="$root.f7params">
-              <f7-statusbar></f7-statusbar>
+
               <f7-view main>
                 <!-- Initial Page -->
                 <f7-page>
@@ -106,7 +106,7 @@ block content
       import Vue from 'vue'
 
       // Import F7 Bundle
-      import Framework7 from 'framework7/framework7.esm.bundle.js'
+      import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 
       // Import F7-Vue Plugin Bundle (with all F7 components registered)
       import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
@@ -129,7 +129,6 @@ block content
       <template>
         <!-- Main Framework7 App component where we pass Framework7 params -->
         <f7-app :params="f7params">
-          <f7-statusbar></f7-statusbar>
           <!-- initial page is specified in routes.js -->
           <f7-view main url="/"></f7-view>
         </f7-app>

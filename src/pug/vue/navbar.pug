@@ -34,11 +34,6 @@ block content
         tr
           th(colspan="4") &lt;f7-navbar&gt; properties
         tr
-          td inner
-          td boolean
-          td true
-          td When enabled (by default), it will put all the content within internal `navbar-inner` element. Disable it only in case you want to put totally custom layout inside
-        tr
           td title
           td string
           td
@@ -98,6 +93,11 @@ block content
           td boolean
           td
           td Enables navbar with large title
+        tr
+          td large-transparent
+          td boolean
+          td
+          td Makes large navbar transparent (should be used in addition to `large` prop)
         tr
           td title-large
           td string
@@ -204,13 +204,14 @@ block content
       li `default` - element will be inserted as a child of `&lt;div class="navbar-inner"&gt;` element
       li `before-inner` - element will be inserted right before `&lt;div class="navbar-inner"&gt;` element
       li `after-inner` - element will be inserted right after `&lt;div class="navbar-inner"&gt;` element
-      li `nav-left` - element will be inserted in navbar's left element
-      li `nav-right` - element will be inserted in navbar's right element
+      li `left` - element will be inserted in navbar's left element
+      li `right` - element will be inserted in navbar's right element
       li `title` - element will be inserted in navbar's title element
+      li `title-large` - element will be inserted in navbar's large title text element
     :code(lang="html")
       <f7-navbar title="My App">
-        <a href="#" slot="nav-left">Left Link</a>
-        <a href="#" slot="nav-right">Right Link</a>
+        <a href="#" slot="left">Left Link</a>
+        <a href="#" slot="right">Right Link</a>
         <div slot="before-inner">Before Inner</div>
         <div slot="after-inner">After Inner</div>
         <div>Default slot</div>
@@ -219,6 +220,7 @@ block content
       <!-- Renders to: -->
 
       <div class="navbar">
+        <div class="navbar-bg"></div>
         <div>Before Inner</div>
         <div class="navbar-inner">
           <div class="left">
@@ -257,7 +259,7 @@ block content
       <!-- or -->
 
       <f7-navbar title="My App" back-link="Back">
-        <f7-link slot="nav-right" icon="icon-bars" panel-open="right"></f7-link>
+        <f7-link slot="right" icon="icon-bars" panel-open="right"></f7-link>
       </f7-navbar>
 
     h4 With large title

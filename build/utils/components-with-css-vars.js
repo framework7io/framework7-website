@@ -7,8 +7,9 @@ const withCssVars = [];
 
 modules.forEach((module) => {
   if (module[0] === '.') return;
-  if (fs.existsSync(path.resolve(__dirname, `../../packages/core/components/${module}/${module}-vars.less`))) {
-    const content = fs.readFileSync(path.resolve(__dirname, `../../packages/core/components/${module}/${module}-vars.less`), 'utf8');
+  const cssVarsPath = path.resolve(__dirname, `../../packages/core/components/${module}/${module}-vars.less`);
+  if (fs.existsSync(cssVarsPath)) {
+    const content = fs.readFileSync(cssVarsPath, 'utf8');
     if (content && content.trim().length) withCssVars.push(module);
   }
 });

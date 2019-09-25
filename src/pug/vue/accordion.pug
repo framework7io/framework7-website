@@ -49,7 +49,7 @@ block content
           th(colspan="2") &lt;f7-accordion-item&gt; events
         tr
           td accordion:beforeopen
-          td Event will be triggered right before accordion content starts its opening animation. `event.detail.prevent` contains function that will prevent accordion from opening when called
+          td Event will be triggered right before accordion content starts its opening animation. First handler argument receives `prevent` function that will prevent accordion from opening when called.
         tr
           td accordion:open
           td Event will be triggered when accordion content starts its opening animation.
@@ -58,7 +58,7 @@ block content
           td Event will be triggered after accordion content completes its opening animation.
         tr
           td accordion:beforeclose
-          td Event will be triggered right before accordion content starts its closing animation. `event.detail.prevent` contains function that will prevent accordion from closing when called
+          td Event will be triggered right before accordion content starts its closing animation. First handler argument receives `prevent` function that will prevent accordion from closing when called.
         tr
           td accordion:close
           td Event will be triggered when accordion content starts its closing animation.

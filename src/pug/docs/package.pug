@@ -29,6 +29,10 @@ block content
 
               ...
           js/
+              framework7-lite.bundle.js
+              framework7-lite.bundle.min.js
+              framework7-lite.js
+              framework7-lite.min.js
               framework7.bundle.js
               framework7.bundle.min.js
               framework7.js
@@ -42,10 +46,14 @@ block content
               framework7.min.css
               framework7.rtl.css
               framework7.rtl.min.css
+          framework7-lite.esm.bundle.js
+          framework7-lite.esm.js
           framework7.esm.bundle.js
           framework7.esm.js
           framework7.bundle.less
           framework7.less
+    h2 Lite Version
+    p Framework7 "Lite" version (files with `-lite` suffix) doesn't have Framework7 Component (Router Component) functionality, and it is designed to be used with Framework7-Vue/React libs where you use Vue/React components instead.
 
     h2 Styles
     p Main Framework7 styles are located in `css/` folder:
@@ -60,7 +68,10 @@ block content
     ul
       li `framework7.js` - contains minimal (core) Framework7 version with minimal required set of components.
       li `framework7.bundle.js` - contains whole Framework7 with all its components.
-
+    p There is also "lite" version included:
+    ul
+      li `framework7-lite.js` - contains minimal (core) Framework7 version with minimal required set of components.
+      li `framework7-lite.bundle.js` - contains whole Framework7 with all its components.
     h2 Components
     p All components are located in `components/` folder and required to be used with core (not bundle) version. You can learn more about how to use them in #[a(href="lazy-modules.html") lazy modules] section.
 
@@ -73,19 +84,19 @@ block content
     p Framework7 has modular structure and <b>by default it exports only core Framework7 with core components</b>.
     p And if you need additional components they must be included additionally:
     :code(lang="js")
-          // Import core framework
-          import Framework7 from 'framework7';
+      // Import core framework
+      import Framework7 from 'framework7';
 
-          // Import additional components
-          import Searchbar from 'framework7/components/searchbar/searchbar.js';
-          import Calendar from 'framework7/components/calendar/calendar.js';
-          import Popup from 'framework7/components/popup/popup.js';
+      // Import additional components
+      import Searchbar from 'framework7/components/searchbar/searchbar.js';
+      import Calendar from 'framework7/components/calendar/calendar.js';
+      import Popup from 'framework7/components/popup/popup.js';
 
-          // Install F7 Components using .use() method on class:
-          Framework7.use([Searchbar, Calendar, Popup]);
+      // Install F7 Components using .use() method on class:
+      Framework7.use([Searchbar, Calendar, Popup]);
 
-          // Init app
-          var app = new Framework7({/*...*/});
+      // Init app
+      var app = new Framework7({/*...*/});
     p Such modular structure provides best tree-shaking results and package size optimization.
     p In addition to `default` export it has named export for `Template7`, `Dom7`, `Request`, `Device`, `Utils` and `Support` libraries:
     :code(lang="js")
@@ -96,6 +107,9 @@ block content
           if (Device.ios) {
             Request.get('http://google.com');
           }
+    p "Lite" module is also available:
+    :code(lang="js")
+      import Framework7 from 'framework7/framework7-lite.esm.js';
 
     h2 ES Module Bundle
     p If you need to include Framework7 with all components, we can include its another script bundle with all components installed:
@@ -105,7 +119,9 @@ block content
 
           // Init app
           var app = new Framework7({/*...*/});
-
+    p "Lite" bundle module is also available:
+    :code(lang="js")
+      import Framework7 from 'framework7/framework7-lite.esm.bundle.js';
     h2 ES-Next
     p Note, that Framework7 ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile them as well, as well as `template7`, `dom7` and `ssr-window` modules that used as dependencies.
 

@@ -133,7 +133,7 @@ block content
           td Back
           td Text on back link in Photo Browser's navbar
         tr
-          td popupBackLinkText
+          td popupCloseLinkText
           td string
           td Close
           td Text on close link in Photo Browser's navbar when opened in Popup or as Standalone
@@ -230,7 +230,8 @@ block content
           td on
           td object
           td
-          td Object with events handlers. For example:
+          td
+            p Object with events handlers. For example:
             :code(lang="js")
                   var photoBrowser = app.photoBrowser.create({
                     ...
@@ -555,7 +556,7 @@ block content
                     'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
                 ],
                 type: 'page',
-                backLinkText: 'Back'
+                pageBackLinkText: 'Back'
             });
             $$('.pb-page').on('click', function () {
                 myPhotoBrowserPage.open();

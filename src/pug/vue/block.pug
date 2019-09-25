@@ -38,10 +38,30 @@ block content
           td
           td Makes block inset
         tr
-          td tablet-inset
+          td xsmall-inset
           td boolean
           td
-          td Makes block inset on tablets, but not on phones
+          td Makes block inset when app width >= 480px
+        tr
+          td small-inset
+          td boolean
+          td
+          td Makes block inset when app width >= 568px
+        tr
+          td medium-inset
+          td boolean
+          td
+          td Makes block inset when app width >= 768px
+        tr
+          td large-inset
+          td boolean
+          td
+          td Makes block inset when app width >= 1024px
+        tr
+          td xlarge-inset
+          td boolean
+          td
+          td Makes block inset when app width >= 1200px
         tr
           td strong
           td boolean
@@ -125,7 +145,7 @@ block content
           </f7-block>
 
           <f7-block-title>Tablet Inset</f7-block-title>
-          <f7-block strong tablet-inset>
+          <f7-block strong medium-inset>
             <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
           </f7-block>
 

@@ -15,14 +15,14 @@ block content
     ul
       li "bottom" and "right" hairlines are made using `:after` pseudo elements
       li "left" and "top" hairlines are made using `:before` pseudo elements
-    p So, for example, if you want to change navbar's bottom hairline color, you need to change <b>background-color</b> of `:after` element:
+    p So, for example, if you want to change navbar's bottom hairline color, you need to change <b>background-color</b> of its `.navbar-bg:after` element:
     :code(lang="css")
-      .navbar:after {
+      .navbar-bg:after {
         background-color: #ff0000;
       }
     p To remove bottom hairline on navbar and top hairline on toolbar:
     :code(lang="css")
-      .navbar:after {
+      .navbar-bg:after {
         display:none;
       }
 

@@ -143,7 +143,8 @@ block content
           td on
           td object
           td
-          td Object with events handlers. For example:
+          td
+            p Object with events handlers. For example:
             :code(lang="js")
                   var dialog = app.dialog.create({
                     text: 'Hello World',
@@ -315,7 +316,7 @@ block content
           td Event will be triggered after Dialog completes its closing animation
     h3 App and Dialog Instance Events
     p Dialog instance emits events on both self instance and app instance. App instance events has same names prefixed with `dialog`.
-    table.events-table
+    table.events-table.double-events-table
       thead
         tr
           th Event

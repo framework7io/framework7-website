@@ -12,7 +12,7 @@ block content
     +improveDocsLink
     h1 Icon React Component
     ul.docs-index
-    p Icon React component represents Icon element. It is ready to be used with custom icons, <a href="../icons/" target="_blank">Framework7 Icons</a>, <a href="https://material.io/icons/" target="_blank">Material Icons</a>, <a href="http://fontawesome.io/" target="_blank">Font Awesome</a>, <a href="http://ionicons.com/" target="_blank">Ionicons</a>.
+    p Icon React component represents Icon element. It is ready to be used with custom icons, <a href="../icons/" target="_blank">Framework7 Icons</a> and <a href="https://material.io/icons/" target="_blank">Material Icons</a>.
     h2 Icon Components
     p There are following components included:
     ul
@@ -42,25 +42,17 @@ block content
           td string
           td Name of Material Icons font icon
         tr
-          td fa
-          td string
-          td Name of Font Awesome font icon
-        tr
-          td ion
-          td string
-          td Name of Ionicons font icon
-        tr
           td ios
           td string
-          td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. `f7:home` or `ion:home`
+          td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. `f7:home`
         tr
           td md
           td string
-          td Icon to be used in case of Material theme is used. Consists of icon family and icon name divided by colon, e.g. `material:home` or `fa:home`
+          td Icon to be used in case of Material theme is used. Consists of icon family and icon name divided by colon, e.g. `material:home`
         tr
           td aurora
           td string
-          td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. `f7:home` or `ion:home`
+          td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. `f7:home`
         tr
           td tooltip
           td string
@@ -78,12 +70,6 @@ block content
 
       {/*  Material Icons font icon */}
       &lt;Icon material="home"&gt;&lt;/Icon&gt;
-
-      {/*  Font Awesome icons font icon */}
-      &lt;Icon fa="home"&gt;&lt;/Icon&gt;
-
-      {/*  Ionicons icons font icon */}
-      &lt;Icon ion="home"&gt;&lt;/Icon&gt;
 
       {/*  F7 icons font icon with custom size and color */}
       &lt;Icon f7="home" size="44px" color="blue"&gt;&lt;/Icon&gt;

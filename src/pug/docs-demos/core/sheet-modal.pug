@@ -13,18 +13,20 @@ block content
         .block
           // In data-sheet attribute we specify CSS selector of sheet we need to open
           p
-            a(href="#", data-sheet=".my-sheet").button.button-fill.sheet-open Open Sheet
+            a(href="#", data-sheet=".my-sheet").button.sheet-open Open Sheet
           // Link to close sheet
           p
-            a(href="#", data-sheet=".my-sheet").button.button-fill.sheet-close Close Sheet
+            a(href="#", data-sheet=".my-sheet").button.sheet-close Close Sheet
           p
-            a(href="#").button.button-fill.dynamic-sheet Create Dynamic Sheet
+            a(href="#").button.dynamic-sheet Create Dynamic Sheet
           p
-            a(href="#", data-sheet=".my-sheet-top").button.button-fill.sheet-open Open Top Sheet
+            a(href="#", data-sheet=".my-sheet-top").button.sheet-open Open Top Sheet
           p
-            a(href="#", data-sheet=".my-sheet-swipe-to-close").button.button-fill.sheet-open Swipe To Close
+            a(href="#", data-sheet=".my-sheet-swipe-to-close").button.sheet-open Swipe To Close
           p
-            a(href="#", data-sheet=".my-sheet-swipe-to-step").button.button-fill.sheet-open Swipe To Step
+            a(href="#", data-sheet=".my-sheet-swipe-to-step").button.sheet-open Swipe To Step
+          p
+            a(href="#", data-sheet=".my-sheet-push").button.sheet-open Sheet Push
 
   .sheet-modal.my-sheet
     .toolbar
@@ -93,6 +95,28 @@ block content
             </div>
           </li>
         </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet-modal my-sheet-push">
+    <div class="toolbar">
+      <div class="toolbar-inner">
+        <div class="left"></div>
+        <div class="right">
+          <a class="link sheet-close">Close</a>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-modal-inner">
+      <div class="page-content">
+        <div class="block">
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex adipisci.</p>
+          <p>Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique quis facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam. Consequatur, nisi, enim.</p>
+          <p>Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.</p>
+          <p>Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?</p>
+          <p>Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt praesentium velit ipsa illo iusto.</p>
+        </div>
       </div>
     </div>
   </div>

@@ -45,10 +45,30 @@ block content
           td false
           td Makes list block inset
         tr
-          td tablet-inset
+          td xsmall-inset
           td boolean
-          td false
-          td Makes block inset on tablets, but not on phones
+          td
+          td Makes block inset when app width >= 480px
+        tr
+          td small-inset
+          td boolean
+          td
+          td Makes block inset when app width >= 568px
+        tr
+          td medium-inset
+          td boolean
+          td
+          td Makes block inset when app width >= 768px
+        tr
+          td large-inset
+          td boolean
+          td
+          td Makes block inset when app width >= 1024px
+        tr
+          td xlarge-inset
+          td boolean
+          td
+          td Makes block inset when app width >= 1200px
         tr
           td media-list
           td boolean
@@ -400,7 +420,7 @@ block content
       h4 Tablet inset
       :code(lang="html")
             <f7-block-title>Tablet inset</f7-block-title>
-            <f7-list tablet-inset>
+            <f7-list medium-inset>
               <f7-list-item link="#" title="Ivan Petrov" after="CEO">
                 <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
               </f7-list-item>

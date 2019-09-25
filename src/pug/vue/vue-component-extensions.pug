@@ -69,3 +69,26 @@ block content
               li `route` - object with matching route from available routes
               li `context` - context that was passed to the route
 
+    p If you use functional components, then previously described extensions will not work. Framework7 instance, `f7ready` method and `theme` can be imported directly from Framework7-Vue library. Device, Request and Support can be imported directly from Framework7 core library.
+    :code(lang="js")
+      import { Device, Request, Support } from 'framework7';
+      import { f7, f7ready, theme } from 'framework7-vue';
+
+    :code(lang="html")
+      <template>
+        ...
+      </template>
+      <script>
+        import { f7, f7ready } from 'framework7-vue';
+
+        export default {
+          ...
+          mounted() {
+            f7ready(() => {
+              f7.dialog.alert('Component mounted');
+            })
+          },
+        };
+      </script>
+
+

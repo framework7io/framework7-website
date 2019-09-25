@@ -11,15 +11,17 @@ block content
       .page-content
         .block
           p
-            a(href="#", data-popup=".popup-about").link.popup-open Open About Popup
+            a(href="#", data-popup=".popup-about").button.popup-open Open About Popup
           p
-            a(href="#", data-popup=".popup-services").link.popup-open Open Services Popup
+            a(href="#", data-popup=".popup-services").button.popup-open Open Services Popup
           p
-            a(href="#").link.dynamic-popup Create dynamic Popup
+            a(href="#").button.dynamic-popup Create dynamic Popup
           p
-            a(href="#", data-popup=".popup-swipe-to-close").link.popup-open Popup with swipe to close
+            a(href="#", data-popup=".popup-swipe-to-close").button.popup-open Popup with swipe to close
           p
-            a(href="#", data-popup=".popup-swipe-to-close-handler").link.popup-open Popup with swipe to close handler
+            a(href="#", data-popup=".popup-swipe-to-close-handler").button.popup-open Popup with swipe to close handler
+          p
+            a(href="#", data-popup=".popup-push").button.popup-open Popup Push
   .popup.popup-about
     .block
       p About
@@ -41,6 +43,15 @@ block content
   <div class="popup popup-swipe-to-close-handler">
     <div class="block">
       <p class="my-swipe-to-close-handler"><b>Swipe works only on this paragraph</b></p>
+      p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac. Integer vitae quam a ante lobortis lobortis. Nam vehicula sagittis quam, sit amet congue purus consequat sed. Maecenas eget mattis lectus. Aliquam luctus luctus leo ac fringilla. Sed nec eros vel purus tincidunt tincidunt in in orci. Sed tellus neque, pellentesque nec metus id, congue elementum odio. Donec turpis tellus, mollis ac leo eget, accumsan fermentum lorem. Aliquam et elementum neque. Vestibulum sed egestas ipsum.
+    </div>
+  </div>
+
+  <div class="popup popup-push">
+    <div class="block">
+      p Popup Push
+      p
+        a(href="#").link.popup-close Close popup
       p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac. Integer vitae quam a ante lobortis lobortis. Nam vehicula sagittis quam, sit amet congue purus consequat sed. Maecenas eget mattis lectus. Aliquam luctus luctus leo ac fringilla. Sed nec eros vel purus tincidunt tincidunt in in orci. Sed tellus neque, pellentesque nec metus id, congue elementum odio. Donec turpis tellus, mollis ac leo eget, accumsan fermentum lorem. Aliquam et elementum neque. Vestibulum sed egestas ipsum.
     </div>
   </div>

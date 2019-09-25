@@ -176,6 +176,17 @@ block content
           td function(routeTo, routeFrom, resolve, reject)
           td Do required asynchronous manipulation and the return required route content and options
         tr
+          td asyncComponent
+          td function()
+          td
+            p Method should return Promise resolved with Component or ES module with `.default` property containing Component.
+            p It is mostly designed as a shorter version of `async` to dynamically import components. For example:
+            :code(lang="js")
+              {
+                path: '/some-page/',
+                asyncComponent: () => import('./path/to/some-page.js'),
+              }
+        tr
           th(colspan="4") Routable Tabs
         tr
           td tabs

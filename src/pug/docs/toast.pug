@@ -144,7 +144,8 @@ block content
           td on
           td object
           td
-          td Object with events handlers. For example:
+          td
+            p Object with events handlers. For example:
             :code(lang="js")
                   var toast = app.toast.create({
                     text: 'Hello, how are you?',
@@ -236,7 +237,7 @@ block content
           td Event will be triggered after Toast completes its closing animation
     h3 App and Toast Instance Events
     p Toast instance emits events on both self instance and app instance. App instance events has same names prefixed with `toast`.
-    table.events-table
+    table.events-table.double-events-table
       thead
         tr
           th Event

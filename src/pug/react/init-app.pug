@@ -41,7 +41,7 @@ block content
       import ReactDOM from  'react-dom';
 
       // Import F7 Bundle
-      import Framework7 from 'framework7/framework7.esm.bundle.js';
+      import Framework7 from 'framework7/framework7-lite.esm.bundle.js';
 
       // Import F7-React Plugin
       import Framework7React from 'framework7-react';
@@ -75,9 +75,8 @@ block content
       };
 
       export default () => (
-        // Main Framework7 App component where we pass Framework7 params
+        {/* Main Framework7 App component where we pass Framework7 params */}
         <App params={f7params}>
-          <Statusbar />
 
           {/* initial page is specified in routes.js */}
           <View main url="/" />

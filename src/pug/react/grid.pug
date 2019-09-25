@@ -49,15 +49,30 @@ block content
           td auto
           td Column width. Check available <a href="../docs/grid.html#column-sizes">Column Sizes</a>
         tr
-          td tabletWidth
-          td number<br>string
+          td xsmall
+          td number<string>
           td
-          td Column width for large screen tablets (when width &gt;= 768px)
+          td Column width when app width >= 480px
         tr
-          td desktopWidth
-          td number<br>string
+          td small
+          td number<string>
           td
-          td Column width for larger screen tablets (when width &gt;= 1025px)
+          td Column width when app width >= 568px
+        tr
+          td medium
+          td number<string>
+          td
+          td Column width when app width >= 768px
+        tr
+          td large
+          td number<string>
+          td
+          td Column width when app width >= 1024px
+        tr
+          td xlarge
+          td number<string>
+          td
+          td Column width when app width >= 1200px
     .with-device
       h2(data-device-preview="../docs-demos/react/grid.html") Examples
       :code(lang="jsx")
@@ -173,19 +188,19 @@ block content
             <Block>
               <p>Grid cells have different size on Phone/Tablet</p>
               <Row>
-                <Col width="100" tabletWidth="50">.col-100.tablet-50</Col>
-                <Col width="100" tabletWidth="50">.col-100.tablet-50</Col>
+                <Col width="100" medium="50">.col-100.tablet-50</Col>
+                <Col width="100" medium="50">.col-100.tablet-50</Col>
               </Row>
               <Row>
-                <Col width="50" tabletWidth="25">.col-50.tablet-25</Col>
-                <Col width="50" tabletWidth="25">.col-50.tablet-25</Col>
-                <Col width="50" tabletWidth="25">.col-50.tablet-25</Col>
-                <Col width="50" tabletWidth="25">.col-50.tablet-25</Col>
+                <Col width="50" medium="25">.col-50.tablet-25</Col>
+                <Col width="50" medium="25">.col-50.tablet-25</Col>
+                <Col width="50" medium="25">.col-50.tablet-25</Col>
+                <Col width="50" medium="25">.col-50.tablet-25</Col>
               </Row>
               <Row>
-                <Col width="100" tabletWidth="40">.col-100.tablet-40</Col>
-                <Col width="50" tabletWidth="60">.col-50.tablet-60</Col>
-                <Col width="50" tabletWidth="66">.col-50.tablet-66</Col>
-                <Col width="100" tabletWidth="33">.col-100.tablet-33</Col>
+                <Col width="100" medium="40">.col-100.tablet-40</Col>
+                <Col width="50" medium="60">.col-50.tablet-60</Col>
+                <Col width="50" medium="66">.col-50.tablet-66</Col>
+                <Col width="100" medium="33">.col-100.tablet-33</Col>
               </Row>
             </Block>

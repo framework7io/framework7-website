@@ -65,6 +65,10 @@ block content
           td swipeHandler
           td HTMLElement<br>string
           td If not passed, then whole popup can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (`swipeToClose` must be also enabled)
+        tr
+          td push
+          td boolean
+          td When enabled it will push view behind on open. Works only when top safe area is in place. It can also be enabled by adding `popup-push` class to Popup element.
     h2 Popup Methods
     table.methods-table
       tr
@@ -126,7 +130,11 @@ block content
               <p>
                 <f7-button fill popup-open=".demo-popup-swipe-handler">With Swipe Handler</f7-button>
               </p>
+              <p>
+                <f7-button fill popup-open=".demo-popup-push">Popup Push</f7-button>
+              </p>
             </f7-block>
+
             <f7-popup class="demo-popup" :opened="popupOpened" @popup:closed="popupOpened = false">
               <f7-page>
                 <f7-navbar title="Popup Title">
@@ -165,6 +173,20 @@ block content
                 </f7-block>
               </f7-page>
             </f7-popup>
+
+            <f7-popup class="demo-popup-push" push>
+              <f7-page>
+                <f7-navbar title="Popup Push">
+                  <f7-nav-right>
+                    <f7-link popup-close>Close</f7-link>
+                  </f7-nav-right>
+                </f7-navbar>
+                <f7-block strong>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                </f7-block>
+              </f7-page>
+            </f7-popup>
+
           </f7-page>
         </template>
 
@@ -185,6 +207,7 @@ block content
                       <div class="popup">
                         <div class="page">
                           <div class="navbar">
+                            <div class="navbar-bg">
                             <div class="navbar-inner">
                               <div class="title">Dynamic Popup</div>
                               <div class="right"><a href="#" class="link popup-close">Close</a></div>

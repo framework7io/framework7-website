@@ -213,10 +213,16 @@ block content
           td
           td If not passed, then whole Sheet can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (`swipeToClose` or `swipeToStep` must be also enabled)
         tr
+          td push
+          td boolean
+          td false
+          td When enabled it will push view behind on open. Works only when top safe area is in place. It can also be enabled by adding `sheet-modal-push` class to Sheet element.
+        tr
           td on
           td object
           td
-          td Object with events handlers. For example:
+          td
+            p Object with events handlers. For example:
             :code(lang="js")
               var sheet = app.sheet.create({
                 content: '<div class="sheet-modal">...</div>',
@@ -398,7 +404,7 @@ block content
           td Event will be triggered on Sheet swipe step between step opened and closed state. As `event.detail` it receives step open progress number (from `0` to `1`)
     h3 App and Sheet Instance Events
     p Sheet instance emits events on both self instance and app instance. App instance events has same names prefixed with `popup`.
-    table.events-table
+    table.events-table.double-events-table
       thead
         tr
           th Event
@@ -499,16 +505,23 @@ block content
               <div class="page-content">
                 <div class="block">
                   <!-- In data-sheet attribute we specify CSS selector of sheet we need to open-->
-                  <p><a class="button button-fill sheet-open" href="#" data-sheet=".my-sheet">Open Sheet</a></p>
+                  <p><a class="button sheet-open" href="#" data-sheet=".my-sheet">Open Sheet</a></p>
+
                   <!-- Button to close sheet-->
-                  <p><a class="button button-fill sheet-close" href="#" data-sheet=".my-sheet">Close Sheet</a></p>
-                  <p><a class="button button-fill dynamic-sheet" href="#">Create Dynamic Sheet</a></p>
+                  <p><a class="button sheet-close" href="#" data-sheet=".my-sheet">Close Sheet</a></p>
+                  <p><a class="button dynamic-sheet" href="#">Create Dynamic Sheet</a></p>
+
                   <!-- Button to open another top sheet-->
-                  <p><a class="button button-fill sheet-open" href="#" data-sheet=".my-sheet-top">Open Top Sheet</a></p>
+                  <p><a class="button sheet-open" href="#" data-sheet=".my-sheet-top">Open Top Sheet</a></p>
+
                   <!-- Button to open swipe-to-close sheet-->
-                  <p><a class="button button-fill sheet-open" href="#" data-sheet=".my-sheet-swipe-to-close">Swipe To Close</a></p>
+                  <p><a class="button sheet-open" href="#" data-sheet=".my-sheet-swipe-to-close">Swipe To Close</a></p>
+
                   <!-- Button to open swipe-to-step sheet-->
-                  <p><a class="button button-fill sheet-open" href="#" data-sheet=".my-sheet-swipe-to-step">Swipe To Step</a></p>
+                  <p><a class="button sheet-open" href="#" data-sheet=".my-sheet-swipe-to-step">Swipe To Step</a></p>
+
+                  <!-- Button to open sheet push -->
+                  <p><a class="button sheet-open" href="#" data-sheet=".my-sheet-push">Sheet Push</a></p>
                 </div>
               </div>
             </div>
@@ -596,6 +609,26 @@ block content
               </div>
             </div>
           </div>
+
+          <!-- Sheet Push -->
+          <div class="sheet-modal my-sheet-push">
+            <div class="toolbar">
+              <div class="toolbar-inner">
+                <div class="left"></div>
+                <div class="right">
+                  <a class="link sheet-close">Close</a>
+                </div>
+              </div>
+            </div>
+            <div class="sheet-modal-inner">
+              <div class="page-content">
+                <div class="block">
+                  <p>Lorem ipsum dolor sit amet....</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </body>
       :code(lang="js")
         var app = new Framework7();

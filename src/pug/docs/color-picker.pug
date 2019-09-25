@@ -364,7 +364,8 @@ block content
           td on
           td object
           td
-          td Object with events handlers. For example:
+          td
+            p Object with events handlers. For example:
             :code(lang="js")
               var colorPicker = app.colorPicker.create({
                 ...
@@ -670,7 +671,7 @@ block content
           td Event will be triggered after Color Picker completes its closing animation
     h3 App and Color Picker Instance Events
     p Color Picker instance emits events on both self instance and app instance. App instance events has same names prefixed with `colorPicker`.
-    table.events-table
+    table.events-table.double-events-table
       thead
         tr
           th Event

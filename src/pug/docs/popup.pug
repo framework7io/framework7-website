@@ -142,10 +142,16 @@ block content
           td
           td If not passed, then whole popup can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (`swipeToClose` must be also enabled)
         tr
+          td push
+          td boolean
+          td false
+          td When enabled it will push view behind on open. Works only when top safe area is in place. It can also be enabled by adding `popup-push` class to Popup element.
+        tr
           td on
           td object
           td
-          td Object with events handlers. For example:
+          td
+            p Object with events handlers. For example:
             :code(lang="js")
                   var popup = app.popup.create({
                     content: '<div class="popup">...</div>',
@@ -293,7 +299,7 @@ block content
           td Event will be triggered after Popup completes its closing animation
     h3 App and Popup Instance Events
     p Popup instance emits events on both self instance and app instance. App instance events has same names prefixed with `popup`.
-    table.events-table
+    table.events-table.double-events-table
       thead
         tr
           th Event
@@ -357,16 +363,18 @@ block content
             <div class="page-content">
               <div class="block">
                 <!-- Open About Popup -->
-                <p><a class="link popup-open" href="#" data-popup=".popup-about">Open About Popup</a></p>
+                <p><a class="button popup-open" href="#" data-popup=".popup-about">Open About Popup</a></p>
                 <!-- Open Services Popup -->
-                <p><a class="link popup-open" href="#" data-popup=".popup-services">Open Services Popup</a></p>
+                <p><a class="button popup-open" href="#" data-popup=".popup-services">Open Services Popup</a></p>
                 <!-- Create Dynamic Popup -->
-                <p><a class="link dynamic-popup" href="#">Create dynamic popup</a></p>
+                <p><a class="button dynamic-popup" href="#">Create dynamic popup</a></p>
 
                 <!-- Popup with swipe-to-close -->
-                <p><a class="link popup-open" href="#" data-popup=".popup-swipe-to-close">Popup with swipe to close</a></p>
+                <p><a class="button popup-open" href="#" data-popup=".popup-swipe-to-close">Popup with swipe to close</a></p>
                 <!-- Popup with swipe-to-close handler -->
-                <p><a class="link popup-open" href="#" data-popup=".popup-swipe-to-close-handler">Popup with swipe to close handler</a></p>
+                <p><a class="button popup-open" href="#" data-popup=".popup-swipe-to-close-handler">Popup with swipe to close handler</a></p>
+                <!-- Popup push -->
+                <p><a class="button popup-open" href="#" data-popup=".popup-push">Popup Push</a></p>
               </div>
             </div>
           ...
@@ -394,6 +402,13 @@ block content
           <div class="popup popup-swipe-to-close-handler">
             <div class="block">
               <p class="my-swipe-to-close-handler"><b>Swipe works only on this paragraph</b></p>
+              <p>Lorem ipsum dolor sit amet...</p>
+            </div>
+          </div>
+          <div class="popup popup-push">
+            <div class="block">
+              <p>Popup Push </p>
+              <p><a class="link popup-close" href="#">Close popup</a></p>
               <p>Lorem ipsum dolor sit amet...</p>
             </div>
           </div>

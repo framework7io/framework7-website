@@ -194,12 +194,13 @@ block content
           td closeByBackdropClick
           td boolean
           td true
-          td Enable/disable ability to close panel by clicking outside of panel (on
+          td Enable/disable ability to close panel by clicking outside of panel
         tr
           td on
           td object
           td
-          td Object with events handlers. For example:
+          td
+            p Object with events handlers. For example:
             :code(lang="js")
                   var panel = app.panel.create({
                     el: '.panel-left'
@@ -538,7 +539,7 @@ block content
         li
           p To toggle panel we need to add `panel-toggle` class to any HTML element (prefered to link)
         li
-          p If you want to specify which panel should opened/closed, then it could be done via additional `data-panel=".panel-left"` attribute on this HTML element
+          p If you want to specify which panel should opened/closed, then it could be done via additional `data-panel=".panel-left"` attribute on this HTML element. This attribute can also receive just `left` or `right` value if there is only one panel of such side in DOM.
     p According to above note:
     :code(lang="html")
       <body>
@@ -550,7 +551,7 @@ block content
               <!-- Clicking on link with "panel-close" class will close panel -->
               <p><a href="#" class="panel-close">Close me</a></p>
               <!-- Click on link with "panel-open" and data-panel=".panel-right" attribute will open Right panel -->
-              <p><a href="#" data-panel=".panel-right" class="panel-close">Open Right Panel</a></p>
+              <p><a href="#" data-panel=".panel-right" class="panel-open">Open Right Panel</a></p>
             </div>
           </div>
 

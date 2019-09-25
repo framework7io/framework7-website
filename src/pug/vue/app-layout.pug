@@ -19,7 +19,7 @@ block content
               <meta charset="utf-8">
               <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
               <meta name="apple-mobile-web-app-capable" content="yes">
-              <!-- Color theme for statusbar -->
+              <!-- Color theme for statusbar (Android only) -->
               <meta name="theme-color" content="#2196f3">
               <!-- Your app title -->
               <title>My App</title>
@@ -56,8 +56,6 @@ block content
               <div id="app">
                 <!-- Main Framework7 App component where we pass Framework7 params -->
                 <f7-app :params="{ theme: 'auto', name: 'My App', id: 'com.demoapp.test' }">
-                  <!-- Status bar overlay for full screen mode (Cordova or PhoneGap) -->
-                  <f7-statusbar></f7-statusbar>
                   <!-- Your main view, should have "main" prop -->
                   <f7-view main>
                     <!-- Initial Page -->
@@ -92,8 +90,6 @@ block content
               <div id="app">
                 <!-- Main Framework7 App component where we pass Framework7 params -->
                 <f7-app :params="{ theme: 'auto', name: 'My App', id: 'com.demoapp.test' }">
-                  <!-- Status bar overlay for full screen mode (Cordova or PhoneGap) -->
-                  <f7-statusbar></f7-statusbar>
 
                   <!-- Left Panel with "cover" effect -->
                   <f7-panel left cover>
@@ -162,7 +158,7 @@ block content
               <!-- ... scripts ... -->
             </body>
           </html>
-    p You can read more about statusbar overlay, views, navbar, toolbar, pages, panels and other components in appropriate sections.
+    p You can read more about views, navbar, toolbar, pages, panels and other components in appropriate sections.
 
     h2 Initialize App
     p Now when we have basic template, we need to <a href="init-app.html">initialize our app</a> in (for example) `my-app.js`

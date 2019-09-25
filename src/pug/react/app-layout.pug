@@ -19,7 +19,7 @@ block content
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
           <meta name="apple-mobile-web-app-capable" content="yes">
-          <!-- Color theme for statusbar -->
+          <!-- Color theme for statusbar (Android only) -->
           <meta name="theme-color" content="#2196f3">
           <!-- Your app title -->
           <title>My App</title>
@@ -40,14 +40,11 @@ block content
     p Let's look at the very basic app component layout:
     :code(lang="jsx")
       // App.jsx
-      import { App, Statusbar, View, Page, Navbar, Toolbar, Link } from 'framework7-react';
+      import { App, View, Page, Navbar, Toolbar, Link } from 'framework7-react';
 
       export default () => (
         // Main Framework7 App component where we pass Framework7 params
         <App params={{ theme: 'auto', name: 'My App', id: 'com.demoapp.test' }}>
-
-          {/* Status bar overlay for full screen mode (Cordova or PhoneGap) */}
-          <Statusbar></Statusbar>
 
           {/* Your main view, should have "main" prop */}
           <View main>
@@ -73,14 +70,11 @@ block content
     :code(lang="jsx")
       // App.jsx
 
-      import { App, NavRight, Statusbar, Panel, View, Page, Navbar, Block, Row, Col, Button, Popup, Link } from 'framework7-react';
+      import { App, NavRight, Panel, View, Page, Navbar, Block, Row, Col, Button, Popup, Link } from 'framework7-react';
 
       export default () => (
         /* Main Framework7 App component where we pass Framework7 params */
         <App params={{ theme: 'auto', name: 'My App', id: 'com.demoapp.test' }}>
-
-          {/* Status bar overlay for full screen mode (Cordova or PhoneGap) */}
-          <Statusbar></Statusbar>
 
           {/* Left Panel with "cover" effect */}
           <Panel left cover>
@@ -147,7 +141,7 @@ block content
         </App>
       )
 
-    p You can read more about statusbar overlay, views, navbar, toolbar, pages, panels and other components in appropriate sections.
+    p You can read more about views, navbar, toolbar, pages, panels and other components in appropriate sections.
     h2 Initialize App
     p Now when we have basic template, we need to <a href="init-app.html">initialize our app</a> in (for example) `my-app.js`
 

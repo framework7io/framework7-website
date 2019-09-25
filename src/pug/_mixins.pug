@@ -30,30 +30,20 @@ mixin vueLinkIconProps
     td
     td Name of Material Icons font icon
   tr
-    td icon-fa
-    td string
-    td
-    td Name of Font Awesome font icon
-  tr
-    td icon-ion
-    td string
-    td
-    td Name of Ionicons font icon
-  tr
     td icon-ios
     td string
     td
-    td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>ion:home</code>
+    td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code>
   tr
     td icon-md
     td string
     td
-    td Icon to be used in case of MD theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
+    td Icon to be used in case of MD theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code>
   tr
     td icon-aurora
     td string
     td
-    td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
+    td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code>
 mixin vueLinkRouterProps
   tr
     td href
@@ -69,7 +59,7 @@ mixin vueLinkRouterProps
     td view
     td string
     td
-    td CSS selector of the View to load the page
+    td CSS selector of the View to load the page. Or `current` to load in current view.
   tr
     td external
     td boolean
@@ -111,6 +101,11 @@ mixin vueLinkRouterProps
     td
     td Disables pages animation
   tr
+    td transition
+    td string
+    td
+    td Name of the <a href="./docs/view.html#custom-page-transitions" target="_blank">custom page transition</a>
+  tr
     td ignore-cache
     td boolean
     td
@@ -136,17 +131,17 @@ mixin vueLinkActionsProps
     td panel-open
     td string<br>boolean
     td
-    td Defines panel to open. Can be <code>left</code> or <code>right</code>
+    td CSS selector of panel to open on click. Or can be `left` or `right` if there is only left or right panel in DOM.
   tr
     td panel-close
-    td boolean
+    td string<br>boolean
     td
     td Closes panel on click
   tr
     td panel-toggle
-    td boolean
+    td string<br>boolean
     td
-    td Toggle (open/close) panel on click
+    td CSS selector of panel to toggle on click. Or can be `left` or `right` if there is only left or right panel in DOM.
   tr
     td actions-open
     td string<br>boolean
@@ -280,30 +275,20 @@ mixin reactLinkIconProps
     td
     td Name of Material Icons font icon
   tr
-    td iconFa
-    td string
-    td
-    td Name of Font Awesome font icon
-  tr
-    td iconIon
-    td string
-    td
-    td Name of Ionicons font icon
-  tr
     td iconIos
     td string
     td
-    td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>ion:home</code>
+    td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code>
   tr
     td iconMd
     td string
     td
-    td Icon to be used in case of MD theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
+    td Icon to be used in case of MD theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code>
   tr
     td iconAurora
     td string
     td
-    td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>fa:home</code>
+    td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code>
 
 mixin reactLinkRouterProps
   tr
@@ -320,7 +305,7 @@ mixin reactLinkRouterProps
     td view
     td string
     td
-    td CSS selector of the View to load the page
+    td CSS selector of the View to load the page. Or `current` to load in current view.
   tr
     td external
     td boolean
@@ -362,6 +347,11 @@ mixin reactLinkRouterProps
     td
     td Disables pages animation
   tr
+    td transition
+    td string
+    td
+    td Name of the <a href="./docs/view.html#custom-page-transitions" target="_blank">custom page transition</a>
+  tr
     td ignoreCache
     td boolean
     td
@@ -387,17 +377,17 @@ mixin reactLinkActionsProps
     td panelOpen
     td string<br>boolean
     td
-    td Defines panel to open. Can be <code>left</code> or <code>right</code>
+    td CSS selector of panel to open on click. Or can be `left` or `right` if there is only left or right panel in DOM.
   tr
     td panelClose
-    td boolean
+    td string<br>boolean
     td
     td Closes panel on click
   tr
     td panelToggle
-    td boolean
+    td string<br>boolean
     td
-    td Toggle (open/close) panel on click
+    td CSS selector of panel to toggle on click. Or can be `left` or `right` if there is only left or right panel in DOM.
   tr
     td actionsOpen
     td string<br>boolean

@@ -32,7 +32,7 @@ block content
           td Event will be triggered when sortable mode is disabled
         tr
           td sortable:sort
-          td Event will be triggered after user release currently sorting element in new position. `event.detail` will contain object with `from` and `to` properties with start/new index numbers of sorted list item
+          td Event will be triggered after user release currently sorting element in new position. First handler argument contains object with `from`, `to` and `el` properties with start/new index numbers of sorted list item and the HTML element of sorted list item
     .with-device
       h2(data-device-preview="../docs-demos/vue/sortable.html") Examples
       :code
@@ -116,10 +116,9 @@ block content
 
               export default {
                 methods: {
-                  onSort(e) {
+                  onSort(data) {
                     // Sort data
-                    console.log(e.target);
-                    console.log(e.detail);
+                    console.log(data);
                   }
                 }
               };

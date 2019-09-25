@@ -40,7 +40,7 @@ block content
     p This example uses a typographic feature called <a href="http://alistapart.com/article/the-era-of-symbol-fonts" target="_blank">ligatures</a>, which allows rendering of an icon glyph simply by using its textual name. The replacement is done automatically by the web browser and provides more readable code than the equivalent numeric character reference.
     h3 Styling Icons
     h4 Sizing
-    p Framework7 Icons look best at 25px, but if an icon needs to be displayed in an alternative size, just use CSS font-size rule:
+    p Framework7 Icons look best at 28px, but if an icon needs to be displayed in an alternative size, just use CSS font-size rule:
     :code(lang="css")
           .size-22 { font-size: 22px }
           .size-25 { font-size: 25px }
@@ -61,7 +61,7 @@ block content
           &lt;i class="icon f7-icons color-custom"&gt;home&lt;/i&gt;
     h2 Using Both F7 Icons & Material Icons
     p To keep best practise its better to use F7 Icons font for iOS theme and Material Icons font for MD theme. But what to do in case you develop your app for both MD and iOS themes?
-    p In this case we may use router's `${theme}-only` and `if-${theme}` and `if-not-${theme}` helper classes to have F7 icon in iOS theme and Material icons in MD theme:
+    p In this case we may use router's `{theme}-only` and `if-{theme}` and `if-not-{theme}` helper classes to have F7 icon in iOS theme and Material icons in MD theme:
     :code(lang="html")
       <i class="f7-icons if-not-md">home</i>
       <i class="material-icons md-only">home</i>
