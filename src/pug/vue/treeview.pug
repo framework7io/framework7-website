@@ -106,17 +106,17 @@ block content
           td Event will be triggered on first open of Treeview item with `loadChildren` prop. In `event.detail` it contains function to hide loading preloader.
 
     h2 Treeview Item Slots
-    p Treeview Vue component (`&lt;f7-treeview-item&gt;`) has additional slots for custom elements:
+    p Treeview Vue component (`<f7-treeview-item>`) has additional slots for custom elements:
     ul
       li `root-start` - element will be inserted in the beginning of treeview item element
       li `root` / `root-end` - element will be inserted in the end of treeview item element
-      li `content-start` - element will be inserted in the beginning of `&lt;div class="treeview-item-content"&gt;` element
-      li `content` / `content-end` - element will be inserted in the end of `&lt;div class="treeview-item-content"&gt;` element
-      li `children-start` - element will be inserted in the beginning of the `&lt;div class="treeview-item-children"&gt;` element
-      li `default` - element will be inserted in the end of the `&lt;div class="treeview-item-children"&gt;` element
-      li `media` - element will be inserted before `&lt;div class="treeview-item-label"&gt;` element
-      li `label-start` - element will be inserted in the beginning `&lt;div class="treeview-item-label"&gt;` element
-      li `label` - element will be inserted in the end of `&lt;div class="treeview-item-label"&gt;` element
+      li `content-start` - element will be inserted in the beginning of `<div class="treeview-item-content">` element
+      li `content` / `content-end` - element will be inserted in the end of `<div class="treeview-item-content">` element
+      li `children-start` - element will be inserted in the beginning of the `<div class="treeview-item-children">` element
+      li `default` - element will be inserted in the end of the `<div class="treeview-item-children">` element
+      li `media` - element will be inserted before `<div class="treeview-item-label">` element
+      li `label-start` - element will be inserted in the beginning `<div class="treeview-item-label">` element
+      li `label` - element will be inserted in the end of `<div class="treeview-item-label">` element
     :code(lang="html")
       <f7-treeview-item label="Item 1">
         <img src="path-to-my-image.jpg" slot="media">

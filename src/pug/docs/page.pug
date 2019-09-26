@@ -23,7 +23,7 @@ block content
     h3 Page Name
     p As you may note, each page has a `data-name` attribute with a unique page name. It's not required but can be useful within "page events" or "page callbacks". It can help us to define which page is loaded and available so you can make required manipulations to the page.
     h3 Page Content
-    p All visual content (like list views, forms, etc.) should put inside of `&lt;div class="page-content"&gt;` which should be a child of `&lt;div class="page"&gt;`. It's required for correct styling, layout and scrolling.
+    p All visual content (like list views, forms, etc.) should put inside of `<div class="page-content">` which should be a child of `<div class="page">`. It's required for correct styling, layout and scrolling.
     h2 Page Events
     p Now lets look at one of the most important parts of page navigation, "page events". <b>Page Events</b> allow us to manipulate just loaded pages by executing JavaScript for those specific pages:
     table.events-table
@@ -87,7 +87,7 @@ block content
       li Currently active page has `page-current` class.
       li If page we load not in DOM (e.g. loaded via Ajax or using template or from component) it will be added to DOM.
       li Page that we load/open will have additional `page-next` class set on its element.
-      li Router element (`&lt;div class="view"&gt;`) will have additional `router-transition-forward` class that does the following:
+      li Router element (`<div class="view">`) will have additional `router-transition-forward` class that does the following:
         ul
           li page with `page-next` (new page) class moves into the view
           li page with `page-current` (current page) class moves out of the view
@@ -98,7 +98,7 @@ block content
       li Currently active page has `page-current` class.
       li If page we go back to not in DOM (e.g. loaded via Ajax or using template or from component) it will be added to DOM.
       li Page that we go back to will have additional `page-previous` class set on its element.
-      li Router element (`&lt;div class="view"&gt;`) will have additional `router-transition-backward` class that does the following:
+      li Router element (`<div class="view">`) will have additional `router-transition-backward` class that does the following:
         ul
           li page with `page-previous` (page that we go back to) class moves into the view
           li page with `page-current` (current page) class moves out of the view

@@ -113,7 +113,7 @@ block content
                   // property key is the button id
                   hr: {
                     // button html content
-                    content: 'HR',
+                    content: '&amp;lt;hr&amp;gt;',
                     // button click handler
                     onClick(event, buttonEl) {
                       document.execCommand('insertHorizontalRule', false);
@@ -277,7 +277,7 @@ block content
               return {
                 customButtons: {
                   hr: {
-                    content: '&lt;hr&gt;',
+                    content: '&amp;lt;hr&amp;gt;',
                     onClick(editor, buttonEl) {
                       document.execCommand('insertHorizontalRule', false);
                     },

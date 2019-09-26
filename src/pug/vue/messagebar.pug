@@ -199,14 +199,14 @@ block content
     h2 Messagebar Slots
     p Messagebar Vue component has additional slots for custom elements:
     ul
-      li `default` - element will be inserted in the end of `&lt;div class="toolbar-inner"&gt;`. element
+      li `default` - element will be inserted in the end of `<div class="toolbar-inner">`. element
       li `before-area` - element will be inserted right before textarea. Messagebar attachments go here
       li `after-area` - element will be inserted right after textarea
       li `send-link` - element will be inserted inside of send link
-      li `before-inner` - element will be inserted right before `&lt;div class="toolbar-inner"&gt;`. element
-      li `after-inner` - element will be inserted right after `&lt;div class="toolbar-inner"&gt;`. element. Messagebar sheet goes here
-      li `inner-start` - element will be inserted in the beginning of `&lt;div class="toolbar-inner"&gt;`. element
-      li `inner-end` - element will be inserted in the end of `&lt;div class="toolbar-inner"&gt;`. element. Same as `default` slot
+      li `before-inner` - element will be inserted right before `<div class="toolbar-inner">`. element
+      li `after-inner` - element will be inserted right after `<div class="toolbar-inner">`. element. Messagebar sheet goes here
+      li `inner-start` - element will be inserted in the beginning of `<div class="toolbar-inner">`. element
+      li `inner-end` - element will be inserted in the end of `<div class="toolbar-inner">`. element. Same as `default` slot
     :code
           <f7-messagebar placeholder="Message" @submit="onSubmit">
             <div slot="before-inner">Before inner</div>

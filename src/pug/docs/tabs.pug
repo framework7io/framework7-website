@@ -38,7 +38,7 @@ block content
       li `div class="tab"` - single tab. Should have <strong>unique</strong> `id` attribute
       li `div class="tab tab-active"` - single active tab. Tab which is active (visible) by default, should have additional `tab-active` class
     h3 Scrollable Tabs
-    p If you put tabs inside of scrollable `&lt;div class="page-content"&gt;` then they will have mutual scrolling - scrolling one tab will basically scroll the all tabs as well. To avoid this (if this is a case), it is recommended to make each tab as page-content, in this case each tab will have own scrolling:
+    p If you put tabs inside of scrollable `<div class="page-content">` then they will have mutual scrolling - scrolling one tab will basically scroll the all tabs as well. To avoid this (if this is a case), it is recommended to make each tab as page-content, in this case each tab will have own scrolling:
     :code(lang="html")
           <div class="page">
             <div class="navbar">...</div>
@@ -59,7 +59,7 @@ block content
           </div>
     h2 Switching Between Tabs
     p After we have our tabs layout we need some contoller so user can switch between them.
-    p To make it work we need to create links (`&lt;a&gt;` tags) with `tab-link` class and `href` attribute equal to the `id` attribute of target tab:
+    p To make it work we need to create links (`<a>` tags) with `tab-link` class and `href` attribute equal to the `id` attribute of target tab:
     :code(lang="html")
            &lt;!-- Link that activates first tab, has the same href attribute (#tab1) as the id attribute of first tab (tab1)  --&gt;
            &lt;a href="#tab1" class="tab-link tab-link-active"&gt;Tab 1&lt;/a&gt;

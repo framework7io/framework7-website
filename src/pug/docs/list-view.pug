@@ -21,7 +21,7 @@ block content
       li To present a selectable list of options
     h2 List View Block
     p List block is your list view elements wrapper.
-    p So first of all, all your list view elements should be wrapped with `&lt;div class="list"&gt;` element:
+    p So first of all, all your list view elements should be wrapped with `<div class="list">` element:
     :code(lang="html")
          &lt;div class="list"&gt;
              &lt;ul&gt;
@@ -95,7 +95,7 @@ block content
           p Because .item-content is actually CSS flex-box element, note that <strong>`item-media` and `item-inner` should be direct children of `item-content`</strong>!
         li
           p For the same reason <strong>`item-title` and `item-after` should be direct children of `item-inner`</strong>!
-    p Also note that if your list item has nothing additional, you can user `item-content` class on `&lt;li&gt;` element:
+    p Also note that if your list item has nothing additional, you can user `item-content` class on `<li>` element:
     :code(lang="html")
           &lt;li class="item-content"&gt;
               &lt;div class="item-media"&gt;
@@ -131,7 +131,7 @@ block content
             </div>
           </li>
     h2 Link Item
-    p Of course in most cases we need to use list view elements as links (&lt;a&gt;) to other pages or data. In this case we need to wrap `item-content` with `&lt;a class="item-link"&gt;` element:
+    p Of course in most cases we need to use list view elements as links (&lt;a&gt;) to other pages or data. In this case we need to wrap `item-content` with `<a class="item-link">` element:
     :code(lang="html")
           <li>
             &lt;a href="#" class="item-link"&gt;
@@ -208,7 +208,7 @@ block content
            &lt;/div&gt;
     p You may ask what is the difference from simple dividers? <strong>With list groups, group titles have sticky position during scroll within single group.</strong>
     h2 Simple List
-    p In case we need list with simple items structure that have only titles, we may use Simple List modification. In this case we need additional class `simple-list` on list block with plain `&lt;li&gt;` items layout:
+    p In case we need list with simple items structure that have only titles, we may use Simple List modification. In this case we need additional class `simple-list` on list block with plain `<li>` items layout:
     :code(lang="html")
           <div class="list simple-list">
             <ul>
@@ -220,7 +220,7 @@ block content
             </ul>
           </div>
     h2 Links List
-    p In case we need list with simple link items structure that have only titles, we may use Links List modification. In this case we need additional class `links-list` on list block with plain `&lt;li&gt;&lt;a&gt;...&lt;/a&gt;&lt;/li&gt;` items layout:
+    p In case we need list with simple link items structure that have only titles, we may use Links List modification. In this case we need additional class `links-list` on list block with plain `<li>&lt;a&gt;...&lt;/a&gt;&lt;/li&gt;` items layout:
     :code(lang="html")
           <div class="list links-list">
             <ul>
@@ -282,7 +282,7 @@ block content
           li
             p `item-text` - additional two-lines container for detailed description. <strong>Optional</strong> element.
     .important-note
-      p When you use Link Item (item-link) in media list it will render chevron icon (`&gt;`) at the level of `item-title`. If you want to move this chevron to the center of item, then you need to add `chevron-center` class to this item or to the containing list
+      p When you use Link Item (item-link) in media list it will render chevron icon (`>`) at the level of `item-title`. If you want to move this chevron to the center of item, then you need to add `chevron-center` class to this item or to the containing list
     h2 Custom Table-like Elements
     p In you case you need some custom list item layout with table-like structure you may use additional list elements `item-row` and `item-cell`:
     :code(lang="html")

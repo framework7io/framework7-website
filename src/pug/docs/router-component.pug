@@ -464,13 +464,13 @@ block content
           }
         }
       </script>
-    p Well, now it is much cleaner. The `&lt;template&gt;` and `&lt;style&gt;` tags will be automatically converted to the same properties of exported component.
+    p Well, now it is much cleaner. The `<template>` and `<style>` tags will be automatically converted to the same properties of exported component.
     p You may think that it is not valid to have a direct `return` statement in script, but it is ok because parser puts the content of the script tag into function body.
     h3 ES Template Literals
     .important-note
       p
         b The feature available from Framework7 version 3.1.0.
-    p When we use single file component, the everything what is under `&lt;template&gt;` tag is compiled as Template7 template. In some situations it may bring more complexity, if you need to do a lot of complex checks and modifications right in the template. With Template7 you may need to register a bunch of helpers.
+    p When we use single file component, the everything what is under `<template>` tag is compiled as Template7 template. In some situations it may bring more complexity, if you need to do a lot of complex checks and modifications right in the template. With Template7 you may need to register a bunch of helpers.
 
     p So single file component template can be treated as native JavaScript <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals" target="_blank">Template literal</a>.
 
@@ -481,7 +481,7 @@ block content
       var b = 10;
       console.log(`Fifteen is ${a + b} and not ${2 * a + b}.`);
 
-    p To enable your component template being treated as template literal we need to add `es` attribute to `&lt;template&gt;` tag. The template from previous example will look like:
+    p To enable your component template being treated as template literal we need to add `es` attribute to `<template>` tag. The template from previous example will look like:
     :code(lang="html")
       <template es>
         <div class="page">
@@ -505,7 +505,7 @@ block content
       </template>
 
     h3 Scoped Styles
-    p In case you want to scope component styles in single file component to this component only, you may add `scoped` attribute to component `&lt;style&gt;` tag:
+    p In case you want to scope component styles in single file component to this component only, you may add `scoped` attribute to component `<style>` tag:
     :code(lang="html")
       <template>
         <!-- component template -->

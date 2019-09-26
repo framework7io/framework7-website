@@ -159,7 +159,7 @@ block content
                   // property key is the button id
                   hr: {
                     // button html content
-                    content: 'HR',
+                    content: '&amp;lt;hr&amp;gt;',
                     // button click handler
                     onClick(event, buttonEl) {
                       document.execCommand('insertHorizontalRule', false);
@@ -430,19 +430,19 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/text-editor.html") Examples
 
-      h3 Default Setup
+      h4 Default Setup
       :code(lang="html")
         <div class="text-editor text-editor-init">
           <div class="text-editor-content" contenteditable></div>
         </div>
 
-      h3 With Placeholder
+      h4 With Placeholder
       :code(lang="html")
         <div class="text-editor text-editor-init" data-placeholder="Enter text...">
           <div class="text-editor-content" contenteditable></div>
         </div>
 
-      h3 With Default Value
+      h4 With Default Value
       :code(lang="html")
         <div class="text-editor text-editor-init" data-placeholder="Enter text...">
           <div class="text-editor-content" contenteditable>
@@ -450,13 +450,13 @@ block content
           </div>
         </div>
 
-      h3 Specific Buttons
+      h4 Specific Buttons
       :code(lang="html")
         <div class="text-editor text-editor-init" data-placeholder="Enter text..." data-buttons='[["bold", "italic", "underline", "strikeThrough"], ["orderedList", "unorderedList"]]'>
           <div class="text-editor-content" contenteditable></div>
         </div>
 
-      h3 Custom Button
+      h4 Custom Button
       :code(lang="html")
         <div class="text-editor text-editor-custom-buttons">
           <div class="text-editor-content" contenteditable></div>
@@ -467,7 +467,7 @@ block content
           // define custom "hr" button
           customButtons: {
             hr: {
-              content: '&lt;hr&gt;',
+              content: '&amp;lt;hr&amp;gt;',
               onClick(editor, buttonEl) {
                 document.execCommand('insertHorizontalRule', false);
               },
@@ -476,25 +476,25 @@ block content
           buttons: [["bold", "italic", "underline", "strikeThrough"], "hr"],
         });
 
-      h3 Resizable
+      h4 Resizable
       :code(lang="html")
         <div class="text-editor text-editor-init text-editor-resizable" data-placeholder="Enter text..." data-buttons='["bold", "italic", "underline", "strikeThrough"]'>
           <div class="text-editor-content" contenteditable></div>
         </div>
 
-      h3 Popover Mode
+      h4 Popover Mode
       :code(lang="html")
         <div class="text-editor text-editor-init" data-placeholder="Enter text..." data-buttons='["bold", "italic", "underline", "strikeThrough"]' data-mode="popover" style="--f7-text-editor-height: 150px">
           <div class="text-editor-content" contenteditable></div>
         </div>
 
-      h3 Keyboard Toolbar Mode
+      h4 Keyboard Toolbar Mode
       :code(lang="html")
         <div class="text-editor text-editor-init" data-placeholder="Enter text..." data-mode="keyboard-toolbar" style="--f7-text-editor-height: 150px">
           <div class="text-editor-content" contenteditable></div>
         </div>
 
-      h3 As List Input
+      h4 As List Input
       :code(lang="html")
         <div class="list">
           <ul>

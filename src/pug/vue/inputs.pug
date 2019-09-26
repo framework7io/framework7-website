@@ -241,7 +241,7 @@ block content
           td wrap
           td boolean
           td true
-          td When enabled it will be wrapped in `&lt;li&gt;` element
+          td When enabled it will be wrapped in `<li>` element
         tr
           td calendar-params
           td object
@@ -263,7 +263,7 @@ block content
           td wrap
           td boolean
           td true
-          td Defines should the input be wraped with `&lt;div class="input"&gt;` element or not.
+          td Defines should the input be wraped with `<div class="input">` element or not.
         tr
           td type
           td string
@@ -500,7 +500,7 @@ block content
           td Fired when `type="colorpicker"` Color Picker value changed. As an argument it receives object with Color Picker value.
 
     h2 Input Slots
-    p `&lt;f7-list-input&gt;` has additional slots for custom elements:
+    p `<f7-list-input>` has additional slots for custom elements:
     ul
       li `default` - in case of `type="select"` or `type="textarea"` - element will be placed inside of `select` or `textarea` tags.
       li `info` - element will be inserted into container with info message
@@ -508,13 +508,13 @@ block content
       li `label` - element will be inserted into container with input's label
       li `input` - element will be inserted instead of input element (`input` prop must be also set to `false`)
 
-      li `root-start` - element will be inserted in the beginning of `&lt;li&gt;` element
-      li `root` / `root-end` - element will be inserted in the end of `&lt;li&gt;` element
-      li `content-start` - element will be inserted in the beginning of `&lt;div class="item-content"&gt;` element
-      li `content` / `content-end` - element will be inserted in the end of `&lt;div class="item-content"&gt;` element
-      li `inner-start` - element will be inserted in the beginning of `&lt;div class="item-inner"&gt;` element
-      li `inner` / `inner-end` - element will be inserted in the end of `&lt;div class="item-inner"&gt;` element
-      li `media` - element will be inserted inside of `&lt;div class="item-media"&gt;` element
+      li `root-start` - element will be inserted in the beginning of `<li>` element
+      li `root` / `root-end` - element will be inserted in the end of `<li>` element
+      li `content-start` - element will be inserted in the beginning of `<div class="item-content">` element
+      li `content` / `content-end` - element will be inserted in the end of `<div class="item-content">` element
+      li `inner-start` - element will be inserted in the beginning of `<div class="item-inner">` element
+      li `inner` / `inner-end` - element will be inserted in the end of `<div class="item-inner">` element
+      li `media` - element will be inserted inside of `<div class="item-media">` element
 
     h2 Input v-model
     p `v-model` <b>is not supported</b> on `f7-list-input` / `f7-input` vue components. Instead, just use the combination of `value` property and `@input` event:

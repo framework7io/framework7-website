@@ -228,22 +228,22 @@ block content
           td Event will be triggered when user clicks on message bubble
 
     h2 Messages Slots
-    p Single message Vue component (`&lt;f7-message&gt;`) has additional slots for custom elements:
+    p Single message Vue component (`<f7-message>`) has additional slots for custom elements:
     ul
-      li `default` - element will be inserted as a child of `&lt;div class="message-bubble"&gt;` element in the end
-      li `start` - element will be inserted in the beginning and direct child of main message element `&lt;div class="message"&gt;`
-      li `end` - element will be inserted in the end and direct child of main message element `&lt;div class="message"&gt;`
-      li `content-start` - element will be inserted in the beginning and direct child of the `&lt;div class="message-content"&gt;` element
-      li `content-end` - element will be inserted in the end and direct child of the `&lt;div class="message-content"&gt;` element
-      li `bubble-start` - element will be inserted in the beginning and direct child of the `&lt;div class="message-bubble"&gt;` element
-      li `bubble-end` - element will be inserted in the end and direct child of the `&lt;div class="message-bubble"&gt;` element. Same as `default` slot
+      li `default` - element will be inserted as a child of `<div class="message-bubble">` element in the end
+      li `start` - element will be inserted in the beginning and direct child of main message element `<div class="message">`
+      li `end` - element will be inserted in the end and direct child of main message element `<div class="message">`
+      li `content-start` - element will be inserted in the beginning and direct child of the `<div class="message-content">` element
+      li `content-end` - element will be inserted in the end and direct child of the `<div class="message-content">` element
+      li `bubble-start` - element will be inserted in the beginning and direct child of the `<div class="message-bubble">` element
+      li `bubble-end` - element will be inserted in the end and direct child of the `<div class="message-bubble">` element. Same as `default` slot
     p The following slots can be used inside of single message instead of same props if you need to pass there more complext layout:
     ul
       li `header` - element will be inserted in message header
       li `footer` - element will be inserted in message footer
       li `text` - element will be inserted in message text
       li `name` - element will be inserted in message name
-      li `image` - element will be inserted in message image (supposed tp be an `&lt;img&gt;` element)
+      li `image` - element will be inserted in message image (supposed tp be an `<img>` element)
       li `text-header` - element will be inserted in message text header
       li `text-footer` - element will be inserted in message text footer
     :code(lang="html")

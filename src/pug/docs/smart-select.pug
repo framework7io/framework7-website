@@ -14,7 +14,7 @@ block content
     ul.docs-index
     p Smart select allows you to easily convert your usual form selects to dynamic pages with grouped radio or checkbox inputs. You can see such feature in many native iOS apps
     h2 Smart Select Layout
-    p Smart select layout is pretty simple. It is a well known <a href="list-view.html">List View</a> link with `&lt;select&gt;` inside and additional `smart-select` class on `item-link`:
+    p Smart select layout is pretty simple. It is a well known <a href="list-view.html">List View</a> link with `<select>` inside and additional `smart-select` class on `item-link`:
     :code(lang="html")
       <div class="list">
         <ul>
@@ -45,7 +45,7 @@ block content
     .important-note
       p Note that smart select works only in initialized Views, because it used Router to load smart select pages or open modals!
     h3 Custom Option Icons, Colors and Images
-    p You can also specify Smart Select page' list view element custom icon, image or color. We need to use additional `data-option-icon`, `data-option-image` attributes on smart select `&lt;select&gt;` (to set default image for all options) or on `&lt;option&gt;` to set image or icon on single option.
+    p You can also specify Smart Select page' list view element custom icon, image or color. We need to use additional `data-option-icon`, `data-option-image` attributes on smart select `<select>` (to set default image for all options) or on `<option>` to set image or icon on single option.
     p For single option we may also use `data-option-color` and `data-option-class` attributes to add specific option color or css class for additional styling
     :code(lang="html")
       <li>
@@ -65,7 +65,7 @@ block content
       </li>
 
     h3 Multiple Select And &lt;optgroup&gt;
-    p We can also use multiple select and group options using `&lt;optgroup&gt;`. So if we add `multiple` attribute to our select then radio buttons on smart select page will be automatically converted to checkboxes:
+    p We can also use multiple select and group options using `<optgroup>`. So if we add `multiple` attribute to our select then radio buttons on smart select page will be automatically converted to checkboxes:
     :code(lang="html")
       <li>
         <a href="#" class="item-link smart-select">
@@ -219,7 +219,7 @@ block content
           td valueEl
           td HTMLElement
           td
-          td Visual element where to insert selected value. If not passed then it will look for `&lt;div class="item-after"&gt;` element
+          td Visual element where to insert selected value. If not passed then it will look for `<div class="item-after">` element
         tr
           td setValueText
           td boolean
@@ -229,7 +229,7 @@ block content
           td formatValueText
           td function(values)
           td
-          td Custom function to format smart select text value that appears on list item (in `&lt;div class="item-after"&gt;`). `values` is the array of current values
+          td Custom function to format smart select text value that appears on list item (in `<div class="item-after">`). `values` is the array of current values
         tr
           td openIn
           td string
@@ -259,7 +259,7 @@ block content
           td pageTitle
           td string
           td
-          td Smart select page title. If not passed then it will be the `&lt;div class="item-title"&gt;` text
+          td Smart select page title. If not passed then it will be the `<div class="item-title">` text
         tr
           td pageBackLinkText
           td string
@@ -442,7 +442,7 @@ block content
           td Dom7 instance with HTML element used to display value
         tr
           td smartSelect.selectEl
-          td Child select element `&lt;select&gt;`
+          td Child select element `<select>`
         tr
           td smartSelect.$selectEl
           td Dom7 instance with child select element
