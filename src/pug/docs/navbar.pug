@@ -25,88 +25,88 @@ block content
     h2 Navbar HTML Layout
     p Navbar layout is pretty simple and self explaining:
     :code(lang="html")
-          &lt;div class="navbar"&gt;
+          <div class="navbar">
               <div class="navbar-bg"></div>
-              &lt;div class="navbar-inner"&gt;
-                  &lt;div class="left"&gt;Left&lt;/div&gt;
-                  &lt;div class="title"&gt;Page Title&lt;/div&gt;
-                  &lt;div class="right"&gt;Right&lt;/div&gt;
-              &lt;/div&gt;
-          &lt;/div&gt;
+              <div class="navbar-inner">
+                  <div class="left">Left</div>
+                  <div class="title">Page Title</div>
+                  <div class="right">Right</div>
+              </div>
+          </div>
     .important-note
       p Note that Navbar's `Title` element has lowest width priority, and when window screen will not fit all three elements Title part will be cut.
       p So if you use plain text in `Title` part it will have ellipsis (...) on the end when it is cut. But you need to take care about it if you have some custom elements there.
     h3 Navbar With Links
     p To add links in Left or Right part you just need to add the plain `<a>` tag with additional `link` class:
     :code(lang="html")
-          &lt;div class="navbar"&gt;
+          <div class="navbar">
               <div class="navbar-bg"></div>
-              &lt;div class="navbar-inner"&gt;
-                  &lt;div class="left"&gt;
-                      &lt;a href="#" class="link"&gt;Left Link&lt;/a&gt;
-                  &lt;/div&gt;
-                  &lt;div class="title"&gt;Page Title&lt;/div&gt;
-                  &lt;div class="right"&gt;
-                      &lt;a href="#" class="link"&gt;Right Link&lt;/a&gt;
-                  &lt;/div&gt;
-              &lt;/div&gt;
-          &lt;/div&gt;
+              <div class="navbar-inner">
+                  <div class="left">
+                      <a href="#" class="link">Left Link</a>
+                  </div>
+                  <div class="title">Page Title</div>
+                  <div class="right">
+                      <a href="#" class="link">Right Link</a>
+                  </div>
+              </div>
+          </div>
     h3 Multiple Links
     p Nothing extraordinary. Just add more `<a class="link"` to the required part:
     :code(lang="html")
-          &lt;div class="navbar"&gt;
+          <div class="navbar">
               <div class="navbar-bg"></div>
-              &lt;div class="navbar-inner"&gt;
-                  &lt;div class="left"&gt;
-                      &lt;a href="#" class="link"&gt;Left 1&lt;/a&gt;
-                      &lt;a href="#" class="link"&gt;Left 2&lt;/a&gt;
-                  &lt;/div&gt;
-                  &lt;div class="title"&gt;Page Title&lt;/div&gt;
-                  &lt;div class="right"&gt;
-                      &lt;a href="#" class="link"&gt;Right 1&lt;/a&gt;
-                  &lt;/div&gt;
-              &lt;/div&gt;
-          &lt;/div&gt;
+              <div class="navbar-inner">
+                  <div class="left">
+                      <a href="#" class="link">Left 1</a>
+                      <a href="#" class="link">Left 2</a>
+                  </div>
+                  <div class="title">Page Title</div>
+                  <div class="right">
+                      <a href="#" class="link">Right 1</a>
+                  </div>
+              </div>
+          </div>
     h3 Links With Icons + Text
     p Here comes a little difference. In this case we need to <strong>wrap link's text with</strong> `<span>` element. It is required for correct spacing between icon and "word", and for animation:
     :code(lang="html")
-          &lt;div class="navbar"&gt;
+          <div class="navbar">
               <div class="navbar-bg"></div>
-              &lt;div class="navbar-inner"&gt;
-                  &lt;div class="left"&gt;
-                      &lt;a href="#" class="link"&gt;
-                          &lt;i class="icon icon-back"&gt;&lt;/i&gt;
-                          &lt;span&gt;Back&lt;/span&gt;
-                      &lt;/a&gt;
-                  &lt;/div&gt;
-                  &lt;div class="title"&gt;Title&lt;/div&gt;
-                  &lt;div class="right"&gt;
-                      &lt;a href="#" class="link"&gt;
-                          &lt;i class="icon another-icon"&gt;&lt;/i&gt;
-                          &lt;span&gt;Menu&lt;/span&gt;
-                      &lt;/a&gt;
-                  &lt;/div&gt;
-              &lt;/div&gt;
-          &lt;/div&gt;
+              <div class="navbar-inner">
+                  <div class="left">
+                      <a href="#" class="link">
+                          <i class="icon icon-back"></i>
+                          <span>Back</span>
+                      </a>
+                  </div>
+                  <div class="title">Title</div>
+                  <div class="right">
+                      <a href="#" class="link">
+                          <i class="icon another-icon"></i>
+                          <span>Menu</span>
+                      </a>
+                  </div>
+              </div>
+          </div>
     h3 Links With Icons Only
     p If need links with icons and without text we need to additional `icon-only` class to links. With this class link will have fixed size so we can't miss it with finger:
     :code(lang="html")
-          &lt;div class="navbar"&gt;
+          <div class="navbar">
               <div class="navbar-bg"></div>
-              &lt;div class="navbar-inner"&gt;
-                  &lt;div class="left"&gt;
-                      &lt;a href="#" class="link icon-only"&gt;
-                          &lt;i class="icon icon-back"&gt;&lt;/i&gt;
-                      &lt;/a&gt;
-                  &lt;/div&gt;
-                  &lt;div class="title"&gt;Title&lt;/div&gt;
-                  &lt;div class="right"&gt;
-                      &lt;a href="#" class="link icon-only"&gt;
-                          &lt;i class="icon another-icon"&gt;&lt;/i&gt;
-                      &lt;/a&gt;
-                  &lt;/div&gt;
-              &lt;/div&gt;
-          &lt;/div&gt;
+              <div class="navbar-inner">
+                  <div class="left">
+                      <a href="#" class="link icon-only">
+                          <i class="icon icon-back"></i>
+                      </a>
+                  </div>
+                  <div class="title">Title</div>
+                  <div class="right">
+                      <a href="#" class="link icon-only">
+                          <i class="icon another-icon"></i>
+                      </a>
+                  </div>
+              </div>
+          </div>
 
     h3 Large Title
     p Large-title navbar has additional "row" (or "bar") with large title text, which is get collapsed on page scroll. To make it large we need to add additional `navbar-large` class to `navbar` and add additional `title-large` element to it:
@@ -409,12 +409,12 @@ block content
     p If you have common single Navbar across all pages/views of your app you can hide/show Navbar automatically for some pages where you don't need it.
     p To make it work all you need is to add `no-navbar` class to loaded page (`<div class="page no-navbar">`):
     :code(lang="html")
-          &lt;!-- Page has additional "no-navbar" class --&gt;
-          &lt;div class="page no-navbar"&gt;
-            &lt;div class="page-content"&gt;
+          <!-- Page has additional "no-navbar" class -->
+          <div class="page no-navbar">
+            <div class="page-content">
                 ...
-            &lt;/div&gt;
-          &lt;/div&gt;
+            </div>
+          </div>
 
     h2 Navbar Events
     p Navbar will fire the following DOM events on Navbar element (`<div class="navbar">`) and app events on app instance:

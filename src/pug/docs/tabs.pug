@@ -61,14 +61,14 @@ block content
     p After we have our tabs layout we need some contoller so user can switch between them.
     p To make it work we need to create links (`<a>` tags) with `tab-link` class and `href` attribute equal to the `id` attribute of target tab:
     :code(lang="html")
-           &lt;!-- Link that activates first tab, has the same href attribute (#tab1) as the id attribute of first tab (tab1)  --&gt;
-           &lt;a href="#tab1" class="tab-link tab-link-active"&gt;Tab 1&lt;/a&gt;
+           <!-- Link that activates first tab, has the same href attribute (#tab1) as the id attribute of first tab (tab1)  -->
+           <a href="#tab1" class="tab-link tab-link-active">Tab 1</a>
 
-           &lt;!-- Link that activates 2nd tab, has the same href attribute (#tab2) as the id attribute of 2nd tab (tab2)  --&gt;
-           &lt;a href="#tab2" class="tab-link"&gt;Tab 2&lt;/a&gt;
+           <!-- Link that activates 2nd tab, has the same href attribute (#tab2) as the id attribute of 2nd tab (tab2)  -->
+           <a href="#tab2" class="tab-link">Tab 2</a>
 
-           &lt;!-- Link that activates 3rd tab, has the same href attribute (#tab2) as the id attribute of 3rd tab (tab3)  --&gt;
-           &lt;a href="#tab3" class="tab-link"&gt;Tab 3&lt;/a&gt;
+           <!-- Link that activates 3rd tab, has the same href attribute (#tab2) as the id attribute of 3rd tab (tab3)  -->
+           <a href="#tab3" class="tab-link">Tab 3</a>
     .important-note
       p As you may see, first link also has `tab-link-active` class. It is not required, but if all such links will be on the same DOM tree level (the same-level children of mutual parent), then script will also change this `tab-link-active` class on link related to the active tab. It is useful when your "active" link has different visual style (like buttons in <a href="button.html#segmented-control">Segmented Control</a> or links in <a href="toolbar-tabbar.html#tabbar">Tabbar</a>)
     h2 Switch Multiple Tabs

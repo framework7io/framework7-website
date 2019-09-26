@@ -15,21 +15,21 @@ block content
     h2 Accordion Layout
     p Common Accordion layout could be treat as the following:
     :code(lang="html")
-      &lt;div class="accordion-list"&gt;
-        &lt;div class="accordion-item"&gt;
-          &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
-          &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class="accordion-item accordion-item-opened"&gt;
-          &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
-          &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class="accordion-item"&gt;
-          &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
-          &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
-        &lt;/div&gt;
+      <div class="accordion-list">
+        <div class="accordion-item">
+          <div class="accordion-item-toggle">...</div>
+          <div class="accordion-item-content">...</div>
+        </div>
+        <div class="accordion-item accordion-item-opened">
+          <div class="accordion-item-toggle">...</div>
+          <div class="accordion-item-content">...</div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-item-toggle">...</div>
+          <div class="accordion-item-content">...</div>
+        </div>
         ...
-      &lt;/div&gt;
+      </div>
     p Where
     ul
       li `accordion-list` - list of accordion items set. Optional class
@@ -42,40 +42,40 @@ block content
     h2 Collapsible Layout
     p If you want to use single separate collapsible element you may just omit "accordion-list" wrapper element:
     :code(lang="html")
-          &lt;!-- Single collapsible element --&gt;
-          &lt;div class="accordion-item"&gt;
-              &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
-              &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
-          &lt;/div&gt;
+          <!-- Single collapsible element -->
+          <div class="accordion-item">
+              <div class="accordion-item-toggle">...</div>
+              <div class="accordion-item-content">...</div>
+          </div>
 
-          &lt;!-- Another separate collapsible element --&gt;
-          &lt;div class="accordion-item"&gt;
-              &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
-              &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
-          &lt;/div&gt;
+          <!-- Another separate collapsible element -->
+          <div class="accordion-item">
+              <div class="accordion-item-toggle">...</div>
+              <div class="accordion-item-content">...</div>
+          </div>
     h2 Accordion List View
     p If you use list view as accordion you may use "item-link" element instead of "accordion-toggle":
     :code(lang="html")
-          &lt;div class="list accordion-list"&gt;
-              &lt;ul&gt;
-                  &lt;li class="accordion-item"&gt;
-                      &lt;a href="" class="item-link item-content"&gt;
-                          &lt;div class="item-inner"&gt;
-                              &lt;div class="item-title"&gt;Item 1&lt;/div&gt;
-                          &lt;/div&gt;
-                      &lt;/a&gt;
-                      &lt;div class="accordion-item-content"&gt;Item 1 content ...&lt;/div&gt;
-                  &lt;/li&gt;
-                  &lt;li class="accordion-item"&gt;
-                      &lt;a href="" class="item-link item-content"&gt;
-                          &lt;div class="item-inner"&gt;
-                              &lt;div class="item-title"&gt;Item 2&lt;/div&gt;
-                          &lt;/div&gt;
-                      &lt;/a&gt;
-                      &lt;div class="accordion-item-content"&gt;Item 2 content ...&lt;/div&gt;
-                  &lt;/li&gt;
-              &lt;/ul&gt;
-          &lt;/div&gt;
+          <div class="list accordion-list">
+              <ul>
+                  <li class="accordion-item">
+                      <a href="" class="item-link item-content">
+                          <div class="item-inner">
+                              <div class="item-title">Item 1</div>
+                          </div>
+                      </a>
+                      <div class="accordion-item-content">Item 1 content ...</div>
+                  </li>
+                  <li class="accordion-item">
+                      <a href="" class="item-link item-content">
+                          <div class="item-inner">
+                              <div class="item-title">Item 2</div>
+                          </div>
+                      </a>
+                      <div class="accordion-item-content">Item 2 content ...</div>
+                  </li>
+              </ul>
+          </div>
     .with-device
       h2(data-device-preview="../docs-demos/core/accordion.html") Example
       :code(lang="html")

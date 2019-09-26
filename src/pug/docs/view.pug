@@ -896,10 +896,10 @@ block content
     .important-note
       p Parameters that used in camelCase, for example `pushState`, in data- attributes should be used as kebab-case as <b>data-push-state</b>
     :code(lang="html")
-          &lt;!-- view parameters in data- attributes --&gt;
-          &lt;div class="view view-init" data-url="/" data-name="home" data-push-state="true"&gt;
+          <!-- view parameters in data- attributes -->
+          <div class="view view-init" data-url="/" data-name="home" data-push-state="true">
             ...
-          &lt;/div&gt;
+          </div>
     p In this case if you need to access created View instance you can use:
     ul
       li In case if it is main view, we may use `app.views.main` to get main view instance

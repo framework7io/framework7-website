@@ -519,13 +519,13 @@ block content
     p So lets say we are on a `/catalog/` page and have the following links:
     ol
       li
-        p `<a href="computers/">Computers&lt;/a&gt;` - will work as expected. Link will be merged with the current route (`/catalog/` + `computers/`) and we will have `/catalog/computers/` which we have in our routes.
+        p `<a href="computers/">Computers</a>` - will work as expected. Link will be merged with the current route (`/catalog/` + `computers/`) and we will have `/catalog/computers/` which we have in our routes.
       li
-        p `<a href="./computers/">Computers&lt;/a&gt;` - will work the same as case 1 because `./` in the beginning of path means same sub level.
+        p `<a href="./computers/">Computers</a>` - will work the same as case 1 because `./` in the beginning of path means same sub level.
       li
-        p `<a href="/catalog/computers/">Computers&lt;/a&gt;` - will also work as expected the same as case 1 because `/` (slash) in the beginning means root. And we have such root route in merged routes.
+        p `<a href="/catalog/computers/">Computers</a>` - will also work as expected the same as case 1 because `/` (slash) in the beginning means root. And we have such root route in merged routes.
       li
-        p `<a href="/computers/">Computers&lt;/a&gt;` - <b>won't work</b> as expected because `/` (slash) in the beginning means root. And we don't have such `/computers/` root route in our routes.
+        p `<a href="/computers/">Computers</a>` - <b>won't work</b> as expected because `/` (slash) in the beginning means root. And we don't have such `/computers/` root route in our routes.
 
     h2 Detail Routes
     p For Master Detail view, it is also possible to specify `detailRoutes` in addition to `master: true` on master route.

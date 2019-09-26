@@ -18,16 +18,16 @@ block content
     p When progressbar is determinate it indicates how long an operation will take when the percentage complete is detectable.
     p Let's look at layout of determinate progressbar:
     :code(lang="html")
-          &lt;div class="progressbar" data-progress="20"&gt;
-            &lt;span&gt;&lt;/span&gt;
-          &lt;/div&gt;
+          <div class="progressbar" data-progress="20">
+            <span></span>
+          </div>
     p Where <b>data-progress="20"</b> - current progress (in percents). Note that this data attribute sets progress only on page load. If you need to change it later it should be done via API.
 
     h2 Infinite Progressbar
     p When progressbar is infinite/indeterminate it requests that the user wait while something finishes when it’s not necessary to indicate how long it will take.
     p Let's look at layout of infinite progressbar:
     :code(lang="html")
-          &lt;div class="progressbar-infinite"&gt;&lt;/div&gt;
+          <div class="progressbar-infinite"></div>
 
     h2 Progressbar Colors
     p Progressbar supports all <a href="color-themes.html">default colors</a>. So to change its color just add `color-[color]` class to preloader element.

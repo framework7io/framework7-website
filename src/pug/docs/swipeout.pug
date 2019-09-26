@@ -67,57 +67,57 @@ block content
           </li>
     p If you use <a href="list-view.html#link-item">link items</a> the layout will be following:
     :code(lang="html")
-          &lt;li class="swipeout"&gt;
-            &lt;div class="swipeout-content"&gt;
-              &lt;a href="#" class="item-content item-link"&gt;
-                &lt;div class="item-media"&gt;...&lt;/div&gt;
-                &lt;div class="item-inner"&gt;...&lt;/div&gt;
-              &lt;/a&gt;
-            &lt;/div&gt;
-            &lt;div class="swipeout-actions-right"&gt;
-              &lt;a href="#"&gt;Action 1&lt;/a&gt;
-              &lt;a href="#"&gt;Action 2&lt;/a&gt;
-            &lt;/div&gt;
-          &lt;/li&gt;
+          <li class="swipeout">
+            <div class="swipeout-content">
+              <a href="#" class="item-content item-link">
+                <div class="item-media">...</div>
+                <div class="item-inner">...</div>
+              </a>
+            </div>
+            <div class="swipeout-actions-right">
+              <a href="#">Action 1</a>
+              <a href="#">Action 2</a>
+            </div>
+          </li>
     h2 Swipe To Delete
     p Framework7 supports this frequently used feature from the box without single line of JavaScript. All you need is to add `swipeout-delete` class to swipeout actions buttons:
     :code(lang="html")
-          &lt;li class="swipeout"&gt;
-            &lt;div class="swipeout-content item-content"&gt;
-              &lt;div class="item-media"&gt;...&lt;/div&gt;
-              &lt;div class="item-inner"&gt;...&lt;/div&gt;
-            &lt;/div&gt;
-            &lt;div class="swipeout-actions-right"&gt;
-              &lt;!-- Add this button and item will be deleted automatically --&gt;
-              &lt;a href="#" class="swipeout-delete"&gt;Delete&lt;/a&gt;
-            &lt;/div&gt;
-          &lt;/li&gt;
+          <li class="swipeout">
+            <div class="swipeout-content item-content">
+              <div class="item-media">...</div>
+              <div class="item-inner">...</div>
+            </div>
+            <div class="swipeout-actions-right">
+              <!-- Add this button and item will be deleted automatically -->
+              <a href="#" class="swipeout-delete">Delete</a>
+            </div>
+          </li>
     p It is also possible to call Confirm modal when user clicks on "Delete" button, and element will be removed only after confirmation. To make delete on confirmation you need to add additional `data-confirm` and `data-confirm-title` (optional) attributes to Delete link:
     :code(lang="html")
-          &lt;li class="swipeout"&gt;
-            &lt;div class="swipeout-content item-content"&gt;
-              &lt;div class="item-media"&gt;...&lt;/div&gt;
-              &lt;div class="item-inner"&gt;...&lt;/div&gt;
-            &lt;/div&gt;
-            &lt;div class="swipeout-actions-right"&gt;
-              &lt;!-- We add data-confirm and data-confirm-title attributes --&gt;
-              &lt;a href="#" class="swipeout-delete" data-confirm="Are you sure want to delete this item?" data-confirm-title="Delete?"&gt;Delete&lt;/a&gt;
-            &lt;/div&gt;
-          &lt;/li&gt;
+          <li class="swipeout">
+            <div class="swipeout-content item-content">
+              <div class="item-media">...</div>
+              <div class="item-inner">...</div>
+            </div>
+            <div class="swipeout-actions-right">
+              <!-- We add data-confirm and data-confirm-title attributes -->
+              <a href="#" class="swipeout-delete" data-confirm="Are you sure want to delete this item?" data-confirm-title="Delete?">Delete</a>
+            </div>
+          </li>
     h2 Overswipe
     p Swipeouts also support "overswipe" actions that will be triggered automatically if you swipe actions too much. In this case we need to add `swipeout-overswipe` class to required actions button:
     :code(lang="html")
-          &lt;li class="swipeout"&gt;
-            &lt;div class="swipeout-content item-content"&gt;
-              &lt;div class="item-media"&gt;...&lt;/div&gt;
-              &lt;div class="item-inner"&gt;...&lt;/div&gt;
-            &lt;/div&gt;
-            &lt;div class="swipeout-actions-right"&gt;
-              &lt;a href="#"&gt;More&lt;/a&gt;
-              &lt;a href="#" class="swipeout-delete swipeout-overswipe"&gt;Delete&lt;/a&gt;
-              &lt;/div&gt;
-            &lt;/div&gt;
-          &lt;/li&gt;
+          <li class="swipeout">
+            <div class="swipeout-content item-content">
+              <div class="item-media">...</div>
+              <div class="item-inner">...</div>
+            </div>
+            <div class="swipeout-actions-right">
+              <a href="#">More</a>
+              <a href="#" class="swipeout-delete swipeout-overswipe">Delete</a>
+              </div>
+            </div>
+          </li>
     .important-note
       ul
         li
