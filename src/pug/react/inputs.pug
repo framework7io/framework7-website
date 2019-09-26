@@ -78,6 +78,7 @@ block content
               li <b>select</b> - to render select element
               li <b>datepicker</b> - to open <a href="/docs/calendar.html" target="_blank">Calendar</a> on input focus
               li <b>colorpicker</b> - to open <a href="/docs/color-picker.html" target="_blank">Color Picker</a> on input focus
+              li <b>texteditor</b> - to open <a href="/docs/text-editor.html" target="_blank">Text Editor</a> on input focus
         tr
           td resizable
           td boolean
@@ -146,6 +147,7 @@ block content
             p Input value.
             p If `type="datepicker"` then value must be passed as what <a href="/docs/calendar.html" target="_blank">Calendar</a> accepts - Array with dates, for example `value={[new Date()}"`
             p If `type="colorpicker"` then value must be passed as what <a href="/docs/color-picker.html" target="_blank">Color Picker</a> accepts - Object with colors, for example `value={{hex: '#ff0000'}}`
+            p If `type="texteditor"` then value should be HTML string
         tr
           td defaultValue
           td string<br>number
@@ -257,6 +259,11 @@ block content
           td
           td Object with <a href="../docs/color-picker.html#color-picker-parameters" target="_blank">Color Picker Parameters</a> which is used when `type="colorpicker"`
         tr
+          td textEditorParams
+          td object
+          td
+          td Object with <a href="../docs/text-editor.html#text-editor-parameters" target="_blank">Text Editor Parameters</a> which is used when `type="texteditor"`
+        tr
           th(colspan="4") &lt;Input&gt; properties
         tr
           td outline
@@ -278,6 +285,7 @@ block content
               li <b>select</b> - to render select element
               li <b>datepicker</b> - to open <a href="/docs/calendar.html" target="_blank">Calendar</a> on input focus
               li <b>colorpicker</b> - to open <a href="/docs/color-picker.html" target="_blank">Color Picker</a> on input focus
+              li <b>texteditor</b> - to open <a href="/docs/text-editor.html" target="_blank">Text Editor</a> on input focus
         tr
           td resizable
           td boolean
@@ -346,6 +354,7 @@ block content
             p Input value.
             p If `type="datepicker"` then value must be passed as what <a href="/docs/calendar.html" target="_blank">Calendar</a> accepts - Array with dates, for example `value={[new Date()}"`
             p If `type="colorpicker"` then value must be passed as what <a href="/docs/color-picker.html" target="_blank">Color Picker</a> accepts - Object with colors, for example `value={{hex: '#ff0000'}}`
+            p If `type="texteditor"` then value should be HTML string
         tr
           td defaultValue
           td string<br>number
@@ -456,6 +465,11 @@ block content
           td object
           td
           td Object with <a href="../docs/color-picker.html#color-picker-parameters" target="_blank">Color Picker Parameters</a> which is used when `type="colorpicker"`
+        tr
+          td textEditorParams
+          td object
+          td
+          td Object with <a href="../docs/text-editor.html#text-editor-parameters" target="_blank">Text Editor Parameters</a> which is used when `type="texteditor"`
 
     h2 Input Events
     table.events-table
