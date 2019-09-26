@@ -3,6 +3,7 @@ import initDocsSearch from './init-docs-search';
 import initDocsDevice from './init-docs-device';
 import initDocsNav from './init-docs-nav';
 import initDocsHeaders from './init-docs-headers';
+import copyToClipboard from './copy-to-clipboard';
 
 initDocsSearch();
 initDocsDevice();
@@ -30,6 +31,18 @@ $('.home-header a[href="#get-started"]').click((e) => {
   $('#get-started')[0].scrollIntoView({
     behavior: 'smooth',
     block: 'center',
+  });
+});
+
+$('.f7-demo-icon i').on('click', function onClick() {
+  const el = this;
+  const text = $(el).parent().next().text();
+  copyToClipboard(text, () => {
+    const $toastEl = $(`<div class="f7-demo-icons-toast"><b>${text}</b> is copied to clipboard</div>`);
+    $toastEl.once('animationend', () => {
+      $toastEl.remove();
+    });
+    $(document.body).append($toastEl);
   });
 });
 
