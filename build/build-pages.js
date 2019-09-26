@@ -17,6 +17,7 @@ const codeInlineFilter = require('./utils/code-inline-filter');
 const createIndex = require('./utils/create-index');
 const createMobilePreviewLinks = require('./utils/create-mobile-preview-links');
 const createInlineCodeTags = require('./utils/create-inline-code-tags');
+const createCodeFilter = require('./utils/create-code-filter');
 
 if (!pug.filter && !pug.filters.code) {
   pug.filters = {
@@ -40,6 +41,7 @@ function buildPages(cb, { src = ['**/*.pug', '!**/_*.pug', '!_*.pug'], dest = '.
         let content = file.contents.toString();
         content = createIndex(content, file.path);
         content = createMobilePreviewLinks(content, file.path);
+        content = createCodeFilter(content);
         content = createInlineCodeTags(content);
         file.contents = Buffer.from(content);
       }
