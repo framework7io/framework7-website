@@ -5490,9 +5490,14 @@
 	    return true;
 	  }
 	  function handleClickLight(e) {
+	    var isOverswipe = e && e.detail && e.detail === 'f7Overswipe';
 	    var localPreventClick = preventClick;
 	    if (targetElement && e.target !== targetElement) {
-	      localPreventClick = true;
+	      if (isOverswipe) {
+	        localPreventClick = false;
+	      } else {
+	        localPreventClick = true;
+	      }
 	    }
 	    if (params.tapHold && params.tapHoldPreventClicks && tapHoldFired) {
 	      localPreventClick = true;
@@ -8690,12 +8695,19 @@
 	    }
 	    var forceOtherUrl = navigateOptions.force && previousRoute && navigateUrl;
 	    if (previousRoute && modalToClose) {
-	      if (router.params.pushState && navigateOptions.pushState !== false) {
+	      var isBrokenPushState = Device.ie || Device.edge || (Device.firefox && !Device.ios);
+	      var needHistoryBack = router.params.pushState && navigateOptions.pushState !== false;
+	      if (needHistoryBack && !isBrokenPushState) {
 	        History.back();
 	      }
 	      router.currentRoute = previousRoute;
 	      router.history.pop();
 	      router.saveHistory();
+
+	      if (needHistoryBack && isBrokenPushState) {
+	        History.back();
+	      }
+
 	      router.modalRemove(modalToClose);
 	      if (forceOtherUrl) {
 	        router.navigate(navigateUrl, { reloadCurrent: true });
@@ -16575,10 +16587,10 @@
 	          }
 	        }
 	        if (overswipeRight) {
-	          $actionsRight.find('.swipeout-overswipe')[0].click();
+	          $actionsRight.find('.swipeout-overswipe').trigger('click', 'f7Overswipe');
 	        }
 	        if (overswipeLeft) {
-	          $actionsLeft.find('.swipeout-overswipe')[0].click();
+	          $actionsLeft.find('.swipeout-overswipe').trigger('click', 'f7Overswipe');
 	        }
 	      } else {
 	        $swipeoutEl.trigger('swipeout:close');
@@ -19759,17 +19771,30 @@
 	    $cardEl.trigger('card:close');
 	    app.emit('cardClose', $cardEl[0]);
 
+	    var animateWidth = $cardEl.hasClass('card-expandable-animate-width');
+
 	    function transitionEnd() {
+	      if (!animateWidth) {
+	        $cardContentEl
+	          .css({
+	            width: '',
+	            height: '',
+	          });
+	      }
 	      $cardEl.removeClass('card-closing card-no-transition');
 	      $cardEl.trigger('card:closed');
 	      $cardEl.find('.card-expandable-size').remove();
 	      app.emit('cardClosed', $cardEl[0], $pageEl[0]);
 	    }
+	    if (animateWidth) {
+	      $cardContentEl
+	        .css({
+	          width: '',
+	          height: '',
+	        });
+	    }
+
 	    $cardContentEl
-	      .css({
-	        width: '',
-	        height: '',
-	      })
 	      .transform('')
 	      .scrollTop(0, animate ? 300 : 0);
 	    if (animate) {
@@ -22628,6 +22653,7 @@
 	    } else {
 	      ss.modal.once('modalClosed', function () {
 	        Utils.nextTick(function () {
+	          if (ss.destroyed) { return; }
 	          ss.modal.destroy();
 	          delete ss.modal;
 	        });
@@ -35664,6 +35690,7 @@
 	    } else {
 	      pb.modal.once('modalClosed', function () {
 	        Utils.nextTick(function () {
+	          if (pb.destroyed) { return; }
 	          pb.modal.destroy();
 	          delete pb.modal;
 	        });
@@ -35684,6 +35711,7 @@
 	      delete pb.$el[0].f7PhotoBrowser;
 	    }
 	    Utils.deleteProps(pb);
+	    pb.destroyed = true;
 	    pb = null;
 	  };
 
@@ -36744,6 +36772,7 @@
 	    } else {
 	      ac.modal.once('modalClosed', function () {
 	        Utils.nextTick(function () {
+	          if (ac.destroyed) { return; }
 	          ac.modal.destroy();
 	          delete ac.modal;
 	        });
@@ -39978,7 +40007,7 @@
 	};
 
 	/**
-	 * Framework7 4.5.1
+	 * Framework7 4.5.2
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -39986,7 +40015,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: September 19, 2019
+	 * Released on: September 27, 2019
 	 */
 
 	// Install Core Modules & Components
@@ -54082,7 +54111,7 @@
 	};
 
 	/**
-	 * Framework7 React 4.5.1
+	 * Framework7 React 4.5.2
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -54090,7 +54119,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: September 19, 2019
+	 * Released on: September 27, 2019
 	 */
 
 	var AccordionContent = F7AccordionContent;
