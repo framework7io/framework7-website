@@ -142,6 +142,15 @@ block content
           td app
           td <span>listEl, data</span>
           td Event will be triggered after user release currently sorting element in new position. `data` is an object with `from` and `to` properties with from/to index numbers of sorted list item `el` property with HTML sorted element
+    h2 Sortable On Tap Hold
+    p It is possible to bypass sortable enable/disable logic and make list items sortable on item tap and hold (long press). To make it work, we just need additional `sortable-tap-hold` class on sortable list:
+    ```html
+      <!-- additional "sortable-tap-hold" class on sortable list -->
+      <div class="list sortable sortable-tap-hold">
+        ...
+      </div>
+    ```
+    p In this case app will rely on custom `taphold` event. To make it work correctly, make sure you have also enabled `touch.tapHold: true` #[a(href="http://localhost:3001/docs/app.html#app-parameters" target="_blank") app parameter]
     h2 Control Sortable With Links
     p It is possible to enable and disable sortable mode using special classes and data attributes on links:
     .important-note

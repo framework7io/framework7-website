@@ -31,11 +31,14 @@ block content
         :code(lang="js")
               /* my-config.js */
               const config = {
-                target: 'universal',
                 rtl: false, // change to true to generate RTL styles
 
                 // remove any components you don't need
                 components: [
+                  // Appbar
+                  'appbar',
+
+                  // Modals
                   'dialog',
                   'popup',
                   'login-screen',
@@ -43,18 +46,35 @@ block content
                   'actions',
                   'sheet',
                   'toast',
+
+                  // Loaders
                   'preloader',
                   'progressbar',
+
+                  // List Components
                   'sortable',
                   'swipeout',
                   'accordion',
                   'contacts-list',
                   'virtual-list',
+                  'list-index',
+
+                  // Timeline
                   'timeline',
+
+                  // Tabs
                   'tabs',
+
+                  // Panel
                   'panel',
+
+                  // Card
                   'card',
+
+                  // Chip
                   'chip',
+
+                  // Form Components
                   'form',
                   'input',
                   'checkbox',
@@ -63,31 +83,78 @@ block content
                   'range',
                   'stepper',
                   'smart-select',
+
+                  // Grid
                   'grid',
+
+                  // Pickers
                   'calendar',
                   'picker',
+
+                  // Page Components
                   'infinite-scroll',
                   'pull-to-refresh',
                   'lazy',
+
+                  // Data table
                   'data-table',
+
+                  // FAB
                   'fab',
+
+                  // Searchbar
                   'searchbar',
+
+                  // Messages
                   'messages',
                   'messagebar',
+
+                  // Swiper
                   'swiper',
+
+                  // Photo Browser
                   'photo-browser',
+
+                  // Notifications
                   'notification',
+
+                  // Autocomplete
                   'autocomplete',
+
+                  // Tooltip
                   'tooltip',
+
+                  // Gauge
                   'gauge',
+
+                  // Skeleton
                   'skeleton',
+
+                  // Menu
                   'menu',
-                  'vi',
+
+                  // Color Picker
+                  'color-picker',
+
+                  // Tree View
+                  'treeview',
+
+                  // WYSIWYG Editor
+                  'text-editor',
+
+                  // Elevation
                   'elevation',
+
+                  // Typography
                   'typography',
+
+                  // VI Video Ads
+                  'vi',
                 ],
                 // include/exclude dark theme styles
                 darkTheme: true,
+                // include/exclude light theme styles
+                lightTheme: true,
                 // include/exclude themes
                 themes: [
                   'ios',
@@ -148,6 +215,9 @@ block content
           th Path
           th
       tbody
+        tr
+          td Appbar
+          td `framework7/components/appbar/appbar.js`
         tr
           td Dialog
           td `framework7/components/dialog/dialog.js`
@@ -290,11 +360,20 @@ block content
           td Menu
           td `framework7/components/menu/menu.js`
         tr
-          td Vi
-          td `framework7/components/vi/vi.js`
+          td ColorPicker
+          td `framework7/components/color-picker/color-picker.js`
+        tr
+          td Treeview
+          td `framework7/components/treeview/treeview.js`
+        tr
+          td Text Editor
+          td `framework7/components/text-editor/text-editor.js`
         tr
           td Typography
           td `framework7/components/typography/typography.js`
+        tr
+          td Vi
+          td `framework7/components/vi/vi.js`
     h2 Less.js
     p Framework7 styles are built with <a href="http://lesscss.org/" target="_blank">Less.js</a>. If you use Less and NPM in your app/project then you can easily create custom framework7 stylesheet with only components you need.
     p Create your own `framework7.less` file:
@@ -323,6 +402,8 @@ block content
 
       // include/exclude dark theme
       @includeDarkTheme: true;
+      // include/exclude light theme
+      @includeLightTheme: true;
 
       // Theme color
       @themeColor: #007aff;
