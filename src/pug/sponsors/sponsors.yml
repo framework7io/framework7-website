@@ -60,10 +60,6 @@ topSupporter:
   link: https://blokt.com/
   imageUrl: "#{cdn}/i/sponsors/blokt.png"
 -
-  title: ActiveWaiter
-  link: https://www.activewaiter.com/
-  imageUrl: "#{cdn}/i/sponsors/activewaiter.png"
--
   title: Wappler - The Visual Web App Creator
   link: https://wappler.io/
   imageUrl: "#{cdn}/i/sponsors/wappler.png"
