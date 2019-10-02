@@ -1,59 +1,17 @@
 import $ from 'dom7';
-import initDocsSearch from './init-docs-search';
 import initDocsDevice from './init-docs-device';
 import initDocsNav from './init-docs-nav';
 import initDocsHeaders from './init-docs-headers';
 
-initDocsSearch();
 initDocsDevice();
 initDocsNav();
 initDocsHeaders();
-
-// Home device theme switch
-$('.home-header .theme-switch a').click(function onClick(e) {
-  if ($(this).hasClass('active')) {
-    return;
-  }
-  e.preventDefault();
-  const url = $(this).attr('href');
-  $('header .phone iframe').attr('src', url);
-  $('.home-header .theme-switch a').removeClass('active');
-  $(this).addClass('active');
-  $('header .phone .fullscreen').attr('href', url);
-});
-$('.home-header .mobile-preview-button').click((e) => {
-  e.preventDefault();
-  $('.home-header').toggleClass('mobile-preview-enabled');
-});
-
 
 // Docs clickable titles
 $('.docs-content').find('h2, h3').on('click', function onClick() {
   const $h = $(this);
   if (!$h.attr('id')) return;
   document.location.hash = $h.attr('id');
-});
-
-// Showcase
-$('.showcase-apps .app-icon').on('click', function onClick() {
-  const appHtml = $(this).parents('.app').html();
-  $('body').append('<div class="showcase-app-preview-backdrop"></div>');
-  $('body').append(`<div class="showcase-app-preview"><span class="showcase-app-preview-close"></span>${appHtml.replace('<h4>', '<h3>').replace('</h4>', '</h3>')}</div>`);
-  $('body').css('overflow', 'hidden');
-});
-$(document).on('click', '.showcase-app-preview-close, .showcase-app-preview-backdrop', () => {
-  $('.showcase-app-preview, .showcase-app-preview-backdrop').remove();
-  $('body').css('overflow', '');
-});
-$(document).on('click', '.app-show-shots a', function onClick(e) {
-  e.preventDefault();
-  $(this).parent().hide().parents('.showcase-app-preview')
-    .find('.app-shots')
-    .show()
-    .find('img')
-    .each(function forEach() {
-      $(this).attr('src', $(this).attr('data-src'));
-    });
 });
 
 // GH Stars/Forks
