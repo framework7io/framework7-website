@@ -271,13 +271,13 @@ block content
           td Hide navbar
             ul.method-parameters
               li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
-              li <span class="parameter">animated</span> - <span class="parameter-type">Boolean</span> - wheter it should be hidden with animation or not. By default is <code>true</code>
+              li <span class="parameter">animate</span> - <span class="parameter-type">Boolean</span> - whether it should be hidden with animation or not. By default is <code>true</code>
         tr
-          td app.navbar.show(<span>navbarEl</span>, <span>isAnimated</span>)
+          td app.navbar.show(<span>navbarEl</span>, <span>animate</span>)
           td Show navbar
             ul.method-parameters
               li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
-              li <span class="parameter">animated</span> - <span class="parameter-type">Boolean</span> - wheter it should be shown with animation or not. By default is <code>true</code>
+              li <span class="parameter">animate</span> - <span class="parameter-type">Boolean</span> - whether it should be shown with animation or not. By default is <code>true</code>
         tr
           td app.navbar.size(<span>navbarEl</span>)
           td Recalculate positional styles for Navbar elements. It could be useful after you change some of Navbar elements dynamically.
@@ -288,6 +288,11 @@ block content
           td Get navbar HTML element by specified page element. Useful only when dynamic navbar is enabled. In this case it is out of the page container.
             ul.method-parameters
               li <span class="parameter">pageEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of page where to look for navbar. Required.
+        tr
+          td app.navbar.getPageByEl(<span>navbarEl</span>)
+          td Get page HTML element by specified navbar element. Useful only when dynamic navbar is enabled. In this case it is out of the page container.
+            ul.method-parameters
+              li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of navbar to find relative page. Required.
     h2 Navbar App Parameters
     p It is possible to control some default navbar behavior using global <a href="app.html#app-parameters">app parameters</a> by passing navbar related parameters under <code>navbar</code> parameter:
     table.params-table
