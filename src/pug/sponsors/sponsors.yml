@@ -24,6 +24,10 @@ silver:
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
 -
+  title: Staff Augmentation - Recruit Top Staff in Romania
+  link: https://staffaugmentation.ro
+  imageUrl: "#{cdn}/i/sponsors/staffaugmentation.jpg"
+-
   title: Bid4Papers - Write My Essay
   link: https://bid4papers.com/write-my-essay.html
   imageUrl: "#{cdn}/i/sponsors/bid4papers.png"
@@ -55,10 +59,6 @@ topSupporter:
   title: Blokt - Cryptocurrency News
   link: https://blokt.com/
   imageUrl: "#{cdn}/i/sponsors/blokt.png"
--
-  title: ActiveWaiter
-  link: https://www.activewaiter.com/
-  imageUrl: "#{cdn}/i/sponsors/activewaiter.png"
 -
   title: Wappler - The Visual Web App Creator
   link: https://wappler.io/
