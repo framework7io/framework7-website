@@ -288,11 +288,12 @@ block content
     table.methods-table
       tbody
         tr
-          td app.navbar.hide(<span>navbarEl</span>, <span>animate</span>)
+          td app.navbar.hide(<span>navbarEl</span>, <span>animate</span>, <span>hideStatusbar</span>)
           td Hide navbar
             ul.method-parameters
               li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
               li <span class="parameter">animate</span> - <span class="parameter-type">Boolean</span> - whether it should be hidden with animation or not. By default is `true`
+              li <span class="parameter">hideStatusbar</span> - <span class="parameter-type">Boolean</span> - when `false` (default) it hides navbar partially keeping space required to cover statusbar area. Otherwise, navbar will be fully hidden.
         tr
           td app.navbar.show(<span>navbarEl</span>, <span>animate</span>)
           td Show navbar
@@ -314,6 +315,21 @@ block content
           td Get page HTML element by specified navbar element. Useful only when dynamic navbar is enabled. In this case it is out of the page container.
             ul.method-parameters
               li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of navbar to find relative page. Required.
+        tr
+          td app.navbar.collapseLargeTitle(<span>navbarEl</span>)
+          td Collapse large navbar title
+            ul.method-parameters
+              li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of navbar to collapse. Required.
+        tr
+          td app.navbar.expandLargeTitle(<span>navbarEl</span>)
+          td Expand large navbar title
+            ul.method-parameters
+              li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of navbar to expand. Required.
+        tr
+          td app.navbar.toggleLargeTitle(<span>navbarEl</span>)
+          td Toggle large navbar title
+            ul.method-parameters
+              li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of navbar to toggle (collapse or expand). Required.
     h2 Navbar App Parameters
     p It is possible to control some default navbar behavior using global <a href="app.html#app-parameters">app parameters</a> by passing navbar related parameters under `navbar` parameter:
     table.params-table
