@@ -19,6 +19,7 @@ icons/index.html
 tutorials/*.html
 /index.html
 nbproject
+packages/core/components/
 packages/core/components/*.js
 packages/core/components/*.css
 packages/core/components/**/*.js
