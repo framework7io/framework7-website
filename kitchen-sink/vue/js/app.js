@@ -10255,8 +10255,7 @@
         return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
       }()),
 
-      pointerEvents: !!(win.navigator.pointerEnabled || win.PointerEvent || ('maxTouchPoints' in win.navigator && win.navigator.maxTouchPoints > 0)),
-      prefixedPointerEvents: !!win.navigator.msPointerEnabled,
+      pointerEvents: !!win.PointerEvent && ('maxTouchPoints' in win.navigator) && win.navigator.maxTouchPoints > 0,
 
       observer: (function checkObserver() {
         return ('MutationObserver' in win || 'WebkitMutationObserver' in win);
@@ -10313,7 +10312,6 @@
     var screenWidth = win.screen.width;
     var screenHeight = win.screen.height;
 
-    var windowsPhone = ua.match(/(Windows Phone);?[\s\/]+([\d.]+)?/); // eslint-disable-line
     var android = ua.match(/(Android);?[\s\/]+([\d.]+)?/); // eslint-disable-line
     var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
     var ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/);
@@ -10382,7 +10380,7 @@
     device.standalone = device.webView;
 
     // Desktop
-    device.desktop = !(device.ios || device.android || windowsPhone) || electron;
+    device.desktop = !(device.ios || device.android) || electron;
     if (device.desktop) {
       device.electron = electron;
       device.macos = macos;
@@ -11617,9 +11615,6 @@
 
         // Pixel Ratio
         classNames.push(("device-pixel-ratio-" + (Math.floor(Device.pixelRatio))));
-        if (Device.pixelRatio >= 2) {
-          classNames.push('device-retina');
-        }
         // OS classes
         if (Device.os && !Device.desktop) {
           classNames.push(
@@ -11727,6 +11722,8 @@
       request: Request,
     },
   };
+
+  /* eslint-disable no-nested-ternary */
 
   function initTouch() {
     var app = this;
@@ -11927,7 +11924,8 @@
           tapHoldFired = true;
           e.preventDefault();
           preventClick = true;
-          $(e.target).trigger('taphold');
+          $(e.target).trigger('taphold', e);
+          app.emit('taphold', e);
         }, params.tapHoldDelay);
       }
       targetElement = e.target;
@@ -12003,9 +12001,14 @@
       return true;
     }
     function handleClick(e) {
+      var isOverswipe = e && e.detail && e.detail === 'f7Overswipe';
       var localPreventClick = preventClick;
       if (targetElement && e.target !== targetElement) {
-        localPreventClick = true;
+        if (isOverswipe) {
+          localPreventClick = false;
+        } else {
+          localPreventClick = true;
+        }
       }
       if (params.tapHold && params.tapHoldPreventClicks && tapHoldFired) {
         localPreventClick = true;
@@ -12057,6 +12060,13 @@
     function appTouchEndPassive(e) {
       emitAppTouchEvent('touchend:passive', e);
     }
+    function appGestureActive(e) {
+      emitAppTouchEvent(((e.type) + " " + (e.type) + ":active"), e);
+    }
+    function appGesturePassive(e) {
+      emitAppTouchEvent(((e.type) + ":passive"), e);
+    }
+
 
     var passiveListener = Support.passiveListener ? { passive: true } : false;
     var activeListener = Support.passiveListener ? { passive: false } : false;
@@ -12071,6 +12081,15 @@
       doc.addEventListener(app.touchEvents.start, appTouchStartPassive, passiveListener);
       doc.addEventListener(app.touchEvents.move, appTouchMovePassive, passiveListener);
       doc.addEventListener(app.touchEvents.end, appTouchEndPassive, passiveListener);
+      if (Support.touch && Support.gestures) {
+        doc.addEventListener('gesturestart', appGestureActive, activeListener);
+        doc.addEventListener('gesturechange', appGestureActive, activeListener);
+        doc.addEventListener('gestureend', appGestureActive, activeListener);
+
+        doc.addEventListener('gesturestart', appGesturePassive, passiveListener);
+        doc.addEventListener('gesturechange', appGesturePassive, passiveListener);
+        doc.addEventListener('gestureend', appGesturePassive, passiveListener);
+      }
     } else {
       doc.addEventListener(app.touchEvents.start, function (e) {
         appTouchStartActive(e);
@@ -12084,6 +12103,20 @@
         appTouchEndActive(e);
         appTouchEndPassive(e);
       }, false);
+      if (Support.touch && Support.gestures) {
+        doc.addEventListener('gesturestart', function (e) {
+          appGestureActive(e);
+          appGesturePassive(e);
+        }, false);
+        doc.addEventListener('gesturechange', function (e) {
+          appGestureActive(e);
+          appGesturePassive(e);
+        }, false);
+        doc.addEventListener('gestureend', function (e) {
+          appGestureActive(e);
+          appGesturePassive(e);
+        }, false);
+      }
     }
 
     if (Support.touch) {
@@ -12091,7 +12124,6 @@
       app.on('touchstart', handleTouchStart);
       app.on('touchmove', handleTouchMove);
       app.on('touchend', handleTouchEnd);
-
       doc.addEventListener('touchcancel', handleTouchCancel, { passive: true });
     } else if (params.activeState) {
       app.on('touchstart', handleMouseDown);
@@ -12132,9 +12164,9 @@
     },
     instance: {
       touchEvents: {
-        start: Support.touch ? 'touchstart' : 'mousedown',
-        move: Support.touch ? 'touchmove' : 'mousemove',
-        end: Support.touch ? 'touchend' : 'mouseup',
+        start: Support.touch ? 'touchstart' : (Support.pointerEvents ? 'pointerdown' : 'mousedown'),
+        move: Support.touch ? 'touchmove' : (Support.pointerEvents ? 'pointermove' : 'mousemove'),
+        end: Support.touch ? 'touchend' : (Support.pointerEvents ? 'pointerup' : 'mouseup'),
       },
     },
     on: {
@@ -12261,26 +12293,27 @@
    * @return {!function(Object=, Object=)}
    */
   function compile (str, options) {
-    return tokensToFunction(parse(str, options))
+    return tokensToFunction(parse(str, options), options)
   }
 
   /**
    * Expose a method for transforming tokens into the path function.
    */
-  function tokensToFunction (tokens) {
+  function tokensToFunction (tokens, options) {
     // Compile all the tokens into regexps.
     var matches = new Array(tokens.length);
 
     // Compile all the patterns before compilation.
     for (var i = 0; i < tokens.length; i++) {
       if (typeof tokens[i] === 'object') {
-        matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$');
+        matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$', flags(options));
       }
     }
 
     return function (data, options) {
       var path = '';
       var encode = (options && options.encode) || encodeURIComponent;
+      var validate = options ? options.validate !== false : true;
 
       for (var i = 0; i < tokens.length; i++) {
         var token = tokens[i];
@@ -12307,7 +12340,7 @@
           for (var j = 0; j < value.length; j++) {
             segment = encode(value[j], token);
 
-            if (!matches[i].test(segment)) {
+            if (validate && !matches[i].test(segment)) {
               throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '"')
             }
 
@@ -12320,7 +12353,7 @@
         if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
           segment = encode(String(value), token);
 
-          if (!matches[i].test(segment)) {
+          if (validate && !matches[i].test(segment)) {
             throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but got "' + segment + '"')
           }
 
@@ -13332,6 +13365,30 @@
     }
   }
 
+  function asyncComponent (router, asyncComponent, resolve, reject) {
+    function resolvePromise(componentPromise) {
+      componentPromise
+        .then(function (c) {
+          // eslint-disable-next-line
+          resolve({ component: c.default || c._default || c });
+        })
+        .catch(function (err) {
+          reject();
+          throw new Error(err);
+        });
+    }
+    if (asyncComponent instanceof Promise) {
+      resolvePromise(asyncComponent);
+      return;
+    }
+    var asyncComponentResult = asyncComponent.call(router);
+    if (asyncComponentResult instanceof Promise) {
+      resolvePromise(asyncComponentResult);
+    } else {
+      resolve({ component: asyncComponentResult });
+    }
+  }
+
   function refreshPage() {
     var router = this;
     appRouterCheck(router, 'refreshPage');
@@ -14141,8 +14198,10 @@
       }
       if (route.route.async) {
         router.allowPageChange = false;
-
         route.route.async.call(router, options.route, router.currentRoute, asyncResolve, asyncReject);
+      }
+      if (route.route.asyncComponent) {
+        asyncComponent(router, route.route.asyncComponent, asyncResolve, asyncReject);
       }
     }
     function reject() {
@@ -14428,6 +14487,8 @@
     }
     if (tabRoute.async) {
       tabRoute.async.call(router, currentRoute, previousRoute, asyncResolve, asyncReject);
+    } else if (tabRoute.asyncComponent) {
+      asyncComponent(router, tabRoute.asyncComponent, asyncResolve, asyncReject);
     } else if (!hasContentLoadProp) {
       router.allowPageChange = true;
     }
@@ -14647,6 +14708,9 @@
     }
     if (modalParams.async) {
       modalParams.async.call(router, options.route, router.currentRoute, asyncResolve, asyncReject);
+    }
+    if (modalParams.asyncComponent) {
+      asyncComponent(router, modalParams.asyncComponent, asyncResolve, asyncReject);
     }
     return router;
   }
@@ -15254,12 +15318,19 @@
       }
       var forceOtherUrl = navigateOptions.force && previousRoute && navigateUrl;
       if (previousRoute && modalToClose) {
-        if (router.params.pushState && navigateOptions.pushState !== false) {
+        var isBrokenPushState = Device.ie || Device.edge || (Device.firefox && !Device.ios);
+        var needHistoryBack = router.params.pushState && navigateOptions.pushState !== false;
+        if (needHistoryBack && !isBrokenPushState) {
           History.back();
         }
         router.currentRoute = previousRoute;
         router.history.pop();
         router.saveHistory();
+
+        if (needHistoryBack && isBrokenPushState) {
+          History.back();
+        }
+
         router.modalRemove(modalToClose);
         if (forceOtherUrl) {
           router.navigate(navigateUrl, { reloadCurrent: true });
@@ -15414,8 +15485,10 @@
       }
       if (route.route.async) {
         router.allowPageChange = false;
-
         route.route.async.call(router, route, router.currentRoute, asyncResolve, asyncReject);
+      }
+      if (route.route.asyncComponent) {
+        asyncComponent(router, route.route.asyncComponent, asyncResolve, asyncReject);
       }
     }
     function reject() {
@@ -16985,16 +17058,6 @@
     }
 
     app.on('click', handleClicks);
-
-    // TODO: check if need this in iOS
-    // Prevent scrolling on overlays
-    // function preventScrolling(e) {
-    //   e.preventDefault();
-    // }
-    // if (Support.touch && !Device.android) {
-    //   const activeListener = Support.passiveListener ? { passive: false, capture: false } : false;
-    //   $(document).on((app.params.touch.fastClicks ? 'touchstart' : 'touchmove'), '.panel-backdrop, .dialog-backdrop, .preloader-backdrop, .popup-backdrop, .searchbar-backdrop', preventScrolling, activeListener);
-    // }
   }
   var ClicksModule = {
     name: 'clicks',
@@ -17203,18 +17266,6 @@
     },
   };
 
-  var HistoryModule = {
-    name: 'history',
-    static: {
-      history: History,
-    },
-    on: {
-      init: function init() {
-        History.init(this);
-      },
-    },
-  };
-
   function vnode(sel, data, children, text, elm) {
       var key = data === undefined ? undefined : data.key;
       return { sel: sel, data: data, children: children,
@@ -17312,6 +17363,55 @@
     return context;
   }
 
+  function createCustomComponent(ref) {
+    var app = ref.app;
+    var vnode = ref.vnode;
+    var tagName = ref.tagName;
+    var data = ref.data;
+
+    app.component.create(
+      Object.assign({ el: vnode.elm }, customComponents[tagName]),
+      {
+        $props: contextFromAttrs(data.attrs || {}, data.props || {}),
+      },
+      vnode.children
+    ).then(function (c) {
+      if (vnode.data && vnode.data.on && c && c.$el) {
+        Object.keys(vnode.data.on).forEach(function (eventName) {
+          c.$el.on(eventName, vnode.data.on[eventName]);
+        });
+      }
+      // eslint-disable-next-line
+      vnode.elm.__component__ = c;
+    });
+  }
+  function updateCustomComponent(vnode) {
+    // eslint-disable-next-line
+    var component = vnode && vnode.elm && vnode.elm.__component__;
+    if (!component) { return; }
+    var newProps = contextFromAttrs(vnode.data.attrs || {}, vnode.data.props || {});
+    component.$children = vnode.children;
+    Object.assign(component.$props, newProps);
+    component.$update();
+  }
+  function destroyCustomComponent(vnode) {
+    // eslint-disable-next-line
+    var component = vnode && vnode.elm && vnode.elm.__component__;
+
+    if (component) {
+      var el = component.el;
+      var $el = component.$el;
+      if (vnode.data && vnode.data.on && $el) {
+        Object.keys(vnode.data.on).forEach(function (eventName) {
+          $el.off(eventName, vnode.data.on[eventName]);
+        });
+      }
+      if (component.$destroy) { component.$destroy(); }
+      if (el && el.parentNode) { el.parentNode.removeChild(el); }
+      delete vnode.elm.__component__; // eslint-disable-line
+    }
+  }
+
   function getHooks(data, app, initial, isRoot, tagName) {
     var hooks = {};
     var insert = [];
@@ -17323,33 +17423,13 @@
     if (isCustomComponent) {
       insert.push(function (vnode) {
         if (vnode.sel !== tagName) { return; }
-        app.component.create(
-          Object.assign({ el: vnode.elm }, customComponents[tagName]),
-          {
-            $props: contextFromAttrs(data.attrs || {}, data.props || {}),
-          }
-        ).then(function (c) {
-          // eslint-disable-next-line
-          vnode.elm.__component__ = c;
-        });
+        createCustomComponent({ app: app, vnode: vnode, tagName: tagName, data: data });
       });
       destroy.push(function (vnode) {
-        // eslint-disable-next-line
-        var component = vnode && vnode.elm && vnode.elm.__component__;
-        if (component) {
-          var el = component.el;
-          if (component.$destroy) { component.$destroy(); }
-          if (el && el.parentNode) { el.parentNode.removeChild(el); }
-          delete vnode.elm.__component__; // eslint-disable-line
-        }
+        destroyCustomComponent(vnode);
       });
       update.push(function (oldVnode, vnode) {
-        // eslint-disable-next-line
-        var component = vnode && vnode.elm && vnode.elm.__component__;
-        if (!component) { return; }
-        var newProps = contextFromAttrs(vnode.data.attrs || {}, vnode.data.props || {});
-        Object.assign(component.$props, newProps);
-        component.$update();
+        updateCustomComponent(vnode);
       });
     }
 
@@ -17592,6 +17672,22 @@
     return children;
   }
 
+  function getSlots(slotEl, context, app, initial) {
+    var slotName = slotEl.getAttribute('name') || 'default';
+    var slots = (context.$children || [])
+      .filter(function (childEl) {
+        var childSlotName = 'default';
+        if (childEl.data) {
+          childSlotName = (childEl.data.attrs && childEl.data.attrs.slot) || 'default';
+        }
+        return childSlotName === slotName;
+      });
+    if (slots.length === 0) {
+      return getChildren(slotEl, context, app, initial);
+    }
+    return slots;
+  }
+
   function elementToVNode(el, context, app, initial, isRoot) {
     if (el.nodeType === 3) {
       // text
@@ -17600,7 +17696,9 @@
     if (el.nodeType !== 1) { return null; }
     // element (statement adds inline SVG compatibility)
     var tagName = (el instanceof win.SVGElement) ? el.nodeName : el.nodeName.toLowerCase();
-
+    if (tagName === 'slot') {
+      return getSlots(el, context, app, initial);
+    }
     return h(
       tagName,
       getData$1(el, context, app, initial, isRoot, tagName),
@@ -18240,7 +18338,7 @@
 
   /* eslint no-underscore-dangle: "off" */
 
-  var Component = function Component(app, options, extendContext) {
+  var Component = function Component(app, options, extendContext, children) {
     if ( options === void 0 ) options = {};
     if ( extendContext === void 0 ) extendContext = {};
 
@@ -18259,9 +18357,11 @@
         $options: Utils.extend({ id: id }, options),
         $id: options.isClassComponent ? self.constructor.id : (options.id || id),
         $mixins: options.isClassComponent ? self.constructor.mixins : options.mixins,
+        $children: children || [],
       }
     );
     var $options = self.$options;
+
 
     if (self.$mixins && self.$mixins.length) {
       for (var i = self.$mixins.length - 1; i >= 0; i -= 1) {
@@ -18272,6 +18372,24 @@
         }
       }
     }
+
+    Object.defineProperty(self, '$slots', {
+      enumerable: true,
+      configurable: true,
+      get: function get() {
+        var slots = {};
+        self.$children.forEach(function (childVNode) {
+          var childSlotName = 'default';
+          if (childVNode.data) {
+            childSlotName = (childVNode.data.attrs && childVNode.data.attrs.slot) || 'default';
+          }
+          if (!slots[childSlotName]) { slots[childSlotName] = []; }
+          slots[childSlotName].push(childVNode);
+        });
+        return slots;
+      },
+    });
+
 
     // Root data and methods
     Object.defineProperty(self, '$root', {
@@ -18473,11 +18591,7 @@
       html = self.render.call(self);
     } else if ($options.template) {
       if (typeof $options.template === 'string') {
-        try {
-          html = Template7.compile($options.template)(self);
-        } catch (err) {
-          throw err;
-        }
+        html = Template7.compile($options.template)(self);
       } else {
         // Supposed to be function
         html = $options.template(self);
@@ -18503,29 +18617,33 @@
     });
   };
 
-  Component.prototype.$update = function $update () {
+  Component.prototype.$update = function $update (callback) {
     var self = this;
     win.cancelAnimationFrame(self.__requestAnimationFrameId);
     delete self.__requestAnimationFrameId;
     self.__updateIsPending = true;
-    self.__requestAnimationFrameId = win.requestAnimationFrame(function () {
-      var html = self.$render();
+    return new Promise(function (resolve) {
+      self.__requestAnimationFrameId = win.requestAnimationFrame(function () {
+        var html = self.$render();
 
-      // Make Dom
-      if (html && typeof html === 'string') {
-        html = html.trim();
-        var newVNode = vdom(html, self, false);
-        self.$vnode = patch$1(self.$vnode, newVNode);
-      }
-      self.__updateIsPending = false;
-      delete self.__updateIsPending;
+        // Make Dom
+        if (html && typeof html === 'string') {
+          html = html.trim();
+          var newVNode = vdom(html, self, false);
+          self.$vnode = patch$1(self.$vnode, newVNode);
+        }
+        self.__updateIsPending = false;
+        delete self.__updateIsPending;
+        if (callback) { callback(); }
+        resolve();
+      });
     });
   };
 
-  Component.prototype.$setState = function $setState (mergeState) {
+  Component.prototype.$setState = function $setState (mergeState, callback) {
     var self = this;
     Utils.merge(self, mergeState);
-    self.$update();
+    return self.$update(callback);
   };
 
   Component.prototype.$mount = function $mount (mountMethod) {
@@ -18734,14 +18852,26 @@
         parse: function parse(componentString) {
           return parseComponent(componentString);
         },
-        create: function create(options, context) {
+        create: function create(options, context, children) {
           if (typeof options === 'function') {
             // eslint-disable-next-line
-            return new options(app, { isClassComponent: true }, context);
+            return new options(app, { isClassComponent: true }, context, children);
           }
-          return new Component(app, options, context);
+          return new Component(app, options, context, children);
         },
       };
+    },
+  };
+
+  var HistoryModule = {
+    name: 'history',
+    static: {
+      history: History,
+    },
+    on: {
+      init: function init() {
+        History.init(this);
+      },
     },
   };
 
@@ -22934,12 +23064,14 @@
       var sortingElOffsetLocal;
       var sortingElOffsetTop;
       var initialScrollTop;
+      var wasTapHold;
 
-      function handleTouchStart(e) {
+      function handleTouchStart(e, isTapHold) {
         isMoved = false;
         isTouched = true;
+        wasTapHold = false;
         touchStartY = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
-        $sortingEl = $(this).parent('li');
+        $sortingEl = $(e.target).closest('li').eq(0);
         indexFrom = $sortingEl.index();
         $sortableContainer = $sortingEl.parents('.sortable');
         var $listGroup = $sortingEl.parents('.list-group');
@@ -22949,6 +23081,11 @@
         $sortingItems = $sortableContainer.children('ul').children('li:not(.disallow-sorting):not(.no-sorting)');
         if (app.panel) { app.panel.allowOpen = false; }
         if (app.swipeout) { app.swipeout.allow = false; }
+        if (isTapHold) {
+          $sortingEl.addClass('sorting');
+          $sortableContainer.addClass('sortable-sorting');
+          wasTapHold = true;
+        }
       }
       function handleTouchMove(e) {
         if (!isTouched || !$sortingEl) { return; }
@@ -23029,12 +23166,16 @@
       }
       function handleTouchEnd() {
         if (!isTouched || !isMoved) {
-          isTouched = false;
-          isMoved = false;
           if (isTouched && !isMoved) {
             if (app.panel) { app.panel.allowOpen = true; }
             if (app.swipeout) { app.swipeout.allow = true; }
+            if (wasTapHold) {
+              $sortingEl.removeClass('sorting');
+              $sortableContainer.removeClass('sortable-sorting');
+            }
           }
+          isTouched = false;
+          isMoved = false;
           return;
         }
         if (app.panel) { app.panel.allowOpen = true; }
@@ -23096,6 +23237,10 @@
       $(doc).on(app.touchEvents.start, '.list.sortable .sortable-handler', handleTouchStart, activeListener);
       app.on('touchmove:active', handleTouchMove);
       app.on('touchend:passive', handleTouchEnd);
+
+      $(doc).on('taphold', '.sortable-tap-hold', function (e, pointerEvent) {
+        handleTouchStart(pointerEvent, true);
+      });
     },
     enable: function enable(el) {
       if ( el === void 0 ) el = '.list.sortable';
@@ -23456,10 +23601,10 @@
             }
           }
           if (overswipeRight) {
-            $actionsRight.find('.swipeout-overswipe')[0].click();
+            $actionsRight.find('.swipeout-overswipe').trigger('click', 'f7Overswipe');
           }
           if (overswipeLeft) {
-            $actionsLeft.find('.swipeout-overswipe')[0].click();
+            $actionsLeft.find('.swipeout-overswipe').trigger('click', 'f7Overswipe');
           }
         } else {
           $swipeoutEl.trigger('swipeout:close');
@@ -25132,6 +25277,7 @@
     var otherPanel;
 
     var isTouched;
+    var isGestureStarted;
     var isMoved;
     var isScrolling;
     var touchesStart = {};
@@ -25146,7 +25292,7 @@
 
     var touchMoves = 0;
     function handleTouchStart(e) {
-      if (!panel.swipeable) { return; }
+      if (!panel.swipeable || isGestureStarted) { return; }
       if (!app.panel.allowOpen || (!params.swipe && !params.swipeOnlyClose) || isTouched) { return; }
       if ($('.modal-in:not(.toast):not(.notification), .photo-browser-in').length > 0) { return; }
       otherPanel = app.panel.get(side === 'left' ? 'right' : 'left') || {};
@@ -25182,7 +25328,7 @@
       direction = undefined;
     }
     function handleTouchMove(e) {
-      if (!isTouched) { return; }
+      if (!isTouched || isGestureStarted) { return; }
       touchMoves += 1;
       if (touchMoves < 2) { return; }
       if (e.f7PreventSwipePanel || app.preventSwipePanelBySwipeBack || app.preventSwipePanel) {
@@ -25242,6 +25388,7 @@
 
       if (!isMoved) {
         if (!panel.opened) {
+          panel.insertToRoot();
           $el.addClass('panel-in-swipe');
           $backdropEl.css('visibility', 'visible');
           $el.trigger('panel:swipeopen');
@@ -25299,12 +25446,13 @@
         panel.emit('local::swipe panelSwipe', panel, Math.abs(translate / panelWidth));
       }
     }
-    function handleTouchEnd() {
+    function handleTouchEnd(e) {
       if (!isTouched || !isMoved) {
         isTouched = false;
         isMoved = false;
         return;
       }
+      var isGesture = e.type === 'gesturestart' || isGestureStarted;
       isTouched = false;
       isMoved = false;
       var timeDiff = (new Date()).getTime() - touchStartTime;
@@ -25313,7 +25461,9 @@
 
       var threshold = params.swipeThreshold || 0;
 
-      if (!panel.opened) {
+      if (isGesture) {
+        action = 'reset';
+      } else if (!panel.opened) {
         if (Math.abs(touchesDiff) < threshold) {
           action = 'reset';
         } else if (effect === 'cover') {
@@ -25394,15 +25544,26 @@
       $el.transition('').transform('');
       $backdropEl.transform('').transition('').css({ opacity: '', visibility: '' });
     }
+    function handleGestureStart(e) {
+      isGestureStarted = true;
+      handleTouchEnd(e);
+    }
+    function handleGestureEnd() {
+      isGestureStarted = false;
+    }
 
     // Add Events
     app.on('touchstart:passive', handleTouchStart);
     app.on('touchmove:active', handleTouchMove);
     app.on('touchend:passive', handleTouchEnd);
+    app.on('gesturestart', handleGestureStart);
+    app.on('gestureend', handleGestureEnd);
     panel.on('panelDestroy', function () {
       app.off('touchstart:passive', handleTouchStart);
       app.off('touchmove:active', handleTouchMove);
       app.off('touchend:passive', handleTouchEnd);
+      app.off('gesturestart', handleGestureStart);
+      app.off('gestureend', handleGestureEnd);
     });
   }
 
@@ -25891,23 +26052,11 @@
       return panel;
     };
 
-    Panel.prototype.open = function open (animate) {
-      if ( animate === void 0 ) animate = true;
-
+    Panel.prototype.insertToRoot = function insertToRoot () {
       var panel = this;
-      var app = panel.app;
-
-      if (!app.panel.allowOpen) { return false; }
-
-      var effect = panel.effect;
       var $el = panel.$el;
+      var app = panel.app;
       var $backdropEl = panel.$backdropEl;
-      var opened = panel.opened;
-
-      if (!$el || $el.hasClass('panel-in')) {
-        return panel;
-      }
-
       var $panelParentEl = $el.parent();
       var wasInDom = $el.parents(document).length > 0;
 
@@ -25947,6 +26096,26 @@
           }
         });
       }
+    };
+
+    Panel.prototype.open = function open (animate) {
+      if ( animate === void 0 ) animate = true;
+
+      var panel = this;
+      var app = panel.app;
+
+      if (!app.panel.allowOpen) { return false; }
+
+      var effect = panel.effect;
+      var $el = panel.$el;
+      var $backdropEl = panel.$backdropEl;
+      var opened = panel.opened;
+
+      if (!$el || $el.hasClass('panel-in')) {
+        return panel;
+      }
+
+      panel.insertToRoot();
 
       // Ignore if opened
       if (opened || $el.hasClass('panel-in-breakpoint') || $el.hasClass('panel-in')) { return false; }
@@ -26648,17 +26817,30 @@
       $cardEl.trigger('card:close');
       app.emit('cardClose', $cardEl[0]);
 
+      var animateWidth = $cardEl.hasClass('card-expandable-animate-width');
+
       function transitionEnd() {
+        if (!animateWidth) {
+          $cardContentEl
+            .css({
+              width: '',
+              height: '',
+            });
+        }
         $cardEl.removeClass('card-closing card-no-transition');
         $cardEl.trigger('card:closed');
         $cardEl.find('.card-expandable-size').remove();
         app.emit('cardClosed', $cardEl[0], $pageEl[0]);
       }
+      if (animateWidth) {
+        $cardContentEl
+          .css({
+            width: '',
+            height: '',
+          });
+      }
+
       $cardContentEl
-        .css({
-          width: '',
-          height: '',
-        })
         .transform('')
         .scrollTop(0, animate ? 300 : 0);
       if (animate) {
@@ -26780,11 +26962,7 @@
       app.form.data[("form-" + formId)] = data;
 
       // Store form data in local storage also
-      try {
-        win.localStorage[("f7form-" + formId)] = JSON.stringify(data);
-      } catch (e) {
-        throw e;
-      }
+      win.localStorage[("f7form-" + formId)] = JSON.stringify(data);
     },
     get: function get(form) {
       var app = this;
@@ -26795,12 +26973,8 @@
         formId = $formEl.attr('id');
       }
 
-      try {
-        if (win.localStorage[("f7form-" + formId)]) {
-          return JSON.parse(win.localStorage[("f7form-" + formId)]);
-        }
-      } catch (e) {
-        throw e;
+      if (win.localStorage[("f7form-" + formId)]) {
+        return JSON.parse(win.localStorage[("f7form-" + formId)]);
       }
       if (app.form.data[("form-" + formId)]) {
         return app.form.data[("form-" + formId)];
@@ -26823,13 +26997,9 @@
       }
 
       // Delete form data from local storage also
-      try {
-        if (win.localStorage[("f7form-" + formId)]) {
-          win.localStorage[("f7form-" + formId)] = '';
-          win.localStorage.removeItem(("f7form-" + formId));
-        }
-      } catch (e) {
-        throw e;
+      if (win.localStorage[("f7form-" + formId)]) {
+        win.localStorage[("f7form-" + formId)] = '';
+        win.localStorage.removeItem(("f7form-" + formId));
       }
     },
   };
@@ -29562,6 +29732,7 @@
       } else {
         ss.modal.once('modalClosed', function () {
           Utils.nextTick(function () {
+            if (ss.destroyed) { return; }
             ss.modal.destroy();
             delete ss.modal;
           });
@@ -29599,7 +29770,7 @@
         setValueText: true,
         formatValueText: null,
         openIn: 'page', // or 'popup' or 'sheet' or 'popover'
-        popupPush: true,
+        popupPush: false,
         popupSwipeToClose: undefined, // defaults to app
         sheetPush: false,
         sheetSwipeToClose: undefined, // defaults to app
@@ -35644,8 +35815,7 @@
         if (params.slidesPerColumnFill === 'row' && params.slidesPerGroup > 1) {
           var groupIndex = Math.floor(i / (params.slidesPerGroup * params.slidesPerColumn));
           var slideIndexInGroup = i - params.slidesPerColumn * params.slidesPerGroup * groupIndex;
-
-          row = Math.floor(slideIndexInGroup / params.slidesPerColumn);
+          row = Math.floor(slideIndexInGroup / params.slidesPerGroup);
           column = (slideIndexInGroup - row * params.slidesPerGroup) + groupIndex * params.slidesPerGroup;
 
           newSlideOrderIndex = column + ((row * slidesNumberEvenToRows) / slidesPerColumn);
@@ -36633,7 +36803,7 @@
 
     if (params.slidesPerView === 'auto' && !params.loopedSlides) { params.loopedSlides = slides.length; }
 
-    swiper.loopedSlides = parseInt(params.loopedSlides || params.slidesPerView, 10);
+    swiper.loopedSlides = Math.ceil(parseFloat(params.loopedSlides || params.slidesPerView, 10));
     swiper.loopedSlides += params.loopAdditionalSlides;
     if (swiper.loopedSlides > slides.length) {
       swiper.loopedSlides = slides.length;
@@ -37437,10 +37607,17 @@
         swiper.slideTo(swiper.activeIndex);
         return;
       }
-      if (swiper.swipeDirection === 'next') {
+      var isNavButtonTarget = swiper.navigation && (e.target === swiper.navigation.nextEl || e.target === swiper.navigation.prevEl);
+      if (!isNavButtonTarget) {
+        if (swiper.swipeDirection === 'next') {
+          swiper.slideTo(stopIndex + params.slidesPerGroup);
+        }
+        if (swiper.swipeDirection === 'prev') {
+          swiper.slideTo(stopIndex);
+        }
+      } else if (e.target === swiper.navigation.nextEl) {
         swiper.slideTo(stopIndex + params.slidesPerGroup);
-      }
-      if (swiper.swipeDirection === 'prev') {
+      } else {
         swiper.slideTo(stopIndex);
       }
     }
@@ -37555,7 +37732,7 @@
     var capture = !!params.nested;
 
     // Touch Events
-    if (!Support.touch && (Support.pointerEvents || Support.prefixedPointerEvents)) {
+    if (!Support.touch && Support.pointerEvents) {
       el.addEventListener(touchEvents.start, swiper.onTouchStart, false);
       doc.addEventListener(touchEvents.move, swiper.onTouchMove, capture);
       doc.addEventListener(touchEvents.end, swiper.onTouchEnd, false);
@@ -37598,7 +37775,7 @@
     var capture = !!params.nested;
 
     // Touch Events
-    if (!Support.touch && (Support.pointerEvents || Support.prefixedPointerEvents)) {
+    if (!Support.touch && Support.pointerEvents) {
       el.removeEventListener(touchEvents.start, swiper.onTouchStart, false);
       doc.removeEventListener(touchEvents.move, swiper.onTouchMove, capture);
       doc.removeEventListener(touchEvents.end, swiper.onTouchEnd, false);
@@ -38152,8 +38329,6 @@
           var desktop = ['mousedown', 'mousemove', 'mouseup'];
           if (Support.pointerEvents) {
             desktop = ['pointerdown', 'pointermove', 'pointerup'];
-          } else if (Support.prefixedPointerEvents) {
-            desktop = ['MSPointerDown', 'MSPointerMove', 'MSPointerUp'];
           }
           swiper.touchEventsTouch = {
             start: touch[0],
@@ -39075,6 +39250,11 @@
         pX = e.deltaX;
       }
 
+      if (e.shiftKey && !pX) { // if user scrolls with shift he wants horizontal scroll
+        pX = pY;
+        pY = 0;
+      }
+
       if ((pX || pY) && e.deltaMode) {
         if (e.deltaMode === 1) { // delta in LINE units
           pX *= LINE_HEIGHT;
@@ -39883,9 +40063,9 @@
     getPointerPosition: function getPointerPosition(e) {
       var swiper = this;
       if (swiper.isHorizontal()) {
-        return ((e.type === 'touchstart' || e.type === 'touchmove') ? e.targetTouches[0].pageX : e.pageX || e.clientX);
+        return ((e.type === 'touchstart' || e.type === 'touchmove') ? e.targetTouches[0].clientX : e.clientX);
       }
-      return ((e.type === 'touchstart' || e.type === 'touchmove') ? e.targetTouches[0].pageY : e.pageY || e.clientY);
+      return ((e.type === 'touchstart' || e.type === 'touchmove') ? e.targetTouches[0].clientY : e.clientY);
     },
     setDragPosition: function setDragPosition(e) {
       var swiper = this;
@@ -41506,6 +41686,7 @@
             }
             if (document.visibilityState === 'visible' && swiper.autoplay.paused) {
               swiper.autoplay.run();
+              swiper.autoplay.paused = false;
             }
           },
           onTransitionEnd: function onTransitionEnd(e) {
@@ -43056,6 +43237,7 @@
       } else {
         pb.modal.once('modalClosed', function () {
           Utils.nextTick(function () {
+            if (pb.destroyed) { return; }
             pb.modal.destroy();
             delete pb.modal;
           });
@@ -43076,6 +43258,7 @@
         delete pb.$el[0].f7PhotoBrowser;
       }
       Utils.deleteProps(pb);
+      pb.destroyed = true;
       pb = null;
     };
 
@@ -44137,6 +44320,7 @@
       } else {
         ac.modal.once('modalClosed', function () {
           Utils.nextTick(function () {
+            if (ac.destroyed) { return; }
             ac.modal.destroy();
             delete ac.modal;
           });
@@ -44201,7 +44385,7 @@
         searchbarDisableText: 'Cancel',
         searchbarDisableButton: undefined,
 
-        popupPush: true,
+        popupPush: false,
         popupSwipeToClose: undefined,
 
         animate: true,
@@ -44347,8 +44531,8 @@
           app.on('touchmove', handleTouchMove);
           app.on('touchend:passive', handleTouchEnd);
         } else {
-          $targetEl.on('mouseenter', handleMouseEnter);
-          $targetEl.on('mouseleave', handleMouseLeave);
+          $targetEl.on((Support.pointerEvents ? 'pointerenter' : 'mousenter'), handleMouseEnter);
+          $targetEl.on((Support.pointerEvents ? 'pointerleave' : 'mouseleave'), handleMouseLeave);
         }
       };
       tooltip.detachEvents = function detachEvents() {
@@ -44359,8 +44543,8 @@
           app.off('touchmove', handleTouchMove);
           app.off('touchend:passive', handleTouchEnd);
         } else {
-          $targetEl.off('mouseenter', handleMouseEnter);
-          $targetEl.off('mouseleave', handleMouseLeave);
+          $targetEl.off((Support.pointerEvents ? 'pointerenter' : 'mousenter'), handleMouseEnter);
+          $targetEl.off((Support.pointerEvents ? 'pointerleave' : 'mouseleave'), handleMouseLeave);
         }
       };
 
@@ -47022,7 +47206,7 @@
         containerEl: null,
         openIn: 'popover', // or 'popover' or 'sheet' or 'popup' or 'page' or 'auto'
         openInPhone: 'popup', // or 'popover' or 'sheet' or 'popup' or 'page'
-        popupPush: true,
+        popupPush: false,
         popupSwipeToClose: undefined,
         sheetPush: false,
         sheetSwipeToClose: undefined,
@@ -47123,256 +47307,6 @@
         if (!$treeviewItemEl.length) { return; }
         e.preventF7Router = true;
         app.treeview.toggle($treeviewItemEl[0]);
-      },
-    },
-  };
-
-  var ViAd = /*@__PURE__*/(function (Framework7Class) {
-    function ViAd(app, params) {
-      if ( params === void 0 ) params = {};
-
-      Framework7Class.call(this, params, [app]);
-      var vi = this;
-      if (!win.vi) {
-        throw new Error('Framework7: vi SDK not found.');
-      }
-
-      var orientation;
-      if (typeof win.orientation !== 'undefined') {
-        orientation = win.orientation === -90 || win.orientation === 90 ? 'horizontal' : 'vertical';
-      }
-      var defaults = Utils.extend(
-        {},
-        app.params.vi,
-        {
-          appId: app.id,
-          appVer: app.version,
-          language: app.language,
-          width: app.width,
-          height: app.height,
-          os: Device.os,
-          osVersion: Device.osVersion,
-          orientation: orientation,
-        }
-      );
-
-      // Extend defaults with modules params
-      vi.useModulesParams(defaults);
-
-      vi.params = Utils.extend(defaults, params);
-
-      var adParams = {};
-      var skipParams = ('on autoplay fallbackOverlay fallbackOverlayText enabled').split(' ');
-      Object.keys(vi.params).forEach(function (paramName) {
-        if (skipParams.indexOf(paramName) >= 0) { return; }
-        var paramValue = vi.params[paramName];
-        if ([null, undefined].indexOf(paramValue) >= 0) { return; }
-        adParams[paramName] = paramValue;
-      });
-
-      if (!vi.params.appId) {
-        throw new Error('Framework7: "app.id" is required to display an ad. Make sure you have specified it on app initialization.');
-      }
-      if (!vi.params.placementId) {
-        throw new Error('Framework7: "placementId" is required to display an ad.');
-      }
-
-      function onResize() {
-        var $viFrame = $('iframe#viAd');
-        if ($viFrame.length === 0) { return; }
-        $viFrame
-          .css({
-            width: ((app.width) + "px"),
-            height: ((app.height) + "px"),
-          });
-      }
-
-      function removeOverlay() {
-        if (!vi.$overlayEl) { return; }
-        vi.$overlayEl.off('click touchstart');
-        vi.$overlayEl.remove();
-      }
-      function createOverlay(videoEl) {
-        if (!videoEl) { return; }
-        vi.$overlayEl = $(("\n        <div class=\"vi-overlay\">\n          " + (vi.params.fallbackOverlayText ? ("<div class=\"vi-overlay-text\">" + (vi.params.fallbackOverlayText) + "</div>") : '') + "\n          <div class=\"vi-overlay-play-button\"></div>\n        </div>\n      ").trim());
-
-        var touchStartTime;
-        vi.$overlayEl.on('touchstart', function () {
-          touchStartTime = Utils.now();
-        });
-        vi.$overlayEl.on('click', function () {
-          var timeDiff = Utils.now() - touchStartTime;
-          if (timeDiff > 300) { return; }
-          if (videoEl) {
-            videoEl.play();
-            removeOverlay();
-            return;
-          }
-          vi.start();
-          removeOverlay();
-        });
-        app.root.append(vi.$overlayEl);
-      }
-
-      // Create ad
-      vi.ad = new win.vi.Ad(adParams);
-
-      Utils.extend(vi.ad, {
-        onAdReady: function onAdReady() {
-          app.on('resize', onResize);
-          vi.emit('local::ready');
-          if (vi.params.autoplay) {
-            vi.start();
-          }
-        },
-        onAdStarted: function onAdStarted() {
-          vi.emit('local::started');
-        },
-        onAdClick: function onAdClick(targetUrl) {
-          vi.emit('local::click', targetUrl);
-        },
-        onAdImpression: function onAdImpression() {
-          vi.emit('local::impression');
-        },
-        onAdStopped: function onAdStopped(reason) {
-          app.off('resize', onResize);
-          removeOverlay();
-
-          vi.emit('local::stopped', reason);
-          if (reason === 'complete') {
-            vi.emit('local::complete');
-            vi.emit('local::completed');
-          }
-          if (reason === 'userexit') {
-            vi.emit('local::userexit');
-          }
-          vi.destroyed = true;
-        },
-        onAutoPlayFailed: function onAutoPlayFailed(reason, videoEl) {
-          vi.emit('local::autoplayFailed', reason, videoEl);
-          if (reason && reason.name && reason.name.indexOf('NotAllowedError') !== -1 && vi.params.fallbackOverlay) {
-            createOverlay(videoEl);
-          }
-        },
-        onAdError: function onAdError(msg) {
-          removeOverlay();
-          app.off('resize', onResize);
-          vi.emit('local::error', msg);
-          vi.destroyed = true;
-        },
-      });
-
-      vi.init();
-
-      Utils.extend(vi, {
-        app: app,
-      });
-    }
-
-    if ( Framework7Class ) ViAd.__proto__ = Framework7Class;
-    ViAd.prototype = Object.create( Framework7Class && Framework7Class.prototype );
-    ViAd.prototype.constructor = ViAd;
-
-    ViAd.prototype.start = function start () {
-      var vi = this;
-      if (vi.destroyed) { return; }
-      if (vi.ad) { vi.ad.startAd(); }
-    };
-
-    ViAd.prototype.pause = function pause () {
-      var vi = this;
-      if (vi.destroyed) { return; }
-      if (vi.ad) { vi.ad.pauseAd(); }
-    };
-
-    ViAd.prototype.resume = function resume () {
-      var vi = this;
-      if (vi.destroyed) { return; }
-      if (vi.ad) { vi.ad.resumeAd(); }
-    };
-
-    ViAd.prototype.stop = function stop () {
-      var vi = this;
-      if (vi.destroyed) { return; }
-      if (vi.ad) { vi.ad.stopAd(); }
-    };
-
-    ViAd.prototype.init = function init () {
-      var vi = this;
-      if (vi.destroyed) { return; }
-      if (vi.ad) { vi.ad.initAd(); }
-    };
-
-    ViAd.prototype.destroy = function destroy () {
-      var vi = this;
-      vi.destroyed = true;
-      vi.emit('local::beforeDestroy');
-      Utils.deleteProps(vi);
-    };
-
-    return ViAd;
-  }(Framework7Class));
-
-  var Vi = {
-    name: 'vi',
-    params: {
-      vi: {
-        enabled: false,
-        autoplay: true,
-        fallbackOverlay: true,
-        fallbackOverlayText: 'Please watch this ad',
-        showMute: true,
-        startMuted: (Device.ios || Device.android) && !Device.cordova,
-        appId: null,
-        appVer: null,
-        language: null,
-        width: null,
-        height: null,
-        placementId: 'pltd4o7ibb9rc653x14',
-        placementType: 'interstitial',
-        videoSlot: null,
-        showProgress: true,
-        showBranding: true,
-        os: null,
-        osVersion: null,
-        orientation: null,
-        age: null,
-        gender: null,
-        advertiserId: null,
-        latitude: null,
-        longitude: null,
-        accuracy: null,
-        storeId: null,
-        ip: null,
-        manufacturer: null,
-        model: null,
-        connectionType: null,
-        connectionProvider: null,
-      },
-    },
-    create: function create() {
-      var app = this;
-      app.vi = {
-        sdkReady: false,
-        createAd: function createAd(adParams) {
-          return new ViAd(app, adParams);
-        },
-        loadSdk: function loadSdk() {
-          if (app.vi.sdkReady) { return; }
-          var script = doc.createElement('script');
-          script.onload = function onload() {
-            app.emit('viSdkReady');
-            app.vi.sdkReady = true;
-          };
-          script.src = 'https://c.vi-serve.com/viadshtml/vi.min.js';
-          $('head').append(script);
-        },
-      };
-    },
-    on: {
-      init: function init() {
-        var app = this;
-        if (app.params.vi.enabled || (app.passedParams.vi && app.passedParams.vi.enabled !== false)) { app.vi.loadSdk(); }
       },
     },
   };
@@ -47745,6 +47679,7 @@
           var buttonData = self.params.customButtons[button];
           return ("<button class=\"text-editor-button\" data-button=\"" + button + "\">" + (buttonData.content || '') + "</button>");
         }
+        if (!textEditorButtonsMap[button]) { return ''; }
         var iconContent = textEditorButtonsMap[button][self.app.theme === 'md' ? 1 : 0];
         return ("<button class=\"text-editor-button\" data-button=\"" + button + "\">" + (iconContent.indexOf('<') >= 0 ? iconContent : ("<i class=\"" + iconClass + "\">" + iconContent + "</i>")) + "</button>").trim();
       }
@@ -47960,8 +47895,258 @@
     name: 'typography',
   };
 
+  var ViAd = /*@__PURE__*/(function (Framework7Class) {
+    function ViAd(app, params) {
+      if ( params === void 0 ) params = {};
+
+      Framework7Class.call(this, params, [app]);
+      var vi = this;
+      if (!win.vi) {
+        throw new Error('Framework7: vi SDK not found.');
+      }
+
+      var orientation;
+      if (typeof win.orientation !== 'undefined') {
+        orientation = win.orientation === -90 || win.orientation === 90 ? 'horizontal' : 'vertical';
+      }
+      var defaults = Utils.extend(
+        {},
+        app.params.vi,
+        {
+          appId: app.id,
+          appVer: app.version,
+          language: app.language,
+          width: app.width,
+          height: app.height,
+          os: Device.os,
+          osVersion: Device.osVersion,
+          orientation: orientation,
+        }
+      );
+
+      // Extend defaults with modules params
+      vi.useModulesParams(defaults);
+
+      vi.params = Utils.extend(defaults, params);
+
+      var adParams = {};
+      var skipParams = ('on autoplay fallbackOverlay fallbackOverlayText enabled').split(' ');
+      Object.keys(vi.params).forEach(function (paramName) {
+        if (skipParams.indexOf(paramName) >= 0) { return; }
+        var paramValue = vi.params[paramName];
+        if ([null, undefined].indexOf(paramValue) >= 0) { return; }
+        adParams[paramName] = paramValue;
+      });
+
+      if (!vi.params.appId) {
+        throw new Error('Framework7: "app.id" is required to display an ad. Make sure you have specified it on app initialization.');
+      }
+      if (!vi.params.placementId) {
+        throw new Error('Framework7: "placementId" is required to display an ad.');
+      }
+
+      function onResize() {
+        var $viFrame = $('iframe#viAd');
+        if ($viFrame.length === 0) { return; }
+        $viFrame
+          .css({
+            width: ((app.width) + "px"),
+            height: ((app.height) + "px"),
+          });
+      }
+
+      function removeOverlay() {
+        if (!vi.$overlayEl) { return; }
+        vi.$overlayEl.off('click touchstart');
+        vi.$overlayEl.remove();
+      }
+      function createOverlay(videoEl) {
+        if (!videoEl) { return; }
+        vi.$overlayEl = $(("\n        <div class=\"vi-overlay\">\n          " + (vi.params.fallbackOverlayText ? ("<div class=\"vi-overlay-text\">" + (vi.params.fallbackOverlayText) + "</div>") : '') + "\n          <div class=\"vi-overlay-play-button\"></div>\n        </div>\n      ").trim());
+
+        var touchStartTime;
+        vi.$overlayEl.on('touchstart', function () {
+          touchStartTime = Utils.now();
+        });
+        vi.$overlayEl.on('click', function () {
+          var timeDiff = Utils.now() - touchStartTime;
+          if (timeDiff > 300) { return; }
+          if (videoEl) {
+            videoEl.play();
+            removeOverlay();
+            return;
+          }
+          vi.start();
+          removeOverlay();
+        });
+        app.root.append(vi.$overlayEl);
+      }
+
+      // Create ad
+      vi.ad = new win.vi.Ad(adParams);
+
+      Utils.extend(vi.ad, {
+        onAdReady: function onAdReady() {
+          app.on('resize', onResize);
+          vi.emit('local::ready');
+          if (vi.params.autoplay) {
+            vi.start();
+          }
+        },
+        onAdStarted: function onAdStarted() {
+          vi.emit('local::started');
+        },
+        onAdClick: function onAdClick(targetUrl) {
+          vi.emit('local::click', targetUrl);
+        },
+        onAdImpression: function onAdImpression() {
+          vi.emit('local::impression');
+        },
+        onAdStopped: function onAdStopped(reason) {
+          app.off('resize', onResize);
+          removeOverlay();
+
+          vi.emit('local::stopped', reason);
+          if (reason === 'complete') {
+            vi.emit('local::complete');
+            vi.emit('local::completed');
+          }
+          if (reason === 'userexit') {
+            vi.emit('local::userexit');
+          }
+          vi.destroyed = true;
+        },
+        onAutoPlayFailed: function onAutoPlayFailed(reason, videoEl) {
+          vi.emit('local::autoplayFailed', reason, videoEl);
+          if (reason && reason.name && reason.name.indexOf('NotAllowedError') !== -1 && vi.params.fallbackOverlay) {
+            createOverlay(videoEl);
+          }
+        },
+        onAdError: function onAdError(msg) {
+          removeOverlay();
+          app.off('resize', onResize);
+          vi.emit('local::error', msg);
+          vi.destroyed = true;
+        },
+      });
+
+      vi.init();
+
+      Utils.extend(vi, {
+        app: app,
+      });
+    }
+
+    if ( Framework7Class ) ViAd.__proto__ = Framework7Class;
+    ViAd.prototype = Object.create( Framework7Class && Framework7Class.prototype );
+    ViAd.prototype.constructor = ViAd;
+
+    ViAd.prototype.start = function start () {
+      var vi = this;
+      if (vi.destroyed) { return; }
+      if (vi.ad) { vi.ad.startAd(); }
+    };
+
+    ViAd.prototype.pause = function pause () {
+      var vi = this;
+      if (vi.destroyed) { return; }
+      if (vi.ad) { vi.ad.pauseAd(); }
+    };
+
+    ViAd.prototype.resume = function resume () {
+      var vi = this;
+      if (vi.destroyed) { return; }
+      if (vi.ad) { vi.ad.resumeAd(); }
+    };
+
+    ViAd.prototype.stop = function stop () {
+      var vi = this;
+      if (vi.destroyed) { return; }
+      if (vi.ad) { vi.ad.stopAd(); }
+    };
+
+    ViAd.prototype.init = function init () {
+      var vi = this;
+      if (vi.destroyed) { return; }
+      if (vi.ad) { vi.ad.initAd(); }
+    };
+
+    ViAd.prototype.destroy = function destroy () {
+      var vi = this;
+      vi.destroyed = true;
+      vi.emit('local::beforeDestroy');
+      Utils.deleteProps(vi);
+    };
+
+    return ViAd;
+  }(Framework7Class));
+
+  var Vi = {
+    name: 'vi',
+    params: {
+      vi: {
+        enabled: false,
+        autoplay: true,
+        fallbackOverlay: true,
+        fallbackOverlayText: 'Please watch this ad',
+        showMute: true,
+        startMuted: (Device.ios || Device.android) && !Device.cordova,
+        appId: null,
+        appVer: null,
+        language: null,
+        width: null,
+        height: null,
+        placementId: 'pltd4o7ibb9rc653x14',
+        placementType: 'interstitial',
+        videoSlot: null,
+        showProgress: true,
+        showBranding: true,
+        os: null,
+        osVersion: null,
+        orientation: null,
+        age: null,
+        gender: null,
+        advertiserId: null,
+        latitude: null,
+        longitude: null,
+        accuracy: null,
+        storeId: null,
+        ip: null,
+        manufacturer: null,
+        model: null,
+        connectionType: null,
+        connectionProvider: null,
+      },
+    },
+    create: function create() {
+      var app = this;
+      app.vi = {
+        sdkReady: false,
+        createAd: function createAd(adParams) {
+          return new ViAd(app, adParams);
+        },
+        loadSdk: function loadSdk() {
+          if (app.vi.sdkReady) { return; }
+          var script = doc.createElement('script');
+          script.onload = function onload() {
+            app.emit('viSdkReady');
+            app.vi.sdkReady = true;
+          };
+          script.src = 'https://c.vi-serve.com/viadshtml/vi.min.js';
+          $('head').append(script);
+        },
+      };
+    },
+    on: {
+      init: function init() {
+        var app = this;
+        if (app.params.vi.enabled || (app.passedParams.vi && app.passedParams.vi.enabled !== false)) { app.vi.loadSdk(); }
+      },
+    },
+  };
+
   /**
-   * Framework7 5.0.0-beta.16
+   * Framework7 5.0.0
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -47969,13 +48154,13 @@
    *
    * Released under the MIT License
    *
-   * Released on: September 19, 2019
+   * Released on: October 7, 2019
    */
 
   // Install Core Modules & Components
-  Router.use([
-    RouterTemplateLoaderModule,
-    RouterComponentLoaderModule ]);
+  Router.use([ //NO_LITE
+    RouterTemplateLoaderModule, //NO_LITE
+    RouterComponentLoaderModule ]); //NO_LITE
 
   Framework7.use([
     DeviceModule,
@@ -47987,7 +48172,7 @@
     ClicksModule,
     RouterModule,
     HistoryModule,
-    ComponentModule,
+    ComponentModule, //NO_LITE
     ServiceWorkerModule,
     Statusbar$1,
     View$1,
@@ -48046,10 +48231,10 @@
     Menu$1,
     ColorPicker$1,
     Treeview$1,
-    Vi,
     TextEditor$1,
     Elevation,
-    Typography
+    Typography,
+    Vi
   ]);
 
   var Utils$1 = {
@@ -48428,13 +48613,12 @@
       id: [String, Number]
     }, Mixins.colorProps),
     name: 'f7-accordion-content',
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'accordion-item-content', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -48444,12 +48628,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -48469,11 +48651,9 @@
       id: [String, Number],
       opened: Boolean
     }, Mixins.colorProps),
-
     created: function created() {
       Utils$1.bindMethods(this, 'onBeforeOpen onOpen onOpened onBeforeClose onClose onClosed'.split(' '));
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
@@ -48488,7 +48668,6 @@
         f7.on('accordionClosed', self.onClosed);
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
@@ -48502,14 +48681,13 @@
       f7.off('accordionClosed', self.onClosed);
       delete this.eventTargetEl;
     },
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var opened = props.opened;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          opened = props.opened;
       var classes = Utils$1.classNames(className, 'accordion-item', {
         'accordion-item-opened': opened
       }, Mixins.colorClasses(props));
@@ -48522,51 +48700,45 @@
         }
       }, [this.$slots['default']]);
     },
-
     methods: {
       onBeforeOpen: function onBeforeOpen(el, prevent) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('accordionBeforeOpen accordion:beforeopen', prevent);
       },
-
       onOpen: function onOpen(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('accordionOpen accordion:open');
       },
-
       onOpened: function onOpened(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('accordionOpened accordion:opened');
       },
-
       onBeforeClose: function onBeforeClose(el, prevent) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('accordionBeforeClose accordion:beforeclose', prevent);
       },
-
       onClose: function onClose(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('accordionClose accordion:close');
       },
-
       onClosed: function onClosed(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('accordionClosed accordion:closed');
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -48575,13 +48747,12 @@
       id: [String, Number]
     }, Mixins.colorProps),
     name: 'f7-accordion-toggle',
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'accordion-item-toggle', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -48591,12 +48762,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -48605,13 +48774,12 @@
       id: [String, Number]
     }, Mixins.colorProps),
     name: 'f7-accordion',
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'accordion-list', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -48621,12 +48789,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   });
 
@@ -48640,15 +48806,14 @@
         default: true
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var className = props.className;
-      var style = props.style;
-      var bold = props.bold;
+      var id = props.id,
+          className = props.className,
+          style = props.style,
+          bold = props.bold;
       var mediaEl;
 
       if (self.$slots.media && self.$slots.media.length) {
@@ -48672,19 +48837,15 @@
         class: 'actions-button-text'
       }, [this.$slots['default']])]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick']);
     },
-
     mounted: function mounted() {
       this.$refs.el.addEventListener('click', this.onClick);
     },
-
     beforeDestroy: function beforeDestroy() {
       this.$refs.el.removeEventListener('click', this.onClick);
     },
-
     methods: {
       onClick: function onClick(event) {
         var self = this;
@@ -48697,20 +48858,20 @@
 
         self.dispatchEvent('click', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -48719,14 +48880,13 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'actions-group', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -48736,12 +48896,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -48751,15 +48909,14 @@
       id: [String, Number],
       bold: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var bold = props.bold;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          bold = props.bold;
       var classes = Utils$1.classNames(className, 'actions-label', {
         'actions-button-bold': bold
       }, Mixins.colorClasses(props));
@@ -48772,37 +48929,33 @@
         }
       }, [this.$slots['default']]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick']);
     },
-
     mounted: function mounted() {
       this.$refs.el.addEventListener('click', this.onClick);
     },
-
     beforeDestroy: function beforeDestroy() {
       this.$refs.el.removeEventListener('click', this.onClick);
     },
-
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -48821,15 +48974,14 @@
       closeByOutsideClick: Boolean,
       closeOnEscape: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var grid = props.grid;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          grid = props.grid;
       var classes = Utils$1.classNames(className, 'actions-modal', {
         'actions-grid': grid
       }, Mixins.colorClasses(props));
@@ -48842,7 +48994,6 @@
         }
       }, [this.$slots['default']]);
     },
-
     watch: {
       'props.opened': function watchOpened(opened) {
         var self = this;
@@ -48855,26 +49006,24 @@
         }
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
       var props = self.props;
-      var grid = props.grid;
-      var target = props.target;
-      var convertToPopover = props.convertToPopover;
-      var forceToPopover = props.forceToPopover;
-      var opened = props.opened;
-      var closeByBackdropClick = props.closeByBackdropClick;
-      var closeByOutsideClick = props.closeByOutsideClick;
-      var closeOnEscape = props.closeOnEscape;
-      var backdrop = props.backdrop;
-      var backdropEl = props.backdropEl;
+      var grid = props.grid,
+          target = props.target,
+          convertToPopover = props.convertToPopover,
+          forceToPopover = props.forceToPopover,
+          opened = props.opened,
+          closeByBackdropClick = props.closeByBackdropClick,
+          closeByOutsideClick = props.closeByOutsideClick,
+          closeOnEscape = props.closeOnEscape,
+          backdrop = props.backdrop,
+          backdropEl = props.backdropEl;
       var actionsParams = {
         el: el,
         grid: grid,
@@ -48904,55 +49053,48 @@
         }
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Actions) { self.f7Actions.destroy(); }
       delete self.f7Actions;
     },
-
     methods: {
       onOpen: function onOpen(instance) {
         this.dispatchEvent('actions:open actionsOpen', instance);
       },
-
       onOpened: function onOpened(instance) {
         this.dispatchEvent('actions:opened actionsOpened', instance);
       },
-
       onClose: function onClose(instance) {
         this.dispatchEvent('actions:close actionsClose', instance);
       },
-
       onClosed: function onClosed(instance) {
         this.dispatchEvent('actions:closed actionsClosed', instance);
       },
-
       open: function open(animate) {
         var self = this;
         if (!self.f7Actions) { return undefined; }
         return self.f7Actions.open(animate);
       },
-
       close: function close(animate) {
         var self = this;
         if (!self.f7Actions) { return undefined; }
         return self.f7Actions.close(animate);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -49011,19 +49153,17 @@
 
   var RoutableModals = {
     name: 'f7-routable-modals',
-
     data: function data() {
-      var state = (function () {
+      var state = function () {
         return {
           modals: []
         };
-      })();
+      }();
 
       return {
         state: state
       };
     },
-
     render: function render() {
       var _h = this.$createElement;
       return _h('div', {
@@ -49039,13 +49179,11 @@
         }
       })]);
     },
-
     updated: function updated() {
       var self = this;
       if (!self.routerData) { return; }
       f7.events.emit('modalsRouterDidUpdate', self.routerData);
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (!self.routerData) { return; }
@@ -49053,7 +49191,6 @@
       self.routerData = null;
       delete self.routerData;
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
@@ -49061,22 +49198,18 @@
         modals: self.state.modals,
         el: el,
         component: self,
-
         setModals: function setModals(modals) {
           self.setState({
             modals: modals
           });
         }
-
       };
       f7.routers.modals = self.routerData;
     },
-
     methods: {
       setState: function setState(updater, callback) {
         __vueComponentSetState(this, updater, callback);
       }
-
     }
   };
 
@@ -49087,14 +49220,13 @@
       params: Object,
       routes: Array
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
+      var id = props.id,
+          style = props.style,
+          className = props.className;
       var classes = Utils$1.classNames(className, 'framework7-root', Mixins.colorClasses(props));
       return _h('div', {
         ref: 'el',
@@ -49105,12 +49237,12 @@
         }
       }, [this.$slots['default'], _h(RoutableModals)]);
     },
-
     mounted: function mounted() {
       var self = this;
-      var ref = self.props;
-      var params = ref.params; if ( params === void 0 ) params = {};
-      var routes = ref.routes;
+      var _self$props = self.props,
+          _self$props$params = _self$props.params,
+          params = _self$props$params === void 0 ? {} : _self$props$params,
+          routes = _self$props.routes;
       var el = self.$refs.el;
       var parentEl = el.parentNode;
 
@@ -49120,12 +49252,10 @@
 
       f7.init(el, params, routes);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -49142,19 +49272,18 @@
       innerClass: String,
       innerClassName: String
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var inner = props.inner;
-      var innerClass = props.innerClass;
-      var innerClassName = props.innerClassName;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var noShadow = props.noShadow;
-      var noHairline = props.noHairline;
+      var inner = props.inner,
+          innerClass = props.innerClass,
+          innerClassName = props.innerClassName,
+          className = props.className,
+          id = props.id,
+          style = props.style,
+          noShadow = props.noShadow,
+          noHairline = props.noHairline;
       var innerEl;
 
       if (inner) {
@@ -49177,12 +49306,10 @@
         }
       }, [this.$slots['before-inner'], innerEl || self.$slots.default, this.$slots['after-inner']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   });
 
@@ -49191,13 +49318,12 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'badge', Mixins.colorClasses(props));
       return _h('span', {
         style: style,
@@ -49207,12 +49333,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -49221,13 +49345,12 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'block-footer', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -49237,12 +49360,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -49251,13 +49372,12 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'block-header', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -49267,12 +49387,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -49283,15 +49401,14 @@
       large: Boolean,
       medium: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var large = props.large;
-      var medium = props.medium;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          large = props.large,
+          medium = props.medium;
       var classes = Utils$1.classNames(className, 'block-title', {
         'block-title-large': large,
         'block-title-medium': medium
@@ -49304,12 +49421,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -49333,11 +49448,9 @@
       noHairlinesIos: Boolean,
       noHairlinesAurora: Boolean
     }, Mixins.colorProps),
-
     created: function created() {
       Utils$1.bindMethods(this, ['onTabShow', 'onTabHide']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
@@ -49348,7 +49461,6 @@
         f7.on('tabHide', self.onTabHide);
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var el = this.$refs.el;
       if (!el || !this.$f7) { return; }
@@ -49356,29 +49468,28 @@
       this.$f7.off('tabHide', this.onTabHide);
       delete this.eventTargetEl;
     },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var inset = props.inset;
-      var xsmallInset = props.xsmallInset;
-      var smallInset = props.smallInset;
-      var mediumInset = props.mediumInset;
-      var largeInset = props.largeInset;
-      var xlargeInset = props.xlargeInset;
-      var strong = props.strong;
-      var accordionList = props.accordionList;
-      var tabs = props.tabs;
-      var tab = props.tab;
-      var tabActive = props.tabActive;
-      var noHairlines = props.noHairlines;
-      var noHairlinesIos = props.noHairlinesIos;
-      var noHairlinesMd = props.noHairlinesMd;
-      var noHairlinesAurora = props.noHairlinesAurora;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          inset = props.inset,
+          xsmallInset = props.xsmallInset,
+          smallInset = props.smallInset,
+          mediumInset = props.mediumInset,
+          largeInset = props.largeInset,
+          xlargeInset = props.xlargeInset,
+          strong = props.strong,
+          accordionList = props.accordionList,
+          tabs = props.tabs,
+          tab = props.tab,
+          tabActive = props.tabActive,
+          noHairlines = props.noHairlines,
+          noHairlinesIos = props.noHairlinesIos,
+          noHairlinesMd = props.noHairlinesMd,
+          noHairlinesAurora = props.noHairlinesAurora,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'block', {
         inset: inset,
         'xsmall-inset': xsmallInset,
@@ -49405,31 +49516,29 @@
         }
       }, [this.$slots['default']]);
     },
-
     methods: {
       onTabShow: function onTabShow(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('tabShow tab:show');
       },
-
       onTabHide: function onTabHide(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('tabHide tab:hide');
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -49446,17 +49555,42 @@
       tooltip: String,
       size: [String, Number]
     }, Mixins.colorProps),
+    data: function data() {
+      var _this = this;
 
+      var props = __vueComponentProps(this);
+
+      var state = function () {
+        var self = _this;
+        var $f7 = self.$f7;
+
+        if (!$f7) {
+          self.$f7ready(function () {
+            self.setState({
+              _theme: self.$theme
+            });
+          });
+        }
+
+        return {
+          _theme: $f7 ? self.$theme : null
+        };
+      }();
+
+      return {
+        state: state
+      };
+    },
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
+      var id = props.id,
+          style = props.style;
       var size = props.size;
 
       if (typeof size === 'number' || parseFloat(size) === size * 1) {
-        size = size + "px";
+        size = "".concat(size, "px");
       }
 
       return _h('i', {
@@ -49472,7 +49606,6 @@
         }
       }, [self.iconTextComputed, this.$slots['default']]);
     },
-
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
@@ -49496,13 +49629,11 @@
         self.f7Tooltip.setText(newText);
       }
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      var ref = self.props;
-      var tooltip = ref.tooltip;
+      var tooltip = self.props.tooltip;
       if (!tooltip) { return; }
       self.$f7ready(function (f7) {
         self.f7Tooltip = f7.tooltip.create({
@@ -49511,7 +49642,6 @@
         });
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
 
@@ -49521,44 +49651,44 @@
         delete self.f7Tooltip;
       }
     },
-
     computed: {
       iconTextComputed: function iconTextComputed() {
         var self = this;
-        var ref = self.props;
-        var material = ref.material;
-        var f7 = ref.f7;
-        var md = ref.md;
-        var ios = ref.ios;
-        var aurora = ref.aurora;
+        var _self$props = self.props,
+            material = _self$props.material,
+            f7 = _self$props.f7,
+            md = _self$props.md,
+            ios = _self$props.ios,
+            aurora = _self$props.aurora;
+        var theme = self.state._theme;
         var text = material || f7;
 
-        if (md && self.$theme.md && (md.indexOf('material:') >= 0 || md.indexOf('f7:') >= 0)) {
+        if (md && theme && theme.md && (md.indexOf('material:') >= 0 || md.indexOf('f7:') >= 0)) {
           text = md.split(':')[1];
-        } else if (ios && self.$theme.ios && (ios.indexOf('material:') >= 0 || ios.indexOf('f7:') >= 0)) {
+        } else if (ios && theme && theme.ios && (ios.indexOf('material:') >= 0 || ios.indexOf('f7:') >= 0)) {
           text = ios.split(':')[1];
-        } else if (aurora && self.$theme.aurora && (aurora.indexOf('material:') >= 0 || aurora.indexOf('f7:') >= 0)) {
+        } else if (aurora && theme && theme.aurora && (aurora.indexOf('material:') >= 0 || aurora.indexOf('f7:') >= 0)) {
           text = aurora.split(':')[1];
         }
 
         return text;
       },
-
       classes: function classes() {
         var classes = {
           icon: true
         };
         var self = this;
         var props = self.props;
-        var material = props.material;
-        var f7 = props.f7;
-        var icon = props.icon;
-        var md = props.md;
-        var ios = props.ios;
-        var aurora = props.aurora;
-        var className = props.className;
+        var theme = self.state._theme;
+        var material = props.material,
+            f7 = props.f7,
+            icon = props.icon,
+            md = props.md,
+            ios = props.ios,
+            aurora = props.aurora,
+            className = props.className;
         var themeIcon;
-        if (self.$theme.ios) { themeIcon = ios; }else if (self.$theme.md) { themeIcon = md; }else if (self.$theme.aurora) { themeIcon = aurora; }
+        if (theme && theme.ios) { themeIcon = ios; }else if (theme && theme.md) { themeIcon = md; }else if (theme && theme.aurora) { themeIcon = aurora; }
 
         if (themeIcon) {
           var parts = themeIcon.split(':');
@@ -49584,11 +49714,14 @@
 
         return Utils$1.classNames(className, classes, Mixins.colorClasses(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
+    },
+    methods: {
+      setState: function setState(updater, callback) {
+        __vueComponentSetState(this, updater, callback);
+      }
     }
   };
 
@@ -49670,26 +49803,25 @@
       active: Boolean,
       disabled: Boolean,
       tooltip: String
-    }, Mixins.colorProps, Mixins.linkIconProps, Mixins.linkRouterProps, Mixins.linkActionsProps),
-
+    }, Mixins.colorProps, {}, Mixins.linkIconProps, {}, Mixins.linkRouterProps, {}, Mixins.linkActionsProps),
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var iconEl;
       var textEl;
       var props = self.props;
-      var text = props.text;
-      var icon = props.icon;
-      var iconMaterial = props.iconMaterial;
-      var iconF7 = props.iconF7;
-      var iconMd = props.iconMd;
-      var iconIos = props.iconIos;
-      var iconAurora = props.iconAurora;
-      var iconColor = props.iconColor;
-      var iconSize = props.iconSize;
-      var id = props.id;
-      var style = props.style;
-      var type = props.type;
+      var text = props.text,
+          icon = props.icon,
+          iconMaterial = props.iconMaterial,
+          iconF7 = props.iconF7,
+          iconMd = props.iconMd,
+          iconIos = props.iconIos,
+          iconAurora = props.iconAurora,
+          iconColor = props.iconColor,
+          iconSize = props.iconSize,
+          id = props.id,
+          style = props.style,
+          type = props.type;
 
       if (text) {
         textEl = _h('span', [text]);
@@ -49721,15 +49853,14 @@
         }
       })), [iconEl, textEl, this.$slots['default']]);
     },
-
     computed: {
       attrs: function attrs() {
         var self = this;
         var props = self.props;
-        var href = props.href;
-        var target = props.target;
-        var tabLink = props.tabLink;
-        var type = props.type;
+        var href = props.href,
+            target = props.target,
+            tabLink = props.tabLink,
+            type = props.type;
         var hrefComputed = href;
         if (href === true) { hrefComputed = '#'; }
         if (href === false) { hrefComputed = undefined; }
@@ -49740,39 +49871,38 @@
           'data-tab': Utils$1.isStringProp(tabLink) && tabLink || undefined
         }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
       },
-
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var tabLink = props.tabLink;
-        var tabLinkActive = props.tabLinkActive;
-        var round = props.round;
-        var roundIos = props.roundIos;
-        var roundAurora = props.roundAurora;
-        var roundMd = props.roundMd;
-        var fill = props.fill;
-        var fillIos = props.fillIos;
-        var fillAurora = props.fillAurora;
-        var fillMd = props.fillMd;
-        var large = props.large;
-        var largeIos = props.largeIos;
-        var largeAurora = props.largeAurora;
-        var largeMd = props.largeMd;
-        var small = props.small;
-        var smallIos = props.smallIos;
-        var smallAurora = props.smallAurora;
-        var smallMd = props.smallMd;
-        var raised = props.raised;
-        var raisedIos = props.raisedIos;
-        var raisedAurora = props.raisedAurora;
-        var raisedMd = props.raisedMd;
-        var active = props.active;
-        var outline = props.outline;
-        var outlineIos = props.outlineIos;
-        var outlineAurora = props.outlineAurora;
-        var outlineMd = props.outlineMd;
-        var disabled = props.disabled;
-        var className = props.className;
+        var tabLink = props.tabLink,
+            tabLinkActive = props.tabLinkActive,
+            round = props.round,
+            roundIos = props.roundIos,
+            roundAurora = props.roundAurora,
+            roundMd = props.roundMd,
+            fill = props.fill,
+            fillIos = props.fillIos,
+            fillAurora = props.fillAurora,
+            fillMd = props.fillMd,
+            large = props.large,
+            largeIos = props.largeIos,
+            largeAurora = props.largeAurora,
+            largeMd = props.largeMd,
+            small = props.small,
+            smallIos = props.smallIos,
+            smallAurora = props.smallAurora,
+            smallMd = props.smallMd,
+            raised = props.raised,
+            raisedIos = props.raisedIos,
+            raisedAurora = props.raisedAurora,
+            raisedMd = props.raisedMd,
+            active = props.active,
+            outline = props.outline,
+            outlineIos = props.outlineIos,
+            outlineAurora = props.outlineAurora,
+            outlineMd = props.outlineMd,
+            disabled = props.disabled,
+            className = props.className;
         return Utils$1.classNames(className, 'button', {
           'tab-link': tabLink || tabLink === '',
           'tab-link-active': tabLinkActive,
@@ -49804,24 +49934,23 @@
           disabled: disabled
         }, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     watch: {
       'props.tooltip': function watchTooltip(newText) {
@@ -49846,18 +49975,16 @@
         self.f7Tooltip.setText(newText);
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       el.addEventListener('click', self.onClick);
-      var ref = self.props;
-      var tooltip = ref.tooltip;
-      var routeProps = ref.routeProps;
+      var _self$props = self.props,
+          tooltip = _self$props.tooltip,
+          routeProps = _self$props.routeProps;
 
       if (routeProps) {
         el.f7RouteProps = routeProps;
@@ -49871,18 +49998,15 @@
         });
       });
     },
-
     updated: function updated() {
       var self = this;
       var el = self.$refs.el;
-      var ref = self.props;
-      var routeProps = ref.routeProps;
+      var routeProps = self.props.routeProps;
 
       if (routeProps) {
         el.f7RouteProps = routeProps;
       }
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
@@ -49895,7 +50019,6 @@
         delete self.f7Tooltip;
       }
     }
-
   };
 
   var f7CardContent = {
@@ -49907,14 +50030,13 @@
         default: true
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var id = props.id;
-      var className = props.className;
-      var style = props.style;
-      var padding = props.padding;
+      var id = props.id,
+          className = props.className,
+          style = props.style,
+          padding = props.padding;
       var classes = Utils$1.classNames(className, 'card-content', {
         'card-content-padding': padding
       }, Mixins.colorClasses(props));
@@ -49926,12 +50048,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -49940,13 +50060,12 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'card-footer', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -49956,12 +50075,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -49970,13 +50087,12 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'card-header', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -49986,12 +50102,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -50056,11 +50170,9 @@
         }
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, 'onBeforeOpen onOpen onOpened onClose onClosed'.split(' '));
     },
-
     mounted: function mounted() {
       var self = this;
       if (!self.props.expandable) { return; }
@@ -50079,7 +50191,6 @@
         }
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (!self.props.expandable) { return; }
@@ -50093,31 +50204,30 @@
       self.eventTargetEl = null;
       delete self.eventTargetEl;
     },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var title = props.title;
-      var content = props.content;
-      var footer = props.footer;
-      var padding = props.padding;
-      var outline = props.outline;
-      var expandable = props.expandable;
-      var expandableAnimateWidth = props.expandableAnimateWidth;
-      var animate = props.animate;
-      var hideNavbarOnOpen = props.hideNavbarOnOpen;
-      var hideToolbarOnOpen = props.hideToolbarOnOpen;
-      var hideStatusbarOnOpen = props.hideStatusbarOnOpen;
-      var swipeToClose = props.swipeToClose;
-      var closeByBackdropClick = props.closeByBackdropClick;
-      var backdrop = props.backdrop;
-      var backdropEl = props.backdropEl;
-      var noShadow = props.noShadow;
-      var noBorder = props.noBorder;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          title = props.title,
+          content = props.content,
+          footer = props.footer,
+          padding = props.padding,
+          outline = props.outline,
+          expandable = props.expandable,
+          expandableAnimateWidth = props.expandableAnimateWidth,
+          animate = props.animate,
+          hideNavbarOnOpen = props.hideNavbarOnOpen,
+          hideToolbarOnOpen = props.hideToolbarOnOpen,
+          hideStatusbarOnOpen = props.hideStatusbarOnOpen,
+          swipeToClose = props.swipeToClose,
+          closeByBackdropClick = props.closeByBackdropClick,
+          backdrop = props.backdrop,
+          backdropEl = props.backdropEl,
+          noShadow = props.noShadow,
+          noBorder = props.noBorder;
       var headerEl;
       var contentEl;
       var footerEl;
@@ -50162,58 +50272,51 @@
         }
       }, [headerEl, contentEl, footerEl, this.$slots['default']]);
     },
-
     methods: {
       open: function open() {
         var self = this;
         if (!self.$refs.el) { return; }
         self.$f7.card.open(self.$refs.el);
       },
-
       close: function close() {
         var self = this;
         if (!self.$refs.el) { return; }
         self.$f7.card.close(self.$refs.el);
       },
-
       onBeforeOpen: function onBeforeOpen(el, prevent) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('cardBeforeOpen card:beforeopen', el, prevent);
       },
-
       onOpen: function onOpen(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('cardOpen card:open', el);
       },
-
       onOpened: function onOpened(el, pageEl) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('cardOpened card:opened', el, pageEl);
       },
-
       onClose: function onClose(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('cardClose card:close', el);
       },
-
       onClosed: function onClosed(el, pageEl) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('cardClosed card:closed', el, pageEl);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -50229,19 +50332,18 @@
       readonly: Boolean,
       defaultChecked: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var name = props.name;
-      var value = props.value;
-      var disabled = props.disabled;
-      var readonly = props.readonly;
-      var checked = props.checked;
-      var defaultChecked = props.defaultChecked;
-      var id = props.id;
-      var style = props.style;
+      var name = props.name,
+          value = props.value,
+          disabled = props.disabled,
+          readonly = props.readonly,
+          checked = props.checked,
+          defaultChecked = props.defaultChecked,
+          id = props.id,
+          style = props.style;
       var inputEl;
       {
         inputEl = _h('input', {
@@ -50274,65 +50376,55 @@
         }
       }, [inputEl, iconEl, this.$slots['default']]);
     },
-
     computed: {
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var className = props.className;
-        var disabled = props.disabled;
+        var className = props.className,
+            disabled = props.disabled;
         return Utils$1.classNames(className, {
           checkbox: true,
           disabled: disabled
         }, Mixins.colorClasses(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onChange']);
     },
-
     mounted: function mounted() {
       var self = this;
-      var ref = self.$refs;
-      var inputEl = ref.inputEl;
-      var ref$1 = self.props;
-      var indeterminate = ref$1.indeterminate;
+      var inputEl = self.$refs.inputEl;
+      var indeterminate = self.props.indeterminate;
 
       if (indeterminate && inputEl) {
         inputEl.indeterminate = true;
       }
     },
-
     updated: function updated() {
       var self = this;
-      var ref = self.$refs;
-      var inputEl = ref.inputEl;
-      var ref$1 = self.props;
-      var indeterminate = ref$1.indeterminate;
+      var inputEl = self.$refs.inputEl;
+      var indeterminate = self.props.indeterminate;
 
       if (inputEl) {
         inputEl.indeterminate = indeterminate;
       }
     },
-
     methods: {
       onChange: function onChange(event) {
         this.dispatchEvent('change', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     }
   };
 
@@ -50347,26 +50439,25 @@
       mediaTextColor: String,
       outline: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var media = props.media;
-      var text = props.text;
-      var deleteable = props.deleteable;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var mediaTextColor = props.mediaTextColor;
-      var mediaBgColor = props.mediaBgColor;
-      var outline = props.outline;
+      var media = props.media,
+          text = props.text,
+          deleteable = props.deleteable,
+          className = props.className,
+          id = props.id,
+          style = props.style,
+          mediaTextColor = props.mediaTextColor,
+          mediaBgColor = props.mediaBgColor,
+          outline = props.outline;
       var mediaEl;
       var labelEl;
       var deleteEl;
 
       if (media || self.$slots && self.$slots.media) {
-        var mediaClasses = Utils$1.classNames('chip-media', mediaTextColor && ("text-color-" + mediaTextColor), mediaBgColor && ("bg-color-" + mediaBgColor));
+        var mediaClasses = Utils$1.classNames('chip-media', mediaTextColor && "text-color-".concat(mediaTextColor), mediaBgColor && "bg-color-".concat(mediaBgColor));
         mediaEl = _h('div', {
           class: mediaClasses
         }, [media || this.$slots['media']]);
@@ -50397,11 +50488,9 @@
         }
       }, [mediaEl, labelEl, deleteEl]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick', 'onDeleteClick']);
     },
-
     mounted: function mounted() {
       this.$refs.el.addEventListener('click', this.onClick);
 
@@ -50409,7 +50498,6 @@
         this.$refs.deleteEl.addEventListener('click', this.onDeleteClick);
       }
     },
-
     beforeDestroy: function beforeDestroy() {
       this.$refs.el.removeEventListener('click', this.onClick);
 
@@ -50417,32 +50505,31 @@
         this.$refs.deleteEl.removeEventListener('click', this.onDeleteClick);
       }
     },
-
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       onDeleteClick: function onDeleteClick(event) {
         this.dispatchEvent('delete', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
   var f7Col = {
     name: 'f7-col',
     props: Object.assign({
@@ -50471,27 +50558,26 @@
         type: [Number, String]
       }
     }, Mixins.colorProps),
-
     render: function render() {
-      var obj;
+      var _Utils$classNames;
 
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var tag = props.tag;
-      var width = props.width;
-      var xsmall = props.xsmall;
-      var small = props.small;
-      var medium = props.medium;
-      var large = props.large;
-      var xlarge = props.xlarge;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          tag = props.tag,
+          width = props.width,
+          xsmall = props.xsmall,
+          small = props.small,
+          medium = props.medium,
+          large = props.large,
+          xlarge = props.xlarge;
       var ColTag = tag;
-      var classes = Utils$1.classNames(className, ( obj = {
+      var classes = Utils$1.classNames(className, (_Utils$classNames = {
         col: width === 'auto'
-      }, obj[("col-" + width)] = width !== 'auto', obj[("xsmall-" + xsmall)] = xsmall, obj[("small-" + small)] = small, obj[("medium-" + medium)] = medium, obj[("large-" + large)] = large, obj[("xlarge-" + xlarge)] = xlarge, obj ), Mixins.colorClasses(props));
+      }, _defineProperty(_Utils$classNames, "col-".concat(width), width !== 'auto'), _defineProperty(_Utils$classNames, "xsmall-".concat(xsmall), xsmall), _defineProperty(_Utils$classNames, "small-".concat(small), small), _defineProperty(_Utils$classNames, "medium-".concat(medium), medium), _defineProperty(_Utils$classNames, "large-".concat(large), large), _defineProperty(_Utils$classNames, "xlarge-".concat(xlarge), xlarge), _Utils$classNames), Mixins.colorClasses(props));
       return _h(ColTag, {
         style: style,
         class: classes,
@@ -50501,37 +50587,33 @@
         }
       }, [this.$slots['default']]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick']);
     },
-
     mounted: function mounted() {
       this.$refs.el.addEventListener('click', this.onClick);
     },
-
     beforeDestroy: function beforeDestroy() {
       this.$refs.el.removeEventListener('click', this.onClick);
     },
-
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -50544,16 +50626,15 @@
       target: String,
       tooltip: String
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var fabClose = props.fabClose;
-      var label = props.label;
-      var target = props.target;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          fabClose = props.fabClose,
+          label = props.label,
+          target = props.target;
       var classes = Utils$1.classNames(className, {
         'fab-close': fabClose,
         'fab-label-button': label
@@ -50576,16 +50657,13 @@
         }
       }, [this.$slots['default'], labelEl]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick']);
     },
-
     mounted: function mounted() {
       var self = this;
       self.$refs.el.addEventListener('click', self.onClick);
-      var ref = self.props;
-      var tooltip = ref.tooltip;
+      var tooltip = self.props.tooltip;
       if (!tooltip) { return; }
       self.$f7ready(function (f7) {
         self.f7Tooltip = f7.tooltip.create({
@@ -50594,7 +50672,6 @@
         });
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       self.$refs.el.removeEventListener('click', self.onClick);
@@ -50605,19 +50682,19 @@
         delete self.f7Tooltip;
       }
     },
-
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     watch: {
       'props.tooltip': function watchTooltip(newText) {
@@ -50646,7 +50723,6 @@
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -50659,15 +50735,14 @@
         default: 'top'
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var position = props.position;
-      var classes = Utils$1.classNames(className, 'fab-buttons', ("fab-buttons-" + position), Mixins.colorClasses(props));
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          position = props.position;
+      var classes = Utils$1.classNames(className, 'fab-buttons', "fab-buttons-".concat(position), Mixins.colorClasses(props));
       return _h('div', {
         style: style,
         class: classes,
@@ -50676,12 +50751,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -50699,34 +50772,33 @@
       },
       tooltip: String
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var morphTo = props.morphTo;
-      var initialHref = props.href;
-      var position = props.position;
-      var text = props.text;
-      var target = props.target;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          morphTo = props.morphTo,
+          initialHref = props.href,
+          position = props.position,
+          text = props.text,
+          target = props.target;
       var href = initialHref;
       if (href === true) { href = '#'; }
       if (href === false) { href = undefined; }
       var linkChildren = [];
       var rootChildren = [];
-      var ref = self.$slots;
-      var linkSlots = ref.link;
-      var defaultSlots = ref.default;
-      var rootSlots = ref.root;
-      var textSlots = ref.text;
+      var _self$$slots = self.$slots,
+          linkSlots = _self$$slots.link,
+          defaultSlots = _self$$slots.default,
+          rootSlots = _self$$slots.root,
+          textSlots = _self$$slots.text;
 
       if (defaultSlots) {
         for (var i = 0; i < defaultSlots.length; i += 1) {
           var child = defaultSlots[i];
-          var isRoot = (void 0);
+          var isRoot = void 0;
           {
             if (child.tag && child.tag.indexOf('fab-buttons') >= 0) { isRoot = true; }
           }
@@ -50755,7 +50827,7 @@
         }, [linkChildren, textEl, linkSlots]);
       }
 
-      var classes = Utils$1.classNames(className, 'fab', ("fab-" + position), {
+      var classes = Utils$1.classNames(className, 'fab', "fab-".concat(position), {
         'fab-morph': morphTo,
         'fab-extended': typeof textEl !== 'undefined'
       }, Mixins.colorClasses(props));
@@ -50768,7 +50840,6 @@
         }
       }, [linkEl, rootChildren, rootSlots]);
     },
-
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
@@ -50792,11 +50863,9 @@
         self.f7Tooltip.setText(newText);
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick']);
     },
-
     mounted: function mounted() {
       var self = this;
 
@@ -50804,8 +50873,7 @@
         self.$refs.linkEl.addEventListener('click', self.onClick);
       }
 
-      var ref = self.props;
-      var tooltip = ref.tooltip;
+      var tooltip = self.props.tooltip;
       if (!tooltip) { return; }
       self.$f7ready(function (f7) {
         self.f7Tooltip = f7.tooltip.create({
@@ -50814,7 +50882,6 @@
         });
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
 
@@ -50828,26 +50895,25 @@
         delete self.f7Tooltip;
       }
     },
-
     methods: {
       onClick: function onClick(event) {
         var self = this;
         self.dispatchEvent('click', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -50910,28 +50976,27 @@
       }
     },
     name: 'f7-gauge',
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var type = props.type;
-      var value = props.value;
-      var size = props.size;
-      var bgColor = props.bgColor;
-      var borderBgColor = props.borderBgColor;
-      var borderColor = props.borderColor;
-      var borderWidth = props.borderWidth;
-      var valueText = props.valueText;
-      var valueTextColor = props.valueTextColor;
-      var valueFontSize = props.valueFontSize;
-      var valueFontWeight = props.valueFontWeight;
-      var labelText = props.labelText;
-      var labelTextColor = props.labelTextColor;
-      var labelFontSize = props.labelFontSize;
-      var labelFontWeight = props.labelFontWeight;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          type = props.type,
+          value = props.value,
+          size = props.size,
+          bgColor = props.bgColor,
+          borderBgColor = props.borderBgColor,
+          borderColor = props.borderColor,
+          borderWidth = props.borderWidth,
+          valueText = props.valueText,
+          valueTextColor = props.valueTextColor,
+          valueFontSize = props.valueFontSize,
+          valueFontWeight = props.valueFontWeight,
+          labelText = props.labelText,
+          labelTextColor = props.labelTextColor,
+          labelFontSize = props.labelFontSize,
+          labelFontWeight = props.labelFontWeight;
       var classes = Utils$1.classNames(className, 'gauge');
       var semiCircle = type === 'semicircle';
       var radius = size / 2 - borderWidth / 2;
@@ -50946,14 +51011,14 @@
       }, [_h('svg', {
         class: 'gauge-svg',
         attrs: {
-          width: (size + "px"),
-          height: ((semiCircle ? size / 2 : size) + "px"),
-          viewBox: ("0 0 " + size + " " + (semiCircle ? size / 2 : size))
+          width: "".concat(size, "px"),
+          height: "".concat(semiCircle ? size / 2 : size, "px"),
+          viewBox: "0 0 ".concat(size, " ").concat(semiCircle ? size / 2 : size)
         }
       }, [semiCircle && _h('path', {
         class: 'gauge-back-semi',
         attrs: {
-          d: ("M" + (size - borderWidth / 2) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0"),
+          d: "M".concat(size - borderWidth / 2, ",").concat(size / 2, " a1,1 0 0,0 -").concat(size - borderWidth, ",0"),
           stroke: borderBgColor,
           'stroke-width': borderWidth,
           fill: bgColor || 'none'
@@ -50961,7 +51026,7 @@
       }), semiCircle && _h('path', {
         class: 'gauge-front-semi',
         attrs: {
-          d: ("M" + (size - borderWidth / 2) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0"),
+          d: "M".concat(size - borderWidth / 2, ",").concat(size / 2, " a1,1 0 0,0 -").concat(size - borderWidth, ",0"),
           stroke: borderColor,
           'stroke-width': borderWidth,
           'stroke-dasharray': length / 2,
@@ -50981,7 +51046,7 @@
       }), !semiCircle && _h('circle', {
         class: 'gauge-front-circle',
         attrs: {
-          transform: ("rotate(-90 " + (size / 2) + " " + (size / 2) + ")"),
+          transform: "rotate(-90 ".concat(size / 2, " ").concat(size / 2, ")"),
           stroke: borderColor,
           'stroke-width': borderWidth,
           'stroke-dasharray': length,
@@ -51017,12 +51082,10 @@
         }
       }, [labelText])])]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -51041,20 +51104,19 @@
       name: String,
       value: [String, Number, Array]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var disabled = props.disabled;
-      var id = props.id;
-      var style = props.style;
-      var name = props.name;
-      var readonly = props.readonly;
-      var checked = props.checked;
-      var defaultChecked = props.defaultChecked;
-      var value = props.value;
+      var className = props.className,
+          disabled = props.disabled,
+          id = props.id,
+          style = props.style,
+          name = props.name,
+          readonly = props.readonly,
+          checked = props.checked,
+          defaultChecked = props.defaultChecked,
+          value = props.value;
       var labelClasses = Utils$1.classNames('toggle', className, {
         disabled: disabled
       }, Mixins.colorClasses(props));
@@ -51088,7 +51150,6 @@
         class: 'toggle-icon'
       })]);
     },
-
     watch: {
       'props.checked': function watchChecked(newValue) {
         var self = this;
@@ -51096,11 +51157,9 @@
         self.f7Toggle.checked = newValue;
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onChange']);
     },
-
     mounted: function mounted() {
       var self = this;
       if (!self.props.init) { return; }
@@ -51112,41 +51171,37 @@
               var checked = toggle.checked;
               self.dispatchEvent('toggle:change toggleChange', checked);
             }
-
           }
         });
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Toggle && self.f7Toggle.destroy && self.f7Toggle.$el) { self.f7Toggle.destroy(); }
     },
-
     methods: {
       toggle: function toggle() {
         var self = this;
         if (self.f7Toggle && self.f7Toggle.toggle) { self.f7Toggle.toggle(); }
       },
-
       onChange: function onChange(event) {
         var self = this;
         self.dispatchEvent('change', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -51217,21 +51272,20 @@
       inputId: String,
       disabled: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var ref = self.props;
-      var id = ref.id;
-      var disabled = ref.disabled;
-      var className = ref.className;
-      var style = ref.style;
-      var input = ref.input;
-      var inputId = ref.inputId;
-      var name = ref.name;
-      var vertical = ref.vertical;
-      var verticalReversed = ref.verticalReversed;
+      var _self$props = self.props,
+          id = _self$props.id,
+          disabled = _self$props.disabled,
+          className = _self$props.className,
+          style = _self$props.style,
+          input = _self$props.input,
+          inputId = _self$props.inputId,
+          name = _self$props.name,
+          vertical = _self$props.vertical,
+          verticalReversed = _self$props.verticalReversed;
       var classes = Utils$1.classNames(className, 'range-slider', {
         'range-slider-horizontal': !vertical,
         'range-slider-vertical': vertical,
@@ -51253,7 +51307,6 @@
         }
       }), this.$slots['default']]);
     },
-
     watch: {
       'props.value': function watchValue(newValue) {
         var self = this;
@@ -51261,27 +51314,26 @@
         self.f7Range.setValue(newValue);
       }
     },
-
     mounted: function mounted() {
       var self = this;
       self.$f7ready(function (f7) {
         if (!self.props.init) { return; }
         var props = self.props;
-        var value = props.value;
-        var min = props.min;
-        var max = props.max;
-        var step = props.step;
-        var label = props.label;
-        var dual = props.dual;
-        var draggableBar = props.draggableBar;
-        var vertical = props.vertical;
-        var verticalReversed = props.verticalReversed;
-        var formatLabel = props.formatLabel;
-        var scale = props.scale;
-        var scaleSteps = props.scaleSteps;
-        var scaleSubSteps = props.scaleSubSteps;
-        var formatScaleLabel = props.formatScaleLabel;
-        var limitKnobPosition = props.limitKnobPosition;
+        var value = props.value,
+            min = props.min,
+            max = props.max,
+            step = props.step,
+            label = props.label,
+            dual = props.dual,
+            draggableBar = props.draggableBar,
+            vertical = props.vertical,
+            verticalReversed = props.verticalReversed,
+            formatLabel = props.formatLabel,
+            scale = props.scale,
+            scaleSteps = props.scaleSteps,
+            scaleSubSteps = props.scaleSubSteps,
+            formatScaleLabel = props.formatScaleLabel,
+            limitKnobPosition = props.limitKnobPosition;
         self.f7Range = f7.range.create(Utils$1.noUndefinedProps({
           el: self.$refs.el,
           value: value,
@@ -51303,27 +51355,22 @@
             change: function change(range, val) {
               self.dispatchEvent('range:change rangeChange', val);
             },
-
             changed: function changed(range, val) {
               self.dispatchEvent('range:changed rangeChanged', val);
             }
-
           }
         }));
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Range && self.f7Range.destroy) { self.f7Range.destroy(); }
     },
-
     methods: {
       setValue: function setValue(newValue) {
         var self = this;
         if (self.f7Range && self.f7Range.setValue) { self.f7Range.setValue(newValue); }
       },
-
       getValue: function getValue() {
         var self = this;
 
@@ -51333,20 +51380,20 @@
 
         return undefined;
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -51390,25 +51437,23 @@
         default: false
       }
     }),
-
     created: function created() {
       Utils$1.bindMethods(this, 'onChange onInput onFocus onBlur onButtonClick onKeyboardOpen onKeyboardClose onPopoverOpen onPopoverClose'.split(' '));
     },
-
     mounted: function mounted() {
-      var this$1 = this;
+      var _this = this;
 
       var props = this.props;
-      var mode = props.mode;
-      var value = props.value;
-      var palceholder = props.palceholder;
-      var buttons = props.buttons;
-      var customButtons = props.customButtons;
-      var dividers = props.dividers;
-      var imageUrlText = props.imageUrlText;
-      var linkUrlText = props.linkUrlText;
-      var placeholder = props.placeholder;
-      var clearFormattingOnPaste = props.clearFormattingOnPaste;
+      var mode = props.mode,
+          value = props.value,
+          palceholder = props.palceholder,
+          buttons = props.buttons,
+          customButtons = props.customButtons,
+          dividers = props.dividers,
+          imageUrlText = props.imageUrlText,
+          linkUrlText = props.linkUrlText,
+          placeholder = props.placeholder,
+          clearFormattingOnPaste = props.clearFormattingOnPaste;
       var params = Utils$1.noUndefinedProps({
         el: this.$refs.el,
         mode: mode,
@@ -51434,16 +51479,14 @@
         }
       });
       this.$f7ready(function (f7) {
-        this$1.f7TextEditor = f7.textEditor.create(params);
+        _this.f7TextEditor = f7.textEditor.create(params);
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       if (this.f7TextEditor && this.f7TextEditor.destroy) {
         this.f7TextEditor.destroy();
       }
     },
-
     watch: {
       'props.value': function watchValue() {
         if (this.f7TextEditor) {
@@ -51451,14 +51494,13 @@
         }
       }
     },
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var resizable = props.resizable;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          resizable = props.resizable;
       var classes = Utils$1.classNames(className, 'text-editor', resizable && 'text-editor-resizable', Mixins.colorClasses(props));
       return _h('div', {
         ref: 'el',
@@ -51474,57 +51516,48 @@
         }
       }, [this.$slots['default']]), this.$slots['root-end'], this.$slots['root']]);
     },
-
     methods: {
       onChange: function onChange(editor, value) {
-        this.dispatchEvent('texteditor:change textEditorChange', editor, value);
+        this.dispatchEvent('texteditor:change textEditorChange', value);
       },
-
-      onInput: function onInput(editor) {
-        this.dispatchEvent('texteditor:change textEditorChange', editor);
+      onInput: function onInput() {
+        this.dispatchEvent('texteditor:change textEditorChange');
       },
-
-      onFocus: function onFocus(editor) {
-        this.dispatchEvent('texteditor:focus textEditorFocus', editor);
+      onFocus: function onFocus() {
+        this.dispatchEvent('texteditor:focus textEditorFocus');
       },
-
-      onBlur: function onBlur(editor) {
-        this.dispatchEvent('texteditor:blur textEditorBlur', editor);
+      onBlur: function onBlur() {
+        this.dispatchEvent('texteditor:blur textEditorBlur');
       },
-
       onButtonClick: function onButtonClick(editor, button) {
-        this.dispatchEvent('texteditor:buttonclick textEditorButtonClick', editor, button);
+        this.dispatchEvent('texteditor:buttonclick textEditorButtonClick', button);
       },
-
-      onKeyboardOpen: function onKeyboardOpen(editor) {
-        this.dispatchEvent('texteditor:keyboardopen textEditorKeyboardOpen', editor);
+      onKeyboardOpen: function onKeyboardOpen() {
+        this.dispatchEvent('texteditor:keyboardopen textEditorKeyboardOpen');
       },
-
-      onKeyboardClose: function onKeyboardClose(editor) {
-        this.dispatchEvent('texteditor:keyboardclose textEditorKeyboardClose', editor);
+      onKeyboardClose: function onKeyboardClose() {
+        this.dispatchEvent('texteditor:keyboardclose textEditorKeyboardClose');
       },
-
-      onPopoverOpen: function onPopoverOpen(editor) {
-        this.dispatchEvent('texteditor:popoveropen textEditorPopoverOpen', editor);
+      onPopoverOpen: function onPopoverOpen() {
+        this.dispatchEvent('texteditor:popoveropen textEditorPopoverOpen');
       },
-
-      onPopoverClose: function onPopoverClose(editor) {
-        this.dispatchEvent('texteditor:popoverclose textEditorPopoverClose', editor);
+      onPopoverClose: function onPopoverClose() {
+        this.dispatchEvent('texteditor:popoverclose textEditorPopoverClose');
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -51582,75 +51615,73 @@
       colorPickerParams: Object,
       textEditorParams: Object
     }, Mixins.colorProps),
-
     data: function data() {
       var props = __vueComponentProps(this);
 
-      var state = (function () {
+      var state = function () {
         return {
           inputFocused: false,
           inputInvalid: false
         };
-      })();
+      }();
 
       return {
         state: state
       };
     },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var type = props.type;
-      var name = props.name;
-      var value = props.value;
-      var defaultValue = props.defaultValue;
-      var placeholder = props.placeholder;
-      var id = props.id;
-      var inputId = props.inputId;
-      var size = props.size;
-      var accept = props.accept;
-      var autocomplete = props.autocomplete;
-      var autocorrect = props.autocorrect;
-      var autocapitalize = props.autocapitalize;
-      var spellcheck = props.spellcheck;
-      var autofocus = props.autofocus;
-      var autosave = props.autosave;
-      var checked = props.checked;
-      var disabled = props.disabled;
-      var max = props.max;
-      var min = props.min;
-      var step = props.step;
-      var maxlength = props.maxlength;
-      var minlength = props.minlength;
-      var multiple = props.multiple;
-      var readonly = props.readonly;
-      var required = props.required;
-      var inputStyle = props.inputStyle;
-      var pattern = props.pattern;
-      var validate = props.validate;
-      var validateOnBlur = props.validateOnBlur;
-      var tabindex = props.tabindex;
-      var resizable = props.resizable;
-      var clearButton = props.clearButton;
-      var errorMessage = props.errorMessage;
-      var errorMessageForce = props.errorMessageForce;
-      var info = props.info;
-      var wrap = props.wrap;
-      var dropdown = props.dropdown;
-      var style = props.style;
-      var className = props.className;
-      var noStoreData = props.noStoreData;
-      var noFormStoreData = props.noFormStoreData;
-      var ignoreStoreData = props.ignoreStoreData;
-      var outline = props.outline;
-      var textEditorParams = props.textEditorParams;
+      var type = props.type,
+          name = props.name,
+          value = props.value,
+          defaultValue = props.defaultValue,
+          placeholder = props.placeholder,
+          id = props.id,
+          inputId = props.inputId,
+          size = props.size,
+          accept = props.accept,
+          autocomplete = props.autocomplete,
+          autocorrect = props.autocorrect,
+          autocapitalize = props.autocapitalize,
+          spellcheck = props.spellcheck,
+          autofocus = props.autofocus,
+          autosave = props.autosave,
+          checked = props.checked,
+          disabled = props.disabled,
+          max = props.max,
+          min = props.min,
+          step = props.step,
+          maxlength = props.maxlength,
+          minlength = props.minlength,
+          multiple = props.multiple,
+          readonly = props.readonly,
+          required = props.required,
+          inputStyle = props.inputStyle,
+          pattern = props.pattern,
+          validate = props.validate,
+          validateOnBlur = props.validateOnBlur,
+          tabindex = props.tabindex,
+          resizable = props.resizable,
+          clearButton = props.clearButton,
+          errorMessage = props.errorMessage,
+          errorMessageForce = props.errorMessageForce,
+          info = props.info,
+          wrap = props.wrap,
+          dropdown = props.dropdown,
+          style = props.style,
+          className = props.className,
+          noStoreData = props.noStoreData,
+          noFormStoreData = props.noFormStoreData,
+          ignoreStoreData = props.ignoreStoreData,
+          outline = props.outline,
+          textEditorParams = props.textEditorParams;
       var domValue = self.domValue();
       var inputHasValue = self.inputHasValue();
       var inputEl;
 
-      var createInput = function (InputTag, children) {
+      var createInput = function createInput(InputTag, children) {
         var needsValue = type !== 'file' && type !== 'datepicker' && type !== 'colorpicker';
         var needsType = InputTag === 'input';
         var inputType = type;
@@ -51728,9 +51759,9 @@
         return input;
       };
 
-      var ref = self.$slots;
-      var slotsDefault = ref.default;
-      var slotsInfo = ref.info;
+      var _self$$slots = self.$slots,
+          slotsDefault = _self$$slots.default,
+          slotsInfo = _self$$slots.info;
 
       if (type === 'select' || type === 'textarea' || type === 'file') {
         if (type === 'select') {
@@ -51813,12 +51844,10 @@
 
       return inputEl;
     },
-
     watch: {
       'props.value': function watchValue() {
         var self = this;
-        var ref = self.props;
-        var type = ref.type;
+        var type = self.props.type;
         if (type === 'range' || type === 'toggle') { return; }
         if (!self.$f7) { return; }
         self.updateInputOnDidUpdate = true;
@@ -51832,24 +51861,22 @@
         }
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, 'onFocus onBlur onInput onChange onTextareaResize onInputNotEmpty onInputEmpty onInputClear'.split(' '));
     },
-
     mounted: function mounted() {
       var self = this;
       self.$f7ready(function (f7) {
-        var ref = self.props;
-        var validate = ref.validate;
-        var validateOnBlur = ref.validateOnBlur;
-        var resizable = ref.resizable;
-        var type = ref.type;
-        var clearButton = ref.clearButton;
-        var value = ref.value;
-        var defaultValue = ref.defaultValue;
-        var calendarParams = ref.calendarParams;
-        var colorPickerParams = ref.colorPickerParams;
+        var _self$props = self.props,
+            validate = _self$props.validate,
+            validateOnBlur = _self$props.validateOnBlur,
+            resizable = _self$props.resizable,
+            type = _self$props.type,
+            clearButton = _self$props.clearButton,
+            value = _self$props.value,
+            defaultValue = _self$props.defaultValue,
+            calendarParams = _self$props.calendarParams,
+            colorPickerParams = _self$props.colorPickerParams;
         if (type === 'range' || type === 'toggle') { return; }
         var inputEl = self.$refs.inputEl;
         if (!inputEl) { return; }
@@ -51872,7 +51899,6 @@
               change: function change(calendar, calendarValue) {
                 self.dispatchEvent('calendar:change calendarChange', calendarValue);
               }
-
             }
           }, calendarParams || {}));
         }
@@ -51885,7 +51911,6 @@
               change: function change(colorPicker, colorPickerValue) {
                 self.dispatchEvent('colorpicker:change colorPickerChange', colorPickerValue);
               }
-
             }
           }, colorPickerParams || {}));
         }
@@ -51903,13 +51928,12 @@
         }
       });
     },
-
     updated: function updated() {
       var self = this;
-      var ref = self.props;
-      var validate = ref.validate;
-      var validateOnBlur = ref.validateOnBlur;
-      var resizable = ref.resizable;
+      var _self$props2 = self.props,
+          validate = _self$props2.validate,
+          validateOnBlur = _self$props2.validateOnBlur,
+          resizable = _self$props2.resizable;
       var f7 = self.$f7;
       if (!f7) { return; }
 
@@ -51928,13 +51952,12 @@
         }
       }
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var ref = self.props;
-      var type = ref.type;
-      var resizable = ref.resizable;
-      var clearButton = ref.clearButton;
+      var _self$props3 = self.props,
+          type = _self$props3.type,
+          resizable = _self$props3.resizable,
+          clearButton = _self$props3.clearButton;
       if (type === 'range' || type === 'toggle') { return; }
       var inputEl = self.$refs.inputEl;
       if (!inputEl) { return; }
@@ -51960,21 +51983,18 @@
       delete self.f7Calendar;
       delete self.f7ColorPicker;
     },
-
     methods: {
       domValue: function domValue() {
         var self = this;
-        var ref = self.$refs;
-        var inputEl = ref.inputEl;
+        var inputEl = self.$refs.inputEl;
         if (!inputEl) { return undefined; }
         return inputEl.value;
       },
-
       inputHasValue: function inputHasValue() {
         var self = this;
-        var ref = self.props;
-        var value = ref.value;
-        var type = ref.type;
+        var _self$props4 = self.props,
+            value = _self$props4.value,
+            type = _self$props4.type;
 
         if (type === 'datepicker' && Array.isArray(value) && value.length === 0) {
           return false;
@@ -51983,7 +52003,6 @@
         var domValue = self.domValue();
         return typeof value === 'undefined' ? domValue || domValue === 0 : value || value === 0;
       },
-
       validateInput: function validateInput(inputEl) {
         var self = this;
         var f7 = self.$f7;
@@ -52003,58 +52022,61 @@
           });
         }
       },
-
       onTextareaResize: function onTextareaResize(event) {
         this.dispatchEvent('textarea:resize textareaResize', event);
       },
-
       onInputNotEmpty: function onInputNotEmpty(event) {
         this.dispatchEvent('input:notempty inputNotEmpty', event);
       },
-
       onInputEmpty: function onInputEmpty(event) {
         this.dispatchEvent('input:empty inputEmpty', event);
       },
-
       onInputClear: function onInputClear(event) {
         this.dispatchEvent('input:clear inputClear', event);
       },
-
       onInput: function onInput() {
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
+        var arguments$1 = arguments;
 
         var self = this;
-        var ref = self.props;
-        var validate = ref.validate;
-        var validateOnBlur = ref.validateOnBlur;
-        self.dispatchEvent.apply(self, [ 'input' ].concat( args ));
+        var _self$props5 = self.props,
+            validate = _self$props5.validate,
+            validateOnBlur = _self$props5.validateOnBlur;
+
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments$1[_key];
+        }
+
+        self.dispatchEvent.apply(self, ['input'].concat(args));
 
         if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
         }
       },
-
       onFocus: function onFocus() {
-        var ref;
+        var arguments$1 = arguments;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
-        (ref = this).dispatchEvent.apply(ref, [ 'focus' ].concat( args ));
+        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          args[_key2] = arguments$1[_key2];
+        }
+
+        this.dispatchEvent.apply(this, ['focus'].concat(args));
         this.setState({
           inputFocused: true
         });
       },
-
       onBlur: function onBlur() {
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
+        var arguments$1 = arguments;
 
         var self = this;
-        var ref = self.props;
-        var validate = ref.validate;
-        var validateOnBlur = ref.validateOnBlur;
-        self.dispatchEvent.apply(self, [ 'blur' ].concat( args ));
+        var _self$props6 = self.props,
+            validate = _self$props6.validate,
+            validateOnBlur = _self$props6.validateOnBlur;
+
+        for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+          args[_key3] = arguments$1[_key3];
+        }
+
+        self.dispatchEvent.apply(self, ['blur'].concat(args));
 
         if ((validate || validate === '' || validateOnBlur || validateOnBlur === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
@@ -52064,36 +52086,36 @@
           inputFocused: false
         });
       },
-
       onChange: function onChange() {
-        var ref;
+        var arguments$1 = arguments;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
-        (ref = this).dispatchEvent.apply(ref, [ 'change' ].concat( args ));
+        for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+          args[_key4] = arguments$1[_key4];
+        }
+
+        this.dispatchEvent.apply(this, ['change'].concat(args));
 
         if (this.props.type === 'texteditor') {
           this.dispatchEvent('texteditor:change textEditorChange', args[1]);
         }
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len5 = arguments.length, args = new Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
+          args[_key5 - 1] = arguments$1[_key5];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       },
-
       setState: function setState(updater, callback) {
         __vueComponentSetState(this, updater, callback);
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -52118,41 +52140,39 @@
       tooltip: String,
       smartSelect: Boolean,
       smartSelectParams: Object
-    }, Mixins.colorProps, Mixins.linkIconProps, Mixins.linkRouterProps, Mixins.linkActionsProps),
-
+    }, Mixins.colorProps, {}, Mixins.linkIconProps, {}, Mixins.linkRouterProps, {}, Mixins.linkActionsProps),
     data: function data() {
       var props = __vueComponentProps(this);
 
-      var state = (function () {
+      var state = function () {
         return {
           isTabbarLabel: props.tabbarLabel
         };
-      })();
+      }();
 
       return {
         state: state
       };
     },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var text = props.text;
-      var badge = props.badge;
-      var badgeColor = props.badgeColor;
-      var iconOnly = props.iconOnly;
-      var iconBadge = props.iconBadge;
-      var icon = props.icon;
-      var iconColor = props.iconColor;
-      var iconSize = props.iconSize;
-      var iconMaterial = props.iconMaterial;
-      var iconF7 = props.iconF7;
-      var iconMd = props.iconMd;
-      var iconIos = props.iconIos;
-      var iconAurora = props.iconAurora;
-      var id = props.id;
-      var style = props.style;
+      var text = props.text,
+          badge = props.badge,
+          badgeColor = props.badgeColor,
+          iconOnly = props.iconOnly,
+          iconBadge = props.iconBadge,
+          icon = props.icon,
+          iconColor = props.iconColor,
+          iconSize = props.iconSize,
+          iconMaterial = props.iconMaterial,
+          iconF7 = props.iconF7,
+          iconMd = props.iconMd,
+          iconIos = props.iconIos,
+          iconAurora = props.iconAurora,
+          id = props.id,
+          style = props.style;
       var defaultSlots = self.$slots.default;
       var iconEl;
       var textEl;
@@ -52209,7 +52229,6 @@
         }
       })), [iconEl, textEl, defaultSlots]);
     },
-
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
@@ -52233,22 +52252,20 @@
         self.f7Tooltip.setText(newText);
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       el.addEventListener('click', self.onClick);
-      var ref = self.props;
-      var tabbarLabel = ref.tabbarLabel;
-      var tabLink = ref.tabLink;
-      var tooltip = ref.tooltip;
-      var smartSelect = ref.smartSelect;
-      var smartSelectParams = ref.smartSelectParams;
-      var routeProps = ref.routeProps;
+      var _self$props = self.props,
+          tabbarLabel = _self$props.tabbarLabel,
+          tabLink = _self$props.tabLink,
+          tooltip = _self$props.tooltip,
+          smartSelect = _self$props.smartSelect,
+          smartSelectParams = _self$props.smartSelectParams,
+          routeProps = _self$props.routeProps;
       var isTabbarLabel = false;
 
       if (tabbarLabel || (tabLink || tabLink === '') && self.$$(el).parents('.tabbar-labels').length) {
@@ -52275,18 +52292,15 @@
         }
       });
     },
-
     updated: function updated() {
       var self = this;
       var el = self.$refs.el;
-      var ref = self.props;
-      var routeProps = ref.routeProps;
+      var routeProps = self.props.routeProps;
 
       if (routeProps) {
         el.f7RouteProps = routeProps;
       }
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
@@ -52303,14 +52317,13 @@
         delete self.f7Tooltip;
       }
     },
-
     computed: {
       attrs: function attrs() {
         var self = this;
         var props = self.props;
-        var href = props.href;
-        var target = props.target;
-        var tabLink = props.tabLink;
+        var href = props.href,
+            target = props.target,
+            tabLink = props.tabLink;
         var hrefComputed = href;
         if (href === true) { hrefComputed = '#'; }
         if (href === false) { hrefComputed = undefined; }
@@ -52320,15 +52333,14 @@
           'data-tab': Utils$1.isStringProp(tabLink) && tabLink || undefined
         }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
       },
-
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var tabLink = props.tabLink;
-        var tabLinkActive = props.tabLinkActive;
-        var noLinkClass = props.noLinkClass;
-        var smartSelect = props.smartSelect;
-        var className = props.className;
+        var tabLink = props.tabLink,
+            tabLinkActive = props.tabLinkActive,
+            noLinkClass = props.noLinkClass,
+            smartSelect = props.smartSelect,
+            className = props.className;
         return Utils$1.classNames(className, {
           link: !(noLinkClass || self.state.isTabbarLabel),
           'icon-only': self.iconOnlyComputed,
@@ -52337,28 +52349,26 @@
           'smart-select': smartSelect
         }, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       },
-
       setState: function setState(updater, callback) {
         __vueComponentSetState(this, updater, callback);
       }
-
     }
   };
 
@@ -52374,17 +52384,16 @@
       href: [Boolean, String],
       target: String,
       tooltip: String
-    }, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps),
-
+    }, Mixins.colorProps, {}, Mixins.linkRouterProps, {}, Mixins.linkActionsProps),
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var title = props.title;
-      var text = props.text;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          title = props.title,
+          text = props.text;
       return _h('li', {
         style: style,
         class: className,
@@ -52397,38 +52406,34 @@
         ref: 'linkEl'
       })), [this.$slots['default'] || [title || text]])]);
     },
-
     computed: {
       attrs: function attrs() {
         var self = this;
         var props = self.props;
-        var link = props.link;
-        var href = props.href;
-        var target = props.target;
-        var tabLink = props.tabLink;
+        var link = props.link,
+            href = props.href,
+            target = props.target,
+            tabLink = props.tabLink;
         return Utils$1.extend({
           href: typeof link === 'boolean' && typeof href === 'boolean' ? '#' : link || href,
           target: target,
           'data-tab': Utils$1.isStringProp(tabLink) && tabLink
         }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
       },
-
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var tabLink = props.tabLink;
-        var tabLinkActive = props.tabLinkActive;
+        var tabLink = props.tabLink,
+            tabLinkActive = props.tabLinkActive;
         return Utils$1.classNames({
           'list-button': true,
           'tab-link': tabLink || tabLink === '',
           'tab-link-active': tabLinkActive
         }, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
     watch: {
       'props.tooltip': function watchTooltip(newText) {
@@ -52453,17 +52458,15 @@
         self.f7Tooltip.setText(newText);
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick']);
     },
-
     mounted: function mounted() {
       var self = this;
       var linkEl = self.$refs.linkEl;
-      var ref = self.props;
-      var routeProps = ref.routeProps;
-      var tooltip = ref.tooltip;
+      var _self$props = self.props,
+          routeProps = _self$props.routeProps,
+          tooltip = _self$props.tooltip;
 
       if (routeProps) {
         linkEl.f7RouteProps = routeProps;
@@ -52479,18 +52482,15 @@
         }
       });
     },
-
     updated: function updated() {
       var self = this;
       var linkEl = self.$refs.linkEl;
-      var ref = self.props;
-      var routeProps = ref.routeProps;
+      var routeProps = self.props.routeProps;
 
       if (routeProps) {
         linkEl.f7RouteProps = routeProps;
       }
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var linkEl = self.$refs.linkEl;
@@ -52503,19 +52503,19 @@
         delete self.f7Tooltip;
       }
     },
-
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     }
   };
 
@@ -52525,25 +52525,26 @@
       id: [String, Number],
       mediaList: Boolean,
       sortable: Boolean,
+      sortableTapHold: Boolean,
       sortableMoveElements: {
         type: Boolean,
         default: undefined
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var mediaList = props.mediaList;
-      var sortable = props.sortable;
-      var sortableMoveElements = props.sortableMoveElements;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          mediaList = props.mediaList,
+          sortable = props.sortable,
+          sortableMoveElements = props.sortableMoveElements;
       var classes = Utils$1.classNames(className, 'list-group', {
         'media-list': mediaList,
-        sortable: sortable
+        sortable: sortable,
+        'sortable-tap-hold': sortableTapHold
       }, Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -52554,12 +52555,10 @@
         }
       }, [_h('ul', [this.$slots['default']])]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -52597,13 +52596,12 @@
         default: 14
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'list-index', Mixins.colorClasses(props));
       return _h('div', {
         ref: 'el',
@@ -52614,7 +52612,6 @@
         }
       }, [this.$slots['default']]);
     },
-
     beforeDestroy: function beforeDestroy() {
       if (!this.props.init) { return; }
 
@@ -52622,20 +52619,19 @@
         this.f7ListIndex.destroy();
       }
     },
-
     mounted: function mounted() {
       var self = this;
       if (!self.props.init) { return; }
       self.$f7ready(function (f7) {
         var el = self.$refs.el;
-        var ref = self.props;
-        var listEl = ref.listEl;
-        var indexes = ref.indexes;
-        var iosItemHeight = ref.iosItemHeight;
-        var mdItemHeight = ref.mdItemHeight;
-        var auroraItemHeight = ref.auroraItemHeight;
-        var scrollList = ref.scrollList;
-        var label = ref.label;
+        var _self$props = self.props,
+            listEl = _self$props.listEl,
+            indexes = _self$props.indexes,
+            iosItemHeight = _self$props.iosItemHeight,
+            mdItemHeight = _self$props.mdItemHeight,
+            auroraItemHeight = _self$props.auroraItemHeight,
+            scrollList = _self$props.scrollList,
+            label = _self$props.label;
         self.f7ListIndex = f7.listIndex.create({
           el: el,
           listEl: listEl,
@@ -52649,12 +52645,10 @@
             select: function select(index, itemContent, itemIndex) {
               self.dispatchEvent('listindex:select listIndexSelect', itemContent, itemIndex);
             }
-
           }
         });
       });
     },
-
     watch: {
       'props.indexes': function watchIndexes() {
         if (!this.f7ListIndex) { return; }
@@ -52667,25 +52661,24 @@
         if (!this.f7ListIndex) { return; }
         this.f7ListIndex.update();
       },
-
       scrollListToIndex: function scrollListToIndex(indexContent) {
         if (!this.f7ListIndex) { return; }
         this.f7ListIndex.scrollListToIndex(indexContent);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -52757,84 +52750,82 @@
       colorPickerParams: Object,
       textEditorParams: Object
     }, Mixins.colorProps),
-
     data: function data() {
       var props = __vueComponentProps(this);
 
-      var state = (function () {
+      var state = function () {
         return {
           isSortable: props.sortable,
           inputFocused: false,
           inputInvalid: false
         };
-      })();
+      }();
 
       return {
         state: state
       };
     },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
-      var ref = self.state;
-      var inputFocused = ref.inputFocused;
-      var inputInvalid = ref.inputInvalid;
+      var _self$state = self.state,
+          inputFocused = _self$state.inputFocused,
+          inputInvalid = _self$state.inputInvalid;
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
-      var sortable = props.sortable;
-      var media = props.media;
-      var dropdown = props.dropdown;
-      var renderInput = props.input;
-      var wrap = props.wrap;
-      var type = props.type;
-      var name = props.name;
-      var value = props.value;
-      var defaultValue = props.defaultValue;
-      var readonly = props.readonly;
-      var required = props.required;
-      var disabled = props.disabled;
-      var placeholder = props.placeholder;
-      var inputId = props.inputId;
-      var size = props.size;
-      var accept = props.accept;
-      var autocomplete = props.autocomplete;
-      var autocorrect = props.autocorrect;
-      var autocapitalize = props.autocapitalize;
-      var spellcheck = props.spellcheck;
-      var autofocus = props.autofocus;
-      var autosave = props.autosave;
-      var max = props.max;
-      var min = props.min;
-      var step = props.step;
-      var maxlength = props.maxlength;
-      var minlength = props.minlength;
-      var multiple = props.multiple;
-      var inputStyle = props.inputStyle;
-      var pattern = props.pattern;
-      var validate = props.validate;
-      var validateOnBlur = props.validateOnBlur;
-      var tabindex = props.tabindex;
-      var resizable = props.resizable;
-      var clearButton = props.clearButton;
-      var noFormStoreData = props.noFormStoreData;
-      var noStoreData = props.noStoreData;
-      var ignoreStoreData = props.ignoreStoreData;
-      var errorMessage = props.errorMessage;
-      var errorMessageForce = props.errorMessageForce;
-      var info = props.info;
-      var outline = props.outline;
-      var label = props.label;
-      var inlineLabel = props.inlineLabel;
-      var floatingLabel = props.floatingLabel;
-      var textEditorParams = props.textEditorParams;
+      var id = props.id,
+          style = props.style,
+          className = props.className,
+          sortable = props.sortable,
+          media = props.media,
+          dropdown = props.dropdown,
+          renderInput = props.input,
+          wrap = props.wrap,
+          type = props.type,
+          name = props.name,
+          value = props.value,
+          defaultValue = props.defaultValue,
+          readonly = props.readonly,
+          required = props.required,
+          disabled = props.disabled,
+          placeholder = props.placeholder,
+          inputId = props.inputId,
+          size = props.size,
+          accept = props.accept,
+          autocomplete = props.autocomplete,
+          autocorrect = props.autocorrect,
+          autocapitalize = props.autocapitalize,
+          spellcheck = props.spellcheck,
+          autofocus = props.autofocus,
+          autosave = props.autosave,
+          max = props.max,
+          min = props.min,
+          step = props.step,
+          maxlength = props.maxlength,
+          minlength = props.minlength,
+          multiple = props.multiple,
+          inputStyle = props.inputStyle,
+          pattern = props.pattern,
+          validate = props.validate,
+          validateOnBlur = props.validateOnBlur,
+          tabindex = props.tabindex,
+          resizable = props.resizable,
+          clearButton = props.clearButton,
+          noFormStoreData = props.noFormStoreData,
+          noStoreData = props.noStoreData,
+          ignoreStoreData = props.ignoreStoreData,
+          errorMessage = props.errorMessage,
+          errorMessageForce = props.errorMessageForce,
+          info = props.info,
+          outline = props.outline,
+          label = props.label,
+          inlineLabel = props.inlineLabel,
+          floatingLabel = props.floatingLabel,
+          textEditorParams = props.textEditorParams;
       var domValue = self.domValue();
       var inputHasValue = self.inputHasValue();
       var isSortable = sortable || self.state.isSortable;
 
-      var createInput = function (InputTag, children) {
+      var createInput = function createInput(InputTag, children) {
         var needsValue = type !== 'file' && type !== 'datepicker' && type !== 'colorpicker';
         var needsType = InputTag === 'input';
         var inputType = type;
@@ -52997,7 +52988,6 @@
         class: 'sortable-handler'
       }), this.$slots['root'], this.$slots['root-end']]);
     },
-
     watch: {
       'props.value': function watchValue() {
         var self = this;
@@ -53013,26 +53003,24 @@
         }
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, 'onChange onInput onFocus onBlur onTextareaResize onInputNotEmpty onInputEmpty onInputClear'.split(' '));
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       var itemContentEl = self.$refs.itemContentEl;
       if (!el && !itemContentEl) { return; }
       self.$f7ready(function (f7) {
-        var ref = self.props;
-        var validate = ref.validate;
-        var validateOnBlur = ref.validateOnBlur;
-        var resizable = ref.resizable;
-        var value = ref.value;
-        var defaultValue = ref.defaultValue;
-        var type = ref.type;
-        var calendarParams = ref.calendarParams;
-        var colorPickerParams = ref.colorPickerParams;
+        var _self$props = self.props,
+            validate = _self$props.validate,
+            validateOnBlur = _self$props.validateOnBlur,
+            resizable = _self$props.resizable,
+            value = _self$props.value,
+            defaultValue = _self$props.defaultValue,
+            type = _self$props.type,
+            calendarParams = _self$props.calendarParams,
+            colorPickerParams = _self$props.colorPickerParams;
         var inputEl = self.$refs.inputEl;
         if (!inputEl) { return; }
         inputEl.addEventListener('input:notempty', self.onInputNotEmpty, false);
@@ -53048,7 +53036,6 @@
               change: function change(calendar, calendarValue) {
                 self.dispatchEvent('calendar:change calendarChange', calendarValue);
               }
-
             }
           }, calendarParams || {}));
         }
@@ -53061,7 +53048,6 @@
               change: function change(colorPicker, colorPickerValue) {
                 self.dispatchEvent('colorpicker:change colorPickerChange', colorPickerValue);
               }
-
             }
           }, colorPickerParams || {}));
         }
@@ -53084,7 +53070,6 @@
         });
       }
     },
-
     updated: function updated() {
       var self = this;
       var $listEl = self.$listEl;
@@ -53097,11 +53082,11 @@
         });
       }
 
-      var ref = self.props;
-      var validate = ref.validate;
-      var validateOnBlur = ref.validateOnBlur;
-      var resizable = ref.resizable;
-      var type = ref.type;
+      var _self$props2 = self.props,
+          validate = _self$props2.validate,
+          validateOnBlur = _self$props2.validateOnBlur,
+          resizable = _self$props2.resizable,
+          type = _self$props2.type;
       var f7 = self.$f7;
       if (!f7) { return; }
 
@@ -53119,7 +53104,6 @@
         }
       }
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var inputEl = self.$refs.inputEl;
@@ -53140,21 +53124,18 @@
       delete self.f7Calendar;
       delete self.f7ColorPicker;
     },
-
     methods: {
       domValue: function domValue() {
         var self = this;
-        var ref = self.$refs;
-        var inputEl = ref.inputEl;
+        var inputEl = self.$refs.inputEl;
         if (!inputEl) { return undefined; }
         return inputEl.value;
       },
-
       inputHasValue: function inputHasValue() {
         var self = this;
-        var ref = self.props;
-        var value = ref.value;
-        var type = ref.type;
+        var _self$props3 = self.props,
+            value = _self$props3.value,
+            type = _self$props3.type;
 
         if (type === 'datepicker' && Array.isArray(value) && value.length === 0) {
           return false;
@@ -53163,7 +53144,6 @@
         var domValue = self.domValue();
         return typeof value === 'undefined' ? domValue || domValue === 0 : value || value === 0;
       },
-
       validateInput: function validateInput(inputEl) {
         var self = this;
         var f7 = self.$f7;
@@ -53183,58 +53163,61 @@
           });
         }
       },
-
       onTextareaResize: function onTextareaResize(event) {
         this.dispatchEvent('textarea:resize textareaResize', event);
       },
-
       onInputNotEmpty: function onInputNotEmpty(event) {
         this.dispatchEvent('input:notempty inputNotEmpty', event);
       },
-
       onInputEmpty: function onInputEmpty(event) {
         this.dispatchEvent('input:empty inputEmpty', event);
       },
-
       onInputClear: function onInputClear(event) {
         this.dispatchEvent('input:clear inputClear', event);
       },
-
       onInput: function onInput() {
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
+        var arguments$1 = arguments;
 
         var self = this;
-        var ref = self.props;
-        var validate = ref.validate;
-        var validateOnBlur = ref.validateOnBlur;
-        self.dispatchEvent.apply(self, [ 'input' ].concat( args ));
+        var _self$props4 = self.props,
+            validate = _self$props4.validate,
+            validateOnBlur = _self$props4.validateOnBlur;
+
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments$1[_key];
+        }
+
+        self.dispatchEvent.apply(self, ['input'].concat(args));
 
         if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
         }
       },
-
       onFocus: function onFocus() {
-        var ref;
+        var arguments$1 = arguments;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
-        (ref = this).dispatchEvent.apply(ref, [ 'focus' ].concat( args ));
+        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          args[_key2] = arguments$1[_key2];
+        }
+
+        this.dispatchEvent.apply(this, ['focus'].concat(args));
         this.setState({
           inputFocused: true
         });
       },
-
       onBlur: function onBlur() {
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
+        var arguments$1 = arguments;
 
         var self = this;
-        var ref = self.props;
-        var validate = ref.validate;
-        var validateOnBlur = ref.validateOnBlur;
-        self.dispatchEvent.apply(self, [ 'blur' ].concat( args ));
+        var _self$props5 = self.props,
+            validate = _self$props5.validate,
+            validateOnBlur = _self$props5.validateOnBlur;
+
+        for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+          args[_key3] = arguments$1[_key3];
+        }
+
+        self.dispatchEvent.apply(self, ['blur'].concat(args));
 
         if ((validate || validate === '' || validateOnBlur || validateOnBlur === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
@@ -53244,36 +53227,36 @@
           inputFocused: false
         });
       },
-
       onChange: function onChange() {
-        var ref;
+        var arguments$1 = arguments;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
-        (ref = this).dispatchEvent.apply(ref, [ 'change' ].concat( args ));
+        for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+          args[_key4] = arguments$1[_key4];
+        }
+
+        this.dispatchEvent.apply(this, ['change'].concat(args));
 
         if (this.props.type === 'texteditor') {
           this.dispatchEvent('texteditor:change textEditorChange', args[1]);
         }
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len5 = arguments.length, args = new Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
+          args[_key5 - 1] = arguments$1[_key5];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       },
-
       setState: function setState(updater, callback) {
         __vueComponentSetState(this, updater, callback);
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -53282,13 +53265,12 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'item-cell', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -53298,15 +53280,20 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
+  function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+  function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+  function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
+
+  function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
   var F7ListItemContent = {
     name: 'f7-list-item-content',
     props: Object.assign({
@@ -53333,34 +53320,33 @@
       required: Boolean,
       disabled: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var className = props.className;
-      var style = props.style;
-      var radio = props.radio;
-      var checkbox = props.checkbox;
-      var value = props.value;
-      var name = props.name;
-      var checked = props.checked;
-      var defaultChecked = props.defaultChecked;
-      var readonly = props.readonly;
-      var disabled = props.disabled;
-      var required = props.required;
-      var media = props.media;
-      var header = props.header;
-      var footer = props.footer;
-      var title = props.title;
-      var subtitle = props.subtitle;
-      var text = props.text;
-      var after = props.after;
-      var badge = props.badge;
-      var mediaList = props.mediaList;
-      var mediaItem = props.mediaItem;
-      var badgeColor = props.badgeColor;
+      var id = props.id,
+          className = props.className,
+          style = props.style,
+          radio = props.radio,
+          checkbox = props.checkbox,
+          value = props.value,
+          name = props.name,
+          checked = props.checked,
+          defaultChecked = props.defaultChecked,
+          readonly = props.readonly,
+          disabled = props.disabled,
+          required = props.required,
+          media = props.media,
+          header = props.header,
+          footer = props.footer,
+          title = props.title,
+          subtitle = props.subtitle,
+          text = props.text,
+          after = props.after,
+          badge = props.badge,
+          mediaList = props.mediaList,
+          mediaItem = props.mediaItem,
+          badgeColor = props.badgeColor;
       var slotsContentStart = [];
       var slotsContent = [];
       var slotsContentEnd = [];
@@ -53396,7 +53382,7 @@
 
       if (slots && slots.length) {
         slots.forEach(function (slot) {
-          if (Array.isArray(slot)) { flattenSlots.push.apply(flattenSlots, slot); }else { flattenSlots.push(slot); }
+          if (Array.isArray(slot)) { flattenSlots.push.apply(flattenSlots, _toConsumableArray(slot)); }else { flattenSlots.push(slot); }
         });
       }
 
@@ -53444,7 +53430,7 @@
           });
         }
         inputIconEl = _h('i', {
-          class: ("icon icon-" + (radio ? 'radio' : 'checkbox'))
+          class: "icon icon-".concat(radio ? 'radio' : 'checkbox')
         });
       }
 
@@ -53543,18 +53529,15 @@
         }
       }, [slotsContentStart, inputEl, inputIconEl, mediaEl, innerEl, slotsContent, slotsContentEnd]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, 'onClick onChange'.split(' '));
     },
-
     mounted: function mounted() {
       var self = this;
-      var ref = self.$refs;
-      var el = ref.el;
-      var inputEl = ref.inputEl;
-      var ref$1 = self.props;
-      var indeterminate = ref$1.indeterminate;
+      var _self$$refs = self.$refs,
+          el = _self$$refs.el,
+          inputEl = _self$$refs.inputEl;
+      var indeterminate = self.props.indeterminate;
 
       if (indeterminate && inputEl) {
         inputEl.indeterminate = true;
@@ -53562,48 +53545,41 @@
 
       el.addEventListener('click', self.onClick);
     },
-
     updated: function updated() {
       var self = this;
-      var ref = self.$refs;
-      var inputEl = ref.inputEl;
-      var ref$1 = self.props;
-      var indeterminate = ref$1.indeterminate;
+      var inputEl = self.$refs.inputEl;
+      var indeterminate = self.props.indeterminate;
 
       if (inputEl) {
         inputEl.indeterminate = indeterminate;
       }
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var ref = self.$refs;
-      var el = ref.el;
+      var el = self.$refs.el;
       el.removeEventListener('click', self.onClick);
     },
-
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       onChange: function onChange(event) {
         this.dispatchEvent('change', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -53612,13 +53588,12 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'item-row', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -53628,12 +53603,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -53680,67 +53653,65 @@
       required: Boolean,
       disabled: Boolean,
       virtualListIndex: Number
-    }, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps),
-
+    }, Mixins.colorProps, {}, Mixins.linkRouterProps, {}, Mixins.linkActionsProps),
     data: function data() {
       var props = __vueComponentProps(this);
 
-      var state = (function () {
+      var state = function () {
         return {
           isMedia: props.mediaItem || props.mediaList,
           isSortable: props.sortable,
           isSimple: false
         };
-      })();
+      }();
 
       return {
         state: state
       };
     },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var linkEl;
       var itemContentEl;
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
-      var title = props.title;
-      var text = props.text;
-      var media = props.media;
-      var subtitle = props.subtitle;
-      var header = props.header;
-      var footer = props.footer;
-      var link = props.link;
-      var href = props.href;
-      var target = props.target;
-      var after = props.after;
-      var badge = props.badge;
-      var badgeColor = props.badgeColor;
-      var mediaItem = props.mediaItem;
-      var mediaList = props.mediaList;
-      var divider = props.divider;
-      var groupTitle = props.groupTitle;
-      var swipeout = props.swipeout;
-      var accordionItem = props.accordionItem;
-      var accordionItemOpened = props.accordionItemOpened;
-      var smartSelect = props.smartSelect;
-      var checkbox = props.checkbox;
-      var radio = props.radio;
-      var checked = props.checked;
-      var defaultChecked = props.defaultChecked;
-      var indeterminate = props.indeterminate;
-      var name = props.name;
-      var value = props.value;
-      var readonly = props.readonly;
-      var required = props.required;
-      var disabled = props.disabled;
-      var sortable = props.sortable;
-      var noChevron = props.noChevron;
-      var chevronCenter = props.chevronCenter;
-      var virtualListIndex = props.virtualListIndex;
+      var id = props.id,
+          style = props.style,
+          className = props.className,
+          title = props.title,
+          text = props.text,
+          media = props.media,
+          subtitle = props.subtitle,
+          header = props.header,
+          footer = props.footer,
+          link = props.link,
+          href = props.href,
+          target = props.target,
+          after = props.after,
+          badge = props.badge,
+          badgeColor = props.badgeColor,
+          mediaItem = props.mediaItem,
+          mediaList = props.mediaList,
+          divider = props.divider,
+          groupTitle = props.groupTitle,
+          swipeout = props.swipeout,
+          accordionItem = props.accordionItem,
+          accordionItemOpened = props.accordionItemOpened,
+          smartSelect = props.smartSelect,
+          checkbox = props.checkbox,
+          radio = props.radio,
+          checked = props.checked,
+          defaultChecked = props.defaultChecked,
+          indeterminate = props.indeterminate,
+          name = props.name,
+          value = props.value,
+          readonly = props.readonly,
+          required = props.required,
+          disabled = props.disabled,
+          sortable = props.sortable,
+          noChevron = props.noChevron,
+          chevronCenter = props.chevronCenter,
+          virtualListIndex = props.virtualListIndex;
       var isMedia = mediaItem || mediaList || self.state.isMedia;
       var isSortable = sortable || self.state.isSortable;
       var isSimple = self.state.isSimple;
@@ -53781,7 +53752,7 @@
           var linkAttrs = Object.assign({
             href: link === true ? '' : link || href,
             target: target
-          }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
+          }, Mixins.linkRouterAttrs(props), {}, Mixins.linkActionsAttrs(props));
           var linkClasses = Utils$1.classNames({
             'item-link': true,
             'smart-select': smartSelect
@@ -53845,7 +53816,6 @@
         class: 'sortable-handler'
       }), (swipeout || accordionItem) && self.$slots.default, this.$slots['root'], this.$slots['root-end']]);
     },
-
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
@@ -53880,27 +53850,25 @@
         }
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick', 'onChange', 'onSwipeoutOpen', 'onSwipeoutOpened', 'onSwipeoutClose', 'onSwipeoutClosed', 'onSwipeoutDelete', 'onSwipeoutDeleted', 'onSwipeoutOverswipeEnter', 'onSwipeoutOverswipeExit', 'onSwipeout', 'onAccBeforeOpen', 'onAccOpen', 'onAccOpened', 'onAccBeforeClose', 'onAccClose', 'onAccClosed']);
     },
-
     mounted: function mounted() {
       var self = this;
-      var ref = self.$refs;
-      var el = ref.el;
-      var linkEl = ref.linkEl;
+      var _self$$refs = self.$refs,
+          el = _self$$refs.el,
+          linkEl = _self$$refs.linkEl;
       if (!el) { return; }
-      var ref$1 = self.props;
-      var link = ref$1.link;
-      var href = ref$1.href;
-      var smartSelect = ref$1.smartSelect;
-      var swipeout = ref$1.swipeout;
-      var swipeoutOpened = ref$1.swipeoutOpened;
-      var accordionItem = ref$1.accordionItem;
-      var smartSelectParams = ref$1.smartSelectParams;
-      var routeProps = ref$1.routeProps;
-      var tooltip = ref$1.tooltip;
+      var _self$props = self.props,
+          link = _self$props.link,
+          href = _self$props.href,
+          smartSelect = _self$props.smartSelect,
+          swipeout = _self$props.swipeout,
+          swipeoutOpened = _self$props.swipeoutOpened,
+          accordionItem = _self$props.accordionItem,
+          smartSelectParams = _self$props.smartSelectParams,
+          routeProps = _self$props.routeProps,
+          tooltip = _self$props.tooltip;
       var needsEvents = !(link || href || accordionItem || smartSelect);
 
       if (!needsEvents && linkEl) {
@@ -53964,14 +53932,11 @@
         }
       });
     },
-
     updated: function updated() {
       var self = this;
       var $listEl = self.$listEl;
-      var ref = self.$refs;
-      var linkEl = ref.linkEl;
-      var ref$1 = self.props;
-      var routeProps = ref$1.routeProps;
+      var linkEl = self.$refs.linkEl;
+      var routeProps = self.props.routeProps;
 
       if (linkEl && routeProps) {
         linkEl.f7RouteProps = routeProps;
@@ -54000,17 +53965,15 @@
         });
       }
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var ref = self.$refs;
-      var linkEl = ref.linkEl;
-      var ref$1 = self.props;
-      var link = ref$1.link;
-      var href = ref$1.href;
-      var smartSelect = ref$1.smartSelect;
-      var swipeout = ref$1.swipeout;
-      var accordionItem = ref$1.accordionItem;
+      var linkEl = self.$refs.linkEl;
+      var _self$props2 = self.props,
+          link = _self$props2.link,
+          href = _self$props2.href,
+          smartSelect = _self$props2.smartSelect,
+          swipeout = _self$props2.swipeout,
+          accordionItem = _self$props2.accordionItem;
       var needsEvents = !(link || href || accordionItem || smartSelect);
 
       if (linkEl) {
@@ -54059,7 +54022,6 @@
       self.eventTargetEl = null;
       delete self.eventTargetEl;
     },
-
     methods: {
       onClick: function onClick(event) {
         var self = this;
@@ -54068,107 +54030,89 @@
           self.dispatchEvent('click', event);
         }
       },
-
       onSwipeoutOverswipeEnter: function onSwipeoutOverswipeEnter(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('swipeout:overswipeenter swipeoutOverswipeEnter');
       },
-
       onSwipeoutOverswipeExit: function onSwipeoutOverswipeExit(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('swipeout:overswipeexit swipeoutOverswipeExit');
       },
-
       onSwipeoutDeleted: function onSwipeoutDeleted(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('swipeout:deleted swipeoutDeleted');
       },
-
       onSwipeoutDelete: function onSwipeoutDelete(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('swipeout:delete swipeoutDelete');
       },
-
       onSwipeoutClose: function onSwipeoutClose(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('swipeout:close swipeoutClose');
       },
-
       onSwipeoutClosed: function onSwipeoutClosed(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('swipeout:closed swipeoutClosed');
       },
-
       onSwipeoutOpen: function onSwipeoutOpen(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('swipeout:open swipeoutOpen');
       },
-
       onSwipeoutOpened: function onSwipeoutOpened(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('swipeout:opened swipeoutOpened');
       },
-
       onSwipeout: function onSwipeout(el, progress) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('swipeout', progress);
       },
-
       onAccBeforeClose: function onAccBeforeClose(el, prevent) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('accordion:beforeclose accordionBeforeClose', prevent);
       },
-
       onAccClose: function onAccClose(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('accordion:close accordionClose');
       },
-
       onAccClosed: function onAccClosed(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('accordion:closed accordionClosed');
       },
-
       onAccBeforeOpen: function onAccBeforeOpen(el, prevent) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('accordion:beforeopen accordionBeforeOpen', prevent);
       },
-
       onAccOpen: function onAccOpen(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('accordion:open accordionOpen');
       },
-
       onAccOpened: function onAccOpened(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('accordion:opened accordionOpened');
       },
-
       onChange: function onChange(event) {
         this.dispatchEvent('change', event);
       },
-
       onInput: function onInput(event) {
         this.dispatchEvent('input', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       },
-
       setState: function setState(updater, callback) {
         __vueComponentSetState(this, updater, callback);
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -54184,6 +54128,7 @@
       xlargeInset: Boolean,
       mediaList: Boolean,
       sortable: Boolean,
+      sortableTapHold: Boolean,
       sortableEnabled: Boolean,
       sortableMoveElements: {
         type: Boolean,
@@ -54211,18 +54156,17 @@
       virtualList: Boolean,
       virtualListParams: Object
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var form = props.form;
-      var sortableMoveElements = props.sortableMoveElements;
-      var ref = self.$slots;
-      var slotsList = ref.list;
-      var slotsDefault = ref.default;
+      var id = props.id,
+          style = props.style,
+          form = props.form,
+          sortableMoveElements = props.sortableMoveElements;
+      var _self$$slots = self.$slots,
+          slotsList = _self$$slots.list,
+          slotsDefault = _self$$slots.default;
       var rootChildrenBeforeList = [];
       var rootChildrenAfterList = [];
       var ulChildren = slotsList || [];
@@ -54266,40 +54210,40 @@
         }, [self.$slots['before-list'], rootChildrenBeforeList, self.$slots['after-list'], rootChildrenAfterList]);
       }
     },
-
     computed: {
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var inset = props.inset;
-        var xsmallInset = props.xsmallInset;
-        var smallInset = props.smallInset;
-        var mediumInset = props.mediumInset;
-        var largeInset = props.largeInset;
-        var xlargeInset = props.xlargeInset;
-        var mediaList = props.mediaList;
-        var simpleList = props.simpleList;
-        var linksList = props.linksList;
-        var sortable = props.sortable;
-        var accordionList = props.accordionList;
-        var contactsList = props.contactsList;
-        var virtualList = props.virtualList;
-        var sortableEnabled = props.sortableEnabled;
-        var tab = props.tab;
-        var tabActive = props.tabActive;
-        var noHairlines = props.noHairlines;
-        var noHairlinesIos = props.noHairlinesIos;
-        var noHairlinesMd = props.noHairlinesMd;
-        var noHairlinesAurora = props.noHairlinesAurora;
-        var noHairlinesBetween = props.noHairlinesBetween;
-        var noHairlinesBetweenIos = props.noHairlinesBetweenIos;
-        var noHairlinesBetweenMd = props.noHairlinesBetweenMd;
-        var noHairlinesBetweenAurora = props.noHairlinesBetweenAurora;
-        var formStoreData = props.formStoreData;
-        var inlineLabels = props.inlineLabels;
-        var className = props.className;
-        var noChevron = props.noChevron;
-        var chevronCenter = props.chevronCenter;
+        var inset = props.inset,
+            xsmallInset = props.xsmallInset,
+            smallInset = props.smallInset,
+            mediumInset = props.mediumInset,
+            largeInset = props.largeInset,
+            xlargeInset = props.xlargeInset,
+            mediaList = props.mediaList,
+            simpleList = props.simpleList,
+            linksList = props.linksList,
+            sortable = props.sortable,
+            sortableTapHold = props.sortableTapHold,
+            sortableEnabled = props.sortableEnabled,
+            accordionList = props.accordionList,
+            contactsList = props.contactsList,
+            virtualList = props.virtualList,
+            tab = props.tab,
+            tabActive = props.tabActive,
+            noHairlines = props.noHairlines,
+            noHairlinesIos = props.noHairlinesIos,
+            noHairlinesMd = props.noHairlinesMd,
+            noHairlinesAurora = props.noHairlinesAurora,
+            noHairlinesBetween = props.noHairlinesBetween,
+            noHairlinesBetweenIos = props.noHairlinesBetweenIos,
+            noHairlinesBetweenMd = props.noHairlinesBetweenMd,
+            noHairlinesBetweenAurora = props.noHairlinesBetweenAurora,
+            formStoreData = props.formStoreData,
+            inlineLabels = props.inlineLabels,
+            className = props.className,
+            noChevron = props.noChevron,
+            chevronCenter = props.chevronCenter;
         return Utils$1.classNames(className, 'list', {
           inset: inset,
           'xsmall-inset': xsmallInset,
@@ -54311,10 +54255,11 @@
           'simple-list': simpleList,
           'links-list': linksList,
           sortable: sortable,
+          'sortable-tap-hold': sortableTapHold,
+          'sortable-enabled': sortableEnabled,
           'accordion-list': accordionList,
           'contacts-list': contactsList,
           'virtual-list': virtualList,
-          'sortable-enabled': sortableEnabled,
           tab: tab,
           'tab-active': tabActive,
           'no-hairlines': noHairlines,
@@ -54331,24 +54276,20 @@
           'chevron-center': chevronCenter
         }, Mixins.colorClasses(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onSortableEnable', 'onSortableDisable', 'onSortableSort', 'onTabShow', 'onTabHide', 'onSubmit']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
-      var ref = self.props;
-      var virtualList = ref.virtualList;
-      var virtualListParams = ref.virtualListParams;
-      var form = ref.form;
+      var _self$props = self.props,
+          virtualList = _self$props.virtualList,
+          virtualListParams = _self$props.virtualListParams,
+          form = _self$props.form;
       self.$f7ready(function (f7) {
         self.eventTargetEl = el;
         f7.on('sortableEnable', self.onSortableEnable);
@@ -54371,27 +54312,22 @@
               var vl = this;
               self.dispatchEvent('virtual:itembeforeinsert virtualItemBeforeInsert', vl, itemEl, item);
             },
-
             beforeClear: function beforeClear(fragment) {
               var vl = this;
               self.dispatchEvent('virtual:beforeclear virtualBeforeClear', vl, fragment);
             },
-
             itemsBeforeInsert: function itemsBeforeInsert(fragment) {
               var vl = this;
               self.dispatchEvent('virtual:itemsbeforeinsert virtualItemsBeforeInsert', vl, fragment);
             },
-
             itemsAfterInsert: function itemsAfterInsert(fragment) {
               var vl = this;
               self.dispatchEvent('virtual:itemsafterinsert virtualItemsAfterInsert', vl, fragment);
             }
-
           }
         }, vlParams));
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
@@ -54408,44 +54344,39 @@
       if (!(self.virtualList && self.f7VirtualList)) { return; }
       if (self.f7VirtualList.destroy) { self.f7VirtualList.destroy(); }
     },
-
     methods: {
       onSubmit: function onSubmit(event) {
         this.dispatchEvent('submit', event);
       },
-
       onSortableEnable: function onSortableEnable(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('sortable:enable sortableEnable');
       },
-
       onSortableDisable: function onSortableDisable(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('sortable:disable sortableDisable');
       },
-
       onSortableSort: function onSortableSort(el, sortData, listEl) {
         if (this.eventTargetEl !== listEl) { return; }
         this.dispatchEvent('sortable:sort sortableSort', sortData);
       },
-
       onTabShow: function onTabShow(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('tab:show tabShow');
       },
-
       onTabHide: function onTabHide(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('tab:hide tabHide');
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     }
   };
 
@@ -54454,13 +54385,12 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'login-screen-title', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -54470,12 +54400,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -54485,14 +54413,13 @@
       id: [String, Number],
       opened: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'login-screen', Mixins.colorClasses(props));
       return _h('div', {
         ref: 'el',
@@ -54503,7 +54430,6 @@
         }
       }, [this.$slots['default']]);
     },
-
     watch: {
       'props.opened': function watchOpened(opened) {
         var self = this;
@@ -54516,11 +54442,9 @@
         }
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
@@ -54541,54 +54465,47 @@
         }
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7LoginScreen) { self.f7LoginScreen.destroy(); }
     },
-
     methods: {
       onOpen: function onOpen(instance) {
         this.dispatchEvent('loginscreen:open loginScreenOpen', instance);
       },
-
       onOpened: function onOpened(instance) {
         this.dispatchEvent('loginscreen:opened loginScreenOpened', instance);
       },
-
       onClose: function onClose(instance) {
         this.dispatchEvent('loginscreen:close loginScreenClose', instance);
       },
-
       onClosed: function onClosed(instance) {
         this.dispatchEvent('loginscreen:closed loginScreenClosed', instance);
       },
-
       open: function open(animate) {
         var self = this;
         if (!self.f7LoginScreen) { return undefined; }
         return self.f7LoginScreen.open(animate);
       },
-
       close: function close(animate) {
         var self = this;
         if (!self.f7LoginScreen) { return undefined; }
         return self.f7LoginScreen.close(animate);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -54601,20 +54518,19 @@
       href: String,
       target: String,
       divider: Boolean
-    }, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps),
-
+    }, Mixins.colorProps, {}, Mixins.linkRouterProps, {}, Mixins.linkActionsProps),
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var className = props.className;
-      var style = props.style;
-      var link = props.link;
-      var href = props.href;
-      var text = props.text;
-      var divider = props.divider;
-      var menuClose = props.menuClose;
+      var id = props.id,
+          className = props.className,
+          style = props.style,
+          link = props.link,
+          href = props.href,
+          text = props.text,
+          divider = props.divider,
+          menuClose = props.menuClose;
       var isLink = link || href || href === '';
       var Tag = isLink ? 'a' : 'div';
       var classes = Utils$1.classNames({
@@ -54634,30 +54550,24 @@
         }
       })), [text, this.$slots['default']]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
       el.addEventListener('click', self.onClick);
-      var ref = self.props;
-      var routeProps = ref.routeProps;
+      var routeProps = self.props.routeProps;
       if (routeProps) { el.f7RouteProps = routeProps; }
     },
-
     updated: function updated() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      var ref = self.props;
-      var routeProps = ref.routeProps;
+      var routeProps = self.props.routeProps;
       if (routeProps) { el.f7RouteProps = routeProps; }
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
@@ -54665,14 +54575,13 @@
       el.removeEventListener('click', self.onClick);
       delete el.f7RouteProps;
     },
-
     computed: {
       attrs: function attrs() {
         var self = this;
         var props = self.props;
-        var link = props.link;
-        var href = props.href;
-        var target = props.target;
+        var link = props.link,
+            href = props.href,
+            target = props.target;
         var hrefComputed = href;
         if (typeof hrefComputed === 'undefined' && link) { hrefComputed = '#'; }
         return Utils$1.extend({
@@ -54680,24 +54589,23 @@
           target: target
         }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     }
   };
 
@@ -54711,24 +54619,23 @@
       center: Boolean,
       right: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var className = props.className;
-      var style = props.style;
-      var contentHeight = props.contentHeight;
-      var position = props.position;
-      var left = props.left;
-      var center = props.center;
-      var right = props.right;
+      var id = props.id,
+          className = props.className,
+          style = props.style,
+          contentHeight = props.contentHeight,
+          position = props.position,
+          left = props.left,
+          center = props.center,
+          right = props.right;
       var positionComputed = position || 'left';
       if (left) { positionComputed = 'left'; }
       if (center) { positionComputed = 'center'; }
       if (right) { positionComputed = 'right'; }
-      var classes = Utils$1.classNames('menu-dropdown', ("menu-dropdown-" + positionComputed), Mixins.colorClasses(props), className);
+      var classes = Utils$1.classNames('menu-dropdown', "menu-dropdown-".concat(positionComputed), Mixins.colorClasses(props), className);
       return _h('div', {
         class: classes,
         style: style,
@@ -54742,12 +54649,10 @@
         }
       }, [this.$slots['default']])]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -54761,28 +54666,27 @@
       link: Boolean,
       target: String,
       dropdown: Boolean
-    }, Mixins.colorProps, Mixins.linkIconProps, Mixins.linkRouterProps, Mixins.linkActionsProps),
-
+    }, Mixins.colorProps, {}, Mixins.linkIconProps, {}, Mixins.linkRouterProps, {}, Mixins.linkActionsProps),
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var className = props.className;
-      var style = props.style;
-      var link = props.link;
-      var href = props.href;
-      var text = props.text;
-      var dropdown = props.dropdown;
-      var iconOnly = props.iconOnly;
-      var icon = props.icon;
-      var iconColor = props.iconColor;
-      var iconSize = props.iconSize;
-      var iconMaterial = props.iconMaterial;
-      var iconF7 = props.iconF7;
-      var iconMd = props.iconMd;
-      var iconIos = props.iconIos;
-      var iconAurora = props.iconAurora;
+      var id = props.id,
+          className = props.className,
+          style = props.style,
+          link = props.link,
+          href = props.href,
+          text = props.text,
+          dropdown = props.dropdown,
+          iconOnly = props.iconOnly,
+          icon = props.icon,
+          iconColor = props.iconColor,
+          iconSize = props.iconSize,
+          iconMaterial = props.iconMaterial,
+          iconF7 = props.iconF7,
+          iconMd = props.iconMd,
+          iconIos = props.iconIos,
+          iconAurora = props.iconAurora;
       var slots = self.$slots;
       var iconEl;
       var iconOnlyComputed;
@@ -54828,35 +54732,29 @@
         class: 'menu-item-content'
       }, [text, iconEl, this.$slots['text']]), this.$slots['default']]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick', 'onOpened', 'onClosed']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
       self.eventTargetEl = el;
       el.addEventListener('click', self.onClick);
-      var ref = self.props;
-      var routeProps = ref.routeProps;
+      var routeProps = self.props.routeProps;
       if (routeProps) { el.f7RouteProps = routeProps; }
       self.$f7ready(function (f7) {
         f7.on('menuOpened', self.onOpened);
         f7.on('menuClosed', self.onClosed);
       });
     },
-
     updated: function updated() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      var ref = self.props;
-      var routeProps = ref.routeProps;
+      var routeProps = self.props.routeProps;
       if (routeProps) { el.f7RouteProps = routeProps; }
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
@@ -54868,14 +54766,13 @@
       delete el.f7RouteProps;
       delete self.eventTargetEl;
     },
-
     computed: {
       attrs: function attrs() {
         var self = this;
         var props = self.props;
-        var href = props.href;
-        var link = props.link;
-        var target = props.target;
+        var href = props.href,
+            link = props.link,
+            target = props.target;
         var hrefComputed = href;
         if (typeof hrefComputed === 'undefined' && link) { hrefComputed = '#'; }
         return Utils$1.extend({
@@ -54883,34 +54780,31 @@
           target: target
         }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
     methods: {
       onClick: function onClick(e) {
         this.dispatchEvent('click', e);
       },
-
       onOpened: function onOpened(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('menuOpened menu:opened', el);
       },
-
       onClosed: function onClosed(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('menuClosed menu:closed', el);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     }
   };
 
@@ -54919,14 +54813,13 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var className = props.className;
-      var style = props.style;
+      var id = props.id,
+          className = props.className,
+          style = props.style;
       return _h('div', {
         class: Utils$1.classNames('menu', Mixins.colorClasses(props), className),
         style: style,
@@ -54937,12 +54830,10 @@
         class: 'menu-inner'
       }, [this.$slots['default']])]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -54971,38 +54862,37 @@
       sameAvatar: Boolean,
       typing: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var text = props.text;
-      var name = props.name;
-      var avatar = props.avatar;
-      var image = props.image;
-      var header = props.header;
-      var footer = props.footer;
-      var textHeader = props.textHeader;
-      var textFooter = props.textFooter;
-      var typing = props.typing;
-      var id = props.id;
-      var style = props.style;
-      var ref = self.$slots;
-      var slotsStart = ref.start;
-      var slotsEnd = ref.end;
-      var slotsDefault = ref.default;
-      var slotsContentStart = ref['content-start'];
-      var slotsContentEnd = ref['content-end'];
-      var slotsAvatar = ref.avatar;
-      var slotsName = ref.name;
-      var slotsHeader = ref.header;
-      var slotsFooter = ref.footer;
-      var slotsImage = ref.image;
-      var slotsText = ref.text;
-      var slotsTextHeader = ref['text-header'];
-      var slotsTextFooter = ref['text-footer'];
-      var slotsBubbleStart = ref['bubble-start'];
-      var slotsBubbleEnd = ref['bubble-end'];
+      var text = props.text,
+          name = props.name,
+          avatar = props.avatar,
+          image = props.image,
+          header = props.header,
+          footer = props.footer,
+          textHeader = props.textHeader,
+          textFooter = props.textFooter,
+          typing = props.typing,
+          id = props.id,
+          style = props.style;
+      var _self$$slots = self.$slots,
+          slotsStart = _self$$slots.start,
+          slotsEnd = _self$$slots.end,
+          slotsDefault = _self$$slots.default,
+          slotsContentStart = _self$$slots['content-start'],
+          slotsContentEnd = _self$$slots['content-end'],
+          slotsAvatar = _self$$slots.avatar,
+          slotsName = _self$$slots.name,
+          slotsHeader = _self$$slots.header,
+          slotsFooter = _self$$slots.footer,
+          slotsImage = _self$$slots.image,
+          slotsText = _self$$slots.text,
+          slotsTextHeader = _self$$slots['text-header'],
+          slotsTextFooter = _self$$slots['text-footer'],
+          slotsBubbleStart = _self$$slots['bubble-start'],
+          slotsBubbleEnd = _self$$slots['bubble-end'];
       return _h('div', {
         ref: 'el',
         style: style,
@@ -55014,7 +54904,7 @@
         ref: 'avatarEl',
         class: 'message-avatar',
         style: {
-          backgroundImage: avatar && ("url(" + avatar + ")")
+          backgroundImage: avatar && "url(".concat(avatar, ")")
         }
       }, [slotsAvatar]), _h('div', {
         class: 'message-content'
@@ -55047,21 +54937,20 @@
         class: 'message-footer'
       }, [slotsFooter || footer]), slotsContentEnd]), slotsEnd]);
     },
-
     computed: {
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var type = props.type;
-        var typing = props.typing;
-        var first = props.first;
-        var last = props.last;
-        var tail = props.tail;
-        var sameName = props.sameName;
-        var sameHeader = props.sameHeader;
-        var sameFooter = props.sameFooter;
-        var sameAvatar = props.sameAvatar;
-        var className = props.className;
+        var type = props.type,
+            typing = props.typing,
+            first = props.first,
+            last = props.last,
+            tail = props.tail,
+            sameName = props.sameName,
+            sameHeader = props.sameHeader,
+            sameFooter = props.sameFooter,
+            sameAvatar = props.sameAvatar,
+            className = props.className;
         return Utils$1.classNames(className, 'message', {
           'message-sent': type === 'sent',
           'message-received': type === 'received',
@@ -55075,26 +54964,22 @@
           'message-same-avatar': sameAvatar
         }, Mixins.colorClasses(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick', 'onNameClick', 'onTextClick', 'onAvatarClick', 'onHeaderClick', 'onFooterClick', 'onBubbleClick']);
     },
-
     mounted: function mounted() {
-      var ref = this.$refs;
-      var el = ref.el;
-      var nameEl = ref.nameEl;
-      var textEl = ref.textEl;
-      var avatarEl = ref.avatarEl;
-      var headerEl = ref.headerEl;
-      var footerEl = ref.footerEl;
-      var bubbleEl = ref.bubbleEl;
+      var _this$$refs = this.$refs,
+          el = _this$$refs.el,
+          nameEl = _this$$refs.nameEl,
+          textEl = _this$$refs.textEl,
+          avatarEl = _this$$refs.avatarEl,
+          headerEl = _this$$refs.headerEl,
+          footerEl = _this$$refs.footerEl,
+          bubbleEl = _this$$refs.bubbleEl;
       el.addEventListener('click', this.onClick);
       if (nameEl) { nameEl.addEventListener('click', this.onNameClick); }
       if (textEl) { textEl.addEventListener('click', this.onTextClick); }
@@ -55103,16 +54988,15 @@
       if (footerEl) { footerEl.addEventListener('click', this.onFooterClick); }
       if (bubbleEl) { bubbleEl.addEventListener('click', this.onBubbleClick); }
     },
-
     beforeDestroy: function beforeDestroy() {
-      var ref = this.$refs;
-      var el = ref.el;
-      var nameEl = ref.nameEl;
-      var textEl = ref.textEl;
-      var avatarEl = ref.avatarEl;
-      var headerEl = ref.headerEl;
-      var footerEl = ref.footerEl;
-      var bubbleEl = ref.bubbleEl;
+      var _this$$refs2 = this.$refs,
+          el = _this$$refs2.el,
+          nameEl = _this$$refs2.nameEl,
+          textEl = _this$$refs2.textEl,
+          avatarEl = _this$$refs2.avatarEl,
+          headerEl = _this$$refs2.headerEl,
+          footerEl = _this$$refs2.footerEl,
+          bubbleEl = _this$$refs2.bubbleEl;
       el.removeEventListener('click', this.onClick);
       if (nameEl) { nameEl.removeEventListener('click', this.onNameClick); }
       if (textEl) { textEl.removeEventListener('click', this.onTextClick); }
@@ -55121,43 +55005,37 @@
       if (footerEl) { footerEl.removeEventListener('click', this.onFooterClick); }
       if (bubbleEl) { bubbleEl.removeEventListener('click', this.onBubbleClick); }
     },
-
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       onNameClick: function onNameClick(event) {
         this.dispatchEvent('click:name clickName', event);
       },
-
       onTextClick: function onTextClick(event) {
         this.dispatchEvent('click:text clickText', event);
       },
-
       onAvatarClick: function onAvatarClick(event) {
         this.dispatchEvent('click:avatar clickAvatar', event);
       },
-
       onHeaderClick: function onHeaderClick(event) {
         this.dispatchEvent('click:header clickHeader', event);
       },
-
       onFooterClick: function onFooterClick(event) {
         this.dispatchEvent('click:footer clickFooter', event);
       },
-
       onBubbleClick: function onBubbleClick(event) {
         this.dispatchEvent('click:bubble clickBubble', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     }
   };
 
@@ -55171,16 +55049,15 @@
         default: true
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var deletable = props.deletable;
-      var image = props.image;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var deletable = props.deletable,
+          image = props.image,
+          className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'messagebar-attachment', Mixins.colorClasses(props));
       return _h('div', {
         ref: 'el',
@@ -55198,11 +55075,9 @@
         class: 'messagebar-attachment-delete'
       }), this.$slots['default']]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick', 'onDeleteClick']);
     },
-
     mounted: function mounted() {
       this.$refs.el.addEventListener('click', this.onClick);
 
@@ -55210,7 +55085,6 @@
         this.$refs.deleteEl.addEventListener('click', this.onDeleteClick);
       }
     },
-
     beforeDestroy: function beforeDestroy() {
       this.$refs.el.removeEventListener('click', this.onClick);
 
@@ -55218,29 +55092,27 @@
         this.$refs.deleteEl.removeEventListener('click', this.onDeleteClick);
       }
     },
-
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('attachment:click attachmentClick', event);
       },
-
       onDeleteClick: function onDeleteClick(event) {
         this.dispatchEvent('attachment:delete attachmentDelete', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -55249,13 +55121,12 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'messagebar-attachments', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -55265,12 +55136,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -55281,19 +55150,18 @@
       image: String,
       checked: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var image = props.image;
-      var checked = props.checked;
-      var id = props.id;
-      var className = props.className;
-      var style = props.style;
+      var image = props.image,
+          checked = props.checked,
+          id = props.id,
+          className = props.className,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'messagebar-sheet-image', 'checkbox', Mixins.colorClasses(props));
       var styles = Utils$1.extend({
-        backgroundImage: image && ("url(" + image + ")")
+        backgroundImage: image && "url(".concat(image, ")")
       }, style || {});
       var inputEl;
       {
@@ -55320,30 +55188,28 @@
         class: 'icon icon-checkbox'
       }), this.$slots['default']]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onChange']);
     },
-
     methods: {
       onChange: function onChange(event) {
         if (this.props.checked) { this.dispatchEvent('checked', event); }else { this.dispatchEvent('unchecked', event); }
         this.dispatchEvent('change', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -55352,13 +55218,12 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'messagebar-sheet-item', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -55368,12 +55233,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   });
 
@@ -55382,13 +55245,12 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'messagebar-sheet', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -55398,12 +55260,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -55446,33 +55306,31 @@
         default: true
       }
     }, Mixins.colorProps),
-
     created: function created() {
       Utils$1.bindMethods(this, ['onChange', 'onInput', 'onFocus', 'onBlur', 'onClick', 'onAttachmentDelete', 'onAttachmentClick,', 'onResizePage']);
     },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
-      var ref = self.props;
-      var placeholder = ref.placeholder;
-      var disabled = ref.disabled;
-      var name = ref.name;
-      var readonly = ref.readonly;
-      var resizable = ref.resizable;
-      var value = ref.value;
-      var sendLink = ref.sendLink;
-      var id = ref.id;
-      var style = ref.style;
-      var ref$1 = self.$slots;
-      var slotsDefault = ref$1.default;
-      var slotsBeforeInner = ref$1['before-inner'];
-      var slotsAfterInner = ref$1['after-inner'];
-      var slotsSendLink = ref$1['send-link'];
-      var slotsInnerStart = ref$1['inner-start'];
-      var slotsInnerEnd = ref$1['inner-end'];
-      var slotsBeforeArea = ref$1['before-area'];
-      var slotsAfterArea = ref$1['after-area'];
+      var _self$props = self.props,
+          placeholder = _self$props.placeholder,
+          disabled = _self$props.disabled,
+          name = _self$props.name,
+          readonly = _self$props.readonly,
+          resizable = _self$props.resizable,
+          value = _self$props.value,
+          sendLink = _self$props.sendLink,
+          id = _self$props.id,
+          style = _self$props.style;
+      var _self$$slots = self.$slots,
+          slotsDefault = _self$$slots.default,
+          slotsBeforeInner = _self$$slots['before-inner'],
+          slotsAfterInner = _self$$slots['after-inner'],
+          slotsSendLink = _self$$slots['send-link'],
+          slotsInnerStart = _self$$slots['inner-start'],
+          slotsInnerEnd = _self$$slots['inner-end'],
+          slotsBeforeArea = _self$$slots['before-area'],
+          slotsAfterArea = _self$$slots['after-area'];
       var innerEndEls = [];
       var messagebarAttachmentsEl;
       var messagebarSheetEl;
@@ -55530,24 +55388,21 @@
         }
       }, [slotsSendLink || sendLink]), slotsInnerEnd, innerEndEls]), slotsAfterInner, messagebarSheetEl]);
     },
-
     computed: {
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var className = props.className;
-        var attachmentsVisible = props.attachmentsVisible;
-        var sheetVisible = props.sheetVisible;
+        var className = props.className,
+            attachmentsVisible = props.attachmentsVisible,
+            sheetVisible = props.sheetVisible;
         return Utils$1.classNames(className, 'toolbar', 'messagebar', {
           'messagebar-attachments-visible': attachmentsVisible,
           'messagebar-sheet-visible': sheetVisible
         }, Mixins.colorClasses(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
     watch: {
       'props.sheetVisible': function watchSheetVisible() {
@@ -55561,16 +55416,15 @@
         self.updateAttachmentsVisible = true;
       }
     },
-
     mounted: function mounted() {
       var self = this;
-      var ref = self.props;
-      var init = ref.init;
-      var top = ref.top;
-      var resizePage = ref.resizePage;
-      var bottomOffset = ref.bottomOffset;
-      var topOffset = ref.topOffset;
-      var maxHeight = ref.maxHeight;
+      var _self$props2 = self.props,
+          init = _self$props2.init,
+          top = _self$props2.top,
+          resizePage = _self$props2.resizePage,
+          bottomOffset = _self$props2.bottomOffset,
+          topOffset = _self$props2.topOffset,
+          maxHeight = _self$props2.maxHeight;
       if (!init) { return; }
       var el = self.$refs.el;
       if (!el) { return; }
@@ -55591,13 +55445,12 @@
         self.f7Messagebar = self.$f7.messagebar.create(params);
       });
     },
-
     updated: function updated() {
       var self = this;
       if (!self.f7Messagebar) { return; }
-      var ref = self.props;
-      var sheetVisible = ref.sheetVisible;
-      var attachmentsVisible = ref.attachmentsVisible;
+      var _self$props3 = self.props,
+          sheetVisible = _self$props3.sheetVisible,
+          attachmentsVisible = _self$props3.attachmentsVisible;
 
       if (self.updateSheetVisible) {
         self.updateSheetVisible = false;
@@ -55611,146 +55464,101 @@
         self.f7Messagebar.resizePage();
       }
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Messagebar && self.f7Messagebar.destroy) { self.f7Messagebar.destroy(); }
     },
-
     methods: {
       clear: function clear() {
-        var ref;
+        var _this$f7Messagebar;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).clear.apply(ref, args);
+        return (_this$f7Messagebar = this.f7Messagebar).clear.apply(_this$f7Messagebar, arguments);
       },
-
       getValue: function getValue() {
-        var ref;
+        var _this$f7Messagebar2;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).getValue.apply(ref, args);
+        return (_this$f7Messagebar2 = this.f7Messagebar).getValue.apply(_this$f7Messagebar2, arguments);
       },
-
       setValue: function setValue() {
-        var ref;
+        var _this$f7Messagebar3;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).setValue.apply(ref, args);
+        return (_this$f7Messagebar3 = this.f7Messagebar).setValue.apply(_this$f7Messagebar3, arguments);
       },
-
       setPlaceholder: function setPlaceholder() {
-        var ref;
+        var _this$f7Messagebar4;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).setPlaceholder.apply(ref, args);
+        return (_this$f7Messagebar4 = this.f7Messagebar).setPlaceholder.apply(_this$f7Messagebar4, arguments);
       },
-
       resize: function resize() {
-        var ref;
+        var _this$f7Messagebar5;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).resizePage.apply(ref, args);
+        return (_this$f7Messagebar5 = this.f7Messagebar).resizePage.apply(_this$f7Messagebar5, arguments);
       },
-
       focus: function focus() {
-        var ref;
+        var _this$f7Messagebar6;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).focus.apply(ref, args);
+        return (_this$f7Messagebar6 = this.f7Messagebar).focus.apply(_this$f7Messagebar6, arguments);
       },
-
       blur: function blur() {
-        var ref;
+        var _this$f7Messagebar7;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).blur.apply(ref, args);
+        return (_this$f7Messagebar7 = this.f7Messagebar).blur.apply(_this$f7Messagebar7, arguments);
       },
-
       attachmentsShow: function attachmentsShow() {
-        var ref;
+        var _this$f7Messagebar8;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).attachmentsShow.apply(ref, args);
+        return (_this$f7Messagebar8 = this.f7Messagebar).attachmentsShow.apply(_this$f7Messagebar8, arguments);
       },
-
       attachmentsHide: function attachmentsHide() {
-        var ref;
+        var _this$f7Messagebar9;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).attachmentsHide.apply(ref, args);
+        return (_this$f7Messagebar9 = this.f7Messagebar).attachmentsHide.apply(_this$f7Messagebar9, arguments);
       },
-
       attachmentsToggle: function attachmentsToggle() {
-        var ref;
+        var _this$f7Messagebar10;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).attachmentsToggle.apply(ref, args);
+        return (_this$f7Messagebar10 = this.f7Messagebar).attachmentsToggle.apply(_this$f7Messagebar10, arguments);
       },
-
       sheetShow: function sheetShow() {
-        var ref;
+        var _this$f7Messagebar11;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).sheetShow.apply(ref, args);
+        return (_this$f7Messagebar11 = this.f7Messagebar).sheetShow.apply(_this$f7Messagebar11, arguments);
       },
-
       sheetHide: function sheetHide() {
-        var ref;
+        var _this$f7Messagebar12;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).sheetHide.apply(ref, args);
+        return (_this$f7Messagebar12 = this.f7Messagebar).sheetHide.apply(_this$f7Messagebar12, arguments);
       },
-
       sheetToggle: function sheetToggle() {
-        var ref;
+        var _this$f7Messagebar13;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messagebar) { return undefined; }
-        return (ref = this.f7Messagebar).sheetToggle.apply(ref, args);
+        return (_this$f7Messagebar13 = this.f7Messagebar).sheetToggle.apply(_this$f7Messagebar13, arguments);
       },
-
       onChange: function onChange(event) {
         this.dispatchEvent('change', event);
       },
-
       onInput: function onInput(event) {
         this.dispatchEvent('input', event);
       },
-
       onFocus: function onFocus(event) {
         this.dispatchEvent('focus', event);
       },
-
       onBlur: function onBlur(event) {
         this.dispatchEvent('blur', event);
       },
-
       onClick: function onClick(event) {
         var self = this;
         var value;
@@ -55764,26 +55572,24 @@
         this.dispatchEvent('send', value, clear);
         this.dispatchEvent('click', event);
       },
-
       onAttachmentDelete: function onAttachmentDelete(instance, attachmentEl, attachmentElIndex) {
         this.dispatchEvent('messagebar:attachmentdelete messagebarAttachmentDelete', instance, attachmentEl, attachmentElIndex);
       },
-
       onAttachmentClick: function onAttachmentClick(instance, attachmentEl, attachmentElIndex) {
         this.dispatchEvent('messagebar:attachmentclick messagebarAttachmentClick', instance, attachmentEl, attachmentElIndex);
       },
-
       onResizePage: function onResizePage(instance) {
         this.dispatchEvent('messagebar:resizepage messagebarResizePage', instance);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     }
   };
 
@@ -55792,13 +55598,12 @@
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'messages-title', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -55808,12 +55613,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -55827,11 +55630,9 @@
       },
       messages: {
         type: Array,
-
-        default: function default$1() {
+        default: function _default() {
           return [];
         }
-
       },
       newMessagesFirst: {
         type: Boolean,
@@ -55859,14 +55660,13 @@
         default: true
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
+      var id = props.id,
+          style = props.style,
+          className = props.className;
       var classes = Utils$1.classNames(className, 'messages', Mixins.colorClasses(props));
       return _h('div', {
         ref: 'el',
@@ -55877,7 +55677,6 @@
         }
       }, [this.$slots['default']]);
     },
-
     beforeUpdate: function beforeUpdate() {
       var self = this;
       if (!self.props.init) { return; }
@@ -55890,13 +55689,12 @@
         children[i].classList.add('message-appeared');
       }
     },
-
     updated: function updated() {
       var self = this;
-      var ref = self.props;
-      var init = ref.init;
-      var autoLayout = ref.autoLayout;
-      var scrollMessages = ref.scrollMessages;
+      var _self$props = self.props,
+          init = _self$props.init,
+          autoLayout = _self$props.autoLayout,
+          scrollMessages = _self$props.scrollMessages;
       if (!init) { return; }
       var el = self.$refs.el;
       if (!el) { return; }
@@ -55917,25 +55715,24 @@
         self.f7Messages.scroll();
       }
     },
-
     mounted: function mounted() {
       var self = this;
-      var ref = self.props;
-      var init = ref.init;
-      var autoLayout = ref.autoLayout;
-      var messages = ref.messages;
-      var newMessagesFirst = ref.newMessagesFirst;
-      var scrollMessages = ref.scrollMessages;
-      var scrollMessagesOnEdge = ref.scrollMessagesOnEdge;
-      var firstMessageRule = ref.firstMessageRule;
-      var lastMessageRule = ref.lastMessageRule;
-      var tailMessageRule = ref.tailMessageRule;
-      var sameNameMessageRule = ref.sameNameMessageRule;
-      var sameHeaderMessageRule = ref.sameHeaderMessageRule;
-      var sameFooterMessageRule = ref.sameFooterMessageRule;
-      var sameAvatarMessageRule = ref.sameAvatarMessageRule;
-      var customClassMessageRule = ref.customClassMessageRule;
-      var renderMessage = ref.renderMessage;
+      var _self$props2 = self.props,
+          init = _self$props2.init,
+          autoLayout = _self$props2.autoLayout,
+          messages = _self$props2.messages,
+          newMessagesFirst = _self$props2.newMessagesFirst,
+          scrollMessages = _self$props2.scrollMessages,
+          scrollMessagesOnEdge = _self$props2.scrollMessagesOnEdge,
+          firstMessageRule = _self$props2.firstMessageRule,
+          lastMessageRule = _self$props2.lastMessageRule,
+          tailMessageRule = _self$props2.tailMessageRule,
+          sameNameMessageRule = _self$props2.sameNameMessageRule,
+          sameHeaderMessageRule = _self$props2.sameHeaderMessageRule,
+          sameFooterMessageRule = _self$props2.sameFooterMessageRule,
+          sameAvatarMessageRule = _self$props2.sameAvatarMessageRule,
+          customClassMessageRule = _self$props2.customClassMessageRule,
+          renderMessage = _self$props2.renderMessage;
       if (!init) { return; }
       self.$f7ready(function (f7) {
         self.f7Messages = f7.messages.create(Utils$1.noUndefinedProps({
@@ -55957,84 +55754,73 @@
         }));
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       if (this.f7Messages && this.f7Messages.destroy) { this.f7Messages.destroy(); }
     },
-
     methods: {
       renderMessages: function renderMessages(messagesToRender, method) {
         if (!this.f7Messages) { return undefined; }
         return this.f7Messages.renderMessages(messagesToRender, method);
       },
-
       layout: function layout() {
         if (!this.f7Messages) { return undefined; }
         return this.f7Messages.layout();
       },
-
       scroll: function scroll(duration, scrollTop) {
         if (!this.f7Messages) { return undefined; }
         return this.f7Messages.scroll(duration, scrollTop);
       },
-
       clear: function clear() {
         if (!this.f7Messages) { return undefined; }
         return this.f7Messages.clear();
       },
-
       removeMessage: function removeMessage(messageToRemove, layout) {
         if (!this.f7Messages) { return undefined; }
         return this.f7Messages.removeMessage(messageToRemove, layout);
       },
-
       removeMessages: function removeMessages(messagesToRemove, layout) {
         if (!this.f7Messages) { return undefined; }
         return this.f7Messages.removeMessages(messagesToRemove, layout);
       },
-
       addMessage: function addMessage() {
-        var ref;
+        var _this$f7Messages;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messages) { return undefined; }
-        return (ref = this.f7Messages).addMessage.apply(ref, args);
+        return (_this$f7Messages = this.f7Messages).addMessage.apply(_this$f7Messages, arguments);
       },
-
       addMessages: function addMessages() {
-        var ref;
+        var _this$f7Messages2;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
         if (!this.f7Messages) { return undefined; }
-        return (ref = this.f7Messages).addMessages.apply(ref, args);
+        return (_this$f7Messages2 = this.f7Messages).addMessages.apply(_this$f7Messages2, arguments);
       },
-
       showTyping: function showTyping(message) {
         if (!this.f7Messages) { return undefined; }
         return this.f7Messages.showTyping(message);
       },
-
       hideTyping: function hideTyping() {
         if (!this.f7Messages) { return undefined; }
         return this.f7Messages.hideTyping();
       },
-
       destroy: function destroy() {
         if (!this.f7Messages) { return undefined; }
         return this.f7Messages.destroy();
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
+  function _toConsumableArray$1(arr) { return _arrayWithoutHoles$1(arr) || _iterableToArray$1(arr) || _nonIterableSpread$1(); }
+
+  function _nonIterableSpread$1() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+  function _iterableToArray$1(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
+
+  function _arrayWithoutHoles$1(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
   var f7NavLeft = {
     name: 'f7-nav-left',
     props: Object.assign({
@@ -56048,18 +55834,17 @@
       },
       sliding: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var backLink = props.backLink;
-      var backLinkUrl = props.backLinkUrl;
-      var backLinkForce = props.backLinkForce;
-      var backLinkShowText = props.backLinkShowText;
-      var sliding = props.sliding;
-      var className = props.className;
-      var style = props.style;
-      var id = props.id;
+      var backLink = props.backLink,
+          backLinkUrl = props.backLinkUrl,
+          backLinkForce = props.backLinkForce,
+          backLinkShowText = props.backLinkShowText,
+          sliding = props.sliding,
+          className = props.className,
+          style = props.style,
+          id = props.id;
       var linkEl;
       var needBackLinkText = backLinkShowText;
       if (typeof needBackLinkText === 'undefined') { needBackLinkText = !this.$theme.md; }
@@ -56089,7 +55874,7 @@
 
       if (slots && Object.keys(slots).length) {
         Object.keys(slots).forEach(function (key) {
-          children.push.apply(children, slots[key]);
+          children.push.apply(children, _toConsumableArray$1(slots[key]));
         });
       }
 
@@ -56101,46 +55886,50 @@
         }
       }, [linkEl, children]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onBackClick']);
     },
-
     methods: {
       onBackClick: function onBackClick(event) {
         this.dispatchEvent('back-click backClick click:back clickBack', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
+  function _toConsumableArray$2(arr) { return _arrayWithoutHoles$2(arr) || _iterableToArray$2(arr) || _nonIterableSpread$2(); }
+
+  function _nonIterableSpread$2() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+  function _iterableToArray$2(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
+
+  function _arrayWithoutHoles$2(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
   var f7NavRight = {
     name: 'f7-nav-right',
     props: Object.assign({
       id: [String, Number],
       sliding: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var sliding = props.sliding;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          sliding = props.sliding;
       var classes = Utils$1.classNames(className, 'right', {
         sliding: sliding
       }, Mixins.colorClasses(props));
@@ -56149,7 +55938,7 @@
 
       if (slots && Object.keys(slots).length) {
         Object.keys(slots).forEach(function (key) {
-          children.push.apply(children, slots[key]);
+          children.push.apply(children, _toConsumableArray$2(slots[key]));
         });
       }
 
@@ -56161,35 +55950,39 @@
         }
       }, [children]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
+  function _toConsumableArray$3(arr) { return _arrayWithoutHoles$3(arr) || _iterableToArray$3(arr) || _nonIterableSpread$3(); }
+
+  function _nonIterableSpread$3() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+  function _iterableToArray$3(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
+
+  function _arrayWithoutHoles$3(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
   var f7NavTitleLarge = {
     name: 'f7-nav-title',
     props: Object.assign({
       id: [String, Number]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
+      var id = props.id,
+          style = props.style,
+          className = props.className;
       var classes = Utils$1.classNames(className, 'title-large', Mixins.colorClasses(props));
       var children = [];
       var slots = self.$slots;
 
       if (slots && Object.keys(slots).length) {
         Object.keys(slots).forEach(function (key) {
-          children.push.apply(children, slots[key]);
+          children.push.apply(children, _toConsumableArray$3(slots[key]));
         });
       }
 
@@ -56203,15 +55996,20 @@
         class: 'title-large-text'
       }, [children])]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
+  function _toConsumableArray$4(arr) { return _arrayWithoutHoles$4(arr) || _iterableToArray$4(arr) || _nonIterableSpread$4(); }
+
+  function _nonIterableSpread$4() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+  function _iterableToArray$4(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
+
+  function _arrayWithoutHoles$4(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
   var f7NavTitle = {
     name: 'f7-nav-title',
     props: Object.assign({
@@ -56220,17 +56018,16 @@
       subtitle: String,
       sliding: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var title = props.title;
-      var subtitle = props.subtitle;
-      var id = props.id;
-      var style = props.style;
-      var sliding = props.sliding;
-      var className = props.className;
+      var title = props.title,
+          subtitle = props.subtitle,
+          id = props.id,
+          style = props.style,
+          sliding = props.sliding,
+          className = props.className;
       var subtitleEl;
 
       if (subtitle) {
@@ -56248,7 +56045,9 @@
       if (slots && Object.keys(slots).length) {
         children = [];
         Object.keys(slots).forEach(function (key) {
-          children.push.apply(children, slots[key]);
+          var _children;
+
+          (_children = children).push.apply(_children, _toConsumableArray$4(slots[key]));
         });
       }
 
@@ -56260,12 +56059,10 @@
         }
       }, [children, !children && title, !children && subtitleEl]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -56295,35 +56092,61 @@
       largeTransparent: Boolean,
       titleLarge: String
     }, Mixins.colorProps),
+    data: function data() {
+      var _this = this;
 
+      var props = __vueComponentProps(this);
+
+      var state = function () {
+        var self = _this;
+        var $f7 = self.$f7;
+
+        if (!$f7) {
+          self.$f7ready(function () {
+            self.setState({
+              _theme: self.$theme
+            });
+          });
+        }
+
+        return {
+          _theme: $f7 ? self.$theme : null
+        };
+      }();
+
+      return {
+        state: state
+      };
+    },
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var backLink = props.backLink;
-      var backLinkUrl = props.backLinkUrl;
-      var backLinkForce = props.backLinkForce;
-      var backLinkShowText = props.backLinkShowText;
-      var sliding = props.sliding;
-      var title = props.title;
-      var subtitle = props.subtitle;
-      var innerClass = props.innerClass;
-      var innerClassName = props.innerClassName;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var hidden = props.hidden;
-      var noShadow = props.noShadow;
-      var noHairline = props.noHairline;
-      var large = props.large;
-      var largeTransparent = props.largeTransparent;
-      var titleLarge = props.titleLarge;
+      var backLink = props.backLink,
+          backLinkUrl = props.backLinkUrl,
+          backLinkForce = props.backLinkForce,
+          backLinkShowText = props.backLinkShowText,
+          sliding = props.sliding,
+          title = props.title,
+          subtitle = props.subtitle,
+          innerClass = props.innerClass,
+          innerClassName = props.innerClassName,
+          className = props.className,
+          id = props.id,
+          style = props.style,
+          hidden = props.hidden,
+          noShadow = props.noShadow,
+          noHairline = props.noHairline,
+          large = props.large,
+          largeTransparent = props.largeTransparent,
+          titleLarge = props.titleLarge;
+      var theme = self.state.theme;
       var leftEl;
       var titleEl;
       var rightEl;
       var titleLargeEl;
-      var addLeftTitleClass = self.$theme && self.$theme.ios && self.$f7 && !self.$f7.params.navbar.iosCenterTitle;
-      var addCenterTitleClass = self.$theme && self.$theme.md && self.$f7 && self.$f7.params.navbar.mdCenterTitle || self.$theme && self.$theme.aurora && self.$f7 && self.$f7.params.navbar.auroraCenterTitle;
+      var addLeftTitleClass = theme && theme.ios && self.$f7 && !self.$f7.params.navbar.iosCenterTitle;
+      var addCenterTitleClass = theme && theme.md && self.$f7 && self.$f7.params.navbar.mdCenterTitle || theme && theme.aurora && self.$f7 && self.$f7.params.navbar.auroraCenterTitle;
       var slots = self.$slots;
       var classes = Utils$1.classNames(className, 'navbar', {
         'navbar-hidden': hidden,
@@ -56390,15 +56213,12 @@
         class: 'navbar-bg'
       }), this.$slots['before-inner'], innerEl, this.$slots['after-inner']]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onBackClick', 'onHide', 'onShow', 'onExpand', 'onCollapse']);
     },
-
     mounted: function mounted() {
       var self = this;
-      var ref = self.$refs;
-      var el = ref.el;
+      var el = self.$refs.el;
       if (!el) { return; }
       self.$f7ready(function (f7) {
         self.eventTargetEl = el;
@@ -56408,18 +56228,15 @@
         f7.on('navbarExpand', self.onExpand);
       });
     },
-
     updated: function updated() {
       var self = this;
       if (!self.$f7) { return; }
       var el = self.$refs.el;
       self.$f7.navbar.size(el);
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var ref = self.$refs;
-      var el = ref.el;
+      var el = self.$refs.el;
       if (!el || !self.$f7) { return; }
       var f7 = self.$f7;
       f7.off('navbarShow', self.onShow);
@@ -56429,63 +56246,58 @@
       self.eventTargetEl = null;
       delete self.eventTargetEl;
     },
-
     methods: {
       onHide: function onHide(navbarEl) {
         if (this.eventTargetEl !== navbarEl) { return; }
         this.dispatchEvent('navbar:hide navbarHide');
       },
-
       onShow: function onShow(navbarEl) {
         if (this.eventTargetEl !== navbarEl) { return; }
         this.dispatchEvent('navbar:show navbarShow');
       },
-
       onExpand: function onExpand(navbarEl) {
         if (this.eventTargetEl !== navbarEl) { return; }
         this.dispatchEvent('navbar:expand navbarExpand');
       },
-
       onCollapse: function onCollapse(navbarEl) {
         if (this.eventTargetEl !== navbarEl) { return; }
         this.dispatchEvent('navbar:collapse navbarCollapse');
       },
-
       hide: function hide(animate) {
         var self = this;
         if (!self.$f7) { return; }
         self.$f7.navbar.hide(self.$refs.el, animate);
       },
-
       show: function show(animate) {
         var self = this;
         if (!self.$f7) { return; }
         self.$f7.navbar.show(self.$refs.el, animate);
       },
-
       size: function size() {
         var self = this;
         if (!self.$f7) { return; }
         self.$f7.navbar.size(self.$refs.el);
       },
-
       onBackClick: function onBackClick(event) {
         this.dispatchEvent('back-click backClick click:back clickBack', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
+      },
+      setState: function setState(updater, callback) {
+        __vueComponentSetState(this, updater, callback);
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -56495,27 +56307,53 @@
       id: [String, Number],
       size: [Number, String]
     }, Mixins.colorProps),
+    data: function data() {
+      var _this = this;
 
+      var props = __vueComponentProps(this);
+
+      var state = function () {
+        var self = _this;
+        var $f7 = self.$f7;
+
+        if (!$f7) {
+          self.$f7ready(function () {
+            self.setState({
+              _theme: self.$theme
+            });
+          });
+        }
+
+        return {
+          _theme: $f7 ? self.$theme : null
+        };
+      }();
+
+      return {
+        state: state
+      };
+    },
     render: function render() {
       var _h = this.$createElement;
       var self = this;
-      var sizeComputed = self.sizeComputed;
-      var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
+      var sizeComputed = self.sizeComputed,
+          props = self.props;
+      var id = props.id,
+          style = props.style,
+          className = props.className;
+      var theme = self.state._theme;
       var preloaderStyle = {};
 
       if (sizeComputed) {
-        preloaderStyle.width = sizeComputed + "px";
-        preloaderStyle.height = sizeComputed + "px";
-        preloaderStyle['--f7-preloader-size'] = sizeComputed + "px";
+        preloaderStyle.width = "".concat(sizeComputed, "px");
+        preloaderStyle.height = "".concat(sizeComputed, "px");
+        preloaderStyle['--f7-preloader-size'] = "".concat(sizeComputed, "px");
       }
 
       if (style) { Utils$1.extend(preloaderStyle, style || {}); }
       var innerEl;
 
-      if (self.$theme.md) {
+      if (theme && theme.md) {
         innerEl = _h('span', {
           class: 'preloader-inner'
         }, [_h('span', {
@@ -56529,7 +56367,7 @@
         }, [_h('span', {
           class: 'preloader-inner-half-circle'
         })])]);
-      } else if (self.$theme.ios) {
+      } else if (theme && theme.ios) {
         innerEl = _h('span', {
           class: 'preloader-inner'
         }, [_h('span', {
@@ -56557,7 +56395,7 @@
         }), _h('span', {
           class: 'preloader-inner-line'
         })]);
-      } else if (self.$theme.aurora) {
+      } else if (theme && theme.aurora) {
         innerEl = _h('span', {
           class: 'preloader-inner'
         }, [_h('span', {
@@ -56574,7 +56412,6 @@
         }
       }, [innerEl]);
     },
-
     computed: {
       sizeComputed: function sizeComputed() {
         var s = this.props.size;
@@ -56585,11 +56422,14 @@
 
         return s;
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
+    },
+    methods: {
+      setState: function setState(updater, callback) {
+        __vueComponentSetState(this, updater, callback);
+      }
     }
   };
 
@@ -56620,22 +56460,21 @@
       messagesContent: Boolean,
       loginScreen: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var ptr = props.ptr;
-      var ptrPreloader = props.ptrPreloader;
-      var ptrDistance = props.ptrDistance;
-      var ptrBottom = props.ptrBottom;
-      var ptrMousewheel = props.ptrMousewheel;
-      var infinite = props.infinite;
-      var infinitePreloader = props.infinitePreloader;
-      var id = props.id;
-      var style = props.style;
-      var infiniteDistance = props.infiniteDistance;
-      var infiniteTop = props.infiniteTop;
+      var ptr = props.ptr,
+          ptrPreloader = props.ptrPreloader,
+          ptrDistance = props.ptrDistance,
+          ptrBottom = props.ptrBottom,
+          ptrMousewheel = props.ptrMousewheel,
+          infinite = props.infinite,
+          infinitePreloader = props.infinitePreloader,
+          id = props.id,
+          style = props.style,
+          infiniteDistance = props.infiniteDistance,
+          infiniteTop = props.infiniteTop;
       var ptrEl;
       var infiniteEl;
 
@@ -56665,23 +56504,22 @@
         }
       }, [ptrBottom ? null : ptrEl, infiniteTop ? infiniteEl : null, self.$slots.default, infiniteTop ? null : infiniteEl, ptrBottom ? ptrEl : null]);
     },
-
     computed: {
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var className = props.className;
-        var tab = props.tab;
-        var tabActive = props.tabActive;
-        var ptr = props.ptr;
-        var ptrBottom = props.ptrBottom;
-        var infinite = props.infinite;
-        var infiniteTop = props.infiniteTop;
-        var hideBarsOnScroll = props.hideBarsOnScroll;
-        var hideNavbarOnScroll = props.hideNavbarOnScroll;
-        var hideToolbarOnScroll = props.hideToolbarOnScroll;
-        var messagesContent = props.messagesContent;
-        var loginScreen = props.loginScreen;
+        var className = props.className,
+            tab = props.tab,
+            tabActive = props.tabActive,
+            ptr = props.ptr,
+            ptrBottom = props.ptrBottom,
+            infinite = props.infinite,
+            infiniteTop = props.infiniteTop,
+            hideBarsOnScroll = props.hideBarsOnScroll,
+            hideNavbarOnScroll = props.hideNavbarOnScroll,
+            hideToolbarOnScroll = props.hideToolbarOnScroll,
+            messagesContent = props.messagesContent,
+            loginScreen = props.loginScreen;
         return Utils$1.classNames(className, 'page-content', {
           tab: tab,
           'tab-active': tabActive,
@@ -56696,24 +56534,20 @@
           'login-screen-content': loginScreen
         }, Mixins.colorClasses(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onTabShow', 'onTabHide']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
-      var ref = self.props;
-      var ptr = ref.ptr;
-      var infinite = ref.infinite;
-      var tab = ref.tab;
+      var _self$props = self.props,
+          ptr = _self$props.ptr,
+          infinite = _self$props.infinite,
+          tab = _self$props.tab;
       self.$f7ready(function (f7) {
         self.eventTargetEl = el;
 
@@ -56735,7 +56569,6 @@
         }
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (!self.$f7) { return; }
@@ -56750,55 +56583,48 @@
       self.eventTargetEl = null;
       delete self.eventTargetEl;
     },
-
     methods: {
       onPtrPullStart: function onPtrPullStart(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('ptr:pullstart ptrPullStart');
       },
-
       onPtrPullMove: function onPtrPullMove(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('ptr:pullmove ptrPullMove');
       },
-
       onPtrPullEnd: function onPtrPullEnd(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('ptr:pullend ptrPullEnd');
       },
-
       onPtrRefresh: function onPtrRefresh(el, done) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('ptr:refresh ptrRefresh', done);
       },
-
       onPtrDone: function onPtrDone(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('ptr:done ptrDone');
       },
-
       onInfinite: function onInfinite(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('infinite');
       },
-
       onTabShow: function onTabShow(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('tab:show tabShow');
       },
-
       onTabHide: function onTabHide(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('tab:hide tabHide');
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     }
   };
 
@@ -56853,11 +56679,10 @@
       messagesContent: Boolean,
       loginScreen: Boolean
     }, Mixins.colorProps),
-
     data: function data() {
       var props = __vueComponentProps(this);
 
-      var state = (function () {
+      var state = function () {
         return {
           hasSubnavbar: false,
           hasNavbarLarge: false,
@@ -56869,51 +56694,50 @@
           routerPageRoleDetailRoot: false,
           routerPageMasterStack: false
         };
-      })();
+      }();
 
       return {
         state: state
       };
     },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var name = props.name;
-      var pageContent = props.pageContent;
-      var messagesContent = props.messagesContent;
-      var ptr = props.ptr;
-      var ptrDistance = props.ptrDistance;
-      var ptrPreloader = props.ptrPreloader;
-      var ptrBottom = props.ptrBottom;
-      var ptrMousewheel = props.ptrMousewheel;
-      var infinite = props.infinite;
-      var infiniteDistance = props.infiniteDistance;
-      var infinitePreloader = props.infinitePreloader;
-      var infiniteTop = props.infiniteTop;
-      var hideBarsOnScroll = props.hideBarsOnScroll;
-      var hideNavbarOnScroll = props.hideNavbarOnScroll;
-      var hideToolbarOnScroll = props.hideToolbarOnScroll;
-      var loginScreen = props.loginScreen;
-      var className = props.className;
-      var stacked = props.stacked;
-      var tabs = props.tabs;
-      var subnavbar = props.subnavbar;
-      var withSubnavbar = props.withSubnavbar;
-      var navbarLarge = props.navbarLarge;
-      var withNavbarLarge = props.withNavbarLarge;
-      var noNavbar = props.noNavbar;
-      var noToolbar = props.noToolbar;
-      var noSwipeback = props.noSwipeback;
+      var id = props.id,
+          style = props.style,
+          name = props.name,
+          pageContent = props.pageContent,
+          messagesContent = props.messagesContent,
+          ptr = props.ptr,
+          ptrDistance = props.ptrDistance,
+          ptrPreloader = props.ptrPreloader,
+          ptrBottom = props.ptrBottom,
+          ptrMousewheel = props.ptrMousewheel,
+          infinite = props.infinite,
+          infiniteDistance = props.infiniteDistance,
+          infinitePreloader = props.infinitePreloader,
+          infiniteTop = props.infiniteTop,
+          hideBarsOnScroll = props.hideBarsOnScroll,
+          hideNavbarOnScroll = props.hideNavbarOnScroll,
+          hideToolbarOnScroll = props.hideToolbarOnScroll,
+          loginScreen = props.loginScreen,
+          className = props.className,
+          stacked = props.stacked,
+          tabs = props.tabs,
+          subnavbar = props.subnavbar,
+          withSubnavbar = props.withSubnavbar,
+          navbarLarge = props.navbarLarge,
+          withNavbarLarge = props.withNavbarLarge,
+          noNavbar = props.noNavbar,
+          noToolbar = props.noToolbar,
+          noSwipeback = props.noSwipeback;
       var fixedList = [];
       var staticList = [];
-      var ref = self.$slots;
-      var slotsStatic = ref.static;
-      var slotsFixed = ref.fixed;
-      var slotsDefault = ref.default;
+      var _self$$slots = self.$slots,
+          slotsStatic = _self$$slots.static,
+          slotsFixed = _self$$slots.fixed,
+          slotsDefault = _self$$slots.default;
       var fixedTags;
       fixedTags = 'navbar toolbar tabbar subnavbar searchbar messagebar fab list-index'.split(' ');
       var hasSubnavbar;
@@ -57024,11 +56848,9 @@
         }
       }, [fixedList, slotsFixed, pageContentEl]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack', 'onPageNavbarLargeCollapsed', 'onPageNavbarLargeExpanded', 'onCardOpened', 'onCardClose']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
@@ -57037,7 +56859,7 @@
         f7.on('pageMounted', self.onPageMounted);
         f7.on('pageInit', self.onPageInit);
         f7.on('pageReinit', self.onPageReinit);
-        f7.on('pageBeforeOn', self.onPageBeforeIn);
+        f7.on('pageBeforeIn', self.onPageBeforeIn);
         f7.on('pageBeforeOut', self.onPageBeforeOut);
         f7.on('pageAfterOut', self.onPageAfterOut);
         f7.on('pageAfterIn', self.onPageAfterIn);
@@ -57054,7 +56876,6 @@
         f7.on('cardClose', self.onCardClose);
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (!self.$f7) { return; }
@@ -57062,7 +56883,7 @@
       f7.off('pageMounted', self.onPageMounted);
       f7.off('pageInit', self.onPageInit);
       f7.off('pageReinit', self.onPageReinit);
-      f7.off('pageBeforeOn', self.onPageBeforeIn);
+      f7.off('pageBeforeIn', self.onPageBeforeIn);
       f7.off('pageBeforeOut', self.onPageBeforeOut);
       f7.off('pageAfterOut', self.onPageAfterOut);
       f7.off('pageAfterIn', self.onPageAfterIn);
@@ -57080,68 +56901,72 @@
       self.eventTargetEl = null;
       delete self.eventTargetEl;
     },
-
     methods: {
       onPtrPullStart: function onPtrPullStart() {
-        var ref;
+        var arguments$1 = arguments;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
-        (ref = this).dispatchEvent.apply(ref, [ 'ptr:pullstart ptrPullStart' ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments$1[_key];
+        }
+
+        this.dispatchEvent.apply(this, ['ptr:pullstart ptrPullStart'].concat(args));
       },
-
       onPtrPullMove: function onPtrPullMove() {
-        var ref;
+        var arguments$1 = arguments;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
-        (ref = this).dispatchEvent.apply(ref, [ 'ptr:pullmove ptrPullMove' ].concat( args ));
+        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          args[_key2] = arguments$1[_key2];
+        }
+
+        this.dispatchEvent.apply(this, ['ptr:pullmove ptrPullMove'].concat(args));
       },
-
       onPtrPullEnd: function onPtrPullEnd() {
-        var ref;
+        var arguments$1 = arguments;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
-        (ref = this).dispatchEvent.apply(ref, [ 'ptr:pullend ptrPullEnd' ].concat( args ));
+        for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+          args[_key3] = arguments$1[_key3];
+        }
+
+        this.dispatchEvent.apply(this, ['ptr:pullend ptrPullEnd'].concat(args));
       },
-
       onPtrRefresh: function onPtrRefresh() {
-        var ref;
+        var arguments$1 = arguments;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
-        (ref = this).dispatchEvent.apply(ref, [ 'ptr:refresh ptrRefresh' ].concat( args ));
+        for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+          args[_key4] = arguments$1[_key4];
+        }
+
+        this.dispatchEvent.apply(this, ['ptr:refresh ptrRefresh'].concat(args));
       },
-
       onPtrDone: function onPtrDone() {
-        var ref;
+        var arguments$1 = arguments;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
-        (ref = this).dispatchEvent.apply(ref, [ 'ptr:done ptrDone' ].concat( args ));
+        for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+          args[_key5] = arguments$1[_key5];
+        }
+
+        this.dispatchEvent.apply(this, ['ptr:done ptrDone'].concat(args));
       },
-
       onInfinite: function onInfinite() {
-        var ref;
+        var arguments$1 = arguments;
 
-        var args = [], len = arguments.length;
-        while ( len-- ) args[ len ] = arguments[ len ];
-        (ref = this).dispatchEvent.apply(ref, [ 'infinite' ].concat( args ));
+        for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+          args[_key6] = arguments$1[_key6];
+        }
+
+        this.dispatchEvent.apply(this, ['infinite'].concat(args));
       },
-
       onPageMounted: function onPageMounted(page) {
         if (this.eventTargetEl !== page.el) { return; }
         this.dispatchEvent('page:mounted pageMounted', page);
       },
-
       onPageInit: function onPageInit(page) {
         if (this.eventTargetEl !== page.el) { return; }
-        var ref = this.props;
-        var withSubnavbar = ref.withSubnavbar;
-        var subnavbar = ref.subnavbar;
-        var withNavbarLarge = ref.withNavbarLarge;
-        var navbarLarge = ref.navbarLarge;
+        var _this$props = this.props,
+            withSubnavbar = _this$props.withSubnavbar,
+            subnavbar = _this$props.subnavbar,
+            withNavbarLarge = _this$props.withNavbarLarge,
+            navbarLarge = _this$props.navbarLarge;
 
         if (typeof withSubnavbar === 'undefined' && typeof subnavbar === 'undefined') {
           if (page.$navbarEl && page.$navbarEl.length && page.$navbarEl.find('.subnavbar').length || page.$el.children('.navbar').find('.subnavbar').length) {
@@ -57161,12 +56986,10 @@
 
         this.dispatchEvent('page:init pageInit', page);
       },
-
       onPageReinit: function onPageReinit(page) {
         if (this.eventTargetEl !== page.el) { return; }
         this.dispatchEvent('page:reinit pageReinit', page);
       },
-
       onPageBeforeIn: function onPageBeforeIn(page) {
         if (this.eventTargetEl !== page.el) { return; }
 
@@ -57184,12 +57007,10 @@
 
         this.dispatchEvent('page:beforein pageBeforeIn', page);
       },
-
       onPageBeforeOut: function onPageBeforeOut(page) {
         if (this.eventTargetEl !== page.el) { return; }
         this.dispatchEvent('page:beforeout pageBeforeOut', page);
       },
-
       onPageAfterOut: function onPageAfterOut(page) {
         if (this.eventTargetEl !== page.el) { return; }
 
@@ -57207,7 +57028,6 @@
 
         this.dispatchEvent('page:afterout pageAfterOut', page);
       },
-
       onPageAfterIn: function onPageAfterIn(page) {
         if (this.eventTargetEl !== page.el) { return; }
         this.setState({
@@ -57215,33 +57035,28 @@
         });
         this.dispatchEvent('page:afterin pageAfterIn', page);
       },
-
       onPageBeforeRemove: function onPageBeforeRemove(page) {
         if (this.eventTargetEl !== page.el) { return; }
         this.dispatchEvent('page:beforeremove pageBeforeRemove', page);
       },
-
       onPageStack: function onPageStack(pageEl) {
         if (this.eventTargetEl !== pageEl) { return; }
         this.setState({
           routerForceUnstack: false
         });
       },
-
       onPageUnstack: function onPageUnstack(pageEl) {
         if (this.eventTargetEl !== pageEl) { return; }
         this.setState({
           routerForceUnstack: true
         });
       },
-
       onPagePosition: function onPagePosition(pageEl, position) {
         if (this.eventTargetEl !== pageEl) { return; }
         this.setState({
-          routerPositionClass: ("page-" + position)
+          routerPositionClass: "page-".concat(position)
         });
       },
-
       onPageRole: function onPageRole(pageEl, rolesData) {
         if (this.eventTargetEl !== pageEl) { return; }
         this.setState({
@@ -57249,69 +57064,63 @@
           routerPageRoleDetailRoot: rolesData.detailRoot
         });
       },
-
       onPageMasterStack: function onPageMasterStack(pageEl) {
         if (this.eventTargetEl !== pageEl) { return; }
         this.setState({
           routerPageMasterStack: true
         });
       },
-
       onPageMasterUnstack: function onPageMasterUnstack(pageEl) {
         if (this.eventTargetEl !== pageEl) { return; }
         this.setState({
           routerPageMasterStack: false
         });
       },
-
       onPageNavbarLargeCollapsed: function onPageNavbarLargeCollapsed(pageEl) {
         if (this.eventTargetEl !== pageEl) { return; }
         this.setState({
           hasNavbarLargeCollapsed: true
         });
       },
-
       onPageNavbarLargeExpanded: function onPageNavbarLargeExpanded(pageEl) {
         if (this.eventTargetEl !== pageEl) { return; }
         this.setState({
           hasNavbarLargeCollapsed: false
         });
       },
-
       onCardOpened: function onCardOpened(cardEl, pageEl) {
         if (this.eventTargetEl !== pageEl) { return; }
         this.setState({
           hasCardExpandableOpened: true
         });
       },
-
       onCardClose: function onCardClose(cardEl, pageEl) {
         if (this.eventTargetEl !== pageEl) { return; }
         this.setState({
           hasCardExpandableOpened: false
         });
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len7 = arguments.length, args = new Array(_len7 > 1 ? _len7 - 1 : 0), _key7 = 1; _key7 < _len7; _key7++) {
+          args[_key7 - 1] = arguments$1[_key7];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       },
-
       setState: function setState(updater, callback) {
         __vueComponentSetState(this, updater, callback);
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
+  function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
   var f7Panel = {
     name: 'f7-panel',
     props: Object.assign({
@@ -57351,13 +57160,12 @@
         default: 0
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var id = props.id;
-      var style = props.style;
-      var resizable = props.resizable;
+      var id = props.id,
+          style = props.style,
+          resizable = props.resizable;
       return _h('div', {
         ref: 'el',
         style: style,
@@ -57369,30 +57177,27 @@
         class: 'panel-resize-handler'
       })]);
     },
-
     computed: {
       classes: function classes() {
-        var obj;
+        var _Utils$classNames;
 
         var self = this;
         var props = self.props;
-        var left = props.left;
-        var reveal = props.reveal;
-        var className = props.className;
-        var resizable = props.resizable;
-        var side = props.side;
-        var effect = props.effect;
+        var left = props.left,
+            reveal = props.reveal,
+            className = props.className,
+            resizable = props.resizable;
+        var side = props.side,
+            effect = props.effect;
         side = side || (left ? 'left' : 'right');
         effect = effect || (reveal ? 'reveal' : 'cover');
-        return Utils$1.classNames(className, 'panel', ( obj = {
+        return Utils$1.classNames(className, 'panel', (_Utils$classNames = {
           'panel-resizable': resizable
-        }, obj[("panel-" + side)] = side, obj[("panel-" + effect)] = effect, obj ), Mixins.colorClasses(props));
+        }, _defineProperty$1(_Utils$classNames, "panel-".concat(side), side), _defineProperty$1(_Utils$classNames, "panel-".concat(effect), effect), _Utils$classNames), Mixins.colorClasses(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
     watch: {
       'props.resizable': function watchResizable(resizable) {
@@ -57411,25 +57216,23 @@
         }
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onBackdropClick', 'onSwipe', 'onSwipeOpen', 'onBreakpoint', 'onCollapsedBreakpoint', 'onResize']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
-      var ref = self.props;
-      var opened = ref.opened;
-      var resizable = ref.resizable;
-      var backdrop = ref.backdrop;
-      var backdropEl = ref.backdropEl;
-      var visibleBreakpoint = ref.visibleBreakpoint;
-      var collapsedBreakpoint = ref.collapsedBreakpoint;
-      var swipe = ref.swipe;
-      var swipeOnlyClose = ref.swipeOnlyClose;
-      var swipeActiveArea = ref.swipeActiveArea;
-      var swipeThreshold = ref.swipeThreshold;
+      var _self$props = self.props,
+          opened = _self$props.opened,
+          resizable = _self$props.resizable,
+          backdrop = _self$props.backdrop,
+          backdropEl = _self$props.backdropEl,
+          visibleBreakpoint = _self$props.visibleBreakpoint,
+          collapsedBreakpoint = _self$props.collapsedBreakpoint,
+          swipe = _self$props.swipe,
+          swipeOnlyClose = _self$props.swipeOnlyClose,
+          swipeActiveArea = _self$props.swipeActiveArea,
+          swipeThreshold = _self$props.swipeThreshold;
       self.$f7ready(function () {
         var $ = self.$$;
         if (!$) { return; }
@@ -57469,7 +57272,6 @@
         }
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
 
@@ -57477,73 +57279,61 @@
         self.f7Panel.destroy();
       }
     },
-
     methods: {
       onOpen: function onOpen(event) {
         this.dispatchEvent('panel:open panelOpen', event);
       },
-
       onOpened: function onOpened(event) {
         this.dispatchEvent('panel:opened panelOpened', event);
       },
-
       onClose: function onClose(event) {
         this.dispatchEvent('panel:close panelClose', event);
       },
-
       onClosed: function onClosed(event) {
         this.dispatchEvent('panel:closed panelClosed', event);
       },
-
       onBackdropClick: function onBackdropClick(event) {
         this.dispatchEvent('panel:backdrop-click panelBackdropClick', event);
       },
-
       onSwipe: function onSwipe(event) {
         this.dispatchEvent('panel:swipe panelSwipe', event);
       },
-
       onSwipeOpen: function onSwipeOpen(event) {
         this.dispatchEvent('panel:swipeopen panelSwipeOpen', event);
       },
-
       onBreakpoint: function onBreakpoint(event) {
         this.dispatchEvent('panel:breakpoint panelBreakpoint', event);
       },
-
       onCollapsedBreakpoint: function onCollapsedBreakpoint(event) {
         this.dispatchEvent('panel:collapsedbreakpoint panelCollapsedBreakpoint', event);
       },
-
       onResize: function onResize(event) {
         this.dispatchEvent('panel:resize panelResize', event);
       },
-
       open: function open(animate) {
         var self = this;
         if (!self.f7Panel) { return; }
         self.f7Panel.open(animate);
       },
-
       close: function close(animate) {
         var self = this;
         if (!self.f7Panel) { return; }
         self.f7Panel.close(animate);
       },
-
       toggle: function toggle(animate) {
         var self = this;
         if (!self.f7Panel) { return; }
         self.f7Panel.toggle(animate);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     }
   };
 
@@ -57630,12 +57420,10 @@
       renderPopup: Function,
       renderStandalone: Function
     },
-
     render: function render() {
       var _h = this.$createElement;
       return null;
     },
-
     watch: {
       'props.photos': function watchPhotos(newValue) {
         var self = this;
@@ -57648,12 +57436,10 @@
         }
       }
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7PhotoBrowser && self.f7PhotoBrowser.destroy) { self.f7PhotoBrowser.destroy(); }
     },
-
     mounted: function mounted() {
       var self = this;
       if (!self.props.init) { return; }
@@ -57668,63 +57454,53 @@
             open: function open() {
               self.dispatchEvent('photobrowser:open photoBrowserOpen');
             },
-
             close: function close() {
               self.dispatchEvent('photobrowser:close photoBrowserClose');
             },
-
             opened: function opened() {
               self.dispatchEvent('photobrowser:opened photoBrowserOpened');
             },
-
             closed: function closed() {
               self.dispatchEvent('photobrowser:closed photoBrowserClosed');
             },
-
             swipeToClose: function swipeToClose() {
               self.dispatchEvent('photobrowser:swipetoclose photoBrowserSwipeToClose');
             }
-
           }
         });
         self.f7PhotoBrowser = f7.photoBrowser.create(params);
       });
     },
-
     methods: {
       open: function open(index) {
         return this.f7PhotoBrowser.open(index);
       },
-
       close: function close() {
         return this.f7PhotoBrowser.close();
       },
-
       expositionToggle: function expositionToggle() {
         return this.f7PhotoBrowser.expositionToggle();
       },
-
       expositionEnable: function expositionEnable() {
         return this.f7PhotoBrowser.expositionEnable();
       },
-
       expositionDisable: function expositionDisable() {
         return this.f7PhotoBrowser.expositionDisable();
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -57740,14 +57516,13 @@
       closeByOutsideClick: Boolean,
       closeOnEscape: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'popover', Mixins.colorClasses(props));
       return _h('div', {
         ref: 'el',
@@ -57762,7 +57537,6 @@
         class: 'popover-inner'
       }, [this.$slots['default']])]);
     },
-
     watch: {
       'props.opened': function watchOpened(opened) {
         var self = this;
@@ -57775,23 +57549,21 @@
         }
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
       var props = self.props;
-      var target = props.target;
-      var opened = props.opened;
-      var backdrop = props.backdrop;
-      var backdropEl = props.backdropEl;
-      var closeByBackdropClick = props.closeByBackdropClick;
-      var closeByOutsideClick = props.closeByOutsideClick;
-      var closeOnEscape = props.closeOnEscape;
+      var target = props.target,
+          opened = props.opened,
+          backdrop = props.backdrop,
+          backdropEl = props.backdropEl,
+          closeByBackdropClick = props.closeByBackdropClick,
+          closeByOutsideClick = props.closeByOutsideClick,
+          closeOnEscape = props.closeOnEscape;
       var popoverParams = {
         el: el,
         on: {
@@ -57818,54 +57590,47 @@
         }
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Popover) { self.f7Popover.destroy(); }
     },
-
     methods: {
       onOpen: function onOpen(instance) {
         this.dispatchEvent('popover:open popoverOpen', instance);
       },
-
       onOpened: function onOpened(instance) {
         this.dispatchEvent('popover:opened popoverOpened', instance);
       },
-
       onClose: function onClose(instance) {
         this.dispatchEvent('popover:close popoverClose', instance);
       },
-
       onClosed: function onClosed(instance) {
         this.dispatchEvent('popover:closed popoverClosed', instance);
       },
-
       open: function open(animate) {
         var self = this;
         if (!self.f7Popover) { return undefined; }
         return self.f7Popover.open(animate);
       },
-
       close: function close(animate) {
         var self = this;
         if (!self.f7Popover) { return undefined; }
         return self.f7Popover.close(animate);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -57887,16 +57652,15 @@
       swipeHandler: [String, Object, window.HTMLElement],
       push: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var tabletFullscreen = props.tabletFullscreen;
-      var push = props.push;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          tabletFullscreen = props.tabletFullscreen,
+          push = props.push;
       var classes = Utils$1.classNames(className, 'popup', {
         'popup-tablet-fullscreen': tabletFullscreen,
         'popup-push': push
@@ -57910,7 +57674,6 @@
         }
       }, [this.$slots['default']]);
     },
-
     watch: {
       'props.opened': function watchOpened(opened) {
         var self = this;
@@ -57923,23 +57686,21 @@
         }
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
       var props = self.props;
-      var closeByBackdropClick = props.closeByBackdropClick;
-      var backdrop = props.backdrop;
-      var backdropEl = props.backdropEl;
-      var animate = props.animate;
-      var closeOnEscape = props.closeOnEscape;
-      var swipeToClose = props.swipeToClose;
-      var swipeHandler = props.swipeHandler;
+      var closeByBackdropClick = props.closeByBackdropClick,
+          backdrop = props.backdrop,
+          backdropEl = props.backdropEl,
+          animate = props.animate,
+          closeOnEscape = props.closeOnEscape,
+          swipeToClose = props.swipeToClose,
+          swipeHandler = props.swipeHandler;
       var popupParams = {
         el: el,
         on: {
@@ -57967,54 +57728,47 @@
         }
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Popup) { self.f7Popup.destroy(); }
     },
-
     methods: {
       onOpen: function onOpen(instance) {
         this.dispatchEvent('popup:open popupOpen', instance);
       },
-
       onOpened: function onOpened(instance) {
         this.dispatchEvent('popup:opened popupOpened', instance);
       },
-
       onClose: function onClose(instance) {
         this.dispatchEvent('popup:close popupClose', instance);
       },
-
       onClosed: function onClosed(instance) {
         this.dispatchEvent('popup:closed popupClosed', instance);
       },
-
       open: function open(animate) {
         var self = this;
         if (!self.f7Popup) { return undefined; }
         return self.f7Popup.open(animate);
       },
-
       close: function close(animate) {
         var self = this;
         if (!self.f7Popup) { return undefined; }
         return self.f7Popup.close(animate);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -58025,19 +57779,18 @@
       progress: Number,
       infinite: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var progress = props.progress;
-      var id = props.id;
-      var style = props.style;
-      var infinite = props.infinite;
-      var className = props.className;
+      var progress = props.progress,
+          id = props.id,
+          style = props.style,
+          infinite = props.infinite,
+          className = props.className;
       var transformStyle = {
-        transform: progress ? ("translate3d(" + (-100 + progress) + "%, 0, 0)") : '',
-        WebkitTransform: progress ? ("translate3d(" + (-100 + progress) + "%, 0, 0)") : ''
+        transform: progress ? "translate3d(".concat(-100 + progress, "%, 0, 0)") : '',
+        WebkitTransform: progress ? "translate3d(".concat(-100 + progress, "%, 0, 0)") : ''
       };
       var classes = Utils$1.classNames(className, 'progressbar', {
         'progressbar-infinite': infinite
@@ -58054,20 +57807,17 @@
         style: transformStyle
       })]);
     },
-
     methods: {
       set: function set(progress, speed) {
         var self = this;
         if (!self.$f7) { return; }
         self.$f7.progressbar.set(self.$refs.el, progress, speed);
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -58082,20 +57832,19 @@
       readonly: Boolean,
       defaultChecked: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var name = props.name;
-      var value = props.value;
-      var disabled = props.disabled;
-      var readonly = props.readonly;
-      var checked = props.checked;
-      var defaultChecked = props.defaultChecked;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
+      var name = props.name,
+          value = props.value,
+          disabled = props.disabled,
+          readonly = props.readonly,
+          checked = props.checked,
+          defaultChecked = props.defaultChecked,
+          id = props.id,
+          style = props.style,
+          className = props.className;
       var inputEl;
       {
         inputEl = _h('input', {
@@ -58131,29 +57880,27 @@
         }
       }, [inputEl, iconEl, this.$slots['default']]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onChange']);
     },
-
     methods: {
       onChange: function onChange(event) {
         this.dispatchEvent('change', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -58167,16 +57914,15 @@
         default: 'div'
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var tag = props.tag;
-      var noGap = props.noGap;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          tag = props.tag,
+          noGap = props.noGap;
       var RowTag = tag;
       var classes = Utils$1.classNames(className, 'row', {
         'no-gap': noGap
@@ -58190,37 +57936,33 @@
         }
       }, [this.$slots['default']]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick']);
     },
-
     mounted: function mounted() {
       this.$refs.el.addEventListener('click', this.onClick);
     },
-
     beforeDestroy: function beforeDestroy() {
       this.$refs.el.removeEventListener('click', this.onClick);
     },
-
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -58320,26 +58062,25 @@
         default: true
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var clearEl;
       var disableEl;
       var props = self.props;
-      var placeholder = props.placeholder;
-      var clearButton = props.clearButton;
-      var disableButton = props.disableButton;
-      var disableButtonText = props.disableButtonText;
-      var form = props.form;
-      var noShadow = props.noShadow;
-      var noHairline = props.noHairline;
-      var expandable = props.expandable;
-      var className = props.className;
-      var style = props.style;
-      var id = props.id;
-      var value = props.value;
-      var inline = props.inline;
+      var placeholder = props.placeholder,
+          clearButton = props.clearButton,
+          disableButton = props.disableButton,
+          disableButtonText = props.disableButtonText,
+          form = props.form,
+          noShadow = props.noShadow,
+          noHairline = props.noHairline,
+          expandable = props.expandable,
+          className = props.className,
+          style = props.style,
+          id = props.id,
+          value = props.value,
+          inline = props.inline;
 
       if (clearButton) {
         clearEl = _h('span', {
@@ -58396,40 +58137,38 @@
         class: 'searchbar-icon'
       }), clearEl, this.$slots['input-wrap-end']]), disableEl, this.$slots['inner-end'], this.$slots['default']]), this.$slots['after-inner']]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onSubmit', 'onClearButtonClick', 'onDisableButtonClick', 'onInput', 'onChange', 'onFocus', 'onBlur']);
     },
-
     mounted: function mounted() {
       var self = this;
-      var ref = self.props;
-      var init = ref.init;
-      var inputEvents = ref.inputEvents;
-      var searchContainer = ref.searchContainer;
-      var searchIn = ref.searchIn;
-      var searchItem = ref.searchItem;
-      var searchGroup = ref.searchGroup;
-      var searchGroupTitle = ref.searchGroupTitle;
-      var hideOnEnableEl = ref.hideOnEnableEl;
-      var hideOnSearchEl = ref.hideOnSearchEl;
-      var foundEl = ref.foundEl;
-      var notFoundEl = ref.notFoundEl;
-      var backdrop = ref.backdrop;
-      var backdropEl = ref.backdropEl;
-      var disableButton = ref.disableButton;
-      var ignore = ref.ignore;
-      var customSearch = ref.customSearch;
-      var removeDiacritics = ref.removeDiacritics;
-      var hideDividers = ref.hideDividers;
-      var hideGroups = ref.hideGroups;
-      var form = ref.form;
-      var expandable = ref.expandable;
-      var inline = ref.inline;
-      var ref$1 = self.$refs;
-      var el = ref$1.el;
-      var clearEl = ref$1.clearEl;
-      var disableEl = ref$1.disableEl;
+      var _self$props = self.props,
+          init = _self$props.init,
+          inputEvents = _self$props.inputEvents,
+          searchContainer = _self$props.searchContainer,
+          searchIn = _self$props.searchIn,
+          searchItem = _self$props.searchItem,
+          searchGroup = _self$props.searchGroup,
+          searchGroupTitle = _self$props.searchGroupTitle,
+          hideOnEnableEl = _self$props.hideOnEnableEl,
+          hideOnSearchEl = _self$props.hideOnSearchEl,
+          foundEl = _self$props.foundEl,
+          notFoundEl = _self$props.notFoundEl,
+          backdrop = _self$props.backdrop,
+          backdropEl = _self$props.backdropEl,
+          disableButton = _self$props.disableButton,
+          ignore = _self$props.ignore,
+          customSearch = _self$props.customSearch,
+          removeDiacritics = _self$props.removeDiacritics,
+          hideDividers = _self$props.hideDividers,
+          hideGroups = _self$props.hideGroups,
+          form = _self$props.form,
+          expandable = _self$props.expandable,
+          inline = _self$props.inline;
+      var _self$$refs = self.$refs,
+          el = _self$$refs.el,
+          clearEl = _self$$refs.clearEl,
+          disableEl = _self$$refs.disableEl;
 
       if (form && el) {
         el.addEventListener('submit', self.onSubmit, false);
@@ -58471,19 +58210,15 @@
             search: function search(searchbar, query, previousQuery) {
               self.dispatchEvent('searchbar:search searchbarSearch', searchbar, query, previousQuery);
             },
-
             clear: function clear(searchbar, previousQuery) {
               self.dispatchEvent('searchbar:clear searchbarClear', searchbar, previousQuery);
             },
-
             enable: function enable(searchbar) {
               self.dispatchEvent('searchbar:enable searchbarEnable', searchbar);
             },
-
             disable: function disable(searchbar) {
               self.dispatchEvent('searchbar:disable searchbarDisable', searchbar);
             }
-
           }
         });
         Object.keys(params).forEach(function (key) {
@@ -58494,13 +58229,12 @@
         self.f7Searchbar = self.$f7.searchbar.create(params);
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var ref = self.$refs;
-      var el = ref.el;
-      var clearEl = ref.clearEl;
-      var disableEl = ref.disableEl;
+      var _self$$refs2 = self.$refs,
+          el = _self$$refs2.el,
+          clearEl = _self$$refs2.clearEl,
+          disableEl = _self$$refs2.disableEl;
 
       if (self.props.form && el) {
         el.removeEventListener('submit', self.onSubmit, false);
@@ -58516,74 +58250,62 @@
 
       if (self.f7Searchbar && self.f7Searchbar.destroy) { self.f7Searchbar.destroy(); }
     },
-
     methods: {
       search: function search(query) {
         if (!this.f7Searchbar) { return undefined; }
         return this.f7Searchbar.search(query);
       },
-
       enable: function enable() {
         if (!this.f7Searchbar) { return undefined; }
         return this.f7Searchbar.enable();
       },
-
       disable: function disable() {
         if (!this.f7Searchbar) { return undefined; }
         return this.f7Searchbar.disable();
       },
-
       toggle: function toggle() {
         if (!this.f7Searchbar) { return undefined; }
         return this.toggle.disable();
       },
-
       clear: function clear() {
         if (!this.f7Searchbar) { return undefined; }
         return this.f7Searchbar.clear();
       },
-
       onChange: function onChange(event) {
         this.dispatchEvent('change', event);
       },
-
       onInput: function onInput(event) {
         this.dispatchEvent('input', event);
       },
-
       onFocus: function onFocus(event) {
         this.dispatchEvent('focus', event);
       },
-
       onBlur: function onBlur(event) {
         this.dispatchEvent('blur', event);
       },
-
       onSubmit: function onSubmit(event) {
         this.dispatchEvent('submit', event);
       },
-
       onClearButtonClick: function onClearButtonClick(event) {
         this.dispatchEvent('click:clear clickClear', event);
       },
-
       onDisableButtonClick: function onDisableButtonClick(event) {
         this.dispatchEvent('click:disable clickDisable', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -58608,27 +58330,26 @@
         default: 'div'
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var raised = props.raised;
-      var raisedIos = props.raisedIos;
-      var raisedAurora = props.raisedAurora;
-      var raisedMd = props.raisedMd;
-      var round = props.round;
-      var roundIos = props.roundIos;
-      var roundAurora = props.roundAurora;
-      var roundMd = props.roundMd;
-      var strong = props.strong;
-      var strongIos = props.strongIos;
-      var strongMd = props.strongMd;
-      var strongAurora = props.strongAurora;
-      var id = props.id;
-      var style = props.style;
-      var tag = props.tag;
+      var className = props.className,
+          raised = props.raised,
+          raisedIos = props.raisedIos,
+          raisedAurora = props.raisedAurora,
+          raisedMd = props.raisedMd,
+          round = props.round,
+          roundIos = props.roundIos,
+          roundAurora = props.roundAurora,
+          roundMd = props.roundMd,
+          strong = props.strong,
+          strongIos = props.strongIos,
+          strongMd = props.strongMd,
+          strongAurora = props.strongAurora,
+          id = props.id,
+          style = props.style,
+          tag = props.tag;
       var classNames = Utils$1.classNames(className, {
         segmented: true,
         'segmented-raised': raised,
@@ -58653,12 +58374,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -58680,20 +58399,19 @@
       swipeToStep: Boolean,
       swipeHandler: [String, Object, window.HTMLElement]
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var fixedList = [];
       var staticList = [];
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
-      var top = props.top;
-      var bottom = props.bottom;
-      var position = props.position;
-      var push = props.push;
+      var id = props.id,
+          style = props.style,
+          className = props.className,
+          top = props.top,
+          bottom = props.bottom,
+          position = props.position,
+          push = props.push;
       var fixedTags;
       fixedTags = 'navbar toolbar tabbar subnavbar searchbar messagebar fab list-index'.split(' ');
       var slotsDefault = self.$slots.default;
@@ -58725,7 +58443,7 @@
 
       var positionComputed = 'bottom';
       if (position) { positionComputed = position; }else if (top) { positionComputed = 'top'; }else if (bottom) { positionComputed = 'bottom'; }
-      var classes = Utils$1.classNames(className, 'sheet-modal', ("sheet-modal-" + positionComputed), {
+      var classes = Utils$1.classNames(className, 'sheet-modal', "sheet-modal-".concat(positionComputed), {
         'sheet-modal-push': push
       }, Mixins.colorClasses(props));
       return _h('div', {
@@ -58737,7 +58455,6 @@
         }
       }, [fixedList, innerEl]);
     },
-
     watch: {
       'props.opened': function watchOpened(opened) {
         var self = this;
@@ -58750,25 +58467,23 @@
         }
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onStepOpen', 'onStepClose', 'onStepProgress']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
       var props = self.props;
-      var opened = props.opened;
-      var backdrop = props.backdrop;
-      var backdropEl = props.backdropEl;
-      var closeByBackdropClick = props.closeByBackdropClick;
-      var closeByOutsideClick = props.closeByOutsideClick;
-      var closeOnEscape = props.closeOnEscape;
-      var swipeToClose = props.swipeToClose;
-      var swipeToStep = props.swipeToStep;
-      var swipeHandler = props.swipeHandler;
+      var opened = props.opened,
+          backdrop = props.backdrop,
+          backdropEl = props.backdropEl,
+          closeByBackdropClick = props.closeByBackdropClick,
+          closeByOutsideClick = props.closeByOutsideClick,
+          closeOnEscape = props.closeOnEscape,
+          swipeToClose = props.swipeToClose,
+          swipeToStep = props.swipeToStep,
+          swipeHandler = props.swipeHandler;
       var sheetParams = {
         el: self.$refs.el,
         on: {
@@ -58800,69 +58515,60 @@
         }
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Sheet) { self.f7Sheet.destroy(); }
     },
-
     methods: {
       onStepProgress: function onStepProgress(instance, progress) {
         this.dispatchEvent('sheet:stepprogress sheetStepProgress', instance, progress);
       },
-
       onStepOpen: function onStepOpen(instance) {
         this.dispatchEvent('sheet:stepopen sheetStepOpen', instance);
       },
-
       onStepClose: function onStepClose(instance) {
         this.dispatchEvent('sheet:stepclose sheetStepClose', instance);
       },
-
       onOpen: function onOpen(instance) {
         this.dispatchEvent('sheet:open sheetOpen', instance);
       },
-
       onOpened: function onOpened(instance) {
         this.dispatchEvent('sheet:opened sheetOpened', instance);
       },
-
       onClose: function onClose(instance) {
         this.dispatchEvent('sheet:close sheetClose', instance);
       },
-
       onClosed: function onClosed(instance) {
         this.dispatchEvent('sheet:closed sheetClosed', instance);
       },
-
       open: function open(animate) {
         var self = this;
         if (!self.f7Sheet) { return undefined; }
         return self.f7Sheet.open(animate);
       },
-
       close: function close(animate) {
         var self = this;
         if (!self.f7Sheet) { return undefined; }
         return self.f7Sheet.close(animate);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
+  function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
   var f7SkeletonBlock = {
     name: 'f7-skeleton-block',
     props: Object.assign({
@@ -58874,48 +58580,47 @@
         default: 'div'
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var width = props.width;
-      var height = props.height;
-      var tag = props.tag;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          width = props.width,
+          height = props.height,
+          tag = props.tag;
       var classes = Utils$1.classNames('skeleton-block', className, Mixins.colorClasses(props));
       var styleAttribute = style;
 
       if (width) {
-        var widthValue = typeof width === 'number' ? (width + "px") : width;
+        var widthValue = typeof width === 'number' ? "".concat(width, "px") : width;
 
         if (!styleAttribute) {
           styleAttribute = {
             width: widthValue
           };
-        } else if (typeof styleAttribute === 'object') {
+        } else if (_typeof(styleAttribute) === 'object') {
           styleAttribute = Object.assign({
             width: widthValue
           }, styleAttribute);
         } else if (typeof styleAttribute === 'string') {
-          styleAttribute = "width: " + widthValue + "; " + styleAttribute;
+          styleAttribute = "width: ".concat(widthValue, "; ").concat(styleAttribute);
         }
       }
 
       if (height) {
-        var heightValue = typeof height === 'number' ? (height + "px") : height;
+        var heightValue = typeof height === 'number' ? "".concat(height, "px") : height;
 
         if (!styleAttribute) {
           styleAttribute = {
             height: heightValue
           };
-        } else if (typeof styleAttribute === 'object') {
+        } else if (_typeof(styleAttribute) === 'object') {
           styleAttribute = Object.assign({
             height: heightValue
           }, styleAttribute);
         } else if (typeof styleAttribute === 'string') {
-          styleAttribute = "height: " + heightValue + "; " + styleAttribute;
+          styleAttribute = "height: ".concat(heightValue, "; ").concat(styleAttribute);
         }
       }
 
@@ -58928,15 +58633,14 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
+  function _typeof$1(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$1 = function _typeof(obj) { return typeof obj; }; } else { _typeof$1 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$1(obj); }
   ({
     name: 'f7-skeleton-text',
     props: Object.assign({
@@ -58948,48 +58652,47 @@
         default: 'span'
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var width = props.width;
-      var height = props.height;
-      var tag = props.tag;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          width = props.width,
+          height = props.height,
+          tag = props.tag;
       var classes = Utils$1.classNames('skeleton-text', className, Mixins.colorClasses(props));
       var styleAttribute = style;
 
       if (width) {
-        var widthValue = typeof width === 'number' ? (width + "px") : width;
+        var widthValue = typeof width === 'number' ? "".concat(width, "px") : width;
 
         if (!styleAttribute) {
           styleAttribute = {
             width: widthValue
           };
-        } else if (typeof styleAttribute === 'object') {
+        } else if (_typeof$1(styleAttribute) === 'object') {
           styleAttribute = Object.assign({
             width: widthValue
           }, styleAttribute);
         } else if (typeof styleAttribute === 'string') {
-          styleAttribute = "width: " + widthValue + "; " + styleAttribute;
+          styleAttribute = "width: ".concat(widthValue, "; ").concat(styleAttribute);
         }
       }
 
       if (height) {
-        var heightValue = typeof height === 'number' ? (height + "px") : height;
+        var heightValue = typeof height === 'number' ? "".concat(height, "px") : height;
 
         if (!styleAttribute) {
           styleAttribute = {
             height: heightValue
           };
-        } else if (typeof styleAttribute === 'object') {
+        } else if (_typeof$1(styleAttribute) === 'object') {
           styleAttribute = Object.assign({
             height: heightValue
           }, styleAttribute);
         } else if (typeof styleAttribute === 'string') {
-          styleAttribute = "height: " + heightValue + "; " + styleAttribute;
+          styleAttribute = "height: ".concat(heightValue, "; ").concat(styleAttribute);
         }
       }
 
@@ -59002,44 +58705,12 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   });
-
-  var f7Statusbar = {
-    name: 'f7-statusbar',
-    props: Object.assign({
-      id: [String, Number]
-    }, Mixins.colorProps),
-
-    render: function render() {
-      var _h = this.$createElement;
-      var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var classes = Utils$1.classNames(className, 'statusbar', Mixins.colorClasses(props));
-      return _h('div', {
-        style: style,
-        class: classes,
-        attrs: {
-          id: id
-        }
-      }, [this.$slots['default']]);
-    },
-
-    computed: {
-      props: function props() {
-        return __vueComponentProps(this);
-      }
-
-    }
-  };
 
   var f7Stepper = {
     name: 'f7-stepper',
@@ -59127,23 +58798,22 @@
       raisedIos: Boolean,
       raisedAurora: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var input = props.input;
-      var buttonsOnly = props.buttonsOnly;
-      var inputType = props.inputType;
-      var value = props.value;
-      var inputReadonly = props.inputReadonly;
-      var min = props.min;
-      var max = props.max;
-      var step = props.step;
-      var id = props.id;
-      var style = props.style;
-      var name = props.name;
-      var inputId = props.inputId;
+      var input = props.input,
+          buttonsOnly = props.buttonsOnly,
+          inputType = props.inputType,
+          value = props.value,
+          inputReadonly = props.inputReadonly,
+          min = props.min,
+          max = props.max,
+          step = props.step,
+          id = props.id,
+          style = props.style,
+          name = props.name,
+          inputId = props.inputId;
       var inputWrapEl;
       var valueEl;
 
@@ -59196,32 +58866,31 @@
         class: 'stepper-button-plus'
       })]);
     },
-
     computed: {
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var round = props.round;
-        var roundIos = props.roundIos;
-        var roundMd = props.roundMd;
-        var roundAurora = props.roundAurora;
-        var fill = props.fill;
-        var fillIos = props.fillIos;
-        var fillMd = props.fillMd;
-        var fillAurora = props.fillAurora;
-        var large = props.large;
-        var largeIos = props.largeIos;
-        var largeMd = props.largeMd;
-        var largeAurora = props.largeAurora;
-        var small = props.small;
-        var smallIos = props.smallIos;
-        var smallMd = props.smallMd;
-        var smallAurora = props.smallAurora;
-        var raised = props.raised;
-        var raisedMd = props.raisedMd;
-        var raisedIos = props.raisedIos;
-        var raisedAurora = props.raisedAurora;
-        var disabled = props.disabled;
+        var round = props.round,
+            roundIos = props.roundIos,
+            roundMd = props.roundMd,
+            roundAurora = props.roundAurora,
+            fill = props.fill,
+            fillIos = props.fillIos,
+            fillMd = props.fillMd,
+            fillAurora = props.fillAurora,
+            large = props.large,
+            largeIos = props.largeIos,
+            largeMd = props.largeMd,
+            largeAurora = props.largeAurora,
+            small = props.small,
+            smallIos = props.smallIos,
+            smallMd = props.smallMd,
+            smallAurora = props.smallAurora,
+            raised = props.raised,
+            raisedMd = props.raisedMd,
+            raisedIos = props.raisedIos,
+            raisedAurora = props.raisedAurora,
+            disabled = props.disabled;
         return Utils$1.classNames(self.props.className, 'stepper', {
           disabled: disabled,
           'stepper-round': round,
@@ -59246,22 +58915,18 @@
           'stepper-raised-aurora': raisedAurora
         }, Mixins.colorClasses(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onInput', 'onMinusClick', 'onPlusClick']);
     },
-
     mounted: function mounted() {
       var self = this;
-      var ref = self.$refs;
-      var minusEl = ref.minusEl;
-      var plusEl = ref.plusEl;
+      var _self$$refs = self.$refs,
+          minusEl = _self$$refs.minusEl,
+          plusEl = _self$$refs.plusEl;
 
       if (minusEl) {
         minusEl.addEventListener('click', self.onMinusClick);
@@ -59273,18 +58938,18 @@
 
       if (!self.props.init) { return; }
       self.$f7ready(function (f7) {
-        var ref = self.props;
-        var min = ref.min;
-        var max = ref.max;
-        var value = ref.value;
-        var step = ref.step;
-        var formatValue = ref.formatValue;
-        var autorepeat = ref.autorepeat;
-        var autorepeatDynamic = ref.autorepeatDynamic;
-        var wraps = ref.wraps;
-        var manualInputMode = ref.manualInputMode;
-        var decimalPoint = ref.decimalPoint;
-        var buttonsEndInputMode = ref.buttonsEndInputMode;
+        var _self$props = self.props,
+            min = _self$props.min,
+            max = _self$props.max,
+            value = _self$props.value,
+            step = _self$props.step,
+            formatValue = _self$props.formatValue,
+            autorepeat = _self$props.autorepeat,
+            autorepeatDynamic = _self$props.autorepeatDynamic,
+            wraps = _self$props.wraps,
+            manualInputMode = _self$props.manualInputMode,
+            decimalPoint = _self$props.decimalPoint,
+            buttonsEndInputMode = _self$props.buttonsEndInputMode;
         var el = self.$refs.el;
         if (!el) { return; }
         self.f7Stepper = f7.stepper.create(Utils$1.noUndefinedProps({
@@ -59304,17 +58969,15 @@
             change: function change(stepper, newValue) {
               self.dispatchEvent('stepper:change stepperChange', newValue);
             }
-
           }
         }));
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var ref = self.$refs;
-      var minusEl = ref.minusEl;
-      var plusEl = ref.plusEl;
+      var _self$$refs2 = self.$refs,
+          minusEl = _self$$refs2.minusEl,
+          plusEl = _self$$refs2.plusEl;
 
       if (minusEl) {
         minusEl.removeEventListener('click', self.onMinusClick);
@@ -59330,23 +58993,19 @@
         self.f7Stepper.destroy();
       }
     },
-
     methods: {
       increment: function increment() {
         if (!this.f7Stepper) { return; }
         this.f7Stepper.increment();
       },
-
       decrement: function decrement() {
         if (!this.f7Stepper) { return; }
         this.f7Stepper.decrement();
       },
-
       setValue: function setValue(newValue) {
         var self = this;
         if (self.f7Stepper && self.f7Stepper.setValue) { self.f7Stepper.setValue(newValue); }
       },
-
       getValue: function getValue() {
         var self = this;
 
@@ -59356,34 +59015,31 @@
 
         return undefined;
       },
-
       onInput: function onInput(event) {
         var stepper = this.f7Stepper;
         this.dispatchEvent('input', event, stepper);
       },
-
       onChange: function onChange(event) {
         var stepper = this.f7Stepper;
         this.dispatchEvent('change', event, stepper);
       },
-
       onMinusClick: function onMinusClick(event) {
         var stepper = this.f7Stepper;
         this.dispatchEvent('stepper:minusclick stepperMinusClick', event, stepper);
       },
-
       onPlusClick: function onPlusClick(event) {
         var stepper = this.f7Stepper;
         this.dispatchEvent('stepper:plusclick stepperPlusClick', event, stepper);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     }
   };
 
@@ -59398,17 +59054,16 @@
         default: true
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var inner = props.inner;
-      var title = props.title;
-      var style = props.style;
-      var id = props.id;
-      var className = props.className;
-      var sliding = props.sliding;
+      var inner = props.inner,
+          title = props.title,
+          style = props.style,
+          id = props.id,
+          className = props.className,
+          sliding = props.sliding;
       var classes = Utils$1.classNames(className, 'subnavbar', {
         sliding: sliding
       }, Mixins.colorClasses(props));
@@ -59424,12 +59079,10 @@
         class: 'subnavbar-title'
       }, [title]), this.$slots['default']]) : this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -59441,16 +59094,15 @@
       right: Boolean,
       side: String
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var left = props.left;
-      var right = props.right;
-      var side = props.side;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var left = props.left,
+          right = props.right,
+          side = props.side,
+          className = props.className,
+          id = props.id,
+          style = props.style;
       var sideComputed = side;
 
       if (!sideComputed) {
@@ -59458,7 +59110,7 @@
         if (right) { sideComputed = 'right'; }
       }
 
-      var classes = Utils$1.classNames(className, ("swipeout-actions-" + sideComputed), Mixins.colorClasses(props));
+      var classes = Utils$1.classNames(className, "swipeout-actions-".concat(sideComputed), Mixins.colorClasses(props));
       return _h('div', {
         style: style,
         class: classes,
@@ -59467,12 +59119,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -59488,20 +59138,19 @@
       delete: Boolean,
       href: String
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var overswipe = props.overswipe;
-      var deleteProp = props.delete;
-      var close = props.close;
-      var href = props.href;
-      var confirmTitle = props.confirmTitle;
-      var confirmText = props.confirmText;
-      var text = props.text;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          overswipe = props.overswipe,
+          deleteProp = props.delete,
+          close = props.close,
+          href = props.href,
+          confirmTitle = props.confirmTitle,
+          confirmText = props.confirmText,
+          text = props.text;
       var classes = Utils$1.classNames(className, {
         'swipeout-overswipe': overswipe,
         'swipeout-delete': deleteProp,
@@ -59519,37 +59168,33 @@
         }
       }, [this.$slots['default'] || [text]]);
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick']);
     },
-
     mounted: function mounted() {
       this.$refs.el.addEventListener('click', this.onClick);
     },
-
     beforeDestroy: function beforeDestroy() {
       this.$refs.el.removeEventListener('click', this.onClick);
     },
-
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -59566,14 +59211,13 @@
         default: true
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
+      var id = props.id,
+          style = props.style,
+          className = props.className;
       var paginationEl;
       var scrollbarEl;
       var buttonNextEl;
@@ -59616,13 +59260,12 @@
         class: 'swiper-wrapper'
       }, [this.$slots['default']]), paginationEl, scrollbarEl, buttonPrevEl, buttonNextEl, this.$slots['after-wrapper']]);
     },
-
     computed: {
       paginationComputed: function paginationComputed() {
         var self = this;
-        var ref = self.props;
-        var pagination = ref.pagination;
-        var params = ref.params;
+        var _self$props = self.props,
+            pagination = _self$props.pagination,
+            params = _self$props.params;
 
         if (pagination === true || params && params.pagination && !params.pagination.el) {
           return true;
@@ -59630,12 +59273,11 @@
 
         return false;
       },
-
       scrollbarComputed: function scrollbarComputed() {
         var self = this;
-        var ref = self.props;
-        var scrollbar = ref.scrollbar;
-        var params = ref.params;
+        var _self$props2 = self.props,
+            scrollbar = _self$props2.scrollbar,
+            params = _self$props2.params;
 
         if (scrollbar === true || params && params.scrollbar && !params.scrollbar.el) {
           return true;
@@ -59643,12 +59285,11 @@
 
         return false;
       },
-
       navigationComputed: function navigationComputed() {
         var self = this;
-        var ref = self.props;
-        var navigation = ref.navigation;
-        var params = ref.params;
+        var _self$props3 = self.props,
+            navigation = _self$props3.navigation,
+            params = _self$props3.params;
 
         if (navigation === true || params && params.navigation && !params.navigation.nextEl && !params.navigation.prevEl) {
           return true;
@@ -59656,13 +59297,10 @@
 
         return false;
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
-
     updated: function updated() {
       var self = this;
 
@@ -59673,7 +59311,6 @@
 
       if (self.swiper && self.swiper.update) { self.swiper.update(); }
     },
-
     mounted: function mounted() {
       var self = this;
       if (!self.props.init) { return; }
@@ -59683,11 +59320,11 @@
           navigation: {},
           scrollbar: {}
         };
-        var ref = self.props;
-        var params = ref.params;
-        var pagination = ref.pagination;
-        var navigation = ref.navigation;
-        var scrollbar = ref.scrollbar;
+        var _self$props4 = self.props,
+            params = _self$props4.params,
+            pagination = _self$props4.pagination,
+            navigation = _self$props4.navigation,
+            scrollbar = _self$props4.scrollbar;
         if (params) { Utils$1.extend(newParams, params); }
         if (pagination && !newParams.pagination.el) { newParams.pagination.el = self.$refs.paginationEl; }
 
@@ -59700,13 +59337,11 @@
         self.swiper = f7.swiper.create(self.$refs.el, newParams);
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (!self.props.init) { return; }
       if (self.swiper && self.swiper.destroy) { self.swiper.destroy(); }
     }
-
   });
 
   var f7Tab = {
@@ -59715,29 +59350,27 @@
       id: [String, Number],
       tabActive: Boolean
     }, Mixins.colorProps),
-
     data: function data() {
       var props = __vueComponentProps(this);
 
-      var state = (function () {
+      var state = function () {
         return {
           tabContent: null
         };
-      })();
+      }();
 
       return {
         state: state
       };
     },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var tabActive = props.tabActive;
-      var id = props.id;
-      var className = props.className;
-      var style = props.style;
+      var tabActive = props.tabActive,
+          id = props.id,
+          className = props.className,
+          style = props.style;
       var tabContent = self.state.tabContent;
       var classes = Utils$1.classNames(className, 'tab', {
         'tab-active': tabActive
@@ -59758,17 +59391,14 @@
         }) : this.$slots['default']]);
       }
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onTabShow', 'onTabHide']);
     },
-
     updated: function updated() {
       var self = this;
       if (!self.routerData) { return; }
       f7.events.emit('tabRouterDidUpdate', self.routerData);
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
 
@@ -59784,7 +59414,6 @@
       delete self.routerData;
       delete self.eventTargetEl;
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
@@ -59798,51 +59427,45 @@
         self.routerData = {
           el: el,
           component: self,
-
           setTabContent: function setTabContent(tabContent) {
             self.setState({
               tabContent: tabContent
             });
           }
-
         };
         f7.routers.tabs.push(self.routerData);
       });
     },
-
     methods: {
       show: function show(animate) {
         if (!this.$f7) { return; }
         this.$f7.tab.show(this.$refs.el, animate);
       },
-
       onTabShow: function onTabShow(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('tab:show tabShow');
       },
-
       onTabHide: function onTabHide(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('tab:hide tabHide');
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       },
-
       setState: function setState(updater, callback) {
         __vueComponentSetState(this, updater, callback);
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -59858,17 +59481,16 @@
         default: undefined
       }
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var animated = props.animated;
-      var swipeable = props.swipeable;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
-      var routable = props.routable;
+      var animated = props.animated,
+          swipeable = props.swipeable,
+          id = props.id,
+          style = props.style,
+          className = props.className,
+          routable = props.routable;
       var classes = Utils$1.classNames(className, Mixins.colorClasses(props));
       var wrapClasses = Utils$1.classNames({
         'tabs-animated-wrap': animated,
@@ -59900,23 +59522,20 @@
         }
       }, [this.$slots['default']]);
     },
-
     mounted: function mounted() {
       var self = this;
-      var ref = self.props;
-      var swipeable = ref.swipeable;
-      var swiperParams = ref.swiperParams;
+      var _self$props = self.props,
+          swipeable = _self$props.swipeable,
+          swiperParams = _self$props.swiperParams;
       if (!swipeable || !swiperParams) { return; }
       var wrapEl = self.$refs.wrapEl;
       if (!wrapEl) { return; }
       wrapEl.f7SwiperParams = swiperParams;
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -59972,35 +59591,61 @@
         default: true
       }
     }, Mixins.colorProps),
+    data: function data() {
+      var _this = this;
 
+      var props = __vueComponentProps(this);
+
+      var state = function () {
+        var self = _this;
+        var $f7 = self.$f7;
+
+        if (!$f7) {
+          self.$f7ready(function () {
+            self.setState({
+              _theme: self.$theme
+            });
+          });
+        }
+
+        return {
+          _theme: $f7 ? self.$theme : null
+        };
+      }();
+
+      return {
+        state: state
+      };
+    },
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
-      var inner = props.inner;
-      var tabbar = props.tabbar;
-      var labels = props.labels;
-      var scrollable = props.scrollable;
-      var hidden = props.hidden;
-      var noShadow = props.noShadow;
-      var noHairline = props.noHairline;
-      var noBorder = props.noBorder;
-      var topMd = props.topMd;
-      var topIos = props.topIos;
-      var topAurora = props.topAurora;
-      var top = props.top;
-      var bottomMd = props.bottomMd;
-      var bottomIos = props.bottomIos;
-      var bottomAurora = props.bottomAurora;
-      var bottom = props.bottom;
-      var position = props.position;
+      var id = props.id,
+          style = props.style,
+          className = props.className,
+          inner = props.inner,
+          tabbar = props.tabbar,
+          labels = props.labels,
+          scrollable = props.scrollable,
+          hidden = props.hidden,
+          noShadow = props.noShadow,
+          noHairline = props.noHairline,
+          noBorder = props.noBorder,
+          topMd = props.topMd,
+          topIos = props.topIos,
+          topAurora = props.topAurora,
+          top = props.top,
+          bottomMd = props.bottomMd,
+          bottomIos = props.bottomIos,
+          bottomAurora = props.bottomAurora,
+          bottom = props.bottom,
+          position = props.position;
+      var theme = self.state._theme;
       var classes = Utils$1.classNames(className, 'toolbar', {
         tabbar: tabbar,
-        'toolbar-bottom': self.$theme.md && bottomMd || self.$theme.ios && bottomIos || self.$theme.aurora && bottomAurora || bottom || position === 'bottom',
-        'toolbar-top': self.$theme.md && topMd || self.$theme.ios && topIos || self.$theme.aurora && topAurora || top || position === 'top',
+        'toolbar-bottom': theme && theme.md && bottomMd || theme && theme.ios && bottomIos || theme && theme.aurora && bottomAurora || bottom || position === 'bottom',
+        'toolbar-top': theme && theme.md && topMd || theme && theme.ios && topIos || theme && theme.aurora && topAurora || top || position === 'top',
         'tabbar-labels': labels,
         'tabbar-scrollable': scrollable,
         'toolbar-hidden': hidden,
@@ -60018,7 +59663,6 @@
         class: 'toolbar-inner'
       }, [this.$slots['default']]) : this.$slots['default'], this.$slots['after-inner']]);
     },
-
     updated: function updated() {
       var self = this;
 
@@ -60026,33 +59670,31 @@
         self.$f7.toolbar.setHighlight(self.$refs.el);
       }
     },
-
     mounted: function mounted() {
       var self = this;
       self.$f7ready(function (f7) {
         if (self.props.tabbar) { f7.toolbar.setHighlight(self.$refs.el); }
       });
     },
-
     methods: {
       hide: function hide(animate) {
         var self = this;
         if (!self.$f7) { return; }
         self.$f7.toolbar.hide(this.$refs.el, animate);
       },
-
       show: function show(animate) {
         var self = this;
         if (!self.$f7) { return; }
         self.$f7.toolbar.show(this.$refs.el, animate);
+      },
+      setState: function setState(updater, callback) {
+        __vueComponentSetState(this, updater, callback);
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -60073,26 +59715,25 @@
         type: [Boolean, String],
         default: undefined
       }
-    }, Mixins.colorProps, Mixins.linkActionsProps, Mixins.linkRouterProps, Mixins.linkIconProps),
+    }, Mixins.colorProps, {}, Mixins.linkActionsProps, {}, Mixins.linkRouterProps, {}, Mixins.linkIconProps),
     name: 'f7-treeview-item',
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var toggle = props.toggle;
-      var label = props.label;
-      var icon = props.icon;
-      var iconMaterial = props.iconMaterial;
-      var iconF7 = props.iconF7;
-      var iconMd = props.iconMd;
-      var iconIos = props.iconIos;
-      var iconAurora = props.iconAurora;
-      var iconSize = props.iconSize;
-      var iconColor = props.iconColor;
-      var link = props.link;
+      var id = props.id,
+          style = props.style,
+          toggle = props.toggle,
+          label = props.label,
+          icon = props.icon,
+          iconMaterial = props.iconMaterial,
+          iconF7 = props.iconF7,
+          iconMd = props.iconMd,
+          iconIos = props.iconIos,
+          iconAurora = props.iconAurora,
+          iconSize = props.iconSize,
+          iconColor = props.iconColor,
+          link = props.link;
       var slots = self.$slots;
       var hasChildren = slots.default && slots.default.length || slots.children && slots.children.length || slots['children-start'] && slots['children-start'].length;
       var needToggle = typeof toggle === 'undefined' ? hasChildren : toggle;
@@ -60134,7 +59775,6 @@
         class: 'treeview-item-children'
       }, [this.$slots['children-start'], this.$slots['default'], this.$slots['children']])]);
     },
-
     computed: {
       itemRootAttrs: function itemRootAttrs() {
         var self = this;
@@ -60147,47 +59787,41 @@
           href: href
         }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
       },
-
       itemRootClasses: function itemRootClasses() {
         var self = this;
         var props = self.props;
-        var selectable = props.selectable;
-        var selected = props.selected;
-        var itemToggle = props.itemToggle;
+        var selectable = props.selectable,
+            selected = props.selected,
+            itemToggle = props.itemToggle;
         return Utils$1.classNames('treeview-item-root', {
           'treeview-item-selectable': selectable,
           'treeview-item-selected': selected,
           'treeview-item-toggle': itemToggle
         }, Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
       },
-
       classes: function classes() {
         var self = this;
         var props = self.props;
-        var className = props.className;
-        var opened = props.opened;
-        var loadChildren = props.loadChildren;
+        var className = props.className,
+            opened = props.opened,
+            loadChildren = props.loadChildren;
         return Utils$1.classNames(className, 'treeview-item', {
           'treeview-item-opened': opened,
           'treeview-load-children': loadChildren
         }, Mixins.colorClasses(props));
       },
-
       props: function props() {
         return __vueComponentProps(this);
       }
-
     },
-
     created: function created() {
       Utils$1.bindMethods(this, ['onClick', 'onOpen', 'onClose', 'onLoadChildren']);
     },
-
     mounted: function mounted() {
       var self = this;
-      var ref = self.$refs;
-      var el = ref.el;
-      var rootEl = ref.rootEl;
+      var _self$$refs = self.$refs,
+          el = _self$$refs.el,
+          rootEl = _self$$refs.rootEl;
       rootEl.addEventListener('click', self.onClick);
       if (!el) { return; }
       self.eventTargetEl = el;
@@ -60197,12 +59831,11 @@
         f7.on('treeviewLoadChildren', self.onLoadChildren);
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var ref = self.$refs;
-      var el = ref.el;
-      var rootEl = ref.rootEl;
+      var _self$$refs2 = self.$refs,
+          el = _self$$refs2.el,
+          rootEl = _self$$refs2.rootEl;
       rootEl.removeEventListener('click', self.onClick);
       if (!el || self.$f7) { return; }
       self.$f7.off('treeviewOpen', self.onOpen);
@@ -60211,34 +59844,31 @@
       self.eventTargetEl = null;
       delete self.eventTargetEl;
     },
-
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
-
       onOpen: function onOpen(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('treeview:open treeviewOpen', el);
       },
-
       onClose: function onClose(el) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('treeview:close treeviewClose', el);
       },
-
       onLoadChildren: function onLoadChildren(el, done) {
         if (this.eventTargetEl !== el) { return; }
         this.dispatchEvent('treeview:loadchildren treeviewLoadChildren', el, done);
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       }
-
     }
   };
 
@@ -60247,13 +59877,12 @@
       id: [String, Number]
     }, Mixins.colorProps),
     name: 'f7-treeview',
-
     render: function render() {
       var _h = this.$createElement;
       var props = this.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
+      var className = props.className,
+          id = props.id,
+          style = props.style;
       var classes = Utils$1.classNames(className, 'treeview', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -60263,12 +59892,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -60322,7 +59949,6 @@
       animate: Boolean,
       transition: String,
       iosDynamicNavbar: Boolean,
-      iosSeparateDynamicNavbar: Boolean,
       iosAnimateNavbarBackIcon: Boolean,
       materialPageLoadDelay: Number,
       passRouteQueryToRequest: Boolean,
@@ -60336,31 +59962,29 @@
         default: true
       }
     }, Mixins.colorProps),
-
     data: function data() {
       var props = __vueComponentProps(this);
 
-      var state = (function () {
+      var state = function () {
         return {
           pages: []
         };
-      })();
+      }();
 
       return {
         state: state
       };
     },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var id = props.id;
-      var style = props.style;
-      var tab = props.tab;
-      var main = props.main;
-      var tabActive = props.tabActive;
-      var className = props.className;
+      var id = props.id,
+          style = props.style,
+          tab = props.tab,
+          main = props.main,
+          tabActive = props.tabActive,
+          className = props.className;
       var classes = Utils$1.classNames(className, 'view', {
         'view-main': main,
         'tab-active': tabActive,
@@ -60383,12 +60007,10 @@
         }
       })]);
     },
-
     created: function created() {
       var self = this;
       Utils$1.bindMethods(self, ['onSwipeBackMove', 'onSwipeBackBeforeChange', 'onSwipeBackAfterChange', 'onSwipeBackBeforeReset', 'onSwipeBackAfterReset', 'onTabShow', 'onTabHide', 'onViewInit']);
     },
-
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
@@ -60400,13 +60022,11 @@
           component: self,
           pages: self.state.pages,
           instance: null,
-
           setPages: function setPages(pages) {
             self.setState({
               pages: pages
             });
           }
-
         };
         f7.routers.views.push(self.routerData);
         if (!self.props.init) { return; }
@@ -60423,7 +60043,6 @@
         self.f7View.on('swipebackAfterReset', self.onSwipeBackAfterReset);
       });
     },
-
     beforeDestroy: function beforeDestroy() {
       var self = this;
 
@@ -60445,13 +60064,11 @@
       self.routerData = null;
       delete self.routerData;
     },
-
     updated: function updated() {
       var self = this;
       if (!self.routerData) { return; }
       f7.events.emit('viewRouterDidUpdate', self.routerData);
     },
-
     methods: {
       onViewInit: function onViewInit(view) {
         var self = this;
@@ -60462,61 +60079,53 @@
           self.f7View = self.routerData.instance;
         }
       },
-
       onSwipeBackMove: function onSwipeBackMove(data) {
         var swipeBackData = data;
         this.dispatchEvent('swipeback:move swipeBackMove', swipeBackData);
       },
-
       onSwipeBackBeforeChange: function onSwipeBackBeforeChange(data) {
         var swipeBackData = data;
         this.dispatchEvent('swipeback:beforechange swipeBackBeforeChange', swipeBackData);
       },
-
       onSwipeBackAfterChange: function onSwipeBackAfterChange(data) {
         var swipeBackData = data;
         this.dispatchEvent('swipeback:afterchange swipeBackAfterChange', swipeBackData);
       },
-
       onSwipeBackBeforeReset: function onSwipeBackBeforeReset(data) {
         var swipeBackData = data;
         this.dispatchEvent('swipeback:beforereset swipeBackBeforeReset', swipeBackData);
       },
-
       onSwipeBackAfterReset: function onSwipeBackAfterReset(data) {
         var swipeBackData = data;
         this.dispatchEvent('swipeback:afterreset swipeBackAfterReset', swipeBackData);
       },
-
       onTabShow: function onTabShow(el) {
         if (el === this.$refs.el) {
           this.dispatchEvent('tab:show tabShow');
         }
       },
-
       onTabHide: function onTabHide(el) {
         if (el === this.$refs.el) {
           this.dispatchEvent('tab:hide tabHide');
         }
       },
-
       dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+        var arguments$1 = arguments;
 
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments$1[_key];
+        }
+
+        __vueComponentDispatchEvent.apply(void 0, [this, events].concat(args));
       },
-
       setState: function setState(updater, callback) {
         __vueComponentSetState(this, updater, callback);
       }
-
     },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   };
 
@@ -60526,15 +60135,14 @@
       id: [String, Number],
       tabs: Boolean
     }, Mixins.colorProps),
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
       var props = self.props;
-      var className = props.className;
-      var id = props.id;
-      var style = props.style;
-      var tabs = props.tabs;
+      var className = props.className,
+          id = props.id,
+          style = props.style,
+          tabs = props.tabs;
       var classes = Utils$1.classNames(className, 'views', {
         tabs: tabs
       }, Mixins.colorClasses(props));
@@ -60546,12 +60154,10 @@
         }
       }, [this.$slots['default']]);
     },
-
     computed: {
       props: function props() {
         return __vueComponentProps(this);
       }
-
     }
   });
 
@@ -60905,7 +60511,7 @@
   };
 
   /**
-   * Framework7 Vue 5.0.0-beta.16
+   * Framework7 Vue 5.0.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -60913,7 +60519,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: September 19, 2019
+   * Released on: October 7, 2019
    */
 
   //
@@ -61024,7 +60630,7 @@
   var __vue_script__ = script;
 
   /* template */
-  var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{staticClass:"page-home"},[_c('f7-navbar',{attrs:{"large":"","largeTransparent":"","sliding":false}},[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-aurora":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',{attrs:{"sliding":""}},[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search","icon-aurora":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-nav-title-large',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":"","disable-button":!this.$theme.aurora}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found",attrs:{"medium":""}},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/appbar/","title":"Appbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards-expandable/","title":"Cards Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/color-picker/","title":"Color Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/menu/","title":"Menu"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/skeleton/","title":"Skeleton (Ghost) Elements"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/text-editor/","title":"Text Editor"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/treeview/","title":"Treeview"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search",attrs:{"medium":""}},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aurora Desktop Theme","external":"","link":"./index.html?theme=aurora"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search",attrs:{"medium":""}},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Page Transitions","link":"/page-transitions/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Master-Detail (Split View)","link":"/master-detail/"}})],1)],1)};
+  var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{staticClass:"page-home"},[_c('f7-navbar',{attrs:{"large":"","largeTransparent":"","sliding":false}},[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-aurora":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',{attrs:{"sliding":""}},[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search","icon-aurora":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-nav-title-large',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":"","disable-button":!this.$theme.aurora}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found",attrs:{"medium":""}},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/appbar/","title":"Appbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards-expandable/","title":"Cards Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/color-picker/","title":"Color Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/menu/","title":"Menu"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/skeleton/","title":"Skeleton (Ghost) Elements"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/text-editor/","title":"Text Editor"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/treeview/","title":"Treeview"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search",attrs:{"medium":""}},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aurora Desktop Theme","external":"","link":"./index.html?theme=aurora"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search",attrs:{"medium":""}},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Page Transitions","link":"/page-transitions/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Master-Detail (Split View)","link":"/master-detail/"}})],1)],1)};
   var __vue_staticRenderFns__ = [];
 
     /* style */
@@ -64572,7 +64178,7 @@
   var __vue_script__$J = script$J;
 
   /* template */
-  var __vue_render__$J = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Preloader","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("How about an activity indicator? Framework 7 has a nice one. The F7 Preloader is made with SVG and animated with CSS so it can be easily resized.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('f7-block',{staticClass:"row demo-preloaders align-items-stretch text-align-center"},[_c('f7-col',[_c('f7-preloader')],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"color":"white"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"size":42}})],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"size":42,"color":"white"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Preloaders")]),_vm._v(" "),_c('f7-block',{staticClass:"row text-align-center"},[_c('f7-col',[_c('f7-preloader',{attrs:{"color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"orange"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"blue"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Multi-color (MD-theme only)")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center"},[_c('f7-preloader',{attrs:{"color":"multi"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Preloader Modals")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("With "),_c('b',[_vm._v("app.preloader.show()")]),_vm._v(" you can show small overlay with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openIndicator}},[_vm._v("Open Small Indicator")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader()")]),_vm._v(" you can show dialog modal with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openDialog}},[_vm._v("Open Dialog Preloader")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader('My text...')")]),_vm._v(" you can show dialog preloader modal with custom title.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openCustomDialog}},[_vm._v("Open Dialog Preloader")])])])],1)};
+  var __vue_render__$J = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Preloader","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("How about an activity indicator? Framework7 has a nice one. The F7 Preloader is made with SVG and animated with CSS so it can be easily resized.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('f7-block',{staticClass:"row demo-preloaders align-items-stretch text-align-center"},[_c('f7-col',[_c('f7-preloader')],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"color":"white"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"size":42}})],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"size":42,"color":"white"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Preloaders")]),_vm._v(" "),_c('f7-block',{staticClass:"row text-align-center"},[_c('f7-col',[_c('f7-preloader',{attrs:{"color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"orange"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"blue"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Multi-color (MD-theme only)")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center"},[_c('f7-preloader',{attrs:{"color":"multi"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Preloader Modals")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("With "),_c('b',[_vm._v("app.preloader.show()")]),_vm._v(" you can show small overlay with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openIndicator}},[_vm._v("Open Small Indicator")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader()")]),_vm._v(" you can show dialog modal with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openDialog}},[_vm._v("Open Dialog Preloader")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader('My text...')")]),_vm._v(" you can show dialog preloader modal with custom title.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openCustomDialog}},[_vm._v("Open Dialog Preloader")])])])],1)};
   var __vue_staticRenderFns__$J = [];
 
     /* style */
@@ -65222,59 +64828,7 @@
     );
 
   //
-
   var script$U = {
-    components: {
-      f7Navbar: f7Navbar,
-      f7Page: f7Page,
-      f7Block: f7Block,
-      f7Row: f7Row,
-      f7Button: f7Button,
-    },
-    methods: {
-      showStatusbar: function showStatusbar() {
-        this.$f7.statusbar.show();
-      },
-      hideStatusbar: function hideStatusbar() {
-        this.$f7.statusbar.hide();
-      },
-    },
-  };
-
-  /* script */
-  var __vue_script__$U = script$U;
-
-  /* template */
-  var __vue_render__$U = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Statusbar Overlay","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 automatically detects if your app in full screen mode, and automatically shows statusbar overlay if app is in full screen mode (or hides statusbar if app is not in full screen mode). Its visibility can be forced using app parameters or using API:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.showStatusbar}},[_vm._v("Show Statusbar")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.hideStatusbar}},[_vm._v("Hide Statusbar")])],1)],1)],1)};
-  var __vue_staticRenderFns__$U = [];
-
-    /* style */
-    var __vue_inject_styles__$U = undefined;
-    /* scoped */
-    var __vue_scope_id__$U = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$U = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$U = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var Statusbar$2 = normalizeComponent_1(
-      { render: __vue_render__$U, staticRenderFns: __vue_staticRenderFns__$U },
-      __vue_inject_styles__$U,
-      __vue_script__$U,
-      __vue_scope_id__$U,
-      __vue_is_functional_template__$U,
-      __vue_module_identifier__$U,
-      undefined,
-      undefined
-    );
-
-  //
-  var script$V = {
     components: {
       f7Page: f7Page, f7Navbar: f7Navbar, f7BlockTitle: f7BlockTitle, f7Block: f7Block, f7BlockHeader: f7BlockHeader, f7Row: f7Row, f7Col: f7Col, f7List: f7List, f7ListItem: f7ListItem, f7Stepper: f7Stepper
     },
@@ -65316,10 +64870,50 @@
   };
 
   /* script */
+  var __vue_script__$U = script$U;
+
+  /* template */
+  var __vue_render__$U = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Stepper","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Shape and size")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper')],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","round":"","fill":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","round":"","fill":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","fill":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","round":"","fill":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","round":"","fill":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Colors")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","round":"","color":"green"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","color":"blue"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","round":"","color":"pink"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","color":"yellow"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","round":"","color":"orange"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","color":"gray"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","round":"","color":"black"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Without input element")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"input":false}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"input":false,"round":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Min, max, step")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":100,"min":0,"max":1000,"step":100}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","input":false,"value":5,"min":0,"max":10,"step":0.5}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Autorepeat (Tap & hold)")]),_vm._v(" "),_c('f7-block-header',[_vm._v("Pressing and holding one of its buttons increments or decrements the stepper’s value repeatedly. With dynamic autorepeat, the rate of change depends on how long the user continues pressing the control.")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":100,"step":1,"autorepeat":true}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Dynamic")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":100,"step":1,"autorepeat":true,"autorepeat-dynamic":true}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Wraps")]),_vm._v(" "),_c('f7-block-header',[_vm._v("In wraps mode incrementing beyond maximum value sets value to minimum value, likewise, decrementing below minimum value sets value to maximum value")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":10,"step":1,"autorepeat":true,"wraps":true}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom value element")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":("Apples " + _vm.applesCount)}},[_c('f7-stepper',{attrs:{"slot":"after","buttons-only":true,"small":"","raised":""},on:{"stepper:change":_vm.setApples},slot:"after"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":("Oranges " + _vm.orangesCount)}},[_c('f7-stepper',{attrs:{"slot":"after","buttons-only":true,"small":"","raised":""},on:{"stepper:change":_vm.setOranges},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom value format")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"header":"Meeting starts in","title":_vm.meetingTimeComputed}},[_c('f7-stepper',{attrs:{"slot":"after","min":15,"max":240,"step":15,"value":_vm.meetingTime,"buttons-only":true,"small":"","fill":"","raised":""},on:{"stepper:change":_vm.setMeetingTime},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Manual input")]),_vm._v(" "),_c('f7-block-header',[_vm._v("It is possible to enter value manually from keyboard or mobile keypad. When click on input field, stepper enter into manual input mode, which allow type value from keyboar and check fractional part with defined accurancy. Click outside or enter Return key, ending manual mode.")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":1000,"step":1,"autorepeat":true,"wraps":true,"manual-input-mode":true,"decimal-point":2}})],1)],1)],1)],1)};
+  var __vue_staticRenderFns__$U = [];
+
+    /* style */
+    var __vue_inject_styles__$U = undefined;
+    /* scoped */
+    var __vue_scope_id__$U = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$U = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$U = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var Stepper$2 = normalizeComponent_1(
+      { render: __vue_render__$U, staticRenderFns: __vue_staticRenderFns__$U },
+      __vue_inject_styles__$U,
+      __vue_script__$U,
+      __vue_scope_id__$U,
+      __vue_is_functional_template__$U,
+      __vue_module_identifier__$U,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$V = {
+    components: {
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Subnavbar: f7Subnavbar, f7Segmented: f7Segmented, f7Button: f7Button, f7Block: f7Block, f7List: f7List, f7ListItem: f7ListItem,
+    },
+  };
+
+  /* script */
   var __vue_script__$V = script$V;
 
   /* template */
-  var __vue_render__$V = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Stepper","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Shape and size")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper')],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","round":"","fill":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","round":"","fill":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","fill":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","round":"","fill":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","round":"","fill":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Colors")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","round":"","color":"green"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","color":"blue"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","round":"","color":"pink"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","color":"yellow"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","round":"","color":"orange"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","color":"gray"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","round":"","color":"black"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Without input element")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"input":false}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"input":false,"round":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Min, max, step")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":100,"min":0,"max":1000,"step":100}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","input":false,"value":5,"min":0,"max":10,"step":0.5}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Autorepeat (Tap & hold)")]),_vm._v(" "),_c('f7-block-header',[_vm._v("Pressing and holding one of its buttons increments or decrements the stepper’s value repeatedly. With dynamic autorepeat, the rate of change depends on how long the user continues pressing the control.")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":100,"step":1,"autorepeat":true}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Dynamic")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":100,"step":1,"autorepeat":true,"autorepeat-dynamic":true}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Wraps")]),_vm._v(" "),_c('f7-block-header',[_vm._v("In wraps mode incrementing beyond maximum value sets value to minimum value, likewise, decrementing below minimum value sets value to maximum value")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":10,"step":1,"autorepeat":true,"wraps":true}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom value element")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":("Apples " + _vm.applesCount)}},[_c('f7-stepper',{attrs:{"slot":"after","buttons-only":true,"small":"","raised":""},on:{"stepper:change":_vm.setApples},slot:"after"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":("Oranges " + _vm.orangesCount)}},[_c('f7-stepper',{attrs:{"slot":"after","buttons-only":true,"small":"","raised":""},on:{"stepper:change":_vm.setOranges},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom value format")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"header":"Meeting starts in","title":_vm.meetingTimeComputed}},[_c('f7-stepper',{attrs:{"slot":"after","min":15,"max":240,"step":15,"value":_vm.meetingTime,"buttons-only":true,"small":"","fill":"","raised":""},on:{"stepper:change":_vm.setMeetingTime},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Manual input")]),_vm._v(" "),_c('f7-block-header',[_vm._v("It is possible to enter value manually from keyboard or mobile keypad. When click on input field, stepper enter into manual input mode, which allow type value from keyboar and check fractional part with defined accurancy. Click outside or enter Return key, ending manual mode.")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":1000,"step":1,"autorepeat":true,"wraps":true,"manual-input-mode":true,"decimal-point":2}})],1)],1)],1)],1)};
+  var __vue_render__$V = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Subnavbar","back-link":"Back"}},[_c('f7-subnavbar',[_c('f7-segmented',{attrs:{"strong":""}},[_c('f7-button',{attrs:{"active":""}},[_vm._v("Link 1")]),_vm._v(" "),_c('f7-button',[_vm._v("Link 2")]),_vm._v(" "),_c('f7-button',[_vm._v("Link 3")])],1)],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Subnavbar is useful when you need to put any additional elements into Navbar, like Tab Links or Search Bar. It also remains visible when Navbar hidden.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/subnavbar-title/","title":"Subnavbar Title"}})],1)],1)};
   var __vue_staticRenderFns__$V = [];
 
     /* style */
@@ -65336,7 +64930,7 @@
     
 
     
-    var Stepper$2 = normalizeComponent_1(
+    var Subnavbar$1 = normalizeComponent_1(
       { render: __vue_render__$V, staticRenderFns: __vue_staticRenderFns__$V },
       __vue_inject_styles__$V,
       __vue_script__$V,
@@ -65351,7 +64945,7 @@
 
   var script$W = {
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Subnavbar: f7Subnavbar, f7Segmented: f7Segmented, f7Button: f7Button, f7Block: f7Block, f7List: f7List, f7ListItem: f7ListItem,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Subnavbar: f7Subnavbar,
     },
   };
 
@@ -65359,7 +64953,7 @@
   var __vue_script__$W = script$W;
 
   /* template */
-  var __vue_render__$W = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Subnavbar","back-link":"Back"}},[_c('f7-subnavbar',[_c('f7-segmented',{attrs:{"strong":""}},[_c('f7-button',{attrs:{"active":""}},[_vm._v("Link 1")]),_vm._v(" "),_c('f7-button',[_vm._v("Link 2")]),_vm._v(" "),_c('f7-button',[_vm._v("Link 3")])],1)],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Subnavbar is useful when you need to put any additional elements into Navbar, like Tab Links or Search Bar. It also remains visible when Navbar hidden.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/subnavbar-title/","title":"Subnavbar Title"}})],1)],1)};
+  var __vue_render__$W = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"title":"Page Title"}})],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("It also possible to use Subnavbar to display page title and keep navbar only for actions.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde, consequatur quia amet voluptate vero quasi, veniam, quisquam dolorum magni sint enim, harum expedita excepturi quas iure magnam minus voluptatem quaerat!")]),_vm._v(" "),_c('p',[_vm._v("Dolore laboriosam error magnam velit expedita recusandae, dolor asperiores unde, sint, veritatis illum ipsum? Nulla ratione nobis, ullam debitis. Inventore sapiente rem dolore eum ipsa totam perspiciatis cupiditate, amet maiores!")]),_vm._v(" "),_c('p',[_vm._v("Ratione quod minus ipsum maxime cum voluptate molestiae adipisci placeat ut illo, alias nobis perferendis magni odio sunt, porro, totam praesentium possimus! Autem inventore ut provident animi quae, impedit id!")]),_vm._v(" "),_c('p',[_vm._v("Aperiam ea ab harum. Quis dolorem cupiditate, incidunt mollitia ducimus voluptatem commodi! Odio quasi amet hic nesciunt, quibusdam, est vero repellat sapiente perferendis, optio laboriosam in culpa veniam alias ad.")]),_vm._v(" "),_c('p',[_vm._v("A fuga corporis harum velit maiores, quaerat accusantium cum aspernatur consequuntur dolor vel fugit omnis est dolorum delectus debitis aperiam distinctio eveniet vero nihil voluptatum culpa. Accusamus aliquid facere tenetur?")])])],1)};
   var __vue_staticRenderFns__$W = [];
 
     /* style */
@@ -65376,7 +64970,7 @@
     
 
     
-    var Subnavbar$1 = normalizeComponent_1(
+    var SubnavbarTitle = normalizeComponent_1(
       { render: __vue_render__$W, staticRenderFns: __vue_staticRenderFns__$W },
       __vue_inject_styles__$W,
       __vue_script__$W,
@@ -65391,7 +64985,8 @@
 
   var script$X = {
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Subnavbar: f7Subnavbar,
+      f7Navbar: f7Navbar,
+      f7Page: f7Page,
     },
   };
 
@@ -65399,7 +64994,7 @@
   var __vue_script__$X = script$X;
 
   /* template */
-  var __vue_render__$X = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"title":"Page Title"}})],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("It also possible to use Subnavbar to display page title and keep navbar only for actions.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde, consequatur quia amet voluptate vero quasi, veniam, quisquam dolorum magni sint enim, harum expedita excepturi quas iure magnam minus voluptatem quaerat!")]),_vm._v(" "),_c('p',[_vm._v("Dolore laboriosam error magnam velit expedita recusandae, dolor asperiores unde, sint, veritatis illum ipsum? Nulla ratione nobis, ullam debitis. Inventore sapiente rem dolore eum ipsa totam perspiciatis cupiditate, amet maiores!")]),_vm._v(" "),_c('p',[_vm._v("Ratione quod minus ipsum maxime cum voluptate molestiae adipisci placeat ut illo, alias nobis perferendis magni odio sunt, porro, totam praesentium possimus! Autem inventore ut provident animi quae, impedit id!")]),_vm._v(" "),_c('p',[_vm._v("Aperiam ea ab harum. Quis dolorem cupiditate, incidunt mollitia ducimus voluptatem commodi! Odio quasi amet hic nesciunt, quibusdam, est vero repellat sapiente perferendis, optio laboriosam in culpa veniam alias ad.")]),_vm._v(" "),_c('p',[_vm._v("A fuga corporis harum velit maiores, quaerat accusantium cum aspernatur consequuntur dolor vel fugit omnis est dolorum delectus debitis aperiam distinctio eveniet vero nihil voluptatum culpa. Accusamus aliquid facere tenetur?")])])],1)};
+  var __vue_render__$X = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Swiper Slider","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"block"},[_c('p',[_vm._v("\n      Framework7 comes with powerful and most modern touch slider ever -\n      "),_c('a',{staticClass:"external",attrs:{"href":"http://idangero.us/swiper","target":"_blank"}},[_vm._v("Swiper Slider")]),_vm._v("\n      with super flexible configuration and lot, lot of features. Just check the following demos:\n    ")])]),_vm._v(" "),_c('div',{staticClass:"list links-list"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"swiper-horizontal/"}},[_vm._v("Swiper Horizontal")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-vertical/"}},[_vm._v("Swiper Vertical")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-space-between/"}},[_vm._v("Space Between Slides")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-multiple/"}},[_vm._v("Multiple Per Page")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-nested/"}},[_vm._v("Nested Swipers")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-loop/"}},[_vm._v("Infinite Loop Mode")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-cube/"}},[_vm._v("3D Cube Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-coverflow/"}},[_vm._v("3D Coverflow Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-flip/"}},[_vm._v("3D Flip Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-fade/"}},[_vm._v("Fade Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-scrollbar/"}},[_vm._v("With Scrollbar")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-gallery/"}},[_vm._v("Thumbs Gallery")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-custom-controls/"}},[_vm._v("Custom Controls")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-parallax/"}},[_vm._v("Parallax")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-lazy/"}},[_vm._v("Lazy Loading")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-pagination-progress/"}},[_vm._v("Progress Pagination")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-pagination-fraction/"}},[_vm._v("Fraction Pagination")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-zoom/"}},[_vm._v("Zoom")])])])])],1)};
   var __vue_staticRenderFns__$X = [];
 
     /* style */
@@ -65416,7 +65011,7 @@
     
 
     
-    var SubnavbarTitle = normalizeComponent_1(
+    var Swiper$2 = normalizeComponent_1(
       { render: __vue_render__$X, staticRenderFns: __vue_staticRenderFns__$X },
       __vue_inject_styles__$X,
       __vue_script__$X,
@@ -65440,7 +65035,7 @@
   var __vue_script__$Y = script$Y;
 
   /* template */
-  var __vue_render__$Y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Swiper Slider","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"block"},[_c('p',[_vm._v("\n      Framework7 comes with powerful and most modern touch slider ever -\n      "),_c('a',{staticClass:"external",attrs:{"href":"http://idangero.us/swiper","target":"_blank"}},[_vm._v("Swiper Slider")]),_vm._v("\n      with super flexible configuration and lot, lot of features. Just check the following demos:\n    ")])]),_vm._v(" "),_c('div',{staticClass:"list links-list"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"swiper-horizontal/"}},[_vm._v("Swiper Horizontal")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-vertical/"}},[_vm._v("Swiper Vertical")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-space-between/"}},[_vm._v("Space Between Slides")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-multiple/"}},[_vm._v("Multiple Per Page")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-nested/"}},[_vm._v("Nested Swipers")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-loop/"}},[_vm._v("Infinite Loop Mode")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-cube/"}},[_vm._v("3D Cube Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-coverflow/"}},[_vm._v("3D Coverflow Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-flip/"}},[_vm._v("3D Flip Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-fade/"}},[_vm._v("Fade Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-scrollbar/"}},[_vm._v("With Scrollbar")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-gallery/"}},[_vm._v("Thumbs Gallery")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-custom-controls/"}},[_vm._v("Custom Controls")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-parallax/"}},[_vm._v("Parallax")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-lazy/"}},[_vm._v("Lazy Loading")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-pagination-progress/"}},[_vm._v("Progress Pagination")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-pagination-fraction/"}},[_vm._v("Fraction Pagination")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-zoom/"}},[_vm._v("Zoom")])])])])],1)};
+  var __vue_render__$Y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Swiper Horizontal","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"hideOnClick\": true}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$Y = [];
 
     /* style */
@@ -65457,7 +65052,7 @@
     
 
     
-    var Swiper$2 = normalizeComponent_1(
+    var SwiperHorizontal = normalizeComponent_1(
       { render: __vue_render__$Y, staticRenderFns: __vue_staticRenderFns__$Y },
       __vue_inject_styles__$Y,
       __vue_script__$Y,
@@ -65481,7 +65076,7 @@
   var __vue_script__$Z = script$Z;
 
   /* template */
-  var __vue_render__$Z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Swiper Horizontal","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"hideOnClick\": true}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
+  var __vue_render__$Z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Vertical Swiper","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-direction":"vertical","data-pagination":"{\"el\": \".swiper-pagination\", \"hideOnClick\": true}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$Z = [];
 
     /* style */
@@ -65498,7 +65093,7 @@
     
 
     
-    var SwiperHorizontal = normalizeComponent_1(
+    var SwiperVertical = normalizeComponent_1(
       { render: __vue_render__$Z, staticRenderFns: __vue_staticRenderFns__$Z },
       __vue_inject_styles__$Z,
       __vue_script__$Z,
@@ -65522,7 +65117,7 @@
   var __vue_script__$_ = script$_;
 
   /* template */
-  var __vue_render__$_ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Vertical Swiper","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-direction":"vertical","data-pagination":"{\"el\": \".swiper-pagination\", \"hideOnClick\": true}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
+  var __vue_render__$_ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Space Between Slides","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"hideOnClick\": true}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$_ = [];
 
     /* style */
@@ -65539,7 +65134,7 @@
     
 
     
-    var SwiperVertical = normalizeComponent_1(
+    var SwiperSpaceBetween = normalizeComponent_1(
       { render: __vue_render__$_, staticRenderFns: __vue_staticRenderFns__$_ },
       __vue_inject_styles__$_,
       __vue_script__$_,
@@ -65556,14 +65151,15 @@
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
-    },
+      f7BlockTitle: f7BlockTitle,
+    }
   };
 
   /* script */
   var __vue_script__$$ = script$$;
 
   /* template */
-  var __vue_render__$$ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Space Between Slides","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"hideOnClick\": true}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
+  var __vue_render__$$ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Multiple Swipers","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("1 Slide Per View, 50px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("2 Slides Per View, 20px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"20","data-slides-per-view":"2"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("3 Slides Per View, 10px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-slides-per-view":"3"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Slides Per View + Centered")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple demo-swiper-multiple-auto",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical, 10px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-direction":"vertical"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Slow speed")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-speed":"900","data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$$ = [];
 
     /* style */
@@ -65580,7 +65176,7 @@
     
 
     
-    var SwiperSpaceBetween = normalizeComponent_1(
+    var SwiperMultiple = normalizeComponent_1(
       { render: __vue_render__$$, staticRenderFns: __vue_staticRenderFns__$$ },
       __vue_inject_styles__$$,
       __vue_script__$$,
@@ -65597,15 +65193,14 @@
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
-      f7BlockTitle: f7BlockTitle,
-    }
+    },
   };
 
   /* script */
   var __vue_script__$10 = script$10;
 
   /* template */
-  var __vue_render__$10 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Multiple Swipers","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("1 Slide Per View, 50px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("2 Slides Per View, 20px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"20","data-slides-per-view":"2"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("3 Slides Per View, 10px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-slides-per-view":"3"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Slides Per View + Centered")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple demo-swiper-multiple-auto",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical, 10px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-direction":"vertical"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Slow speed")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-speed":"900","data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
+  var __vue_render__$10 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Nested Swipers","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination-h\"}"}},[_c('div',{staticClass:"swiper-pagination swiper-pagination-h"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination-v\"}","data-direction":"vertical"}},[_c('div',{staticClass:"swiper-pagination swiper-pagination-v"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 3")])])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 4")])])])],1)};
   var __vue_staticRenderFns__$10 = [];
 
     /* style */
@@ -65622,7 +65217,7 @@
     
 
     
-    var SwiperMultiple = normalizeComponent_1(
+    var SwiperNested = normalizeComponent_1(
       { render: __vue_render__$10, staticRenderFns: __vue_staticRenderFns__$10 },
       __vue_inject_styles__$10,
       __vue_script__$10,
@@ -65646,7 +65241,7 @@
   var __vue_script__$11 = script$11;
 
   /* template */
-  var __vue_render__$11 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Nested Swipers","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination-h\"}"}},[_c('div',{staticClass:"swiper-pagination swiper-pagination-h"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination-v\"}","data-direction":"vertical"}},[_c('div',{staticClass:"swiper-pagination swiper-pagination-v"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 3")])])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 4")])])])],1)};
+  var __vue_render__$11 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Infinite Loop Mode","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-loop":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$11 = [];
 
     /* style */
@@ -65663,7 +65258,7 @@
     
 
     
-    var SwiperNested = normalizeComponent_1(
+    var SwiperLoop = normalizeComponent_1(
       { render: __vue_render__$11, staticRenderFns: __vue_staticRenderFns__$11 },
       __vue_inject_styles__$11,
       __vue_script__$11,
@@ -65687,7 +65282,7 @@
   var __vue_script__$12 = script$12;
 
   /* template */
-  var __vue_render__$12 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Infinite Loop Mode","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-loop":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
+  var __vue_render__$12 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Cube","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"cube"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-9.jpg)"}},[_vm._v("Slide 9")])])])],1)};
   var __vue_staticRenderFns__$12 = [];
 
     /* style */
@@ -65704,7 +65299,7 @@
     
 
     
-    var SwiperLoop = normalizeComponent_1(
+    var Swiper3dCube = normalizeComponent_1(
       { render: __vue_render__$12, staticRenderFns: __vue_staticRenderFns__$12 },
       __vue_inject_styles__$12,
       __vue_script__$12,
@@ -65728,7 +65323,7 @@
   var __vue_script__$13 = script$13;
 
   /* template */
-  var __vue_render__$13 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Cube","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"cube"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-9.jpg)"}},[_vm._v("Slide 9")])])])],1)};
+  var __vue_render__$13 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Coverflow Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-coverflow",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"coverflow","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-8.jpg)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-9.jpg)"}},[_vm._v("Slide 9")])])])],1)};
   var __vue_staticRenderFns__$13 = [];
 
     /* style */
@@ -65745,7 +65340,7 @@
     
 
     
-    var Swiper3dCube = normalizeComponent_1(
+    var Swiper3dCoverflow = normalizeComponent_1(
       { render: __vue_render__$13, staticRenderFns: __vue_staticRenderFns__$13 },
       __vue_inject_styles__$13,
       __vue_script__$13,
@@ -65769,7 +65364,7 @@
   var __vue_script__$14 = script$14;
 
   /* template */
-  var __vue_render__$14 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Coverflow Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-coverflow",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"coverflow","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-8.jpg)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-9.jpg)"}},[_vm._v("Slide 9")])])])],1)};
+  var __vue_render__$14 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Flip Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"flip"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg)"}},[_vm._v("Slide 8")])])])],1)};
   var __vue_staticRenderFns__$14 = [];
 
     /* style */
@@ -65786,7 +65381,7 @@
     
 
     
-    var Swiper3dCoverflow = normalizeComponent_1(
+    var Swiper3dFlip = normalizeComponent_1(
       { render: __vue_render__$14, staticRenderFns: __vue_staticRenderFns__$14 },
       __vue_inject_styles__$14,
       __vue_script__$14,
@@ -65810,7 +65405,7 @@
   var __vue_script__$15 = script$15;
 
   /* template */
-  var __vue_render__$15 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Flip Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"flip"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg)"}},[_vm._v("Slide 8")])])])],1)};
+  var __vue_render__$15 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Fade Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-fade",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"fade"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-4.jpg)"}})])])],1)};
   var __vue_staticRenderFns__$15 = [];
 
     /* style */
@@ -65827,7 +65422,7 @@
     
 
     
-    var Swiper3dFlip = normalizeComponent_1(
+    var SwiperFade = normalizeComponent_1(
       { render: __vue_render__$15, staticRenderFns: __vue_staticRenderFns__$15 },
       __vue_inject_styles__$15,
       __vue_script__$15,
@@ -65851,7 +65446,7 @@
   var __vue_script__$16 = script$16;
 
   /* template */
-  var __vue_render__$16 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Fade Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-fade",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"fade"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/people-1024x1024-4.jpg)"}})])])],1)};
+  var __vue_render__$16 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Scrollbar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-scrollbar":"{\"el\": \".swiper-scrollbar\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-scrollbar"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$16 = [];
 
     /* style */
@@ -65868,7 +65463,7 @@
     
 
     
-    var SwiperFade = normalizeComponent_1(
+    var SwiperScrollbar = normalizeComponent_1(
       { render: __vue_render__$16, staticRenderFns: __vue_staticRenderFns__$16 },
       __vue_inject_styles__$16,
       __vue_script__$16,
@@ -65882,47 +65477,6 @@
   //
 
   var script$17 = {
-    components: {
-      f7Navbar: f7Navbar,
-      f7Page: f7Page,
-    },
-  };
-
-  /* script */
-  var __vue_script__$17 = script$17;
-
-  /* template */
-  var __vue_render__$17 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Scrollbar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-scrollbar":"{\"el\": \".swiper-scrollbar\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-scrollbar"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
-  var __vue_staticRenderFns__$17 = [];
-
-    /* style */
-    var __vue_inject_styles__$17 = undefined;
-    /* scoped */
-    var __vue_scope_id__$17 = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$17 = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$17 = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var SwiperScrollbar = normalizeComponent_1(
-      { render: __vue_render__$17, staticRenderFns: __vue_staticRenderFns__$17 },
-      __vue_inject_styles__$17,
-      __vue_script__$17,
-      __vue_scope_id__$17,
-      __vue_is_functional_template__$17,
-      __vue_module_identifier__$17,
-      undefined,
-      undefined
-    );
-
-  //
-
-  var script$18 = {
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -65960,10 +65514,51 @@
   };
 
   /* script */
+  var __vue_script__$17 = script$17;
+
+  /* template */
+  var __vue_render__$17 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{staticStyle:{"background":"#000"},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Thumbs Gallery","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-top"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"})]),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-thumbs"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}})])])])],1)};
+  var __vue_staticRenderFns__$17 = [];
+
+    /* style */
+    var __vue_inject_styles__$17 = undefined;
+    /* scoped */
+    var __vue_scope_id__$17 = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$17 = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$17 = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var SwiperGallery = normalizeComponent_1(
+      { render: __vue_render__$17, staticRenderFns: __vue_staticRenderFns__$17 },
+      __vue_inject_styles__$17,
+      __vue_script__$17,
+      __vue_scope_id__$17,
+      __vue_is_functional_template__$17,
+      __vue_module_identifier__$17,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$18 = {
+    components: {
+      f7Navbar: f7Navbar,
+      f7Page: f7Page,
+    },
+  };
+
+  /* script */
   var __vue_script__$18 = script$18;
 
   /* template */
-  var __vue_render__$18 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{staticStyle:{"background":"#000"},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Thumbs Gallery","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-top"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"})]),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-thumbs"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"}})])])])],1)};
+  var __vue_render__$18 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Custom Controls","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"demo-swiper-custom"},[_c('div',{staticClass:"swiper-container swiper-init",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"clickable\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-space-between":"0"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-4.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-5.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-6.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])])],1)};
   var __vue_staticRenderFns__$18 = [];
 
     /* style */
@@ -65980,7 +65575,7 @@
     
 
     
-    var SwiperGallery = normalizeComponent_1(
+    var SwiperCustomControls = normalizeComponent_1(
       { render: __vue_render__$18, staticRenderFns: __vue_staticRenderFns__$18 },
       __vue_inject_styles__$18,
       __vue_script__$18,
@@ -66004,7 +65599,7 @@
   var __vue_script__$19 = script$19;
 
   /* template */
-  var __vue_render__$19 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Custom Controls","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"demo-swiper-custom"},[_c('div',{staticClass:"swiper-container swiper-init",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"clickable\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-space-between":"0"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-1.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-3.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-4.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-5.jpg)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-6.jpg)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])])],1)};
+  var __vue_render__$19 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Parallax","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-parallax",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-parallax":"true","data-speed":"600"}},[_c('div',{staticClass:"swiper-parallax-bg",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg)"},attrs:{"data-swiper-parallax":"-23%"}}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])])])])],1)};
   var __vue_staticRenderFns__$19 = [];
 
     /* style */
@@ -66021,7 +65616,7 @@
     
 
     
-    var SwiperCustomControls = normalizeComponent_1(
+    var SwiperParallax = normalizeComponent_1(
       { render: __vue_render__$19, staticRenderFns: __vue_staticRenderFns__$19 },
       __vue_inject_styles__$19,
       __vue_script__$19,
@@ -66045,7 +65640,7 @@
   var __vue_script__$1a = script$1a;
 
   /* template */
-  var __vue_render__$1a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Parallax","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-parallax",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-parallax":"true","data-speed":"600"}},[_c('div',{staticClass:"swiper-parallax-bg",staticStyle:{"background-image":"url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg)"},attrs:{"data-swiper-parallax":"-23%"}}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])])])])],1)};
+  var __vue_render__$1a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Slider Lazy Loading","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-lazy",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-lazy":"{\"enabled\": true}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-1.jpg"}}),_vm._v(" "),_c('div',{staticClass:"swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-2.jpg"}}),_vm._v(" "),_c('div',{staticClass:"swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-3.jpg"}}),_vm._v(" "),_c('div',{staticClass:"swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-4.jpg"}}),_vm._v(" "),_c('div',{staticClass:"swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-5.jpg"}}),_vm._v(" "),_c('div',{staticClass:"swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-6.jpg"}}),_vm._v(" "),_c('div',{staticClass:"swiper-lazy-preloader"})])]),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])],1)};
   var __vue_staticRenderFns__$1a = [];
 
     /* style */
@@ -66062,7 +65657,7 @@
     
 
     
-    var SwiperParallax = normalizeComponent_1(
+    var SwiperLazy = normalizeComponent_1(
       { render: __vue_render__$1a, staticRenderFns: __vue_staticRenderFns__$1a },
       __vue_inject_styles__$1a,
       __vue_script__$1a,
@@ -66086,7 +65681,7 @@
   var __vue_script__$1b = script$1b;
 
   /* template */
-  var __vue_render__$1b = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Slider Lazy Loading","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-lazy",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-lazy":"{\"enabled\": true}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-1.jpg"}}),_vm._v(" "),_c('div',{staticClass:"swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-2.jpg"}}),_vm._v(" "),_c('div',{staticClass:"swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-3.jpg"}}),_vm._v(" "),_c('div',{staticClass:"swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-4.jpg"}}),_vm._v(" "),_c('div',{staticClass:"swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-5.jpg"}}),_vm._v(" "),_c('div',{staticClass:"swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"https://cdn.framework7.io/placeholder/nature-1024x1024-6.jpg"}}),_vm._v(" "),_c('div',{staticClass:"swiper-lazy-preloader"})])]),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])],1)};
+  var __vue_render__$1b = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Progress Pagination","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"type\": \"progressbar\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$1b = [];
 
     /* style */
@@ -66103,7 +65698,7 @@
     
 
     
-    var SwiperLazy = normalizeComponent_1(
+    var SwiperPaginationProgress = normalizeComponent_1(
       { render: __vue_render__$1b, staticRenderFns: __vue_staticRenderFns__$1b },
       __vue_inject_styles__$1b,
       __vue_script__$1b,
@@ -66127,7 +65722,7 @@
   var __vue_script__$1c = script$1c;
 
   /* template */
-  var __vue_render__$1c = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Progress Pagination","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"type\": \"progressbar\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
+  var __vue_render__$1c = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Pagination Fraction","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"type\": \"fraction\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$1c = [];
 
     /* style */
@@ -66144,7 +65739,7 @@
     
 
     
-    var SwiperPaginationProgress = normalizeComponent_1(
+    var SwiperPaginationFraction = normalizeComponent_1(
       { render: __vue_render__$1c, staticRenderFns: __vue_staticRenderFns__$1c },
       __vue_inject_styles__$1c,
       __vue_script__$1c,
@@ -66168,7 +65763,7 @@
   var __vue_script__$1d = script$1d;
 
   /* template */
-  var __vue_render__$1d = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Pagination Fraction","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"type\": \"fraction\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
+  var __vue_render__$1d = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Zoom","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-zoom":"{\"enabled\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-1.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-2.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-3.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-4.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-5.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-6.jpg"}})])])]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"})])],1)};
   var __vue_staticRenderFns__$1d = [];
 
     /* style */
@@ -66185,7 +65780,7 @@
     
 
     
-    var SwiperPaginationFraction = normalizeComponent_1(
+    var SwiperZoom = normalizeComponent_1(
       { render: __vue_render__$1d, staticRenderFns: __vue_staticRenderFns__$1d },
       __vue_inject_styles__$1d,
       __vue_script__$1d,
@@ -66199,47 +65794,6 @@
   //
 
   var script$1e = {
-    components: {
-      f7Navbar: f7Navbar,
-      f7Page: f7Page,
-    },
-  };
-
-  /* script */
-  var __vue_script__$1e = script$1e;
-
-  /* template */
-  var __vue_render__$1e = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Zoom","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-zoom":"{\"enabled\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-1.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-2.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-3.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-4.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-5.jpg"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"https://cdn.framework7.io/placeholder/nature-800x800-6.jpg"}})])])]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"})])],1)};
-  var __vue_staticRenderFns__$1e = [];
-
-    /* style */
-    var __vue_inject_styles__$1e = undefined;
-    /* scoped */
-    var __vue_scope_id__$1e = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$1e = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$1e = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var SwiperZoom = normalizeComponent_1(
-      { render: __vue_render__$1e, staticRenderFns: __vue_staticRenderFns__$1e },
-      __vue_inject_styles__$1e,
-      __vue_script__$1e,
-      __vue_scope_id__$1e,
-      __vue_is_functional_template__$1e,
-      __vue_module_identifier__$1e,
-      undefined,
-      undefined
-    );
-
-  //
-
-  var script$1f = {
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -66303,10 +65857,53 @@
   };
 
   /* script */
+  var __vue_script__$1e = script$1e;
+
+  /* template */
+  var __vue_render__$1e = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Swipeout","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("\n      Swipe out actions on list elements is one of the most awesome F7 features. It allows you to call hidden menu for each list element where you can put default ready-to use delete button or any other buttons for some required actions.\n    ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe to delete with confirm modal")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe to delete without confirm")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe for actions")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"You can't delete me"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With callback on remove")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"},on:{"swipeout:deleted":_vm.onDeleted}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"},on:{"swipeout:deleted":_vm.onDeleted}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With actions on left side (swipe to right)")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe right on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe right on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("On both sides with overswipes")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"swipeout":"","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1)],1)],1)};
+  var __vue_staticRenderFns__$1e = [];
+
+    /* style */
+    var __vue_inject_styles__$1e = undefined;
+    /* scoped */
+    var __vue_scope_id__$1e = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$1e = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$1e = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var Swipeout$2 = normalizeComponent_1(
+      { render: __vue_render__$1e, staticRenderFns: __vue_staticRenderFns__$1e },
+      __vue_inject_styles__$1e,
+      __vue_script__$1e,
+      __vue_scope_id__$1e,
+      __vue_is_functional_template__$1e,
+      __vue_module_identifier__$1e,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$1f = {
+    components: {
+      f7Navbar: f7Navbar,
+      f7Page: f7Page,
+      f7List: f7List,
+      f7ListItem: f7ListItem,
+    },
+  };
+
+  /* script */
   var __vue_script__$1f = script$1f;
 
   /* template */
-  var __vue_render__$1f = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Swipeout","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("\n      Swipe out actions on list elements is one of the most awesome F7 features. It allows you to call hidden menu for each list element where you can put default ready-to use delete button or any other buttons for some required actions.\n    ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe to delete with confirm modal")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe to delete without confirm")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe for actions")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"You can't delete me"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With callback on remove")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"},on:{"swipeout:deleted":_vm.onDeleted}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"},on:{"swipeout:deleted":_vm.onDeleted}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With actions on left side (swipe to right)")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe right on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe right on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("On both sides with overswipes")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"swipeout":"","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1)],1)],1)};
+  var __vue_render__$1f = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/tabs-static/","title":"Static Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-animated/","title":"Animated Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-swipeable/","title":"Swipeable Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-routable/","title":"Routable Tabs"}})],1)],1)};
   var __vue_staticRenderFns__$1f = [];
 
     /* style */
@@ -66323,7 +65920,7 @@
     
 
     
-    var Swipeout$2 = normalizeComponent_1(
+    var Tabs$1 = normalizeComponent_1(
       { render: __vue_render__$1f, staticRenderFns: __vue_staticRenderFns__$1f },
       __vue_inject_styles__$1f,
       __vue_script__$1f,
@@ -66338,10 +65935,7 @@
 
   var script$1g = {
     components: {
-      f7Navbar: f7Navbar,
-      f7Page: f7Page,
-      f7List: f7List,
-      f7ListItem: f7ListItem,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar,
     },
   };
 
@@ -66349,7 +65943,7 @@
   var __vue_script__$1g = script$1g;
 
   /* template */
-  var __vue_render__$1g = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/tabs-static/","title":"Static Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-animated/","title":"Animated Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-swipeable/","title":"Swipeable Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-routable/","title":"Routable Tabs"}})],1)],1)};
+  var __vue_render__$1g = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Static Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1g = [];
 
     /* style */
@@ -66366,7 +65960,7 @@
     
 
     
-    var Tabs$1 = normalizeComponent_1(
+    var TabsStatic = normalizeComponent_1(
       { render: __vue_render__$1g, staticRenderFns: __vue_staticRenderFns__$1g },
       __vue_inject_styles__$1g,
       __vue_script__$1g,
@@ -66389,7 +65983,7 @@
   var __vue_script__$1h = script$1h;
 
   /* template */
-  var __vue_render__$1h = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Static Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
+  var __vue_render__$1h = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Animated Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"animated":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1h = [];
 
     /* style */
@@ -66406,7 +66000,7 @@
     
 
     
-    var TabsStatic = normalizeComponent_1(
+    var TabsAnimated = normalizeComponent_1(
       { render: __vue_render__$1h, staticRenderFns: __vue_staticRenderFns__$1h },
       __vue_inject_styles__$1h,
       __vue_script__$1h,
@@ -66429,7 +66023,7 @@
   var __vue_script__$1i = script$1i;
 
   /* template */
-  var __vue_render__$1i = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Animated Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"animated":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
+  var __vue_render__$1i = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Swipeable Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"swipeable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1i = [];
 
     /* style */
@@ -66446,7 +66040,7 @@
     
 
     
-    var TabsAnimated = normalizeComponent_1(
+    var TabsSwipeable = normalizeComponent_1(
       { render: __vue_render__$1i, staticRenderFns: __vue_staticRenderFns__$1i },
       __vue_inject_styles__$1i,
       __vue_script__$1i,
@@ -66469,7 +66063,7 @@
   var __vue_script__$1j = script$1j;
 
   /* template */
-  var __vue_render__$1j = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Swipeable Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"swipeable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
+  var __vue_render__$1j = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabs Routable","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"","href":"./","route-tab-id":"tab1"}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab2/","route-tab-id":"tab2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab3/","route-tab-id":"tab3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"routable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab1"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab2"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab3"}})],1)],1)};
   var __vue_staticRenderFns__$1j = [];
 
     /* style */
@@ -66486,7 +66080,7 @@
     
 
     
-    var TabsSwipeable = normalizeComponent_1(
+    var TabsRoutable = normalizeComponent_1(
       { render: __vue_render__$1j, staticRenderFns: __vue_staticRenderFns__$1j },
       __vue_inject_styles__$1j,
       __vue_script__$1j,
@@ -66500,46 +66094,6 @@
   //
 
   var script$1k = {
-    components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar,
-    },
-  };
-
-  /* script */
-  var __vue_script__$1k = script$1k;
-
-  /* template */
-  var __vue_render__$1k = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabs Routable","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"","href":"./","route-tab-id":"tab1"}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab2/","route-tab-id":"tab2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab3/","route-tab-id":"tab3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"routable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab1"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab2"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab3"}})],1)],1)};
-  var __vue_staticRenderFns__$1k = [];
-
-    /* style */
-    var __vue_inject_styles__$1k = undefined;
-    /* scoped */
-    var __vue_scope_id__$1k = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$1k = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$1k = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var TabsRoutable = normalizeComponent_1(
-      { render: __vue_render__$1k, staticRenderFns: __vue_staticRenderFns__$1k },
-      __vue_inject_styles__$1k,
-      __vue_script__$1k,
-      __vue_scope_id__$1k,
-      __vue_is_functional_template__$1k,
-      __vue_module_identifier__$1k,
-      undefined,
-      undefined
-    );
-
-  //
-
-  var script$1l = {
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
@@ -66567,10 +66121,10 @@
   };
 
   /* script */
-  var __vue_script__$1l = script$1l;
+  var __vue_script__$1k = script$1k;
 
   /* template */
-  var __vue_render__$1l = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Text Editor","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with a touch-friendly Rich Text Editor component. It is based on modern \"contenteditable\" API so it should work everywhere as is.")]),_vm._v(" "),_c('p',[_vm._v("It comes with the basic set of formatting features. But its functionality can be easily extended and customized to fit any requirements.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default Setup")]),_vm._v(" "),_c('f7-text-editor'),_vm._v(" "),_c('f7-block-title',[_vm._v("With Placeholder")]),_vm._v(" "),_c('f7-text-editor',{attrs:{"placeholder":"Enter text..."}}),_vm._v(" "),_c('f7-block-title',[_vm._v("With Default Value")]),_vm._v(" "),_c('f7-text-editor',{attrs:{"placeholder":"Enter text...","value":_vm.customValue},on:{"texteditor:change":function (v) { return _vm.customValue = v; }}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Specific Buttons")]),_vm._v(" "),_c('f7-block-header',[_vm._v("It is possible to customize which buttons (commands) to show.")]),_vm._v(" "),_c('f7-text-editor',{attrs:{"placeholder":"Enter text...","buttons":[
+  var __vue_render__$1k = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Text Editor","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with a touch-friendly Rich Text Editor component. It is based on modern \"contenteditable\" API so it should work everywhere as is.")]),_vm._v(" "),_c('p',[_vm._v("It comes with the basic set of formatting features. But its functionality can be easily extended and customized to fit any requirements.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default Setup")]),_vm._v(" "),_c('f7-text-editor'),_vm._v(" "),_c('f7-block-title',[_vm._v("With Placeholder")]),_vm._v(" "),_c('f7-text-editor',{attrs:{"placeholder":"Enter text..."}}),_vm._v(" "),_c('f7-block-title',[_vm._v("With Default Value")]),_vm._v(" "),_c('f7-text-editor',{attrs:{"placeholder":"Enter text...","value":_vm.customValue},on:{"texteditor:change":function (v) { return _vm.customValue = v; }}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Specific Buttons")]),_vm._v(" "),_c('f7-block-header',[_vm._v("It is possible to customize which buttons (commands) to show.")]),_vm._v(" "),_c('f7-text-editor',{attrs:{"placeholder":"Enter text...","buttons":[
         ['bold', 'italic', 'underline', 'strikeThrough'],
         ['orderedList', 'unorderedList']
       ]}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom Button")]),_vm._v(" "),_c('f7-block-header',[_vm._v("It is possible to create custom editor buttons. Here is the custom \"hr\" button that adds horizontal rule:")]),_vm._v(" "),_c('f7-text-editor',{attrs:{"placeholder":"Enter text...","customButtons":_vm.customButtons,"buttons":[
@@ -66580,16 +66134,16 @@
           mode: 'popover',
           buttons: ['bold', 'italic', 'underline', 'strikeThrough']
         },"value":_vm.listEditorValue},on:{"texteditor:change":function (value) { return _vm.listEditorValue = value; }}})],1)],1)};
-  var __vue_staticRenderFns__$1l = [];
+  var __vue_staticRenderFns__$1k = [];
 
     /* style */
-    var __vue_inject_styles__$1l = undefined;
+    var __vue_inject_styles__$1k = undefined;
     /* scoped */
-    var __vue_scope_id__$1l = undefined;
+    var __vue_scope_id__$1k = undefined;
     /* module identifier */
-    var __vue_module_identifier__$1l = undefined;
+    var __vue_module_identifier__$1k = undefined;
     /* functional template */
-    var __vue_is_functional_template__$1l = false;
+    var __vue_is_functional_template__$1k = false;
     /* style inject */
     
     /* style inject SSR */
@@ -66597,19 +66151,19 @@
 
     
     var TextEditor$2 = normalizeComponent_1(
-      { render: __vue_render__$1l, staticRenderFns: __vue_staticRenderFns__$1l },
-      __vue_inject_styles__$1l,
-      __vue_script__$1l,
-      __vue_scope_id__$1l,
-      __vue_is_functional_template__$1l,
-      __vue_module_identifier__$1l,
+      { render: __vue_render__$1k, staticRenderFns: __vue_staticRenderFns__$1k },
+      __vue_inject_styles__$1k,
+      __vue_script__$1k,
+      __vue_scope_id__$1k,
+      __vue_is_functional_template__$1k,
+      __vue_module_identifier__$1k,
       undefined,
       undefined
     );
 
   //
 
-  var script$1m = {
+  var script$1l = {
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Button: f7Button,
     },
@@ -66741,10 +66295,55 @@
   };
 
   /* script */
+  var __vue_script__$1l = script$1l;
+
+  /* template */
+  var __vue_render__$1l = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Toast","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toasts provide brief feedback about an operation through a message on the screen.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastBottom}},[_vm._v("Toast on Bottom")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastTop}},[_vm._v("Toast on Top")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastCenter}},[_vm._v("Toast on Center")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastIcon}},[_vm._v("Toast with icon")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastLargeMessage}},[_vm._v("Toast with large message")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithButton}},[_vm._v("Toast with close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCustomButton}},[_vm._v("Toast with custom button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCallback}},[_vm._v("Toast with callback on close")])],1)])],1)};
+  var __vue_staticRenderFns__$1l = [];
+
+    /* style */
+    var __vue_inject_styles__$1l = undefined;
+    /* scoped */
+    var __vue_scope_id__$1l = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$1l = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$1l = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var Toast$2 = normalizeComponent_1(
+      { render: __vue_render__$1l, staticRenderFns: __vue_staticRenderFns__$1l },
+      __vue_inject_styles__$1l,
+      __vue_script__$1l,
+      __vue_scope_id__$1l,
+      __vue_is_functional_template__$1l,
+      __vue_module_identifier__$1l,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$1m = {
+    components: {
+      f7Navbar: f7Navbar,
+      f7Page: f7Page,
+      f7BlockTitle: f7BlockTitle,
+      f7List: f7List,
+      f7ListItem: f7ListItem,
+      f7Toggle: f7Toggle,
+    },
+  };
+
+  /* script */
   var __vue_script__$1m = script$1m;
 
   /* template */
-  var __vue_render__$1m = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Toast","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toasts provide brief feedback about an operation through a message on the screen.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastBottom}},[_vm._v("Toast on Bottom")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastTop}},[_vm._v("Toast on Top")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastCenter}},[_vm._v("Toast on Center")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastIcon}},[_vm._v("Toast with icon")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastLargeMessage}},[_vm._v("Toast with large message")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithButton}},[_vm._v("Toast with close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCustomButton}},[_vm._v("Toast with custom button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCallback}},[_vm._v("Toast with callback on close")])],1)])],1)};
+  var __vue_render__$1m = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toggle","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Super Heroes")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('span',[_vm._v("Batman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Aquaman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"blue"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Superman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"red"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Hulk")]),_vm._v(" "),_c('f7-toggle',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Spiderman (Disabled)")]),_vm._v(" "),_c('f7-toggle',{attrs:{"disabled":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Ironman (Disabled)")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","disabled":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Thor")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"orange"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Wonder Woman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"color":"pink"}})],1)],1)],1)};
   var __vue_staticRenderFns__$1m = [];
 
     /* style */
@@ -66761,7 +66360,7 @@
     
 
     
-    var Toast$2 = normalizeComponent_1(
+    var Toggle$2 = normalizeComponent_1(
       { render: __vue_render__$1m, staticRenderFns: __vue_staticRenderFns__$1m },
       __vue_inject_styles__$1m,
       __vue_script__$1m,
@@ -66776,12 +66375,17 @@
 
   var script$1n = {
     components: {
-      f7Navbar: f7Navbar,
-      f7Page: f7Page,
-      f7BlockTitle: f7BlockTitle,
-      f7List: f7List,
-      f7ListItem: f7ListItem,
-      f7Toggle: f7Toggle,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7List: f7List, f7ListItem: f7ListItem, f7Button: f7Button, f7Link: f7Link, f7BlockTitle: f7BlockTitle, f7Block: f7Block,
+    },
+    data: function data() {
+      return {
+        toolbarPosition: 'bottom',
+      }
+    },
+    methods: {
+      toggleToolbarPosition: function toggleToolbarPosition() {
+        this.toolbarPosition = this.toolbarPosition === 'top' ? 'bottom' : 'top';
+      },
     },
   };
 
@@ -66789,7 +66393,7 @@
   var __vue_script__$1n = script$1n;
 
   /* template */
-  var __vue_render__$1n = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toggle","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Super Heroes")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('span',[_vm._v("Batman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Aquaman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"blue"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Superman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"red"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Hulk")]),_vm._v(" "),_c('f7-toggle',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Spiderman (Disabled)")]),_vm._v(" "),_c('f7-toggle',{attrs:{"disabled":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Ironman (Disabled)")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","disabled":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Thor")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"orange"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Wonder Woman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"color":"pink"}})],1)],1)],1)};
+  var __vue_render__$1n = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toolbar & Tabbar","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"./tabbar/","title":"Tabbar"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-labels/","title":"Tabbar With Labels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-scrollable/","title":"Tabbar Scrollable"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./toolbar-hide-scroll/","title":"Hide Toolbar On Scroll"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Toolbar Position")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toolbar supports both top and bottom positions. Click the following button to change its position.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.toggleToolbarPosition}},[_vm._v("Toggle Toolbar Position")])],1)])],1)};
   var __vue_staticRenderFns__$1n = [];
 
     /* style */
@@ -66806,7 +66410,7 @@
     
 
     
-    var Toggle$2 = normalizeComponent_1(
+    var ToolbarTabbar = normalizeComponent_1(
       { render: __vue_render__$1n, staticRenderFns: __vue_staticRenderFns__$1n },
       __vue_inject_styles__$1n,
       __vue_script__$1n,
@@ -66821,7 +66425,7 @@
 
   var script$1o = {
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7List: f7List, f7ListItem: f7ListItem, f7Button: f7Button, f7Link: f7Link, f7BlockTitle: f7BlockTitle, f7Block: f7Block,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
     },
     data: function data() {
       return {
@@ -66839,7 +66443,7 @@
   var __vue_script__$1o = script$1o;
 
   /* template */
-  var __vue_render__$1o = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toolbar & Tabbar","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"./tabbar/","title":"Tabbar"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-labels/","title":"Tabbar With Labels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-scrollable/","title":"Tabbar Scrollable"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./toolbar-hide-scroll/","title":"Hide Toolbar On Scroll"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Toolbar Position")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toolbar supports both top and bottom positions. Click the following button to change its position.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.toggleToolbarPosition}},[_vm._v("Toggle Toolbar Position")])],1)])],1)};
+  var __vue_render__$1o = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:arrow_up_arrow_down_circle_fill","icon-aurora":"f7:arrow_up_arrow_down_circle_fill"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1o = [];
 
     /* style */
@@ -66856,7 +66460,7 @@
     
 
     
-    var ToolbarTabbar = normalizeComponent_1(
+    var Tabbar = normalizeComponent_1(
       { render: __vue_render__$1o, staticRenderFns: __vue_staticRenderFns__$1o },
       __vue_inject_styles__$1o,
       __vue_script__$1o,
@@ -66889,7 +66493,7 @@
   var __vue_script__$1p = script$1p;
 
   /* template */
-  var __vue_render__$1p = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:arrow_up_arrow_down_circle_fill","icon-aurora":"f7:arrow_up_arrow_down_circle_fill"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
+  var __vue_render__$1p = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Labels","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:arrow_up_arrow_down_circle_fill","icon-aurora":"f7:arrow_up_arrow_down_circle_fill"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":"","text":"Tab 1","icon-ios":"f7:envelope_fill","icon-aurora":"f7:envelope_fill","icon-md":"material:email"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2","text":"Tab 2","icon-ios":"f7:calendar_fill","icon-aurora":"f7:calendar_fill","icon-md":"material:today"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3","text":"Tab 3","icon-ios":"f7:cloud_upload_fill","icon-aurora":"f7:cloud_upload_fill","icon-md":"material:file_upload"}})],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1p = [];
 
     /* style */
@@ -66906,7 +66510,7 @@
     
 
     
-    var Tabbar = normalizeComponent_1(
+    var TabbarLabels = normalizeComponent_1(
       { render: __vue_render__$1p, staticRenderFns: __vue_staticRenderFns__$1p },
       __vue_inject_styles__$1p,
       __vue_script__$1p,
@@ -66925,12 +66529,13 @@
     },
     data: function data() {
       return {
+        tabs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         toolbarPosition: 'bottom',
-      }
+      };
     },
     methods: {
       toggleToolbarPosition: function toggleToolbarPosition() {
-        this.toolbarPosition = this.toolbarPosition === 'top' ? 'bottom' : 'top';
+        this.toolbarPosition = this.position === 'top' ? 'bottom' : 'top';
       },
     },
   };
@@ -66939,7 +66544,7 @@
   var __vue_script__$1q = script$1q;
 
   /* template */
-  var __vue_render__$1q = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Labels","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:arrow_up_arrow_down_circle_fill","icon-aurora":"f7:arrow_up_arrow_down_circle_fill"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":"","text":"Tab 1","icon-ios":"f7:envelope_fill","icon-aurora":"f7:envelope_fill","icon-md":"material:email"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2","text":"Tab 2","icon-ios":"f7:calendar_fill","icon-aurora":"f7:calendar_fill","icon-md":"material:today"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3","text":"Tab 3","icon-ios":"f7:cloud_upload_fill","icon-aurora":"f7:cloud_upload_fill","icon-md":"material:file_upload"}})],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
+  var __vue_render__$1q = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Scrollable","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:arrow_up_arrow_down_circle_fill","icon-aurora":"f7:arrow_up_arrow_down_circle_fill"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","scrollable":""}},_vm._l((_vm.tabs),function(tab,index){return _c('f7-link',{key:tab,attrs:{"tab-link":("#tab-" + tab),"tab-link-active":index === 0}},[_vm._v("Tab "+_vm._s(tab))])}),1),_vm._v(" "),_c('f7-tabs',_vm._l((_vm.tabs),function(tab,index){return _c('f7-tab',{key:tab,staticClass:"page-content",attrs:{"id":("tab-" + tab),"tab-active":index === 0}},[_c('f7-block',[_c('p',[_c('b',[_vm._v("Tab "+_vm._s(tab)+" content")])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?")]),_vm._v(" "),_c('p',[_vm._v("Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!")]),_vm._v(" "),_c('p',[_vm._v("At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.")]),_vm._v(" "),_c('p',[_vm._v("Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.")]),_vm._v(" "),_c('p',[_vm._v("Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.")])])],1)}),1)],1)};
   var __vue_staticRenderFns__$1q = [];
 
     /* style */
@@ -66956,7 +66561,7 @@
     
 
     
-    var TabbarLabels = normalizeComponent_1(
+    var TabbarScrollable = normalizeComponent_1(
       { render: __vue_render__$1q, staticRenderFns: __vue_staticRenderFns__$1q },
       __vue_inject_styles__$1q,
       __vue_script__$1q,
@@ -66971,18 +66576,7 @@
 
   var script$1r = {
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
-    },
-    data: function data() {
-      return {
-        tabs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        toolbarPosition: 'bottom',
-      };
-    },
-    methods: {
-      toggleToolbarPosition: function toggleToolbarPosition() {
-        this.toolbarPosition = this.position === 'top' ? 'bottom' : 'top';
-      },
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7Link: f7Link, f7Block: f7Block,
     },
   };
 
@@ -66990,7 +66584,7 @@
   var __vue_script__$1r = script$1r;
 
   /* template */
-  var __vue_render__$1r = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Scrollable","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:arrow_up_arrow_down_circle_fill","icon-aurora":"f7:arrow_up_arrow_down_circle_fill"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","scrollable":""}},_vm._l((_vm.tabs),function(tab,index){return _c('f7-link',{key:tab,attrs:{"tab-link":("#tab-" + tab),"tab-link-active":index === 0}},[_vm._v("Tab "+_vm._s(tab))])}),1),_vm._v(" "),_c('f7-tabs',_vm._l((_vm.tabs),function(tab,index){return _c('f7-tab',{key:tab,staticClass:"page-content",attrs:{"id":("tab-" + tab),"tab-active":index === 0}},[_c('f7-block',[_c('p',[_c('b',[_vm._v("Tab "+_vm._s(tab)+" content")])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?")]),_vm._v(" "),_c('p',[_vm._v("Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!")]),_vm._v(" "),_c('p',[_vm._v("At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.")]),_vm._v(" "),_c('p',[_vm._v("Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.")]),_vm._v(" "),_c('p',[_vm._v("Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.")])])],1)}),1)],1)};
+  var __vue_render__$1r = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"hide-toolbar-on-scroll":""}},[_c('f7-navbar',{attrs:{"title":"Hide Toolbar On Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":""}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Toolbar will be hidden if you scroll bottom")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")])])],1)};
   var __vue_staticRenderFns__$1r = [];
 
     /* style */
@@ -67007,7 +66601,7 @@
     
 
     
-    var TabbarScrollable = normalizeComponent_1(
+    var ToolbarHideScroll = normalizeComponent_1(
       { render: __vue_render__$1r, staticRenderFns: __vue_staticRenderFns__$1r },
       __vue_inject_styles__$1r,
       __vue_script__$1r,
@@ -67021,46 +66615,6 @@
   //
 
   var script$1s = {
-    components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7Link: f7Link, f7Block: f7Block,
-    },
-  };
-
-  /* script */
-  var __vue_script__$1s = script$1s;
-
-  /* template */
-  var __vue_render__$1s = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"hide-toolbar-on-scroll":""}},[_c('f7-navbar',{attrs:{"title":"Hide Toolbar On Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":""}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Toolbar will be hidden if you scroll bottom")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")])])],1)};
-  var __vue_staticRenderFns__$1s = [];
-
-    /* style */
-    var __vue_inject_styles__$1s = undefined;
-    /* scoped */
-    var __vue_scope_id__$1s = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$1s = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$1s = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var ToolbarHideScroll = normalizeComponent_1(
-      { render: __vue_render__$1s, staticRenderFns: __vue_staticRenderFns__$1s },
-      __vue_inject_styles__$1s,
-      __vue_script__$1s,
-      __vue_scope_id__$1s,
-      __vue_is_functional_template__$1s,
-      __vue_module_identifier__$1s,
-      undefined,
-      undefined
-    );
-
-  //
-
-  var script$1t = {
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
@@ -67093,10 +66647,50 @@
   };
 
   /* script */
+  var __vue_script__$1s = script$1s;
+
+  /* template */
+  var __vue_render__$1s = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:init":_vm.onPageInit,"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Tooltip","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"navbar-tooltip"},[_c('f7-icon',{attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info_outline"}})],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Tooltips display informative text when users hover over, or tap an target element.")]),_vm._v(" "),_c('p',[_vm._v("Tooltip can be positioned around any element with any HTML content inside.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info","size":20}}),_vm._v(" Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info","size":20}}),_vm._v(" aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec.")],1),_vm._v(" "),_c('p',[_vm._v("Vestibulum "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info","size":20}}),_vm._v(" gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info","size":20}}),_vm._v(" felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt.")],1),_vm._v(" "),_c('p',[_vm._v("Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info","size":20}}),_vm._v(" neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info","size":20}}),_vm._v(" massa.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Initialization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("For simple cases when you don't need a lot of control over the Tooltip, it can be set on buttons and links automatically with "),_c('code',[_vm._v("tooltip")]),_vm._v(" prop: "),_c('f7-button',{staticStyle:{"display":"inline-block"},attrs:{"round":"","outline":"","small":"","tooltip":"Button tooltip text"}},[_vm._v("Button with Tooltip")])],1)])],1)};
+  var __vue_staticRenderFns__$1s = [];
+
+    /* style */
+    var __vue_inject_styles__$1s = undefined;
+    /* scoped */
+    var __vue_scope_id__$1s = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$1s = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$1s = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var Tooltip$2 = normalizeComponent_1(
+      { render: __vue_render__$1s, staticRenderFns: __vue_staticRenderFns__$1s },
+      __vue_inject_styles__$1s,
+      __vue_script__$1s,
+      __vue_scope_id__$1s,
+      __vue_is_functional_template__$1s,
+      __vue_module_identifier__$1s,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$1t = {
+    components: {
+      f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem,
+    },
+  };
+
+  /* script */
   var __vue_script__$1t = script$1t;
 
   /* template */
-  var __vue_render__$1t = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:init":_vm.onPageInit,"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Tooltip","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"navbar-tooltip"},[_c('f7-icon',{attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info_outline"}})],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Tooltips display informative text when users hover over, or tap an target element.")]),_vm._v(" "),_c('p',[_vm._v("Tooltip can be positioned around any element with any HTML content inside.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info","size":20}}),_vm._v(" Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info","size":20}}),_vm._v(" aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec.")],1),_vm._v(" "),_c('p',[_vm._v("Vestibulum "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info","size":20}}),_vm._v(" gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info","size":20}}),_vm._v(" felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt.")],1),_vm._v(" "),_c('p',[_vm._v("Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info","size":20}}),_vm._v(" neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_circle_fill","aurora":"f7:info_circle_fill","md":"material:info","size":20}}),_vm._v(" massa.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Initialization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("For simple cases when you don't need a lot of control over the Tooltip, it can be set on buttons and links automatically with "),_c('code',[_vm._v("tooltip")]),_vm._v(" prop: "),_c('f7-button',{staticStyle:{"display":"inline-block"},attrs:{"round":"","outline":"","small":"","tooltip":"Button tooltip text"}},[_vm._v("Button with Tooltip")])],1)])],1)};
+  var __vue_render__$1t = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/timeline-vertical/","title":"Vertical Timeline"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline-horizontal/","title":"Horizontal Timeline"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline-horizontal-calendar/","title":"Calendar Timeline"}})],1)],1)};
   var __vue_staticRenderFns__$1t = [];
 
     /* style */
@@ -67113,7 +66707,7 @@
     
 
     
-    var Tooltip$2 = normalizeComponent_1(
+    var Timeline$1 = normalizeComponent_1(
       { render: __vue_render__$1t, staticRenderFns: __vue_staticRenderFns__$1t },
       __vue_inject_styles__$1t,
       __vue_script__$1t,
@@ -67128,7 +66722,9 @@
 
   var script$1u = {
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem,
+      f7Navbar: f7Navbar,
+      f7Page: f7Page,
+      f7BlockTitle: f7BlockTitle,
     },
   };
 
@@ -67136,7 +66732,7 @@
   var __vue_script__$1u = script$1u;
 
   /* template */
-  var __vue_render__$1u = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/timeline-vertical/","title":"Vertical Timeline"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline-horizontal/","title":"Horizontal Timeline"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline-horizontal-calendar/","title":"Calendar Timeline"}})],1)],1)};
+  var __vue_render__$1u = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Vertical Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Tablet Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline medium-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Forced Sides")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Rich Content")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content card no-safe-areas"},[_c('div',{staticClass:"card-header"},[_vm._v("Card Header")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content list links-list inset no-safe-areas"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Inside Content Block")]),_vm._v(" "),_c('div',{staticClass:"block block-strong"},[_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])])])],1)};
   var __vue_staticRenderFns__$1u = [];
 
     /* style */
@@ -67153,7 +66749,7 @@
     
 
     
-    var Timeline$1 = normalizeComponent_1(
+    var TimelineVertical = normalizeComponent_1(
       { render: __vue_render__$1u, staticRenderFns: __vue_staticRenderFns__$1u },
       __vue_inject_styles__$1u,
       __vue_script__$1u,
@@ -67178,7 +66774,7 @@
   var __vue_script__$1v = script$1v;
 
   /* template */
-  var __vue_render__$1v = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Vertical Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Tablet Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline tablet-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Forced Sides")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Rich Content")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content card no-safe-areas"},[_c('div',{staticClass:"card-header"},[_vm._v("Card Header")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content list links-list inset no-safe-areas"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Inside Content Block")]),_vm._v(" "),_c('div',{staticClass:"block block-strong"},[_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])])])],1)};
+  var __vue_render__$1v = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-20"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:45")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something else")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text goes here")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"card no-safe-areas"},[_c('div',{staticClass:"card-header"},[_vm._v("Card")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])]),_vm._v(" "),_c('div',{staticClass:"card no-safe-areas"},[_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Another Card Content")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"list links-list inset no-safe-areas"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])])])])],1)};
   var __vue_staticRenderFns__$1v = [];
 
     /* style */
@@ -67195,7 +66791,7 @@
     
 
     
-    var TimelineVertical = normalizeComponent_1(
+    var TimelineHorizontal = normalizeComponent_1(
       { render: __vue_render__$1v, staticRenderFns: __vue_staticRenderFns__$1v },
       __vue_inject_styles__$1v,
       __vue_script__$1v,
@@ -67220,7 +66816,7 @@
   var __vue_script__$1w = script$1w;
 
   /* template */
-  var __vue_render__$1w = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-20"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:45")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something else")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text goes here")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"card no-safe-areas"},[_c('div',{staticClass:"card-header"},[_vm._v("Card")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])]),_vm._v(" "),_c('div',{staticClass:"card no-safe-areas"},[_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Another Card Content")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"list links-list inset no-safe-areas"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])])])])],1)};
+  var __vue_render__$1w = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline Calendar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-15"},[_c('div',{staticClass:"timeline-year"},[_c('div',{staticClass:"timeline-year-title"},[_c('span',[_vm._v("2016")])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("December")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("29")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("30")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("31")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-year"},[_c('div',{staticClass:"timeline-year-title"},[_c('span',[_vm._v("2017")])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("January")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("6")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("7")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("8")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("9")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("10")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("12")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("13")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("14")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("16")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("17")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("18")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("19")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("29")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("30")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("31")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("February")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("6")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("7")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("8")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("9")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("10")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("12")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("13")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("14")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("16")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("17")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("18")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("19")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])])])])])],1)};
   var __vue_staticRenderFns__$1w = [];
 
     /* style */
@@ -67237,7 +66833,7 @@
     
 
     
-    var TimelineHorizontal = normalizeComponent_1(
+    var TimelineHorizontalCalendar = normalizeComponent_1(
       { render: __vue_render__$1w, staticRenderFns: __vue_staticRenderFns__$1w },
       __vue_inject_styles__$1w,
       __vue_script__$1w,
@@ -67251,48 +66847,6 @@
   //
 
   var script$1x = {
-    components: {
-      f7Navbar: f7Navbar,
-      f7Page: f7Page,
-      f7BlockTitle: f7BlockTitle,
-    },
-  };
-
-  /* script */
-  var __vue_script__$1x = script$1x;
-
-  /* template */
-  var __vue_render__$1x = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline Calendar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-15"},[_c('div',{staticClass:"timeline-year"},[_c('div',{staticClass:"timeline-year-title"},[_c('span',[_vm._v("2016")])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("December")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("29")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("30")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("31")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-year"},[_c('div',{staticClass:"timeline-year-title"},[_c('span',[_vm._v("2017")])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("January")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("6")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("7")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("8")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("9")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("10")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("12")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("13")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("14")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("16")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("17")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("18")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("19")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("29")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("30")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("31")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("February")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("6")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("7")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("8")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("9")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("10")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("12")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("13")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("14")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("16")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("17")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("18")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("19")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])])])])])],1)};
-  var __vue_staticRenderFns__$1x = [];
-
-    /* style */
-    var __vue_inject_styles__$1x = undefined;
-    /* scoped */
-    var __vue_scope_id__$1x = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$1x = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$1x = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var TimelineHorizontalCalendar = normalizeComponent_1(
-      { render: __vue_render__$1x, staticRenderFns: __vue_staticRenderFns__$1x },
-      __vue_inject_styles__$1x,
-      __vue_script__$1x,
-      __vue_scope_id__$1x,
-      __vue_is_functional_template__$1x,
-      __vue_module_identifier__$1x,
-      undefined,
-      undefined
-    );
-
-  //
-
-  var script$1y = {
     components: {
       f7Page: f7Page, f7Navbar: f7Navbar, f7BlockTitle: f7BlockTitle, f7Block: f7Block, f7Treeview: f7Treeview, f7TreeviewItem: f7TreeviewItem, f7Checkbox: f7Checkbox
     },
@@ -67342,20 +66896,20 @@
   };
 
   /* script */
-  var __vue_script__$1y = script$1y;
+  var __vue_script__$1x = script$1x;
 
   /* template */
-  var __vue_render__$1y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Treeview","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Basic tree view")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"label":"Item 1"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Item 1"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 1"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 2"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Item 2"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 1"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 2"}})],1)],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Item 2"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Item 1"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 1"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 2"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Item 2"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 1"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 2"}})],1)],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Item 3"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With icons")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"label":"images","icon-f7":"folder_fill"}},[_c('f7-treeview-item',{attrs:{"label":"avatar.png","icon-f7":"photo_fill"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"background.jpg","icon-f7":"photo_fill"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"documents","icon-f7":"folder_fill"}},[_c('f7-treeview-item',{attrs:{"label":"cv.docx","icon-f7":"doc_text_fill"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"info.docx","icon-f7":"doc_text_fill"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":".gitignore","icon-f7":"logo_github"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"index.html","icon-f7":"doc_text_fill"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With checkboxes")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"label":"images","icon-f7":"folder_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":Object.values(_vm.checkboxes.images).indexOf(false) < 0,"indeterminate":Object.values(_vm.checkboxes.images).indexOf(false) >= 0 && Object.values(_vm.checkboxes.images).indexOf(true) >= 0},on:{"change":function (e) { return Object.keys(_vm.checkboxes.images).forEach(function (k) { return _vm.checkboxes.images[k] = e.target.checked; }); }},slot:"content-start"}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"avatar.png","icon-f7":"photo_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes.images['avatar.png']},on:{"change":function($event){_vm.checkboxes.images['avatar.png'] = $event.target.checked;}},slot:"content-start"})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"background.jpg","icon-f7":"photo_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes.images['background.jpg']},on:{"change":function($event){_vm.checkboxes.images['background.jpg'] = $event.target.checked;}},slot:"content-start"})],1)],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"documents","icon-f7":"folder_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":Object.values(_vm.checkboxes.documents).indexOf(false) < 0,"indeterminate":Object.values(_vm.checkboxes.documents).indexOf(false) >= 0 && Object.values(_vm.checkboxes.documents).indexOf(true) >= 0},on:{"change":function (e) { return Object.keys(_vm.checkboxes.documents).forEach(function (k) { return _vm.checkboxes.documents[k] = e.target.checked; }); }},slot:"content-start"}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"cv.docx","icon-f7":"doc_text_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes.documents['cv.docx']},on:{"change":function($event){_vm.checkboxes.documents['cv.docx'] = $event.target.checked;}},slot:"content-start"})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"info.docx","icon-f7":"doc_text_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes.documents['info.docx']},on:{"change":function($event){_vm.checkboxes.documents['info.docx'] = $event.target.checked;}},slot:"content-start"})],1)],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":".gitignore","icon-f7":"logo_github"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes['.gitignore']},on:{"change":function($event){_vm.checkboxes['.gitignore'] = $event.target.checked;}},slot:"content-start"})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"index.html","icon-f7":"doc_text_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes['index.html']},on:{"change":function($event){_vm.checkboxes['index.html'] = $event.target.checked;}},slot:"content-start"})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Whole item as toggle")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"item-toggle":"","label":"images","icon-f7":"folder_fill"}},[_c('f7-treeview-item',{attrs:{"label":"avatar.png","icon-f7":"photo_fill"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"background.jpg","icon-f7":"photo_fill"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"item-toggle":"","label":"documents","icon-f7":"folder_fill"}},[_c('f7-treeview-item',{attrs:{"label":"cv.docx","icon-f7":"doc_text_fill"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"info.docx","icon-f7":"doc_text_fill"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":".gitignore","icon-f7":"logo_github"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"index.html","icon-f7":"doc_text_fill"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Selectable")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'images',"label":"images","icon-f7":"folder_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'images')}}},[_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'avatar.png',"label":"avatar.png","icon-f7":"photo_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'avatar.png')}}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'background.jpg',"label":"background.jpg","icon-f7":"photo_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'background.jpg')}}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'documents',"label":"documents","icon-f7":"folder_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'documents')}}},[_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'cv.docx',"label":"cv.docx","icon-f7":"doc_text_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'cv.docx')}}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'info.docx',"label":"info.docx","icon-f7":"doc_text_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'info.docx')}}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === '.gitignore',"label":".gitignore","icon-f7":"logo_github"},on:{"click":function($event){return _vm.toggleSelectable($event, '.gitignore')}}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'index.html',"label":"index.html","icon-f7":"doc_text_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'index.html')}}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Preload children")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"toggle":"","load-children":"","icon-f7":"person_2_fill","label":"Users"},on:{"treeview:loadchildren":_vm.loadChildren}},_vm._l((_vm.loadedChildren),function(item,index){return _c('f7-treeview-item',{key:index,attrs:{"icon-f7":"person_fill","label":item.name}})}),1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With links")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"icon-f7":"square_grid_2x2_fill","item-toggle":"","label":"Modals"}},[_c('f7-treeview-item',{attrs:{"link":"/popup/","icon-f7":"link","label":"Popup"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"link":"/dialog/","icon-f7":"link","label":"Dialog"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"link":"/action-sheet/","icon-f7":"link","label":"Action Sheet"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"icon-f7":"square_grid_2x2_fill","item-toggle":"","label":"Navigation Bars"}},[_c('f7-treeview-item',{attrs:{"link":"/navbar/","icon-f7":"link","label":"Navbar"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"link":"/toolbar-tabbar/","icon-f7":"link","label":"Toolbar & Tabbar"}})],1)],1)],1)],1)};
-  var __vue_staticRenderFns__$1y = [];
+  var __vue_render__$1x = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Treeview","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Basic tree view")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"label":"Item 1"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Item 1"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 1"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 2"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Item 2"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 1"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 2"}})],1)],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Item 2"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Item 1"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 1"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 2"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Item 2"}},[_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 1"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Sub Sub Item 2"}})],1)],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"Item 3"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With icons")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"label":"images","icon-f7":"folder_fill"}},[_c('f7-treeview-item',{attrs:{"label":"avatar.png","icon-f7":"photo_fill"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"background.jpg","icon-f7":"photo_fill"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"documents","icon-f7":"folder_fill"}},[_c('f7-treeview-item',{attrs:{"label":"cv.docx","icon-f7":"doc_text_fill"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"info.docx","icon-f7":"doc_text_fill"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":".gitignore","icon-f7":"logo_github"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"index.html","icon-f7":"doc_text_fill"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With checkboxes")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"label":"images","icon-f7":"folder_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":Object.values(_vm.checkboxes.images).indexOf(false) < 0,"indeterminate":Object.values(_vm.checkboxes.images).indexOf(false) >= 0 && Object.values(_vm.checkboxes.images).indexOf(true) >= 0},on:{"change":function (e) { return Object.keys(_vm.checkboxes.images).forEach(function (k) { return _vm.checkboxes.images[k] = e.target.checked; }); }},slot:"content-start"}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"avatar.png","icon-f7":"photo_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes.images['avatar.png']},on:{"change":function($event){_vm.checkboxes.images['avatar.png'] = $event.target.checked;}},slot:"content-start"})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"background.jpg","icon-f7":"photo_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes.images['background.jpg']},on:{"change":function($event){_vm.checkboxes.images['background.jpg'] = $event.target.checked;}},slot:"content-start"})],1)],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"documents","icon-f7":"folder_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":Object.values(_vm.checkboxes.documents).indexOf(false) < 0,"indeterminate":Object.values(_vm.checkboxes.documents).indexOf(false) >= 0 && Object.values(_vm.checkboxes.documents).indexOf(true) >= 0},on:{"change":function (e) { return Object.keys(_vm.checkboxes.documents).forEach(function (k) { return _vm.checkboxes.documents[k] = e.target.checked; }); }},slot:"content-start"}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"cv.docx","icon-f7":"doc_text_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes.documents['cv.docx']},on:{"change":function($event){_vm.checkboxes.documents['cv.docx'] = $event.target.checked;}},slot:"content-start"})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"info.docx","icon-f7":"doc_text_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes.documents['info.docx']},on:{"change":function($event){_vm.checkboxes.documents['info.docx'] = $event.target.checked;}},slot:"content-start"})],1)],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":".gitignore","icon-f7":"logo_github"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes['.gitignore']},on:{"change":function($event){_vm.checkboxes['.gitignore'] = $event.target.checked;}},slot:"content-start"})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"index.html","icon-f7":"doc_text_fill"}},[_c('f7-checkbox',{attrs:{"slot":"content-start","checked":_vm.checkboxes['index.html']},on:{"change":function($event){_vm.checkboxes['index.html'] = $event.target.checked;}},slot:"content-start"})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Whole item as toggle")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"item-toggle":"","label":"images","icon-f7":"folder_fill"}},[_c('f7-treeview-item',{attrs:{"label":"avatar.png","icon-f7":"photo_fill"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"background.jpg","icon-f7":"photo_fill"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"item-toggle":"","label":"documents","icon-f7":"folder_fill"}},[_c('f7-treeview-item',{attrs:{"label":"cv.docx","icon-f7":"doc_text_fill"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"info.docx","icon-f7":"doc_text_fill"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":".gitignore","icon-f7":"logo_github"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"label":"index.html","icon-f7":"doc_text_fill"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Selectable")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'images',"label":"images","icon-f7":"folder_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'images')}}},[_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'avatar.png',"label":"avatar.png","icon-f7":"photo_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'avatar.png')}}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'background.jpg',"label":"background.jpg","icon-f7":"photo_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'background.jpg')}}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'documents',"label":"documents","icon-f7":"folder_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'documents')}}},[_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'cv.docx',"label":"cv.docx","icon-f7":"doc_text_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'cv.docx')}}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'info.docx',"label":"info.docx","icon-f7":"doc_text_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'info.docx')}}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === '.gitignore',"label":".gitignore","icon-f7":"logo_github"},on:{"click":function($event){return _vm.toggleSelectable($event, '.gitignore')}}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"selectable":"","selected":_vm.selectedItem === 'index.html',"label":"index.html","icon-f7":"doc_text_fill"},on:{"click":function($event){return _vm.toggleSelectable($event, 'index.html')}}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Preload children")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"toggle":"","load-children":"","icon-f7":"person_2_fill","label":"Users"},on:{"treeview:loadchildren":_vm.loadChildren}},_vm._l((_vm.loadedChildren),function(item,index){return _c('f7-treeview-item',{key:index,attrs:{"icon-f7":"person_fill","label":item.name}})}),1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With links")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-treeview',[_c('f7-treeview-item',{attrs:{"icon-f7":"square_grid_2x2_fill","item-toggle":"","label":"Modals"}},[_c('f7-treeview-item',{attrs:{"link":"/popup/","icon-f7":"link","label":"Popup"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"link":"/dialog/","icon-f7":"link","label":"Dialog"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"link":"/action-sheet/","icon-f7":"link","label":"Action Sheet"}})],1),_vm._v(" "),_c('f7-treeview-item',{attrs:{"icon-f7":"square_grid_2x2_fill","item-toggle":"","label":"Navigation Bars"}},[_c('f7-treeview-item',{attrs:{"link":"/navbar/","icon-f7":"link","label":"Navbar"}}),_vm._v(" "),_c('f7-treeview-item',{attrs:{"link":"/toolbar-tabbar/","icon-f7":"link","label":"Toolbar & Tabbar"}})],1)],1)],1)],1)};
+  var __vue_staticRenderFns__$1x = [];
 
     /* style */
-    var __vue_inject_styles__$1y = undefined;
+    var __vue_inject_styles__$1x = undefined;
     /* scoped */
-    var __vue_scope_id__$1y = undefined;
+    var __vue_scope_id__$1x = undefined;
     /* module identifier */
-    var __vue_module_identifier__$1y = undefined;
+    var __vue_module_identifier__$1x = undefined;
     /* functional template */
-    var __vue_is_functional_template__$1y = false;
+    var __vue_is_functional_template__$1x = false;
     /* style inject */
     
     /* style inject SSR */
@@ -67363,19 +66917,19 @@
 
     
     var Treeview$2 = normalizeComponent_1(
-      { render: __vue_render__$1y, staticRenderFns: __vue_staticRenderFns__$1y },
-      __vue_inject_styles__$1y,
-      __vue_script__$1y,
-      __vue_scope_id__$1y,
-      __vue_is_functional_template__$1y,
-      __vue_module_identifier__$1y,
+      { render: __vue_render__$1x, staticRenderFns: __vue_staticRenderFns__$1x },
+      __vue_inject_styles__$1x,
+      __vue_script__$1x,
+      __vue_scope_id__$1x,
+      __vue_is_functional_template__$1x,
+      __vue_module_identifier__$1x,
       undefined,
       undefined
     );
 
   //
 
-  var script$1z = {
+  var script$1y = {
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Subnavbar: f7Subnavbar, f7Searchbar: f7Searchbar, f7Block: f7Block,
     },
@@ -67409,20 +66963,20 @@
   };
 
   /* script */
-  var __vue_script__$1z = script$1z;
+  var __vue_script__$1y = script$1y;
 
   /* template */
-  var __vue_render__$1z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Virtual List","back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".virtual-list","search-item":"li","search-in":".item-title","disable-button":!_vm.$theme.aurora}})],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.")]),_vm._v(" "),_c('p',[_vm._v("Here is the example of virtual list with 10 000 items:")])]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-found",attrs:{"medial-list":"","virtual-list":"","virtual-list-params":{ items: _vm.items, searchAll: _vm.searchAll, renderExternal: _vm.renderExternal, height: _vm.$theme.ios ? 63 : (_vm.$theme.md ? 73 : 46)}}},[_c('ul',_vm._l((_vm.vlData.items),function(item,index){return _c('f7-list-item',{key:index,style:(("top: " + (_vm.vlData.topPosition) + "px")),attrs:{"media-item":"","link":"#","title":item.title,"subtitle":item.subtitle,"virtual-list-index":_vm.items.indexOf(item)}})}),1)])],1)};
-  var __vue_staticRenderFns__$1z = [];
+  var __vue_render__$1y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Virtual List","back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".virtual-list","search-item":"li","search-in":".item-title","disable-button":!_vm.$theme.aurora}})],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.")]),_vm._v(" "),_c('p',[_vm._v("Here is the example of virtual list with 10 000 items:")])]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-found",attrs:{"medial-list":"","virtual-list":"","virtual-list-params":{ items: _vm.items, searchAll: _vm.searchAll, renderExternal: _vm.renderExternal, height: _vm.$theme.ios ? 63 : (_vm.$theme.md ? 73 : 46)}}},[_c('ul',_vm._l((_vm.vlData.items),function(item,index){return _c('f7-list-item',{key:index,style:(("top: " + (_vm.vlData.topPosition) + "px")),attrs:{"media-item":"","link":"#","title":item.title,"subtitle":item.subtitle,"virtual-list-index":_vm.items.indexOf(item)}})}),1)])],1)};
+  var __vue_staticRenderFns__$1y = [];
 
     /* style */
-    var __vue_inject_styles__$1z = undefined;
+    var __vue_inject_styles__$1y = undefined;
     /* scoped */
-    var __vue_scope_id__$1z = undefined;
+    var __vue_scope_id__$1y = undefined;
     /* module identifier */
-    var __vue_module_identifier__$1z = undefined;
+    var __vue_module_identifier__$1y = undefined;
     /* functional template */
-    var __vue_is_functional_template__$1z = false;
+    var __vue_is_functional_template__$1y = false;
     /* style inject */
     
     /* style inject SSR */
@@ -67430,12 +66984,12 @@
 
     
     var VirtualList$2 = normalizeComponent_1(
-      { render: __vue_render__$1z, staticRenderFns: __vue_staticRenderFns__$1z },
-      __vue_inject_styles__$1z,
-      __vue_script__$1z,
-      __vue_scope_id__$1z,
-      __vue_is_functional_template__$1z,
-      __vue_module_identifier__$1z,
+      { render: __vue_render__$1y, staticRenderFns: __vue_staticRenderFns__$1y },
+      __vue_inject_styles__$1y,
+      __vue_script__$1y,
+      __vue_scope_id__$1y,
+      __vue_is_functional_template__$1y,
+      __vue_module_identifier__$1y,
       undefined,
       undefined
     );
@@ -67448,7 +67002,7 @@
     var globalCustomColor = '';
     var globalCustomProperties = '';
 
-    var script$1A = {
+    var script$1z = {
       components: {
         f7Navbar: f7Navbar,
         f7Page: f7Page,
@@ -67558,12 +67112,61 @@
     };
 
   /* script */
+  var __vue_script__$1z = script$1z;
+
+  /* template */
+  var __vue_render__$1z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"Color Themes","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Layout Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with 2 main layout themes: Light (default) and Dark:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"bg-color-white demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('light')}}},[(_vm.theme === 'light')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"bg-color-black demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('dark')}}},[(_vm.theme === 'dark')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Navigation Bars Style")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Switch navigation bars to filled style:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-empty",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('empty')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'empty')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-fill",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('fill')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'fill')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Default Color Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with "+_vm._s(_vm.colors.length)+" color themes set.")]),_vm._v(" "),_c('f7-row',[_vm._l((_vm.colors),function(color,index){return _c('f7-col',{key:index,attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}},[_c('f7-button',{staticClass:"demo-color-picker-button",attrs:{"fill":"","round":"","small":"","color":color},on:{"click":function($event){return _vm.setColorTheme(color)}}},[_vm._v(_vm._s(color))])],1)}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}})],2)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Custom Color Theme")]),_vm._v(" "),_c('f7-list',[_c('f7-list-input',{attrs:{"type":"colorpicker","label":"HEX Color","placeholder":"e.g. #ff0000","readonly":"","value":{hex: _vm.customColor || _vm.themeColor},"color-picker-params":{
+          targetEl: '#color-theme-picker-color',
+        }},on:{"colorpicker:change":function (value) { return _vm.setCustomColor(value.hex); }}},[_c('div',{staticStyle:{"width":"28px","height":"28px","border-radius":"4px","background":"var(--f7-theme-color)"},attrs:{"slot":"media","id":"color-theme-picker-color"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Generated CSS Variables")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[(_vm.customProperties)?[_c('p',[_vm._v("Add this code block to your custom stylesheet:")]),_vm._v(" "),_c('pre',{staticStyle:{"overflow":"auto","-webkit-overflow-scrolling":"touch","margin":"0","font-size":"12px"}},[_vm._v(_vm._s(_vm.customProperties))])]:_c('p',[_vm._v("Change navigation bars styles or specify custom color to see custom CSS variables here")])],2)],1)};
+  var __vue_staticRenderFns__$1z = [];
+
+    /* style */
+    var __vue_inject_styles__$1z = undefined;
+    /* scoped */
+    var __vue_scope_id__$1z = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$1z = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$1z = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var ColorThemes = normalizeComponent_1(
+      { render: __vue_render__$1z, staticRenderFns: __vue_staticRenderFns__$1z },
+      __vue_inject_styles__$1z,
+      __vue_script__$1z,
+      __vue_scope_id__$1z,
+      __vue_is_functional_template__$1z,
+      __vue_module_identifier__$1z,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$1A = {
+    components: {
+      f7Navbar: f7Navbar,
+      f7Page: f7Page,
+      f7Block: f7Block,
+      f7List: f7List,
+      f7ListItem: f7ListItem,
+    },
+    data: function () {
+      return {
+        effects: ['f7-circle', 'f7-cover', 'f7-cover-v', 'f7-dive', 'f7-fade', 'f7-flip', 'f7-parallax', 'f7-push'],
+      }
+    },
+  };
+
+  /* script */
   var __vue_script__$1A = script$1A;
 
   /* template */
-  var __vue_render__$1A = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"Color Themes","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Layout Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with 2 main layout themes: Light (default) and Dark:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"bg-color-white demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('light')}}},[(_vm.theme === 'light')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"bg-color-black demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){return _vm.setLayoutTheme('dark')}}},[(_vm.theme === 'dark')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Navigation Bars Style")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Switch navigation bars to filled style:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-empty",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('empty')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'empty')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-fill",attrs:{"width":"50"},on:{"click":function($event){return _vm.setBarsStyle('fill')}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'fill')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Default Color Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with "+_vm._s(_vm.colors.length)+" color themes set.")]),_vm._v(" "),_c('f7-row',[_vm._l((_vm.colors),function(color,index){return _c('f7-col',{key:index,attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}},[_c('f7-button',{staticClass:"demo-color-picker-button",attrs:{"fill":"","round":"","small":"","color":color},on:{"click":function($event){return _vm.setColorTheme(color)}}},[_vm._v(_vm._s(color))])],1)}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}})],2)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Custom Color Theme")]),_vm._v(" "),_c('f7-list',[_c('f7-list-input',{attrs:{"type":"colorpicker","label":"HEX Color","placeholder":"e.g. #ff0000","readonly":"","value":{hex: _vm.customColor || _vm.themeColor},"color-picker-params":{
-          targetEl: '#color-theme-picker-color',
-        }},on:{"colorpicker:change":function (value) { return _vm.setCustomColor(value.hex); }}},[_c('div',{staticStyle:{"width":"28px","height":"28px","border-radius":"4px","background":"var(--f7-theme-color)"},attrs:{"slot":"media","id":"color-theme-picker-color"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Generated CSS Variables")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[(_vm.customProperties)?[_c('p',[_vm._v("Add this code block to your custom stylesheet:")]),_vm._v(" "),_c('pre',{staticStyle:{"overflow":"auto","-webkit-overflow-scrolling":"touch","margin":"0","font-size":"12px"}},[_vm._v(_vm._s(_vm.customProperties))])]:_c('p',[_vm._v("Change navigation bars styles or specify custom color to see custom CSS variables here")])],2)],1)};
+  var __vue_render__$1A = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Page Transitions","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("In addition to default theme-specific page transition it is possible to create custom page transition or use one of the additional transition effects:")])]),_vm._v(" "),_c('f7-list',_vm._l((_vm.effects),function(effect){return _c('f7-list-item',{key:effect,attrs:{"link":("/page-transitions/" + effect + "/"),"title":effect,"transition":effect}})}),1)],1)};
   var __vue_staticRenderFns__$1A = [];
 
     /* style */
@@ -67580,7 +67183,7 @@
     
 
     
-    var ColorThemes = normalizeComponent_1(
+    var PageTransitions = normalizeComponent_1(
       { render: __vue_render__$1A, staticRenderFns: __vue_staticRenderFns__$1A },
       __vue_inject_styles__$1A,
       __vue_script__$1A,
@@ -67598,13 +67201,9 @@
       f7Navbar: f7Navbar,
       f7Page: f7Page,
       f7Block: f7Block,
-      f7List: f7List,
-      f7ListItem: f7ListItem,
     },
-    data: function () {
-      return {
-        effects: ['f7-circle', 'f7-cover', 'f7-cover-v', 'f7-dive', 'f7-fade', 'f7-flip', 'f7-parallax', 'f7-push'],
-      }
+    props: {
+      effect: String,
     },
   };
 
@@ -67612,7 +67211,7 @@
   var __vue_script__$1B = script$1B;
 
   /* template */
-  var __vue_render__$1B = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Page Transitions","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("In addition to default theme-specific page transition it is possible to create custom page transition or use one of the additional transition effects:")])]),_vm._v(" "),_c('f7-list',_vm._l((_vm.effects),function(effect){return _c('f7-list-item',{key:effect,attrs:{"link":("/page-transitions/" + effect + "/"),"title":effect,"transition":effect}})}),1)],1)};
+  var __vue_render__$1B = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":_vm.effect,"back-link":"Back"}}),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('p',[_vm._v("This page was loaded with "),_c('b',[_vm._v(_vm._s(_vm.effect))]),_vm._v(" transition.")])])],1)};
   var __vue_staticRenderFns__$1B = [];
 
     /* style */
@@ -67629,7 +67228,7 @@
     
 
     
-    var PageTransitions = normalizeComponent_1(
+    var PageTransitionsEffect = normalizeComponent_1(
       { render: __vue_render__$1B, staticRenderFns: __vue_staticRenderFns__$1B },
       __vue_inject_styles__$1B,
       __vue_script__$1B,
@@ -67644,12 +67243,7 @@
 
   var script$1C = {
     components: {
-      f7Navbar: f7Navbar,
-      f7Page: f7Page,
-      f7Block: f7Block,
-    },
-    props: {
-      effect: String,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block
     },
   };
 
@@ -67657,7 +67251,7 @@
   var __vue_script__$1C = script$1C;
 
   /* template */
-  var __vue_render__$1C = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":_vm.effect,"back-link":"Back"}}),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('p',[_vm._v("This page was loaded with "),_c('b',[_vm._v(_vm._s(_vm.effect))]),_vm._v(" transition.")])])],1)};
+  var __vue_render__$1C = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Modals","backLink":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to pages, Framework7 router allows to load modal components:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Popup","link":"popup/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Action Sheet","link":"actions/"}})],1)],1)};
   var __vue_staticRenderFns__$1C = [];
 
     /* style */
@@ -67674,7 +67268,7 @@
     
 
     
-    var PageTransitionsEffect = normalizeComponent_1(
+    var RoutableModals$1 = normalizeComponent_1(
       { render: __vue_render__$1C, staticRenderFns: __vue_staticRenderFns__$1C },
       __vue_inject_styles__$1C,
       __vue_script__$1C,
@@ -67686,10 +67280,9 @@
     );
 
   //
-
   var script$1D = {
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block
+      f7Popup: f7Popup, f7Navbar: f7Navbar, f7NavRight: f7NavRight, f7Link: f7Link, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block,
     },
   };
 
@@ -67697,7 +67290,7 @@
   var __vue_script__$1D = script$1D;
 
   /* template */
-  var __vue_render__$1D = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Modals","backLink":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to pages, Framework7 router allows to load modal components:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Popup","link":"popup/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Action Sheet","link":"actions/"}})],1)],1)};
+  var __vue_render__$1D = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-popup',[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Popup"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This Popup was loaded using route link as standalone component")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit f7amet, consectetur adipiscing elit. Suspendisse faucibus mauris f7leo, eu bibendum neque congue non. Ut leo f7mauris, eleifend eu commodo f7a, egestas ac urna. Maecenas in lacus f7faucibus, viverra ipsum f7pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris f7sollicitudin, venenatis nisi f7sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor f7nibh, suscipit in consequat f7vel, feugiat sed quam. Nam risus f7libero, auctor vel tristique f7ac, malesuada ut ante. Sed f7molestie, est in eleifend f7sagittis, leo tortor ullamcorper f7erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor f7sem, suscipit in iaculis f7id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc f7eros, convallis blandit dui sit f7amet, gravida adipiscing libero.")])])],1)],1)};
   var __vue_staticRenderFns__$1D = [];
 
     /* style */
@@ -67714,7 +67307,7 @@
     
 
     
-    var RoutableModals$1 = normalizeComponent_1(
+    var RoutablePopup = normalizeComponent_1(
       { render: __vue_render__$1D, staticRenderFns: __vue_staticRenderFns__$1D },
       __vue_inject_styles__$1D,
       __vue_script__$1D,
@@ -67728,7 +67321,7 @@
   //
   var script$1E = {
     components: {
-      f7Popup: f7Popup, f7Navbar: f7Navbar, f7NavRight: f7NavRight, f7Link: f7Link, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block,
+      f7Actions: f7Actions, f7ActionsLabel: f7ActionsLabel, f7ActionsGroup: f7ActionsGroup, f7ActionsButton: f7ActionsButton,
     },
   };
 
@@ -67736,7 +67329,7 @@
   var __vue_script__$1E = script$1E;
 
   /* template */
-  var __vue_render__$1E = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-popup',[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Popup"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This Popup was loaded using route link as standalone component")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit f7amet, consectetur adipiscing elit. Suspendisse faucibus mauris f7leo, eu bibendum neque congue non. Ut leo f7mauris, eleifend eu commodo f7a, egestas ac urna. Maecenas in lacus f7faucibus, viverra ipsum f7pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris f7sollicitudin, venenatis nisi f7sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor f7nibh, suscipit in consequat f7vel, feugiat sed quam. Nam risus f7libero, auctor vel tristique f7ac, malesuada ut ante. Sed f7molestie, est in eleifend f7sagittis, leo tortor ullamcorper f7erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor f7sem, suscipit in iaculis f7id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc f7eros, convallis blandit dui sit f7amet, gravida adipiscing libero.")])])],1)],1)};
+  var __vue_render__$1E = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-actions',[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("This Action Sheet was loaded as standalone component")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1)};
   var __vue_staticRenderFns__$1E = [];
 
     /* style */
@@ -67753,7 +67346,7 @@
     
 
     
-    var RoutablePopup = normalizeComponent_1(
+    var RoutableActions = normalizeComponent_1(
       { render: __vue_render__$1E, staticRenderFns: __vue_staticRenderFns__$1E },
       __vue_inject_styles__$1E,
       __vue_script__$1E,
@@ -67765,9 +67358,14 @@
     );
 
   //
+
   var script$1F = {
     components: {
-      f7Actions: f7Actions, f7ActionsLabel: f7ActionsLabel, f7ActionsGroup: f7ActionsGroup, f7ActionsButton: f7ActionsButton,
+      f7Page: f7Page,
+      f7Navbar: f7Navbar,
+      f7Block: f7Block,
+      f7List: f7List,
+      f7ListItem: f7ListItem,
     },
   };
 
@@ -67775,7 +67373,7 @@
   var __vue_script__$1F = script$1F;
 
   /* template */
-  var __vue_render__$1F = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-actions',[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("This Action Sheet was loaded as standalone component")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1)};
+  var __vue_render__$1F = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Master Detail","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Master-Detail pattern oftenly used on wide enough screens and tablets, and consists of two views. Master - is an area in the UI where you have a list of something. Detail - is the area that shows the relevant information of a selection in the master.")]),_vm._v(" "),_c('p',[_vm._v("To see Master Detail view make sure the window width is larger than 800px.")]),_vm._v(" "),_c('p',[_vm._v("When collapsed (on narrow screen) navigation between such pages will behave as usual routing.")]),_vm._v(" "),_c('p',[_vm._v("Navigation to/from Master-Detail view happens without transition.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/1/"}},[_vm._v("Detail Page 1")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/2/"}},[_vm._v("Detail Page 2")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/3/"}},[_vm._v("Detail Page 3")])],1)],1)};
   var __vue_staticRenderFns__$1F = [];
 
     /* style */
@@ -67792,7 +67390,7 @@
     
 
     
-    var RoutableActions = normalizeComponent_1(
+    var MasterDetailMaster = normalizeComponent_1(
       { render: __vue_render__$1F, staticRenderFns: __vue_staticRenderFns__$1F },
       __vue_inject_styles__$1F,
       __vue_script__$1F,
@@ -67810,8 +67408,6 @@
       f7Page: f7Page,
       f7Navbar: f7Navbar,
       f7Block: f7Block,
-      f7List: f7List,
-      f7ListItem: f7ListItem,
     },
   };
 
@@ -67819,7 +67415,7 @@
   var __vue_script__$1G = script$1G;
 
   /* template */
-  var __vue_render__$1G = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Master Detail","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Master-Detail pattern oftenly used on wide enough screens and tablets, and consists of two views. Master - is an area in the UI where you have a list of something. Detail - is the area that shows the relevant information of a selection in the master.")]),_vm._v(" "),_c('p',[_vm._v("To see Master Detail view make sure the window width is larger than 800px.")]),_vm._v(" "),_c('p',[_vm._v("When collapsed (on narrow screen) navigation between such pages will behave as usual routing.")]),_vm._v(" "),_c('p',[_vm._v("Navigation to/from Master-Detail view happens without transition.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/1/"}},[_vm._v("Detail Page 1")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/2/"}},[_vm._v("Detail Page 2")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/3/"}},[_vm._v("Detail Page 3")])],1)],1)};
+  var __vue_render__$1G = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":("Detail Page " + (_vm.$f7route.params.id)),"back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('b',[_vm._v("Detail Page "+_vm._s(_vm.$f7route.params.id))])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque congue turpis et risus fringilla condimentum. Aliquam vestibulum est tempor, sagittis massa nec, dictum massa. Phasellus non viverra dui, eget aliquam sem. Donec eleifend dolor id arcu ultrices, vel ultrices dolor fringilla. Phasellus feugiat consectetur libero, eget luctus felis rhoncus at. Duis scelerisque ligula sit amet purus congue pulvinar. Proin a risus id nibh fermentum auctor. Vestibulum at sem a risus mollis iaculis. In vestibulum malesuada arcu id consectetur.")])])],1)};
   var __vue_staticRenderFns__$1G = [];
 
     /* style */
@@ -67836,7 +67432,7 @@
     
 
     
-    var MasterDetailMaster = normalizeComponent_1(
+    var MasterDetailDetail = normalizeComponent_1(
       { render: __vue_render__$1G, staticRenderFns: __vue_staticRenderFns__$1G },
       __vue_inject_styles__$1G,
       __vue_script__$1G,
@@ -67848,7 +67444,6 @@
     );
 
   //
-
   var script$1H = {
     components: {
       f7Page: f7Page,
@@ -67861,7 +67456,7 @@
   var __vue_script__$1H = script$1H;
 
   /* template */
-  var __vue_render__$1H = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":("Detail Page " + (_vm.$f7route.params.id)),"back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('b',[_vm._v("Detail Page "+_vm._s(_vm.$f7route.params.id))])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque congue turpis et risus fringilla condimentum. Aliquam vestibulum est tempor, sagittis massa nec, dictum massa. Phasellus non viverra dui, eget aliquam sem. Donec eleifend dolor id arcu ultrices, vel ultrices dolor fringilla. Phasellus feugiat consectetur libero, eget luctus felis rhoncus at. Duis scelerisque ligula sit amet purus congue pulvinar. Proin a risus id nibh fermentum auctor. Vestibulum at sem a risus mollis iaculis. In vestibulum malesuada arcu id consectetur.")])])],1)};
+  var __vue_render__$1H = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Not found","backLink":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Sorry")]),_vm._v(" "),_c('p',[_vm._v("Requested content not found.")])])],1)};
   var __vue_staticRenderFns__$1H = [];
 
     /* style */
@@ -67878,54 +67473,13 @@
     
 
     
-    var MasterDetailDetail = normalizeComponent_1(
+    var NotFound = normalizeComponent_1(
       { render: __vue_render__$1H, staticRenderFns: __vue_staticRenderFns__$1H },
       __vue_inject_styles__$1H,
       __vue_script__$1H,
       __vue_scope_id__$1H,
       __vue_is_functional_template__$1H,
       __vue_module_identifier__$1H,
-      undefined,
-      undefined
-    );
-
-  //
-  var script$1I = {
-    components: {
-      f7Page: f7Page,
-      f7Navbar: f7Navbar,
-      f7Block: f7Block,
-    },
-  };
-
-  /* script */
-  var __vue_script__$1I = script$1I;
-
-  /* template */
-  var __vue_render__$1I = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Not found","backLink":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Sorry")]),_vm._v(" "),_c('p',[_vm._v("Requested content not found.")])])],1)};
-  var __vue_staticRenderFns__$1I = [];
-
-    /* style */
-    var __vue_inject_styles__$1I = undefined;
-    /* scoped */
-    var __vue_scope_id__$1I = undefined;
-    /* module identifier */
-    var __vue_module_identifier__$1I = undefined;
-    /* functional template */
-    var __vue_is_functional_template__$1I = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-
-    
-    var NotFound = normalizeComponent_1(
-      { render: __vue_render__$1I, staticRenderFns: __vue_staticRenderFns__$1I },
-      __vue_inject_styles__$1I,
-      __vue_script__$1I,
-      __vue_scope_id__$1I,
-      __vue_is_functional_template__$1I,
-      __vue_module_identifier__$1I,
       undefined,
       undefined
     );
@@ -68172,10 +67726,6 @@
       component: Sortable$2,
     },
     {
-      path: '/statusbar/',
-      component: Statusbar$2,
-    },
-    {
       path: '/stepper/',
       component: Stepper$2,
     },
@@ -68419,12 +67969,11 @@
 
   //
 
-  var script$1J = {
+  var script$1I = {
     components: {
       f7App: f7App,
       f7Panel: f7Panel,
       f7View: f7View,
-      f7Statusbar: f7Statusbar,
     },
     data: function data() {
       // Demo Theme
@@ -68456,20 +68005,20 @@
   };
 
   /* script */
-  var __vue_script__$1J = script$1J;
+  var __vue_script__$1I = script$1I;
 
   /* template */
-  var __vue_render__$1J = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-app',{attrs:{"params":_vm.f7Params}},[_c('f7-statusbar'),_vm._v(" "),_c('f7-panel',{attrs:{"left":"","cover":"","resizable":""}},[_c('f7-view',{attrs:{"url":"/panel-left/","links-view":".view-main"}})],1),_vm._v(" "),_c('f7-panel',{attrs:{"right":"","reveal":"","resizable":""}},[_c('f7-view',{attrs:{"url":"/panel-right/"}})],1),_vm._v(" "),_c('f7-view',{staticClass:"safe-areas",attrs:{"url":"/","main":true,"master-detail-breakpoint":800}})],1)};
-  var __vue_staticRenderFns__$1J = [];
+  var __vue_render__$1I = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-app',{attrs:{"params":_vm.f7Params}},[_c('f7-panel',{attrs:{"left":"","cover":"","resizable":""}},[_c('f7-view',{attrs:{"url":"/panel-left/","links-view":".view-main"}})],1),_vm._v(" "),_c('f7-panel',{attrs:{"right":"","reveal":"","resizable":""}},[_c('f7-view',{attrs:{"url":"/panel-right/"}})],1),_vm._v(" "),_c('f7-view',{staticClass:"safe-areas",attrs:{"url":"/","main":true,"master-detail-breakpoint":800}})],1)};
+  var __vue_staticRenderFns__$1I = [];
 
     /* style */
-    var __vue_inject_styles__$1J = undefined;
+    var __vue_inject_styles__$1I = undefined;
     /* scoped */
-    var __vue_scope_id__$1J = undefined;
+    var __vue_scope_id__$1I = undefined;
     /* module identifier */
-    var __vue_module_identifier__$1J = undefined;
+    var __vue_module_identifier__$1I = undefined;
     /* functional template */
-    var __vue_is_functional_template__$1J = false;
+    var __vue_is_functional_template__$1I = false;
     /* style inject */
     
     /* style inject SSR */
@@ -68477,12 +68026,12 @@
 
     
     var App = normalizeComponent_1(
-      { render: __vue_render__$1J, staticRenderFns: __vue_staticRenderFns__$1J },
-      __vue_inject_styles__$1J,
-      __vue_script__$1J,
-      __vue_scope_id__$1J,
-      __vue_is_functional_template__$1J,
-      __vue_module_identifier__$1J,
+      { render: __vue_render__$1I, staticRenderFns: __vue_staticRenderFns__$1I },
+      __vue_inject_styles__$1I,
+      __vue_script__$1I,
+      __vue_scope_id__$1I,
+      __vue_is_functional_template__$1I,
+      __vue_module_identifier__$1I,
       undefined,
       undefined
     );

@@ -1,5 +1,5 @@
 /**
- * Framework7 5.0.0-beta.16
+ * Framework7 5.0.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * http://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: September 19, 2019
+ * Released on: October 7, 2019
  */
 
 /*====================
@@ -107,8 +107,8 @@
 .ios.theme-dark {
   --f7-text-color: #fff;
   --f7-bars-bg-color: #121212;
-  --f7-bars-bg-color-rgb: 19, 19, 19;
-  --f7-bars-border-color: rgba(255, 255, 255, 0.1);
+  --f7-bars-bg-color-rgb: 22, 22, 22;
+  --f7-bars-border-color: rgba(255, 255, 255, 0.16);
 }
 .md {
   --f7-font-family: Roboto, system-ui, Noto, Helvetica, Arial, sans-serif;
@@ -1647,6 +1647,8 @@ html.device-full-viewport body {
   --f7-navbar-subtitle-text-align: inherit;
   --f7-navbar-large-title-line-height: 1.2;
   --f7-navbar-large-title-text-color: inherit;
+  --f7-navbar-large-title-padding-left: 16px;
+  --f7-navbar-large-title-padding-right: 16px;
 }
 .ios {
   --f7-navbar-height: 44px;
@@ -1666,8 +1668,6 @@ html.device-full-viewport body {
   --f7-navbar-large-title-font-weight: 700;
   --f7-navbar-large-title-letter-spacing: -0.03em;
   --f7-navbar-large-title-padding-vertical: 6px;
-  --f7-navbar-large-title-padding-left: 16px;
-  --f7-navbar-large-title-padding-right: 16px;
   /*
   --f7-navbar-link-height: var(--f7-navbar-height);
   --f7-navbar-link-line-height: var(--f7-navbar-height);
@@ -1696,8 +1696,6 @@ html.device-full-viewport body {
   --f7-navbar-large-title-font-weight: 500;
   --f7-navbar-large-title-letter-spacing: 0;
   --f7-navbar-large-title-padding-vertical: 8px;
-  --f7-navbar-large-title-padding-left: 16px;
-  --f7-navbar-large-title-padding-right: 16px;
   /*
   --f7-navbar-link-height: var(--f7-navbar-height);
   --f7-navbar-link-line-height: var(--f7-navbar-height);
@@ -1726,8 +1724,6 @@ html.device-full-viewport body {
   --f7-navbar-large-title-font-weight: bold;
   --f7-navbar-large-title-letter-spacing: -0.03em;
   --f7-navbar-large-title-padding-vertical: 4px;
-  --f7-navbar-large-title-padding-left: 16px;
-  --f7-navbar-large-title-padding-right: 16px;
   --f7-navbar-link-height: auto;
   --f7-navbar-link-line-height: inherit;
   --f7-navbar-subtitle-text-color: rgba(0, 0, 0, 0.6);
@@ -1888,7 +1884,7 @@ html.device-full-viewport body {
 .navbar-bg:after {
   z-index: 1;
 }
-@media (min-width: 768px) {
+@media (min-width: 768px) and (min-height: 600px) {
   :root {
     --f7-navbar-height: var(--f7-navbar-tablet-height);
   }
@@ -2030,12 +2026,6 @@ html.device-full-viewport body {
   --f7-navbar-large-bg-left-bottom: translateX(100%) translateY(0);
   --f7-navbar-large-bg-right-top: translateX(-100%) translateY(calc(-1 * var(--f7-navbar-large-title-height)));
   --f7-navbar-large-bg-right-bottom: translateX(-100%) translateY(0);
-}
-.ios .navbar .material-icons {
-  width: 24px;
-}
-.ios .navbar .f7-icons {
-  width: 28px;
 }
 .ios .navbar a.icon-only {
   width: 44px;
@@ -2624,12 +2614,6 @@ html.device-full-viewport body {
     transform: var(--f7-navbar-large-transparent-bg-left);
   }
 }
-.md .navbar .material-icons {
-  width: 24px;
-}
-.md .navbar .f7-icons {
-  width: 28px;
-}
 .md .navbar a.link {
   padding: 0 16px;
   min-width: 48px;
@@ -2741,7 +2725,7 @@ html.device-full-viewport body {
   --f7-toolbar-link-line-height: var(--f7-toolbar-height);
   */
   --f7-tabbar-labels-height: 50px;
-  --f7-tabbar-labels-tablet-height: 56px;
+  --f7-tabbar-labels-tablet-height: 50px;
   --f7-toolbar-top-shadow-image: none;
   --f7-toolbar-bottom-shadow-image: none;
   --f7-tabbar-icon-size: 28px;
@@ -3092,7 +3076,7 @@ html.device-full-viewport body {
   font-weight: var(--f7-tabbar-label-font-weight);
   letter-spacing: var(--f7-tabbar-label-letter-spacing);
 }
-@media (min-width: 768px) {
+@media (min-width: 768px) and (min-height: 600px) {
   :root {
     --f7-tabbar-labels-height: var(--f7-tabbar-labels-tablet-height);
     --f7-tabbar-label-font-size: var(--f7-tabbar-label-tablet-font-size);
@@ -3252,17 +3236,19 @@ html.device-full-viewport body {
 .ios .tabbar-labels .link i + span {
   margin: 0;
 }
-@media (min-width: 768px) {
-  .ios .tabbar .toolbar-inner,
-  .ios .tabbar-labels .toolbar-inner {
-    justify-content: center;
-  }
+@media (min-width: 768px) and (min-height: 600px) {
   .ios .tabbar .tab-link,
   .ios .tabbar-labels .tab-link,
   .ios .tabbar .link,
   .ios .tabbar-labels .link {
-    width: auto;
-    min-width: 105px;
+    justify-content: center;
+    flex-direction: row;
+  }
+  .ios .tabbar .tab-link i + span,
+  .ios .tabbar-labels .tab-link i + span,
+  .ios .tabbar .link i + span,
+  .ios .tabbar-labels .link i + span {
+    margin-left: 5px;
   }
 }
 .ios .tabbar-scrollable .toolbar-inner {
@@ -3785,9 +3771,7 @@ html.device-full-viewport body {
 .ios .block.no-hairlines-ios:before,
 .ios .block.no-hairlines-ios ul:before,
 .aurora .block.no-hairlines-aurora:before,
-.aurora .block.no-hairlines-aurora ul:before {
-  display: none !important;
-}
+.aurora .block.no-hairlines-aurora ul:before,
 .block.no-hairlines:after,
 .block.no-hairlines ul:after,
 .md .block.no-hairlines-md:after,
@@ -4012,9 +3996,7 @@ html.device-full-viewport body {
   --f7-safe-area-left: 0px;
   --f7-safe-area-right: 0px;
 }
-.block-strong.inset:before {
-  display: none !important;
-}
+.block-strong.inset:before,
 .block-strong.inset:after {
   display: none !important;
 }
@@ -4026,9 +4008,7 @@ html.device-full-viewport body {
     --f7-safe-area-left: 0px;
     --f7-safe-area-right: 0px;
   }
-  .block-strong.xsmall-inset:before {
-    display: none !important;
-  }
+  .block-strong.xsmall-inset:before,
   .block-strong.xsmall-inset:after {
     display: none !important;
   }
@@ -4041,9 +4021,7 @@ html.device-full-viewport body {
     --f7-safe-area-left: 0px;
     --f7-safe-area-right: 0px;
   }
-  .block-strong.small-inset:before {
-    display: none !important;
-  }
+  .block-strong.small-inset:before,
   .block-strong.small-inset:after {
     display: none !important;
   }
@@ -4056,9 +4034,7 @@ html.device-full-viewport body {
     --f7-safe-area-left: 0px;
     --f7-safe-area-right: 0px;
   }
-  .block-strong.medium-inset:before {
-    display: none !important;
-  }
+  .block-strong.medium-inset:before,
   .block-strong.medium-inset:after {
     display: none !important;
   }
@@ -4071,9 +4047,7 @@ html.device-full-viewport body {
     --f7-safe-area-left: 0px;
     --f7-safe-area-right: 0px;
   }
-  .block-strong.large-inset:before {
-    display: none !important;
-  }
+  .block-strong.large-inset:before,
   .block-strong.large-inset:after {
     display: none !important;
   }
@@ -4086,9 +4060,7 @@ html.device-full-viewport body {
     --f7-safe-area-left: 0px;
     --f7-safe-area-right: 0px;
   }
-  .block-strong.xlarge-inset:before {
-    display: none !important;
-  }
+  .block-strong.xlarge-inset:before,
   .block-strong.xlarge-inset:after {
     display: none !important;
   }
@@ -4347,9 +4319,7 @@ html.device-full-viewport body {
 .list ul ul {
   padding-right: calc(var(--f7-list-item-padding-horizontal) + var(--f7-list-in-list-padding-left));
 }
-.list ul ul:before {
-  display: none !important;
-}
+.list ul ul:before,
 .list ul ul:after {
   display: none !important;
 }
@@ -4543,9 +4513,7 @@ html.device-full-viewport body {
 .ios .list.no-hairlines-ios:before,
 .ios .list.no-hairlines-ios ul:before,
 .aurora .list.no-hairlines-aurora:before,
-.aurora .list.no-hairlines-aurora ul:before {
-  display: none !important;
-}
+.aurora .list.no-hairlines-aurora ul:before,
 .list.no-hairlines:after,
 .list.no-hairlines ul:after,
 .md .list.no-hairlines-md:after,
@@ -4909,9 +4877,7 @@ li.list-group-title,
 .list.inset ul {
   border-radius: var(--f7-list-inset-border-radius);
 }
-.list.inset ul:before {
-  display: none !important;
-}
+.list.inset ul:before,
 .list.inset ul:after {
   display: none !important;
 }
@@ -4942,9 +4908,7 @@ li.list-group-title,
   .list.xsmall-inset ul {
     border-radius: var(--f7-list-inset-border-radius);
   }
-  .list.xsmall-inset ul:before {
-    display: none !important;
-  }
+  .list.xsmall-inset ul:before,
   .list.xsmall-inset ul:after {
     display: none !important;
   }
@@ -4973,9 +4937,7 @@ li.list-group-title,
   .list.small-inset ul {
     border-radius: var(--f7-list-inset-border-radius);
   }
-  .list.small-inset ul:before {
-    display: none !important;
-  }
+  .list.small-inset ul:before,
   .list.small-inset ul:after {
     display: none !important;
   }
@@ -5004,9 +4966,7 @@ li.list-group-title,
   .list.medium-inset ul {
     border-radius: var(--f7-list-inset-border-radius);
   }
-  .list.medium-inset ul:before {
-    display: none !important;
-  }
+  .list.medium-inset ul:before,
   .list.medium-inset ul:after {
     display: none !important;
   }
@@ -5035,9 +4995,7 @@ li.list-group-title,
   .list.large-inset ul {
     border-radius: var(--f7-list-inset-border-radius);
   }
-  .list.large-inset ul:before {
-    display: none !important;
-  }
+  .list.large-inset ul:before,
   .list.large-inset ul:after {
     display: none !important;
   }
@@ -5066,9 +5024,7 @@ li.list-group-title,
   .list.xlarge-inset ul {
     border-radius: var(--f7-list-inset-border-radius);
   }
-  .list.xlarge-inset ul:before {
-    display: none !important;
-  }
+  .list.xlarge-inset ul:before,
   .list.xlarge-inset ul:after {
     display: none !important;
   }
@@ -5634,6 +5590,11 @@ input[type="button"].button {
   --f7-touch-ripple-color: var(--f7-theme-color-ripple-color);
 }
 /* === Icon === */
+.f7-icons,
+.material-icons {
+  width: 1em;
+  height: 1em;
+}
 i.icon {
   display: inline-block;
   vertical-align: middle;
@@ -5688,11 +5649,6 @@ i.icon {
 .ios .icon-next:after {
   font-size: 16px;
 }
-.ios .item-media .f7-icons {
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
-}
 .ios .icon-back:after,
 .ios .icon-prev:after {
   content: 'chevron_right_ios';
@@ -5713,11 +5669,6 @@ i.icon {
 .md .icon-next:after,
 .md .icon-prev:after {
   line-height: 1.2;
-}
-.md .item-media .material-icons {
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
 }
 .md .icon-back:after {
   content: 'arrow_right_md';
@@ -5748,11 +5699,6 @@ i.icon {
 .aurora .icon-forward:after,
 .aurora .icon-next:after {
   line-height: inherit;
-}
-.aurora .item-media .f7-icons {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
 }
 .aurora .icon-back:after,
 .aurora .icon-prev:after {
