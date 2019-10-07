@@ -52299,7 +52299,7 @@
 	};
 
 	/**
-	 * Framework7 5.0.1
+	 * Framework7 5.0.2
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -60731,6 +60731,7 @@
 	          style = props.style,
 	          mediaList = props.mediaList,
 	          sortable = props.sortable,
+	          sortableTapHold = props.sortableTapHold,
 	          sortableMoveElements = props.sortableMoveElements;
 	      var classes = Utils$1.classNames(className, 'list-group', {
 	        'media-list': mediaList,
@@ -75146,7 +75147,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.0.1
+	 * Framework7 React 5.0.2
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
