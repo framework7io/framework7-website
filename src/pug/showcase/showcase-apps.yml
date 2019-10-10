@@ -1,5 +1,38 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/my-pets-diary.png"
+  iconRounded: true
+  title: "My Pet's Diary"
+  author:
+    url: http://bananavolt.com/
+    name: BananaVolt
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.bananavolt.mypetsdiary
+  description: |
+    Do you have any pets? They give you joy and happiness from the minutes spent with them, but they need systematic care. How to find time in a busy schedule to provide regular care for animals and not to forget anything? My Pet's Diary - pet care reminders will help you.
+
+    All the most important is collected in one place, in the diary of a pet. Walking, visiting a veterinarian, water procedures, regular treatment of pets, feeding schedule and recommendations for care. With this application, nothing will be missed and forgotten.
+    
+    Your pets will thank you with long and happy years spent next to their beloved owner!
+
+    The functionality of this application allows you to
+    - flexibly configure tasks;
+    - pet feeding schedule;
+    - systematize grooming care and hygiene procedures;
+    - regularly buy pet supplies and feed;
+    - monitor the health status of pets;
+    - routine vaccinations and taking veterinary drugs;
+    - control the walking mode using notifications;
+    - differentiate tasks for several pets;
+    - create notes;
+    - recommendations for pet care.
+  screenshots:
+    - "#{cdn}/i/showcase/my-pets-diary-1.jpg"
+    - "#{cdn}/i/showcase/my-pets-diary-2.jpg"
+    - "#{cdn}/i/showcase/my-pets-diary-3.jpg"
+    - "#{cdn}/i/showcase/my-pets-diary-4.jpg"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/kidoverse-solarsystem.png"
   iconRounded: true
   title: "Kidoverse Solar System"
