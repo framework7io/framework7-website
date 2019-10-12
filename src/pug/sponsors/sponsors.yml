@@ -24,6 +24,10 @@ silver:
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
 -
+  title: Write My Paper For Me
+  link: https://writersperhour.com/write-my-paper
+  imageUrl: "#{cdn}/i/sponsors/wrotersperhour.jpg"
+-
   title: Linux VPS Monovm
   link: https://monovm.com/linux-vps/
   imageUrl: "#{cdn}/i/sponsors/monovm.jpg"
