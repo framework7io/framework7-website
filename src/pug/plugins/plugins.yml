@@ -5,8 +5,7 @@
   iconUrl: '#{cdn}/i/plugins/keypad.svg'
   description: Keypad plugin extends Framework7 with additional custom keyboards
   badges:
-  - v2
-  - v3
+  - v5
 
 -
   title: Feeds
