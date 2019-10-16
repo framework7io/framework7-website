@@ -472,15 +472,15 @@ block content
             });
 
             // Login Screen-Modal DOM events
-            $$('.login-screen').on('loginscreen:open', function (e, loginScreen) {
+            $$('.login-screen').on('loginscreen:open', function (e) {
               console.log('Login screen open')
             });
-            $$('.login-screen').on('loginscreen:opened', function (e, loginScreen) {
+            $$('.login-screen').on('loginscreen:opened', function (e) {
               console.log('Login screen opened')
             });
-            $$('.login-screen').on('loginscreen:close', function (e, loginScreen) {
+            $$('.login-screen').on('loginscreen:close', function (e) {
               console.log('Login screen close')
             });
-            $$('.login-screen').on('loginscreen:closed', function (e, loginScreen) {
+            $$('.login-screen').on('loginscreen:closed', function (e) {
               console.log('Login screen closed')
             });

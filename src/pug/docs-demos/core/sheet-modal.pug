@@ -129,10 +129,10 @@ block scripts
     var $$ = Dom7;
 
     // DOM events for my-sheet sheet
-    $$('.my-sheet').on('sheet:open', function (e, sheet) {
+    $$('.my-sheet').on('sheet:open', function (e) {
       console.log('my-sheet open');
     });
-    $$('.my-sheet').on('sheet:opened', function (e, sheet) {
+    $$('.my-sheet').on('sheet:opened', function (e) {
       console.log('my-sheet opened');
     });
 

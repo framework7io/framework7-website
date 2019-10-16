@@ -64,10 +64,10 @@ block scripts
     var $$ = Dom7;
 
     // DOM events for About popup
-    $$('.popup-about').on('popup:open', function (e, popup) {
+    $$('.popup-about').on('popup:open', function (e) {
       console.log('About popup open');
     });
-    $$('.popup-about').on('popup:opened', function (e, popup) {
+    $$('.popup-about').on('popup:opened', function (e) {
       console.log('About popup opened');
     });
 
