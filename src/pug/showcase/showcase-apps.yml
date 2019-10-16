@@ -1,5 +1,26 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/pricepoint.jpg"
+  iconRounded: true
+  title: "PricePoint"
+  author:
+    url: https://banakin.github.io/
+    name: Banakin
+  links:
+    appstore: https://itunes.apple.com/us/app/pricepoint-cryptocurrencies/id1425210859?ls=1&mt=8
+    googleplay: https://play.google.com/store/apps/details?id=net.banakin.pricepoint
+    website: https://pricepoint.1mb.site/
+  description: |
+    PricePoint lets you view your favorite cryptocurrencies quickly and easily.
+  screenshots:
+    - "#{cdn}/i/showcase/pricepoint-1.jpg"
+    - "#{cdn}/i/showcase/pricepoint-2.jpg"
+    - "#{cdn}/i/showcase/pricepoint-3.jpg"
+    - "#{cdn}/i/showcase/pricepoint-4.jpg"
+    - "#{cdn}/i/showcase/pricepoint-5.jpg"
+    - "#{cdn}/i/showcase/pricepoint-6.jpg"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/my-pets-diary.png"
   iconRounded: true
   title: "My Pet's Diary"
@@ -916,25 +937,6 @@
     - "#{cdn}/i/showcase/brief3.jpg"
     - "#{cdn}/i/showcase/brief4.jpg"
     - "#{cdn}/i/showcase/brief5.jpg"
-##########
--
-  iconUrl: "#{cdn}/i/showcase/pricepoint.jpg"
-  iconRounded: true
-  title: "Price Point"
-  author:
-    url: https://banakin.net/
-    name: Banakin
-  links:
-    googleplay: https://play.google.com/store/apps/details?id=net.banakin.pricepoint
-    website: https://banakin.net/projects/pricepoint/
-  description: |
-    Price Point is an easy to use, lightweight application/website used for checking cryptocurrency exchange rates, Live!
-  screenshots:
-    - "#{cdn}/i/showcase/pricepoint-1.jpg"
-    - "#{cdn}/i/showcase/pricepoint-2.jpg"
-    - "#{cdn}/i/showcase/pricepoint-3.jpg"
-    - "#{cdn}/i/showcase/pricepoint-4.jpg"
-    - "#{cdn}/i/showcase/pricepoint-5.jpg"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/persondothing.png"
