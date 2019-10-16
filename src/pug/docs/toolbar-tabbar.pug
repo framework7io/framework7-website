@@ -265,6 +265,42 @@ block content
         </div>
       </div>
 
+    h2 Toolbar Events
+    p Toolbar will fire the following DOM events on Toolbar element (`<div class="toolbar">`) and app events on app instance:
+
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td toolbar:hide
+          td Toolbar <span>&lt;div class="toolbar"&gt;</span>
+          td Event will be triggered when Toolbar becomes hidden
+        tr
+          td toolbar:show
+          td Navbar <span>&lt;div class="toolbar"&gt;</span>
+          td Toolbar will be triggered when Toolbar becomes visible
+    h3 App Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          td toolbarHide
+          td <span>(el)</span>
+          td Event will be triggered when Toolbar becomes hidden
+        tr
+          td toolbarShow
+          td <span>(el)</span>
+          td Event will be triggered when Toolbar becomes visible
+
     +cssVars('toolbar')
 
     .with-device

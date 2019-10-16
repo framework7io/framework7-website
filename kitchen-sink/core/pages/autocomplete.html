@@ -217,6 +217,7 @@
           inputEl: '#autocomplete-dropdown',
           openIn: 'dropdown',
           source: function (query, render) {
+            console.log(query);
             var results = [];
             if (query.length === 0) {
               render(results);

@@ -124,6 +124,22 @@ block content
         td .show(<span>animate</span>)
         td Show toolbar
 
+    h2 Toolbar Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-toolbar&gt; events
+        tr
+          td toolbar:hide
+          td Event will be triggered when Toolbar becomes hidden
+        tr
+          td toolbar:show
+          td Event will be triggered when Toolbar becomes visible
+
     h2 Toolbar Slots
     p Toolbar Vue component (`<f7-toolbar>`) has additional slots for custom elements:
     ul

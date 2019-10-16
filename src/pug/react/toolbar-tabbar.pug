@@ -124,6 +124,22 @@ block content
         td .show(<span>animate</span>)
         td Show toolbar
 
+    h2 Toolbar Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;Toolbar&gt; events
+        tr
+          td toolbarHide
+          td Event will be triggered when Toolbar becomes hidden
+        tr
+          td toolbarShow
+          td Event will be triggered when Toolbar becomes visible
+
     h2 Toolbar Slots
     p Toolbar React component (`<Toolbar>`) has additional slots for custom elements:
     ul
