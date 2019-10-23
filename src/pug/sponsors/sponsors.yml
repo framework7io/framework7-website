@@ -32,9 +32,9 @@ topSupporter:
   link: https://monovm.com/linux-vps/
   imageUrl: "#{cdn}/i/sponsors/monovm.jpg"
 -
-  title: Staff Augmentation - Recruit Top Staff in Romania
-  link: https://staffaugmentation.ro
-  imageUrl: "#{cdn}/i/sponsors/staffaugmentation.jpg"
+  title: Unicorn.io - Choose your Dream Job
+  link: https://unicorn.io/
+  imageUrl: "#{cdn}/i/sponsors/unicorn.svg"
 -
   title: Bid4Papers - Write My Essay
   link: https://bid4papers.com/write-my-essay.html
