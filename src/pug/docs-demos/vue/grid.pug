@@ -132,6 +132,41 @@ block content
               <f7-col width="100" medium="33">.col-100.tablet-33</f7-col>
             </f7-row>
           </f7-block>
+
+          <f7-block-title>Resizable Cols</f7-block-title>
+          <f7-block class="grid-resizable-demo">
+            <f7-row>
+              <f7-col resizable style="min-width: 20px">1</f7-col>
+              <f7-col resizable style="min-width: 20px">2</f7-col>
+              <f7-col resizable style="min-width: 20px">3</f7-col>
+            </f7-row>
+          </f7-block>
+
+          <f7-block-title>Resizable Fixed Col</f7-block-title>
+          <f7-block-header>2nd column has fixed size</f7-block-header>
+          <f7-block class="grid-resizable-demo">
+            <f7-row>
+              <f7-col resizable style="min-width: 20px">1</f7-col>
+              <f7-col resizable resizable-fixed style="min-width: 20px">2</f7-col>
+              <f7-col resizable style="min-width: 20px">3</f7-col>
+            </f7-row>
+          </f7-block>
+
+          <f7-block-title>Resizable Grid</f7-block-title>
+          <f7-block class="grid-resizable-demo">
+            <f7-row class="align-items-stretch" style="height: 300px">
+              <f7-col resizable class="demo-col-center-content" style="min-width: 50px">Left</f7-col>
+              <f7-col resizable class="display-flex flex-direction-column" style="padding: 0px; border: none; min-width: 50px; background-color: transparent">
+                <f7-row resizable style="height: 50%; min-height: 50px">
+                  <f7-col class="demo-col-center-content" style="height: 100%">Center Top</f7-col>
+                </f7-row>
+                <f7-row resizable style="height: 50%; min-height: 50px">
+                  <f7-col class="demo-col-center-content" style="height: 100%">Center Bottom</f7-col>
+                </f7-row>
+              </f7-col>
+              <f7-col resizable class="demo-col-center-content" style="min-width: 50px">Right</f7-col>
+            </f7-row>
+          </f7-block>
         </f7-page>
       </f7-view>
     </f7-app>
@@ -143,8 +178,19 @@ block content
       color: #000;
       border: 1px solid #ddd;
       padding: 5px;
-      margin-bottom: 15px;
+      margin-bottom: 16px;
       font-size: 12px;
+    }
+    .grid-resizable-demo {
+      --f7-grid-row-gap: 16px;
+    }
+    .grid-resizable-demo div[class*="col"] {
+      margin-bottom: 0;
+    }
+    .grid-resizable-demo .demo-col-center-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   script.
     var component = {}

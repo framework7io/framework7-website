@@ -19782,6 +19782,12 @@
 	      }
 	    }
 	  });
+
+	  if (isRoot && context && context.$id && context.$style && context.$styleScoped) {
+	    if (!data.attrs) data.attrs = {};
+	    data.attrs["data-f7-".concat(context.$id)] = '';
+	  }
+
 	  var hooks = getHooks(data, app, initial, isRoot, tagName);
 
 	  hooks.prepatch = function (oldVnode, vnode) {
@@ -20711,6 +20717,9 @@
 	      });
 	    }
 
+	    self.$style = $options.isClassComponent ? self.constructor.style : $options.style;
+	    self.$styleScoped = $options.isClassComponent ? self.constructor.styleScoped : $options.styleScoped;
+	    self.__updateQueue = [];
 	    return new Promise(function (resolve, reject) {
 	      self.$hook('data', true).then(function (datas) {
 	        var data = {};
@@ -20720,20 +20729,14 @@
 	        Utils.extend(self, data);
 	        self.$hook('beforeCreate');
 	        var html = self.$render();
-	        var style = $options.isClassComponent ? self.constructor.style : $options.style;
-	        var styleScoped = $options.isClassComponent ? self.constructor.styleScoped : $options.styleScoped;
 
 	        if (self.$options.el) {
 	          html = html.trim();
 	          self.$vnode = vdom(html, self, true);
 
-	          if (style) {
+	          if (self.$style) {
 	            self.$styleEl = doc.createElement('style');
-	            self.$styleEl.innerHTML = style;
-
-	            if (styleScoped) {
-	              self.$vnode.data.attrs["data-f7-".concat(self.$id)] = '';
-	            }
+	            self.$styleEl.innerHTML = self.$style;
 	          }
 
 	          self.el = self.$options.el;
@@ -20752,26 +20755,17 @@
 	        if (html && typeof html === 'string') {
 	          html = html.trim();
 	          self.$vnode = vdom(html, self, true);
-
-	          if (style && styleScoped) {
-	            self.$vnode.data.attrs["data-f7-".concat(self.$id)] = '';
-	          }
-
 	          self.el = doc.createElement(self.$vnode.sel || 'div');
 	          patch(self.el, self.$vnode);
 	          self.$el = $(self.el);
 	        } else if (html) {
 	          self.el = html;
 	          self.$el = $(self.el);
-
-	          if (style && styleScoped) {
-	            self.el.setAttribute("data-f7-".concat(self.$id), '');
-	          }
 	        }
 
-	        if (style) {
+	        if (self.$style) {
 	          self.$styleEl = doc.createElement('style');
-	          self.$styleEl.innerHTML = style;
+	          self.$styleEl.innerHTML = self.$style;
 	        }
 
 	        self.$attachEvents();
@@ -20884,45 +20878,65 @@
 	      return html;
 	    }
 	  }, {
+	    key: "$startUpdateQueue",
+	    value: function $startUpdateQueue() {
+	      var self = this;
+	      if (self.__requestAnimationFrameId) return;
+
+	      function update() {
+	        var html = self.$render(); // Make Dom
+
+	        if (html && typeof html === 'string') {
+	          html = html.trim();
+	          var newVNode = vdom(html, self, false);
+	          self.$vnode = patch(self.$vnode, newVNode);
+	        }
+	      }
+
+	      self.__requestAnimationFrameId = win.requestAnimationFrame(function () {
+	        if (self.__updateIsPending) update();
+
+	        self.__updateQueue.forEach(function (resolver) {
+	          return resolver();
+	        });
+
+	        self.__updateQueue = [];
+	        self.__updateIsPending = false;
+	        win.cancelAnimationFrame(self.__requestAnimationFrameId);
+	        delete self.__requestAnimationFrameId;
+	        delete self.__updateIsPending;
+	      });
+	    }
+	  }, {
 	    key: "$tick",
 	    value: function $tick(callback) {
 	      var self = this;
 	      return new Promise(function (resolve) {
-	        win.requestAnimationFrame(function () {
-	          if (self.__updateIsPending) {
-	            win.requestAnimationFrame(function () {
-	              resolve();
-	              callback();
-	            });
-	          } else {
-	            resolve();
-	            callback();
-	          }
-	        });
+	        function resolver() {
+	          resolve();
+	          if (callback) callback();
+	        }
+
+	        self.__updateQueue.push(resolver);
+
+	        self.$startUpdateQueue();
 	      });
 	    }
 	  }, {
 	    key: "$update",
 	    value: function $update(callback) {
 	      var self = this;
-	      win.cancelAnimationFrame(self.__requestAnimationFrameId);
-	      delete self.__requestAnimationFrameId;
-	      self.__updateIsPending = true;
 	      return new Promise(function (resolve) {
-	        self.__requestAnimationFrameId = win.requestAnimationFrame(function () {
-	          var html = self.$render(); // Make Dom
-
-	          if (html && typeof html === 'string') {
-	            html = html.trim();
-	            var newVNode = vdom(html, self, false);
-	            self.$vnode = patch(self.$vnode, newVNode);
-	          }
-
-	          self.__updateIsPending = false;
-	          delete self.__updateIsPending;
+	        function resolver() {
 	          if (callback) callback();
 	          resolve();
-	        });
+	        }
+
+	        self.__updateIsPending = true;
+
+	        self.__updateQueue.push(resolver);
+
+	        self.$startUpdateQueue();
 	      });
 	    }
 	  }, {
@@ -32962,8 +32976,223 @@
 	  }
 	};
 
+	function getElMinSize(dimension, $el) {
+	  var minSize = $el.css("min-".concat(dimension));
+
+	  if (minSize === 'auto' || minSize === 'none') {
+	    minSize = 0;
+	  } else if (minSize.indexOf('px') >= 0) {
+	    minSize = parseFloat(minSize);
+	  } else if (minSize.indexOf('%') >= 0) {
+	    minSize = $el.parent()[0][dimension === 'height' ? 'offsetHeight' : 'offsetWidth'] * parseFloat(minSize) / 100;
+	  }
+
+	  return minSize;
+	}
+
+	function getElMaxSize(dimension, $el) {
+	  var maxSize = $el.css("max-".concat(dimension));
+
+	  if (maxSize === 'auto' || maxSize === 'none') {
+	    maxSize = null;
+	  } else if (maxSize.indexOf('px') >= 0) {
+	    maxSize = parseFloat(maxSize);
+	  } else if (maxSize.indexOf('%') >= 0) {
+	    maxSize = $el.parent()[0][dimension === 'height' ? 'offsetHeight' : 'offsetWidth'] * parseFloat(maxSize) / 100;
+	  }
+
+	  return maxSize;
+	}
+
 	var Grid = {
-	  name: 'grid'
+	  init: function init() {
+	    var app = this;
+	    var isTouched;
+	    var isMoved;
+	    var touchStartX;
+	    var touchStartY;
+	    var $resizeHandlerEl;
+	    var $prevResizableEl;
+	    var $nextResizableEl;
+	    var prevElSize;
+	    var prevElMinSize;
+	    var prevElMaxSize;
+	    var nextElSize;
+	    var nextElMinSize;
+	    var nextElMaxSize;
+	    var parentSize;
+	    var itemsInFlow;
+	    var gapSize;
+	    var isScrolling;
+
+	    function handleTouchStart(e) {
+	      if (isTouched || isMoved) return;
+	      $resizeHandlerEl = $(e.target).closest('.resize-handler');
+	      touchStartX = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
+	      touchStartY = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+	      isTouched = true;
+	      $prevResizableEl = undefined;
+	      $nextResizableEl = undefined;
+	      isScrolling = undefined;
+	    }
+
+	    function handleTouchMove(e) {
+	      if (!isTouched) return;
+	      var isRow = $resizeHandlerEl.parent('.row').length === 1;
+	      var sizeProp = isRow ? 'height' : 'width';
+	      var getSizeProp = isRow ? 'offsetHeight' : 'offsetWidth';
+
+	      if (!isMoved) {
+	        $prevResizableEl = $resizeHandlerEl.parent(isRow ? '.row' : '.col');
+
+	        if ($prevResizableEl.length && (!$prevResizableEl.hasClass('resizable') || $prevResizableEl.hasClass('resizable-fixed'))) {
+	          $prevResizableEl = $prevResizableEl.prevAll('.resizable:not(.resizable-fixed)').eq(0);
+	        }
+
+	        $nextResizableEl = $prevResizableEl.next(isRow ? '.row' : '.col');
+
+	        if ($nextResizableEl.length && (!$nextResizableEl.hasClass('resizable') || $nextResizableEl.hasClass('resizable-fixed'))) {
+	          $nextResizableEl = $nextResizableEl.nextAll('.resizable:not(.resizable-fixed)').eq(0);
+	        }
+
+	        if ($prevResizableEl.length) {
+	          prevElSize = $prevResizableEl[0][getSizeProp];
+	          prevElMinSize = getElMinSize(sizeProp, $prevResizableEl);
+	          prevElMaxSize = getElMaxSize(sizeProp, $prevResizableEl);
+	          parentSize = $prevResizableEl.parent()[0][getSizeProp];
+	          itemsInFlow = $prevResizableEl.parent().children(isRow ? '.row' : '[class*="col-"], .col').length;
+	          gapSize = parseFloat($prevResizableEl.css(isRow ? '--f7-grid-row-gap' : '--f7-grid-gap'));
+	        }
+
+	        if ($nextResizableEl.length) {
+	          nextElSize = $nextResizableEl[0][getSizeProp];
+	          nextElMinSize = getElMinSize(sizeProp, $nextResizableEl);
+	          nextElMaxSize = getElMaxSize(sizeProp, $nextResizableEl);
+
+	          if (!$prevResizableEl.length) {
+	            parentSize = $nextResizableEl.parent()[0][getSizeProp];
+	            itemsInFlow = $nextResizableEl.parent().children(isRow ? '.row' : '[class*="col-"], .col').length;
+	            gapSize = parseFloat($nextResizableEl.css(isRow ? '--f7-grid-row-gap' : '--f7-grid-gap'));
+	          }
+	        }
+	      }
+
+	      isMoved = true;
+	      var touchCurrentX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
+	      var touchCurrentY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+
+	      if (typeof isScrolling === 'undefined' && !isRow) {
+	        isScrolling = !!(isScrolling || Math.abs(touchCurrentY - touchStartY) > Math.abs(touchCurrentX - touchStartX));
+	      }
+
+	      if (isScrolling) {
+	        isTouched = false;
+	        isMoved = false;
+	        return;
+	      }
+
+	      var isAbsolute = $prevResizableEl.hasClass('resizable-absolute') || $nextResizableEl.hasClass('resizable-absolute');
+	      var resizeNextEl = !isRow || isRow && !isAbsolute;
+
+	      if (resizeNextEl && !$nextResizableEl.length || !$prevResizableEl.length) {
+	        isTouched = false;
+	        isMoved = false;
+	        return;
+	      }
+
+	      e.preventDefault();
+	      var diff = isRow ? touchCurrentY - touchStartY : touchCurrentX - touchStartX;
+	      var prevElNewSize;
+	      var nextElNewSize;
+
+	      if ($prevResizableEl.length) {
+	        prevElNewSize = prevElSize + diff;
+
+	        if (prevElNewSize < prevElMinSize) {
+	          prevElNewSize = prevElMinSize;
+	          diff = prevElNewSize - prevElSize;
+	        }
+
+	        if (prevElMaxSize && prevElNewSize > prevElMaxSize) {
+	          prevElNewSize = prevElMaxSize;
+	          diff = prevElNewSize - prevElSize;
+	        }
+	      }
+
+	      if ($nextResizableEl.length && resizeNextEl) {
+	        nextElNewSize = nextElSize - diff;
+
+	        if (nextElNewSize < nextElMinSize) {
+	          nextElNewSize = nextElMinSize;
+	          diff = nextElSize - nextElNewSize;
+	          prevElNewSize = prevElSize + diff;
+	        }
+
+	        if (nextElMaxSize && nextElNewSize > nextElMaxSize) {
+	          nextElNewSize = nextElMaxSize;
+	          diff = nextElSize - nextElNewSize;
+	          prevElNewSize = prevElSize + diff;
+	        }
+	      }
+
+	      if (isAbsolute) {
+	        $prevResizableEl[0].style[sizeProp] = "".concat(prevElNewSize, "px");
+
+	        if (resizeNextEl) {
+	          $nextResizableEl[0].style[sizeProp] = "".concat(nextElNewSize, "px");
+	        }
+
+	        $prevResizableEl.trigger('grid:resize');
+	        $nextResizableEl.trigger('grid:resize');
+	        app.emit('gridResize', $prevResizableEl[0]);
+	        app.emit('gridResize', $nextResizableEl[0]);
+	        return;
+	      }
+
+	      var gapAddSize = (itemsInFlow - 1) * gapSize / itemsInFlow;
+	      var gapAddSizeCSS = isRow ? "".concat(itemsInFlow - 1, " * var(--f7-grid-row-gap) / ").concat(itemsInFlow) : '(var(--f7-cols-per-row) - 1) * var(--f7-grid-gap) / var(--f7-cols-per-row)';
+	      var prevElNewSizeNormalized = prevElNewSize + gapAddSize;
+	      var nextElNewSizeNormalized = nextElNewSize + gapAddSize;
+	      $prevResizableEl[0].style[sizeProp] = "calc(".concat(prevElNewSizeNormalized / parentSize * 100, "% - ").concat(gapAddSizeCSS, ")");
+	      $nextResizableEl[0].style[sizeProp] = "calc(".concat(nextElNewSizeNormalized / parentSize * 100, "% - ").concat(gapAddSizeCSS, ")");
+	      $prevResizableEl.trigger('grid:resize');
+	      $nextResizableEl.trigger('grid:resize');
+	      app.emit('gridResize', $prevResizableEl[0]);
+	      app.emit('gridResize', $nextResizableEl[0]);
+	    }
+
+	    function handleTouchEnd() {
+	      if (!isTouched) return;
+
+	      if (!isMoved) {
+	        isTouched = false;
+	      }
+
+	      isTouched = false;
+	      isMoved = false;
+	    }
+
+	    $(document).on(app.touchEvents.start, '.col > .resize-handler, .row > .resize-handler', handleTouchStart);
+	    app.on('touchmove', handleTouchMove);
+	    app.on('touchend', handleTouchEnd);
+	  }
+	};
+	var Grid$1 = {
+	  name: 'grid',
+	  create: function create() {
+	    var app = this;
+	    Utils.extend(app, {
+	      grid: {
+	        init: Grid.init.bind(app)
+	      }
+	    });
+	  },
+	  on: {
+	    init: function init() {
+	      var app = this;
+	      app.grid.init();
+	    }
+	  }
 	};
 
 	var Calendar =
@@ -39403,8 +39632,9 @@
 	      if (params.slidesPerColumnFill === 'row' && params.slidesPerGroup > 1) {
 	        var groupIndex = Math.floor(i / (params.slidesPerGroup * params.slidesPerColumn));
 	        var slideIndexInGroup = i - params.slidesPerColumn * params.slidesPerGroup * groupIndex;
-	        row = Math.floor(slideIndexInGroup / params.slidesPerGroup);
-	        column = slideIndexInGroup - row * params.slidesPerGroup + groupIndex * params.slidesPerGroup;
+	        var columnsInGroup = groupIndex === 0 ? params.slidesPerGroup : Math.min(Math.ceil((slidesLength - groupIndex * slidesPerColumn * params.slidesPerGroup) / slidesPerColumn), params.slidesPerGroup);
+	        row = Math.floor(slideIndexInGroup / columnsInGroup);
+	        column = slideIndexInGroup - row * columnsInGroup + groupIndex * params.slidesPerGroup;
 	        newSlideOrderIndex = column + row * slidesNumberEvenToRows / slidesPerColumn;
 	        slide.css({
 	          '-webkit-box-ordinal-group': newSlideOrderIndex,
@@ -39603,15 +39833,29 @@
 	    });
 	  }
 
-	  if (params.centerInsufficientSlides) {
+	  if (params.centeredSlides && params.centeredSlidesBounds) {
 	    var allSlidesSize = 0;
 	    slidesSizesGrid.forEach(function (slideSizeValue) {
 	      allSlidesSize += slideSizeValue + (params.spaceBetween ? params.spaceBetween : 0);
 	    });
 	    allSlidesSize -= params.spaceBetween;
+	    var maxSnap = allSlidesSize - swiperSize;
+	    snapGrid = snapGrid.map(function (snap) {
+	      if (snap < 0) return -offsetBefore;
+	      if (snap > maxSnap) return maxSnap + offsetAfter;
+	      return snap;
+	    });
+	  }
 
-	    if (allSlidesSize < swiperSize) {
-	      var allSlidesOffset = (swiperSize - allSlidesSize) / 2;
+	  if (params.centerInsufficientSlides) {
+	    var _allSlidesSize = 0;
+	    slidesSizesGrid.forEach(function (slideSizeValue) {
+	      _allSlidesSize += slideSizeValue + (params.spaceBetween ? params.spaceBetween : 0);
+	    });
+	    _allSlidesSize -= params.spaceBetween;
+
+	    if (_allSlidesSize < swiperSize) {
+	      var allSlidesOffset = (swiperSize - _allSlidesSize) / 2;
 	      snapGrid.forEach(function (snap, snapIndex) {
 	        snapGrid[snapIndex] = snap - allSlidesOffset;
 	      });
@@ -40435,20 +40679,34 @@
 	  var speed = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.params.speed;
 	  var runCallbacks = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 	  var internal = arguments.length > 2 ? arguments[2] : undefined;
+	  var threshold = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0.5;
 	  var swiper = this;
 	  var index = swiper.activeIndex;
 	  var snapIndex = Math.floor(index / swiper.params.slidesPerGroup);
+	  var translate = swiper.rtlTranslate ? swiper.translate : -swiper.translate;
 
-	  if (snapIndex < swiper.snapGrid.length - 1) {
-	    var translate = swiper.rtlTranslate ? swiper.translate : -swiper.translate;
+	  if (translate >= swiper.snapGrid[snapIndex]) {
+	    // The current translate is on or after the current snap index, so the choice
+	    // is between the current index and the one after it.
 	    var currentSnap = swiper.snapGrid[snapIndex];
 	    var nextSnap = swiper.snapGrid[snapIndex + 1];
 
-	    if (translate - currentSnap > (nextSnap - currentSnap) / 2) {
-	      index = swiper.params.slidesPerGroup;
+	    if (translate - currentSnap > (nextSnap - currentSnap) * threshold) {
+	      index += swiper.params.slidesPerGroup;
+	    }
+	  } else {
+	    // The current translate is before the current snap index, so the choice
+	    // is between the current index and the one before it.
+	    var prevSnap = swiper.snapGrid[snapIndex - 1];
+	    var _currentSnap = swiper.snapGrid[snapIndex];
+
+	    if (translate - prevSnap <= (_currentSnap - prevSnap) * threshold) {
+	      index -= swiper.params.slidesPerGroup;
 	    }
 	  }
 
+	  index = Math.max(index, 0);
+	  index = Math.min(index, swiper.snapGrid.length - 1);
 	  return swiper.slideTo(index, speed, runCallbacks, internal);
 	}
 
@@ -40547,8 +40805,7 @@
 
 	function loopFix () {
 	  var swiper = this;
-	  var params = swiper.params,
-	      activeIndex = swiper.activeIndex,
+	  var activeIndex = swiper.activeIndex,
 	      slides = swiper.slides,
 	      loopedSlides = swiper.loopedSlides,
 	      allowSlidePrev = swiper.allowSlidePrev,
@@ -40569,7 +40826,7 @@
 	    if (slideChanged && diff !== 0) {
 	      swiper.setTranslate((rtl ? -swiper.translate : swiper.translate) - diff);
 	    }
-	  } else if (params.slidesPerView === 'auto' && activeIndex >= loopedSlides * 2 || activeIndex >= slides.length - loopedSlides) {
+	  } else if (activeIndex >= slides.length - loopedSlides) {
 	    // Fix For Positive Oversliding
 	    newIndex = -slides.length + activeIndex + loopedSlides;
 	    newIndex += loopedSlides;
@@ -41289,6 +41546,26 @@
 	        } else {
 	          momentumDuration = Math.abs((newPosition - swiper.translate) / swiper.velocity);
 	        }
+
+	        if (params.freeModeSticky) {
+	          // If freeModeSticky is active and the user ends a swipe with a slow-velocity
+	          // event, then durations can be 20+ seconds to slide one (or zero!) slides.
+	          // It's easy to see this when simulating touch with mouse events. To fix this,
+	          // limit single-slide swipes to the default slide duration. This also has the
+	          // nice side effect of matching slide speed if the user stopped moving before
+	          // lifting finger or mouse vs. moving slowly before lifting the finger/mouse.
+	          // For faster swipes, also apply limits (albeit higher ones).
+	          var moveDistance = Math.abs((rtl ? -newPosition : newPosition) - swiper.translate);
+	          var currentSlideSize = swiper.slidesSizesGrid[swiper.activeIndex];
+
+	          if (moveDistance < currentSlideSize) {
+	            momentumDuration = params.speed;
+	          } else if (moveDistance < 2 * currentSlideSize) {
+	            momentumDuration = params.speed * 1.5;
+	          } else {
+	            momentumDuration = params.speed * 2.5;
+	          }
+	        }
 	      } else if (params.freeModeSticky) {
 	        swiper.slideToClosest();
 	        return;
@@ -41420,24 +41697,12 @@
 	  swiper.allowSlidePrev = true;
 	  swiper.updateSize();
 	  swiper.updateSlides();
+	  swiper.updateSlidesClasses();
 
-	  if (params.freeMode) {
-	    var newTranslate = Math.min(Math.max(swiper.translate, swiper.maxTranslate()), swiper.minTranslate());
-	    swiper.setTranslate(newTranslate);
-	    swiper.updateActiveIndex();
-	    swiper.updateSlidesClasses();
-
-	    if (params.autoHeight) {
-	      swiper.updateAutoHeight();
-	    }
+	  if ((params.slidesPerView === 'auto' || params.slidesPerView > 1) && swiper.isEnd && !swiper.params.centeredSlides) {
+	    swiper.slideTo(swiper.slides.length - 1, 0, false, true);
 	  } else {
-	    swiper.updateSlidesClasses();
-
-	    if ((params.slidesPerView === 'auto' || params.slidesPerView > 1) && swiper.isEnd && !swiper.params.centeredSlides) {
-	      swiper.slideTo(swiper.slides.length - 1, 0, false, true);
-	    } else {
-	      swiper.slideTo(swiper.activeIndex, 0, false, true);
-	    }
+	    swiper.slideTo(swiper.activeIndex, 0, false, true);
 	  }
 
 	  if (swiper.autoplay && swiper.autoplay.running && swiper.autoplay.paused) {
@@ -41830,8 +42095,16 @@
 
 	function checkOverflow() {
 	  var swiper = this;
+	  var params = swiper.params;
 	  var wasLocked = swiper.isLocked;
-	  swiper.isLocked = swiper.snapGrid.length === 1;
+	  var lastSlidePosition = swiper.slides.length > 0 && params.slidesOffsetBefore + params.spaceBetween * (swiper.slides.length - 1) + swiper.slides[0].offsetWidth * swiper.slides.length;
+
+	  if (params.slidesOffsetBefore && params.slidesOffsetAfter && lastSlidePosition) {
+	    swiper.isLocked = lastSlidePosition <= swiper.size;
+	  } else {
+	    swiper.isLocked = swiper.snapGrid.length === 1;
+	  }
+
 	  swiper.allowSlideNext = !swiper.isLocked;
 	  swiper.allowSlidePrev = !swiper.isLocked; // events
 
@@ -41886,6 +42159,7 @@
 	  slidesPerColumnFill: 'column',
 	  slidesPerGroup: 1,
 	  centeredSlides: false,
+	  centeredSlidesBounds: false,
 	  slidesOffsetBefore: 0,
 	  // in px
 	  slidesOffsetAfter: 0,
@@ -43022,6 +43296,8 @@
 
 	var Mousewheel = {
 	  lastScrollTime: Utils.now(),
+	  lastEventBeforeSnap: undefined,
+	  recentWheelEvents: [],
 	  event: function event() {
 	    if (win.navigator.userAgent.indexOf('firefox') > -1) return 'DOMMouseScroll';
 	    return isEventSupported() ? 'wheel' : 'mousewheel';
@@ -43156,38 +43432,102 @@
 	      swiper.mousewheel.lastScrollTime = new win.Date().getTime();
 	    } else {
 	      // Freemode or scrollContainer:
-	      if (swiper.params.loop) {
-	        swiper.loopFix();
-	      }
+	      // If we recently snapped after a momentum scroll, then ignore wheel events
+	      // to give time for the declereration to finish. Stop ignoring after 500 msecs
+	      // or if it's a new scroll (larger delta or inverse sign as last event before
+	      // an end-of-momentum snap).
+	      var newEvent = {
+	        time: Utils.now(),
+	        delta: Math.abs(delta),
+	        direction: Math.sign(delta)
+	      };
+	      var lastEventBeforeSnap = swiper.mousewheel.lastEventBeforeSnap;
+	      var ignoreWheelEvents = lastEventBeforeSnap && newEvent.time < lastEventBeforeSnap.time + 500 && newEvent.delta <= lastEventBeforeSnap.delta && newEvent.direction === lastEventBeforeSnap.direction;
 
-	      var position = swiper.getTranslate() + delta * params.sensitivity;
-	      var wasBeginning = swiper.isBeginning;
-	      var wasEnd = swiper.isEnd;
-	      if (position >= swiper.minTranslate()) position = swiper.minTranslate();
-	      if (position <= swiper.maxTranslate()) position = swiper.maxTranslate();
-	      swiper.setTransition(0);
-	      swiper.setTranslate(position);
-	      swiper.updateProgress();
-	      swiper.updateActiveIndex();
-	      swiper.updateSlidesClasses();
+	      if (!ignoreWheelEvents) {
+	        swiper.mousewheel.lastEventBeforeSnap = undefined;
 
-	      if (!wasBeginning && swiper.isBeginning || !wasEnd && swiper.isEnd) {
+	        if (swiper.params.loop) {
+	          swiper.loopFix();
+	        }
+
+	        var position = swiper.getTranslate() + delta * params.sensitivity;
+	        var wasBeginning = swiper.isBeginning;
+	        var wasEnd = swiper.isEnd;
+	        if (position >= swiper.minTranslate()) position = swiper.minTranslate();
+	        if (position <= swiper.maxTranslate()) position = swiper.maxTranslate();
+	        swiper.setTransition(0);
+	        swiper.setTranslate(position);
+	        swiper.updateProgress();
+	        swiper.updateActiveIndex();
 	        swiper.updateSlidesClasses();
+
+	        if (!wasBeginning && swiper.isBeginning || !wasEnd && swiper.isEnd) {
+	          swiper.updateSlidesClasses();
+	        }
+
+	        if (swiper.params.freeModeSticky) {
+	          // When wheel scrolling starts with sticky (aka snap) enabled, then detect
+	          // the end of a momentum scroll by storing recent (N=15?) wheel events.
+	          // 1. do all N events have decreasing or same (absolute value) delta?
+	          // 2. did all N events arrive in the last M (M=500?) msecs?
+	          // 3. does the earliest event have an (absolute value) delta that's
+	          //    at least P (P=1?) larger than the most recent event's delta?
+	          // 4. does the latest event have a delta that's smaller than Q (Q=6?) pixels?
+	          // If 1-4 are "yes" then we're near the end of a momuntum scroll deceleration.
+	          // Snap immediately and ignore remaining wheel events in this scroll.
+	          // See comment above for "remaining wheel events in this scroll" determination.
+	          // If 1-4 aren't satisfied, then wait to snap until 500ms after the last event.
+	          clearTimeout(swiper.mousewheel.timeout);
+	          swiper.mousewheel.timeout = undefined;
+	          var recentWheelEvents = swiper.mousewheel.recentWheelEvents;
+
+	          if (recentWheelEvents.length >= 15) {
+	            recentWheelEvents.shift(); // only store the last N events
+	          }
+
+	          var prevEvent = recentWheelEvents.length ? recentWheelEvents[recentWheelEvents.length - 1] : undefined;
+	          var firstEvent = recentWheelEvents[0];
+	          recentWheelEvents.push(newEvent);
+
+	          if (prevEvent && (newEvent.delta > prevEvent.delta || newEvent.direction !== prevEvent.direction)) {
+	            // Increasing or reverse-sign delta means the user started scrolling again. Clear the wheel event log.
+	            recentWheelEvents.splice(0);
+	          } else if (recentWheelEvents.length >= 15 && newEvent.time - firstEvent.time < 500 && firstEvent.delta - newEvent.delta >= 1 && newEvent.delta <= 6) {
+	            // We're at the end of the deceleration of a momentum scroll, so there's no need
+	            // to wait for more events. Snap ASAP on the next tick.
+	            // Also, because there's some remaining momentum we'll bias the snap in the
+	            // direction of the ongoing scroll because it's better UX for the scroll to snap
+	            // in the same direction as the scroll instead of reversing to snap.  Therefore,
+	            // if it's already scrolled more than 20% in the current direction, keep going.
+	            var snapToThreshold = delta > 0 ? 0.8 : 0.2;
+	            swiper.mousewheel.lastEventBeforeSnap = newEvent;
+	            recentWheelEvents.splice(0);
+	            swiper.mousewheel.timeout = Utils.nextTick(function () {
+	              swiper.slideToClosest(swiper.params.speed, true, undefined, snapToThreshold);
+	            }, 0); // no delay; move on next tick
+	          }
+
+	          if (!swiper.mousewheel.timeout) {
+	            // if we get here, then we haven't detected the end of a momentum scroll, so
+	            // we'll consider a scroll "complete" when there haven't been any wheel events
+	            // for 500ms.
+	            swiper.mousewheel.timeout = Utils.nextTick(function () {
+	              var snapToThreshold = 0.5;
+	              swiper.mousewheel.lastEventBeforeSnap = newEvent;
+	              recentWheelEvents.splice(0);
+	              swiper.slideToClosest(swiper.params.speed, true, undefined, snapToThreshold);
+	            }, 500);
+	          }
+	        } // Emit event
+
+
+	        if (!ignoreWheelEvents) swiper.emit('scroll', e); // Stop autoplay
+
+	        if (swiper.params.autoplay && swiper.params.autoplayDisableOnInteraction) swiper.autoplay.stop(); // Return page scroll on edge positions
+
+	        if (position === swiper.minTranslate() || position === swiper.maxTranslate()) return true;
 	      }
-
-	      if (swiper.params.freeModeSticky) {
-	        clearTimeout(swiper.mousewheel.timeout);
-	        swiper.mousewheel.timeout = Utils.nextTick(function () {
-	          swiper.slideToClosest();
-	        }, 300);
-	      } // Emit event
-
-
-	      swiper.emit('scroll', e); // Stop autoplay
-
-	      if (swiper.params.autoplay && swiper.params.autoplayDisableOnInteraction) swiper.autoplay.stop(); // Return page scroll on edge positions
-
-	      if (position === swiper.minTranslate() || position === swiper.maxTranslate()) return true;
 	    }
 
 	    if (e.preventDefault) e.preventDefault();else e.returnValue = false;
@@ -43260,7 +43600,9 @@
 	        handle: Mousewheel.handle.bind(swiper),
 	        handleMouseEnter: Mousewheel.handleMouseEnter.bind(swiper),
 	        handleMouseLeave: Mousewheel.handleMouseLeave.bind(swiper),
-	        lastScrollTime: Utils.now()
+	        lastScrollTime: Utils.now(),
+	        lastEventBeforeSnap: undefined,
+	        recentWheelEvents: []
 	      }
 	    });
 	  },
@@ -52468,7 +52810,7 @@
 	};
 
 	/**
-	 * Framework7 5.0.5
+	 * Framework7 5.1.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -52476,7 +52818,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: October 16, 2019
+	 * Released on: October 27, 2019
 	 */
 
 
@@ -52486,7 +52828,7 @@
 	]); //NO_LITE
 
 	Framework7.use([DeviceModule, SupportModule, UtilsModule, ResizeModule, RequestModule, TouchModule, ClicksModule, RouterModule, HistoryModule, ComponentModule, //NO_LITE
-	ServiceWorkerModule, Statusbar$1, View$1, Navbar$1, Toolbar$1, Subnavbar, TouchRipple$1, Modal$1, Appbar, Dialog$1, Popup$1, LoginScreen$1, Popover$1, Actions$1, Sheet$1, Toast$1, Preloader$1, Progressbar$1, Sortable$1, Swipeout$1, Accordion$1, ContactsList, VirtualList$1, ListIndex$1, Timeline, Tabs, Panel$1, Card, Chip, Form, Input$1, Checkbox, Radio, Toggle$1, Range$1, Stepper$1, SmartSelect$1, Grid, Calendar$1, Picker$1, InfiniteScroll$1, PullToRefresh$1, Lazy$1, DataTable$1, Fab$1, Searchbar$1, Messages$1, Messagebar$1, Swiper$1, PhotoBrowser$1, Notification$1, Autocomplete$1, Tooltip$1, Gauge$1, Skeleton, Menu$1, ColorPicker$1, Treeview$1, TextEditor$1, Elevation, Typography, Vi$1]);
+	ServiceWorkerModule, Statusbar$1, View$1, Navbar$1, Toolbar$1, Subnavbar, TouchRipple$1, Modal$1, Appbar, Dialog$1, Popup$1, LoginScreen$1, Popover$1, Actions$1, Sheet$1, Toast$1, Preloader$1, Progressbar$1, Sortable$1, Swipeout$1, Accordion$1, ContactsList, VirtualList$1, ListIndex$1, Timeline, Tabs, Panel$1, Card, Chip, Form, Input$1, Checkbox, Radio, Toggle$1, Range$1, Stepper$1, SmartSelect$1, Grid$1, Calendar$1, Picker$1, InfiniteScroll$1, PullToRefresh$1, Lazy$1, DataTable$1, Fab$1, Searchbar$1, Messages$1, Messagebar$1, Swiper$1, PhotoBrowser$1, Notification$1, Autocomplete$1, Tooltip$1, Gauge$1, Skeleton, Menu$1, ColorPicker$1, Treeview$1, TextEditor$1, Elevation, Typography, Vi$1]);
 
 	var Utils$1 = {
 	  noUndefinedProps: function noUndefinedProps(obj) {
@@ -57644,7 +57986,7 @@
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$p(_this), ['onClick']);
+	      Utils$1.bindMethods(_assertThisInitialized$p(_this), ['onClick', 'onResize']);
 	    })();
 
 	    return _this;
@@ -57654,6 +57996,13 @@
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
+	    }
+	  }, {
+	    key: "onResize",
+	    value: function onResize(el) {
+	      if (el === this.eventTargetEl) {
+	        this.dispatchEvent('grid:resize gridResize');
+	      }
 	    }
 	  }, {
 	    key: "render",
@@ -57672,11 +58021,15 @@
 	          small = props.small,
 	          medium = props.medium,
 	          large = props.large,
-	          xlarge = props.xlarge;
+	          xlarge = props.xlarge,
+	          resizable = props.resizable,
+	          resizableFixed = props.resizableFixed,
+	          resizableAbsolute = props.resizableAbsolute,
+	          resizableHandler = props.resizableHandler;
 	      var ColTag = tag;
 	      var classes = Utils$1.classNames(className, (_Utils$classNames = {
 	        col: width === 'auto'
-	      }, _defineProperty$1(_Utils$classNames, "col-".concat(width), width !== 'auto'), _defineProperty$1(_Utils$classNames, "xsmall-".concat(xsmall), xsmall), _defineProperty$1(_Utils$classNames, "small-".concat(small), small), _defineProperty$1(_Utils$classNames, "medium-".concat(medium), medium), _defineProperty$1(_Utils$classNames, "large-".concat(large), large), _defineProperty$1(_Utils$classNames, "xlarge-".concat(xlarge), xlarge), _Utils$classNames), Mixins.colorClasses(props));
+	      }, _defineProperty$1(_Utils$classNames, "col-".concat(width), width !== 'auto'), _defineProperty$1(_Utils$classNames, "xsmall-".concat(xsmall), xsmall), _defineProperty$1(_Utils$classNames, "small-".concat(small), small), _defineProperty$1(_Utils$classNames, "medium-".concat(medium), medium), _defineProperty$1(_Utils$classNames, "large-".concat(large), large), _defineProperty$1(_Utils$classNames, "xlarge-".concat(xlarge), xlarge), _defineProperty$1(_Utils$classNames, "resizable", resizable), _defineProperty$1(_Utils$classNames, 'resizable-fixed', resizableFixed), _defineProperty$1(_Utils$classNames, 'resizable-absolute', resizableAbsolute), _Utils$classNames), Mixins.colorClasses(props));
 	      return react.createElement(ColTag, {
 	        id: id,
 	        style: style,
@@ -57684,17 +58037,29 @@
 	        ref: function ref(__reactNode) {
 	          _this2.__reactRefs['el'] = __reactNode;
 	        }
-	      }, this.slots['default']);
+	      }, this.slots['default'], resizable && resizableHandler && react.createElement('span', {
+	        className: 'resize-handler'
+	      }));
 	    }
 	  }, {
 	    key: "componentWillUnmount",
 	    value: function componentWillUnmount() {
-	      this.refs.el.removeEventListener('click', this.onClick);
+	      var self = this;
+	      var el = self.refs.el;
+	      if (!el || !self.$f7) return;
+	      el.removeEventListener('click', self.onClick);
+	      self.$f7.off('gridResize', self.onResize);
+	      delete self.eventTargetEl;
 	    }
 	  }, {
 	    key: "componentDidMount",
 	    value: function componentDidMount() {
-	      this.refs.el.addEventListener('click', this.onClick);
+	      var self = this;
+	      self.eventTargetEl = self.refs.el;
+	      self.eventTargetEl.addEventListener('click', self.onClick);
+	      self.$f7ready(function (f7) {
+	        f7.on('gridResize', self.onResize);
+	      });
 	    }
 	  }, {
 	    key: "dispatchEvent",
@@ -57747,6 +58112,13 @@
 	  },
 	  xlarge: {
 	    type: [Number, String]
+	  },
+	  resizable: Boolean,
+	  resizableFixed: Boolean,
+	  resizableAbsolute: Boolean,
+	  resizableHandler: {
+	    type: Boolean,
+	    default: true
 	  }
 	}, Mixins.colorProps));
 
@@ -70666,7 +71038,7 @@
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$19(_this), ['onClick']);
+	      Utils$1.bindMethods(_assertThisInitialized$19(_this), ['onClick', 'onResize']);
 	    })();
 
 	    return _this;
@@ -70676,6 +71048,13 @@
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
+	    }
+	  }, {
+	    key: "onResize",
+	    value: function onResize(el) {
+	      if (el === this.eventTargetEl) {
+	        this.dispatchEvent('grid:resize gridResize');
+	      }
 	    }
 	  }, {
 	    key: "render",
@@ -70688,10 +71067,17 @@
 	          id = props.id,
 	          style = props.style,
 	          tag = props.tag,
-	          noGap = props.noGap;
+	          noGap = props.noGap,
+	          resizable = props.resizable,
+	          resizableFixed = props.resizableFixed,
+	          resizableAbsolute = props.resizableAbsolute,
+	          resizableHandler = props.resizableHandler;
 	      var RowTag = tag;
 	      var classes = Utils$1.classNames(className, 'row', {
-	        'no-gap': noGap
+	        'no-gap': noGap,
+	        resizable: resizable,
+	        'resizable-fixed': resizableFixed,
+	        'resizable-absolute': resizableAbsolute
 	      }, Mixins.colorClasses(props));
 	      return react.createElement(RowTag, {
 	        id: id,
@@ -70700,17 +71086,29 @@
 	        ref: function ref(__reactNode) {
 	          _this2.__reactRefs['el'] = __reactNode;
 	        }
-	      }, this.slots['default']);
+	      }, this.slots['default'], resizable && resizableHandler && react.createElement('span', {
+	        className: 'resize-handler'
+	      }));
 	    }
 	  }, {
 	    key: "componentWillUnmount",
 	    value: function componentWillUnmount() {
-	      this.refs.el.removeEventListener('click', this.onClick);
+	      var self = this;
+	      var el = self.refs.el;
+	      if (!el || !self.$f7) return;
+	      el.removeEventListener('click', self.onClick);
+	      self.$f7.off('gridResize', self.onResize);
+	      delete self.eventTargetEl;
 	    }
 	  }, {
 	    key: "componentDidMount",
 	    value: function componentDidMount() {
-	      this.refs.el.addEventListener('click', this.onClick);
+	      var self = this;
+	      self.eventTargetEl = self.refs.el;
+	      self.eventTargetEl.addEventListener('click', self.onClick);
+	      self.$f7ready(function (f7) {
+	        f7.on('gridResize', self.onResize);
+	      });
 	    }
 	  }, {
 	    key: "dispatchEvent",
@@ -70745,6 +71143,13 @@
 	  tag: {
 	    type: String,
 	    default: 'div'
+	  },
+	  resizable: Boolean,
+	  resizableFixed: Boolean,
+	  resizableAbsolute: Boolean,
+	  resizableHandler: {
+	    type: Boolean,
+	    default: true
 	  }
 	}, Mixins.colorProps));
 
@@ -75360,7 +75765,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.0.5
+	 * Framework7 React 5.1.0
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -75368,7 +75773,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: October 16, 2019
+	 * Released on: October 27, 2019
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
@@ -79935,7 +80340,7 @@
 	  return _default;
 	}(react.Component);
 
-	var Grid$1 = (function () {
+	var Grid$2 = (function () {
 	  return react.createElement(Page, {
 	    className: "grid-demo"
 	  }, react.createElement(Navbar$2, {
@@ -80027,7 +80432,57 @@
 	  }, ".col-50.medium-66"), react.createElement(Col, {
 	    width: "100",
 	    medium: "33"
-	  }, ".col-100.medium-33"))));
+	  }, ".col-100.medium-33"))), react.createElement(BlockTitle, null, "Resizable Grid"), react.createElement(Block, {
+	    className: "grid-resizable-demo"
+	  }, react.createElement(Row, {
+	    className: "align-items-stretch",
+	    style: {
+	      height: '300px'
+	    }
+	  }, react.createElement(Col, {
+	    resizable: true,
+	    className: "demo-col-center-content",
+	    style: {
+	      minWidth: '80px'
+	    }
+	  }, "Left"), react.createElement(Col, {
+	    resizable: true,
+	    className: "display-flex flex-direction-column",
+	    style: {
+	      padding: '0px',
+	      border: 'none',
+	      minWidth: '80px',
+	      backgroundColor: 'transparent'
+	    }
+	  }, react.createElement(Row, {
+	    resizable: true,
+	    style: {
+	      height: '50%',
+	      minHeight: '50px'
+	    }
+	  }, react.createElement(Col, {
+	    className: "demo-col-center-content",
+	    style: {
+	      height: '100%'
+	    }
+	  }, "Center Top")), react.createElement(Row, {
+	    resizable: true,
+	    style: {
+	      height: '50%',
+	      minHeight: '50px'
+	    }
+	  }, react.createElement(Col, {
+	    className: "demo-col-center-content",
+	    style: {
+	      height: '100%'
+	    }
+	  }, "Center Bottom"))), react.createElement(Col, {
+	    resizable: true,
+	    className: "demo-col-center-content",
+	    style: {
+	      minWidth: '80px'
+	    }
+	  }, "Right"))));
 	});
 
 	var f7Icons = 'cursor_rays wand_stars bed_double_fill arrow_down_doc_fill chat_bubble_text exclamationmark_square_fill xmark sort_down checkmark_shield cloud money_rubl_circle shift chart_bar light_max videocam_fill hammer_fill light_max sort_up folder_badge_minus shield_lefthalf_fill moon_zzz_fill search_circle_fill music_albums_fill hifispeaker_fill suit_diamond doc_person_fill location tuningfork arrow_left_square_fill arrowtriangle_right_circle_fill lasso pin_slash arrow_uturn_right_circle device_phone_landscape gauge_badge_plus qrcode plus_slash_minus arrow_left_circle hand_thumbsdown capslock_fill map_pin_ellipse house_alt_fill plusminus_circle arrow_up_left_square rectangle_3_offgrid bed_double_fill arrow_down_right_arrow_up_left plus_square_fill_on_square_fill chevron_down_square arrow_uturn_left_circle_fill trash_slash_fill goforward_10 logo_twitter arrow_down_circle_fill bell_fill lock_circle_fill rectangle_stack_fill arrow_merge gauge_badge_minus text_cursor arrow_up_left arrowshape_turn_up_left_2 speaker_3_fill umbrella house hand_point_left_fill bolt_slash_fill arrow_up_to_line repeat arrow_up_right_diamond bag_fill_badge_plus selection_pin_in_out lock_shield arrow_right_arrow_left_circle gobackward_60 square_arrow_up_on_square_fill staroflife_fill graph_circle circle_lefthalf_fill text_badge_checkmark cloud_sleet_fill rocket square_stack_3d_up_slash phone_down_circle_fill arrow_left_circle_fill zzz cloud_moon_rain timelapse folder_badge_plus lessthan doc_on_clipboard_fill sun_min rectangle_3_offgrid device_laptop control folder_fill_badge_plus arrow_clockwise forward_end_fill person_badge_minus minus_rectangle'.split(' ');
@@ -89145,7 +89600,7 @@
 	  component: _default$a
 	}, {
 	  path: '/grid/',
-	  component: Grid$1
+	  component: Grid$2
 	}, {
 	  path: '/icons/',
 	  component: Icons

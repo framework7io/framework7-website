@@ -142,6 +142,46 @@ block content
                     <Col width="100" medium="33">.col-100.tablet-33</Col>
                   </Row>
                 </Block>
+
+                <BlockTitle>Resizable Cols</BlockTitle>
+                <Block className="grid-resizable-demo">
+                  <Row>
+                    <Col resizable style={{minWidth: '20px'}}>1</Col>
+                    <Col resizable style={{minWidth: '20px'}}>2</Col>
+                    <Col resizable style={{minWidth: '20px'}}>3</Col>
+                  </Row>
+                </Block>
+
+                <BlockTitle>Resizable Fixed Col</BlockTitle>
+                <BlockHeader>2nd column has fixed size</BlockHeader>
+                <Block className="grid-resizable-demo">
+                  <Row>
+                    <Col resizable style={{minWidth: '20px'}}>1</Col>
+                    <Col resizable resizableFixed style={{minWidth: '20px'}}>2</Col>
+                    <Col resizable style={{minWidth: '20px'}}>3</Col>
+                  </Row>
+                </Block>
+
+                <BlockTitle>Resizable Grid</BlockTitle>
+                <Block className="grid-resizable-demo">
+                  <Row className="align-items-stretch" style={{height: '300px'}}>
+                    <Col resizable className="demo-col-center-content" style={{minWidth: '50px'}}>Left</Col>
+                    <Col resizable className="display-flex flex-direction-column" style={{
+                      padding: '0px',
+                      border: 'none',
+                      minWidth: '50px',
+                      backgroundColor: 'transparent',
+                    }}>
+                      <Row resizable style={{height: '50%', minHeight: '50px'}}>
+                        <Col className="demo-col-center-content" style={{height: '100%'}}>Center Top</Col>
+                      </Row>
+                      <Row resizable style={{height: '50%', minHeight: '50px'}}>
+                        <Col className="demo-col-center-content" style={{height: '100%'}}>Center Bottom</Col>
+                      </Row>
+                    </Col>
+                    <Col resizable className="demo-col-center-content" style={{minWidth: '50px'}}>Right</Col>
+                  </Row>
+                </Block>
               </Page>
             </View>
           </App>
@@ -157,4 +197,15 @@ block content
       padding: 5px;
       margin-bottom: 15px;
       font-size: 12px;
+    }
+    .grid-resizable-demo {
+      --f7-grid-row-gap: 16px;
+    }
+    .grid-resizable-demo div[class*="col"] {
+      margin-bottom: 0;
+    }
+    .grid-resizable-demo .demo-col-center-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }

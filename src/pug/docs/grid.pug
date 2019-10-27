@@ -74,21 +74,113 @@ block content
           td xlarge-auto
           td Equal width
 
+    h2 Resizable Grid
+    p It is also possible to make layout grid resizable. Let's take a look at its HTML layout:
+    :code(lang="html")
+      <div class="row">
+        <div class="col resizable">
+          ...
+          <span class="resize-handler"></div>
+        </div>
+        <div class="col resizable">
+          ...
+          <span class="resize-handler"></div>
+        </div>
+        ...
+      </div>
+    p where:
+    ul
+      li `resizable` - additional class on column to make it resizable
+      li `<span class="resize-handler"></div>` - resize handler between columns that is used to resize columns
+    p There are also additional classes that can be used to control resizing:
+    ul
+      li `resizable-fixed` - columns with such class will have fixed size (not resizable)
+      li `resizable-absolute` - enables absolute (in px) resizing. When it is not enabled, it resize columns in relative form (sets width in %), this keeps them responsive. With absolute resize it will set absolute size in px to each column, but it can break responsiveness.
+
+    p In the same way, we can make grid rows resizable as well:
+    :code(lang="html")
+      <div>
+        <!-- add "resizable" class to row -->
+        <div class="row resizable">
+          <div class="col">...</div>
+          <div class="col">...</div>
+          <!-- put "resize-handler" as the last child of the row -->
+          <span class="resize-handler"></div>
+        </div>
+
+        <!-- add "resizable" class to row -->
+        <div class="row resizable">
+          <div class="col">...</div>
+          <div class="col">...</div>
+          <!-- put "resize-handler" as the last child of the row -->
+          <span class="resize-handler"></div>
+        </div>
+
+        ...
+      </div>
+    p Resizable rows support same additional `resizable-fixed` and `resizable-absolute` modifiers.
+
+    .important-note
+      ul
+        li To limit colums min/max size (width), they must have `min-width` and `max-with` CSS properties specified
+        li To limit rows min/max size (height), they must have `min-height` and `max-height` CSS properties specified
+        li By default rows (as well as columns) resized in "relative way", to ensure it works correctly, make sure they have parent with fixed height
+
+    h2 Grid Events
+    p Grid will fire the following DOM events on column and row items and app events on app instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td grid:resize
+          td Grid column or row element<span>&lt;div class="col"&gt;</span><span>&lt;div class="row"&gt;</span>
+          td Event will be triggered on resizable grid column (or row) resize
+
+    h3 App Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          td gridResize
+          td <span>(el)</span>
+          td Event will be triggered on resizable grid column (or row) resize
+
     +cssVars('grid')
 
     .with-device
       h2(data-device-preview="../docs-demos/core/grid.html") Examples
       p By default grid columns (cells) has no any visual styles, we'll add them for this demo:
       :code(lang="css")
-            div[class*="col"] {
-              background: #fff;
-              text-align: center;
-              color: #000;
-              border: 1px solid #ddd;
-              padding: 5px;
-              margin-bottom: 15px;
-              font-size: 12px;
-            }
+        div[class*="col"] {
+          background: #fff;
+          text-align: center;
+          color: #000;
+          border: 1px solid #ddd;
+          padding: 5px;
+          margin-bottom: 16px;
+          font-size: 12px;
+        }
+
+        .grid-resizable-demo {
+          --f7-grid-row-gap: 16px;
+        }
+        .grid-resizable-demo div[class*="col"] {
+          margin-bottom: 0;
+        }
+        .grid-resizable-demo .demo-col-center-content {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
       :code(lang="html")
             <div class="block-title">Columns with gap</div>
             <div class="block">
@@ -214,3 +306,68 @@ block content
                 <div class="col-100 medium-33">.col-100.medium-33</div>
               </div>
             </div>
+
+      :code(lang="html")
+        <div class="block-title">Resizable Cols</div>
+        <div class="block grid-resizable-demo">
+          <div class="row">
+            <div class="col resizable" style="min-width: 20px">
+              <span>1</span>
+              <span class="resize-handler"></span>
+            </div>
+            <div class="col resizable" style="min-width: 20px">
+              <span>2</span>
+              <span class="resize-handler"></span>
+            </div>
+            <div class="col resizable" style="min-width: 20px">
+              <span>3</span>
+              <span class="resize-handler"></span>
+            </div>
+          </div>
+        </div>
+
+      :code(lang="html")
+        <div class="block-title">Resizable Fixed Col</div>
+        <div class="block-header">2nd column has fixed size</div>
+        <div class="block grid-resizable-demo">
+          <div class="row">
+            <div class="col resizable" style="min-width: 20px">
+              <span>1</span>
+              <span class="resize-handler"></span>
+            </div>
+            <div class="col resizable resizable-fixed" style="min-width: 20px">
+              <span>2</span>
+              <span class="resize-handler"></span>
+            </div>
+            <div class="col resizable" style="min-width: 20px">
+              <span>3</span>
+              <span class="resize-handler"></span>
+            </div>
+          </div>
+        </div>
+
+      :code(lang="html")
+        <div class="block-title">Resizable Grid</div>
+        <div class="block grid-resizable-demo">
+          <div class="row align-items-stretch" style="height: 300px">
+            <div class="col resizable demo-col-center-content" style="min-width: 50px">
+              | Left
+              <span class="resize-handler"></span>
+            </div>
+            <div class="col resizable display-flex flex-direction-column" style="padding: 0px; border: none; min-width: 50px; background-color: transparent">
+              <div class="row resizable" style="height: 50%; min-height: 50px">
+                <div class="col demo-col-center-content" style="height: 100%">Center Top</div>
+                <span class="resize-handler"></span>
+              </div>
+              <div class="row resizable" style="height: 50%; min-height: 50px">
+                <div class="col demo-col-center-content" style="height: 100%">Center Bottom</div>
+                <span class="resize-handler"></span>
+              </div>
+              <span class="resize-handler"></span>
+            </div>
+            <div class="col resizable demo-col-center-content" style="min-width: 50px">
+              | Right
+              <span class="resize-handler"></span>
+            </div>
+          </div>
+        </div>

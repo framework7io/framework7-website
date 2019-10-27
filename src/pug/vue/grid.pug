@@ -42,6 +42,26 @@ block content
           td div
           td Defines which tag must be used to render row element
         tr
+          td resizable
+          td boolean
+          td false
+          td Makes row resizable
+        tr
+          td resizable-absolute
+          td boolean
+          td false
+          td Enables absolute resizing (in `px`)
+        tr
+          td resizable-fixed
+          td boolean
+          td false
+          td Keeps resizable row in fixed size (not resizable)
+        tr
+          td resizable-handler
+          td boolean
+          td true
+          td Adds resize handler element (between rows) to resize them
+        tr
           th(colspan="4") &lt;f7-col&gt; properties
         tr
           td width
@@ -73,134 +93,206 @@ block content
           td number<string>
           td
           td Column width when app width >= 1200px
+        tr
+          td resizable
+          td boolean
+          td false
+          td Makes column resizable
+        tr
+          td resizable-absolute
+          td boolean
+          td false
+          td Enables absolute resizing (in `px`)
+        tr
+          td resizable-fixed
+          td boolean
+          td false
+          td Keeps resizable column in fixed size (not resizable)
+        tr
+          td resizable-handler
+          td boolean
+          td true
+          td Adds resize handler element (between columns) to resize them
+    h2 Grid Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-row&gt; events
+        tr
+          td grid:resize
+          td Event will be triggered on resizable grid row resize
+        tr
+          th(colspan="2") &lt;f7-col&gt; events
+        tr
+          td grid:resize
+          td Event will be triggered on resizable grid column resize
     .with-device
       h2(data-device-preview="../docs-demos/vue/grid.html") Examples
       :code(lang="html")
-            <f7-block>
-              <p>Columns within a row are automatically set to have equal width. Otherwise you can define your column with percentage of screen you want.</p>
-            </f7-block>
+        <f7-block>
+          <p>Columns within a row are automatically set to have equal width. Otherwise you can define your column with percentage of screen you want.</p>
+        </f7-block>
 
-            <f7-block-title>Columns with gap</f7-block-title>
-            <f7-block>
+        <f7-block-title>Columns with gap</f7-block-title>
+        <f7-block>
+          <f7-row>
+            <f7-col>50% (.col)</f7-col>
+            <f7-col>50% (.col)</f7-col>
+          </f7-row>
+          <f7-row>
+            <f7-col>25% (.col)</f7-col>
+            <f7-col>25% (.col)</f7-col>
+            <f7-col>25% (.col)</f7-col>
+            <f7-col>25% (.col)</f7-col>
+          </f7-row>
+          <f7-row>
+            <f7-col>33% (.col)</f7-col>
+            <f7-col>33% (.col)</f7-col>
+            <f7-col>33% (.col)</f7-col>
+          </f7-row>
+          <f7-row>
+            <f7-col>20% (.col)</f7-col>
+            <f7-col>20% (.col)</f7-col>
+            <f7-col>20% (.col)</f7-col>
+            <f7-col>20% (.col)</f7-col>
+            <f7-col>20% (.col)</f7-col>
+          </f7-row>
+          <f7-row>
+            <f7-col width="33">33% (.col-33)</f7-col>
+            <f7-col width="66">66% (.col-66)</f7-col>
+          </f7-row>
+          <f7-row>
+            <f7-col width="25">25% (.col-25)</f7-col>
+            <f7-col width="25">25% (.col-25)</f7-col>
+            <f7-col width="50">50% (.col-50)</f7-col>
+          </f7-row>
+          <f7-row>
+            <f7-col width="75">75% (.col-75)</f7-col>
+            <f7-col width="25">25% (.col-25)</f7-col>
+          </f7-row>
+          <f7-row>
+            <f7-col width="80">80% (.col-80)</f7-col>
+            <f7-col width="20">20% (.col-20)</f7-col>
+          </f7-row>
+        </f7-block>
+
+        <f7-block-title>No gap between columns</f7-block-title>
+        <f7-block>
+          <f7-row no-gap>
+            <f7-col>50% (.col)</f7-col>
+            <f7-col>50% (.col)</f7-col>
+          </f7-row>
+          <f7-row no-gap>
+            <f7-col>25% (.col)</f7-col>
+            <f7-col>25% (.col)</f7-col>
+            <f7-col>25% (.col)</f7-col>
+            <f7-col>25% (.col)</f7-col>
+          </f7-row>
+          <f7-row no-gap>
+            <f7-col>33% (.col)</f7-col>
+            <f7-col>33% (.col)</f7-col>
+            <f7-col>33% (.col)</f7-col>
+          </f7-row>
+          <f7-row no-gap>
+            <f7-col>20% (.col)</f7-col>
+            <f7-col>20% (.col)</f7-col>
+            <f7-col>20% (.col)</f7-col>
+            <f7-col>20% (.col)</f7-col>
+            <f7-col>20% (.col)</f7-col>
+          </f7-row>
+          <f7-row no-gap>
+            <f7-col width="33">33% (.col-33)</f7-col>
+            <f7-col width="66">66% (.col-66)</f7-col>
+          </f7-row>
+          <f7-row no-gap>
+            <f7-col width="25">25% (.col-25)</f7-col>
+            <f7-col width="25">25% (.col-25)</f7-col>
+            <f7-col width="50">50% (.col-50)</f7-col>
+          </f7-row>
+          <f7-row no-gap>
+            <f7-col width="75">75% (.col-75)</f7-col>
+            <f7-col width="25">25% (.col-25)</f7-col>
+          </f7-row>
+          <f7-row no-gap>
+            <f7-col width="80">80% (.col-80)</f7-col>
+            <f7-col width="20">20% (.col-20)</f7-col>
+          </f7-row>
+        </f7-block>
+
+        <f7-block-title>Nested</f7-block-title>
+        <f7-block>
+          <f7-row>
+            <f7-col>50% (.col)
               <f7-row>
                 <f7-col>50% (.col)</f7-col>
                 <f7-col>50% (.col)</f7-col>
               </f7-row>
-              <f7-row>
-                <f7-col>25% (.col)</f7-col>
-                <f7-col>25% (.col)</f7-col>
-                <f7-col>25% (.col)</f7-col>
-                <f7-col>25% (.col)</f7-col>
-              </f7-row>
-              <f7-row>
-                <f7-col>33% (.col)</f7-col>
-                <f7-col>33% (.col)</f7-col>
-                <f7-col>33% (.col)</f7-col>
-              </f7-row>
-              <f7-row>
-                <f7-col>20% (.col)</f7-col>
-                <f7-col>20% (.col)</f7-col>
-                <f7-col>20% (.col)</f7-col>
-                <f7-col>20% (.col)</f7-col>
-                <f7-col>20% (.col)</f7-col>
-              </f7-row>
+            </f7-col>
+            <f7-col>50% (.col)
               <f7-row>
                 <f7-col width="33">33% (.col-33)</f7-col>
                 <f7-col width="66">66% (.col-66)</f7-col>
               </f7-row>
-              <f7-row>
-                <f7-col width="25">25% (.col-25)</f7-col>
-                <f7-col width="25">25% (.col-25)</f7-col>
-                <f7-col width="50">50% (.col-50)</f7-col>
-              </f7-row>
-              <f7-row>
-                <f7-col width="75">75% (.col-75)</f7-col>
-                <f7-col width="25">25% (.col-25)</f7-col>
-              </f7-row>
-              <f7-row>
-                <f7-col width="80">80% (.col-80)</f7-col>
-                <f7-col width="20">20% (.col-20)</f7-col>
-              </f7-row>
-            </f7-block>
+            </f7-col>
+          </f7-row>
+        </f7-block>
 
-            <f7-block-title>No gap between columns</f7-block-title>
-            <f7-block>
-              <f7-row no-gap>
-                <f7-col>50% (.col)</f7-col>
-                <f7-col>50% (.col)</f7-col>
-              </f7-row>
-              <f7-row no-gap>
-                <f7-col>25% (.col)</f7-col>
-                <f7-col>25% (.col)</f7-col>
-                <f7-col>25% (.col)</f7-col>
-                <f7-col>25% (.col)</f7-col>
-              </f7-row>
-              <f7-row no-gap>
-                <f7-col>33% (.col)</f7-col>
-                <f7-col>33% (.col)</f7-col>
-                <f7-col>33% (.col)</f7-col>
-              </f7-row>
-              <f7-row no-gap>
-                <f7-col>20% (.col)</f7-col>
-                <f7-col>20% (.col)</f7-col>
-                <f7-col>20% (.col)</f7-col>
-                <f7-col>20% (.col)</f7-col>
-                <f7-col>20% (.col)</f7-col>
-              </f7-row>
-              <f7-row no-gap>
-                <f7-col width="33">33% (.col-33)</f7-col>
-                <f7-col width="66">66% (.col-66)</f7-col>
-              </f7-row>
-              <f7-row no-gap>
-                <f7-col width="25">25% (.col-25)</f7-col>
-                <f7-col width="25">25% (.col-25)</f7-col>
-                <f7-col width="50">50% (.col-50)</f7-col>
-              </f7-row>
-              <f7-row no-gap>
-                <f7-col width="75">75% (.col-75)</f7-col>
-                <f7-col width="25">25% (.col-25)</f7-col>
-              </f7-row>
-              <f7-row no-gap>
-                <f7-col width="80">80% (.col-80)</f7-col>
-                <f7-col width="20">20% (.col-20)</f7-col>
-              </f7-row>
-            </f7-block>
+        <f7-block-title>Responsive Grid</f7-block-title>
+        <f7-block>
+          <p>Grid cells have different size on Phone/Tablet</p>
+          <f7-row>
+            <f7-col width="100" medium="50">.col-100.tablet-50</f7-col>
+            <f7-col width="100" medium="50">.col-100.tablet-50</f7-col>
+          </f7-row>
+          <f7-row>
+            <f7-col width="50" medium="25">.col-50.tablet-25</f7-col>
+            <f7-col width="50" medium="25">.col-50.tablet-25</f7-col>
+            <f7-col width="50" medium="25">.col-50.tablet-25</f7-col>
+            <f7-col width="50" medium="25">.col-50.tablet-25</f7-col>
+          </f7-row>
+          <f7-row>
+            <f7-col width="100" medium="40">.col-100.tablet-40</f7-col>
+            <f7-col width="50" medium="60">.col-50.tablet-60</f7-col>
+            <f7-col width="50" medium="66">.col-50.tablet-66</f7-col>
+            <f7-col width="100" medium="33">.col-100.tablet-33</f7-col>
+          </f7-row>
+        </f7-block>
 
-            <f7-block-title>Nested</f7-block-title>
-            <f7-block>
-              <f7-row>
-                <f7-col>50% (.col)
-                  <f7-row>
-                    <f7-col>50% (.col)</f7-col>
-                    <f7-col>50% (.col)</f7-col>
-                  </f7-row>
-                </f7-col>
-                <f7-col>50% (.col)
-                  <f7-row>
-                    <f7-col width="33">33% (.col-33)</f7-col>
-                    <f7-col width="66">66% (.col-66)</f7-col>
-                  </f7-row>
-                </f7-col>
-              </f7-row>
-            </f7-block>
+        <f7-block-title>Resizable Cols</f7-block-title>
+        <f7-block class="grid-resizable-demo">
+          <f7-row>
+            <f7-col resizable style="min-width: 20px">1</f7-col>
+            <f7-col resizable style="min-width: 20px">2</f7-col>
+            <f7-col resizable style="min-width: 20px">3</f7-col>
+          </f7-row>
+        </f7-block>
 
-            <f7-block-title>Responsive Grid</f7-block-title>
-            <f7-block>
-              <p>Grid cells have different size on Phone/Tablet</p>
-              <f7-row>
-                <f7-col width="100" medium="50">.col-100.tablet-50</f7-col>
-                <f7-col width="100" medium="50">.col-100.tablet-50</f7-col>
+        <f7-block-title>Resizable Fixed Col</f7-block-title>
+        <f7-block-header>2nd column has fixed size</f7-block-header>
+        <f7-block class="grid-resizable-demo">
+          <f7-row>
+            <f7-col resizable style="min-width: 20px">1</f7-col>
+            <f7-col resizable resizable-fixed style="min-width: 20px">2</f7-col>
+            <f7-col resizable style="min-width: 20px">3</f7-col>
+          </f7-row>
+        </f7-block>
+
+        <f7-block-title>Resizable Grid</f7-block-title>
+        <f7-block class="grid-resizable-demo">
+          <f7-row class="align-items-stretch" style="height: 300px">
+            <f7-col resizable class="demo-col-center-content" style="min-width: 50px">Left</f7-col>
+            <f7-col resizable class="display-flex flex-direction-column" style="padding: 0px; border: none; min-width: 50px; background-color: transparent">
+              <f7-row resizable style="height: 50%; min-height: 50px">
+                <f7-col class="demo-col-center-content" style="height: 100%">Center Top</f7-col>
               </f7-row>
-              <f7-row>
-                <f7-col width="50" medium="25">.col-50.tablet-25</f7-col>
-                <f7-col width="50" medium="25">.col-50.tablet-25</f7-col>
-                <f7-col width="50" medium="25">.col-50.tablet-25</f7-col>
-                <f7-col width="50" medium="25">.col-50.tablet-25</f7-col>
+              <f7-row resizable style="height: 50%; min-height: 50px">
+                <f7-col class="demo-col-center-content" style="height: 100%">Center Bottom</f7-col>
               </f7-row>
-              <f7-row>
-                <f7-col width="100" medium="40">.col-100.tablet-40</f7-col>
-                <f7-col width="50" medium="60">.col-50.tablet-60</f7-col>
-                <f7-col width="50" medium="66">.col-50.tablet-66</f7-col>
-                <f7-col width="100" medium="33">.col-100.tablet-33</f7-col>
-              </f7-row>
-            </f7-block>
+            </f7-col>
+            <f7-col resizable class="demo-col-center-content" style="min-width: 50px">Right</f7-col>
+          </f7-row>
+        </f7-block>
