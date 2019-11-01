@@ -52,15 +52,15 @@ footer {
     margin-bottom: 5px;
     font-weight: bold;
   }
-  .custom-sponsors {
-    margin-right: -5px;
-  }
   .custom-sponsors a {
     width: 220px;
     height: 65px;
     text-align: center !important;
     line-height: 65px;
-    font-size: 0;
+    font-size: 0 !important;
+    + a {
+      margin-top: 5px;
+    }
   }
   .custom-sponsors a img {
     max-width: 220px;
@@ -68,8 +68,15 @@ footer {
     display: inline-block;
     vertical-align: middle;
   }
+  .custom-sponsors a.border {
+    border: 1px solid rgba(0,0,0,0.1);
+    img {
+      max-width: 220px - 10px;
+      max-height: 65px - 10px;
+    }
+  }
   .custom-sponsors,
-  #bsap_1306028 a {
+  #bsap_1306028 {
     a {
       text-align: left;
       margin-bottom: 20px;
@@ -82,7 +89,7 @@ footer {
       position: relative;
       overflow: hidden;
       float: none;
-      margin: 5px;
+      margin: 5px 0;
       vertical-align: top;
       img {
         border: none;
@@ -92,13 +99,14 @@ footer {
         opacity: 1;
       }
     }
+    a:not(.adhere) {
+      font-size: 0;
+    }
   }
   .custom-sponsors a {
     margin: 0;
   }
   #bsap_1306028 {
-    margin-top: 5px;
-    margin-right: -5px;
     font-size: 0;
     text-align: right;
 
