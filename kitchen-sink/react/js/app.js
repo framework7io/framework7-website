@@ -82358,7 +82358,7 @@
 	      var _this2 = this;
 
 	      return react.createElement(Page, null, react.createElement(Navbar$2, {
-	        title: "Messages",
+	        title: "Messsages",
 	        backLink: "Back"
 	      }), react.createElement(Messagebar$2, {
 	        placeholder: this.placeholder,
