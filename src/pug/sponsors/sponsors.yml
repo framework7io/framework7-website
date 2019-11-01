@@ -2,6 +2,10 @@ diamond:
 platinum:
 gold:
 -
+  title: CodersRank - Ultimate Profile For Coders
+  link: https://codersrank.io
+  imageUrl: "#{cdn}/i/sponsors/codersrank.svg"
+-
   title: Sparheld.de - save shopping online
   link: https://www.sparheld.de/
   imageUrl: "#{cdn}/i/sponsors/sparheld.jpg"
@@ -47,10 +51,6 @@ topSupporter:
   title: Rise — Creative Web Development Agency
   link: https://rise.co
   imageUrl: "#{cdn}/i/sponsors/rise.png"
--
-  title: usave - compare broadband deals on usave.co.uk
-  link: https://usave.co.uk/utilities/broadband
-  imageUrl: "#{cdn}/i/sponsors/usave.png"
 -
   title: Kidoverse - App for kids to learn, play, create and explore
   link: https://kidoverse.app/
