@@ -19456,7 +19456,9 @@
 	var selfClosing = 'area base br col command embed hr img input keygen link menuitem meta param source track wbr'.split(' ');
 	var propsAttrs = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple value indeterminate'.split(' ');
 	var booleanProps = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple readOnly indeterminate'.split(' ');
-	var tempDom = doc.createElement('div');
+	var tempDomDIV = doc.createElement('div');
+	var tempDomTBODY;
+	var tempDomTROW;
 
 	function toCamelCase$1(name) {
 	  return name.split('-').map(function (word, index) {
@@ -19538,11 +19540,20 @@
 	  var destroy = [];
 	  var update = [];
 	  var postpatch = [];
+	  var isFakeElement = false;
+
+	  if (data && data.attrs && data.attrs.component) {
+	    // eslint-disable-next-line
+	    tagName = data.attrs.component;
+	    delete data.attrs.component;
+	    isFakeElement = true;
+	  }
+
 	  var isCustomComponent = tagName && tagName.indexOf('-') > 0 && customComponents[tagName];
 
 	  if (isCustomComponent) {
 	    insert.push(function (vnode) {
-	      if (vnode.sel !== tagName) return;
+	      if (vnode.sel !== tagName && !isFakeElement) return;
 	      createCustomComponent({
 	        app: app,
 	        vnode: vnode,
@@ -19872,7 +19883,20 @@
 	  var context = arguments.length > 1 ? arguments[1] : undefined;
 	  var initial = arguments.length > 2 ? arguments[2] : undefined;
 	  // Save to temp dom
-	  tempDom.innerHTML = html.trim(); // Parse DOM
+	  var htmlTrim = html.trim();
+	  var tempDom = tempDomDIV;
+
+	  if (htmlTrim.indexOf('<tr') === 0) {
+	    if (!tempDomTBODY) tempDomTBODY = doc.createElement('tbody');
+	    tempDom = tempDomTBODY;
+	  }
+
+	  if (htmlTrim.indexOf('<td') === 0 || htmlTrim.indexOf('<th') === 0) {
+	    if (!tempDomTROW) tempDomTROW = doc.createElement('tr');
+	    tempDom = tempDomTROW;
+	  }
+
+	  tempDom.innerHTML = htmlTrim; // Parse DOM
 
 	  var rootEl;
 
@@ -33774,7 +33798,7 @@
 	          locale = _calendar$params2.locale;
 
 	      if (typeof dateFormat === 'string') {
-	        return dateFormat.replace(/yyyy/g, year).replace(/yy/g, String(year).substring(2)).replace(/mm/g, month1 < 10 ? "0".concat(month1) : month1).replace(/m(\W+)/g, "".concat(month1, "$1")).replace(/MM/g, monthNames[month]).replace(/M(\W+)/g, "".concat(monthNamesShort[month], "$1")).replace(/dd/g, day < 10 ? "0".concat(day) : day).replace(/d(\W+)/g, "".concat(day, "$1")).replace(/DD/g, dayNames[weekDay]).replace(/D(\W+)/g, "".concat(dayNamesShort[weekDay], "$1"));
+	        return dateFormat.replace(/yyyy/g, year).replace(/yy/g, String(year).substring(2)).replace(/mm/g, month1 < 10 ? "0".concat(month1) : month1).replace(/m(\W+)/g, "".concat(month1, "$1")).replace(/(\W+)m/g, "$1".concat(month1)).replace(/MM/g, monthNames[month]).replace(/M(\W+)/g, "".concat(monthNamesShort[month], "$1")).replace(/(\W+)M/g, "$1".concat(monthNamesShort[month])).replace(/dd/g, day < 10 ? "0".concat(day) : day).replace(/d(\W+)/g, "".concat(day, "$1")).replace(/(\W+)d/g, "$1".concat(day)).replace(/DD/g, dayNames[weekDay]).replace(/D(\W+)/g, "".concat(dayNamesShort[weekDay], "$1")).replace(/(\W+)D/g, "$1".concat(dayNamesShort[weekDay]));
 	      }
 
 	      if (typeof dateFormat === 'function') {
@@ -47213,9 +47237,6 @@
 	            pb.emit('local::doubleClick', e);
 	          },
 	          slideChange: function slideChange() {
-	            var swiper = this;
-	            pb.onSlideChange(swiper);
-
 	            for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
 	              args[_key] = arguments[_key];
 	            }
@@ -47237,6 +47258,9 @@
 	            pb.emit.apply(pb, ['local::transitionEnd'].concat(args));
 	          },
 	          slideChangeTransitionStart: function slideChangeTransitionStart() {
+	            var swiper = this;
+	            pb.onSlideChange(swiper);
+
 	            for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
 	              args[_key4] = arguments[_key4];
 	            }
@@ -52810,7 +52834,7 @@
 	};
 
 	/**
-	 * Framework7 5.1.0
+	 * Framework7 5.1.1
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -52818,7 +52842,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: October 27, 2019
+	 * Released on: November 3, 2019
 	 */
 
 
@@ -53316,101 +53340,18 @@
 	  });
 	});
 
-	function _typeof$1(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1(obj);
-	}
-
-	function _classCallCheck$1(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1(self, call) {
-	  if (call && (_typeof$1(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1(self);
-	}
-
-	function _assertThisInitialized$1(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$1(o) {
-	  _getPrototypeOf$1 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1(o);
-	}
-
-	function _inherits$1(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1(o, p) {
-	  _setPrototypeOf$1 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1(o, p);
-	}
-
 	var F7AccordionContent =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1(F7AccordionContent, _React$Component);
+	  _inherits(F7AccordionContent, _React$Component);
 
 	  function F7AccordionContent(props, context) {
-	    _classCallCheck$1(this, F7AccordionContent);
+	    _classCallCheck(this, F7AccordionContent);
 
-	    return _possibleConstructorReturn$1(this, _getPrototypeOf$1(F7AccordionContent).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7AccordionContent).call(this, props, context));
 	  }
 
-	  _createClass$1(F7AccordionContent, [{
+	  _createClass(F7AccordionContent, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -53460,110 +53401,27 @@
 	  });
 	}
 
-	function _typeof$2(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$2 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$2 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$2(obj);
-	}
-
-	function _classCallCheck$2(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$2(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$2(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$2(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$2(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$2(self, call) {
-	  if (call && (_typeof$2(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$2(self);
-	}
-
-	function _getPrototypeOf$2(o) {
-	  _getPrototypeOf$2 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$2(o);
-	}
-
-	function _assertThisInitialized$2(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$2(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$2(subClass, superClass);
-	}
-
-	function _setPrototypeOf$2(o, p) {
-	  _setPrototypeOf$2 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$2(o, p);
-	}
-
 	var F7AccordionItem =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$2(F7AccordionItem, _React$Component);
+	  _inherits(F7AccordionItem, _React$Component);
 
 	  function F7AccordionItem(props, context) {
 	    var _this;
 
-	    _classCallCheck$2(this, F7AccordionItem);
+	    _classCallCheck(this, F7AccordionItem);
 
-	    _this = _possibleConstructorReturn$2(this, _getPrototypeOf$2(F7AccordionItem).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7AccordionItem).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$2(_this), 'onBeforeOpen onOpen onOpened onBeforeClose onClose onClosed'.split(' '));
+	      Utils$1.bindMethods(_assertThisInitialized(_this), 'onBeforeOpen onOpen onOpened onBeforeClose onClose onClosed'.split(' '));
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$2(F7AccordionItem, [{
+	  _createClass(F7AccordionItem, [{
 	    key: "onBeforeOpen",
 	    value: function onBeforeOpen(el, prevent) {
 	      if (this.eventTargetEl !== el) return;
@@ -53686,101 +53544,18 @@
 
 	F7AccordionItem.displayName = 'f7-accordion-item';
 
-	function _typeof$3(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$3 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$3 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$3(obj);
-	}
-
-	function _classCallCheck$3(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$3(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$3(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$3(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$3(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$3(self, call) {
-	  if (call && (_typeof$3(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$3(self);
-	}
-
-	function _assertThisInitialized$3(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$3(o) {
-	  _getPrototypeOf$3 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$3(o);
-	}
-
-	function _inherits$3(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$3(subClass, superClass);
-	}
-
-	function _setPrototypeOf$3(o, p) {
-	  _setPrototypeOf$3 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$3(o, p);
-	}
-
 	var F7AccordionToggle =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$3(F7AccordionToggle, _React$Component);
+	  _inherits(F7AccordionToggle, _React$Component);
 
 	  function F7AccordionToggle(props, context) {
-	    _classCallCheck$3(this, F7AccordionToggle);
+	    _classCallCheck(this, F7AccordionToggle);
 
-	    return _possibleConstructorReturn$3(this, _getPrototypeOf$3(F7AccordionToggle).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7AccordionToggle).call(this, props, context));
 	  }
 
-	  _createClass$3(F7AccordionToggle, [{
+	  _createClass(F7AccordionToggle, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -53812,101 +53587,18 @@
 
 	F7AccordionToggle.displayName = 'f7-accordion-toggle';
 
-	function _typeof$4(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$4 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$4 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$4(obj);
-	}
-
-	function _classCallCheck$4(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$4(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$4(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$4(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$4(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$4(self, call) {
-	  if (call && (_typeof$4(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$4(self);
-	}
-
-	function _assertThisInitialized$4(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$4(o) {
-	  _getPrototypeOf$4 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$4(o);
-	}
-
-	function _inherits$4(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$4(subClass, superClass);
-	}
-
-	function _setPrototypeOf$4(o, p) {
-	  _setPrototypeOf$4 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$4(o, p);
-	}
-
 	var F7Accordion =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$4(F7Accordion, _React$Component);
+	  _inherits(F7Accordion, _React$Component);
 
 	  function F7Accordion(props, context) {
-	    _classCallCheck$4(this, F7Accordion);
+	    _classCallCheck(this, F7Accordion);
 
-	    return _possibleConstructorReturn$4(this, _getPrototypeOf$4(F7Accordion).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7Accordion).call(this, props, context));
 	  }
 
-	  _createClass$4(F7Accordion, [{
+	  _createClass(F7Accordion, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -53938,110 +53630,27 @@
 
 	F7Accordion.displayName = 'f7-accordion';
 
-	function _typeof$5(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$5 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$5 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$5(obj);
-	}
-
-	function _classCallCheck$5(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$5(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$5(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$5(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$5(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$5(self, call) {
-	  if (call && (_typeof$5(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$5(self);
-	}
-
-	function _getPrototypeOf$5(o) {
-	  _getPrototypeOf$5 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$5(o);
-	}
-
-	function _assertThisInitialized$5(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$5(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$5(subClass, superClass);
-	}
-
-	function _setPrototypeOf$5(o, p) {
-	  _setPrototypeOf$5 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$5(o, p);
-	}
-
 	var F7ActionsButton =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$5(F7ActionsButton, _React$Component);
+	  _inherits(F7ActionsButton, _React$Component);
 
 	  function F7ActionsButton(props, context) {
 	    var _this;
 
-	    _classCallCheck$5(this, F7ActionsButton);
+	    _classCallCheck(this, F7ActionsButton);
 
-	    _this = _possibleConstructorReturn$5(this, _getPrototypeOf$5(F7ActionsButton).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7ActionsButton).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$5(_this), ['onClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$5(F7ActionsButton, [{
+	  _createClass(F7ActionsButton, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      var self = this;
@@ -54136,101 +53745,18 @@
 
 	F7ActionsButton.displayName = 'f7-actions-button';
 
-	function _typeof$6(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$6 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$6 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$6(obj);
-	}
-
-	function _classCallCheck$6(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$6(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$6(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$6(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$6(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$6(self, call) {
-	  if (call && (_typeof$6(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$6(self);
-	}
-
-	function _assertThisInitialized$6(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$6(o) {
-	  _getPrototypeOf$6 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$6(o);
-	}
-
-	function _inherits$6(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$6(subClass, superClass);
-	}
-
-	function _setPrototypeOf$6(o, p) {
-	  _setPrototypeOf$6 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$6(o, p);
-	}
-
 	var F7ActionsGroup =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$6(F7ActionsGroup, _React$Component);
+	  _inherits(F7ActionsGroup, _React$Component);
 
 	  function F7ActionsGroup(props, context) {
-	    _classCallCheck$6(this, F7ActionsGroup);
+	    _classCallCheck(this, F7ActionsGroup);
 
-	    return _possibleConstructorReturn$6(this, _getPrototypeOf$6(F7ActionsGroup).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7ActionsGroup).call(this, props, context));
 	  }
 
-	  _createClass$6(F7ActionsGroup, [{
+	  _createClass(F7ActionsGroup, [{
 	    key: "render",
 	    value: function render() {
 	      var self = this;
@@ -54263,110 +53789,27 @@
 
 	F7ActionsGroup.displayName = 'f7-actions-group';
 
-	function _typeof$7(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$7 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$7 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$7(obj);
-	}
-
-	function _classCallCheck$7(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$7(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$7(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$7(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$7(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$7(self, call) {
-	  if (call && (_typeof$7(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$7(self);
-	}
-
-	function _getPrototypeOf$7(o) {
-	  _getPrototypeOf$7 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$7(o);
-	}
-
-	function _assertThisInitialized$7(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$7(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$7(subClass, superClass);
-	}
-
-	function _setPrototypeOf$7(o, p) {
-	  _setPrototypeOf$7 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$7(o, p);
-	}
-
 	var F7ActionsLabel =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$7(F7ActionsLabel, _React$Component);
+	  _inherits(F7ActionsLabel, _React$Component);
 
 	  function F7ActionsLabel(props, context) {
 	    var _this;
 
-	    _classCallCheck$7(this, F7ActionsLabel);
+	    _classCallCheck(this, F7ActionsLabel);
 
-	    _this = _possibleConstructorReturn$7(this, _getPrototypeOf$7(F7ActionsLabel).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7ActionsLabel).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$7(_this), ['onClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$7(F7ActionsLabel, [{
+	  _createClass(F7ActionsLabel, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -54467,110 +53910,27 @@
 	  if (callback) callback(newValue, oldValue);
 	}
 
-	function _typeof$8(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$8 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$8 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$8(obj);
-	}
-
-	function _classCallCheck$8(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$8(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$8(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$8(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$8(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$8(self, call) {
-	  if (call && (_typeof$8(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$8(self);
-	}
-
-	function _getPrototypeOf$8(o) {
-	  _getPrototypeOf$8 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$8(o);
-	}
-
-	function _assertThisInitialized$8(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$8(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$8(subClass, superClass);
-	}
-
-	function _setPrototypeOf$8(o, p) {
-	  _setPrototypeOf$8 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$8(o, p);
-	}
-
 	var F7Actions =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$8(F7Actions, _React$Component);
+	  _inherits(F7Actions, _React$Component);
 
 	  function F7Actions(props, context) {
 	    var _this;
 
-	    _classCallCheck$8(this, F7Actions);
+	    _classCallCheck(this, F7Actions);
 
-	    _this = _possibleConstructorReturn$8(this, _getPrototypeOf$8(F7Actions).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Actions).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$8(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$8(F7Actions, [{
+	  _createClass(F7Actions, [{
 	    key: "onOpen",
 	    value: function onOpen(instance) {
 	      this.dispatchEvent('actions:open actionsOpen', instance);
@@ -54776,100 +54136,17 @@
 	  }
 	};
 
-	function _typeof$9(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$9 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$9 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$9(obj);
-	}
-
-	function _classCallCheck$9(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$9(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$9(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$9(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$9(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$9(self, call) {
-	  if (call && (_typeof$9(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$9(self);
-	}
-
-	function _assertThisInitialized$9(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$9(o) {
-	  _getPrototypeOf$9 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$9(o);
-	}
-
-	function _inherits$9(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$9(subClass, superClass);
-	}
-
-	function _setPrototypeOf$9(o, p) {
-	  _setPrototypeOf$9 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$9(o, p);
-	}
-
 	var F7RoutableModals =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$9(F7RoutableModals, _React$Component);
+	  _inherits(F7RoutableModals, _React$Component);
 
 	  function F7RoutableModals(props, context) {
 	    var _this;
 
-	    _classCallCheck$9(this, F7RoutableModals);
+	    _classCallCheck(this, F7RoutableModals);
 
-	    _this = _possibleConstructorReturn$9(this, _getPrototypeOf$9(F7RoutableModals).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7RoutableModals).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    _this.state = function () {
@@ -54881,7 +54158,7 @@
 	    return _this;
 	  }
 
-	  _createClass$9(F7RoutableModals, [{
+	  _createClass(F7RoutableModals, [{
 	    key: "render",
 	    value: function render() {
 	      var _this2 = this;
@@ -54946,105 +54223,22 @@
 
 	F7RoutableModals.displayName = 'f7-routable-modals';
 
-	function _typeof$a(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$a = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$a = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$a(obj);
-	}
-
-	function _classCallCheck$a(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$a(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$a(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$a(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$a(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$a(self, call) {
-	  if (call && (_typeof$a(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$a(self);
-	}
-
-	function _assertThisInitialized$a(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$a(o) {
-	  _getPrototypeOf$a = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$a(o);
-	}
-
-	function _inherits$a(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$a(subClass, superClass);
-	}
-
-	function _setPrototypeOf$a(o, p) {
-	  _setPrototypeOf$a = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$a(o, p);
-	}
-
 	var F7App =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$a(F7App, _React$Component);
+	  _inherits(F7App, _React$Component);
 
 	  function F7App(props, context) {
 	    var _this;
 
-	    _classCallCheck$a(this, F7App);
+	    _classCallCheck(this, F7App);
 
-	    _this = _possibleConstructorReturn$a(this, _getPrototypeOf$a(F7App).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7App).call(this, props, context));
 	    _this.__reactRefs = {};
 	    return _this;
 	  }
 
-	  _createClass$a(F7App, [{
+	  _createClass(F7App, [{
 	    key: "render",
 	    value: function render() {
 	      var _this2 = this;
@@ -55107,105 +54301,22 @@
 
 	F7App.displayName = 'f7-app';
 
-	function _typeof$b(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$b = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$b = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$b(obj);
-	}
-
-	function _classCallCheck$b(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$b(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$b(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$b(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$b(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$b(self, call) {
-	  if (call && (_typeof$b(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$b(self);
-	}
-
-	function _assertThisInitialized$b(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$b(o) {
-	  _getPrototypeOf$b = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$b(o);
-	}
-
-	function _inherits$b(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$b(subClass, superClass);
-	}
-
-	function _setPrototypeOf$b(o, p) {
-	  _setPrototypeOf$b = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$b(o, p);
-	}
-
 	var F7Appbar =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$b(F7Appbar, _React$Component);
+	  _inherits(F7Appbar, _React$Component);
 
 	  function F7Appbar(props, context) {
 	    var _this;
 
-	    _classCallCheck$b(this, F7Appbar);
+	    _classCallCheck(this, F7Appbar);
 
-	    _this = _possibleConstructorReturn$b(this, _getPrototypeOf$b(F7Appbar).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Appbar).call(this, props, context));
 	    _this.__reactRefs = {};
 	    return _this;
 	  }
 
-	  _createClass$b(F7Appbar, [{
+	  _createClass(F7Appbar, [{
 	    key: "render",
 	    value: function render() {
 	      var _this2 = this;
@@ -55276,101 +54387,18 @@
 
 	F7Appbar.displayName = 'f7-appbar';
 
-	function _typeof$c(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$c = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$c = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$c(obj);
-	}
-
-	function _classCallCheck$c(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$c(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$c(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$c(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$c(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$c(self, call) {
-	  if (call && (_typeof$c(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$c(self);
-	}
-
-	function _assertThisInitialized$c(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$c(o) {
-	  _getPrototypeOf$c = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$c(o);
-	}
-
-	function _inherits$c(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$c(subClass, superClass);
-	}
-
-	function _setPrototypeOf$c(o, p) {
-	  _setPrototypeOf$c = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$c(o, p);
-	}
-
 	var F7Badge =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$c(F7Badge, _React$Component);
+	  _inherits(F7Badge, _React$Component);
 
 	  function F7Badge(props, context) {
-	    _classCallCheck$c(this, F7Badge);
+	    _classCallCheck(this, F7Badge);
 
-	    return _possibleConstructorReturn$c(this, _getPrototypeOf$c(F7Badge).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7Badge).call(this, props, context));
 	  }
 
-	  _createClass$c(F7Badge, [{
+	  _createClass(F7Badge, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -55402,101 +54430,18 @@
 
 	F7Badge.displayName = 'f7-badge';
 
-	function _typeof$d(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$d = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$d = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$d(obj);
-	}
-
-	function _classCallCheck$d(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$d(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$d(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$d(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$d(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$d(self, call) {
-	  if (call && (_typeof$d(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$d(self);
-	}
-
-	function _assertThisInitialized$d(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$d(o) {
-	  _getPrototypeOf$d = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$d(o);
-	}
-
-	function _inherits$d(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$d(subClass, superClass);
-	}
-
-	function _setPrototypeOf$d(o, p) {
-	  _setPrototypeOf$d = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$d(o, p);
-	}
-
 	var F7BlockFooter =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$d(F7BlockFooter, _React$Component);
+	  _inherits(F7BlockFooter, _React$Component);
 
 	  function F7BlockFooter(props, context) {
-	    _classCallCheck$d(this, F7BlockFooter);
+	    _classCallCheck(this, F7BlockFooter);
 
-	    return _possibleConstructorReturn$d(this, _getPrototypeOf$d(F7BlockFooter).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7BlockFooter).call(this, props, context));
 	  }
 
-	  _createClass$d(F7BlockFooter, [{
+	  _createClass(F7BlockFooter, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -55528,101 +54473,18 @@
 
 	F7BlockFooter.displayName = 'f7-block-footer';
 
-	function _typeof$e(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$e = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$e = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$e(obj);
-	}
-
-	function _classCallCheck$e(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$e(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$e(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$e(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$e(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$e(self, call) {
-	  if (call && (_typeof$e(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$e(self);
-	}
-
-	function _assertThisInitialized$e(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$e(o) {
-	  _getPrototypeOf$e = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$e(o);
-	}
-
-	function _inherits$e(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$e(subClass, superClass);
-	}
-
-	function _setPrototypeOf$e(o, p) {
-	  _setPrototypeOf$e = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$e(o, p);
-	}
-
 	var F7BlockHeader =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$e(F7BlockHeader, _React$Component);
+	  _inherits(F7BlockHeader, _React$Component);
 
 	  function F7BlockHeader(props, context) {
-	    _classCallCheck$e(this, F7BlockHeader);
+	    _classCallCheck(this, F7BlockHeader);
 
-	    return _possibleConstructorReturn$e(this, _getPrototypeOf$e(F7BlockHeader).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7BlockHeader).call(this, props, context));
 	  }
 
-	  _createClass$e(F7BlockHeader, [{
+	  _createClass(F7BlockHeader, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -55654,101 +54516,18 @@
 
 	F7BlockHeader.displayName = 'f7-block-header';
 
-	function _typeof$f(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$f = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$f = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$f(obj);
-	}
-
-	function _classCallCheck$f(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$f(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$f(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$f(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$f(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$f(self, call) {
-	  if (call && (_typeof$f(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$f(self);
-	}
-
-	function _assertThisInitialized$f(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$f(o) {
-	  _getPrototypeOf$f = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$f(o);
-	}
-
-	function _inherits$f(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$f(subClass, superClass);
-	}
-
-	function _setPrototypeOf$f(o, p) {
-	  _setPrototypeOf$f = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$f(o, p);
-	}
-
 	var F7BlockTitle =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$f(F7BlockTitle, _React$Component);
+	  _inherits(F7BlockTitle, _React$Component);
 
 	  function F7BlockTitle(props, context) {
-	    _classCallCheck$f(this, F7BlockTitle);
+	    _classCallCheck(this, F7BlockTitle);
 
-	    return _possibleConstructorReturn$f(this, _getPrototypeOf$f(F7BlockTitle).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7BlockTitle).call(this, props, context));
 	  }
 
-	  _createClass$f(F7BlockTitle, [{
+	  _createClass(F7BlockTitle, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -55787,110 +54566,27 @@
 
 	F7BlockTitle.displayName = 'f7-block-title';
 
-	function _typeof$g(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$g = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$g = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$g(obj);
-	}
-
-	function _classCallCheck$g(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$g(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$g(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$g(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$g(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$g(self, call) {
-	  if (call && (_typeof$g(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$g(self);
-	}
-
-	function _getPrototypeOf$g(o) {
-	  _getPrototypeOf$g = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$g(o);
-	}
-
-	function _assertThisInitialized$g(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$g(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$g(subClass, superClass);
-	}
-
-	function _setPrototypeOf$g(o, p) {
-	  _setPrototypeOf$g = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$g(o, p);
-	}
-
 	var F7Block =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$g(F7Block, _React$Component);
+	  _inherits(F7Block, _React$Component);
 
 	  function F7Block(props, context) {
 	    var _this;
 
-	    _classCallCheck$g(this, F7Block);
+	    _classCallCheck(this, F7Block);
 
-	    _this = _possibleConstructorReturn$g(this, _getPrototypeOf$g(F7Block).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Block).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$g(_this), ['onTabShow', 'onTabHide']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onTabShow', 'onTabHide']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$g(F7Block, [{
+	  _createClass(F7Block, [{
 	    key: "onTabShow",
 	    value: function onTabShow(el) {
 	      if (this.eventTargetEl !== el) return;
@@ -56022,104 +54718,21 @@
 
 	F7Block.displayName = 'f7-block';
 
-	function _typeof$h(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$h = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$h = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$h(obj);
-	}
-
-	function _classCallCheck$h(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$h(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$h(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$h(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$h(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$h(self, call) {
-	  if (call && (_typeof$h(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$h(self);
-	}
-
-	function _getPrototypeOf$h(o) {
-	  _getPrototypeOf$h = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$h(o);
-	}
-
-	function _assertThisInitialized$h(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$h(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$h(subClass, superClass);
-	}
-
-	function _setPrototypeOf$h(o, p) {
-	  _setPrototypeOf$h = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$h(o, p);
-	}
-
 	var F7Icon =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$h(F7Icon, _React$Component);
+	  _inherits(F7Icon, _React$Component);
 
 	  function F7Icon(props, context) {
 	    var _this;
 
-	    _classCallCheck$h(this, F7Icon);
+	    _classCallCheck(this, F7Icon);
 
-	    _this = _possibleConstructorReturn$h(this, _getPrototypeOf$h(F7Icon).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Icon).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    _this.state = function () {
-	      var self = _assertThisInitialized$h(_this);
+	      var self = _assertThisInitialized(_this);
 
 	      var $f7 = self.$f7;
 
@@ -56139,7 +54752,7 @@
 	    return _this;
 	  }
 
-	  _createClass$h(F7Icon, [{
+	  _createClass(F7Icon, [{
 	    key: "render",
 	    value: function render() {
 	      var _this2 = this;
@@ -56318,110 +54931,27 @@
 
 	F7Icon.displayName = 'f7-icon';
 
-	function _typeof$i(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$i = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$i = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$i(obj);
-	}
-
-	function _classCallCheck$i(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$i(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$i(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$i(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$i(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$i(self, call) {
-	  if (call && (_typeof$i(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$i(self);
-	}
-
-	function _getPrototypeOf$i(o) {
-	  _getPrototypeOf$i = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$i(o);
-	}
-
-	function _assertThisInitialized$i(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$i(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$i(subClass, superClass);
-	}
-
-	function _setPrototypeOf$i(o, p) {
-	  _setPrototypeOf$i = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$i(o, p);
-	}
-
 	var F7Button =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$i(F7Button, _React$Component);
+	  _inherits(F7Button, _React$Component);
 
 	  function F7Button(props, context) {
 	    var _this;
 
-	    _classCallCheck$i(this, F7Button);
+	    _classCallCheck(this, F7Button);
 
-	    _this = _possibleConstructorReturn$i(this, _getPrototypeOf$i(F7Button).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Button).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$i(_this), ['onClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$i(F7Button, [{
+	  _createClass(F7Button, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -56699,101 +55229,18 @@
 
 	F7Button.displayName = 'f7-button';
 
-	function _typeof$j(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$j = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$j = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$j(obj);
-	}
-
-	function _classCallCheck$j(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$j(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$j(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$j(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$j(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$j(self, call) {
-	  if (call && (_typeof$j(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$j(self);
-	}
-
-	function _assertThisInitialized$j(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$j(o) {
-	  _getPrototypeOf$j = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$j(o);
-	}
-
-	function _inherits$j(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$j(subClass, superClass);
-	}
-
-	function _setPrototypeOf$j(o, p) {
-	  _setPrototypeOf$j = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$j(o, p);
-	}
-
 	var F7CardContent =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$j(F7CardContent, _React$Component);
+	  _inherits(F7CardContent, _React$Component);
 
 	  function F7CardContent(props, context) {
-	    _classCallCheck$j(this, F7CardContent);
+	    _classCallCheck(this, F7CardContent);
 
-	    return _possibleConstructorReturn$j(this, _getPrototypeOf$j(F7CardContent).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7CardContent).call(this, props, context));
 	  }
 
-	  _createClass$j(F7CardContent, [{
+	  _createClass(F7CardContent, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -56832,101 +55279,18 @@
 
 	F7CardContent.displayName = 'f7-card-content';
 
-	function _typeof$k(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$k = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$k = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$k(obj);
-	}
-
-	function _classCallCheck$k(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$k(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$k(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$k(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$k(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$k(self, call) {
-	  if (call && (_typeof$k(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$k(self);
-	}
-
-	function _assertThisInitialized$k(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$k(o) {
-	  _getPrototypeOf$k = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$k(o);
-	}
-
-	function _inherits$k(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$k(subClass, superClass);
-	}
-
-	function _setPrototypeOf$k(o, p) {
-	  _setPrototypeOf$k = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$k(o, p);
-	}
-
 	var F7CardFooter =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$k(F7CardFooter, _React$Component);
+	  _inherits(F7CardFooter, _React$Component);
 
 	  function F7CardFooter(props, context) {
-	    _classCallCheck$k(this, F7CardFooter);
+	    _classCallCheck(this, F7CardFooter);
 
-	    return _possibleConstructorReturn$k(this, _getPrototypeOf$k(F7CardFooter).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7CardFooter).call(this, props, context));
 	  }
 
-	  _createClass$k(F7CardFooter, [{
+	  _createClass(F7CardFooter, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -56958,101 +55322,18 @@
 
 	F7CardFooter.displayName = 'f7-card-footer';
 
-	function _typeof$l(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$l = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$l = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$l(obj);
-	}
-
-	function _classCallCheck$l(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$l(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$l(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$l(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$l(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$l(self, call) {
-	  if (call && (_typeof$l(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$l(self);
-	}
-
-	function _assertThisInitialized$l(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$l(o) {
-	  _getPrototypeOf$l = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$l(o);
-	}
-
-	function _inherits$l(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$l(subClass, superClass);
-	}
-
-	function _setPrototypeOf$l(o, p) {
-	  _setPrototypeOf$l = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$l(o, p);
-	}
-
 	var F7CardHeader =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$l(F7CardHeader, _React$Component);
+	  _inherits(F7CardHeader, _React$Component);
 
 	  function F7CardHeader(props, context) {
-	    _classCallCheck$l(this, F7CardHeader);
+	    _classCallCheck(this, F7CardHeader);
 
-	    return _possibleConstructorReturn$l(this, _getPrototypeOf$l(F7CardHeader).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7CardHeader).call(this, props, context));
 	  }
 
-	  _createClass$l(F7CardHeader, [{
+	  _createClass(F7CardHeader, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -57084,110 +55365,27 @@
 
 	F7CardHeader.displayName = 'f7-card-header';
 
-	function _typeof$m(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$m = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$m = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$m(obj);
-	}
-
-	function _classCallCheck$m(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$m(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$m(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$m(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$m(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$m(self, call) {
-	  if (call && (_typeof$m(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$m(self);
-	}
-
-	function _getPrototypeOf$m(o) {
-	  _getPrototypeOf$m = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$m(o);
-	}
-
-	function _assertThisInitialized$m(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$m(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$m(subClass, superClass);
-	}
-
-	function _setPrototypeOf$m(o, p) {
-	  _setPrototypeOf$m = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$m(o, p);
-	}
-
 	var F7Card =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$m(F7Card, _React$Component);
+	  _inherits(F7Card, _React$Component);
 
 	  function F7Card(props, context) {
 	    var _this;
 
-	    _classCallCheck$m(this, F7Card);
+	    _classCallCheck(this, F7Card);
 
-	    _this = _possibleConstructorReturn$m(this, _getPrototypeOf$m(F7Card).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Card).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$m(_this), 'onBeforeOpen onOpen onOpened onClose onClosed'.split(' '));
+	      Utils$1.bindMethods(_assertThisInitialized(_this), 'onBeforeOpen onOpen onOpened onClose onClosed'.split(' '));
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$m(F7Card, [{
+	  _createClass(F7Card, [{
 	    key: "open",
 	    value: function open() {
 	      var self = this;
@@ -57428,110 +55626,27 @@
 
 	F7Card.displayName = 'f7-card';
 
-	function _typeof$n(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$n = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$n = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$n(obj);
-	}
-
-	function _classCallCheck$n(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$n(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$n(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$n(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$n(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$n(self, call) {
-	  if (call && (_typeof$n(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$n(self);
-	}
-
-	function _getPrototypeOf$n(o) {
-	  _getPrototypeOf$n = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$n(o);
-	}
-
-	function _assertThisInitialized$n(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$n(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$n(subClass, superClass);
-	}
-
-	function _setPrototypeOf$n(o, p) {
-	  _setPrototypeOf$n = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$n(o, p);
-	}
-
 	var F7Checkbox =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$n(F7Checkbox, _React$Component);
+	  _inherits(F7Checkbox, _React$Component);
 
 	  function F7Checkbox(props, context) {
 	    var _this;
 
-	    _classCallCheck$n(this, F7Checkbox);
+	    _classCallCheck(this, F7Checkbox);
 
-	    _this = _possibleConstructorReturn$n(this, _getPrototypeOf$n(F7Checkbox).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Checkbox).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$n(_this), ['onChange']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onChange']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$n(F7Checkbox, [{
+	  _createClass(F7Checkbox, [{
 	    key: "onChange",
 	    value: function onChange(event) {
 	      this.dispatchEvent('change', event);
@@ -57650,110 +55765,27 @@
 
 	F7Checkbox.displayName = 'f7-checkbox';
 
-	function _typeof$o(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$o = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$o = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$o(obj);
-	}
-
-	function _classCallCheck$o(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$o(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$o(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$o(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$o(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$o(self, call) {
-	  if (call && (_typeof$o(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$o(self);
-	}
-
-	function _getPrototypeOf$o(o) {
-	  _getPrototypeOf$o = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$o(o);
-	}
-
-	function _assertThisInitialized$o(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$o(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$o(subClass, superClass);
-	}
-
-	function _setPrototypeOf$o(o, p) {
-	  _setPrototypeOf$o = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$o(o, p);
-	}
-
 	var F7Chip =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$o(F7Chip, _React$Component);
+	  _inherits(F7Chip, _React$Component);
 
 	  function F7Chip(props, context) {
 	    var _this;
 
-	    _classCallCheck$o(this, F7Chip);
+	    _classCallCheck(this, F7Chip);
 
-	    _this = _possibleConstructorReturn$o(this, _getPrototypeOf$o(F7Chip).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Chip).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$o(_this), ['onClick', 'onDeleteClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick', 'onDeleteClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$o(F7Chip, [{
+	  _createClass(F7Chip, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -57874,125 +55906,27 @@
 
 	F7Chip.displayName = 'f7-chip';
 
-	function _typeof$p(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$p = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$p = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$p(obj);
-	}
-
-	function _defineProperty$1(obj, key, value) {
-	  if (key in obj) {
-	    Object.defineProperty(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-
-	  return obj;
-	}
-
-	function _classCallCheck$p(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$p(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$p(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$p(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$p(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$p(self, call) {
-	  if (call && (_typeof$p(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$p(self);
-	}
-
-	function _getPrototypeOf$p(o) {
-	  _getPrototypeOf$p = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$p(o);
-	}
-
-	function _assertThisInitialized$p(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$p(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$p(subClass, superClass);
-	}
-
-	function _setPrototypeOf$p(o, p) {
-	  _setPrototypeOf$p = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$p(o, p);
-	}
-
 	var F7Col =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$p(F7Col, _React$Component);
+	  _inherits(F7Col, _React$Component);
 
 	  function F7Col(props, context) {
 	    var _this;
 
-	    _classCallCheck$p(this, F7Col);
+	    _classCallCheck(this, F7Col);
 
-	    _this = _possibleConstructorReturn$p(this, _getPrototypeOf$p(F7Col).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Col).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$p(_this), ['onClick', 'onResize']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick', 'onResize']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$p(F7Col, [{
+	  _createClass(F7Col, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -58029,7 +55963,7 @@
 	      var ColTag = tag;
 	      var classes = Utils$1.classNames(className, (_Utils$classNames = {
 	        col: width === 'auto'
-	      }, _defineProperty$1(_Utils$classNames, "col-".concat(width), width !== 'auto'), _defineProperty$1(_Utils$classNames, "xsmall-".concat(xsmall), xsmall), _defineProperty$1(_Utils$classNames, "small-".concat(small), small), _defineProperty$1(_Utils$classNames, "medium-".concat(medium), medium), _defineProperty$1(_Utils$classNames, "large-".concat(large), large), _defineProperty$1(_Utils$classNames, "xlarge-".concat(xlarge), xlarge), _defineProperty$1(_Utils$classNames, "resizable", resizable), _defineProperty$1(_Utils$classNames, 'resizable-fixed', resizableFixed), _defineProperty$1(_Utils$classNames, 'resizable-absolute', resizableAbsolute), _Utils$classNames), Mixins.colorClasses(props));
+	      }, _defineProperty(_Utils$classNames, "col-".concat(width), width !== 'auto'), _defineProperty(_Utils$classNames, "xsmall-".concat(xsmall), xsmall), _defineProperty(_Utils$classNames, "small-".concat(small), small), _defineProperty(_Utils$classNames, "medium-".concat(medium), medium), _defineProperty(_Utils$classNames, "large-".concat(large), large), _defineProperty(_Utils$classNames, "xlarge-".concat(xlarge), xlarge), _defineProperty(_Utils$classNames, "resizable", resizable), _defineProperty(_Utils$classNames, 'resizable-fixed', resizableFixed), _defineProperty(_Utils$classNames, 'resizable-absolute', resizableAbsolute), _Utils$classNames), Mixins.colorClasses(props));
 	      return react.createElement(ColTag, {
 	        id: id,
 	        style: style,
@@ -58124,110 +56058,27 @@
 
 	F7Col.displayName = 'f7-col';
 
-	function _typeof$q(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$q = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$q = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$q(obj);
-	}
-
-	function _classCallCheck$q(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$q(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$q(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$q(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$q(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$q(self, call) {
-	  if (call && (_typeof$q(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$q(self);
-	}
-
-	function _getPrototypeOf$q(o) {
-	  _getPrototypeOf$q = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$q(o);
-	}
-
-	function _assertThisInitialized$q(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$q(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$q(subClass, superClass);
-	}
-
-	function _setPrototypeOf$q(o, p) {
-	  _setPrototypeOf$q = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$q(o, p);
-	}
-
 	var F7FabButton =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$q(F7FabButton, _React$Component);
+	  _inherits(F7FabButton, _React$Component);
 
 	  function F7FabButton(props, context) {
 	    var _this;
 
-	    _classCallCheck$q(this, F7FabButton);
+	    _classCallCheck(this, F7FabButton);
 
-	    _this = _possibleConstructorReturn$q(this, _getPrototypeOf$q(F7FabButton).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7FabButton).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$q(_this), ['onClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$q(F7FabButton, [{
+	  _createClass(F7FabButton, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -58356,101 +56207,18 @@
 
 	F7FabButton.displayName = 'f7-fab-button';
 
-	function _typeof$r(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$r = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$r = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$r(obj);
-	}
-
-	function _classCallCheck$r(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$r(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$r(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$r(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$r(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$r(self, call) {
-	  if (call && (_typeof$r(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$r(self);
-	}
-
-	function _assertThisInitialized$r(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$r(o) {
-	  _getPrototypeOf$r = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$r(o);
-	}
-
-	function _inherits$r(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$r(subClass, superClass);
-	}
-
-	function _setPrototypeOf$r(o, p) {
-	  _setPrototypeOf$r = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$r(o, p);
-	}
-
 	var F7FabButtons =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$r(F7FabButtons, _React$Component);
+	  _inherits(F7FabButtons, _React$Component);
 
 	  function F7FabButtons(props, context) {
-	    _classCallCheck$r(this, F7FabButtons);
+	    _classCallCheck(this, F7FabButtons);
 
-	    return _possibleConstructorReturn$r(this, _getPrototypeOf$r(F7FabButtons).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7FabButtons).call(this, props, context));
 	  }
 
-	  _createClass$r(F7FabButtons, [{
+	  _createClass(F7FabButtons, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -58487,110 +56255,27 @@
 
 	F7FabButtons.displayName = 'f7-fab-buttons';
 
-	function _typeof$s(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$s = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$s = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$s(obj);
-	}
-
-	function _classCallCheck$s(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$s(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$s(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$s(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$s(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$s(self, call) {
-	  if (call && (_typeof$s(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$s(self);
-	}
-
-	function _getPrototypeOf$s(o) {
-	  _getPrototypeOf$s = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$s(o);
-	}
-
-	function _assertThisInitialized$s(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$s(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$s(subClass, superClass);
-	}
-
-	function _setPrototypeOf$s(o, p) {
-	  _setPrototypeOf$s = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$s(o, p);
-	}
-
 	var F7Fab =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$s(F7Fab, _React$Component);
+	  _inherits(F7Fab, _React$Component);
 
 	  function F7Fab(props, context) {
 	    var _this;
 
-	    _classCallCheck$s(this, F7Fab);
+	    _classCallCheck(this, F7Fab);
 
-	    _this = _possibleConstructorReturn$s(this, _getPrototypeOf$s(F7Fab).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Fab).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$s(_this), ['onClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$s(F7Fab, [{
+	  _createClass(F7Fab, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      var self = this;
@@ -58768,101 +56453,18 @@
 
 	F7Fab.displayName = 'f7-fab';
 
-	function _typeof$t(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$t = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$t = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$t(obj);
-	}
-
-	function _classCallCheck$t(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$t(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$t(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$t(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$t(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$t(self, call) {
-	  if (call && (_typeof$t(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$t(self);
-	}
-
-	function _assertThisInitialized$t(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$t(o) {
-	  _getPrototypeOf$t = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$t(o);
-	}
-
-	function _inherits$t(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$t(subClass, superClass);
-	}
-
-	function _setPrototypeOf$t(o, p) {
-	  _setPrototypeOf$t = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$t(o, p);
-	}
-
 	var F7Gauge =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$t(F7Gauge, _React$Component);
+	  _inherits(F7Gauge, _React$Component);
 
 	  function F7Gauge(props, context) {
-	    _classCallCheck$t(this, F7Gauge);
+	    _classCallCheck(this, F7Gauge);
 
-	    return _possibleConstructorReturn$t(this, _getPrototypeOf$t(F7Gauge).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7Gauge).call(this, props, context));
 	  }
 
-	  _createClass$t(F7Gauge, [{
+	  _createClass(F7Gauge, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -59020,110 +56622,27 @@
 
 	F7Gauge.displayName = 'f7-gauge';
 
-	function _typeof$u(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$u = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$u = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$u(obj);
-	}
-
-	function _classCallCheck$u(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$u(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$u(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$u(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$u(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$u(self, call) {
-	  if (call && (_typeof$u(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$u(self);
-	}
-
-	function _getPrototypeOf$u(o) {
-	  _getPrototypeOf$u = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$u(o);
-	}
-
-	function _assertThisInitialized$u(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$u(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$u(subClass, superClass);
-	}
-
-	function _setPrototypeOf$u(o, p) {
-	  _setPrototypeOf$u = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$u(o, p);
-	}
-
 	var F7Toggle =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$u(F7Toggle, _React$Component);
+	  _inherits(F7Toggle, _React$Component);
 
 	  function F7Toggle(props, context) {
 	    var _this;
 
-	    _classCallCheck$u(this, F7Toggle);
+	    _classCallCheck(this, F7Toggle);
 
-	    _this = _possibleConstructorReturn$u(this, _getPrototypeOf$u(F7Toggle).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Toggle).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$u(_this), ['onChange']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onChange']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$u(F7Toggle, [{
+	  _createClass(F7Toggle, [{
 	    key: "toggle",
 	    value: function toggle() {
 	      var self = this;
@@ -59253,105 +56772,22 @@
 
 	F7Toggle.displayName = 'f7-toggle';
 
-	function _typeof$v(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$v = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$v = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$v(obj);
-	}
-
-	function _classCallCheck$v(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$v(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$v(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$v(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$v(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$v(self, call) {
-	  if (call && (_typeof$v(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$v(self);
-	}
-
-	function _assertThisInitialized$v(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$v(o) {
-	  _getPrototypeOf$v = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$v(o);
-	}
-
-	function _inherits$v(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$v(subClass, superClass);
-	}
-
-	function _setPrototypeOf$v(o, p) {
-	  _setPrototypeOf$v = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$v(o, p);
-	}
-
 	var F7Range =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$v(F7Range, _React$Component);
+	  _inherits(F7Range, _React$Component);
 
 	  function F7Range(props, context) {
 	    var _this;
 
-	    _classCallCheck$v(this, F7Range);
+	    _classCallCheck(this, F7Range);
 
-	    _this = _possibleConstructorReturn$v(this, _getPrototypeOf$v(F7Range).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Range).call(this, props, context));
 	    _this.__reactRefs = {};
 	    return _this;
 	  }
 
-	  _createClass$v(F7Range, [{
+	  _createClass(F7Range, [{
 	    key: "setValue",
 	    value: function setValue(newValue) {
 	      var self = this;
@@ -59566,110 +57002,27 @@
 
 	F7Range.displayName = 'f7-range';
 
-	function _typeof$w(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$w = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$w = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$w(obj);
-	}
-
-	function _classCallCheck$w(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$w(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$w(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$w(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$w(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$w(self, call) {
-	  if (call && (_typeof$w(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$w(self);
-	}
-
-	function _getPrototypeOf$w(o) {
-	  _getPrototypeOf$w = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$w(o);
-	}
-
-	function _assertThisInitialized$w(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$w(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$w(subClass, superClass);
-	}
-
-	function _setPrototypeOf$w(o, p) {
-	  _setPrototypeOf$w = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$w(o, p);
-	}
-
 	var F7TextEditor =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$w(F7TextEditor, _React$Component);
+	  _inherits(F7TextEditor, _React$Component);
 
 	  function F7TextEditor(props, context) {
 	    var _this;
 
-	    _classCallCheck$w(this, F7TextEditor);
+	    _classCallCheck(this, F7TextEditor);
 
-	    _this = _possibleConstructorReturn$w(this, _getPrototypeOf$w(F7TextEditor).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7TextEditor).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$w(_this), 'onChange onInput onFocus onBlur onButtonClick onKeyboardOpen onKeyboardClose onPopoverOpen onPopoverClose'.split(' '));
+	      Utils$1.bindMethods(_assertThisInitialized(_this), 'onChange onInput onFocus onBlur onButtonClick onKeyboardOpen onKeyboardClose onPopoverOpen onPopoverClose'.split(' '));
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$w(F7TextEditor, [{
+	  _createClass(F7TextEditor, [{
 	    key: "onChange",
 	    value: function onChange(editor, value) {
 	      this.dispatchEvent('texteditor:change textEditorChange', value);
@@ -59867,100 +57220,17 @@
 
 	F7TextEditor.displayName = 'f7-text-editor';
 
-	function _typeof$x(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$x = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$x = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$x(obj);
-	}
-
-	function _classCallCheck$x(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$x(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$x(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$x(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$x(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$x(self, call) {
-	  if (call && (_typeof$x(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$x(self);
-	}
-
-	function _getPrototypeOf$x(o) {
-	  _getPrototypeOf$x = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$x(o);
-	}
-
-	function _assertThisInitialized$x(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$x(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$x(subClass, superClass);
-	}
-
-	function _setPrototypeOf$x(o, p) {
-	  _setPrototypeOf$x = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$x(o, p);
-	}
-
 	var F7Input =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$x(F7Input, _React$Component);
+	  _inherits(F7Input, _React$Component);
 
 	  function F7Input(props, context) {
 	    var _this;
 
-	    _classCallCheck$x(this, F7Input);
+	    _classCallCheck(this, F7Input);
 
-	    _this = _possibleConstructorReturn$x(this, _getPrototypeOf$x(F7Input).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Input).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    _this.state = function () {
@@ -59971,13 +57241,13 @@
 	    }();
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$x(_this), 'onFocus onBlur onInput onChange onTextareaResize onInputNotEmpty onInputEmpty onInputClear'.split(' '));
+	      Utils$1.bindMethods(_assertThisInitialized(_this), 'onFocus onBlur onInput onChange onTextareaResize onInputNotEmpty onInputEmpty onInputClear'.split(' '));
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$x(F7Input, [{
+	  _createClass(F7Input, [{
 	    key: "domValue",
 	    value: function domValue() {
 	      var self = this;
@@ -60533,100 +57803,17 @@
 
 	F7Input.displayName = 'f7-input';
 
-	function _typeof$y(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$y = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$y = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$y(obj);
-	}
-
-	function _classCallCheck$y(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$y(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$y(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$y(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$y(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$y(self, call) {
-	  if (call && (_typeof$y(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$y(self);
-	}
-
-	function _getPrototypeOf$y(o) {
-	  _getPrototypeOf$y = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$y(o);
-	}
-
-	function _assertThisInitialized$y(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$y(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$y(subClass, superClass);
-	}
-
-	function _setPrototypeOf$y(o, p) {
-	  _setPrototypeOf$y = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$y(o, p);
-	}
-
 	var F7Link =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$y(F7Link, _React$Component);
+	  _inherits(F7Link, _React$Component);
 
 	  function F7Link(props, context) {
 	    var _this;
 
-	    _classCallCheck$y(this, F7Link);
+	    _classCallCheck(this, F7Link);
 
-	    _this = _possibleConstructorReturn$y(this, _getPrototypeOf$y(F7Link).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Link).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    _this.state = function () {
@@ -60636,13 +57823,13 @@
 	    }();
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$y(_this), ['onClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$y(F7Link, [{
+	  _createClass(F7Link, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -60895,110 +58082,27 @@
 
 	F7Link.displayName = 'f7-link';
 
-	function _typeof$z(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$z = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$z = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$z(obj);
-	}
-
-	function _classCallCheck$z(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$z(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$z(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$z(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$z(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$z(self, call) {
-	  if (call && (_typeof$z(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$z(self);
-	}
-
-	function _getPrototypeOf$z(o) {
-	  _getPrototypeOf$z = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$z(o);
-	}
-
-	function _assertThisInitialized$z(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$z(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$z(subClass, superClass);
-	}
-
-	function _setPrototypeOf$z(o, p) {
-	  _setPrototypeOf$z = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$z(o, p);
-	}
-
 	var F7ListButton =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$z(F7ListButton, _React$Component);
+	  _inherits(F7ListButton, _React$Component);
 
 	  function F7ListButton(props, context) {
 	    var _this;
 
-	    _classCallCheck$z(this, F7ListButton);
+	    _classCallCheck(this, F7ListButton);
 
-	    _this = _possibleConstructorReturn$z(this, _getPrototypeOf$z(F7ListButton).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7ListButton).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$z(_this), ['onClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$z(F7ListButton, [{
+	  _createClass(F7ListButton, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -61168,101 +58272,18 @@
 
 	F7ListButton.displayName = 'f7-list-button';
 
-	function _typeof$A(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$A = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$A = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$A(obj);
-	}
-
-	function _classCallCheck$A(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$A(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$A(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$A(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$A(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$A(self, call) {
-	  if (call && (_typeof$A(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$A(self);
-	}
-
-	function _assertThisInitialized$A(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$A(o) {
-	  _getPrototypeOf$A = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$A(o);
-	}
-
-	function _inherits$A(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$A(subClass, superClass);
-	}
-
-	function _setPrototypeOf$A(o, p) {
-	  _setPrototypeOf$A = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$A(o, p);
-	}
-
 	var F7ListGroup =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$A(F7ListGroup, _React$Component);
+	  _inherits(F7ListGroup, _React$Component);
 
 	  function F7ListGroup(props, context) {
-	    _classCallCheck$A(this, F7ListGroup);
+	    _classCallCheck(this, F7ListGroup);
 
-	    return _possibleConstructorReturn$A(this, _getPrototypeOf$A(F7ListGroup).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7ListGroup).call(this, props, context));
 	  }
 
-	  _createClass$A(F7ListGroup, [{
+	  _createClass(F7ListGroup, [{
 	    key: "render",
 	    value: function render() {
 	      var self = this;
@@ -61311,105 +58332,22 @@
 
 	F7ListGroup.displayName = 'f7-list-group';
 
-	function _typeof$B(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$B = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$B = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$B(obj);
-	}
-
-	function _classCallCheck$B(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$B(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$B(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$B(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$B(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$B(self, call) {
-	  if (call && (_typeof$B(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$B(self);
-	}
-
-	function _assertThisInitialized$B(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$B(o) {
-	  _getPrototypeOf$B = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$B(o);
-	}
-
-	function _inherits$B(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$B(subClass, superClass);
-	}
-
-	function _setPrototypeOf$B(o, p) {
-	  _setPrototypeOf$B = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$B(o, p);
-	}
-
 	var F7ListIndex =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$B(F7ListIndex, _React$Component);
+	  _inherits(F7ListIndex, _React$Component);
 
 	  function F7ListIndex(props, context) {
 	    var _this;
 
-	    _classCallCheck$B(this, F7ListIndex);
+	    _classCallCheck(this, F7ListIndex);
 
-	    _this = _possibleConstructorReturn$B(this, _getPrototypeOf$B(F7ListIndex).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7ListIndex).call(this, props, context));
 	    _this.__reactRefs = {};
 	    return _this;
 	  }
 
-	  _createClass$B(F7ListIndex, [{
+	  _createClass(F7ListIndex, [{
 	    key: "update",
 	    value: function update() {
 	      if (!this.f7ListIndex) return;
@@ -61555,100 +58493,17 @@
 
 	F7ListIndex.displayName = 'f7-list-index';
 
-	function _typeof$C(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$C = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$C = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$C(obj);
-	}
-
-	function _classCallCheck$C(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$C(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$C(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$C(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$C(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$C(self, call) {
-	  if (call && (_typeof$C(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$C(self);
-	}
-
-	function _getPrototypeOf$C(o) {
-	  _getPrototypeOf$C = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$C(o);
-	}
-
-	function _assertThisInitialized$C(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$C(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$C(subClass, superClass);
-	}
-
-	function _setPrototypeOf$C(o, p) {
-	  _setPrototypeOf$C = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$C(o, p);
-	}
-
 	var F7ListInput =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$C(F7ListInput, _React$Component);
+	  _inherits(F7ListInput, _React$Component);
 
 	  function F7ListInput(props, context) {
 	    var _this;
 
-	    _classCallCheck$C(this, F7ListInput);
+	    _classCallCheck(this, F7ListInput);
 
-	    _this = _possibleConstructorReturn$C(this, _getPrototypeOf$C(F7ListInput).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7ListInput).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    _this.state = function () {
@@ -61660,13 +58515,13 @@
 	    }();
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$C(_this), 'onChange onInput onFocus onBlur onTextareaResize onInputNotEmpty onInputEmpty onInputClear'.split(' '));
+	      Utils$1.bindMethods(_assertThisInitialized(_this), 'onChange onInput onFocus onBlur onTextareaResize onInputNotEmpty onInputEmpty onInputClear'.split(' '));
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$C(F7ListInput, [{
+	  _createClass(F7ListInput, [{
 	    key: "domValue",
 	    value: function domValue() {
 	      var self = this;
@@ -62248,101 +59103,18 @@
 
 	F7ListInput.displayName = 'f7-list-input';
 
-	function _typeof$D(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$D = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$D = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$D(obj);
-	}
-
-	function _classCallCheck$D(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$D(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$D(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$D(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$D(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$D(self, call) {
-	  if (call && (_typeof$D(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$D(self);
-	}
-
-	function _assertThisInitialized$D(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$D(o) {
-	  _getPrototypeOf$D = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$D(o);
-	}
-
-	function _inherits$D(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$D(subClass, superClass);
-	}
-
-	function _setPrototypeOf$D(o, p) {
-	  _setPrototypeOf$D = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$D(o, p);
-	}
-
 	var F7ListItemCell =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$D(F7ListItemCell, _React$Component);
+	  _inherits(F7ListItemCell, _React$Component);
 
 	  function F7ListItemCell(props, context) {
-	    _classCallCheck$D(this, F7ListItemCell);
+	    _classCallCheck(this, F7ListItemCell);
 
-	    return _possibleConstructorReturn$D(this, _getPrototypeOf$D(F7ListItemCell).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7ListItemCell).call(this, props, context));
 	  }
 
-	  _createClass$D(F7ListItemCell, [{
+	  _createClass(F7ListItemCell, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -62374,132 +59146,27 @@
 
 	F7ListItemCell.displayName = 'f7-list-item-cell';
 
-	function _typeof$E(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$E = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$E = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$E(obj);
-	}
-
-	function _toConsumableArray$1(arr) {
-	  return _arrayWithoutHoles$1(arr) || _iterableToArray$1(arr) || _nonIterableSpread$1();
-	}
-
-	function _nonIterableSpread$1() {
-	  throw new TypeError("Invalid attempt to spread non-iterable instance");
-	}
-
-	function _iterableToArray$1(iter) {
-	  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-	}
-
-	function _arrayWithoutHoles$1(arr) {
-	  if (Array.isArray(arr)) {
-	    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
-	      arr2[i] = arr[i];
-	    }
-
-	    return arr2;
-	  }
-	}
-
-	function _classCallCheck$E(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$E(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$E(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$E(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$E(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$E(self, call) {
-	  if (call && (_typeof$E(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$E(self);
-	}
-
-	function _getPrototypeOf$E(o) {
-	  _getPrototypeOf$E = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$E(o);
-	}
-
-	function _assertThisInitialized$E(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$E(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$E(subClass, superClass);
-	}
-
-	function _setPrototypeOf$E(o, p) {
-	  _setPrototypeOf$E = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$E(o, p);
-	}
-
 	var F7ListItemContent =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$E(F7ListItemContent, _React$Component);
+	  _inherits(F7ListItemContent, _React$Component);
 
 	  function F7ListItemContent(props, context) {
 	    var _this;
 
-	    _classCallCheck$E(this, F7ListItemContent);
+	    _classCallCheck(this, F7ListItemContent);
 
-	    _this = _possibleConstructorReturn$E(this, _getPrototypeOf$E(F7ListItemContent).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7ListItemContent).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$E(_this), 'onClick onChange'.split(' '));
+	      Utils$1.bindMethods(_assertThisInitialized(_this), 'onClick onChange'.split(' '));
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$E(F7ListItemContent, [{
+	  _createClass(F7ListItemContent, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -62574,7 +59241,7 @@
 
 	      if (slots && slots.length) {
 	        slots.forEach(function (slot) {
-	          if (Array.isArray(slot)) flattenSlots.push.apply(flattenSlots, _toConsumableArray$1(slot));else flattenSlots.push(slot);
+	          if (Array.isArray(slot)) flattenSlots.push.apply(flattenSlots, _toConsumableArray(slot));else flattenSlots.push(slot);
 	        });
 	      }
 
@@ -62805,101 +59472,18 @@
 
 	F7ListItemContent.displayName = 'f7-list-item-content';
 
-	function _typeof$F(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$F = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$F = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$F(obj);
-	}
-
-	function _classCallCheck$F(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$F(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$F(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$F(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$F(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$F(self, call) {
-	  if (call && (_typeof$F(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$F(self);
-	}
-
-	function _assertThisInitialized$F(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$F(o) {
-	  _getPrototypeOf$F = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$F(o);
-	}
-
-	function _inherits$F(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$F(subClass, superClass);
-	}
-
-	function _setPrototypeOf$F(o, p) {
-	  _setPrototypeOf$F = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$F(o, p);
-	}
-
 	var F7ListItemRow =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$F(F7ListItemRow, _React$Component);
+	  _inherits(F7ListItemRow, _React$Component);
 
 	  function F7ListItemRow(props, context) {
-	    _classCallCheck$F(this, F7ListItemRow);
+	    _classCallCheck(this, F7ListItemRow);
 
-	    return _possibleConstructorReturn$F(this, _getPrototypeOf$F(F7ListItemRow).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7ListItemRow).call(this, props, context));
 	  }
 
-	  _createClass$F(F7ListItemRow, [{
+	  _createClass(F7ListItemRow, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -62931,100 +59515,17 @@
 
 	F7ListItemRow.displayName = 'f7-list-item-row';
 
-	function _typeof$G(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$G = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$G = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$G(obj);
-	}
-
-	function _classCallCheck$G(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$G(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$G(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$G(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$G(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$G(self, call) {
-	  if (call && (_typeof$G(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$G(self);
-	}
-
-	function _getPrototypeOf$G(o) {
-	  _getPrototypeOf$G = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$G(o);
-	}
-
-	function _assertThisInitialized$G(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$G(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$G(subClass, superClass);
-	}
-
-	function _setPrototypeOf$G(o, p) {
-	  _setPrototypeOf$G = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$G(o, p);
-	}
-
 	var F7ListItem =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$G(F7ListItem, _React$Component);
+	  _inherits(F7ListItem, _React$Component);
 
 	  function F7ListItem(props, context) {
 	    var _this;
 
-	    _classCallCheck$G(this, F7ListItem);
+	    _classCallCheck(this, F7ListItem);
 
-	    _this = _possibleConstructorReturn$G(this, _getPrototypeOf$G(F7ListItem).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7ListItem).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    _this.state = function () {
@@ -63036,13 +59537,13 @@
 	    }();
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$G(_this), ['onClick', 'onChange', 'onSwipeoutOpen', 'onSwipeoutOpened', 'onSwipeoutClose', 'onSwipeoutClosed', 'onSwipeoutDelete', 'onSwipeoutDeleted', 'onSwipeoutOverswipeEnter', 'onSwipeoutOverswipeExit', 'onSwipeout', 'onAccBeforeOpen', 'onAccOpen', 'onAccOpened', 'onAccBeforeClose', 'onAccClose', 'onAccClosed']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick', 'onChange', 'onSwipeoutOpen', 'onSwipeoutOpened', 'onSwipeoutClose', 'onSwipeoutClosed', 'onSwipeoutDelete', 'onSwipeoutDeleted', 'onSwipeoutOverswipeEnter', 'onSwipeoutOverswipeExit', 'onSwipeout', 'onAccBeforeOpen', 'onAccOpen', 'onAccOpened', 'onAccBeforeClose', 'onAccClose', 'onAccClosed']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$G(F7ListItem, [{
+	  _createClass(F7ListItem, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      var self = this;
@@ -63582,110 +60083,27 @@
 
 	F7ListItem.displayName = 'f7-list-item';
 
-	function _typeof$H(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$H = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$H = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$H(obj);
-	}
-
-	function _classCallCheck$H(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$H(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$H(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$H(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$H(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$H(self, call) {
-	  if (call && (_typeof$H(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$H(self);
-	}
-
-	function _getPrototypeOf$H(o) {
-	  _getPrototypeOf$H = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$H(o);
-	}
-
-	function _assertThisInitialized$H(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$H(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$H(subClass, superClass);
-	}
-
-	function _setPrototypeOf$H(o, p) {
-	  _setPrototypeOf$H = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$H(o, p);
-	}
-
 	var F7List =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$H(F7List, _React$Component);
+	  _inherits(F7List, _React$Component);
 
 	  function F7List(props, context) {
 	    var _this;
 
-	    _classCallCheck$H(this, F7List);
+	    _classCallCheck(this, F7List);
 
-	    _this = _possibleConstructorReturn$H(this, _getPrototypeOf$H(F7List).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7List).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$H(_this), ['onSortableEnable', 'onSortableDisable', 'onSortableSort', 'onTabShow', 'onTabHide', 'onSubmit']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onSortableEnable', 'onSortableDisable', 'onSortableSort', 'onTabShow', 'onTabHide', 'onSubmit']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$H(F7List, [{
+	  _createClass(F7List, [{
 	    key: "onSubmit",
 	    value: function onSubmit(event) {
 	      this.dispatchEvent('submit', event);
@@ -63981,101 +60399,18 @@
 
 	F7List.displayName = 'f7-list';
 
-	function _typeof$I(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$I = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$I = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$I(obj);
-	}
-
-	function _classCallCheck$I(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$I(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$I(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$I(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$I(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$I(self, call) {
-	  if (call && (_typeof$I(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$I(self);
-	}
-
-	function _assertThisInitialized$I(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$I(o) {
-	  _getPrototypeOf$I = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$I(o);
-	}
-
-	function _inherits$I(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$I(subClass, superClass);
-	}
-
-	function _setPrototypeOf$I(o, p) {
-	  _setPrototypeOf$I = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$I(o, p);
-	}
-
 	var F7LoginScreenTitle =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$I(F7LoginScreenTitle, _React$Component);
+	  _inherits(F7LoginScreenTitle, _React$Component);
 
 	  function F7LoginScreenTitle(props, context) {
-	    _classCallCheck$I(this, F7LoginScreenTitle);
+	    _classCallCheck(this, F7LoginScreenTitle);
 
-	    return _possibleConstructorReturn$I(this, _getPrototypeOf$I(F7LoginScreenTitle).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7LoginScreenTitle).call(this, props, context));
 	  }
 
-	  _createClass$I(F7LoginScreenTitle, [{
+	  _createClass(F7LoginScreenTitle, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -64107,110 +60442,27 @@
 
 	F7LoginScreenTitle.displayName = 'f7-login-screen-title';
 
-	function _typeof$J(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$J = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$J = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$J(obj);
-	}
-
-	function _classCallCheck$J(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$J(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$J(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$J(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$J(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$J(self, call) {
-	  if (call && (_typeof$J(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$J(self);
-	}
-
-	function _getPrototypeOf$J(o) {
-	  _getPrototypeOf$J = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$J(o);
-	}
-
-	function _assertThisInitialized$J(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$J(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$J(subClass, superClass);
-	}
-
-	function _setPrototypeOf$J(o, p) {
-	  _setPrototypeOf$J = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$J(o, p);
-	}
-
 	var F7LoginScreen =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$J(F7LoginScreen, _React$Component);
+	  _inherits(F7LoginScreen, _React$Component);
 
 	  function F7LoginScreen(props, context) {
 	    var _this;
 
-	    _classCallCheck$J(this, F7LoginScreen);
+	    _classCallCheck(this, F7LoginScreen);
 
-	    _this = _possibleConstructorReturn$J(this, _getPrototypeOf$J(F7LoginScreen).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7LoginScreen).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$J(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$J(F7LoginScreen, [{
+	  _createClass(F7LoginScreen, [{
 	    key: "onOpen",
 	    value: function onOpen(instance) {
 	      this.dispatchEvent('loginscreen:open loginScreenOpen', instance);
@@ -64342,110 +60594,27 @@
 
 	F7LoginScreen.displayName = 'f7-login-screen';
 
-	function _typeof$K(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$K = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$K = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$K(obj);
-	}
-
-	function _classCallCheck$K(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$K(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$K(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$K(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$K(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$K(self, call) {
-	  if (call && (_typeof$K(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$K(self);
-	}
-
-	function _getPrototypeOf$K(o) {
-	  _getPrototypeOf$K = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$K(o);
-	}
-
-	function _assertThisInitialized$K(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$K(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$K(subClass, superClass);
-	}
-
-	function _setPrototypeOf$K(o, p) {
-	  _setPrototypeOf$K = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$K(o, p);
-	}
-
 	var F7MenuDropdownItem =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$K(F7MenuDropdownItem, _React$Component);
+	  _inherits(F7MenuDropdownItem, _React$Component);
 
 	  function F7MenuDropdownItem(props, context) {
 	    var _this;
 
-	    _classCallCheck$K(this, F7MenuDropdownItem);
+	    _classCallCheck(this, F7MenuDropdownItem);
 
-	    _this = _possibleConstructorReturn$K(this, _getPrototypeOf$K(F7MenuDropdownItem).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7MenuDropdownItem).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$K(_this), ['onClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$K(F7MenuDropdownItem, [{
+	  _createClass(F7MenuDropdownItem, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -64564,101 +60733,18 @@
 
 	F7MenuDropdownItem.displayName = 'f7-menu-dropdown-item';
 
-	function _typeof$L(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$L = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$L = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$L(obj);
-	}
-
-	function _classCallCheck$L(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$L(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$L(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$L(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$L(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$L(self, call) {
-	  if (call && (_typeof$L(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$L(self);
-	}
-
-	function _assertThisInitialized$L(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$L(o) {
-	  _getPrototypeOf$L = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$L(o);
-	}
-
-	function _inherits$L(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$L(subClass, superClass);
-	}
-
-	function _setPrototypeOf$L(o, p) {
-	  _setPrototypeOf$L = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$L(o, p);
-	}
-
 	var F7MenuDropdown =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$L(F7MenuDropdown, _React$Component);
+	  _inherits(F7MenuDropdown, _React$Component);
 
 	  function F7MenuDropdown(props, context) {
-	    _classCallCheck$L(this, F7MenuDropdown);
+	    _classCallCheck(this, F7MenuDropdown);
 
-	    return _possibleConstructorReturn$L(this, _getPrototypeOf$L(F7MenuDropdown).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7MenuDropdown).call(this, props, context));
 	  }
 
-	  _createClass$L(F7MenuDropdown, [{
+	  _createClass(F7MenuDropdown, [{
 	    key: "render",
 	    value: function render() {
 	      var self = this;
@@ -64710,110 +60796,27 @@
 
 	F7MenuDropdown.displayName = 'f7-menu-dropdown';
 
-	function _typeof$M(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$M = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$M = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$M(obj);
-	}
-
-	function _classCallCheck$M(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$M(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$M(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$M(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$M(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$M(self, call) {
-	  if (call && (_typeof$M(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$M(self);
-	}
-
-	function _getPrototypeOf$M(o) {
-	  _getPrototypeOf$M = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$M(o);
-	}
-
-	function _assertThisInitialized$M(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$M(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$M(subClass, superClass);
-	}
-
-	function _setPrototypeOf$M(o, p) {
-	  _setPrototypeOf$M = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$M(o, p);
-	}
-
 	var F7MenuItem =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$M(F7MenuItem, _React$Component);
+	  _inherits(F7MenuItem, _React$Component);
 
 	  function F7MenuItem(props, context) {
 	    var _this;
 
-	    _classCallCheck$M(this, F7MenuItem);
+	    _classCallCheck(this, F7MenuItem);
 
-	    _this = _possibleConstructorReturn$M(this, _getPrototypeOf$M(F7MenuItem).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7MenuItem).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$M(_this), ['onClick', 'onOpened', 'onClosed']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick', 'onOpened', 'onClosed']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$M(F7MenuItem, [{
+	  _createClass(F7MenuItem, [{
 	    key: "onClick",
 	    value: function onClick(e) {
 	      this.dispatchEvent('click', e);
@@ -64986,101 +60989,18 @@
 
 	F7MenuItem.displayName = 'f7-menu-item';
 
-	function _typeof$N(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$N = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$N = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$N(obj);
-	}
-
-	function _classCallCheck$N(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$N(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$N(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$N(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$N(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$N(self, call) {
-	  if (call && (_typeof$N(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$N(self);
-	}
-
-	function _assertThisInitialized$N(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$N(o) {
-	  _getPrototypeOf$N = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$N(o);
-	}
-
-	function _inherits$N(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$N(subClass, superClass);
-	}
-
-	function _setPrototypeOf$N(o, p) {
-	  _setPrototypeOf$N = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$N(o, p);
-	}
-
 	var F7Menu =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$N(F7Menu, _React$Component);
+	  _inherits(F7Menu, _React$Component);
 
 	  function F7Menu(props, context) {
-	    _classCallCheck$N(this, F7Menu);
+	    _classCallCheck(this, F7Menu);
 
-	    return _possibleConstructorReturn$N(this, _getPrototypeOf$N(F7Menu).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7Menu).call(this, props, context));
 	  }
 
-	  _createClass$N(F7Menu, [{
+	  _createClass(F7Menu, [{
 	    key: "render",
 	    value: function render() {
 	      var self = this;
@@ -65114,110 +61034,27 @@
 
 	F7Menu.displayName = 'f7-menu';
 
-	function _typeof$O(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$O = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$O = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$O(obj);
-	}
-
-	function _classCallCheck$O(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$O(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$O(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$O(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$O(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$O(self, call) {
-	  if (call && (_typeof$O(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$O(self);
-	}
-
-	function _getPrototypeOf$O(o) {
-	  _getPrototypeOf$O = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$O(o);
-	}
-
-	function _assertThisInitialized$O(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$O(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$O(subClass, superClass);
-	}
-
-	function _setPrototypeOf$O(o, p) {
-	  _setPrototypeOf$O = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$O(o, p);
-	}
-
 	var F7Message =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$O(F7Message, _React$Component);
+	  _inherits(F7Message, _React$Component);
 
 	  function F7Message(props, context) {
 	    var _this;
 
-	    _classCallCheck$O(this, F7Message);
+	    _classCallCheck(this, F7Message);
 
-	    _this = _possibleConstructorReturn$O(this, _getPrototypeOf$O(F7Message).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Message).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$O(_this), ['onClick', 'onNameClick', 'onTextClick', 'onAvatarClick', 'onHeaderClick', 'onFooterClick', 'onBubbleClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick', 'onNameClick', 'onTextClick', 'onAvatarClick', 'onHeaderClick', 'onFooterClick', 'onBubbleClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$O(F7Message, [{
+	  _createClass(F7Message, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -65459,110 +61296,27 @@
 
 	F7Message.displayName = 'f7-message';
 
-	function _typeof$P(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$P = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$P = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$P(obj);
-	}
-
-	function _classCallCheck$P(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$P(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$P(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$P(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$P(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$P(self, call) {
-	  if (call && (_typeof$P(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$P(self);
-	}
-
-	function _getPrototypeOf$P(o) {
-	  _getPrototypeOf$P = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$P(o);
-	}
-
-	function _assertThisInitialized$P(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$P(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$P(subClass, superClass);
-	}
-
-	function _setPrototypeOf$P(o, p) {
-	  _setPrototypeOf$P = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$P(o, p);
-	}
-
 	var F7MessagebarAttachment =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$P(F7MessagebarAttachment, _React$Component);
+	  _inherits(F7MessagebarAttachment, _React$Component);
 
 	  function F7MessagebarAttachment(props, context) {
 	    var _this;
 
-	    _classCallCheck$P(this, F7MessagebarAttachment);
+	    _classCallCheck(this, F7MessagebarAttachment);
 
-	    _this = _possibleConstructorReturn$P(this, _getPrototypeOf$P(F7MessagebarAttachment).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7MessagebarAttachment).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$P(_this), ['onClick', 'onDeleteClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick', 'onDeleteClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$P(F7MessagebarAttachment, [{
+	  _createClass(F7MessagebarAttachment, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('attachment:click attachmentClick', event);
@@ -65657,101 +61411,18 @@
 
 	F7MessagebarAttachment.displayName = 'f7-messagebar-attachment';
 
-	function _typeof$Q(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$Q = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$Q = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$Q(obj);
-	}
-
-	function _classCallCheck$Q(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$Q(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$Q(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$Q(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$Q(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$Q(self, call) {
-	  if (call && (_typeof$Q(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$Q(self);
-	}
-
-	function _assertThisInitialized$Q(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$Q(o) {
-	  _getPrototypeOf$Q = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$Q(o);
-	}
-
-	function _inherits$Q(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$Q(subClass, superClass);
-	}
-
-	function _setPrototypeOf$Q(o, p) {
-	  _setPrototypeOf$Q = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$Q(o, p);
-	}
-
 	var F7MessagebarAttachments =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$Q(F7MessagebarAttachments, _React$Component);
+	  _inherits(F7MessagebarAttachments, _React$Component);
 
 	  function F7MessagebarAttachments(props, context) {
-	    _classCallCheck$Q(this, F7MessagebarAttachments);
+	    _classCallCheck(this, F7MessagebarAttachments);
 
-	    return _possibleConstructorReturn$Q(this, _getPrototypeOf$Q(F7MessagebarAttachments).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7MessagebarAttachments).call(this, props, context));
 	  }
 
-	  _createClass$Q(F7MessagebarAttachments, [{
+	  _createClass(F7MessagebarAttachments, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -65783,110 +61454,27 @@
 
 	F7MessagebarAttachments.displayName = 'f7-messagebar-attachments';
 
-	function _typeof$R(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$R = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$R = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$R(obj);
-	}
-
-	function _classCallCheck$R(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$R(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$R(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$R(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$R(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$R(self, call) {
-	  if (call && (_typeof$R(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$R(self);
-	}
-
-	function _getPrototypeOf$R(o) {
-	  _getPrototypeOf$R = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$R(o);
-	}
-
-	function _assertThisInitialized$R(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$R(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$R(subClass, superClass);
-	}
-
-	function _setPrototypeOf$R(o, p) {
-	  _setPrototypeOf$R = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$R(o, p);
-	}
-
 	var F7MessagebarSheetImage =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$R(F7MessagebarSheetImage, _React$Component);
+	  _inherits(F7MessagebarSheetImage, _React$Component);
 
 	  function F7MessagebarSheetImage(props, context) {
 	    var _this;
 
-	    _classCallCheck$R(this, F7MessagebarSheetImage);
+	    _classCallCheck(this, F7MessagebarSheetImage);
 
-	    _this = _possibleConstructorReturn$R(this, _getPrototypeOf$R(F7MessagebarSheetImage).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7MessagebarSheetImage).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$R(_this), ['onChange']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onChange']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$R(F7MessagebarSheetImage, [{
+	  _createClass(F7MessagebarSheetImage, [{
 	    key: "onChange",
 	    value: function onChange(event) {
 	      if (this.props.checked) this.dispatchEvent('checked', event);else this.dispatchEvent('unchecked', event);
@@ -65962,101 +61550,18 @@
 
 	F7MessagebarSheetImage.displayName = 'f7-messagebar-sheet-image';
 
-	function _typeof$S(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$S = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$S = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$S(obj);
-	}
-
-	function _classCallCheck$S(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$S(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$S(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$S(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$S(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$S(self, call) {
-	  if (call && (_typeof$S(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$S(self);
-	}
-
-	function _assertThisInitialized$S(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$S(o) {
-	  _getPrototypeOf$S = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$S(o);
-	}
-
-	function _inherits$S(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$S(subClass, superClass);
-	}
-
-	function _setPrototypeOf$S(o, p) {
-	  _setPrototypeOf$S = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$S(o, p);
-	}
-
 	var F7MessagebarSheetItem =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$S(F7MessagebarSheetItem, _React$Component);
+	  _inherits(F7MessagebarSheetItem, _React$Component);
 
 	  function F7MessagebarSheetItem(props, context) {
-	    _classCallCheck$S(this, F7MessagebarSheetItem);
+	    _classCallCheck(this, F7MessagebarSheetItem);
 
-	    return _possibleConstructorReturn$S(this, _getPrototypeOf$S(F7MessagebarSheetItem).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7MessagebarSheetItem).call(this, props, context));
 	  }
 
-	  _createClass$S(F7MessagebarSheetItem, [{
+	  _createClass(F7MessagebarSheetItem, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -66088,101 +61593,18 @@
 
 	F7MessagebarSheetItem.displayName = 'f7-messagebar-sheet-item';
 
-	function _typeof$T(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$T = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$T = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$T(obj);
-	}
-
-	function _classCallCheck$T(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$T(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$T(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$T(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$T(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$T(self, call) {
-	  if (call && (_typeof$T(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$T(self);
-	}
-
-	function _assertThisInitialized$T(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$T(o) {
-	  _getPrototypeOf$T = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$T(o);
-	}
-
-	function _inherits$T(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$T(subClass, superClass);
-	}
-
-	function _setPrototypeOf$T(o, p) {
-	  _setPrototypeOf$T = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$T(o, p);
-	}
-
 	var F7MessagebarSheet =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$T(F7MessagebarSheet, _React$Component);
+	  _inherits(F7MessagebarSheet, _React$Component);
 
 	  function F7MessagebarSheet(props, context) {
-	    _classCallCheck$T(this, F7MessagebarSheet);
+	    _classCallCheck(this, F7MessagebarSheet);
 
-	    return _possibleConstructorReturn$T(this, _getPrototypeOf$T(F7MessagebarSheet).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7MessagebarSheet).call(this, props, context));
 	  }
 
-	  _createClass$T(F7MessagebarSheet, [{
+	  _createClass(F7MessagebarSheet, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -66214,110 +61636,27 @@
 
 	F7MessagebarSheet.displayName = 'f7-messagebar-sheet';
 
-	function _typeof$U(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$U = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$U = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$U(obj);
-	}
-
-	function _classCallCheck$U(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$U(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$U(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$U(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$U(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$U(self, call) {
-	  if (call && (_typeof$U(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$U(self);
-	}
-
-	function _getPrototypeOf$U(o) {
-	  _getPrototypeOf$U = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$U(o);
-	}
-
-	function _assertThisInitialized$U(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$U(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$U(subClass, superClass);
-	}
-
-	function _setPrototypeOf$U(o, p) {
-	  _setPrototypeOf$U = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$U(o, p);
-	}
-
 	var F7Messagebar =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$U(F7Messagebar, _React$Component);
+	  _inherits(F7Messagebar, _React$Component);
 
 	  function F7Messagebar(props, context) {
 	    var _this;
 
-	    _classCallCheck$U(this, F7Messagebar);
+	    _classCallCheck(this, F7Messagebar);
 
-	    _this = _possibleConstructorReturn$U(this, _getPrototypeOf$U(F7Messagebar).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Messagebar).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$U(_this), ['onChange', 'onInput', 'onFocus', 'onBlur', 'onClick', 'onAttachmentDelete', 'onAttachmentClick,', 'onResizePage']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onChange', 'onInput', 'onFocus', 'onBlur', 'onClick', 'onAttachmentDelete', 'onAttachmentClick,', 'onResizePage']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$U(F7Messagebar, [{
+	  _createClass(F7Messagebar, [{
 	    key: "clear",
 	    value: function clear() {
 	      var _this$f7Messagebar;
@@ -66700,101 +62039,18 @@
 
 	F7Messagebar.displayName = 'f7-messagebar';
 
-	function _typeof$V(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$V = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$V = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$V(obj);
-	}
-
-	function _classCallCheck$V(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$V(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$V(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$V(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$V(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$V(self, call) {
-	  if (call && (_typeof$V(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$V(self);
-	}
-
-	function _assertThisInitialized$V(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$V(o) {
-	  _getPrototypeOf$V = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$V(o);
-	}
-
-	function _inherits$V(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$V(subClass, superClass);
-	}
-
-	function _setPrototypeOf$V(o, p) {
-	  _setPrototypeOf$V = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$V(o, p);
-	}
-
 	var F7MessagesTitle =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$V(F7MessagesTitle, _React$Component);
+	  _inherits(F7MessagesTitle, _React$Component);
 
 	  function F7MessagesTitle(props, context) {
-	    _classCallCheck$V(this, F7MessagesTitle);
+	    _classCallCheck(this, F7MessagesTitle);
 
-	    return _possibleConstructorReturn$V(this, _getPrototypeOf$V(F7MessagesTitle).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7MessagesTitle).call(this, props, context));
 	  }
 
-	  _createClass$V(F7MessagesTitle, [{
+	  _createClass(F7MessagesTitle, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -66826,105 +62082,22 @@
 
 	F7MessagesTitle.displayName = 'f7-messages-title';
 
-	function _typeof$W(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$W = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$W = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$W(obj);
-	}
-
-	function _classCallCheck$W(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$W(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$W(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$W(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$W(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$W(self, call) {
-	  if (call && (_typeof$W(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$W(self);
-	}
-
-	function _assertThisInitialized$W(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$W(o) {
-	  _getPrototypeOf$W = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$W(o);
-	}
-
-	function _inherits$W(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$W(subClass, superClass);
-	}
-
-	function _setPrototypeOf$W(o, p) {
-	  _setPrototypeOf$W = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$W(o, p);
-	}
-
 	var F7Messages =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$W(F7Messages, _React$Component);
+	  _inherits(F7Messages, _React$Component);
 
 	  function F7Messages(props, context) {
 	    var _this;
 
-	    _classCallCheck$W(this, F7Messages);
+	    _classCallCheck(this, F7Messages);
 
-	    _this = _possibleConstructorReturn$W(this, _getPrototypeOf$W(F7Messages).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Messages).call(this, props, context));
 	    _this.__reactRefs = {};
 	    return _this;
 	  }
 
-	  _createClass$W(F7Messages, [{
+	  _createClass(F7Messages, [{
 	    key: "renderMessages",
 	    value: function renderMessages(messagesToRender, method) {
 	      if (!this.f7Messages) return undefined;
@@ -67161,131 +62334,26 @@
 
 	F7Messages.displayName = 'f7-messages';
 
-	function _typeof$X(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$X = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$X = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$X(obj);
-	}
-
-	function _toConsumableArray$2(arr) {
-	  return _arrayWithoutHoles$2(arr) || _iterableToArray$2(arr) || _nonIterableSpread$2();
-	}
-
-	function _nonIterableSpread$2() {
-	  throw new TypeError("Invalid attempt to spread non-iterable instance");
-	}
-
-	function _iterableToArray$2(iter) {
-	  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-	}
-
-	function _arrayWithoutHoles$2(arr) {
-	  if (Array.isArray(arr)) {
-	    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
-	      arr2[i] = arr[i];
-	    }
-
-	    return arr2;
-	  }
-	}
-
-	function _classCallCheck$X(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$X(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$X(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$X(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$X(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$X(self, call) {
-	  if (call && (_typeof$X(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$X(self);
-	}
-
-	function _getPrototypeOf$X(o) {
-	  _getPrototypeOf$X = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$X(o);
-	}
-
-	function _assertThisInitialized$X(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$X(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$X(subClass, superClass);
-	}
-
-	function _setPrototypeOf$X(o, p) {
-	  _setPrototypeOf$X = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$X(o, p);
-	}
-
 	var F7NavLeft =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$X(F7NavLeft, _React$Component);
+	  _inherits(F7NavLeft, _React$Component);
 
 	  function F7NavLeft(props, context) {
 	    var _this;
 
-	    _classCallCheck$X(this, F7NavLeft);
+	    _classCallCheck(this, F7NavLeft);
 
-	    _this = _possibleConstructorReturn$X(this, _getPrototypeOf$X(F7NavLeft).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7NavLeft).call(this, props, context));
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$X(_this), ['onBackClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onBackClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$X(F7NavLeft, [{
+	  _createClass(F7NavLeft, [{
 	    key: "onBackClick",
 	    value: function onBackClick(event) {
 	      this.dispatchEvent('back-click backClick click:back clickBack', event);
@@ -67327,7 +62395,7 @@
 
 	      if (slots && Object.keys(slots).length) {
 	        Object.keys(slots).forEach(function (key) {
-	          children.push.apply(children, _toConsumableArray$2(slots[key]));
+	          children.push.apply(children, _toConsumableArray(slots[key]));
 	        });
 	      }
 
@@ -67372,123 +62440,18 @@
 
 	F7NavLeft.displayName = 'f7-nav-left';
 
-	function _typeof$Y(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$Y = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$Y = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$Y(obj);
-	}
-
-	function _toConsumableArray$3(arr) {
-	  return _arrayWithoutHoles$3(arr) || _iterableToArray$3(arr) || _nonIterableSpread$3();
-	}
-
-	function _nonIterableSpread$3() {
-	  throw new TypeError("Invalid attempt to spread non-iterable instance");
-	}
-
-	function _iterableToArray$3(iter) {
-	  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-	}
-
-	function _arrayWithoutHoles$3(arr) {
-	  if (Array.isArray(arr)) {
-	    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
-	      arr2[i] = arr[i];
-	    }
-
-	    return arr2;
-	  }
-	}
-
-	function _classCallCheck$Y(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$Y(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$Y(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$Y(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$Y(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$Y(self, call) {
-	  if (call && (_typeof$Y(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$Y(self);
-	}
-
-	function _assertThisInitialized$Y(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$Y(o) {
-	  _getPrototypeOf$Y = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$Y(o);
-	}
-
-	function _inherits$Y(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$Y(subClass, superClass);
-	}
-
-	function _setPrototypeOf$Y(o, p) {
-	  _setPrototypeOf$Y = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$Y(o, p);
-	}
-
 	var F7NavRight =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$Y(F7NavRight, _React$Component);
+	  _inherits(F7NavRight, _React$Component);
 
 	  function F7NavRight(props, context) {
-	    _classCallCheck$Y(this, F7NavRight);
+	    _classCallCheck(this, F7NavRight);
 
-	    return _possibleConstructorReturn$Y(this, _getPrototypeOf$Y(F7NavRight).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7NavRight).call(this, props, context));
 	  }
 
-	  _createClass$Y(F7NavRight, [{
+	  _createClass(F7NavRight, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -67504,7 +62467,7 @@
 
 	      if (slots && Object.keys(slots).length) {
 	        Object.keys(slots).forEach(function (key) {
-	          children.push.apply(children, _toConsumableArray$3(slots[key]));
+	          children.push.apply(children, _toConsumableArray(slots[key]));
 	        });
 	      }
 
@@ -67533,123 +62496,18 @@
 
 	F7NavRight.displayName = 'f7-nav-right';
 
-	function _typeof$Z(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$Z = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$Z = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$Z(obj);
-	}
-
-	function _toConsumableArray$4(arr) {
-	  return _arrayWithoutHoles$4(arr) || _iterableToArray$4(arr) || _nonIterableSpread$4();
-	}
-
-	function _nonIterableSpread$4() {
-	  throw new TypeError("Invalid attempt to spread non-iterable instance");
-	}
-
-	function _iterableToArray$4(iter) {
-	  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-	}
-
-	function _arrayWithoutHoles$4(arr) {
-	  if (Array.isArray(arr)) {
-	    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
-	      arr2[i] = arr[i];
-	    }
-
-	    return arr2;
-	  }
-	}
-
-	function _classCallCheck$Z(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$Z(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$Z(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$Z(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$Z(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$Z(self, call) {
-	  if (call && (_typeof$Z(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$Z(self);
-	}
-
-	function _assertThisInitialized$Z(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$Z(o) {
-	  _getPrototypeOf$Z = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$Z(o);
-	}
-
-	function _inherits$Z(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$Z(subClass, superClass);
-	}
-
-	function _setPrototypeOf$Z(o, p) {
-	  _setPrototypeOf$Z = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$Z(o, p);
-	}
-
 	var F7NavTitle =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$Z(F7NavTitle, _React$Component);
+	  _inherits(F7NavTitle, _React$Component);
 
 	  function F7NavTitle(props, context) {
-	    _classCallCheck$Z(this, F7NavTitle);
+	    _classCallCheck(this, F7NavTitle);
 
-	    return _possibleConstructorReturn$Z(this, _getPrototypeOf$Z(F7NavTitle).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7NavTitle).call(this, props, context));
 	  }
 
-	  _createClass$Z(F7NavTitle, [{
+	  _createClass(F7NavTitle, [{
 	    key: "render",
 	    value: function render() {
 	      var self = this;
@@ -67663,7 +62521,7 @@
 
 	      if (slots && Object.keys(slots).length) {
 	        Object.keys(slots).forEach(function (key) {
-	          children.push.apply(children, _toConsumableArray$4(slots[key]));
+	          children.push.apply(children, _toConsumableArray(slots[key]));
 	        });
 	      }
 
@@ -67693,123 +62551,18 @@
 
 	F7NavTitle.displayName = 'f7-nav-title';
 
-	function _typeof$_(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$_ = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$_ = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$_(obj);
-	}
-
-	function _toConsumableArray$5(arr) {
-	  return _arrayWithoutHoles$5(arr) || _iterableToArray$5(arr) || _nonIterableSpread$5();
-	}
-
-	function _nonIterableSpread$5() {
-	  throw new TypeError("Invalid attempt to spread non-iterable instance");
-	}
-
-	function _iterableToArray$5(iter) {
-	  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-	}
-
-	function _arrayWithoutHoles$5(arr) {
-	  if (Array.isArray(arr)) {
-	    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
-	      arr2[i] = arr[i];
-	    }
-
-	    return arr2;
-	  }
-	}
-
-	function _classCallCheck$_(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$_(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$_(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$_(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$_(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$_(self, call) {
-	  if (call && (_typeof$_(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$_(self);
-	}
-
-	function _assertThisInitialized$_(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$_(o) {
-	  _getPrototypeOf$_ = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$_(o);
-	}
-
-	function _inherits$_(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$_(subClass, superClass);
-	}
-
-	function _setPrototypeOf$_(o, p) {
-	  _setPrototypeOf$_ = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$_(o, p);
-	}
-
 	var F7NavTitle$1 =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$_(F7NavTitle, _React$Component);
+	  _inherits(F7NavTitle, _React$Component);
 
 	  function F7NavTitle(props, context) {
-	    _classCallCheck$_(this, F7NavTitle);
+	    _classCallCheck(this, F7NavTitle);
 
-	    return _possibleConstructorReturn$_(this, _getPrototypeOf$_(F7NavTitle).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7NavTitle).call(this, props, context));
 	  }
 
-	  _createClass$_(F7NavTitle, [{
+	  _createClass(F7NavTitle, [{
 	    key: "render",
 	    value: function render() {
 	      var self = this;
@@ -67839,7 +62592,7 @@
 	        Object.keys(slots).forEach(function (key) {
 	          var _children;
 
-	          (_children = children).push.apply(_children, _toConsumableArray$5(slots[key]));
+	          (_children = children).push.apply(_children, _toConsumableArray(slots[key]));
 	        });
 	      }
 
@@ -67870,104 +62623,21 @@
 
 	F7NavTitle$1.displayName = 'f7-nav-title';
 
-	function _typeof$$(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$$ = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$$ = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$$(obj);
-	}
-
-	function _classCallCheck$$(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$$(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$$(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$$(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$$(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$$(self, call) {
-	  if (call && (_typeof$$(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$$(self);
-	}
-
-	function _getPrototypeOf$$(o) {
-	  _getPrototypeOf$$ = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$$(o);
-	}
-
-	function _assertThisInitialized$$(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$$(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$$(subClass, superClass);
-	}
-
-	function _setPrototypeOf$$(o, p) {
-	  _setPrototypeOf$$ = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$$(o, p);
-	}
-
 	var F7Navbar =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$$(F7Navbar, _React$Component);
+	  _inherits(F7Navbar, _React$Component);
 
 	  function F7Navbar(props, context) {
 	    var _this;
 
-	    _classCallCheck$$(this, F7Navbar);
+	    _classCallCheck(this, F7Navbar);
 
-	    _this = _possibleConstructorReturn$$(this, _getPrototypeOf$$(F7Navbar).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Navbar).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    _this.state = function () {
-	      var self = _assertThisInitialized$$(_this);
+	      var self = _assertThisInitialized(_this);
 
 	      var $f7 = self.$f7;
 
@@ -67985,13 +62655,13 @@
 	    }();
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$$(_this), ['onBackClick', 'onHide', 'onShow', 'onExpand', 'onCollapse']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onBackClick', 'onHide', 'onShow', 'onExpand', 'onCollapse']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$$(F7Navbar, [{
+	  _createClass(F7Navbar, [{
 	    key: "onHide",
 	    value: function onHide(navbarEl) {
 	      if (this.eventTargetEl !== navbarEl) return;
@@ -68222,103 +62892,20 @@
 
 	F7Navbar.displayName = 'f7-navbar';
 
-	function _typeof$10(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$10 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$10 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$10(obj);
-	}
-
-	function _classCallCheck$10(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$10(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$10(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$10(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$10(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$10(self, call) {
-	  if (call && (_typeof$10(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$10(self);
-	}
-
-	function _getPrototypeOf$10(o) {
-	  _getPrototypeOf$10 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$10(o);
-	}
-
-	function _assertThisInitialized$10(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$10(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$10(subClass, superClass);
-	}
-
-	function _setPrototypeOf$10(o, p) {
-	  _setPrototypeOf$10 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$10(o, p);
-	}
-
 	var F7Preloader =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$10(F7Preloader, _React$Component);
+	  _inherits(F7Preloader, _React$Component);
 
 	  function F7Preloader(props, context) {
 	    var _this;
 
-	    _classCallCheck$10(this, F7Preloader);
+	    _classCallCheck(this, F7Preloader);
 
-	    _this = _possibleConstructorReturn$10(this, _getPrototypeOf$10(F7Preloader).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Preloader).call(this, props, context));
 
 	    _this.state = function () {
-	      var self = _assertThisInitialized$10(_this);
+	      var self = _assertThisInitialized(_this);
 
 	      var $f7 = self.$f7;
 
@@ -68338,7 +62925,7 @@
 	    return _this;
 	  }
 
-	  _createClass$10(F7Preloader, [{
+	  _createClass(F7Preloader, [{
 	    key: "render",
 	    value: function render() {
 	      var self = this;
@@ -68441,110 +63028,27 @@
 
 	F7Preloader.displayName = 'f7-preloader';
 
-	function _typeof$11(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$11 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$11 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$11(obj);
-	}
-
-	function _classCallCheck$11(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$11(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$11(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$11(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$11(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$11(self, call) {
-	  if (call && (_typeof$11(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$11(self);
-	}
-
-	function _getPrototypeOf$11(o) {
-	  _getPrototypeOf$11 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$11(o);
-	}
-
-	function _assertThisInitialized$11(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$11(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$11(subClass, superClass);
-	}
-
-	function _setPrototypeOf$11(o, p) {
-	  _setPrototypeOf$11 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$11(o, p);
-	}
-
 	var F7PageContent =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$11(F7PageContent, _React$Component);
+	  _inherits(F7PageContent, _React$Component);
 
 	  function F7PageContent(props, context) {
 	    var _this;
 
-	    _classCallCheck$11(this, F7PageContent);
+	    _classCallCheck(this, F7PageContent);
 
-	    _this = _possibleConstructorReturn$11(this, _getPrototypeOf$11(F7PageContent).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7PageContent).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$11(_this), ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onTabShow', 'onTabHide']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onTabShow', 'onTabHide']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$11(F7PageContent, [{
+	  _createClass(F7PageContent, [{
 	    key: "onPtrPullStart",
 	    value: function onPtrPullStart(el) {
 	      if (this.eventTargetEl !== el) return;
@@ -68771,100 +63275,17 @@
 
 	F7PageContent.displayName = 'f7-page-content';
 
-	function _typeof$12(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$12 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$12 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$12(obj);
-	}
-
-	function _classCallCheck$12(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$12(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$12(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$12(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$12(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$12(self, call) {
-	  if (call && (_typeof$12(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$12(self);
-	}
-
-	function _getPrototypeOf$12(o) {
-	  _getPrototypeOf$12 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$12(o);
-	}
-
-	function _assertThisInitialized$12(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$12(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$12(subClass, superClass);
-	}
-
-	function _setPrototypeOf$12(o, p) {
-	  _setPrototypeOf$12 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$12(o, p);
-	}
-
 	var F7Page =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$12(F7Page, _React$Component);
+	  _inherits(F7Page, _React$Component);
 
 	  function F7Page(props, context) {
 	    var _this;
 
-	    _classCallCheck$12(this, F7Page);
+	    _classCallCheck(this, F7Page);
 
-	    _this = _possibleConstructorReturn$12(this, _getPrototypeOf$12(F7Page).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Page).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    _this.state = function () {
@@ -68882,13 +63303,13 @@
 	    }();
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$12(_this), ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack', 'onPageNavbarLargeCollapsed', 'onPageNavbarLargeExpanded', 'onCardOpened', 'onCardClose']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack', 'onPageNavbarLargeCollapsed', 'onPageNavbarLargeExpanded', 'onCardOpened', 'onCardClose']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$12(F7Page, [{
+	  _createClass(F7Page, [{
 	    key: "onPtrPullStart",
 	    value: function onPtrPullStart() {
 	      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -69401,125 +63822,27 @@
 
 	F7Page.displayName = 'f7-page';
 
-	function _typeof$13(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$13 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$13 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$13(obj);
-	}
-
-	function _defineProperty$2(obj, key, value) {
-	  if (key in obj) {
-	    Object.defineProperty(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-
-	  return obj;
-	}
-
-	function _classCallCheck$13(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$13(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$13(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$13(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$13(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$13(self, call) {
-	  if (call && (_typeof$13(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$13(self);
-	}
-
-	function _getPrototypeOf$13(o) {
-	  _getPrototypeOf$13 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$13(o);
-	}
-
-	function _assertThisInitialized$13(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$13(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$13(subClass, superClass);
-	}
-
-	function _setPrototypeOf$13(o, p) {
-	  _setPrototypeOf$13 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$13(o, p);
-	}
-
 	var F7Panel =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$13(F7Panel, _React$Component);
+	  _inherits(F7Panel, _React$Component);
 
 	  function F7Panel(props, context) {
 	    var _this;
 
-	    _classCallCheck$13(this, F7Panel);
+	    _classCallCheck(this, F7Panel);
 
-	    _this = _possibleConstructorReturn$13(this, _getPrototypeOf$13(F7Panel).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Panel).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$13(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onBackdropClick', 'onSwipe', 'onSwipeOpen', 'onBreakpoint', 'onCollapsedBreakpoint', 'onResize']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onBackdropClick', 'onSwipe', 'onSwipeOpen', 'onBreakpoint', 'onCollapsedBreakpoint', 'onResize']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$13(F7Panel, [{
+	  _createClass(F7Panel, [{
 	    key: "onOpen",
 	    value: function onOpen(event) {
 	      this.dispatchEvent('panel:open panelOpen', event);
@@ -69722,7 +64045,7 @@
 	      effect = effect || (reveal ? 'reveal' : 'cover');
 	      return Utils$1.classNames(className, 'panel', (_Utils$classNames = {
 	        'panel-resizable': resizable
-	      }, _defineProperty$2(_Utils$classNames, "panel-".concat(side), side), _defineProperty$2(_Utils$classNames, "panel-".concat(effect), effect), _Utils$classNames), Mixins.colorClasses(props));
+	      }, _defineProperty(_Utils$classNames, "panel-".concat(side), side), _defineProperty(_Utils$classNames, "panel-".concat(effect), effect), _Utils$classNames), Mixins.colorClasses(props));
 	    }
 	  }, {
 	    key: "slots",
@@ -69782,101 +64105,18 @@
 
 	F7Panel.displayName = 'f7-panel';
 
-	function _typeof$14(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$14 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$14 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$14(obj);
-	}
-
-	function _classCallCheck$14(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$14(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$14(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$14(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$14(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$14(self, call) {
-	  if (call && (_typeof$14(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$14(self);
-	}
-
-	function _assertThisInitialized$14(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$14(o) {
-	  _getPrototypeOf$14 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$14(o);
-	}
-
-	function _inherits$14(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$14(subClass, superClass);
-	}
-
-	function _setPrototypeOf$14(o, p) {
-	  _setPrototypeOf$14 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$14(o, p);
-	}
-
 	var F7PhotoBrowser =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$14(F7PhotoBrowser, _React$Component);
+	  _inherits(F7PhotoBrowser, _React$Component);
 
 	  function F7PhotoBrowser(props, context) {
-	    _classCallCheck$14(this, F7PhotoBrowser);
+	    _classCallCheck(this, F7PhotoBrowser);
 
-	    return _possibleConstructorReturn$14(this, _getPrototypeOf$14(F7PhotoBrowser).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7PhotoBrowser).call(this, props, context));
 	  }
 
-	  _createClass$14(F7PhotoBrowser, [{
+	  _createClass(F7PhotoBrowser, [{
 	    key: "open",
 	    value: function open(index) {
 	      return this.f7PhotoBrowser.open(index);
@@ -70061,110 +64301,27 @@
 
 	F7PhotoBrowser.displayName = 'f7-photo-browser';
 
-	function _typeof$15(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$15 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$15 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$15(obj);
-	}
-
-	function _classCallCheck$15(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$15(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$15(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$15(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$15(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$15(self, call) {
-	  if (call && (_typeof$15(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$15(self);
-	}
-
-	function _getPrototypeOf$15(o) {
-	  _getPrototypeOf$15 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$15(o);
-	}
-
-	function _assertThisInitialized$15(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$15(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$15(subClass, superClass);
-	}
-
-	function _setPrototypeOf$15(o, p) {
-	  _setPrototypeOf$15 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$15(o, p);
-	}
-
 	var F7Popover =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$15(F7Popover, _React$Component);
+	  _inherits(F7Popover, _React$Component);
 
 	  function F7Popover(props, context) {
 	    var _this;
 
-	    _classCallCheck$15(this, F7Popover);
+	    _classCallCheck(this, F7Popover);
 
-	    _this = _possibleConstructorReturn$15(this, _getPrototypeOf$15(F7Popover).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Popover).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$15(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$15(F7Popover, [{
+	  _createClass(F7Popover, [{
 	    key: "onOpen",
 	    value: function onOpen(instance) {
 	      this.dispatchEvent('popover:open popoverOpen', instance);
@@ -70323,110 +64480,27 @@
 
 	F7Popover.displayName = 'f7-popover';
 
-	function _typeof$16(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$16 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$16 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$16(obj);
-	}
-
-	function _classCallCheck$16(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$16(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$16(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$16(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$16(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$16(self, call) {
-	  if (call && (_typeof$16(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$16(self);
-	}
-
-	function _getPrototypeOf$16(o) {
-	  _getPrototypeOf$16 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$16(o);
-	}
-
-	function _assertThisInitialized$16(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$16(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$16(subClass, superClass);
-	}
-
-	function _setPrototypeOf$16(o, p) {
-	  _setPrototypeOf$16 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$16(o, p);
-	}
-
 	var F7Popup =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$16(F7Popup, _React$Component);
+	  _inherits(F7Popup, _React$Component);
 
 	  function F7Popup(props, context) {
 	    var _this;
 
-	    _classCallCheck$16(this, F7Popup);
+	    _classCallCheck(this, F7Popup);
 
-	    _this = _possibleConstructorReturn$16(this, _getPrototypeOf$16(F7Popup).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Popup).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$16(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$16(F7Popup, [{
+	  _createClass(F7Popup, [{
 	    key: "onOpen",
 	    value: function onOpen(instance) {
 	      this.dispatchEvent('popup:open popupOpen', instance);
@@ -70593,105 +64667,22 @@
 
 	F7Popup.displayName = 'f7-popup';
 
-	function _typeof$17(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$17 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$17 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$17(obj);
-	}
-
-	function _classCallCheck$17(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$17(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$17(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$17(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$17(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$17(self, call) {
-	  if (call && (_typeof$17(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$17(self);
-	}
-
-	function _assertThisInitialized$17(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$17(o) {
-	  _getPrototypeOf$17 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$17(o);
-	}
-
-	function _inherits$17(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$17(subClass, superClass);
-	}
-
-	function _setPrototypeOf$17(o, p) {
-	  _setPrototypeOf$17 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$17(o, p);
-	}
-
 	var F7Progressbar =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$17(F7Progressbar, _React$Component);
+	  _inherits(F7Progressbar, _React$Component);
 
 	  function F7Progressbar(props, context) {
 	    var _this;
 
-	    _classCallCheck$17(this, F7Progressbar);
+	    _classCallCheck(this, F7Progressbar);
 
-	    _this = _possibleConstructorReturn$17(this, _getPrototypeOf$17(F7Progressbar).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Progressbar).call(this, props, context));
 	    _this.__reactRefs = {};
 	    return _this;
 	  }
 
-	  _createClass$17(F7Progressbar, [{
+	  _createClass(F7Progressbar, [{
 	    key: "set",
 	    value: function set(progress, speed) {
 	      var self = this;
@@ -70750,110 +64741,27 @@
 
 	F7Progressbar.displayName = 'f7-progressbar';
 
-	function _typeof$18(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$18 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$18 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$18(obj);
-	}
-
-	function _classCallCheck$18(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$18(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$18(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$18(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$18(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$18(self, call) {
-	  if (call && (_typeof$18(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$18(self);
-	}
-
-	function _getPrototypeOf$18(o) {
-	  _getPrototypeOf$18 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$18(o);
-	}
-
-	function _assertThisInitialized$18(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$18(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$18(subClass, superClass);
-	}
-
-	function _setPrototypeOf$18(o, p) {
-	  _setPrototypeOf$18 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$18(o, p);
-	}
-
 	var F7Radio =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$18(F7Radio, _React$Component);
+	  _inherits(F7Radio, _React$Component);
 
 	  function F7Radio(props, context) {
 	    var _this;
 
-	    _classCallCheck$18(this, F7Radio);
+	    _classCallCheck(this, F7Radio);
 
-	    _this = _possibleConstructorReturn$18(this, _getPrototypeOf$18(F7Radio).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Radio).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$18(_this), ['onChange']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onChange']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$18(F7Radio, [{
+	  _createClass(F7Radio, [{
 	    key: "onChange",
 	    value: function onChange(event) {
 	      this.dispatchEvent('change', event);
@@ -70941,110 +64849,27 @@
 
 	F7Radio.displayName = 'f7-radio';
 
-	function _typeof$19(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$19 = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$19 = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$19(obj);
-	}
-
-	function _classCallCheck$19(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$19(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$19(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$19(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$19(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$19(self, call) {
-	  if (call && (_typeof$19(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$19(self);
-	}
-
-	function _getPrototypeOf$19(o) {
-	  _getPrototypeOf$19 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$19(o);
-	}
-
-	function _assertThisInitialized$19(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$19(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$19(subClass, superClass);
-	}
-
-	function _setPrototypeOf$19(o, p) {
-	  _setPrototypeOf$19 = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$19(o, p);
-	}
-
 	var F7Row =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$19(F7Row, _React$Component);
+	  _inherits(F7Row, _React$Component);
 
 	  function F7Row(props, context) {
 	    var _this;
 
-	    _classCallCheck$19(this, F7Row);
+	    _classCallCheck(this, F7Row);
 
-	    _this = _possibleConstructorReturn$19(this, _getPrototypeOf$19(F7Row).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Row).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$19(_this), ['onClick', 'onResize']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick', 'onResize']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$19(F7Row, [{
+	  _createClass(F7Row, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -71155,110 +64980,27 @@
 
 	F7Row.displayName = 'f7-row';
 
-	function _typeof$1a(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1a = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1a = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1a(obj);
-	}
-
-	function _classCallCheck$1a(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1a(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1a(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1a(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1a(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1a(self, call) {
-	  if (call && (_typeof$1a(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1a(self);
-	}
-
-	function _getPrototypeOf$1a(o) {
-	  _getPrototypeOf$1a = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1a(o);
-	}
-
-	function _assertThisInitialized$1a(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$1a(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1a(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1a(o, p) {
-	  _setPrototypeOf$1a = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1a(o, p);
-	}
-
 	var F7Searchbar =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1a(F7Searchbar, _React$Component);
+	  _inherits(F7Searchbar, _React$Component);
 
 	  function F7Searchbar(props, context) {
 	    var _this;
 
-	    _classCallCheck$1a(this, F7Searchbar);
+	    _classCallCheck(this, F7Searchbar);
 
-	    _this = _possibleConstructorReturn$1a(this, _getPrototypeOf$1a(F7Searchbar).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Searchbar).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$1a(_this), ['onSubmit', 'onClearButtonClick', 'onDisableButtonClick', 'onInput', 'onChange', 'onFocus', 'onBlur']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onSubmit', 'onClearButtonClick', 'onDisableButtonClick', 'onInput', 'onChange', 'onFocus', 'onBlur']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$1a(F7Searchbar, [{
+	  _createClass(F7Searchbar, [{
 	    key: "search",
 	    value: function search(query) {
 	      if (!this.f7Searchbar) return undefined;
@@ -71639,101 +65381,18 @@
 
 	F7Searchbar.displayName = 'f7-searchbar';
 
-	function _typeof$1b(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1b = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1b = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1b(obj);
-	}
-
-	function _classCallCheck$1b(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1b(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1b(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1b(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1b(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1b(self, call) {
-	  if (call && (_typeof$1b(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1b(self);
-	}
-
-	function _assertThisInitialized$1b(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$1b(o) {
-	  _getPrototypeOf$1b = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1b(o);
-	}
-
-	function _inherits$1b(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1b(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1b(o, p) {
-	  _setPrototypeOf$1b = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1b(o, p);
-	}
-
 	var F7Segmented =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1b(F7Segmented, _React$Component);
+	  _inherits(F7Segmented, _React$Component);
 
 	  function F7Segmented(props, context) {
-	    _classCallCheck$1b(this, F7Segmented);
+	    _classCallCheck(this, F7Segmented);
 
-	    return _possibleConstructorReturn$1b(this, _getPrototypeOf$1b(F7Segmented).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7Segmented).call(this, props, context));
 	  }
 
-	  _createClass$1b(F7Segmented, [{
+	  _createClass(F7Segmented, [{
 	    key: "render",
 	    value: function render() {
 	      var self = this;
@@ -71810,110 +65469,27 @@
 
 	F7Segmented.displayName = 'f7-segmented';
 
-	function _typeof$1c(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1c = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1c = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1c(obj);
-	}
-
-	function _classCallCheck$1c(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1c(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1c(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1c(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1c(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1c(self, call) {
-	  if (call && (_typeof$1c(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1c(self);
-	}
-
-	function _getPrototypeOf$1c(o) {
-	  _getPrototypeOf$1c = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1c(o);
-	}
-
-	function _assertThisInitialized$1c(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$1c(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1c(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1c(o, p) {
-	  _setPrototypeOf$1c = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1c(o, p);
-	}
-
 	var F7Sheet =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1c(F7Sheet, _React$Component);
+	  _inherits(F7Sheet, _React$Component);
 
 	  function F7Sheet(props, context) {
 	    var _this;
 
-	    _classCallCheck$1c(this, F7Sheet);
+	    _classCallCheck(this, F7Sheet);
 
-	    _this = _possibleConstructorReturn$1c(this, _getPrototypeOf$1c(F7Sheet).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Sheet).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$1c(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onStepOpen', 'onStepClose', 'onStepProgress']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onStepOpen', 'onStepClose', 'onStepProgress']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$1c(F7Sheet, [{
+	  _createClass(F7Sheet, [{
 	    key: "onStepProgress",
 	    value: function onStepProgress(instance, progress) {
 	      this.dispatchEvent('sheet:stepprogress sheetStepProgress', instance, progress);
@@ -72135,101 +65711,18 @@
 
 	F7Sheet.displayName = 'f7-sheet';
 
-	function _typeof$1d(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1d = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1d = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1d(obj);
-	}
-
-	function _classCallCheck$1d(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1d(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1d(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1d(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1d(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1d(self, call) {
-	  if (call && (_typeof$1d(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1d(self);
-	}
-
-	function _assertThisInitialized$1d(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$1d(o) {
-	  _getPrototypeOf$1d = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1d(o);
-	}
-
-	function _inherits$1d(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1d(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1d(o, p) {
-	  _setPrototypeOf$1d = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1d(o, p);
-	}
-
 	var F7SkeletonBlock =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1d(F7SkeletonBlock, _React$Component);
+	  _inherits(F7SkeletonBlock, _React$Component);
 
 	  function F7SkeletonBlock(props, context) {
-	    _classCallCheck$1d(this, F7SkeletonBlock);
+	    _classCallCheck(this, F7SkeletonBlock);
 
-	    return _possibleConstructorReturn$1d(this, _getPrototypeOf$1d(F7SkeletonBlock).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7SkeletonBlock).call(this, props, context));
 	  }
 
-	  _createClass$1d(F7SkeletonBlock, [{
+	  _createClass(F7SkeletonBlock, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -72249,7 +65742,7 @@
 	          styleAttribute = {
 	            width: widthValue
 	          };
-	        } else if (_typeof$1d(styleAttribute) === 'object') {
+	        } else if (_typeof(styleAttribute) === 'object') {
 	          styleAttribute = Object.assign({
 	            width: widthValue
 	          }, styleAttribute);
@@ -72265,7 +65758,7 @@
 	          styleAttribute = {
 	            height: heightValue
 	          };
-	        } else if (_typeof$1d(styleAttribute) === 'object') {
+	        } else if (_typeof(styleAttribute) === 'object') {
 	          styleAttribute = Object.assign({
 	            height: heightValue
 	          }, styleAttribute);
@@ -72305,101 +65798,18 @@
 
 	F7SkeletonBlock.displayName = 'f7-skeleton-block';
 
-	function _typeof$1e(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1e = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1e = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1e(obj);
-	}
-
-	function _classCallCheck$1e(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1e(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1e(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1e(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1e(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1e(self, call) {
-	  if (call && (_typeof$1e(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1e(self);
-	}
-
-	function _assertThisInitialized$1e(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$1e(o) {
-	  _getPrototypeOf$1e = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1e(o);
-	}
-
-	function _inherits$1e(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1e(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1e(o, p) {
-	  _setPrototypeOf$1e = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1e(o, p);
-	}
-
 	var F7SkeletonText =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1e(F7SkeletonText, _React$Component);
+	  _inherits(F7SkeletonText, _React$Component);
 
 	  function F7SkeletonText(props, context) {
-	    _classCallCheck$1e(this, F7SkeletonText);
+	    _classCallCheck(this, F7SkeletonText);
 
-	    return _possibleConstructorReturn$1e(this, _getPrototypeOf$1e(F7SkeletonText).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7SkeletonText).call(this, props, context));
 	  }
 
-	  _createClass$1e(F7SkeletonText, [{
+	  _createClass(F7SkeletonText, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -72419,7 +65829,7 @@
 	          styleAttribute = {
 	            width: widthValue
 	          };
-	        } else if (_typeof$1e(styleAttribute) === 'object') {
+	        } else if (_typeof(styleAttribute) === 'object') {
 	          styleAttribute = Object.assign({
 	            width: widthValue
 	          }, styleAttribute);
@@ -72435,7 +65845,7 @@
 	          styleAttribute = {
 	            height: heightValue
 	          };
-	        } else if (_typeof$1e(styleAttribute) === 'object') {
+	        } else if (_typeof(styleAttribute) === 'object') {
 	          styleAttribute = Object.assign({
 	            height: heightValue
 	          }, styleAttribute);
@@ -72475,110 +65885,27 @@
 
 	F7SkeletonText.displayName = 'f7-skeleton-text';
 
-	function _typeof$1f(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1f = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1f = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1f(obj);
-	}
-
-	function _classCallCheck$1f(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1f(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1f(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1f(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1f(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1f(self, call) {
-	  if (call && (_typeof$1f(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1f(self);
-	}
-
-	function _getPrototypeOf$1f(o) {
-	  _getPrototypeOf$1f = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1f(o);
-	}
-
-	function _assertThisInitialized$1f(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$1f(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1f(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1f(o, p) {
-	  _setPrototypeOf$1f = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1f(o, p);
-	}
-
 	var F7Stepper =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1f(F7Stepper, _React$Component);
+	  _inherits(F7Stepper, _React$Component);
 
 	  function F7Stepper(props, context) {
 	    var _this;
 
-	    _classCallCheck$1f(this, F7Stepper);
+	    _classCallCheck(this, F7Stepper);
 
-	    _this = _possibleConstructorReturn$1f(this, _getPrototypeOf$1f(F7Stepper).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Stepper).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$1f(_this), ['onInput', 'onMinusClick', 'onPlusClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onInput', 'onMinusClick', 'onPlusClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$1f(F7Stepper, [{
+	  _createClass(F7Stepper, [{
 	    key: "increment",
 	    value: function increment() {
 	      if (!this.f7Stepper) return;
@@ -72936,101 +66263,18 @@
 
 	F7Stepper.displayName = 'f7-stepper';
 
-	function _typeof$1g(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1g = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1g = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1g(obj);
-	}
-
-	function _classCallCheck$1g(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1g(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1g(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1g(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1g(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1g(self, call) {
-	  if (call && (_typeof$1g(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1g(self);
-	}
-
-	function _assertThisInitialized$1g(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$1g(o) {
-	  _getPrototypeOf$1g = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1g(o);
-	}
-
-	function _inherits$1g(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1g(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1g(o, p) {
-	  _setPrototypeOf$1g = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1g(o, p);
-	}
-
 	var F7Subnavbar =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1g(F7Subnavbar, _React$Component);
+	  _inherits(F7Subnavbar, _React$Component);
 
 	  function F7Subnavbar(props, context) {
-	    _classCallCheck$1g(this, F7Subnavbar);
+	    _classCallCheck(this, F7Subnavbar);
 
-	    return _possibleConstructorReturn$1g(this, _getPrototypeOf$1g(F7Subnavbar).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7Subnavbar).call(this, props, context));
 	  }
 
-	  _createClass$1g(F7Subnavbar, [{
+	  _createClass(F7Subnavbar, [{
 	    key: "render",
 	    value: function render() {
 	      var self = this;
@@ -73078,101 +66322,18 @@
 
 	F7Subnavbar.displayName = 'f7-subnavbar';
 
-	function _typeof$1h(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1h = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1h = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1h(obj);
-	}
-
-	function _classCallCheck$1h(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1h(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1h(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1h(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1h(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1h(self, call) {
-	  if (call && (_typeof$1h(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1h(self);
-	}
-
-	function _assertThisInitialized$1h(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$1h(o) {
-	  _getPrototypeOf$1h = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1h(o);
-	}
-
-	function _inherits$1h(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1h(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1h(o, p) {
-	  _setPrototypeOf$1h = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1h(o, p);
-	}
-
 	var F7SwipeoutActions =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1h(F7SwipeoutActions, _React$Component);
+	  _inherits(F7SwipeoutActions, _React$Component);
 
 	  function F7SwipeoutActions(props, context) {
-	    _classCallCheck$1h(this, F7SwipeoutActions);
+	    _classCallCheck(this, F7SwipeoutActions);
 
-	    return _possibleConstructorReturn$1h(this, _getPrototypeOf$1h(F7SwipeoutActions).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7SwipeoutActions).call(this, props, context));
 	  }
 
-	  _createClass$1h(F7SwipeoutActions, [{
+	  _createClass(F7SwipeoutActions, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -73217,110 +66378,27 @@
 
 	F7SwipeoutActions.displayName = 'f7-swipeout-actions';
 
-	function _typeof$1i(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1i = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1i = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1i(obj);
-	}
-
-	function _classCallCheck$1i(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1i(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1i(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1i(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1i(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1i(self, call) {
-	  if (call && (_typeof$1i(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1i(self);
-	}
-
-	function _getPrototypeOf$1i(o) {
-	  _getPrototypeOf$1i = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1i(o);
-	}
-
-	function _assertThisInitialized$1i(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$1i(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1i(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1i(o, p) {
-	  _setPrototypeOf$1i = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1i(o, p);
-	}
-
 	var F7SwipeoutButton =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1i(F7SwipeoutButton, _React$Component);
+	  _inherits(F7SwipeoutButton, _React$Component);
 
 	  function F7SwipeoutButton(props, context) {
 	    var _this;
 
-	    _classCallCheck$1i(this, F7SwipeoutButton);
+	    _classCallCheck(this, F7SwipeoutButton);
 
-	    _this = _possibleConstructorReturn$1i(this, _getPrototypeOf$1i(F7SwipeoutButton).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7SwipeoutButton).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$1i(_this), ['onClick']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$1i(F7SwipeoutButton, [{
+	  _createClass(F7SwipeoutButton, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -73408,101 +66486,18 @@
 
 	F7SwipeoutButton.displayName = 'f7-swipeout-button';
 
-	function _typeof$1j(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1j = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1j = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1j(obj);
-	}
-
-	function _classCallCheck$1j(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1j(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1j(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1j(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1j(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1j(self, call) {
-	  if (call && (_typeof$1j(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1j(self);
-	}
-
-	function _assertThisInitialized$1j(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$1j(o) {
-	  _getPrototypeOf$1j = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1j(o);
-	}
-
-	function _inherits$1j(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1j(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1j(o, p) {
-	  _setPrototypeOf$1j = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1j(o, p);
-	}
-
 	var F7SwiperSlide =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1j(F7SwiperSlide, _React$Component);
+	  _inherits(F7SwiperSlide, _React$Component);
 
 	  function F7SwiperSlide(props, context) {
-	    _classCallCheck$1j(this, F7SwiperSlide);
+	    _classCallCheck(this, F7SwiperSlide);
 
-	    return _possibleConstructorReturn$1j(this, _getPrototypeOf$1j(F7SwiperSlide).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7SwiperSlide).call(this, props, context));
 	  }
 
-	  _createClass$1j(F7SwiperSlide, [{
+	  _createClass(F7SwiperSlide, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -73538,105 +66533,22 @@
 
 	F7SwiperSlide.displayName = 'f7-swiper-slide';
 
-	function _typeof$1k(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1k = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1k = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1k(obj);
-	}
-
-	function _classCallCheck$1k(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1k(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1k(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1k(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1k(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1k(self, call) {
-	  if (call && (_typeof$1k(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1k(self);
-	}
-
-	function _assertThisInitialized$1k(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$1k(o) {
-	  _getPrototypeOf$1k = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1k(o);
-	}
-
-	function _inherits$1k(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1k(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1k(o, p) {
-	  _setPrototypeOf$1k = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1k(o, p);
-	}
-
 	var F7Swiper =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1k(F7Swiper, _React$Component);
+	  _inherits(F7Swiper, _React$Component);
 
 	  function F7Swiper(props, context) {
 	    var _this;
 
-	    _classCallCheck$1k(this, F7Swiper);
+	    _classCallCheck(this, F7Swiper);
 
-	    _this = _possibleConstructorReturn$1k(this, _getPrototypeOf$1k(F7Swiper).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Swiper).call(this, props, context));
 	    _this.__reactRefs = {};
 	    return _this;
 	  }
 
-	  _createClass$1k(F7Swiper, [{
+	  _createClass(F7Swiper, [{
 	    key: "render",
 	    value: function render() {
 	      var _this2 = this;
@@ -73817,100 +66729,17 @@
 
 	F7Swiper.displayName = 'f7-swiper';
 
-	function _typeof$1l(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1l = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1l = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1l(obj);
-	}
-
-	function _classCallCheck$1l(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1l(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1l(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1l(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1l(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1l(self, call) {
-	  if (call && (_typeof$1l(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1l(self);
-	}
-
-	function _getPrototypeOf$1l(o) {
-	  _getPrototypeOf$1l = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1l(o);
-	}
-
-	function _assertThisInitialized$1l(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$1l(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1l(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1l(o, p) {
-	  _setPrototypeOf$1l = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1l(o, p);
-	}
-
 	var F7Tab =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1l(F7Tab, _React$Component);
+	  _inherits(F7Tab, _React$Component);
 
 	  function F7Tab(props, context) {
 	    var _this;
 
-	    _classCallCheck$1l(this, F7Tab);
+	    _classCallCheck(this, F7Tab);
 
-	    _this = _possibleConstructorReturn$1l(this, _getPrototypeOf$1l(F7Tab).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Tab).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    _this.state = function () {
@@ -73920,13 +66749,13 @@
 	    }();
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$1l(_this), ['onTabShow', 'onTabHide']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onTabShow', 'onTabHide']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$1l(F7Tab, [{
+	  _createClass(F7Tab, [{
 	    key: "show",
 	    value: function show(animate) {
 	      if (!this.$f7) return;
@@ -74056,105 +66885,22 @@
 
 	F7Tab.displayName = 'f7-tab';
 
-	function _typeof$1m(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1m = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1m = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1m(obj);
-	}
-
-	function _classCallCheck$1m(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1m(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1m(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1m(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1m(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1m(self, call) {
-	  if (call && (_typeof$1m(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1m(self);
-	}
-
-	function _assertThisInitialized$1m(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$1m(o) {
-	  _getPrototypeOf$1m = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1m(o);
-	}
-
-	function _inherits$1m(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1m(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1m(o, p) {
-	  _setPrototypeOf$1m = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1m(o, p);
-	}
-
 	var F7Tabs =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1m(F7Tabs, _React$Component);
+	  _inherits(F7Tabs, _React$Component);
 
 	  function F7Tabs(props, context) {
 	    var _this;
 
-	    _classCallCheck$1m(this, F7Tabs);
+	    _classCallCheck(this, F7Tabs);
 
-	    _this = _possibleConstructorReturn$1m(this, _getPrototypeOf$1m(F7Tabs).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Tabs).call(this, props, context));
 	    _this.__reactRefs = {};
 	    return _this;
 	  }
 
-	  _createClass$1m(F7Tabs, [{
+	  _createClass(F7Tabs, [{
 	    key: "render",
 	    value: function render() {
 	      var _this2 = this;
@@ -74239,104 +66985,21 @@
 
 	F7Tabs.displayName = 'f7-tabs';
 
-	function _typeof$1n(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1n = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1n = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1n(obj);
-	}
-
-	function _classCallCheck$1n(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1n(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1n(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1n(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1n(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1n(self, call) {
-	  if (call && (_typeof$1n(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1n(self);
-	}
-
-	function _getPrototypeOf$1n(o) {
-	  _getPrototypeOf$1n = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1n(o);
-	}
-
-	function _assertThisInitialized$1n(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$1n(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1n(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1n(o, p) {
-	  _setPrototypeOf$1n = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1n(o, p);
-	}
-
 	var F7Toolbar =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1n(F7Toolbar, _React$Component);
+	  _inherits(F7Toolbar, _React$Component);
 
 	  function F7Toolbar(props, context) {
 	    var _this;
 
-	    _classCallCheck$1n(this, F7Toolbar);
+	    _classCallCheck(this, F7Toolbar);
 
-	    _this = _possibleConstructorReturn$1n(this, _getPrototypeOf$1n(F7Toolbar).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Toolbar).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    _this.state = function () {
-	      var self = _assertThisInitialized$1n(_this);
+	      var self = _assertThisInitialized(_this);
 
 	      var $f7 = self.$f7;
 
@@ -74354,13 +67017,13 @@
 	    }();
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$1n(_this), ['onHide', 'onShow']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onHide', 'onShow']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$1n(F7Toolbar, [{
+	  _createClass(F7Toolbar, [{
 	    key: "onHide",
 	    value: function onHide(navbarEl) {
 	      if (this.eventTargetEl !== navbarEl) return;
@@ -74549,110 +67212,27 @@
 
 	F7Toolbar.displayName = 'f7-toolbar';
 
-	function _typeof$1o(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1o = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1o = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1o(obj);
-	}
-
-	function _classCallCheck$1o(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1o(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1o(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1o(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1o(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1o(self, call) {
-	  if (call && (_typeof$1o(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1o(self);
-	}
-
-	function _getPrototypeOf$1o(o) {
-	  _getPrototypeOf$1o = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1o(o);
-	}
-
-	function _assertThisInitialized$1o(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$1o(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1o(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1o(o, p) {
-	  _setPrototypeOf$1o = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1o(o, p);
-	}
-
 	var F7TreeviewItem =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1o(F7TreeviewItem, _React$Component);
+	  _inherits(F7TreeviewItem, _React$Component);
 
 	  function F7TreeviewItem(props, context) {
 	    var _this;
 
-	    _classCallCheck$1o(this, F7TreeviewItem);
+	    _classCallCheck(this, F7TreeviewItem);
 
-	    _this = _possibleConstructorReturn$1o(this, _getPrototypeOf$1o(F7TreeviewItem).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7TreeviewItem).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized$1o(_this), ['onClick', 'onOpen', 'onClose', 'onLoadChildren']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onClick', 'onOpen', 'onClose', 'onLoadChildren']);
 	    })();
 
 	    return _this;
 	  }
 
-	  _createClass$1o(F7TreeviewItem, [{
+	  _createClass(F7TreeviewItem, [{
 	    key: "onClick",
 	    value: function onClick(event) {
 	      this.dispatchEvent('click', event);
@@ -74854,101 +67434,18 @@
 
 	F7TreeviewItem.displayName = 'f7-treeview-item';
 
-	function _typeof$1p(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1p = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1p = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1p(obj);
-	}
-
-	function _classCallCheck$1p(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1p(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1p(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1p(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1p(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1p(self, call) {
-	  if (call && (_typeof$1p(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1p(self);
-	}
-
-	function _assertThisInitialized$1p(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$1p(o) {
-	  _getPrototypeOf$1p = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1p(o);
-	}
-
-	function _inherits$1p(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1p(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1p(o, p) {
-	  _setPrototypeOf$1p = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1p(o, p);
-	}
-
 	var F7Treeview =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1p(F7Treeview, _React$Component);
+	  _inherits(F7Treeview, _React$Component);
 
 	  function F7Treeview(props, context) {
-	    _classCallCheck$1p(this, F7Treeview);
+	    _classCallCheck(this, F7Treeview);
 
-	    return _possibleConstructorReturn$1p(this, _getPrototypeOf$1p(F7Treeview).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7Treeview).call(this, props, context));
 	  }
 
-	  _createClass$1p(F7Treeview, [{
+	  _createClass(F7Treeview, [{
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -74980,100 +67477,17 @@
 
 	F7Treeview.displayName = 'f7-treeview';
 
-	function _typeof$1q(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1q = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1q = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1q(obj);
-	}
-
-	function _classCallCheck$1q(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1q(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1q(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1q(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1q(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1q(self, call) {
-	  if (call && (_typeof$1q(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1q(self);
-	}
-
-	function _getPrototypeOf$1q(o) {
-	  _getPrototypeOf$1q = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1q(o);
-	}
-
-	function _assertThisInitialized$1q(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _inherits$1q(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1q(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1q(o, p) {
-	  _setPrototypeOf$1q = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1q(o, p);
-	}
-
 	var F7View =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1q(F7View, _React$Component);
+	  _inherits(F7View, _React$Component);
 
 	  function F7View(props, context) {
 	    var _this;
 
-	    _classCallCheck$1q(this, F7View);
+	    _classCallCheck(this, F7View);
 
-	    _this = _possibleConstructorReturn$1q(this, _getPrototypeOf$1q(F7View).call(this, props, context));
+	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7View).call(this, props, context));
 	    _this.__reactRefs = {};
 
 	    _this.state = function () {
@@ -75083,7 +67497,7 @@
 	    }();
 
 	    (function () {
-	      var self = _assertThisInitialized$1q(_this);
+	      var self = _assertThisInitialized(_this);
 
 	      Utils$1.bindMethods(self, ['onSwipeBackMove', 'onSwipeBackBeforeChange', 'onSwipeBackAfterChange', 'onSwipeBackBeforeReset', 'onSwipeBackAfterReset', 'onTabShow', 'onTabHide', 'onViewInit']);
 	    })();
@@ -75091,7 +67505,7 @@
 	    return _this;
 	  }
 
-	  _createClass$1q(F7View, [{
+	  _createClass(F7View, [{
 	    key: "onViewInit",
 	    value: function onViewInit(view) {
 	      var self = this;
@@ -75335,101 +67749,18 @@
 
 	F7View.displayName = 'f7-view';
 
-	function _typeof$1r(obj) {
-	  if (typeof Symbol === "function" && _typeof(Symbol.iterator) === "symbol") {
-	    _typeof$1r = function _typeof$1(obj) {
-	      return _typeof(obj);
-	    };
-	  } else {
-	    _typeof$1r = function _typeof$1(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof(obj);
-	    };
-	  }
-
-	  return _typeof$1r(obj);
-	}
-
-	function _classCallCheck$1r(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-
-	function _defineProperties$1r(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, descriptor.key, descriptor);
-	  }
-	}
-
-	function _createClass$1r(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties$1r(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties$1r(Constructor, staticProps);
-	  return Constructor;
-	}
-
-	function _possibleConstructorReturn$1r(self, call) {
-	  if (call && (_typeof$1r(call) === "object" || typeof call === "function")) {
-	    return call;
-	  }
-
-	  return _assertThisInitialized$1r(self);
-	}
-
-	function _assertThisInitialized$1r(self) {
-	  if (self === void 0) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return self;
-	}
-
-	function _getPrototypeOf$1r(o) {
-	  _getPrototypeOf$1r = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-	    return o.__proto__ || Object.getPrototypeOf(o);
-	  };
-	  return _getPrototypeOf$1r(o);
-	}
-
-	function _inherits$1r(subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function");
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _setPrototypeOf$1r(subClass, superClass);
-	}
-
-	function _setPrototypeOf$1r(o, p) {
-	  _setPrototypeOf$1r = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-	    o.__proto__ = p;
-	    return o;
-	  };
-
-	  return _setPrototypeOf$1r(o, p);
-	}
-
 	var F7Views =
 	/*#__PURE__*/
 	function (_React$Component) {
-	  _inherits$1r(F7Views, _React$Component);
+	  _inherits(F7Views, _React$Component);
 
 	  function F7Views(props, context) {
-	    _classCallCheck$1r(this, F7Views);
+	    _classCallCheck(this, F7Views);
 
-	    return _possibleConstructorReturn$1r(this, _getPrototypeOf$1r(F7Views).call(this, props, context));
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7Views).call(this, props, context));
 	  }
 
-	  _createClass$1r(F7Views, [{
+	  _createClass(F7Views, [{
 	    key: "render",
 	    value: function render() {
 	      var self = this;
@@ -75765,7 +68096,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.1.0
+	 * Framework7 React 5.1.1
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -75773,7 +68104,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: October 27, 2019
+	 * Released on: November 3, 2019
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
@@ -82358,7 +74689,7 @@
 	      var _this2 = this;
 
 	      return react.createElement(Page, null, react.createElement(Navbar$2, {
-	        title: "Messsages",
+	        title: "Messages",
 	        backLink: "Back"
 	      }), react.createElement(Messagebar$2, {
 	        placeholder: this.placeholder,

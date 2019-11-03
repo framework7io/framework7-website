@@ -403,7 +403,7 @@ block content
               <ul>
                 <li>
                   <div class="item-cell width-auto flex-shrink-0">
-                    <i class="icon f7-icons if-not-md">volume_mute_fill</i>
+                    <i class="icon f7-icons if-not-md">speaker_fill</i>
                     <i class="icon material-icons md-only">volume_mute</i>
                   </div>
                   <div class="item-cell flex-shrink-3">
@@ -413,7 +413,7 @@ block content
                     </div>
                   </div>
                   <div class="item-cell width-auto flex-shrink-0">
-                    <i class="icon f7-icons if-not-md">volume_fill</i>
+                    <i class="icon f7-icons if-not-md">speaker_3_fill</i>
                     <i class="icon material-icons md-only">volume_up</i>
                   </div>
                 </li>
@@ -426,7 +426,7 @@ block content
               <ul>
                 <li>
                   <div class="item-cell width-auto flex-shrink-0">
-                    <i class="icon f7-icons if-not-md">circle</i>
+                    <i class="icon f7-icons if-not-md">sun_min</i>
                     <i class="icon material-icons md-only">brightness_low</i>
                   </div>
                   <div class="item-cell flex-shrink-3">
@@ -436,7 +436,7 @@ block content
                     </div>
                   </div>
                   <div class="item-cell width-auto flex-shrink-0">
-                    <i class="icon f7-icons if-not-md">circle_half</i>
+                    <i class="icon f7-icons if-not-md">sun_max</i>
                     <i class="icon material-icons md-only">brightness_high</i>
                   </div>
                 </li>
@@ -574,6 +574,7 @@ block content
             </div>
       p Handle price change:
       :code(lang="js")
-            $$('#price-filter').on('range:change', function (e, range) {
-              $$('.price-value').text('$'+(range.value[0])+' - $'+(range.value[1]));
-            });
+        $$('#price-filter').on('range:change', function (e) {
+          var range = app.range.get(e.target);
+          $$('.price-value').text('$'+(range.value[0])+' - $'+(range.value[1]));
+        });

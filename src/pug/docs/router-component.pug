@@ -984,6 +984,35 @@ block content
       </div>
     p Note, that attributes passed to custom component element available in component `$props` property.
 
+    p Custom components in strict HTML structure require a small workaround. For example, if you have a custom component that returns a table row:
+    :code(lang="js")
+      Framework7.registerComponent('my-table-row', {
+        // ...
+        template: `
+          <tr>
+            <td>Cell 1</td>
+            <td>Cell 2</td>
+          </tr>
+        `,
+        // ...
+      })
+    p And if you use it directly in `table` (or `tbody`) it will produce a not valid HTML layout:
+    :code(lang="html")
+      <table>
+        <tbody>
+          <my-table-row></my-table-row>
+          ...
+        </tbody>
+      </table>
+    p To workaround such case, we just need usual `<tr>` element with `component` attribute:
+    :code(lang="html")
+      <table>
+        <tbody>
+          <tr component="my-table-row"></tr>
+          ...
+        </tbody>
+      </table>
+
     h4 Events
     p You can assign DOM events for custom component in templates with same `@{event}` syntax. Event handler will be actually attached to custom component root element.
     :code(lang="html")
