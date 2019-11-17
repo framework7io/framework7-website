@@ -13823,8 +13823,8 @@
       }
     }
     function setPositionClasses() {
-      router.setNavbarPosition($oldPage, 'current', false);
-      router.setNavbarPosition($newPage, 'next', false);
+      router.setPagePosition($oldPage, 'current', false);
+      router.setPagePosition($newPage, 'next', false);
       if (dynamicNavbar) {
         router.setNavbarPosition($oldNavbarEl, 'current', false);
         router.setNavbarPosition($newNavbarEl, 'next', false);
@@ -48684,7 +48684,7 @@
   };
 
   /**
-   * Framework7 5.1.2
+   * Framework7 5.1.3
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -61859,7 +61859,7 @@
   };
 
   /**
-   * Framework7 Vue 5.1.2
+   * Framework7 Vue 5.1.3
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
