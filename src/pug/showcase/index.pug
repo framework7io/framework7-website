@@ -14,7 +14,7 @@ block content
     each app in showcaseApps
       .app
         .app-icon(class=app.iconRounded ? 'app-icon-rounded' : '')
-          img(src=app.iconUrl.replace('#{cdn}', cdn))
+          img(src=app.iconUrl.replace('#{cdn}', cdn), loading="lazy")
         .app-info
           h4 #{app.title}
           .app-author by&nbsp;
