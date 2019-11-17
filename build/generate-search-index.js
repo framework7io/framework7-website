@@ -41,10 +41,10 @@ function addSection(section) {
   searchData.push(section);
 }
 function parseFolder(folder, docs) {
-  const files = fs.readdirSync(`./${folder}/`);
+  const files = fs.readdirSync(`./public/${folder}/`);
   files.forEach((file) => {
     if (file.indexOf('.') === 0) return;
-    const content = fs.readFileSync(`./${folder}/${file}`, 'utf8');
+    const content = fs.readFileSync(`./public/${folder}/${file}`, 'utf8');
     const dom = new JSDOM(content, {});
     const window = dom.window;
     const $ = jQuery(window);

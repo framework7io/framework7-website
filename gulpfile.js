@@ -35,10 +35,12 @@ gulp.task('watch', () => {
     } else {
       src.push(filePath);
     }
-
+    const dest = filePath.split('/')[0] === filePath
+      ? './public/'
+      : `./public/${path.parse(filePath).dir}`;
     buildPages(null, {
       src,
-      dest: filePath.split('/')[0] === filePath ? './' : path.parse(filePath).dir,
+      dest,
     });
   });
 });
@@ -48,14 +50,14 @@ Server
 ================================= */
 gulp.task('connect', () => {
   return connect.server({
-    root: ['./'],
+    root: ['./public/'],
     livereload: true,
     port: '3001',
   });
 });
 
 gulp.task('open', () => {
-  return gulp.src('./index.html').pipe(open({ uri: 'http://localhost:3001/index.html' }));
+  return gulp.src('./public/index.html').pipe(open({ uri: 'http://localhost:3001/index.html' }));
 });
 
 gulp.task('server', gulp.parallel(['watch', 'connect', 'open']));

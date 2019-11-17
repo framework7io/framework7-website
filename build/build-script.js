@@ -14,11 +14,11 @@ function build(cb) {
   }).then((bundle) => {
     return bundle.write({
       strict: true,
-      file: './js/main.js',
+      file: './public/js/main.js',
       format: 'umd',
       name: 'app',
       sourcemap: true,
-      sourcemapFile: './js/main.js.map',
+      sourcemapFile: './public/js/main.js.map',
     });
   }).then((bundle) => {
     const result = bundle.output[0];
@@ -30,8 +30,8 @@ function build(cb) {
       },
     });
 
-    fs.writeFileSync('./js/main.js', minified.code);
-    fs.writeFileSync('./js/main.js.map', minified.map);
+    fs.writeFileSync('./public/js/main.js', minified.code);
+    fs.writeFileSync('./public/js/main.js.map', minified.map);
 
     cb();
   }).catch((err) => {

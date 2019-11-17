@@ -7,7 +7,7 @@ const componentsWithCssVars = require('./components-with-css-vars');
 
 module.exports = (component, info = true, title = 'CSS Variables') => {
   if (componentsWithCssVars.indexOf(component) < 0) return '';
-  let content = fs.readFileSync(`./packages/core/components/${component}/${component}-vars.less`, 'utf8');
+  let content = fs.readFileSync(`./public/packages/core/components/${component}/${component}-vars.less`, 'utf8');
   let css;
   content = `
 .ios-vars(@ruleset) {

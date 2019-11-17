@@ -26,7 +26,7 @@ if (!pug.filter && !pug.filters.code) {
   };
 }
 
-function buildPages(cb, { src = ['**/*.pug', '!**/_*.pug', '!_*.pug'], dest = './' } = {}) {
+function buildPages(cb, { src = ['**/*.pug', '!**/_*.pug', '!_*.pug'], dest = './public' } = {}) {
   const cdn = process.argv.slice(3) ? process.argv.slice(3).toString().replace('-', '') !== 'local' : true;
   const time = Date.now();
 

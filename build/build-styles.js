@@ -10,7 +10,7 @@ function buildLess(cb) {
       paths: [path.join(__dirname, 'less', 'includes')],
     }))
     .pipe(cleanCss({ compatibility: '*,-properties.zeroUnits', level: 2 }))
-    .pipe(gulp.dest('./css/'))
+    .pipe(gulp.dest('./public/css/'))
     .pipe(connect.reload())
     .on('end', () => {
       if (cb) cb();
