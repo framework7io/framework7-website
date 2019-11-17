@@ -2,7 +2,7 @@
   title: Keypad
   url: https://github.com/framework7io/framework7-plugin-keypad
   previewUrl: https://framework7io.github.io/framework7-plugin-keypad/
-  iconUrl: '#{cdn}/i/plugins/keypad.svg'
+  iconUrl: '/i/plugins/keypad.svg'
   description: Keypad plugin extends Framework7 with additional custom keyboards
   badges:
   - v5
@@ -11,7 +11,7 @@
   title: Feeds
   url: https://github.com/framework7io/framework7-plugin-feeds
   previewUrl: https://framework7io.github.io/framework7-plugin-feeds/
-  iconUrl: '#{cdn}/i/plugins/feeds.svg'
+  iconUrl: '/i/plugins/feeds.svg'
   description: Brings easy RSS feeds integration into Framework7 app
   badges:
   - v2
@@ -21,7 +21,7 @@
   title: 3D Panels
   url: https://github.com/framework7io/framework7-plugin-3d-panels
   previewUrl: https://framework7io.github.io/framework7-plugin-3d-panels/
-  iconUrl: '#{cdn}/i/plugins/3d-panels.svg'
+  iconUrl: '/i/plugins/3d-panels.svg'
   description: 3D Panels plugin converts "reveal"-effect panels to great looking 3D panels
   badges:
   - v2

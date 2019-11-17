@@ -2,7 +2,7 @@ official:
 community:
 -
   title: Telefones Úteis
-  iconUrl: "#{cdn}/i/templates/telefones.png"
+  iconUrl: "/i/templates/telefones.png"
   author:
     url: https://github.com/CesarBalzer
     name: Cesar E. Balzer
@@ -124,7 +124,7 @@ community:
   - v1
 -
   title: Weather7 Material
-  iconUrl: "#{cdn}/i/templates/weather7-material.png"
+  iconUrl: "/i/templates/weather7-material.png"
   author:
     url: https://github.com/nolimits4web/
     name: Vladimir Kharlampidi
