@@ -15,6 +15,7 @@ function trackOutboundClick(url, category) {
   if (!url) return;
   window.ga('send', 'event', category, 'click', url);
 }
+/*
 const sponsorLinks = [
   '.footer .custom-sponsors a',
   '.footer .keycdn-link',
@@ -36,11 +37,12 @@ $(supportLinks.join(',')).on('click', function onClick() {
   const url = this.href;
   trackOutboundClick(url, 'supportlink');
 });
+*/
 $('a').on('click', function onClick() {
   const url = this.href;
   if (!url) return;
   if (url.indexOf('http') !== 0 || url.indexOf(document.location.host) >= 0) return;
-  trackOutboundClick(url, 'outboundlink');
+  trackOutboundClick(url, 'outbound');
 });
 
 // Home device theme switch
