@@ -10,6 +10,39 @@ initDocsDevice();
 initDocsNav();
 initDocsHeaders();
 
+function trackOutboundClick(url, category) {
+  if (!window.ga || !url) return;
+  if (!url) return;
+  window.ga('send', 'event', category, 'click', url);
+}
+const sponsorLinks = [
+  '.footer .custom-sponsors a',
+  '.footer .keycdn-link',
+  '.footer .vpsserver-link',
+  '.home-sponsors-list a',
+  '.sponsors a.sponsor:not(.sponsor-join)',
+  '.docs-nav-sponsors a',
+];
+const supportLinks = [
+  'a[href*="patreon.com"]',
+  'a[href*="teespring.com"]',
+];
+
+$(sponsorLinks.join(',')).on('click', function onClick() {
+  const url = this.href;
+  trackOutboundClick(url, 'sponsorlink');
+});
+$(supportLinks.join(',')).on('click', function onClick() {
+  const url = this.href;
+  trackOutboundClick(url, 'supportlink');
+});
+$('a').on('click', function onClick() {
+  const url = this.href;
+  if (!url) return;
+  if (url.indexOf('http') !== 0 || url.indexOf(document.location.host) >= 0) return;
+  trackOutboundClick(url, 'outboundlink');
+});
+
 // Home device theme switch
 $('.home-header .theme-switch a').click(function onClick(e) {
   if ($(this).hasClass('active')) {

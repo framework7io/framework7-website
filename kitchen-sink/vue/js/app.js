@@ -2,7 +2,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = global || self, global.app = factory());
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
   /*!
    * Vue.js v2.6.10
@@ -10440,11 +10440,11 @@
         var args = [], len = arguments.length;
         while ( len-- ) args[ len ] = arguments[ len ];
 
-      handler.apply(self, args);
       self.off(events, onceHandler);
       if (onceHandler.f7proxy) {
         delete onceHandler.f7proxy;
       }
+      handler.apply(self, args);
     }
     onceHandler.f7proxy = handler;
     return self.on(events, onceHandler, priority);
@@ -12175,377 +12175,318 @@
   };
 
   /**
-   * Expose `pathToRegexp`.
-   */
-  var pathToRegexp_1 = pathToRegexp;
-  var parse_1 = parse;
-  var compile_1 = compile;
-  var tokensToFunction_1 = tokensToFunction;
-  var tokensToRegExp_1 = tokensToRegExp;
-
-  /**
    * Default configs.
    */
-  var DEFAULT_DELIMITER = '/';
-
+  var DEFAULT_DELIMITER = "/";
   /**
-   * The main path matching regexp utility.
-   *
-   * @type {RegExp}
+   * Balanced bracket helper function.
    */
-  var PATH_REGEXP = new RegExp([
-    // Match escaped characters that would otherwise appear in future matches.
-    // This allows the user to escape special characters that won't transform.
-    '(\\\\.)',
-    // Match Express-style parameters and un-named parameters with a prefix
-    // and optional suffixes. Matches appear as:
-    //
-    // ":test(\\d+)?" => ["test", "\d+", undefined, "?"]
-    // "(\\d+)"  => [undefined, undefined, "\d+", undefined]
-    '(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?'
-  ].join('|'), 'g');
-
+  function balanced(open, close, str, index) {
+      var count = 0;
+      var i = index;
+      while (i < str.length) {
+          if (str[i] === "\\") {
+              i += 2;
+              continue;
+          }
+          if (str[i] === close) {
+              count--;
+              if (count === 0)
+                  { return i + 1; }
+          }
+          if (str[i] === open) {
+              count++;
+          }
+          i++;
+      }
+      return -1;
+  }
   /**
    * Parse a string for the raw tokens.
-   *
-   * @param  {string}  str
-   * @param  {Object=} options
-   * @return {!Array}
    */
-  function parse (str, options) {
-    var tokens = [];
-    var key = 0;
-    var index = 0;
-    var path = '';
-    var defaultDelimiter = (options && options.delimiter) || DEFAULT_DELIMITER;
-    var whitelist = (options && options.whitelist) || undefined;
-    var pathEscaped = false;
-    var res;
-
-    while ((res = PATH_REGEXP.exec(str)) !== null) {
-      var m = res[0];
-      var escaped = res[1];
-      var offset = res.index;
-      path += str.slice(index, offset);
-      index = offset + m.length;
-
-      // Ignore already escaped sequences.
-      if (escaped) {
-        path += escaped[1];
-        pathEscaped = true;
-        continue
+  function parse(str, options) {
+      if (options === void 0) { options = {}; }
+      var _a, _b;
+      var tokens = [];
+      var defaultDelimiter = (_a = options.delimiter, (_a !== null && _a !== void 0 ? _a : DEFAULT_DELIMITER));
+      var whitelist = (_b = options.whitelist, (_b !== null && _b !== void 0 ? _b : undefined));
+      var i = 0;
+      var key = 0;
+      var path = "";
+      var isEscaped = false;
+      // tslint:disable-next-line
+      while (i < str.length) {
+          var prefix = "";
+          var name = "";
+          var pattern = "";
+          // Ignore escaped sequences.
+          if (str[i] === "\\") {
+              i++;
+              path += str[i++];
+              isEscaped = true;
+              continue;
+          }
+          if (str[i] === ":") {
+              while (++i < str.length) {
+                  var code = str.charCodeAt(i);
+                  if (
+                  // `0-9`
+                  (code >= 48 && code <= 57) ||
+                      // `A-Z`
+                      (code >= 65 && code <= 90) ||
+                      // `a-z`
+                      (code >= 97 && code <= 122) ||
+                      // `_`
+                      code === 95) {
+                      name += str[i];
+                      continue;
+                  }
+                  break;
+              }
+              // False positive on param name.
+              if (!name)
+                  { i--; }
+          }
+          if (str[i] === "(") {
+              var end = balanced("(", ")", str, i);
+              // False positive on matching brackets.
+              if (end > -1) {
+                  pattern = str.slice(i + 1, end - 1);
+                  i = end;
+                  if (pattern[0] === "?") {
+                      throw new TypeError("Path pattern must be a capturing group");
+                  }
+                  if (/\((?=[^?])/.test(pattern)) {
+                      var validPattern = pattern.replace(/\((?=[^?])/, "(?:");
+                      throw new TypeError("Capturing groups are not allowed in pattern, use a non-capturing group: (" + validPattern + ")");
+                  }
+              }
+          }
+          // Add regular characters to the path string.
+          if (name === "" && pattern === "") {
+              path += str[i++];
+              isEscaped = false;
+              continue;
+          }
+          // Extract the final character from `path` for the prefix.
+          if (path.length && !isEscaped) {
+              var char = path[path.length - 1];
+              var matches = whitelist ? whitelist.indexOf(char) > -1 : true;
+              if (matches) {
+                  prefix = char;
+                  path = path.slice(0, -1);
+              }
+          }
+          // Push the current path onto the list of tokens.
+          if (path.length) {
+              tokens.push(path);
+              path = "";
+          }
+          var repeat = str[i] === "+" || str[i] === "*";
+          var optional = str[i] === "?" || str[i] === "*";
+          var delimiter = prefix || defaultDelimiter;
+          // Increment `i` past modifier token.
+          if (repeat || optional)
+              { i++; }
+          tokens.push({
+              name: name || key++,
+              prefix: prefix,
+              delimiter: delimiter,
+              optional: optional,
+              repeat: repeat,
+              pattern: pattern ||
+                  "[^" + escapeString(delimiter === defaultDelimiter
+                      ? delimiter
+                      : delimiter + defaultDelimiter) + "]+?"
+          });
       }
-
-      var prev = '';
-      var name = res[2];
-      var capture = res[3];
-      var group = res[4];
-      var modifier = res[5];
-
-      if (!pathEscaped && path.length) {
-        var k = path.length - 1;
-        var c = path[k];
-        var matches = whitelist ? whitelist.indexOf(c) > -1 : true;
-
-        if (matches) {
-          prev = c;
-          path = path.slice(0, k);
-        }
-      }
-
-      // Push the current path onto the tokens.
-      if (path) {
-        tokens.push(path);
-        path = '';
-        pathEscaped = false;
-      }
-
-      var repeat = modifier === '+' || modifier === '*';
-      var optional = modifier === '?' || modifier === '*';
-      var pattern = capture || group;
-      var delimiter = prev || defaultDelimiter;
-
-      tokens.push({
-        name: name || key++,
-        prefix: prev,
-        delimiter: delimiter,
-        optional: optional,
-        repeat: repeat,
-        pattern: pattern
-          ? escapeGroup(pattern)
-          : '[^' + escapeString(delimiter === defaultDelimiter ? delimiter : (delimiter + defaultDelimiter)) + ']+?'
-      });
-    }
-
-    // Push any remaining characters.
-    if (path || index < str.length) {
-      tokens.push(path + str.substr(index));
-    }
-
-    return tokens
+      if (path.length)
+          { tokens.push(path); }
+      return tokens;
   }
-
   /**
    * Compile a string to a template function for the path.
-   *
-   * @param  {string}             str
-   * @param  {Object=}            options
-   * @return {!function(Object=, Object=)}
    */
-  function compile (str, options) {
-    return tokensToFunction(parse(str, options), options)
+  function compile(str, options) {
+      return tokensToFunction(parse(str, options), options);
   }
-
   /**
    * Expose a method for transforming tokens into the path function.
    */
-  function tokensToFunction (tokens, options) {
-    // Compile all the tokens into regexps.
-    var matches = new Array(tokens.length);
-
-    // Compile all the patterns before compilation.
-    for (var i = 0; i < tokens.length; i++) {
-      if (typeof tokens[i] === 'object') {
-        matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$', flags(options));
-      }
-    }
-
-    return function (data, options) {
-      var path = '';
-      var encode = (options && options.encode) || encodeURIComponent;
-      var validate = options ? options.validate !== false : true;
-
-      for (var i = 0; i < tokens.length; i++) {
-        var token = tokens[i];
-
-        if (typeof token === 'string') {
-          path += token;
-          continue
-        }
-
-        var value = data ? data[token.name] : undefined;
-        var segment;
-
-        if (Array.isArray(value)) {
-          if (!token.repeat) {
-            throw new TypeError('Expected "' + token.name + '" to not repeat, but got array')
+  function tokensToFunction(tokens, options) {
+      if (options === void 0) { options = {}; }
+      var reFlags = flags(options);
+      var _a = options.encode, encode = _a === void 0 ? function (x) { return x; } : _a, _b = options.validate, validate = _b === void 0 ? true : _b;
+      // Compile all the tokens into regexps.
+      var matches = tokens.map(function (token) {
+          if (typeof token === "object") {
+              return new RegExp("^(?:" + token.pattern + ")$", reFlags);
           }
-
-          if (value.length === 0) {
-            if (token.optional) { continue }
-
-            throw new TypeError('Expected "' + token.name + '" to not be empty')
+      });
+      return function (data) {
+          var path = "";
+          for (var i = 0; i < tokens.length; i++) {
+              var token = tokens[i];
+              if (typeof token === "string") {
+                  path += token;
+                  continue;
+              }
+              var value = data ? data[token.name] : undefined;
+              if (Array.isArray(value)) {
+                  if (!token.repeat) {
+                      throw new TypeError("Expected \"" + token.name + "\" to not repeat, but got an array");
+                  }
+                  if (value.length === 0) {
+                      if (token.optional)
+                          { continue; }
+                      throw new TypeError("Expected \"" + token.name + "\" to not be empty");
+                  }
+                  for (var j = 0; j < value.length; j++) {
+                      var segment = encode(value[j], token);
+                      if (validate && !matches[i].test(segment)) {
+                          throw new TypeError("Expected all \"" + token.name + "\" to match \"" + token.pattern + "\", but got \"" + segment + "\"");
+                      }
+                      path += (j === 0 ? token.prefix : token.delimiter) + segment;
+                  }
+                  continue;
+              }
+              if (typeof value === "string" || typeof value === "number") {
+                  var segment = encode(String(value), token);
+                  if (validate && !matches[i].test(segment)) {
+                      throw new TypeError("Expected \"" + token.name + "\" to match \"" + token.pattern + "\", but got \"" + segment + "\"");
+                  }
+                  path += token.prefix + segment;
+                  continue;
+              }
+              if (token.optional)
+                  { continue; }
+              var typeOfMessage = token.repeat ? "an array" : "a string";
+              throw new TypeError("Expected \"" + token.name + "\" to be " + typeOfMessage);
           }
-
-          for (var j = 0; j < value.length; j++) {
-            segment = encode(value[j], token);
-
-            if (validate && !matches[i].test(segment)) {
-              throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '"')
-            }
-
-            path += (j === 0 ? token.prefix : token.delimiter) + segment;
-          }
-
-          continue
-        }
-
-        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-          segment = encode(String(value), token);
-
-          if (validate && !matches[i].test(segment)) {
-            throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but got "' + segment + '"')
-          }
-
-          path += token.prefix + segment;
-          continue
-        }
-
-        if (token.optional) { continue }
-
-        throw new TypeError('Expected "' + token.name + '" to be ' + (token.repeat ? 'an array' : 'a string'))
-      }
-
-      return path
-    }
+          return path;
+      };
   }
-
   /**
    * Escape a regular expression string.
-   *
-   * @param  {string} str
-   * @return {string}
    */
-  function escapeString (str) {
-    return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, '\\$1')
+  function escapeString(str) {
+      return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
   }
-
-  /**
-   * Escape the capturing group by escaping special characters and meaning.
-   *
-   * @param  {string} group
-   * @return {string}
-   */
-  function escapeGroup (group) {
-    return group.replace(/([=!:$/()])/g, '\\$1')
-  }
-
   /**
    * Get the flags for a regexp from the options.
-   *
-   * @param  {Object} options
-   * @return {string}
    */
-  function flags (options) {
-    return options && options.sensitive ? '' : 'i'
+  function flags(options) {
+      return options && options.sensitive ? "" : "i";
   }
-
   /**
    * Pull out keys from a regexp.
-   *
-   * @param  {!RegExp} path
-   * @param  {Array=}  keys
-   * @return {!RegExp}
    */
-  function regexpToRegexp (path, keys) {
-    if (!keys) { return path }
-
-    // Use a negative lookahead to match only capturing groups.
-    var groups = path.source.match(/\((?!\?)/g);
-
-    if (groups) {
-      for (var i = 0; i < groups.length; i++) {
-        keys.push({
-          name: i,
-          prefix: null,
-          delimiter: null,
-          optional: false,
-          repeat: false,
-          pattern: null
-        });
+  function regexpToRegexp(path, keys) {
+      if (!keys)
+          { return path; }
+      // Use a negative lookahead to match only capturing groups.
+      var groups = path.source.match(/\((?!\?)/g);
+      if (groups) {
+          for (var i = 0; i < groups.length; i++) {
+              keys.push({
+                  name: i,
+                  prefix: "",
+                  delimiter: "",
+                  optional: false,
+                  repeat: false,
+                  pattern: ""
+              });
+          }
       }
-    }
-
-    return path
+      return path;
   }
-
   /**
    * Transform an array into a regexp.
-   *
-   * @param  {!Array}  path
-   * @param  {Array=}  keys
-   * @param  {Object=} options
-   * @return {!RegExp}
    */
-  function arrayToRegexp (path, keys, options) {
-    var parts = [];
-
-    for (var i = 0; i < path.length; i++) {
-      parts.push(pathToRegexp(path[i], keys, options).source);
-    }
-
-    return new RegExp('(?:' + parts.join('|') + ')', flags(options))
+  function arrayToRegexp(paths, keys, options) {
+      var parts = paths.map(function (path) { return pathToRegexp(path, keys, options).source; });
+      return new RegExp("(?:" + parts.join("|") + ")", flags(options));
   }
-
   /**
    * Create a path regexp from string input.
-   *
-   * @param  {string}  path
-   * @param  {Array=}  keys
-   * @param  {Object=} options
-   * @return {!RegExp}
    */
-  function stringToRegexp (path, keys, options) {
-    return tokensToRegExp(parse(path, options), keys, options)
+  function stringToRegexp(path, keys, options) {
+      return tokensToRegexp(parse(path, options), keys, options);
   }
-
   /**
    * Expose a function for taking tokens and returning a RegExp.
-   *
-   * @param  {!Array}  tokens
-   * @param  {Array=}  keys
-   * @param  {Object=} options
-   * @return {!RegExp}
    */
-  function tokensToRegExp (tokens, keys, options) {
-    options = options || {};
-
-    var strict = options.strict;
-    var start = options.start !== false;
-    var end = options.end !== false;
-    var delimiter = options.delimiter || DEFAULT_DELIMITER;
-    var endsWith = [].concat(options.endsWith || []).map(escapeString).concat('$').join('|');
-    var route = start ? '^' : '';
-
-    // Iterate over the tokens and create our regexp string.
-    for (var i = 0; i < tokens.length; i++) {
-      var token = tokens[i];
-
-      if (typeof token === 'string') {
-        route += escapeString(token);
-      } else {
-        var capture = token.repeat
-          ? '(?:' + token.pattern + ')(?:' + escapeString(token.delimiter) + '(?:' + token.pattern + '))*'
-          : token.pattern;
-
-        if (keys) { keys.push(token); }
-
-        if (token.optional) {
-          if (!token.prefix) {
-            route += '(' + capture + ')?';
-          } else {
-            route += '(?:' + escapeString(token.prefix) + '(' + capture + '))?';
+  function tokensToRegexp(tokens, keys, options) {
+      if (options === void 0) { options = {}; }
+      var strict = options.strict, _a = options.start, start = _a === void 0 ? true : _a, _b = options.end, end = _b === void 0 ? true : _b, _c = options.delimiter, delimiter = _c === void 0 ? DEFAULT_DELIMITER : _c, _d = options.encode, encode = _d === void 0 ? function (x) { return x; } : _d;
+      var endsWith = (typeof options.endsWith === "string"
+          ? options.endsWith.split("")
+          : options.endsWith || [])
+          .map(escapeString)
+          .concat("$")
+          .join("|");
+      var route = start ? "^" : "";
+      // Iterate over the tokens and create our regexp string.
+      for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
+          var token = tokens_1[_i];
+          if (typeof token === "string") {
+              route += escapeString(encode(token));
           }
-        } else {
-          route += escapeString(token.prefix) + '(' + capture + ')';
-        }
+          else {
+              var capture = token.repeat
+                  ? "(?:" + token.pattern + ")(?:" + escapeString(token.delimiter) + "(?:" + token.pattern + "))*"
+                  : token.pattern;
+              if (keys)
+                  { keys.push(token); }
+              if (token.optional) {
+                  if (!token.prefix) {
+                      route += "(" + capture + ")?";
+                  }
+                  else {
+                      route += "(?:" + escapeString(token.prefix) + "(" + capture + "))?";
+                  }
+              }
+              else {
+                  route += escapeString(token.prefix) + "(" + capture + ")";
+              }
+          }
       }
-    }
-
-    if (end) {
-      if (!strict) { route += '(?:' + escapeString(delimiter) + ')?'; }
-
-      route += endsWith === '$' ? '$' : '(?=' + endsWith + ')';
-    } else {
-      var endToken = tokens[tokens.length - 1];
-      var isEndDelimited = typeof endToken === 'string'
-        ? endToken[endToken.length - 1] === delimiter
-        : endToken === undefined;
-
-      if (!strict) { route += '(?:' + escapeString(delimiter) + '(?=' + endsWith + '))?'; }
-      if (!isEndDelimited) { route += '(?=' + escapeString(delimiter) + '|' + endsWith + ')'; }
-    }
-
-    return new RegExp(route, flags(options))
+      if (end) {
+          if (!strict)
+              { route += "(?:" + escapeString(delimiter) + ")?"; }
+          route += endsWith === "$" ? "$" : "(?=" + endsWith + ")";
+      }
+      else {
+          var endToken = tokens[tokens.length - 1];
+          var isEndDelimited = typeof endToken === "string"
+              ? endToken[endToken.length - 1] === delimiter
+              : // tslint:disable-next-line
+                  endToken === undefined;
+          if (!strict) {
+              route += "(?:" + escapeString(delimiter) + "(?=" + endsWith + "))?";
+          }
+          if (!isEndDelimited) {
+              route += "(?=" + escapeString(delimiter) + "|" + endsWith + ")";
+          }
+      }
+      return new RegExp(route, flags(options));
   }
-
   /**
    * Normalize the given path string, returning a regular expression.
    *
    * An empty array can be passed in for the keys, which will hold the
    * placeholder key descriptions. For example, using `/user/:id`, `keys` will
    * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
-   *
-   * @param  {(string|RegExp|Array)} path
-   * @param  {Array=}                keys
-   * @param  {Object=}               options
-   * @return {!RegExp}
    */
-  function pathToRegexp (path, keys, options) {
-    if (path instanceof RegExp) {
-      return regexpToRegexp(path, keys)
-    }
-
-    if (Array.isArray(path)) {
-      return arrayToRegexp(/** @type {!Array} */ (path), keys, options)
-    }
-
-    return stringToRegexp(/** @type {string} */ (path), keys, options)
+  function pathToRegexp(path, keys, options) {
+      if (path instanceof RegExp) {
+          return regexpToRegexp(path, keys);
+      }
+      if (Array.isArray(path)) {
+          return arrayToRegexp(path, keys, options);
+      }
+      return stringToRegexp(path, keys, options);
   }
-  pathToRegexp_1.parse = parse_1;
-  pathToRegexp_1.compile = compile_1;
-  pathToRegexp_1.tokensToFunction = tokensToFunction_1;
-  pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
 
   var History = {
     queue: [],
@@ -13134,8 +13075,8 @@
         if ($pageShadowEl) { $pageShadowEl[0].style.opacity = ''; }
         if ($pageOpacityEl) { $pageOpacityEl[0].style.opacity = ''; }
         if (dynamicNavbar) {
-          $currentNavbarEl.removeClass('navbar-current').addClass('navbar-next');
-          $previousNavbarEl.removeClass('navbar-previous').addClass('navbar-current').removeAttr('aria-hidden');
+          router.setNavbarPosition($currentNavbarEl, 'next');
+          router.setNavbarPosition($previousNavbarEl, 'current', false);
         }
         pageChanged = true;
       }
@@ -13822,14 +13763,9 @@
       router.pageCallback('afterIn', $newPage, $newNavbarEl, newPagePosition, 'current', options);
       if (options.reloadCurrent && options.clearPreviousHistory) { router.clearPreviousHistory(); }
       if (reloadDetail) {
-        masterPageEl.classList.add('page-previous');
-        masterPageEl.classList.remove('page-current');
-        $(masterPageEl).trigger('page:position', { position: 'previous' });
-        router.emit('pagePosition', masterPageEl, 'previous');
-
+        router.setPagePosition($(masterPageEl), 'previous');
         if (masterPageEl.f7Page && masterPageEl.f7Page.navbarEl) {
-          masterPageEl.f7Page.navbarEl.classList.add('navbar-previous');
-          masterPageEl.f7Page.navbarEl.classList.remove('navbar-current');
+          router.setNavbarPosition($(masterPageEl.f7Page.navbarEl), 'previous');
         }
       }
       return router;
@@ -13845,22 +13781,11 @@
 
     // Animation
     function afterAnimation() {
-      var pageClasses = 'page-previous page-current page-next';
-      var navbarClasses = 'navbar-previous navbar-current navbar-next';
-      $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
-      router.emit('pagePosition', $newPage[0], 'current');
-      $oldPage.removeClass(pageClasses).addClass('page-previous').trigger('page:position', { position: 'previous' });
-      router.emit('pagePosition', $oldPage[0], 'previous');
-
-      if (!$oldPage.hasClass('page-master')) {
-        $oldPage.attr('aria-hidden', 'true');
-      }
+      router.setPagePosition($newPage, 'current', false);
+      router.setPagePosition($oldPage, 'previous', !$oldPage.hasClass('page-master'));
       if (dynamicNavbar) {
-        $newNavbarEl.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
-        $oldNavbarEl.removeClass(navbarClasses).addClass('navbar-previous');
-        if (!$oldNavbarEl.hasClass('navbar-master')) {
-          $oldNavbarEl.attr('aria-hidden', 'true');
-        }
+        router.setNavbarPosition($newNavbarEl, 'current', false);
+        router.setNavbarPosition($oldNavbarEl, 'previous', !$oldNavbarEl.hasClass('navbar-master'));
       }
       // After animation event
       router.allowPageChange = true;
@@ -13898,15 +13823,11 @@
       }
     }
     function setPositionClasses() {
-      var pageClasses = 'page-previous page-current page-next';
-      var navbarClasses = 'navbar-previous navbar-current navbar-next';
-      $oldPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
-      router.emit('pagePosition', $oldPage[0], 'current');
-      $newPage.removeClass(pageClasses).addClass('page-next').removeAttr('aria-hidden').trigger('page:position', { position: 'next' });
-      router.emit('pagePosition', $newPage[0], 'next');
+      router.setNavbarPosition($oldPage, 'current', false);
+      router.setNavbarPosition($newPage, 'next', false);
       if (dynamicNavbar) {
-        $oldNavbarEl.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
-        $newNavbarEl.removeClass(navbarClasses).addClass('navbar-next').removeAttr('aria-hidden');
+        router.setNavbarPosition($oldNavbarEl, 'current', false);
+        router.setNavbarPosition($newNavbarEl, 'next', false);
       }
     }
     if (options.animate && !(isMaster && app.width >= router.params.masterDetailBreakpoint)) {
@@ -15072,15 +14993,11 @@
     // Animation
     function afterAnimation() {
       // Set classes
-      var pageClasses = 'page-previous page-current page-next';
-      var navbarClasses = 'navbar-previous navbar-current navbar-next';
-      $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
-      router.emit('pagePosition', $newPage[0], 'current');
-      $oldPage.removeClass(pageClasses).addClass('page-next').attr('aria-hidden', 'true').trigger('page:position', { position: 'next' });
-      router.emit('pagePosition', $oldPage[0], 'next');
+      router.setPagePosition($newPage, 'current', false);
+      router.setPagePosition($oldPage, 'next', true);
       if (dynamicNavbar) {
-        $newNavbarEl.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
-        $oldNavbarEl.removeClass(navbarClasses).addClass('navbar-next').attr('aria-hidden', 'true');
+        router.setNavbarPosition($newNavbarEl, 'current', false);
+        router.setNavbarPosition($oldNavbarEl, 'next', true);
       }
 
       // After animation event
@@ -15117,15 +15034,11 @@
     }
 
     function setPositionClasses() {
-      var pageClasses = 'page-previous page-current page-next';
-      var navbarClasses = 'navbar-previous navbar-current navbar-next';
-      $oldPage.removeClass(pageClasses).addClass('page-current').trigger('page:position', { position: 'current' });
-      router.emit('pagePosition', $oldPage[0], 'current');
-      $newPage.removeClass(pageClasses).addClass('page-previous').removeAttr('aria-hidden').trigger('page:position', { position: 'previous' });
-      router.emit('pagePosition', $newPage[0], 'previous');
+      router.setPagePosition($oldPage, 'current');
+      router.setPagePosition($newPage, 'previous', false);
       if (dynamicNavbar) {
-        $oldNavbarEl.removeClass(navbarClasses).addClass('navbar-current');
-        $newNavbarEl.removeClass(navbarClasses).addClass('navbar-previous').removeAttr('aria-hidden');
+        router.setNavbarPosition($oldNavbarEl, 'current');
+        router.setNavbarPosition($newNavbarEl, 'previous', false);
       }
     }
 
@@ -16048,7 +15961,7 @@
       var query = ref.query;
 
       var path = route.path;
-      var toUrl = pathToRegexp_1.compile(path);
+      var toUrl = compile(path);
       var url;
       try {
         url = toUrl(params || {});
@@ -16126,7 +16039,7 @@
         var matched;
         pathsToMatch.forEach(function (pathToMatch) {
           if (matched) { return; }
-          matched = pathToRegexp_1(pathToMatch, keys).exec(path);
+          matched = pathToRegexp(pathToMatch, keys).exec(path);
         });
 
         if (matched) {
@@ -16269,6 +16182,32 @@
           },
         });
       });
+    };
+
+    Router.prototype.setNavbarPosition = function setNavbarPosition ($el, position, ariaHidden) {
+      var router = this;
+      $el.removeClass('navbar-previous navbar-current navbar-next');
+      $el.addClass(("navbar-" + position));
+      if (ariaHidden === false) {
+        $el.removeAttr('aria-hidden');
+      } else if (ariaHidden === true) {
+        $el.attr('aria-hidden', 'true');
+      }
+      $el.trigger('navbar:position', { position: position });
+      router.emit('navbarPosition', $el[0], position);
+    };
+
+    Router.prototype.setPagePosition = function setPagePosition ($el, position, ariaHidden) {
+      var router = this;
+      $el.removeClass('page-previous page-current page-next');
+      $el.addClass(("page-" + position));
+      if (ariaHidden === false) {
+        $el.removeAttr('aria-hidden');
+      } else if (ariaHidden === true) {
+        $el.attr('aria-hidden', 'true');
+      }
+      $el.trigger('page:position', { position: position });
+      router.emit('pagePosition', $el[0], position);
     };
 
     // Remove theme elements
@@ -16652,14 +16591,14 @@
         router.$el.children('.page:not(.stacked)').each(function (index, pageEl) {
           var $pageEl = $(pageEl);
           var $navbarEl;
-          $pageEl.addClass('page-current');
+          router.setPagePosition($pageEl, 'current');
           if (router.dynamicNavbar) {
             $navbarEl = $pageEl.children('.navbar');
             if ($navbarEl.length > 0) {
               if (!router.$navbarsEl.parents(doc).length) {
                 router.$el.prepend(router.$navbarsEl);
               }
-              $navbarEl.addClass('navbar-current');
+              router.setNavbarPosition($navbarEl, 'current');
               router.$navbarsEl.append($navbarEl);
               if ($navbarEl.children('.title-large').length) {
                 $navbarEl.addClass('navbar-large');
@@ -19907,31 +19846,39 @@
         if ($clickedEl.closest('a').length > 0) {
           return;
         }
-        var pageContent;
+        var $pageContentEl;
+
         // Find active page
-        var navbar = $clickedEl.parents('.navbar');
+        var $navbarEl = $clickedEl.parents('.navbar');
+        var $navbarsEl = $navbarEl.parents('.navbars');
 
         // Static Layout
-        pageContent = navbar.parents('.page-content');
+        $pageContentEl = $navbarEl.parents('.page-content');
 
-        if (pageContent.length === 0) {
+        if ($pageContentEl.length === 0) {
           // Fixed Layout
-          if (navbar.parents('.page').length > 0) {
-            pageContent = navbar.parents('.page').find('.page-content');
+          if ($navbarEl.parents('.page').length > 0) {
+            $pageContentEl = $navbarEl.parents('.page').find('.page-content');
+          }
+          // Through Layout iOS
+          if ($pageContentEl.length === 0 && $navbarsEl.length) {
+            if ($navbarsEl.nextAll('.page-current:not(.stacked)').length > 0) {
+              $pageContentEl = $navbarsEl.nextAll('.page-current:not(.stacked)').find('.page-content');
+            }
           }
           // Through Layout
-          if (pageContent.length === 0) {
-            if (navbar.nextAll('.page-current:not(.stacked)').length > 0) {
-              pageContent = navbar.nextAll('.page-current:not(.stacked)').find('.page-content');
+          if ($pageContentEl.length === 0) {
+            if ($navbarEl.nextAll('.page-current:not(.stacked)').length > 0) {
+              $pageContentEl = $navbarEl.nextAll('.page-current:not(.stacked)').find('.page-content');
             }
           }
         }
-        if (pageContent && pageContent.length > 0) {
+        if ($pageContentEl && $pageContentEl.length > 0) {
           // Check for tab
-          if (pageContent.hasClass('tab')) {
-            pageContent = pageContent.parent('.tabs').children('.page-content.tab-active');
+          if ($pageContentEl.hasClass('tab')) {
+            $pageContentEl = $pageContentEl.parent('.tabs').children('.page-content.tab-active');
           }
-          if (pageContent.length > 0) { pageContent.scrollTop(0, 300); }
+          if ($pageContentEl.length > 0) { $pageContentEl.scrollTop(0, 300); }
         }
       },
     },
@@ -37206,6 +37153,9 @@
 
   function loopFix () {
     var swiper = this;
+
+    swiper.emit('beforeLoopFix');
+
     var activeIndex = swiper.activeIndex;
     var slides = swiper.slides;
     var loopedSlides = swiper.loopedSlides;
@@ -37219,7 +37169,6 @@
 
     var snapTranslate = -snapGrid[activeIndex];
     var diff = snapTranslate - swiper.getTranslate();
-
 
     // Fix For Negative Oversliding
     if (activeIndex < loopedSlides) {
@@ -37240,6 +37189,8 @@
     }
     swiper.allowSlidePrev = allowSlidePrev;
     swiper.allowSlideNext = allowSlideNext;
+
+    swiper.emit('loopFix');
   }
 
   function loopDestroy () {
@@ -38155,7 +38106,11 @@
     }
 
     // Resize handler
-    swiper.on((Device.ios || Device.android ? 'resize orientationchange observerUpdate' : 'resize observerUpdate'), onResize, true);
+    if (params.updateOnWindowResize) {
+      swiper.on((Device.ios || Device.android ? 'resize orientationchange observerUpdate' : 'resize observerUpdate'), onResize, true);
+    } else {
+      swiper.on('observerUpdate', onResize, true);
+    }
   }
 
   function detachEvents() {
@@ -38440,6 +38395,7 @@
     initialSlide: 0,
     speed: 300,
     cssMode: false,
+    updateOnWindowResize: true,
     //
     preventInteractionOnTransition: false,
 
@@ -39724,32 +39680,55 @@
       if (params.invert) { delta = -delta; }
 
       if (!swiper.params.freeMode) {
-        if (Utils.now() - swiper.mousewheel.lastScrollTime > 60) {
-          if (delta < 0) {
-            if ((!swiper.isEnd || swiper.params.loop) && !swiper.animating) {
-              swiper.slideNext();
-              swiper.emit('scroll', e);
-            } else if (params.releaseOnEdges) { return true; }
-          } else if ((!swiper.isBeginning || swiper.params.loop) && !swiper.animating) {
-            swiper.slidePrev();
-            swiper.emit('scroll', e);
-          } else if (params.releaseOnEdges) { return true; }
+        // Register the new event in a variable which stores the relevant data
+        var newEvent = {
+          time: Utils.now(),
+          delta: Math.abs(delta),
+          direction: Math.sign(delta),
+          raw: event,
+        };
+
+        // Keep the most recent events
+        var recentWheelEvents = swiper.mousewheel.recentWheelEvents;
+        if (recentWheelEvents.length >= 2) {
+          recentWheelEvents.shift(); // only store the last N events
         }
-        swiper.mousewheel.lastScrollTime = (new win.Date()).getTime();
+        var prevEvent = recentWheelEvents.length ? recentWheelEvents[recentWheelEvents.length - 1] : undefined;
+        recentWheelEvents.push(newEvent);
+
+        // If there is at least one previous recorded event:
+        //   If direction has changed or
+        //   if the scroll is quicker than the previous one:
+        //     Animate the slider.
+        // Else (this is the first time the wheel is moved):
+        //     Animate the slider.
+        if (prevEvent) {
+          if (newEvent.direction !== prevEvent.direction || newEvent.delta > prevEvent.delta) {
+            swiper.mousewheel.animateSlider(newEvent);
+          }
+        } else {
+          swiper.mousewheel.animateSlider(newEvent);
+        }
+
+        // If it's time to release the scroll:
+        //   Return now so you don't hit the preventDefault.
+        if (swiper.mousewheel.releaseScroll(newEvent)) {
+          return true;
+        }
       } else {
         // Freemode or scrollContainer:
 
         // If we recently snapped after a momentum scroll, then ignore wheel events
-        // to give time for the declereration to finish. Stop ignoring after 500 msecs
+        // to give time for the deceleration to finish. Stop ignoring after 500 msecs
         // or if it's a new scroll (larger delta or inverse sign as last event before
         // an end-of-momentum snap).
-        var newEvent = { time: Utils.now(), delta: Math.abs(delta), direction: Math.sign(delta) };
+        var newEvent$1 = { time: Utils.now(), delta: Math.abs(delta), direction: Math.sign(delta) };
         var ref = swiper.mousewheel;
         var lastEventBeforeSnap = ref.lastEventBeforeSnap;
         var ignoreWheelEvents = lastEventBeforeSnap
-          && newEvent.time < lastEventBeforeSnap.time + 500
-          && newEvent.delta <= lastEventBeforeSnap.delta
-          && newEvent.direction === lastEventBeforeSnap.direction;
+          && newEvent$1.time < lastEventBeforeSnap.time + 500
+          && newEvent$1.delta <= lastEventBeforeSnap.delta
+          && newEvent$1.direction === lastEventBeforeSnap.direction;
         if (!ignoreWheelEvents) {
           swiper.mousewheel.lastEventBeforeSnap = undefined;
 
@@ -39787,20 +39766,20 @@
             // If 1-4 aren't satisfied, then wait to snap until 500ms after the last event.
             clearTimeout(swiper.mousewheel.timeout);
             swiper.mousewheel.timeout = undefined;
-            var recentWheelEvents = swiper.mousewheel.recentWheelEvents;
-            if (recentWheelEvents.length >= 15) {
-              recentWheelEvents.shift(); // only store the last N events
+            var recentWheelEvents$1 = swiper.mousewheel.recentWheelEvents;
+            if (recentWheelEvents$1.length >= 15) {
+              recentWheelEvents$1.shift(); // only store the last N events
             }
-            var prevEvent = recentWheelEvents.length ? recentWheelEvents[recentWheelEvents.length - 1] : undefined;
-            var firstEvent = recentWheelEvents[0];
-            recentWheelEvents.push(newEvent);
-            if (prevEvent && (newEvent.delta > prevEvent.delta || newEvent.direction !== prevEvent.direction)) {
+            var prevEvent$1 = recentWheelEvents$1.length ? recentWheelEvents$1[recentWheelEvents$1.length - 1] : undefined;
+            var firstEvent = recentWheelEvents$1[0];
+            recentWheelEvents$1.push(newEvent$1);
+            if (prevEvent$1 && (newEvent$1.delta > prevEvent$1.delta || newEvent$1.direction !== prevEvent$1.direction)) {
               // Increasing or reverse-sign delta means the user started scrolling again. Clear the wheel event log.
-              recentWheelEvents.splice(0);
-            } else if (recentWheelEvents.length >= 15
-                && newEvent.time - firstEvent.time < 500
-                && firstEvent.delta - newEvent.delta >= 1
-                && newEvent.delta <= 6
+              recentWheelEvents$1.splice(0);
+            } else if (recentWheelEvents$1.length >= 15
+                && newEvent$1.time - firstEvent.time < 500
+                && firstEvent.delta - newEvent$1.delta >= 1
+                && newEvent$1.delta <= 6
             ) {
               // We're at the end of the deceleration of a momentum scroll, so there's no need
               // to wait for more events. Snap ASAP on the next tick.
@@ -39809,8 +39788,8 @@
               // in the same direction as the scroll instead of reversing to snap.  Therefore,
               // if it's already scrolled more than 20% in the current direction, keep going.
               var snapToThreshold = delta > 0 ? 0.8 : 0.2;
-              swiper.mousewheel.lastEventBeforeSnap = newEvent;
-              recentWheelEvents.splice(0);
+              swiper.mousewheel.lastEventBeforeSnap = newEvent$1;
+              recentWheelEvents$1.splice(0);
               swiper.mousewheel.timeout = Utils.nextTick(function () {
                 swiper.slideToClosest(swiper.params.speed, true, undefined, snapToThreshold);
               }, 0); // no delay; move on next tick
@@ -39821,8 +39800,8 @@
               // for 500ms.
               swiper.mousewheel.timeout = Utils.nextTick(function () {
                 var snapToThreshold = 0.5;
-                swiper.mousewheel.lastEventBeforeSnap = newEvent;
-                recentWheelEvents.splice(0);
+                swiper.mousewheel.lastEventBeforeSnap = newEvent$1;
+                recentWheelEvents$1.splice(0);
                 swiper.slideToClosest(swiper.params.speed, true, undefined, snapToThreshold);
               }, 500);
             }
@@ -39840,6 +39819,55 @@
 
       if (e.preventDefault) { e.preventDefault(); }
       else { e.returnValue = false; }
+      return false;
+    },
+    animateSlider: function animateSlider(newEvent) {
+      var swiper = this;
+      // If the movement is NOT big enough and
+      // if the last time the user scrolled was too close to the current one (avoid continuously triggering the slider):
+      //   Don't go any further (avoid insignificant scroll movement).
+      if (newEvent.delta >= 6 && Utils.now() - swiper.mousewheel.lastScrollTime < 60) {
+        // Return false as a default
+        return true;
+      }
+      // If user is scrolling towards the end:
+      //   If the slider hasn't hit the latest slide or
+      //   if the slider is a loop and
+      //   if the slider isn't moving right now:
+      //     Go to next slide and
+      //     emit a scroll event.
+      // Else (the user is scrolling towards the beginning) and
+      // if the slider hasn't hit the first slide or
+      // if the slider is a loop and
+      // if the slider isn't moving right now:
+      //   Go to prev slide and
+      //   emit a scroll event.
+      if (newEvent.direction < 0) {
+        if ((!swiper.isEnd || swiper.params.loop) && !swiper.animating) {
+          swiper.slideNext();
+          swiper.emit('scroll', newEvent.raw);
+        }
+      } else if ((!swiper.isBeginning || swiper.params.loop) && !swiper.animating) {
+        swiper.slidePrev();
+        swiper.emit('scroll', newEvent.raw);
+      }
+      // If you got here is because an animation has been triggered so store the current time
+      swiper.mousewheel.lastScrollTime = (new win.Date()).getTime();
+      // Return false as a default
+      return false;
+    },
+    releaseScroll: function releaseScroll(newEvent) {
+      var swiper = this;
+      var params = swiper.params.mousewheel;
+      if (newEvent.direction < 0) {
+        if (swiper.isEnd && !swiper.params.loop && params.releaseOnEdges) {
+          // Return true to animate scroll on edges
+          return true;
+        }
+      } else if (swiper.isBeginning && !swiper.params.loop && params.releaseOnEdges) {
+        // Return true to animate scroll on edges
+        return true;
+      }
       return false;
     },
     enable: function enable() {
@@ -39902,6 +39930,8 @@
           handle: Mousewheel.handle.bind(swiper),
           handleMouseEnter: Mousewheel.handleMouseEnter.bind(swiper),
           handleMouseLeave: Mousewheel.handleMouseLeave.bind(swiper),
+          animateSlider: Mousewheel.animateSlider.bind(swiper),
+          releaseScroll: Mousewheel.releaseScroll.bind(swiper),
           lastScrollTime: Utils.now(),
           lastEventBeforeSnap: undefined,
           recentWheelEvents: [],
@@ -41926,7 +41956,7 @@
     updateNavigation: function updateNavigation() {
       var swiper = this;
 
-      if (swiper.params.loop) { return; }
+      if (swiper.params.loop || !swiper.navigation) { return; }
       var ref = swiper.navigation;
       var $nextEl = ref.$nextEl;
       var $prevEl = ref.$prevEl;
@@ -42859,6 +42889,12 @@
         thumbsToActivate = swiper.params.slidesPerView;
       }
 
+      if (!swiper.params.thumbs.multipleActiveThumbs) {
+        thumbsToActivate = 1;
+      }
+
+      thumbsToActivate = Math.floor(thumbsToActivate);
+
       thumbsSwiper.slides.removeClass(thumbActiveClass);
       if (thumbsSwiper.params.loop || (thumbsSwiper.params.virtual && thumbsSwiper.params.virtual.enabled)) {
         for (var i = 0; i < thumbsToActivate; i += 1) {
@@ -42875,6 +42911,7 @@
     name: 'thumbs',
     params: {
       thumbs: {
+        multipleActiveThumbs: true,
         swiper: null,
         slideThumbActiveClass: 'swiper-slide-thumb-active',
         thumbsContainerClass: 'swiper-container-thumbs',
@@ -48647,7 +48684,7 @@
   };
 
   /**
-   * Framework7 5.1.1
+   * Framework7 5.1.2
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -48655,7 +48692,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: November 3, 2019
+   * Released on: November 17, 2019
    */
 
   // Install Core Modules & Components
@@ -57070,7 +57107,9 @@
         }
 
         return {
-          _theme: $f7 ? self.$theme : null
+          _theme: $f7 ? self.$theme : null,
+          routerPositionClass: '',
+          largeCollapsed: false
         };
       })();
 
@@ -57101,7 +57140,10 @@
       var large = props.large;
       var largeTransparent = props.largeTransparent;
       var titleLarge = props.titleLarge;
-      var theme = self.state.theme;
+      var ref = self.state;
+      var theme = ref._theme;
+      var routerPositionClass = ref.routerPositionClass;
+      var largeCollapsed = ref.largeCollapsed;
       var leftEl;
       var titleEl;
       var rightEl;
@@ -57109,10 +57151,11 @@
       var addLeftTitleClass = theme && theme.ios && self.$f7 && !self.$f7.params.navbar.iosCenterTitle;
       var addCenterTitleClass = theme && theme.md && self.$f7 && self.$f7.params.navbar.mdCenterTitle || theme && theme.aurora && self.$f7 && self.$f7.params.navbar.auroraCenterTitle;
       var slots = self.$slots;
-      var classes = Utils$1.classNames(className, 'navbar', {
+      var classes = Utils$1.classNames(className, 'navbar', routerPositionClass, {
         'navbar-hidden': hidden,
         'navbar-large': large,
-        'navbar-large-transparent': largeTransparent
+        'navbar-large-transparent': largeTransparent,
+        'navbar-large-collapsed': large && largeCollapsed
       }, Mixins.colorClasses(props));
 
       if (backLink || slots['nav-left'] || slots.left) {
@@ -57176,7 +57219,7 @@
     },
 
     created: function created() {
-      Utils$1.bindMethods(this, ['onBackClick', 'onHide', 'onShow', 'onExpand', 'onCollapse']);
+      Utils$1.bindMethods(this, ['onBackClick', 'onHide', 'onShow', 'onExpand', 'onCollapse', 'onNavbarPosition']);
     },
 
     mounted: function mounted() {
@@ -57190,6 +57233,7 @@
         f7.on('navbarHide', self.onHide);
         f7.on('navbarCollapse', self.onCollapse);
         f7.on('navbarExpand', self.onExpand);
+        f7.on('navbarPosition', self.onNavbarPosition);
       });
     },
 
@@ -57210,6 +57254,7 @@
       f7.off('navbarHide', self.onHide);
       f7.off('navbarCollapse', self.onCollapse);
       f7.off('navbarExpand', self.onExpand);
+      f7.off('navbarPosition', self.onNavbarPosition);
       self.eventTargetEl = null;
       delete self.eventTargetEl;
     },
@@ -57227,12 +57272,25 @@
 
       onExpand: function onExpand(navbarEl) {
         if (this.eventTargetEl !== navbarEl) { return; }
+        this.setState({
+          largeCollapsed: false
+        });
         this.dispatchEvent('navbar:expand navbarExpand');
       },
 
       onCollapse: function onCollapse(navbarEl) {
         if (this.eventTargetEl !== navbarEl) { return; }
+        this.setState({
+          largeCollapsed: true
+        });
         this.dispatchEvent('navbar:collapse navbarCollapse');
+      },
+
+      onNavbarPosition: function onNavbarPosition(navbarEl, position) {
+        if (this.eventTargetEl !== navbarEl) { return; }
+        this.setState({
+          routerPositionClass: ("navbar-" + position)
+        });
       },
 
       hide: function hide(animate) {
@@ -61801,7 +61859,7 @@
   };
 
   /**
-   * Framework7 Vue 5.1.1
+   * Framework7 Vue 5.1.2
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -61809,7 +61867,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: November 3, 2019
+   * Released on: November 17, 2019
    */
 
   //
@@ -61831,90 +61889,83 @@
     },
   };
 
-  function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
-  /* server only */
-  , shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-    if (typeof shadowMode !== 'boolean') {
-      createInjectorSSR = createInjector;
-      createInjector = shadowMode;
-      shadowMode = false;
-    } // Vue.extend constructor export interop.
-
-
-    var options = typeof script === 'function' ? script.options : script; // render functions
-
-    if (template && template.render) {
-      options.render = template.render;
-      options.staticRenderFns = template.staticRenderFns;
-      options._compiled = true; // functional template
-
-      if (isFunctionalTemplate) {
-        options.functional = true;
+  function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
+      if (typeof shadowMode !== 'boolean') {
+          createInjectorSSR = createInjector;
+          createInjector = shadowMode;
+          shadowMode = false;
       }
-    } // scopedId
-
-
-    if (scopeId) {
-      options._scopeId = scopeId;
-    }
-
-    var hook;
-
-    if (moduleIdentifier) {
-      // server build
-      hook = function hook(context) {
-        // 2.3 injection
-        context = context || // cached call
-        this.$vnode && this.$vnode.ssrContext || // stateful
-        this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext; // functional
-        // 2.2 with runInNewContext: true
-
-        if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-          context = __VUE_SSR_CONTEXT__;
-        } // inject component styles
-
-
-        if (style) {
-          style.call(this, createInjectorSSR(context));
-        } // register component module identifier for async chunk inference
-
-
-        if (context && context._registeredComponents) {
-          context._registeredComponents.add(moduleIdentifier);
-        }
-      }; // used by ssr in case component is cached and beforeCreate
-      // never gets called
-
-
-      options._ssrRegister = hook;
-    } else if (style) {
-      hook = shadowMode ? function () {
-        style.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
-      } : function (context) {
-        style.call(this, createInjector(context));
-      };
-    }
-
-    if (hook) {
-      if (options.functional) {
-        // register for functional component in vue file
-        var originalRender = options.render;
-
-        options.render = function renderWithStyleInjection(h, context) {
-          hook.call(context);
-          return originalRender(h, context);
-        };
-      } else {
-        // inject component registration as beforeCreate hook
-        var existing = options.beforeCreate;
-        options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
+      // Vue.extend constructor export interop.
+      var options = typeof script === 'function' ? script.options : script;
+      // render functions
+      if (template && template.render) {
+          options.render = template.render;
+          options.staticRenderFns = template.staticRenderFns;
+          options._compiled = true;
+          // functional template
+          if (isFunctionalTemplate) {
+              options.functional = true;
+          }
       }
-    }
-
-    return script;
+      // scopedId
+      if (scopeId) {
+          options._scopeId = scopeId;
+      }
+      var hook;
+      if (moduleIdentifier) {
+          // server build
+          hook = function (context) {
+              // 2.3 injection
+              context =
+                  context || // cached call
+                      (this.$vnode && this.$vnode.ssrContext) || // stateful
+                      (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext); // functional
+              // 2.2 with runInNewContext: true
+              if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+                  context = __VUE_SSR_CONTEXT__;
+              }
+              // inject component styles
+              if (style) {
+                  style.call(this, createInjectorSSR(context));
+              }
+              // register component module identifier for async chunk inference
+              if (context && context._registeredComponents) {
+                  context._registeredComponents.add(moduleIdentifier);
+              }
+          };
+          // used by ssr in case component is cached and beforeCreate
+          // never gets called
+          options._ssrRegister = hook;
+      }
+      else if (style) {
+          hook = shadowMode
+              ? function (context) {
+                  style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
+              }
+              : function (context) {
+                  style.call(this, createInjector(context));
+              };
+      }
+      if (hook) {
+          if (options.functional) {
+              // register for functional component in vue file
+              var originalRender = options.render;
+              options.render = function renderWithStyleInjection(h, context) {
+                  hook.call(context);
+                  return originalRender(h, context);
+              };
+          }
+          else {
+              // inject component registration as beforeCreate hook
+              var existing = options.beforeCreate;
+              options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
+          }
+      }
+      return script;
   }
 
-  var normalizeComponent_1 = normalizeComponent;
+  var isOldIE = typeof navigator !== 'undefined' &&
+      /msie [6-9]\\b/.test(navigator.userAgent.toLowerCase());
 
   /* script */
   var __vue_script__ = script;
@@ -61935,15 +61986,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Home = normalizeComponent_1(
+    var Home = normalizeComponent(
       { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
       __vue_inject_styles__,
       __vue_script__,
       __vue_scope_id__,
       __vue_is_functional_template__,
       __vue_module_identifier__,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -61980,15 +62035,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var PanelLeft = normalizeComponent_1(
+    var PanelLeft = normalizeComponent(
       { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
       __vue_inject_styles__$1,
       __vue_script__$1,
       __vue_scope_id__$1,
       __vue_is_functional_template__$1,
       __vue_module_identifier__$1,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -62026,15 +62085,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var PanelRight = normalizeComponent_1(
+    var PanelRight = normalizeComponent(
       { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
       __vue_inject_styles__$2,
       __vue_script__$2,
       __vue_scope_id__$2,
       __vue_is_functional_template__$2,
       __vue_module_identifier__$2,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -62069,15 +62132,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var About = normalizeComponent_1(
+    var About = normalizeComponent(
       { render: __vue_render__$3, staticRenderFns: __vue_staticRenderFns__$3 },
       __vue_inject_styles__$3,
       __vue_script__$3,
       __vue_scope_id__$3,
       __vue_is_functional_template__$3,
       __vue_module_identifier__$3,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -62117,15 +62184,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Accordion$2 = normalizeComponent_1(
+    var Accordion$2 = normalizeComponent(
       { render: __vue_render__$4, staticRenderFns: __vue_staticRenderFns__$4 },
       __vue_inject_styles__$4,
       __vue_script__$4,
       __vue_scope_id__$4,
       __vue_is_functional_template__$4,
       __vue_module_identifier__$4,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -62211,15 +62282,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var ActionSheet = normalizeComponent_1(
+    var ActionSheet = normalizeComponent(
       { render: __vue_render__$5, staticRenderFns: __vue_staticRenderFns__$5 },
       __vue_inject_styles__$5,
       __vue_script__$5,
       __vue_scope_id__$5,
       __vue_is_functional_template__$5,
       __vue_module_identifier__$5,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -62282,15 +62357,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Appbar$1 = normalizeComponent_1(
+    var Appbar$1 = normalizeComponent(
       { render: __vue_render__$6, staticRenderFns: __vue_staticRenderFns__$6 },
       __vue_inject_styles__$6,
       __vue_script__$6,
       __vue_scope_id__$6,
       __vue_is_functional_template__$6,
       __vue_module_identifier__$6,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -62703,15 +62782,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Autocomplete$2 = normalizeComponent_1(
+    var Autocomplete$2 = normalizeComponent(
       { render: __vue_render__$7, staticRenderFns: __vue_staticRenderFns__$7 },
       __vue_inject_styles__$7,
       __vue_script__$7,
       __vue_scope_id__$7,
       __vue_is_functional_template__$7,
       __vue_module_identifier__$7,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -62751,15 +62834,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Badge = normalizeComponent_1(
+    var Badge = normalizeComponent(
       { render: __vue_render__$8, staticRenderFns: __vue_staticRenderFns__$8 },
       __vue_inject_styles__$8,
       __vue_script__$8,
       __vue_scope_id__$8,
       __vue_is_functional_template__$8,
       __vue_module_identifier__$8,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -62800,15 +62887,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Buttons = normalizeComponent_1(
+    var Buttons = normalizeComponent(
       { render: __vue_render__$9, staticRenderFns: __vue_staticRenderFns__$9 },
       __vue_inject_styles__$9,
       __vue_script__$9,
       __vue_scope_id__$9,
       __vue_is_functional_template__$9,
       __vue_module_identifier__$9,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -62881,15 +62972,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Calendar$2 = normalizeComponent_1(
+    var Calendar$2 = normalizeComponent(
       { render: __vue_render__$a, staticRenderFns: __vue_staticRenderFns__$a },
       __vue_inject_styles__$a,
       __vue_script__$a,
       __vue_scope_id__$a,
       __vue_is_functional_template__$a,
       __vue_module_identifier__$a,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63028,15 +63123,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var CalendarPage = normalizeComponent_1(
+    var CalendarPage = normalizeComponent(
       { render: __vue_render__$b, staticRenderFns: __vue_staticRenderFns__$b },
       __vue_inject_styles__$b,
       __vue_script__$b,
       __vue_scope_id__$b,
       __vue_is_functional_template__$b,
       __vue_module_identifier__$b,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63078,15 +63177,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Cards = normalizeComponent_1(
+    var Cards = normalizeComponent(
       { render: __vue_render__$c, staticRenderFns: __vue_staticRenderFns__$c },
       __vue_inject_styles__$c,
       __vue_script__$c,
       __vue_scope_id__$c,
       __vue_is_functional_template__$c,
       __vue_module_identifier__$c,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63125,15 +63228,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var CardsExpandable = normalizeComponent_1(
+    var CardsExpandable = normalizeComponent(
       { render: __vue_render__$d, staticRenderFns: __vue_staticRenderFns__$d },
       __vue_inject_styles__$d,
       __vue_script__$d,
       __vue_scope_id__$d,
       __vue_is_functional_template__$d,
       __vue_module_identifier__$d,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63197,15 +63304,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Checkbox$1 = normalizeComponent_1(
+    var Checkbox$1 = normalizeComponent(
       { render: __vue_render__$e, staticRenderFns: __vue_staticRenderFns__$e },
       __vue_inject_styles__$e,
       __vue_script__$e,
       __vue_scope_id__$e,
       __vue_is_functional_template__$e,
       __vue_module_identifier__$e,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63252,15 +63363,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Chips = normalizeComponent_1(
+    var Chips = normalizeComponent(
       { render: __vue_render__$f, staticRenderFns: __vue_staticRenderFns__$f },
       __vue_inject_styles__$f,
       __vue_script__$f,
       __vue_scope_id__$f,
       __vue_is_functional_template__$f,
       __vue_module_identifier__$f,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63417,15 +63532,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var ColorPicker$2 = normalizeComponent_1(
+    var ColorPicker$2 = normalizeComponent(
       { render: __vue_render__$g, staticRenderFns: __vue_staticRenderFns__$g },
       __vue_inject_styles__$g,
       __vue_script__$g,
       __vue_scope_id__$g,
       __vue_is_functional_template__$g,
       __vue_module_identifier__$g,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63461,15 +63580,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var ContactsList$1 = normalizeComponent_1(
+    var ContactsList$1 = normalizeComponent(
       { render: __vue_render__$h, staticRenderFns: __vue_staticRenderFns__$h },
       __vue_inject_styles__$h,
       __vue_script__$h,
       __vue_scope_id__$h,
       __vue_is_functional_template__$h,
       __vue_module_identifier__$h,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63506,15 +63629,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var ContentBlock = normalizeComponent_1(
+    var ContentBlock = normalizeComponent(
       { render: __vue_render__$i, staticRenderFns: __vue_staticRenderFns__$i },
       __vue_inject_styles__$i,
       __vue_script__$i,
       __vue_scope_id__$i,
       __vue_is_functional_template__$i,
       __vue_module_identifier__$i,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63550,15 +63677,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var DataTable$2 = normalizeComponent_1(
+    var DataTable$2 = normalizeComponent(
       { render: __vue_render__$j, staticRenderFns: __vue_staticRenderFns__$j },
       __vue_inject_styles__$j,
       __vue_script__$j,
       __vue_scope_id__$j,
       __vue_is_functional_template__$j,
       __vue_module_identifier__$j,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63688,15 +63819,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Dialog$2 = normalizeComponent_1(
+    var Dialog$2 = normalizeComponent(
       { render: __vue_render__$k, staticRenderFns: __vue_staticRenderFns__$k },
       __vue_inject_styles__$k,
       __vue_script__$k,
       __vue_scope_id__$k,
       __vue_is_functional_template__$k,
       __vue_module_identifier__$k,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63733,15 +63868,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Elevation$1 = normalizeComponent_1(
+    var Elevation$1 = normalizeComponent(
       { render: __vue_render__$l, staticRenderFns: __vue_staticRenderFns__$l },
       __vue_inject_styles__$l,
       __vue_script__$l,
       __vue_scope_id__$l,
       __vue_is_functional_template__$l,
       __vue_module_identifier__$l,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63773,15 +63912,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Fab$2 = normalizeComponent_1(
+    var Fab$2 = normalizeComponent(
       { render: __vue_render__$m, staticRenderFns: __vue_staticRenderFns__$m },
       __vue_inject_styles__$m,
       __vue_script__$m,
       __vue_scope_id__$m,
       __vue_is_functional_template__$m,
       __vue_module_identifier__$m,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63813,15 +63956,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var FabMorph = normalizeComponent_1(
+    var FabMorph = normalizeComponent(
       { render: __vue_render__$n, staticRenderFns: __vue_staticRenderFns__$n },
       __vue_inject_styles__$n,
       __vue_script__$n,
       __vue_scope_id__$n,
       __vue_is_functional_template__$n,
       __vue_module_identifier__$n,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63855,15 +64002,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var FormStorage$1 = normalizeComponent_1(
+    var FormStorage$1 = normalizeComponent(
       { render: __vue_render__$o, staticRenderFns: __vue_staticRenderFns__$o },
       __vue_inject_styles__$o,
       __vue_script__$o,
       __vue_scope_id__$o,
       __vue_is_functional_template__$o,
       __vue_module_identifier__$o,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63908,15 +64059,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Gauge$2 = normalizeComponent_1(
+    var Gauge$2 = normalizeComponent(
       { render: __vue_render__$p, staticRenderFns: __vue_staticRenderFns__$p },
       __vue_inject_styles__$p,
       __vue_script__$p,
       __vue_scope_id__$p,
       __vue_is_functional_template__$p,
       __vue_module_identifier__$p,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -63953,15 +64108,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Grid$2 = normalizeComponent_1(
+    var Grid$2 = normalizeComponent(
       { render: __vue_render__$q, staticRenderFns: __vue_staticRenderFns__$q },
       __vue_inject_styles__$q,
       __vue_script__$q,
       __vue_scope_id__$q,
       __vue_is_functional_template__$q,
       __vue_module_identifier__$q,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64011,15 +64170,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Icons = normalizeComponent_1(
+    var Icons = normalizeComponent(
       { render: __vue_render__$r, staticRenderFns: __vue_staticRenderFns__$r },
       __vue_inject_styles__$r,
       __vue_script__$r,
       __vue_scope_id__$r,
       __vue_is_functional_template__$r,
       __vue_module_identifier__$r,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64084,15 +64247,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var InfiniteScroll$2 = normalizeComponent_1(
+    var InfiniteScroll$2 = normalizeComponent(
       { render: __vue_render__$s, staticRenderFns: __vue_staticRenderFns__$s },
       __vue_inject_styles__$s,
       __vue_script__$s,
       __vue_scope_id__$s,
       __vue_is_functional_template__$s,
       __vue_module_identifier__$s,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64131,15 +64298,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Inputs = normalizeComponent_1(
+    var Inputs = normalizeComponent(
       { render: __vue_render__$t, staticRenderFns: __vue_staticRenderFns__$t },
       __vue_inject_styles__$t,
       __vue_script__$t,
       __vue_scope_id__$t,
       __vue_is_functional_template__$t,
       __vue_module_identifier__$t,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64173,15 +64344,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var LazyLoad = normalizeComponent_1(
+    var LazyLoad = normalizeComponent(
       { render: __vue_render__$u, staticRenderFns: __vue_staticRenderFns__$u },
       __vue_inject_styles__$u,
       __vue_script__$u,
       __vue_scope_id__$u,
       __vue_is_functional_template__$u,
       __vue_module_identifier__$u,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64224,15 +64399,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var List = normalizeComponent_1(
+    var List = normalizeComponent(
       { render: __vue_render__$v, staticRenderFns: __vue_staticRenderFns__$v },
       __vue_inject_styles__$v,
       __vue_script__$v,
       __vue_scope_id__$v,
       __vue_is_functional_template__$v,
       __vue_module_identifier__$v,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64269,15 +64448,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var ListIndex$2 = normalizeComponent_1(
+    var ListIndex$2 = normalizeComponent(
       { render: __vue_render__$w, staticRenderFns: __vue_staticRenderFns__$w },
       __vue_inject_styles__$w,
       __vue_script__$w,
       __vue_scope_id__$w,
       __vue_is_functional_template__$w,
       __vue_module_identifier__$w,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64337,15 +64520,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var LoginScreen$2 = normalizeComponent_1(
+    var LoginScreen$2 = normalizeComponent(
       { render: __vue_render__$x, staticRenderFns: __vue_staticRenderFns__$x },
       __vue_inject_styles__$x,
       __vue_script__$x,
       __vue_scope_id__$x,
       __vue_is_functional_template__$x,
       __vue_module_identifier__$x,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64399,15 +64586,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var LoginScreenPage = normalizeComponent_1(
+    var LoginScreenPage = normalizeComponent(
       { render: __vue_render__$y, staticRenderFns: __vue_staticRenderFns__$y },
       __vue_inject_styles__$y,
       __vue_script__$y,
       __vue_scope_id__$y,
       __vue_is_functional_template__$y,
       __vue_module_identifier__$y,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64500,15 +64691,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Menu$2 = normalizeComponent_1(
+    var Menu$2 = normalizeComponent(
       { render: __vue_render__$z, staticRenderFns: __vue_staticRenderFns__$z },
       __vue_inject_styles__$z,
       __vue_script__$z,
       __vue_scope_id__$z,
       __vue_is_functional_template__$z,
       __vue_module_identifier__$z,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64754,15 +64949,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Messages$2 = normalizeComponent_1(
+    var Messages$2 = normalizeComponent(
       { render: __vue_render__$A, staticRenderFns: __vue_staticRenderFns__$A },
       __vue_inject_styles__$A,
       __vue_script__$A,
       __vue_scope_id__$A,
       __vue_is_functional_template__$A,
       __vue_module_identifier__$A,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64800,15 +64999,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Navbar$2 = normalizeComponent_1(
+    var Navbar$2 = normalizeComponent(
       { render: __vue_render__$B, staticRenderFns: __vue_staticRenderFns__$B },
       __vue_inject_styles__$B,
       __vue_script__$B,
       __vue_scope_id__$B,
       __vue_is_functional_template__$B,
       __vue_module_identifier__$B,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64842,15 +65045,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var NavbarHideScroll = normalizeComponent_1(
+    var NavbarHideScroll = normalizeComponent(
       { render: __vue_render__$C, staticRenderFns: __vue_staticRenderFns__$C },
       __vue_inject_styles__$C,
       __vue_script__$C,
       __vue_scope_id__$C,
       __vue_is_functional_template__$C,
       __vue_module_identifier__$C,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -64967,15 +65174,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Notifications = normalizeComponent_1(
+    var Notifications = normalizeComponent(
       { render: __vue_render__$D, staticRenderFns: __vue_staticRenderFns__$D },
       __vue_inject_styles__$D,
       __vue_script__$D,
       __vue_scope_id__$D,
       __vue_is_functional_template__$D,
       __vue_module_identifier__$D,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65011,15 +65222,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Panel$2 = normalizeComponent_1(
+    var Panel$2 = normalizeComponent(
       { render: __vue_render__$E, staticRenderFns: __vue_staticRenderFns__$E },
       __vue_inject_styles__$E,
       __vue_script__$E,
       __vue_scope_id__$E,
       __vue_is_functional_template__$E,
       __vue_module_identifier__$E,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65076,15 +65291,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var PhotoBrowser$2 = normalizeComponent_1(
+    var PhotoBrowser$2 = normalizeComponent(
       { render: __vue_render__$F, staticRenderFns: __vue_staticRenderFns__$F },
       __vue_inject_styles__$F,
       __vue_script__$F,
       __vue_scope_id__$F,
       __vue_is_functional_template__$F,
       __vue_module_identifier__$F,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65296,15 +65515,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Picker$2 = normalizeComponent_1(
+    var Picker$2 = normalizeComponent(
       { render: __vue_render__$G, staticRenderFns: __vue_staticRenderFns__$G },
       __vue_inject_styles__$G,
       __vue_script__$G,
       __vue_scope_id__$G,
       __vue_is_functional_template__$G,
       __vue_module_identifier__$G,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65367,15 +65590,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Popup$2 = normalizeComponent_1(
+    var Popup$2 = normalizeComponent(
       { render: __vue_render__$H, staticRenderFns: __vue_staticRenderFns__$H },
       __vue_inject_styles__$H,
       __vue_script__$H,
       __vue_scope_id__$H,
       __vue_is_functional_template__$H,
       __vue_module_identifier__$H,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65415,15 +65642,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Popover$2 = normalizeComponent_1(
+    var Popover$2 = normalizeComponent(
       { render: __vue_render__$I, staticRenderFns: __vue_staticRenderFns__$I },
       __vue_inject_styles__$I,
       __vue_script__$I,
       __vue_scope_id__$I,
       __vue_is_functional_template__$I,
       __vue_module_identifier__$I,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65483,15 +65714,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Preloader$2 = normalizeComponent_1(
+    var Preloader$2 = normalizeComponent(
       { render: __vue_render__$J, staticRenderFns: __vue_staticRenderFns__$J },
       __vue_inject_styles__$J,
       __vue_script__$J,
       __vue_scope_id__$J,
       __vue_is_functional_template__$J,
       __vue_module_identifier__$J,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65578,15 +65813,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Progressbar$2 = normalizeComponent_1(
+    var Progressbar$2 = normalizeComponent(
       { render: __vue_render__$K, staticRenderFns: __vue_staticRenderFns__$K },
       __vue_inject_styles__$K,
       __vue_script__$K,
       __vue_scope_id__$K,
       __vue_is_functional_template__$K,
       __vue_module_identifier__$K,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65663,15 +65902,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var PullToRefresh$2 = normalizeComponent_1(
+    var PullToRefresh$2 = normalizeComponent(
       { render: __vue_render__$L, staticRenderFns: __vue_staticRenderFns__$L },
       __vue_inject_styles__$L,
       __vue_script__$L,
       __vue_scope_id__$L,
       __vue_is_functional_template__$L,
       __vue_module_identifier__$L,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65709,15 +65952,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Radio$1 = normalizeComponent_1(
+    var Radio$1 = normalizeComponent(
       { render: __vue_render__$M, staticRenderFns: __vue_staticRenderFns__$M },
       __vue_inject_styles__$M,
       __vue_script__$M,
       __vue_scope_id__$M,
       __vue_is_functional_template__$M,
       __vue_module_identifier__$M,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65769,15 +66016,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Range$2 = normalizeComponent_1(
+    var Range$2 = normalizeComponent(
       { render: __vue_render__$N, staticRenderFns: __vue_staticRenderFns__$N },
       __vue_inject_styles__$N,
       __vue_script__$N,
       __vue_scope_id__$N,
       __vue_is_functional_template__$N,
       __vue_module_identifier__$N,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65814,15 +66065,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Searchbar$2 = normalizeComponent_1(
+    var Searchbar$2 = normalizeComponent(
       { render: __vue_render__$O, staticRenderFns: __vue_staticRenderFns__$O },
       __vue_inject_styles__$O,
       __vue_script__$O,
       __vue_scope_id__$O,
       __vue_is_functional_template__$O,
       __vue_module_identifier__$O,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65861,15 +66116,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SearchbarExpandable = normalizeComponent_1(
+    var SearchbarExpandable = normalizeComponent(
       { render: __vue_render__$P, staticRenderFns: __vue_staticRenderFns__$P },
       __vue_inject_styles__$P,
       __vue_script__$P,
       __vue_scope_id__$P,
       __vue_is_functional_template__$P,
       __vue_module_identifier__$P,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -65947,15 +66206,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SheetModal = normalizeComponent_1(
+    var SheetModal = normalizeComponent(
       { render: __vue_render__$Q, staticRenderFns: __vue_staticRenderFns__$Q },
       __vue_inject_styles__$Q,
       __vue_script__$Q,
       __vue_scope_id__$Q,
       __vue_is_functional_template__$Q,
       __vue_module_identifier__$Q,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66013,15 +66276,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Skeleton$1 = normalizeComponent_1(
+    var Skeleton$1 = normalizeComponent(
       { render: __vue_render__$R, staticRenderFns: __vue_staticRenderFns__$R },
       __vue_inject_styles__$R,
       __vue_script__$R,
       __vue_scope_id__$R,
       __vue_is_functional_template__$R,
       __vue_module_identifier__$R,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66057,15 +66324,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SmartSelect$2 = normalizeComponent_1(
+    var SmartSelect$2 = normalizeComponent(
       { render: __vue_render__$S, staticRenderFns: __vue_staticRenderFns__$S },
       __vue_inject_styles__$S,
       __vue_script__$S,
       __vue_scope_id__$S,
       __vue_is_functional_template__$S,
       __vue_module_identifier__$S,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66104,15 +66375,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Sortable$2 = normalizeComponent_1(
+    var Sortable$2 = normalizeComponent(
       { render: __vue_render__$T, staticRenderFns: __vue_staticRenderFns__$T },
       __vue_inject_styles__$T,
       __vue_script__$T,
       __vue_scope_id__$T,
       __vue_is_functional_template__$T,
       __vue_module_identifier__$T,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66178,15 +66453,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Stepper$2 = normalizeComponent_1(
+    var Stepper$2 = normalizeComponent(
       { render: __vue_render__$U, staticRenderFns: __vue_staticRenderFns__$U },
       __vue_inject_styles__$U,
       __vue_script__$U,
       __vue_scope_id__$U,
       __vue_is_functional_template__$U,
       __vue_module_identifier__$U,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66218,15 +66497,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Subnavbar$1 = normalizeComponent_1(
+    var Subnavbar$1 = normalizeComponent(
       { render: __vue_render__$V, staticRenderFns: __vue_staticRenderFns__$V },
       __vue_inject_styles__$V,
       __vue_script__$V,
       __vue_scope_id__$V,
       __vue_is_functional_template__$V,
       __vue_module_identifier__$V,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66258,15 +66541,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SubnavbarTitle = normalizeComponent_1(
+    var SubnavbarTitle = normalizeComponent(
       { render: __vue_render__$W, staticRenderFns: __vue_staticRenderFns__$W },
       __vue_inject_styles__$W,
       __vue_script__$W,
       __vue_scope_id__$W,
       __vue_is_functional_template__$W,
       __vue_module_identifier__$W,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66299,15 +66586,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Swiper$2 = normalizeComponent_1(
+    var Swiper$2 = normalizeComponent(
       { render: __vue_render__$X, staticRenderFns: __vue_staticRenderFns__$X },
       __vue_inject_styles__$X,
       __vue_script__$X,
       __vue_scope_id__$X,
       __vue_is_functional_template__$X,
       __vue_module_identifier__$X,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66340,15 +66631,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperHorizontal = normalizeComponent_1(
+    var SwiperHorizontal = normalizeComponent(
       { render: __vue_render__$Y, staticRenderFns: __vue_staticRenderFns__$Y },
       __vue_inject_styles__$Y,
       __vue_script__$Y,
       __vue_scope_id__$Y,
       __vue_is_functional_template__$Y,
       __vue_module_identifier__$Y,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66381,15 +66676,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperVertical = normalizeComponent_1(
+    var SwiperVertical = normalizeComponent(
       { render: __vue_render__$Z, staticRenderFns: __vue_staticRenderFns__$Z },
       __vue_inject_styles__$Z,
       __vue_script__$Z,
       __vue_scope_id__$Z,
       __vue_is_functional_template__$Z,
       __vue_module_identifier__$Z,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66422,15 +66721,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperSpaceBetween = normalizeComponent_1(
+    var SwiperSpaceBetween = normalizeComponent(
       { render: __vue_render__$_, staticRenderFns: __vue_staticRenderFns__$_ },
       __vue_inject_styles__$_,
       __vue_script__$_,
       __vue_scope_id__$_,
       __vue_is_functional_template__$_,
       __vue_module_identifier__$_,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66464,15 +66767,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperMultiple = normalizeComponent_1(
+    var SwiperMultiple = normalizeComponent(
       { render: __vue_render__$$, staticRenderFns: __vue_staticRenderFns__$$ },
       __vue_inject_styles__$$,
       __vue_script__$$,
       __vue_scope_id__$$,
       __vue_is_functional_template__$$,
       __vue_module_identifier__$$,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66505,15 +66812,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperNested = normalizeComponent_1(
+    var SwiperNested = normalizeComponent(
       { render: __vue_render__$10, staticRenderFns: __vue_staticRenderFns__$10 },
       __vue_inject_styles__$10,
       __vue_script__$10,
       __vue_scope_id__$10,
       __vue_is_functional_template__$10,
       __vue_module_identifier__$10,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66546,15 +66857,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperLoop = normalizeComponent_1(
+    var SwiperLoop = normalizeComponent(
       { render: __vue_render__$11, staticRenderFns: __vue_staticRenderFns__$11 },
       __vue_inject_styles__$11,
       __vue_script__$11,
       __vue_scope_id__$11,
       __vue_is_functional_template__$11,
       __vue_module_identifier__$11,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66587,15 +66902,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Swiper3dCube = normalizeComponent_1(
+    var Swiper3dCube = normalizeComponent(
       { render: __vue_render__$12, staticRenderFns: __vue_staticRenderFns__$12 },
       __vue_inject_styles__$12,
       __vue_script__$12,
       __vue_scope_id__$12,
       __vue_is_functional_template__$12,
       __vue_module_identifier__$12,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66628,15 +66947,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Swiper3dCoverflow = normalizeComponent_1(
+    var Swiper3dCoverflow = normalizeComponent(
       { render: __vue_render__$13, staticRenderFns: __vue_staticRenderFns__$13 },
       __vue_inject_styles__$13,
       __vue_script__$13,
       __vue_scope_id__$13,
       __vue_is_functional_template__$13,
       __vue_module_identifier__$13,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66669,15 +66992,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Swiper3dFlip = normalizeComponent_1(
+    var Swiper3dFlip = normalizeComponent(
       { render: __vue_render__$14, staticRenderFns: __vue_staticRenderFns__$14 },
       __vue_inject_styles__$14,
       __vue_script__$14,
       __vue_scope_id__$14,
       __vue_is_functional_template__$14,
       __vue_module_identifier__$14,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66710,15 +67037,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperFade = normalizeComponent_1(
+    var SwiperFade = normalizeComponent(
       { render: __vue_render__$15, staticRenderFns: __vue_staticRenderFns__$15 },
       __vue_inject_styles__$15,
       __vue_script__$15,
       __vue_scope_id__$15,
       __vue_is_functional_template__$15,
       __vue_module_identifier__$15,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66751,15 +67082,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperScrollbar = normalizeComponent_1(
+    var SwiperScrollbar = normalizeComponent(
       { render: __vue_render__$16, staticRenderFns: __vue_staticRenderFns__$16 },
       __vue_inject_styles__$16,
       __vue_script__$16,
       __vue_scope_id__$16,
       __vue_is_functional_template__$16,
       __vue_module_identifier__$16,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66822,15 +67157,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperGallery = normalizeComponent_1(
+    var SwiperGallery = normalizeComponent(
       { render: __vue_render__$17, staticRenderFns: __vue_staticRenderFns__$17 },
       __vue_inject_styles__$17,
       __vue_script__$17,
       __vue_scope_id__$17,
       __vue_is_functional_template__$17,
       __vue_module_identifier__$17,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66863,15 +67202,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperCustomControls = normalizeComponent_1(
+    var SwiperCustomControls = normalizeComponent(
       { render: __vue_render__$18, staticRenderFns: __vue_staticRenderFns__$18 },
       __vue_inject_styles__$18,
       __vue_script__$18,
       __vue_scope_id__$18,
       __vue_is_functional_template__$18,
       __vue_module_identifier__$18,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66904,15 +67247,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperParallax = normalizeComponent_1(
+    var SwiperParallax = normalizeComponent(
       { render: __vue_render__$19, staticRenderFns: __vue_staticRenderFns__$19 },
       __vue_inject_styles__$19,
       __vue_script__$19,
       __vue_scope_id__$19,
       __vue_is_functional_template__$19,
       __vue_module_identifier__$19,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66945,15 +67292,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperLazy = normalizeComponent_1(
+    var SwiperLazy = normalizeComponent(
       { render: __vue_render__$1a, staticRenderFns: __vue_staticRenderFns__$1a },
       __vue_inject_styles__$1a,
       __vue_script__$1a,
       __vue_scope_id__$1a,
       __vue_is_functional_template__$1a,
       __vue_module_identifier__$1a,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -66986,15 +67337,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperPaginationProgress = normalizeComponent_1(
+    var SwiperPaginationProgress = normalizeComponent(
       { render: __vue_render__$1b, staticRenderFns: __vue_staticRenderFns__$1b },
       __vue_inject_styles__$1b,
       __vue_script__$1b,
       __vue_scope_id__$1b,
       __vue_is_functional_template__$1b,
       __vue_module_identifier__$1b,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67027,15 +67382,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperPaginationFraction = normalizeComponent_1(
+    var SwiperPaginationFraction = normalizeComponent(
       { render: __vue_render__$1c, staticRenderFns: __vue_staticRenderFns__$1c },
       __vue_inject_styles__$1c,
       __vue_script__$1c,
       __vue_scope_id__$1c,
       __vue_is_functional_template__$1c,
       __vue_module_identifier__$1c,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67068,15 +67427,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SwiperZoom = normalizeComponent_1(
+    var SwiperZoom = normalizeComponent(
       { render: __vue_render__$1d, staticRenderFns: __vue_staticRenderFns__$1d },
       __vue_inject_styles__$1d,
       __vue_script__$1d,
       __vue_scope_id__$1d,
       __vue_is_functional_template__$1d,
       __vue_module_identifier__$1d,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67165,15 +67528,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Swipeout$2 = normalizeComponent_1(
+    var Swipeout$2 = normalizeComponent(
       { render: __vue_render__$1e, staticRenderFns: __vue_staticRenderFns__$1e },
       __vue_inject_styles__$1e,
       __vue_script__$1e,
       __vue_scope_id__$1e,
       __vue_is_functional_template__$1e,
       __vue_module_identifier__$1e,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67208,15 +67575,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Tabs$1 = normalizeComponent_1(
+    var Tabs$1 = normalizeComponent(
       { render: __vue_render__$1f, staticRenderFns: __vue_staticRenderFns__$1f },
       __vue_inject_styles__$1f,
       __vue_script__$1f,
       __vue_scope_id__$1f,
       __vue_is_functional_template__$1f,
       __vue_module_identifier__$1f,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67248,15 +67619,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var TabsStatic = normalizeComponent_1(
+    var TabsStatic = normalizeComponent(
       { render: __vue_render__$1g, staticRenderFns: __vue_staticRenderFns__$1g },
       __vue_inject_styles__$1g,
       __vue_script__$1g,
       __vue_scope_id__$1g,
       __vue_is_functional_template__$1g,
       __vue_module_identifier__$1g,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67288,15 +67663,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var TabsAnimated = normalizeComponent_1(
+    var TabsAnimated = normalizeComponent(
       { render: __vue_render__$1h, staticRenderFns: __vue_staticRenderFns__$1h },
       __vue_inject_styles__$1h,
       __vue_script__$1h,
       __vue_scope_id__$1h,
       __vue_is_functional_template__$1h,
       __vue_module_identifier__$1h,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67328,15 +67707,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var TabsSwipeable = normalizeComponent_1(
+    var TabsSwipeable = normalizeComponent(
       { render: __vue_render__$1i, staticRenderFns: __vue_staticRenderFns__$1i },
       __vue_inject_styles__$1i,
       __vue_script__$1i,
       __vue_scope_id__$1i,
       __vue_is_functional_template__$1i,
       __vue_module_identifier__$1i,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67368,15 +67751,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var TabsRoutable = normalizeComponent_1(
+    var TabsRoutable = normalizeComponent(
       { render: __vue_render__$1j, staticRenderFns: __vue_staticRenderFns__$1j },
       __vue_inject_styles__$1j,
       __vue_script__$1j,
       __vue_scope_id__$1j,
       __vue_is_functional_template__$1j,
       __vue_module_identifier__$1j,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67438,15 +67825,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var TextEditor$2 = normalizeComponent_1(
+    var TextEditor$2 = normalizeComponent(
       { render: __vue_render__$1k, staticRenderFns: __vue_staticRenderFns__$1k },
       __vue_inject_styles__$1k,
       __vue_script__$1k,
       __vue_scope_id__$1k,
       __vue_is_functional_template__$1k,
       __vue_module_identifier__$1k,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67603,15 +67994,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Toast$2 = normalizeComponent_1(
+    var Toast$2 = normalizeComponent(
       { render: __vue_render__$1l, staticRenderFns: __vue_staticRenderFns__$1l },
       __vue_inject_styles__$1l,
       __vue_script__$1l,
       __vue_scope_id__$1l,
       __vue_is_functional_template__$1l,
       __vue_module_identifier__$1l,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67648,15 +68043,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Toggle$2 = normalizeComponent_1(
+    var Toggle$2 = normalizeComponent(
       { render: __vue_render__$1m, staticRenderFns: __vue_staticRenderFns__$1m },
       __vue_inject_styles__$1m,
       __vue_script__$1m,
       __vue_scope_id__$1m,
       __vue_is_functional_template__$1m,
       __vue_module_identifier__$1m,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67698,15 +68097,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var ToolbarTabbar = normalizeComponent_1(
+    var ToolbarTabbar = normalizeComponent(
       { render: __vue_render__$1n, staticRenderFns: __vue_staticRenderFns__$1n },
       __vue_inject_styles__$1n,
       __vue_script__$1n,
       __vue_scope_id__$1n,
       __vue_is_functional_template__$1n,
       __vue_module_identifier__$1n,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67748,15 +68151,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Tabbar = normalizeComponent_1(
+    var Tabbar = normalizeComponent(
       { render: __vue_render__$1o, staticRenderFns: __vue_staticRenderFns__$1o },
       __vue_inject_styles__$1o,
       __vue_script__$1o,
       __vue_scope_id__$1o,
       __vue_is_functional_template__$1o,
       __vue_module_identifier__$1o,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67798,15 +68205,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var TabbarLabels = normalizeComponent_1(
+    var TabbarLabels = normalizeComponent(
       { render: __vue_render__$1p, staticRenderFns: __vue_staticRenderFns__$1p },
       __vue_inject_styles__$1p,
       __vue_script__$1p,
       __vue_scope_id__$1p,
       __vue_is_functional_template__$1p,
       __vue_module_identifier__$1p,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67849,15 +68260,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var TabbarScrollable = normalizeComponent_1(
+    var TabbarScrollable = normalizeComponent(
       { render: __vue_render__$1q, staticRenderFns: __vue_staticRenderFns__$1q },
       __vue_inject_styles__$1q,
       __vue_script__$1q,
       __vue_scope_id__$1q,
       __vue_is_functional_template__$1q,
       __vue_module_identifier__$1q,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67889,15 +68304,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var ToolbarHideScroll = normalizeComponent_1(
+    var ToolbarHideScroll = normalizeComponent(
       { render: __vue_render__$1r, staticRenderFns: __vue_staticRenderFns__$1r },
       __vue_inject_styles__$1r,
       __vue_script__$1r,
       __vue_scope_id__$1r,
       __vue_is_functional_template__$1r,
       __vue_module_identifier__$1r,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67955,15 +68374,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Tooltip$2 = normalizeComponent_1(
+    var Tooltip$2 = normalizeComponent(
       { render: __vue_render__$1s, staticRenderFns: __vue_staticRenderFns__$1s },
       __vue_inject_styles__$1s,
       __vue_script__$1s,
       __vue_scope_id__$1s,
       __vue_is_functional_template__$1s,
       __vue_module_identifier__$1s,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -67995,15 +68418,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Timeline$1 = normalizeComponent_1(
+    var Timeline$1 = normalizeComponent(
       { render: __vue_render__$1t, staticRenderFns: __vue_staticRenderFns__$1t },
       __vue_inject_styles__$1t,
       __vue_script__$1t,
       __vue_scope_id__$1t,
       __vue_is_functional_template__$1t,
       __vue_module_identifier__$1t,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68037,15 +68464,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var TimelineVertical = normalizeComponent_1(
+    var TimelineVertical = normalizeComponent(
       { render: __vue_render__$1u, staticRenderFns: __vue_staticRenderFns__$1u },
       __vue_inject_styles__$1u,
       __vue_script__$1u,
       __vue_scope_id__$1u,
       __vue_is_functional_template__$1u,
       __vue_module_identifier__$1u,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68079,15 +68510,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var TimelineHorizontal = normalizeComponent_1(
+    var TimelineHorizontal = normalizeComponent(
       { render: __vue_render__$1v, staticRenderFns: __vue_staticRenderFns__$1v },
       __vue_inject_styles__$1v,
       __vue_script__$1v,
       __vue_scope_id__$1v,
       __vue_is_functional_template__$1v,
       __vue_module_identifier__$1v,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68121,15 +68556,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var TimelineHorizontalCalendar = normalizeComponent_1(
+    var TimelineHorizontalCalendar = normalizeComponent(
       { render: __vue_render__$1w, staticRenderFns: __vue_staticRenderFns__$1w },
       __vue_inject_styles__$1w,
       __vue_script__$1w,
       __vue_scope_id__$1w,
       __vue_is_functional_template__$1w,
       __vue_module_identifier__$1w,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68204,15 +68643,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Treeview$2 = normalizeComponent_1(
+    var Treeview$2 = normalizeComponent(
       { render: __vue_render__$1x, staticRenderFns: __vue_staticRenderFns__$1x },
       __vue_inject_styles__$1x,
       __vue_script__$1x,
       __vue_scope_id__$1x,
       __vue_is_functional_template__$1x,
       __vue_module_identifier__$1x,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68271,15 +68714,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var VirtualList$2 = normalizeComponent_1(
+    var VirtualList$2 = normalizeComponent(
       { render: __vue_render__$1y, staticRenderFns: __vue_staticRenderFns__$1y },
       __vue_inject_styles__$1y,
       __vue_script__$1y,
       __vue_scope_id__$1y,
       __vue_is_functional_template__$1y,
       __vue_module_identifier__$1y,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68422,15 +68869,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var ColorThemes = normalizeComponent_1(
+    var ColorThemes = normalizeComponent(
       { render: __vue_render__$1z, staticRenderFns: __vue_staticRenderFns__$1z },
       __vue_inject_styles__$1z,
       __vue_script__$1z,
       __vue_scope_id__$1z,
       __vue_is_functional_template__$1z,
       __vue_module_identifier__$1z,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68471,15 +68922,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var PageTransitions = normalizeComponent_1(
+    var PageTransitions = normalizeComponent(
       { render: __vue_render__$1A, staticRenderFns: __vue_staticRenderFns__$1A },
       __vue_inject_styles__$1A,
       __vue_script__$1A,
       __vue_scope_id__$1A,
       __vue_is_functional_template__$1A,
       __vue_module_identifier__$1A,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68516,15 +68971,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var PageTransitionsEffect = normalizeComponent_1(
+    var PageTransitionsEffect = normalizeComponent(
       { render: __vue_render__$1B, staticRenderFns: __vue_staticRenderFns__$1B },
       __vue_inject_styles__$1B,
       __vue_script__$1B,
       __vue_scope_id__$1B,
       __vue_is_functional_template__$1B,
       __vue_module_identifier__$1B,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68556,15 +69015,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var RoutableModals$1 = normalizeComponent_1(
+    var RoutableModals$1 = normalizeComponent(
       { render: __vue_render__$1C, staticRenderFns: __vue_staticRenderFns__$1C },
       __vue_inject_styles__$1C,
       __vue_script__$1C,
       __vue_scope_id__$1C,
       __vue_is_functional_template__$1C,
       __vue_module_identifier__$1C,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68595,15 +69058,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var RoutablePopup = normalizeComponent_1(
+    var RoutablePopup = normalizeComponent(
       { render: __vue_render__$1D, staticRenderFns: __vue_staticRenderFns__$1D },
       __vue_inject_styles__$1D,
       __vue_script__$1D,
       __vue_scope_id__$1D,
       __vue_is_functional_template__$1D,
       __vue_module_identifier__$1D,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68634,15 +69101,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var RoutableActions = normalizeComponent_1(
+    var RoutableActions = normalizeComponent(
       { render: __vue_render__$1E, staticRenderFns: __vue_staticRenderFns__$1E },
       __vue_inject_styles__$1E,
       __vue_script__$1E,
       __vue_scope_id__$1E,
       __vue_is_functional_template__$1E,
       __vue_module_identifier__$1E,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68678,15 +69149,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var MasterDetailMaster = normalizeComponent_1(
+    var MasterDetailMaster = normalizeComponent(
       { render: __vue_render__$1F, staticRenderFns: __vue_staticRenderFns__$1F },
       __vue_inject_styles__$1F,
       __vue_script__$1F,
       __vue_scope_id__$1F,
       __vue_is_functional_template__$1F,
       __vue_module_identifier__$1F,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68720,15 +69195,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var MasterDetailDetail = normalizeComponent_1(
+    var MasterDetailDetail = normalizeComponent(
       { render: __vue_render__$1G, staticRenderFns: __vue_staticRenderFns__$1G },
       __vue_inject_styles__$1G,
       __vue_script__$1G,
       __vue_scope_id__$1G,
       __vue_is_functional_template__$1G,
       __vue_module_identifier__$1G,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -68761,15 +69240,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var NotFound = normalizeComponent_1(
+    var NotFound = normalizeComponent(
       { render: __vue_render__$1H, staticRenderFns: __vue_staticRenderFns__$1H },
       __vue_inject_styles__$1H,
       __vue_script__$1H,
       __vue_scope_id__$1H,
       __vue_is_functional_template__$1H,
       __vue_module_identifier__$1H,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -69313,15 +69796,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var App = normalizeComponent_1(
+    var App = normalizeComponent(
       { render: __vue_render__$1I, staticRenderFns: __vue_staticRenderFns__$1I },
       __vue_inject_styles__$1I,
       __vue_script__$1I,
       __vue_scope_id__$1I,
       __vue_is_functional_template__$1I,
       __vue_module_identifier__$1I,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -69337,4 +69824,4 @@
 
   return app;
 
-}));
+})));
