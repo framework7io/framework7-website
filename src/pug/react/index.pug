@@ -1,28 +1,54 @@
-extends ../src/pug/_docs-template
+extends ../_docs-template
 
 block vars
   - var activeLink = 'react';
   - var title = 'Framework7 React';
 
 block content
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    h1 Framework7 React
+    p Bring components-syntax, structured data and data bindings to Framework7 with power and simplicity of React.js
+    :code(lang="jsx")
+      <App>
 
-    .docs-nav
-      include ./_docs-react-menu
-    .docs-content
-      .important-note
-        p
-          b Current Framework7 React documentation is for Framework7 v1.x and for Framework7 React v0.x and not compatible with Framework7 v2
-      .home-block.home-vue
-        .text
-          h1 Framework7 React
-          p Framework7 with the power and simplicity of React
-        .pic
-          img(src=cdn + "/i/react-intro.png")
-      .home-block.home-free
-        .text
-          h2 Starter App Templates
-          p There are some ready to use templates to start your app developement immediately using Framework7 React.
-          p
-            a(href="https://github.com/bencompton/framework7-react-app-template", target="_blank") Create React App
-            a(href="https://github.com/bencompton/framework7-react-static-template", target="_blank") Static HTML + CSS + JavaScript
+        <Panel left cover themeDark>
+          <Navbar title="Left Panel" />
+          <Block>Left panel content</Block>
+        </Panel>
+
+        <Panel right reveal>
+          <Navbar title="Right Panel" />
+          <Block>Right panel content</Block>
+        </Panel>
+
+        <View main>
+          <Page>
+            <Navbar title="My App" />
+            <Block>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eleifend, elit vitae scelerisque vulputate, tortor velit tempus dui, et luctus tellus justo nec velit. Duis scelerisque in tellus et pretium. Ut faucibus fringilla risus, ut dapibus nunc vehicula sit amet. Donec posuere nunc non fermentum commodo.</p>
+            </Block>
+            <Block>
+              <Segmented>
+                <Button panelOpen="left">Left Panel</Button>
+                <Button panelOpen="right">Right Panel</Button>
+              </Segmented>
+            </Block>
+            <List>
+              {
+                [1, 2, 3].map(n => (
+                  <ListItem
+                    key={n}
+                    title={`Item ${n}`}
+                  />
+                ))
+              }
+            </List>
+          </Page>
+        </View>
+
+      </App>
+    p
+      a(href="introduction.html").button Get Started
 

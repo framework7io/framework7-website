@@ -5,19 +5,20 @@ block vars
   - var title = 'Subnavbar Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Subnavbar Vue Component
-    .docs-index
+    ul.docs-index
     p Subnavbar is useful when you need to put any additional elements into Navbar, like Tab Links or Search Bar. It also remains visible when Navbar hidden.
     p Subnavbar Vue component represents <a href="../docs/subnavbar.html">Subnavbar</a> component.
     h2 Subnavbar Components
     p There are following components included:
     ul
-      li <code><b>f7-subnavbar</b></code>
+      li `f7-subnavbar`
     h2 Subnavbar Properties
     table.params-table
       thead
@@ -44,50 +45,28 @@ block content
           td boolean
           td true
           td When enabled the additional "subnavbar-inner" wrapper element will be added
-    h2 Examples
-    pre
-      code.html
-        :code
-          <f7-subnavbar>
-            <f7-segmented>
-              <f7-button tab-link="#tab1" tab-link-active>Tab 1</f7-button>
-              <f7-button tab-link="#tab2">Tab 2</f7-button>
-            </f7-segmented>
-          </f7-subnavbar>
-
-          <!-- Renders to: -->
-
-          <div class="subnavbar">
-            <div class="subnavbar-inner">
-              <div class="segmented">
-                <a href="#" class="button tab-link tab-link-active" data-tab="#tab1">Tab 1</a>
-                <a href="#" class="button tab-link" data-tab="#tab2">Tab 2</a>
-              </div>
-            </div>
-          </div>
-    h4 Inside of Navbar With Title
-    pre
-      code.html
-        :code
-          <f7-navbar back-link="Back">
-            <f7-subnavbar title="Page Title"></f7-subnavbar>
-          </f7-navbar>
-
-          <!-- Renders to: -->
-
-          <div class="navbar">
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a href="#" class="link back">
-                  <i class="icon icon-back"></i>
-                  <span>Back</span>
-                </a>
-              </div>
-              <div class="subnavbar">
-                <div class="subnavbar-inner">
-                  <div class="title">Page Title</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/subnavbar.html") Examples
+      :code
+            <f7-page :page-content="false">
+              <f7-navbar title="Subnavbar">
+                <f7-subnavbar>
+                  <f7-segmented raised>
+                    <f7-button tab-link="#tab1" tab-link-active>Tab 1</f7-button>
+                    <f7-button tab-link="#tab2">Tab 2</f7-button>
+                  </f7-segmented>
+                </f7-subnavbar>
+              </f7-navbar>
+              <f7-tabs>
+                <f7-tab id="tab1" tab-active class="page-content">
+                  <f7-block>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nisi nisi, tincidunt ut eleifend non, sagittis a elit. Sed consequat odio at leo varius viverra...</p>
+                  </f7-block>
+                </f7-tab>
+                <f7-tab id="tab2" class="page-content">
+                  <f7-block>
+                    <p>Donec iaculis posuere massa sed dignissim. Praesent id nibh nec massa mollis egestas. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas...</p>
+                  </f7-block>
+                </f7-tab>
+              </f7-tabs>
+            </f7-page>

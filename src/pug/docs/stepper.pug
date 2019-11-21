@@ -11,12 +11,10 @@ block content
   .docs-content
     +improveDocsLink
     h1 Stepper
-    .docs-index
+    ul.docs-index
     h2 Stepper Layout
     p Single stepper layout is pretty simple:
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <!-- Stepper element -->
           <div class="stepper">
             <!-- Stepper minus/decrement button -->
@@ -30,9 +28,7 @@ block content
             <div class="stepper-button-plus"></div>
           </div>
     p If you don't need an input element but still need to keep the value:
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <!-- Stepper element -->
           <div class="stepper">
             <div class="stepper-button-minus"></div>
@@ -41,9 +37,7 @@ block content
             <div class="stepper-button-plus"></div>
           </div>
     p And if you don't need to display value between stepper buttons:
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <!-- Stepper element -->
           <div class="stepper">
             <div class="stepper-button-minus"></div>
@@ -63,6 +57,9 @@ block content
           td stepper-fill-md
           td Stepper buttons will have filled-style only in MD theme
         tr
+          td stepper-fill-aurora
+          td Stepper buttons will have filled-style only in Aurora theme
+        tr
           td stepper-round
           td Rounded stepper buttons
         tr
@@ -71,6 +68,9 @@ block content
         tr
           td stepper-round-md
           td Stepper buttons will be rounded only in MD theme
+        tr
+          td stepper-round-aurora
+          td Stepper buttons will be rounded only in Aurora theme
         tr
           td stepper-small
           td Small stepper
@@ -81,18 +81,32 @@ block content
           td stepper-small-md
           td Stepper will be small only in MD theme
         tr
-          td stepper-big
-          td Big stepper
+          td stepper-small-aurora
+          td Stepper will be small only in Aurora theme
         tr
-          td stepper-big-ios
-          td Stepper will be big only in iOS theme
+          td stepper-large
+          td Large stepper
         tr
-          td stepper-big-md
-          td Stepper will be big only in MD theme
+          td stepper-large-ios
+          td Stepper will be large only in iOS theme
+        tr
+          td stepper-large-md
+          td Stepper will be large only in MD theme
+        tr
+          td stepper-large-aurora
+          td Stepper will be large only in Aurora theme
         tr
           td stepper-raised
-          td Raised stepper&nbsp;
-            b.md-only This will have effect only in MD theme
+          td Raised stepper
+        tr
+          td stepper-raised-ios
+          td Raised stepper only in iOS theme
+        tr
+          td stepper-raised-md
+          td Raised stepper only in MD theme
+        tr
+          td stepper-raised-aurora
+          td Raised stepper only in Aurora theme
         tr
           td color-[color]
           td Color button, where <b>[color]</b> is one of the <a href="color-themes.html">default colors</a>
@@ -166,7 +180,7 @@ block content
           td inputEl
           td HTMLElement<br>string
           td
-          td Stepper input element or CSS selector of input element. If not specified, will try to look for <code>&lt;input&gt;</code> inside of stepper element
+          td Stepper input element or CSS selector of input element. If not specified, will try to look for `<input>` inside of stepper element
         tr
           td step
           td number
@@ -206,22 +220,36 @@ block content
           td valueEl
           td HTMLElement<br>string
           td
-          td Stepper value element or CSS selector of this element where Stepper will insert value. If not specified, and there is no <code>inputEl</code> passed will try to look for <code>&lt;div class="stepper-value"&gt;</code> inside of stepper element
+          td Stepper value element or CSS selector of this element where Stepper will insert value. If not specified, and there is no `inputEl` passed will try to look for `<div class="stepper-value">` inside of stepper element
         tr
           td formatValue
           td function (value)
           td
           td Function to format value in required format. It accepts current value and must return new formatted value;
         tr
+          td manualInputMode
+          td boolean
+          td false
+          td Enables manual input mode. This mode allows to type value from keyboar and check fractional part with defined accurancy. Also, `step` parameter is ignored when typing in this mode.
+        tr
+          td decimalPoint
+          td number
+          td 4
+          td Number of digits after dot, when in manual input mode.
+        tr
+          td buttonsEndInputMode
+          td boolean
+          td true
+          td Disables manual input mode on Stepper's minus or plus button click.
+        tr
           td on
           td object
           td
-          td Object with events handlers. For example:
-            pre
-              code
-                :code
+          td
+            p Object with events handlers. For example:
+            :code(lang="js")
                   var stepper = app.stepper.create({
-                    el: '.stepper'
+                    el: '.stepper',
                     on: {
                       change: function () {
                         console.log('Stepper value changed')
@@ -231,11 +259,9 @@ block content
 
     h2 Stepper Methods & Properties
     p So to create Stepper we have to call:
-    pre
-      code
-        :code
+    :code(lang="js")
           var stepper = app.stepper.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>stepper</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `stepper` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -289,10 +315,10 @@ block content
           td Decrement stepper value, similar to clicking on its "minus" button
         tr
           td stepper.plus()
-          td Alias for <code>stepper.increment()</code>
+          td Alias for `stepper.increment()`
         tr
           td stepper.minus()
-          td Alias for <code>stepper.decrement()</code>
+          td Alias for `stepper.decrement()`
         tr
           td stepper.destroy()
           td Destroys stepper instance
@@ -331,7 +357,7 @@ block content
           td Stepper Element<span>&lt;div class="stepper"&gt;</span>
           td Event will be triggered right before Stepper instance will be destroyed
     h3 App and Stepper Instance Events
-    p Stepper instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>stepper</code>.
+    p Stepper instance emits events on both self instance and app instance. App instance events has same names prefixed with `stepper`.
     table.events-table.double-events-table
       thead
         tr
@@ -359,10 +385,8 @@ block content
           td <span>(stepper)</span>
           td app
     h2 Stepper Auto Initialization
-    p If you don't need to use Stepper API and your Stepper is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>stepper-init</code> class:
-    pre
-      code.html
-        :code
+    p If you don't need to use Stepper API and your Stepper is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional `stepper-init` class:
+    :code(lang="html")
           <!-- Add stepper-init class -->
           <div class="stepper stepper-init">
             <div class="stepper-button-minus"></div>
@@ -371,10 +395,8 @@ block content
             </div>
             <div class="stepper-button-plus"></div>
           </div>
-    p In this case if you need to access created Stepper instance you can use the <code>app.stepper.get</code> app method:
-    pre
-      code.js
-        :code
+    p In this case if you need to access created Stepper instance you can use the `app.stepper.get` app method:
+    :code(lang="js")
           var stepper = app.stepper.get('.stepper');
 
           if (stepper.value > 50) {
@@ -383,10 +405,8 @@ block content
     p When using auto init you may need to pass additional parameters. It can be done with two ways:
     ul
       li
-        p If you use stepper with input then <code>step</code>, <code>min</code>, <code>max</code>, <code>value</code> parameters can be set from same input attributes:
-        pre
-          code.html
-            :code
+        p If you use stepper with input then `step`, `min`, `max`, `value` parameters can be set from same input attributes:
+        :code(lang="html")
               <!-- min, max, step, value parameters will be set for same input attributes -->
               <div class="stepper stepper-init">
                 <div class="stepper-button-minus"></div>
@@ -396,10 +416,8 @@ block content
                 <div class="stepper-button-plus"></div>
               </div>
       li
-        p Otherwise, if you don't have input inside, you can set all available parameters via <code>data-</code> attributes on stepper element.
-        pre
-          code.html
-            :code
+        p Otherwise, if you don't have input inside, you can set all available parameters via `data-` attributes on stepper element.
+        :code(lang="html")
               <!-- parameters set via data- attributes -->
               <div
                 class="stepper stepper-init"
@@ -413,12 +431,12 @@ block content
                 <div class="stepper-button-plus"></div>
               </div>
 
+    +cssVars('stepper')
+
     .with-device
-      h2(data-device-preview="../docs-demos/stepper.html") Examples
+      h2(data-device-preview="../docs-demos/core/stepper.html") Examples
       h4 Shape and size
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -514,8 +532,8 @@ block content
 
               <div class="row margin-top">
                 <div class="col">
-                  <small>Big</small>
-                  <div class="stepper stepper-big stepper-init">
+                  <small>Large</small>
+                  <div class="stepper stepper-large stepper-init">
                     <div class="stepper-button-minus"></div>
                     <div class="stepper-input-wrap">
                       <input type="text" value="0" min="0" max="100" step="1" readonly>
@@ -524,8 +542,8 @@ block content
                   </div>
                 </div>
                 <div class="col">
-                  <small>Big Round</small>
-                  <div class="stepper stepper-big stepper-round stepper-init">
+                  <small>Large Round</small>
+                  <div class="stepper stepper-large stepper-round stepper-init">
                     <div class="stepper-button-minus"></div>
                     <div class="stepper-input-wrap">
                       <input type="text" value="0" min="0" max="100" step="1" readonly>
@@ -537,8 +555,8 @@ block content
 
               <div class="row margin-top">
                 <div class="col">
-                  <small>Big Fill</small>
-                  <div class="stepper stepper-big stepper-fill stepper-init">
+                  <small>Large Fill</small>
+                  <div class="stepper stepper-large stepper-fill stepper-init">
                     <div class="stepper-button-minus"></div>
                     <div class="stepper-input-wrap">
                       <input type="text" value="0" min="0" max="100" step="1" readonly>
@@ -547,8 +565,8 @@ block content
                   </div>
                 </div>
                 <div class="col">
-                  <small>Big Round Fill</small>
-                  <div class="stepper stepper-big stepper-round stepper-fill stepper-init">
+                  <small>Large Round Fill</small>
+                  <div class="stepper stepper-large stepper-round stepper-fill stepper-init">
                     <div class="stepper-button-minus"></div>
                     <div class="stepper-input-wrap">
                       <input type="text" value="0" min="0" max="100" step="1" readonly>
@@ -559,10 +577,8 @@ block content
               </div>
             </div>
 
-      h4 Raised (MD-theme only)
-      pre
-        code.html
-          :code
+      h4 Raised
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -658,8 +674,8 @@ block content
 
               <div class="row margin-top">
                 <div class="col">
-                  <small>Big</small>
-                  <div class="stepper stepper-raised stepper-big stepper-init">
+                  <small>Large</small>
+                  <div class="stepper stepper-raised stepper-large stepper-init">
                     <div class="stepper-button-minus"></div>
                     <div class="stepper-input-wrap">
                       <input type="text" value="0" min="0" max="100" step="1" readonly>
@@ -668,8 +684,8 @@ block content
                   </div>
                 </div>
                 <div class="col">
-                  <small>Big Round</small>
-                  <div class="stepper stepper-raised stepper-big stepper-round stepper-init">
+                  <small>Large Round</small>
+                  <div class="stepper stepper-raised stepper-large stepper-round stepper-init">
                     <div class="stepper-button-minus"></div>
                     <div class="stepper-input-wrap">
                       <input type="text" value="0" min="0" max="100" step="1" readonly>
@@ -681,8 +697,8 @@ block content
 
               <div class="row margin-top">
                 <div class="col">
-                  <small>Big Fill</small>
-                  <div class="stepper stepper-raised stepper-big stepper-fill stepper-init">
+                  <small>Large Fill</small>
+                  <div class="stepper stepper-raised stepper-large stepper-fill stepper-init">
                     <div class="stepper-button-minus"></div>
                     <div class="stepper-input-wrap">
                       <input type="text" value="0" min="0" max="100" step="1" readonly>
@@ -691,8 +707,8 @@ block content
                   </div>
                 </div>
                 <div class="col">
-                  <small>Big Round Fill</small>
-                  <div class="stepper stepper-raised stepper-big stepper-round stepper-fill stepper-init">
+                  <small>Large Round Fill</small>
+                  <div class="stepper stepper-raised stepper-large stepper-round stepper-fill stepper-init">
                     <div class="stepper-button-minus"></div>
                     <div class="stepper-input-wrap">
                       <input type="text" value="0" min="0" max="100" step="1" readonly>
@@ -703,9 +719,7 @@ block content
               </div>
             </div>
       h4 Colors
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -792,9 +806,7 @@ block content
               </div>
             </div>
       h4 Without input element
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -814,9 +826,7 @@ block content
               </div>
             </div>
       h4 Custom min, max and step
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -838,9 +848,7 @@ block content
               </div>
             </div>
       h4 Autorepeat (Tap & hold)
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -868,9 +876,7 @@ block content
 
       h4 Wraps
       p In wraps mode incrementing beyond maximum value sets value to minimum value, likewise, decrementing below minimum value sets value to maximum value
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -885,9 +891,7 @@ block content
               </div>
             </div>
       h4 Custom value element
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list">
               <ul>
                 <li class="item-content">
@@ -915,9 +919,7 @@ block content
               </ul>
             </div>
       h4 Custom value format
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list">
               <ul>
                 <li class="item-content">
@@ -935,4 +937,20 @@ block content
                   </div>
                 </li>
               </ul>
+            </div>
+      h4 Manual input
+      p It is possible to enter value manually from keyboard or mobile keypad. When click on input field, stepper enter into manual input mode, which allow type value from keyboar and check fractional part with defined accurancy. Click outside or enter Return key, ending manual mode.
+      :code(lang="html")
+            <div class="block block-strong text-align-center">
+              <div class="row">
+                <div class="col">
+                  <div class="stepper stepper-fill stepper-init" data-wraps="true" data-autorepeat="true" data-autorepeat-dynamic="true" data-decimal-point="2" data-manual-input-mode="true">
+                    <div class="stepper-button-minus"></div>
+                    <div class="stepper-input-wrap">
+                      <input type="text" value="0" min="0" max="1000" step="1">
+                    </div>
+                    <div class="stepper-button-plus"></div>
+                  </div>
+                </div>
+              </div>
             </div>

@@ -1,63 +1,86 @@
-.links
-  .links-block
-    .links-block-title Project
-    ul
-      li
-        a(href="https://github.com/framework7io/framework7/releases" target="_blank") Download
-      li
-        a(href="/contribute/") Contribute
-      li
-        a(href="/sponsors/") Sponsors
-      li
-        a(href="http://blog.framework7.io", target="_blank") Blog
-      li
-        a(href="https://github.com/framework7io/framework7/blob/master/CHANGELOG.md" target="_blank") Changelog
-  .links-block
-    .links-block-title Docs
-    ul
-      li
-        a(href="/docs/") Framework7 / API
-      li
-        a(href="/vue/") Framework7 Vue
-      li
-        a(href="/react/") Framework7 React
-      li
-        a(href="/docs/dom7.html") Dom7
-      li
-        a(href="http://idangero.us/template7/" target="_blank") Template7
-      li
-        a(href="http://v1.framework7.io") Framework7 v1
-  .links-block
-    .links-block-title Resources
-    ul
-      li
-        a(href="http://forum.framework7.io" target="_blank") Community Forum
-      li
-        a(href="/tutorials/") Tutorials
-      li
-        a(href="/templates/") Templates
-      li
-        a(href="/plugins/") Plugins
-      li
-        a(href="/showcase/") Apps Showcase
-      li
-        a(href="/icons/") Framework7 Icons
-  .links-block
-    .links-block-title Connect
-    ul
-      li
-        a(href="https://twitter.com/framework7io", target="_blank") Twitter
-      li
-        a(href="https://github.com/framework7io", target="_blank") GitHub
-      li
-        a(href="https://facebook.com/framework7io", target="_blank") Facebook
-  .footer-sponsors
-    .footer-sponsors-title Sponsored by
-    div(id="bsap_1306028" class="bsarocks bsap_692e54a1f79f00fb913f5a1c3ec9eaa5")
-.copy
-  .copy-left
-    p Code licensed under <a href="https://github.com/nolimits4web/Framework7/blob/master/LICENSE" target="_blank">MIT</a>
-    p 2016 © Framework7 is brought to you by <a href="https://twitter.com/nolimits4web" target="_blank">Vladimir Kharlampidi</a> from <a href="http://idangero.us">iDangero.us</a>.
-  .copy-right
-    p Proudly supported by <a href="https://www.keycdn.com/" class="keycdn-link" target="_blank"><img src="#{cdn}/i/keycdn-logo.svg" alt="KeyCDN" title="KeyCDN" class="keycdn-logo"></a>
-  .clearfix
+footer
+  .center
+    .links
+      .links-block
+        .links-block-title Project
+        ul
+          li
+            a(href="https://github.com/framework7io/framework7/releases" target="_blank") Download
+          li
+            a(href="/contribute/") Contribute
+          li
+            a(href="/sponsors/") Sponsors
+          li
+            a(href="https://blog.framework7.io", target="_blank") Blog
+          li
+            a(href="https://teespring.com/stores/framework7" target="_blank") T-Shirt Shop
+          li
+            a(href="https://github.com/framework7io/framework7/blob/master/CHANGELOG.md" target="_blank") Changelog
+      .links-block
+        .links-block-title Docs
+        ul
+          li
+            a(href="/docs/") Framework7 Core / API
+          li
+            a(href="/vue/") Framework7 Vue
+          li
+            a(href="/react/") Framework7 React
+          li
+            a(href="/cli/") Framework7 CLI
+          li
+            a(href="/icons/") Framework7 Icons
+          li
+            a(href="/docs/dom7.html") Dom7
+          li
+            a(href="https://idangero.us/template7/" target="_blank") Template7
+          li
+            a(href="https://v1.framework7.io") Framework7 v1
+          li
+            a(href="https://v2.framework7.io") Framework7 v2
+          li
+            a(href="https://v3.framework7.io") Framework7 v3
+          li
+            a(href="https://v4.framework7.io") Framework7 v4
+      .links-block
+        .links-block-title Resources
+        ul
+          li
+            a(href="https://forum.framework7.io" target="_blank") Community Forum
+          li
+            a(href="/tutorials/") Tutorials
+          li
+            a(href="/templates/") Templates
+          li
+            a(href="/plugins/") Plugins
+          li
+            a(href="/showcase/") Apps Showcase
+          li
+            a(href="https://jobs.framework7.io" target="_blank") Jobs & Developers
+
+      .links-block
+        .links-block-title Connect
+        ul
+          li
+            a(href="https://twitter.com/framework7io", target="_blank") Twitter
+          li
+            a(href="https://github.com/framework7io", target="_blank") GitHub
+          li
+            a(href="https://facebook.com/framework7io", target="_blank") Facebook
+      .footer-sponsors
+        .footer-sponsors-title Sponsored by
+        .custom-sponsors
+          a(href="https://watchcartoononline.best/", target="_blank")
+            img(src='/i/sponsors/watchcartoononline.png' alt="Watch cartoon online" title="Watch cartoon online")
+          a(href="https://codersrank.io/?utm_source=banner&utm_medium=referral&utm_campaign=vladimir", target="_blank").border
+            img(src='/i/sponsors/codersrank.svg' alt="CodersRank - Ultimate Profile For Coders" title="CodersRank - Ultimate Profile For Coders")
+          a(href="https://www.sparheld.de/", target="_blank").border
+            img(src='/i/sponsors/sparheld.jpg' alt="Sparheld.de - save shopping online" title="Sparheld.de - save shopping online")
+        div(id="bsap_1306028" class="bsarocks bsap_692e54a1f79f00fb913f5a1c3ec9eaa5")
+    .copy
+      .copy-left
+        p Code licensed under <a href="https://github.com/framework7io/framework7/blob/master/LICENSE" target="_blank">MIT</a>
+        p #{new Date().getFullYear()} © Framework7 is brought to you by <a href="https://github.com/nolimits4web/" target="_blank">Vladimir Kharlampidi</a>.
+      .copy-right
+        p Proudly supported by <a href="https://www.keycdn.com/" class="keycdn-link" target="_blank"><img src="/i/keycdn-logo.svg" alt="KeyCDN" title="KeyCDN" class="keycdn-logo"></a>
+        p Hosted on awesome <a href="https://www.vpsserver.com" class="vpsserver-link" target="_blank"><img src="/i/vpsserver-logo.svg" alt="VPS Server" title="VPS Server" class="vpsserver-logo"></a>
+      .clearfix

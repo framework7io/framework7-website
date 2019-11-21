@@ -9,14 +9,12 @@ block content
   .docs-content
     +improveDocsLink
     h1 Events
-    .docs-index
-    p Most of Framework7 components that is built with classes/constructors (including Framework7 class itself) have kind of event emitter API.
+    ul.docs-index
+    p Most of Framework7 components that is built with classes/constructors (including Framework7 class itself) have event emitter API.
     p It allows us easily to emit and handle all kind of events, including events between components.
     h2 Events Handlers in Parameters
-    p When you create app instance or any other component uisng API, you can pass event handler on app/component initialization in <code><b>on</b></code> parameter:
-    pre
-      code.js
-        :code
+    p When you create app instance or any other component using API, you can pass event handler on app/component initialization in `on` parameter:
+    :code(lang="js")
           var app = new Framework7({
             ...
             on: {
@@ -49,15 +47,16 @@ block content
           td [instance].once(<span>event</span>, <span>handler</span>)
           td Add event handler that will be removed after it was fired
         tr
+          td [instance].off(<span>event</span>, <span>handler</span>)
+          td Remove event handler for specified event
+        tr
           td [instance].off(<span>event</span>)
           td Remove all handlers for specified event
         tr
           td [instance].emit(<span>event</span>, <span>...args</span>)
           td Fire event on instance
     h4 Add Event Handlers
-    pre
-      code.js
-        :code
+    :code(lang="js")
           var app = new Framework7({/*...*/});
 
           var popup = app.popup.create({/*...*/});
@@ -80,17 +79,13 @@ block content
           });
     h4 Add Multiple Handlers
     p We can pass multiple events in first parameters separated with space:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           app.on('popupOpen popupClose', function (popup) {
             // do something on popupOpen and popupClose
           });
     h4 Remove Event Handlers
     p Named function handler can be removed:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           function onTabShow() {
             // do something on tab show
           }
@@ -101,17 +96,13 @@ block content
           // later remove tabShow handler:
           app.off('tabShow', onTabShow);
     h4 Remove All Handlers
-    p If we don't pass second handler argument to <code>.off</code> method then we will remove all handlers assigned for this event:
-    pre
-      code.js
-        :code
+    p If we don't pass second handler argument to `.off` method then we will remove all handlers assigned for this event:
+    :code(lang="js")
           // Remove all tabShow handlers
           app.off('tabShow');
     h4 Emit Events
     p And of course we can emit events and any kind of custom events we may need:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           app.on('myCustomEvent', function (a, b) {
             console.log(a); // -> 'foo'
             console.log(b); // -> 'bar'
@@ -121,19 +112,15 @@ block content
 
     h2 Events Delegating
     p Events which emitted on components will delegate to app instance as well:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           app.on('something', function () {/*...*/});
 
           popup.on('something', function () {/*...*/});
 
           popup.emit('something'); // will trigger "something" event assigned to both app and popup instances
 
-    p If this is not what you want, it is possible to emit so called <b>local</b> events on components. In this case we need to prefix event name with <code><b>local::</b></code>
-    pre
-      code.js
-        :code
+    p If this is not what you want, it is possible to emit so called <b>local</b> events on components. In this case we need to prefix event name with `local::`
+    :code(lang="js")
           app.on('something', function () {/*...*/});
 
           popup.on('something', function () {/*...*/});
@@ -141,13 +128,41 @@ block content
           popup.emit('local::something'); // will only trigger "something" event assigned to popup instance above
 
     h2 Event Handler Context
-    p Event handler context (<code>this</code>) will always point to instance where it was assigned:
-    pre
-      code.js
-        :code
+    p Event handler context (`this`) will always point to instance where it was assigned:
+    :code(lang="js")
           app.on('popupOpen', function () {
             console.log(this); // -> app instance
           });
           popup.on('popupOpen', function () {
             console.log(this); // -> popup instance
           });
+
+    h2 Events Bus
+    p Current events emitter API on Framework7 classes is also very useful to create custom events for communication between app components and modules.
+    p And there is an additional helper class that is designed to be used like event bus only and not to flood main app or some components instances.
+    p To create new events bus we need to call `new Framework7.Events()`:
+    :code(lang="js")
+      // Create custom events bus
+      var myEvents = new Framework7.Events();
+
+      // handle event
+      myEvents.on('some-event', function () {
+        // do something when 'some-event' fired
+      })
+
+      // emit event
+      myEvents.emit('some-event');
+
+      // Create another event bus
+      const notificationEvents = new Framework7.Events();
+
+      notificationEvents.on('notificationReceived', function (notification) {
+        // do something with notification
+      })
+
+      // somewhere in the app send notification
+      notificationEvents.emit('notificationReceived', {
+        title: 'New message',
+        from: 'John Doe',
+      });
+

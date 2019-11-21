@@ -1,0 +1,150 @@
+extends _layout
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-bg
+        .navbar-inner
+          .left
+          .title.sliding Photo Browser
+          .right
+      .page-content
+        .block-title Light Theme
+        .block.row
+            .col-33
+              a(href="#").button.button-fill.pb-standalone Standalone
+            .col-33
+              a(href="#").button.button-fill.pb-popup Popup
+            .col-33
+              a(href="#").button.button-fill.pb-page Page
+        .block-title Dark Theme
+        .block.row
+            .col-50
+              a(href="#").button.button-fill.pb-standalone-dark Standalone
+            .col-50
+              a(href="#").button.button-fill.pb-popup-dark Popup
+        .block
+            a(href="#").button.button-fill.pb-standalone-captions With Captions
+        .block
+            a(href="#").button.button-fill.pb-standalone-video With Video
+
+
+
+block scripts
+  script.
+    var app = new Framework7();
+
+    var $$ = Dom7;
+
+    /*=== Default standalone ===*/
+    var myPhotoBrowserStandalone = app.photoBrowser.create({
+        photos : [
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+        ]
+    });
+    //Open photo browser on click
+    $$('.pb-standalone').on('click', function () {
+        myPhotoBrowserStandalone.open();
+    });
+
+    /*=== Popup ===*/
+    var myPhotoBrowserPopup = app.photoBrowser.create({
+        photos : [
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+        ],
+        type: 'popup'
+    });
+    $$('.pb-popup').on('click', function () {
+        myPhotoBrowserPopup.open();
+    });
+
+    /*=== As Page ===*/
+    var myPhotoBrowserPage = app.photoBrowser.create({
+        photos : [
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+        ],
+        type: 'page',
+        pageBackLinkText: 'Back'
+    });
+    $$('.pb-page').on('click', function () {
+        myPhotoBrowserPage.open();
+    });
+
+    /*=== Standalone Dark ===*/
+    var myPhotoBrowserDark = app.photoBrowser.create({
+        photos : [
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+        ],
+        theme: 'dark'
+    });
+    $$('.pb-standalone-dark').on('click', function () {
+        myPhotoBrowserDark.open();
+    });
+
+    /*=== Popup Dark ===*/
+    var myPhotoBrowserPopupDark = app.photoBrowser.create({
+        photos : [
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+            'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+        ],
+        theme: 'dark',
+        type: 'popup'
+    });
+    $$('.pb-popup-dark').on('click', function () {
+        myPhotoBrowserPopupDark.open();
+    });
+
+    /*=== With Captions ===*/
+    var myPhotoBrowserCaptions = app.photoBrowser.create({
+        photos : [
+            {
+                url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+                caption: 'Caption 1 Text'
+            },
+            {
+                url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                caption: 'Second Caption Text'
+            },
+            // This one without caption
+            {
+                url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+            },
+        ],
+        theme: 'dark',
+        type: 'standalone'
+    });
+    $$('.pb-standalone-captions').on('click', function () {
+        myPhotoBrowserCaptions.open();
+    });
+
+    /*=== With Video ===*/
+    var myPhotoBrowserVideo = app.photoBrowser.create({
+        photos : [
+            {
+                html: '<iframe src="//www.youtube.com/embed/lmc21V-zBq0" frameborder="0" allowfullscreen></iframe>',
+                caption: 'Woodkid - Run Boy Run (Official HD Video)'
+            },
+            {
+                url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                caption: 'Second Caption Text'
+            },
+            {
+                url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+            },
+        ],
+        theme: 'dark',
+        type: 'standalone'
+    });
+    $$('.pb-standalone-video').on('click', function () {
+        myPhotoBrowserVideo.open();
+    });
+

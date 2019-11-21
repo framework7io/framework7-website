@@ -5,20 +5,21 @@ block vars
   - var title = 'Button Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Button Vue Component
-    .docs-index
+    ul.docs-index
     p Button Vue component represents Framework7's <a href="../docs/button.html">Button</a> elements.
 
     h2 Button Components
     p There are following components included:
     ul
-      li <code><b>f7-button</b></code> - single button
-      li <code><b>f7-segmented</b></code> - segmented wrapper for buttons
+      li `f7-button` - single button
+      li `f7-segmented` - segmented wrapper for buttons
 
     h2 Button Properties
     p Button component has almost the same properties as the <a href="link.html">Link</a> component but with few additional button-specific properties:
@@ -36,12 +37,62 @@ block content
           td raised
           td boolean
           td false
-          td Makes segmented raised. Affects MD theme only
+          td Makes segmented raised
+        tr
+          td raised-ios
+          td boolean
+          td false
+          td Makes segmented raised only in iOS theme
+        tr
+          td raised-md
+          td boolean
+          td false
+          td Makes segmented raised only in MD theme
+        tr
+          td raised-aurora
+          td boolean
+          td false
+          td Makes segmented raised only in Aurora theme
         tr
           td round
           td boolean
           td false
           td Makes segmented round
+        tr
+          td round-ios
+          td boolean
+          td false
+          td Makes segmented round only in iOS theme
+        tr
+          td round-md
+          td boolean
+          td false
+          td Makes segmented round only in MD theme
+        tr
+          td round-aurora
+          td boolean
+          td false
+          td Makes segmented round only in Aurora theme
+        tr
+          td strong
+          td boolean
+          td false
+          td Makes strong segmented
+        tr
+          td strong-ios
+          td boolean
+          td false
+          td Makes strong segmented only in iOS theme
+        tr
+          td strong-md
+          td boolean
+          td false
+          td Makes strong segmented only in MD theme
+        tr
+          td strong-aurora
+          td boolean
+          td false
+          td Makes strong segmented only in Aurora theme
         tr
           td tag
           td string
@@ -49,6 +100,11 @@ block content
           td Tag used to render Segmented element
         tr
           th(colspan="4") &lt;f7-button&gt; properties
+        tr
+          td type
+          td string
+          td
+          td If it is one of `submit`, `button` or `reset` then it will be rendered as `<button>` element with same `type` attribute
         tr
           td tab-link
           td string<br>boolean
@@ -63,7 +119,7 @@ block content
           td active
           td boolean
           td false
-          td Makes this button active state when used in Segmented. Must be used instead of <code>tab-link-active</code>
+          td Makes this button active state when used in Segmented. Must be used instead of `tab-link-active`
         tr
           td text
           td string
@@ -74,6 +130,11 @@ block content
           td boolean
           td
           td Disables fast click
+        tr
+          td tooltip
+          td string
+          td
+          td Button <a href="../docs/tooltip.html">tooltip</a> text to show on button hover/press
         tr
           td round
           td boolean
@@ -90,20 +151,30 @@ block content
           td false
           td Makes button round for MD theme only
         tr
-          td big
+          td round-aurora
           td boolean
           td false
-          td Makes big button
+          td Makes button round for Aurora theme only
         tr
-          td big-ios
+          td large
           td boolean
           td false
-          td Makes big button for iOS theme only
+          td Makes large button
         tr
-          td big-md
+          td large-ios
           td boolean
           td false
-          td Makes big button for MD theme only
+          td Makes large button for iOS theme only
+        tr
+          td large-md
+          td boolean
+          td false
+          td Makes large button for MD theme only
+        tr
+          td large-aurora
+          td boolean
+          td false
+          td Makes large button for Aurora theme only
         tr
           td small
           td boolean
@@ -120,6 +191,11 @@ block content
           td false
           td Makes small button for MD theme only
         tr
+          td small-aurora
+          td boolean
+          td false
+          td Makes small button for Aurora theme only
+        tr
           td fill
           td boolean
           td false
@@ -135,15 +211,50 @@ block content
           td false
           td Makes button filled color for MD theme only
         tr
+          td fill-aurora
+          td boolean
+          td false
+          td Makes button filled color for Aurora theme only
+        tr
           td raised
           td boolean
           td false
-          td Makes button raised. Affects MD theme only
+          td Makes button raised
+        tr
+          td raised-ios
+          td boolean
+          td false
+          td Makes button raised only in iOS theme
+        tr
+          td raised-md
+          td boolean
+          td false
+          td Makes button raised only in MD theme
+        tr
+          td raised-aurora
+          td boolean
+          td false
+          td Makes button raised only in Aurora theme
         tr
           td outline
           td boolean
           td false
-          td Makes button outline. Affects MD theme only
+          td Makes button outline
+        tr
+          td outline-ios
+          td boolean
+          td false
+          td Makes button outline only in iOS theme
+        tr
+          td outline-md
+          td boolean
+          td false
+          td Makes button outline only in MD theme
+        tr
+          td outline-aurora
+          td boolean
+          td false
+          td Makes button outline only in Aurora theme
         tr
           th(colspan="4") &lt;f7-button&gt; icon related properties
         +vueLinkIconProps
@@ -167,118 +278,183 @@ block content
           td click
           td Event will be triggered after click on a button
 
-    h2 Examples
-    pre
-      code.html
-        :code
-          <f7-button>Button Text</f7-button>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/button.html") Examples
+      :code(lang="html")
+            <f7-block-title>Usual Buttons</f7-block-title>
+            <f7-block>
+              <f7-row>
+                <f7-col>
+                  <f7-button>Button</f7-button>
+                </f7-col>
+                <f7-col>
+                  <f7-button>Button</f7-button>
+                </f7-col>
+                <f7-col>
+                  <f7-button round>Round</f7-button>
+                </f7-col>
+              </f7-row>
+            </f7-block>
 
-          <!-- Renders to: -->
+            <f7-block-title>Fill Buttons</f7-block-title>
+            <f7-block>
+              <f7-row>
+                <f7-col>
+                  <f7-button fill>Button</f7-button>
+                </f7-col>
+                <f7-col>
+                  <f7-button fill>Button</f7-button>
+                </f7-col>
+                <f7-col>
+                  <f7-button fill round>Round</f7-button>
+                </f7-col>
+              </f7-row>
+            </f7-block>
 
-          <a href="#" class="button">Button Text</a>
+            <f7-block-title>Outline Buttons</f7-block-title>
+            <f7-block>
+              <f7-row>
+                <f7-col>
+                  <f7-button outline>Button</f7-button>
+                </f7-col>
+                <f7-col>
+                  <f7-button outline>Button</f7-button>
+                </f7-col>
+                <f7-col>
+                  <f7-button outline round>Round</f7-button>
+                </f7-col>
+              </f7-row>
+            </f7-block>
 
-    h4 Segmented Controller
-    pre
-      code.html
-        :code
-          <f7-segmented>
-            <f7-button>Button 1</f7-button>
-            <f7-button>Button 2</f7-button>
-            <f7-button>Button 3</f7-button>
-          </f7-segmented>
+            <f7-block-title>Raised Buttons</f7-block-title>
+            <f7-block>
+              <f7-row tag="p">
+                <f7-col tag="span">
+                  <f7-button raised>Button</f7-button>
+                </f7-col>
+                <f7-col tag="span">
+                  <f7-button raised fill>Fill</f7-button>
+                </f7-col>
+                <f7-col tag="span">
+                  <f7-button raised outline>Outline</f7-button>
+                </f7-col>
+              </f7-row>
+              <f7-row tag="p">
+                <f7-col tag="span">
+                  <f7-button raised round>Round</f7-button>
+                </f7-col>
+                <f7-col tag="span">
+                  <f7-button raised fill round>Fill</f7-button>
+                </f7-col>
+                <f7-col tag="span">
+                  <f7-button raised outline round>Outline</f7-button>
+                </f7-col>
+              </f7-row>
+            </f7-block>
 
-          <!-- Renders to: -->
+            <f7-block-title>Segmented</f7-block-title>
+            <f7-block>
+              <f7-segmented raised tag="p">
+                <f7-button>Button</f7-button>
+                <f7-button>Button</f7-button>
+                <f7-button active>Active</f7-button>
+              </f7-segmented>
+              <f7-segmented strong tag="p">
+                <f7-button>Button</f7-button>
+                <f7-button>Button</f7-button>
+                <f7-button active>Active</f7-button>
+              </f7-segmented>
+              <f7-segmented raised tag="p">
+                <f7-button outline>Outline</f7-button>
+                <f7-button outline>Outline</f7-button>
+                <f7-button outline active>Active</f7-button>
+              </f7-segmented>
+              <f7-segmented raised round tag="p">
+                <f7-button round>Button</f7-button>
+                <f7-button round>Button</f7-button>
+                <f7-button round active>Active</f7-button>
+              </f7-segmented>
+              <f7-segmented round round tag="p">
+                <f7-button round outline>Outline</f7-button>
+                <f7-button round outline>Outline</f7-button>
+                <f7-button round outline active>Active</f7-button>
+              </f7-segmented>
+            </f7-block>
 
-          <div class="segmented">
-            <a href="#" class="button">Button 1</a>
-            <a href="#" class="button">Button 2</a>
-            <a href="#" class="button">Button 3</a>
-          </div>
+            <f7-block-title>Large Buttons</f7-block-title>
+            <f7-block>
+              <f7-row tag="p">
+                <f7-col tag="span">
+                  <f7-button large>Button</f7-button>
+                </f7-col>
+                <f7-col tag="span">
+                  <f7-button large fill>Fill</f7-button>
+                </f7-col>
+              </f7-row>
+              <f7-row tag="p">
+                <f7-col tag="span">
+                  <f7-button large raised>Raised</f7-button>
+                </f7-col>
+                <f7-col tag="span">
+                  <f7-button large raised fill>Raised Fill</f7-button>
+                </f7-col>
+              </f7-row>
+            </f7-block>
 
-    h4 Tab Links
-    pre
-      code.html
-        :code
-          <!-- Tabs -->
-          <f7-tabs>
-            <f7-tab id="tab-1" tab-active>Tab 1</f7-tab>
-            <f7-tab id="tab-2">Tab 2</f7-tab>
-          </f7-tabs>
-          <!-- Switch Between Tabs -->
-          <f7-segmented>
-            <f7-button tab-link="#tab-1" tab-link-active>Button 1</f7-button>
-            <f7-button tab-link="#tab-2">Button 2</f7-button>
-          </f7-segmented>
+            <f7-block-title>Small Buttons</f7-block-title>
+            <f7-block>
+              <f7-row tag="p">
+                <f7-col tag="span">
+                  <f7-button large small>Button</f7-button>
+                </f7-col>
+                <f7-col tag="span">
+                  <f7-button large small outline>Outline</f7-button>
+                </f7-col>
+                <f7-col tag="span">
+                  <f7-button large small fill>Fill</f7-button>
+                </f7-col>
+              </f7-row>
+              <f7-row tag="p">
+                <f7-col tag="span">
+                  <f7-button large small round>Button</f7-button>
+                </f7-col>
+                <f7-col tag="span">
+                  <f7-button large small outline round>Outline</f7-button>
+                </f7-col>
+                <f7-col tag="span">
+                  <f7-button large small fill round>Fill</f7-button>
+                </f7-col>
+              </f7-row>
+            </f7-block>
 
-          <!-- Renders to: -->
+            <f7-block-title>Color Buttons</f7-block-title>
+            <f7-block>
+              <f7-row>
+                <f7-col>
+                  <f7-button color="red">Red</f7-button>
+                </f7-col>
+                <f7-col>
+                  <f7-button color="green">Green</f7-button>
+                </f7-col>
+                <f7-col>
+                  <f7-button color="blue">Blue</f7-button>
+                </f7-col>
+              </f7-row>
+            </f7-block>
 
-          <!-- Tabs -->
-          <div class="tabs">
-            <div class="tab tab-active" id="tab-1">Tab 1</div>
-            <div class="tab" id="tab-2">Tab 2</div>
-          </div>
-          <!-- Switch Between Tabs -->
-          <div class="segmented">
-            <a href="#" data-tab="#tab-1" class="button tab-link tab-link-active">Button 1</a>
-            <a href="#" data-tab="#tab-2" class="button tab-link">Button 2</a>
-          </div>
-
-    h4 Routable Tabs
-    pre
-      code.html
-        :code
-          <!-- Tabs -->
-          <f7-tabs routable>
-            <f7-tab id="tab-1"></f7-tab>
-            <f7-tab id="tab-2"></f7-tab>
-          </f7-tabs>
-
-          <f7-segmented>
-            <f7-button route-tab-id="#tab-1" tab-link href="/tabs/">Button 1</f7-button>
-            <f7-button route-tab-id="#tab-2" tab-link href="/tabs/tab-2/">Button 2</f7-button>
-          </f7-segmented>
-
-          <!-- Renders to: -->
-
-          <!-- Tabs -->
-          <div class="tabs tabs-routable">
-            <div class="tab" id="tab-1"></div>
-            <div class="tab" id="tab-2"></div>
-          </div>
-
-          <div class="segmented">
-            <a href="/tabs/" data-route-tab-id="#tab-1" class="button tab-link">Button 1</a>
-            <a href="/tabs/tab-2/" data-route-tab-id="#tab-2" class="button tab-link">Button 2</a>
-          </div>
-
-    h4 Colors
-    pre
-      code.html
-        :code
-          <f7-button color="red">Red Button</f7-button>
-          <f7-button color="green">Green Button</f7-button>
-
-          <f7-segmented color="orange">
-            <f7-button active>Button 1</f7-button>
-            <f7-button>Button 2</f7-button>
-            <f7-button>Button 3</f7-button>
-          </f7-segmented>
-
-          <!-- With custom Touch-Ripple color, affects Material theme only -->
-          <f7-button ripple-color="yellow">Yellow-ripple Button</f7-button>
-
-    h4 Round/Fill/Raised/Big
-    pre
-      code.html
-        :code
-          <f7-button big color="red">Big Red Button</f7-button>
-
-          <f7-button round color="green">Round Green Button</f7-button>
-          <f7-button big round>Big Round Button</f7-button>
-
-          <f7-button fill>Filled-Color Button</f7-button>
-
-          <f7-button raised>Raised Button</f7-button>
-          <f7-button big raised color="red">Big Red Raised Button</f7-button>
+            <f7-block-title>Color Fill Buttons</f7-block-title>
+            <f7-block>
+              <f7-row>
+                <f7-col>
+                  <f7-button fill color="red">Red</f7-button>
+                </f7-col>
+                <f7-col>
+                  <f7-button fill color="green">Green</f7-button>
+                </f7-col>
+                <f7-col>
+                  <f7-button fill color="blue">Blue</f7-button>
+                </f7-col>
+              </f7-row>
+            </f7-block>
 
 

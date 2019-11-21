@@ -1,45 +1,39 @@
 .internal-header {
-  height: 160px;
-  color: #fff;
   box-sizing: border-box;
   position: relative;
   z-index: 500;
+  padding-top: 15px;
+  padding-bottom: 20px;
 
   > .center {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     height: 100%;
-    &:before {
-      position: absolute;
-      content: '';
-      border-left: 180px solid transparent;
-      border-right: 500px solid transparent;
-      border-top: 160px solid @brightColor;
-      left: 150px;
-      bottom: 0;
-      transform-origin: left bottom;
-      z-index: -1;
-    }
   }
   .logo-holder {
-    width: 160px;
+    margin-top: -10px;
     margin-right: 30px;
+    margin-bottom: -10px;
+    width: 160px;
+    height: 140px;
+    flex-shrink: 0;
   }
   .logo {
-    width: 160px;
-    height: 160px;
+    background: #fff url('../i/logo.svg') no-repeat center;
+    background-size: contain;
+    display: block;
+    width: 140px;
+    height: 140px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 30px;
     border-radius: 50%;
     box-sizing: border-box;
-    box-shadow: 0px 10px 50px rgba(0,0,0,0.3);
+    box-shadow: 0px 10px 20px rgba(red(@redColor),green(@redColor),blue(@redColor), 0.4);
     transition: 600ms;
     transition-property: box-shadow, transform;
-    border: 4px solid #fff;
     &:hover {
-      box-shadow: 0px 30px 100px rgba(0,0,0,0.3);
+      box-shadow: 0px 30px 100px rgba(red(@redColor),green(@redColor),blue(@redColor), 0.4);
       transform: scale(1.05);
     }
   }
@@ -53,13 +47,24 @@
     font-weight: 400;
     line-height: 1;
     margin-bottom: 20px;
+    img {
+      width: 230px;
+      height: auto;
+    }
+    .version {
+      vertical-align: super;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline;
+    }
   }
   ul.nav {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
-    margin-left: -10px;
+    font-weight: 500;
+    font-size: 15px;
     li {
       margin: 0;
       position: relative;
@@ -71,7 +76,9 @@
       transform: translateX(-50%) translateY(0px);
     }
     ul {
+      font-size: 14px;
       opacity: 0;
+      font-weight: normal;
       pointer-events: none;
       visibility: hidden;
       position: absolute;
@@ -90,12 +97,12 @@
       top: 100%;
       margin-top: 10px;
       &:before {
-        content: '';
-        height: 10px;
+        position: absolute;
         bottom: 100%;
         width: 100%;
-        position: absolute;
+        height: 10px;
         left: 0;
+        content: '';
       }
       &:after {
         content: '';
@@ -109,29 +116,35 @@
         border-bottom: 10px solid #fff;
         position: absolute;
       }
+      li.divider {
+        height: 1px;
+        background: rgba(0,0,0,0.1);
+        margin-left: -20px;
+        margin-right: -20px;
+      }
       li + li {
         margin-top: 6px;
       }
       a {
-        color: #555;
+        color: #000;
         text-decoration: none;
         &:hover {
-          color: @primaryColor;
+          color: @redColor;
         }
       }
+
     }
     > li + li {
-      margin-left: 5px;
+      margin-left: 15px;
     }
     > li > a {
       color: inherit;
       text-decoration: none;
-      padding: 0 10px;
       display: block;
-      border-radius: 10px;
     }
-    > li:hover > a, > li.active > a {
-      background: rgba(0,0,0,0.1);
+    > li:hover > a,
+    > li.active > a {
+      color: @redColor;
     }
   }
   .carbon {
@@ -142,30 +155,28 @@
     left: 0;
     bottom: 0;
     flex-shrink: 0;
+    border: none;
+    background: rgba(0,0,0,0.1);
+    a {
+      color: #000;
+    }
   }
   .patreon-github {
     display: flex;
     margin-top: 20px;
-    margin-bottom: -10px;
-    .patreon-button {
-      margin-left: -10px;
-      &:not(:hover) {
-        background: none;
-      }
-    }
-    .github-buttons {
-      margin-left: 20px;
-      line-height: 22px;
-      a span {
-        font-size: 12px;
-      }
+  }
+  .github-buttons {
+    margin-left: 20px;
+    line-height: 22px;
+    a span {
+      font-size: 12px;
     }
   }
-
 }
 
 .bsa-cpc {
-  background: darken(@primaryColor, 5%);
+  border-top: 1px solid rgba(0,0,0,0.1);
+  background: @redColor;
   height: 30px;
   position: relative;
   z-index: 100;
@@ -221,7 +232,7 @@
     padding: 3px 6px;
     border-radius: 2px;
     background-color: #fff;
-    color: @primaryColor;
+    color: @redColor;
     content: "Sponsor";
     text-transform: uppercase;
     font-size: 10px;
@@ -233,14 +244,6 @@
 
 @media (max-width: 960px) {
   .internal-header {
-    height: auto;
-    > .center {
-      padding-top: 20px;
-      padding-bottom: 20px;
-      &:before {
-        left: 50px;
-      }
-    }
     .header-content {
       max-width: 100%;
       min-width: 0;
@@ -248,6 +251,7 @@
     }
     .logo-holder {
       width: 120px;
+      height: 120px;
     }
     .logo {
       width: 120px;
@@ -273,19 +277,16 @@
 }
 @media (max-width: 900px) {
   .internal-header {
-    > .center {
-      padding-top: 10px;
-      padding-bottom: 10px;
-      &:before {
-        left: 50px;
-      }
+    .header-content {
+      width: 100%;
+      margin-right: 0;
     }
     .patreon-github {
       display: block;
-      .github-buttons {
-        margin-left: 0;
-        margin-top: 5px;
-      }
+    }
+    .github-buttons {
+      margin-left: 0;
+      margin-top: 10px;
     }
   }
   .bsa-cpc {
@@ -297,6 +298,125 @@
     }
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 850px) {
+  .internal-header {
+    padding-top: 30px;
+    padding-bottom: 20px;
+    .logo-holder {
+      margin-right: 20px;
+    }
+    .github-buttons {
+      margin-top: 10px;
+    }
+    .logo, .logo-holder {
+      width: 100px;
+      height: 100px;
+    }
+    ul.nav {
+      font-size: 14px;
+    }
+  }
+}
+@media (max-width: 800px) {
+  .internal-header {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    .logo-holder {
+      margin-right: 15px;
+    }
+    .logo-holder {
+      width: 40px;
+      height: 40px;
+    }
+    .logo {
+      border-width: 2px;
+      width: 55px;
+      height: 55px;
+      margin-left: -10px;
+      margin-top: 0;
+      box-shadow: 0px 5px 10px rgba(red(@redColor),green(@redColor),blue(@redColor), 0.4);
+    }
+    .title img {
+      width: calc(100% - 50px);
+      max-width: 230px;
+    }
+  }
+}
+@media (max-width: 700px) and (min-width: 601px) {
+  .internal-header {
+    ul.nav {
+      flex-wrap: wrap;
+      li + li {
+        margin-left: 0;
+      }
+      li {
+        margin-right: 5px;
+      }
+    }
+  }
+}
+@media (max-width: 600px) {
+  .internal-header {
+    .center {
+      flex-direction: column;
+    }
+    .logo-holder {
+      margin: 0;
+      margin-bottom: -40px;
+      z-index: 100;
+    }
+    .carbon {
+      margin: 0;
+      max-width: 100%;
+      margin-top: 20px;
+      box-sizing: border-box;
+      min-height: 119px;
+    }
+    .title {
+      margin-left: 55px;
+      margin-top: 5px;
+    }
+    ul.nav {
+      margin-left: 0;
+      margin-top: 30px;
+      margin-bottom: 20px;
+      >li:hover>a {
+        background: none;
+        opacity: 0.7;
+      }
+      >li>a {
+        padding: 0;
 
+      }
+      >li + li {
+        margin-left: 15px;
+      }
+      >li:first-child ul {
+        left: 0;
+        margin-left: 0;
+        transform: translateX(0%) translateY(10px);
+        &:after {
+          left: 20px;
+        }
+      }
+      >li:first-child:hover ul {
+        transform: translateX(0%) translateY(0px);
+      }
+    }
+    .patreon-button:hover {
+      background: none;
+      opacity: 0.7;
+    }
+    .patreon-button .patreon-text {
+      font-weight: 500;
+      font-size: 13px;
+    }
+    .github-buttons {
+      display: none;
+    }
+  }
+  .bsa-cpc {
+    min-height: 30px;
+    height: auto;
+  }
 }

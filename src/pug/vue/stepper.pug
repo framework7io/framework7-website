@@ -5,17 +5,19 @@ block vars
   - var title = 'Stepper Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
+
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Stepper Vue Component
-    .docs-index
+    ul.docs-index
     p Stepper Vue component represents <a href="../docs/stepper.html">Stepper</a> component.
     h2 Stepper Components
     p There are following components included:
     ul
-      li <code><b>f7-stepper</b></code>
+      li `f7-stepper`
     h2 Stepper Properties
     table.params-table
       thead
@@ -63,7 +65,7 @@ block content
           td false
           td When enabled it will repeatedly increase/decrease values while you tap and hold plus/minus buttons
         tr
-          td autorepeatDynamic
+          td autorepeat-dynamic
           td boolean
           td false
           td When enabled it will increase autorepeat ratio based on how long you hold the button
@@ -71,22 +73,42 @@ block content
           td input
           td boolean
           td true
-          td Defines should it render <code>&lt;input&gt;</code> element or not
+          td Defines should it render `<input>` element or not
         tr
-          td inputReadonly
+          td input-readonly
           td boolean
-          td true
-          td Makes inner input element <code>readonly</code>
+          td false
+          td Makes inner input element `readonly`
         tr
-          td buttonsOnly
+          td name
+          td string
+          td
+          td Input element "name" attribute
+        tr
+          td buttons-only
           td boolean
           td false
           td Disables inner value container between stepper buttons
         tr
-          td formatValue
+          td format-value
           td function(value)
           td
           td Custom function to format value for value element between buttons. It must return new formatted value
+        tr
+          td manual-input-mode
+          td boolean
+          td false
+          td Enables manual input mode. This mode allows to type value from keyboar and check fractional part with defined accurancy. Also, `step` parameter is ignored when typing in this mode.
+        tr
+          td decimal-point
+          td number
+          td 4
+          td Number of digits after dot, when in manual input mode.
+        tr
+          td buttons-end-input-mode
+          td boolean
+          td true
+          td Disables manual input mode on Stepper's minus or plus button click.
         tr
           td disabled
           td boolean
@@ -108,20 +130,20 @@ block content
           td false
           td Makes stepper round for MD theme only
         tr
-          td big
+          td large
           td boolean
           td false
-          td Makes big stepper
+          td Makes large stepper
         tr
-          td big-ios
+          td large-ios
           td boolean
           td false
-          td Makes big stepper for iOS theme only
+          td Makes large stepper for iOS theme only
         tr
-          td big-md
+          td large-md
           td boolean
           td false
-          td Makes big stepper for MD theme only
+          td Makes large stepper for MD theme only
         tr
           td small
           td boolean
@@ -156,7 +178,17 @@ block content
           td raised
           td boolean
           td false
-          td Makes stepper raised. Affects MD theme only
+          td Makes stepper raised.
+        tr
+          td raised-ios
+          td boolean
+          td false
+          td Makes stepper raised for iOS theme.
+        tr
+          td raised-md
+          td boolean
+          td false
+          td Makes stepper raised for MD theme.
     h2 Stepper Events
     table.events-table
       thead
@@ -177,7 +209,7 @@ block content
           td Event will be triggered on "plus" button click
         tr
           td input
-          td Event will be triggered on input's <code>input</code> event
+          td Event will be triggered on input's `input` event
     h2 Stepper Methods
     table.methods-table
       thead
@@ -199,38 +231,309 @@ block content
         tr
           td .getValue()
           td Returns stepper value
-    h2 Examples
-    pre
-      code.html
-        :code
-          <!-- Default -->
-          <f7-stepper></f7-stepper>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/stepper.html") Examples
+      :code
+            <template>
+              <f7-page>
+                <f7-navbar title="Stepper"></f7-navbar>
+                <f7-block-title>Shape and size</f7-block-title>
+                <f7-block strong class="text-align-center">
+                  <f7-row>
+                    <f7-col>
+                      <small class="display-block">Default</small>
+                      <f7-stepper></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Round</small>
+                      <f7-stepper round></f7-stepper>
+                    </f7-col>
+                  </f7-row>
 
-          <!-- Small and round -->
-          <f7-stepper small round></f7-stepper>
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <small class="display-block">Fill</small>
+                      <f7-stepper fill></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Round Fill</small>
+                      <f7-stepper fill round></f7-stepper>
+                    </f7-col>
+                  </f7-row>
 
-          <!-- Min, max, step -->
-          <f7-stepper
-            :min="0"
-            :max="1000"
-            :step="100"
-            :value="500"
-          ></f7-stepper>
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <small class="display-block">Small</small>
+                      <f7-stepper small></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Small Round</small>
+                      <f7-stepper small round></f7-stepper>
+                    </f7-col>
+                  </f7-row>
 
-          <!-- With buttons only -->
-          <f7-stepper
-            :min="0"
-            :max="1000"
-            :step="100"
-            :value="500"
-            :buttons-only="true"
-          ></f7-stepper>
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <small class="display-block">Small Fill</small>
+                      <f7-stepper small fill></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Small Round Fill</small>
+                      <f7-stepper small round fill></f7-stepper>
+                    </f7-col>
+                  </f7-row>
 
-          <!-- Event -->
-          <f7-stepper
-            :min="10"
-            :max="20"
-            :step="0.5"
-            :value="15"
-            @stepper:change="(value) => { someVar = value }"
-          ></f7-stepper>
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <small class="display-block">Large</small>
+                      <f7-stepper large></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Large Round</small>
+                      <f7-stepper large round></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <small class="display-block">Large Fill</small>
+                      <f7-stepper large fill></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Large Round Fill</small>
+                      <f7-stepper large round fill></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+                </f7-block>
+
+                <f7-block-title>Raised</f7-block-title>
+                <f7-block strong class="text-align-center">
+                  <f7-row>
+                    <f7-col>
+                      <small class="display-block">Default</small>
+                      <f7-stepper raised></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Round</small>
+                      <f7-stepper raised round></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <small class="display-block">Fill</small>
+                      <f7-stepper raised fill></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Round Fill</small>
+                      <f7-stepper raised fill round></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <small class="display-block">Small</small>
+                      <f7-stepper raised small></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Small Round</small>
+                      <f7-stepper raised small round></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <small class="display-block">Small Fill</small>
+                      <f7-stepper raised small fill></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Small Round Fill</small>
+                      <f7-stepper raised small round fill></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <small class="display-block">Large</small>
+                      <f7-stepper raised large></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Large Round</small>
+                      <f7-stepper raised large round></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <small class="display-block">Large Fill</small>
+                      <f7-stepper raised large fill></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Large Round Fill</small>
+                      <f7-stepper raised large round fill></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+                </f7-block>
+                <f7-block-title>Colors</f7-block-title>
+                <f7-block strong class="text-align-center">
+                  <f7-row>
+                    <f7-col>
+                      <f7-stepper fill color="red"></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <f7-stepper fill round color="green"></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <f7-stepper fill color="blue"></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <f7-stepper fill round color="pink"></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <f7-stepper fill small color="yellow"></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <f7-stepper fill small round color="orange"></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+
+                  <f7-row class="margin-top">
+                    <f7-col>
+                      <f7-stepper fill small color="gray"></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <f7-stepper fill small round color="black"></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+                </f7-block>
+                <f7-block-title>Without input element</f7-block-title>
+                <f7-block strong class="text-align-center">
+                  <f7-row>
+                    <f7-col>
+                      <f7-stepper :input="false"></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <f7-stepper :input="false" round></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+                </f7-block>
+                <f7-block-title>Min, max, step</f7-block-title>
+                <f7-block strong class="text-align-center">
+                  <f7-row>
+                    <f7-col>
+                      <f7-stepper :value="100" :min="0" :max="1000" :step="100"></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <f7-stepper :input="false" :value="5" :min="0" :max="10" :step="0.5"></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+                </f7-block>
+
+                <f7-block-title>Autorepeat (Tap & hold)</f7-block-title>
+                <f7-block-header>Pressing and holding one of its buttons increments or decrements the stepper’s value repeatedly. With dynamic autorepeat, the rate of change depends on how long the user continues pressing the control.</f7-block-header>
+                <f7-block strong class="text-align-center">
+                  <f7-row>
+                    <f7-col>
+                      <small class="display-block">Default</small>
+                      <f7-stepper :value="0" :min="0" :max="100" :step="1" :autorepeat="true"></f7-stepper>
+                    </f7-col>
+                    <f7-col>
+                      <small class="display-block">Dynamic</small>
+                      <f7-stepper :value="0" :min="0" :max="100" :step="1" :autorepeat="true" :autorepeat-dynamic="true"></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+                </f7-block>
+
+                <f7-block-title>Wraps</f7-block-title>
+                <f7-block-header>In wraps mode incrementing beyond maximum value sets value to minimum value, likewise, decrementing below minimum value sets value to maximum value</f7-block-header>
+                <f7-block strong class="text-align-center">
+                  <f7-row>
+                    <f7-col>
+                      <f7-stepper :value="0" :min="0" :max="10" :step="1" :autorepeat="true" :wraps="true"></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+                </f7-block>
+
+                <f7-block-title>Custom value element</f7-block-title>
+                <f7-list>
+                  <f7-list-item :title="`Apples ${applesCount}`">
+                    <f7-stepper :buttons-only="true" small raised slot="after" @stepper:change="setApples"></f7-stepper>
+                  </f7-list-item>
+                  <f7-list-item :title="`Oranges ${orangesCount}`">
+                    <f7-stepper :buttons-only="true" small raised slot="after" @stepper:change="setOranges"></f7-stepper>
+                  </f7-list-item>
+                </f7-list>
+
+                <f7-block-title>Custom value format</f7-block-title>
+                <f7-list>
+                  <f7-list-item header="Meeting starts in" :title="meetingTimeComputed">
+                    <f7-stepper
+                      :min="15"
+                      :max="240"
+                      :step="15"
+                      :value="meetingTime"
+                      :buttons-only="true"
+                      small
+                      slot="after"
+                      @stepper:change="setMeetingTime"
+                    ></f7-stepper>
+                  </f7-list-item>
+                </f7-list>
+
+                <f7-block-title>Manual input</f7-block-title>
+                <f7-block-header>It is possible to enter value manually from keyboard or mobile keypad. When click on input field, stepper enter into manual input mode, which allow type value from keyboar and check fractional part with defined accurancy. Click outside or enter Return key, ending manual mode.</f7-block-header>
+                <f7-block strong class="text-align-center">
+                  <f7-row>
+                    <f7-col>
+                      <f7-stepper fill :value="0" :min="0" :max="1000" :step="1" :autorepeat="true" :wraps="true" :manual-input-mode="true" :decimal-point="2"></f7-stepper>
+                    </f7-col>
+                  </f7-row>
+                </f7-block>
+              </f7-page>
+            </template>
+
+            <script>
+              export default {
+                data() {
+                  return {
+                    applesCount: 0,
+                    orangesCount: 0,
+                    meetingTime: 15,
+                  };
+                },
+                computed: {
+                  meetingTimeComputed() {
+                    const self = this;
+                    const value = self.meetingTime;
+
+                    const hours = Math.floor(value / 60);
+                    const minutes = value - (hours * 60);
+                    const formatted = [];
+                    if (hours > 0) {
+                      formatted.push(hours + ' ' + (hours > 1 ? 'hours' : 'hour'));
+                    }
+                    if (minutes > 0) {
+                      formatted.push(minutes + ' minutes');
+                    }
+                    return formatted.join(' ');
+                  },
+                },
+                methods: {
+                  setApples(value) {
+                    this.applesCount = value;
+                  },
+                  setOranges(value) {
+                    this.orangesCount = value;
+                  },
+                  setMeetingTime(value) {
+                    this.meetingTime = value;
+                  },
+                },
+              };
+            </script>

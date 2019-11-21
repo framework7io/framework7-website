@@ -1,0 +1,208 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Panel React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Panel React Component
+    ul.docs-index
+    p Panel React component represents <a href="../docs/panel.html">Side Panels</a> component.
+    h2 Panel Components
+    p There are following components included:
+    ul
+      li `Panel` / `F7Panel` - Panel element
+    h2 Panel Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td side
+          td string
+          td
+          td Panel side. Could be `left` or `right`
+        tr
+          td left
+          td boolean
+          td
+          td Shortcut prop for `side="left"`
+        tr
+          td right
+          td boolean
+          td
+          td Shortcut prop for `side="right"`
+        tr
+          td effect
+          td string
+          td
+          td Panel effect. Could be `cover` or `reveal`
+        tr
+          td cover
+          td boolean
+          td
+          td Shortcut prop for `effect="cover"`
+        tr
+          td reveal
+          td boolean
+          td
+          td Shortcut prop for `effect="reveal"`
+        tr
+          td visibleBreakpoint
+          td number
+          td
+          td Minimal app width (in px) when left panel becomes always visible
+        tr
+          td collapsedBreakpoint
+          td number
+          td
+          td Minimal app width (in px) when left panel becomes partially visible (collapsed)
+        tr
+          td swipe
+          td boolean
+          td false
+          td Enable if you want to enable ability to open/close panel with swipe
+        tr
+          td swipeActiveArea
+          td number
+          td 0
+          td Width (in px) of invisible edge from the screen that triggers panel swipe
+        tr
+          td swipeOnlyClose
+          td boolean
+          td false
+          td This parameter allows to close (but not open) panel with swipes. (`swipe` should be also enabled)
+        tr
+          td swipeThreshold
+          td number
+          td 0
+          td Panel will not move with swipe if "touch distance" will be less than this value (in px).
+        tr
+          td backdrop
+          td boolean
+          td true
+          td Enables Panel backdrop (dark semi transparent layer behind)
+        tr
+          td backdropEl
+          td HTMLElement<br>string
+          td
+          td HTML element or string CSS selector of custom backdrop element
+        tr
+          td closeByBackdropClick
+          td boolean
+          td true
+          td Enable/disable ability to close panel by clicking outside of panel
+        tr
+          td resizable
+          td boolean
+          td false
+          td Enables/disables resizable panel
+        tr
+          td opened
+          td boolean
+          td
+          td Allows to open/close panel and set its initial state
+    h2 Panel Methods
+    table.methods-table
+      tr
+        td .open(<span>animate</span>)
+        td Open panel
+      tr
+        td .close(<span>animate</span>)
+        td Close panel
+    h2 Panel Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          td panelOpen
+          td Event will be triggered when Panel starts its opening animation
+        tr
+          td panelOpened
+          td Event will be triggered after Panel completes its opening animation
+        tr
+          td panelClose
+          td Event will be triggered when Panel starts its closing animation
+        tr
+          td panelClosed
+          td Event will be triggered after Panel completes its closing animation
+        tr
+          td panelBackdropClick
+          td Event will be triggered when the panel backdrop is clicked
+        tr
+          td panelSwipe
+          td Event will be triggered for swipe panels during touch swipe action
+        tr
+          td panelSwipeOpen
+          td Event will be triggered in the very beginning of opening it with swipe
+        tr
+          td panelCollapsedBreakpoint
+          td Event will be triggered when it becomes visible/hidden when app width matches its `collapsedBreakpoint`
+        tr
+          td panelBreakpoint
+          td Event will be triggered when it becomes visible/hidden when app width matches its `visibleBreakpoint`
+    h2 Open And Close Panel
+    p You can control panel state, open and closing it:
+    ul
+      li using <a href="../docs/panel.html">Panel API</a>
+      li by passing `true` or `false` to its `opened` prop
+      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant `panelOpen` property (to open it) and `panelClose` property to close it
+    h2 Access To Panel Instance
+    p You can access Panel initialized instance by accessing `.f7Panel` component's property.
+    .with-device
+      h2(data-device-preview="../docs-demos/react/panel.html") Examples
+      :code(lang="css")
+        /* Limit resizable panel width */
+        .panel {
+          min-width: 100px;
+          max-width: 90vw;
+        }
+      :code(lang="jsx")
+        <App>
+          {/* Left resizable Panel with Reveal effect */}
+          <Panel left reveal resizable>
+            <View>
+              <Page>
+                <Block>Left panel content</Block>
+              </Page>
+            </View>
+          </Panel>
+
+          {/* Right resizable Panel with Cover effect and dark layout theme */}
+          <Panel right resizable themeDark>
+            <View>
+              <Page>
+                <Block>Right panel content</Block>
+              </Page>
+            </View>
+          </Panel>
+
+          {/* Main view */}
+          <View main>
+            <Page>
+              <Navbar title="Panel"></Navbar>
+
+              <Block className="row">
+                <Col>
+                  <Button raised panelOpen="left">Open left panel</Button>
+                </Col>
+                <Col>
+                  <Button raised panelOpen="right">Open right panel</Button>
+                </Col>
+              </Block>
+            </Page>
+          </View>
+        </App>

@@ -2,28 +2,30 @@
   title: Keypad
   url: https://github.com/framework7io/framework7-plugin-keypad
   previewUrl: https://framework7io.github.io/framework7-plugin-keypad/
-  iconUrl: '#{cdn}/i/plugins/keypad.svg'
+  iconUrl: '/i/plugins/keypad.svg'
   description: Keypad plugin extends Framework7 with additional custom keyboards
   badges:
-  - v2
+  - v5
 
 -
   title: Feeds
   url: https://github.com/framework7io/framework7-plugin-feeds
   previewUrl: https://framework7io.github.io/framework7-plugin-feeds/
-  iconUrl: '#{cdn}/i/plugins/feeds.svg'
+  iconUrl: '/i/plugins/feeds.svg'
   description: Brings easy RSS feeds integration into Framework7 app
   badges:
   - v2
+  - v3
 
 -
   title: 3D Panels
   url: https://github.com/framework7io/framework7-plugin-3d-panels
   previewUrl: https://framework7io.github.io/framework7-plugin-3d-panels/
-  iconUrl: '#{cdn}/i/plugins/3d-panels.svg'
+  iconUrl: '/i/plugins/3d-panels.svg'
   description: 3D Panels plugin converts "reveal"-effect panels to great looking 3D panels
   badges:
   - v2
+  - v3
 
 -
   title: Up scroller
@@ -36,6 +38,7 @@
   description: Plugin shows a small blue button at the top of the screen once the user has started scrolling down a bit
   badges:
   - v2
+  - v3
 
 -
   title: Welcome Screen / Intro Tutorial
@@ -48,7 +51,22 @@
   description: Plugin will display a fullscreen swipeable modal window to guide the user through a welcome screen / tutorial
   badges:
   - v2
+  - v3
 
+-
+  title: Framework7 Redux
+  author:
+    url: http://github.com/bencompton/
+    name: Ben Compton
+  url: https://github.com/bencompton/framework7-redux/
+  previewUrl: https://github.com/bencompton/framework7-redux/
+  icon:
+    text: Framework7 Redux
+    bgColor: '#fff'
+    textColor: '#000'
+  description: Redux bindings to keep your Redux store in sync with Framework7
+  badges:
+  - v3
 -
   title: Tour Guide
   icon:

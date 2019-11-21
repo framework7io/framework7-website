@@ -5,13 +5,14 @@ block vars
   - var title = 'Smart Select Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Smart Select Vue Component
-    .docs-index
+    ul.docs-index
     p Smart Select allows you to easily convert your usual form selects to dynamic pages with grouped radio inputs. You can see such feature in many native apps.
     p It is not a separate Vue component, but just a particular case of using <a href="list-view.html">&lt;f7-list&gt;</a> and <a href="list-item.html">&lt;f7-list-item&gt;</a> components with Framework7's <a href="../docs/smart-select.html">Smart Select</a> component.
 
@@ -38,58 +39,66 @@ block content
           td Object with <a href="../docs/smart-select.html#smart-select-parameters">Smart Select Parameters</a>
 
     h2 Access To Smart Select Instance
-    p You can access Smart Select initialized instance by accessing <code><b>.f7SmartSelect</b></code> property of <code>&lt;f7-list-item&gt;</code> component.
+    p You can access Smart Select initialized instance by accessing `.f7SmartSelect` property of `<f7-list-item>` component.
 
-    h2 Examples
-    pre
-      code.html
-        :code
-          <f7-list form>
-            <!-- Enables Smart Select behavior by adding "smart-select" prop -->
-            <f7-list-item smart-select title="Fruit">
-              <!-- Select with values inside -->
-              <select name="fruits">
-                <option value="apple" selected>Apple</option>
-                <option value="pineapple">Pineapple</option>
-                <option value="pear">Pear</option>
-                <option value="orange">Orange</option>
-                <option value="melon">Melon</option>
-                <option value="peach">Peach</option>
-                <option value="banana">Banana</option>
-              </select>
-            </f7-list-item>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/smart-select.html") Examples
+      :code
+            <f7-list>
 
-            <!-- Multiple Smart Select With Searchbar -->
-            <f7-list-item smart-select :smart-select-params={ searchbar: true } title="Car">
-              <select name="car" multiple="multiple">
-                <optgroup label="Japanese">
-                  <option value="honda" selected>Honda</option>
-                  <option value="lexus">Lexus</option>
-                  <option value="mazda">Mazda</option>
-                  <option value="nissan">Nissan</option>
-                  <option value="toyota">Toyota</option>
-                </optgroup>
-                <optgroup label="German">
-                  <option value="audi" selected>Audi</option>
-                  <option value="bmw">BMW</option>
-                  <option value="mercedes">Mercedes</option>
-                  <option value="vw">Volkswagen</option>
-                  <option value="volvo">Volvo</option>
-                </optgroup>
-                <optgroup label="American">
-                  <option value="cadillac">Cadillac</option>
-                  <option value="chrysler">Chrysler</option>
-                  <option value="dodge">Dodge</option>
-                  <option value="ford" selected>Ford</option>
-                </optgroup>
-              </select>
-            </f7-list-item>
+              <f7-list-item title="Fruit" smart-select>
+                <select name="fruits">
+                  <option value="apple" selected>Apple</option>
+                  <option value="pineapple">Pineapple</option>
+                  <option value="pear">Pear</option>
+                  <option value="orange">Orange</option>
+                  <option value="melon">Melon</option>
+                  <option value="peach">Peach</option>
+                  <option value="banana">Banana</option>
+                </select>
+              </f7-list-item>
 
-            <!-- With back on select -->
-            <f7-list-item smart-select :smart-select-params="{ closeOnSelect: true }" title="Mac or Windows">
-              <select name="mac-windows">
-                <option value="mac">Mac</option>
-                <option value="windows">Windows</option>
-              </select>
-            </f7-list-item>
-          </f7-list>
+              <f7-list-item title="Car" smart-select :smart-select-params="{openIn: 'popup', searchbar: true, searchbarPlaceholder: 'Search car'}">
+                <select name="car" multiple>
+                  <optgroup label="Japanese">
+                    <option value="honda" selected>Honda</option>
+                    <option value="lexus">Lexus</option>
+                    <option value="mazda">Mazda</option>
+                    <option value="nissan">Nissan</option>
+                    <option value="toyota">Toyota</option>
+                  </optgroup>
+                  <optgroup label="German">
+                    <option value="audi" selected>Audi</option>
+                    <option value="bmw">BMW</option>
+                    <option value="mercedes">Mercedes</option>
+                    <option value="vw">Volkswagen</option>
+                    <option value="volvo">Volvo</option>
+                  </optgroup>
+                  <optgroup label="American">
+                    <option value="cadillac">Cadillac</option>
+                    <option value="chrysler">Chrysler</option>
+                    <option value="dodge">Dodge</option>
+                    <option value="ford" selected>Ford</option>
+                  </optgroup>
+                </select>
+              </f7-list-item>
+
+              <f7-list-item title="Mac or Windows" smart-select :smart-select-params="{openIn: 'sheet'}">
+                <select name="mac-windows">
+                  <option value="mac" selected>Mac</option>
+                  <option value="windows">Windows</option>
+                </select>
+              </f7-list-item>
+              <f7-list-item title="Super Hero" smart-select :smart-select-params="{openIn: 'popover'}">
+                <select name="superhero" multiple>
+                  <option value="Batman" selected>Batman</option>
+                  <option value="Superman">Superman</option>
+                  <option value="Hulk">Hulk</option>
+                  <option value="Spiderman">Spiderman</option>
+                  <option value="Ironman">Ironman</option>
+                  <option value="Thor">Thor</option>
+                  <option value="Wonder Woman">Wonder Woman</option>
+                </select>
+              </f7-list-item>
+
+            </f7-list>

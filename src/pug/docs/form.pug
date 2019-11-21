@@ -11,9 +11,9 @@ block content
   .docs-content
     +improveDocsLink
     h1 Form
-    .docs-index
+    ul.docs-index
     .with-device
-      h2(data-device-preview="../docs-demos/form-data.html") Form Data
+      h2(data-device-preview="../docs-demos/core/form-data.html") Form Data
       p Framework7 comes with some very useful methods, this makes working with forms as simple as possible:
       h3 Form Data App Methods
       p Using the following app methods we can easily convert all form fields values to data object and fill the form from data object:
@@ -40,7 +40,7 @@ block content
       .important-note
         ul
           li
-            p Note that each input should have <code>name</code> attribute, otherwise its value will not be presented in data object
+            p Note that each input should have `name` attribute, otherwise its value will not be presented in data object
           li
             p Checkboxes and "multiple" selects will be presented as Arrays
       h3 Form Data Events
@@ -56,11 +56,11 @@ block content
           tr
             td form:todata
             td Form Element<span>&lt;form&gt;</span>
-            td Event will be triggered on form when calling <code>app.form.convertToData</code>
+            td Event will be triggered on form when calling `app.form.convertToData`
           tr
             td form:fromdata
             td Form Element<span>&lt;form&gt;</span>
-            td Event will be triggered on form when calling <code>app.form.fillFromData</code>
+            td Event will be triggered on form when calling `app.form.fillFromData`
       h4 App Events
       p Form Data api emit events on app instance as well:
       table.events-table
@@ -77,18 +77,16 @@ block content
             td app
             td
               span (form, data)
-            td Event will be triggered on <code>app.form.convertToData</code> call
+            td Event will be triggered on `app.form.convertToData` call
           tr
             td formFromData
             td app
             td
               span (form, data)
-            td Event will be triggered on <code>app.form.fillFromData</code> call
+            td Event will be triggered on `app.form.fillFromData` call
 
       h3 Form Data Example
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <form class="list" id="my-form">
               <ul>
                 <li>
@@ -142,9 +140,7 @@ block content
               <div class="col"><a class="button convert-form-to-data" href="#">Get Data</a></div>
               <div class="col"><a class="button fill-form-from-data" href="#">Fill Form</a></div>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;
@@ -164,20 +160,21 @@ block content
               app.form.fillFromData('#my-form', formData);
             });
 
-      h2(data-device-preview="../docs-demos/form-storage.html") Form Storage
+      h2(data-device-preview="../docs-demos/core/form-storage.html") Form Storage
       p With form storage it is easy to store and parse forms data automatically, especially on Ajax loaded pages. And the most interesting part is that when you load this page again Framework7 will parse this data and fill up all form fields automatically!
       p To enable form storage for specific form, all you need is:
       ul
-        li add <code>form-store-data</code> class to form
-        li add <code>id</code> attribute to form. It will not work if form doesn't have <code>id</code> attribute
-        li make sure that all you inputs have <code>name</code> attributes, otherwise they will be ignored
-      p After form storage is enabled with <code>form-store-data</code> class, then form data will be saved to <code>localStorage</code> on every form input change.
+        li add `form-store-data` class to form
+        li add `id` attribute to form. It will not work if form doesn't have `id` attribute
+        li make sure that all you inputs have `name` attributes, otherwise they will be ignored
+      p After form storage is enabled with `form-store-data` class, then form data will be saved to `localStorage` on every form input change.
+      p To ignore inputs for storage you can add `no-store-data` or `ignore-store-data` class to required input elements.
       p Otherwise you can use the following app methods to store/get/remove stored form data:
       h3 Form Storage App Methods
       .method-wrap
         p
           span.method app.form.getFormData(<span>formId</span>)
-          | - get form data for the form with specified <code>id</code> attribute
+          | - get form data for the form with specified `id` attribute
         ul.method-parameters
         li
           span.parameter formId
@@ -186,7 +183,7 @@ block content
       .method-wrap
         p
           span.method app.form.storeFormData(<span>formId</span>, <span>data</span>)
-          | - store form data for the form with specified <code>id</code> attribute
+          | - store form data for the form with specified `id` attribute
         ul.method-parameters
         li
           span.parameter formId
@@ -197,7 +194,7 @@ block content
       .method-wrap
         p
           span.method app.form.removeFormData(<span>formId</span>)
-          | - remove form data for the form with specified <code>id</code> attribute
+          | - remove form data for the form with specified `id` attribute
         ul.method-parameters
         li
           span.parameter formId
@@ -215,7 +212,7 @@ block content
           tr
             td form:storedata
             td Form Element<span>&lt;form&gt;</span>
-            td Event will be triggered right after for data saved
+            td Event will be triggered right after form data saved
       h4 App Events
       p Form Storage api emit events on app instance as well:
       table.events-table
@@ -231,11 +228,9 @@ block content
             td app
             td
               span (form, data)
-            td Event will be triggered right after for data saved
+            td Event will be triggered right after form data saved
       h3 Form Storage Example
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <form class="list form-store-data" id="my-form">
               <ul>
                 <li>
@@ -254,6 +249,16 @@ block content
                       <div class="item-title item-label">E-mail</div>
                       <div class="item-input-wrap">
                         <input type="email" name="email" placeholder="E-mail">
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">Ignore from storage</div>
+                      <div class="item-input-wrap">
+                        <input class="no-store-data" type="text" name="text" placeholder="This value won't be stored">
                       </div>
                     </div>
                   </div>
@@ -293,29 +298,27 @@ block content
       li when user change any form field or when "change" event triggered on form (or form field) programmatically
 
     h3 Send form data on submit
-    p To enable Ajax form and send data automatically on submit, we just need to add <code><b>form-ajax-submit</b></code> class to form:
-    pre
-      code
-        | &lt;form action="send-here.html" method="GET" class="form-ajax-submit"&gt;
-        |     ...
-        | &lt;/form&gt;
+    p To enable Ajax form and send data automatically on submit, we just need to add `form-ajax-submit` class to form:
+    :code(lang="html")
+          <form action="send-here.html" method="GET" class="form-ajax-submit">
+              ...
+          </form>
     p And when user will submit this form, it automatically will be sended using Ajax with the following rules:
     .important-note
       ul
         li
-          p Form data will be sended to the file/url specified in form's <code>action</code> attribute
+          p Form data will be sended to the file/url specified in form's `action` attribute
         li
-          p Request method will be the same as specified in form's <code>method</code> attribute
+          p Request method will be the same as specified in form's `method` attribute
         li
-          p Content type will be the same as specified in form's <code>enctype</code> attribute. By default (if not specified), it is <code>application/x-www-form-urlencoded</code>
+          p Content type will be the same as specified in form's `enctype` attribute. By default (if not specified), it is `application/x-www-form-urlencoded`
 
     h3 Send form data on input change
-    p Mostly we don't use "submit" buttons in apps, so in this cases we need to submit form data when user changes any form fields. For this case we need to use <code><b>form-ajax-submit-onchange</b></code> class:
-    pre
-      code
-        | &lt;form action="send-here.html" method="GET" class="form-ajax-submit-onchange"&gt;
-        |     ...
-        | &lt;/form&gt;
+    p Mostly we don't use "submit" buttons in apps, so in this cases we need to submit form data when user changes any form fields. For this case we need to use `form-ajax-submit-onchange` class:
+    :code(lang="html")
+         <form action="send-here.html" method="GET" class="form-ajax-submit-onchange">
+             ...
+         </form>
     p And when user will change any form filed, form data automatically will be sended using Ajax with the same rules as in previous case.
 
     h3 Ajax Form Submit Events
@@ -344,18 +347,17 @@ block content
           td formajax:error
           td Form Element<span>&lt;form class="form-ajax-submit"&gt;</span>
           td Event will be triggered on Ajax request error
-    pre
-      code.js
-        | var app = new Framework7();
-        |
-        | var $$ = Dom7;
-        |
-        | $$('form.form-ajax-submit').on('formajax:success', function (e) {
-        |   var xhr = e.detail.xhr; // actual XHR object
-        |
-        |   var data = e.detail.data; // Ajax response from action file
-        |   // do something with response data
-        | });
+    :code(lang="js")
+         var app = new Framework7();
+
+         var $$ = Dom7;
+
+         $$('form.form-ajax-submit').on('formajax:success', function (e) {
+           var xhr = e.detail.xhr; // actual XHR object
+
+           var data = e.detail.data; // Ajax response from action file
+           // do something with response data
+         });
     h4 App Events
     table.events-table
       thead
@@ -385,9 +387,7 @@ block content
           td app
           td <span>(formEl, data, xhr)</span>
           td Event will be triggered on Ajax request error
-    pre
-      code.js
-        :code
+    :code(lang="js")
           var app = new Framework7();
 
           app.on('formAjaxSuccess', function (formEl, data, xhr) {

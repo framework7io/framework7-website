@@ -1,0 +1,155 @@
+extends _layout
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-bg
+        .navbar-inner
+          .left
+            a(href="#").link
+              i.icon.icon-back
+              span.if-not-md Back
+          .title Color Themes
+      .toolbar.toolbar-bottom
+        .toolbar-inner
+          a(href="#").link Left
+          a(href="#").link Right
+      .page-content
+        .block Praesent varius justo odio. Duis in <a href="#">cursus</a> lorem. Suspendisse convallis porta ornare. Vivamus consectetur varius ligula convallis posuere. Proin quis neque eget nisi tempus <a href="#">faucibus</a> at volutpat leo. Suspendisse id erat aliquet, vulputate sem ac, iaculis metus. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+        .block
+          p.segmented
+            a(href="#").button.button-active Button 1
+            a(href="#").button Button 2
+            a(href="#").button Button 3
+          p
+            a(href="#").button.button-large.button-fill Fill Button
+        .block-title Choose Color Theme
+        .list
+          ul
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="default", checked)
+                i.icon.icon-radio
+                .item-inner
+                  .item-title Default
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="red")
+                i.icon.icon-radio
+                .item-inner
+                  .item-title Red
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="green")
+                i.icon-radio
+                .item-inner
+                  .item-title Green
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="blue")
+                i.icon-radio
+                .item-inner
+                  .item-title Blue
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="pink")
+                i.icon-radio
+                .item-inner
+                  .item-title Pink
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="yellow")
+                i.icon-radio
+                .item-inner
+                  .item-title Yellow
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="orange")
+                i.icon-radio
+                .item-inner
+                  .item-title Orange
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="purple")
+                i.icon-radio
+                .item-inner
+                  .item-title Purple
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="deeppurple")
+                i.icon-radio
+                .item-inner
+                  .item-title Deep Purple
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="lightblue")
+                i.icon-radio
+                .item-inner
+                  .item-title Light Blue
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="teal")
+                i.icon-radio
+                .item-inner
+                  .item-title Teal
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="lime")
+                i.icon-radio
+                .item-inner
+                  .item-title Lime
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="deeporange")
+                i.icon-radio
+                .item-inner
+                  .item-title Deep Orange
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="gray")
+                i.icon-radio
+                .item-inner
+                  .item-title Gray
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="white")
+                i.icon-radio
+                .item-inner
+                  .item-title White
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="black")
+                i.icon-radio
+                .item-inner
+                  .item-title Black
+        .list
+          ul
+            li.item-content
+              .item-inner
+                .item-title Dark Theme
+                .item-after
+                  label.toggle.toggle-init
+                    input(type="checkbox")
+                    span.toggle-icon
+
+block scripts
+
+  script.
+    var app = new Framework7();
+    var $$ = Dom7;
+    $$('input[name="color-radio"]').on('change', function () {
+      if (this.checked) {
+        $$('.view').attr('class', 'view view-main view-init');
+        $$('.view').addClass('color-theme-' + $$(this).val());
+        if ($$('.toggle input')[0].checked) {
+          $$('.view').addClass('theme-dark');
+        }
+      }
+    });
+    $$('.toggle input').on('change', function () {
+      if (this.checked) {
+        $$('.view').addClass('theme-dark');
+      } else {
+        $$('.view').removeClass('theme-dark');
+      }
+    });

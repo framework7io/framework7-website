@@ -1,224 +1,424 @@
-extends ../src/pug/_docs-template
+extends ../_docs-template
 
 block vars
   - var activeLink = 'react';
-  - var title = 'Search Bar React Component | Framework7 React Documentation';
+  - var title = 'Searchbar React Component | Framework7 React Documentation';
 
 block content
+  include ../_docs-demo-device
 
-    .docs-nav
-      include ./_docs-react-menu
-    .docs-content
-      h1 Search Bar React Component
-      p Search Bar React component represents Framework7's <a href="../docs/searchbar.html">Search Bar</a> component.
-      h2 Usage example
-      pre
-        code
-          :code
-            <Searchbar
-              cancelLink="Cancel"
-              placeholder="Search in items"
-              clearButton={true}
-            />
-      p Renders to:
-      pre
-        code
-          :code
-            <form class="searchbar">
-              <div class="searchbar-input">
-                <!-- Input -->
-                <input type="search" placeholder="Search in items">
-                <!-- Clear button -->
-                <a href="#" class="searchbar-clear"></a>
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Searchbar React Component
+    ul.docs-index
+    p Searchbar React component represents Framework7's <a href="../docs/searchbar.html">Searchbar</a> component.
+
+    h2 Searchbar Components
+    p There are following components included:
+    ul
+      li `Searchbar` / `F7Searchbar`
+
+
+    h2 Searchbar Properties
+    p You can pass all parameters in single `params` property or use separate props for each parameter to specify them via component attributes:
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Searchbar&gt; properties
+        tr
+          td init
+          td boolean
+          td true
+          td Initializes Searchbar
+        tr
+          td value
+          td string<br>number
+          td
+          td Allows to specify Searchbar input's value. Can be usefule when used with `customSearch` enabled
+        tr
+          td form
+          td boolean
+          td true
+          td Main searchbar element will be used as a `form` tag instead of `div`
+        tr
+          td placeholder
+          td string
+          td "Search"
+          td Input placeholder text
+        tr
+          td disableButton
+          td boolean
+          td true
+          td Enables disable button
+        tr
+          td disableButtonText
+          td string
+          td Cancel
+          td Disable button text
+        tr
+          td clearButton
+          td boolean
+          td true
+          td Enables searchbar input clear button
+        tr
+          td expandable
+          td boolean
+          td false
+          td Enables expandable searchbar
+        tr
+          td inline
+          td boolean
+          td false
+          td Enables inline searchbar
+        tr
+          td searchContainer
+          td string<br>object
+          td
+          td CSS selector or HTML element of list block to search
+        tr
+          td searchIn
+          td string
+          td .item-title
+          td CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like `'.item-title, .item-text'`
+        tr
+          td searchItem
+          td string
+          td li
+          td CSS selector of single search item. If we do a search in List View, then it must be a single list element `li`
+        tr
+          td searchGroup
+          td string
+          td .list-group
+          td CSS selector of group element. Used when `hideGroups` enabled to hide groups. If we do a search in List View, then it usually a list group.
+        tr
+          td searchGroupTitle
+          td string
+          td .list-group-title, .item-divider
+          td CSS selector of group titles and dividers. Used when `hideDividers` enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider.
+        tr
+          td foundEl
+          td string<br>object
+          td .searchbar-found
+          td CSS selector or HTMLElement of searchbar "found" element. If not specified, searchbar will look for `.searchbar-found` element on page
+        tr
+          td notFoundEl
+          td string<br>object
+          td .searchbar-not-found
+          td CSS selector or HTMLElement of searchbar "not-found" element. If not specified, searchbar will look for `.searchbar-not-found` element on page
+        tr
+          td backdrop
+          td boolean
+          td
+          td Enables searchbar backdrop element. By default, disabled for Aurora theme or for inline searchbar
+        tr
+          td backdropEl
+          td string<br>object
+          td
+          td CSS selector or HTMLElement of searchbar backdrop element. If not passed and  `backdrop` parameter is true then it will look for `.searchbar-backdrop` element. In case none found it will create one automatically
+        tr
+          td ignore
+          td string
+          td .searchbar-ignore
+          td CSS selector for items to be ignored by searchbar and always present in search results
+        tr
+          td customSearch
+          td boolean
+          td false
+          td When enabled searchbar will not search through any of list blocks specified by `search-container` and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
+        tr
+          td removeDiacritics
+          td boolean
+          td false
+          td Enable to remove/replace diacritics (á, í, ó, etc.) during search
+        tr
+          td hideDividers
+          td boolean
+          td true
+          td If enabled, then search will consider item dividers and group titles and hide them if there are no found items right after them
+        tr
+          td hideGroups
+          td boolean
+          td true
+          td If enabled, then search will consider list view groups hide them if there are no found items inside of these groups
+        tr
+          td noShadow
+          td boolean
+          td false
+          td Disable shadow rendering for MD theme
+        tr
+          td noHairline
+          td boolean
+          td false
+          td Disable searchbar bottom thin border (hairline) for iOS theme
+
+    h2 Searchbar Methods
+    table.methods-table
+      tr
+        th(colspan="2") &lt;Searchbar&gt; methods
+      tr
+        td .search(<span>query</span>)
+        td Force searchbar to search passed query
+      tr
+        td .enable()
+        td Enable/activate searchbar
+      tr
+        td .disable()
+        td Disable/deactivate searchbar
+      tr
+        td .toggle()
+        td Toggle searchbar
+      tr
+        td .clear()
+        td Clear search query and update results
+
+    h2 Searchbar Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;Searchbar&gt; events
+        tr
+          td searchbarSearch
+          td <span>(searchbar, query, previousQuery)</span>
+          td Event will be triggered during search (search field change). As an arguments event receives searchbar instance, search query and previous query
+        tr
+          td searchbarClear
+          td <span>(searchbar, previousQuery)</span>
+          td Event will be triggered when user clicks on Searchbar input "clear" button. As an arguments event receives searchbar instance and previous query
+        tr
+          td searchbarEnable
+          td <span>(searchbar)</span>
+          td Event will be triggered when Searchbar becomes active
+        tr
+          td searchbarDisable
+          td <span>(searchbar)</span>
+          td Event will be triggered when Searchbar becomes inactive/disabled
+        tr
+          td change
+          td <span>(event)</span>
+          td Event will be triggered when "change" event occurs on searchbar input element
+        tr
+          td input
+          td <span>(event)</span>
+          td Event will be triggered when "input" event occurs on searchbar input element
+        tr
+          td focus
+          td <span>(event)</span>
+          td Event will be triggered when "focus" event occurs on searchbar input element
+        tr
+          td blur
+          td <span>(event)</span>
+          td Event will be triggered when "blur" event occurs on searchbar input element
+        tr
+          td clickClear
+          td <span>(event)</span>
+          td Event will be triggered when user clicks on input "clear" button
+        tr
+          td clickDisable
+          td <span>(event)</span>
+          td Event will be triggered when user clicks on searchbar disable button
+    h2 Searchbar Slots
+    p Searchbar React component has additional slots for custom elements:
+    ul
+      li `default` - element will be inserted as a child of `<div class="searchbar-inner">` element in the end. Same as `inner-end` slot
+      li `before-inner` - element will be inserted right before `<div class="searchbar-inner">` element
+      li `after-inner` - element will be inserted right after `<div class="searchbar-inner">` element
+      li `inner-start` - element will be inserted as a child of `<div class="searchbar-inner">` element in the beginning
+      li `inner-end` - element will be inserted as a child of `<div class="searchbar-inner">` element in the end
+      li `input-wrap-start` - element will be inserted as a child of `<div class="searchbar-input-wrap">` element in the beginning
+      li `input-wrap-end` - element will be inserted as a child of `<div class="searchbar-input-wrap">` element in the end
+    h4 Without Slots:
+    :code(lang="jsx")
+          <Searchbar
+            disableButtonText="Cancel"
+            placeholder="Search in items"
+            clearButton={true}
+          ></Searchbar>
+
+          {/* Renders to: */}
+
+          <form class="searchbar">
+            <div class="searchbar-inner">
+              <div class="searchbar-input-wrap">
+                <input type="search" placeholder="Search">
+                <i class="searchbar-icon"></i>
+                <span class="input-clear-button"></span>
               </div>
-              <!-- Cancel Link -->
-              <div class="searchbar-cancel">Cancel</div>
-            </form>
-      p Here is how it can be used in React component with initialization
-      pre
-        code
-          :code
-            const SearchbarPage = () => {
-              return (
-                <Page>
-                  <Navbar backLink="Back" title="Searchbar" sliding />
-                  <Searchbar
-                    cancelLink="Cancel"
-                    searchList="#search-list"
-                    onSearchbarSearch={onSearchFunction}
-                    onSearchbarEnable={onEnableFunction}
-                    onSearchbarDisable={onDisableFunction}
-                    onSearchbarClear={onClearFunction}
-                  />
-                  <List className="searchbar-not-found">
-                    <ListItem title="Nothing found" />
-                  </List>
-                  <List className="searchbar-found" id="search-list">
-                  {
-                    Array.apply(null, Array(100)).map((item, index) => {
-                      return (<ListItem  key={index} title={`Item ${index + 1}`} />);
-                    })
-                  }
-                  </List>
-                </Page>
-              );
-            };
-      h2 Slot Properties
-      p Search Bar React component has additional slots for custom elements:
-      ul
-        li <b>beforeInputSlot</b> - element will be inserted right before &lt;input type="search"&gt; element
-        li <b>afterInputSlot</b> - element will be inserted right after &lt;input type="search"&gt; element
-      pre
-        code
-          :code
-            <Searchbar
-              cancelLink="Cancel"
-              placeholder="Search in items"
-              clearButton={true}
+              <span class="searchbar-disable-button">Cancel</span>
+            </div>
+          </form>
+    h4 With Slots:
+    :code(lang="jsx")
+          <Searchbar
+            disableButtonText="Cancel"
+            placeholder="Search in items"
+            clearButton={true}
+          >
+            <div slot="inner-start">Inner Start</div>
+            <div slot="inner-end">Inner End</div>
+            <div slot="input-wrap-start">Input Wrap Start</div>
+            <div slot="input-wrap-end">Input Wrap End</div>
+            <div slot="before-inner">Before Inner</div>
+            <div slot="after-inner">After Inner</div>
+          </Searchbar>
 
-              beforeInputSlot={<div>Before Input</div>}
-              afterInputSlot={<div>After Input</div>}
-            />
-      p Renders to:
-      pre
-        code
-          :code
-            <form class="searchbar">
-              <div class="searchbar-input">
-                <div>Before Input</div>
-                <input type="search" placeholder="Search in items">
-                <div>After Input</div>
-                <a href="#" class="searchbar-clear"></a>
+          {/* Renders to: */}
+
+          <form class="searchbar">
+            <div slot="before-inner">Before Inner</div>
+            <div class="searchbar-inner">
+              <div slot="inner-start">Inner Start</div>
+              <div class="searchbar-input-wrap">
+                <div slot="input-wrap-start">Input Wrap Start</div>
+                <input type="search" placeholder="Search">
+                <i class="searchbar-icon"></i>
+                <span class="input-clear-button"></span>
+                <div slot="input-wrap-end">Input Wrap End</div>
               </div>
-              <div class="searchbar-cancel">Cancel</div>
-            </form>
-      h2 Properties
-      p You can pass all parameters in single <code>params</code> property or use separate props for each parameter to specify them via component attributes:
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td form
-            td boolean
-            td true
-            td Main search bar element will be used as a <code>form</code> tag instead of <code>div</code>
-          tr
-            td placeholder
-            td string
-            td "Search"
-            td Input placeholder text
-          tr
-            td cancel-link
-            td string
-            td
-            td Cancel link text. Affects only iOS theme
-          tr
-            td clear-button
-            td boolean
-            td true
-            td Enables "clear" input button
+              <span class="searchbar-disable-button">Cancel</span>
+              <div slot="inner-end">Inner End</div>
+            </div>
+            <div slot="after-inner">After Inner</div>
+          </form>
 
-          tr
-            td init
-            td boolean
-            td true
-            td Initializes Search Bar
-          tr
-            td params
-            td Object
-            td
-            td Object with <a href="../docs/searchbar.html#search-bar-parameters">Search Bar API</a> parameters
-          tr
-            th(colspan="4") <code>params</code> separate props
-          tr
-            td searchList
-            td string/object
-            td
-            td CSS selector or HTML element of list block to search
-          tr
-            td searchIn
-            td string
-            td '.item-title'
-            td CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like <b>'.item-title, .item-text'</b>
-          tr
-            td found
-            td string/object
-            td
-            td CSS selector or HTMLElement of searchbar "found" element. If not specified, searchbar will look for <code>.searchbar-found</code> element on page
-          tr
-            td notFoud
-            td string/object
-            td
-            td CSS selector or HTMLElement of searchbar "not-found" element. If not specified, searchbar will look for <code>.searchbar-not-found</code> element on page
-          tr
-            td overlay
-            td string/object
-            td
-            td CSS selector or HTMLElement of searchbar overlay. If not specified, searchbar will look for <code>.searchbar-overlay</code> element on page
-          tr
-            td ignore
-            td string
-            td '.searchbar-ignore'
-            td CSS selector for items to be ignored by searchbar and always present in search results
-          tr
-            td customSearch
-            td boolean
-            td false
-            td When enabled searchbar will not search through any of list blocks specified by `searchList` and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
-          tr
-            td removeDiacritics
-            td boolean
-            td false
-            td Enable to remove/replace diacritics (á, í, ó, etc.) during search
-          tr
-            td hideDividers
-            td boolean
-            td true
-            td If enabled, then search will consider item dividers and group titles and hide them if there are no found items right after them
-          tr
-            td hideGroups
-            td boolean
-            td true
-            td If enabled, then search will consider list view groups hide them if there are no found items inside of these groups
-      h2 Event Properties
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            td searchbar:search
-            td Event will be triggered during search (search field change). Event detail contains search query (e.detail.query) and array of found HTML elements (e.detail.foundItems)
-          tr
-            td searchbar:clear
-            td Event will be triggered when user clicks on Search Bar's "clear" element (a href="#" class="searchbar-clear")
-          tr
-            td searchbar:enable
-            td Event will be triggered when Search Bar becomes active
-          tr
-            td searchbar:disable
-            td Event will be triggered when Search Bar becomes inactive - when user clicks on "Cancel" button (a href="searchbar-cancel") or on "searchbar-overlay" element
-          tr
-            td change
-            td Event will be triggered when "change" event occurs on search bar input element
-          tr
-            td input
-            td Event will be triggered when "input" event occurs on search bar input element
-          tr
-            td focus
-            td Event will be triggered when "focus" event occurs on search bar input element
-          tr
-            td blur
-            td Event will be triggered when "blur" event occurs on search bar input element
-          tr
-            td click:clear
-            td Event will be triggered when user clicks on input "clear" button
-          tr
-            td click:cancel
-            td Event will be triggered when user clicks on "cancel" link
+    h2 Access To Searchbar Instance
+    p If you use automatic initalization to init Searchbar (with `init={true}` prop) and need to use Searchbar API you can access its initialized instance by accessing `.f7Searchbar` component's property.
+
+    .with-device
+      h2 Examples
+      h4(data-device-preview="../docs-demos/react/searchbar.html") Usual Searchbar
+      :code(lang="jsx")
+        export default () => (
+          <Page>
+            <Navbar title="Searchbar">
+              <Subnavbar inner={false}>
+                <Searchbar
+                  searchContainer=".search-list"
+                  searchIn=".item-title"
+                  disableButton={!this.$theme.aurora}
+                ></Searchbar>
+              </Subnavbar>
+            </Navbar>
+            <List className="searchbar-not-found">
+              <ListItem title="Nothing found" />
+            </List>
+            <List className="search-list searchbar-found">
+              <ListItem title="Acura" />
+              <ListItem title="Audi" />
+              <ListItem title="BMW" />
+              <ListItem title="Cadillac " />
+              <ListItem title="Chevrolet " />
+              <ListItem title="Chrysler " />
+              <ListItem title="Dodge " />
+              <ListItem title="Ferrari " />
+              <ListItem title="Ford " />
+              <ListItem title="GMC " />
+              <ListItem title="Honda" />
+              <ListItem title="Hummer" />
+              <ListItem title="Hyundai" />
+              <ListItem title="Infiniti " />
+              <ListItem title="Isuzu " />
+              <ListItem title="Jaguar " />
+              <ListItem title="Jeep " />
+              <ListItem title="Kia" />
+              <ListItem title="Lamborghini " />
+              <ListItem title="Land Rover" />
+              <ListItem title="Lexus " />
+              <ListItem title="Lincoln " />
+              <ListItem title="Lotus " />
+              <ListItem title="Mazda" />
+              <ListItem title="Mercedes-Benz" />
+              <ListItem title="Mercury " />
+              <ListItem title="Mitsubishi" />
+              <ListItem title="Nissan " />
+              <ListItem title="Oldsmobile " />
+              <ListItem title="Peugeot " />
+              <ListItem title="Pontiac " />
+              <ListItem title="Porsche" />
+              <ListItem title="Regal" />
+              <ListItem title="Saab " />
+              <ListItem title="Saturn " />
+              <ListItem title="Subaru " />
+              <ListItem title="Suzuki " />
+              <ListItem title="Toyota" />
+              <ListItem title="Volkswagen" />
+              <ListItem title="Volvo" />
+            </List>
+          </Page>
+        );
+
+      h4(data-device-preview="../docs-demos/react/searchbar-expandable.html") Expandable Searchbar
+      :code(lang="jsx")
+        export default () => (
+          <Page>
+            <Navbar title="Searchbar">
+              <NavRight>
+                <Link searchbarEnable=".searchbar-demo" iconIos="f7:search" iconAurora="f7:search" iconMd="material:search"></Link>
+              </NavRight>
+              <Searchbar
+                className="searchbar-demo"
+                expandable
+                searchContainer=".search-list"
+                searchIn=".item-title"
+                disableButton={!this.$theme.aurora}
+              ></Searchbar>
+            </Navbar>
+            <List className="searchbar-not-found">
+              <ListItem title="Nothing found" />
+            </List>
+            <List className="search-list searchbar-found">
+              <ListItem title="Acura" />
+              <ListItem title="Audi" />
+              <ListItem title="BMW" />
+              <ListItem title="Cadillac " />
+              <ListItem title="Chevrolet " />
+              <ListItem title="Chrysler " />
+              <ListItem title="Dodge " />
+              <ListItem title="Ferrari " />
+              <ListItem title="Ford " />
+              <ListItem title="GMC " />
+              <ListItem title="Honda" />
+              <ListItem title="Hummer" />
+              <ListItem title="Hyundai" />
+              <ListItem title="Infiniti " />
+              <ListItem title="Isuzu " />
+              <ListItem title="Jaguar " />
+              <ListItem title="Jeep " />
+              <ListItem title="Kia" />
+              <ListItem title="Lamborghini " />
+              <ListItem title="Land Rover" />
+              <ListItem title="Lexus " />
+              <ListItem title="Lincoln " />
+              <ListItem title="Lotus " />
+              <ListItem title="Mazda" />
+              <ListItem title="Mercedes-Benz" />
+              <ListItem title="Mercury " />
+              <ListItem title="Mitsubishi" />
+              <ListItem title="Nissan " />
+              <ListItem title="Oldsmobile " />
+              <ListItem title="Peugeot " />
+              <ListItem title="Pontiac " />
+              <ListItem title="Porsche" />
+              <ListItem title="Regal" />
+              <ListItem title="Saab " />
+              <ListItem title="Saturn " />
+              <ListItem title="Subaru " />
+              <ListItem title="Suzuki " />
+              <ListItem title="Toyota" />
+              <ListItem title="Volkswagen" />
+              <ListItem title="Volvo" />
+            </List>
+          </Page>
+        );

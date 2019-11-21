@@ -9,12 +9,10 @@ block content
   .docs-content
     +improveDocsLink
     h1 Device
-    .docs-index
+    ul.docs-index
     p Framework7 comes with Device detection library with which contains useful information about device and platform.
-    p It is avaialable as a <code><b>device</b></code> property of Framework7 class (<code>Framework7.device</code>) and same property on initialized app instance (<code>app.device</code>):
-    pre
-      code.js
-        :code
+    p It is avaialable as a `device` property of Framework7 class (`Framework7.device`) and same property on initialized app instance (`app.device`):
+    :code(lang="js")
           // If we need it in place where we don't have access to app instance or before we init the app
           if (Framework7.device.ios) {
             console.log('It is iOS device');
@@ -33,88 +31,70 @@ block content
           th(colspan="2") Properties
         tr
           td ios
-          td <code>true</code> for iOS device
+          td `true` for iOS device
         tr
           td android
-          td <code>true</code> for Android device
-        tr
-          td windows
-          td <code>true</code> for Windows Phone device
+          td `true` for Android device
         tr
           td desktop
-          td <code>true</code> for desktop browser
+          td `true` for desktop browser
         tr
           td iphone
-          td <code>true</code> for iPhone
-        tr
-          td iphoneX
-          td <code>true</code> for iPhone X
+          td `true` for iPhone
         tr
           td ipod
-          td <code>true</code> for iPod
+          td `true` for iPod
         tr
           td ipad
-          td <code>true</code> for iPad
+          td `true` for iPad
         tr
           td cordova
-          td <code>true</code> when app running in cordova environment
+          td `true` when app running in cordova environment
         tr
           td phonegap
-          td alias for <code>cordova</code> prop
+          td alias for `cordova` prop
+        tr
+          td windows
+          td `true` for desktop windows
+        tr
+          td macos
+          td `true` for desktop macOs
+        tr
+          td ie
+          td `true` for Internet Explorer browser
+        tr
+          td edge
+          td `true` for Edge browser
+        tr
+          td electron
+          td `true` when app is running under Electron environment
         tr
           td webView
-          td <code>true</code> if app runs in web view - webapp installed to home screen
+          td `true` if app runs in web view - webapp installed to home screen, valid for desktop PWAs installed to desktop
+        tr
+          td standalone
+          td Same as `webView`
         tr
           td os
-          td Contains OS can be <code>ios</code>, <code>android</code> or <code>windows</code> (for Windows Phone)
+          td Contains OS can be `ios`, `android`, `macos`, `windows`
         tr
           td osVersion
-          td Contains OS version, e.g. <code>11.2.0</code>
+          td Contains OS version, e.g. `11.2.0`
         tr
           td pixelRatio
           td Device pixel ratio
         tr
-          td statusbar
-          td <code>true</code> if app running in full-screen mode and requires <a href="status-bar.html">Status Bar</a> overlay
-        tr
           th(colspan="2") Methods
         tr
-          td needsStatusbarOverlay()
-          td Returns <code>true</code> if app running in full-screen mode and requires <a href="status-bar.html">Status Bar</a> overlay
+          td prefersColorScheme()
+          td Returns pereferd user system color scheme. Returns `"light"` or `"dark"` where this feature supported or `undefined` otherwise. This feature support is based on <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank">`(prefers-color-scheme)` media query support</a>.
     h2 Device Related Classes
-    p Also this Device detecting library adds additional classes on <code>&lt;html&gt;</code> element which can help you with different CSS styles for different OS and platforms.
-    p So if you open app with iOS 7.1 device you may have the following classes:
-    pre
-      code
-        | &lt;html class="ios device-ios device-ios-7 device-ios-7-1 device-ios-gt-6 device-pixel-ratio-1"&gt;
-        | ...
-    p If you open app with iOS 7.1 device with retina screen and your app running in full screen mode:
-    pre
-      code
-        | &lt;html class="device-ios device-ios-7 device-ios-7-1 device-ios-gt-6 device-retina device-pixel-ratio-2 with-statusbar"&gt;
-        | ...
-    p If you open app on iPhone X and your app running in full screen mode:
-    pre
-      code
-        | &lt;html class="device-ios device-iphone-x device-ios-11 device-ios-11-0 device-ios-gt-6 device-ios-gt-7 device-ios-gt-8 device-ios-gt-9 device-ios-gt-10 device-retina device-pixel-ratio-3 with-statusbar"&gt;
-        | ...
-    p If you open app with Android 4.4 device you will have the following classes:
-    pre
-      code
-        | &lt;html class="device-android device-android-4 device-android-4-4"&gt;
-        | ...
+    p Device detecting library adds additional classes on `<html>` element which can help you with different CSS styles for different OS and platforms.
     p In other words classes calculated by the following rule:
-    pre
-      code.nohighlight
-        :code
+    :code
           device-[os]
-          device-[os major version]
-          device-[os full version]
-          [device-desktop]
-          [device-retina]
-          [device-iphone-x] - if it is iPhone X
-          [device-desktop]
+          device-desktop
+          device-macos - if desktop macOS device
+          device-windows - if desktop windows device
           device-pixel-ratio-[pixel ratio]
-          [with-statusbar] - in case the app is running in full screen mode
-    .important-note
-      p Note that "greater than" (ios-gt-6: for all iOS greater than iOS 6) classes available only for iOS
+          device-cordova - if app running under cordova

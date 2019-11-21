@@ -2,34 +2,64 @@ extends ../_internal-template
 
 block vars
   - var activeLink = 'templates';
-  - var title = 'Ready To Use Framework7 App Templates';
+  - var title = 'Ready To Use Framework7 Templates & Tools';
 
 block content
   - var templates = getYamlData('templates/templates.yml');
+  h1.text-align-center Framework7 Tools & Templates
+  h2.text-align-center Framework7 Tools
+  .apps.templates(style="justify-content:center")
+    .app
+      a.app-icon(href="/cli/")
+        .img(style="background-color: #ee350f; color: #fff") Framework7 CLI
+      .app-info
+        .app-title Framework7 CLI
+        .app-buttons
+          a(href="/cli/") Documentation
+        .app-description Official Framework7 CLI provides flexible and up to date way to start app development
+    .app
+      a.app-icon(href="https://wappler.io", target="_blank")
+        .img(style="background-color: #fff;")
+          img(src='/i/sponsors/wappler.png')
+      .app-info
+        .app-title Wappler
+        .app-buttons
+          a(href="https://wappler.io", target="_blank") Learn More
+        .app-description Visual Web App Creator, offers full visual Framework7 builder
+    .app
+      a.app-icon(href="https://www.thoriumbuilder.com/", target="_blank")
+        .img(style="background-color: #fff;")
+          img(src='/i/templates/thorium.png')
+      .app-info
+        .app-title Thorium Builder
+        .app-buttons
+          a(href="https://www.thoriumbuilder.com/", target="_blank") Learn More
+        .app-description Native macOs app - full visual Framework7 app builder
+  if (templates.official)
+    h2.text-align-center Official Framework7 Templates
+    .apps.templates
+      each app in templates.official
+        .app
+          a.app-icon(href=app.url, target="_blank", data-hover-text="Download")
+            if (app.iconUrl)
+              img(src=app.iconUrl.replace('#{cdn}', cdn))
+            else if (app.icon)
+              .img(style='background-color: ' + app.icon.bgColor + '; color: ' + app.icon.textColor) #{app.icon.text}
 
-  h1.text-align-center Official Starter Templates
-  .apps.templates
-    each app in templates.official
-      .app
-        a.app-icon(href=app.url, target="_blank", data-hover-text="Download")
-          if (app.iconUrl)
-            img(src=app.iconUrl.replace('#{cdn}', cdn))
-          else if (app.icon)
-            .img(style='background-color: ' + app.icon.bgColor + '; color: ' + app.icon.textColor) #{app.icon.text}
+            if app.badges
+              .app-badges
+                each badge in app.badges
+                  span #{badge}
+          .app-info
+            .app-title #{app.title}
+            if app.author
+              .app-author by <a href="#{app.author.url}" target="_blank">#{app.author.name}</a>
+            .app-buttons
+              a(href=app.url, target="_blank") Download
+              if app.previewUrl
+                a(href=app.previewUrl, target="_blank") Preview
+            .app-description #{app.description}
 
-          if app.badges
-            .app-badges
-              each badge in app.badges
-                span #{badge}
-        .app-info
-          .app-title #{app.title}
-          if app.author
-            .app-author by <a href="#{app.author.url}" target="_blank">#{app.author.name}</a>
-          .app-buttons
-            a(href=app.url, target="_blank") Download
-            if app.previewUrl
-              a(href=app.previewUrl, target="_blank") Preview
-          .app-description #{app.description}
   h2.text-align-center Community Starter Apps & Templates
   .apps.templates
     each app in templates.community

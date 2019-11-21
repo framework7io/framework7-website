@@ -13,13 +13,11 @@ block content
     p Template7 is a mobile-first JavaScript template engine with <a href="http://handlebarsjs.com/" target="_blank">Handlebars</a>-like syntax.
     p It is ultra lightweight (around 1KB minified and gzipped) and blazing fast (up to 3 times faster than Handlebars in mobile Safari!) and it is already included in Framework7. So you don't need to include any additional scripts.
     h2 Usage & API
-    p Сheck out <a href="http://www.idangero.us/template7/" target="_blank">Template7 Website</a> for the most relevant guide and API. But skip the part about downloading, it is already included into Framework7.
+    p Сheck out <a href="https://www.idangero.us/template7/" target="_blank">Template7 Website</a> for the most relevant guide and API. But skip the part about downloading, it is already included into Framework7.
 
     h2 Performance Tips
-    p Template7 is fast and you can make it works even faster in your apps. The slowest part (but still very fast in T7) in all this compilation/rendering process is the compilation from string to pure JS function when you do <code>Template7.compile()</code>. So don't compile the same templates multiple times, one time will be enough:
-    pre
-      code
-        :code
+    p Template7 is fast and you can make it works even faster in your apps. The slowest part (but still very fast in T7) in all this compilation/rendering process is the compilation from string to pure JS function when you do `Template7.compile()`. So don't compile the same templates multiple times, one time will be enough:
+    :code(lang="js")
           // Initialize app
           var app = new Framework7();
 
@@ -41,4 +39,4 @@ block content
           });
     h2 Using Template7 Outside
     p Template7 could be used as a standalone library without Framework7. You will need to download it at
-      a(href="https://github.com/nolimits4web/Template7", target="_blank") Template7 GitHub repo
+      a(href="https://github.com/nolimits4web/template7", target="_blank") Template7 GitHub repo

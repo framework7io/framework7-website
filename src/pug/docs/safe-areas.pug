@@ -1,0 +1,80 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Safe Areas | Framework7 Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Safe Areas
+    p With the iPhone X release and further, Apple introduced so called <b>safe areas</b>, later implemented by Google Chrome with support in Android.
+    p On devices with safe areas (like with top screen notch), app UI must include additional top/bottom spacing (to consider top notch and new bottom bar) in portrait orientation and additional left/righ spacing (to consider left/right notch) in landscape orientation.
+    p In portrait orientation Framework7 will do required styles modifications automatically, but in landscape orientation some additional classes must be added to elements:
+    ul
+      li `safe-areas` - add to element that is stick to both left and right screen edges in landscape orientation
+      li `safe-area-left` - add to element that is stick to the left screen edge in landscape orientation
+      li `safe-area-right` - add to element that is stick to the right screen edge in landscape orientation
+      li `no-safe-areas` - add to element which is is inside of `safe-areas` to remove additional horizontal spacing
+      li `no-safe-area-left` - add to element which is is inside of `safe-areas` to remove additional left spacing
+      li `no-safe-area-right` - add to element which is is inside of `safe-areas` to remove additional right spacing
+    p The following elements don't require such classes:
+    ul
+      li Popup, Sheet - already considered as full screen elements that is required extra spacing on both left and right sides
+      li Left Panel - already considered as element that is stick to the left screen edge and requires extra spacing on left side
+      li Right Panel - already considered as element that is stick to the right screen edge and requires extra spacing on right side
+    p Here is the example app layout with such classes:
+    :code(lang="html")
+      <body>
+        <!-- app root -->
+        <div id="app">
+
+          <!-- left panel doesn't require any additional classes -->
+          <div class="panel panel-left panel-cover">
+            ...
+          </div>
+
+          <!-- right panel doesn't require any additional classes -->
+          <div class="panel panel-right panel-reveal">
+            ...
+          </div>
+
+          <!-- main view, full-wide element, add "safe-areas" class -->
+          <div class="view view-main view-init safe-areas" data-url="/">
+            <div class="page">
+              <div class="navbar">
+                ...
+              </div>
+              <div class="page-content">
+                <!-- full-wide list, will inherit safe-areas from view -->
+                <div class="list">
+                  ...
+                </div>
+                <!-- full-wide content block, will inherit safe-areas from view -->
+                <div class="block">
+                  ...
+                </div>
+                <!--
+                  two-columns blocks: need to
+                    - remove extra spacing on right side for left block
+                    - remove extra spacing on left side for right block
+                -->
+                <div class="row">
+                  <!-- remove right spacing on left block -->
+                  <div class="block col no-safe-area-right">
+                    ...
+                  </div>
+                  <!-- remove left spacing on right block -->
+                  <div class="block col no-safe-area-left">
+                    ...
+                  </div>
+                </div>
+                ...
+              </div>
+            </div>
+          </div>
+        </div>
+        ...
+      </body>
+

@@ -14,96 +14,94 @@ block content
     ul.docs-index
     p Badges are used to display/indicate count numbers and labels on different elements of your app.
     h2 Badge Layout
-    p Badges have a super simple layout, it's just an element with a <code><b>badge</b></code> class:
-    pre
-      code.html
-        :code
+    p Badges have a super simple layout, it's just an element with a `badge` class:
+    :code(lang="html")
           <span class="badge">32</span>
     h2 Badge Colors
     p Badges support all <a href="color-themes.html">default colors</a>:
-    pre
-      code.html
-        :code
-          <!-- Green badge -->
-          <span class="badge color-green">32</span>
+    :code(lang="html")
+      <!-- Green badge -->
+      <span class="badge color-green">32</span>
 
-          <!-- Red badge -->
-          <span class="badge color-red">15</span>
+      <!-- Red badge -->
+      <span class="badge color-red">15</span>
+
+    +cssVars('badge')
+
     .with-device
-      h2(data-device-preview="../docs-demos/badge.html") Examples
-      pre
-        code.html
-          :code
-            <div class="page">
-              <div class="navbar">
-                <div class="navbar-inner">
-                  <div class="left"></div>
-                  <div class="title">Badge</div>
-                  <div class="right">
-                    <a class="link icon-only">
-                      <i class="icon f7-icons ios-only">person_fill<span class="badge color-red">5</span></i>
-                      <i class="icon material-icons md-only">person<span class="badge color-red">5</span></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div class="toolbar tabbar tabbar-labels">
-                <div class="toolbar-inner">
-                <a href="#tab-1" class="tab-link tab-link-active">
-                  <i class="icon icon-fill f7-icons ios-only">email_fill<span class="badge color-green">5</span></i>
-                  <i class="icon material-icons md-only">email<span class="badge color-green">5</span></i>
-                  <span class="tabbar-label">Inbox</span>
+      h2(data-device-preview="../docs-demos/core/badge.html") Examples
+      :code(lang="html")
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner">
+              <div class="left"></div>
+              <div class="title">Badge</div>
+              <div class="right">
+                <a class="link icon-only">
+                  <i class="icon f7-icons if-not-md">person_fill<span class="badge color-red">5</span></i>
+                  <i class="icon material-icons md-only">person<span class="badge color-red">5</span></i>
                 </a>
-                <a href="#tab-2" class="tab-link">
-                  <i class="icon f7-icons ios-only">today<span class="badge color-red">7</span></i>
-                  <i class="icon material-icons md-only">today<span class="badge color-red">7</span></i>
-                  <span class="tabbar-label">Calendar</span>
-                </a>
-                <a href="#tab-3" class="tab-link">
-                  <i class="icon f7-icons ios-only">cloud<span class="badge color-red">1</span></i>
-                  <i class="icon material-icons md-only">file_upload<span class="badge color-red">1</span></i>
-                  <span class="tabbar-label">Upload</span>
-                </a>
-                </div>
-              </div>
-              <div class="page-content">
-                <div class="list">
-                  <ul>
-                    <li>
-                      <div class="item-content">
-                        <div class="item-inner">
-                          <div class="item-title">Foo Bar</div>
-                          <div class="item-after"><span class="badge">0</span></div>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="item-content">
-                        <div class="item-inner">
-                          <div class="item-title">Ivan Petrov</div>
-                          <div class="item-after"><span class="badge color-blue">CEO</span></div>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="item-content">
-                        <div class="item-inner">
-                          <div class="item-title">John Doe</div>
-                          <div class="item-after"><span class="badge color-green">5</span></div>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="item-content">
-                        <div class="item-inner">
-                          <div class="item-title">Jane Doe</div>
-                          <div class="item-after"><span class="badge color-orange">NEW</span></div>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
               </div>
             </div>
+          </div>
+          <div class="toolbar tabbar tabbar-labels toolbar-bottom">
+            <div class="toolbar-inner">
+            <a href="#tab-1" class="tab-link tab-link-active">
+              <i class="icon icon-fill f7-icons if-not-md">email_fill<span class="badge color-green">5</span></i>
+              <i class="icon material-icons md-only">email<span class="badge color-green">5</span></i>
+              <span class="tabbar-label">Inbox</span>
+            </a>
+            <a href="#tab-2" class="tab-link">
+              <i class="icon f7-icons if-not-md">today<span class="badge color-red">7</span></i>
+              <i class="icon material-icons md-only">today<span class="badge color-red">7</span></i>
+              <span class="tabbar-label">Calendar</span>
+            </a>
+            <a href="#tab-3" class="tab-link">
+              <i class="icon f7-icons if-not-md">cloud<span class="badge color-red">1</span></i>
+              <i class="icon material-icons md-only">file_upload<span class="badge color-red">1</span></i>
+              <span class="tabbar-label">Upload</span>
+            </a>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="list">
+              <ul>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Foo Bar</div>
+                      <div class="item-after"><span class="badge">0</span></div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Ivan Petrov</div>
+                      <div class="item-after"><span class="badge color-blue">CEO</span></div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">John Doe</div>
+                      <div class="item-after"><span class="badge color-green">5</span></div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Jane Doe</div>
+                      <div class="item-after"><span class="badge color-orange">NEW</span></div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
 

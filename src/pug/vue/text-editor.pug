@@ -1,0 +1,291 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Text Editor Vue Component | Framework7 Vue Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Text Editor Vue Component
+    ul.docs-index
+    p Text Editor Vue component represents <a href="../docs/text-editor.html">Text Editor</a> component.
+
+    h2 Text Editor Components
+    p There are following components included:
+    ul
+      li `f7-text-editor`
+
+    h2 Text Editor Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-text-editor&gt; properties
+        tr
+          td value
+          td string
+          td
+          td
+            p Text editor initial html content value.
+        tr
+          td placeholder
+          td string
+          td
+          td Editor placeholder content displayed when it is empty. By default it is not specified
+        tr
+          td resizable
+          td boolean
+          td false
+          td Makes editor resizable (when its height will fit to its content)
+        tr
+          td mode
+          td string
+          td toolbar
+          td
+            p Text editor buttons mode. Can be:
+            ul
+              li `toolbar` - it will add toolbar with editor buttons in text editor container element
+              li `popover` - it will show popover bubble with editor buttons on top of the selected text in editor
+              li `keyboard-toolbar` - toolbar with editor buttons will appear on top of virtual keyboard when editor is in the focus. It is supported only in iOS, Android cordova apps and in Android Chrome. When not supported it will fallback to `popover` mode.
+        tr
+          td buttons
+          td array
+          td
+          td
+            p Array with editor buttons, or array of arrays (groups) with editor buttons. By default all buttons enabled and its default value is:
+            ```js
+              [
+                ['bold', 'italic', 'underline', 'strikeThrough'],
+                ['orderedList', 'unorderedList'],
+                ['link', 'image'],
+                ['paragraph', 'h1', 'h2', 'h3'],
+                ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify'],
+                ['subscript', 'superscript'],
+                ['indent', 'outdent'],
+              ]
+            ```
+        tr
+          td dividers
+          td boolean
+          td true
+          td Adds visual divider between buttons group
+        tr
+          td imageUrlText
+          td string
+          td Insert image URL
+          td Prompt text that appears on image url request
+        tr
+          td linkUrlText
+          td string
+          td Insert link URL
+          td Prompt text that appears on link url request
+        tr
+          td clearFormattingOnPaste
+          td boolean
+          td true
+          td When enabled it will clear any formatting on paste from clipboard
+        tr
+          td customButtons
+          td object
+          td
+          td
+            p Object with custom buttons. Object property key is the button id that should be used in `buttons` to enable it.
+            p For example to specify custom button that will add `<hr>` we can use following declaration:
+            ```html
+              <f7-text-editor
+                :custom-buttons="customButtons"
+                :buttons="buttons"
+              />
+            ```
+            ```js
+              {
+                customButtons: {
+                  // property key is the button id
+                  hr: {
+                    // button html content
+                    content: '&amp;lt;hr&amp;gt;',
+                    // button click handler
+                    onClick(event, buttonEl) {
+                      document.execCommand('insertHorizontalRule', false);
+                    }
+                  }
+                },
+                // now we use custom button id "hr" to add it to buttons
+                buttons: ['bold', 'italic', 'hr']
+              }
+            ```
+    h2 Text Editor Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;f7-text-editor&gt; events
+        tr
+          td texteditor:change
+          td
+            span (value)
+          td Event will be triggered when editor value has been changed
+        tr
+          td texteditor:input
+          td
+          td Event will be triggered on editor's content "input" event
+        tr
+          td texteditor:focus
+          td
+          td Event will be triggered on editor's content focus
+        tr
+          td texteditor:blur
+          td
+          td Event will be triggered on editor's content blur
+        tr
+          td texteditor:buttonclick
+          td
+            span (buttonId)
+          td Event will be triggered on editor button click
+        tr
+          td texteditor:keyboardopen
+          td
+          td Event will be triggered when editor keyboard toolbar appears
+        tr
+          td texteditor:keyboardclose
+          td
+          td Event will be triggered when editor keyboard toolbar disappears
+        tr
+          td texteditor:popoveropen
+          td
+          td Event will be triggered on editor popover open
+        tr
+          td texteditor:popoverclose
+          td
+          td Event will be triggered on editor popover close
+        tr
+          td texteditor:beforedestroy
+          td
+          td Event will be triggered right before Text Editor instance will be destroyed
+
+    h2 Access To Text Editor Instance
+    p If you need to use <a href="../docs/text-editor.html">Text Editor API</a> you can access its initialized instance by accessing `.f7TextEditor` component's property.
+
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/text-editor.html") Examples
+      :code(lang="html")
+        <template>
+          <f7-page>
+            <f7-navbar title="Text Editor"></f7-navbar>
+
+            <f7-block-title>Default Setup</f7-block-title>
+            <f7-text-editor />
+
+            <f7-block-title>With Placeholder</f7-block-title>
+            <f7-text-editor
+              placeholder="Enter text..."
+            />
+
+            <f7-block-title>With Default Value</f7-block-title>
+            <f7-text-editor
+              placeholder="Enter text..."
+              :value="customValue"
+              @texteditor:change="(v) => customValue = v"
+            />
+
+            <f7-block-title>Specific Buttons</f7-block-title>
+            <f7-block-header>It is possible to customize which buttons (commands) to show.</f7-block-header>
+            <f7-text-editor
+              placeholder="Enter text..."
+              :buttons="[
+                ['bold', 'italic', 'underline', 'strikeThrough'],
+                ['orderedList', 'unorderedList']
+              ]"
+            />
+
+            <f7-block-title>Custom Button</f7-block-title>
+            <f7-block-header>It is possible to create custom editor buttons. Here is the custom "hr" button that adds horizontal rule:</f7-block-header>
+            <f7-text-editor
+              placeholder="Enter text..."
+              :customButtons="customButtons"
+              :buttons="[
+                ['bold', 'italic', 'underline', 'strikeThrough'],
+                'hr'
+              ]"
+            />
+
+            <f7-block-title>Resizable</f7-block-title>
+            <f7-block-header>Editor will be resized based on its content.</f7-block-header>
+            <f7-text-editor
+              placeholder="Enter text..."
+              resizable
+              :buttons="['bold', 'italic', 'underline', 'strikeThrough']"
+            />
+
+            <f7-block-title>Popover Mode</f7-block-title>
+            <f7-block-header>In this mode, there is no toolbar with buttons, but they appear as popover when you select any text in editor.</f7-block-header>
+            <f7-text-editor
+              placeholder="Enter text..."
+              mode="popover"
+              :buttons="['bold', 'italic', 'underline', 'strikeThrough']"
+              style="--f7-text-editor-height: 150px"
+            />
+
+            <f7-block-title>Keyboard Toolbar Mode</f7-block-title>
+            <f7-block-header>In this mode, toolbar with buttons will appear on top of virtual keyboard when editor is in the focus. It is supported only in iOS, Android cordova apps and in Android Chrome. When not supported it will fallback to "popover" mode.</f7-block-header>
+            <f7-text-editor
+              placeholder="Enter text..."
+              mode="keyboard-toolbar"
+              style="--f7-text-editor-height: 150px"
+            />
+
+            <f7-block-title>As List Input</f7-block-title>
+            <f7-block-header>Text editor can be used in list with other inputs. In this example it is enabled with "keyboard-toolbar"/"popover" type for "About" field.</f7-block-header>
+            <f7-list>
+              <f7-list-input
+                type="text"
+                label="Name"
+                placeholder="Your name"
+              />
+              <f7-list-input
+                type="texteditor"
+                label="About"
+                placeholder="About"
+                resizable
+                :textEditorParams="{
+                  mode: 'popover',
+                  buttons: ['bold', 'italic', 'underline', 'strikeThrough']
+                }"
+                :value="listEditorValue"
+                @texteditor:change="(value) => listEditorValue = value"
+              />
+            </f7-list>
+          </f7-page>
+        </template>
+        <script>
+          export default {
+            data() {
+              return {
+                customButtons: {
+                  hr: {
+                    content: '&amp;lt;hr&amp;gt;',
+                    onClick(editor, buttonEl) {
+                      document.execCommand('insertHorizontalRule', false);
+                    },
+                  },
+                },
+                customValue: '<p>Lorem, ipsum dolor sit amet ...</p>',
+                listEditorValue: '',
+              }
+            },
+          };
+        </script>

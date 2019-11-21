@@ -11,13 +11,11 @@ block content
   .docs-content
     +improveDocsLink
     h1 Login Screen
-    .docs-index
+    ul.docs-index
     p Framework7 comes with ready to use Login Screen layout. It could be used inside of page or login screen (embedded) or as a standalone modal.
     h2 Login Screen Layout
     p First of all, let's look at the standalone Login Screen layout. It behaves almost in the same way as Login Screen:
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <div class="login-screen">
             <!-- Default view-page layout -->
             <div class="view">
@@ -142,16 +140,15 @@ block content
           td animate
           td boolean
           td true
-          td Whether the Login Screen should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods
+          td Whether the Login Screen should be opened/closed with animation or not. Can be overwritten in `.open()` and `.close()` methods
         tr
           td on
           td object
           td
-          td Object with events handlers. For example:
-            pre
-              code
-                :code
-                  var login screen = app.loginScreen.create({
+          td
+            p Object with events handlers. For example:
+            :code(lang="js")
+                  var loginScreen = app.loginScreen.create({
                     content: '<div class="login-screen">...</div>',
                     on: {
                       opened: function () {
@@ -161,11 +158,9 @@ block content
                   })
     h2 Login Screen Methods & Properties
     p So to create Login Screen we have to call:
-    pre
-      code
-        :code
+    :code(lang="js")
           var loginScreen = app.loginScreen.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>loginScreen</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `loginScreen` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -183,6 +178,9 @@ block content
           td loginScreen.params
           td Login Screen parameters
         tr
+          td loginScreen.opened
+          td Boolean prop indicating whether login screen is opened or not
+        tr
           th(colspan="2") Methods
         tr
           td loginScreen.open(<span>animate</span>)
@@ -190,14 +188,14 @@ block content
             ul.method-parameters
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be opened with animation
         tr
           td loginScreen.close(<span>animate</span>)
           td Close login screen. Where
             ul.method-parameters
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be closed with animation
         tr
           td loginScreen.destroy()
           td Destroy login screen
@@ -227,9 +225,7 @@ block content
         li
           p If you have more than one login screen in DOM, you need to specify appropriate login screen via additional <b>data-login-screen=".my-login-screen"</b> attribute on this HTML element
     p According to above note:
-    pre
-      code.xml
-        :code
+    :code(lang="html")
           <!-- In data-login-screen attribute we specify CSS selector of login screen we need to open -->
           <p><a href="#" data-login-screen=".my-login-screen" class="login-screen-open">Open Login Screen</a></p>
 
@@ -238,6 +234,7 @@ block content
             <div class="view">
               <div class="page">
                 <div class="navbar">
+                  <div class="navbar-bg"></div>
                   <div class="navbar-inner">
                     <div class="title">Login Screen</div>
                     <div class="right">
@@ -282,8 +279,8 @@ block content
           td Login Screen Element<span>&lt;div class="login-screen"&gt;</span>
           td Event will be triggered after Login Screen completes its closing animation
     h3 App and Login Screen Instance Events
-    p Login Screen instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>loginScreen</code>.
-    table.events-table
+    p Login Screen instance emits events on both self instance and app instance. App instance events has same names prefixed with `loginScreen`.
+    table.events-table.double-events-table
       thead
         tr
           th Event
@@ -338,9 +335,7 @@ block content
           td app
     h2 Embedded Login Screen
     p It is also possible to embed Login Screen into the page or popup. Let's look on the example of Login Screen inside of page:
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <div class="page no-navbar no-toolbar no-swipeback">
             <div class="page-content login-screen-content">
               <div class="login-screen-title">My App</div>
@@ -379,11 +374,12 @@ block content
           </div>
     .important-note
       p Note that on login screen page we have additional "no-navbar", "no-toolbar" and "no-swipeback" classes to hide navigation element from user
+
+    +cssVars('login-screen')
+
     .with-device
-      h2(data-device-preview="../docs-demos/login-screen.html") Examples
-      pre
-        code.html
-          :code
+      h2(data-device-preview="../docs-demos/core/login-screen.html") Examples
+      :code(lang="html")
             <body>
               ...
                 <div class="page-content">
@@ -441,9 +437,7 @@ block content
               </div>
               ...
             </body>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var $$ = Dom7;
 
             var app = new Framework7({
@@ -478,15 +472,15 @@ block content
             });
 
             // Login Screen-Modal DOM events
-            $$('.login-screen').on('loginscreen:open', function (e, loginScreen) {
+            $$('.login-screen').on('loginscreen:open', function (e) {
               console.log('Login screen open')
             });
-            $$('.login-screen').on('loginscreen:opened', function (e, loginScreen) {
+            $$('.login-screen').on('loginscreen:opened', function (e) {
               console.log('Login screen opened')
             });
-            $$('.login-screen').on('loginscreen:close', function (e, loginScreen) {
+            $$('.login-screen').on('loginscreen:close', function (e) {
               console.log('Login screen close')
             });
-            $$('.login-screen').on('loginscreen:closed', function (e, loginScreen) {
+            $$('.login-screen').on('loginscreen:closed', function (e) {
               console.log('Login screen closed')
             });

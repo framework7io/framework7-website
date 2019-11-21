@@ -1,0 +1,366 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Toolbar React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Toolbar React Component
+    ul.docsIndex
+    p Toolbar is a fixed (with Fixed and Through layout types) area at the bottom of a screen that contains navigation elements. Toolbar does not have any parts, just plain links inside
+    p Toolbar React component represents <a href="../docs/toolbar-tabbar.html">Toolbar</a> component.
+
+    h2 Toolbar Components
+    p There are following components included:
+    ul
+      li `Toolbar` / `F7Toolbar`
+
+    h2 Toolbar Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Toolbar&gt; properties
+        tr
+          td inner
+          td boolean
+          td true
+          td When enabled (by default), it will put all the content within internal `toolbarInner` element. Disable it only in case you want to put totally custom layout inside
+        tr
+          td position
+          td string
+          td
+          td #[a(href="/docs/toolbar-tabbar.html#toolbar-position") Toolbar position], can be `top` or `bottom`
+        tr
+          td top
+          td boolean
+          td
+          td Top positioned toolbar. Shortening for `position="top"`
+        tr
+          td topIos
+          td boolean
+          td
+          td Top positioned toolbar only for iOS theme
+        tr
+          td topMd
+          td boolean
+          td
+          td Top positioned toolbar only for MD theme
+        tr
+          td topAurora
+          td boolean
+          td
+          td Top positioned toolbar only for Aurora theme
+        tr
+          td bottom
+          td boolean
+          td
+          td Bottom positioned toolbar. Shortening for `position="bottom"`
+        tr
+          td bottomIos
+          td boolean
+          td
+          td Bottom positioned toolbar only for iOS theme
+        tr
+          td bottomMd
+          td boolean
+          td
+          td Bottom positioned toolbar only for MD theme
+        tr
+          td bottomAurora
+          td boolean
+          td
+          td Bottom positioned toolbar only for Aurora theme
+        tr
+          td tabbar
+          td boolean
+          td false
+          td Defines whether the Toolbar is also a Tabbar or not
+        tr
+          td labels
+          td boolean
+          td false
+          td Enables Tabbar with labels (affects only when `tabbar: true`)
+        tr
+          td scrollable
+          td boolean
+          td false
+          td Enables scrollable Tabbar (affects only when `tabbar: true`)
+        tr
+          td noShadow
+          td boolean
+          td
+          td Disable shadow rendering for Material theme
+        tr
+          td noHairline
+          td boolean
+          td false
+          td Disable toolbar/tabbar top thin border (hairline) for iOS theme
+        tr
+          td hidden
+          td boolean
+          td false
+          td Makes toolbar hidden
+
+    h2 Toolbar Methods
+    table.methods-table
+      td
+        th(colspan="2") &lt;Toolbar&gt; methods
+      tr
+        td .hide(<span>animate</span>)
+        td Hide toolbar
+      tr
+        td .show(<span>animate</span>)
+        td Show toolbar
+
+    h2 Toolbar Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;Toolbar&gt; events
+        tr
+          td toolbarHide
+          td Event will be triggered when Toolbar becomes hidden
+        tr
+          td toolbarShow
+          td Event will be triggered when Toolbar becomes visible
+
+    h2 Toolbar Slots
+    p Toolbar React component (`<Toolbar>`) has additional slots for custom elements:
+    ul
+      li `default` - element will be inserted as a child of `<div class="toolbarInner">` element
+      li `beforeInner` - element will be inserted right before `<div class="toolbarInner">` element
+      li `afterInner` - element will be inserted right after `<div class="toolbarInner">` element
+    :code(lang="jsx")
+          <Toolbar>
+            <div slot="beforeInner">Before Inner</div>
+            <div slot="afterInner">After Inner</div>
+            {/* Goes to default slot: */}
+            <Link>Left Link</Link>
+            <Link>Right Link</Link>
+          </Toolbar>
+
+          {/* Renders to: */}
+
+          <div class="toolbar">
+            <div>Before Inner</div>
+            <div class="toolbarInner">
+              <a href="#" class="link">Left Link</a>
+              <a href="#" class="link">Right Link</a>
+            </div>
+            <div>After Inner</div>
+          </div>
+
+    .with-device
+      h2(data-device-preview="../docs-demos/react/toolbar-tabbar.html") Examples
+      h3 Toolbar
+      :code(lang="jsx")
+            export default class extends React.Component{
+              constructor() {
+                this.state = {
+                  isBottom: true,
+                };
+              }
+              render() {
+                return (
+                  <Page>
+                    <Navbar title="Toolbar" backLink="Back"></Navbar>
+
+                    <Toolbar position={this.state.isBottom ? 'bottom' : 'top'}>
+                      <Link>Left Link</Link>
+                      <Link>Right Link</Link>
+                    </Toolbar>
+
+                    <BlockTitle>Toolbar Position</BlockTitle>
+                    <Block>
+                      <p>Toolbar supports both top and bottom positions. Click the following button to change its position.</p>
+                      <p>
+                        <Button raised onClick={() => this.setState({isBottom: !this.state.isBottom})}>Toggle Toolbar Position</Button>
+                      </p>
+                    </Block>
+
+                    <Block>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi...</p>
+                    </Block>
+                  </Page>
+                )
+              }
+            }
+      h3 Tabbar
+      :code(lang="jsx")
+            export default class extends React.Component{
+              constructor() {
+                this.state = {
+                  isBottom: true,
+                };
+              }
+              render() {
+                return (
+                  <Page pageContent={false}>
+                    <Navbar title="Tabbar" backLink="Back">
+                      <NavRight>
+                        <Link iconIos="f7:reload" iconAurora="f7:reload" iconMd="material:compare_arrows" onClick={() => this.setState({isBottom: !this.state.isBottom})}></Link>
+                      </NavRight>
+                    </Navbar>
+
+                    <Toolbar tabbar position={this.state.isBottom ? 'bottom' : 'top'}>
+                      <Link tabLink="#tab-1" tabLinkActive>Tab 1</Link>
+                      <Link tabLink="#tab-2">Tab 2</Link>
+                      <Link tabLink="#tab-3">Tab 3</Link>
+                    </Toolbar>
+
+                    <Tabs>
+                      <Tab id="tab-1" className="page-content" tabActive>
+                        <Block>
+                          <p>Tab 1 content</p>
+                          ...
+                        </Block>
+                      </Tab>
+                      <Tab id="tab-2" className="page-content">
+                        <Block>
+                          <p>Tab 2 content</p>
+                          ...
+                        </Block>
+                      </Tab>
+                      <Tab id="tab-3" className="page-content">
+                        <Block>
+                          <p>Tab 3 content</p>
+                          ...
+                        </Block>
+                      </Tab>
+                    </Tabs>
+                  </Page>
+                )
+              }
+
+      h3 Tabbar Labels
+      :code(lang="jsx")
+            export default class extends React.Component{
+              constructor() {
+                this.state = {
+                  isBottom: true,
+                };
+              }
+              render() {
+                return (
+                  <Page pageContent={false}>
+                    <Navbar title="Tabbar Labels" backLink="Back">
+                      <NavRight>
+                        <Link iconIos="f7:reload" iconAurora="f7:reload" iconMd="material:compare_arrows" onClick={() => this.setState({isBottom: !this.state.isBottom})}></Link>
+                      </NavRight>
+                    </Navbar>
+
+                    <Toolbar tabbar labels position={this.state.isBottom ? 'bottom' : 'top'}>
+                      <Link tabLink="#tab-1" tabLinkActive text="Tab 1" iconIos="f7:email_fill" iconAurora="f7:email_fill" iconMd="material:email"></Link>
+                      <Link tabLink="#tab-2" text="Tab 2" iconIos="f7:today_fill" iconAurora="f7:today_fill" iconMd="material:today"></Link>
+                      <Link tabLink="#tab-3" text="Tab 3" iconIos="f7:cloud_fill" iconAurora="f7:cloud_fill" iconMd="material:file_upload"></Link>
+                    </Toolbar>
+
+                    <Tabs>
+                      <Tab id="tab-1" className="page-content" tabActive>
+                        <Block>
+                          <p>Tab 1 content</p>
+                          ...
+                        </Block>
+                      </Tab>
+                      <Tab id="tab-2" className="page-content">
+                        <Block>
+                          <p>Tab 2 content</p>
+                          ...
+                        </Block>
+                      </Tab>
+                      <Tab id="tab-3" className="page-content">
+                        <Block>
+                          <p>Tab 3 content</p>
+                          ...
+                        </Block>
+                      </Tab>
+                    </Tabs>
+                  </Page>
+                )
+              }
+            }
+
+      h3 Tabbar Scrollable
+      :code(lang="jsx")
+            export default class extends React.Component{
+              constructor() {
+                this.state = {
+                  isBottom: true,
+                };
+              }
+              render() {
+                const tabs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+                return (
+                  <Page pageContent={false}>
+                    <Navbar title="Tabbar Scrollable" backLink="Back">
+                      <NavRight>
+                        <Link iconIos="f7:reload" iconAurora="f7:reload" iconMd="material:compare_arrows" onClick={() => this.setState({isBottom: !this.state.isBottom})}></Link>
+                      </NavRight>
+                    </Navbar>
+
+                    <Toolbar tabbar scrollable position={this.state.isBottom ? 'bottom' : 'top'}>
+                      {tabs.map((tab, index) => (
+                        <Link
+                          key={tab}
+                          tabLink={`#tab-${tab}`}
+                          tabLinkActive={index === 0}
+                        >Tab {tab}</Link>
+                      ))}
+                    </Toolbar>
+
+                    <Tabs>
+                      {tabs.map((tab, index) => (
+                        <Tab
+                          key={tab}
+                          id={`tab-${tab}`}
+                          className="page-content"
+                          tabActive={index === 0}
+                        >
+                          <Block>
+                            <p><b>Tab {tab} content</b></p>
+                            ...
+                          </Block>
+                        </Tab>
+                      ))}
+                    </Tabs>
+                  </Page>
+                )
+              }
+            }
+
+      h3 Hide Toolbar On Scroll
+      :code(lang="jsx")
+            export default () => (
+              <Page hideToolbarOnScroll>
+                <Navbar title="Hide Toolbar On Scroll" backLink="Back"></Navbar>
+
+                <Toolbar bottom-md>
+                  <Link>Left Link</Link>
+                  <Link>Right Link</Link>
+                </Toolbar>
+
+                <Block strong>
+                  <p>Toolbar will be hidden if you scroll bottom</p>
+                </Block>
+                <Block>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.</p>
+                  ...
+                </Block>
+              </Page>
+            );

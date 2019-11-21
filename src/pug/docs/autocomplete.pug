@@ -11,7 +11,7 @@ block content
   .docs-content
     +improveDocsLink
     h1 Autocomplete
-    .docs-index
+    ul.docs-index
     p Framework7 comes with mobile-friendly and touch optimized Autocomplete component.
     p Autocomplete could be used in standalone mode or as a dropdown.
     h2 Autocomplete App Methods
@@ -62,9 +62,7 @@ block content
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Autocomplete element to close.
       p.method-returns Method returns Autocomplete's instance
     p For example:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           var autocomplete = app.autocomplete.create({
             inputEl: '#autocomplete-dropdown',
             openIn: 'dropdown',
@@ -85,13 +83,13 @@ block content
         tr
           td openIn
           td string
-          td <code>page</code>
-          td Defines how to open Autocomplete, can be <code>page</code> or <code>popup</code> (for Standalone) or <code>dropdown</code>
+          td `page`
+          td Defines how to open Autocomplete, can be `page` or `popup` (for Standalone) or `dropdown`
         tr
           td source
           td function (query, render)
           td
-          td Function which accepts search <code>query</code> and <code>render</code> function where you need to pass array with matched items
+          td Function which accepts search `query` and `render` function where you need to pass array with matched items
         tr
           td limit
           td number
@@ -101,7 +99,7 @@ block content
           td preloader
           td boolean
           td false
-          td Set to <code>true</code> to include Preloader to autocomplete layout
+          td Set to `true` to include Preloader to autocomplete layout
         tr
           td preloaderColor
           td string
@@ -128,7 +126,7 @@ block content
           td requestSourceOnOpen
           td boolean
           td false
-          td If enabled, then it will request passed to <code>source</code> function on autocomplete open
+          td If enabled, then it will request passed to `source` function on autocomplete open
         tr
           td openerEl
           td string<br>HTMLElement
@@ -148,7 +146,27 @@ block content
           td pageTitle
           td string
           td
-          td Autocomplete page title. If nothing is specified and passed <code>openerEl</code> is an item of List View, then text value of <code>item-title</code> element will be used
+          td Autocomplete page title. If nothing is specified and passed `openerEl` is an item of List View, then text value of `item-title` element will be used
+        tr
+          td popupPush
+          td boolean
+          td false
+          td Enables Autocomplete popup to push view/s behind on open
+        tr
+          td popupSwipeToClose
+          td boolean
+          td undefined
+          td Enables ability to close Autocomplete popup with swipe. When not specified it inherits app's Popup `swipeToClose` parameter
+        tr
+          td sheetPush
+          td boolean
+          td false
+          td Enables Autocomplete sheet to push view/s behind on open
+        tr
+          td sheetSwipeToClose
+          td boolean
+          td undefined
+          td Enables ability to close Autocomplete sheet with swipe. When not specified it inherits app's Sheet `swipeToClose` parameter
         tr
           td searchbarPlaceholder
           td string
@@ -168,22 +186,22 @@ block content
           td multiple
           td boolean
           td false
-          td Set to <code>true</code> to allow multiple selections
+          td Set to `true` to allow multiple selections
         tr
           td closeOnSelect
           td boolean
           td false
-          td Set to <code>true</code> and autocomplete will be closed when user picks value. Not available if <code>multiple</code> is enabled
+          td Set to `true` and autocomplete will be closed when user picks value. Not available if `multiple` is enabled
         tr
           td autoFocus
           td boolean
           td false
-          td Set to <code>true</code> to auto focus search field on autocomplete open
+          td Set to `true` to auto focus search field on autocomplete open
         tr
           td animate
           td boolean
           td true
-          td Set to <code>false</code> to open standalone autocomplete without animation
+          td Set to `false` to open standalone autocomplete without animation
         tr
           td navbarColorTheme
           td string
@@ -198,7 +216,7 @@ block content
           td routableModals
           td boolean
           td true
-          td Will add opened autocomplete modal (when <code>openIn: 'popup'</code>) to router history which gives ability to close autocomplete by going back in router history and set current route to the autocomplete modal
+          td Will add opened autocomplete modal (when `openIn: 'popup'`) to router history which gives ability to close autocomplete by going back in router history and set current route to the autocomplete modal
         tr
           td url
           td string
@@ -220,7 +238,7 @@ block content
           td inputEvents
           td string
           td input
-          td Allows to configure input events used to handle Autcomplete actions and source request. Can be changed for example to <code>change keyup compositionend</code> if you use keyboard with composition of Chinese characters
+          td Allows to configure input events used to handle Autcomplete actions and source request. Can be changed for example to `change keyup compositionend` if you use keyboard with composition of Chinese characters
         tr
           td highlightMatches
           td boolean
@@ -240,12 +258,17 @@ block content
           td updateInputValueOnSelect
           td boolean
           td true
-          td If <code>true</code> then value of related input will be update as well
+          td If `true` then value of related input will be update as well
         tr
           td expandInput
           td boolean
           td false
-          td If <code>true</code> then input which is used as <b>item-input</b> in List View will be expanded to full screen wide during dropdown visible.
+          td If `true` then input which is used as <b>item-input</b> in List View will be expanded to full screen wide during dropdown visible.
+        tr
+          td dropdownContainerEl
+          td string<br>HTMLElement
+          td
+          td By default dropdown will be added to parent page-content element. You can specify here different element where to add dropdown element
         tr
           th(colspan="4") Render functions
         tr
@@ -284,10 +307,9 @@ block content
           td on
           td object
           td
-          td Object with events handlers. For example:
-            pre
-              code
-                :code
+          td
+            p Object with events handlers. For example:
+            :code(lang="js")
                   var autocomplete = app.autocomplete.create({
                     ...
                     on: {
@@ -297,10 +319,8 @@ block content
                     }
                   })
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>autocomplete</code> property to set defaults for all autcompletes. For example:
-      pre
-        code
-          :code
+      p Note that all following parameters can be used in global app parameters under `autocomplete` property to set defaults for all autcompletes. For example:
+      :code(lang="js")
             var app = new Framework7({
               autocomplete: {
                 openIn: 'popup',
@@ -308,7 +328,7 @@ block content
               }
             });
     h2 Autocomplete Methods & Properties
-    p After we initialize Autocomplete we have its initialized instance in variable (like <code>autocomplete</code> variable in example above) with helpful methods and properties:
+    p After we initialize Autocomplete we have its initialized instance in variable (like `autocomplete` variable in example above) with helpful methods and properties:
     table.methods-table
       tbody
         tr
@@ -339,10 +359,10 @@ block content
           td Dom7 instance of Autcomplete dropdown
         tr
           td autocomplete.url
-          td Autcomplete URL (that was passed in <code>url</code> parameter)
+          td Autcomplete URL (that was passed in `url` parameter)
         tr
           td autocomplete.view
-          td Autcomplete View (that was passed in <code>view</code> parameter) or found parent view
+          td Autcomplete View (that was passed in `view` parameter) or found parent view
         tr
           td autocomplete.el
           td HTML element of Autcomplete container: dropdown element, or popup element, or page element. Available when Autocomplete opened
@@ -385,8 +405,8 @@ block content
           td autocomplete.emit(<span>event</span>, <span>...args</span>)
           td Fire event on instance
     h2 Autocomplete Events
-    p Autocomplete instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>autocomplete</code>.
-    table.events-table
+    p Autocomplete instance emits events on both self instance and app instance. App instance events has same names prefixed with `autocomplete`.
+    table.events-table.double-events-table
       thead
         tr
           th Event
@@ -398,7 +418,7 @@ block content
           td change
           td autocomplete
           td(rowspan="2") <span>autocomplete, value</span>
-          td(rowspan="2") Event will be triggered when Autocomplete value changed. Returned <code>value</code> is an array with selected items
+          td(rowspan="2") Event will be triggered when Autocomplete value changed. Returned `value` is an array with selected items
         tr
           td autocompleteChange
           td app
@@ -442,11 +462,12 @@ block content
         tr
           td autocompleteBeforeDestroy
           td app
+
+    +cssVars('autocomplete')
+
     .with-device
-      h2(data-device-preview="../docs-demos/autocomplete.html") Examples
-      pre
-        code.js
-          :code
+      h2(data-device-preview="../docs-demos/core/autocomplete.html") Examples
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;
@@ -454,9 +475,7 @@ block content
             // Fruits data demo array
             var fruits = ('Apple Apricot Avocado Banana Melon Orange Peach Pear Pineapple').split(' ');
       h4 Simple Dropdown Autocomplete
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Simple Dropdown Autocomplete</div>
               <ul>
@@ -470,9 +489,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var autocompleteDropdownSimple = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown',
               openIn: 'dropdown',
@@ -492,9 +509,7 @@ block content
             });
 
       h4 Dropdown With Input Expand
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Dropdown With Input Expand</div>
               <ul>
@@ -508,9 +523,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var autocompleteDropdownExpand = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown-expand',
               openIn: 'dropdown',
@@ -531,9 +544,7 @@ block content
             });
 
       h4 Dropdown With All Values
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Dropdown With All Values</div>
               <ul>
@@ -547,9 +558,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var autocompleteDropdownAll = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown-all',
               openIn: 'dropdown',
@@ -564,9 +573,7 @@ block content
               }
             });
       h4 Dropdown With Placeholder
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Dropdown With Placeholder</div>
               <ul>
@@ -581,9 +588,7 @@ block content
               </ul>
             </div>
 
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var autocompleteDropdownPlaceholder = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown-placeholder',
               openIn: 'dropdown',
@@ -604,9 +609,7 @@ block content
             });
 
       h4 Dropdown With Typeahead
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Dropdown With Typeahead</div>
               <ul>
@@ -620,9 +623,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var autocompleteDropdownTypeahead = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown-typeahead',
               openIn: 'dropdown',
@@ -644,9 +645,7 @@ block content
             });
 
       h4 Dropdown With Ajax-Data
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Dropdown With Ajax-Data</div>
               <ul>
@@ -660,9 +659,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var autocompleteDropdownAjax = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown-ajax',
               openIn: 'dropdown',
@@ -706,9 +703,7 @@ block content
             });
 
       h4 Dropdown With Ajax-Data + Typeahead
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Dropdown With Ajax-Data + Typeahead</div>
               <ul>
@@ -722,9 +717,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var autocompleteDropdownAjaxTypeahead = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown-ajax-typeahead',
               openIn: 'dropdown',
@@ -768,11 +761,10 @@ block content
               }
             });
       h4 Searchbar Dropdown
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
+                <div class="navbar-bg"></div>
                 <div class="navbar-inner sliding">
                   ...
                   <!-- Put searchbar in subnavbar -->
@@ -792,9 +784,7 @@ block content
               </div>
               ...
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var searchbar = app.searchbar.create({
               el: '#searchbar-autocomplete',
               customSearch: true,
@@ -823,9 +813,7 @@ block content
               }
             })
       h4 Simple Standalone Autocomplete
-      pre
-        code.html
-          :code
+      :code(lang="html")
             div class="list">
               <div class="block-header">Simple Standalone Autocomplete</div>
               <ul>
@@ -840,9 +828,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var autocompleteStandaloneSimple = app.autocomplete.create({
               openIn: 'page', //open in page
               openerEl: '#autocomplete-standalone', //link that opens autocomplete
@@ -872,9 +858,7 @@ block content
             });
 
       h4 Popup Autocomplete
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list">
               <div class="block-header">Popup Autocomplete</div>
               <ul>
@@ -889,9 +873,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var autocompleteStandalonePopup = app.autocomplete.create({
               openIn: 'popup', //open in page
               openerEl: '#autocomplete-standalone-popup', //link that opens autocomplete
@@ -920,9 +902,7 @@ block content
             });
 
       h4 Multiple Values
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list">
               <div class="block-header">Multiple Values</div>
               <ul>
@@ -937,9 +917,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var autocompleteStandaloneMultiple = app.autocomplete.create({
               openIn: 'page', //open in page
               openerEl: '#autocomplete-standalone-multiple', //link that opens autocomplete
@@ -969,9 +947,7 @@ block content
             });
 
       h4 Standalone With Ajax-Data
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list">
               <div class="block-header">With Ajax-Data</div>
               <ul>
@@ -986,9 +962,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var autocompleteStandaloneAjax = app.autocomplete.create({
               openIn: 'page', //open in page
               openerEl: '#autocomplete-standalone-ajax', //link that opens autocomplete

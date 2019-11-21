@@ -11,37 +11,65 @@ block content
   .docs-content
     +improveDocsLink
     h1 Pull To Refresh
-    .docs-index
+    ul.docs-index
     p Pull to refresh is a special component that can be used to initiate the refreshing of a page’s contents.
     h2 Pull To Refresh Layout
     p Let's look on how to integrate pull to refresh to page:
-    pre
-      code.html
-        :code
-          <div class="page">
-            <!-- Page content must have additional "ptr-content" class -->
-            <div class="page-content ptr-content" data-ptr-distance="55">
-              <!-- Default pull to refresh preloader-->
-              <div class="ptr-preloader">
-                <div class="preloader"></div>
-                <div class="ptr-arrow"></div>
-              </div>
-
-              <!-- usual content below -->
-              <div class="list">
-                ...
-              </div>
-            </div>
+    :code(lang="html")
+      <div class="page">
+        <!-- Page content must have additional "ptr-content" class -->
+        <div class="page-content ptr-content" data-ptr-distance="55" data-ptr-mousewheel="true">
+          <!-- Default pull to refresh preloader-->
+          <div class="ptr-preloader">
+            <div class="preloader"></div>
+            <div class="ptr-arrow"></div>
           </div>
+
+          <!-- usual content below -->
+          <div class="list">
+            ...
+          </div>
+
+          <!-- nested scrollable element -->
+          <div class="my-scolling-content ptr-watch-scrollable">
+            ...
+          </div>
+
+          <!-- another nested scrollable element -->
+          <div class="another-scolling-content ptr-ignore">
+            ...
+          </div>
+        </div>
+      </div>
     p Where:
       ul
-        li <code><b>ptr-content</b></code> class. This is required to enable pull to refresh
-        li <code><b>div class="ptr-preloader"</b></code> hidden layer with pull to refresh visual elements: preloader and arrow
-        li <code>data-ptr-distance="55"</code> additional attribute that allows to set custom pull to refresh trigger distance. By default (if not specified) it is 44px
+        li `ptr-content` class. This is required to enable pull to refresh
+        li `div class="ptr-preloader"` hidden layer with pull to refresh visual elements: preloader and arrow
+        li `data-ptr-distance="55"` additional attribute that allows to set custom pull to refresh trigger distance. By default (if not specified) it is 44px
+        li `data-ptr-mousewheel="true"` additional attribute that enables pull to refresh with mousewheel (for desktop apps). Works only for PTR top.
+        li `ptr-watch-scrollable` - additional class that must be added on nested scrollable elements to prevent pull to refresh on such elements scrolling
+        li `ptr-ignore` - additional class that must be added on nested scrollable elements or other elements that will to prevent pull to refresh on such elements scrolling or touchmove
+    h2 Pull To Refresh From Bottom
+    p It is also possible to make it work like pull from bottom. In this case we need to move `ptr-preloader` element to the bottom of page content and add additional `ptr-bottom` class to pull to refresh content:
+    :code(lang="html")
+      <div class="page">
+        <!-- ptr-content must have additional "ptr-bottom" class -->
+        <div class="page-content ptr-content ptr-bottom">
+          <div class="list">
+            ...
+          </div>
+
+          <!-- Pull to refresh preloader moves to bottom -->
+          <div class="ptr-preloader">
+            <div class="preloader"></div>
+            <div class="ptr-arrow"></div>
+          </div>
+        </div>
+      </div>
     h2 Pull To Refresh Sequence
-    p When user starts to pull <b>ptr-content</b> down, then <b>ptr-preloader</b> will receive additional <code><b>ptr-pull-down</code></b> class.
-    p When user pulls down <b>ptr-content</b> on a distance more than 44px (when <b>ptr-preloader</b> will be fully visible), then <b>ptr-preloader</b> will receive additional <code><b>ptr-pull-up</code></b> class which changes arrow rotation to notify user about refresh action on release.
-    p When user release pull to refresh content when it is in "ptr-pull-up" state, then <b>ptr-preloader</b> will receive additional <code><b>ptr-refreshing</code></b> class. In "refreshing" state arrow will be hidden and user will see preloader indicator. On this stage you probably need to do Ajax request and refresh page content.
+    p When user starts to pull <b>ptr-content</b> down, then <b>ptr-preloader</b> will receive additional `ptr-pull-down` class.
+    p When user pulls down <b>ptr-content</b> on a distance more than 44px (when <b>ptr-preloader</b> will be fully visible), then <b>ptr-preloader</b> will receive additional `ptr-pull-up` class which changes arrow rotation to notify user about refresh action on release.
+    p When user release pull to refresh content when it is in "ptr-pull-up" state, then <b>ptr-preloader</b> will receive additional `ptr-refreshing` class. In "refreshing" state arrow will be hidden and user will see preloader indicator. On this stage you probably need to do Ajax request and refresh page content.
     h2 Pull To Refresh App Methods
     p There are few App's methods that can be used with pull to refresh container:
     .method-wrap
@@ -51,7 +79,7 @@ block content
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - PTR element (<code>ptr-content</code>). Required.
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - PTR element (`ptr-content`). Required.
       p.method-returns Method returns created PTR instance
       .important-note Use this method only in case you have added ptr content after page init or if you want to enable it later. Otherwise if there is "ptr-content" element on page init it will be created automatically
     .method-wrap
@@ -61,7 +89,7 @@ block content
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - PTR element (<code>ptr-content</code>). Required.
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - PTR element (`ptr-content`). Required.
     .method-wrap
       p
         span.method app.ptr.get(<span>el</span>)
@@ -69,7 +97,7 @@ block content
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (<code>ptr-content</code>).
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (`ptr-content`).
       p.method-returns Method returns PTR instance
     .method-wrap
       p
@@ -78,7 +106,7 @@ block content
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (<code>ptr-content</code>). Required.
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (`ptr-content`). Required.
     .method-wrap
       p
         span.method app.ptr.refresh(<span>el</span>)
@@ -86,12 +114,10 @@ block content
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (<code>ptr-content</code>). Required.
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (`ptr-content`). Required.
     h2 Pull To Refresh Methods & Properties
-    p If we created PTR manually or used <code>app.ptr.get</code> method we will PTR initialized instance with useful methods and properties:
-    pre
-      code.js
-        :code
+    p If we created PTR manually or used `app.ptr.get` method we will PTR initialized instance with useful methods and properties:
+    :code(lang="js")
           // init ptr manually
           var ptr = app.ptr.create('.ptr-content');
 
@@ -106,10 +132,10 @@ block content
           td Link to global app instance
         tr
           td ptr.el
-          td PTR HTML element (<code>ptr-content</code>)
+          td PTR HTML element (`ptr-content`)
         tr
           td ptr.$el
-          td Dom7 instance with PTR HTML element (<code>ptr-content</code>)
+          td Dom7 instance with PTR HTML element (`ptr-content`)
         tr
           th(colspan="2") Methods
         tr
@@ -146,17 +172,17 @@ block content
         tr
           td ptr:refresh
           td Pull To Refresh content<span>&lt;div class="ptr-content"&gt;</span>
-          td Event will be triggered when pull to refresh enters in "refreshing" state. <code>event.detail</code> contain <code>ptr.done</code> method to reset its state after loading completed
+          td Event will be triggered when pull to refresh enters in "refreshing" state. `event.detail` contain `ptr.done` method to reset its state after loading completed
         tr
           td ptr:done
           td Pull To Refresh content<span>&lt;div class="ptr-content"&gt;</span>
-          td Event will be triggered after pull to refresh is done and it is back to initial state (after calling <code>ptr.done</code> method)
+          td Event will be triggered after pull to refresh is done and it is back to initial state (after calling `ptr.done` method)
         tr
           td ptr:beforedestroy
           td Pull To Refresh content<span>&lt;div class="ptr-content"&gt;</span>
           td Event will be triggered right before PTR instance will be destroyed
     h3 App and Pull To Refresh Instance Events
-    p PTR instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>ptr</code>.
+    p PTR instance emits events on both self instance and app instance. App instance events has same names prefixed with `ptr`.
     table.events-table.double-events-table
       thead
         tr
@@ -181,10 +207,10 @@ block content
           td <span>(el, data)</span>
           td(rowspan="2") Event will be triggered when you start to move pull to refresh content. As an argument event handler receives ptr element and ptr data containing the following properties:
             ul
-              li <code>event</code> - touchmove event
-              li <code>scrollTop</code> - current scroll top position
-              li <code>translate</code> - current translateY offset
-              li <code>touchesDiff</code> - touches difference (in px)
+              li `event` - touchmove event
+              li `scrollTop` - current scroll top position
+              li `translate` - current translateY offset
+              li `touchesDiff` - touches difference (in px)
         tr
           td ptrPullMove
           td app
@@ -204,7 +230,7 @@ block content
           td refresh
           td ptr
           td <span>(el, done)</span>
-          td(rowspan="2") Event will be triggered when pull to refresh enters. As an argument event handler receives ptr element and <code>done</code> function to reset PTR state
+          td(rowspan="2") Event will be triggered when pull to refresh enters. As an argument event handler receives ptr element and `done` function to reset PTR state
         tr
           td ptrRefresh
           td app
@@ -229,80 +255,122 @@ block content
           td ptrBeforeDestroy
           td app
           td <span>(ptr)</span>
+
+    +cssVars('pull-to-refresh')
+
+    h2 Examples
     .with-device
-      h2(data-device-preview="../docs-demos/pull-to-refresh.html") Example
-      pre
-        code.html
-          :code
-            <div class="page-content ptr-content">
-              <div class="ptr-preloader">
-                <div class="preloader"></div>
-                <div class="ptr-arrow"></div>
-              </div>
-              <div class="list media-list">
-                <ul>
-                  <li class="item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/88/88/abstract/1" width="44"/></div>
-                    <div class="item-inner">
-                      <div class="item-title-row">
-                        <div class="item-title">Yellow Submarine</div>
-                      </div>
-                      <div class="item-subtitle">Beatles</div>
-                    </div>
-                  </li>
-                  <li class="item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/88/88/abstract/2" width="44"/></div>
-                    <div class="item-inner">
-                      <div class="item-title-row">
-                        <div class="item-title">Don't Stop Me Now</div>
-                      </div>
-                      <div class="item-subtitle">Queen</div>
-                    </div>
-                  </li>
-                  <li class="item-content">
-                    <div class="item-media"><img src="http://lorempixel.com/88/88/abstract/3" width="44"/></div>
-                    <div class="item-inner">
-                      <div class="item-title-row">
-                        <div class="item-title">Billie Jean</div>
-                      </div>
-                      <div class="item-subtitle">Michael Jackson</div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-      pre
-        code.js
-          :code
-            var app = new Framework7();
+      h4(data-device-preview="../docs-demos/core/pull-to-refresh.html") Pull From Top
+      :code(lang="html")
+        <div class="page-content ptr-content">
+          <div class="ptr-preloader">
+            <div class="preloader"></div>
+            <div class="ptr-arrow"></div>
+          </div>
+          <div class="list media-list">
+            <ul>
+              <li class="item-content">
+                <div class="item-media"><img src="https://cdn.framework7.io/placeholder/abstract-88x88-1.jpg" width="44"/></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Yellow Submarine</div>
+                  </div>
+                  <div class="item-subtitle">Beatles</div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-media"><img src="https://cdn.framework7.io/placeholder/abstract-88x88-2.jpg" width="44"/></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Don't Stop Me Now</div>
+                  </div>
+                  <div class="item-subtitle">Queen</div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-media"><img src="https://cdn.framework7.io/placeholder/abstract-88x88-3.jpg" width="44"/></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Billie Jean</div>
+                  </div>
+                  <div class="item-subtitle">Michael Jackson</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      :code(lang="js")
+        var app = new Framework7();
 
-            var $$ = Dom7;
+        var $$ = Dom7;
 
-            // Dummy Content
-            var songs = ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'];
-            var authors = ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers'];
-            // Pull to refresh content
-            var $ptrContent = $$('.ptr-content');
-            // Add 'refresh' listener on it
-            $ptrContent.on('ptr:refresh', function (e) {
-              // Emulate 2s loading
-              setTimeout(function () {
-                var picURL = 'http://lorempixel.com/88/88/abstract/' + Math.round(Math.random() * 10);
-                var song = songs[Math.floor(Math.random() * songs.length)];
-                var author = authors[Math.floor(Math.random() * authors.length)];
-                var itemHTML =
-                  '<li class="item-content">' +
-                    '<div class="item-media"><img src="' + picURL + '" width="44"/></div>' +
-                    '<div class="item-inner">' +
-                      '<div class="item-title-row">' +
-                        '<div class="item-title">' + song + '</div>' +
-                      '</div>' +
-                      '<div class="item-subtitle">' + author + '</div>' +
-                    '</div>' +
-                  '</li>';
-                // Prepend new list element
-                $ptrContent.find('ul').prepend(itemHTML);
-                // When loading done, we need to reset it
-                app.ptr.done(); // or e.detail();
-              }, 2000);
-            });
+        // Dummy Content
+        var songs = ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'];
+        var authors = ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers'];
+        // Pull to refresh content
+        var $ptrContent = $$('.ptr-content');
+        // Add 'refresh' listener on it
+        $ptrContent.on('ptr:refresh', function (e) {
+          // Emulate 2s loading
+          setTimeout(function () {
+            var picURL = 'https://cdn.framework7.io/placeholder/abstract-88x88-' + (Math.floor(Math.random() * 10) + 1) + '.jpg';
+            var song = songs[Math.floor(Math.random() * songs.length)];
+            var author = authors[Math.floor(Math.random() * authors.length)];
+            var itemHTML =
+              '<li class="item-content">' +
+                '<div class="item-media"><img src="' + picURL + '" width="44"/></div>' +
+                '<div class="item-inner">' +
+                  '<div class="item-title-row">' +
+                    '<div class="item-title">' + song + '</div>' +
+                  '</div>' +
+                  '<div class="item-subtitle">' + author + '</div>' +
+                '</div>' +
+              '</li>';
+            // Prepend new list element
+            $ptrContent.find('ul').prepend(itemHTML);
+            // When loading done, we need to reset it
+            app.ptr.done(); // or e.detail();
+          }, 2000);
+        });
+      h4(data-device-preview="../docs-demos/core/pull-to-refresh-bottom.html") Pull From Bottom
+      :code(lang="html")
+        <!-- additional "ptr-bottom" class -->
+        <div class="page-content ptr-content ptr-bottom">
+          <div class="list media-list">
+            <ul>
+              <li class="item-content">
+                <div class="item-media"><img src="https://cdn.framework7.io/placeholder/abstract-88x88-1.jpg" width="44"/></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Yellow Submarine</div>
+                  </div>
+                  <div class="item-subtitle">Beatles</div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-media"><img src="https://cdn.framework7.io/placeholder/abstract-88x88-2.jpg" width="44"/></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Don't Stop Me Now</div>
+                  </div>
+                  <div class="item-subtitle">Queen</div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-media"><img src="https://cdn.framework7.io/placeholder/abstract-88x88-3.jpg" width="44"/></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Billie Jean</div>
+                  </div>
+                  <div class="item-subtitle">Michael Jackson</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- ptr-preload is on the bottom -->
+          <div class="ptr-preloader">
+            <div class="preloader"></div>
+            <div class="ptr-arrow"></div>
+          </div>
+        </div>

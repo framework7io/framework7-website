@@ -7,20 +7,21 @@ block vars
 block content
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Navbar Vue Component
-    .docs-index
+    ul.docs-index
     p Navbar is a fixed (with Fixed and Through layout types) area at the top of a screen that contains Page title and navigation elements.
     p Navbar Vue component represents <a href="../docs/navbar.html">Navbar</a> component.
     h2 Navbar Components
     p There are following components included:
     ul
-      li <code><b>f7-navbar</b></code>
-      li <code><b>f7-nav-left</b></code>
-      li <code><b>f7-nav-right</b></code>
-      li <code><b>f7-nav-title</b></code>
+      li `f7-navbar`
+      li `f7-nav-left`
+      li `f7-nav-right`
+      li `f7-nav-title`
+      li `f7-nav-title-large`
     h2 Navbar Properties
     table.params-table
       thead
@@ -32,11 +33,6 @@ block content
       tbody
         tr
           th(colspan="4") &lt;f7-navbar&gt; properties
-        tr
-          td inner
-          td boolean
-          td true
-          td When enabled (by default), it will put all the content within internal `navbar-inner` element. Disable it only in case you want to put totally custom layout inside
         tr
           td title
           td string
@@ -51,12 +47,22 @@ block content
           td back-link
           td boolean<br>string
           td
-          td Adds back-link with text (if <code>string</code> value is specified)
+          td Adds back-link with text (if `string` value is specified)
         tr
           td back-link-url
           td string
           td
           td Custom back link URL
+        tr
+          td back-link-force
+          td boolean
+          td false
+          td Force page to load and ignore previous page in history
+        tr
+          td back-link-show-text
+          td boolean
+          td
+          td By default back link text disable for MD theme
         tr
           td sliding
           td boolean
@@ -78,6 +84,26 @@ block content
           td false
           td Makes navbar hidden
         tr
+          td innerClass
+          td string
+          td
+          td Adds additional class to `navbar-inner` element
+        tr
+          td large
+          td boolean
+          td
+          td Enables navbar with large title
+        tr
+          td large-transparent
+          td boolean
+          td
+          td Makes large navbar transparent (should be used in addition to `large` prop)
+        tr
+          td title-large
+          td string
+          td
+          td Navbar large title text. If not specified then will be equal to `title` prop
+        tr
           th(colspan="4") &lt;f7-nav-left&gt; properties
         tr
           td back-link
@@ -90,10 +116,20 @@ block content
           td
           td Custom back link URL
         tr
+          td back-link-force
+          td boolean
+          td false
+          td Force page to load and ignore previous page in history
+        tr
+          td back-link-show-text
+          td boolean
+          td
+          td By default back link text disable for MD theme
+        tr
           td sliding
           td boolean
           td
-          td Enables "sliding" effect. By default inhertis <code>sliding</code> prop of parent <code>f7-navbar</code>
+          td Enables "sliding" effect. By default inhertis `sliding` prop of parent `f7-navbar`
         tr
           th(colspan="4") &lt;f7-nav-title&gt; properties
         tr
@@ -110,14 +146,14 @@ block content
           td sliding
           td boolean
           td
-          td Enables "sliding" effect. By default inhertis <code>sliding</code> prop of parent <code>f7-navbar</code>
+          td Enables "sliding" effect. By default inhertis `sliding` prop of parent `f7-navbar`
         tr
           th(colspan="4") &lt;f7-nav-right&gt; properties
         tr
           td sliding
           td boolean
           td
-          td Enables "sliding" effect. By default inhertis <code>sliding</code> prop of parent <code>f7-navbar</code>
+          td Enables "sliding" effect. By default inhertis `sliding` prop of parent `f7-navbar`
     h2 Navbar Methods
     table.methods-table
       tr
@@ -145,175 +181,113 @@ block content
           td back-click<br>click:back
           td Event will be triggered after click on navbar back link
         tr
+          td navbar:hide
+          td Event will be triggered when Navbar becomes hidden
+        tr
+          td navbar:show
+          td Event will be triggered when Navbar becomes visible
+        tr
+          td navbar:collapse
+          td Event will be triggered when Navbar with large title collapsed (from large navbar to usual navbar)
+        tr
+          td navbar:expand
+          td Event will be triggered when Navbar with large title expanded (from usual navbar to large navbar)
+        tr
           th(colspan="2") &lt;f7-nav-left&gt; events
         tr
           td back-click<br>click:back
           td Event will be triggered after click on navbar back link
 
     h2 Navbar Slots
-    p Navbar Vue component (<code>&lt;f7-navbar&gt;</code>) has additional slots for custom elements:
+    p Navbar Vue component (`<f7-navbar>`) has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="navbar-inner"&gt;</code> element
-      li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="navbar-inner"&gt;</code> element
-      li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="navbar-inner"&gt;</code> element
-    pre
-      code.html
-        :code
-          <f7-navbar title="My App">
-            <div slot="before-inner">Before Inner</div>
-            <div slot="after-inner">After Inner</div>
-            <div>Default slot</div>
-          </f7-navbar>
+      li `default` - element will be inserted as a child of `<div class="navbar-inner">` element
+      li `before-inner` - element will be inserted right before `<div class="navbar-inner">` element
+      li `after-inner` - element will be inserted right after `<div class="navbar-inner">` element
+      li `left` - element will be inserted in navbar's left element
+      li `right` - element will be inserted in navbar's right element
+      li `title` - element will be inserted in navbar's title element
+      li `title-large` - element will be inserted in navbar's large title text element
+    :code(lang="html")
+      <f7-navbar title="My App">
+        <a href="#" slot="left">Left Link</a>
+        <a href="#" slot="right">Right Link</a>
+        <div slot="before-inner">Before Inner</div>
+        <div slot="after-inner">After Inner</div>
+        <div>Default slot</div>
+      </f7-navbar>
 
-          <!-- Renders to: -->
+      <!-- Renders to: -->
 
-          <div class="navbar">
-            <div>Before Inner</div>
-            <div class="navbar-inner">
-              <div class="title">My App</div>
-              <div>Default slot</div>
-            </div>
-            <div>After Inner</div>
+      <div class="navbar">
+        <div class="navbar-bg"></div>
+        <div>Before Inner</div>
+        <div class="navbar-inner">
+          <div class="left">
+            <a href="#">Left Link</a>
           </div>
+          <div class="title">My App</div>
+          <div class="right">
+            <a href="#">Right Link</a>
+          </div>
+          <div>Default slot</div>
+        </div>
+        <div>After Inner</div>
+      </div>
 
     h2 Examples
     h4 Minimal layout
-    pre
-      code.html
-        :code
-          <f7-navbar title="My App"></f7-navbar>
+    :code(lang="html")
+      <f7-navbar title="My App"></f7-navbar>
 
-          <!-- Renders to: -->
-
-          <div class="navbar">
-            <div class="navbar-inner sliding">
-              <div class="title">My App</div>
-            </div>
-          </div>
     h4 Minimal layout with back link
-    pre
-      code.html
-        :code
-          <f7-navbar title="My App" back-link="Back"></f7-navbar>
+    :code(lang="html")
+      <f7-navbar title="My App" back-link="Back"></f7-navbar>
 
-          <!-- Renders to: -->
-
-          <div class="navbar">
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a href="#" class="back link">
-                  <i class="icon icon-back"></i>
-                  <!-- Back link text rendered only for iOS theme -->
-                  <span>Back</span>
-                </a>
-              </div>
-              <div class="title">My App</div>
-            </div>
-          </div>
     h4 Without "sliding" transition effect (affects iOS theme only)
-    pre
-      code.html
-        :code
-          <f7-navbar title="My App" back-link="Back" :sliding="false"></f7-navbar>
+    :code(lang="html")
+      <f7-navbar title="My App" back-link="Back" :sliding="false"></f7-navbar>
 
-          <!-- Renders to: -->
-
-          <div class="navbar">
-            <div class="navbar-inner">
-              <div class="left">
-                <a href="#" class="back link">
-                  <i class="icon icon-back"></i>
-                  <!-- Back link text rendered only for iOS theme -->
-                  <span>Back</span>
-                </a>
-              </div>
-              <div class="title">My App</div>
-            </div>
-          </div>
     h4 With additional right link to open right panel
-    pre
-      code.html
-        :code
-          <f7-navbar title="My App" back-link="Back">
-            <f7-nav-right>
-              <f7-link icon="icon-bars" panel-open="right"></f7-link>
-            </f7-nav-right>
-          </f7-navbar>
+    :code(lang="html")
+      <f7-navbar title="My App" back-link="Back">
+        <f7-nav-right>
+          <f7-link icon="icon-bars" panel-open="right"></f7-link>
+        </f7-nav-right>
+      </f7-navbar>
 
-          <!-- Renders to: -->
+      <!-- or -->
 
-          <div class="navbar">
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a href="#" class="back link">
-                  <i class="icon icon-back"></i>
-                  <!-- Back link text rendered only for iOS theme -->
-                  <span>Back</span>
-                </a>
-              </div>
-              <div class="title">My App</div>
-              <div class="right">
-                <a href="#" class="link panel-open" data-panel="right">
-                  <i class="icon icon-bars"></i>
-                </a>
-              </div>
-            </div>
-          </div>
+      <f7-navbar title="My App" back-link="Back">
+        <f7-link slot="right" icon="icon-bars" panel-open="right"></f7-link>
+      </f7-navbar>
+
+    h4 With large title
+    :code(lang="html")
+      <f7-navbar title="My App" back-link="Back" large></f7-navbar>
+
+      <!-- with different large title text -->
+
+      <f7-navbar title="My App" back-link="Back" large title-large="Large Title"></f7-navbar>
+
     h4 All three parts
-    pre
-      code.html
-        :code
-          <f7-navbar>
-            <f7-nav-left back-link="Back"></f7-nav-left>
-            <f7-nav-title>My App</f7-nav-title>
-            <f7-nav-right>
-              <f7-link icon="icon-bars" panel-open="right"></f7-link>
-            </f7-nav-right>
-          </f7-navbar>
+    :code(lang="html")
+      <f7-navbar>
+        <f7-nav-left back-link="Back"></f7-nav-left>
+        <f7-nav-title>My App</f7-nav-title>
+        <f7-nav-right>
+          <f7-link icon="icon-bars" panel-open="right"></f7-link>
+        </f7-nav-right>
+      </f7-navbar>
 
-          <!-- Renders to: -->
-
-          <div class="navbar">
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a href="#" class="back link">
-                  <i class="icon icon-back"></i>
-                  <!-- Back link text rendered only for iOS theme -->
-                  <span>Back</span>
-                </a>
-              </div>
-              <div class="title">My App</div>
-              <div class="right">
-                <a href="#" class="link panel-open" data-panel="right">
-                  <i class="icon icon-bars"></i>
-                </a>
-              </div>
-            </div>
-          </div>
     h4 Full custom layout
-    pre
-      code.html
-        :code
-          <f7-navbar>
-            <f7-nav-left>
-              <f7-link>Left Link</f7-link>
-            </f7-nav-left>
-            <f7-nav-title>My App</f7-nav-title>
-            <f7-nav-right>
-              <f7-link>Right Link</f7-link>
-            </f7-nav-right>
-          </f7-navbar>
-
-          <!-- Renders to: -->
-
-          <div class="navbar">
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a href="#" class="link">Left Link</a>
-              </div>
-              <div class="title">My App</div>
-              <div class="right">
-                <a href="#" class="link">Right Link</a>
-              </div>
-            </div>
-          </div>
+    :code(lang="html")
+      <f7-navbar>
+        <f7-nav-left>
+          <f7-link>Left Link</f7-link>
+        </f7-nav-left>
+        <f7-nav-title>My App</f7-nav-title>
+        <f7-nav-right>
+          <f7-link>Right Link</f7-link>
+        </f7-nav-right>
+      </f7-navbar>

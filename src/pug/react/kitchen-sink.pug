@@ -1,0 +1,47 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Framework7-React Kitchen Sink | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Kitchen Sink
+    ul.docs-index
+    .with-device(data-device-preview="../kitchen-sink/react/index.html?theme=ios")
+      p Framework7-React Kitchen Sink is a great place to get started, it has a lot of examples for all Framework7-React components and covers most of aspects.
+      p It is recommended to use it as a reference during development.
+      h2 Source Code
+      p React Kitchen Sink source code is located at <a href="https://github.com/framework7io/framework7/tree/master/kitchen-sink/react" target="_blank">GitHub repository</a>
+      h2 Running Locally
+      p To run Framework7-React Kitchen Sink locally we need:
+      ol
+        li
+          p Download and unzip <a href="https://github.com/framework7io/framework7/" target="_blank">Framework7 GitHub repository</a> to a local folder
+        li
+          p Install <a href="http://nodejs.org/" target="_blank">Node.js</a> (if not installed)
+        li
+          p Install Gulp (if not installed) by executing the following command in terminal:
+          :code
+            $ npm install --global gulp
+        li
+          p Now, we need to install required dependencies. Go to the folder with downloaded and unzipped Framework7 repository and execute in terminal:
+          :code
+            $ npm install
+        li
+          p We are ready to launch Framework7-React Kitchen Sink, just execute in terminal:
+          :code
+            $ npm run react:prod
+          p That command will launch Kitchen Sink with production (released) version of Framework7. To use latest development version in Kitchen Sink, use the following command instead:
+          :code
+            $ npm run react:dev
+
+
+
+
+
+

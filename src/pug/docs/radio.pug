@@ -11,12 +11,10 @@ block content
   .docs-content
     +improveDocsLink
     h1 Radio
-    .docs-index
+    ul.docs-index
     h2 Radio Layout
     p Radio layout is pretty simple:
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <!-- radio element -->
           <label class="radio">
             <!-- radio input -->
@@ -26,9 +24,7 @@ block content
           </label>
     h2 Radio Group/List
     p To create Radio group/list we need to use <a href="list-view.html">List View</a> with few additions:
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <div class="list">
             <ul>
               <!-- Single radio item -->
@@ -60,22 +56,21 @@ block content
           </div>
     .important-note
       ul
-        li <code>item-content</code> must be a <code><b>&lt;label&gt;</b></code> element with additional <code><b>item-radio</b></code> class
-        li Radio input (<code>&lt;input type="radio"&gt;</code>) must be a first child of <code>item-content</code>
+        li `item-content` must be a `<label>` element with additional `item-radio` class
+        li Radio input (`<input type="radio">`) must be a first child of `item-content`
         li Radio icon must be <b>after</b> radio input
+
+    +cssVars('radio')
+
     .with-device
-      h2(data-device-preview="../docs-demos/radio.html") Examples
+      h2(data-device-preview="../docs-demos/core/radio.html") Examples
       h4 Inline
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block block-strong">
               <p>Lorem <label class="radio"><input type="radio" name="demo-radio-inline"><i class="icon-radio"></i></label> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <label class="radio"><input type="radio" name="demo-radio-inline"><i class="icon-radio"></i></label> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
             </div>
       h4 Radio Group
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list">
               <ul>
                 <li>
@@ -117,9 +112,7 @@ block content
               </ul>
             </div>
       h4 With Media Lists
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="list media-list">
               <ul>
                 <li>

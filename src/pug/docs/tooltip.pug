@@ -1,0 +1,305 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Tooltip | Framework7 Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Tooltip
+    ul.docs-index
+    p Tooltips display informative text when users hover over, or tap an target element.
+    p Tooltip can be positioned around any element with any HTML content inside.
+
+    h2 Tooltip Layout
+    p Tooltip is a JavaScript-only component, it doesn't have any HTML layout.
+
+    h2 Tooltip App Methods
+    p We need to create/initialize the Tooltip. Let's look at related App methods to work with Tooltip:
+    .method-wrap
+      p
+        span.method app.tooltip.create(<span>parameters</span>)
+        | - create Tooltip instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with tooltip parameters
+      p.method-returns Method returns created Tooltip instance
+
+    .method-wrap
+      p
+        span.method app.tooltip.destroy(<span>targetEl</span>)
+        | - destroy Tooltip instance
+      ul.method-parameters
+        li
+          span.parameter targetEl
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span> (instance). Tooltip element or Tooltip instance to destroy.
+    .method-wrap
+      p
+        span.method app.tooltip.get(<span>targetEl</span>)
+        | - get Tooltip instance by its target HTML element
+      ul.method-parameters
+        li
+          span.parameter targetEl
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Tooltip target element.
+      p.method-returns Method returns Tooltip instance
+    .method-wrap
+      p
+        span.method app.tooltip.show(<span>targetEl</span>)
+        | - show Tooltip
+      ul.method-parameters
+        li
+          span.parameter targetEl
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Tooltip target element.
+      p.method-returns Method returns Tooltip instance
+    .method-wrap
+      p
+        span.method app.tooltip.hide(<span>targetEl</span>)
+        | - hide Tooltip
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Tooltip target element.
+      p.method-returns Method returns Tooltip instance
+    .method-wrap
+      p
+        span.method app.tooltip.setText(<span>targetEl</span>, <span>text</span>)
+        | - change Tooltip text
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Tooltip target element.
+        li
+          span.parameter text
+          |  - <span class="parameter-type">string</span> - new text to set in specified Tooltip.
+      p.method-returns Method returns Tooltip instance
+    h2 Tooltip Parameters
+    p Now let's look at list of available parameters we need to create Tooltip:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td targetEl
+          td HTMLElement<br>string
+          td
+          td Tooltip target element. Tooltip will be shown around this element. HTMLElement or string with CSS selector of tooltip target element
+        tr
+          td text
+          td string
+          td
+          td Tooltip text or HTML content
+        tr
+          td cssClass
+          td string
+          td
+          td Additional css class will be added to Tooltip element. Can be used for additional tooltip styling
+        tr
+          td render
+          td function (tooltip)
+          td
+          td Function to render tooltip element, must return full tooltip HTML layout string
+        tr
+          td on
+          td object
+          td
+          td
+            p Object with events handlers. For example:
+            :code(lang="js")
+                  var tooltip = app.tooltip.create({
+                    targetEl: '.some-link',
+                    on: {
+                      show: function () {
+                        console.log('Tooltip became visible')
+                      }
+                    }
+                  })
+
+    h2 Tooltip Methods & Properties
+    p So to create Tooltip we have to call:
+    :code(lang="js")
+          var tooltip = app.tooltip.create({ /* parameters */ })
+    p After that we have its initialized instance (like `tooltip` variable in example above) with useful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td tooltip.app
+          td Link to global app instance
+        tr
+          td tooltip.targetEl
+          td Tooltip target HTML element
+        tr
+          td tooltip.$targetEl
+          td Dom7 instance with tooltip target HTML element
+        tr
+          td tooltip.el
+          td Tooltip itself HTML element
+        tr
+          td tooltip.$el
+          td Dom7 instance with tooltip HTML element
+        tr
+          td tooltip.text
+          td Tooltip text/content
+        tr
+          td tooltip.opened
+          td Boolean property indicating whether it is opened/visible or not
+        tr
+          td tooltip.params
+          td Tooltip parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td tooltip.show(<span>targetEl</span>)
+          td Show tooltip around `targetEl` element. If `targetEl` is not specified, then it will use `targetEl` passed in parameters on initialization
+        tr
+          td tooltip.hide()
+          td Hide tooltip
+        tr
+          td tooltip.setText(<span>text</span>)
+          td Change tooltip text or HTML content to the new one
+        tr
+          td tooltip.destroy()
+          td Destroys tooltip instance
+        tr
+          td tooltip.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td tooltip.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td tooltip.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td tooltip.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td tooltip.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+
+    h2 Tooltip Events
+    p Tooltip will fire the following DOM events on tooltip element and events on app and tooltip instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td tooltip:show
+          td Tooltip Element<br>
+            | Tooltip Target
+          td Event will be triggered when Tooltip becomes visible
+        tr
+          td tooltip:hide
+          td Tooltip Element<br>
+            | Tooltip Target
+          td Event will be triggered when Tooltip becomes hidden
+        tr
+          td tooltip:beforedestroy
+          td Tooltip Element<br>
+            | Tooltip Target
+          td Event will be triggered right before Tooltip instance will be destroyed
+
+    h3 App and Tooltip Instance Events
+    p Tooltip instance emits events on both self instance and app instance. App instance events has same names prefixed with `tooltip`.
+    table.events-table.double-events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Target
+          th Description
+      tbody
+        tr
+          td show
+          td <span>(tooltip)</span>
+          td tooltip
+          td(rowspan="2") Event will be triggered when Tooltip becomes visible. As an argument event handler receives Tooltip instance
+        tr
+          td tooltipShow
+          td <span>(tooltip)</span>
+          td app
+        tr
+          td hide
+          td <span>(tooltip)</span>
+          td tooltip
+          td(rowspan="2") Event will be triggered when Tooltip becomes hidden. As an argument event handler receives Toolitp instance
+        tr
+          td tooltipHide
+          td <span>(tooltip)</span>
+          td app
+        tr
+          td beforeDestroy
+          td <span>(tooltip)</span>
+          td tooltip
+          td(rowspan="2") Event will be triggered right before Tooltip instance will be destroyed. As an argument event handler receives Tooltip instance
+        tr
+          td tooltipBeforeDestroy
+          td <span>(tooltip)</span>
+          td app
+    h2 Tooltip Auto Initialization
+    p If you don't need to use Tooltip API and your Tooltip target element is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding `tooltip-init` class to target element, and specifying tooltip text in its `data-tooltip` attribute:
+    :code(lang="html")
+          <!-- Add tooltip-init class and specify tooltip text in data-tooltip attribute -->
+          <a href="/profile/" class="link tooltip-init profile-link" data-tooltip="Profile settings">
+            <i class="profile-icon"></i>
+          </a>
+    p In this case if you need to access created Tooltip instance you can use the `app.tooltip.get` app method:
+    :code(lang="js")
+          var tooltip = app.tooltip.get('.profile-link');
+          // change tooltip text
+          tooltip.setText('Profile');
+
+    +cssVars('tooltip')
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/tooltip.html") Examples
+      :code(lang="html")
+            <!-- navbar with link with tooltip -->
+            <div class="navbar">
+              <div class="navbar-bg"></div>
+              <div class="navbar-inner sliding">
+                <div class="title">Tooltip</div>
+                <div class="right">
+                  <a href="#" class="link navbar-tooltip">
+                    <i class="icon f7-icons if-not-md">info</i>
+                    <i class="icon material-icons if-md">info_outline</i>
+                  </a>
+                </div>
+              </div>
+            </div>
+            ...
+
+            <!-- icons with tooltip in text -->
+            <div class="block block-strong">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. <i class="icon f7-icons color-blue icon-tooltip if-not-md">info_fill</i> <i class="icon material-icons color-blue icon-tooltip if-md">info</i> Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus...
+              ...
+            </div>
+            ...
+
+            <!-- button with auto init tooltip -->
+            <a class="button button-round button-outline button-small tooltip-init" data-tooltip="Button tooltip text">Button with Tooltip</a>
+      :code(lang="js")
+            // icons tooltip. One tooltip for all icons with "icon-tooltip" class
+            var iconTooltip = app.tooltip.create({
+              targetEl: '.icon-tooltip',
+              text: 'Tooltip text',
+            });
+
+            // navbar link tooltip
+            var navbarTooltip = app.tooltip.create({
+              targetEl: '.navbar-tooltip',
+              text: 'One more tooltip<br>with more text<br><em>and custom formatting</em>'
+            });

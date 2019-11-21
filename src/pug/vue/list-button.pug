@@ -5,19 +5,20 @@ block vars
   - var title = 'List Button Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 List Button Vue Component
-    .docs-index
+    ul.docs-index
     p List Button Vue component represents Framework7's <a href="../docs/list-view.html#list-button">List Button</a> element. They are intended to be used inside of the <a href="list-view.html">List Vue Component</a>.
 
     h2 List Button Components
     p There are following components included:
     ul
-      li <code><b>f7-list-button</b></code>
+      li `f7-list-button`
 
     h2 List Button Properties
     table.params-table
@@ -37,7 +38,7 @@ block content
           td text
           td string
           td
-          td Button inner text, same as <code>title</code>
+          td Button inner text, same as `title`
         tr
           td tab-link
           td string/boolean
@@ -59,6 +60,11 @@ block content
           td
           td Link target attribute
         tr
+          td tooltip
+          td string
+          td
+          td List button <a href="../docs/tooltip.html">tooltip</a> text to show on button hover/press
+        tr
           th(colspan="4") &lt;f7-list-button&gt; navigation/router related properties
         +vueLinkRouterProps
         tr
@@ -78,43 +84,24 @@ block content
           td click
           td Event will be triggered after click on a button
 
-    h2 Examples
-    h4 Minimal Layout
-    pre
-      code.html
-        :code
-          <f7-list>
-            <f7-list-button>Button 1</f7-list-button>
-            <f7-list-button>Button 2</f7-list-button>
-          </f7-list>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/list-button.html") Examples
+      :code(lang="html")
+            <f7-list>
+              <f7-list-button title="List Button 1"></f7-list-button>
+              <f7-list-button title="List Button 2"></f7-list-button>
+              <f7-list-button title="List Button 3"></f7-list-button>
+            </f7-list>
 
-          <!-- Renders to: -->
+            <f7-list inset>
+              <f7-list-button title="List Button 1"></f7-list-button>
+              <f7-list-button title="List Button 2"></f7-list-button>
+              <f7-list-button title="List Button 3"></f7-list-button>
+            </f7-list>
 
-          <div class="list">
-            <ul>
-              <li>
-                <a href="#" class="item-link list-button">Button 1</a>
-              </li>
-              <li>
-                <a href="#" class="item-link list-button">Button 2</a>
-              </li>
-            </ul>
-          </div>
-
-    h4 Color Buttons
-    pre
-      code.html
-        :code
-          <f7-list>
-            <f7-list-button color="red">Red Button</f7-list-button>
-            <f7-list-button color="green">Green Button</f7-list-button>
-          </f7-list>
-
-    h4 Control Buttons in Inset List
-    pre
-      code.html
-        :code
-          <f7-list inset>
-            <f7-list-button panel-open="left">Open Panel</f7-list-button>
-            <f7-list-button popup-open="#my-popup">Open Popup</f7-list-button>
-          </f7-list>
+            <f7-list inset>
+              <f7-list-button title="Red List Button" color="red"></f7-list-button>
+              <f7-list-button title="Green List Button" color="green"></f7-list-button>
+              <f7-list-button title="Orange List Button" color="orange"></f7-list-button>
+            </f7-list>
+      .device-spacer

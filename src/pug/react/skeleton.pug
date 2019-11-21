@@ -1,0 +1,180 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Skeleton React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Skeleton React Component
+    ul.docs-index
+    p Skeleton elements (aka UI Skeletons, Skeleton Screens, Ghost Elements) are basically "gray box" representations of UI that will be available soon. They are designed to improve perceived performance.
+    p Skeleton React component represents <a href="../docs/skeleton.html">Skeleton</a> component.
+    h2 Skeleton Components
+    p There are following components included:
+    ul
+      li `SkeletonBlock`
+      li `SkeletonText`
+    h2 Skeleton Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;SkeletonBlock&gt; properties
+        tr
+          td string<br>number
+          td string
+          td
+          td Skeleton block width
+        tr
+          td string<br>number
+          td string
+          td
+          td Skeleton block height
+        tr
+          td tag
+          td string
+          td div
+          td Skeleton block tag
+
+        tr
+          th(colspan="4") &lt;SkeletonText&gt; properties
+        tr
+          td string<br>number
+          td string
+          td
+          td Skeleton text element width
+        tr
+          td string<br>number
+          td string
+          td
+          td Skeleton text element height
+        tr
+          td tag
+          td string
+          td span
+          td Skeleton text element tag
+
+    .with-device
+      h2(data-device-preview="../docs-demos/react/skeleton.html") Examples
+
+      :code(lang="jsx")
+        class AppComponent extends React.Component {
+          constructor() {
+            super();
+
+            this.state = {
+              loading: false,
+              effect: null,
+            };
+          }
+          load(effect) {
+            var self = this;
+            if (self.state.loading) return;
+            self.setState({
+              effect: effect,
+              loading: true,
+            });
+            setTimeout(() => {
+              self.setState({ loading: false });
+            }, 3000);
+          }
+          render() {
+            return (
+              <App>
+                <View main>
+                  <Page>
+                    <Navbar title="Menu" />
+
+                    <BlockTitle>Skeleton List</BlockTitle>
+                    <List mediaList className="skeleton-text">
+                      <ListItem
+                        title="Title"
+                        subtitle="Subtitle"
+                        text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum."
+                      >
+                        <SkeletonBlock style={{ width: '40px', height: '40px', 'border-radius': '50%' }} slot="media" />
+                      </ListItem>
+                      <ListItem
+                        title="Title"
+                        subtitle="Subtitle"
+                        text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum."
+                      >
+                        <SkeletonBlock style={{ width: '40px', height: '40px', 'border-radius': '50%' }} slot="media" />
+                      </ListItem>
+                    </List>
+
+                    <BlockTitle>Skeleton Card</BlockTitle>
+                    <Card
+                      className="skeleton-text"
+                      title="Card Header"
+                      content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit."
+                      footer="Card Footer"
+                    ></Card>
+
+                    <BlockTitle>Loading Effects</BlockTitle>
+                    <Block strong>
+                      <Row tag="p">
+                        <Button fill small round className="col" onClick={() => this.load('fade')}>Fade</Button>
+                        <Button fill small round className="col" onClick={() => this.load('blink')}>Blink</Button>
+                        <Button fill small round className="col" onClick={() => this.load('pulse')}>Pulse</Button>
+                      </Row>
+                    </Block>
+                    {this.state.loading
+                      ? (
+                        <List mediaList v-if="loading">
+                          {[1,2,3].map(n => (
+                            <ListItem
+                              key={n}
+                              className={`skeleton-text skeleton-effect-${this.state.effect}`}
+                              title="Full Name"
+                              subtitle="Position"
+                              text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."
+                            >
+                              <SkeletonBlock style={{ width: '40px', height: '40px', 'border-radius': '50%' }} slot="media" />
+                            </ListItem>
+                          ))}
+                        </List>
+                      )
+                      : (
+                        <List mediaList>
+                          <ListItem
+                            title="John Doe"
+                            subtitle="CEO"
+                            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."
+                          >
+                            <img src="https://placeimg.com/80/80/people/1" style={{ width: '40px', height: '40px', 'border-radius': '50%' }} slot="media" />
+                          </ListItem>
+                          <ListItem
+                            title="Jane Doe"
+                            subtitle="Marketing"
+                            text="Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."
+                          >
+                            <img src="https://placeimg.com/80/80/people/2" style={{ width: '40px', height: '40px', 'border-radius': '50%' }} slot="media" />
+                          </ListItem>
+                          <ListItem
+                            title="Kate Johnson"
+                            subtitle="Admin"
+                            text="Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."
+                          >
+                            <img src="https://placeimg.com/80/80/people/3" style={{ width: '40px', height: '40px', 'border-radius': '50%' }} slot="media" />
+                          </ListItem>
+                        </List>
+                      )
+                    }
+                  </Page>
+                </View>
+              </App>
+            )
+          }
+        }

@@ -11,397 +11,394 @@ block content
   .docs-content
     +improveDocsLink
     h1 Timeline
-    .docs-index
+    ul.docs-index
     p Framework7 comes with Timeline component that allows to display both Vertical & Horizontal timeline layouts.
     .with-device
-      h2(data-device-preview="../docs-demos/timeline-vertical.html") Vertical Timeline
+      h2(data-device-preview="../docs-demos/core/timeline-vertical.html") Vertical Timeline
       p Common Vertical Timeline layout could be treated as the following:
-      pre
-        code
-          | &lt;div class="timeline"&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;21 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-inner"&gt;
-          |         &lt;div class="timeline-item-time"&gt;12:30&lt;/div&gt;
-          |         &lt;div class="timeline-item-title"&gt;Title&lt;/div&gt;
-          |         &lt;div class="timeline-item-subtitle"&gt;Subtitle&lt;/div&gt;
-          |         &lt;div class="timeline-item-text"&gt;Text&lt;/div&gt;
-          |       &lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     ... another timeline item ...
-          |   &lt;/div&gt;
-          | &lt;/div&gt;
+      :code(lang="html")
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-item-date">21 <small>DEC</small></div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-inner">
+                    <div class="timeline-item-time">12:30</div>
+                    <div class="timeline-item-title">Title</div>
+                    <div class="timeline-item-subtitle">Subtitle</div>
+                    <div class="timeline-item-text">Text</div>
+                  </div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                ... another timeline item ...
+              </div>
+            </div>
       p Where
       ul
-        li <code>timeline</code> - main timeline wrapping element. Required
+        li `timeline` - main timeline wrapping element. Required
           ul
-            li <code>timeline-item</code> - single timeline item. Required
+            li `timeline-item` - single timeline item. Required
               ul
-                li <code>timeline-item-date</code> - timeline item date. Required
-                li <code>timeline-item-divider</code> - timeline item decorative divider. Required for vertical timeline
-                li <code>timeline-item-content</code> - timeline item content wrapping. You can put any content here: text, cards, list block, custom HTML or special temeline elements. Required
+                li `timeline-item-date` - timeline item date. Required
+                li `timeline-item-divider` - timeline item decorative divider. Required for vertical timeline
+                li `timeline-item-content` - timeline item content wrapping. You can put any content here: text, cards, list block, custom HTML or special temeline elements. Required
                   ul
-                    li <code>timeline-item-inner</code> - item content additional decorative wrapping. Optional
-                    li <code>timeline-item-time</code> - item time. Optional
-                    li <code>timeline-item-title</code> - item title. Optional
-                    li <code>timeline-item-subtitle</code> - item subtitle. Optional
-                    li <code>timeline-item-text</code> - item text. Optional
+                    li `timeline-item-inner` - item content additional decorative wrapping. Optional
+                    li `timeline-item-time` - item time. Optional
+                    li `timeline-item-title` - item title. Optional
+                    li `timeline-item-subtitle` - item subtitle. Optional
+                    li `timeline-item-text` - item text. Optional
       h3 Vertical Timeline Example
-      pre
-        code
-          | &lt;!-- Timeline --&gt;
-          | &lt;div class="timeline"&gt;
-          |   &lt;!-- Timeline item --&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;21 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;Plain text item&lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;!-- Timeline item with inner --&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;22 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-inner"&gt;Another text goes here&lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;!-- Timeline item with special timeline elements --&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;23 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-time"&gt;12:33&lt;/div&gt;
-          |       &lt;div class="timeline-item-title"&gt;Item Title&lt;/div&gt;
-          |       &lt;div class="timeline-item-subtitle"&gt;Item Subtitle&lt;/div&gt;
-          |       &lt;div class="timeline-item-text"&gt;Item Text&lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;!-- Timeline item with special timeline elements and inner --&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;24 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-inner"&gt;
-          |         &lt;div class="timeline-item-time"&gt;12:33&lt;/div&gt;
-          |         ...
-          |       &lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;!-- Timeline item with multiple events per day  --&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;25 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-time"&gt;12:33&lt;/div&gt;
-          |       &lt;div class="timeline-item-title"&gt;Item Title&lt;/div&gt;
-          |       &lt;div class="timeline-item-subtitle"&gt;Item Subtitle&lt;/div&gt;
-          |       &lt;div class="timeline-item-text"&gt;Item Text&lt;/div&gt;
-          |       &lt;div class="timeline-item-time"&gt;15:45&lt;/div&gt;
-          |       &lt;div class="timeline-item-title"&gt;Item Title&lt;/div&gt;
-          |       &lt;div class="timeline-item-subtitle"&gt;Item Subtitle&lt;/div&gt;
-          |       &lt;div class="timeline-item-text"&gt;Item Text&lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;!-- Timeline item with multiple events (inners) per day --&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;26 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-inner"&gt;
-          |         &lt;div class="timeline-item-time"&gt;12:33&lt;/div&gt;
-          |         ...
-          |       &lt;/div&gt;
-          |       &lt;div class="timeline-item-inner"&gt;
-          |         &lt;div class="timeline-item-time"&gt;15:45&lt;/div&gt;
-          |         ...
-          |       &lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;!-- Timeline item with Card --&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;27 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content card"&gt;
-          |       &lt;div class="card-header"&gt;Card header&lt;/div&gt;
-          |       &lt;div class="card-content card-content-padding"&gt;Card content&lt;/div&gt;
-          |       &lt;div class="card-footer"&gt;Card footer&lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          | &lt;/div&gt;
-      h3(data-device-preview="../docs-demos/timeline-vertical-sides.html") Vertical Timeline Side By Side
-      p There is another "side-by-side" mode available for Vertical Timeline where each next item will be on different side. To enable "side-by-side" mode you need to add <code>timeline-sides</code> class to main <code>timeline</code> element. It is also possible to enable this mode only for tablet devices by adding <code>tablet-sides</code> class to main timeline element.
-      p To force timeline element to required side we may use additional <code>timeline-item-left</code> and <code>timeline-item-right</code> classes on single timeline item element <code>timeline-item</code>
-      pre
-        code
-          | &lt;!-- Each next item will on different side --&gt;
-          | &lt;div class="block-title"&gt;Side By Side&lt;/div&gt;
-          | &lt;div class="timeline timeline-sides"&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;21 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-inner"&gt;Some text goes here&lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;22 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-inner"&gt;Another text goes here&lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;23 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-inner"&gt;Just plain text&lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;24 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-inner"&gt;One more text here&lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          | &lt;/div&gt;
-          | &lt;!-- Each next item will on different side only on large tablet screens (iPad) --&gt;
-          | &lt;div class="block-title"&gt;Only Tablet Side By Side&lt;/div&gt;
-          | &lt;div class="timeline tablet-sides"&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;21 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     ...
-          |   &lt;/div&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;22 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     ...
-          |   &lt;/div&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;23 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     ...
-          |   &lt;/div&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;24 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     ...
-          |   &lt;/div&gt;
-          | &lt;/div&gt;
-          | &lt;!-- Forced sides --&gt;
-          | &lt;div class="block-title"&gt;Forced Sides&lt;/div&gt;
-          | &lt;div class="timeline timeline-sides"&gt;
-          |   &lt;!-- Force to right side by additional "timeline-item-right" class --&gt;
-          |   &lt;div class="timeline-item timeline-item-right"&gt;
-          |     &lt;div class="timeline-item-date"&gt;21 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     ...
-          |   &lt;/div&gt;
-          |   &lt;!-- Force to right side by additional "timeline-item-right" class --&gt;
-          |   &lt;div class="timeline-item timeline-item-right"&gt;
-          |     &lt;div class="timeline-item-date"&gt;22 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     ...
-          |   &lt;/div&gt;
-          |   &lt;!-- Force to left side by additional "timeline-item-left" class --&gt;
-          |   &lt;div class="timeline-item timeline-item-left"&gt;
-          |     &lt;div class="timeline-item-date"&gt;23 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     ...
-          |   &lt;/div&gt;
-          |   &lt;!-- Force to left side by additional "timeline-item-left" class --&gt;
-          |   &lt;div class="timeline-item timeline-item-left"&gt;
-          |     &lt;div class="timeline-item-date"&gt;24 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     ...
-          |   &lt;/div&gt;
-          | &lt;/div&gt;
-      h2(data-device-preview="../docs-demos/timeline-horizontal.html") Horizontal Timeline
-      p Horizontal Timeline has the same layout as Vertical but witha addional <code>timeline-horizontal</code> class on main <code>timeline</code> element.
-      p We can also control columns per view in timeline by using <a href="grid.html">Layout Grid</a> columns' classes like <code>col-33</code> and <code>tablet-20</code> (to define column width for large tablet screens).
-      pre
-        code
-          | &lt;!--
-          | Additional "timeline-horizontal" class to enable Horizontal timeline
-          | Additional "col-50" to define column width (50%)
-          | Additional "tablet-20" to define column width for tablets (20%)
-          | --&gt;
-          | &lt;div class="timeline timeline-horizontal col-50 tablet-20"&gt;
-          |   &lt;!-- Timeline Item (Day) --&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;21 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-inner"&gt;
-          |         &lt;div class="timeline-item-time"&gt;12:56&lt;/div&gt;
-          |         &lt;div class="timeline-item-title"&gt;Title 1&lt;/div&gt;
-          |         &lt;div class="timeline-item-subtitle"&gt;Subtitle 1&lt;/div&gt;
-          |         &lt;div class="timeline-item-text"&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit&lt;/div&gt;
-          |       &lt;/div&gt;
-          |       ...
-          |       &lt;div class="timeline-item-inner"&gt;
-          |         &lt;div class="timeline-item-time"&gt;14:45&lt;/div&gt;
-          |         &lt;div class="timeline-item-text"&gt;Do something&lt;/div&gt;
-          |       &lt;/div&gt;
-          |       ...
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;22 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;Plain text goes here&lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;!-- Timeline Item With Card --&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;23 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="card"&gt;
-          |         ...
-          |       &lt;/div&gt;
-          |       ...
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;!-- Timeline Item With List Block --&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;24 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="list inset"&gt;
-          |         &lt;ul&gt;
-          |           ...
-          |         &lt;/ul&gt;
-          |       &lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;25 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-time"&gt;11:11&lt;/div&gt;
-          |       &lt;div class="timeline-item-text"&gt;Task 1&lt;/div&gt;
-          |       &lt;div class="timeline-item-time"&gt;12:33&lt;/div&gt;
-          |       &lt;div class="timeline-item-text"&gt;Task 2&lt;/div&gt;
-          |       ...
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;div class="timeline-item"&gt;
-          |     &lt;div class="timeline-item-date"&gt;26 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-          |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="timeline-item-inner"&gt;
-          |         &lt;div class="timeline-item-time"&gt;11:11&lt;/div&gt;
-          |         &lt;div class="timeline-item-text"&gt;Task 1&lt;/div&gt;
-          |       &lt;/div&gt;
-          |       &lt;div class="timeline-item-inner"&gt;
-          |         &lt;div class="timeline-item-time"&gt;12:33&lt;/div&gt;
-          |         &lt;div class="timeline-item-text"&gt;Task 2&lt;/div&gt;
-          |       &lt;/div&gt;
-          |       ...
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          | &lt;/div&gt;
-      h2(data-device-preview="../docs-demos/timeline-calendar.html") Calendar Timeline
+      :code(lang="html")
+            <!-- Timeline -->
+            <div class="timeline">
+              <!-- Timeline item -->
+              <div class="timeline-item">
+                <div class="timeline-item-date">21 <small>DEC</small></div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content">Plain text item</div>
+              </div>
+              <!-- Timeline item with inner -->
+              <div class="timeline-item">
+                <div class="timeline-item-date">22 <small>DEC</small></div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-inner">Another text goes here</div>
+                </div>
+              </div>
+              <!-- Timeline item with special timeline elements -->
+              <div class="timeline-item">
+                <div class="timeline-item-date">23 <small>DEC</small></div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-time">12:33</div>
+                  <div class="timeline-item-title">Item Title</div>
+                  <div class="timeline-item-subtitle">Item Subtitle</div>
+                  <div class="timeline-item-text">Item Text</div>
+                </div>
+              </div>
+              <!-- Timeline item with special timeline elements and inner -->
+              <div class="timeline-item">
+                <div class="timeline-item-date">24 <small>DEC</small></div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-inner">
+                    <div class="timeline-item-time">12:33</div>
+                    ...
+                  </div>
+                </div>
+              </div>
+              <!-- Timeline item with multiple events per day  -->
+              <div class="timeline-item">
+                <div class="timeline-item-date">25 <small>DEC</small></div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-time">12:33</div>
+                  <div class="timeline-item-title">Item Title</div>
+                  <div class="timeline-item-subtitle">Item Subtitle</div>
+                  <div class="timeline-item-text">Item Text</div>
+                  <div class="timeline-item-time">15:45</div>
+                  <div class="timeline-item-title">Item Title</div>
+                  <div class="timeline-item-subtitle">Item Subtitle</div>
+                  <div class="timeline-item-text">Item Text</div>
+                </div>
+              </div>
+              <!-- Timeline item with multiple events (inners) per day -->
+              <div class="timeline-item">
+                <div class="timeline-item-date">26 <small>DEC</small></div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-inner">
+                    <div class="timeline-item-time">12:33</div>
+                    ...
+                  </div>
+                  <div class="timeline-item-inner">
+                    <div class="timeline-item-time">15:45</div>
+                    ...
+                  </div>
+                </div>
+              </div>
+              <!-- Timeline item with Card -->
+              <div class="timeline-item">
+                <div class="timeline-item-date">27 <small>DEC</small></div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content card">
+                  <div class="card-header">Card header</div>
+                  <div class="card-content card-content-padding">Card content</div>
+                  <div class="card-footer">Card footer</div>
+                </div>
+              </div>
+            </div>
+      h3(data-device-preview="../docs-demos/core/timeline-vertical-sides.html") Vertical Timeline Side By Side
+      p There is another "side-by-side" mode available for Vertical Timeline where each next item will be on different side. To enable "side-by-side" mode you need to add `timeline-sides` class to main `timeline` element.
+      p It is also possible to enable this mode based on responsive breakpoint. For example, for tablet devices (width >= 786px) we need to add `medium-sides` class to main timeline element. For full set of such responsive classes check #[a(href="grid.html#column-sizes") Grid docs]. They are `xsmall-sides`, `small-sides`, `medium-sides`, `large-sides`, `xlarge-sides`.
+      p To force timeline element to required side we may use additional `timeline-item-left` and `timeline-item-right` classes on single timeline item element `timeline-item`
+      :code(lang="html")
+            <!-- Each next item will on different side -->
+            <div class="block-title">Side By Side</div>
+            <div class="timeline timeline-sides">
+              <div class="timeline-item">
+                <div class="timeline-item-date">21 <small>DEC</small></div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-inner">Some text goes here</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-item-date">22 <small>DEC</small></div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-inner">Another text goes here</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-item-date">23 <small>DEC</small></div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-inner">Just plain text</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-item-date">24 <small>DEC</small></div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-inner">One more text here</div>
+                </div>
+              </div>
+            </div>
+            <!-- Each next item will on different side only on large tablet screens (iPad) -->
+            <div class="block-title">Only Tablet Side By Side</div>
+            <div class="timeline medium-sides">
+              <div class="timeline-item">
+                <div class="timeline-item-date">21 <small>DEC</small></div>
+                ...
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-item-date">22 <small>DEC</small></div>
+                ...
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-item-date">23 <small>DEC</small></div>
+                ...
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-item-date">24 <small>DEC</small></div>
+                ...
+              </div>
+            </div>
+            <!-- Forced sides -->
+            <div class="block-title">Forced Sides</div>
+            <div class="timeline timeline-sides">
+              <!-- Force to right side by additional "timeline-item-right" class -->
+              <div class="timeline-item timeline-item-right">
+                <div class="timeline-item-date">21 <small>DEC</small></div>
+                ...
+              </div>
+              <!-- Force to right side by additional "timeline-item-right" class -->
+              <div class="timeline-item timeline-item-right">
+                <div class="timeline-item-date">22 <small>DEC</small></div>
+                ...
+              </div>
+              <!-- Force to left side by additional "timeline-item-left" class -->
+              <div class="timeline-item timeline-item-left">
+                <div class="timeline-item-date">23 <small>DEC</small></div>
+                ...
+              </div>
+              <!-- Force to left side by additional "timeline-item-left" class -->
+              <div class="timeline-item timeline-item-left">
+                <div class="timeline-item-date">24 <small>DEC</small></div>
+                ...
+              </div>
+            </div>
+      h2(data-device-preview="../docs-demos/core/timeline-horizontal.html") Horizontal Timeline
+      p Horizontal Timeline has the same layout as Vertical but witha addional `timeline-horizontal` class on main `timeline` element.
+      p We can also control columns per view in timeline by using <a href="grid.html">Layout Grid</a> columns' classes like `col-33` and `tablet-20` (to define column width for large tablet screens).
+      :code(lang="html")
+            <!--
+            Additional "timeline-horizontal" class to enable Horizontal timeline
+            Additional "col-50" to define column width (50%)
+            Additional "tablet-20" to define column width for tablets (20%)
+            -->
+            <div class="timeline timeline-horizontal col-50 tablet-20">
+              <!-- Timeline Item (Day) -->
+              <div class="timeline-item">
+                <div class="timeline-item-date">21 <small>DEC</small></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-inner">
+                    <div class="timeline-item-time">12:56</div>
+                    <div class="timeline-item-title">Title 1</div>
+                    <div class="timeline-item-subtitle">Subtitle 1</div>
+                    <div class="timeline-item-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit</div>
+                  </div>
+                  ...
+                  <div class="timeline-item-inner">
+                    <div class="timeline-item-time">14:45</div>
+                    <div class="timeline-item-text">Do something</div>
+                  </div>
+                  ...
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-item-date">22 <small>DEC</small></div>
+                <div class="timeline-item-content">Plain text goes here</div>
+              </div>
+              <!-- Timeline Item With Card -->
+              <div class="timeline-item">
+                <div class="timeline-item-date">23 <small>DEC</small></div>
+                <div class="timeline-item-content">
+                  <div class="card">
+                    ...
+                  </div>
+                  ...
+                </div>
+              </div>
+              <!-- Timeline Item With List Block -->
+              <div class="timeline-item">
+                <div class="timeline-item-date">24 <small>DEC</small></div>
+                <div class="timeline-item-content">
+                  <div class="list inset">
+                    <ul>
+                      ...
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-item-date">25 <small>DEC</small></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-time">11:11</div>
+                  <div class="timeline-item-text">Task 1</div>
+                  <div class="timeline-item-time">12:33</div>
+                  <div class="timeline-item-text">Task 2</div>
+                  ...
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-item-date">26 <small>DEC</small></div>
+                <div class="timeline-item-content">
+                  <div class="timeline-item-inner">
+                    <div class="timeline-item-time">11:11</div>
+                    <div class="timeline-item-text">Task 1</div>
+                  </div>
+                  <div class="timeline-item-inner">
+                    <div class="timeline-item-time">12:33</div>
+                    <div class="timeline-item-text">Task 2</div>
+                  </div>
+                  ...
+                </div>
+              </div>
+            </div>
+      h2(data-device-preview="../docs-demos/core/timeline-calendar.html") Calendar Timeline
       p Calendar Timeline has almost the same layout as Horizontal but with additional Year and Month wrapping elements, so the structure should be the following:
-      pre
-        code
-          | &lt;div class="timeline timeline-horizontal"&gt;
-          |   &lt;!-- Timeline Year --&gt;
-          |   &lt;div class="timeline-year"&gt;
-          |     &lt;!-- Year Title --&gt;
-          |     &lt;div class="timeline-year-title"&gt;&lt;span&gt;2016&lt;/span&gt;&lt;/div&gt;
-          |     &lt;!-- Month --&gt;
-          |     &lt;div class="timeline-month"&gt;
-          |       &lt;!-- Month Title --&gt;
-          |       &lt;div class="timeline-month-title"&gt;&lt;span&gt;January&lt;/span&gt;&lt;/div&gt;
-          |       &lt;!-- Items --&gt;
-          |       &lt;div class="timeline-item"&gt;...&lt;/div&gt;
-          |       &lt;div class="timeline-item"&gt;...&lt;/div&gt;
-          |       &lt;div class="timeline-item"&gt;...&lt;/div&gt;
-          |       &lt;div class="timeline-item"&gt;...&lt;/div&gt;
-          |     &lt;/div&gt;
-          |     &lt;!-- Another Month --&gt;
-          |     &lt;div class="timeline-month"&gt;
-          |       &lt;!-- Month Title --&gt;
-          |       &lt;div class="timeline-month-title"&gt;&lt;span&gt;February&lt;/span&gt;&lt;/div&gt;
-          |       &lt;!-- Items --&gt;
-          |       &lt;div class="timeline-item"&gt;...&lt;/div&gt;
-          |       &lt;div class="timeline-item"&gt;...&lt;/div&gt;
-          |       &lt;div class="timeline-item"&gt;...&lt;/div&gt;
-          |       &lt;div class="timeline-item"&gt;...&lt;/div&gt;
-          |     &lt;/div&gt;
-          |     ...
-          |   &lt;/div&gt;
-          |   &lt;!-- Timeline Another Year --&gt;
-          |   &lt;div class="timeline-year"&gt;
-          |     &lt;div class="timeline-year-title"&gt;&lt;span&gt;2017&lt;/span&gt;&lt;/div&gt;
-          |     &lt;!-- Months --&gt;
-          |     &lt;div class="timeline-month"&gt;...&lt;/div&gt;
-          |     &lt;div class="timeline-month"&gt;...&lt;/div&gt;
-          |     ...
-          |   &lt;/div&gt;
-          | &lt;/div&gt;
-      pre
-        code
-          | &lt;!--
-          | Additional "timeline-horizontal" class to enable Horizontal timeline
-          | Additional "col-33" to define column width (33%)
-          | Additional "tablet-20" to define column width for tablets (20%)
-          | --&gt;
-          | &lt;div class="timeline timeline-horizontal col-33 tablet-15"&gt;
-          |   &lt;!-- Timeline Year --&gt;
-          |   &lt;div class="timeline-year"&gt;
-          |     &lt;!-- Timeline Year Title --&gt;
-          |     &lt;div class="timeline-year-title"&gt;&lt;span&gt;2016&lt;/span&gt;&lt;/div&gt;
-          |     &lt;!-- Timeline Month --&gt;
-          |     &lt;div class="timeline-month"&gt;
-          |       &lt;!-- Timeline Month Title --&gt;
-          |       &lt;div class="timeline-month-title"&gt;&lt;span&gt;December&lt;/span&gt;&lt;/div&gt;
-          |       &lt;!-- Timeline Month Items --&gt;
-          |       &lt;div class="timeline-item"&gt;
-          |         &lt;div class="timeline-item-date"&gt;20&lt;/div&gt;
-          |         &lt;div class="timeline-item-content"&gt;
-          |           &lt;div class="timeline-item-time"&gt;21:00&lt;/div&gt;
-          |           &lt;div class="timeline-item-text"&gt;Task 1&lt;/div&gt;
-          |           &lt;div class="timeline-item-time"&gt;5:00&lt;/div&gt;
-          |           &lt;div class="timeline-item-text"&gt;Task 2&lt;/div&gt;
-          |         &lt;/div&gt;
-          |       &lt;/div&gt;
-          |       &lt;div class="timeline-item"&gt;
-          |         &lt;div class="timeline-item-date"&gt;21&lt;/div&gt;
-          |         ...
-          |       &lt;/div&gt;
-          |       ...
-          |       &lt;div class="timeline-item"&gt;
-          |         &lt;div class="timeline-item-date"&gt;31&lt;/div&gt;
-          |         ...
-          |       &lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;!-- Timeline Year --&gt;
-          |   &lt;div class="timeline-year"&gt;
-          |     &lt;!-- Timeline Year Title --&gt;
-          |     &lt;div class="timeline-year-title"&gt;&lt;span&gt;2017&lt;/span&gt;&lt;/div&gt;
-          |     &lt;!-- Timeline Month --&gt;
-          |     &lt;div class="timeline-month"&gt;
-          |       &lt;!-- Timeline Month Title --&gt;
-          |       &lt;div class="timeline-month-title"&gt;&lt;span&gt;January&lt;/span&gt;&lt;/div&gt;
-          |       &lt;!-- Timeline Month Items --&gt;
-          |       &lt;div class="timeline-item"&gt;
-          |         &lt;div class="timeline-item-date"&gt;1&lt;/div&gt;
-          |         ...
-          |       &lt;/div&gt;
-          |       ...
-          |       &lt;div class="timeline-item"&gt;
-          |         &lt;div class="timeline-item-date"&gt;31&lt;/div&gt;
-          |         ...
-          |       &lt;/div&gt;
-          |     &lt;/div&gt;
-          |     &lt;!-- Timeline Month --&gt;
-          |     &lt;div class="timeline-month"&gt;
-          |       &lt;!-- Timeline Month Title --&gt;
-          |       &lt;div class="timeline-month-title"&gt;&lt;span&gt;February&lt;/span&gt;&lt;/div&gt;
-          |       &lt;!-- Timeline Month Items --&gt;
-          |       &lt;div class="timeline-item"&gt;
-          |         &lt;div class="timeline-item-date"&gt;1&lt;/div&gt;
-          |         ...
-          |       &lt;/div&gt;
-          |       ...
-          |       &lt;div class="timeline-item"&gt;
-          |         &lt;div class="timeline-item-date"&gt;28&lt;/div&gt;
-          |         ...
-          |       &lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          | &lt;/div&gt;
+      :code(lang="html")
+            <div class="timeline timeline-horizontal">
+              <!-- Timeline Year -->
+              <div class="timeline-year">
+                <!-- Year Title -->
+                <div class="timeline-year-title"><span>2016</span></div>
+                <!-- Month -->
+                <div class="timeline-month">
+                  <!-- Month Title -->
+                  <div class="timeline-month-title"><span>January</span></div>
+                  <!-- Items -->
+                  <div class="timeline-item">...</div>
+                  <div class="timeline-item">...</div>
+                  <div class="timeline-item">...</div>
+                  <div class="timeline-item">...</div>
+                </div>
+                <!-- Another Month -->
+                <div class="timeline-month">
+                  <!-- Month Title -->
+                  <div class="timeline-month-title"><span>February</span></div>
+                  <!-- Items -->
+                  <div class="timeline-item">...</div>
+                  <div class="timeline-item">...</div>
+                  <div class="timeline-item">...</div>
+                  <div class="timeline-item">...</div>
+                </div>
+                ...
+              </div>
+              <!-- Timeline Another Year -->
+              <div class="timeline-year">
+                <div class="timeline-year-title"><span>2017</span></div>
+                <!-- Months -->
+                <div class="timeline-month">...</div>
+                <div class="timeline-month">...</div>
+                ...
+              </div>
+            </div>
+      :code(lang="html")
+            <!--
+            Additional "timeline-horizontal" class to enable Horizontal timeline
+            Additional "col-33" to define column width (33%)
+            Additional "tablet-20" to define column width for tablets (20%)
+            -->
+            <div class="timeline timeline-horizontal col-33 tablet-15">
+              <!-- Timeline Year -->
+              <div class="timeline-year">
+                <!-- Timeline Year Title -->
+                <div class="timeline-year-title"><span>2016</span></div>
+                <!-- Timeline Month -->
+                <div class="timeline-month">
+                  <!-- Timeline Month Title -->
+                  <div class="timeline-month-title"><span>December</span></div>
+                  <!-- Timeline Month Items -->
+                  <div class="timeline-item">
+                    <div class="timeline-item-date">20</div>
+                    <div class="timeline-item-content">
+                      <div class="timeline-item-time">21:00</div>
+                      <div class="timeline-item-text">Task 1</div>
+                      <div class="timeline-item-time">5:00</div>
+                      <div class="timeline-item-text">Task 2</div>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-item-date">21</div>
+                    ...
+                  </div>
+                  ...
+                  <div class="timeline-item">
+                    <div class="timeline-item-date">31</div>
+                    ...
+                  </div>
+                </div>
+              </div>
+              <!-- Timeline Year -->
+              <div class="timeline-year">
+                <!-- Timeline Year Title -->
+                <div class="timeline-year-title"><span>2017</span></div>
+                <!-- Timeline Month -->
+                <div class="timeline-month">
+                  <!-- Timeline Month Title -->
+                  <div class="timeline-month-title"><span>January</span></div>
+                  <!-- Timeline Month Items -->
+                  <div class="timeline-item">
+                    <div class="timeline-item-date">1</div>
+                    ...
+                  </div>
+                  ...
+                  <div class="timeline-item">
+                    <div class="timeline-item-date">31</div>
+                    ...
+                  </div>
+                </div>
+                <!-- Timeline Month -->
+                <div class="timeline-month">
+                  <!-- Timeline Month Title -->
+                  <div class="timeline-month-title"><span>February</span></div>
+                  <!-- Timeline Month Items -->
+                  <div class="timeline-item">
+                    <div class="timeline-item-date">1</div>
+                    ...
+                  </div>
+                  ...
+                  <div class="timeline-item">
+                    <div class="timeline-item-date">28</div>
+                    ...
+                  </div>
+                </div>
+              </div>
+            </div>
+
+    +cssVars('timeline')

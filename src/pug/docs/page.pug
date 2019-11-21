@@ -14,18 +14,16 @@ block content
     ul.docs-index
     p Page is one of the main components (containers) used to display app content.
     h2 Page Layout
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <div class="page" data-name="home">
             <div class="page-content">
               ... scrollable page content goes here ...
             </div>
           </div>
     h3 Page Name
-    p As you may note, each page has a <code>data-name</code> attribute with a unique page name. It's not required but can be useful within "page events" or "page callbacks". It can help us to define which page is loaded and available so you can make required manipulations to the page.
+    p As you may note, each page has a `data-name` attribute with a unique page name. It's not required but can be useful within "page events" or "page callbacks". It can help us to define which page is loaded and available so you can make required manipulations to the page.
     h3 Page Content
-    p All visual content (like list views, forms, etc.) should put inside of <code>&lt;div class="page-content"&gt;</code> which should be a child of <code>&lt;div class="page"&gt;</code>. It's required for correct styling, layout and scrolling.
+    p All visual content (like list views, forms, etc.) should put inside of `<div class="page-content">` which should be a child of `<div class="page">`. It's required for correct styling, layout and scrolling.
     h2 Page Events
     p Now lets look at one of the most important parts of page navigation, "page events". <b>Page Events</b> allow us to manipulate just loaded pages by executing JavaScript for those specific pages:
     table.events-table
@@ -38,7 +36,7 @@ block content
         tr
           td page:mounted
           td Page Element<span>&lt;div class="page"&gt;</span>
-          td Event will be triggered when new page just inserted to DOM
+          td Event will be triggered when new page just inserted to DOM. Or when page with `keepAlive` route is mounted/attached to DOM
         tr
           td page:init
           td Page Element<span>&lt;div class="page"&gt;</span>
@@ -64,13 +62,15 @@ block content
           td Page Element<span>&lt;div class="page"&gt;</span>
           td Event will be triggered after page transitioned out of view
         tr
+          td page:beforeunmount
+          td Page Element<span>&lt;div class="page"&gt;</span>
+          td Event will be triggered when page with `keepAlive` route is going to be unmounted/detached from DOM
+        tr
           td page:beforeremove
           td Page Element<span>&lt;div class="page"&gt;</span>
-          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
+          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. This event won't be triggered for `keepAlive` routes.
     p Lets see how we can use these events. There are two ways to add page event handlers:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           // Option 1. Using one 'page:init' handler for all pages
           $$(document).on('page:init', function (e) {
             // Do something here when page loaded and initialized
@@ -84,46 +84,42 @@ block content
     p When a new page is loading and transitioned into the view (main visible part of the app) it has different classes on page element.
     p When we load/open new page the following happens:
     ol
-      li Currently active page has <code><b>page-current</b></code> class.
+      li Currently active page has `page-current` class.
       li If page we load not in DOM (e.g. loaded via Ajax or using template or from component) it will be added to DOM.
-      li Page that we load/open will have additional <code><b>page-next</b></code> class set on its element.
-      li Router element (<code>&lt;div class="view"&gt;</code>) will have additional <code><b>router-transition-forward</b></code> class that does the following:
+      li Page that we load/open will have additional `page-next` class set on its element.
+      li Router element (`<div class="view">`) will have additional `router-transition-forward` class that does the following:
         ul
-          li page with <code>page-next</code> (new page) class moves into the view
-          li page with <code>page-current</code> (current page) class moves out of the view
-      li After transition completed, the new page that we loaded will have <code><b>page-current</b></code> class
-      li And the page that was previously active will have <code><b>page-previous</b></code> class
+          li page with `page-next` (new page) class moves into the view
+          li page with `page-current` (current page) class moves out of the view
+      li After transition completed, the new page that we loaded will have `page-current` class
+      li And the page that was previously active will have `page-previous` class
     p When we load/open previous page (go back) the following happens:
     ol
-      li Currently active page has <code><b>page-current</b></code> class.
+      li Currently active page has `page-current` class.
       li If page we go back to not in DOM (e.g. loaded via Ajax or using template or from component) it will be added to DOM.
-      li Page that we go back to will have additional <code><b>page-previous</b></code> class set on its element.
-      li Router element (<code>&lt;div class="view"&gt;</code>) will have additional <code><b>router-transition-backward</b></code> class that does the following:
+      li Page that we go back to will have additional `page-previous` class set on its element.
+      li Router element (`<div class="view">`) will have additional `router-transition-backward` class that does the following:
         ul
-          li page with <code>page-previous</code> (page that we go back to) class moves into the view
-          li page with <code>page-current</code> (current page) class moves out of the view
-      li After transition completed, the new page that we returned to will have <code><b>page-current</b></code> class
-      li And the page that was previously active will have <code><b>page-next</b></code> class. In case this page was added to DOM dynamically, it will be removed from DOM.
+          li page with `page-previous` (page that we go back to) class moves into the view
+          li page with `page-current` (current page) class moves out of the view
+      li After transition completed, the new page that we returned to will have `page-current` class
+      li And the page that was previously active will have `page-next` class. In case this page was added to DOM dynamically, it will be removed from DOM.
 
     h2 Page Data
     p As you may see it is pretty easy, but how do you determine which page is loaded when we use only one handler? For this case we have Page Data in the event details:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           // In page events:
           $$(document).on('page:init', function (e) {
             // Page Data contains all required information about loaded and initialized page
             var page = e.detail;
           })
     p Or in case the event handler was assigned using Dom7 like in example above then it will be passed in second argument:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           // In page events:
           $$(document).on('page:init', function (e, page) {
             console.log(page);
           })
-    p Now, in the example above we have page data in <code><b>page</b></code> variable. It is an object with the following properties:
+    p Now, in the example above we have page data in `page` variable. It is an object with the following properties:
     table.methods-table
       thead
         tr
@@ -140,15 +136,11 @@ block content
         tr
           td page.router
           td <span class="parameter-type">object</span>
-          td Router instance that contains this page (if this View was initialized). Same as <code>page.view.router</code>
-        tr
-          td page.app
-          td <span class="parameter-type">string</span>
-          td Initialized app instance
+          td Router instance that contains this page (if this View was initialized). Same as `page.view.router`
         tr
           td page.name
           td <span class="parameter-type">string</span>
-          td Value of page's <code>data-name</code> attribute
+          td Value of page's `data-name` attribute
         tr
           td page.el
           td <span class="parameter-type">HTMLElement</span>
@@ -158,33 +150,34 @@ block content
           td <span class="parameter-type">object</span>
           td Dom7 instance with Page element
         tr
-          td page.navbarEl
-          td <span class="parameter-type">HTMLElement</span>
-          td Related navbar element for this page. Available only in iOS theme with dynamic navbar enabled.
-        tr
-          td page.$navbarEl
-          td <span class="parameter-type">object</span>
-          td Dom7 instance with related navbar element for this page. Available only in iOS theme with dynamic navbar enabled.
-        tr
           td page.from
           td <span class="parameter-type">string</span>
-          td Page position before transition or direction of where this Page comes from. It will be <code>next</code> if you load new page, <code>previous</code> - if you go back to this page, or <code>current</code> if this page replaces the currently active one.
+          td Page position before transition or direction of where this Page comes from. It will be `next` if you load new page, `previous` - if you go back to this page, or `current` if this page replaces the currently active one.
         tr
           td page.to
           td <span class="parameter-type">string</span>
-          td New page position or where this page goes to. Can be same <code>next</code>, <code>previous</code> or <code>current</code>
+          td New page position or where this page goes to. Can be same `next`, `previous` or `current`
         tr
           td page.position
           td <span class="parameter-type">string</span>
-          td Alias for <code>page.from</code>
+          td Alias for `page.from`
         tr
           td page.direction
           td <span class="parameter-type">string</span>
-          td Direction of page transition (if applicable). Can be <code>forward</code> or <code>backward</code>
+          td Direction of page transition (if applicable). Can be `forward` or `backward`
         tr
           td page.route
           td <span class="parameter-type">object</span>
-          td Route associated with this page
+          td Route associated with this page, object with current route data that was used to load this page. It has the following properties
+            ul
+              li `url` - route URL
+              li `path` - route path
+              li `query` - object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{id: '5', foo: 'bar'}`
+              li `params` - route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{userId: '55', postId: '12'}`
+              li `name` - route name
+              li `hash` - route URL hash
+              li `route` - object with matching route from available routes
+              li `context` - context that was passed to the route
         tr
           td page.pageFrom
           td <span class="parameter-type">object</span>
@@ -193,19 +186,14 @@ block content
           td page.context
           td <span class="parameter-type">object</span>
           td Template7 context that was passed for this page when using Template7 pages
-        tr
-          td page.fromPage
-          td <span class="parameter-type">object</span>
-          td Page Data object of the previously active page
     h2 Access To Page Data
-    p If you don't use page events/callbacks and need to access to page data, it is possible via the <code>f7Page</code> property on its HTMLElement:
-    pre
-      code.js
-        :code
+    p If you don't use page events/callbacks and need to access to page data, it is possible via the `f7Page` property on its HTMLElement:
+    :code(lang="js")
           var $$ = Dom7;
 
           var page = $$('.page[data-name="somepage"]')[0].f7Page;
 
           // do something with page data
 
+    +cssVars('page')
 

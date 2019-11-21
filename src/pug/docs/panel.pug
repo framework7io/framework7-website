@@ -11,184 +11,127 @@ block content
   .docs-content
     +improveDocsLink
     h1 Panel / Side Panels
-    .docs-index
+    ul.docs-index
     h2 Panel Layout
-    p Let's look how to add Side Panels to our App. We may include up to 2 panels to our App, one on left side and another one on right side. We should add panels' HTML right in the beginning of the app root element (or &lt;body&gt; in case there is no root element in use):
-    pre
-      code.html
-        :code
-          <body>
-            <!-- App root element -->
-            <div id="#app">
-              <!-- Left panel -->
-              <div class="panel panel-left">
-                  ... panel content goes here ...
-              </div>
+    p Let's look how to add Side Panels to our App. We may include up to 2 panels to our App, one on left side and another one on right side. We should add panels' HTML right in the beginning of the app root element (or `<body>` in case there is no root element in use):
+    :code(lang="html")
+      <body>
+        <!-- App root element -->
+        <div id="app">
+          <!-- Left panel -->
+          <div class="panel panel-left">
+              ... panel content goes here ...
+          </div>
 
-              <!-- Right panel -->
-              <div class="panel panel-right">
-                  ... panel content goes here ...
-              </div>
+          <!-- Right panel -->
+          <div class="panel panel-right">
+              ... panel content goes here ...
+          </div>
 
-              ...
-            </div>
-          </body>
-    h2 Panel Effect
-    p After we added panels we need to choose opening effect for each panel. There could be one of two effects: <b>"Reveal"</b> (when panel moves out whole app's content) or <b>"Cover"</b> (when panel overlays app's content). If you want to use "Reveal" effect you should add additional <code><b>panel-reveal</b></code> class to Panel, or <code><b>panel-cover</b></code> for cover effect:
-    pre
-      code.html
-        :code
-          <body>
-            <!-- App root element -->
-            <div id="#app">
-              <!-- Left panel, let it be with reveal effect -->
-              <div class="panel panel-left panel-reveal">
-                  ... panel content goes here ...
-              </div>
+          ...
+        </div>
+      </body>
+    p After we added panels we need to choose opening effect for each panel. There could be one of two effects: <b>"Reveal"</b> (when panel moves out whole app's content) or <b>"Cover"</b> (when panel overlays app's content). If you want to use "Reveal" effect you should add additional `panel-reveal` class to Panel, or `panel-cover` for cover effect:
+    :code(lang="html")
+      <body>
+        <!-- App root element -->
+        <div id="app">
+          <!-- Left panel, let it be with reveal effect -->
+          <div class="panel panel-left panel-reveal">
+              ... panel content goes here ...
+          </div>
 
-              <!-- Right panel, with cover effect -->
-              <div class="panel panel-right panel-cover">
-                  ... panel content goes here ...
-              </div>
+          <!-- Right panel, with cover effect -->
+          <div class="panel panel-right panel-cover">
+              ... panel content goes here ...
+          </div>
 
-              ...
-            </div>
-          </body>
-    h2 Panel App Parameters
-    p It is possible to control some default panels behavior using global <a href="app.html#app-parameters">app parameters</a> by passing panels related parameters under <code>panel</code> parameter:
-    table.params-table
-      thead
-        tr
-          th Parameter
-          th Type
-          th Default
-          th Description
-      tbody
-        tr
-          td leftBreakpoint
-          td number
-          td
-          td Minimal app width (in px) when left panel becomes always visible
-        tr
-          td rightBreakpoint
-          td number
-          td
-          td Minimal app width (in px) when right panel becomes always visible
-        tr
-          td swipe
-          td string
-          td
-          td Disabled by default. If you want to enable ability to open/close side panels with swipe you can pass here <code>left</code> (for left panel) or <code>right</code> (for right panel) or <code>both</code> (for both panels).
-        tr
-          td swipeActiveArea
-          td number
-          td 0
-          td Width (in px) of invisible edge from the screen that triggers swipe panel
-        tr
-          td swipeCloseOpposite
-          td boolean
-          td true
-          td This parameter gives ability to close opposite panel by swipe. For example, if your swipePanel is "left", then you could close "right" panel also with swipe.
-        tr
-          td swipeOnlyClose
-          td boolean
-          td false
-          td This parameter allows to close (but not open) panels with swipes
-        tr
-          td swipeNoFollow
-          td boolean
-          td false
-          td Fallback option for potentially better performance on old/slow devices. If you enable it, then side panel will not follow your finger during touch, it will be automatically opened/closed on swipe left/right.
-        tr
-          td swipeThreshold
-          td number
-          td 0
-          td Panel will not move with swipe if "touch distance" will be less than this value (in px).
-        tr
-          td closeByBackdropClick
-          td boolean
-          td true
-          td Enable/disable ability to close panel by clicking outside of panel (on panel's backdrop)
-    p For example:
-    pre
-      code.js
-        :code
-          var app = new Framework({
-            panel: {
-              swipe: 'left',
-              leftBreakpoint: 768,
-              rightBreakpoint: 1440,
-            }
-          });
+          ...
+        </div>
+      </body>
+    p Each Panel can be resizable. To make Panel resizable we just need to add `panel-resizable` class to Panel element:
+    :code(lang="html")
+      <body>
+        <!-- App root element -->
+        <div id="app">
+          <!-- Make left panel resizable -->
+          <div class="panel panel-left panel-resizable">
+              ... panel content goes here ...
+          </div>
+
+          <!-- Make right panel resizable -->
+          <div class="panel panel-right panel-resizable">
+              ... panel content goes here ...
+          </div>
+          ...
+        </div>
+      </body>
+
     h2 Panel App Methods
     p Let's look at related App methods to work with Panel:
     .method-wrap
       p
-        span.method app.panel.open(<span>side, animate</span>)
-        | - open panel
-      ul.method-parameters
-        li
-          span.parameter side
-          |  - <span class="parameter-type">string</span>. Panel to open: "left" or "right". Required in case you have two panels.
-        li
-          span.parameter animate
-          |  - <span class="parameter-type">boolean</span>. Should it be opened with animation or not. Optional, by default is <code>true</code>
-    .method-wrap
-      p
-        span.method app.panel.close(<span>side, animate</span>)
-        | - close panel
-      ul.method-parameters
-        li
-          span.parameter side
-          |  - <span class="parameter-type">string</span>. Panel to close. Optional, by default will close any opened panel.
-        li
-          span.parameter animate
-          |  - <span class="parameter-type">boolean</span>. Should it be opened with animation or not. Optional, by default is <code>true</code>
-    .method-wrap
-      p
         span.method app.panel.create(<span>parameters</span>)
-        | - create new panel instance
+        | - create Panel instance
       ul.method-parameters
         li
           span.parameter parameters
-          |  - <span class="parameter-type">object</span>. Object with panel parameters.
-      p.method-returns Method returns created Panel instance
-      .important-note Use this method only in case you have added panel to DOM after app initialization. Otherwise it will be created automatically
+          |  - <span class="parameter-type">object</span>. Object with panel parameters
+      p.method-returns Method returns created Panel's instance
+
     .method-wrap
       p
-        span.method app.panel.get(<span>side</span>)
-        | - get Panel instance by specified side
+        span.method app.panel.destroy(<span>el</span>)
+        | - destroy Panel instance
       ul.method-parameters
         li
-          span.parameter side
-          |  - <span class="parameter-type">string</span>. Panel to get
-      p.method-returns Method returns Panel instance
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Panel element or Panel instance to destroy.
     .method-wrap
       p
-        span.method app.panel.enableSwipe(<span>side</span>)
-        | - enable swipes for panel (swipe-to-close and swipe-to-open)
+        span.method app.panel.get(<span>el</span>)
+        | - get Panel instance by HTML element
       ul.method-parameters
         li
-          span.parameter side
-          |  - <span class="parameter-type">string</span>. Panel to enable swipe actions on
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Panel element.
+      p.method-returns Method returns Panel's instance
     .method-wrap
       p
-        span.method app.panel.disableSwipe(<span>side</span>)
-        | - disable swipes for panel (swipe-to-close and swipe-to-open)
+        span.method app.panel.open(<span>panel, animate</span>)
+        | - open panel
       ul.method-parameters
         li
-          span.parameter side
-          |  - <span class="parameter-type">string</span>. Panel to disable swipe actions on
+          span.parameter panel
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of panel element to open
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Should it be opened with animation or not. Optional, by default is `true`
     .method-wrap
       p
-        span.method app.panel.left
-        | - left panel instance
+        span.method app.panel.close(<span>panel, animate</span>)
+        | - close panel
+      ul.method-parameters
+        li
+          span.parameter panel
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of panel element to close
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Should it be closed with animation or not. Optional, by default is `true`
     .method-wrap
       p
-        span.method app.panel.right
-        | - right panel instance
+        span.method app.panel.toggle(<span>panel, animate</span>)
+        | - toggle panel
+      ul.method-parameters
+        li
+          span.parameter panel
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of panel element to toggle
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Should it be opened/closed with animation or not. Optional, by default is `true`
+
     h2 Panel Parameters
-    p If we create Panel manually using <code>app.panel.create</code> method we need to pass object with panel parameters:
+    p If we create Panel manually using `app.panel.create` method we need to pass object with panel parameters:
     table.params-table
       thead
         tr
@@ -203,25 +146,92 @@ block content
           td
           td Panel element
         tr
-          td side
-          td string
+          td resizable
+          td boolean
           td
-          td Can be <code>left</code> or <code>right</code>. If not passed then will be determined based on <code>panel-left</code> or <code>panel-right</code> element classes
+          td Enables resizable panel. If not passed then will be determined based on `panel-resizable` class.
         tr
-          td effect
-          td string
+          td visibleBreakpoint
+          td number
           td
-          td Can be <code>cover</code> or <code>reveal</code>. If not passed then will be determined based on <code>panel-cover</code> or <code>panel-reveal</code> element classes
+          td Minimal app width (in px) when left panel becomes always visible
+        tr
+          td collapsedBreakpoint
+          td number
+          td
+          td Minimal app width (in px) when left panel becomes partially visible (collapsed)
+        tr
+          td swipe
+          td boolean
+          td false
+          td Enable if you want to enable ability to open/close panel with swipe
+        tr
+          td swipeActiveArea
+          td number
+          td 0
+          td Width (in px) of invisible edge from the screen that triggers panel swipe
+        tr
+          td swipeOnlyClose
+          td boolean
+          td false
+          td This parameter allows to close (but not open) panel with swipes. (`swipe` should be also enabled)
+        tr
+          td swipeThreshold
+          td number
+          td 0
+          td Panel will not move with swipe if "touch distance" will be less than this value (in px).
+        tr
+          td backdrop
+          td boolean
+          td true
+          td Enables Panel backdrop (dark semi transparent layer behind)
+        tr
+          td backdropEl
+          td HTMLElement<br>string
+          td
+          td HTML element or string CSS selector of custom backdrop element
+        tr
+          td closeByBackdropClick
+          td boolean
+          td true
+          td Enable/disable ability to close panel by clicking outside of panel
+        tr
+          td on
+          td object
+          td
+          td
+            p Object with events handlers. For example:
+            :code(lang="js")
+                  var panel = app.panel.create({
+                    el: '.panel-left'
+                    on: {
+                      opened: function () {
+                        console.log('Panel opened')
+                      }
+                    }
+                  })
+
     p For example:
-    pre
-      code.js
-        :code
-          var panel = app.panel.create({
-            el: '.panel-left',
-          })
+    :code(lang="js")
+      var panel = app.panel.create({
+        el: '.panel-left',
+        resizable: true,
+        visibleBreakpoint: 1024,
+        collapsedBreakpoint: 768,
+      })
+
+    .important-note
+      p Note that all following parameters can be used in global app parameters under `panel` property to set defaults for all panels. For example:
+      :code(lang="js")
+            var app = new Framework7({
+              panel: {
+                swipe: true,
+                visibleBreakpoint: 1024,
+              }
+            });
 
     h2 Panel Methods & Properties
-    p After we created Panel instance (by calling <code>app.panel.create</code>) or after we got Panel instance (by calling <code>app.panel.get</code>) we may use its useful methods and properties:
+    p After we created Panel instance (by calling `app.panel.create`) or after we got Panel instance (by calling `app.panel.get`) we may use its useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -231,10 +241,10 @@ block content
           td Link to global app instance
         tr
           td panel.side
-          td String with panel side: <code>left</code> or <code>right</code>
+          td String with panel side: `left` or `right`
         tr
           td panel.effect
-          td String with panel effect: <code>cover</code> or <code>reveal</code>
+          td String with panel effect: `cover` or `reveal`
         tr
           td panel.opened
           td Boolean property indicating whether it is opened or not
@@ -252,7 +262,7 @@ block content
           td Dom7 instance with backdrop HTML element
         tr
           td panel.params
-          td Popup parameters
+          td Panel parameters
         tr
           th(colspan="2") Methods
         tr
@@ -261,14 +271,52 @@ block content
             ul.method-parameters
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation or not
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be opened with animation or not
         tr
           td panel.close(<span>animate</span>)
           td Close panel. Where
             ul.method-parameters
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation or not
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be closed with animation or not
+        tr
+          td panel.toggle(<span>animate</span>)
+          td Toggle panel. Where
+            ul.method-parameters
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be closed with animation or not
+
+        tr
+          td panel.enableVisibleBreakpoint()
+          td Enable visible breakpoint
+        tr
+          td panel.disableVisibleBreakpoint()
+          td Disable visible breakpoint
+        tr
+          td panel.toggleVisibleBreakpoint()
+          td Toggle visible breakpoint
+        tr
+          td panel.enableCollapsedBreakpoint()
+          td Enable collapsed breakpoint
+        tr
+          td panel.disableCollapsedBreakpoint()
+          td Disable collapsed breakpoint
+        tr
+          td panel.toggleCollapsedBreakpoint()
+          td Toggle collapsed breakpoint
+        tr
+          td panel.enableResizable()
+          td Enable resizable panel
+        tr
+          td panel.disableResizable()
+          td Disable resizable panel
+        tr
+          td panel.enableSwipe()
+          td Enable swipeable panel
+        tr
+          td panel.disableSwipe()
+          td Disable swipeable panel
         tr
           td panel.destroy()
           td Destroy panel instance
@@ -287,58 +335,6 @@ block content
         tr
           td panel.emit(<span>event</span>, <span>...args</span>)
           td Fire event on instance
-    h2 Control Panel With Links
-    p It is possible to open and close required panel (if you have them in DOM) using special classes and data attributes on links:
-    .important-note
-      ul
-        li
-          p To open panel we need to add <code><b>panel-open</b></code> class to any HTML element (prefered to link)
-        li
-          p To close panel we need to add <code><b>panel-close</b></code> class to any HTML element (prefered to link)
-        li
-          p If you have two panels in app, such link will open/close Left panel by default
-        li
-          p If you want to specify which panel should opened/closed, then it could be done via additional <code><b>data-panel="left</b></code> attribute on this HTML element
-    p According to above note:
-    pre
-      code.html
-        :code
-          <body>
-            <div id="app">
-              <!-- Left Panel with Reveal effect -->
-              <div class="panel panel-left panel-reveal">
-                <div class="content-block">
-                  ...
-                  <!-- Clicking on link with "panel-close" class will close panel -->
-                  <p><a href="#" class="panel-close">Close me</a></p>
-                  <!-- Click on link with "panel-open" and data-panel="right" attribute will open Right panel -->
-                  <p><a href="#" data-panel="right" class="panel-close">Open Right Panel</a></p>
-                </div>
-              </div>
-
-              <!-- Right Panel with Cover effect -->
-              <div class="panel panel-right panel-cover">
-                <div class="content-block">
-                  ...
-                  <!-- Click on link with "panel-close" class will close panel -->
-                  <p><a href="#" class="panel-close">Close me</a></p>
-                  <!-- Click on link with "panel-open" and data-panel="left" attribute will open Left panel -->
-                  <p><a href="#" data-panel="left" class="panel-open">Open Left Panel</a></p>
-                </div>
-              </div>
-
-              ...
-              <div class="page-content">
-                <div class="content-block">
-                  <!-- If no data-panel attribute, Left panel will be opened by default -->
-                  <p><a href="#" class="panel-open">Open Left Panel</a></p>
-                  <!-- Click on link with "panel-open" and data-panel="right" attribute will open Right panel -->
-                  <p><a href="#" data-panel="right" class="panel-open">Open Right Panel</a></p>
-                </div>
-              </div>
-            </div>
-            ...
-          </body>
     h2 Panel Events
     p Panel will fire the following DOM events on panel element and events on app and panel instance:
     h3 DOM Events
@@ -378,15 +374,23 @@ block content
           td Panel Element<span>&lt;div class="panel"&gt;</span>
           td Event will be triggered for swipe panel during touch swipe action
         tr
+          td panel:collapsedbreakpoint
+          td Panel Element<span>&lt;div class="panel"&gt;</span>
+          td Event will be triggered when it becomes visible/hidden when app width matches its `collapsedBreakpoint`
+        tr
           td panel:breakpoint
           td Panel Element<span>&lt;div class="panel"&gt;</span>
-          td Event will be triggered when it becomes visible/hidden when app width matches its breakpoint
+          td Event will be triggered when it becomes visible/hidden when app width matches its `visibleBreakpoint`
+        tr
+          td panel:resize
+          td Panel Element<span>&lt;div class="panel"&gt;</span>
+          td Event will be triggered on resizable panel resize
         tr
           td panel:beforedestroy
           td Panel Element<span>&lt;div class="panel"&gt;</span>
           td Event will be triggered right before Panel instance will be destroyed
     h3 App and Panel Instance Events
-    p Panel instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>panel</code>.
+    p Panel instance emits events on both self instance and app instance. App instance events has same names prefixed with `panel`.
     table.events-table.double-events-table
       thead
         tr
@@ -459,12 +463,30 @@ block content
           td app
           td <span>(panel, progress)</span>
         tr
+          td collapsedBreakpoint
+          td panel
+          td <span>(panel)</span>
+          td(rowspan="2") Event will be triggered when it becomes visible/hidden when app width matches its `collapsedBreakpoint`. As an argument event handler receives panel instance
+        tr
+          td panelCollapsedBreakpoint
+          td app
+          td <span>(panel)</span>
+        tr
           td breakpoint
           td panel
           td <span>(panel)</span>
-          td(rowspan="2") Event will be triggered when it becomes visible/hidden when app width matches its breakpoint. As an argument event handler receives panel instance
+          td(rowspan="2") Event will be triggered when it becomes visible/hidden when app width matches its `visibleBreakpoint`. As an argument event handler receives panel instance
         tr
           td panelBreakpoint
+          td app
+          td <span>(panel)</span>
+        tr
+          td resize
+          td panel
+          td <span>(panel, newPanelWidth)</span>
+          td(rowspan="2") Event will be triggered on resizable panel resize
+        tr
+          td panelResize
           td app
           td <span>(panel)</span>
         tr
@@ -476,77 +498,241 @@ block content
           td panelBeforeDestroy
           td app
           td <span>(panel)</span>
-    .with-device
-      h2(data-device-preview="../docs-demos/panel.html") Examples
-      pre
-        code.html
-          :code
-            <body>
-              <div id="app">
-                <div class="panel panel-left panel-reveal">
-                  <div class="block">
-                    <p>Left Panel content here</p>
-                    <p><a class="panel-close" href="#">Close me</a></p>
-                    <p><a class="panel-open" href="#" data-panel="right">Open Right Panel</a></p>
-                  </div>
-                </div>
-                <div class="panel panel-right panel-cover">
-                  <div class="block">
-                    <p>Right Panel content here</p>
-                    <p><a class="panel-close" href="#">Close me</a></p>
-                    <p><a class="panel-open" href="#" data-panel="left">Open Left Panel</a></p>
-                  </div>
-                </div>
-                <div class="view view-main view-init">
+
+    h2 Panel Auto Initialization
+    p If you don't need to use Panel API and your Panel is inside of the app on init or inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional `panel-init` class:
+    :code(lang="html")
+      <!-- Add panel-init class -->
+      <div class="panel panel-left panel-cover panel-init">
+        ...
+      </div>
+    p In this case if you need to access created Panel instance you can use the `app.panel.get` app method:
+    :code(lang="js")
+      var panel = app.panel.get('.panel-left');
+
+      if (panel.opened) {
+        // do something
+      }
+    p When using auto init you may need to pass additional parameters. It can be done with `data-` attributes on panel element.
+    :code(lang="html")
+      <!-- parameters set via data- attributes -->
+      <div
+        class="panel palen-left panel-reveal panel-init"
+        data-collapsed-breakpoint="768"
+        data-visible-breakpoint="1024"
+        data-swipe="true"
+      >
+        ...
+      </div>
+    .important-note
+      p Parameters used in camelCase, for example <b>visibleBreakpoint</b>, in data- attributes should be used in kebab-case as <b>data-visible-breakpoint</b>
+
+
+    h2 Control Panel With Links
+    p It is possible to open and close required panel (if you have them in DOM) using special classes and data attributes on links:
+    .important-note
+      ul
+        li
+          p To open panel we need to add `panel-open` class to any HTML element (prefered to link)
+        li
+          p To close panel we need to add `panel-close` class to any HTML element (prefered to link)
+        li
+          p To toggle panel we need to add `panel-toggle` class to any HTML element (prefered to link)
+        li
+          p If you want to specify which panel should opened/closed, then it could be done via additional `data-panel=".panel-left"` attribute on this HTML element. This attribute can also receive just `left` or `right` value if there is only one panel of such side in DOM.
+    p According to above note:
+    :code(lang="html")
+      <body>
+        <div id="app">
+          <!-- Left Panel with Reveal effect -->
+          <div class="panel panel-left panel-reveal panel-init">
+            <div class="block">
+              ...
+              <!-- Clicking on link with "panel-close" class will close panel -->
+              <p><a href="#" class="panel-close">Close me</a></p>
+              <!-- Click on link with "panel-open" and data-panel=".panel-right" attribute will open Right panel -->
+              <p><a href="#" data-panel=".panel-right" class="panel-open">Open Right Panel</a></p>
+            </div>
+          </div>
+
+          <!-- Right Panel with Cover effect -->
+          <div class="panel panel-right panel-cover panel-init">
+            <div class="block">
+              ...
+              <!-- Click on link with "panel-close" class will close panel -->
+              <p><a href="#" class="panel-close">Close me</a></p>
+              <!-- Click on link with "panel-open" and data-panel=".panel-left" attribute will open Left panel -->
+              <p><a href="#" data-panel=".panel-left" class="panel-open">Open Left Panel</a></p>
+            </div>
+          </div>
+
+          ...
+          <div class="page-content">
+            <div class="block">
+              <!-- Click on link with "panel-open" and data-panel=".panel-left" attribute will open Left panel -->
+              <p><a href="#" data-panel=".panel-left" class="panel-open">Open Left Panel</a></p>
+              <!-- Click on link with "panel-open" and data-panel=".panel-right" attribute will open Right panel -->
+              <p><a href="#" data-panel=".panel-right" class="panel-open">Open Right Panel</a></p>
+            </div>
+          </div>
+        </div>
+        ...
+      </body>
+    h2 Routable Panels
+    p Panels can also be routable with same features as for routable modals and pages:
+    ul
+      li it provides opportunity to open Panel by usual links instead of so called special links or API,
+      li with enabled Push State, the same Panel will be opened when you refresh browser, navigate back and forward in history,
+      li with routable Panels you can load Panel itself and its content in the same ways as for pages and modals, i.e. using `url`, `content`, `template`, `templateUrl`, `component` or `componentUrl`
+    :code(lang="js")
+      routes = [
+        ...
+        // Creates Panel from passed HTML string
+        {
+          path: '/left-panel/',
+          panel: {
+            content: `
+              <div class="panel panel-left panel-cover">
+                <div class="view">
                   <div class="page">
-                    <div class="navbar">
-                      <div class="navbar-inner">
-                        <div class="left"></div>
-                        <div class="title">Panels</div>
-                        <div class="right"></div>
-                      </div>
-                    </div>
-                    <div class="page-content">
-                      <div class="block">
-                        <p><a class="panel-open" href="#">Open Left Panel</a></p>
-                        <p><a class="panel-open" href="#" data-panel="right">Open Right Panel</a></p>
-                      </div>
-                    </div>
+                    ...
                   </div>
                 </div>
               </div>
-            </body>
-      pre
-        code.js
-          :code
-            var app = new Framework7();
+            `
+          }
+        },
+        // Load Panel from file via Ajax
+        {
+          path: '/right-panel-ajax/',
+          panel: {
+            url: './right-panel.html',
+            /* right-panel.html contains:
+            <div class="panel panel-right panel-reveal">
+              <div class="view">
+                <div class="page">
+                  ...
+                </div>
+              </div>
+            </div>
+            */
+          },
+        },
+        // Load Panel from component file
+        {
+          path: '/panel-component/',
+          panel: {
+            componentUrl: './panel-component.html',
+            /* panel-component.html contains:
+            <template>
+              <div class="panel panel-left panel-cover">
+                <div class="view">
+                  <div class="page">
+                    ...
+                  </div>
+                </div>
+              </div>
+            </template>
+            <style>...</style>
+            <script>...</script>
+            */
+          },
+        },
+      ]
+    p According to example above:
+    ul
+      li when you click on link with `/left-panel/` href attribute it will open Panel from specified string content,
+      li when you click on link with `/right-panel-ajax/` href attribute it will perform Ajax request to `right-panel.html` file and open it as a Right Panel,
+      li when you click on link with `/panel-component/` href attribute it will perform Ajax request to `panel-component.html` file, parse it as a Router Component and open it as a Panel,
 
-            var $$ = Dom7;
+    +cssVars('panel')
 
-            // Dom Events
-            $$('.panel-left').on('panel:open', function () {
-              console.log('Panel left: open');
-            });
-            $$('.panel-left').on('panel:opened', function () {
-              console.log('Panel left: opened');
-            });
+    .with-device
+      h2(data-device-preview="../docs-demos/core/panel.html") Examples
+      :code(lang="html")
+        <body>
+          <div id="app">
+            <div class="panel panel-left panel-reveal panel-resizable panel-init">
+              <div class="block">
+                <p>Left Panel content here</p>
+                <p><a class="panel-close" href="#">Close me</a></p>
+                <p><a class="panel-open" href="#" data-panel=".panel-right-1">Open Right Panel</a></p>
+              </div>
+            </div>
+            <div class="panel panel-right panel-right-1 panel-cover panel-resizable panel-init">
+              <div class="block">
+                <p>Right Panel content here</p>
+                <p><a class="panel-close" href="#">Close me</a></p>
+                <p><a class="panel-open" href="#" data-panel=".panel-left">Open Left Panel</a></p>
+              </div>
+            </div>
+            <div class="panel panel-right panel-right-2 panel-cover panel-init theme-dark">
+              <div class="page">
+                <div class="block">
+                  <p>Here comes another 3rd panel.</p>
+                  <p><a class="panel-close" href="#">Close me</a></p>
+                </div>
+              </div>
+            </div>
+            <div class="view view-main view-init">
+              <div class="page">
+                <div class="navbar">
+                  <div class="navbar-bg"></div>
+                  <div class="navbar-inner">
+                    <div class="left"></div>
+                    <div class="title">Panels</div>
+                    <div class="right"></div>
+                  </div>
+                </div>
+                <div class="page-content">
+                  <div class="block block-strong">
+                    <p><a class="button panel-open" href="# data-panel=".panel-left"">Open Left Panel</a></p>
+                    <p><a class="button panel-open" href="#" data-panel=".panel-right-1">Open Right Panel</a></p>
+                    <p><a class="button panel-open" href="#" data-panel=".panel-right-2">Open Another Panel</a></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </body>
+      :code(lang="css")
+        /* Limit resizable panel width */
+        .panel {
+          min-width: 100px;
+          max-width: 90vw;
+        }
+      :code(lang="js")
+        var app = new Framework7();
 
-            // Instance Events
-            var panelRight = app.panel.right;
-            panelRight.on('open', function () {
-              console.log('Panel right: open');
-            });
-            panelRight.on('opened', function () {
-              console.log('Panel right: opened');
-            });
+        var $$ = Dom7;
 
-            // App Events
-            app.on('panelClose', function (panel) {
-              console.log('Panel ' + panel.side + ': close');
-            });
-            app.on('panelClosed', function (panel) {
-              console.log('Panel ' + panel.side + ': closed');
-            });
+        // Dom Events
+        $$('.panel-left').on('panel:open', function () {
+          console.log('Panel left: open');
+        });
+        $$('.panel-left').on('panel:opened', function () {
+          console.log('Panel left: opened');
+        });
+
+        // Instance Events
+        var panelRight = app.panel.get('.panel-right-1');
+        panelRight.on('open', function () {
+          console.log('Panel right: open');
+        });
+        panelRight.on('opened', function () {
+          console.log('Panel right: opened');
+        });
+
+        // App Events
+        app.on('panelClose', function (panel) {
+          console.log('Panel ' + panel.side + ': close');
+        });
+        app.on('panelClosed', function (panel) {
+          console.log('Panel ' + panel.side + ': closed');
+        });
+        app.on('panelResize', function (panel, newPanelWidth) {
+          console.log('Panel resized to ' + newPanelWidth + 'px');
+        });
 
 
 

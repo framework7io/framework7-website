@@ -5,25 +5,26 @@ block vars
   - var title = 'Messagebar Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Messagebar Vue Component
-    .docs-index
+    ul.docs-index
     p Messagebar Vue component represents Framework7's <a href="../docs/messagebar.html">Messagebar</a> component.
     h2 Messagebar Components
     p There are following components included:
     ul
-      li <code><b>f7-messagebar</b></code> - main messagebar element
-      li <code><b>f7-messagebar-sheet</b></code> - messagebar sheet element
-      li <code><b>f7-messagebar-sheet-image</b></code> - messagebar sheet image item
-      li <code><b>f7-messagebar-sheet-item</b></code> - messagebar sheet item
-      li <code><b>f7-messagebar-attachments</b></code> - messagebar attachments element
-      li <code><b>f7-messagebar-attachment</b></code> - single messagebar attachment element
+      li `f7-messagebar` - main messagebar element
+      li `f7-messagebar-sheet` - messagebar sheet element
+      li `f7-messagebar-sheet-image` - messagebar sheet image item
+      li `f7-messagebar-sheet-item` - messagebar sheet item
+      li `f7-messagebar-attachments` - messagebar attachments element
+      li `f7-messagebar-attachment` - single messagebar attachment element
     p
-      img(src=cdn + "/i/docs/messagebar-vue.jpg", style="max-width: 950px; width: 100%")
+      img(src="/i/docs/messagebar-vue.jpg", style="max-width: 950px; width: 100%")
     h2 Messagebar Properties
     table.params-table
       thead
@@ -45,6 +46,11 @@ block content
           td string
           td
           td Textarea "name" attribute
+        tr
+          td textarea-id
+          td string<br>number
+          td
+          td Textarea "id" attribute
         tr
           td placeholder
           td string
@@ -69,7 +75,7 @@ block content
           td send-link
           td string
           td
-          td Enables Send link and specifies its text. This property will be ignored in case you use <code>send-link</code> slot
+          td Enables Send link and specifies its text. This property will be ignored in case you use `send-link` slot
         tr
           td max-height
           td number
@@ -90,6 +96,11 @@ block content
           td boolean
           td false
           td Makes messagebar attachments visible/active
+        tr
+          td resize-page
+          td boolean
+          td true
+          td When enabled, it will resize messages page when messagebar textarea size changed
         tr
           th(colspan="4") &lt;f7-messagebar-sheet-image&gt; properties
         tr
@@ -129,7 +140,7 @@ block content
         td .getValue()
         td Return messagebar textarea value
       tr
-        td .resizePage()
+        td .resize()
         td Force Messagebar to resize messages page depending on messagebar height/size
       tr
         td .focus()
@@ -188,29 +199,25 @@ block content
     h2 Messagebar Slots
     p Messagebar Vue component has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - element will be inserted in the end of <code>&lt;div class="toolbar-inner"&gt;</code. element
-      li <code><b>before-area</b></code> - element will be inserted right before textarea. Messagebar attachments go here
-      li <code><b>after-area</b></code> - element will be inserted right after textarea
-      li <code><b>send-link</b></code> - element will be inserted inside of send link
-      li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="toolbar-inner"&gt;</code. element
-      li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="toolbar-inner"&gt;</code. element. Messagebar sheet goes here
-      li <code><b>inner-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="toolbar-inner"&gt;</code. element
-      li <code><b>inner-end</b></code> - element will be inserted in the end of <code>&lt;div class="toolbar-inner"&gt;</code. element. Same as <code>default</code> slot
-    pre
-      code
-        :code
+      li `default` - element will be inserted in the end of `<div class="toolbar-inner">`. element
+      li `before-area` - element will be inserted right before textarea. Messagebar attachments go here
+      li `after-area` - element will be inserted right after textarea
+      li `send-link` - element will be inserted inside of send link
+      li `before-inner` - element will be inserted right before `<div class="toolbar-inner">`. element
+      li `after-inner` - element will be inserted right after `<div class="toolbar-inner">`. element. Messagebar sheet goes here
+      li `inner-start` - element will be inserted in the beginning of `<div class="toolbar-inner">`. element
+      li `inner-end` - element will be inserted in the end of `<div class="toolbar-inner">`. element. Same as `default` slot
+    :code
           <f7-messagebar placeholder="Message" @submit="onSubmit">
             <div slot="before-inner">Before inner</div>
             <div slot="after-inner">After inner</div>
             <div slot="before-area">Before textarea</div>
             <div slot="after-area">After textarea</div>
-            <f7-icon if-ios="f7:arrow_up_fill" if-md="material:send" slot="send-link"></f7-icon>
+            <f7-icon ios="f7:arrow_up_fill" aurora="f7:arrow_up_fill" md="material:send" slot="send-link"></f7-icon>
             <div>Default slot</div>
           </f7-messagebar>
     p Renders to:
-    pre
-      code
-        :code
+    :code
           <div class="toolbar messagebar">
             <div>Before inner</div>
             <div class="toolbar-inner">
@@ -226,138 +233,288 @@ block content
           </div>
 
     h2 Access To Messagebar Instance
-    p If you use automatic initalization to init Messagebar (with <code>init:true</code> prop) and need to use its <a href="../docs/messagebar.html#messagebar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Messagebar</b></code> component's property.
+    p If you use automatic initalization to init Messagebar (with `init:true` prop) and need to use its <a href="../docs/messagebar.html#messagebar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing `.f7Messagebar` component's property.
 
-    h2 Examples
-    pre
-      code.html
-        :code
-          <f7-messagebar placeholder="Message" send-link="Send" @submit="onSubmit"></f7-messagebar>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/messages.html") Examples
+      p Here is how the full example of Messages page where it can be used together with <a href="messages.html">Messages</a>:
+      :code(lang="html")
+            <template>
+              <f7-page>
+                <f7-navbar title="Messages"></f7-navbar>
 
-          <!-- Renders to: -->
+                <f7-messagebar
+                  :placeholder="placeholder"
+                  ref="messagebar"
+                  :attachments-visible="attachmentsVisible"
+                  :sheet-visible="sheetVisible"
+                >
+                  <f7-link
+                    icon-ios="f7:camera_fill"
+                    icon-aurora="f7:camera_fill"
+                    icon-md="material:camera_alt"
+                    slot="inner-start"
+                    @click="sheetVisible = !sheetVisible"
+                  ></f7-link>
+                  <f7-link
+                    icon-ios="f7:arrow_up_fill"
+                    icon-aurora="f7:arrow_up_fill"
+                    icon-md="material:send"
+                    slot="inner-end"
+                    @click="sendMessage"
+                  ></f7-link>
+                  <f7-messagebar-attachments>
+                    <f7-messagebar-attachment
+                      v-for="(image, index) in attachments"
+                      :key="index"
+                      :image="image"
+                      @attachment:delete="deleteAttachment(image)"
+                    ></f7-messagebar-attachment>
+                  </f7-messagebar-attachments>
+                  <f7-messagebar-sheet>
+                    <f7-messagebar-sheet-image
+                      v-for="(image, index) in images"
+                      :key="index"
+                      :image="image"
+                      :checked="attachments.indexOf(image) >= 0"
+                      @change="handleAttachment"
+                    ></f7-messagebar-sheet-image>
+                  </f7-messagebar-sheet>
+                </f7-messagebar>
 
-          <div class="toolbar messagebar">
-            <div class="toolbar-inner">
-              <div class="messagebar-area">
-                <textarea placeholder="Message"></textarea>
-              </div>
-              <a href="#" class="link">Send</a>
-            </div>
-          </div>
-
-    h4 With Sheet And Attachments
-    pre
-      code.html
-        :code
-          <template>
-            <f7-page>
-              <f7-navbar title="Messsages" back-link="Back"></f7-navbar>
-
-              <f7-messagebar
-                :placeholder="placeholder"
-                ref="messagebar"
-                :attachmentsVisible="attachmentsVisible"
-                :sheetVisible="sheetVisible"
-              >
-                <!-- Link to toggle Sheet -->
-                <f7-link
-                  icon-if-ios="f7:camera_fill"
-                  icon-if-md="material:camera_alt"
-                  slot="inner-start"
-                  @click="sheetVisible = !sheetVisible"
-                ></f7-link>
-                <!-- Send Message Link -->
-                <f7-link
-                  icon-if-ios="f7:arrow_up_fill"
-                  icon-if-md="material:send"
-                  slot="inner-end"
-                  @click="sendMessage"
-                ></f7-link>
-                <!-- Attachments -->
-                <f7-messagebar-attachments>
-                  <f7-messagebar-attachment
-                    v-for="(image, index) in attachments"
+                <f7-messages ref="messages">
+                  <f7-messages-title><b>Sunday, Feb 9,</b> 12:58</f7-messages-title>
+                  <f7-message
+                    v-for="(message, index) in messagesData"
                     :key="index"
-                    :image="image"
-                    @attachment:delete="deleteAttachment(image)"
-                  ></f7-messagebar-attachment>
-                </f7-messagebar-attachments>
-                <!-- Sheet -->
-                <f7-messagebar-sheet>
-                  <f7-messagebar-sheet-image
-                    v-for="(image, index) in images"
-                    :key="index"
-                    :image="image"
-                    :checked="attachments.indexOf(image) >= 0"
-                    @change="handleAttachment"
-                  ></f7-messagebar-sheet-image>
-                </f7-messagebar-sheet>
-              </f7-messagebar>
+                    :type="message.type"
+                    :image="message.image"
+                    :name="message.name"
+                    :avatar="message.avatar"
+                    :first="isFirstMessage(message, index)"
+                    :last="isLastMessage(message, index)"
+                    :tail="isTailMessage(message, index)"
+                  >
+                    <span slot="text" v-if="message.text" v-html="message.text"></span>
+                  </f7-message>
+                  <f7-message v-if="typingMessage"
+                    type="received"
+                    :typing="true"
+                    :first="true"
+                    :last="true"
+                    :tail="true"
+                    :header="`${typingMessage.name} is typing`"
+                    :avatar="typingMessage.avatar"
+                  ></f7-message>
+                </f7-messages>
+              </f7-page>
+            </template>
+            <script>
+              export default {
+                data() {
+                  return {
+                    attachments: [],
+                    sheetVisible: false,
+                    typingMessage: null,
+                    messagesData: [
+                      {
+                        type: 'sent',
+                        text: 'Hi, Kate',
+                      },
+                      {
+                        type: 'sent',
+                        text: 'How are you?',
+                      },
+                      {
+                        name: 'Kate',
+                        type: 'received',
+                        text: 'Hi, I am good!',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
+                      },
+                      {
+                        name: 'Blue Ninja',
+                        type: 'received',
+                        text: 'Hi there, I am also fine, thanks! And how are you?',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+                      },
+                      {
+                        type: 'sent',
+                        text: 'Hey, Blue Ninja! Glad to see you ;)',
+                      },
+                      {
+                        type: 'sent',
+                        text: 'Hey, look, cutest kitten ever!',
+                      },
+                      {
+                        type: 'sent',
+                        image: 'https://cdn.framework7.io/placeholder/cats-200x260-4.jpg',
 
-              <f7-messages>
-                ...
-              </f7-messages>
-            </f7-page>
-          </template>
-          <script>
-            export default {
-              data() {
-                return {
-                  attachments: [],
-                  sheetVisible: false,
-                  // Sheet images available
-                  images: [
-                    'http://lorempixel.com/300/300/cats/1/',
-                    'http://lorempixel.com/200/300/cats/2/',
-                    'http://lorempixel.com/400/300/cats/3/',
-                    'http://lorempixel.com/300/150/cats/4/',
-                    'http://lorempixel.com/150/300/cats/5/',
-                    'http://lorempixel.com/300/300/cats/6/',
-                    'http://lorempixel.com/300/300/cats/7/',
-                    'http://lorempixel.com/200/300/cats/8/',
-                    'http://lorempixel.com/400/300/cats/9/',
-                    'http://lorempixel.com/300/150/cats/10/',
-                  ],
-                };
-              },
-              computed: {
-                attachmentsVisible() {
-                  const self = this;
-                  return self.attachments.length > 0;
+                      },
+                      {
+                        name: 'Kate',
+                        type: 'received',
+                        text: 'Nice!',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
+                      },
+                      {
+                        name: 'Kate',
+                        type: 'received',
+                        text: 'Like it very much!',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
+                      },
+                      {
+                        name: 'Blue Ninja',
+                        type: 'received',
+                        text: 'Awesome!',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+                      },
+                    ],
+                    images: [
+                      'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-200x300-2.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-400x300-3.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-300x150-4.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-150x300-5.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-300x300-6.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-300x300-7.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-200x300-8.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-400x300-9.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-300x150-10.jpg',
+                    ],
+                    people: [
+                      {
+                        name: 'Kate Johnson',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
+                      },
+                      {
+                        name: 'Blue Ninja',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+                      },
+                    ],
+                    answers: [
+                      'Yes!',
+                      'No',
+                      'Hm...',
+                      'I am not sure',
+                      'And what about you?',
+                      'May be ;)',
+                      'Lorem ipsum dolor sit amet, consectetur',
+                      'What?',
+                      'Are you sure?',
+                      'Of course',
+                      'Need to think about it',
+                      'Amazing!!!',
+                    ],
+                    responseInProgress: false,
+                  };
                 },
-                placeholder() {
-                  const self = this;
-                  return self.attachments.length > 0 ? 'Add comment or Send' : 'Message';
+                computed: {
+                  attachmentsVisible() {
+                    const self = this;
+                    return self.attachments.length > 0;
+                  },
+                  placeholder() {
+                    const self = this;
+                    return self.attachments.length > 0 ? 'Add comment or Send' : 'Message';
+                  },
                 },
-              },
-              methods: {
-                deleteAttachment(image) {
+                mounted() {
                   const self = this;
-                  const index = self.attachments.indexOf(image);
-                  self.attachments.splice(index, 1)[0]; // eslint-disable-line
+                  self.$f7ready(() => {
+                    self.messagebar = self.$refs.messagebar.f7Messagebar;
+                    self.messages = self.$refs.messages.f7Messages;
+                  });
                 },
-                handleAttachment(e) {
-                  const self = this;
-                  const index = self.$$(e.target).parents('label.checkbox').index();
-                  const image = self.images[index];
-                  if (e.target.checked) {
-                    // Add to attachments
-                    self.attachments.unshift(image);
-                  } else {
-                    // Remove from attachments
-                    self.attachments.splice(self.attachments.indexOf(image), 1);
-                  }
-                },
-                sendMessage() {
-                  const self = this;
-                  const text = self.messagebar.getValue().replace(/\n/g, '<br>').trim();
-                  // the rest of logic to send a message
-                },
-                onF7Ready() {
-                  const self = this;
-                  self.messagebar = self.$refs.messagebar.f7Messagebar;
-                },
-              },
-            };
-          </script>
+                methods: {
+                  isFirstMessage(message, index) {
+                    const self = this;
+                    const previousMessage = self.messagesData[index - 1];
+                    if (message.isTitle) return false;
+                    if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
+                    return false;
+                  },
+                  isLastMessage(message, index) {
+                    const self = this;
+                    const nextMessage = self.messagesData[index + 1];
+                    if (message.isTitle) return false;
+                    if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+                    return false;
+                  },
+                  isTailMessage(message, index) {
+                    const self = this;
+                    const nextMessage = self.messagesData[index + 1];
+                    if (message.isTitle) return false;
+                    if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+                    return false;
+                  },
+                  deleteAttachment(image) {
+                    const self = this;
+                    const index = self.attachments.indexOf(image);
+                    self.attachments.splice(index, 1)[0]; // eslint-disable-line
+                  },
+                  handleAttachment(e) {
+                    const self = this;
+                    const index = self.$$(e.target).parents('label.checkbox').index();
+                    const image = self.images[index];
+                    if (e.target.checked) {
+                      // Add to attachments
+                      self.attachments.unshift(image);
+                    } else {
+                      // Remove from attachments
+                      self.attachments.splice(self.attachments.indexOf(image), 1);
+                    }
+                  },
+                  sendMessage() {
+                    const self = this;
+                    const text = self.messagebar.getValue().replace(/\n/g, '<br>').trim();
+                    const messagesToSend = [];
+                    self.attachments.forEach((attachment) => {
+                      messagesToSend.push({
+                        image: attachment,
+                      });
+                    });
+                    if (text.trim().length) {
+                      messagesToSend.push({
+                        text,
+                      });
+                    }
+                    if (messagesToSend.length === 0) {
+                      return;
+                    }
 
+                    // Reset attachments
+                    self.attachments = [];
+                    // Hide sheet
+                    self.sheetVisible = false;
+                    // Clear area
+                    self.messagebar.clear();
+                    // Focus area
+                    if (text.length) self.messagebar.focus();
+                    // Send message
+                    self.messagesData.push(...messagesToSend);
+
+                    // Mock response
+                    if (self.responseInProgress) return;
+                    self.responseInProgress = true;
+                    setTimeout(() => {
+                      const answer = self.answers[Math.floor(Math.random() * self.answers.length)];
+                      const person = self.people[Math.floor(Math.random() * self.people.length)];
+                      self.typingMessage = {
+                        name: person.name,
+                        avatar: person.avatar,
+                      };
+                      setTimeout(() => {
+                        self.messagesData.push({
+                          text: answer,
+                          type: 'received',
+                          name: person.name,
+                          avatar: person.avatar,
+                        });
+                        self.typingMessage = null;
+                        self.responseInProgress = false;
+                      }, 4000);
+                    }, 1000);
+                  },
+                },
+              };
+            </script>

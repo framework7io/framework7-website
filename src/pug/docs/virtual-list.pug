@@ -10,20 +10,19 @@ block content
   .docs-content
     +improveDocsLink
     h1 Virtual List
-    .docs-index
+    ul.docs-index
     p Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 components which work with lists such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.
     h2 Virtual List Layout
     p Virtual List HTML layout is pretty simple, it is almost the same as for usual <a href="list-view.html">List View</a> with only difference: you need to leave it empty:
-    pre
-      code
-        | &lt;!-- Virtual List --&gt;
-        | &lt;div class="list virtual-list"&gt;
-        |   &lt;!-- keep it empty --&gt;
-        | &lt;/div&gt;
+    :code(lang="html")
+          <!-- Virtual List -->
+          <div class="list virtual-list">
+            <!-- keep it empty -->
+          </div>
     p Where:
     ul
       li
-        p <code>virtual-list</code> - required additional class on any list block that uses Virtual List
+        p `virtual-list` - required additional class on any list block that uses Virtual List
 
     h2 Virtual List App Methods
     p Now, when we have list's HTML, we need to initialize it. We need to use required App method:
@@ -70,17 +69,17 @@ block content
           td el
           td HTMLElement<br>string
           td
-          td Target List Block element. In case of <code>string</code> - CSS selector of list block element
+          td Target List Block element. In case of `string` - CSS selector of list block element
         tr
           td ul
           td HTMLElement<br>string
           td
-          td List element <code>&lt;ul&gt;</code> inside of List block.
+          td List element `<ul>` inside of List block.
         tr
           td createUl
           td boolean
           td true
-          td Will automatically create <code>&lt;ul&gt;</code> element inside of Virtual List block. If disabled, then virtual list can be used on any block element without <code>ul &gt; li</code> structure
+          td Will automatically create `<ul>` element inside of Virtual List block. If disabled, then virtual list can be used on any block element without `ul > li` structure
         tr
           td items
           td array
@@ -105,12 +104,12 @@ block content
           td height
           td number or function(item)
           td
-          td If <code>number</code> - list item height in px. If <code>function</code> then function should return item height. By default equals to <code>44</code> for iOS theme and <code>48</code> for MD theme
+          td If `number` - list item height in px. If `function` then function should return item height. By default equals to `44` for iOS theme, `48` for MD theme, `38` for Aurora theme.
         tr
           td itemTemplate
           td string<br>function
           td
-          td Template7 string template or Template7 compiled template that used to render single item. Template should contain full HTML layout for single item, including wrapping <code>&lt;li&gt;&lt;/li&gt;</code> tags
+          td Template7 string template or Template7 compiled template that used to render single item. Template should contain full HTML layout for single item, including wrapping `<li></li>` tags
         tr
           td renderItem
           td function(item)
@@ -120,7 +119,7 @@ block content
           td renderExternal
           td function(renderParameters)
           td
-          td This optional function allows to render DOM items using some custom method. Useful in case it is used (e.g.) with Vue/React plugin to pass DOM rendering and manipulation to Vue/React. <code>renderParameters</code> conaints object with the following properties: <code>fromIndex</code>, <code>toIndex</code>, <code>listHeight</code>, <code>topPosition</code>, <code>items</code>
+          td This optional function allows to render DOM items using some custom method. Useful in case it is used (e.g.) with Vue/React plugin to pass DOM rendering and manipulation to Vue/React. `renderParameters` conaints object with the following properties: `fromIndex`, `toIndex`, `listHeight`, `topPosition`, `items`
         tr
           td emptyTemplate
           td string
@@ -130,7 +129,7 @@ block content
           td dynamicHeightBufferSize
           td number
           td 1
-          td This parameter allows to control buffer size on Virtual Lists with dynamic height (when <code>height</code> parameter is function) as a buffer size multiplier
+          td This parameter allows to control buffer size on Virtual Lists with dynamic height (when `height` parameter is function) as a buffer size multiplier
         tr
           td cache
           td boolean
@@ -150,14 +149,19 @@ block content
           td showFilteredItemsOnly
           td boolean
           td false
-          td Option to show filtered items only set by `filter()` method
+          td Option to show filtered items only set by #[filter()] method
+        tr
+          td scrollableParentEl
+          td HTMLElement<br>string
+          td
+          td Virtual list's scrollable parent. If not specified, then it will look for parent `<div class="page-content">` element
         tr
           th(colspan="4") Searchbar
         tr
           td searchByItem
           td function(query, item, index)
           td
-          td Search function that will be used by <a href="searchbar.html">Searchbar</a>, it receives search query, item itself and item index. If item matches to search query you need to return <code>true</code>, otherwise this function should return <code>false</code>
+          td Search function that will be used by <a href="searchbar.html">Searchbar</a>, it receives search query, item itself and item index. If item matches to search query you need to return `true`, otherwise this function should return `false`
         tr
           td searchAll
           td function(query, items)
@@ -165,11 +169,9 @@ block content
           td Search function that will be used by <a href="searchbar.html">Searchbar</a>, it receives search query and array with all items. You need to loop through items and return array with indexes of matched items
     h2 Virtual List Methods & Properties
     p So to create Virtual List we have to call:
-    pre
-      code
-        :code
+    :code(lang="js")
           var virtualList = app.virtualList.create({ /* parameters */ })
-    p After we initialize Virtual List we have its initialized instance in variable (like <code>virtualList</code> variable in example above) with helpful methods and properties:
+    p After we initialize Virtual List we have its initialized instance in variable (like `virtualList` variable in example above) with helpful methods and properties:
     table.methods-table
       tbody
         tr
@@ -206,7 +208,7 @@ block content
           td Index number of currently last rendered item
         tr
           td virtualList.reachEnd
-          td Boolean property. Equals <code>true</code> if the currently last rendered item is the last item of all specified items
+          td Boolean property. Equals `true` if the currently last rendered item is the last item of all specified items
         tr
           th(colspan="2") Methods
         tr
@@ -229,7 +231,7 @@ block content
           td virtualList.prependItems(<span>items</span>);
           td Prepend array with items to virtual list
         tr
-          td virtualList.replaceItem(<span>index, items</span>);
+          td virtualList.replaceItem(<span>index, item</span>);
           td Replace item at specified index with the new one
         tr
           td virtualList.replaceAllItems(<span>items</span>);
@@ -259,12 +261,12 @@ block content
           td virtualList.update();
           td Update virtual list, including recalculation of list sizes and re-rendering of virtual list
         tr
-          td virtualList.scrollToItem(index);
+          td virtualList.scrollToItem(<span>index</span>);
           td Scroll Virtual List to specified item by its index number
     h2 Virtual List Events
     p Virtual List will fire the following events on app and virtual list instance:
-    p Virtual List instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>vl</code>.
-    table.events-table
+    p Virtual List instance emits events on both self instance and app instance. App instance events has same names prefixed with `vl`.
+    table.events-table.double-events-table
       thead
         tr
           th Event
@@ -308,13 +310,14 @@ block content
           td vlItemsAfterInsert
           td app
 
+    +cssVars('virtual-list')
+
     .with-device
-      h2(data-device-preview="../docs-demos/virtual-list.html") Examples
-      pre
-        code.html
-          :code
+      h2(data-device-preview="../docs-demos/core/virtual-list.html") Examples
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
+                <div class="navbar-bg"></div>
                 <div class="navbar-inner sliding">
                   <div class="title">Virtual List</div>
                   <div class="subnavbar">
@@ -325,7 +328,7 @@ block content
                           <i class="searchbar-icon"></i>
                           <span class="input-clear-button"></span>
                         </div>
-                        <span class="searchbar-disable-button">Cancel</span>
+                        <span class="searchbar-disable-button if-not-aurora">Cancel</span>
                       </div>
                     </form>
                   </div>
@@ -341,9 +344,7 @@ block content
                 <div class="list virtual-list media-list searchbar-found"></div>
               </div>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var app = new Framework7();
 
             // Dummy items array
@@ -381,7 +382,7 @@ block content
                   '</a>' +
                 '</li>',
               // Item height
-              height: app.theme === 'ios' ? 63 : 73,
+              height: app.theme === 'ios' ? 63 : (app.theme === 'md' ? 73 : 46),
             });
 
 

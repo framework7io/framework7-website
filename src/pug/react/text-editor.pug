@@ -1,0 +1,286 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Text Editor React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Text Editor React Component
+    ul.docs-index
+    p Text Editor React component represents <a href="../docs/text-editor.html">Text Editor</a> component.
+
+    h2 Text Editor Components
+    p There are following components included:
+    ul
+      li `TextEditor` / `F7TextEditor`
+
+    h2 Text Editor Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;TextEditor&gt; properties
+        tr
+          td value
+          td string
+          td
+          td
+            p Text editor initial html content value.
+        tr
+          td placeholder
+          td string
+          td
+          td Editor placeholder content displayed when it is empty. By default it is not specified
+        tr
+          td resizable
+          td boolean
+          td false
+          td Makes editor resizable (when its height will fit to its content)
+        tr
+          td mode
+          td string
+          td toolbar
+          td
+            p Text editor buttons mode. Can be:
+            ul
+              li `toolbar` - it will add toolbar with editor buttons in text editor container element
+              li `popover` - it will show popover bubble with editor buttons on top of the selected text in editor
+              li `keyboard-toolbar` - toolbar with editor buttons will appear on top of virtual keyboard when editor is in the focus. It is supported only in iOS, Android cordova apps and in Android Chrome. When not supported it will fallback to `popover` mode.
+        tr
+          td buttons
+          td array
+          td
+          td
+            p Array with editor buttons, or array of arrays (groups) with editor buttons. By default all buttons enabled and its default value is:
+            ```js
+              [
+                ['bold', 'italic', 'underline', 'strikeThrough'],
+                ['orderedList', 'unorderedList'],
+                ['link', 'image'],
+                ['paragraph', 'h1', 'h2', 'h3'],
+                ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify'],
+                ['subscript', 'superscript'],
+                ['indent', 'outdent'],
+              ]
+            ```
+        tr
+          td dividers
+          td boolean
+          td true
+          td Adds visual divider between buttons group
+        tr
+          td imageUrlText
+          td string
+          td Insert image URL
+          td Prompt text that appears on image url request
+        tr
+          td linkUrlText
+          td string
+          td Insert link URL
+          td Prompt text that appears on link url request
+        tr
+          td clearFormattingOnPaste
+          td boolean
+          td true
+          td When enabled it will clear any formatting on paste from clipboard
+        tr
+          td customButtons
+          td object
+          td
+          td
+            p Object with custom buttons. Object property key is the button id that should be used in `buttons` to enable it.
+            p For example to specify custom button that will add `<hr>` we can use following declaration:
+            :code(lang="jsx")
+              <TextEditor
+                customButtons={{
+                  // property key is the button id
+                  hr: {
+                    // button html content
+                    content: '&amp;lt;hr&amp;gt;',
+                    // button click handler
+                    onClick(event, buttonEl) {
+                      document.execCommand('insertHorizontalRule', false);
+                    }
+                  }
+                }}
+                {/* now we use custom button id "hr" to add it to buttons */}
+                buttons={['bold', 'italic', 'hr']}
+              />
+            ```
+    h2 Text Editor Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;TextEditor&gt; events
+        tr
+          td textEditorChange
+          td
+            span (value)
+          td Event will be triggered when editor value has been changed
+        tr
+          td textEditorInput
+          td
+          td Event will be triggered on editor's content "input" event
+        tr
+          td textEditorFocus
+          td
+          td Event will be triggered on editor's content focus
+        tr
+          td textEditorBlur
+          td
+          td Event will be triggered on editor's content blur
+        tr
+          td textEditorButtonClick
+          td
+            span (buttonId)
+          td Event will be triggered on editor button click
+        tr
+          td textEditorKeyboardOpen
+          td
+          td Event will be triggered when editor keyboard toolbar appears
+        tr
+          td textEditorKeyboardClose
+          td
+          td Event will be triggered when editor keyboard toolbar disappears
+        tr
+          td textEditorPopoverOpen
+          td
+          td Event will be triggered on editor popover open
+        tr
+          td textEditorPopoverClose
+          td
+          td Event will be triggered on editor popover close
+        tr
+          td textEditorBeforeDestroy
+          td
+          td Event will be triggered right before Text Editor instance will be destroyed
+
+    h2 Access To Text Editor Instance
+    p If you need to use <a href="../docs/text-editor.html">Text Editor API</a> you can access its initialized instance by accessing `.f7TextEditor` component's property.
+
+    .with-device
+      h2(data-device-preview="../docs-demos/react/text-editor.html") Examples
+      :code(lang="jsx")
+        export default class extends React.Component {
+          constructor() {
+            super();
+            this.state = {
+              customButtons: {
+                hr: {
+                  content: '&amp;lt;hr&amp;gt;',
+                  onClick(editor, buttonEl) {
+                    document.execCommand('insertHorizontalRule', false);
+                  },
+                },
+              },
+              customValue: '<p>Lorem, ipsum dolor sit amet consectetur adipisicing...</p>',
+              listEditorValue: '',
+            };
+          }
+          render() {
+            return (
+              <Page>
+                <Navbar title="Text Editor"></Navbar>
+
+                <BlockTitle>Default Setup</BlockTitle>
+                <TextEditor />
+
+                <BlockTitle>With Placeholder</BlockTitle>
+                <TextEditor
+                  placeholder="Enter text..."
+                />
+
+                <BlockTitle>With Default Value</BlockTitle>
+                <TextEditor
+                  placeholder="Enter text..."
+                  value={this.state.customValue}
+                  onTextEditorChange={(value) => this.setState({ customValue: value })}
+                />
+
+                <BlockTitle>Specific Buttons</BlockTitle>
+                <BlockHeader>It is possible to customize which buttons (commands) to show.</BlockHeader>
+                <TextEditor
+                  placeholder="Enter text..."
+                  buttons={[
+                    ['bold', 'italic', 'underline', 'strikeThrough'],
+                    ['orderedList', 'unorderedList']
+                  ]}
+                />
+
+                <BlockTitle>Custom Button</BlockTitle>
+                <BlockHeader>It is possible to create custom editor buttons. Here is the custom "hr" button that adds horizontal rule:</BlockHeader>
+                <TextEditor
+                  placeholder="Enter text..."
+                  customButtons={this.state.customButtons}
+                  buttons={[
+                    ['bold', 'italic', 'underline', 'strikeThrough'],
+                    'hr'
+                  ]}
+                />
+
+                <BlockTitle>Resizable</BlockTitle>
+                <BlockHeader>Editor will be resized based on its content.</BlockHeader>
+                <TextEditor
+                  placeholder="Enter text..."
+                  resizable
+                  buttons={['bold', 'italic', 'underline', 'strikeThrough']}
+                />
+
+                <BlockTitle>Popover Mode</BlockTitle>
+                <BlockHeader>In this mode, there is no toolbar with buttons, but they appear as popover when you select any text in editor.</BlockHeader>
+                <TextEditor
+                  placeholder="Enter text..."
+                  mode="popover"
+                  buttons={['bold', 'italic', 'underline', 'strikeThrough']}
+                  style={{'--f7-text-editor-height': '150px'}}
+                />
+
+                <BlockTitle>Keyboard Toolbar Mode</BlockTitle>
+                <BlockHeader>In this mode, toolbar with buttons will appear on top of virtual keyboard when editor is in the focus. It is supported only in iOS, Android cordova apps and in Android Chrome. When not supported it will fallback to "popover" mode.</BlockHeader>
+                <TextEditor
+                  placeholder="Enter text..."
+                  mode="keyboard-toolbar"
+                  style={{'--f7-text-editor-height': '150px'}}
+                />
+
+                <BlockTitle>As List Input</BlockTitle>
+                <BlockHeader>Text editor can be used in list with other inputs. In this example it is enabled with "keyboard-toolbar"/"popover" type for "About" field.</BlockHeader>
+                <List>
+                  <ListInput
+                    type="text"
+                    label="Name"
+                    placeholder="Your name"
+                  />
+                  <ListInput
+                    type="texteditor"
+                    label="About"
+                    placeholder="About"
+                    resizable
+                    textEditorParams={{
+                      mode: 'popover',
+                      buttons: ['bold', 'italic', 'underline', 'strikeThrough']
+                    }}
+                    value={this.state.listEditorValue}
+                    onTextEditorChange={(value) => this.setState({listEditorValue: value})}
+                  />
+                </List>
+              </Page>
+            );
+          }
+        }

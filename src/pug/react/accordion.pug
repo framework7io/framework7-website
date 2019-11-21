@@ -1,0 +1,153 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Accordion React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Accordion React Component
+    ul.docs-index
+    p Accordion React component represents Framework7's <a href="../docs/accordion.html">Accordion</a> component.
+    h2 Accordion Components
+    p There are following components included:
+    ul
+      li `Accordion` / `F7Accordion`
+      li `AccordionItem` / `F7AccordionItem`
+      li `AccordionToggle` / `F7AccordionToggle`
+      li `AccordionContent` / `F7AccordionContent`
+    h2 Accordion Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;AccordionItem&gt; properties
+        tr
+          td opened
+          td boolean
+          td
+          td Makes accordion item opened
+
+    h2 Accordion Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;AccordionItem&gt; events
+        tr
+          td accordionBeforeOpen
+          td Event will be triggered right before accordion content starts its opening animation. First handler argument receives `prevent` function that will prevent accordion from opening when called.
+        tr
+          td accordionOpen
+          td Event will be triggered when accordion content starts its opening animation.
+        tr
+          td accordionOpened
+          td Event will be triggered after accordion content completes its opening animation.
+        tr
+          td accordionBeforeClose
+          td Event will be triggered right before accordion content starts its closing animation. First handler argument receives `prevent` function that will prevent accordion from closing when called.
+        tr
+          td accordionClose
+          td Event will be triggered when accordion content starts its closing animation.
+        tr
+          td accordionClosed
+          td Event will be triggered after accordion content completes its closing animation.
+
+    h2 Accordion List
+    p Accordion List is not a separate component, but just a particular case of using <a href="list-view.html">`<List>`</a>, <a href="list-item.html">`<ListItem>`</a> and `<AccordionContent>` components.
+    p In this case accordion events will be fired on `ListItem`.
+    .with-device
+      h2(data-device-preview="../docs-demos/react/accordion.html") Examples
+      :code(lang="jsx")
+            export default () => (
+            <Page>
+              <Navbar title="Accordion"/>
+
+              <BlockTitle>List View Accordion</BlockTitle>
+              <List accordionList>
+                <ListItem accordionItem title="Lorem Ipsum">
+                  <AccordionContent>
+                    <Block>
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.
+                      </p>
+                    </Block>
+                  </AccordionContent>
+                </ListItem>
+                <ListItem accordionItem title="Nested List">
+                  <AccordionContent>
+                    <List>
+                      <ListItem title="Item 1"></ListItem>
+                      <ListItem title="Item 2"></ListItem>
+                      <ListItem title="Item 3"></ListItem>
+                      <ListItem title="Item 4"></ListItem>
+                    </List>
+                  </AccordionContent>
+                </ListItem>
+                <ListItem accordionItem title="Integer semper">
+                  <AccordionContent>
+                    <Block>
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.
+                      </p>
+                    </Block>
+                  </AccordionContent>
+                </ListItem>
+              </List>
+
+              <BlockTitle>Inset Accordion</BlockTitle>
+              <List accordionList inset>
+                <ListItem accordionItem title="Lorem Ipsum">
+                  <AccordionContent>
+                    <Block>
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.
+                      </p>
+                    </Block>
+                  </AccordionContent>
+                </ListItem>
+                <ListItem accordionItem title="Nested List">
+                  <AccordionContent>
+                    <List>
+                      <ListItem title="Item 1"></ListItem>
+                      <ListItem title="Item 2"></ListItem>
+                      <ListItem title="Item 3"></ListItem>
+                      <ListItem title="Item 4"></ListItem>
+                    </List>
+                  </AccordionContent>
+                </ListItem>
+                <ListItem accordionItem title="Integer semper">
+                  <AccordionContent>
+                    <Block>
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.
+                      </p>
+                    </Block>
+                  </AccordionContent>
+                </ListItem>
+              </List>
+
+              <BlockTitle>Custom Collapsible</BlockTitle>
+              <Block inner accordionList>
+                {Array.from(Array(3).keys()).map(n => (
+                  <AccordionItem key={n}>
+                    <AccordionToggle><b>Item {n + 1}</b></AccordionToggle>
+                    <AccordionContent>Content {n + 1}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Block>
+            </Page>
+            );

@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /packages/
+Disallow: /kitchen-sink/
+Disallow: /docs-demos/

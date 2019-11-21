@@ -1,52 +1,53 @@
 official:
--
-  title: Single View
-  iconUrl: '#{cdn}/i/templates/single-view.svg'
-  url: https://github.com/framework7io/framework7-template-single-view
-  previewUrl: https://framework7io.github.io/framework7-template-single-view/
-  badges:
-  - v2
--
-  title: Tabbed Views
-  iconUrl: '#{cdn}/i/templates/tabs.svg'
-  url: https://github.com/framework7io/framework7-template-tabs
-  previewUrl: https://framework7io.github.io/framework7-template-tabs/
-  badges:
-  - v2
--
-  title: Split View
-  iconUrl: '#{cdn}/i/templates/split-view.svg'
-  url: https://github.com/framework7io/framework7-template-split-view
-  previewUrl: https://framework7io.github.io/framework7-template-split-view/
-  badges:
-  - v2
--
-  title: Vue.js Simple
-  iconUrl: '#{cdn}/i/templates/f7-vue-simple.svg'
-  url: https://github.com/framework7io/framework7-template-vue-simple
-  previewUrl: https://framework7io.github.io/framework7-template-vue-simple/
-  description: Simple Framework7-Vue starter app template in a single HTML file
-  badges:
-  - v2
-  - Vue
--
-  title: Vue.js Webpack
-  iconUrl: '#{cdn}/i/templates/f7-vue-webpack.svg'
-  url: https://github.com/framework7io/framework7-template-vue-webpack
-  description: Framework7-Vue Webpack starter app template with hot-reload & css extraction
-  badges:
-  - v2
-  - Vue
--
-  title: Vue.js Browserify
-  iconUrl: '#{cdn}/i/templates/f7-vue-browserify.svg'
-  url: https://github.com/framework7io/framework7-template-vue-browserify
-  description: Framework7-Vue Browserify starter app template with hot-reload & css extraction
-  badges:
-  - v2
-  - Vue
-
 community:
+-
+  title: Telefones Úteis
+  iconUrl: "/i/templates/telefones.png"
+  author:
+    url: https://github.com/CesarBalzer
+    name: Cesar E. Balzer
+  url: https://github.com/CesarBalzer/telefones_uteis
+  description: Emergency access tool for quick access to emergency services and other public utility numbers, private numbers and others you wish.
+  badges:
+  - v4
+-
+  title: HackerNews7
+  iconUrl: https://github.com/GuillaumeBiton/HackerNews7/raw/master/assets-src/apple-touch-icon.png
+  author:
+    url: https://github.com/GuillaumeBiton
+    name: Guillaume Biton
+  url: https://github.com/GuillaumeBiton/HackerNews7
+  previewUrl: http://guillaumebiton.github.io/HackerNews7/
+  description: Hacker News Reader powered by Framework7 which is based on the Official Hacker News API
+  badges:
+  - v4
+-
+  title: Simplest Framework7 Template
+  icon:
+    text: The simplest core template possible
+    bgColor: '#df258a'
+    textColor: '#fff'
+  author:
+    url: http://www.timo-ernst.net
+    name: Timo Ernst
+  url: https://github.com/valnub/framework7-simplest-template
+  description: It doesn't get any simpler than this. Just the basics with HTML, CSS and JavaScript. Good for beginners.
+  badges:
+  - v3
+-
+  title: Facebook API JavaScript SDK get all Albums and Photos
+  icon:
+    text: Get all Facebook Photos
+    bgColor: '#3B5998'
+    textColor: '#fff'
+  author:
+    url: https://websitebeaver.com/facebook-api-javascript-sdk-get-all-albums-and-photos
+    name: WebsiteBeaver
+  url: https://github.com/WebsiteBeaver/facebook-api-javascript-sdk-get-all-albums-and-photos
+  description: Get all Facebook albums and photos with its API.
+  badges:
+  - v3
+  - Facebook API
 -
   title: Framework7 Parceljs starter app
   icon:
@@ -60,8 +61,8 @@ community:
   previewUrl: https://guillaumebiton.github.io/framework7-parcel-template/
   description: Framework7 starter app template bundle up by parcel
   badges:
-  - v2
-  - Parceljs
+  - v3
+  - Parcel.js
 -
   title: App Framework
   iconUrl: http://is3.mzstatic.com/image/thumb/Purple127/v4/a5/13/be/a513bea8-7382-589f-dc30-3c032068df0c/source/350x350bb.jpg
@@ -89,7 +90,22 @@ community:
   badges:
   - Cordova
   - Vue
-  - v2
+  - v3
+-
+  title: F7 + React + Redux
+  icon:
+    text: F7 + React + Redux
+    bgColor: '#fff'
+    textColor: '#000'
+  author:
+    url: http://github.com/bencompton/
+    name: Ben Compton
+  url: https://github.com/bencompton/framework7-redux-app-template
+  description:
+  badges:
+  - v3
+  - React
+  - Redux
 -
   title: PGChat
   icon:
@@ -108,7 +124,7 @@ community:
   - v1
 -
   title: Weather7 Material
-  iconUrl: "#{cdn}/i/templates/weather7-material.png"
+  iconUrl: "/i/templates/weather7-material.png"
   author:
     url: https://github.com/nolimits4web/
     name: Vladimir Kharlampidi
@@ -130,17 +146,6 @@ community:
   description: This is a demo application will list upcoming and current movies from theaters and give you detailed information.
   badges:
   - Angular 1.x
-  - v1
--
-  title: HackerNews7
-  iconUrl: http://guillaumebiton.github.io/HackerNews7/apple-touch-icon.png
-  author:
-    url: https://github.com/GuillaumeBiton
-    name: Guillaume Biton
-  url: https://github.com/GuillaumeBiton/HackerNews7
-  previewUrl: http://guillaumebiton.github.io/HackerNews7/
-  description: Hacker News Reader powered by Framework7 which is based on the Official Hacker News API
-  badges:
   - v1
 -
   title: CanJS Issue Tracker

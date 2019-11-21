@@ -1,0 +1,599 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Lazy Modules | Framework7 Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Lazy Modules
+    ul.docs-index
+    .important-note
+      p
+        b Lazy Modules available from Framework7 version 3.4.0.
+    p Lazy modules provide a way to make your web app startup time much faster, by loading initially only functionality required for home page/view, and load additional modules/components when navigating to pages that use them. This will make your initial app scripts and styles a way more smaller size, which is significant when you build a web app or PWA.
+
+    p There are two type of modules available with Framework7. ES-modules and "browser modules". To use ES-modules you need to use bundler with `import/export` support like Webpack or Rollup. Browser modules are designed only to be used when you don't use any bundler.
+
+    h2 Modules API
+    p To load Framework7 modules <b>after</b> it was initialized we need to use following app methods:
+    .method-wrap
+      p
+        span.method app.loadModule(<span>module</span>)</span> - load module
+      ul.method-parameters
+        li
+          span.parameter module
+          |  - one of the following:
+          br
+          |  - <span class="parameter-type">object</span> with <a href="plugins-api.html">Framework7 Plugin</a>
+          br
+          |  - <span class="parameter-type">function</span> that returns <a href="plugins-api.html">Framework7 Plugin</a>
+          br
+          |  - <span class="parameter-type">string</span> with module name to load (e.g. `'searchbar'`)
+          br
+          |  - <span class="parameter-type">string</span> with module path to load (e.g. `'path/to/components/searchbar.js'`)
+      p.method-returns Method returns Promise
+    .method-wrap
+      p
+        span.method app.loadModules(<span>modules</span>)</span> - load modules
+      ul.method-parameters
+        li
+          span.parameter modules
+          |  - array with modules, where each array item one of the described above
+      p.method-returns Method returns Promise
+
+    h2 ES Modules
+    p This method will only work if you use bundler like Webpack or Rollup.
+    p Firs of all, we need to realize what modules our app requires to display initial page and import them:
+    :code(lang="js")
+      // import core framework with core components only:
+      import Framework7 from 'framework7';
+
+      // import framework7 modules/components we need on initial page
+      import Searchbar from 'framework7/components/searchbar/searchbar.js';
+      import Accordion from 'framework7/components/accordion/accordion.js';
+
+      // install core modules
+      Framework7.use([Searchbar, Accordion]);
+
+      // init app
+      var app = new Framework7({
+        // f7 params
+      });
+    p Later when we need to install additional F7 module we can use dynamic imports:
+    :code(lang="js")
+      import('framework7/components/gauge/gauge.js')
+        .then(module => app.loadModule(module.default))
+        .then(() => {
+          // module loaded and we can use gauge api
+          app.gauge.create(/* ... */)
+        })
+    p If we need to load few modules at a time:
+    :code(lang="js")
+      Promise
+        .all([
+          import('framework7/components/gauge/gauge.js'),
+          import('framework7/components/calendar/calendar.js')
+        ])
+        .then((modules) => {
+          // loaded module will be at ".default" prop of import result
+          var modulesToLoad = modules.map(module => module.default);
+          return app.loadModules(modulesToLoad);
+        })
+        .then(() => {
+          // modules loaded and we can use their api
+          app.gauge.create(/* ... */)
+          app.calendar.create(/* ... */)
+        })
+    p It may be not very convenient to write it every time so we can make a function for that:
+    :code(lang="js")
+      function loadF7Modules(moduleNames) {
+        var modulesToLoad = moduleNames.map((moduleName) => {
+          return import(`framework7/components/${moduleName}/${moduleName}.js`);
+        });
+        return Promise.all(modulesToLoad)
+          .then((modules) => {
+            return app.loadModules(modules.map(module => module.default));
+          })
+      }
+    p And we can use it like:
+    :code(lang="js")
+      loadF7Modules(['gauge', 'calendar']).then(() => {
+        // modules loaded and we can use their api
+        app.gauge.create(/* ... */)
+        app.calendar.create(/* ... */)
+      });
+    p If we need to preload modules for specific route then route's `async` is the best fit for it:
+    :code(lang="js")
+      var routes = [
+        {
+          path: '/',
+          url: './index.html',
+        },
+        /* Page where we need Gauge and Calendar modules to be loaded */
+        {
+          path: '/gauge-calendar/',
+          async: function (routeTo, routeFrom, resolve, reject) {
+            // load modules
+            loadF7Modules(['gauge', 'calendar']).then(() => {
+              // resolve route
+              resolve({
+                componentUrl: './gauge-calendar.html',
+              });
+            });
+          }
+        }
+      ]
+    p The following ES-module components are available for importing (all other components are part of the core):
+    table
+      thead
+        tr
+          th Component
+          th Path
+      tbody
+        tr
+          td Dialog
+          td `framework7/components/dialog/dialog.js`
+        tr
+          td Popup
+          td `framework7/components/popup/popup.js`
+        tr
+          td LoginScreen
+          td `framework7/components/login-screen/login-screen.js`
+        tr
+          td Popover
+          td `framework7/components/popover/popover.js`
+        tr
+          td Actions
+          td `framework7/components/actions/actions.js`
+        tr
+          td Sheet
+          td `framework7/components/sheet/sheet.js`
+        tr
+          td Toast
+          td `framework7/components/toast/toast.js`
+        tr
+          td Preloader
+          td `framework7/components/preloader/preloader.js`
+        tr
+          td Progressbar
+          td `framework7/components/progressbar/progressbar.js`
+        tr
+          td Sortable
+          td `framework7/components/sortable/sortable.js`
+        tr
+          td Swipeout
+          td `framework7/components/swipeout/swipeout.js`
+        tr
+          td Accordion
+          td `framework7/components/accordion/accordion.js`
+        tr
+          td ContactsList
+          td `framework7/components/contacts-list/contacts-list.js`
+        tr
+          td VirtualList
+          td `framework7/components/virtual-list/virtual-list.js`
+        tr
+          td ListIndex
+          td `framework7/components/list-index/list-index.js`
+        tr
+          td Timeline
+          td `framework7/components/timeline/timeline.js`
+        tr
+          td Tabs
+          td `framework7/components/tabs/tabs.js`
+        tr
+          td Panel
+          td `framework7/components/panel/panel.js`
+        tr
+          td Card
+          td `framework7/components/card/card.js`
+        tr
+          td Chip
+          td `framework7/components/chip/chip.js`
+        tr
+          td Form
+          td `framework7/components/form/form.js`
+        tr
+          td Input
+          td `framework7/components/input/input.js`
+        tr
+          td Checkbox
+          td `framework7/components/checkbox/checkbox.js`
+        tr
+          td Radio
+          td `framework7/components/radio/radio.js`
+        tr
+          td Toggle
+          td `framework7/components/toggle/toggle.js`
+        tr
+          td Range
+          td `framework7/components/range/range.js`
+        tr
+          td Stepper
+          td `framework7/components/stepper/stepper.js`
+        tr
+          td SmartSelect
+          td `framework7/components/smart-select/smart-select.js`
+        tr
+          td Grid
+          td `framework7/components/grid/grid.js`
+        tr
+          td Calendar
+          td `framework7/components/calendar/calendar.js`
+        tr
+          td Picker
+          td `framework7/components/picker/picker.js`
+        tr
+          td InfiniteScroll
+          td `framework7/components/infinite-scroll/infinite-scroll.js`
+        tr
+          td PullToRefresh
+          td `framework7/components/pull-to-refresh/pull-to-refresh.js`
+        tr
+          td Lazy
+          td `framework7/components/lazy/lazy.js`
+        tr
+          td DataTable
+          td `framework7/components/data-table/data-table.js`
+        tr
+          td Fab
+          td `framework7/components/fab/fab.js`
+        tr
+          td Searchbar
+          td `framework7/components/searchbar/searchbar.js`
+        tr
+          td Messages
+          td `framework7/components/messages/messages.js`
+        tr
+          td Messagebar
+          td `framework7/components/messagebar/messagebar.js`
+        tr
+          td Swiper
+          td `framework7/components/swiper/swiper.js`
+        tr
+          td PhotoBrowser
+          td `framework7/components/photo-browser/photo-browser.js`
+        tr
+          td Notification
+          td `framework7/components/notification/notification.js`
+        tr
+          td Autocomplete
+          td `framework7/components/autocomplete/autocomplete.js`
+        tr
+          td Tooltip
+          td `framework7/components/tooltip/tooltip.js`
+        tr
+          td Gauge
+          td `framework7/components/gauge/gauge.js`
+        tr
+          td Skeleton
+          td `framework7/components/skeleton/skeleton.js`
+        tr
+          td Menu
+          td `framework7/components/menu/menu.js`
+        tr
+          td Vi
+          td `framework7/components/vi/vi.js`
+        tr
+          td Typography
+          td `framework7/components/typography/typography.js`
+    h2 Browser Modules
+    p Browser modules are intended to be used in development setup without bundlers (like Webpack or Rollup).
+    p First of all, in our main <a href="app-layout.html">app layout</a> we need to use so called minimal core Framework7 library instead of `framework7.bundle.js` and `framework7.bundle.css` scripts and styles that contains whole framework.
+    :code(lang="html")
+      <!DOCTYPE html>
+      <html>
+        <head>
+          ...
+          <!-- Path to Framework7 Core Library CSS -->
+          <link rel="stylesheet" href="path/to/framework7/css/framework7.min.css">
+          <!-- Path to your custom app styles-->
+          <link rel="stylesheet" href="path/to/my-app.css">
+        </head>
+        <body>
+          <div id="app">
+            ...
+          </div>
+          <!-- Path to Framework7 Core Library JS-->
+          <script type="text/javascript" src="path/to/framework7/js/framework7.min.js"></script>
+          <!-- Path to your app js-->
+          <script type="text/javascript" src="path/to/my-app.js"></script>
+        </body>
+      </html>
+    p We also need to inclued modules/components that we need on initial page after `framework7` styles and script. If we need Searchbar and Accordion then we need to include them in app layout:
+    :code(lang="html")
+      <!DOCTYPE html>
+      <html>
+        <head>
+          ...
+          <!-- Path to Framework7 Core Library CSS -->
+          <link rel="stylesheet" href="path/to/framework7/css/framework7.min.css">
+          <!-- Include modules required for initial page -->
+          <link rel="stylesheet" href="path/to/framework7/components/accordion.css">
+          <link rel="stylesheet" href="path/to/framework7/components/searchbar.css">
+          <!-- Path to your custom app styles-->
+          <link rel="stylesheet" href="path/to/my-app.css">
+        </head>
+        <body>
+          <div id="app">
+            ...
+          </div>
+          <!-- Path to Framework7 Core Library JS-->
+          <script type="text/javascript" src="path/to/framework7/js/framework7.min.js"></script>
+          <!-- Include modules required for initial page -->
+          <script type="text/javascript" src="path/to/framework7/components/accordion.js"></script>
+          <script type="text/javascript" src="path/to/framework7/components/searchbar.js"></script>
+          <!-- Path to your app js-->
+          <script type="text/javascript" src="path/to/my-app.js"></script>
+        </body>
+      </html>
+    p Now when we init Framework7 app we need to specify where is the rest of modules in `lazyModulesPath` parameter (path to `/components/` folder):
+    :code(lang="js")
+      var app = new Framework7({
+        // ...
+        lazyModulesPath: 'path/to/framework7/components',
+      });
+    p Now we can just load module by its name (it will automatically fetch file with such file name in specified `lazyModulesPath` location):
+    :code(lang="js")
+      app.loadModules(['calendar', 'gauge']).then(() => {
+        // modules loaded and we can use their api
+        app.gauge.create(/* ... */)
+        app.calendar.create(/* ... */)
+      });
+    .important-note
+      p Note, that browser modules also load modules styles automatically. So loading `gauge.js` will also automatically load `gauge.css` stylesheet.
+    p So the above expression `app.loadModules(['calendar', 'gauge'])` will load the following files:
+    ul
+      li path/to/framework7/components/calendar.js
+      li path/to/framework7/components/calendar.css
+      li path/to/framework7/components/gauge.js
+      li path/to/framework7/components/gauge.css
+    p When we need to preload modules for specific route and we use browser modules, then we can just use route's `modules` property:
+    :code(lang="js")
+      var routes = [
+        {
+          path: '/',
+          url: './index.html',
+        },
+        /* Page where we need Gauge and Calendar modules to be loaded */
+        {
+          path: '/gauge-calendar/',
+          modules: ['gauge', 'calendar'], // will load these components before loading route
+          componentUrl: './gauge-calendar.html',
+        }
+      ]
+    p Or the same but using `async` route like in example with ES modules:
+    :code(lang="js")
+      var routes = [
+        {
+          path: '/',
+          url: './index.html',
+        },
+        /* Page where we need Gauge and Calendar modules to be loaded */
+        {
+          path: '/gauge-calendar/',
+          modules: ['gauge', 'calendar'], // will load these components before loading route
+          async: function(routeTo, routeFrom, resolve, reject) {
+            app.loadModules(['gauge', 'calendar']).then(() => {
+              resolve({
+                componentUrl: './gauge-calendar.html',
+              });
+            });
+          },
+        }
+      ]
+    p The following browser modules-components are available for loading (all other components are part of the core):
+    table
+      thead
+        tr
+          th Component
+          th Name
+          th Path
+      tbody
+        tr
+          td Dialog
+          td `dialog`
+          td `framework7/components/dialog.js`
+        tr
+          td Popup
+          td `popup`
+          td `framework7/components/popup.js`
+        tr
+          td LoginScreen
+          td `login-screen`
+          td `framework7/components/login-screen.js`
+        tr
+          td Popover
+          td `popover`
+          td `framework7/components/popover.js`
+        tr
+          td Actions
+          td `actions`
+          td `framework7/components/actions.js`
+        tr
+          td Sheet
+          td `sheet`
+          td `framework7/components/sheet.js`
+        tr
+          td Toast
+          td `toast`
+          td `framework7/components/toast.js`
+        tr
+          td Preloader
+          td `preloader`
+          td `framework7/components/preloader.js`
+        tr
+          td Progressbar
+          td `progressbar`
+          td `framework7/components/progressbar.js`
+        tr
+          td Sortable
+          td `sortable`
+          td `framework7/components/sortable.js`
+        tr
+          td Swipeout
+          td `swipeout`
+          td `framework7/components/swipeout.js`
+        tr
+          td Accordion
+          td `accordion`
+          td `framework7/components/accordion.js`
+        tr
+          td ContactsList
+          td `contacts-list`
+          td `framework7/components/contacts-list.js`
+        tr
+          td VirtualList
+          td `virtual-list`
+          td `framework7/components/virtual-list.js`
+        tr
+          td ListIndex
+          td `list-index`
+          td `framework7/components/list-index.js`
+        tr
+          td Timeline
+          td `timeline`
+          td `framework7/components/timeline.js`
+        tr
+          td Tabs
+          td `tabs`
+          td `framework7/components/tabs.js`
+        tr
+          td Panel
+          td `panel`
+          td `framework7/components/panel.js`
+        tr
+          td Card
+          td `card`
+          td `framework7/components/card.js`
+        tr
+          td Chip
+          td `chip`
+          td `framework7/components/chip.js`
+        tr
+          td Form
+          td `form`
+          td `framework7/components/form.js`
+        tr
+          td Input
+          td `input`
+          td `framework7/components/input.js`
+        tr
+          td Checkbox
+          td `checkbox`
+          td `framework7/components/checkbox.js`
+        tr
+          td Radio
+          td `radio`
+          td `framework7/components/radio.js`
+        tr
+          td Toggle
+          td `toggle`
+          td `framework7/components/toggle.js`
+        tr
+          td Range
+          td `range`
+          td `framework7/components/range.js`
+        tr
+          td Stepper
+          td `stepper`
+          td `framework7/components/stepper.js`
+        tr
+          td SmartSelect
+          td `smart-select`
+          td `framework7/components/smart-select.js`
+        tr
+          td Grid
+          td `grid`
+          td `framework7/components/grid.js`
+        tr
+          td Calendar
+          td `calendar`
+          td `framework7/components/calendar.js`
+        tr
+          td Picker
+          td `picker`
+          td `framework7/components/picker.js`
+        tr
+          td InfiniteScroll
+          td `infinite-scroll`
+          td `framework7/components/infinite-scroll.js`
+        tr
+          td PullToRefresh
+          td `pull-to-refresh`
+          td `framework7/components/pull-to-refresh.js`
+        tr
+          td Lazy
+          td `lazy`
+          td `framework7/components/lazy.js`
+        tr
+          td DataTable
+          td `data-table`
+          td `framework7/components/data-table.js`
+        tr
+          td Fab
+          td `fab`
+          td `framework7/components/fab.js`
+        tr
+          td Searchbar
+          td `searchbar`
+          td `framework7/components/searchbar.js`
+        tr
+          td Messages
+          td `messages`
+          td `framework7/components/messages.js`
+        tr
+          td Messagebar
+          td `messagebar`
+          td `framework7/components/messagebar.js`
+        tr
+          td Swiper
+          td `swiper`
+          td `framework7/components/swiper.js`
+        tr
+          td PhotoBrowser
+          td `photo`
+          td `framework7/components/browser/photo-browser.js`
+        tr
+          td Notification
+          td `notification`
+          td `framework7/components/notification.js`
+        tr
+          td Autocomplete
+          td `autocomplete`
+          td `framework7/components/autocomplete.js`
+        tr
+          td Tooltip
+          td `tooltip`
+          td `framework7/components/tooltip.js`
+        tr
+          td Gauge
+          td `gauge`
+          td `framework7/components/gauge.js`
+        tr
+          td Skeleton
+          td `skeleton`
+          td `framework7/components/skeleton.js`
+        tr
+          td Menu
+          td `menu`
+          td `framework7/components/menu.js`
+        tr
+          td Vi
+          td `vi`
+          td `framework7/components/vi.js`
+        tr
+          td Typography
+          td `typography`
+          td `framework7/components/typography.js`
+
+
+
+
+
+

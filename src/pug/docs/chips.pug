@@ -11,35 +11,41 @@ block content
   .docs-content
     +improveDocsLink
     h1 Chips
-    .docs-index
+    ul.docs-index
     p Chips (Tags) represent complex entities in small blocks, such as a contact. They can contain a photo, short title string, and brief information.
     h2 Chips Layout
     p Let's look at basic chip HTML layout
-    pre
-      code.html
-        | &lt;div class="chip"&gt;
-        |     &lt;div class="chip-media"&gt;
-        |         &lt;img src="http://lorempixel.com/100/100/people/9/"&gt;
-        |     &lt;/div&gt;
-        |     &lt;div class="chip-label"&gt;Jane Doe&lt;/div&gt;
-        |     &lt;a href="#" class="chip-delete"&gt;&lt;/a&gt;
-        | &lt;/div&gt;
+    :code(lang="html")
+          <div class="chip">
+            <div class="chip-media">
+              <img src="https://cdn.framework7.io/placeholder/people-100x100-9.jpg">
+            </div>
+            <div class="chip-label">Jane Doe</div>
+            <a href="#" class="chip-delete"></a>
+          </div>
+
+          <div class="chip chip-outline">
+            <div class="chip-label">Outline Chip</div>
+          </div>
     p Where
     ul
       li
-        p <code>&lt;div class="chip"&gt;</code> - Chip container
+        p `<div class="chip">` - Chip container
         ul
           li
-            p <code>&lt;div class="chip-media"&gt;</code> - Chip "media" element, can contain image/avatar or icon. <em>Optional</em>
+            p `<div class="chip-media">` - Chip "media" element, can contain image/avatar or icon. <em>Optional</em>
           li
-            p <code>&lt;div class="card-label"&gt;</code> - Chip text label
+            p `<div class="chip-label">` - Chip text label
           li
-            p <code>&lt;a class="card-delete"&gt;</code> - Chip delete icon-link. <em>Optional</em>
-    .with-device(data-device-preview="../docs-demos/chips.html")
-      h2 Examples
-      pre
-        code.html
-          :code
+            p `<a class="chip-delete">` - Chip delete icon-link. <em>Optional</em>
+          li
+            p `chip-outline` - additional class that can be added to chip element to make it outline
+
+    +cssVars('chip')
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/chips.html") Examples
+      :code(lang="html")
             <div class="block-title">Chips With Text</div>
             <div class="block block-strong">
               <div class="chip">
@@ -58,48 +64,63 @@ block content
                 <div class="chip-label">Last One</div>
               </div>
             </div>
-      pre
-        code.html
-          :code
+      :code(lang="html")
+            <div class="block-title">Outline Chips</div>
+            <div class="block block-strong">
+              <div class="chip chip-outline">
+                <div class="chip-label">Example Chip</div>
+              </div>
+              <div class="chip chip-outline">
+                <div class="chip-label">Another Chip</div>
+              </div>
+              <div class="chip chip-outline">
+                <div class="chip-label">One More Chip</div>
+              </div>
+              <div class="chip chip-outline">
+                <div class="chip-label">Fourth Chip</div>
+              </div>
+              <div class="chip chip-outline">
+                <div class="chip-label">Last One</div>
+              </div>
+            </div>
+      :code(lang="html")
             <div class="block-title">Icon Chips</div>
             <div class="block block-strong">
               <div class="chip">
                 <div class="chip-media bg-color-blue">
-                  <i class="icon f7-icons ios-only">add_round</i>
+                  <i class="icon f7-icons if-not-md">add_round</i>
                   <i class="icon material-icons md-only">add_circle</i>
                 </div>
                 <div class="chip-label">Add Contact</div>
               </div>
               <div class="chip">
                 <div class="chip-media bg-color-green">
-                  <i class="icon f7-icons ios-only">compass</i>
+                  <i class="icon f7-icons if-not-md">compass</i>
                   <i class="icon material-icons md-only">location_on</i>
                 </div>
                 <div class="chip-label">London</div>
               </div>
               <div class="chip">
                 <div class="chip-media bg-color-red">
-                  <i class="icon f7-icons ios-only">person</i>
+                  <i class="icon f7-icons if-not-md">person</i>
                   <i class="icon material-icons md-only">person</i>
                 </div>
                 <div class="chip-label">John Doe</div>
               </div>
             </div>
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">Contact Chips</div>
             <div class="block block-strong">
               <div class="chip">
-                <div class="chip-media"><img src="http://lorempixel.com/64/64/people/9/"/></div>
+                <div class="chip-media"><img src="https://cdn.framework7.io/placeholder/people-64x64-9.jpg"/></div>
                 <div class="chip-label">Jane Doe</div>
               </div>
               <div class="chip">
-                <div class="chip-media"><img src="http://lorempixel.com/64/64/people/9/"/></div>
+                <div class="chip-media"><img src="https://cdn.framework7.io/placeholder/people-64x64-9.jpg"/></div>
                 <div class="chip-label">John Doe</div>
               </div>
               <div class="chip">
-                <div class="chip-media"><img src="http://lorempixel.com/64/64/people/9/"/></div>
+                <div class="chip-media"><img src="https://cdn.framework7.io/placeholder/people-64x64-9.jpg"/></div>
                 <div class="chip-label">Adam Smith</div>
               </div>
               <div class="chip">
@@ -115,9 +136,7 @@ block content
                 <div class="chip-label">Kate</div>
               </div>
             </div>
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">Deletable Chips / Tags</div>
             <div class="block block-strong">
               <div class="chip">
@@ -128,7 +147,7 @@ block content
                 <div class="chip-label">Chris</div><a href="#" class="chip-delete"></a>
               </div>
               <div class="chip">
-                <div class="chip-media"><img src="http://lorempixel.com/64/64/people/9/"/></div>
+                <div class="chip-media"><img src="https://cdn.framework7.io/placeholder/people-64x64-9.jpg"/></div>
                 <div class="chip-label">Jane Doe</div><a href="#" class="chip-delete"></a>
               </div>
               <div class="chip">
@@ -139,13 +158,11 @@ block content
                 <div class="chip-label">Jennifer</div><a href="#" class="chip-delete"></a>
               </div>
               <div class="chip">
-                <div class="chip-media"><img src="http://lorempixel.com/64/64/people/9/"/></div>
+                <div class="chip-media"><img src="https://cdn.framework7.io/placeholder/people-64x64-9.jpg"/></div>
                 <div class="chip-label">Adam Smith</div><a href="#" class="chip-delete"></a>
               </div>
             </div>
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">Color Chips</div>
             <div class="block block-strong">
               <div class="chip color-red">
@@ -161,6 +178,21 @@ block content
                 <div class="chip-label">Orange Chip</div>
               </div>
               <div class="chip color-pink">
+                <div class="chip-label">Pink Chip</div>
+              </div>
+              <div class="chip chip-outline color-red">
+                <div class="chip-label">Red Chip</div>
+              </div>
+              <div class="chip chip-outline color-green">
+                <div class="chip-label">Green Chip</div>
+              </div>
+              <div class="chip chip-outline color-blue">
+                <div class="chip-label">Blue Chip</div>
+              </div>
+              <div class="chip chip-outline color-orange">
+                <div class="chip-label">Orange Chip</div>
+              </div>
+              <div class="chip chip-outline color-pink">
                 <div class="chip-label">Pink Chip</div>
               </div>
             </div>

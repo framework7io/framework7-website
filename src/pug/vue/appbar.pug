@@ -1,0 +1,79 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Appbar Vue Component | Framework7 Vue Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Appbar Vue Component
+    ul.docs-index
+    p Appbar Vue component represents <a href="../docs/appbar.html">Appbar</a> element.
+    p It is the main app bar with actions on top of the whole app. It is designed to be used in desktop apps with Aurora theme.
+    h2 Appbar Components
+    p There are following components included:
+    ul
+      li `f7-appbar`
+    h2 Appbar Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-appbar&gt; properties
+        tr
+          td inner
+          td boolean
+          td true
+          td When enabled (by default), it will put all the content within internal `appbar-inner` element. Disable it only in case you want to put totally custom layout inside
+        tr
+          td no-shadow
+          td boolean
+          td false
+          td Disable shadow rendering for MD theme
+        tr
+          td no-hairline
+          td boolean
+          td false
+          td Disable appbar bottom thin border (hairline) for iOS theme
+        tr
+          td inner-class
+          td string
+          td
+          td Adds additional class to `appbar-inner` element
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/appbar.html") Examples
+      :code
+        <f7-app>
+          <f7-appbar>
+            <div class="left">
+              <f7-button small panel-toggle="left" class="display-flex" icon-f7="bars"></f7-button>
+              <f7-button small class="display-flex margin-left-half" icon-f7="reply_fill"></f7-button>
+              <f7-button small class="display-flex margin-left-half" icon-f7="forward_fill"></f7-button>
+            </div>
+            <div class="right">
+              <f7-searchbar
+                inline
+                custom-search
+                :disable-button="false"
+              ></f7-searchbar>
+            </div>
+          </f7-appbar>
+          <f7-view main>
+            <f7-page>
+              <f7-navbar title="Appbar"></f7-navbar>
+              <f7-block strong>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed sagittis dui. Fusce nulla massa, scelerisque vitae auctor in, luctus in ipsum. Sed eu lectus vel magna malesuada lacinia. Ut at vestibulum sem. In semper, arcu pulvinar volutpat fermentum, felis magna fringilla felis, nec volutpat nisi nunc quis ante. Fusce elementum egestas tortor ut porta. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis id commodo elit. Sed massa dui, laoreet a orci sed, egestas vehicula tellus. Nulla pulvinar ornare justo sed finibus. Aliquam hendrerit dui at nulla eleifend, quis feugiat enim aliquam. Nulla facilisi. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+              </f7-block>
+            </f7-page>
+          </f7-view>
+        </f7-app>

@@ -5,20 +5,22 @@ block vars
   - var title = 'Floating Action Button Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
+
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Floating Action Button Vue Component
-    .docs-index
+    ul.docs-index
     p Floating action buttons (FABs) are used for a promoted action. They are distinguished by a circled icon floating above the UI and have motion behaviors that include morphing, launching, and a transferring anchor point.
     p Floating Action Button Vue component represents <a href="../docs/floating-action-button.html">Floating Action Button</a> element.
     h2 FAB Components
     p There are following components included:
     ul
-      li <code><b>f7-fab</b></code> - main FAB element
-      li <code><b>f7-fab-buttons</b></code> - wrapper for multiple FAB buttons used as Speed Dial FAB
-      li <code><b>f7-fab-button</b></code> - single FAB Speed Dial button
+      li `f7-fab` - main FAB element
+      li `f7-fab-buttons` - wrapper for multiple FAB buttons used as Speed Dial FAB
+      li `f7-fab-button` - single FAB Speed Dial button
     h2 FAB Properties
     table.params-table
       thead
@@ -34,27 +36,42 @@ block content
           td href
           td string<br>boolean
           td
-          td URL of the page to load (if set). Will set <code>href</code> attribute on main FAB link. In case of boolean <code>href="false"</code> it won't add <code>href</code> tag
+          td URL of the page to load (if set). Will set `href` attribute on main FAB link. In case of boolean `href="false"` it won't add `href` tag
+        tr
+          td target
+          td string
+          td
+          td Value of link target attribute, e.g. `_blank`, `_self`, etc.
         tr
           td position
           td string
           td right-bottom
           td FAB position. Can be one of the following:
             ul
-              li <code>right-bottom</code>
-              li <code>center-bottom</code>
-              li <code>left-bottom</code>
-              li <code>right-center</code>
-              li <code>center-center</code>
-              li <code>left-center</code>
-              li <code>right-top</code>
-              li <code>center-top</code>
-              li <code>left-top</code>
+              li `right-bottom`
+              li `center-bottom`
+              li `left-bottom`
+              li `right-center`
+              li `center-center`
+              li `left-center`
+              li `right-top`
+              li `center-top`
+              li `left-top`
         tr
           td morph-to
           td string
           td
           td String CSS selector of the FAB morph target
+        tr
+          td text
+          td string
+          td
+          td FAB Button text. If specified, then it will be displayed as Extended Fab with text label
+        tr
+          td tooltip
+          td string
+          td
+          td FAB <a href="../docs/tooltip.html">tooltip</a> text to show on button hover/press
         tr
           th(colspan="4") &lt;f7-fab-buttons&gt; properties
         tr
@@ -63,11 +80,11 @@ block content
           td top
           td Speed dial buttons position, can be one of the following:
             ul
-              li <code>top</code> - buttons will appear on top of FAB
-              li <code>right</code> - buttons will appear on right of FAB
-              li <code>bottom</code> - buttons will appear on bottom of FAB
-              li <code>left</code> - buttons will appear on left of FAB
-              li <code>center</code> - buttons will appear around of FAB
+              li `top` - buttons will appear on top of FAB
+              li `right` - buttons will appear on right of FAB
+              li `bottom` - buttons will appear on bottom of FAB
+              li `left` - buttons will appear on left of FAB
+              li `center` - buttons will appear around of FAB
         tr
           th(colspan="4") &lt;f7-fab-button&gt; properties
         tr
@@ -75,6 +92,21 @@ block content
           td boolean
           td false
           td When enabled then clicking on this button will close the FAB
+        tr
+          td target
+          td string
+          td
+          td Value of link target attribute, e.g. `_blank`, `_self`, etc.
+        tr
+          td label
+          td string
+          td
+          td Button text label
+        tr
+          td tooltip
+          td string
+          td
+          td Button <a href="../docs/tooltip.html">tooltip</a> text to show on button hover/press
     h2 FAB Events
     table.events-table
       thead
@@ -92,64 +124,84 @@ block content
         tr
           td click
           td Event will be triggered after click on FAB Speed Dial button
-    h2 Examples
-    h4 Default FAB
-    pre
-      code
-        :code
-          <f7-page>
-            <!-- FAB must be direct child of a page -->
-            <f7-fab color="pink" @click="doSomething">
-              <f7-icon f7="add"></f7-icon>
-            </f7-fab>
-            ...
-          </f7-page>
-    p Renders to:
-    pre
-      code
-        :code
-          ...
-          <div class="fab fab-right-bottom color-pink">
-            <a href="#">
-              <i class="icon f7-icons">add</i>
-            </a>
-          </div>
-          ...
-    h4 Speed Dial
-    pre
-      code
-        :code
-          <f7-page>
-            <!-- FAB must be direct child of a page -->
-            <f7-fab color="pink" @click="doSomething">
-              <!-- First icon is visible when Speed Dial actions are closed -->
-              <f7-icon f7="add"></f7-icon>
-              <!-- Second icon is visible when Speed Dial actions are opened -->
-              <f7-icon f7="close"></f7-icon>
+    h2 FAB Slots
+    p FAB Vue component (`<f7-fab>`) has additional slots for custom elements:
+    ul
+      li `default` - child element will be inserted inside of the main FAB link `<a>` element. But if the child is `f7-fab-buttons`, then it will be inserted in the end of the main FAB element
+      li `link` - child element will be inserted inside of the main FAB link `<a>` element
+      li `root` - child element will be inserted in the end of the main FAB element
+      li `text` - child element will be inserted in the text element of the Extended FAB
 
-              <!-- Speed Dial Buttons -->
-              <f7-fab-buttons>
-                <f7-fab-button color="orange" @click="onButtonClick">A</f7-fab-button>
-                <f7-fab-button color="green" @click="onButtonClick">B</f7-fab-button>
-                <f7-fab-button color="blue" @click="onButtonClick">C</f7-fab-button>
-              </f7-fab-buttons>
-            </f7-fab>
-            ...
-          </f7-page>
-    p Renders to:
-    pre
-      code
-        :code
-          ...
-          <div class="fab fab-right-bottom color-pink">
-            <a href="#">
-              <i class="icon f7-icons">add</i>
-              <i class="icon f7-icons">close</i>
-            </a>
-            <div class="fab-buttons fab-buttons-top">
-              <a href="#" class="color-orange">A</a>
-              <a href="#" class="color-green">B</a>
-              <a href="#" class="color-blue">C</a>
-            </div>
-          </div>
-          ...
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/floating-action-button.html") Examples
+      :code(lang="html")
+            <f7-page>
+              <f7-navbar title="Floating Action Button"></f7-navbar>
+
+              <!-- Toolbar FAB Morph Target -->
+              <f7-toolbar bottom class="fab-morph-target">
+                <f7-link>Link 1</f7-link>
+                <f7-link>Link 2</f7-link>
+                <f7-link>Link 3</f7-link>
+              </f7-toolbar>
+
+              <!-- FAB Left Top (Yellow) -->
+              <f7-fab position="left-top" slot="fixed" color="yellow">
+                <f7-icon ios="f7:add" aurora="f7:add" md="material:add"></f7-icon>
+                <f7-icon ios="f7:close" aurora="f7:close" md="material:close"></f7-icon>
+                <f7-fab-buttons position="bottom">
+                  <f7-fab-button>1</f7-fab-button>
+                  <f7-fab-button>2</f7-fab-button>
+                  <f7-fab-button>3</f7-fab-button>
+                </f7-fab-buttons>
+              </f7-fab>
+
+              <!-- FAB Right Top (Pink) -->
+              <f7-fab position="right-top" slot="fixed" color="pink">
+                <f7-icon ios="f7:add" aurora="f7:add" md="material:add"></f7-icon>
+                <f7-icon ios="f7:close" aurora="f7:close" md="material:close"></f7-icon>
+                <f7-fab-buttons position="left">
+                  <f7-fab-button>1</f7-fab-button>
+                  <f7-fab-button>2</f7-fab-button>
+                  <f7-fab-button>3</f7-fab-button>
+                </f7-fab-buttons>
+              </f7-fab>
+
+              <!-- FAB Center (Green) -->
+              <f7-fab position="center-center" slot="fixed" color="green">
+                <f7-icon ios="f7:add" aurora="f7:add" md="material:add"></f7-icon>
+                <f7-icon ios="f7:close" aurora="f7:close" md="material:close"></f7-icon>
+                <f7-fab-buttons position="center">
+                  <f7-fab-button>1</f7-fab-button>
+                  <f7-fab-button>2</f7-fab-button>
+                  <f7-fab-button>3</f7-fab-button>
+                  <f7-fab-button>4</f7-fab-button>
+                </f7-fab-buttons>
+              </f7-fab>
+
+              <!-- FAB Left Bottom (Blue) -->
+              <!-- Will morph to Toolbar -->
+              <f7-fab position="left-bottom" slot="fixed" morph-to=".toolbar.fab-morph-target">
+                <f7-icon ios="f7:add" aurora="f7:add" md="material:add"></f7-icon>
+                <f7-icon ios="f7:close" aurora="f7:close" md="material:close"></f7-icon>
+              </f7-fab>
+
+              <!-- FAB Right Bottom (Orange) -->
+              <f7-fab position="right-bottom" slot="fixed" color="orange">
+                <f7-icon ios="f7:add" aurora="f7:add" md="material:add"></f7-icon>
+                <f7-icon ios="f7:close" aurora="f7:close" md="material:close"></f7-icon>
+                <f7-fab-buttons position="top">
+                  <f7-fab-button label="Action 1">1</f7-fab-button>
+                  <f7-fab-button label="Action 2">2</f7-fab-button>
+                </f7-fab-buttons>
+              </f7-fab>
+
+              <!-- Extended FAB Center Bottom (Red) -->
+              <f7-fab position="center-bottom" slot="fixed" text="Create" color="red">
+                <f7-icon ios="f7:add" aurora="f7:add" md="material:add"></f7-icon>
+              </f7-fab>
+
+              <f7-block>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus eligendi est saepe molestias ... voluptatibus eligendi.</p>
+              </f7-block>
+            </f7-page>

@@ -11,7 +11,7 @@ block content
   .docs-content
     +improveDocsLink
     h1 Photo Browser
-    .docs-index
+    ul.docs-index
     p Photo Browser is a photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional).
     p Photo Browser uses <a href="swiper.html">Swiper Slider</a> component to slide between photos.
 
@@ -45,12 +45,10 @@ block content
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Photo Browser element.
       p.method-returns Method returns Photo Browser's instance
     p For example:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           var photoBrowser = app.photoBrowser.create({
             photos: [
-              'path/to/photo-1.jpg'
+              'path/to/photo-1.jpg',
               'path/to/photo-2.jpg'
             ],
           });
@@ -85,6 +83,11 @@ block content
           td true
           td You can close Photo Browser with swipe up/down when this parameter is enabled
         tr
+          td popupPush
+          td boolean
+          td false
+          td Enables Photo Browser popup to push view/s behind on open
+        tr
           td routableModals
           td boolean
           td true
@@ -98,22 +101,22 @@ block content
           td view
           td object
           td
-          td Link to initialized View instance if you want use "page" Photo Browser type or where to set routing when <code>routableModals</code> enabled. By default, if not specified, it will be opened in Main View.
+          td Link to initialized View instance if you want use "page" Photo Browser type or where to set routing when `routableModals` enabled. By default, if not specified, it will be opened in Main View.
         tr
           td type
           td string
           td standalone
-          td Define how Photo Browser should be opened. Could be <code>standalone</code> (will be opened as an overlay with custom transition effect), <code>popup</code> (will be opened as <a href="popup.html">popup</a>), <code>page</code> (will be injected to View and loaded as a new page).
+          td Define how Photo Browser should be opened. Could be `standalone` (will be opened as an overlay with custom transition effect), `popup` (will be opened as <a href="popup.html">popup</a>), `page` (will be injected to View and loaded as a new page).
         tr
           td theme
           td string
           td light
-          td Photo Browser color theme, could be <code>light</code> or <code>dark</code>
+          td Photo Browser color theme, could be `light` or `dark`
         tr
           td captionsTheme
           td string
           td
-          td Captions color theme, could be also <code>light</code> or <code>dark</code>. By default, equal to <code>theme</code> parameter
+          td Captions color theme, could be also `light` or `dark`. By default, equal to `theme` parameter
         tr
           td navbar
           td boolean
@@ -125,10 +128,20 @@ block content
           td true
           td Set to false to remove Photo Browser's Toolbar
         tr
-          td backLinkText
+          td pageBackLinkText
+          td string
+          td Back
+          td Text on back link in Photo Browser's navbar
+        tr
+          td popupCloseLinkText
           td string
           td Close
-          td Text on back link in Photo Browser's navbar
+          td Text on close link in Photo Browser's navbar when opened in Popup or as Standalone
+        tr
+          td navbarShowCount
+          td boolean
+          td undefined
+          td Defines should it display "3 of 5" text in navbar title or not. If not specified (undefined) then it will show this text if there is more than 1 item
         tr
           td navbarOfText
           td string
@@ -144,9 +157,7 @@ block content
           td object
           td
           td Swiper parameters. By default equals to:
-            pre
-              code.js
-                :code
+            :code(lang="js")
                   swiper: {
                     initialSlide: 0,
                     spaceBetween: 20,
@@ -219,10 +230,9 @@ block content
           td on
           td object
           td
-          td Object with events handlers. For example:
-            pre
-              code
-                :code
+          td
+            p Object with events handlers. For example:
+            :code(lang="js")
                   var photoBrowser = app.photoBrowser.create({
                     ...
                     on: {
@@ -233,65 +243,62 @@ block content
                   })
 
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>photoBrowser</code> property to set defaults for all photo browsers. For example:
-      pre
-        code
-          :code
+      p Note that all following parameters can be used in global app parameters under `photoBrowser` property to set defaults for all photo browsers. For example:
+      :code(lang="js")
             var app = new Framework7({
               photoBrowser: {
                 type: 'popup',
               }
             });
     h3 Photos Array
-    p When we initialize Photo Browser we need to pass array with photos/videos in <code>photos</code> parameter. Let's look at different variations of this array:
-    pre
-      code.js
-        | // If we need photo browser with just photos we may pass array with string urls:
-        | var photos = [
-        |     'image1.jpg',
-        |     'image2.jpg',
-        |     'image3.jpg',
-        |     'image4.jpg',
-        | ];
-        |
-        | //If we need to use caption for some of photos then each photo should be presented as object:
-        | var photos = [
-        |     {
-        |         url: 'image1.jpg',
-        |         caption: 'Caption 1'
-        |     },
-        |     {
-        |         url: 'image2.jpg',
-        |         caption: 'Caption 1'
-        |     },
-        |     // This one will be without caption
-        |     {
-        |         url: 'image3.jpg',
-        |     },
-        |     // This one will be also without caption
-        |     'image4.jpg'
-        | ];
-        |
-        | //If we need to use videos in some slides we need to pass HTML element of video element or iframe within "html" property:
-        | var photos = [
-        |     {
-        |         url: 'image1.jpg',
-        |         caption: 'Caption 1'
-        |     },
-        |     // Video element with caption
-        |     {
-        |         html: '&lt;video src="video1.mp4"&gt;&lt;/video&gt;',
-        |         caption: 'Video Caption'
-        |     },
-        |     // This one is embedded video without caption
-        |     {
-        |         html: '&lt;iframe src="..."&gt;&lt;/iframe&gt;',
-        |     },
-        |     // This one will be also video without caption
-        |     '&lt;video src="video2.mp4"&gt;&lt;/video&gt;'
-        | ];
+    p When we initialize Photo Browser we need to pass array with photos/videos in `photos` parameter. Let's look at different variations of this array:
+    :code(lang="js")
+          // If we need photo browser with just photos we may pass array with string urls:
+          var photos = [
+              'image1.jpg',
+              'image2.jpg',
+              'image3.jpg',
+              'image4.jpg',
+          ];
+
+          //If we need to use caption for some of photos then each photo should be presented as object:
+          var photos = [
+              {
+                  url: 'image1.jpg',
+                  caption: 'Caption 1'
+              },
+              {
+                  url: 'image2.jpg',
+                  caption: 'Caption 1'
+              },
+              // This one will be without caption
+              {
+                  url: 'image3.jpg',
+              },
+              // This one will be also without caption
+              'image4.jpg'
+          ];
+
+          //If we need to use videos in some slides we need to pass HTML element of video element or iframe within "html" property:
+          var photos = [
+              {
+                  url: 'image1.jpg',
+                  caption: 'Caption 1'
+              },
+              // Video element with caption
+              {
+                  html: '<video src="video1.mp4"></video>',
+                  caption: 'Video Caption'
+              },
+              // This one is embedded video without caption
+              {
+                  html: '<iframe src="..."></iframe>',
+              },
+              // This one will be also video without caption
+              '<video src="video2.mp4"></video>'
+          ];
     h2 Photo Browser Methods & Properties
-    p After we initialize Photo Browser we have its initialized instance in variable (like <code>photoBrowser</code> variable in examples above) with helpful methods and properties:
+    p After we initialize Photo Browser we have its initialized instance in variable (like `photoBrowser` variable in examples above) with helpful methods and properties:
     table.methods-table
       tbody
         tr
@@ -310,16 +317,16 @@ block content
           td Index number of currently active photo slide
         tr
           td photoBrowser.exposed
-          td <code>true</code> if Photo Browser in exposition mode
+          td `true` if Photo Browser in exposition mode
         tr
           td photoBrowser.opened
-          td <code>true</code> if Photo Browser is currently opened
+          td `true` if Photo Browser is currently opened
         tr
           td photoBrowser.url
-          td Photo Browser URL (that was passed in <code>url</code> parameter)
+          td Photo Browser URL (that was passed in `url` parameter)
         tr
           td photoBrowser.view
-          td Photo Browser View (that was passed in <code>view</code> parameter) or found parent view
+          td Photo Browser View (that was passed in `view` parameter) or found parent view
         tr
           td photoBrowser.swiper
           td Contains initialized Swiper instance with all available Swiper <a href="http://idangero.us/swiper/api/#methods" target="_blank">methods and properties</a>
@@ -345,7 +352,7 @@ block content
           td Disable exposition mode
         tr
           td photoBrowser.destroy()
-          td Destroy photo prowser instance
+          td Destroy photo browser instance
         tr
           td photoBrowser.on(<span>event</span>, <span>handler</span>)
           td Add event handler
@@ -388,7 +395,7 @@ block content
           td Photo Browser Element
           td Event will be triggered after Photo Browser completes its closing animation
     h3 App and Photo Browser Instance Events
-    p Photo Browser instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>photoBrowser</code>.
+    p Photo Browser instance emits events on both self instance and app instance. App instance events has same names prefixed with `photoBrowser`.
     table.events-table
       thead
         tr
@@ -490,140 +497,139 @@ block content
           td app
 
 
+    +cssVars('photo-browser')
 
     .with-device
-      h2(data-device-preview="../docs-demos/photo-browser.html") Examples
+      h2(data-device-preview="../docs-demos/core/photo-browser.html") Examples
 
-      pre
-        code.html
-          | &lt;div class="page-content"&gt;
-          |   &lt;div class="block-title"&gt;Light Theme&lt;/div&gt;
-          |   &lt;div class="block row"&gt;
-          |     &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-standalone"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
-          |     &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-popup"&gt;Popup&lt;/a&gt;&lt;/div&gt;
-          |     &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-page"&gt;Page&lt;/a&gt;&lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;div class="block-title"&gt;Dark Theme&lt;/div&gt;
-          |   &lt;div class="block row"&gt;
-          |     &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-standalone-dark"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
-          |     &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-popup-dark"&gt;Popup&lt;/a&gt;&lt;/div&gt;
-          |   &lt;/div&gt;
-          | &lt;/div&gt;
-      pre
-        code.js
-          | var app = new Framework7();
-          |
-          | var $$ = Dom7;
-          |
-          |
-          | /*=== Default standalone ===*/
-          | var myPhotoBrowserStandalone = app.photoBrowser.create({
-          |     photos : [
-          |         'http://lorempixel.com/1024/1024/sports/1/',
-          |         'http://lorempixel.com/1024/1024/sports/2/',
-          |         'http://lorempixel.com/1024/1024/sports/3/',
-          |     ]
-          | });
-          | //Open photo browser on click
-          | $$('.pb-standalone').on('click', function () {
-          |     myPhotoBrowserStandalone.open();
-          | });
-          |
-          | /*=== Popup ===*/
-          | var myPhotoBrowserPopup = app.photoBrowser.create({
-          |     photos : [
-          |         'http://lorempixel.com/1024/1024/sports/1/',
-          |         'http://lorempixel.com/1024/1024/sports/2/',
-          |         'http://lorempixel.com/1024/1024/sports/3/',
-          |     ],
-          |     type: 'popup'
-          | });
-          | $$('.pb-popup').on('click', function () {
-          |     myPhotoBrowserPopup.open();
-          | });
-          |
-          | /*=== As Page ===*/
-          | var myPhotoBrowserPage = app.photoBrowser.create({
-          |     photos : [
-          |         'http://lorempixel.com/1024/1024/sports/1/',
-          |         'http://lorempixel.com/1024/1024/sports/2/',
-          |         'http://lorempixel.com/1024/1024/sports/3/',
-          |     ],
-          |     type: 'page',
-          |     backLinkText: 'Back'
-          | });
-          | $$('.pb-page').on('click', function () {
-          |     myPhotoBrowserPage.open();
-          | });
-          |
-          | /*=== Standalone Dark ===*/
-          | var myPhotoBrowserDark = app.photoBrowser.create({
-          |     photos : [
-          |         'http://lorempixel.com/1024/1024/sports/1/',
-          |         'http://lorempixel.com/1024/1024/sports/2/',
-          |         'http://lorempixel.com/1024/1024/sports/3/',
-          |     ],
-          |     theme: 'dark'
-          | });
-          | $$('.pb-standalone-dark').on('click', function () {
-          |     myPhotoBrowserDark.open();
-          | });
-          |
-          | /*=== Popup Dark ===*/
-          | var myPhotoBrowserPopupDark = app.photoBrowser.create({
-          |     photos : [
-          |         'http://lorempixel.com/1024/1024/sports/1/',
-          |         'http://lorempixel.com/1024/1024/sports/2/',
-          |         'http://lorempixel.com/1024/1024/sports/3/',
-          |     ],
-          |     theme: 'dark',
-          |     type: 'popup'
-          | });
-          | $$('.pb-popup-dark').on('click', function () {
-          |     myPhotoBrowserPopupDark.open();
-          | });
-          |
-          | /*=== With Captions ===*/
-          | var myPhotoBrowserPopupDark = app.photoBrowser.create({
-          |     photos : [
-          |         {
-          |             url: 'http://lorempixel.com/1024/1024/sports/1/',
-          |             caption: 'Caption 1 Text'
-          |         },
-          |         {
-          |             url: 'http://lorempixel.com/1024/1024/sports/2/',
-          |             caption: 'Second Caption Text'
-          |         },
-          |         // This one without caption
-          |         {
-          |             url: 'http://lorempixel.com/1024/1024/sports/3/',
-          |         },
-          |     ],
-          |     theme: 'dark',
-          |     type: 'standalone'
-          | });
-          | $$('.pb-standalone-captions').on('click', function () {
-          |     myPhotoBrowserPopupDark.open();
-          | });
-          |
-          | /*=== With Video ===*/
-          | var myPhotoBrowserPopupDark = app.photoBrowser.create({
-          |     photos : [
-          |         {
-          |             html: '&lt;iframe src="//www.youtube.com/embed/lmc21V-zBq0" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;',
-          |             caption: 'Woodkid - Run Boy Run (Official HD Video)'
-          |         },
-          |         {
-          |             url: 'http://lorempixel.com/1024/1024/sports/2/',
-          |             caption: 'Second Caption Text'
-          |         },
-          |         {
-          |             url: 'http://lorempixel.com/1024/1024/sports/3/',
-          |         },
-          |     ],
-          |     theme: 'dark',
-          |     type: 'standalone'
-          | });
-          | $$('.pb-standalone-video').on('click', function () {
-          |     myPhotoBrowserPopupDark.open();
-          | });
+      :code(lang="html")
+        <div class="page-content">
+          <div class="block-title">Light Theme</div>
+          <div class="block row">
+            <div class="col-33"><a href="#" class="button button-fill pb-standalone">Standalone</a></div>
+            <div class="col-33"><a href="#" class="button button-fill pb-popup">Popup</a></div>
+            <div class="col-33"><a href="#" class="button button-fill pb-page">Page</a></div>
+          </div>
+          <div class="block-title">Dark Theme</div>
+          <div class="block row">
+            <div class="col-50"><a href="#" class="button button-fill pb-standalone-dark">Standalone</a></div>
+            <div class="col-50"><a href="#" class="button button-fill pb-popup-dark">Popup</a></div>
+          </div>
+        </div>
+      :code(lang="js")
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+
+            /*=== Default standalone ===*/
+            var myPhotoBrowserStandalone = app.photoBrowser.create({
+                photos : [
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+                ]
+            });
+            //Open photo browser on click
+            $$('.pb-standalone').on('click', function () {
+                myPhotoBrowserStandalone.open();
+            });
+
+            /*=== Popup ===*/
+            var myPhotoBrowserPopup = app.photoBrowser.create({
+                photos : [
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+                ],
+                type: 'popup'
+            });
+            $$('.pb-popup').on('click', function () {
+                myPhotoBrowserPopup.open();
+            });
+
+            /*=== As Page ===*/
+            var myPhotoBrowserPage = app.photoBrowser.create({
+                photos : [
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+                ],
+                type: 'page',
+                pageBackLinkText: 'Back'
+            });
+            $$('.pb-page').on('click', function () {
+                myPhotoBrowserPage.open();
+            });
+
+            /*=== Standalone Dark ===*/
+            var myPhotoBrowserDark = app.photoBrowser.create({
+                photos : [
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+                ],
+                theme: 'dark'
+            });
+            $$('.pb-standalone-dark').on('click', function () {
+                myPhotoBrowserDark.open();
+            });
+
+            /*=== Popup Dark ===*/
+            var myPhotoBrowserPopupDark = app.photoBrowser.create({
+                photos : [
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                    'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+                ],
+                theme: 'dark',
+                type: 'popup'
+            });
+            $$('.pb-popup-dark').on('click', function () {
+                myPhotoBrowserPopupDark.open();
+            });
+
+            /*=== With Captions ===*/
+            var myPhotoBrowserPopupDark = app.photoBrowser.create({
+                photos : [
+                    {
+                        url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+                        caption: 'Caption 1 Text'
+                    },
+                    {
+                        url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                        caption: 'Second Caption Text'
+                    },
+                    // This one without caption
+                    {
+                        url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+                    },
+                ],
+                theme: 'dark',
+                type: 'standalone'
+            });
+            $$('.pb-standalone-captions').on('click', function () {
+                myPhotoBrowserPopupDark.open();
+            });
+
+            /*=== With Video ===*/
+            var myPhotoBrowserPopupDark = app.photoBrowser.create({
+                photos : [
+                    {
+                        html: '&lt;iframe src="//www.youtube.com/embed/lmc21V-zBq0" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;',
+                        caption: 'Woodkid - Run Boy Run (Official HD Video)'
+                    },
+                    {
+                        url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+                        caption: 'Second Caption Text'
+                    },
+                    {
+                        url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+                    },
+                ],
+                theme: 'dark',
+                type: 'standalone'
+            });
+            $$('.pb-standalone-video').on('click', function () {
+                myPhotoBrowserPopupDark.open();
+            });

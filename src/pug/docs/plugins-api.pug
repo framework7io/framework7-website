@@ -13,9 +13,7 @@ block content
     p It is based on expandable Classes. Every JavaScript class (component) that is used in Framework7 is expandable.
     h2 Plugin Structure
     p First of all let's look at the basic plugin's JS structure. It is basically an object:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           var myPlugin = {
             // Module Name
             name: 'demo-module',
@@ -82,17 +80,13 @@ block content
 
     h2 Install Plugin
     p After we have our plugin, we need to install it on required Class. To install plugin we must call `.use()` method on class. For example, if this is an common Framework7 plugin:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           Framework7.use(myPlugin);
     .important-note
-      p Plugin must be installed before class initialization (before calling <code>new Framework7()</code>)
+      p Plugin must be installed before class initialization (before calling `new Framework7()`)
     h2 Demo Plugin
     p Let's create simple Debug demo plugin. It will do nothing, just log some events:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           /* framework7.debug.js */
 
           var debugEnabled = false;
@@ -111,7 +105,7 @@ block content
                   debugEnabled = true;
                 },
                 disable: function () {
-                  debugFalse = true;
+                  debugEnabled = false;
                 },
               }
             },
@@ -142,17 +136,14 @@ block content
             }
           }
     p We need to include it to app:
-    pre
-      code
-        | &lt;body&gt;
-        |     ...
-        |     &lt;script src="path/to/framework7.js"&gt;&lt;/script&gt;
-        |     &lt;script src="path/to/framework7.debug.js"&gt;&lt;/script&gt;
-        |     &lt;script src="path/to/myapp.js"&gt;&lt;/script&gt;
-        | &lt;/body&gt;
-    pre
-      code.js
-        :code
+    :code(lang="html")
+          <body>
+              ...
+              <script src="path/to/framework7.js"></script>
+              <script src="path/to/framework7.debug.js"></script>
+              <script src="path/to/myapp.js"></script>
+          </body>
+    :code(lang="js")
           /* myapp.js */
 
           // install plugin first

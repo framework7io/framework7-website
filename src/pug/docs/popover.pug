@@ -11,26 +11,25 @@ block content
   .docs-content
     +improveDocsLink
     h1 Popover
-    .docs-index
+    ul.docs-index
     p Popover compontent is used to manage the presentation of content in a popover. You use popovers to present information temporarily. The popover remains visible until the user taps outside of the popover window or you explicitly dismiss it.
     .important-note
       p Note that is not recommended to use Popover on small screens (iPhone). On small screens you should use <a href="action-sheet.html">Action Sheet</a> instead.
     h2 Popover Layout
     p First of all let's look on Popover layout, it is pretty simple:
-    pre
-      code.html
-        | &lt;body&gt;
-        |     ...
-        |     &lt;div class="popover"&gt;
-        |         &lt;!-- Popover's angle arrow --&gt;
-        |         &lt;div class="popover-angle"&gt;&lt;/div&gt;
-        |
-        |         &lt;!-- Popover content --&gt;
-        |         &lt;div class="popover-inner"&gt;
-        |             &lt;!-- Any HTML content here --&gt;
-        |         &lt;/div&gt;
-        |     &lt;/div&gt;
-        | &lt;/body&gt;
+    :code(lang="html")
+          <body>
+              ...
+              <div class="popover">
+                  <!-- Popover's angle arrow -->
+                  <div class="popover-angle"></div>
+
+                  <!-- Popover content -->
+                  <div class="popover-inner">
+                      <!-- Any HTML content here -->
+                  </div>
+              </div>
+          </body>
     p Popover is highly customizable element and you can put anything inside, event another view with navigation.
 
 
@@ -117,6 +116,11 @@ block content
           td true
           td Enables Popover backdrop (dark semi transparent layer behind)
         tr
+          td backdropEl
+          td HTMLElement<br>string
+          td
+          td HTML element or string CSS selector of custom backdrop element
+        tr
           td closeByBackdropClick
           td boolean
           td true
@@ -127,10 +131,15 @@ block content
           td true
           td When enabled, popover will be closed on when click outside of it
         tr
+          td closeOnEscape
+          td boolean
+          td false
+          td When enabled, popover will be closed on ESC keyboard key press
+        tr
           td animate
           td boolean
           td true
-          td Whether the Popover should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods
+          td Whether the Popover should be opened/closed with animation or not. Can be overwritten in `.open()` and `.close()` methods
         tr
           td targetEl
           td HTMLElement<br>string
@@ -140,30 +149,29 @@ block content
           td targetX
           td number
           td
-          td Virtual target element horizontal offset from left side of the screen. Required without using real target element (<code>targetEl</code>)
+          td Virtual target element horizontal offset from left side of the screen. Required without using real target element (`targetEl`)
         tr
           td targetY
           td number
           td
-          td Virtual target element vertical offset from top of the screen. Required without using real target element (<code>targetEl</code>)
+          td Virtual target element vertical offset from top of the screen. Required without using real target element (`targetEl`)
         tr
           td targetWidth
           td number
           td 0
-          td Virtual target element width (in px). Required without using real target element (<code>targetEl</code>)
+          td Virtual target element width (in px). Required without using real target element (`targetEl`)
         tr
           td targetHeight
           td number
           td 0
-          td Virtual target element height (in px). Required without using real target element (<code>targetEl</code>)
+          td Virtual target element height (in px). Required without using real target element (`targetEl`)
         tr
           td on
           td object
           td
-          td Object with events handlers. For example:
-            pre
-              code
-                :code
+          td
+            p Object with events handlers. For example:
+            :code(lang="js")
                   var popover = app.popover.create({
                     content: '<div class="popover">...</div>',
                     on: {
@@ -173,10 +181,8 @@ block content
                     }
                   })
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>popover</code> property to set defaults for all popovers. For example:
-      pre
-        code
-          :code
+      p Note that all following parameters can be used in global app parameters under `popover` property to set defaults for all popovers. For example:
+      :code(lang="js")
             var app = new Framework7({
               popover: {
                 closeByBackdropClick: false,
@@ -184,11 +190,9 @@ block content
             });
     h2 Popover Methods & Properties
     p So to create Popover we have to call:
-    pre
-      code
-        :code
+    :code(lang="js")
           var popover = app.popover.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>popover</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `popover` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -218,6 +222,9 @@ block content
           td popover.params
           td Popover parameters
         tr
+          td popover.opened
+          td Boolean prop indicating whether popover is opened or not
+        tr
           th(colspan="2") Methods
         tr
           td popover.open(<span>targetEl</span>, <span>animate</span>)
@@ -225,24 +232,24 @@ block content
             ul.method-parameters
               li
                 span.parameter targetEl
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - target element to set popover position around this element
+                |  - <span class="parameter-type">HTMLElement or string</span> - target element to set popover position around this element
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be opened with animation
         tr
           td popover.open(<span>animate</span>)
           td Open popover around target element passed on popover creation. Where
             ul.method-parameters
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be opened with animation
         tr
           td popover.close(<span>animate</span>)
           td Close popover. Where
             ul.method-parameters
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be closed with animation
         tr
           td popover.destroy()
           td Destroy popover
@@ -272,9 +279,7 @@ block content
         li
           p If you have more than one popover in DOM, you need to specify appropriate popover via additional <b>data-popover=".my-popover"</b> attribute on this HTML element
     p According to above note:
-    pre
-      code.xml
-        :code
+    :code(lang="html")
           <!-- In data-popover attribute we specify CSS selector of popover we need to open -->
           <p><a href="#" data-popover=".my-popover" class="popover-open">Open Popover</a></p>
 
@@ -314,8 +319,8 @@ block content
           td Popover Element<span>&lt;div class="popover"&gt;</span>
           td Event will be triggered after Popover completes its closing animation
     h3 App and Popover Instance Events
-    p Popover instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>popover</code>.
-    table.events-table
+    p Popover instance emits events on both self instance and app instance. App instance events has same names prefixed with `popover`.
+    table.events-table.double-events-table
       thead
         tr
           th Event
@@ -369,16 +374,16 @@ block content
           td <span>popover</span>
           td app
 
+    +cssVars('popover')
 
     .with-device
-      h2(data-device-preview="../docs-demos/popover.html") Examples
-      pre
-        code.html
-          :code
+      h2(data-device-preview="../docs-demos/core/popover.html") Examples
+      :code(lang="html")
             <body>
               ...
                 <div class="page">
                   <div class="navbar">
+                    <div class="navbar-bg"></div>
                     <div class="navbar-inner">
                       <div class="left">
                         <!-- Additional "popover-open" class to open popover on link click -->
@@ -432,18 +437,16 @@ block content
               </div>
               ...
             </body>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;
 
             // DOM events for About popover
-            $$('.popover-about').on('popover:open', function (e, popover) {
+            $$('.popover-about').on('popover:open', function (e) {
               console.log('About popover open');
             });
-            $$('.popover-about').on('popover:opened', function (e, popover) {
+            $$('.popover-about').on('popover:opened', function (e) {
               console.log('About popover opened');
             });
 

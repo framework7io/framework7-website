@@ -11,10 +11,8 @@ block content
     +improveDocsLink
     h1 Support
     p Framework7 also comes with features detection library.
-    p It is avaialable as a <code><b>support</b></code> property of Framework7 class (<code>Framework7.support</code>) and same property on initialized app instance (<code>app.support</code>):
-    pre
-      code.js
-        :code
+    p It is avaialable as a `support` property of Framework7 class (`Framework7.support`) and same property on initialized app instance (`app.support`):
+    :code(lang="js")
           // If we need it in place where we don't have access to app instance or before we init the app
           if (!Framework7.support.touch) {
             console.log('No touch support');
@@ -46,6 +44,3 @@ block content
       tr
         td gestures
         td Gestures event support (gesturestart, gesturechange, gestureend)
-      tr
-        td positionSticky
-        td CSS <code>position:sticky</code> support

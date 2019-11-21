@@ -5,17 +5,19 @@ block vars
   - var title = 'Range Slider Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
+
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Range Slider Vue Component
-    .docs-index
+    ul.docs-index
     p Range Slider Vue component represents <a href="../docs/range-slider.html">Range Slider</a> component.
     h2 Range Slider Components
     p There are following components included:
     ul
-      li <code><b>f7-range</b></code>
+      li `f7-range`
     h2 Range Slider Properties
     table.params-table
       thead
@@ -63,15 +65,76 @@ block content
           td false
           td Enables dual range slider
         tr
-          td draggableBar
+          td vertical
+          td boolean
+          td false
+          td Enables vertical range slider
+        tr
+          td vertical-reversed
+          td boolean
+          td false
+          td Makes vertical range slider reversed. (Only when `vertical:true`)
+        tr
+          td draggable-bar
           td boolean
           td true
           td When enabled it is also possible to interact with range slider (change value) on range bar click and swipe.
+        tr
+          td format-label
+          td function(<span>value</span>)
+          td
+          td Method must return formatted range knob label text. As an argument it receives label value
+        tr
+          td scale
+          td boolean
+          td false
+          td Enables range slider scale
+        tr
+          td scale-steps
+          td number
+          td 5
+          td Number of scale steps
+        tr
+          td scale-sub-steps
+          td number
+          td 0
+          td Number of scale sub steps (each step will be divided by this value)
+        tr
+          td format-scale-label
+          td function (<span>value</span>)
+          td
+          td Method must return formatted scale value. As an argument it receives currect scale step value. This method will be called as for each scale step.
+        tr
+          td limit-knob-position
+          td boolean
+          td
+          td Limits knob position to the size of the range bar. By default enabled from iOS theme
         tr
           td disabled
           td boolean
           td false
           td Defines whether the range slider is disabled or not
+        tr
+          td id
+          td string
+          td
+          td Range slider element ID attribute
+        tr
+          td input
+          td boolean
+          td false
+          td If enabled, then it will render `input type="range"` element inside as well
+        tr
+          td input-id
+          td string
+          td
+          td Input element ID attribute
+        tr
+          td name
+          td string
+          td
+          td Input element "name" attribute
+
     h2 Range Slider Events
     table.events-table
       thead
@@ -84,6 +147,9 @@ block content
         tr
           td range:change
           td Event will be triggered when Range Slider value has been changed
+        tr
+          td range:changed
+          td Event will be triggered on slider knob release after value change
     h2 Range Slider Methods
     table.methods-table
       thead
@@ -99,35 +165,207 @@ block content
         tr
           td .getValue()
           td Returns range slider value
-    h2 Examples
-    pre
-      code.html
-        :code
-          <!-- Default -->
-          <f7-range
-            :min="0"
-            :max="100"
-            :step="1"
-            :value="10"
-          ></f7-range>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/range-slider.html") Examples
+      :code(lang="html")
+        <template>
+          <f7-page>
+            <f7-navbar title="Range Slider"></f7-navbar>
 
-          <!-- Enable labels + color -->
-          <f7-range
-            :min="0"
-            :max="100"
-            :step="1"
-            :value="50"
-            :label="true"
-            color="orange"
-          ></f7-range>
+            <f7-block-title>Volume</f7-block-title>
+            <f7-list simple-list>
+              <f7-list-item>
+                <f7-list-item-cell class="width-auto flex-shrink-0">
+                  <f7-icon ios="f7:speaker_fill" aurora="f7:speaker_fill" md="material:volume_mute"></f7-icon>
+                </f7-list-item-cell>
+                <f7-list-item-cell class="flex-shrink-3">
+                  <f7-range
+                    :min="0"
+                    :max="100"
+                    :step="1"
+                    :value="10"
+                  ></f7-range>
+                </f7-list-item-cell>
+                <f7-list-item-cell class="width-auto flex-shrink-0">
+                  <f7-icon ios="f7:speaker_3_fill" aurora="f7:speaker_3_fill" md="material:volume_up"></f7-icon>
+                </f7-list-item-cell>
+              </f7-list-item>
+            </f7-list>
 
-          <!-- Dual -->
-          <f7-range
-            :min="0"
-            :max="500"
-            :step="1"
-            :value="[100, 500]"
-            :label="true"
-            :dual="true"
-            color="green"
-          ></f7-range>
+            <f7-block-title>Brightness</f7-block-title>
+            <f7-list simple-list>
+              <f7-list-item>
+                <f7-list-item-cell class="width-auto flex-shrink-0">
+                  <f7-icon ios="f7:sun_min" aurora="f7:sun_min" md="material:brightness_low"></f7-icon>
+                </f7-list-item-cell>
+                <f7-list-item-cell class="flex-shrink-3">
+                  <f7-range
+                    :min="0"
+                    :max="100"
+                    :step="1"
+                    :value="50"
+                    :label="true"
+                    color="orange"
+                  ></f7-range>
+                </f7-list-item-cell>
+                <f7-list-item-cell class="width-auto flex-shrink-0">
+                  <f7-icon ios="f7:sun_max" aurora="f7:sun_max" md="material:brightness_high"></f7-icon>
+                </f7-list-item-cell>
+              </f7-list-item>
+            </f7-list>
+
+            <f7-block-title class="display-flex justify-content-space-between">Price Filter <span>${{priceMin}} - ${{priceMax}}</span></f7-block-title>
+            <f7-list simple-list>
+              <f7-list-item>
+                <f7-list-item-cell class="width-auto flex-shrink-0">
+                  <f7-icon ios="f7:money_dollar_round" aurora="f7:money_dollar_round" md="material:attach_money"></f7-icon>
+                </f7-list-item-cell>
+                <f7-list-item-cell class="flex-shrink-3">
+                  <f7-range
+                    :min="0"
+                    :max="500"
+                    :step="1"
+                    :value="[priceMin, priceMax]"
+                    :label="true"
+                    :dual="true"
+                    color="green"
+                    @range:change="onPriceChange"
+                  ></f7-range>
+                </f7-list-item-cell>
+                <f7-list-item-cell class="width-auto flex-shrink-0">
+                  <f7-icon ios="f7:money_dollar_round_fill" aurora="f7:money_dollar_round_fill" md="material:monetization_on"></f7-icon>
+                </f7-list-item-cell>
+              </f7-list-item>
+            </f7-list>
+
+            <f7-block-title>With Scale</f7-block-title>
+            <f7-block strong>
+              <f7-range
+                :min="0"
+                :max="100"
+                :label="true"
+                :step="5"
+                :value="25"
+                :scale="true"
+                :scale-steps="5"
+                :scale-sub-steps="4"
+              ></f7-range>
+            </f7-block>
+
+            <f7-block-title>Vertical</f7-block-title>
+            <f7-block strong class="display-flex justify-content-center">
+              <f7-range
+                class="margin-right"
+                style="height: 160px"
+                :vertical="true"
+                :min="0"
+                :max="100"
+                :label="true"
+                :step="1"
+                :value="25"
+              /></f7-range>
+              <f7-range
+                class="margin-horizontal"
+                style="height: 160px"
+                :vertical="true"
+                :min="0"
+                :max="100"
+                :label="true"
+                :step="1"
+                :value="50"
+              /></f7-range>
+              <f7-range
+                class="margin-horizontal"
+                style="height: 160px"
+                :vertical="true"
+                :min="0"
+                :max="100"
+                :label="true"
+                :step="1"
+                :value="75"
+              /></f7-range>
+              <f7-range
+                class="margin-left"
+                style="height: 160px"
+                :dual="true"
+                :vertical="true"
+                :min="0"
+                :max="100"
+                :label="true"
+                :step="1"
+                :value="[25, 75]"
+              /></f7-range>
+            </f7-block>
+
+            <f7-block-title>Vertical Reversed</f7-block-title>
+            <f7-block strong class="display-flex justify-content-center">
+              <f7-range
+                class="margin-right"
+                color="red"
+                style="height: 160px"
+                :vertical="true"
+                :vertical-reversed="true"
+                :min="0"
+                :max="100"
+                :label="true"
+                :step="1"
+                :value="25"
+              /></f7-range>
+              <f7-range
+                class="margin-horizontal"
+                color="red"
+                style="height: 160px"
+                :vertical="true"
+                :vertical-reversed="true"
+                :min="0"
+                :max="100"
+                :label="true"
+                :step="1"
+                :value="50"
+              /></f7-range>
+              <f7-range
+                class="margin-horizontal"
+                color="red"
+                style="height: 160px"
+                :vertical="true"
+                :vertical-reversed="true"
+                :min="0"
+                :max="100"
+                :label="true"
+                :step="1"
+                :value="75"
+              /></f7-range>
+              <f7-range
+                class="margin-left"
+                color="red"
+                style="height: 160px"
+                :dual="true"
+                :vertical="true"
+                :vertical-reversed="true"
+                :min="0"
+                :max="100"
+                :label="true"
+                :step="1"
+                :value="[25, 75]"
+              /></f7-range>
+            </f7-block>
+          </f7-page>
+        </template>
+
+        <script>
+          export default {
+            data() {
+              return {
+                priceMin: 200,
+                priceMax: 400,
+              };
+            },
+            methods: {
+              onPriceChange(values) {
+                this.priceMin = values[0];
+                this.priceMax = values[1];
+              },
+            },
+          };
+        </script>
+

@@ -5,21 +5,22 @@ block vars
   - var title = 'Messages Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Messages Component
-    .docs-index
+    ul.docs-index
     p Messages Vue component represents <a href="../docs/messages.html">Messages</a> component.
 
     h2 Messages Components
     p There are following components included:
     ul
-      li <code><b>f7-messages</b></code> - main Messages container
-      li <code><b>f7-message</b></code> - single message element
-      li <code><b>f7-messages-title</b></code> - single messages title element
+      li `f7-messages` - main Messages container
+      li `f7-message` - single message element
+      li `f7-messages-title` - single messages title element
 
     h2 Messages Properties
     table.params-table
@@ -73,7 +74,7 @@ block content
             | same-avatar-message-rule<br><br>
           td function(message, previousMessage, nextMessage)
           td
-          td Functions that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then the appropriage class will be added to message:
+          td Functions that must return boolean `true` or `false` based on required condition depending on previous and next messages. In case of match then the appropriage class will be added to message:
             ul
               li message-first
               li message-last
@@ -93,7 +94,7 @@ block content
           td type
           td string
           td sent
-          td Message type: <code>sent</code> (default) or <code>received</code>
+          td Message type: `sent` (default) or `received`
         tr
           td text
           td string
@@ -176,7 +177,7 @@ block content
         th(colspan="2") &lt;f7-messages&gt; methods
       tr
         td .scroll(<span>duration, position</span>);
-        td Scroll messages to top/bottom depending on <code>newMessagesFirst</code> parameter
+        td Scroll messages to top/bottom depending on `newMessagesFirst` parameter
           ul.method-parameters
             li
               span.parameter duration
@@ -227,27 +228,25 @@ block content
           td Event will be triggered when user clicks on message bubble
 
     h2 Messages Slots
-    p Single message Vue component (<code>&lt;f7-message&gt;</code>) has additional slots for custom elements:
+    p Single message Vue component (`<f7-message>`) has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="message-bubble"&gt;</code> element in the end
-      li <code><b>start</b></code> - element will be inserted in the beginning and direct child of main message element <code>&lt;div class="message"&gt;</code>
-      li <code><b>end</b></code> - element will be inserted in the end and direct child of main message element <code>&lt;div class="message"&gt;</code>
-      li <code><b>content-start</b></code> - element will be inserted in the beginning and direct child of the <code>&lt;div class="message-content"&gt;</code> element
-      li <code><b>content-end</b></code> - element will be inserted in the end and direct child of the <code>&lt;div class="message-content"&gt;</code> element
-      li <code><b>bubble-start</b></code> - element will be inserted in the beginning and direct child of the <code>&lt;div class="message-bubble"&gt;</code> element
-      li <code><b>bubble-end</b></code> - element will be inserted in the end and direct child of the <code>&lt;div class="message-bubble"&gt;</code> element. Same as <code><b>default</b></code> slot
+      li `default` - element will be inserted as a child of `<div class="message-bubble">` element in the end
+      li `start` - element will be inserted in the beginning and direct child of main message element `<div class="message">`
+      li `end` - element will be inserted in the end and direct child of main message element `<div class="message">`
+      li `content-start` - element will be inserted in the beginning and direct child of the `<div class="message-content">` element
+      li `content-end` - element will be inserted in the end and direct child of the `<div class="message-content">` element
+      li `bubble-start` - element will be inserted in the beginning and direct child of the `<div class="message-bubble">` element
+      li `bubble-end` - element will be inserted in the end and direct child of the `<div class="message-bubble">` element. Same as `default` slot
     p The following slots can be used inside of single message instead of same props if you need to pass there more complext layout:
     ul
-      li <code><b>header</b></code> - element will be inserted in message header
-      li <code><b>footer</b></code> - element will be inserted in message footer
-      li <code><b>text</b></code> - element will be inserted in message text
-      li <code><b>name</b></code> - element will be inserted in message name
-      li <code><b>image</b></code> - element will be inserted in message image (supposed tp be an <code>&lt;img&gt;</code> element)
-      li <code><b>text-header</b></code> - element will be inserted in message text header
-      li <code><b>text-footer</b></code> - element will be inserted in message text footer
-    pre
-      code.html
-        :code
+      li `header` - element will be inserted in message header
+      li `footer` - element will be inserted in message footer
+      li `text` - element will be inserted in message text
+      li `name` - element will be inserted in message name
+      li `image` - element will be inserted in message image (supposed tp be an `<img>` element)
+      li `text-header` - element will be inserted in message text header
+      li `text-footer` - element will be inserted in message text footer
+    :code(lang="html")
           <f7-message
             type="sent"
             text="Hello World"
@@ -281,230 +280,289 @@ block content
           </div>
 
     h2 Access To Messages Instance
-    p If you use automatic initalization to init Messages (with <code>init:true</code> prop) and need to use <a href="../docs/messages.html">Messages API</a> you can access its initialized instance by accessing <code><b>.f7Messages</b></code> component's property.
+    p If you use automatic initalization to init Messages (with `init:true` prop) and need to use <a href="../docs/messages.html">Messages API</a> you can access its initialized instance by accessing `.f7Messages` component's property.
 
-    h2 Examples
-    pre
-      code.html
-        :code
-          <f7-messages>
-            <f7-message name="John" text="Hello, Kate!" type="received"></f7-message>
-            <f7-message name="Kate" text="Hi, John!" type="sent"></f7-message>
-          </f7-messages>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/messages.html") Examples
+      p Here is how the full example of Messages page where it can be used together with <a href="messagebar.html">Messagebar</a>:
+      :code(lang="html")
+            <template>
+              <f7-page>
+                <f7-navbar title="Messages"></f7-navbar>
 
-          <!-- Renders to: -->
+                <f7-messagebar
+                  :placeholder="placeholder"
+                  ref="messagebar"
+                  :attachments-visible="attachmentsVisible"
+                  :sheet-visible="sheetVisible"
+                >
+                  <f7-link
+                    icon-ios="f7:camera_fill"
+                    icon-aurora="f7:camera_fill"
+                    icon-md="material:camera_alt"
+                    slot="inner-start"
+                    @click="sheetVisible = !sheetVisible"
+                  ></f7-link>
+                  <f7-link
+                    icon-ios="f7:arrow_up_fill"
+                    icon-aurora="f7:arrow_up_fill"
+                    icon-md="material:send"
+                    slot="inner-end"
+                    @click="sendMessage"
+                  ></f7-link>
+                  <f7-messagebar-attachments>
+                    <f7-messagebar-attachment
+                      v-for="(image, index) in attachments"
+                      :key="index"
+                      :image="image"
+                      @attachment:delete="deleteAttachment(image)"
+                    ></f7-messagebar-attachment>
+                  </f7-messagebar-attachments>
+                  <f7-messagebar-sheet>
+                    <f7-messagebar-sheet-image
+                      v-for="(image, index) in images"
+                      :key="index"
+                      :image="image"
+                      :checked="attachments.indexOf(image) >= 0"
+                      @change="handleAttachment"
+                    ></f7-messagebar-sheet-image>
+                  </f7-messagebar-sheet>
+                </f7-messagebar>
 
-          <div class="messages">
-            <div class="message message-received">
-              <div class="message-name">John</div>
-              <div class="message-text">Hello, Kate!</div>
-            </div>
-            <div class="message message-sent">
-              <div class="message-name">Kate</div>
-              <div class="message-text">Hi, John!</div>
-            </div>
-          </div>
-
-    h4 Full Example
-    p Here is how it can be used in Vue component along with <a href="messagebar.html">Messagebar</a>:
-    pre
-      code.html
-        :code
-          <template>
-            <f7-page>
-              <f7-navbar title="Messsages" back-link="Back"></f7-navbar>
-
-              <!-- Messagebar -->
-              <f7-messagebar
-                placeholder="Send message"
-                ref="messagebar"
-              >
-                <!-- Send message link -->
-                <f7-link
-                  icon-if-ios="f7:arrow_up_fill"
-                  icon-if-md="material:send"
-                  slot="inner-end"
-                  @click="sendMessage"
-                ></f7-link>
-              </f7-messagebar>
-
-              <!-- Messages -->
-              <f7-messages ref="messages">
-                <f7-messages-title><b>Sunday, Feb 9,</b> 12:58</f7-messages-title>
-                <f7-message
-                  v-for="(message, index) in messagesData"
-                  :key="index"
-                  :type="message.type"
-                  :text="message.text"
-                  :image="message.image"
-                  :name="message.name"
-                  :avatar="message.avatar"
-                  :first="isFirstMessage(message, index)"
-                  :last="isLastMessage(message, index)"
-                  :tail="isTailMessage(message, index)"
-                ></f7-message>
-              </f7-messages>
-            </f7-page>
-          </template>
-          <script>
-            export default {
-              data() {
-                return {
-                  // Initial messages
-                  messagesData: [
-                    {
-                      type: 'sent',
-                      text: 'Hi, Kate',
-                    },
-                    {
-                      type: 'sent',
-                      text: 'How are you?',
-                    },
-                    {
-                      name: 'Kate',
-                      type: 'received',
-                      text: 'Hi, I am good!',
-                      avatar: 'http://lorempixel.com/100/100/people/9',
-                    },
-                    {
-                      name: 'Blue Ninja',
-                      type: 'received',
-                      text: 'Hi there, I am also fine, thanks! And how are you?',
-                      avatar: 'http://lorempixel.com/100/100/people/7',
-                    },
-                    {
-                      type: 'sent',
-                      text: 'Hey, Blue Ninja! Glad to see you ;)',
-                    },
-                    {
-                      type: 'sent',
-                      text: 'Hey, look, cutest kitten ever!',
-                    },
-                    {
-                      type: 'sent',
-                      image: 'http://lorempixel.com/200/260/cats/4/',
-
-                    },
-                    {
-                      name: 'Kate',
-                      type: 'received',
-                      text: 'Nice!',
-                      avatar: 'http://lorempixel.com/100/100/people/9',
-                    },
-                    {
-                      name: 'Kate',
-                      type: 'received',
-                      text: 'Like it very much!',
-                      avatar: 'http://lorempixel.com/100/100/people/9',
-                    },
-                    {
-                      name: 'Blue Ninja',
-                      type: 'received',
-                      text: 'Awesome!',
-                      avatar: 'http://lorempixel.com/100/100/people/7',
-                    },
-                  ],
-                  // Dummy data
-                  people: [
-                    {
-                      name: 'Kate Johnson',
-                      avatar: 'http://lorempixel.com/100/100/people/9',
-                    },
-                    {
-                      name: 'Blue Ninja',
-                      avatar: 'http://lorempixel.com/100/100/people/7',
-                    },
-                  ],
-                  answers: [
-                    'Yes!',
-                    'No',
-                    'Hm...',
-                    'I am not sure',
-                    'And what about you?',
-                    'May be ;)',
-                    'Lorem ipsum dolor sit amet, consectetur',
-                    'What?',
-                    'Are you sure?',
-                    'Of course',
-                    'Need to think about it',
-                    'Amazing!!!',
-                  ],
-                  // Response in progress flag
-                  responseInProgress: false,
-                };
-              },
-              methods: {
-                // Messages rules for correct styling
-                isFirstMessage(message, index) {
-                  const self = this;
-                  const previousMessage = self.messagesData[index - 1];
-                  if (message.isTitle) return false;
-                  if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
-                  return false;
-                },
-                isLastMessage(message, index) {
-                  const self = this;
-                  const nextMessage = self.messagesData[index + 1];
-                  if (message.isTitle) return false;
-                  if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
-                  return false;
-                },
-                isTailMessage(message, index) {
-                  const self = this;
-                  const nextMessage = self.messagesData[index + 1];
-                  if (message.isTitle) return false;
-                  if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
-                  return false;
-                },
-                sendMessage() {
-                  const self = this;
-                  const text = self.messagebar.getValue().replace(/\n/g, '<br>').trim();
-
-                  if (text.length === 0) {
-                    // exit when empty messagebar text is empty
-                    return;
-                  }
-
-                  // Clear messagebar area
-                  self.messagebar.clear();
-
-                  // Focus area
-                  if (text.length) self.messagebar.focus();
-
-                  // Add sent message
-                  self.messagesData.push({
-                    text,
-                  });
-
-                  // Mock response
-                  if (self.responseInProgress) return;
-                  self.responseInProgress = true;
-                  setTimeout(() => {
-                    const answer = self.answers[Math.floor(Math.random() * self.answers.length)];
-                    const person = self.people[Math.floor(Math.random() * self.people.length)];
-                    self.messages.showTyping({
-                      header: `${person.name} is typing`,
-                      avatar: person.avatar,
-                    });
-                    setTimeout(() => {
-                      self.messagesData.push({
-                        text: answer,
+                <f7-messages ref="messages">
+                  <f7-messages-title><b>Sunday, Feb 9,</b> 12:58</f7-messages-title>
+                  <f7-message
+                    v-for="(message, index) in messagesData"
+                    :key="index"
+                    :type="message.type"
+                    :image="message.image"
+                    :name="message.name"
+                    :avatar="message.avatar"
+                    :first="isFirstMessage(message, index)"
+                    :last="isLastMessage(message, index)"
+                    :tail="isTailMessage(message, index)"
+                  >
+                    <span slot="text" v-if="message.text" v-html="message.text"></span>
+                  </f7-message>
+                  <f7-message v-if="typingMessage"
+                    type="received"
+                    :typing="true"
+                    :first="true"
+                    :last="true"
+                    :tail="true"
+                    :header="`${typingMessage.name} is typing`"
+                    :avatar="typingMessage.avatar"
+                  ></f7-message>
+                </f7-messages>
+              </f7-page>
+            </template>
+            <script>
+              export default {
+                data() {
+                  return {
+                    attachments: [],
+                    sheetVisible: false,
+                    typingMessage: null,
+                    messagesData: [
+                      {
+                        type: 'sent',
+                        text: 'Hi, Kate',
+                      },
+                      {
+                        type: 'sent',
+                        text: 'How are you?',
+                      },
+                      {
+                        name: 'Kate',
                         type: 'received',
+                        text: 'Hi, I am good!',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
+                      },
+                      {
+                        name: 'Blue Ninja',
+                        type: 'received',
+                        text: 'Hi there, I am also fine, thanks! And how are you?',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+                      },
+                      {
+                        type: 'sent',
+                        text: 'Hey, Blue Ninja! Glad to see you ;)',
+                      },
+                      {
+                        type: 'sent',
+                        text: 'Hey, look, cutest kitten ever!',
+                      },
+                      {
+                        type: 'sent',
+                        image: 'https://cdn.framework7.io/placeholder/cats-200x260-4.jpg',
+
+                      },
+                      {
+                        name: 'Kate',
+                        type: 'received',
+                        text: 'Nice!',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
+                      },
+                      {
+                        name: 'Kate',
+                        type: 'received',
+                        text: 'Like it very much!',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
+                      },
+                      {
+                        name: 'Blue Ninja',
+                        type: 'received',
+                        text: 'Awesome!',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+                      },
+                    ],
+                    images: [
+                      'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-200x300-2.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-400x300-3.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-300x150-4.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-150x300-5.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-300x300-6.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-300x300-7.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-200x300-8.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-400x300-9.jpg',
+                      'https://cdn.framework7.io/placeholder/cats-300x150-10.jpg',
+                    ],
+                    people: [
+                      {
+                        name: 'Kate Johnson',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
+                      },
+                      {
+                        name: 'Blue Ninja',
+                        avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+                      },
+                    ],
+                    answers: [
+                      'Yes!',
+                      'No',
+                      'Hm...',
+                      'I am not sure',
+                      'And what about you?',
+                      'May be ;)',
+                      'Lorem ipsum dolor sit amet, consectetur',
+                      'What?',
+                      'Are you sure?',
+                      'Of course',
+                      'Need to think about it',
+                      'Amazing!!!',
+                    ],
+                    responseInProgress: false,
+                  };
+                },
+                computed: {
+                  attachmentsVisible() {
+                    const self = this;
+                    return self.attachments.length > 0;
+                  },
+                  placeholder() {
+                    const self = this;
+                    return self.attachments.length > 0 ? 'Add comment or Send' : 'Message';
+                  },
+                },
+                mounted() {
+                  const self = this;
+                  self.$f7ready(() => {
+                    self.messagebar = self.$refs.messagebar.f7Messagebar;
+                    self.messages = self.$refs.messages.f7Messages;
+                  });
+                },
+                methods: {
+                  isFirstMessage(message, index) {
+                    const self = this;
+                    const previousMessage = self.messagesData[index - 1];
+                    if (message.isTitle) return false;
+                    if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
+                    return false;
+                  },
+                  isLastMessage(message, index) {
+                    const self = this;
+                    const nextMessage = self.messagesData[index + 1];
+                    if (message.isTitle) return false;
+                    if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+                    return false;
+                  },
+                  isTailMessage(message, index) {
+                    const self = this;
+                    const nextMessage = self.messagesData[index + 1];
+                    if (message.isTitle) return false;
+                    if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+                    return false;
+                  },
+                  deleteAttachment(image) {
+                    const self = this;
+                    const index = self.attachments.indexOf(image);
+                    self.attachments.splice(index, 1)[0]; // eslint-disable-line
+                  },
+                  handleAttachment(e) {
+                    const self = this;
+                    const index = self.$$(e.target).parents('label.checkbox').index();
+                    const image = self.images[index];
+                    if (e.target.checked) {
+                      // Add to attachments
+                      self.attachments.unshift(image);
+                    } else {
+                      // Remove from attachments
+                      self.attachments.splice(self.attachments.indexOf(image), 1);
+                    }
+                  },
+                  sendMessage() {
+                    const self = this;
+                    const text = self.messagebar.getValue().replace(/\n/g, '<br>').trim();
+                    const messagesToSend = [];
+                    self.attachments.forEach((attachment) => {
+                      messagesToSend.push({
+                        image: attachment,
+                      });
+                    });
+                    if (text.trim().length) {
+                      messagesToSend.push({
+                        text,
+                      });
+                    }
+                    if (messagesToSend.length === 0) {
+                      return;
+                    }
+
+                    // Reset attachments
+                    self.attachments = [];
+                    // Hide sheet
+                    self.sheetVisible = false;
+                    // Clear area
+                    self.messagebar.clear();
+                    // Focus area
+                    if (text.length) self.messagebar.focus();
+                    // Send message
+                    self.messagesData.push(...messagesToSend);
+
+                    // Mock response
+                    if (self.responseInProgress) return;
+                    self.responseInProgress = true;
+                    setTimeout(() => {
+                      const answer = self.answers[Math.floor(Math.random() * self.answers.length)];
+                      const person = self.people[Math.floor(Math.random() * self.people.length)];
+                      self.typingMessage = {
                         name: person.name,
                         avatar: person.avatar,
-                      });
-                      self.messages.hideTyping();
-                      self.responseInProgress = false;
-                    }, 4000);
-                  }, 1000);
+                      };
+                      setTimeout(() => {
+                        self.messagesData.push({
+                          text: answer,
+                          type: 'received',
+                          name: person.name,
+                          avatar: person.avatar,
+                        });
+                        self.typingMessage = null;
+                        self.responseInProgress = false;
+                      }, 4000);
+                    }, 1000);
+                  },
                 },
-                onF7Ready() {
-                  const self = this;
-                  // References to us APIs
-                  self.messagebar = self.$refs.messagebar.f7Messagebar;
-                  self.messages = self.$refs.messages.f7Messages;
-                },
-              },
-            };
-          </script>
+              };
+            </script>
 

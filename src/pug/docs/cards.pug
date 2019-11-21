@@ -11,65 +11,315 @@ block content
   .docs-content
     +improveDocsLink
     h1 Cards
-    .docs-index
+    ul.docs-index
     p Cards, along with List View, is a great way to contain and orginize your information. Cards contain unique related data, for example, a photo, text, and link all about a single subject. Cards are typically an entry point to more complex and detailed information.
     h2 Card Layout
     p Lets look at a basic card HTML layout
-    pre
-      code
-        | &lt;div class="card"&gt;
-        |     &lt;div class="card-header"&gt;Header&lt;/div&gt;
-        |     &lt;div class="card-content"&gt;
-        |         &lt;!-- Card content --&gt;
-        |     &lt;/div&gt;
-        |     &lt;div class="card-footer"&gt;Footer&lt;/div&gt;
-        | &lt;/div&gt;
-        |
-        | &lt;div class="card"&gt;
-        |     &lt;div class="card-header"&gt;Header&lt;/div&gt;
-        |     &lt;div class="card-content card-content-padding"&gt;
-        |         &lt;!-- Card content --&gt;
-        |     &lt;/div&gt;
-        |     &lt;div class="card-footer"&gt;Footer&lt;/div&gt;
-        | &lt;/div&gt;
+    :code(lang="html")
+          <div class="card">
+            <div class="card-header">Header</div>
+            <div class="card-content">
+              <!-- Card content -->
+            </div>
+            <div class="card-footer">Footer</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Header</div>
+            <div class="card-content card-content-padding">
+              <!-- Card content -->
+            </div>
+            <div class="card-footer">Footer</div>
+          </div>
+
+          <div class="card card-outline">
+            <div class="card-header">Header</div>
+            <div class="card-content">
+              <!-- Card content -->
+            </div>
+            <div class="card-footer">Footer</div>
+          </div>
     p Where:
     ul
       li
-        p <code>&lt;div class="card"&gt;</code> - Card container
+        p `<div class="card">` - Card container
         ul
           li
-            p <code>&lt;div class="card-header"&gt;</code> - Card header. Mostly used to display card title. Optional
+            p `<div class="card-header">` - Card header. Mostly used to display card title. Optional
           li
-            p <code>&lt;div class="card-footer"&gt;</code> - Card footer is used for some additional information or for custom actions/links. Optional
+            p `<div class="card-footer">` - Card footer is used for some additional information or for custom actions/links. Optional
           li
-            p <code>&lt;div class="card-content"&gt;</code> - Main container for card content. Required
+            p `<div class="card-content">` - Main container for card content. Required
           li
-            p <code>&lt;div class="card-content card-content-padding"&gt;</code> - Additional <b>card-content-padding</b> used to add extra padding to card-content
+            p `<div class="card-content card-content-padding">` - Additional <b>card-content-padding</b> used to add extra padding to card-content
+          li
+            p `card-outline` - additional class that can be added to card element to make it outline
+          li
+            p `no-shadow` - additional class that can be added to card element to remove its shadow
+          li
+            p `no-border` - additional class that can be added to card element to remove its border (for outline card)
     .important-note
       p Note that "card-header" and "card-footer" have a flexbox layout (<em>display:flex</em>) where as items have a center vertical alignment. If you need to align items to top or to bottom of header/footer, then you may use additional <a href="typography.html">typography</a> classes, for example:
       p <b>&lt;div class="card-header align-items-flex-start"&gt;</b> - align header items by header top line
       p <b>&lt;div class="card-footer align-items-flex-end"&gt;</b> - align footer items by footer bottom line
+
+    h2 Expandable Cards
+    p Expandable Cards (aka AppStore cards) is a subset of usual Cards which expand on click to full screen size on mobile and to larger size on tablet.
+    h4 Expandable Cards Layout
+    p It has a bit different and simplified layout:
+    :code(lang="html")
+      <!-- addition "card-expandable" class on card to make it expandable -->
+      <div class="card card-expandable">
+        <!-- card content -->
+        <div class="card-content">
+          <!-- put all content here -->
+        </div>
+      </div>
+    p Where
+      ul
+        li `card-expandable` - addition class on card element to make it expandable
+        li `card-content` - only place here to put any card content
+    p So all the extra elements like `card-content-padding`, `card-header`, `card-footer` must be placed inside of `card-content` when card is expandable.
+
+    h4 Expandable Card Size
+    p By default expandable card opens to fixed size on tablet/desktops. To make expandable card to open to full screen size on tablet/desktop screen additional `card-tablet-fullscreen` class required on card element. Otherwise you can configure this size using `--f7-card-expandable-tablet-width` and `--f7-card-expandable-tablet-height` CSS variables.
+    p Expandable card content (`card-content`) is set to `100vw` width when collapsed (closed). It is done to improve card open/close transition performance, so you need to take care about its content positioning. You can make its content width also animatable and responsive by adding additional `card-expandable-animate-width` class to card element, but performance can be worse in this case.
+
+    h4 Hide Elements On Open/Close
+    p Expandable card has 2 states: closed and opened. And it is possible to hide/show card's elements by using these two classes:
+    ul
+      li `card-opened-fade-in` - element with such class inside of card-content will have `0` opacity when card closed, and it will fade to `1` opacity on card open.
+      li `card-opened-fade-out` - element with such class inside of card-content will have `1` opacity when card closed, and it will fade to `0` opacity on card open.
+
+    h4 Prevent Card From Opening
+    p In some layouts you may have a button or link in visible area or expandable card when it is collapsed. To allow click on such button or link and to prevent expandable card from opening, we need to add `card-prevent-open` class to this button:
+
+    :code(lang="html")
+      <div class="card card-expandable">
+        <div class="card-content">
+          ...
+          <!-- Add "card-prevent-open" to element and click on it won't open expandable card -->
+          <a href="#" class="button card-prevent-open">Button</a>
+        </div>
+      </div>
+
+    h4 Expandable Card Backdrop
+    p If you have enabled expandable card backdrop (enabled by default, see parameters below), then it will automatically add backdrop element (darken overlay behind the card) on card open to card parent page.
+    p In some layouts you may need to place such backdrop element in custom place. In this case we need to manually add this element and specify it in card's `data-backdrop-el` attribute:
+    :code(lang="html")
+      <div class="block">
+        <!-- custom backdrop element -->
+        <div class="card-backdrop custom-backdrop"></div>
+        <!-- pass its CSS selector in data-backdrop-el attribute -->
+        <div class="card card-expandable" data-backdrop-el=".custom-backdrop">
+          ...
+        </div>
+      </div>
+
+
+    h2 Card App Methods
+    p Let's look at related App methods to work with expandable cards:
+    .method-wrap
+      p
+        span.method app.card.open(<span>el</span>, <span>animate</span>)
+        | - open expandable card
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Expandable card to open.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Opens expandable card with animation. By default is `true`
+    .method-wrap
+      p
+        span.method app.card.close(<span>el</span>, <span>animate</span>)
+        | - close expandable card
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Expandable card to close.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Closes expandable card with animation. By default is `true`
+
+    .method-wrap
+      p
+        span.method app.card.toggle(<span>el</span>, <span>animate</span>)
+        | - toggle expandable card
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Expandable card to toggle.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Toggle expandable card with animation. By default is `true`
+
+    h2 Card App Parameters
+    p It is possible to control some default Cards behavior using global <a href="app.html#app-parameters">app parameters</a> by passing Cards related parameters under `card` parameter:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td hideNavbarOnOpen
+          td boolean
+          td true
+          td Will hide Navbar on expandable card open.
+        tr
+          td hideToolbarOnOpen
+          td boolean
+          td true
+          td Will hide Toolbar on expandable card open.
+        tr
+          td hideStatusbarOnOpen
+          td boolean
+          td true
+          td Will hide "Statusbar" (or fully hide Navbar) on expandable card open.
+        tr
+          td swipeToClose
+          td boolean
+          td true
+          td Allows to close expandable card with swipe.
+        tr
+          td backdrop
+          td boolean
+          td true
+          td Enables expandable card backdrop layer.
+        tr
+          td closeByBackdropClick
+          td boolean
+          td true
+          td When enabled, expandable card will be closed on its backdrop click.
+    p For example:
+    :code(lang="js")
+      var app = new Framework7({
+        card: {
+          hideNavbarOnOpen: false,
+          closeByBackdropClick: false,
+        },
+      });
+    p In addition, all these paramteres can be set on each expandable card individually with same `data-` attributes, including additional `data-animate` attribute:
+    :code(lang="html")
+      <!-- this card will opened without animation -->
+      <div class="card card-expandable" data-animate="false">
+        ...
+      </div>
+
+      <!-- this card will opened without backdrop -->
+      <div class="card card-expandable" data-backdrop="false">
+        ...
+      </div>
+    h2 Control Cards With Links
+    p It is possible to open and close required expandable cards using special classes and data attributes on links:
+    .important-note
+      ul
+        li
+          p To open expandable card we need to add "<b>card-open</b>" class to any HTML element (prefered to link)
+        li
+          p To close expandable we need to add "<b>card-close</b>" class to any HTML element (prefered to link)
+        li
+          p If you have more than one expandable cards in DOM, you need to specify appropriate card via additional <b>data-card=".my-card"</b> attribute on this HTML element
+
+    h2 Card Events
+    p Expandable card will fire the following DOM events on card element and events on app instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td card:beforeopen
+          td Card Element<span>&lt;div class="card"&gt;</span>
+          td Event will be triggered right before expandable card starts its opening animation. `event.detail.prevent` contains function that will prevent card from opening when called
+        tr
+          td card:open
+          td Card Element<span>&lt;div class="card"&gt;</span>
+          td Event will be triggered when expandable card starts its opening animation
+        tr
+          td card:opened
+          td Card Element<span>&lt;div class="card"&gt;</span>
+          td Event will be triggered after expandable card completes its opening animation
+        tr
+          td card:close
+          td Card Element<span>&lt;div class="card"&gt;</span>
+          td Event will be triggered when expandable card starts its closing animation
+        tr
+          td card:closed
+          td Card Element<span>&lt;div class="card"&gt;</span>
+          td Event will be triggered after expandable card completes its closing animation
+    h3 App Instance Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          td cardBeforeOpen
+          td <span>(el, prevent)</span>
+          td Event will be triggered right before expandable card starts its opening animation. `prevent` contains function that will prevent expandable card from opening when called
+        tr
+          td cardOpen
+          td <span>(el)</span>
+          td Event will be triggered when expandable card starts its opening animation. As an argument event handler received card HTML element
+        tr
+          td cardOpened
+          td <span>(el)</span>
+          td Event will be triggered after expandable card completes its opening animation. As an argument event handler received card HTML element
+        tr
+          td cardClose
+          td <span>(el)</span>
+          td Event will be triggered when expandable card starts its closing animation. As an argument event handler received card HTML element
+        tr
+          td cardClosed
+          td <span>(el)</span>
+          td Event will be triggered after expandable card completes its closing animation. As an argument event handler received card HTML element
+
+
+    +cssVars('card')
+
     .with-device
-      h2(data-device-preview="../docs-demos/cards.html") Examples
+      h2(data-device-preview="../docs-demos/core/cards.html") Examples
       h4 Simple Cards
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="card">
               <div class="card-content card-content-padding">This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element.</div>
             </div>
+
             <div class="card">
               <div class="card-header">Card header</div>
               <div class="card-content card-content-padding">Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions.</div>
               <div class="card-footer">Card Footer</div>
             </div>
+
             <div class="card">
               <div class="card-content card-content-padding">Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. </div>
             </div>
+      h4 Outline Cards
+      :code(lang="html")
+            <div class="card card-outline">
+              <div class="card-content card-content-padding">This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element.</div>
+            </div>
+
+            <div class="card card-outline">
+              <div class="card-header">Card header</div>
+              <div class="card-content card-content-padding">Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions.</div>
+              <div class="card-footer">Card Footer</div>
+            </div>
+
+            <div class="card card-outline">
+              <div class="card-content card-content-padding">Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. </div>
+            </div>
       h4 Styled Cards
-      pre
-        code.css
-          :code
+      :code(lang="css")
             .demo-card-header-pic .card-header {
               height: 40vw;
               background-size: cover;
@@ -79,19 +329,18 @@ block content
             .demo-card-header-pic .card-content-padding .date{
               color: #8e8e93;
             }
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="card demo-card-header-pic">
-              <div style="background-image:url(http://lorempixel.com/1000/600/nature/3/)" class="card-header align-items-flex-end">Journey To Mountains</div>
+              <div style="background-image:url(https://cdn.framework7.io/placeholder/nature-1000x600-3.jpg)" class="card-header align-items-flex-end">Journey To Mountains</div>
               <div class="card-content card-content-padding">
                 <p class="date">Posted on January 21, 2015</p>
                 <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...</p>
               </div>
               <div class="card-footer"><a href="#" class="link">Like</a><a href="#" class="link">Read more</a></div>
             </div>
+
             <div class="card demo-card-header-pic">
-              <div style="background-image:url(http://lorempixel.com/1000/600/people/6/)" class="card-header align-items-flex-end">Lorem Ipsum</div>
+              <div style="background-image:url(https://cdn.framework7.io/placeholder/people-1000x600-6.jpg)" class="card-header align-items-flex-end">Lorem Ipsum</div>
               <div class="card-content card-content-padding">
                 <p class="date">Posted on January 21, 2015</p>
                 <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...</p>
@@ -99,9 +348,7 @@ block content
               <div class="card-footer"><a href="#" class="link">Like</a><a href="#" class="link">Read more</a></div>
             </div>
       h4 Facebook Cards
-      pre
-        code.css
-          :code
+      :code(lang="css")
             .demo-facebook-card .card-header {
               display: block;
               padding: 10px;
@@ -135,34 +382,31 @@ block content
             .demo-facebook-card .card-content-padding .likes {
               color: #8e8e93;
             }
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="card demo-facebook-card">
               <div class="card-header">
-                <div class="demo-facebook-avatar"><img src="http://lorempixel.com/68/68/people/1/" width="34" height="34"/></div>
+                <div class="demo-facebook-avatar"><img src="https://cdn.framework7.io/placeholder/people-68x68-1.jpg" width="34" height="34"/></div>
                 <div class="demo-facebook-name">John Doe</div>
                 <div class="demo-facebook-date">Monday at 3:47 PM</div>
               </div>
-              <div class="card-content"> <img src="http://lorempixel.com/1000/700/nature/8/" width="100%"/></div>
+              <div class="card-content"> <img src="https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg" width="100%"/></div>
               <div class="card-footer"><a href="#" class="link">Like</a><a href="#" class="link">Comment</a><a href="#" class="link">Share</a></div>
             </div>
+
             <div class="card demo-facebook-card">
               <div class="card-header">
-                <div class="demo-facebook-avatar"><img src="http://lorempixel.com/68/68/people/1/" width="34" height="34"/></div>
+                <div class="demo-facebook-avatar"><img src="https://cdn.framework7.io/placeholder/people-68x68-1.jpg" width="34" height="34"/></div>
                 <div class="demo-facebook-name">John Doe</div>
                 <div class="demo-facebook-date">Monday at 2:15 PM</div>
               </div>
               <div class="card-content card-content-padding">
-                <p>What a nice photo i took yesterday!</p><img src="http://lorempixel.com/1000/700/nature/8/" width="100%"/>
+                <p>What a nice photo i took yesterday!</p><img src="https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg" width="100%"/>
                 <p class="likes">Likes: 112 &nbsp;&nbsp; Comments: 43</p>
               </div>
               <div class="card-footer"><a href="#" class="link">Like</a><a href="#" class="link">Comment</a><a href="#" class="link">Share</a></div>
             </div>
       h4 Cards With List View
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="card">
               <div class="card-content">
                 <div class="list links-list">
@@ -176,13 +420,14 @@ block content
                 </div>
               </div>
             </div>
+
             <div class="card">
               <div class="card-header">New Releases:</div>
               <div class="card-content">
                 <div class="list media-list">
                   <ul>
                     <li class="item-content">
-                      <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/4" width="44"/></div>
+                      <div class="item-media"><img src="https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg" width="44"/></div>
                       <div class="item-inner">
                         <div class="item-title-row">
                           <div class="item-title">Yellow Submarine</div>
@@ -191,7 +436,7 @@ block content
                       </div>
                     </li>
                     <li class="item-content">
-                      <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/5" width="44"/></div>
+                      <div class="item-media"><img src="https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg" width="44"/></div>
                       <div class="item-inner">
                         <div class="item-title-row">
                           <div class="item-title">Don't Stop Me Now</div>
@@ -200,7 +445,7 @@ block content
                       </div>
                     </li>
                     <li class="item-content">
-                      <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/6" width="44"/></div>
+                      <div class="item-media"><img src="https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg" width="44"/></div>
                       <div class="item-inner">
                         <div class="item-title-row">
                           <div class="item-title">Billie Jean</div>
@@ -213,3 +458,41 @@ block content
               </div>
               <div class="card-footer"> <span>January 20, 2015</span><span>5 comments</span></div>
             </div>
+      h4 Expandable Cards
+      :code(lang="html")
+        <div class="card card-expandable">
+          <div class="card-content">
+            <div class="bg-color-red" style="height: 300px">
+              <div class="card-header text-color-white display-block">
+                Framework7
+                <br>
+                <small style="opacity: 0.7">Build Mobile Apps</small>
+              </div>
+              <a href="#" class="link card-close card-opened-fade-in color-white" style="position: absolute; right: 15px; top: 15px">
+                <i class="icon f7-icons">close_round_fill</i>
+              </a>
+            </div>
+            <div class="card-content-padding">
+              <p>Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to.</p>
+              ...
+            </div>
+          </div>
+        </div>
+        <div class="card card-expandable">
+          <div class="card-content">
+            <div class="bg-color-yellow" style="height: 300px">
+              <div class="card-header text-color-black display-block">
+                Framework7
+                <br>
+                <small style="opacity: 0.7">Build Mobile Apps</small>
+              </div>
+              <a href="#" class="link card-close card-opened-fade-in color-black" style="position: absolute; right: 15px; top: 15px">
+                <i class="icon f7-icons">close_round_fill</i>
+              </a>
+            </div>
+            <div class="card-content-padding">
+              <p>Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to.</p>
+              ...
+            </div>
+          </div>
+        </div>

@@ -11,7 +11,7 @@ block content
   .docs-content
     +improveDocsLink
     h1 Calendar / Datepicker
-    .docs-index
+    ul.docs-index
     p Calendar is a touch optimized component that provides an easy way to handle dates.
     p Calendar could be used as inline component or as overlay. Overlay Calendar will be automatically converted to Popover on tablets (iPad).
     h2 Calendar App Methods
@@ -53,11 +53,10 @@ block content
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Calendar element to close.
       p.method-returns Method returns Calendar's instance
     p For example:
-    pre
-      code.js
-        | var calendar = app.calendar.create({
-        |     input: '#calendar-input'
-        | });
+    :code(lang="js")
+          var calendar = app.calendar.create({
+              inputEl: '#calendar-input'
+          });
     h2 Calendar Parameters
     p Let's look on list of all available Calendar parameters:
     table.params-table
@@ -68,6 +67,13 @@ block content
           th Default
           th Description
       tbody
+        tr
+          td locale
+          td string
+          td
+          td
+            p Calendar locale. Should be a correct locale accepted by <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat#Parameters">`Intl.DateTimeFormat`</a>. If not specified (by default), it will use browser locale.
+            p For example `en-US`, `ru`, `en`, `en-US-u-ca-buddhist`, etc.
         tr
           td value
           td array
@@ -82,7 +88,21 @@ block content
           td events
           td Date Range
           td
-          td Dates with events. Will be marked with additonal "dot" on calendar day. Parameter accepts so called <b>Date Ranges</b> (look below for details)
+          td
+            p Dates with events. Will be marked with additonal "dot" on calendar day. Parameter accepts so called <b>Date Range</b> (look below for details).
+            p If you want to indicate that day has few different events, it is possible to indicate this with multiple different color dots. In this case, you need to pass date range as array where each object will have `date` and `color` properties, e.g.
+            :code(lang="js")
+                  [
+                    {
+                      date: new Date(2018, 4, 11),
+                      color: '#2196f3',
+                    },
+                    // same date but different color, one more dot will be added to this day
+                    {
+                      date: new Date(2018, 4, 11),
+                      color: '#4caf50',
+                    },
+                  ]
         tr
           td rangesClasses
           td array
@@ -93,27 +113,27 @@ block content
           td formatValue
           td function (values)
           td
-          td Function to format input value, should return new/formatted string value. <b>values</b> is array where each item represents selected date
+          td Function to format input value, should return new/formatted string value. <b>values</b> is an array where each item represents selected date. Can be used instead of `dateFormat` parameter to specify custom formatting
         tr
           td monthNames
           td array
-          td ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August' , 'September' , 'October', 'November', 'December']
-          td Array with full month names
+          td `auto`
+          td Array with full month names. If `auto` then it will display month names based on specified `locale` (or browser locale)
         tr
           td monthNamesShort
           td array
-          td ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-          td Array with short month names
+          td `auto`
+          td Array with short month names. If `auto` then it will display month names based on specified `locale` (or browser locale)
         tr
           td dayNames
           td array
-          td ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-          td Array with week day names
+          td `auto`
+          td Array with week day names.  If `auto` then it will display day names based on specified `locale` (or browser locale)
         tr
           td dayNamesShort
           td array
-          td ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-          td Array with week day short names
+          td `auto`
+          td Array with week day short names.  If `auto` then it will day names based on specified `locale` (or browser locale)
         tr
           td firstDay
           td number
@@ -126,20 +146,23 @@ block content
           td Array with index numeber of weekend days, by default it is Saturday and Sunday
         tr
           td dateFormat
-          td string
-          td 'yyyy-mm-dd'
-          td Default date format, available expressions:
+          td string<br>object
+          td undefined
+          td
+            p If undefined, it will use format based on `locale` or (or browser locale).
+            p It can accept <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat#Parameters">`Intl.DateTimeFormat`.`options`</a>. For example `{ month: 'long', day: 'numeric' }`.
+            p Or you can pass string with special tokens, available expressions:
             ul
-              li 'yyyy' - 4 digits year
-              li 'yy' - 2 digits year
-              li 'mm' - 2 digits month number, from 01 to 12
-              li 'm' - month number, from 1 to 12
-              li 'MM' - full month name
-              li 'M' - short month name
-              li 'dd' - 2 digits day number, from 01 to 31
-              li 'd' - day number, from 1 to 31
-              li 'DD' - full week day name
-              li 'D' - short week day name
+              li `yyyy` - 4 digits year
+              li `yy` - 2 digits year
+              li `mm` - 2 digits month number, from 01 to 12
+              li `m` - month number, from 1 to 12
+              li `MM` - full month name
+              li `M` - short month name
+              li `dd` - 2 digits day number, from 01 to 31
+              li `d` - day number, from 1 to 31
+              li `DD` - full week day name
+              li `D` - short week day name
         tr
           td multiple
           td boolean
@@ -149,7 +172,17 @@ block content
           td rangePicker
           td boolean
           td false
-          td Enable to enable range picker. Not compatible with <code>multiple</code>
+          td Enable to enable range picker. Not compatible with `multiple`
+        tr
+          td rangePickerMinDays
+          td number
+          td 1
+          td Minimum days that need to be selected when `rangePicker` enabled
+        tr
+          td rangePickerMaxDays
+          td number
+          td 0
+          td Maximum days allowed to be selected when `rangePicker` enabled. `0` means no maximum
         tr
           td direction
           td string
@@ -191,10 +224,45 @@ block content
           td true
           td Enable month selector in toolbar
         tr
+          td monthPicker
+          td boolean
+          td true
+          td Enables month picker to select a month when clicked on a month selector in toolbar
+        tr
           td yearSelector
           td boolean
           td true
           td Enable year picker in toolbar
+        tr
+          td yeadPicker
+          td boolean
+          td true
+          td Enables year picker to select a year when clicked on a year selector in toolbar
+        tr
+          td yearPickerMin
+          td number
+          td
+          td Minimum available year for year picker, by default is today minus 100 years
+        tr
+          td yearPickerMax
+          td number
+          td
+          td Maximum available year for year picker, by default is today plus 100 years
+        tr
+          td timePicker
+          td boolean
+          td false
+          td Enables time picker
+        tr
+          td timePickerFormat
+          td object
+          td {hour: 'numeric', minute: 'numeric'}
+          td Time format displayed in time selector. It accepts <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat#Parameters">`Intl.DateTimeFormat`.`options`</a>
+        tr
+          td timePickerPlaceholder
+          td string
+          td Select time
+          td Text to display in time selector placeholder.
         tr
           th(colspan="4") Container/opener-specific parameters
         tr
@@ -206,7 +274,17 @@ block content
           td openIn
           td string
           td auto
-          td Can be <code>auto</code>, <code>popover</code> (to open calendar in popover), <code>sheet</code> (to open in sheet modal) or <code>customModal</code> (to open in custom Calendar modal overlay). In case of <code>auto</code> will open in sheet modal on small screens and in popover on large screens.
+          td Can be `auto`, `popover` (to open calendar in popover), `sheet` (to open in sheet modal) or `customModal` (to open in custom Calendar modal overlay). In case of `auto` will open in sheet modal on small screens and in popover on large screens.
+        tr
+          td sheetPush
+          td boolean
+          td false
+          td Enables Calendar sheet to push view/s behind on open
+        tr
+          td sheetSwipeToClose
+          td boolean
+          td undefined
+          td Enables ability to close Calendar sheet with swipe. When not specified it inherits app's Sheet `swipeToClose` parameter
         tr
           td inputEl
           td string or HTMLElement
@@ -266,7 +344,17 @@ block content
           td view
           td object
           td
-          td View where to set routing when <code>routableModals</code> enabled. Defaults to parent view of <code>inputEl</code> or main view if not found parent view
+          td View where to set routing when `routableModals` enabled. Defaults to parent view of `inputEl` or main view if not found parent view
+        tr
+          td backdrop
+          td boolean
+          td
+          td Enables Calendar backdrop (dark semi transparent layer behind). By default only it is enabled when Calendar opened in Popover.
+        tr
+          td closeByBackdropClick
+          td boolean
+          td true
+          td When enabled, Calendar will be closed on backdrop click
         tr
           th(colspan="4") Render Functions
         tr
@@ -315,10 +403,9 @@ block content
           td on
           td object
           td
-          td Object with events handlers. For example:
-            pre
-              code
-                :code
+          td
+            p Object with events handlers. For example:
+            :code(lang="js")
                   var calendar = app.calendar.create({
                     ...
                     on: {
@@ -328,10 +415,8 @@ block content
                     }
                   })
     .important-note
-      p Note that all following parameters can be used in global app parameters under <code>calendar</code> property to set defaults for all calendars. For example:
-      pre
-        code
-          :code
+      p Note that all following parameters can be used in global app parameters under `calendar` property to set defaults for all calendars. For example:
+      :code(lang="js")
             var app = new Framework7({
               calendar: {
                 url: 'calendar/',
@@ -341,77 +426,89 @@ block content
     h3 Date Range
     p Some of Calendar parameters (<b>disabled</b>, <b>events</b> and <b>rangesClasses</b>) accept so called <b>Date Range</b>. It is a simple way to specify and cover all possible dates combination.
     p It can be array with dates, for example:
-    pre
-      code.js
-        | var calendar = app.calendar.create({
-        |     ...
-        |     //Disabled 10th November 2015 and 11th November 2015:
-        |     disabled: [new Date(2015, 10, 10), new Date(2015, 10, 11)],
-        |     ...
-        | });
+    :code(lang="js")
+          var calendar = app.calendar.create({
+              ...
+              // Disabled 10th November 2015 and 11th November 2015:
+              disabled: [new Date(2015, 10, 10), new Date(2015, 10, 11)],
+              ...
+          });
     p It can be custom function where you need to return <b>true</b> or <b>false</b>
-    pre
-      code.js
-        | var calendar = app.calendar.create({
-        |     ...
-        |     //Disabled all dates in November 2015
-        |     disabled: function (date) {
-        |         if (date.getFullYear() === 2015 && date.getMonth() === 10) {
-        |             return true;
-        |         }
-        |         else {
-        |             return false;
-        |         }
-        |     },
-        |     ...
-        | });
+    :code(lang="js")
+          var calendar = app.calendar.create({
+              ...
+              //Disabled all dates in November 2015
+              disabled: function (date) {
+                  if (date.getFullYear() === 2015 && date.getMonth() === 10) {
+                      return true;
+                  }
+                  else {
+                      return false;
+                  }
+              },
+              ...
+          });
     p Or object with <b>from</b> and <b>to</b> properties
-    pre
-      code.js
-        | var calendar = app.calendar.create({
-        |     ...
-        |     //Disable all dates between 1st October 2015 and 31 December 2015
-        |     disabled: {
-        |         from: new Date(2015, 9, 1),
-        |         to: new Date(2015, 11, 31)
-        |     },
-        |     ...
-        | });
+    :code(lang="js")
+          var calendar = app.calendar.create({
+              ...
+              //Disable all dates between 1st October 2015 and 31 December 2015
+              disabled: {
+                  from: new Date(2015, 9, 1),
+                  to: new Date(2015, 11, 31)
+              },
+              ...
+          });
     p Or object with just <b>from</b> or <b>to</b> properties
-    pre
-      code.js
-        | var calendar = app.calendar.create({
-        |     ...
-        |     //Disable everyting since December 2015
-        |     disabled: {
-        |         from: new Date(2015, 11, 1)
-        |     },
-        |     ...
-        | });
+    :code(lang="js")
+          var calendar = app.calendar.create({
+              ...
+              //Disable everyting since December 2015
+              disabled: {
+                  from: new Date(2015, 11, 1)
+              },
+              ...
+          });
+    p Or object with `date` property:
+    :code(lang="js")
+          var calendar = app.calendar.create({
+              ...
+              // Disabled 1th December 2015
+              disabled: {
+                  date: new Date(2015, 11, 1)
+              },
+              ...
+          });
     p Or array with mixed dates and objects:
-    pre
-      code.js
-        | var calendar = app.calendar.create({
-        |     ...
-        |     events: [
-        |         new Date(2015, 9, 1),
-        |         new Date(2015, 9, 5),
-        |         {
-        |             from: new Date(2015, 9, 10),
-        |             to: new Date(2015, 9, 15)
-        |         },
-        |         {
-        |             from: new Date(2015, 9, 20),
-        |             to: new Date(2015, 9, 31)
-        |         }
-        |     ],
-        |     ...
-        | });
+    :code(lang="js")
+          var calendar = app.calendar.create({
+              ...
+              events: [
+                  new Date(2015, 9, 1),
+                  new Date(2015, 9, 5),
+                  {
+                      from: new Date(2015, 9, 10),
+                      to: new Date(2015, 9, 15)
+                  },
+                  {
+                      from: new Date(2015, 9, 20),
+                      to: new Date(2015, 9, 31)
+                  },
+                  {
+                      date: new Date(2015, 11, 1),
+                      color: '#ff0000'
+                  },
+                  // same date but one more color dot will be added
+                  {
+                      date: new Date(2015, 11, 1),
+                      color: '#00ff00'
+                  },
+              ],
+              ...
+          });
     h3 rangesClasses
     p <b>rangesClasses</b> parameter accepts array of objects with Date Range and class names for this range:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           var calendar = app.calendar.create({
               ...
               //Add classes for november and october
@@ -425,7 +522,7 @@ block content
                           return date.getMonth() === 9
                       }
                   },
-                  //Add "day-holiday" class for 1-10th January 2015
+                  //Add "day-holiday" class for 1-10th January 2016
                   {
                       cssClass: 'day-holiday',
                       range: {
@@ -437,7 +534,7 @@ block content
               ...
           });
     h2 Calendar Methods & Properties
-    p After we initialize Calendar we have its initialized instance in variable (like <code>calendar</code> variable in examples above) with helpful methods and properties:
+    p After we initialize Calendar we have its initialized instance in variable (like `calendar` variable in examples above) with helpful methods and properties:
     table.methods-table
       tbody
         tr
@@ -459,51 +556,57 @@ block content
           td Dom7 instance with calendar HTML element
         tr
           td calendar.inputEl
-          td Calendar input HTML element (passed in <code>inputEl</code> parameter)
+          td Calendar input HTML element (passed in `inputEl` parameter)
         tr
           td calendar.$inputEl
-          td Dom7 instance with calendar input HTML element (passed in <code>inputEl</code> parameter)
+          td Dom7 instance with calendar input HTML element (passed in `inputEl` parameter)
         tr
           td calendar.value
           td Array where each item represents selected date
         tr
+          td calendar.currentMonth
+          td Calendar view current month. Number, from `0` to `11`
+        tr
+          td calendar.currentYear
+          td Calendar view current year. Number, for example `2020`
+        tr
           td calendar.opened
-          td <code>true</code> if Calendar is currently opened
+          td `true` if Calendar is currently opened
         tr
           td calendar.inline
-          td <code>true</code> when inline calendar is in use
+          td `true` when inline calendar is in use
         tr
           td calendar.cols
           td Array with specified Calendar columns. Each column also has its own methods and properties (look below)
         tr
           td calendar.url
-          td Calendar URL (that was passed in <code>url</code> parameter)
+          td Calendar URL (that was passed in `url` parameter)
         tr
           td calendar.view
-          td Calendar View (that was passed in <code>view</code> parameter) or found parent view
+          td Calendar View (that was passed in `view` parameter) or found parent view
         tr
           td calendar.params
           td Object with initialization parameters
         tr
           th(colspan="2") Methods
         tr
-          td calendar.setValue(values)
-          td Set new selected dates. <code>values</code> is array where each item represents selected date
+          td calendar.setValue(<span>values</span>)
+          td Set new selected dates. `values` is array where each item represents selected date
         tr
           td calendar.getValue()
           td Returns current calendar value
         tr
           td calendar.addValue()
-          td Adds value to the values array. Useful in case if multiple selection is enabled (with <code>multiple: true</code> parameter)
+          td Adds value to the values array. Useful in case if multiple selection is enabled (with `multiple: true` parameter)
         tr
           td calendar.update()
           td Rerenders calendar. Useful in case you added/changed values dynamically and need to update calendar layout
         tr
-          td calendar.nextMonth(duration)
-          td Calendar transition to next month for specified duration in ms
+          td calendar.nextMonth(<span>duration</span>)
+          td Calendar transition to next month for specified `duration` in ms
         tr
-          td calendar.prevMonth(duration)
-          td Calendar transition to previous month for specified duration in ms
+          td calendar.prevMonth(<span>duration</span>)
+          td Calendar transition to previous month for specified `duration` in ms
         tr
           td calendar.nextYear()
           td Calendar transition to next year
@@ -511,8 +614,8 @@ block content
           td calendar.prevYear()
           td Calendar transition to previous year
         tr
-          td calendar.setYearMonth(year, month, duration)
-          td Calendar transition to specified year, month for specified duration in ms
+          td calendar.setYearMonth(<span>year</span>, <span>month</span>, <span>duration</span>)
+          td Calendar transition to specified `year`, `month` for specified `duration` in ms
         tr
           td calendar.open()
           td Open Calendar
@@ -564,8 +667,8 @@ block content
           td Calendar Element<span>&lt;div class="calendar"&gt;</span>
           td Event will be triggered after Calendar completes its closing animation
     h3 App and Calendar Instance Events
-    p Calendar instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>calendar</code>.
-    table.events-table
+    p Calendar instance emits events on both self instance and app instance. App instance events has same names prefixed with `calendar`.
+    table.events-table.double-events-table
       thead
         tr
           th Event
@@ -671,12 +774,13 @@ block content
         tr
           td calendarBeforeDestroy
           td app
+
+    +cssVars('calendar')
+
     .with-device
-      h2(data-device-preview="../docs-demos/calendar.html") Examples
+      h2(data-device-preview="../docs-demos/core/calendar.html") Examples
       h4 Default Setup
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">Default setup</div>
             <div class="list no-hairlines-md">
               <ul>
@@ -691,18 +795,14 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var calendarDefault = app.calendar.create({
               inputEl: '#demo-calendar-default',
             });
 
 
       h4 Custom Date Format
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">Custom date format</div>
             <div class="list no-hairlines-md">
               <ul>
@@ -717,19 +817,36 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var calendarDateFormat = app.calendar.create({
               inputEl: '#demo-calendar-date-format',
-              dateFormat: 'DD, MM dd, yyyy'
+              dateFormat: { weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' },
             });
 
-
+      h4 Date + Time
+      :code(lang="html")
+        <div class="block-title">Date + Time</div>
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Select date and time" readonly="readonly" id="demo-calendar-date-time"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      :code(lang="js")
+        var calendarDateTime = app.calendar.create({
+          inputEl: '#demo-calendar-date-time',
+          timePicker: true,
+          dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' },
+        });
       h4 Multiple Values
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">Multiple Values</div>
             <div class="list no-hairlines-md">
               <ul>
@@ -745,19 +862,15 @@ block content
               </ul>
             </div>
 
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var calendarMultiple = app.calendar.create({
               inputEl: '#demo-calendar-multiple',
-              dateFormat: 'M dd yyyy',
+              dateFormat: { month: 'short', day: 'numeric' },
               multiple: true
             });
 
       h4 Range Picker
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">Range Picker</div>
             <div class="list no-hairlines-md">
               <ul>
@@ -772,19 +885,14 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var calendarRange = app.calendar.create({
               inputEl: '#demo-calendar-range',
-              dateFormat: 'M dd yyyy',
               rangePicker: true
             });
       h4 Open In Modal
-      pre
-        code.html
-          :code
-            <div class="block-title">Open in Mondal</div>
+      :code(lang="html")
+            <div class="block-title">Open in Modal</div>
             <div class="list no-hairlines-md">
               <ul>
                 <li>
@@ -799,21 +907,16 @@ block content
               </ul>
             </div>
 
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var calendarModal = app.calendar.create({
               inputEl: '#demo-calendar-modal',
               openIn: 'customModal',
               header: true,
               footer: true,
-              dateFormat: 'MM dd yyyy',
             });
 
       h4 With Events
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">With Events</div>
             <div class="list no-hairlines-md">
               <ul>
@@ -829,24 +932,31 @@ block content
               </ul>
             </div>
 
-      pre
-        code.js
-          :code
-            var today = new Date();
+      :code(lang="js")
+            var now = new Date();
+            var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             var weekLater = new Date().setDate(today.getDate() + 7);
             var calendarEvents = app.calendar.create({
                 inputEl: '#demo-calendar-events',
-                dateFormat: 'M dd yyyy',
-                events: {
-                  from: today,
-                  to: weekLater
-                }
+                events: [
+                  {
+                    from: today,
+                    to: weekLater
+                  },
+                  //- more events this day
+                  {
+                    date: today,
+                    color: '#ff0000'
+                  },
+                  {
+                    date: today,
+                    color: '#00ff00'
+                  },
+                ]
             });
 
       h4 Disabled Dates
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">Disabled Dates</div>
             <div class="list no-hairlines-md">
               <ul>
@@ -862,14 +972,11 @@ block content
               </ul>
             </div>
 
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var today = new Date();
             var weekLater = new Date().setDate(today.getDate() + 7);
             var calendarDisabled = app.calendar.create({
                 inputEl: '#demo-calendar-disabled',
-                dateFormat: 'M dd yyyy',
                 disabled: {
                   from: today,
                   to: weekLater
@@ -878,17 +985,13 @@ block content
 
 
       h4 Inline With Custom Toolbar
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">Inline with custom toolbar</div>
             <div class="block block-strong no-padding">
               <div id="demo-calendar-inline-container"></div>
             </div>
 
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var $$ = Dom7;
             var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August' , 'September' , 'October', 'November', 'December'];
             var calendarInline = app.calendar.create({

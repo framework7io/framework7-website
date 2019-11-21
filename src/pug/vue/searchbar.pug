@@ -5,23 +5,24 @@ block vars
   - var title = 'Searchbar Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Searchbar Vue Component
-    .docs-index
+    ul.docs-index
     p Searchbar Vue component represents Framework7's <a href="../docs/searchbar.html">Searchbar</a> component.
 
     h2 Searchbar Components
     p There are following components included:
     ul
-      li <code><b>f7-searchbar</b></code>
+      li `f7-searchbar`
 
 
     h2 Searchbar Properties
-    p You can pass all parameters in single <code>params</code> property or use separate props for each parameter to specify them via component attributes:
+    p You can pass all parameters in single `params` property or use separate props for each parameter to specify them via component attributes:
     table.params-table
       thead
         tr
@@ -38,10 +39,15 @@ block content
           td true
           td Initializes Searchbar
         tr
+          td value
+          td string<br>number
+          td
+          td Allows to specify Searchbar input's value. Can be usefule when used with `custom-search` enabled
+        tr
           td form
           td boolean
           td true
-          td Main searchbar element will be used as a <code>form</code> tag instead of <code>div</code>
+          td Main searchbar element will be used as a `form` tag instead of `div`
         tr
           td placeholder
           td string
@@ -63,6 +69,16 @@ block content
           td true
           td Enables searchbar input clear button
         tr
+          td expandable
+          td boolean
+          td false
+          td Enables expandable searchbar
+        tr
+          td inline
+          td boolean
+          td false
+          td Enables inline searchbar
+        tr
           td search-container
           td string<br>object
           td
@@ -71,32 +87,42 @@ block content
           td search-in
           td string
           td .item-title
-          td CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like <code>'.item-title, .item-text'</code>
+          td CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like `'.item-title, .item-text'`
         tr
           td search-item
           td string
           td li
-          td CSS selector of single search item. If we do a search in List View, then it must be a single list element <code>li</code>
+          td CSS selector of single search item. If we do a search in List View, then it must be a single list element `li`
+        tr
+          td search-group
+          td string
+          td .list-group
+          td CSS selector of group element. Used when `hide-groups` enabled to hide groups. If we do a search in List View, then it usually a list group.
+        tr
+          td search-group-title
+          td string
+          td .list-group-title, .item-divider
+          td CSS selector of group titles and dividers. Used when `hide-dividers` enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider.
         tr
           td found-el
           td string<br>object
           td .searchbar-found
-          td CSS selector or HTMLElement of searchbar "found" element. If not specified, searchbar will look for <code>.searchbar-found</code> element on page
+          td CSS selector or HTMLElement of searchbar "found" element. If not specified, searchbar will look for `.searchbar-found` element on page
         tr
-          td not-foud-el
+          td not-found-el
           td string<br>object
           td .searchbar-not-found
-          td CSS selector or HTMLElement of searchbar "not-found" element. If not specified, searchbar will look for <code>.searchbar-not-found</code> element on page
+          td CSS selector or HTMLElement of searchbar "not-found" element. If not specified, searchbar will look for `.searchbar-not-found` element on page
         tr
           td backdrop
           td boolean
-          td true
-          td Enables searchbar backdrop element
+          td
+          td Enables searchbar backdrop element. By default, disabled for Aurora theme or for inline searchbar
         tr
           td backdrop-el
           td string<br>object
           td
-          td CSS selector or HTMLElement of searchbar backdrop element. If not passed and  <code>backdrop</code> parameter is true then it will look for <code>.searchbar-backdrop</code> element. In case none found it will create one automatically
+          td CSS selector or HTMLElement of searchbar backdrop element. If not passed and  `backdrop` parameter is true then it will look for `.searchbar-backdrop` element. In case none found it will create one automatically
         tr
           td ignore
           td string
@@ -106,7 +132,7 @@ block content
           td custom-search
           td boolean
           td false
-          td When enabled searchbar will not search through any of list blocks specified by <code>search-container</code> and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
+          td When enabled searchbar will not search through any of list blocks specified by `search-container` and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
         tr
           td remove-diacritics
           td boolean
@@ -206,19 +232,17 @@ block content
     h2 Searchbar Slots
     p Searchbar Vue component has additional slots for custom elements:
     ul
-      li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-inner"&gt;</code> element in the end. Same as <code><b>inner-end</b></code> slot
-      li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="searchbar-inner"&gt;</code> element
-      li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="searchbar-inner"&gt;</code> element
-      li <code><b>inner-start</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-inner"&gt;</code> element in the beginning
-      li <code><b>inner-end</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-inner"&gt;</code> element in the end
-      li <code><b>input-wrap-start</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-input-wrap"&gt;</code> element in the beginning
-      li <code><b>input-wrap-end</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-input-wrap"&gt;</code> element in the end
+      li `default` - element will be inserted as a child of `<div class="searchbar-inner">` element in the end. Same as `inner-end` slot
+      li `before-inner` - element will be inserted right before `<div class="searchbar-inner">` element
+      li `after-inner` - element will be inserted right after `<div class="searchbar-inner">` element
+      li `inner-start` - element will be inserted as a child of `<div class="searchbar-inner">` element in the beginning
+      li `inner-end` - element will be inserted as a child of `<div class="searchbar-inner">` element in the end
+      li `input-wrap-start` - element will be inserted as a child of `<div class="searchbar-input-wrap">` element in the beginning
+      li `input-wrap-end` - element will be inserted as a child of `<div class="searchbar-input-wrap">` element in the end
     h4 Without Slots:
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <f7-searchbar
-            disable-link-text="Cancel"
+            disable-button-text="Cancel"
             placeholder="Search in items"
             :clear-button="true"
           ></f7-searchbar>
@@ -236,11 +260,9 @@ block content
             </div>
           </form>
     h4 With Slots:
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <f7-searchbar
-            disable-link-text="Cancel"
+            disable-button-text="Cancel"
             placeholder="Search in items"
             :clear-button="true"
           >
@@ -272,65 +294,127 @@ block content
           </form>
 
     h2 Access To Searchbar Instance
-    p If you use automatic initalization to init Searchbar (with <code>init:true</code> prop) and need to use Searchbar API you can access its initialized instance by accessing <code><b>.f7Searchbar</b></code> component's property.
+    p If you use automatic initalization to init Searchbar (with `init:true` prop) and need to use Searchbar API you can access its initialized instance by accessing `.f7Searchbar` component's property.
 
-    h2 Examples
-    p Here is how it can be used in Vue component with initialization
-    pre
-      code.html
-        :code
-          <template>
+    .with-device
+      h2 Examples
+      h4(data-device-preview="../docs-demos/vue/searchbar.html") Usual Searchbar
+      :code
             <f7-page>
-
-              <!-- Searchbar -->
-              <f7-searchbar
-                disable-link-text="Cancel"
-                search-container="#search-list"
-                placeholder="Search in items"
-                :clear-button="true"
-                @searchbar:search="onSearch"
-                @searchbar:enable="onEnable"
-                @searchbar:disable="onDisable"
-                @searchbar:clear="onClear"
-              ></f7-searchbar>
-
-              <!-- Will be visible if there is no any results found, defined by "searchbar-not-found" class -->
+              <f7-navbar title="Searchbar">
+                <f7-subnavbar :inner="false">
+                  <f7-searchbar
+                    search-container=".search-list"
+                    search-in=".item-title"
+                    :disable-button="!$theme.aurora"
+                  ></f7-searchbar>
+                </f7-subnavbar>
+              </f7-navbar>
               <f7-list class="searchbar-not-found">
                 <f7-list-item title="Nothing found"></f7-list-item>
               </f7-list>
-
-              <!-- Search through this list -->
-              <f7-list class="searchbar-found" id="search-list">
-                <f7-list-item v-for="item in items" :title="'Item ' + item"></f7-list-item>
+              <f7-list class="search-list searchbar-found">
+                <f7-list-item title="Acura"></f7-list-item>
+                <f7-list-item title="Audi"></f7-list-item>
+                <f7-list-item title="BMW"></f7-list-item>
+                <f7-list-item title="Cadillac "></f7-list-item>
+                <f7-list-item title="Chevrolet "></f7-list-item>
+                <f7-list-item title="Chrysler "></f7-list-item>
+                <f7-list-item title="Dodge "></f7-list-item>
+                <f7-list-item title="Ferrari "></f7-list-item>
+                <f7-list-item title="Ford "></f7-list-item>
+                <f7-list-item title="GMC "></f7-list-item>
+                <f7-list-item title="Honda"></f7-list-item>
+                <f7-list-item title="Hummer"></f7-list-item>
+                <f7-list-item title="Hyundai"></f7-list-item>
+                <f7-list-item title="Infiniti "></f7-list-item>
+                <f7-list-item title="Isuzu "></f7-list-item>
+                <f7-list-item title="Jaguar "></f7-list-item>
+                <f7-list-item title="Jeep "></f7-list-item>
+                <f7-list-item title="Kia"></f7-list-item>
+                <f7-list-item title="Lamborghini "></f7-list-item>
+                <f7-list-item title="Land Rover"></f7-list-item>
+                <f7-list-item title="Lexus "></f7-list-item>
+                <f7-list-item title="Lincoln "></f7-list-item>
+                <f7-list-item title="Lotus "></f7-list-item>
+                <f7-list-item title="Mazda"></f7-list-item>
+                <f7-list-item title="Mercedes-Benz"></f7-list-item>
+                <f7-list-item title="Mercury "></f7-list-item>
+                <f7-list-item title="Mitsubishi"></f7-list-item>
+                <f7-list-item title="Nissan "></f7-list-item>
+                <f7-list-item title="Oldsmobile "></f7-list-item>
+                <f7-list-item title="Peugeot "></f7-list-item>
+                <f7-list-item title="Pontiac "></f7-list-item>
+                <f7-list-item title="Porsche"></f7-list-item>
+                <f7-list-item title="Regal"></f7-list-item>
+                <f7-list-item title="Saab "></f7-list-item>
+                <f7-list-item title="Saturn "></f7-list-item>
+                <f7-list-item title="Subaru "></f7-list-item>
+                <f7-list-item title="Suzuki "></f7-list-item>
+                <f7-list-item title="Toyota"></f7-list-item>
+                <f7-list-item title="Volkswagen"></f7-list-item>
+                <f7-list-item title="Volvo"></f7-list-item>
               </f7-list>
-
             </f7-page>
-          </template>
 
-          <script>
-            export default {
-              data: function () {
-                return {
-                  items: (function () {
-                    var it = [];
-                    for (var i = 0; i < 100; i++) it.push(i+1);
-                    return it;
-                  })()
-                }
-              },
-              methods: {
-                onSearch: function (searchbar, query, previousQuery) {
-                  console.log('search', query);
-                },
-                onClear: function (event) {
-                  console.log('clear');
-                },
-                onEnable: function (event) {
-                  console.log('enable');
-                },
-                onDisable: function (event) {
-                  console.log('disable');
-                },
-              }
-            }
-          </script>
+      h4(data-device-preview="../docs-demos/vue/searchbar-expandable.html") Expandable Searchbar
+      :code
+            <f7-page>
+              <f7-navbar title="Searchbar">
+                <f7-nav-right>
+                  <f7-link class="searchbar-enable" data-searchbar=".searchbar-demo" icon-ios="f7:search" icon-aurora="f7:search" icon-md="material:search"></f7-link>
+                </f7-nav-right>
+                <f7-searchbar
+                  class="searchbar-demo"
+                  expandable
+                  search-container=".search-list"
+                  search-in=".item-title"
+                  :disable-button="!$theme.aurora"
+                ></f7-searchbar>
+              </f7-navbar>
+              <f7-list class="searchbar-not-found">
+                <f7-list-item title="Nothing found"></f7-list-item>
+              </f7-list>
+              <f7-list class="search-list searchbar-found">
+                <f7-list-item title="Acura"></f7-list-item>
+                <f7-list-item title="Audi"></f7-list-item>
+                <f7-list-item title="BMW"></f7-list-item>
+                <f7-list-item title="Cadillac "></f7-list-item>
+                <f7-list-item title="Chevrolet "></f7-list-item>
+                <f7-list-item title="Chrysler "></f7-list-item>
+                <f7-list-item title="Dodge "></f7-list-item>
+                <f7-list-item title="Ferrari "></f7-list-item>
+                <f7-list-item title="Ford "></f7-list-item>
+                <f7-list-item title="GMC "></f7-list-item>
+                <f7-list-item title="Honda"></f7-list-item>
+                <f7-list-item title="Hummer"></f7-list-item>
+                <f7-list-item title="Hyundai"></f7-list-item>
+                <f7-list-item title="Infiniti "></f7-list-item>
+                <f7-list-item title="Isuzu "></f7-list-item>
+                <f7-list-item title="Jaguar "></f7-list-item>
+                <f7-list-item title="Jeep "></f7-list-item>
+                <f7-list-item title="Kia"></f7-list-item>
+                <f7-list-item title="Lamborghini "></f7-list-item>
+                <f7-list-item title="Land Rover"></f7-list-item>
+                <f7-list-item title="Lexus "></f7-list-item>
+                <f7-list-item title="Lincoln "></f7-list-item>
+                <f7-list-item title="Lotus "></f7-list-item>
+                <f7-list-item title="Mazda"></f7-list-item>
+                <f7-list-item title="Mercedes-Benz"></f7-list-item>
+                <f7-list-item title="Mercury "></f7-list-item>
+                <f7-list-item title="Mitsubishi"></f7-list-item>
+                <f7-list-item title="Nissan "></f7-list-item>
+                <f7-list-item title="Oldsmobile "></f7-list-item>
+                <f7-list-item title="Peugeot "></f7-list-item>
+                <f7-list-item title="Pontiac "></f7-list-item>
+                <f7-list-item title="Porsche"></f7-list-item>
+                <f7-list-item title="Regal"></f7-list-item>
+                <f7-list-item title="Saab "></f7-list-item>
+                <f7-list-item title="Saturn "></f7-list-item>
+                <f7-list-item title="Subaru "></f7-list-item>
+                <f7-list-item title="Suzuki "></f7-list-item>
+                <f7-list-item title="Toyota"></f7-list-item>
+                <f7-list-item title="Volkswagen"></f7-list-item>
+                <f7-list-item title="Volvo"></f7-list-item>
+              </f7-list>
+            </f7-page>

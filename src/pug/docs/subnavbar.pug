@@ -11,16 +11,15 @@ block content
   .docs-content
     +improveDocsLink
     h1 Subnavbar
-    .docs-index
+    ul.docs-index
     p Subnavbar is useful when you need to put any additional elements into Navbar, like Tab Links or Searchbar. It also remains visible when Navbar hidden
     h2 Subnavbar Layout
     h4 In Navbar
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <div class="page page-with-subnavbar">
             <!-- Navbar -->
             <div class="navbar">
+              <div class="navbar-bg"></div>
               <div class="navbar-inner sliding">
                 <div class="left">...</div>
                 <div class="title">...</div>
@@ -46,15 +45,14 @@ block content
           </div>
     p Along with "left", "right" and "title" elements, "subnavbar" also supports "sliding" class for sliding transition when used with Dynamic Navbar.
     .important-note
-      p Note that page that contains Subnavbar must have additional <code><b>page-with-subnavbar</b></code> class which adds additional top padding required for subnavbar
+      p Note that page that contains Subnavbar must have additional `page-with-subnavbar` class which adds additional top padding required for subnavbar
     h4 In Page
-    p It is also possible to put it as a direct child of <code>page</code> right after Navbar:
-    pre
-      code.html
-        :code
+    p It is also possible to put it as a direct child of `page` right after Navbar:
+    :code(lang="html")
           <div class="page page-with-subnavbar">
             <!-- Navbar -->
             <div class="navbar">
+              <div class="navbar-bg"></div>
               <div class="navbar-inner">
                 <div class="left">...</div>
                 <div class="title">...</div>
@@ -78,13 +76,12 @@ block content
             </div>
           </div>
     h4 In Page Content
-    p It is also possible to put it as a direct child of <code>page-content</code>. In this case it will be static and scroll with the page content:
-    pre
-      code.html
-        :code
+    p It is also possible to put it as a direct child of `page-content`. In this case it will be static and scroll with the page content:
+    :code(lang="html")
           <div class="page page-with-subnavbar">
             <!-- Navbar -->
             <div class="navbar">
+              <div class="navbar-bg"></div>
               <div class="navbar-inner">
                 <div class="left">...</div>
                 <div class="title">...</div>
@@ -108,13 +105,27 @@ block content
               ...
             </div>
           </div>
+
+    h4 With Title
+    p We can alos use special `subnavbar-title` element to use Subnavbar to display larget title:
+    :code(lang="html")
+      ...
+      <div class="subnavbar">
+        <div class="subnavbar-inner">
+          <!-- Subnavbar title -->
+          <div class="subnavbar-title">Title</div>
+        </div>
+      </div>
+      ...
+
+    +cssVars('subnavbar')
+
     .with-device
-      h2(data-device-preview="../docs-demos/subnavbar.html") Example
-      pre
-        code.html
-          :code
+      h2(data-device-preview="../docs-demos/core/subnavbar.html") Example
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
+                <div class="navbar-bg"></div>
                 <div class="navbar-inner">
                   <div class="left"></div>
                   <div class="title">Sub Navbar</div>

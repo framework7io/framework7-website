@@ -11,13 +11,11 @@ block content
   .docs-content
     +improveDocsLink
     h1 Range Slider
-    .docs-index
+    ul.docs-index
     h2 Range Slider Layout
     h3 Single Range
     p Single range slider layout is pretty simple:
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <!-- Range Slider element -->
           <div class="range-slider">
             <!-- range input -->
@@ -25,16 +23,12 @@ block content
           </div>
     h3 Dual Range
     p Dual range slider is more simpler as it doesn't require input element because input:range doesn't support dual range:
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <!-- Range Slider element -->
           <div class="range-slider"></div>
     h2 Range Slider Colors
     p Range Slider supports all <a href="color-themes.html">default colors</a>. So to change its color just add color-[color] class to range slider element.
-    pre
-      code.html
-        :code
+    :code(lang="html")
           <!-- red range -->
           <div class="range-slider color-red">...</div>
 
@@ -109,7 +103,7 @@ block content
           td inputEl
           td HTMLElement<br>string
           td
-          td Range Slider input element or CSS selector of input element. If not specified, will try to look for <code>input type="range"</code> inside of range slider element
+          td Range Slider input element or CSS selector of input element. If not specified, will try to look for `input type="range"` inside of range slider element
         tr
           td dual
           td boolean
@@ -125,6 +119,11 @@ block content
           td boolean
           td false
           td Enables additional label around range slider knob
+        tr
+          td formatLabel
+          td function(<span>value</span>)
+          td
+          td Method must return formatted range knob label text. As an argument it receives label value
         tr
           td min
           td number
@@ -146,15 +145,49 @@ block content
           td true
           td When enabled it is also possible to interact with range slider (change value) on range bar click and swipe.
         tr
+          td vertical
+          td boolean
+          td false
+          td Enables vertical range slider
+        tr
+          td verticalReversed
+          td boolean
+          td false
+          td Makes vertical range slider reversed (`vertical` must be also enabled)
+        tr
+          td scale
+          td boolean
+          td false
+          td Enables range slider scale
+        tr
+          td scaleSteps
+          td number
+          td 5
+          td Number of scale steps
+        tr
+          td scaleSubSteps
+          td number
+          td 0
+          td Number of scale sub steps (each step will be divided by this value)
+        tr
+          td formatScaleLabel
+          td function (<span>value</span>)
+          td
+          td Method must return formatted scale value. As an argument it receives currect scale step value. This method will be called as for each scale step.
+        tr
+          td limitKnobPosition
+          td boolean
+          td
+          td Limits knob position to the size of the range bar. By default enabled from iOS theme
+        tr
           td on
           td object
           td
-          td Object with events handlers. For example:
-            pre
-              code
-                :code
+          td
+            p Object with events handlers. For example:
+            :code(lang="js")
                   var range = app.range.create({
-                    el: '.range-slider'
+                    el: '.range-slider',
                     on: {
                       change: function () {
                         console.log('Range Slider value changed')
@@ -164,11 +197,9 @@ block content
 
     h2 Range Slider Methods & Properties
     p So to create Range Slider we have to call:
-    pre
-      code
-        :code
+    :code(lang="js")
           var range = app.range.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>range</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `range` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -193,7 +224,7 @@ block content
           td Range slider width (in px)
         tr
           td range.dual
-          td Boolean proprty indication whether it is dual or not
+          td Boolean property indicating whether it is dual or not
         tr
           td range.min
           td Range min value
@@ -203,6 +234,18 @@ block content
         tr
           td range.value
           td Range value
+        tr
+          td range.scale
+          td Boolean property indicating whether `scale` is enabled or not
+        tr
+          td range.scaleSteps
+          td Number of scale steps
+        tr
+          td range.scaleSubSteps
+          td Number of scale sub steps
+        tr
+          td range.$scaleEl
+          td Dom7 instance with generated scale HTML element
         tr
           td range.knobs
           td Array where each element represents HTMLElement of created range knob (2 knobs in case of dual slider)
@@ -220,6 +263,9 @@ block content
         tr
           td range.setValue(<span>value</span>)
           td Set new range slider value
+        tr
+          td range.updateScale()
+          td Re-calculate and re-render slider scale
         tr
           td range.destroy()
           td Destroys range slider instance
@@ -254,12 +300,16 @@ block content
           td Range Slider Element<span>&lt;div class="range-slider"&gt;</span>
           td Event will be triggered when Range Slider value has been changed
         tr
+          td range:changed
+          td Range Slider Element<span>&lt;div class="range-slider"&gt;</span>
+          td Event will be triggered on slider knob release after value change
+        tr
           td range:beforedestroy
           td Range Slider Element<span>&lt;div class="range-slider"&gt;</span>
           td Event will be triggered right before Range Slider instance will be destroyed
     h3 App and Range Slider Instance Events
-    p Range Slider instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>range</code>.
-    table.events-table
+    p Range Slider instance emits events on both self instance and app instance. App instance events has same names prefixed with `range`.
+    table.events-table.double-events-table
       thead
         tr
           th Event
@@ -269,35 +319,40 @@ block content
       tbody
         tr
           td change
-          td <span>range</span>
+          td <span>(range, value)</span>
           td range
           td(rowspan="2") Event will be triggered when range value has been changed. As an argument event handler receives range instance
         tr
           td rangeChange
-          td <span>range</span>
+          td <span>(range, value)</span>
           td app
         tr
-          td rangeDestroy
-          td <span>range</span>
+          td changed
+          td <span>(range, value)</span>
+          td range
+          td(rowspan="2") Event will be triggered on slider knob release after value change. As an argument event handler receives range instance
+        tr
+          td rangeChanged
+          td <span>(range, value)</span>
+          td app
+        tr
+          td beforeDestroy
+          td <span>(range)</span>
           td range
           td(rowspan="2") Event will be triggered right before Range Slider instance will be destroyed. As an argument event handler receives range instance
         tr
           td rangeBeforeDestroy
-          td <span>range</span>
+          td <span>(range)</span>
           td app
     h2 Range Slider Auto Initialization
-    p If you don't need to use Range Slider API and your Range Slider is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>range-slider-init</code> class:
-    pre
-      code.html
-        :code
+    p If you don't need to use Range Slider API and your Range Slider is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional `range-slider-init` class:
+    :code(lang="html")
           <!-- Add range-slider-init class -->
           <div class="range-slider range-slider-init">
             <input type="range" min="0" max="100" step="1" value="10">
           </div>
-    p In this case if you need to access created Range Slider instance you can use the <code>app.range.get</code> app method:
-    pre
-      code.js
-        :code
+    p In this case if you need to access created Range Slider instance you can use the `app.range.get` app method:
+    :code(lang="js")
           var range = app.range.get('.range-slider');
 
           if (range.value > 50) {
@@ -306,19 +361,15 @@ block content
     p When using auto init you may need to pass additional parameters. It can be done with two ways:
     ul
       li
-        p In you case you use single-range slider and you have input:range inside, then <code>step</code>, <code>min</code>, <code>max</code>, <code>value</code> parameters can be set from same input attributes:
-        pre
-          code.html
-            :code
+        p In you case you use single-range slider and you have input:range inside, then `step`, `min`, `max`, `value` parameters can be set from same input attributes:
+        :code(lang="html")
               <!-- min, max, step, value parameters will be set for same input attributes -->
               <div class="range-slider range-slider-init">
                 <input type="range" min="0" max="100" step="1" value="10">
               </div>
       li
-        p Otherwise, if you don't have input:range inside or you use dual range input you can set all available parameters via <code>data-</code> attributes on range slider element.
-        pre
-          code.html
-            :code
+        p Otherwise, if you don't have input:range inside or you use dual range input you can set all available parameters via `data-` attributes on range slider element.
+        :code(lang="html")
               <!-- parameters set via data- attributes -->
               <div
                 class="range-slider range-slider-init"
@@ -328,10 +379,8 @@ block content
                 data-label="true"
                 data-value="50"
               ></div>
-        p In case you have dual range slider, then you need to pass to values using <code>data-value-left</code> and <code>data-value-right</code> attributes:
-        pre
-          code.html
-            :code
+        p In case you have dual range slider, then you need to pass to values using `data-value-left` and `data-value-right` attributes:
+        :code(lang="html")
               <!-- parameters set via data- attributes -->
               <div
                 class="range-slider range-slider-init"
@@ -344,17 +393,17 @@ block content
                 data-value-right="60"
               ></div>
 
+    +cssVars('range')
+
     .with-device
-      h2(data-device-preview="../docs-demos/range-slider.html") Examples
-      pre
-        code.html
-          :code
+      h2(data-device-preview="../docs-demos/core/range-slider.html") Examples
+      :code(lang="html")
             <div class="block-title">Volume</div>
             <div class="list simple-list">
               <ul>
                 <li>
                   <div class="item-cell width-auto flex-shrink-0">
-                    <i class="icon f7-icons ios-only">volume_mute_fill</i>
+                    <i class="icon f7-icons if-not-md">speaker_fill</i>
                     <i class="icon material-icons md-only">volume_mute</i>
                   </div>
                   <div class="item-cell flex-shrink-3">
@@ -364,22 +413,20 @@ block content
                     </div>
                   </div>
                   <div class="item-cell width-auto flex-shrink-0">
-                    <i class="icon f7-icons ios-only">volume_fill</i>
+                    <i class="icon f7-icons if-not-md">speaker_3_fill</i>
                     <i class="icon material-icons md-only">volume_up</i>
                   </div>
                 </li>
               </ul>
             </div>
 
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">Brightness</div>
             <div class="list simple-list">
               <ul>
                 <li>
                   <div class="item-cell width-auto flex-shrink-0">
-                    <i class="icon f7-icons ios-only">circle</i>
+                    <i class="icon f7-icons if-not-md">sun_min</i>
                     <i class="icon material-icons md-only">brightness_low</i>
                   </div>
                   <div class="item-cell flex-shrink-3">
@@ -389,21 +436,19 @@ block content
                     </div>
                   </div>
                   <div class="item-cell width-auto flex-shrink-0">
-                    <i class="icon f7-icons ios-only">circle_half</i>
+                    <i class="icon f7-icons if-not-md">sun_max</i>
                     <i class="icon material-icons md-only">brightness_high</i>
                   </div>
                 </li>
               </ul>
             </div>
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title display-flex justify-content-space-between">Price Filter <span class="price-value">$200 - $400</span></div>
             <div class="list simple-list">
               <ul>
                 <li class="item-row">
                   <div class="item-cell width-auto flex-shrink-0">
-                    <i class="icon f7-icons ios-only">money_dollar</i>
+                    <i class="icon f7-icons if-not-md">money_dollar_round</i>
                     <i class="icon material-icons md-only">attach_money</i>
                   </div>
                   <div class="item-cell item-cell-shrink-3">
@@ -421,16 +466,115 @@ block content
                     ></div>
                   </div>
                   <div class="item-cell width-auto flex-shrink-0">
-                    <i class="icon f7-icons ios-only">money_dollar_fill</i>
+                    <i class="icon f7-icons if-not-md">money_dollar_round_fill</i>
                     <i class="icon material-icons md-only">monetization_on</i>
                   </div>
                 </li>
               </ul>
             </div>
+
+            <div class="block-title">With Scale</div>
+            <div class="block block-strong">
+              <div class="range-slider range-slider-init"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="5"
+                data-value="25"
+                data-scale="true"
+                data-scale-steps="5"
+                data-scale-sub-steps="4"
+              ></div>
+            </div>
+            <div class="block-title">Vertical</div>
+            <div class="block block-strong display-flex justify-content-center">
+              <div class="range-slider range-slider-init margin-right"
+                data-vertical="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value="25"
+                style="height: 160px"
+              ></div>
+              <div class="range-slider range-slider-init margin-horizontal"
+                data-vertical="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value="50"
+                style="height: 160px"
+              ></div>
+              <div class="range-slider range-slider-init margin-horizontal"
+                data-vertical="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value="75"
+                style="height: 160px"
+              ></div>
+              <div class="range-slider range-slider-init margin-left"
+                data-dual="true"
+                data-vertical="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value-left="25"
+                data-value-right="75"
+                style="height: 160px"
+              ></div>
+            </div>
+            <div class="block-title">Vertical Reversed</div>
+            <div class="block block-strong display-flex justify-content-center">
+              <div class="range-slider range-slider-init color-red margin-right"
+                data-vertical="true"
+                data-vertical-reversed="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value="25"
+                style="height: 160px"
+              ></div>
+              <div class="range-slider range-slider-init color-red margin-horizontal"
+                data-vertical="true"
+                data-vertical-reversed="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value="50"
+                style="height: 160px"
+              ></div>
+              <div class="range-slider range-slider-init color-red margin-horizontal"
+                data-vertical="true"
+                data-vertical-reversed="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value="75"
+                style="height: 160px"
+              ></div>
+              <div class="range-slider range-slider-init color-red margin-left"
+                data-dual="true"
+                data-vertical="true"
+                data-vertical-reversed="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value-left="25"
+                data-value-right="75"
+                style="height: 160px"
+              ></div>
+            </div>
       p Handle price change:
-      pre
-        code.js
-          :code
-            $$('#price-filter').on('range:change', function (e, range) {
-              $$('.price-value').text('$'+(range.value[0])+' - $'+(range.value[1]));
-            });
+      :code(lang="js")
+        $$('#price-filter').on('range:change', function (e) {
+          var range = app.range.get(e.target);
+          $$('.price-value').text('$'+(range.value[0])+' - $'+(range.value[1]));
+        });

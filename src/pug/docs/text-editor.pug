@@ -1,0 +1,527 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Text Editor | Framework7 Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Text Editor
+    ul.docs-index
+    p Framework7 comes with a touch-friendly Rich Text Editor component. It is based on modern "contenteditable" API so it should work everywhere as is.
+    p It comes with the basic set of formatting features. But its functionality can be easily extended and customized to fit any requirements.
+    h2 Text Editor Layout
+    ```html
+      <div class="text-editor">
+        <div class="text-editor-content" contenteditable></div>
+      </div>
+    ```
+    p To make editor resizable (when its height will fit to its content), we need to add `text-editor-resizable` class to editor element:
+    ```html
+      <!-- additional "text-editor-resizable" class -->
+      <div class="text-editor text-editor-resizable">
+        <div class="text-editor-content" contenteditable></div>
+      </div>
+    ```
+
+    h2 Text Editor App Methods
+    p Let's look at related App methods to work with Text Editor:
+    .method-wrap
+      p
+        span.method app.textEditor.create(<span>parameters</span>)
+        | - create Text Editor instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with Text Editor parameters
+      p.method-returns Method returns created Text Editor instance
+
+    .method-wrap
+      p
+        span.method app.textEditor.destroy(<span>el</span>)
+        | - destroy Text Editor instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Text Editor element or Text Editor instance to destroy.
+    .method-wrap
+      p
+        span.method app.textEditor.get(<span>el</span>)
+        | - get Text Editor instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Text Editor element.
+      p.method-returns Method returns Text Editor's instance
+
+    p For example:
+    :code(lang="js")
+      var textEditor = app.textEditor.create({
+        el: '#my-text-editor',
+        value: `<p>Hello</p>`,
+      });
+
+    h2 Text Editor Parameters
+    p Let's look on list of all available Text Editor parameters:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td el
+          td HTMLElement<br>string
+          td
+          td Text Editor element. HTMLElement or string with CSS selector of editor element
+        tr
+          td value
+          td string
+          td
+          td
+            p Text editor initial html content value. Initial value can also be placed as inner HTML content of `text-editor-content` element, e.g.:
+            ```html
+              <div class="text-editor">
+                <div class="text-editor-content" contenteditable>
+                  <p>Initial HTML value</p>
+                </div>
+              </div>
+            ```
+        tr
+          td placeholder
+          td string
+          td
+          td Editor placeholder content displayed when it is empty. By default it is not specified
+        tr
+          td mode
+          td string
+          td toolbar
+          td
+            p Text editor buttons mode. Can be:
+            ul
+              li `toolbar` - it will add toolbar with editor buttons in text editor container element
+              li `popover` - it will show popover bubble with editor buttons on top of the selected text in editor
+              li `keyboard-toolbar` - toolbar with editor buttons will appear on top of virtual keyboard when editor is in the focus. It is supported only in iOS, Android cordova apps and in Android Chrome. When not supported it will fallback to `popover` mode.
+        tr
+          td buttons
+          td array
+          td
+          td
+            p Array with editor buttons, or array of arrays (groups) with editor buttons. By default all buttons enabled and its default value is:
+            ```js
+              [
+                ['bold', 'italic', 'underline', 'strikeThrough'],
+                ['orderedList', 'unorderedList'],
+                ['link', 'image'],
+                ['paragraph', 'h1', 'h2', 'h3'],
+                ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify'],
+                ['subscript', 'superscript'],
+                ['indent', 'outdent'],
+              ]
+            ```
+        tr
+          td dividers
+          td boolean
+          td true
+          td Adds visual divider between buttons group
+        tr
+          td imageUrlText
+          td string
+          td Insert image URL
+          td Prompt text that appears on image url request
+        tr
+          td linkUrlText
+          td string
+          td Insert link URL
+          td Prompt text that appears on link url request
+        tr
+          td clearFormattingOnPaste
+          td boolean
+          td true
+          td When enabled it will clear any formatting on paste from clipboard
+        tr
+          td customButtons
+          td object
+          td
+          td
+            p Object with custom buttons. Object property key is the button id that should be used in `buttons` to enable it.
+            p For example to specify custom button that will add `<hr>` we can use following declaration:
+            ```js
+              var textEditor = app.textEditor.create({
+                el: '.my-text-editor',
+                customButtons: {
+                  // property key is the button id
+                  hr: {
+                    // button html content
+                    content: '&amp;lt;hr&amp;gt;',
+                    // button click handler
+                    onClick(event, buttonEl) {
+                      document.execCommand('insertHorizontalRule', false);
+                    }
+                  }
+                },
+                // now we use custom button id "hr" to add it to buttons
+                buttons: ['bold', 'italic', 'hr']
+              })
+            ```
+
+        tr
+          td on
+          td object
+          td
+          td
+            p Object with events handlers. For example:
+            :code(lang="js")
+              var textEditor = app.textEditor.create({
+                ...
+                on: {
+                  change: function () {
+                    console.log('Text Editor value changed')
+                  }
+                }
+              })
+    .important-note
+      p Note that all following parameters can be used in global app parameters under `textEditor` property to set defaults for all text editors. For example:
+      :code(lang="js")
+        var app = new Framework7({
+          textEditor: {
+            buttons: ['bold', 'italic'],
+          }
+        });
+
+    h2 Text Editor Methods & Properties
+    p After we initialize Text Editor we have its initialized instance in variable (like `textEditor` variable in examples above) with helpful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td textEditor.app
+          td Link to global app instance
+        tr
+          td textEditor.el
+          td Text Editor container HTML element
+        tr
+          td textEditor.$el
+          td Dom7 instance with Text Editor container HTML element
+        tr
+          td textEditor.contentEl
+          td Text Editor content (`contenteditalbe`) HTML element
+        tr
+          td textEditor.$contentEl
+          td Dom7 instance with Text Editor content (`contenteditalbe`) HTML element
+        tr
+          td textEditor.value
+          td HTML value of the Text Editor
+        tr
+          td textEditor.params
+          td Object with initialization parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td textEditor.setValue(<span>value</span>)
+          td Set new Text Editor value. `value` is the HTML string.
+        tr
+          td textEditor.getValue()
+          td Returns current Text Editor value
+        tr
+          td textEditor.getSelectionRange()
+          td Returns current selection Range
+        tr
+          td textEditor.setSelectionRange(<span>range</span>)
+          td Set selection based on passed Range
+        tr
+          td textEditor.destroy()
+          td Destroy Text Editor instance and remove all events
+        tr
+          td textEditor.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td textEditor.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td textEditor.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td textEditor.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td textEditor.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+    h2 Text Editor Events
+    p Text Editor will fire the following DOM events on text editor element and events on app andtext editor instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          td texteditor:change
+          td Event will be triggered when editor value has been changed
+        tr
+          td texteditor:input
+          td Event will be triggered on editor's content "input" event
+        tr
+          td texteditor:focus
+          td Event will be triggered on editor's content focus
+        tr
+          td texteditor:blur
+          td Event will be triggered on editor's content blur
+        tr
+          td texteditor:buttonclick
+          td Event will be triggered on editor button click
+
+        tr
+          td texteditor:keyboardopen
+          td Event will be triggered when editor keyboard toolbar appears
+
+        tr
+          td texteditor:keyboardclose
+          td Event will be triggered when editor keyboard toolbar disappears
+
+        tr
+          td texteditor:popoveropen
+          td Event will be triggered on editor popover open
+
+        tr
+          td texteditor:popoverclose
+          td Event will be triggered on editor popover close
+        tr
+          td texteditor:beforedestroy
+          td Event will be triggered right before Text Editor instance will be destroyed
+    h3 App and Text Editor Instance Events
+    p Text Editor instance emits events on both self instance and app instance. App instance events has same names prefixed with `textEditor`.
+    table.events-table.double-events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Arguments
+          th Description
+      tbody
+        tr
+          td change
+          td textEditor
+          td(rowspan="2")
+            span (editor, value)
+          td(rowspan="2") Event will be triggered when editor value has been changed.
+        tr
+          td textEditorChange
+          td app
+        tr
+          td input
+          td textEditor
+          td(rowspan="2")
+            span (editor)
+          td(rowspan="2") Event will be triggered on editor's content "input" event.
+        tr
+          td textEditorInput
+          td app
+        tr
+          td focus
+          td textEditor
+          td(rowspan="2")
+            span (editor)
+          td(rowspan="2") Event will be triggered on editor's content focus.
+        tr
+          td textEditorFocus
+          td app
+        tr
+          td blur
+          td textEditor
+          td(rowspan="2")
+            span (editor)
+          td(rowspan="2") Event will be triggered on editor's content blur.
+        tr
+          td textEditorBlur
+          td app
+        tr
+          td buttonClick
+          td textEditor
+          td(rowspan="2")
+            span (editor, button)
+          td(rowspan="2") Event will be triggered on editor button click.<br>As second argument event handler receives id of the clicked button, e.g. `bold`
+        tr
+          td textEditorButtonClick
+          td app
+        tr
+          td keyboardOpen
+          td textEditor
+          td(rowspan="2")
+            span (editor)
+          td(rowspan="2") Event will be triggered when editor keyboard toolbar appears.
+        tr
+          td textEditorKeyboardOpen
+          td app
+        tr
+          td keyboardClose
+          td textEditor
+          td(rowspan="2")
+            span (editor)
+          td(rowspan="2") Event will be triggered when editor keyboard toolbar disappears.
+        tr
+          td textEditorKeyboardClose
+          td app
+        tr
+          td popoverOpen
+          td textEditor
+          td(rowspan="2")
+            span (editor)
+          td(rowspan="2") Event will be triggered on editor popover open.
+        tr
+          td textEditorPopoverOpen
+          td app
+        tr
+          td popoverClose
+          td textEditor
+          td(rowspan="2")
+            span (editor)
+          td(rowspan="2") Event will be triggered on editor popover close.
+        tr
+          td textEditorPopoverClose
+          td app
+        tr
+          td beforeDestroy
+          td textEditor
+          td(rowspan="2")
+            span (editor)
+          td(rowspan="2") Event will be triggered right before Text Editor instance will be destroyed.
+        tr
+          td textEditorBeforeDestroy
+          td app
+
+    h2 Text Editor Auto Initialization
+    p If you don't need to use Text Editor API and your Text Editor is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional `text-editor-init` class:
+    :code(lang="html")
+      <!-- Add text-editor-init class -->
+      <div class="text-editor text-editor-init">
+        <div class="text-editor-content" contenteditable></div>
+      </div>
+    p In this case if you need to access created Text Editor instance you can use the `app.textEditor.get` app method:
+    :code(lang="js")
+      var textEditor = app.textEditor.get('.my-text-editor');
+
+      if (!textEditor.value) {
+        // do something
+      }
+    p When using auto init you may need to pass additional parameters. It can be done with `data-` attributes on panel element.
+    :code(lang="html")
+      <!-- parameters set via data- attributes -->
+      <div
+        class="text-editor text-editor-init"
+        data-mode="popover"
+        data-placeholder="Description"
+      >
+        ...
+      </div>
+    .important-note
+      p Parameters used in camelCase, for example <b>imageUrlText</b>, in data- attributes should be used in kebab-case as <b>data-image-url-text</b>
+
+    +cssVars('text-editor')
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/text-editor.html") Examples
+
+      h4 Default Setup
+      :code(lang="html")
+        <div class="text-editor text-editor-init">
+          <div class="text-editor-content" contenteditable></div>
+        </div>
+
+      h4 With Placeholder
+      :code(lang="html")
+        <div class="text-editor text-editor-init" data-placeholder="Enter text...">
+          <div class="text-editor-content" contenteditable></div>
+        </div>
+
+      h4 With Default Value
+      :code(lang="html")
+        <div class="text-editor text-editor-init" data-placeholder="Enter text...">
+          <div class="text-editor-content" contenteditable>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consequatur sunt, ...</p>
+          </div>
+        </div>
+
+      h4 Specific Buttons
+      :code(lang="html")
+        <div class="text-editor text-editor-init" data-placeholder="Enter text..." data-buttons='[["bold", "italic", "underline", "strikeThrough"], ["orderedList", "unorderedList"]]'>
+          <div class="text-editor-content" contenteditable></div>
+        </div>
+
+      h4 Custom Button
+      :code(lang="html")
+        <div class="text-editor text-editor-custom-buttons">
+          <div class="text-editor-content" contenteditable></div>
+        </div>
+      :code(lang="js")
+        var textEditorCustomButtons = app.textEditor.create({
+          el: '.text-editor-custom-buttons',
+          // define custom "hr" button
+          customButtons: {
+            hr: {
+              content: '&amp;lt;hr&amp;gt;',
+              onClick(editor, buttonEl) {
+                document.execCommand('insertHorizontalRule', false);
+              },
+            },
+          },
+          buttons: [["bold", "italic", "underline", "strikeThrough"], "hr"],
+        });
+
+      h4 Resizable
+      :code(lang="html")
+        <div class="text-editor text-editor-init text-editor-resizable" data-placeholder="Enter text..." data-buttons='["bold", "italic", "underline", "strikeThrough"]'>
+          <div class="text-editor-content" contenteditable></div>
+        </div>
+
+      h4 Popover Mode
+      :code(lang="html")
+        <div class="text-editor text-editor-init" data-placeholder="Enter text..." data-buttons='["bold", "italic", "underline", "strikeThrough"]' data-mode="popover" style="--f7-text-editor-height: 150px">
+          <div class="text-editor-content" contenteditable></div>
+        </div>
+
+      h4 Keyboard Toolbar Mode
+      :code(lang="html")
+        <div class="text-editor text-editor-init" data-placeholder="Enter text..." data-mode="keyboard-toolbar" style="--f7-text-editor-height: 150px">
+          <div class="text-editor-content" contenteditable></div>
+        </div>
+
+      h4 As List Input
+      :code(lang="html")
+        <div class="list">
+          <ul>
+            <li class="item-content item-input">
+              <div class="item-media">
+                <i class="icon demo-list-icon"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title item-label">Name</div>
+                <div class="item-input-wrap">
+                  <input type="text" placeholder="Your name">
+                </div>
+              </div>
+            </li>
+            <li class="item-content item-input">
+              <div class="item-media">
+                <i class="icon demo-list-icon"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title item-label">About</div>
+                <div class="item-input-wrap">
+                  <div class="text-editor text-editor-init text-editor-resizable" data-placeholder="About" data-buttons='["bold", "italic", "underline", "strikeThrough"]' data-mode="popover">
+                    <div class="text-editor-content" contenteditable></div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+

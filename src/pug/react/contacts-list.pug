@@ -1,175 +1,78 @@
-extends ../src/pug/_docs-template
+extends ../_docs-template
 
 block vars
   - var activeLink = 'react';
   - var title = 'Contacts List React Component | Framework7 React Documentation';
 
 block content
+  include ../_docs-demo-device
 
-    .docs-nav
-      include ./_docs-react-menu
-    .docs-content
-      h1 Contacts List React Component
-      p Contacts List is not a separate component, but just a particular case of using <a href="list.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.
-      h2 Usage example
-      p Here is the full contacts list page example:
-      pre
-        code
-          :code
-            const contacts = {
-              'A': [
-              'Aaron',
-              'Abbie',
-              'Adam',
-              'Adele',
-              'Agatha',
-              'Agnes',
-              'Albert',
-              'Alexander'
-              ],
-              'B': [
-              'Bailey',
-              'Barclay',
-              'Bartolo',
-              'Bellamy',
-              'Belle',
-              'Benjamin'
-              ],
-              'C': [
-              'Caiden',
-              'Calvin',
-              'Candy',
-              'Carl',
-              'Cherilyn',
-              'Chester',
-              'Chloe'
-              ],
-              'V': [
-              'Vladimir'
-              ]
-            };
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Contacts List React Component
+    ul.docs-index
+    p Contacts List is not a separate component, but just a particular case of using <a href="list-view.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.
 
-            const ContactsList = () => (
+    h2 Contacts List Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;List&gt; properties
+        tr
+          td contactsList
+          td boolean
+          td false
+          td Adds required additional styles for Contacts List
+
+    .with-device
+      h2(data-device-preview="../docs-demos/react/contacts-list.html") Examples
+      :code(lang="jsx")
+            export default () => (
               <Page>
-                <Navbar backLink="Back" title="Contacts" sliding></Navbar>
-
-                <List contacts>
-                  {Object.keys(contacts).reduce((listGroups, nextGroupName) => {
-                    return [
-                      ...listGroups,
-                      <ListGroup key={nextGroupName}>
-                        <ListItem title={nextGroupName} groupTitle />
-                        {contacts[nextGroupName].map(contactName => {
-                          return <ListItem key={contactName} title={contactName} />;
-                        })}
-                      </ListGroup>
-                    ];
-                  }, [])}
+                <Navbar title="Contacts List"></Navbar>
+                <List contactsList>
+                  <ListGroup>
+                    <ListItem title="A" groupTitle></ListItem>
+                    <ListItem title="Aaron "></ListItem>
+                    <ListItem title="Abbie"></ListItem>
+                    <ListItem title="Adam"></ListItem>
+                    <ListItem title="Adele"></ListItem>
+                    <ListItem title="Agatha"></ListItem>
+                    <ListItem title="Agnes"></ListItem>
+                    <ListItem title="Albert"></ListItem>
+                    <ListItem title="Alexander"></ListItem>
+                  </ListGroup>
+                  <ListGroup>
+                    <ListItem title="B" groupTitle></ListItem>
+                    <ListItem title="Bailey"></ListItem>
+                    <ListItem title="Barclay"></ListItem>
+                    <ListItem title="Bartolo"></ListItem>
+                    <ListItem title="Bellamy"></ListItem>
+                    <ListItem title="Belle"></ListItem>
+                    <ListItem title="Benjamin"></ListItem>
+                  </ListGroup>
+                  <ListGroup>
+                    <ListItem title="C" groupTitle></ListItem>
+                    <ListItem title="Caiden"></ListItem>
+                    <ListItem title="Calvin"></ListItem>
+                    <ListItem title="Candy"></ListItem>
+                    <ListItem title="Carl"></ListItem>
+                    <ListItem title="Cherilyn"></ListItem>
+                    <ListItem title="Chester"></ListItem>
+                    <ListItem title="Chloe"></ListItem>
+                  </ListGroup>
+                  <ListGroup>
+                    <ListItem title="V" groupTitle></ListItem>
+                    <ListItem title="Vladimir"></ListItem>
+                  </ListGroup>
                 </List>
               </Page>
             );
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="page">
-              <div class="navbar">
-                <div class="navbar-inner">
-                  <div class="left sliding">
-                    <a href="#" class="back link">Back</a>
-                  </div>
-                  <div class="center sliding">Contacts</div>
-                </div>
-              </div>
-              <div class="page-content">
-                <div class="list-block contacts-block">
-                  <div class="list-block-group">
-                    <ul>
-                      <li class="list-group-title">
-                        <span>A</span>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Aaron</div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Abbie</div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Adam</div>
-                          </div>
-                        </div>
-                      </li>
-                      ...
-                    </ul>
-                  </div>
-                  <div class="list-block-group">
-                    <ul>
-                      <li class="list-group-title">
-                        <span>B</span>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Bailey</div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Barclay</div>
-                          </div>
-                        </div>
-                      </li>
-                      ...
-                    </ul>
-                  </div>
-                  <div class="list-block-group">
-                    <ul>
-                      <li class="list-group-title">
-                        <span>C</span>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Caiden</div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Calvin</div>
-                          </div>
-                        </div>
-                      </li>
-                      ...
-                    </ul>
-                  </div>
-                  <div class="list-block-group">
-                    <ul>
-                      <li class="list-group-title">
-                        <span>V</span>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Vladimir</div>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>

@@ -30,25 +30,20 @@ mixin vueLinkIconProps
     td
     td Name of Material Icons font icon
   tr
-    td icon-fa
+    td icon-ios
     td string
     td
-    td Name of Font Awesome font icon
+    td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code>
   tr
-    td icon-ion
+    td icon-md
     td string
     td
-    td Name of Ionicons font icon
+    td Icon to be used in case of MD theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code>
   tr
-    td icon-if-ios
+    td icon-aurora
     td string
     td
-    td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>ion:home</code>
-  tr
-    td icon-if-md
-    td string
-    td
-    td Icon to be used in case of MD theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
+    td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code>
 mixin vueLinkRouterProps
   tr
     td href
@@ -56,10 +51,15 @@ mixin vueLinkRouterProps
     td #
     td URL of the page to load. In case of boolean <code>href="false"</code> it won't add <code>href</code> tag
   tr
+    td target
+    td string
+    td
+    td Value of link target attribute, e.g. <code>_blank</code>, <code>_self</code>, etc.
+  tr
     td view
     td string
     td
-    td CSS selector of the View to load the page
+    td CSS selector of the View to load the page. Or `current` to load in current view.
   tr
     td external
     td boolean
@@ -91,37 +91,57 @@ mixin vueLinkRouterProps
     td
     td Load new page and remove all previous pages from history and DOM
   tr
+    td reload-detail
+    td boolean
+    td
+    td Reload Detail page in Master Detail view
+  tr
     td animate
     td boolean
     td
     td Disables pages animation
+  tr
+    td transition
+    td string
+    td
+    td Name of the <a href="./docs/view.html#custom-page-transitions" target="_blank">custom page transition</a>
   tr
     td ignore-cache
     td boolean
     td
     td Ignores caching
   tr
-    td page-name
-    td string
-    td
-    td Name of the page to load
-  tr
     td route-tab-id
     td string
     td
     td Routable Tab id
+  tr
+    td route-props
+    td object
+    td
+    td Object with additional props that will be passed to target route component
+  tr
+    td prevent-router
+    td boolean
+    td false
+    td If set, then it won't be processed by Framework7 router
 
 mixin vueLinkActionsProps
   tr
     td panel-open
     td string<br>boolean
     td
-    td Defines panel to open. Can be <code>left</code> or <code>right</code>
+    td CSS selector of panel to open on click. Or can be `left` or `right` if there is only left or right panel in DOM.
   tr
     td panel-close
-    td boolean
+    td string<br>boolean
     td
     td Closes panel on click
+  tr
+    td panel-toggle
+    td string<br>boolean
+    td
+    td CSS selector of panel to toggle on click. Or can be `left` or `right` if there is only left or right panel in DOM.
   tr
     td actions-open
     td string<br>boolean
@@ -187,3 +207,291 @@ mixin vueLinkActionsProps
     td string<br>boolean
     td
     td CSS selector of the Sortable list to toggle on click. Or boolean property to toggle currently opened/closed Sortable list
+  tr
+    td searchbar-enable
+    td string<br>boolean
+    td
+    td CSS selector of the Expandable Searchbar to be enabled on click. Or boolean property to enable the first found Searchbar
+  tr
+    td searchbar-disable
+    td string<br>boolean
+    td
+    td CSS selector of the Expandable Searchbar to be disabled on click. Or boolean property to disable the first found Searchbar
+  tr
+    td searchbar-toggle
+    td string<br>boolean
+    td
+    td CSS selector of the Expandable Searchbar to toggle on click. Or boolean property to toggle the first found Searchbar
+  tr
+    td searchbar-clear
+    td string<br>boolean
+    td
+    td CSS selector of the Expandable Searchbar to clear on click. Or boolean property to clear the first found Searchbar
+  tr
+    td card-open
+    td string<br>boolean
+    td
+    td CSS selector of the expandable card to open on click. Or boolean to open first found expandable card
+  tr
+    td card-close
+    td string<br>boolean
+    td
+    td CSS selector of the expandable card to close on click. Or boolean property to close currently opened expandable card
+  tr
+    td card-prevent-open
+    td boolean
+    td
+    td Click on element with this prop won't open its parent expandable card
+  tr
+    td menu-close
+    td boolean
+    td
+    td Closes Menu dropdown on click
+
+mixin reactLinkIconProps
+  tr
+    td iconSize
+    td string<br>number
+    td
+    td Icon size in px
+  tr
+    td iconColor
+    td string
+    td
+    td Icon color. One of the <a href="../docs/color-themes.html">default colors</a>
+  tr
+    td icon
+    td string
+    td
+    td Custom icon class
+  tr
+    td iconF7
+    td string
+    td
+    td Name of F7 Icons font icon
+  tr
+    td iconMaterial
+    td string
+    td
+    td Name of Material Icons font icon
+  tr
+    td iconIos
+    td string
+    td
+    td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code>
+  tr
+    td iconMd
+    td string
+    td
+    td Icon to be used in case of MD theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code>
+  tr
+    td iconAurora
+    td string
+    td
+    td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code>
+
+mixin reactLinkRouterProps
+  tr
+    td href
+    td string<br>boolean
+    td #
+    td URL of the page to load. In case of boolean <code>href="false"</code> it won't add <code>href</code> tag
+  tr
+    td target
+    td string
+    td
+    td Value of link target attribute, e.g. <code>_blank</code>, <code>_self</code>, etc.
+  tr
+    td view
+    td string
+    td
+    td CSS selector of the View to load the page. Or `current` to load in current view.
+  tr
+    td external
+    td boolean
+    td
+    td Enable to bypass Framework7's link click handler
+  tr
+    td back
+    td boolean
+    td
+    td Enables back navigation link
+  tr
+    td force
+    td boolean
+    td
+    td Force page to load and ignore previous page in history (use together with <code>back</code> prop)
+  tr
+    td reloadCurrent
+    td boolean
+    td
+    td Reloads new page instead of the currently active one
+  tr
+    td reloadPrevious
+    td boolean
+    td
+    td Replace the previous page in history with the new one from route
+  tr
+    td reloadAll
+    td boolean
+    td
+    td Load new page and remove all previous pages from history and DOM
+  tr
+    td reloadDetail
+    td boolean
+    td
+    td Reload Detail page in Master Detail view
+  tr
+    td animate
+    td boolean
+    td
+    td Disables pages animation
+  tr
+    td transition
+    td string
+    td
+    td Name of the <a href="./docs/view.html#custom-page-transitions" target="_blank">custom page transition</a>
+  tr
+    td ignoreCache
+    td boolean
+    td
+    td Ignores caching
+  tr
+    td routeTabId
+    td string
+    td
+    td Routable Tab id
+  tr
+    td routeProps
+    td object
+    td
+    td Object with additional props that will be passed to target route component
+  tr
+    td preventRouter
+    td boolean
+    td false
+    td If set, then it won't be processed by Framework7 router
+
+mixin reactLinkActionsProps
+  tr
+    td panelOpen
+    td string<br>boolean
+    td
+    td CSS selector of panel to open on click. Or can be `left` or `right` if there is only left or right panel in DOM.
+  tr
+    td panelClose
+    td string<br>boolean
+    td
+    td Closes panel on click
+  tr
+    td panelToggle
+    td string<br>boolean
+    td
+    td CSS selector of panel to toggle on click. Or can be `left` or `right` if there is only left or right panel in DOM.
+  tr
+    td actionsOpen
+    td string<br>boolean
+    td
+    td CSS selector of the action sheet to open on click
+  tr
+    td actionsClose
+    td string<br>boolean
+    td
+    td CSS selector of the action sheet to close on click. Or boolean property to close currently opened action sheet
+  tr
+    td popupOpen
+    td string<br>boolean
+    td
+    td CSS selector of the popup to open on click
+  tr
+    td popupClose
+    td string<br>boolean
+    td
+    td CSS selector of the popup to close on click. Or boolean property to close currently opened popup
+  tr
+    td popoverOpen
+    td string<br>boolean
+    td
+    td CSS selector of the popover to open on click
+  tr
+    td popoverClose
+    td string<br>boolean
+    td
+    td CSS selector of the popover to close on click. Or boolean property to close currently opened popover
+  tr
+    td sheetOpen
+    td string<br>boolean
+    td
+    td CSS selector of the sheet modal to open on click
+  tr
+    td sheetClose
+    td string<br>boolean
+    td
+    td CSS selector of the sheet modal to close on click. Or boolean property to close currently opened sheet modal
+  tr
+    td loginScreenOpen
+    td string<br>boolean
+    td
+    td CSS selector of the login screen to open on click
+  tr
+    td loginScreenClose
+    td string<br>boolean
+    td
+    td CSS selector of the login screen to close on click. Or boolean property to close currently opened login screen
+  tr
+    td sortableEnable
+    td string<br>boolean
+    td
+    td CSS selector of the Sortable list to open on click
+  tr
+    td sortableDisable
+    td string<br>boolean
+    td
+    td CSS selector of the Sortable list to close on click. Or boolean property to close currently opened Sortable list
+  tr
+    td sortableToggle
+    td string<br>boolean
+    td
+    td CSS selector of the Sortable list to toggle on click. Or boolean property to toggle currently opened/closed Sortable list
+  tr
+    td searchbarEnable
+    td string<br>boolean
+    td
+    td CSS selector of the Expandable Searchbar to be enabled on click. Or boolean property to enable the first found Searchbar
+  tr
+    td searchbarDisable
+    td string<br>boolean
+    td
+    td CSS selector of the Expandable Searchbar to be disabled on click. Or boolean property to disable the first found Searchbar
+  tr
+    td searchbarToggle
+    td string<br>boolean
+    td
+    td CSS selector of the Expandable Searchbar to toggle on click. Or boolean property to toggle the first found Searchbar
+  tr
+    td searchbarClear
+    td string<br>boolean
+    td
+    td CSS selector of the Expandable Searchbar to clear on click. Or boolean property to clear the first found Searchbar
+  tr
+    td cardOpen
+    td string<br>boolean
+    td
+    td CSS selector of the expandable card to open on click. Or boolean to open first found expandable card
+  tr
+    td cardClose
+    td string<br>boolean
+    td
+    td CSS selector of the expandable card to close on click. Or boolean property to close currently opened expandable card
+  tr
+    td cardPreventOpen
+    td boolean
+    td
+    td Click on element with this prop won't open its parent expandable card
+  tr
+    td menuClose
+    td boolean
+    td
+    td Closes Menu dropdown on click
+mixin cssVars(component, info, title)
+  | !{cssVars(component, info, title)}

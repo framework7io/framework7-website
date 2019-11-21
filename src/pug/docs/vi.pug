@@ -11,34 +11,32 @@ block content
   .docs-content
     +improveDocsLink
     h1 Video Intelligence (vi)
-    .docs-index
+    ul.docs-index
     p <a href="http://vi.ai" target="_blank">Video Intelligence</a> component that built into Framework7 allows you to easily add video advertising to your Framework7 app, straight out-of-the-box.
     p vi's interstitial ads can be placed into your app experience at your discretion, showing full screen video ads. Advertisers pay a premium for these ad slots, and they will be directly connected to your app; you'll be able to monetise straight away.
     h2 Getting Started With vi
     h4 1. Sign up for Framework7 vi publisher account
     p First of all as a mobile publisher you need to create vi publisher account. To signup for Framework7 vi account go to <a href="http://vi.framework7.io/" target="_blank">vi.framework7.io</a> and fill up the following form:
-    img(src=cdn + "/i/docs/vi-1.png")
+    img(src="/i/docs/vi-1.png")
     h4 2. Setup your app at vi
     p After successful registration you will receive instructions with vi dashboard link and temporary password to the specified email.
     p When you log in to your vi dashboard you will see a list of your apps. If you don’t have apps create new one:
-    img(src=cdn + "/i/docs/vi-2.png")
+    img(src="/i/docs/vi-2.png")
     p When you already have an app, you need to <b>add placement</b> for this app:
-    img(src=cdn + "/i/docs/vi-3.png")
+    img(src="/i/docs/vi-3.png")
     p When you create place choose Placement Type: "Video Interstitial"
-    img(src=cdn + "/i/docs/vi-4.png")
+    img(src="/i/docs/vi-4.png")
     p Ok, after we have placement created we need placement ID, choose just created placement:
-    img(src=cdn + "/i/docs/vi-5.png")
+    img(src="/i/docs/vi-5.png")
     p Click “copy” near the placement id string to copy id to the clipboard
-    img(src=cdn + "/i/docs/vi-6.png")
+    img(src="/i/docs/vi-6.png")
     h4 3. Configure vi in Framework7 app
     p After we set the things up at vi dashboard we will have:
     ul
-      li App bundle id (e.g. <code>io.framework7.testapp</code>)
-      li Placement id (e.g. <code>pltd4o7ibb9rc653x14</code>)
+      li App bundle id (e.g. `io.framework7.testapp`)
+      li Placement id (e.g. `pltd4o7ibb9rc653x14`)
     p Now when we have our vi placement id we may set it up in Framework7 on the app initialization:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           var app = new Framework7({
             /*
               common app bundle id must match the one
@@ -53,9 +51,7 @@ block content
           });
     h4 4. Show Ad
     p That is all, now we can use Framework7’s vi API to create and show ads. In simplest way just call the following method when you need to show an ad:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           app.vi.createAd();
     h2 vi App Methods
     p Let's look at available vi app methods and properties:
@@ -86,12 +82,12 @@ block content
           td enabled
           td boolean
           td false
-          td Global app parameter which enables vi API and vi SDK to load. If you pass any vi parameters under <code>vi</code> app parameters then it will enable vi api as well
+          td Global app parameter which enables vi API and vi SDK to load. If you pass any vi parameters under `vi` app parameters then it will enable vi api as well
         tr
           td appId
           td string
           td
-          td App bundle id, if not specified then equal to <code>id</code> <a href="app.html#app-parameters">app parameter</a>
+          td App bundle id, if not specified then equal to `id` <a href="app.html#app-parameters">app parameter</a>
         tr
           td placementId
           td string
@@ -101,7 +97,7 @@ block content
           td placementType
           td string
           td interstitial
-          td Ad type. Can be <code>interstitial</code> (when ad runs as full screen video) or <code>instream</code> (when ad video )
+          td Ad type. Can be `interstitial` (when ad runs as full screen video) or `instream` (when ad video )
         tr
           td autoplay
           td boolean
@@ -111,7 +107,7 @@ block content
           td startMuted
           td boolean
           td
-          td Defines whether the ad must start muted or not. By default is <code>true</code> when app is running as a web app (not Cordova) under mobile device (iOS or Android). It is required because on mobile device video autoplay usually requires additional user interaction
+          td Defines whether the ad must start muted or not. By default is `true` when app is running as a web app (not Cordova) under mobile device (iOS or Android). It is required because on mobile device video autoplay usually requires additional user interaction
         tr
           td fallbackOverlay
           td boolean
@@ -126,12 +122,12 @@ block content
           td appVer
           td string
           td
-          td App version, if not specified then equal to <code>version</code> <a href="app.html#app-parameters">app parameter</a>
+          td App version, if not specified then equal to `version` <a href="app.html#app-parameters">app parameter</a>
         tr
           td language
           td boolean
           td null
-          td App language, if not specified then equal to <code>language</code> <a href="app.html#app-parameters">app parameter</a>
+          td App language, if not specified then equal to `language` <a href="app.html#app-parameters">app parameter</a>
         tr
           td width
           td number
@@ -161,17 +157,17 @@ block content
           td os
           td string
           td
-          td Operating system, if not specified then will be equal to <code>app.device.os</code>
+          td Operating system, if not specified then will be equal to `app.device.os`
         tr
           td osVersion
           td string
           td
-          td Operating system version, if not specified then will be equal to <code>app.device.osVersion</code>
+          td Operating system version, if not specified then will be equal to `app.device.osVersion`
         tr
           td orientation
           td string
           td
-          td Device orientation, if not specified then will be detected based on <code>window.orientation</code>
+          td Device orientation, if not specified then will be detected based on `window.orientation`
         tr
           td age
           td number
@@ -231,10 +227,9 @@ block content
           td on
           td object
           td
-          td Object with events handlers. For example:
-            pre
-              code
-                :code
+          td
+            p Object with events handlers. For example:
+            :code(lang="js")
                   var viAd = app.vi.createAd({
                     on: {
                       stopped: function () {
@@ -243,10 +238,8 @@ block content
                     }
                   })
     .important-note
-      p All parameters can be used in global app parameters under <code>vi</code> property to set defaults for all vi ads. For example:
-      pre
-        code.js
-          :code
+      p All parameters can be used in global app parameters under `vi` property to set defaults for all vi ads. For example:
+      :code(lang="js")
             var app = new Framework7({
               /*
                 common app bundle id must match the one
@@ -260,20 +253,16 @@ block content
               }
             });
       p In this case when we create vi ad, we need to pass parameters that we want to override:
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var viAd = app.vi.createAd({
               // disable autoplay for this ad
               autoplay: false,
             })
     h2 vi Ad Methods & Properties
     p So to create vi ad we have to call:
-    pre
-      code
-        :code
-          var viAd = app.vi.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>viAd</code> variable in example above) with useful methods and properties:
+    :code(lang="js")
+      var viAd = app.vi.create({ /* parameters */ })
+    p After that we have its initialized instance (like `viAd` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -330,7 +319,7 @@ block content
           td ready
           td viAd
           td <span></span>
-          td Event will be triggered when ad created, requested and ready to be played. In case of disabled autplay, you to listen for this event and call <code>viAd.start()</code> when ad becomes ready
+          td Event will be triggered when ad created, requested and ready to be played. In case of disabled autplay, you to listen for this event and call `viAd.start()` when ad becomes ready
         tr
           td started
           td viAd
@@ -355,7 +344,7 @@ block content
           td stopped
           td viAd
           td <span>reason</span>
-          td Event will be triggered when video ad stopped. As an argument it receives string <code>reason</code>, which can be, for example, <code>userexit</code> (when video was interrupted by user) or <code>complete</code> when ad video completed
+          td Event will be triggered when video ad stopped. As an argument it receives string `reason`, which can be, for example, `userexit` (when video was interrupted by user) or `complete` when ad video completed
         tr
           td complete
           td viAd
@@ -392,10 +381,8 @@ block content
           td <span></span>
           td Event will be triggered when vi SDK loaded and ready to be used
     .with-device
-      h2(data-device-preview="../docs-demos/vi.html") Examples
-      pre
-        code.js
-          :code
+      h2(data-device-preview="../docs-demos/core/vi.html") Examples
+      :code(lang="js")
             var app = new Framework7({
               id: 'io.framework7.testapp',
               vi: {
@@ -434,7 +421,7 @@ block content
               app.vi.createAd({
                 fallbackOverlay: false,
                 on: {
-                  autoplayFailed() {
+                  autoplayFailed: function() {
                     const ad = this;
                     app.dialog.alert('Check out this awesome ad', () => {
                       ad.start();
@@ -449,16 +436,16 @@ block content
               app.vi.createAd({
                 autoplay: false,
                 on: {
-                  ready() {
+                  ready: function() {
                     const ad = this;
                     app.dialog.alert('Check out this awesome ad to get the reward', () => {
                       ad.start();
                     })
                   },
-                  complete() {
+                  complete: function() {
                     app.dialog.alert('Congrats! You got the reward!')
                   },
-                  userexit() {
+                  userexit: function() {
                     app.dialog.alert('Sorry, no reward for you!')
                   },
                 }

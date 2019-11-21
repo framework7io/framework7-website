@@ -10,21 +10,18 @@ block content
   .docs-content
     +improveDocsLink
     h1 Tap Hold Event (Long Tap)
-    p Framework7 has so called "tap hold" event. It triggers (if enabled) after a sustained, complete touch event. By default it is disabled and could be enabled and configured using <code>touch.tapHold...</code> <a href="app.html#app-parameters">App parameters</a> on app initialization.
+    p Framework7 has so called "tap hold" event. It triggers (if enabled) after a sustained, complete touch event. By default it is disabled and could be enabled and configured using `touch.tapHold...` <a href="app.html#app-parameters">App parameters</a> on app initialization.
 
     p Note, that Tap Hold is a part of built-in <b>Fast Clicks</b> library, so Fast Clicks should be also enabled.
 
     p Also note, that you probably will need to disable mobile browser default "long-tap" actions by adding these CSS rules to elements:
-    pre
-      code.css
-        | -moz-user-select: none;
-        | -webkit-user-select: none;
-        | user-select: none;
+    :code(lang="css")
+          -moz-user-select: none;
+          -webkit-user-select: none;
+          user-select: none;
 
     p For example:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           var app = new Framework7({
             touch: {
               tapHold: true //enable tap hold events

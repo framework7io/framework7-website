@@ -11,27 +11,39 @@ block content
   .docs-content
     +improveDocsLink
     h1 Sortable List
-    .docs-index
+    ul.docs-index
     p Sortable lists is an extension of <a href="list-view.html">List View</a> that allows you to sort list view elements.
     h2 Sortable List Layout
     p Let's look at layout structure of sortable lists in your list views:
-    pre
-      code
-        | &lt;!-- Additional "sortable" class on list block --&gt;
-        | &lt;div class="list sortable"&gt;
-        |     &lt;li&gt;
-        |         &lt;div class="item-content"&gt;
-        |             &lt;div class="item-media"&gt;...&lt;/div&gt;
-        |             &lt;div class="item-inner"&gt;...&lt;/div&gt;
-        |         &lt;/div&gt;
-        |         &lt;!-- Sortable handler element --&gt;
-        |         &lt;div class="sortable-handler"&gt;&lt;/div&gt;
-        |     &lt;/li&gt;
-        | &lt;/div&gt;
+    :code(lang="html")
+      <!-- Additional "sortable" class on list block -->
+      <div class="list sortable">
+          <li>
+              <div class="item-content">
+                  <div class="item-media">...</div>
+                  <div class="item-inner">...</div>
+              </div>
+              <!-- Sortable handler element -->
+              <div class="sortable-handler"></div>
+          </li>
+      </div>
     p Where:
     ul
-      li <code>sortable-handler</code> - "draggable" element (hidden by default) that allows you to sort current list view element
-    p As you may see it is pretty simple, all you need is to add <code><b>sortable</b></code> class to list block and put <code><b>&lt;div class="sortable-handler"&gt;&lt;/div&gt;</b></code> as a direct child of <code>&lt;li&gt;</code>
+      li `sortable-handler` - "draggable" element (hidden by default) that allows you to sort current list view element
+    p As you may see it is pretty simple, all you need is to add `sortable` class to list block and put `<div class="sortable-handler">&lt;/div&gt;` as a direct child of `<li>`.
+    p If we need to disable sorting on some specific items we can add `no-sorting` or `disallow-sorting` class to those items:
+    :code(lang="html")
+      <!-- Additional "sortable" class on list block -->
+      <div class="list sortable">
+          <!-- disable sorting for this item -->
+          <li class="no-sorting">...</li>
+
+          <!-- sortable items -->
+          <li>...</li>
+          <li>...</li>
+      </div>
+    p Note, that it makes sense and work only on first or last items in the list and won't work correctly if you disable sortable for some of the items in the middle.
+
     h2 Sortable App Methods
     p To enable/disable sorting mode on sortable list we need to use following app methods:
     .method-wrap
@@ -58,6 +70,31 @@ block content
         li
           span.parameter listEl
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Sortable list block element.
+    h2 Sortable App Parameters
+    p It is possible to configure global sortable behavior on app initialisation by passing sortable related paremeters under `sortable` property.
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td moveElements
+          td boolean
+          td true
+          td
+            p When enabled then it will move (reorder) HTML elements according to new sortable order. It is useful to disable it if you use other library for DOM manipulation, like React or Vue.
+            p It is also possible to overwrite this behavior for specific lists by adding `data-sortable-move-elements="true"` or `data-sortable-move-elements="false"` attribute to list element.
+    p To change these parameters we need to pass them on app init under `sortable` property, for example:
+    :code(lang="js")
+          var app = new Framework7({
+            sortable: {
+              moveElements: false
+            }
+          });
+
     h2 Sortable Events
     p Sortable will fire the following DOM events on sortable list block element and events on app instance:
     h3 DOM Events
@@ -79,7 +116,7 @@ block content
         tr
           td sortable:sort
           td List element<span>&lt;li&gt;</span>
-          td Event will be triggered after user release currently sorting element in new position. <code>event.detail</code> will contain object with <code>from</code> and <code>to</code> properties with from/to index numbers of sorted list item
+          td Event will be triggered after user release currently sorting element in new position. `event.detail` will contain object with `from` and `to` properties with from/to index numbers of sorted list item and `el` property with HTML sorted element
     h3 App Instance Events
     p Sortable instance emit events on app instance.
     table.events-table
@@ -103,27 +140,38 @@ block content
         tr
           td sortableSort
           td app
-          td <span>listEl, indexes</span>
-          td Event will be triggered after user release currently sorting element in new position. <code>indexes</code> is an object with <code>from</code> and <code>to</code> properties with from/to index numbers of sorted list item
+          td <span>listEl, data</span>
+          td Event will be triggered after user release currently sorting element in new position. `data` is an object with `from` and `to` properties with from/to index numbers of sorted list item `el` property with HTML sorted element
+    h2 Sortable On Tap Hold
+    p It is possible to bypass sortable enable/disable logic and make list items sortable on item tap and hold (long press). To make it work, we just need additional `sortable-tap-hold` class on sortable list:
+    ```html
+      <!-- additional "sortable-tap-hold" class on sortable list -->
+      <div class="list sortable sortable-tap-hold">
+        ...
+      </div>
+    ```
+    p In this case app will rely on custom `taphold` event. To make it work correctly, make sure you have also enabled `touch.tapHold: true` #[a(href="app.html#app-parameters" target="_blank") app parameter]
     h2 Control Sortable With Links
     p It is possible to enable and disable sortable mode using special classes and data attributes on links:
     .important-note
       ul
         li
-          p To enable sortable mode we need to add <code><b>sortable-open</b></code> class to any HTML element (prefered to link)
+          p To enable sortable mode we need to add `sortable-enable` class to any HTML element (prefered to link)
         li
-          p To disable sortable mode we need to add <code><b>sortable-close</b></code> class to any HTML element (prefered to link)
+          p To disable sortable mode we need to add `sortable-disable` class to any HTML element (prefered to link)
         li
-          p To toggle sortable mode we need to add <code><b>sortable-toggle</b></code> class to any HTML element (prefered to link)
+          p To toggle sortable mode we need to add `sortable-toggle` class to any HTML element (prefered to link)
         li
-          p If you have more than one sortable list in app, you need to specify appropriate sortable list via additional <code><b>data-sortable=".sortable"</b></code> attribute on this HTML element with CSS selector of required sortable list
+          p If you have more than one sortable list in app, you need to specify appropriate sortable list via additional `data-sortable=".sortable"` attribute on this HTML element with CSS selector of required sortable list
+
+    +cssVars('sortable')
+
     .with-device
-      h2(data-device-preview="../docs-demos/sortable.html") Examples
-      pre
-        code.html
-          :code
+      h2(data-device-preview="../docs-demos/core/sortable.html") Examples
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
+                <div class="navbar-bg"></div>
                 <div class="navbar-inner">
                   <div class="left"></div>
                   <div class="title">Sortable</div>
@@ -163,7 +211,7 @@ block content
                   <ul>
                     <li>
                       <div class="item-content">
-                        <div class="item-media"><img src="http://lorempixel.com/160/160/people/1" width="80"/></div>
+                        <div class="item-media"><img src="https://cdn.framework7.io/placeholder/people-160x160-1.jpg" width="80"/></div>
                         <div class="item-inner">
                           <div class="item-title-row">
                             <div class="item-title">Yellow Submarine</div>
@@ -180,9 +228,7 @@ block content
                 </div>
               </div>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var app = new Framework7();
 
             app.on('sortableSort', function (listEl, indexes) {

@@ -1,0 +1,80 @@
+extends _layout
+block content
+  .panel.panel-left.panel-reveal.panel-resizable.panel-init
+    .block
+      p Left Panel content here
+      p
+        a(href="#").panel-close Close me
+      p
+        a(href="#", data-panel=".panel-right-1").panel-open Open Right Panel
+
+  .panel.panel-right.panel-right-1.panel-cover.panel-resizable.panel-init
+    .block
+      p Right Panel content here
+      p
+        a(href="#").panel-close Close me
+      p
+        a(href="#", data-panel="left").panel-open Open Left Panel
+
+  .panel.panel-right.panel-right-2.panel-cover.panel-init.theme-dark
+    .page
+      .block
+        p Here comes another 3rd panel.
+        p
+          a(href="#").panel-close Close me
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-bg
+        .navbar-inner
+          .left
+          .title Panels
+          .right
+      .page-content
+        .block.block-strong
+          p
+            a(href="#" data-panel=".panel-left").button.panel-open Open Left Panel
+          p
+            a(href="#", data-panel=".panel-right-1").button.panel-open Open Right Panel
+          p
+            a(href="#", data-panel=".panel-right-2").button.panel-open Open Another Panel
+
+
+block scripts
+  style.
+    .panel {
+      min-width: 100px;
+      max-width: 90vw;
+    }
+  script.
+    var app = new Framework7();
+
+    var $$ = Dom7;
+
+    // Dom Events
+    $$('.panel-left').on('panel:open', function () {
+      console.log('Panel left: open');
+    });
+    $$('.panel-left').on('panel:opened', function () {
+      console.log('Panel left: opened');
+    });
+
+    // Instance Events
+    var panelRight = app.panel.get('.panel-right-1');
+    panelRight.on('open', function () {
+      console.log('Panel right: open');
+    });
+    panelRight.on('opened', function () {
+      console.log('Panel right: opened');
+    });
+
+    // App Events
+    app.on('panelClose', function (panel) {
+      console.log('Panel ' + panel.side + ': close');
+    });
+    app.on('panelClosed', function (panel) {
+      console.log('Panel ' + panel.side + ': closed');
+    });
+    app.on('panelResize', function (panel, newPanelWidth) {
+      console.log('Panel resized to ' + newPanelWidth + 'px');
+    });

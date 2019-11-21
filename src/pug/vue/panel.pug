@@ -5,18 +5,19 @@ block vars
   - var title = 'Panel Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Panel Vue Component
-    .docs-index
+    ul.docs-index
     p Panel Vue component represents <a href="../docs/panel.html">Side Panels</a> component.
     h2 Panel Components
     p There are following components included:
     ul
-      li <code><b>f7-panel</b></code> - Panel element
+      li `f7-panel` - Panel element
     h2 Panel Properties
     table.params-table
       thead
@@ -30,32 +31,82 @@ block content
           td side
           td string
           td
-          td Panel side. Could be <code>left</code> or <code>right</code>
+          td Panel side. Could be `left` or `right`
         tr
           td left
           td boolean
           td
-          td Shortcut prop for <code>side="left"</code>
+          td Shortcut prop for `side="left"`
         tr
           td right
           td boolean
           td
-          td Shortcut prop for <code>side="right"</code>
+          td Shortcut prop for `side="right"`
         tr
           td effect
           td string
           td
-          td Panel effect. Could be <code>cover</code> or <code>reveal</code>
+          td Panel effect. Could be `cover` or `reveal`
         tr
           td cover
           td boolean
           td
-          td Shortcut prop for <code>effect="cover"</code>
+          td Shortcut prop for `effect="cover"`
         tr
           td reveal
           td boolean
           td
-          td Shortcut prop for <code>effect="reveal"</code>
+          td Shortcut prop for `effect="reveal"`
+        tr
+          td visibleBreakpoint
+          td number
+          td
+          td Minimal app width (in px) when left panel becomes always visible
+        tr
+          td collapsedBreakpoint
+          td number
+          td
+          td Minimal app width (in px) when left panel becomes partially visible (collapsed)
+        tr
+          td swipe
+          td boolean
+          td false
+          td Enable if you want to enable ability to open/close panel with swipe
+        tr
+          td swipeActiveArea
+          td number
+          td 0
+          td Width (in px) of invisible edge from the screen that triggers panel swipe
+        tr
+          td swipeOnlyClose
+          td boolean
+          td false
+          td This parameter allows to close (but not open) panel with swipes. (`swipe` should be also enabled)
+        tr
+          td swipeThreshold
+          td number
+          td 0
+          td Panel will not move with swipe if "touch distance" will be less than this value (in px).
+        tr
+          td backdrop
+          td boolean
+          td true
+          td Enables Panel backdrop (dark semi transparent layer behind)
+        tr
+          td backdropEl
+          td HTMLElement<br>string
+          td
+          td HTML element or string CSS selector of custom backdrop element
+        tr
+          td closeByBackdropClick
+          td boolean
+          td true
+          td Enable/disable ability to close panel by clicking outside of panel
+        tr
+          td resizable
+          td boolean
+          td false
+          td Enables/disables resizable panel
         tr
           td opened
           td boolean
@@ -98,37 +149,60 @@ block content
           td panel:swipeopen
           td Event will be triggered in the very beginning of opening it with swipe
         tr
+          td panel:collapsedbreakpoint
+          td Event will be triggered when it becomes visible/hidden when app width matches its `collapsedBreakpoint`
+        tr
           td panel:breakpoint
-          td Event will be triggered when it becomes visible/hidden when app width matches its breakpoint
+          td Event will be triggered when it becomes visible/hidden when app width matches its `visibleBreakpoint`
     h2 Open And Close Panel
     p You can control panel state, open and closing it:
     ul
       li using <a href="../docs/panel.html">Panel API</a>
-      li by passing <code>true</code> or <code>false</code> to its <code>opened</code> prop
-      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>panel-open</code> property (to open it) and <code>panel-close</code> property to close it
+      li by passing `true` or `false` to its `opened` prop
+      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant `panel-open` property (to open it) and `panel-close` property to close it
     h2 Access To Panel Instance
-    p You can access Panel initialized instance by accessing <code><b>.f7Panel</b></code> component's property.
-    h2 Examples
-    pre
-      code.html
-        :code
-          <!-- Left Panel with Reveal effect -->
-          <f7-panel left reveal>
-            <!-- Left panel content goes here -->
+    p You can access Panel initialized instance by accessing `.f7Panel` component's property.
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/panel.html") Examples
+      :code(lang="css")
+        /* Limit resizable panel width */
+        .panel {
+          min-width: 100px;
+          max-width: 90vw;
+        }
+      :code(lang="html")
+        <f7-app>
+          <!-- Left resizable Panel with Reveal effect -->
+          <f7-panel left reveal resizable>
+            <f7-view>
+              <f7-page>
+                <f7-block>Left panel content</f7-block>
+              </f7-page>
+            </f7-view>
           </f7-panel>
 
-          <!-- Right Panel with Cover effect and dark layout theme -->
-          <f7-panel right cover class="theme-dark">
-            <!-- Right panel content goes here -->
+          <!-- Right resizable Panel with Cover effect and dark layout theme -->
+          <f7-panel right resizable theme-dark>
+            <f7-view>
+              <f7-page>
+                <f7-block>Right panel content</f7-block>
+              </f7-page>
+            </f7-view>
           </f7-panel>
-    p Renders to:
-    pre
-      code.html
-        :code
-          <div class="panel panel-left panel-reveal">
-            ...
-          </div>
-          <div class="panel panel-right panel-cover theme-dark">
-            ...
-          </div>
 
+          <!-- Main view -->
+          <f7-view main>
+            <f7-page>
+              <f7-navbar title="Panel"></f7-navbar>
+
+              <f7-block class="row">
+                <f7-col>
+                  <f7-button raised panel-open="left">Open left panel</f7-button>
+                </f7-col>
+                <f7-col>
+                  <f7-button raised panel-open="right">Open right panel</f7-button>
+                </f7-col>
+              </f7-block>
+            </f7-page>
+          </f7-view>
+        </f7-app>

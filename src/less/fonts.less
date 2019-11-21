@@ -1,52 +1,26 @@
 @font-face {
-    font-family:'myriad';
-    font-style:normal;
-    font-weight:100;
-    src: url("../fonts/myriad-set-pro_ultralight.woff") format("woff"), 
-         url("../fonts/myriad-set-pro_ultralight.ttf") format("truetype");
-    *src:url('');
+  font-display: fallback;
+  font-family: Sailec;
+  font-weight: 400;
+  src: url(../fonts/Sailec-Regular.woff2) format("woff2"), url(../fonts/Sailec-Regular.woff) format("woff")
+}
+@font-face {
+  font-display: fallback;
+  font-family: Sailec;
+  font-weight: 500;
+  src: url(../fonts/Sailec-Medium.woff2) format("woff2"), url(../fonts/Sailec-Medium.woff) format("woff")
+}
+@font-face {
+  font-display: fallback;
+  font-family: Sailec;
+  font-weight: 700;
+  src: url(../fonts/Sailec-Bold.woff2) format("woff2"), url(../fonts/Sailec-Bold.woff) format("woff")
+}
+@font-face {
+  font-display: fallback;
+  font-family: Sailec;
+  font-weight: 800;
+  src: url(../fonts/Sailec-Black.woff2) format("woff2"), url(../fonts/Sailec-Black.woff) format("woff")
 }
 
-@font-face {
-    font-family:'myriad';
-    font-style:normal;
-    font-weight:300;
-    src: url("../fonts/myriad-set-pro_thin.woff") format("woff"), 
-         url("../fonts/myriad-set-pro_thin.ttf") format("truetype");
-    *src:url('');
-}
-@font-face {
-    font-family:'myriad';
-    font-style:normal;
-    font-weight:400;
-    src: url("../fonts/myriad-set-pro_text.woff") format("woff"), 
-         url("../fonts/myriad-set-pro_text.ttf") format("truetype");
-    *src:url('');
-}
-
-@font-face {
-    font-family:'myriad';
-    font-style:normal;
-    font-weight:500;
-    src: url("../fonts/myriad-set-pro_medium.woff") format("woff"), 
-         url("../fonts/myriad-set-pro_medium.ttf") format("truetype");
-    *src:url('');
-}
-
-@font-face {
-    font-family:'myriad';
-    font-style:normal;
-    font-weight:600;
-    src: url("../fonts/myriad-set-pro_semibold.woff") format("woff"), 
-         url("../fonts/myriad-set-pro_semibold.ttf") format("truetype");
-    *src:url('');
-}
-
-@font-face {
-    font-family:'myriad';
-    font-style:normal;
-    font-weight:700;
-    src: url("../fonts/myriad-set-pro_bold.woff") format("woff"), 
-         url("../fonts/myriad-set-pro_bold.ttf") format("truetype");
-    *src:url('');
-}
+@import (inline) url('../../public/css/framework7-icons.css');

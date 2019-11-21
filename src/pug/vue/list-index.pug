@@ -5,17 +5,18 @@ block vars
   - var title = 'List Index Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 List Index Vue Component
-    .docs-index
+    ul.docs-index
     p List Index Vue component represents <a href="../docs/list-index.html">List Index</a> component.
     h2 List Index Components
     p There are following components included:
     ul
-      li <code><b>f7-list-index</b></code>
+      li `f7-list-index`
     h2 List Index Properties
     table.params-table
       thead
@@ -33,7 +34,7 @@ block content
           td true
           td Initializes List Index
         tr
-          td listEl
+          td list-el
           td object<br>string
           td
           td Related List View element. HTMLElement or string with CSS selector of List View element
@@ -41,9 +42,9 @@ block content
           td indexes
           td array<br>string
           td auto
-          td Array with indexes. If not passed then it will automatically generate it based on <code>item-divider</code> and <code>list-group-title</code> elements inside of passed List View element in <code>listEl</code> parameter
+          td Array with indexes. If not passed then it will automatically generate it based on `item-divider` and `list-group-title` elements inside of passed List View element in `listEl` parameter
         tr
-          td scrollList
+          td scroll-list
           td boolean
           td true
           td Will automatically scroll related List View to the selected index
@@ -53,15 +54,20 @@ block content
           td false
           td Enables label bubble with selected index when you swipe over list index
         tr
-          td iosItemHeight
+          td ios-item-height
           td number
           td 14
           td Single index item height. It is required to calculate dynamic index and how many indexes fit on the screen. For iOS theme
         tr
-          td mdItemHeight
+          td md-item-height
           td number
           td 14
           td Single index item height. It is required to calculate dynamic index and how many indexes fit on the screen. For MD theme
+        tr
+          td aurora-item-height
+          td number
+          td 14
+          td Single index item height. It is required to calculate dynamic index and how many indexes fit on the screen. For Aurora theme
     h2 List Index Events
     table.events-table
       thead
@@ -71,7 +77,7 @@ block content
           th Description
       tbody
         tr
-          th(colspan="2") &lt;f7-list-index&gt; events
+          th(colspan="3") &lt;f7-list-index&gt; events
         tr
           td listindex:select
           td <span>(itemContent)</span>
@@ -89,51 +95,193 @@ block content
           td .update()
           td Recalculates indexes, sizes and rerenders list index
         tr
-          td .scrollToList(<span>itemContent</span>)
+          td .scrollListToIndex(<span>itemContent</span>)
           td Scrolls related list to specified index content
-    h2 Examples
-    p Example of full page with list index build for contacts list
-    pre
-      code.html
-        :code
-          <f7-page>
-            <f7-navbar title="List Index" back-link="Back"></f7-navbar>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/list-index.html") Examples
+      :code(lang="html")
+            <template>
+              <f7-page>
+                <f7-navbar title="List Index"></f7-navbar>
 
-            <!-- List Index -->
-            <f7-list-index
-              indexes="auto"
-              list-el="#contacts-list"
-              :scroll-list="true"
-              :label="true"
-              @listindex:select="onIndexSelect"
-            ></f7-list-index>
+                <f7-list-index
+                  indexes="auto"
+                  list-el=".list.contacts-list"
+                  :scroll-list="true"
+                  :label="true"
+                  @listindex:select="onIndexSelect"
+                ></f7-list-index>
 
-            <!-- Contacts list -->
-            <f7-list contacts-list id="contacts-list">
-              <f7-list-group>
-                <f7-list-item title="A" group-title></f7-list-item>
-                <f7-list-item title="Aaron"></f7-list-item>
-                <f7-list-item title="Adam"></f7-list-item>
-                <f7-list-item title="Aiden"></f7-list-item>
-                ...
-              </f7-list-group>
-              <f7-list-group>
-                <f7-list-item title="B" group-title></f7-list-item>
-                <f7-list-item title="Benjamin"></f7-list-item>
-                <f7-list-item title="Blake"></f7-list-item>
-                <f7-list-item title="Bobby"></f7-list-item>
-              </f7-list-group>
-              <f7-list-group>
-                <f7-list-item title="C" group-title></f7-list-item>
-                <f7-list-item title="Caleb"></f7-list-item>
-                <f7-list-item title="Callum"></f7-list-item>
-                <f7-list-item title="Cameron"></f7-list-item>
-                ...
-              </f7-list-group>
-              ...
-              <f7-list-group>
-                <f7-list-item title="Z" group-title></f7-list-item>
-                <f7-list-item title="Zachary"></f7-list-item>
-              </f7-list-group>
-            </f7-list>
-          </f7-page>
+                <f7-list contacts-list>
+                  <f7-list-group>
+                    <f7-list-item title="A" group-title></f7-list-item>
+                    <f7-list-item title="Aaron"></f7-list-item>
+                    <f7-list-item title="Adam"></f7-list-item>
+                    <f7-list-item title="Aiden"></f7-list-item>
+                    <f7-list-item title="Albert"></f7-list-item>
+                    <f7-list-item title="Alex"></f7-list-item>
+                    <f7-list-item title="Alexander"></f7-list-item>
+                    <f7-list-item title="Alfie"></f7-list-item>
+                    <f7-list-item title="Archie"></f7-list-item>
+                    <f7-list-item title="Arthur"></f7-list-item>
+                    <f7-list-item title="Austin"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="B" group-title></f7-list-item>
+                    <f7-list-item title="Benjamin"></f7-list-item>
+                    <f7-list-item title="Blake"></f7-list-item>
+                    <f7-list-item title="Bobby"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="C" group-title></f7-list-item>
+                    <f7-list-item title="Caleb"></f7-list-item>
+                    <f7-list-item title="Callum"></f7-list-item>
+                    <f7-list-item title="Cameron"></f7-list-item>
+                    <f7-list-item title="Charles"></f7-list-item>
+                    <f7-list-item title="Charlie"></f7-list-item>
+                    <f7-list-item title="Connor"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="D" group-title></f7-list-item>
+                    <f7-list-item title="Daniel"></f7-list-item>
+                    <f7-list-item title="David"></f7-list-item>
+                    <f7-list-item title="Dexter"></f7-list-item>
+                    <f7-list-item title="Dylan"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="E" group-title></f7-list-item>
+                    <f7-list-item title="Edward"></f7-list-item>
+                    <f7-list-item title="Elijah"></f7-list-item>
+                    <f7-list-item title="Elliot"></f7-list-item>
+                    <f7-list-item title="Elliott"></f7-list-item>
+                    <f7-list-item title="Ethan"></f7-list-item>
+                    <f7-list-item title="Evan"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="F" group-title></f7-list-item>
+                    <f7-list-item title="Felix"></f7-list-item>
+                    <f7-list-item title="Finlay"></f7-list-item>
+                    <f7-list-item title="Finley"></f7-list-item>
+                    <f7-list-item title="Frankie"></f7-list-item>
+                    <f7-list-item title="Freddie"></f7-list-item>
+                    <f7-list-item title="Frederick"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="G" group-title></f7-list-item>
+                    <f7-list-item title="Gabriel"></f7-list-item>
+                    <f7-list-item title="George"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="H" group-title></f7-list-item>
+                    <f7-list-item title="Harley"></f7-list-item>
+                    <f7-list-item title="Harrison"></f7-list-item>
+                    <f7-list-item title="Harry"></f7-list-item>
+                    <f7-list-item title="Harvey"></f7-list-item>
+                    <f7-list-item title="Henry"></f7-list-item>
+                    <f7-list-item title="Hugo"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="I" group-title></f7-list-item>
+                    <f7-list-item title="Ibrahim"></f7-list-item>
+                    <f7-list-item title="Isaac"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="J" group-title></f7-list-item>
+                    <f7-list-item title="Jack"></f7-list-item>
+                    <f7-list-item title="Jacob"></f7-list-item>
+                    <f7-list-item title="Jake"></f7-list-item>
+                    <f7-list-item title="James"></f7-list-item>
+                    <f7-list-item title="Jamie"></f7-list-item>
+                    <f7-list-item title="Jayden"></f7-list-item>
+                    <f7-list-item title="Jenson"></f7-list-item>
+                    <f7-list-item title="Joseph"></f7-list-item>
+                    <f7-list-item title="Joshua"></f7-list-item>
+                    <f7-list-item title="Jude"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="K" group-title></f7-list-item>
+                    <f7-list-item title="Kai"></f7-list-item>
+                    <f7-list-item title="Kian"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="L" group-title></f7-list-item>
+                    <f7-list-item title="Leo"></f7-list-item>
+                    <f7-list-item title="Leon"></f7-list-item>
+                    <f7-list-item title="Lewis"></f7-list-item>
+                    <f7-list-item title="Liam"></f7-list-item>
+                    <f7-list-item title="Logan"></f7-list-item>
+                    <f7-list-item title="Louie"></f7-list-item>
+                    <f7-list-item title="Louis"></f7-list-item>
+                    <f7-list-item title="Luca"></f7-list-item>
+                    <f7-list-item title="Lucas"></f7-list-item>
+                    <f7-list-item title="Luke"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="M" group-title></f7-list-item>
+                    <f7-list-item title="Mason"></f7-list-item>
+                    <f7-list-item title="Matthew"></f7-list-item>
+                    <f7-list-item title="Max"></f7-list-item>
+                    <f7-list-item title="Michael"></f7-list-item>
+                    <f7-list-item title="Mohammad"></f7-list-item>
+                    <f7-list-item title="Mohammed"></f7-list-item>
+                    <f7-list-item title="Muhammad"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="N" group-title></f7-list-item>
+                    <f7-list-item title="Nathan"></f7-list-item>
+                    <f7-list-item title="Noah"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="O" group-title></f7-list-item>
+                    <f7-list-item title="Oliver"></f7-list-item>
+                    <f7-list-item title="Ollie"></f7-list-item>
+                    <f7-list-item title="Oscar"></f7-list-item>
+                    <f7-list-item title="Owen"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="R" group-title></f7-list-item>
+                    <f7-list-item title="Reuben"></f7-list-item>
+                    <f7-list-item title="Riley"></f7-list-item>
+                    <f7-list-item title="Robert"></f7-list-item>
+                    <f7-list-item title="Ronnie"></f7-list-item>
+                    <f7-list-item title="Rory"></f7-list-item>
+                    <f7-list-item title="Ryan"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="S" group-title></f7-list-item>
+                    <f7-list-item title="Samuel"></f7-list-item>
+                    <f7-list-item title="Sebastian"></f7-list-item>
+                    <f7-list-item title="Seth"></f7-list-item>
+                    <f7-list-item title="Sonny"></f7-list-item>
+                    <f7-list-item title="Stanley"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="T" group-title></f7-list-item>
+                    <f7-list-item title="Teddy"></f7-list-item>
+                    <f7-list-item title="Theo"></f7-list-item>
+                    <f7-list-item title="Theodore"></f7-list-item>
+                    <f7-list-item title="Thomas"></f7-list-item>
+                    <f7-list-item title="Toby"></f7-list-item>
+                    <f7-list-item title="Tommy"></f7-list-item>
+                    <f7-list-item title="Tyler"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="W" group-title></f7-list-item>
+                    <f7-list-item title="William"></f7-list-item>
+                  </f7-list-group>
+                  <f7-list-group>
+                    <f7-list-item title="Z" group-title></f7-list-item>
+                    <f7-list-item title="Zachary"></f7-list-item>
+                  </f7-list-group>
+                </f7-list>
+              </f7-page>
+            </template>
+            <script>
+              export default {
+                methods: {
+                  onIndexSelect(itemContent) {
+                    console.log(itemContent);
+                  },
+                },
+              };
+            </script>

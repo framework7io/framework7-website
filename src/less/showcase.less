@@ -22,7 +22,7 @@
     cursor: pointer;
     img {
       max-width: 100%;
-      box-shadow: 0px 20px 50px rgba(0,0,0,0.2);
+      box-shadow: 0px 10px 30px rgba(0,0,0,0.1);
     }
     &.app-icon-rounded {
       img {
@@ -59,40 +59,6 @@
     margin: 0;
     line-height: 1.2;
   }
-  @media (max-width: 1023px) {
-    .app {
-      width: 100% / 3;
-    }
-  }
-  @media (max-width: 800px) {
-    .app-icon {
-      width: 150px;
-      height: 150px;
-    }
-    .app-icon.app-icon-rounded img {
-      border-radius: 35px;
-    }
-  }
-  // @media (max-width: 640px) {
-  //   .app {
-  //     width: 50%;
-  //   }
-  //   .app-icon {
-  //     width: 120px;
-  //     height: 120px;
-  //   }
-  //   .app-icon.app-icon-rounded img {
-  //     border-radius: 23px;
-  //   }
-  // }
-  // @media (max-width: 480px) {
-  //   .app {
-  //     margin-top: 30px;
-  //   }
-  //   h4, .app-author {
-  //     display: none;
-  //   }
-  // }
 }
 .showcase-app-preview-backdrop {
   position: fixed;
@@ -109,7 +75,7 @@
   top: 50%;
   z-index: 1000;
   background: #fff;
-  border-radius: 45px;
+  border-radius: 15px;
   transform: translate3d(-50%, -50%, 0);
   width: 800px;
   padding: 20px;
@@ -118,6 +84,7 @@
   max-height: 90%;
   max-width: 90%;
   box-shadow: 0px 30px 60px rgba(0,0,0,0.4);
+  animation: showcase-app-preview-in 200ms forwards;
   .showcase-app-preview-close {
     position: absolute;
     width: 40px;
@@ -128,8 +95,6 @@
     transform: rotate(45deg);
     border-radius: 50%;
     box-sizing: border-box;
-    background: @primaryColor;
-    box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
     &:hover {
       &:after, &:before {
         transform: scale(1.2);
@@ -144,7 +109,7 @@
       margin-left: -2px;
       width: 4px;
       height: 60%;
-      background: #fff;
+      background: #999;
       border-radius: 2px;
       transition: 200ms;
     }
@@ -156,7 +121,7 @@
       margin-top: -2px;
       height: 4px;
       width: 60%;
-      background: #fff;
+      background: #999;
       border-radius: 2px;
       transition: 200ms;
     }
@@ -185,18 +150,14 @@
     margin-left: 230px;
     height: 100%;
     overflow: auto;
-  }
-  .app-about {
-    color: #555;
+    -webkit-overflow-scrolling: touch;
   }
   .app-links {
     line-height: 180px/4;
     a {
       vertical-align: middle;
-      margin-left: 10px;
-    }
-    a:first-child {
-      margin-left: 0;
+      margin-right: 10px;
+      margin-bottom: 10px;
     }
     .button {
       .button();
@@ -238,6 +199,7 @@
     border-radius: 4px;
     padding: 10px;
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
     white-space: nowrap;
     display: none;
     img, iframe {
@@ -255,5 +217,109 @@
       text-decoration: none;
       border-bottom: 1px dotted;
     }
+  }
+}
+
+@media (max-width: 1023px) {
+  .showcase-apps {
+    .app {
+      width: 100% / 3;
+    }
+  }
+
+}
+@media (max-width: 800px) {
+  .showcase-apps {
+    .app-icon {
+      width: 150px;
+      height: 150px;
+    }
+    .app-icon.app-icon-rounded img {
+      border-radius: 35px;
+    }
+    h4 {
+      font-size: 18px;
+    }
+    .app-author {
+      font-size: 14px;
+    }
+  }
+}
+@media (max-width: 600px) {
+  .showcase-apps {
+    .app-icon {
+      width: 80%;
+      max-width: 150px;
+      height: auto;
+    }
+    .app-icon.app-icon-rounded img {
+      border-radius: 5vw;
+    }
+    h4 {
+      font-size: 14px;
+      word-break: break-word;
+    }
+    .app-author {
+      font-size: 12px;
+    }
+  }
+  .showcase-app-preview {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+    padding: 15px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    .app-icon {
+      width: 80px;
+      height: 80px;
+      float: none;
+      margin-left: 0;
+      margin-right: 0;
+      margin-bottom: -80px;
+      &.app-icon-rounded img {
+        border-radius: 10px;
+      }
+    }
+    .app-info {
+      margin-left: 0;
+      overflow: visible;
+      height: auto;
+      h3 {
+        margin: 0;
+      }
+      h3, .app-author {
+        margin-left: 100px;
+      }
+    }
+    .app-links {
+      margin-top: 40px;
+      a {
+        margin-left: 0;
+        margin-right: 5px;
+      }
+    }
+  }
+}
+@media (max-width: 400px) {
+  .showcase-apps {
+    .app {
+      width: 50%;
+    }
+    .app-icon.app-icon-rounded img {
+      border-radius: 8vw;
+    }
+  }
+}
+@keyframes showcase-app-preview-in {
+  from {
+    opacity: 0.8;
+    transform: translate3d(-50%,-45%,0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(-50%,-50%,0);
   }
 }

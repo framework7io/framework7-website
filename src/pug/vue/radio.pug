@@ -5,17 +5,19 @@ block vars
   - var title = 'Radio Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
+
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Radio Vue Component
-    .docs-index
+    ul.docs-index
     p Radio Vue component represents <a href="../docs/radio.html">Radio</a> component.
     h2 Radio Components
     p There are following components included:
     ul
-      li <code><b>f7-radio</b></code>
+      li `f7-radio`
     h2 Radio Properties
     table.params-table
       thead
@@ -65,25 +67,21 @@ block content
           td change
           td Event will be triggered when radio input state changed
     h2 Radios List
-    p Radios List is not a separate component, but just a particular case of using <code><a href="list-view.html">&lt;f7-list&gt;</a></code>, <code><a href="list-item.html">&lt;f7-list-item&gt;</a></code>.
-    pre
-      code.html
-        :code
+    p Radios List is not a separate component, but just a particular case of using <a href="list-view.html">`<f7-list>`</a>, <a href="list-item.html">`<f7-list-item>`</a>.
+    :code(lang="html")
           <f7-list>
             <!-- Additional "radio" prop to enable radio list item -->
             <f7-list-item radio value="check_1" name="demo-radio" checked title="Radio 1"></f7-list-item>
             <f7-list-item radio value="check_2" name="demo-radio" title="Radio 2"></f7-list-item>
           </f7-list>
     h2 Radio v-model
-    p <code>v-model</code> <b>is not supported</b> on Radio vue component. Instead, just use the combination of <code>checked</code> property and <code>@change</code> event:
-    pre
-      code.html
-        :code
+    p `v-model` <b>is not supported</b> on Radio vue component. Instead, just use the combination of `checked` property and `@change` event:
+    :code(lang="html")
           <template>
             <f7-radio
               name="fruit"
-              value="bannana"
-              :checked="fruit === 'bannana'"
+              value="banana"
+              :checked="fruit === 'banana'"
               @change="fruit = $event.target.value"
             ></f7-radio>
 
@@ -110,18 +108,59 @@ block content
               },
             };
           </script>
-    h2 Examples
-    pre
-      code.html
-        :code
-          <!-- Inline radio -->
-          <p>Lorem <f7-radio name="demo-radio-1"></f7-radio> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <f7-radio name="demo-radio-1" checked></f7-radio> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/radio.html") Examples
+      :code(lang="html")
+            <f7-block-title>Inline</f7-block-title>
+            <f7-block strong>
+              <p>Lorem <f7-radio name="demo-radio-inline"></f7-radio> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <f7-radio name="demo-radio-inline" checked></f7-radio> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
+            </f7-block>
 
-          <!-- Radios List -->
-          <f7-list>
-            <f7-list-item radio value="Books" title="Books" name="demo-radio-2" checked></f7-list-item>
-            <f7-list-item radio value="Movies" title="Movies" name="demo-radio-2"></f7-list-item>
-            <f7-list-item radio value="Food" title="Food" name="demo-radio-2"></f7-list-item>
-            <f7-list-item radio value="Drinks" title="Drinks" name="demo-radio-2"></f7-list-item>
-          </f7-list>
+            <f7-block-title>Radio Group</f7-block-title>
+            <f7-list>
+              <f7-list-item radio title="Books" name="demo-radio" checked></f7-list-item>
+              <f7-list-item radio title="Movies" name="demo-radio"></f7-list-item>
+              <f7-list-item radio title="Food" name="demo-radio"></f7-list-item>
+              <f7-list-item radio title="Drinks" name="demo-radio"></f7-list-item>
+            </f7-list>
 
+            <f7-block-title>With Media Lists</f7-block-title>
+              <f7-list media-list>
+                <f7-list-item
+                  radio
+                  checked
+                  name="demo-media-radio"
+                  value="1"
+                  title="Facebook"
+                  after="17:14"
+                  subtitle="New messages from John Doe"
+                  text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+                ></f7-list-item>
+                <f7-list-item
+                  radio
+                  name="demo-media-radio"
+                  value="2"
+                  title="John Doe (via Twitter)"
+                  after="17:11"
+                  subtitle="John Doe (@_johndoe) mentioned you on Twitter!"
+                  text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+                ></f7-list-item>
+                <f7-list-item
+                  radio
+                  name="demo-media-radio"
+                  value="3"
+                  title="Facebook"
+                  after="16:48"
+                  subtitle="New messages from John Doe"
+                  text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+                ></f7-list-item>
+                <f7-list-item
+                  radio
+                  name="demo-media-radio"
+                  value="4"
+                  title="John Doe (via Twitter)"
+                  after="15:32"
+                  subtitle="John Doe (@_johndoe) mentioned you on Twitter!"
+                  text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+                ></f7-list-item>
+              </f7-list>

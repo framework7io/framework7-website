@@ -9,15 +9,12 @@ block content
   .docs-content
     +improveDocsLink
     h1 Initialize App
-    p Now you can see our HTML layout with linked required CSS and JavaScript files. Now we should initialize our app (for example in <code>my-app.js</code>):
-    pre
-      code
-        | var app = new Framework7();
-    p In the example above we use <code>app</code> variable where we store Framework7 initialized instance for easy access in future. It is not necessary to name it <code>app</code>, it could be any name you like.
+    p Now you can see our HTML layout with linked required CSS and JavaScript files. Now we should initialize our app (for example in `my-app.js`):
+    :code(lang="js")
+          var app = new Framework7();
+    p In the example above we use `app` variable where we store Framework7 initialized instance for easy access in future. It is not necessary to name it `app`, it could be any name you like.
     p It was pretty simple. But Framework7 also provides more customization on initialization by passing object with parameters:
-    pre
-      code
-        :code
+    :code(lang="js")
           var app = new Framework7({
             // App root element
             root: '#app',
@@ -39,15 +36,11 @@ block content
             // ... other parameters
           });
     p For list of all available app parameters check the <a href="app.html">App / Core</a> section.
-    p Now after we initialized our app, we need to initialize our <a href="view.html">View</a> (<code>&lt;div class="view view-main"&gt;</code> in app layout). The View is basically the app router which is responsible for navigation:
-    pre
-      code
-        :code
+    p Now after we initialized our app, we need to initialize our <a href="view.html">View</a> (`<div class="view view-main">` in app layout). The View is basically the app router which is responsible for navigation:
+    :code(lang="js")
           var mainView = app.views.create('.view-main');
-    p So your final initialization code in <code>my-app.js</code> could look like:
-    pre
-      code
-        :code
+    p So your final initialization code in `my-app.js` could look like:
+    :code(lang="js")
           var app = new Framework7({
             // App root element
             root: '#app',

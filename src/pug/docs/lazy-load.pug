@@ -11,55 +11,52 @@ block content
   .docs-content
     +improveDocsLink
     h1 Lazy Load
-    .docs-index
+    ul.docs-index
     p Lazy Load delays loading of images on page while they are outside of viewport until user scrolls to them.
     p It will make the page load faster, improve scrolling performance and also save traffic.
     .important-note
-      p Note, that lazy images and elements should be inside of scrollable <code><b>&lt;div class="page-content"&gt;</b></code> to work correctly
+      p Note, that lazy images and elements should be inside of scrollable `<div class="page-content">` to work correctly
     h2 Usage
     h3 With Images
     p To use lazy load on images:
     ol
-      li specify image source into <code><b>data-src</b></code> attribute instead of <code>src</code> attribute
-      li add <code><b>lazy</b></code> class to the image
-    pre
-      code.html
-        | &lt;div class="page-content"&gt;
-        |     ...
-        |     &lt;img data-src="path/to/image.jpg" class="lazy"&gt;
-        |     ...
-        | &lt;/div&gt;
-    .important-note After lazy image successfully loaded, <em>or in case of error loading the image file</em>, the <code>lazy</code> class will be replaced with <code>lazy-loaded</code> class.
+      li specify image source into `data-src` attribute instead of `src` attribute
+      li add `lazy` class to the image
+    :code(lang="html")
+      <div class="page-content">
+        ...
+        <img data-src="path/to/image.jpg" class="lazy">
+        ...
+      </div>
+    .important-note After lazy image successfully loaded, <em>or in case of error loading the image file</em>, the `lazy` class will be replaced with `lazy-loaded` class.
     h3 With Background Images
     p It is also possible to use lazy load for background images, in this case:
     ol
-      li specify element's background image source into <code><b>data-background</b></code>
-      li add <code><b>lazy</b></code> class to element
-    pre
-      code.html
-        | &lt;div class="page-content"&gt;
-        |     ...
-        |     &lt;div data-background="path/to/image.jpg" class="lazy"&gt;
-        |         ...
-        |     &lt;/div&gt;
-        |     ...
-        | &lt;/div&gt;
-    .important-note After lazy image successfully loaded, <em>or in case of error loading the image file</em>, the <code>lazy</code> class will be replaced with <code>lazy-loaded</code> class.
+      li specify element's background image source into `data-background`
+      li add `lazy` class to element
+    :code(lang="html")
+      <div class="page-content">
+        ...
+        <div data-background="path/to/image.jpg" class="lazy">
+            ...
+        </div>
+        ...
+      </div>
+    .important-note After lazy image successfully loaded, <em>or in case of error loading the image file</em>, the `lazy` class will be replaced with `lazy-loaded` class.
 
     h3 With Fade-in Effect
-    p If you want to add fade-in effect when image is loaded, you need to add additional <code><b>lazy-fade-in</b></code> class to image/element:
-    pre
-      code.html
-        | &lt;div class="page-content"&gt;
-        |     ...
-        |     &lt;img data-src="path/to/image.jpg" class="lazy lazy-fade-in"&gt;
-        |     &lt;div data-background="path/to/image.jpg" class="lazy lazy-fade-in"&gt;
-        |         ...
-        |     &lt;/div&gt;
-        |     ...
-        | &lt;/div&gt;
+    p If you want to add fade-in effect when image is loaded, you need to add additional `lazy-fade-in` class to image/element:
+    :code(lang="html")
+      <div class="page-content">
+        ...
+        <img data-src="path/to/image.jpg" class="lazy lazy-fade-in">
+        <div data-background="path/to/image.jpg" class="lazy lazy-fade-in">
+            ...
+        </div>
+        ...
+      </div>
     h2 Lazy Load App Parameters
-    p It is possible to control some default lazy loading behavior using global <a href="app.html#app-parameters">app parameters</a> by passing lazy loading related parameters under <code>lazy</code> parameter:
+    p It is possible to control some default lazy loading behavior using global <a href="app.html#app-parameters">app parameters</a> by passing lazy loading related parameters under `lazy` parameter:
     table.params-table
       thead
         tr
@@ -83,10 +80,13 @@ block content
           td boolean
           td true
           td If enabled, then lazy images will be loaded one by one when they appear in viewport
+        tr
+          td observer
+          td boolean
+          td true
+          td If enabled, it will use #[a(href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API" target="_blank") Intersection Observer] if it is supported by browser.
     p For example:
-    pre
-      code.js
-        :code
+    :code(lang="js")
           var app = new Framework7({
             lazy: {
               threshold: 50,
@@ -120,7 +120,7 @@ block content
       ul.method-parameters
         li
           span.parameter imageEl
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of lazy image or element (element with <code>lazy</code> class). Required.
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of lazy image or element (element with `lazy` class). Required.
         li
           span.parameter callback
           |  - <span class="parameter-type">function</span> - callback function that will be executed when image file loaded or in case of error loading this file.
@@ -174,18 +174,13 @@ block content
 
 
     h2 Trigger Lazy Load Manually
-    p It is possible to force lazy handler to check lazy images by triggering <code><b>lazy</b></code> event on lazy image/element. It is useful in case you have added lazy elements dynamically and want to check should them be loaded or not without scrolling the page. For example:
-    pre
-      code.js
-        :code
-          $$('img.lazy').trigger('lazy');
-
-          $$('div.lazy').trigger('lazy');
+    p It is possible to force lazy handler to check lazy images by triggering `lazy` event on lazy image/element. It is useful in case you have added lazy elements dynamically and want to check should them be loaded or not without scrolling the page. For example:
+    :code(lang="js")
+      $$('img.lazy').trigger('lazy');
+      $$('div.lazy').trigger('lazy');
     .with-device
-      h2(data-device-preview="../docs-demos/lazy-load.html") Examples
-      pre
-        code.css
-          :code
+      h2(data-device-preview="../docs-demos/core/lazy-load.html") Examples
+      :code(lang="css")
             img.demo-lazy {
               width: 100%;
               height: auto;
@@ -196,33 +191,31 @@ block content
               background-size: cover;
               height: 60vw;
             }
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="page-content">
               <div class="block block-strong">
-                <p> <img data-src="http://lorempixel.com/500/500/nature/1" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
+                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-1.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
                 <p>Lorem ipsum ...</p>
-                <p> <img data-src="http://lorempixel.com/500/500/nature/2" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
+                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-2.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
                 <p>Aenean id congue orci...</p>
-                <p> <img data-src="http://lorempixel.com/500/500/nature/3" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
+                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-3.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
                 <p>Pellentesque aliquam maximus ...</p>
-                <p> <img data-src="http://lorempixel.com/500/500/nature/4" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
+                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-4.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
                 <p>Duis ullamcorper velit id enim rutrum...</p>
-                <p> <img data-src="http://lorempixel.com/500/500/nature/5" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
+                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-5.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
                 <p>Suspendisse potenti...</p>
-                <p> <img data-src="http://lorempixel.com/500/500/nature/6" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
+                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-6.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
                 <p>Lorem ipsum ...</p>
-                <p> <img data-src="http://lorempixel.com/500/500/nature/7" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
+                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-7.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
                 <p>Aenean id congue orci...</p>
-                <p> <img data-src="http://lorempixel.com/500/500/nature/8" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
+                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-8.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
                 <p>Lorem ipsum ...</p>
-                <p> <img data-src="http://lorempixel.com/500/500/people/1" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
+                <p> <img data-src="https://cdn.framework7.io/placeholder/people-500x500-1.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
                 <p>Pellentesque aliquam maximus ...</p>
-                <p> <img data-src="http://lorempixel.com/500/500/nature/10" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
+                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-10.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
                 <p>Duis ullamcorper velit...</p>
                 <p><b>Using as background image:</b></p>
-                <div data-background="http://lorempixel.com/500/500/people/10" class="lazy lazy-fade-in demo-lazy"></div>
+                <div data-background="https://cdn.framework7.io/placeholder/people-500x500-10.jpg" class="lazy lazy-fade-in demo-lazy"></div>
                 <p>Suspendisse potenti...</p>
               </div>
             </div>

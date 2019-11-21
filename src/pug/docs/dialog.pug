@@ -11,7 +11,7 @@ block content
   .docs-content
     +improveDocsLink
     h1 Dialog
-    .docs-index
+    ul.docs-index
     p Dialog is a small content pane that pops up over App's main content. Dialogs are usualy used to ask something from a user, or to notify or warn a user. Dialog, as all other modals, is part of so called "Temporary Views".
 
     p Dialog can only be opened by using JavaScript. So lets look at related App methods to work with dialogs.
@@ -98,7 +98,7 @@ block content
           td animate
           td boolean
           td true
-          td Whether the Dialog should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods
+          td Whether the Dialog should be opened/closed with animation or not. Can be overwritten in `.open()` and `.close()` methods
         tr
           td title
           td string
@@ -143,10 +143,9 @@ block content
           td on
           td object
           td
-          td Object with events handlers. For example:
-            pre
-              code
-                :code
+          td
+            p Object with events handlers. For example:
+            :code(lang="js")
                   var dialog = app.dialog.create({
                     text: 'Hello World',
                     on: {
@@ -156,7 +155,7 @@ block content
                     }
                   })
     h3 Button Parameters
-    p Each Button in <code>buttons</code> array must be presented as object with button parameters:
+    p Each Button in `buttons` array must be presented as object with button parameters:
     table.params-table
       thead
         tr
@@ -179,7 +178,7 @@ block content
           td color
           td string
           td
-          td Button color, one of default colors
+          td Button color, one of <a href="color-themes.html">default colors</a>
         tr
           td close
           td boolean
@@ -194,7 +193,7 @@ block content
           td keyCodes
           td array
           td []
-          td Array with keyboard keycodes that will be used to trigger button click. For example, key code <code>13</code> means that button click will be triggered on Enter key press
+          td Array with keyboard keycodes that will be used to trigger button click. For example, key code `13` means that button click will be triggered on Enter key press
         tr
           td onClick
           td function(dialog, e)
@@ -202,11 +201,9 @@ block content
           td Callback function that will be executed after click on this button
     h2 Dialog Methods & Properties
     p So to create a Dialog we have to call:
-    pre
-      code
-        :code
+    :code(lang="js")
           var dialog = app.dialog.create({ /* parameters */ })
-    p After that we have its initialized instance (like <code>dialog</code> variable in example above) with useful methods and properties:
+    p After that we have its initialized instance (like `dialog` variable in example above) with useful methods and properties:
     table.methods-table
       tbody
         tr
@@ -230,6 +227,9 @@ block content
           td dialog.params
           td Dialog parameters
         tr
+          td dialog.opened
+          td Boolean prop indicating whether dialog is opened or not
+        tr
           th(colspan="2") Methods
         tr
           td dialog.open(<span>animate</span>)
@@ -237,14 +237,14 @@ block content
             ul.method-parameters
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be opened with animation
         tr
           td dialog.close(<span>animate</span>)
           td Close dialog. Where
             ul.method-parameters
               li
                 span.parameter animate
-                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation
+                |  - <span class="parameter-type">boolean</span> (by default `true`) - defines whether it should be closed with animation
         tr
           td dialog.setProgress(<span>progress</span>, <span>duration</span>)
           td Sets dialog progress when Dialog Progress shortcut in use
@@ -315,8 +315,8 @@ block content
           td Dialog Element<span>&lt;div class="dialog"&gt;</span>
           td Event will be triggered after Dialog completes its closing animation
     h3 App and Dialog Instance Events
-    p Dialog instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>dialog</code>.
-    table.events-table
+    p Dialog instance emits events on both self instance and app instance. App instance events has same names prefixed with `dialog`.
+    table.events-table.double-events-table
       thead
         tr
           th Event
@@ -373,10 +373,8 @@ block content
     p There are a few shortcut methods which that make creating dialogs much easier.
     p First lets check the global app parameters which help to configure such shortcuts and also used for localization purposes.
     h3 Dialog Shortcuts Parameters
-    p The following global dialog shortcut parameters can be passed on <a href="init-app.html">app initialization</a> under <code>dialog</code> property:
-    pre
-      code.js
-        :code
+    p The following global dialog shortcut parameters can be passed on <a href="init-app.html">app initialization</a> under `dialog` property:
+    :code(lang="js")
           var app = new Framework7({
             dialog: {
               // set default title for all dialog shortcuts
@@ -398,7 +396,7 @@ block content
           td title
           td string
           td
-          td Default dialogs shortcuts title. If not specified, will be equal to <code>app.name</code>
+          td Default dialogs shortcuts title. If not specified, will be equal to `app.name`
         tr
           td buttonOk
           td string
@@ -492,7 +490,7 @@ block content
     p Prompt dialog is used when it is required to get some data/answer from user. To open Prompt dialog we should also call one of the following App methods:
     .method-wrap
       p
-        span.method app.dialog.prompt(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
+        span.method app.dialog.prompt(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>, <span>defaultValue</span>)
         | - create Prompt Dialog and open it
       ul.method-parameters
         li
@@ -507,9 +505,12 @@ block content
         li
           span.parameter callbackCancel
           |  - <span class="parameter-type">function(value)</span>. Optional. Callback function that will be executed when user click "Cancel" button on Prompt dialog. As an argument function receives value of text input
+        li
+          span.parameter defaultValue
+          |  - <span class="parameter-type">string</span>. Optional. Prompt input default value
     .method-wrap
       p
-        span.method app.dialog.prompt(<span>text</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
+        span.method app.dialog.prompt(<span>text</span>, <span>callbackOk</span>, <span>callbackCancel</span>, <span>defaultValue</span>)
         | - create Prompt Dialog with default title and open it
       p.method-returns Method returns created Dialog's instance
     h3 Login
@@ -563,12 +564,15 @@ block content
     p Preloader dialog is used to indicate some background activity (like Ajax request) and to block any user actions during this activity. To open Preloader dialog we should also call appropriate App method:
     .method-wrap
       p
-        span.method app.dialog.preloader(<span>title</span>)
+        span.method app.dialog.preloader(<span>title</span>, <span>color</span>)
         | - create Preloader Dialog and open it
       ul.method-parameters
         li
           span.parameter title
           |  - <span class="parameter-type">string</span>. Optional. Preloader dialog title
+        li
+          span.parameter color
+          |  - <span class="parameter-type">string</span>. Optional. Preloader color. One of the <a href="color-themes.html">default colors</a>
       p.method-returns Method returns created Dialog's instance
     h3 Progress
     p Same as Preloader dialog but with <a href="progressbar.html">progressbar</a> instead of preloader.
@@ -582,17 +586,17 @@ block content
           |  - <span class="parameter-type">string</span>. Optional. Progress dialog title
         li
           span.parameter progress
-          |  - <span class="parameter-type">number</span>. Optional. Progressbar progress (from 0 to 100). If no <code>number</code> passed then it will have infinite progressbar.
+          |  - <span class="parameter-type">number</span>. Optional. Progressbar progress (from 0 to 100). If no `number` passed then it will have infinite progressbar.
         li
           span.parameter color
-          |  - <span class="parameter-type">string</span>. Optional. Progressbar color. One of default colors
+          |  - <span class="parameter-type">string</span>. Optional. Progressbar color. One of <a href="color-themes.html">default colors</a>
       p.method-returns Method returns created Dialog's instance
 
+    +cssVars('dialog')
+
     .with-device
-      h2(data-device-preview="../docs-demos/dialog.html") Examples
-      pre
-        code.xml
-          :code
+      h2(data-device-preview="../docs-demos/core/dialog.html") Examples
+      :code(lang="html")
             <body>
               ...
                 <div class="page-content">
@@ -630,9 +634,7 @@ block content
                 </div>
               ...
             </body>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

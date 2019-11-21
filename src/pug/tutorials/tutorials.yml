@@ -1,4 +1,92 @@
 -
+  date: October 7, 2019
+  video: false
+  title: "Migration To Framework7 v5"
+  url: https://blog.framework7.io/migration-to-framework7-v5-1374257bb5a7
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+  - v5
+-
+  date: Aug 21, 2019
+  video: true
+  title: "User Authentication for Framework7 with Firebase"
+  url: https://youtu.be/cYlSZLV5qN4
+  author:
+    name: Timo Ernst
+    url: https://www.timo-ernst.net
+  badges:
+  - v4
+-
+  date: May 21, 2019
+  video: true
+  title: "Get Started with Framework7 in 2019 using CLI Tutorial"
+  url: https://youtu.be/65hfVB49PZU
+  author:
+    name: Timo Ernst
+    url: https://www.timo-ernst.net
+  badges:
+  - v4
+-
+  date: February 12, 2019
+  video: false
+  title: "Migration To Framework7 v4"
+  url: https://blog.framework7.io/migration-to-framework7-v4-89d1ce49f4c0
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+  - v4
+-
+  date: December 5, 2018
+  video: true
+  title: "How to use the Calendar Component in Framework7"
+  url: https://youtu.be/qYteZaz_pUc
+  author:
+    name: Timo Ernst
+    url: http://www.timo-ernst.net
+  badges:
+  - v3
+-
+  date: November 2, 2018
+  video: true
+  title: "Auto-Complete Search Fields with React, Node and Framework7 tutorial"
+  url: https://youtu.be/6VEGkAdPTkU
+  author:
+    name: Timo Ernst
+    url: http://www.timo-ernst.net
+  badges:
+  - v3
+-
+  date: July 9, 2018
+  video: false
+  title: "Migration To Framework7 v3"
+  url: https://blog.framework7.io/migration-to-framework7-v3-928a21a1eac9
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+  - v3
+-
+  video: true
+  date: May 28th, 2018
+  title: "Deploy Framework7 apps to Android with PhoneGap Cordova | Beginner Tutorial"
+  url: https://www.timo-ernst.net/blog/2018/05/28/deploy-framework7-apps-to-android-with-phonegap-cordova-beginner-tutorial/
+  author:
+    name: Timo Ernst
+    url: https://www.timo-ernst.net
+-
+  video: true
+  date: April 11, 2018
+  title: "How to use Framework7 V2 Router | Video Tutorial"
+  url: https://www.timo-ernst.net/blog/2018/04/11/how-to-use-framework7-v2-router-tutorial/
+  author:
+    name: Timo Ernst
+    url: https://www.timo-ernst.net
+  badges:
+  - v2
+-
   date: Jan 14, 2018
   video: false
   title: "Migration To Framework7 v2"

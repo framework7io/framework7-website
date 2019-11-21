@@ -11,47 +11,42 @@ block content
   .docs-content
     +improveDocsLink
     h1 Progressbar
-    .docs-index
+    ul.docs-index
     p In addition to <a href="preloader.html">Preloader</a> Framework7 also comes with fancy animated determinate and infinite/indeterminate progressbars to indicate activity.
 
     h2 Determinate Progressbar
     p When progressbar is determinate it indicates how long an operation will take when the percentage complete is detectable.
     p Let's look at layout of determinate progressbar:
-    pre
-      code.html
-        | &lt;div class="progressbar" data-progress="20"&gt;
-        |   &lt;span&gt;&lt;/span&gt;
-        | &lt;/div&gt;
+    :code(lang="html")
+          <div class="progressbar" data-progress="20">
+            <span></span>
+          </div>
     p Where <b>data-progress="20"</b> - current progress (in percents). Note that this data attribute sets progress only on page load. If you need to change it later it should be done via API.
 
     h2 Infinite Progressbar
     p When progressbar is infinite/indeterminate it requests that the user wait while something finishes when it’s not necessary to indicate how long it will take.
     p Let's look at layout of infinite progressbar:
-    pre
-      code.html
-        | &lt;div class="progressbar-infinite"&gt;&lt;/div&gt;
+    :code(lang="html")
+          <div class="progressbar-infinite"></div>
 
     h2 Progressbar Colors
-    p Progressbar supports all <a href="color-themes.html">default colors</a>. So to change its color just add <code>color-[color]</code> class to preloader element.
-    p MD theme also supports special <code>color-multi</code> color for infinite progressbar to make it multi-color.
-    pre.html
-      code
-        :code
-          <!-- Red progressbar -->
-          <div class="progressbar color-red" data-progress="20">
-            <span></span>
-          </div>
+    p Progressbar supports all <a href="color-themes.html">default colors</a>. So to change its color just add `color-[color]` class to preloader element.
+    :code(lang="html")
+      <!-- Red progressbar -->
+      <div class="progressbar color-red" data-progress="20">
+        <span></span>
+      </div>
 
-          <!-- Green progressbar -->
-          <div class="progressbar color-green" data-progress="50">
-            <span></span>
-          </div>
+      <!-- Green progressbar -->
+      <div class="progressbar color-green" data-progress="50">
+        <span></span>
+      </div>
 
-          <!-- Yellow infinite progressbar -->
-          <div class="progressbar-infinite color-yellow"></div>
+      <!-- Yellow infinite progressbar -->
+      <div class="progressbar-infinite color-yellow"></div>
 
-          <!-- Multicolor infinite progressbar (MD theme only) -->
-          <div class="progressbar-infinite color-multi"></div>
+      <!-- Multicolor infinite progressbar -->
+      <div class="progressbar-infinite color-multi"></div>
     h2 Progressbar API
     p Progressbar comes with API that allows you to control Progressbar's progress, show and hide it. Let's look on appropriate App's properties and methods:
     .method-wrap
@@ -98,23 +93,23 @@ block content
         li.method-returns This method returns Progressbar HTMLElement
       p All arguments here are optional:
       ul
-        li If you omit <code>el</code> argument, it will look for (or create) progressbar element under app root
-        li If you omit <code>progress</code>, it will show/create infinite progressbar
+        li If you omit `el` argument, it will look for (or create) progressbar element under app root
+        li If you omit `progress`, it will show/create infinite progressbar
         li If you omit all arguments, then it will show/create infinite progressbar under the app root with default color
     .method-wrap
       p
-        span.method myApp.progressbar.hide(<span>el</span>)
+        span.method app.progressbar.hide(<span>el</span>)
         |  - hide Progressbar.
       ul.method-parameters
         li
           span.parameter el
           |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. Progressbar element container or element containing progressbar element. If string - CSS selector of such element. If not specified then it will look for such element under the app root element.
 
-    .with-device(data-device-preview="../docs-demos/progressbar.html")
-      h2 Examples
-      pre
-        code.html
-          :code
+    +cssVars('progressbar')
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/progressbar.html") Examples
+      :code(lang="html")
             <div class="block-title">Determinate Progress Bar</div>
             <div class="block block-strong">
               <p>Inline determinate progress bar:</p>
@@ -141,9 +136,7 @@ block content
                 </p>
               </div>
             </div>
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">Infinite Progress Bar</div>
             <div class="block block-strong">
               <p>Inline infinite progress bar</p>
@@ -168,9 +161,7 @@ block content
                 </p>
               </div>
             </div>
-      pre
-        code.html
-          :code
+      :code(lang="html")
             <div class="block-title">Colors</div>
             <div class="list simple-list">
               <ul>
@@ -194,9 +185,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

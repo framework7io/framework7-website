@@ -1,0 +1,92 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Appbar | Framework7 Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Appbar
+    ul.docs-index
+    p Appbar is the main app bar with actions on top of the whole app. It is designed to be used in desktop apps with Aurora theme.
+    h2 Appbar Layout
+    p Appbar layour is pretty simple:
+    :code(lang="html")
+      <div class="appbar">
+        <div class="appbar-inner">
+          <!-- ... Appbar content -->
+        </div>
+      </div>
+    p To be on top of the whole app it must be placed in App's root element before Panels and Views:
+    :code(lang="html")
+      <div id="app">
+
+        <!-- Appbar -->
+        <div class="appbar">
+          <div class="appbar-inner">
+            <!-- ... Appbar content -->
+          </div>
+        </div>
+
+        <!-- Panels -->
+        <div class="panel panel-left panel-reveal">...</div>
+
+        <!-- Views -->
+        <div class="view view-main">...</div>
+        ...
+
+      </div>
+    :code(lang="html")
+          <span class="badge">32</span>
+
+    +cssVars('appbar')
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/appbar.html") Examples
+      :code(lang="html")
+        <div id="#app">
+          <!-- Appbar -->
+          <div class="appbar">
+            <div class="appbar-inner">
+              <div class="left">
+                <a href="#" class="button button-small panel-toggle display-flex" data-panel="left">
+                  <i class="f7-icons">bars</i>
+                </a>
+                <a href="#" class="button button-small display-flex margin-left-half">
+                  <i class="f7-icons">reply_fill</i>
+                </a>
+                <a href="#" class="button button-small display-flex margin-left-half">
+                  <i class="f7-icons">forward_fill</i>
+                </a>
+              </div>
+              <div class="right">
+                <div class="searchbar searchbar-inline">
+                  <div class="searchbar-input-wrap">
+                    <input type="text" placeholder="Search app">
+                    <i class="searchbar-icon"></i>
+                    <div class="input-clear-button"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rest of the app -->
+          <div class="view view-main view-init">
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-bg"></div>
+                <div class="navbar-inner">
+                  <div class="title">Badge</div>
+                </div>
+              </div>
+              <div class="page-content">
+                ...
+              </div>
+            </div>
+          </div>
+        </div>
