@@ -3105,3 +3105,31 @@
     - "#{cdn}/i/showcase/tanahalhaperek3.png"
     - "#{cdn}/i/showcase/tanahalhaperek4.png"
     - "#{cdn}/i/showcase/tanahalhaperek5.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/farmqascouting.png"
+  iconRounded: true
+  title: "FarmQA Scouting"
+  author:
+    url: https://farmqa.com/
+    name: FarmQA
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.farmqa.scouting
+    appstore: https://itunes.apple.com/app/farmqa-scouting/id1232043703?mt=8
+    website: https://farmqa.com/scouting
+  description: |
+    FarmQA Scouting is your digital agronomy assistant for crop and field scouting. Flexible scouting templates allow for the definition of the exact template you need for your crops. FarmQA Scouting will increase the effectiveness of your crop scouting for standard crops as well as specialty crops like grass seed, hops, or even grapes. There are no constraints because FarmQA Scouting adapts to your needs.
+  features:
+    - Easily send scouting reports to agronomists and growers
+    - Define customized scouting templates specific to crops or even fields
+    - Document findings with photographs and map annotations
+    - Optimized data entry to make your time in the field more efficient
+    - See distances to nearby fields
+    - Draw field boundaries
+    - Automatically merge scouting reports from multiple scouts into one report
+    - Offline scouting observations
+  screenshots:
+  - "#{cdn}/i/showcase/farmqascouting1.png"
+  - "#{cdn}/i/showcase/farmqascouting2.png"
+  - "#{cdn}/i/showcase/farmqascouting3.png"
+  - "#{cdn}/i/showcase/farmqascouting4.png"
