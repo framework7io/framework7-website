@@ -32,9 +32,13 @@ silver:
   imageUrl: "/i/sponsors/securcom.png"
 topSupporter:
 -
+  title: Kqapius, INC.
+  link: https://kqapi.us
+  imageUrl: "/i/sponsors/kqapius.png"
+-
   title: Write My Paper For Me
   link: https://writersperhour.com/write-my-paper
-  imageUrl: "/i/sponsors/writersperhour.jpg"
+  imageUrl: "/i/sponsors/kqapi.jpg"
 -
   title: Linux VPS Monovm
   link: https://monovm.com/linux-vps/
