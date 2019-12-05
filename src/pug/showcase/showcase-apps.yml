@@ -1,5 +1,86 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/ananya-marathi.png"
+  iconRounded: true
+  title: "मराठी विश्वकोश (Vishwakosh)"
+  author:
+    url: http://ananyamultitech.com/
+    name: Ananya MultiTech
+  links:
+    appstore: https://apps.apple.com/in/app/id1473689165
+    googleplay: https://play.google.com/store/apps/details?id=io.marathi.vishwakosh
+  description: |
+    आधुनिक जग हे ज्ञान आणि माहिती यांचे जग म्हणून ओळखले जाते. यामध्ये ज्ञाननिर्मिती, ज्ञानसंवर्धन आणि ज्ञानप्रसार या तिन्हीं गोष्टींचा समावेश होतो. याचा विचार करून दि. १ डिसेंबर १९८० रोजी मराठी विश्वकोशाच्या संपादन आणि प्रकाशन कार्यार्थ महाराष्ट्र राज्य मराठी विश्वकोश निर्मिती मंडळाची स्थापना करण्यात आली. प्राज्ञ पाठशाळेच्या माध्यमातून संस्कृतचे अध्ययन करणारे तर्कतीर्थ लक्ष्मणशास्त्री जोशी यांच्यावर ही जबाबदारी देण्यात आली. मराठी विश्वकोशाच्या माध्यमातून मराठीचा प्रचार व प्रसार करून जिज्ञासू वाचकांना, संशोधकांना, अभ्यासकांना जागतिक दर्जाचे ज्ञान व माहिती उपलब्ध करून देणे हा मराठी विश्वकोशाचा प्रधान हेतू होता.
+
+    सीडॅक ने संगणकीकृत केलेले मूळ विश्वकोशाचे २० खंडात विखूरलेले लेख एकत्रीत करून "तांत्रीकदृष्ट्या अद्ययावत" करून "https://vishwakosh.marathi.gov.in/" ह्या संकेतस्थळावर "प्रथमावृत्ती" म्हणून उपलब्ध केले आहेत. युनिकोड वापरून संगणकीकृत केलेला हा डेटा, इमेजेस सहीत ऑनलाइन असून १००% सर्चेबल आहे. पूर्वी केवळ टायटल पुरता मर्यादीत असलेली सर्च आता पूर्ण लेखातील विषय कव्हर करते.
+
+    मराठी विश्वकोशाचे नविन अद्ययावत संकेतस्थळ "https://marathivishwakosh.org/" ह्या नावाने असून विश्वकोशाने अंगीकारलेल्या ज्ञानमंडळ संकल्पनेला अनुसरून त्याची रचना आहे.
+
+    मराठी विश्वकोशाच्या ऍपमधे दोन्ही साइट एकत्र पहायची सोय आहे. वेगवेगळी अॅप डाऊनलोड करायची गरज नाही. ऍपमधे देखील सर्च वर विशेष भर दिला आहे, जेणेकरून कुणीही हवा तो लेख पटकन शोधू शकेल. ऍपमधूनच मराठी शब्दकोश शोधायची सोय देखील आहे.
+  screenshots:
+    - "#{cdn}/i/showcase/ananya-marathi-1.png"
+    - "#{cdn}/i/showcase/ananya-marathi-2.png"
+    - "#{cdn}/i/showcase/ananya-marathi-3.png"
+    - "#{cdn}/i/showcase/ananya-marathi-4.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/ananya-magazine.png"
+  iconRounded: true
+  title: "Bahuvidh"
+  author:
+    url: http://ananyamultitech.com/
+    name: Ananya MultiTech
+  links:
+    appstore: https://apps.apple.com/in/app/id1467748001
+    googleplay: https://play.google.com/store/apps/details?id=com.bahuvidh.app
+  description: |
+    Selective Curated Content in Marathi. This app is a tool to read various selective content availed on "www.Bahuvidh.com" which is 1st paid digital magazine in Marathi Language. App allows online registration and then access to "member's only" content. App has offline compatibility, commenting & social media sharing features.
+  screenshots:
+    - "#{cdn}/i/showcase/ananya-magazine-1.png"
+    - "#{cdn}/i/showcase/ananya-magazine-2.png"
+    - "#{cdn}/i/showcase/ananya-magazine-3.png"
+    - "#{cdn}/i/showcase/ananya-magazine-4.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/ananya-dictionary.png"
+  iconRounded: true
+  title: "शब्दकोश"
+  author:
+    url: http://ananyamultitech.com/
+    name: Ananya MultiTech
+  links:
+    appstore: https://apps.apple.com/in/app/id1474544259
+    googleplay: https://play.google.com/store/apps/details?id=io.marathi.shabdakosh
+  description: |
+    १ मे १९६० रोजी महाराष्ट्र राज्याची स्थापना झाल्यानंतर राजभाषा मराठीचा शासन व्यवहारात वापर करण्याबाबतचे धोरण राबविण्यासाठी शासन निर्णय, सामान्य प्रशासन विभाग,क्रमांक ओएफएल-११५९ बी दिनांक ६ जुलै १९६० अन्वये भाषा संचालनालयाची स्थापना करण्यात आली. मराठी राजभाषा असल्याचे घोषित करणारा कायदा विधानमंडळात मंजूर होऊन दिनांक ११ जानेवारी, १९६५ रोजी महाराष्ट्र राजपत्रातून जाहीर झाला व तदन्वये मराठीचा राज्य कारभारात जास्तीत जास्त वापर करण्याचे ठरले. राजभाषा मराठीविषयक शासनाचे धोरण राबवताना आधुनिक तंत्रज्ञानाद्वारे विविध विषयावरील शास्त्रीय व तांत्रिक परिभाषा कोश तयार करणे, शासन व्यवहारासाठी आवश्यक परिभाषा घडविणे, शब्दावल्या तयार करणे ही भाषा संचालनालयचे महत्वाचे उद्दिष्ट आहे!
+
+    राजभाषा मराठीविषयक शासनाचे धोरण राबवताना, मराठीचा राज्य कारभारात जास्तीत जास्त वापर करण्यासाठी आधुनिक तंत्रज्ञानाद्वारे विविध विषयावरील शास्त्रीय व तांत्रिक परिभाषा कोश, शासन व्यवहारासाठी आवश्यक परिभाषा व शब्दावल्या यांचे संकलन..
+  screenshots:
+    - "#{cdn}/i/showcase/ananya-dictionary-1.jpg"
+    - "#{cdn}/i/showcase/ananya-dictionary-2.jpg"
+    - "#{cdn}/i/showcase/ananya-dictionary-3.jpg"
+    - "#{cdn}/i/showcase/ananya-dictionary-4.jpg"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/ananya-state.png"
+  iconRounded: true
+  title: "भाषा संचालनालय"
+  author:
+    url: http://ananyamultitech.com/
+    name: Ananya MultiTech
+  links:
+    appstore: https://apps.apple.com/in/app/id1476476502
+    googleplay: https://play.google.com/store/apps/details?id=io.marathi.directorate
+  description: |
+    राजभाषा मराठीचा शासन व्यवहारात वापर करण्याबाबतचे शासनाचे धोरण राबवण्यासाठी महाराष्ट्र शासनाने दिनांक ६ जुलै, १९६० अन्वये भाषा संचालनालयाची स्थापना केली. केंद्गीय व राज्य अधिनियम, नियम यांचा मराठी अनुवाद व विविध विषयावरील शास्त्रीय व तांत्रिक परिभाषा कोश, शब्दावल्या ह्यांचा समावेश असलेले अद्ययावत अॅप आजच डाऊनलोड करा.
+    राज्य अधिनियम व केंद्गीय अधिनियम यांच्या अनुवादाचे काम या संचालनालयाच्या स्थापनेपासून करण्यात येत आहे. त्यासाठी कायद्याची अशी एक विशिष्ट लेखनशैली या संचालनालयाने विकसित केली असून ‘’न्याय व्यवहार कोश’’ हा कोश त्या दृष्टीने प्रकाशित केला आहे. तसेच आतापर्यंत सुमारे २१२ राज्य अधिनियमांचा व १२६० राज्य नियमांचा अनुवाद करण्यात आला आहे.
+  screenshots:
+    - "#{cdn}/i/showcase/ananya-state-1.jpg"
+    - "#{cdn}/i/showcase/ananya-state-2.jpg"
+    - "#{cdn}/i/showcase/ananya-state-3.jpg"
+    - "#{cdn}/i/showcase/ananya-state-4.jpg"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/pricepoint.jpg"
   iconRounded: true
   title: "PricePoint"
@@ -33,7 +114,7 @@
     Do you have any pets? They give you joy and happiness from the minutes spent with them, but they need systematic care. How to find time in a busy schedule to provide regular care for animals and not to forget anything? My Pet's Diary - pet care reminders will help you.
 
     All the most important is collected in one place, in the diary of a pet. Walking, visiting a veterinarian, water procedures, regular treatment of pets, feeding schedule and recommendations for care. With this application, nothing will be missed and forgotten.
-    
+
     Your pets will thank you with long and happy years spent next to their beloved owner!
 
     The functionality of this application allows you to
