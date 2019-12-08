@@ -149,8 +149,9 @@ block content
           td string<br>object
           td undefined
           td
-            p If undefined, it will use format based on `locale` or (or browser locale).
-            p It can accept <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat#Parameters">`Intl.DateTimeFormat`.`options`</a>. For example `{ month: 'long', day: 'numeric' }`.
+            p If undefined, it will use format based on `locale` (or browser locale).
+            p It can accept <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat#Parameters">`Intl.DateTimeFormat`.`options`</a>.
+            p For example `{ month: 'long', day: 'numeric' }`.
             p Or you can pass string with special tokens, available expressions:
             ul
               li `yyyy` - 4 digits year
@@ -163,6 +164,18 @@ block content
               li `d` - day number, from 1 to 31
               li `DD` - full week day name
               li `D` - short week day name
+            p The following additional time expressions available when `timePicker` enabled:
+            ul
+              li `HH` - 24-hours format 2 digits hours (00 - 23)
+              li `H` - 24-hours format hours (0 - 23)
+              li `hh` - 12-hours format 2 digits hours (00 - 12)
+              li `h` - 12-hours format hours (0 - 12)
+              li `:mm` - 2 digits minutes (00 - 59)
+              li `:m` - minutes (0 - 59)
+              li `ss` - 2 digits seconds (00 - 59)
+              li `s` - seconds (0 - 59)
+              li `A` - uppercased post or ante meridiem (PM or AM)
+              li `a` - lowercased post or ante meridiem (pm or am)
         tr
           td multiple
           td boolean

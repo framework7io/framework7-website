@@ -81,13 +81,13 @@
 	    var source = arguments[i] != null ? arguments[i] : {};
 
 	    if (i % 2) {
-	      ownKeys(source, true).forEach(function (key) {
+	      ownKeys(Object(source), true).forEach(function (key) {
 	        _defineProperty(target, key, source[key]);
 	      });
 	    } else if (Object.getOwnPropertyDescriptors) {
 	      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
 	    } else {
-	      ownKeys(source).forEach(function (key) {
+	      ownKeys(Object(source)).forEach(function (key) {
 	        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
 	      });
 	    }
@@ -12374,6 +12374,7 @@
 	  }), {
 	    open: function open(el, animate) {
 	      var $el = $(el);
+	      if (!$el.length) return undefined;
 	      var instance = $el[0].f7Modal;
 	      if (!instance) instance = new constructor(app, {
 	        el: $el
@@ -12384,7 +12385,7 @@
 	      var el = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultSelector;
 	      var animate = arguments.length > 1 ? arguments[1] : undefined;
 	      var $el = $(el);
-	      if ($el.length === 0) return undefined;
+	      if (!$el.length) return undefined;
 	      var instance = $el[0].f7Modal;
 	      if (!instance) instance = new constructor(app, {
 	        el: $el
@@ -13926,11 +13927,11 @@
 	      tapHoldPreventClicks: true,
 	      // Active State
 	      activeState: true,
-	      activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item, .link, .item-link',
+	      activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item, .link, .item-link, .accordion-item-toggle',
 	      mdTouchRipple: true,
 	      iosTouchRipple: false,
 	      auroraTouchRipple: false,
-	      touchRippleElements: '.ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content'
+	      touchRippleElements: '.ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content, .list.accordion-list .accordion-item-toggle'
 	    }
 	  },
 	  instance: {
@@ -13946,36 +13947,137 @@
 	};
 
 	/**
-	 * Default configs.
+	 * Tokenize input string.
 	 */
-	var DEFAULT_DELIMITER = "/";
-	/**
-	 * Balanced bracket helper function.
-	 */
-
-	function balanced(open, close, str, index) {
-	  var count = 0;
-	  var i = index;
+	function lexer(str) {
+	  var tokens = [];
+	  var i = 0;
 
 	  while (i < str.length) {
-	    if (str[i] === "\\") {
-	      i += 2;
+	    var char = str[i];
+
+	    if (char === "*" || char === "+" || char === "?") {
+	      tokens.push({
+	        type: "MODIFIER",
+	        index: i,
+	        value: str[i++]
+	      });
 	      continue;
 	    }
 
-	    if (str[i] === close) {
-	      count--;
-	      if (count === 0) return i + 1;
+	    if (char === "\\") {
+	      tokens.push({
+	        type: "ESCAPED_CHAR",
+	        index: i++,
+	        value: str[i++]
+	      });
+	      continue;
 	    }
 
-	    if (str[i] === open) {
-	      count++;
+	    if (char === "{") {
+	      tokens.push({
+	        type: "OPEN",
+	        index: i,
+	        value: str[i++]
+	      });
+	      continue;
 	    }
 
-	    i++;
+	    if (char === "}") {
+	      tokens.push({
+	        type: "CLOSE",
+	        index: i,
+	        value: str[i++]
+	      });
+	      continue;
+	    }
+
+	    if (char === ":") {
+	      var name = "";
+	      var j = i + 1;
+
+	      while (j < str.length) {
+	        var code = str.charCodeAt(j);
+
+	        if ( // `0-9`
+	        code >= 48 && code <= 57 || // `A-Z`
+	        code >= 65 && code <= 90 || // `a-z`
+	        code >= 97 && code <= 122 || // `_`
+	        code === 95) {
+	          name += str[j++];
+	          continue;
+	        }
+
+	        break;
+	      }
+
+	      if (!name) throw new TypeError("Missing parameter name at " + i);
+	      tokens.push({
+	        type: "NAME",
+	        index: i,
+	        value: name
+	      });
+	      i = j;
+	      continue;
+	    }
+
+	    if (char === "(") {
+	      var count = 1;
+	      var pattern = "";
+	      var j = i + 1;
+
+	      if (str[j] === "?") {
+	        throw new TypeError("Pattern cannot start with \"?\" at " + j);
+	      }
+
+	      while (j < str.length) {
+	        if (str[j] === "\\") {
+	          pattern += str[j++] + str[j++];
+	          continue;
+	        }
+
+	        if (str[j] === ")") {
+	          count--;
+
+	          if (count === 0) {
+	            j++;
+	            break;
+	          }
+	        } else if (str[j] === "(") {
+	          count++;
+
+	          if (str[j + 1] !== "?") {
+	            throw new TypeError("Capturing groups are not allowed at " + j);
+	          }
+	        }
+
+	        pattern += str[j++];
+	      }
+
+	      if (count) throw new TypeError("Unbalanced pattern at " + i);
+	      if (!pattern) throw new TypeError("Missing pattern at " + i);
+	      tokens.push({
+	        type: "PATTERN",
+	        index: i,
+	        value: pattern
+	      });
+	      i = j;
+	      continue;
+	    }
+
+	    tokens.push({
+	      type: "CHAR",
+	      index: i,
+	      value: str[i++]
+	    });
 	  }
 
-	  return -1;
+	  tokens.push({
+	    type: "END",
+	    index: i,
+	    value: ""
+	  });
+	  return tokens;
 	}
 	/**
 	 * Parse a string for the raw tokens.
@@ -13987,107 +14089,101 @@
 	    options = {};
 	  }
 
-	  var _a, _b;
-
-	  var tokens = [];
-	  var defaultDelimiter = (_a = options.delimiter, _a !== null && _a !== void 0 ? _a : DEFAULT_DELIMITER);
-	  var whitelist = (_b = options.whitelist, _b !== null && _b !== void 0 ? _b : undefined);
-	  var i = 0;
+	  var tokens = lexer(str);
+	  var _a = options.prefixes,
+	      prefixes = _a === void 0 ? "./" : _a;
+	  var defaultPattern = "[^" + escapeString(options.delimiter || "/#?") + "]+?";
+	  var result = [];
 	  var key = 0;
+	  var i = 0;
 	  var path = "";
-	  var isEscaped = false; // tslint:disable-next-line
 
-	  while (i < str.length) {
-	    var prefix = "";
-	    var name = "";
-	    var pattern = ""; // Ignore escaped sequences.
+	  var tryConsume = function tryConsume(type) {
+	    if (i < tokens.length && tokens[i].type === type) return tokens[i++].value;
+	  };
 
-	    if (str[i] === "\\") {
-	      i++;
-	      path += str[i++];
-	      isEscaped = true;
+	  var mustConsume = function mustConsume(type) {
+	    var value = tryConsume(type);
+	    if (value !== undefined) return value;
+	    var _a = tokens[i],
+	        nextType = _a.type,
+	        index = _a.index;
+	    throw new TypeError("Unexpected " + nextType + " at " + index + ", expected " + type);
+	  };
+
+	  var consumeText = function consumeText() {
+	    var result = "";
+	    var value; // tslint:disable-next-line
+
+	    while (value = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
+	      result += value;
+	    }
+
+	    return result;
+	  };
+
+	  while (i < tokens.length) {
+	    var char = tryConsume("CHAR");
+	    var name = tryConsume("NAME");
+	    var pattern = tryConsume("PATTERN");
+
+	    if (name || pattern) {
+	      var prefix = char || "";
+
+	      if (prefixes.indexOf(prefix) === -1) {
+	        path += prefix;
+	        prefix = "";
+	      }
+
+	      if (path) {
+	        result.push(path);
+	        path = "";
+	      }
+
+	      result.push({
+	        name: name || key++,
+	        prefix: prefix,
+	        suffix: "",
+	        pattern: pattern || defaultPattern,
+	        modifier: tryConsume("MODIFIER") || ""
+	      });
 	      continue;
 	    }
 
-	    if (str[i] === ":") {
-	      while (++i < str.length) {
-	        var code = str.charCodeAt(i);
+	    var value = char || tryConsume("ESCAPED_CHAR");
 
-	        if ( // `0-9`
-	        code >= 48 && code <= 57 || // `A-Z`
-	        code >= 65 && code <= 90 || // `a-z`
-	        code >= 97 && code <= 122 || // `_`
-	        code === 95) {
-	          name += str[i];
-	          continue;
-	        }
-
-	        break;
-	      } // False positive on param name.
-
-
-	      if (!name) i--;
+	    if (value) {
+	      path += value;
+	      continue;
 	    }
 
-	    if (str[i] === "(") {
-	      var end = balanced("(", ")", str, i); // False positive on matching brackets.
-
-	      if (end > -1) {
-	        pattern = str.slice(i + 1, end - 1);
-	        i = end;
-
-	        if (pattern[0] === "?") {
-	          throw new TypeError("Path pattern must be a capturing group");
-	        }
-
-	        if (/\((?=[^?])/.test(pattern)) {
-	          var validPattern = pattern.replace(/\((?=[^?])/, "(?:");
-	          throw new TypeError("Capturing groups are not allowed in pattern, use a non-capturing group: (" + validPattern + ")");
-	        }
-	      }
-	    } // Add regular characters to the path string.
-
-
-	    if (name === "" && pattern === "") {
-	      path += str[i++];
-	      isEscaped = false;
-	      continue;
-	    } // Extract the final character from `path` for the prefix.
-
-
-	    if (path.length && !isEscaped) {
-	      var char = path[path.length - 1];
-	      var matches = whitelist ? whitelist.indexOf(char) > -1 : true;
-
-	      if (matches) {
-	        prefix = char;
-	        path = path.slice(0, -1);
-	      }
-	    } // Push the current path onto the list of tokens.
-
-
-	    if (path.length) {
-	      tokens.push(path);
+	    if (path) {
+	      result.push(path);
 	      path = "";
 	    }
 
-	    var repeat = str[i] === "+" || str[i] === "*";
-	    var optional = str[i] === "?" || str[i] === "*";
-	    var delimiter = prefix || defaultDelimiter; // Increment `i` past modifier token.
+	    var open = tryConsume("OPEN");
 
-	    if (repeat || optional) i++;
-	    tokens.push({
-	      name: name || key++,
-	      prefix: prefix,
-	      delimiter: delimiter,
-	      optional: optional,
-	      repeat: repeat,
-	      pattern: pattern || "[^" + escapeString(delimiter === defaultDelimiter ? delimiter : delimiter + defaultDelimiter) + "]+?"
-	    });
+	    if (open) {
+	      var prefix = consumeText();
+	      var name_1 = tryConsume("NAME") || "";
+	      var pattern_1 = tryConsume("PATTERN") || "";
+	      var suffix = consumeText();
+	      mustConsume("CLOSE");
+	      result.push({
+	        name: name_1 || (pattern_1 ? key++ : ""),
+	        pattern: name_1 && !pattern_1 ? defaultPattern : pattern_1,
+	        prefix: prefix,
+	        suffix: suffix,
+	        modifier: tryConsume("MODIFIER") || ""
+	      });
+	      continue;
+	    }
+
+	    mustConsume("END");
 	  }
 
-	  if (path.length) tokens.push(path);
-	  return tokens;
+	  return result;
 	}
 	/**
 	 * Compile a string to a template function for the path.
@@ -14130,14 +14226,16 @@
 	      }
 
 	      var value = data ? data[token.name] : undefined;
+	      var optional = token.modifier === "?" || token.modifier === "*";
+	      var repeat = token.modifier === "*" || token.modifier === "+";
 
 	      if (Array.isArray(value)) {
-	        if (!token.repeat) {
+	        if (!repeat) {
 	          throw new TypeError("Expected \"" + token.name + "\" to not repeat, but got an array");
 	        }
 
 	        if (value.length === 0) {
-	          if (token.optional) continue;
+	          if (optional) continue;
 	          throw new TypeError("Expected \"" + token.name + "\" to not be empty");
 	        }
 
@@ -14148,7 +14246,7 @@
 	            throw new TypeError("Expected all \"" + token.name + "\" to match \"" + token.pattern + "\", but got \"" + segment + "\"");
 	          }
 
-	          path += (j === 0 ? token.prefix : token.delimiter) + segment;
+	          path += token.prefix + segment + token.suffix;
 	        }
 
 	        continue;
@@ -14161,12 +14259,12 @@
 	          throw new TypeError("Expected \"" + token.name + "\" to match \"" + token.pattern + "\", but got \"" + segment + "\"");
 	        }
 
-	        path += token.prefix + segment;
+	        path += token.prefix + segment + token.suffix;
 	        continue;
 	      }
 
-	      if (token.optional) continue;
-	      var typeOfMessage = token.repeat ? "an array" : "a string";
+	      if (optional) continue;
+	      var typeOfMessage = repeat ? "an array" : "a string";
 	      throw new TypeError("Expected \"" + token.name + "\" to be " + typeOfMessage);
 	    }
 
@@ -14203,9 +14301,8 @@
 	      keys.push({
 	        name: i,
 	        prefix: "",
-	        delimiter: "",
-	        optional: false,
-	        repeat: false,
+	        suffix: "",
+	        modifier: "",
 	        pattern: ""
 	      });
 	    }
@@ -14242,18 +14339,18 @@
 	    options = {};
 	  }
 
-	  var strict = options.strict,
-	      _a = options.start,
-	      start = _a === void 0 ? true : _a,
-	      _b = options.end,
-	      end = _b === void 0 ? true : _b,
-	      _c = options.delimiter,
-	      delimiter = _c === void 0 ? DEFAULT_DELIMITER : _c,
+	  var _a = options.strict,
+	      strict = _a === void 0 ? false : _a,
+	      _b = options.start,
+	      start = _b === void 0 ? true : _b,
+	      _c = options.end,
+	      end = _c === void 0 ? true : _c,
 	      _d = options.encode,
 	      encode = _d === void 0 ? function (x) {
 	    return x;
 	  } : _d;
-	  var endsWith = (typeof options.endsWith === "string" ? options.endsWith.split("") : options.endsWith || []).map(escapeString).concat("$").join("|");
+	  var endsWith = "[" + escapeString(options.endsWith || "") + "]|$";
+	  var delimiter = "[" + escapeString(options.delimiter || "/#?") + "]";
 	  var route = start ? "^" : ""; // Iterate over the tokens and create our regexp string.
 
 	  for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
@@ -14262,35 +14359,42 @@
 	    if (typeof token === "string") {
 	      route += escapeString(encode(token));
 	    } else {
-	      var capture = token.repeat ? "(?:" + token.pattern + ")(?:" + escapeString(token.delimiter) + "(?:" + token.pattern + "))*" : token.pattern;
-	      if (keys) keys.push(token);
+	      var prefix = escapeString(encode(token.prefix));
+	      var suffix = escapeString(encode(token.suffix));
 
-	      if (token.optional) {
-	        if (!token.prefix) {
-	          route += "(" + capture + ")?";
+	      if (token.pattern) {
+	        if (keys) keys.push(token);
+
+	        if (prefix || suffix) {
+	          if (token.modifier === "+" || token.modifier === "*") {
+	            var mod = token.modifier === "*" ? "?" : "";
+	            route += "(?:" + prefix + "((?:" + token.pattern + ")(?:" + suffix + prefix + "(?:" + token.pattern + "))*)" + suffix + ")" + mod;
+	          } else {
+	            route += "(?:" + prefix + "(" + token.pattern + ")" + suffix + ")" + token.modifier;
+	          }
 	        } else {
-	          route += "(?:" + escapeString(token.prefix) + "(" + capture + "))?";
+	          route += "(" + token.pattern + ")" + token.modifier;
 	        }
 	      } else {
-	        route += escapeString(token.prefix) + "(" + capture + ")";
+	        route += "(?:" + prefix + suffix + ")" + token.modifier;
 	      }
 	    }
 	  }
 
 	  if (end) {
-	    if (!strict) route += "(?:" + escapeString(delimiter) + ")?";
-	    route += endsWith === "$" ? "$" : "(?=" + endsWith + ")";
+	    if (!strict) route += delimiter + "?";
+	    route += !options.endsWith ? "$" : "(?=" + endsWith + ")";
 	  } else {
 	    var endToken = tokens[tokens.length - 1];
-	    var isEndDelimited = typeof endToken === "string" ? endToken[endToken.length - 1] === delimiter : // tslint:disable-next-line
+	    var isEndDelimited = typeof endToken === "string" ? delimiter.indexOf(endToken[endToken.length - 1]) > -1 : // tslint:disable-next-line
 	    endToken === undefined;
 
 	    if (!strict) {
-	      route += "(?:" + escapeString(delimiter) + "(?=" + endsWith + "))?";
+	      route += "(?:" + delimiter + "(?=" + endsWith + "))?";
 	    }
 
 	    if (!isEndDelimited) {
-	      route += "(?=" + escapeString(delimiter) + "|" + endsWith + ")";
+	      route += "(?=" + delimiter + "|" + endsWith + ")";
 	    }
 	  }
 
@@ -14305,14 +14409,8 @@
 	 */
 
 	function pathToRegexp(path, keys, options) {
-	  if (path instanceof RegExp) {
-	    return regexpToRegexp(path, keys);
-	  }
-
-	  if (Array.isArray(path)) {
-	    return arrayToRegexp(path, keys, options);
-	  }
-
+	  if (path instanceof RegExp) return regexpToRegexp(path, keys);
+	  if (Array.isArray(path)) return arrayToRegexp(path, keys, options);
 	  return stringToRegexp(path, keys, options);
 	}
 
@@ -15466,6 +15564,13 @@
 
 	  if (dynamicNavbar && $newNavbarEl.length) {
 	    $newNavbarEl.removeClass('navbar-previous navbar-current navbar-next').addClass("navbar-".concat(newPagePosition).concat(isMaster ? ' navbar-master' : '').concat(isDetail ? ' navbar-master-detail' : '').concat(isDetailRoot ? ' navbar-master-detail-root' : '')).removeClass('stacked');
+
+	    if (isMaster || isDetail) {
+	      router.emit('navbarRole', $newNavbarEl[0], {
+	        role: isMaster ? 'master' : 'detail',
+	        detailRoot: !!isDetailRoot
+	      });
+	    }
 	  } // Find Old Page
 
 
@@ -15494,6 +15599,9 @@
 	      });
 	    }
 	  } else {
+	    var removedPageEls = [];
+	    var removedNavbarEls = [];
+
 	    if ($pagesInView.length > 1) {
 	      var _i2 = 0;
 
@@ -15505,6 +15613,7 @@
 
 	          if (dynamicNavbar) {
 	            $(app.navbar.getElByPage(masterPageEl)).addClass('navbar-master-stacked');
+	            router.emit('navbarMasterStack', app.navbar.getElByPage(masterPageEl));
 	          }
 
 	          continue; // eslint-disable-line
@@ -15522,25 +15631,30 @@
 	          }
 	        } else {
 	          // Page remove event
+	          removedPageEls.push($pagesInView[_i2]);
 	          router.pageCallback('beforeRemove', $pagesInView[_i2], $navbarsInView && $navbarsInView[_i2], 'previous', undefined, options);
 	          router.removePage($pagesInView[_i2]);
 
 	          if (dynamicNavbar && oldNavbarEl) {
+	            removedNavbarEls.push(oldNavbarEl);
 	            router.removeNavbar(oldNavbarEl);
 	          }
 	        }
 	      }
 	    }
 
-	    $oldPage = $viewEl.children('.page:not(.stacked)').filter(function (index, page) {
-	      return page !== $newPage[0];
+	    $oldPage = $viewEl.children('.page:not(.stacked)').filter(function (index, pageEl) {
+	      return pageEl !== $newPage[0] && removedPageEls.indexOf(pageEl) < 0;
 	    });
 
 	    if (dynamicNavbar) {
 	      $oldNavbarEl = $navbarsEl.children('.navbar:not(.stacked)').filter(function (index, navbarEl) {
-	        return navbarEl !== $newNavbarEl[0];
+	        return navbarEl !== $newNavbarEl[0] && removedNavbarEls.indexOf(removedNavbarEls) < 0;
 	      });
 	    }
+
+	    removedPageEls = [];
+	    removedNavbarEls = [];
 	  }
 
 	  if (isDetail && !options.reloadAll) {
@@ -16756,6 +16870,13 @@
 
 	  if (dynamicNavbar && $newNavbarEl.length > 0) {
 	    $newNavbarEl.addClass("navbar-previous".concat(isMaster ? ' navbar-master' : '').concat(isDetail ? ' navbar-master-detail' : '').concat(isDetailRoot ? ' navbar-master-detail-root' : '')).removeClass('stacked').removeAttr('aria-hidden');
+
+	    if (isMaster || isDetailRoot) {
+	      router.emit('navbarRole', $newNavbarEl[0], {
+	        role: isMaster ? 'master' : 'detail',
+	        detailRoot: !!isDetailRoot
+	      });
+	    }
 	  } // Remove previous page in case of "forced"
 
 
@@ -16897,6 +17018,7 @@
 
 	      if (dynamicNavbar) {
 	        $(app.navbar.getElByPage($newPage)).removeClass('navbar-master-stacked');
+	        router.emi('navbarMasterUnstack', app.navbar.getElByPage($newPage));
 	      }
 	    } // Page init and before init events
 
@@ -20918,15 +21040,17 @@
 	      self.__requestAnimationFrameId = win.requestAnimationFrame(function () {
 	        if (self.__updateIsPending) update();
 
-	        self.__updateQueue.forEach(function (resolver) {
-	          return resolver();
-	        });
+	        var resolvers = _toConsumableArray(self.__updateQueue);
 
 	        self.__updateQueue = [];
 	        self.__updateIsPending = false;
 	        win.cancelAnimationFrame(self.__requestAnimationFrameId);
 	        delete self.__requestAnimationFrameId;
 	        delete self.__updateIsPending;
+	        resolvers.forEach(function (resolver) {
+	          return resolver();
+	        });
+	        resolvers = [];
 	      });
 	    }
 	  }, {
@@ -20950,8 +21074,8 @@
 	      var self = this;
 	      return new Promise(function (resolve) {
 	        function resolver() {
-	          if (callback) callback();
 	          resolve();
+	          if (callback) callback();
 	        }
 
 	        self.__updateIsPending = true;
@@ -20963,7 +21087,9 @@
 	    }
 	  }, {
 	    key: "$setState",
-	    value: function $setState(mergeState, callback) {
+	    value: function $setState() {
+	      var mergeState = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	      var callback = arguments.length > 1 ? arguments[1] : undefined;
 	      var self = this;
 	      Utils.merge(self, mergeState);
 	      return self.$update(callback);
@@ -23205,7 +23331,8 @@
 	      progressTitle: 'Loading... ',
 	      closeByBackdropClick: false,
 	      destroyPredefinedDialogs: true,
-	      keyboardActions: true
+	      keyboardActions: true,
+	      autoFocus: true
 	    }
 	  },
 	  static: {
@@ -23220,6 +23347,14 @@
 
 	    var destroyOnClose = app.params.dialog.destroyPredefinedDialogs;
 	    var keyboardActions = app.params.dialog.keyboardActions;
+	    var autoFocus = app.params.dialog.autoFocus;
+	    var autoFocusHandler = autoFocus ? {
+	      on: {
+	        opened: function opened(dialog) {
+	          dialog.$el.find('input').eq(0).focus();
+	        }
+	      }
+	    } : {};
 	    app.dialog = Utils.extend(ModalMethods({
 	      app: app,
 	      constructor: Dialog,
@@ -23273,7 +23408,7 @@
 	        }
 
 	        defaultValue = typeof defaultValue === 'undefined' || defaultValue === null ? '' : defaultValue;
-	        return new Dialog(app, {
+	        return new Dialog(app, _objectSpread2({
 	          title: typeof title === 'undefined' ? defaultDialogTitle() : title,
 	          text: text,
 	          content: "<div class=\"dialog-input-field input\"><input type=\"text\" class=\"dialog-input\" value=\"".concat(defaultValue, "\"></div>"),
@@ -23292,7 +23427,7 @@
 	            if (index === 1 && callbackOk) callbackOk(inputValue);
 	          },
 	          destroyOnClose: destroyOnClose
-	        }).open();
+	        }, autoFocusHandler)).open();
 	      },
 	      confirm: function confirm() {
 	        for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
@@ -23345,7 +23480,7 @@
 	          title = args[3];
 	        }
 
-	        return new Dialog(app, {
+	        return new Dialog(app, _objectSpread2({
 	          title: typeof title === 'undefined' ? defaultDialogTitle() : title,
 	          text: text,
 	          content: "\n              <div class=\"dialog-input-field dialog-input-double input\">\n                <input type=\"text\" name=\"dialog-username\" placeholder=\"".concat(app.params.dialog.usernamePlaceholder, "\" class=\"dialog-input\">\n              </div>\n              <div class=\"dialog-input-field dialog-input-double input\">\n                <input type=\"password\" name=\"dialog-password\" placeholder=\"").concat(app.params.dialog.passwordPlaceholder, "\" class=\"dialog-input\">\n              </div>"),
@@ -23365,7 +23500,7 @@
 	            if (index === 1 && callbackOk) callbackOk(username, password);
 	          },
 	          destroyOnClose: destroyOnClose
-	        }).open();
+	        }, autoFocusHandler)).open();
 	      },
 	      password: function password() {
 	        for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
@@ -23384,7 +23519,7 @@
 	          title = args[3];
 	        }
 
-	        return new Dialog(app, {
+	        return new Dialog(app, _objectSpread2({
 	          title: typeof title === 'undefined' ? defaultDialogTitle() : title,
 	          text: text,
 	          content: "\n              <div class=\"dialog-input-field input\">\n                <input type=\"password\" name=\"dialog-password\" placeholder=\"".concat(app.params.dialog.passwordPlaceholder, "\" class=\"dialog-input\">\n              </div>"),
@@ -23403,7 +23538,7 @@
 	            if (index === 1 && callbackOk) callbackOk(password);
 	          },
 	          destroyOnClose: destroyOnClose
-	        }).open();
+	        }, autoFocusHandler)).open();
 	      },
 	      preloader: function preloader(title, color) {
 	        var preloaderInner = Utils["".concat(app.theme, "PreloaderContent")] || '';
@@ -25774,6 +25909,8 @@
 
 	        if (indexTo !== null) indexTo = parseInt(indexTo, 10);else indexTo = undefined;
 	        var virtualList = $sortableContainer[0].f7VirtualList;
+	        if (indexFrom) indexFrom = parseInt(indexFrom, 10);
+	        if (indexTo) indexTo = parseInt(indexTo, 10);
 	        if (virtualList) virtualList.moveItem(indexFrom, indexTo);
 	      }
 
@@ -28645,7 +28782,7 @@
 	          app.allowPanelOpen = true;
 
 	          if (emitEvents) {
-	            panel.emit('local::breakpoint panelBreakpoint');
+	            panel.emit('local::breakpoint panelBreakpoint', panel);
 	            panel.$el.trigger('panel:breakpoint');
 	          }
 	        } else {
@@ -28658,7 +28795,7 @@
 	        $viewEl.css(_defineProperty({}, "margin-".concat(side), ''));
 
 	        if (emitEvents) {
-	          panel.emit('local::breakpoint panelBreakpoint');
+	          panel.emit('local::breakpoint panelBreakpoint', panel);
 	          panel.$el.trigger('panel:breakpoint');
 	        }
 	      }
@@ -28717,7 +28854,7 @@
 	          app.allowPanelOpen = true;
 
 	          if (emitEvents) {
-	            panel.emit('local::collapsedBreakpoint panelCollapsedBreakpoint');
+	            panel.emit('local::collapsedBreakpoint panelCollapsedBreakpoint', panel);
 	            panel.$el.trigger('panel:collapsedbreakpoint');
 	          }
 	        }
@@ -28726,7 +28863,7 @@
 	        panel.collapsed = false;
 
 	        if (emitEvents) {
-	          panel.emit('local::collapsedBreakpoint panelCollapsedBreakpoint');
+	          panel.emit('local::collapsedBreakpoint panelCollapsedBreakpoint', panel);
 	          panel.$el.trigger('panel:collapsedbreakpoint');
 	        }
 	      }
@@ -29032,12 +29169,12 @@
 	        var $viewEl = $(panel.getViewEl());
 	        panel.$el.removeClass('panel-in-breakpoint panel-in-collapsed panel-in');
 	        $viewEl.css(_defineProperty({}, "margin-".concat(panel.side), ''));
-	        panel.emit('local::breakpoint panelBreakpoint');
+	        panel.emit('local::breakpoint panelBreakpoint', panel);
 	        panel.$el.trigger('panel:breakpoint');
 	      }
 
 	      panel.$el.trigger('panel:destroy');
-	      panel.emit('local::destroy panelDestroy');
+	      panel.emit('local::destroy panelDestroy', panel);
 
 	      if (panel.el) {
 	        panel.el.f7Panel = null;
@@ -32517,6 +32654,7 @@
 	        }
 	      } else {
 	        var $selectedItemEl = $containerEl.find('input:checked').parents('li');
+	        if (!$selectedItemEl.length) return ss;
 	        var $pageContentEl = $containerEl.find('.page-content');
 	        $pageContentEl.scrollTop($selectedItemEl.offset().top - $pageContentEl.offset().top - parseInt($pageContentEl.css('padding-top'), 10));
 	      }
@@ -33803,8 +33941,53 @@
 	          dateFormat = _calendar$params2.dateFormat,
 	          locale = _calendar$params2.locale;
 
+	      function twoDigits(number) {
+	        return number < 10 ? "0".concat(number) : number;
+	      }
+
 	      if (typeof dateFormat === 'string') {
-	        return dateFormat.replace(/yyyy/g, year).replace(/yy/g, String(year).substring(2)).replace(/mm/g, month1 < 10 ? "0".concat(month1) : month1).replace(/m(\W+)/g, "".concat(month1, "$1")).replace(/(\W+)m/g, "$1".concat(month1)).replace(/MM/g, monthNames[month]).replace(/M(\W+)/g, "".concat(monthNamesShort[month], "$1")).replace(/(\W+)M/g, "$1".concat(monthNamesShort[month])).replace(/dd/g, day < 10 ? "0".concat(day) : day).replace(/d(\W+)/g, "".concat(day, "$1")).replace(/(\W+)d/g, "$1".concat(day)).replace(/DD/g, dayNames[weekDay]).replace(/D(\W+)/g, "".concat(dayNamesShort[weekDay], "$1")).replace(/(\W+)D/g, "$1".concat(dayNamesShort[weekDay]));
+	        var tokens = {
+	          yyyy: year,
+	          yy: String(year).substring(2),
+	          mm: twoDigits(month1),
+	          m: month1,
+	          MM: monthNames[month],
+	          M: monthNamesShort[month],
+	          dd: twoDigits(day),
+	          d: day,
+	          DD: dayNames[weekDay],
+	          D: dayNamesShort[weekDay]
+	        };
+
+	        if (calendar.params.timePicker) {
+	          var hours = date.getHours();
+	          var minutes = date.getMinutes();
+	          var seconds = date.getSeconds();
+	          var hours12 = hours;
+	          if (hours > 12) hours12 = hours - 12;
+	          if (hours === 0) hours12 = 12;
+	          var a = hours >= 12 && hours !== 0 ? 'pm' : 'am';
+	          Object.assign(tokens, {
+	            HH: twoDigits(hours),
+	            H: hours,
+	            hh: twoDigits(hours12),
+	            h: hours12,
+	            ss: twoDigits(seconds),
+	            s: seconds,
+	            ':mm': twoDigits(minutes),
+	            ':m': minutes,
+	            a: a,
+	            A: a.toUpperCase()
+	          });
+	        }
+
+	        var regexp = new RegExp(Object.keys(tokens).map(function (t) {
+	          return "(".concat(t, ")");
+	        }).join('|'), 'g');
+	        return dateFormat.replace(regexp, function (token) {
+	          if (token in tokens) return tokens[token];
+	          return token;
+	        });
 	      }
 
 	      if (typeof dateFormat === 'function') {
@@ -47093,9 +47276,10 @@
 	      var $previousSlideEl = pb.params.virtualSlides ? swiper.$wrapperEl.find(".swiper-slide[data-swiper-slide-index=\"".concat(swiper.previousIndex, "\"]")) : swiper.slides.eq(swiper.previousIndex);
 	      var $currentEl = pb.$el.find('.photo-browser-current');
 	      var $totalEl = pb.$el.find('.photo-browser-total');
+	      var navbarEl;
 
 	      if (pb.params.type === 'page' && pb.params.navbar && $currentEl.length === 0 && pb.app.theme === 'ios') {
-	        var navbarEl = pb.app.navbar.getElByPage(pb.$el);
+	        navbarEl = pb.app.navbar.getElByPage(pb.$el);
 
 	        if (navbarEl) {
 	          $currentEl = $(navbarEl).find('.photo-browser-current');
@@ -47106,6 +47290,11 @@
 	      if ($currentEl.length && $totalEl.length) {
 	        $currentEl.text(current);
 	        $totalEl.text(total);
+	        if (!navbarEl) navbarEl = $currentEl.parents('.navbar')[0];
+
+	        if (navbarEl) {
+	          pb.app.navbar.size(navbarEl);
+	        }
 	      } // Update captions
 
 
@@ -49547,7 +49736,7 @@
 	          stroke: borderColor,
 	          'stroke-width': borderWidth,
 	          'stroke-dasharray': length / 2,
-	          'stroke-dashoffset': length / 2 * (progress - 1),
+	          'stroke-dashoffset': length / 2 * (1 + progress),
 	          fill: borderBgColor ? 'none' : bgColor || 'none'
 	        };
 	        Object.keys(backAttrs).forEach(function (attr) {
@@ -52937,7 +53126,7 @@
 	};
 
 	/**
-	 * Framework7 5.1.3
+	 * Framework7 5.2.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -52945,7 +53134,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: November 17, 2019
+	 * Released on: December 8, 2019
 	 */
 
 
@@ -53707,8 +53896,9 @@
 	      var props = this.props;
 	      var className = props.className,
 	          id = props.id,
-	          style = props.style;
-	      var classes = Utils$1.classNames(className, 'accordion-list', Mixins.colorClasses(props));
+	          style = props.style,
+	          accordionOpposite = props.accordionOpposite;
+	      var classes = Utils$1.classNames(className, 'accordion-list', accordionOpposite && 'accordion-opposite', Mixins.colorClasses(props));
 	      return react.createElement('div', {
 	        id: id,
 	        style: style,
@@ -53728,7 +53918,8 @@
 	__reactComponentSetProps(F7Accordion, Object.assign({
 	  id: [String, Number],
 	  className: String,
-	  style: Object
+	  style: Object,
+	  accordionOpposite: Boolean
 	}, Mixins.colorProps));
 
 	F7Accordion.displayName = 'f7-accordion';
@@ -54376,6 +54567,7 @@
 	        parentEl.style.height = '100%';
 	      }
 
+	      if (f7.instance) return;
 	      f7.init(el, params, routes);
 	    }
 	  }, {
@@ -54717,6 +54909,7 @@
 	          xlargeInset = props.xlargeInset,
 	          strong = props.strong,
 	          accordionList = props.accordionList,
+	          accordionOpposite = props.accordionOpposite,
 	          tabs = props.tabs,
 	          tab = props.tab,
 	          tabActive = props.tabActive,
@@ -54735,6 +54928,7 @@
 	        'xlarge-inset': xlargeInset,
 	        'block-strong': strong,
 	        'accordion-list': accordionList,
+	        'accordion-opposite': accordionOpposite,
 	        tabs: tabs,
 	        tab: tab,
 	        'tab-active': tabActive,
@@ -54813,6 +55007,7 @@
 	  tab: Boolean,
 	  tabActive: Boolean,
 	  accordionList: Boolean,
+	  accordionOpposite: Boolean,
 	  noHairlines: Boolean,
 	  noHairlinesMd: Boolean,
 	  noHairlinesIos: Boolean,
@@ -58396,12 +58591,14 @@
 	          style = props.style,
 	          mediaList = props.mediaList,
 	          sortable = props.sortable,
+	          sortableOpposite = props.sortableOpposite,
 	          sortableTapHold = props.sortableTapHold,
 	          sortableMoveElements = props.sortableMoveElements;
 	      var classes = Utils$1.classNames(className, 'list-group', {
 	        'media-list': mediaList,
 	        sortable: sortable,
-	        'sortable-tap-hold': sortableTapHold
+	        'sortable-tap-hold': sortableTapHold,
+	        'sortable-opposite': sortableOpposite
 	      }, Mixins.colorClasses(props));
 	      return react.createElement('div', {
 	        id: id,
@@ -58426,6 +58623,7 @@
 	  style: Object,
 	  mediaList: Boolean,
 	  sortable: Boolean,
+	  sortableOpposite: Boolean,
 	  sortableTapHold: Boolean,
 	  sortableMoveElements: {
 	    type: Boolean,
@@ -59339,13 +59537,19 @@
 	      var inputIconEl;
 	      var headerEl;
 	      var footerEl;
-	      var slots = self.slots.default;
+	      var slotsDefault = self.slots.default;
 	      var flattenSlots = [];
 
-	      if (slots && slots.length) {
-	        slots.forEach(function (slot) {
+	      if (slotsDefault && slotsDefault.length) {
+	        slotsDefault.forEach(function (slot) {
 	          if (Array.isArray(slot)) flattenSlots.push.apply(flattenSlots, _toConsumableArray(slot));else flattenSlots.push(slot);
 	        });
+	      }
+
+	      var passedSlotsContentStart = self.slots['content-start'];
+
+	      if (passedSlotsContentStart && passedSlotsContentStart.length) {
+	        slotsContentStart.push.apply(slotsContentStart, _toConsumableArray(passedSlotsContentStart));
 	      }
 
 	      flattenSlots.forEach(function (child) {
@@ -59635,6 +59839,7 @@
 	      return {
 	        isMedia: props.mediaItem || props.mediaList,
 	        isSortable: props.sortable,
+	        isSortableOpposite: props.sortableOpposite,
 	        isSimple: false
 	      };
 	    }();
@@ -59798,11 +60003,13 @@
 	          required = props.required,
 	          disabled = props.disabled,
 	          sortable = props.sortable,
+	          sortableOpposite = props.sortableOpposite,
 	          noChevron = props.noChevron,
 	          chevronCenter = props.chevronCenter,
 	          virtualListIndex = props.virtualListIndex;
 	      var isMedia = mediaItem || mediaList || self.state.isMedia;
 	      var isSortable = sortable || self.state.isSortable;
+	      var isSortableOpposite = isSortable && (sortableOpposite || self.state.isSortableOpposite);
 	      var isSimple = self.state.isSimple;
 
 	      if (!isSimple) {
@@ -59831,7 +60038,10 @@
 	          disabled: disabled,
 	          onClick: needsEvents ? self.onClick : null,
 	          onChange: needsEvents ? self.onChange : null
-	        }, this.slots['content-start'], this.slots['content'], this.slots['content-end'], this.slots['media'], this.slots['inner-start'], this.slots['inner'], this.slots['inner-end'], this.slots['after-start'], this.slots['after'], this.slots['after-end'], this.slots['header'], this.slots['footer'], this.slots['before-title'], this.slots['title'], this.slots['after-title'], this.slots['subtitle'], this.slots['text'], swipeout || accordionItem ? null : self.slots.default);
+	        }, this.slots['content-start'], this.slots['content'], this.slots['content-end'], this.slots['media'], this.slots['inner-start'], this.slots['inner'], this.slots['inner-end'], this.slots['after-start'], this.slots['after'], this.slots['after-end'], this.slots['header'], this.slots['footer'], this.slots['before-title'], this.slots['title'], this.slots['after-title'], this.slots['subtitle'], this.slots['text'], swipeout || accordionItem ? null : self.slots.default, isSortable && sortable !== false && isSortableOpposite && react.createElement('div', {
+	          className: 'sortable-handler',
+	          slot: 'content-start'
+	        }));
 
 	        if (link || href || accordionItem || smartSelect) {
 	          var linkAttrs = Object.assign({
@@ -59899,7 +60109,7 @@
 	        'data-virtual-list-index': virtualListIndex
 	      }, this.slots['root-start'], swipeout ? react.createElement('div', {
 	        className: 'swipeout-content'
-	      }, linkItemEl) : linkItemEl, isSortable && sortable !== false && react.createElement('div', {
+	      }, linkItemEl) : linkItemEl, isSortable && sortable !== false && !isSortableOpposite && react.createElement('div', {
 	        className: 'sortable-handler'
 	      }), (swipeout || accordionItem) && self.slots.default, this.slots['root'], this.slots['root-end']);
 	    }
@@ -60014,6 +60224,7 @@
 	      var isMedia = $listEl.hasClass('media-list');
 	      var isSimple = $listEl.hasClass('simple-list');
 	      var isSortable = $listEl.hasClass('sortable');
+	      var isSortableOpposite = $listEl.hasClass('sortable-opposite');
 
 	      if (isMedia !== self.state.isMedia) {
 	        self.setState({
@@ -60031,6 +60242,12 @@
 	        self.setState({
 	          isSortable: isSortable
 	        });
+
+	        if (isSortableOpposite !== self.state.isSortableOpposite) {
+	          self.setState({
+	            isSortableOpposite: isSortableOpposite
+	          });
+	        }
 	      }
 	    }
 	  }, {
@@ -60067,7 +60284,8 @@
 	        self.setState({
 	          isMedia: self.$listEl.hasClass('media-list'),
 	          isSimple: self.$listEl.hasClass('simple-list'),
-	          isSortable: self.$listEl.hasClass('sortable')
+	          isSortable: self.$listEl.hasClass('sortable'),
+	          isSortableOpposite: self.$listEl.hasClass('sortable-opposite')
 	        });
 	      }
 
@@ -60162,6 +60380,10 @@
 	  swipeout: Boolean,
 	  swipeoutOpened: Boolean,
 	  sortable: {
+	    type: Boolean,
+	    default: undefined
+	  },
+	  sortableOpposite: {
 	    type: Boolean,
 	    default: undefined
 	  },
@@ -60393,7 +60615,9 @@
 	          sortable = props.sortable,
 	          sortableTapHold = props.sortableTapHold,
 	          sortableEnabled = props.sortableEnabled,
+	          sortableOpposite = props.sortableOpposite,
 	          accordionList = props.accordionList,
+	          accordionOpposite = props.accordionOpposite,
 	          contactsList = props.contactsList,
 	          virtualList = props.virtualList,
 	          tab = props.tab,
@@ -60424,7 +60648,9 @@
 	        sortable: sortable,
 	        'sortable-tap-hold': sortableTapHold,
 	        'sortable-enabled': sortableEnabled,
+	        'sortable-opposite': sortableOpposite,
 	        'accordion-list': accordionList,
+	        'accordion-opposite': accordionOpposite,
 	        'contacts-list': contactsList,
 	        'virtual-list': virtualList,
 	        tab: tab,
@@ -60477,7 +60703,9 @@
 	    type: Boolean,
 	    default: undefined
 	  },
+	  sortableOpposite: Boolean,
 	  accordionList: Boolean,
+	  accordionOpposite: Boolean,
 	  contactsList: Boolean,
 	  simpleList: Boolean,
 	  linksList: Boolean,
@@ -62755,7 +62983,10 @@
 	      return {
 	        _theme: $f7 ? self.$theme : null,
 	        routerPositionClass: '',
-	        largeCollapsed: false
+	        largeCollapsed: false,
+	        routerNavbarRole: null,
+	        routerNavbarRoleDetailRoot: false,
+	        routerNavbarMasterStack: false
 	      };
 	    }();
 
@@ -62802,6 +63033,31 @@
 	      if (this.eventTargetEl !== navbarEl) return;
 	      this.setState({
 	        routerPositionClass: "navbar-".concat(position)
+	      });
+	    }
+	  }, {
+	    key: "onNavbarRole",
+	    value: function onNavbarRole(navbarEl, rolesData) {
+	      if (this.eventTargetEl !== navbarEl) return;
+	      this.setState({
+	        routerNavbarRole: rolesData.role,
+	        routerNavbarRoleDetailRoot: rolesData.detailRoot
+	      });
+	    }
+	  }, {
+	    key: "onNavbarMasterStack",
+	    value: function onNavbarMasterStack(navbarEl) {
+	      if (this.eventTargetEl !== navbarEl) return;
+	      this.setState({
+	        routerNavbarMasterStack: true
+	      });
+	    }
+	  }, {
+	    key: "onNavbarMasterUnstack",
+	    value: function onNavbarMasterUnstack(navbarEl) {
+	      if (this.eventTargetEl !== navbarEl) return;
+	      this.setState({
+	        routerNavbarMasterStack: false
 	      });
 	    }
 	  }, {
@@ -62870,7 +63126,13 @@
 	        'navbar-hidden': hidden,
 	        'navbar-large': large,
 	        'navbar-large-transparent': largeTransparent,
-	        'navbar-large-collapsed': large && largeCollapsed
+	        'navbar-large-collapsed': large && largeCollapsed,
+	        'navbar-master': this.state.routerNavbarRole === 'master',
+	        'navbar-master-detail': this.state.routerNavbarRole === 'detail',
+	        'navbar-master-detail-root': this.state.routerNavbarRoleDetailRoot === true,
+	        'navbar-master-stacked': this.state.routerNavbarMasterStack === true,
+	        'no-shadow': noShadow,
+	        'no-hairline': noHairline
 	      }, Mixins.colorClasses(props));
 
 	      if (backLink || slots['nav-left'] || slots.left) {
@@ -62908,8 +63170,6 @@
 	      var innerEl = react.createElement('div', {
 	        className: Utils$1.classNames('navbar-inner', innerClass, innerClassName, {
 	          sliding: sliding,
-	          'no-shadow': noShadow,
-	          'no-hairline': noHairline,
 	          'navbar-inner-left-title': addLeftTitleClass,
 	          'navbar-inner-centered-title': addCenterTitleClass
 	        })
@@ -62937,6 +63197,9 @@
 	      f7.off('navbarCollapse', self.onCollapse);
 	      f7.off('navbarExpand', self.onExpand);
 	      f7.off('navbarPosition', self.onNavbarPosition);
+	      f7.off('navbarRole', self.onNavbarRole);
+	      f7.off('navbarMasterStack', self.onNavbarMasterStack);
+	      f7.off('navbarMasterUnstack', self.onNavbarMasterUnstack);
 	      self.eventTargetEl = null;
 	      delete self.eventTargetEl;
 	    }
@@ -62961,6 +63224,9 @@
 	        f7.on('navbarCollapse', self.onCollapse);
 	        f7.on('navbarExpand', self.onExpand);
 	        f7.on('navbarPosition', self.onNavbarPosition);
+	        f7.on('navbarRole', self.onNavbarRole);
+	        f7.on('navbarMasterStack', self.onNavbarMasterStack);
+	        f7.on('navbarMasterUnstack', self.onNavbarMasterUnstack);
 	      });
 	    }
 	  }, {
@@ -63119,6 +63385,10 @@
 	        }, react.createElement('span', {
 	          className: 'preloader-inner-circle'
 	        }));
+	      } else if (!theme) {
+	        innerEl = react.createElement('span', {
+	          className: 'preloader-inner'
+	        });
 	      }
 
 	      var classes = Utils$1.classNames(className, 'preloader', Mixins.colorClasses(props));
@@ -68221,7 +68491,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.1.3
+	 * Framework7 React 5.2.0
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -68229,7 +68499,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: November 17, 2019
+	 * Released on: December 8, 2019
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
@@ -68886,6 +69156,26 @@
 	  }, react.createElement(AccordionContent, null, react.createElement(Block, null, react.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum."))))), react.createElement(BlockTitle, null, "Inset Accordion"), react.createElement(List, {
 	    accordionList: true,
 	    inset: true
+	  }, react.createElement(ListItem, {
+	    accordionItem: true,
+	    title: "Lorem Ipsum"
+	  }, react.createElement(AccordionContent, null, react.createElement(Block, null, react.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.")))), react.createElement(ListItem, {
+	    accordionItem: true,
+	    title: "Nested List"
+	  }, react.createElement(AccordionContent, null, react.createElement(List, null, react.createElement(ListItem, {
+	    title: "Item 1"
+	  }), react.createElement(ListItem, {
+	    title: "Item 2"
+	  }), react.createElement(ListItem, {
+	    title: "Item 3"
+	  }), react.createElement(ListItem, {
+	    title: "Item 4"
+	  })))), react.createElement(ListItem, {
+	    accordionItem: true,
+	    title: "Integer semper"
+	  }, react.createElement(AccordionContent, null, react.createElement(Block, null, react.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum."))))), react.createElement(BlockTitle, null, "Opposite Side"), react.createElement(List, {
+	    accordionList: true,
+	    accordionOpposite: true
 	  }, react.createElement(ListItem, {
 	    accordionItem: true,
 	    title: "Lorem Ipsum"
@@ -77151,6 +77441,51 @@
 	    slot: "media",
 	    src: "https://cdn.framework7.io/placeholder/people-160x160-3.jpg",
 	    width: "80"
+	  }))), react.createElement(BlockTitle, null, "Opposite Side"), react.createElement(List, {
+	    sortable: true,
+	    sortableOpposite: true
+	  }, react.createElement(ListItem, {
+	    title: "1 Jenna Smith",
+	    after: "CEO"
+	  }, react.createElement(Icon, {
+	    icon: "icon-f7",
+	    slot: "media"
+	  })), react.createElement(ListItem, {
+	    title: "2 John Doe",
+	    after: "Director"
+	  }, react.createElement(Icon, {
+	    icon: "icon-f7",
+	    slot: "media"
+	  })), react.createElement(ListItem, {
+	    title: "3 John Doe",
+	    after: "Developer"
+	  }, react.createElement(Icon, {
+	    icon: "icon-f7",
+	    slot: "media"
+	  })), react.createElement(ListItem, {
+	    title: "4 Aaron Darling",
+	    after: "Manager"
+	  }, react.createElement(Icon, {
+	    icon: "icon-f7",
+	    slot: "media"
+	  })), react.createElement(ListItem, {
+	    title: "5 Calvin Johnson",
+	    after: "Accounter"
+	  }, react.createElement(Icon, {
+	    icon: "icon-f7",
+	    slot: "media"
+	  })), react.createElement(ListItem, {
+	    title: "6 John Smith",
+	    after: "SEO"
+	  }, react.createElement(Icon, {
+	    icon: "icon-f7",
+	    slot: "media"
+	  })), react.createElement(ListItem, {
+	    title: "7 Chloe",
+	    after: "Manager"
+	  }, react.createElement(Icon, {
+	    icon: "icon-f7",
+	    slot: "media"
 	  }))));
 	});
 

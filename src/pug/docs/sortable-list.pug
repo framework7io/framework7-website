@@ -26,11 +26,14 @@ block content
               <!-- Sortable handler element -->
               <div class="sortable-handler"></div>
           </li>
+          ...
       </div>
     p Where:
     ul
       li `sortable-handler` - "draggable" element (hidden by default) that allows you to sort current list view element
     p As you may see it is pretty simple, all you need is to add `sortable` class to list block and put `<div class="sortable-handler">&lt;/div&gt;` as a direct child of `<li>`.
+
+    h4 Disable Sorting
     p If we need to disable sorting on some specific items we can add `no-sorting` or `disallow-sorting` class to those items:
     :code(lang="html")
       <!-- Additional "sortable" class on list block -->
@@ -43,6 +46,23 @@ block content
           <li>...</li>
       </div>
     p Note, that it makes sense and work only on first or last items in the list and won't work correctly if you disable sortable for some of the items in the middle.
+
+    h4 Opposite Sortable
+    p If we need to render sortable handler on opposite side (e.g. on left in LTR direction) we need to add `sortable-opposite` side to sortable list:
+    ```html
+      <!-- Additional "sortable-opposite" class on sortable list -->
+      <div class="list sortable sortable-opposite">
+        <li>
+          <div class="item-content">
+            <div class="item-media">...</div>
+            <div class="item-inner">...</div>
+          </div>
+          <!-- Sortable handler element -->
+          <div class="sortable-handler"></div>
+        </li>
+        ...
+      </div>
+    ```
 
     h2 Sortable App Methods
     p To enable/disable sorting mode on sortable list we need to use following app methods:
@@ -169,68 +189,85 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/sortable.html") Examples
       :code(lang="html")
-            <div class="page">
-              <div class="navbar">
-                <div class="navbar-bg"></div>
-                <div class="navbar-inner">
-                  <div class="left"></div>
-                  <div class="title">Sortable</div>
-                  <div class="right">
-                    <!-- Link to toggle sortable -->
-                    <a class="link sortable-toggle" data-sortable=".sortable">Toggle</a>
-                  </div>
-                </div>
-              </div>
-              <div class="page-content">
-                <div class="list sortable">
-                  <ul>
-                    <li>
-                      <div class="item-content">
-                        <div class="item-media"><i class="icon icon-f7"></i></div>
-                        <div class="item-inner">
-                          <div class="item-title">1 Jenna Smith</div>
-                          <div class="item-after">CEO</div>
-                        </div>
-                      </div>
-                      <div class="sortable-handler"></div>
-                    </li>
-                    <li>
-                      <div class="item-content">
-                        <div class="item-media"><i class="icon icon-f7"></i></div>
-                        <div class="item-inner">
-                          <div class="item-title">2 John Doe</div>
-                          <div class="item-after">Director</div>
-                        </div>
-                      </div>
-                      <div class="sortable-handler"></div>
-                    </li>
-                    ...
-                  </ul>
-                </div>
-                <div class="list media-list sortable">
-                  <ul>
-                    <li>
-                      <div class="item-content">
-                        <div class="item-media"><img src="https://cdn.framework7.io/placeholder/people-160x160-1.jpg" width="80"/></div>
-                        <div class="item-inner">
-                          <div class="item-title-row">
-                            <div class="item-title">Yellow Submarine</div>
-                            <div class="item-after">$15</div>
-                          </div>
-                          <div class="item-subtitle">Beatles</div>
-                          <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
-                        </div>
-                      </div>
-                      <div class="sortable-handler"></div>
-                    </li>
-                    ...
-                  </ul>
-                </div>
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner">
+              <div class="left"></div>
+              <div class="title">Sortable</div>
+              <div class="right">
+                <!-- Link to toggle sortable -->
+                <a class="link sortable-toggle" data-sortable=".sortable">Toggle</a>
               </div>
             </div>
-      :code(lang="js")
-            var app = new Framework7();
+          </div>
+          <div class="page-content">
+            <div class="list sortable">
+              <ul>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">1 Jenna Smith</div>
+                      <div class="item-after">CEO</div>
+                    </div>
+                  </div>
+                  <div class="sortable-handler"></div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">2 John Doe</div>
+                      <div class="item-after">Director</div>
+                    </div>
+                  </div>
+                  <div class="sortable-handler"></div>
+                </li>
+                ...
+              </ul>
+            </div>
+            <div class="list media-list sortable">
+              <ul>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><img src="https://cdn.framework7.io/placeholder/people-160x160-1.jpg" width="80"/></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Yellow Submarine</div>
+                        <div class="item-after">$15</div>
+                      </div>
+                      <div class="item-subtitle">Beatles</div>
+                      <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                    </div>
+                  </div>
+                  <div class="sortable-handler"></div>
+                </li>
+                ...
+              </ul>
+            </div>
 
-            app.on('sortableSort', function (listEl, indexes) {
-              console.log(indexes);
-            })
+            <div class="block-title">Opposite Side</div>
+            <div class="list sortable sortable-opposite">
+              <ul>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">1 Jenna Smith</div>
+                      <div class="item-after">CEO</div>
+                    </div>
+                  </div>
+                  <div class="sortable-handler"></div>
+                </li>
+                ...
+              </ul>
+            </div>
+          </div>
+        </div>
+      :code(lang="js")
+        var app = new Framework7();
+
+        app.on('sortableSort', function (listEl, indexes) {
+          console.log(indexes);
+        })

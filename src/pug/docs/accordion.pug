@@ -76,6 +76,48 @@ block content
                   </li>
               </ul>
           </div>
+    h2 Opposite Accordion
+    p To render accordion chevron icon on opposite side (on left in LTR), it is required to add extra `accordion-opposite` class to accordion container or accordion list:
+    ```html
+      <!-- Accordion opposite -->
+      <div class="accordion-list accordion-opposite">
+        <div class="accordion-item">
+          <div class="accordion-item-toggle">...</div>
+          <div class="accordion-item-content">...</div>
+        </div>
+        <div class="accordion-item accordion-item-opened">
+          <div class="accordion-item-toggle">...</div>
+          <div class="accordion-item-content">...</div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-item-toggle">...</div>
+          <div class="accordion-item-content">...</div>
+        </div>
+        ...
+      </div>
+
+      <!-- Accordion list opposite -->
+      <div class="list accordion-list accordion-opposite">
+        <ul>
+          <li class="accordion-item">
+            <a href="" class="item-link item-content">
+              <div class="item-inner">
+                <div class="item-title">Item 1</div>
+              </div>
+            </a>
+            <div class="accordion-item-content">Item 1 content ...</div>
+          </li>
+          <li class="accordion-item">
+            <a href="" class="item-link item-content">
+              <div class="item-inner">
+                <div class="item-title">Item 2</div>
+              </div>
+            </a>
+            <div class="accordion-item-content">Item 2 content ...</div>
+          </li>
+        </ul>
+      </div>
+    ```
     .with-device
       h2(data-device-preview="../docs-demos/core/accordion.html") Example
       :code(lang="html")
@@ -133,6 +175,39 @@ block content
             ...
           </ul>
         </div>
+
+        <!-- Opposite Side -->
+        <div class="block-title">Opposite Side</div>
+        <div class="list accordion-list accordion-opposite">
+          <ul>
+            <li class="accordion-item">
+              <a class="item-content item-link" href="#">
+                <div class="item-inner">
+                  <div class="item-title">Item 1</div>
+                </div>
+              </a>
+              <div class="accordion-item-content">
+                <div class="block">
+                  <p>Item 1 content. Lorem ipsum dolor sit amet...</p>
+                </div>
+              </div>
+            </li>
+            <li class="accordion-item">
+              <a class="item-content item-link" href="#">
+                <div class="item-inner">
+                  <div class="item-title">Item 2</div>
+                </div>
+              </a>
+              <div class="accordion-item-content">
+                <div class="block">
+                  <p>Item 2 content. Lorem ipsum dolor sit amet...</p>
+                </div>
+              </div>
+            </li>
+            ...
+          </ul>
+        </div>
+
         <!-- Custom Accordion -->
         <div class="block-title">Custom Accordion</div>
         <div class="block accordion-list custom-accordion">

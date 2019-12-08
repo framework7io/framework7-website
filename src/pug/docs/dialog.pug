@@ -118,7 +118,7 @@ block content
           td buttons
           td array
           td []
-          td Array with dialog buttons
+          td Array with dialog buttons, where each button is an object with <a href="#button-parameters">Button Parameters</a>
         tr
           td verticalButtons
           td boolean
@@ -437,6 +437,11 @@ block content
           td boolean
           td true
           td Enables keyboard shortcuts (Enter and Esc) keys for predefined dialogs (Alert, Confirm, Prompt, Login, Password) "Ok" and "Cancel" buttons
+        tr
+          td autoFocus
+          td boolean
+          td true
+          td When enabled it autofocus dialog inputs on dialog open. Valid only for predefined dialogs with inputs like Prompt, Login and Password
     p Now lets look at available dialog shortcuts
     h3 Alert
     p To create Alert dialog we need to use the following app methods:

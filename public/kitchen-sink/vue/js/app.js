@@ -10727,6 +10727,7 @@
       {
         open: function open(el, animate) {
           var $el = $(el);
+          if (!$el.length) { return undefined; }
           var instance = $el[0].f7Modal;
           if (!instance) { instance = new constructor(app, { el: $el }); }
           return instance.open(animate);
@@ -10735,7 +10736,7 @@
           if ( el === void 0 ) el = defaultSelector;
 
           var $el = $(el);
-          if ($el.length === 0) { return undefined; }
+          if (!$el.length) { return undefined; }
           var instance = $el[0].f7Modal;
           if (!instance) { instance = new constructor(app, { el: $el }); }
           return instance.close(animate);
@@ -12155,11 +12156,11 @@
         tapHoldPreventClicks: true,
         // Active State
         activeState: true,
-        activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item, .link, .item-link',
+        activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item, .link, .item-link, .accordion-item-toggle',
         mdTouchRipple: true,
         iosTouchRipple: false,
         auroraTouchRipple: false,
-        touchRippleElements: '.ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content',
+        touchRippleElements: '.ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content, .list.accordion-list .accordion-item-toggle',
       },
     },
     instance: {
@@ -12175,60 +12176,34 @@
   };
 
   /**
-   * Default configs.
+   * Tokenize input string.
    */
-  var DEFAULT_DELIMITER = "/";
-  /**
-   * Balanced bracket helper function.
-   */
-  function balanced(open, close, str, index) {
-      var count = 0;
-      var i = index;
-      while (i < str.length) {
-          if (str[i] === "\\") {
-              i += 2;
-              continue;
-          }
-          if (str[i] === close) {
-              count--;
-              if (count === 0)
-                  { return i + 1; }
-          }
-          if (str[i] === open) {
-              count++;
-          }
-          i++;
-      }
-      return -1;
-  }
-  /**
-   * Parse a string for the raw tokens.
-   */
-  function parse(str, options) {
-      if (options === void 0) { options = {}; }
-      var _a, _b;
+  function lexer(str) {
       var tokens = [];
-      var defaultDelimiter = (_a = options.delimiter, (_a !== null && _a !== void 0 ? _a : DEFAULT_DELIMITER));
-      var whitelist = (_b = options.whitelist, (_b !== null && _b !== void 0 ? _b : undefined));
       var i = 0;
-      var key = 0;
-      var path = "";
-      var isEscaped = false;
-      // tslint:disable-next-line
       while (i < str.length) {
-          var prefix = "";
-          var name = "";
-          var pattern = "";
-          // Ignore escaped sequences.
-          if (str[i] === "\\") {
-              i++;
-              path += str[i++];
-              isEscaped = true;
+          var char = str[i];
+          if (char === "*" || char === "+" || char === "?") {
+              tokens.push({ type: "MODIFIER", index: i, value: str[i++] });
               continue;
           }
-          if (str[i] === ":") {
-              while (++i < str.length) {
-                  var code = str.charCodeAt(i);
+          if (char === "\\") {
+              tokens.push({ type: "ESCAPED_CHAR", index: i++, value: str[i++] });
+              continue;
+          }
+          if (char === "{") {
+              tokens.push({ type: "OPEN", index: i, value: str[i++] });
+              continue;
+          }
+          if (char === "}") {
+              tokens.push({ type: "CLOSE", index: i, value: str[i++] });
+              continue;
+          }
+          if (char === ":") {
+              var name = "";
+              var j = i + 1;
+              while (j < str.length) {
+                  var code = str.charCodeAt(j);
                   if (
                   // `0-9`
                   (code >= 48 && code <= 57) ||
@@ -12238,71 +12213,140 @@
                       (code >= 97 && code <= 122) ||
                       // `_`
                       code === 95) {
-                      name += str[i];
+                      name += str[j++];
                       continue;
                   }
                   break;
               }
-              // False positive on param name.
               if (!name)
-                  { i--; }
-          }
-          if (str[i] === "(") {
-              var end = balanced("(", ")", str, i);
-              // False positive on matching brackets.
-              if (end > -1) {
-                  pattern = str.slice(i + 1, end - 1);
-                  i = end;
-                  if (pattern[0] === "?") {
-                      throw new TypeError("Path pattern must be a capturing group");
-                  }
-                  if (/\((?=[^?])/.test(pattern)) {
-                      var validPattern = pattern.replace(/\((?=[^?])/, "(?:");
-                      throw new TypeError("Capturing groups are not allowed in pattern, use a non-capturing group: (" + validPattern + ")");
-                  }
-              }
-          }
-          // Add regular characters to the path string.
-          if (name === "" && pattern === "") {
-              path += str[i++];
-              isEscaped = false;
+                  { throw new TypeError("Missing parameter name at " + i); }
+              tokens.push({ type: "NAME", index: i, value: name });
+              i = j;
               continue;
           }
-          // Extract the final character from `path` for the prefix.
-          if (path.length && !isEscaped) {
-              var char = path[path.length - 1];
-              var matches = whitelist ? whitelist.indexOf(char) > -1 : true;
-              if (matches) {
-                  prefix = char;
-                  path = path.slice(0, -1);
+          if (char === "(") {
+              var count = 1;
+              var pattern = "";
+              var j = i + 1;
+              if (str[j] === "?") {
+                  throw new TypeError("Pattern cannot start with \"?\" at " + j);
               }
+              while (j < str.length) {
+                  if (str[j] === "\\") {
+                      pattern += str[j++] + str[j++];
+                      continue;
+                  }
+                  if (str[j] === ")") {
+                      count--;
+                      if (count === 0) {
+                          j++;
+                          break;
+                      }
+                  }
+                  else if (str[j] === "(") {
+                      count++;
+                      if (str[j + 1] !== "?") {
+                          throw new TypeError("Capturing groups are not allowed at " + j);
+                      }
+                  }
+                  pattern += str[j++];
+              }
+              if (count)
+                  { throw new TypeError("Unbalanced pattern at " + i); }
+              if (!pattern)
+                  { throw new TypeError("Missing pattern at " + i); }
+              tokens.push({ type: "PATTERN", index: i, value: pattern });
+              i = j;
+              continue;
           }
-          // Push the current path onto the list of tokens.
-          if (path.length) {
-              tokens.push(path);
+          tokens.push({ type: "CHAR", index: i, value: str[i++] });
+      }
+      tokens.push({ type: "END", index: i, value: "" });
+      return tokens;
+  }
+  /**
+   * Parse a string for the raw tokens.
+   */
+  function parse(str, options) {
+      if (options === void 0) { options = {}; }
+      var tokens = lexer(str);
+      var _a = options.prefixes, prefixes = _a === void 0 ? "./" : _a;
+      var defaultPattern = "[^" + escapeString(options.delimiter || "/#?") + "]+?";
+      var result = [];
+      var key = 0;
+      var i = 0;
+      var path = "";
+      var tryConsume = function (type) {
+          if (i < tokens.length && tokens[i].type === type)
+              { return tokens[i++].value; }
+      };
+      var mustConsume = function (type) {
+          var value = tryConsume(type);
+          if (value !== undefined)
+              { return value; }
+          var _a = tokens[i], nextType = _a.type, index = _a.index;
+          throw new TypeError("Unexpected " + nextType + " at " + index + ", expected " + type);
+      };
+      var consumeText = function () {
+          var result = "";
+          var value;
+          // tslint:disable-next-line
+          while ((value = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR"))) {
+              result += value;
+          }
+          return result;
+      };
+      while (i < tokens.length) {
+          var char = tryConsume("CHAR");
+          var name = tryConsume("NAME");
+          var pattern = tryConsume("PATTERN");
+          if (name || pattern) {
+              var prefix = char || "";
+              if (prefixes.indexOf(prefix) === -1) {
+                  path += prefix;
+                  prefix = "";
+              }
+              if (path) {
+                  result.push(path);
+                  path = "";
+              }
+              result.push({
+                  name: name || key++,
+                  prefix: prefix,
+                  suffix: "",
+                  pattern: pattern || defaultPattern,
+                  modifier: tryConsume("MODIFIER") || ""
+              });
+              continue;
+          }
+          var value = char || tryConsume("ESCAPED_CHAR");
+          if (value) {
+              path += value;
+              continue;
+          }
+          if (path) {
+              result.push(path);
               path = "";
           }
-          var repeat = str[i] === "+" || str[i] === "*";
-          var optional = str[i] === "?" || str[i] === "*";
-          var delimiter = prefix || defaultDelimiter;
-          // Increment `i` past modifier token.
-          if (repeat || optional)
-              { i++; }
-          tokens.push({
-              name: name || key++,
-              prefix: prefix,
-              delimiter: delimiter,
-              optional: optional,
-              repeat: repeat,
-              pattern: pattern ||
-                  "[^" + escapeString(delimiter === defaultDelimiter
-                      ? delimiter
-                      : delimiter + defaultDelimiter) + "]+?"
-          });
+          var open = tryConsume("OPEN");
+          if (open) {
+              var prefix = consumeText();
+              var name_1 = tryConsume("NAME") || "";
+              var pattern_1 = tryConsume("PATTERN") || "";
+              var suffix = consumeText();
+              mustConsume("CLOSE");
+              result.push({
+                  name: name_1 || (pattern_1 ? key++ : ""),
+                  pattern: name_1 && !pattern_1 ? defaultPattern : pattern_1,
+                  prefix: prefix,
+                  suffix: suffix,
+                  modifier: tryConsume("MODIFIER") || ""
+              });
+              continue;
+          }
+          mustConsume("END");
       }
-      if (path.length)
-          { tokens.push(path); }
-      return tokens;
+      return result;
   }
   /**
    * Compile a string to a template function for the path.
@@ -12332,12 +12376,14 @@
                   continue;
               }
               var value = data ? data[token.name] : undefined;
+              var optional = token.modifier === "?" || token.modifier === "*";
+              var repeat = token.modifier === "*" || token.modifier === "+";
               if (Array.isArray(value)) {
-                  if (!token.repeat) {
+                  if (!repeat) {
                       throw new TypeError("Expected \"" + token.name + "\" to not repeat, but got an array");
                   }
                   if (value.length === 0) {
-                      if (token.optional)
+                      if (optional)
                           { continue; }
                       throw new TypeError("Expected \"" + token.name + "\" to not be empty");
                   }
@@ -12346,7 +12392,7 @@
                       if (validate && !matches[i].test(segment)) {
                           throw new TypeError("Expected all \"" + token.name + "\" to match \"" + token.pattern + "\", but got \"" + segment + "\"");
                       }
-                      path += (j === 0 ? token.prefix : token.delimiter) + segment;
+                      path += token.prefix + segment + token.suffix;
                   }
                   continue;
               }
@@ -12355,12 +12401,12 @@
                   if (validate && !matches[i].test(segment)) {
                       throw new TypeError("Expected \"" + token.name + "\" to match \"" + token.pattern + "\", but got \"" + segment + "\"");
                   }
-                  path += token.prefix + segment;
+                  path += token.prefix + segment + token.suffix;
                   continue;
               }
-              if (token.optional)
+              if (optional)
                   { continue; }
-              var typeOfMessage = token.repeat ? "an array" : "a string";
+              var typeOfMessage = repeat ? "an array" : "a string";
               throw new TypeError("Expected \"" + token.name + "\" to be " + typeOfMessage);
           }
           return path;
@@ -12391,9 +12437,8 @@
               keys.push({
                   name: i,
                   prefix: "",
-                  delimiter: "",
-                  optional: false,
-                  repeat: false,
+                  suffix: "",
+                  modifier: "",
                   pattern: ""
               });
           }
@@ -12418,13 +12463,9 @@
    */
   function tokensToRegexp(tokens, keys, options) {
       if (options === void 0) { options = {}; }
-      var strict = options.strict, _a = options.start, start = _a === void 0 ? true : _a, _b = options.end, end = _b === void 0 ? true : _b, _c = options.delimiter, delimiter = _c === void 0 ? DEFAULT_DELIMITER : _c, _d = options.encode, encode = _d === void 0 ? function (x) { return x; } : _d;
-      var endsWith = (typeof options.endsWith === "string"
-          ? options.endsWith.split("")
-          : options.endsWith || [])
-          .map(escapeString)
-          .concat("$")
-          .join("|");
+      var _a = options.strict, strict = _a === void 0 ? false : _a, _b = options.start, start = _b === void 0 ? true : _b, _c = options.end, end = _c === void 0 ? true : _c, _d = options.encode, encode = _d === void 0 ? function (x) { return x; } : _d;
+      var endsWith = "[" + escapeString(options.endsWith || "") + "]|$";
+      var delimiter = "[" + escapeString(options.delimiter || "/#?") + "]";
       var route = start ? "^" : "";
       // Iterate over the tokens and create our regexp string.
       for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
@@ -12433,40 +12474,45 @@
               route += escapeString(encode(token));
           }
           else {
-              var capture = token.repeat
-                  ? "(?:" + token.pattern + ")(?:" + escapeString(token.delimiter) + "(?:" + token.pattern + "))*"
-                  : token.pattern;
-              if (keys)
-                  { keys.push(token); }
-              if (token.optional) {
-                  if (!token.prefix) {
-                      route += "(" + capture + ")?";
+              var prefix = escapeString(encode(token.prefix));
+              var suffix = escapeString(encode(token.suffix));
+              if (token.pattern) {
+                  if (keys)
+                      { keys.push(token); }
+                  if (prefix || suffix) {
+                      if (token.modifier === "+" || token.modifier === "*") {
+                          var mod = token.modifier === "*" ? "?" : "";
+                          route += "(?:" + prefix + "((?:" + token.pattern + ")(?:" + suffix + prefix + "(?:" + token.pattern + "))*)" + suffix + ")" + mod;
+                      }
+                      else {
+                          route += "(?:" + prefix + "(" + token.pattern + ")" + suffix + ")" + token.modifier;
+                      }
                   }
                   else {
-                      route += "(?:" + escapeString(token.prefix) + "(" + capture + "))?";
+                      route += "(" + token.pattern + ")" + token.modifier;
                   }
               }
               else {
-                  route += escapeString(token.prefix) + "(" + capture + ")";
+                  route += "(?:" + prefix + suffix + ")" + token.modifier;
               }
           }
       }
       if (end) {
           if (!strict)
-              { route += "(?:" + escapeString(delimiter) + ")?"; }
-          route += endsWith === "$" ? "$" : "(?=" + endsWith + ")";
+              { route += delimiter + "?"; }
+          route += !options.endsWith ? "$" : "(?=" + endsWith + ")";
       }
       else {
           var endToken = tokens[tokens.length - 1];
           var isEndDelimited = typeof endToken === "string"
-              ? endToken[endToken.length - 1] === delimiter
+              ? delimiter.indexOf(endToken[endToken.length - 1]) > -1
               : // tslint:disable-next-line
                   endToken === undefined;
           if (!strict) {
-              route += "(?:" + escapeString(delimiter) + "(?=" + endsWith + "))?";
+              route += "(?:" + delimiter + "(?=" + endsWith + "))?";
           }
           if (!isEndDelimited) {
-              route += "(?=" + escapeString(delimiter) + "|" + endsWith + ")";
+              route += "(?=" + delimiter + "|" + endsWith + ")";
           }
       }
       return new RegExp(route, flags(options));
@@ -12479,12 +12525,10 @@
    * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
    */
   function pathToRegexp(path, keys, options) {
-      if (path instanceof RegExp) {
-          return regexpToRegexp(path, keys);
-      }
-      if (Array.isArray(path)) {
-          return arrayToRegexp(path, keys, options);
-      }
+      if (path instanceof RegExp)
+          { return regexpToRegexp(path, keys); }
+      if (Array.isArray(path))
+          { return arrayToRegexp(path, keys, options); }
       return stringToRegexp(path, keys, options);
   }
 
@@ -13512,6 +13556,9 @@
         .removeClass('navbar-previous navbar-current navbar-next')
         .addClass(("navbar-" + newPagePosition + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '') + (isDetailRoot ? ' navbar-master-detail-root' : '')))
         .removeClass('stacked');
+      if (isMaster || isDetail) {
+        router.emit('navbarRole', $newNavbarEl[0], { role: isMaster ? 'master' : 'detail', detailRoot: !!isDetailRoot });
+      }
     }
 
     // Find Old Page
@@ -13533,6 +13580,8 @@
         $oldNavbarEl = $navbarsInView.filter(function (index, navbarEl) { return navbarEl !== $newNavbarEl[0]; });
       }
     } else {
+      var removedPageEls = [];
+      var removedNavbarEls = [];
       if ($pagesInView.length > 1) {
         var i$2 = 0;
         for (i$2 = 0; i$2 < $pagesInView.length - 1; i$2 += 1) {
@@ -13544,6 +13593,7 @@
             router.emit('pageMasterStack', $pagesInView[i$2]);
             if (dynamicNavbar) {
               $(app.navbar.getElByPage(masterPageEl)).addClass('navbar-master-stacked');
+              router.emit('navbarMasterStack', app.navbar.getElByPage(masterPageEl));
             }
             continue; // eslint-disable-line
           }
@@ -13557,9 +13607,11 @@
             }
           } else {
             // Page remove event
+            removedPageEls.push($pagesInView[i$2]);
             router.pageCallback('beforeRemove', $pagesInView[i$2], $navbarsInView && $navbarsInView[i$2], 'previous', undefined, options);
             router.removePage($pagesInView[i$2]);
             if (dynamicNavbar && oldNavbarEl) {
+              removedNavbarEls.push(oldNavbarEl);
               router.removeNavbar(oldNavbarEl);
             }
           }
@@ -13567,12 +13619,14 @@
       }
       $oldPage = $viewEl
         .children('.page:not(.stacked)')
-        .filter(function (index, page) { return page !== $newPage[0]; });
+        .filter(function (index, pageEl) { return pageEl !== $newPage[0] && removedPageEls.indexOf(pageEl) < 0; });
       if (dynamicNavbar) {
         $oldNavbarEl = $navbarsEl
           .children('.navbar:not(.stacked)')
-          .filter(function (index, navbarEl) { return navbarEl !== $newNavbarEl[0]; });
+          .filter(function (index, navbarEl) { return navbarEl !== $newNavbarEl[0] && removedNavbarEls.indexOf(removedNavbarEls) < 0; });
       }
+      removedPageEls = [];
+      removedNavbarEls = [];
     }
 
     if (isDetail && !options.reloadAll) {
@@ -14747,6 +14801,9 @@
         .addClass(("navbar-previous" + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '') + (isDetailRoot ? ' navbar-master-detail-root' : '')))
         .removeClass('stacked')
         .removeAttr('aria-hidden');
+      if (isMaster || isDetailRoot) {
+        router.emit('navbarRole', $newNavbarEl[0], { role: isMaster ? 'master' : 'detail', detailRoot: !!isDetailRoot });
+      }
     }
 
     // Remove previous page in case of "forced"
@@ -14871,6 +14928,7 @@
         router.emit('pageMasterUnstack', $newPage[0]);
         if (dynamicNavbar) {
           $(app.navbar.getElByPage($newPage)).removeClass('navbar-master-stacked');
+          router.emi('navbarMasterUnstack', app.navbar.getElByPage($newPage));
         }
       }
       // Page init and before init events
@@ -18570,12 +18628,14 @@
     }
     self.__requestAnimationFrameId = win.requestAnimationFrame(function () {
       if (self.__updateIsPending) { update(); }
-      self.__updateQueue.forEach(function (resolver) { return resolver(); });
+      var resolvers = [].concat( self.__updateQueue );
       self.__updateQueue = [];
       self.__updateIsPending = false;
       win.cancelAnimationFrame(self.__requestAnimationFrameId);
       delete self.__requestAnimationFrameId;
       delete self.__updateIsPending;
+      resolvers.forEach(function (resolver) { return resolver(); });
+      resolvers = [];
     });
   };
 
@@ -18595,8 +18655,8 @@
     var self = this;
     return new Promise(function (resolve) {
       function resolver() {
-        if (callback) { callback(); }
         resolve();
+        if (callback) { callback(); }
       }
       self.__updateIsPending = true;
       self.__updateQueue.push(resolver);
@@ -18605,6 +18665,8 @@
   };
 
   Component.prototype.$setState = function $setState (mergeState, callback) {
+      if ( mergeState === void 0 ) mergeState = {};
+
     var self = this;
     Utils.merge(self, mergeState);
     return self.$update(callback);
@@ -20775,6 +20837,7 @@
         closeByBackdropClick: false,
         destroyPredefinedDialogs: true,
         keyboardActions: true,
+        autoFocus: true,
       },
     },
     static: {
@@ -20787,6 +20850,15 @@
       }
       var destroyOnClose = app.params.dialog.destroyPredefinedDialogs;
       var keyboardActions = app.params.dialog.keyboardActions;
+      var autoFocus = app.params.dialog.autoFocus;
+      var autoFocusHandler = (autoFocus ? {
+        on: {
+          opened: function opened(dialog) {
+            dialog.$el.find('input').eq(0).focus();
+          },
+        },
+      } : {});
+
       app.dialog = Utils.extend(
         ModalMethods({
           app: app,
@@ -20832,8 +20904,7 @@
               (assign = args, text = assign[0], callbackOk = assign[1], callbackCancel = assign[2], defaultValue = assign[3], title = assign[4]);
             }
             defaultValue = typeof defaultValue === 'undefined' || defaultValue === null ? '' : defaultValue;
-            return new Dialog(app, {
-              title: typeof title === 'undefined' ? defaultDialogTitle() : title,
+            return new Dialog(app, Object.assign({}, {title: typeof title === 'undefined' ? defaultDialogTitle() : title,
               text: text,
               content: ("<div class=\"dialog-input-field input\"><input type=\"text\" class=\"dialog-input\" value=\"" + defaultValue + "\"></div>"),
               buttons: [
@@ -20852,8 +20923,8 @@
                 if (index === 0 && callbackCancel) { callbackCancel(inputValue); }
                 if (index === 1 && callbackOk) { callbackOk(inputValue); }
               },
-              destroyOnClose: destroyOnClose,
-            }).open();
+              destroyOnClose: destroyOnClose},
+              autoFocusHandler)).open();
           },
           confirm: function confirm() {
             var assign;
@@ -20898,8 +20969,7 @@
             if (typeof args[1] === 'function') {
               (assign = args, text = assign[0], callbackOk = assign[1], callbackCancel = assign[2], title = assign[3]);
             }
-            return new Dialog(app, {
-              title: typeof title === 'undefined' ? defaultDialogTitle() : title,
+            return new Dialog(app, Object.assign({}, {title: typeof title === 'undefined' ? defaultDialogTitle() : title,
               text: text,
               content: ("\n              <div class=\"dialog-input-field dialog-input-double input\">\n                <input type=\"text\" name=\"dialog-username\" placeholder=\"" + (app.params.dialog.usernamePlaceholder) + "\" class=\"dialog-input\">\n              </div>\n              <div class=\"dialog-input-field dialog-input-double input\">\n                <input type=\"password\" name=\"dialog-password\" placeholder=\"" + (app.params.dialog.passwordPlaceholder) + "\" class=\"dialog-input\">\n              </div>"),
               buttons: [
@@ -20919,8 +20989,8 @@
                 if (index === 0 && callbackCancel) { callbackCancel(username, password); }
                 if (index === 1 && callbackOk) { callbackOk(username, password); }
               },
-              destroyOnClose: destroyOnClose,
-            }).open();
+              destroyOnClose: destroyOnClose},
+              autoFocusHandler)).open();
           },
           password: function password() {
             var assign;
@@ -20934,8 +21004,7 @@
             if (typeof args[1] === 'function') {
               (assign = args, text = assign[0], callbackOk = assign[1], callbackCancel = assign[2], title = assign[3]);
             }
-            return new Dialog(app, {
-              title: typeof title === 'undefined' ? defaultDialogTitle() : title,
+            return new Dialog(app, Object.assign({}, {title: typeof title === 'undefined' ? defaultDialogTitle() : title,
               text: text,
               content: ("\n              <div class=\"dialog-input-field input\">\n                <input type=\"password\" name=\"dialog-password\" placeholder=\"" + (app.params.dialog.passwordPlaceholder) + "\" class=\"dialog-input\">\n              </div>"),
               buttons: [
@@ -20954,8 +21023,8 @@
                 if (index === 0 && callbackCancel) { callbackCancel(password); }
                 if (index === 1 && callbackOk) { callbackOk(password); }
               },
-              destroyOnClose: destroyOnClose,
-            }).open();
+              destroyOnClose: destroyOnClose},
+              autoFocusHandler)).open();
           },
           preloader: function preloader(title, color) {
             var preloaderInner = Utils[((app.theme) + "PreloaderContent")] || '';
@@ -23197,6 +23266,9 @@
           else { indexTo = undefined; }
 
           var virtualList = $sortableContainer[0].f7VirtualList;
+
+          if (indexFrom) { indexFrom = parseInt(indexFrom, 10); }
+          if (indexTo) { indexTo = parseInt(indexTo, 10); }
           if (virtualList) { virtualList.moveItem(indexFrom, indexTo); }
         }
         if (typeof indexTo !== 'undefined' && !Number.isNaN(indexTo) && indexTo !== indexFrom) {
@@ -25848,7 +25920,7 @@
           $viewEl.css(( obj = {}, obj[("margin-" + side)] = (($el.width()) + "px"), obj ));
           app.allowPanelOpen = true;
           if (emitEvents) {
-            panel.emit('local::breakpoint panelBreakpoint');
+            panel.emit('local::breakpoint panelBreakpoint', panel);
             panel.$el.trigger('panel:breakpoint');
           }
         } else {
@@ -25860,7 +25932,7 @@
         panel.onClosed();
         $viewEl.css(( obj$2 = {}, obj$2[("margin-" + side)] = '', obj$2 ));
         if (emitEvents) {
-          panel.emit('local::breakpoint panelBreakpoint');
+          panel.emit('local::breakpoint panelBreakpoint', panel);
           panel.$el.trigger('panel:breakpoint');
         }
       }
@@ -25911,7 +25983,7 @@
           panel.collapsed = true;
           app.allowPanelOpen = true;
           if (emitEvents) {
-            panel.emit('local::collapsedBreakpoint panelCollapsedBreakpoint');
+            panel.emit('local::collapsedBreakpoint panelCollapsedBreakpoint', panel);
             panel.$el.trigger('panel:collapsedbreakpoint');
           }
         }
@@ -25919,7 +25991,7 @@
         $el.removeClass('panel-in-collapsed panel-in');
         panel.collapsed = false;
         if (emitEvents) {
-          panel.emit('local::collapsedBreakpoint panelCollapsedBreakpoint');
+          panel.emit('local::collapsedBreakpoint panelCollapsedBreakpoint', panel);
           panel.$el.trigger('panel:collapsedbreakpoint');
         }
       }
@@ -26237,12 +26309,12 @@
         var $viewEl = $(panel.getViewEl());
         panel.$el.removeClass('panel-in-breakpoint panel-in-collapsed panel-in');
         $viewEl.css(( obj = {}, obj[("margin-" + (panel.side))] = '', obj ));
-        panel.emit('local::breakpoint panelBreakpoint');
+        panel.emit('local::breakpoint panelBreakpoint', panel);
         panel.$el.trigger('panel:breakpoint');
       }
 
       panel.$el.trigger('panel:destroy');
-      panel.emit('local::destroy panelDestroy');
+      panel.emit('local::destroy panelDestroy', panel);
       if (panel.el) {
         panel.el.f7Panel = null;
         delete panel.el.f7Panel;
@@ -29439,6 +29511,7 @@
         }
       } else {
         var $selectedItemEl = $containerEl.find('input:checked').parents('li');
+        if (!$selectedItemEl.length) { return ss; }
         var $pageContentEl = $containerEl.find('.page-content');
         $pageContentEl.scrollTop($selectedItemEl.offset().top - $pageContentEl.offset().top - parseInt($pageContentEl.css('padding-top'), 10));
       }
@@ -30616,22 +30689,53 @@
       var ref = calendar.params;
       var dateFormat = ref.dateFormat;
       var locale = ref.locale;
+
+      function twoDigits(number) {
+        return (number < 10) ? ("0" + number) : number;
+      }
       if (typeof dateFormat === 'string') {
-        return dateFormat
-          .replace(/yyyy/g, year)
-          .replace(/yy/g, String(year).substring(2))
-          .replace(/mm/g, month1 < 10 ? ("0" + month1) : month1)
-          .replace(/m(\W+)/g, (month1 + "$1"))
-          .replace(/(\W+)m/g, ("$1" + month1))
-          .replace(/MM/g, monthNames[month])
-          .replace(/M(\W+)/g, ((monthNamesShort[month]) + "$1"))
-          .replace(/(\W+)M/g, ("$1" + (monthNamesShort[month])))
-          .replace(/dd/g, day < 10 ? ("0" + day) : day)
-          .replace(/d(\W+)/g, (day + "$1"))
-          .replace(/(\W+)d/g, ("$1" + day))
-          .replace(/DD/g, dayNames[weekDay])
-          .replace(/D(\W+)/g, ((dayNamesShort[weekDay]) + "$1"))
-          .replace(/(\W+)D/g, ("$1" + (dayNamesShort[weekDay])));
+        var tokens = {
+          yyyy: year,
+          yy: String(year).substring(2),
+          mm: twoDigits(month1),
+          m: month1,
+          MM: monthNames[month],
+          M: monthNamesShort[month],
+          dd: twoDigits(day),
+          d: day,
+          DD: dayNames[weekDay],
+          D: dayNamesShort[weekDay],
+        };
+        if (calendar.params.timePicker) {
+          var hours = date.getHours();
+          var minutes = date.getMinutes();
+          var seconds = date.getSeconds();
+          var hours12 = hours;
+          if (hours > 12) { hours12 = hours - 12; }
+          if (hours === 0) { hours12 = 12; }
+          var a = hours >= 12 && hours !== 0 ? 'pm' : 'am';
+
+          Object.assign(tokens, {
+            HH: twoDigits(hours),
+            H: hours,
+            hh: twoDigits(hours12),
+            h: hours12,
+            ss: twoDigits(seconds),
+            s: seconds,
+            ':mm': twoDigits(minutes),
+            ':m': minutes,
+            a: a,
+            A: a.toUpperCase(),
+          });
+        }
+        var regexp = new RegExp(
+          Object.keys(tokens).map(function (t) { return ("(" + t + ")"); }).join('|'),
+          'g'
+        );
+        return dateFormat.replace(regexp, function (token) {
+          if (token in tokens) { return tokens[token]; }
+          return token;
+        });
       }
       if (typeof dateFormat === 'function') {
         return dateFormat(date);
@@ -43232,8 +43336,9 @@
 
       var $currentEl = pb.$el.find('.photo-browser-current');
       var $totalEl = pb.$el.find('.photo-browser-total');
+      var navbarEl;
       if (pb.params.type === 'page' && pb.params.navbar && $currentEl.length === 0 && pb.app.theme === 'ios') {
-        var navbarEl = pb.app.navbar.getElByPage(pb.$el);
+        navbarEl = pb.app.navbar.getElByPage(pb.$el);
         if (navbarEl) {
           $currentEl = $(navbarEl).find('.photo-browser-current');
           $totalEl = $(navbarEl).find('.photo-browser-total');
@@ -43242,6 +43347,10 @@
       if ($currentEl.length && $totalEl.length) {
         $currentEl.text(current);
         $totalEl.text(total);
+        if (!navbarEl) { navbarEl = $currentEl.parents('.navbar')[0]; }
+        if (navbarEl) {
+          pb.app.navbar.size(navbarEl);
+        }
       }
 
       // Update captions
@@ -45500,7 +45609,7 @@
           stroke: borderColor,
           'stroke-width': borderWidth,
           'stroke-dasharray': length / 2,
-          'stroke-dashoffset': (length / 2) * (progress - 1),
+          'stroke-dashoffset': (length / 2) * (1 + progress),
           fill: borderBgColor ? 'none' : (bgColor || 'none'),
         };
         Object.keys(backAttrs).forEach(function (attr) {
@@ -48684,7 +48793,7 @@
   };
 
   /**
-   * Framework7 5.1.3
+   * Framework7 5.2.0
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -48692,7 +48801,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: November 17, 2019
+   * Released on: December 8, 2019
    */
 
   // Install Core Modules & Components
@@ -49325,7 +49434,8 @@
 
   ({
     props: Object.assign({
-      id: [String, Number]
+      id: [String, Number],
+      accordionOpposite: Boolean
     }, Mixins.colorProps),
     name: 'f7-accordion',
 
@@ -49335,7 +49445,8 @@
       var className = props.className;
       var id = props.id;
       var style = props.style;
-      var classes = Utils$1.classNames(className, 'accordion-list', Mixins.colorClasses(props));
+      var accordionOpposite = props.accordionOpposite;
+      var classes = Utils$1.classNames(className, 'accordion-list', accordionOpposite && 'accordion-opposite', Mixins.colorClasses(props));
       return _h('div', {
         style: style,
         class: classes,
@@ -49841,6 +49952,7 @@
         parentEl.style.height = '100%';
       }
 
+      if (f7.instance) { return; }
       f7.init(el, params, routes);
     },
 
@@ -50051,6 +50163,7 @@
       tab: Boolean,
       tabActive: Boolean,
       accordionList: Boolean,
+      accordionOpposite: Boolean,
       noHairlines: Boolean,
       noHairlinesMd: Boolean,
       noHairlinesIos: Boolean,
@@ -50093,6 +50206,7 @@
       var xlargeInset = props.xlargeInset;
       var strong = props.strong;
       var accordionList = props.accordionList;
+      var accordionOpposite = props.accordionOpposite;
       var tabs = props.tabs;
       var tab = props.tab;
       var tabActive = props.tabActive;
@@ -50111,6 +50225,7 @@
         'xlarge-inset': xlargeInset,
         'block-strong': strong,
         'accordion-list': accordionList,
+        'accordion-opposite': accordionOpposite,
         tabs: tabs,
         tab: tab,
         'tab-active': tabActive,
@@ -53312,6 +53427,7 @@
       id: [String, Number],
       mediaList: Boolean,
       sortable: Boolean,
+      sortableOpposite: Boolean,
       sortableTapHold: Boolean,
       sortableMoveElements: {
         type: Boolean,
@@ -53328,12 +53444,14 @@
       var style = props.style;
       var mediaList = props.mediaList;
       var sortable = props.sortable;
+      var sortableOpposite = props.sortableOpposite;
       var sortableTapHold = props.sortableTapHold;
       var sortableMoveElements = props.sortableMoveElements;
       var classes = Utils$1.classNames(className, 'list-group', {
         'media-list': mediaList,
         sortable: sortable,
-        'sortable-tap-hold': sortableTapHold
+        'sortable-tap-hold': sortableTapHold,
+        'sortable-opposite': sortableOpposite
       }, Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -54181,13 +54299,19 @@
       var inputIconEl;
       var headerEl;
       var footerEl;
-      var slots = self.$slots.default;
+      var slotsDefault = self.$slots.default;
       var flattenSlots = [];
 
-      if (slots && slots.length) {
-        slots.forEach(function (slot) {
+      if (slotsDefault && slotsDefault.length) {
+        slotsDefault.forEach(function (slot) {
           if (Array.isArray(slot)) { flattenSlots.push.apply(flattenSlots, slot); }else { flattenSlots.push(slot); }
         });
+      }
+
+      var passedSlotsContentStart = self.$slots['content-start'];
+
+      if (passedSlotsContentStart && passedSlotsContentStart.length) {
+        slotsContentStart.push.apply(slotsContentStart, passedSlotsContentStart);
       }
 
       flattenSlots.forEach(function (child) {
@@ -54453,6 +54577,10 @@
         type: Boolean,
         default: undefined
       },
+      sortableOpposite: {
+        type: Boolean,
+        default: undefined
+      },
       accordionItem: Boolean,
       accordionItemOpened: Boolean,
       smartSelect: Boolean,
@@ -54479,6 +54607,7 @@
         return {
           isMedia: props.mediaItem || props.mediaList,
           isSortable: props.sortable,
+          isSortableOpposite: props.sortableOpposite,
           isSimple: false
         };
       })();
@@ -54528,11 +54657,13 @@
       var required = props.required;
       var disabled = props.disabled;
       var sortable = props.sortable;
+      var sortableOpposite = props.sortableOpposite;
       var noChevron = props.noChevron;
       var chevronCenter = props.chevronCenter;
       var virtualListIndex = props.virtualListIndex;
       var isMedia = mediaItem || mediaList || self.state.isMedia;
       var isSortable = sortable || self.state.isSortable;
+      var isSortableOpposite = isSortable && (sortableOpposite || self.state.isSortableOpposite);
       var isSimple = self.state.isSimple;
 
       if (!isSimple) {
@@ -54565,7 +54696,10 @@
             required: required,
             disabled: disabled
           }
-        }, [this.$slots['content-start'], this.$slots['content'], this.$slots['content-end'], this.$slots['media'], this.$slots['inner-start'], this.$slots['inner'], this.$slots['inner-end'], this.$slots['after-start'], this.$slots['after'], this.$slots['after-end'], this.$slots['header'], this.$slots['footer'], this.$slots['before-title'], this.$slots['title'], this.$slots['after-title'], this.$slots['subtitle'], this.$slots['text'], swipeout || accordionItem ? null : self.$slots.default]);
+        }, [this.$slots['content-start'], this.$slots['content'], this.$slots['content-end'], this.$slots['media'], this.$slots['inner-start'], this.$slots['inner'], this.$slots['inner-end'], this.$slots['after-start'], this.$slots['after'], this.$slots['after-end'], this.$slots['header'], this.$slots['footer'], this.$slots['before-title'], this.$slots['title'], this.$slots['after-title'], this.$slots['subtitle'], this.$slots['text'], swipeout || accordionItem ? null : self.$slots.default, isSortable && sortable !== false && isSortableOpposite && _h('div', {
+          class: 'sortable-handler',
+          slot: 'content-start'
+        })]);
 
         if (link || href || accordionItem || smartSelect) {
           var linkAttrs = Object.assign({
@@ -54631,7 +54765,7 @@
         }
       }, [this.$slots['root-start'], swipeout ? _h('div', {
         class: 'swipeout-content'
-      }, [linkItemEl]) : linkItemEl, isSortable && sortable !== false && _h('div', {
+      }, [linkItemEl]) : linkItemEl, isSortable && sortable !== false && !isSortableOpposite && _h('div', {
         class: 'sortable-handler'
       }), (swipeout || accordionItem) && self.$slots.default, this.$slots['root'], this.$slots['root-end']]);
     },
@@ -54707,7 +54841,8 @@
         self.setState({
           isMedia: self.$listEl.hasClass('media-list'),
           isSimple: self.$listEl.hasClass('simple-list'),
-          isSortable: self.$listEl.hasClass('sortable')
+          isSortable: self.$listEl.hasClass('sortable'),
+          isSortableOpposite: self.$listEl.hasClass('sortable-opposite')
         });
       }
 
@@ -54771,6 +54906,7 @@
       var isMedia = $listEl.hasClass('media-list');
       var isSimple = $listEl.hasClass('simple-list');
       var isSortable = $listEl.hasClass('sortable');
+      var isSortableOpposite = $listEl.hasClass('sortable-opposite');
 
       if (isMedia !== self.state.isMedia) {
         self.setState({
@@ -54788,6 +54924,12 @@
         self.setState({
           isSortable: isSortable
         });
+
+        if (isSortableOpposite !== self.state.isSortableOpposite) {
+          self.setState({
+            isSortableOpposite: isSortableOpposite
+          });
+        }
       }
     },
 
@@ -54980,7 +55122,9 @@
         type: Boolean,
         default: undefined
       },
+      sortableOpposite: Boolean,
       accordionList: Boolean,
+      accordionOpposite: Boolean,
       contactsList: Boolean,
       simpleList: Boolean,
       linksList: Boolean,
@@ -55074,7 +55218,9 @@
         var sortable = props.sortable;
         var sortableTapHold = props.sortableTapHold;
         var sortableEnabled = props.sortableEnabled;
+        var sortableOpposite = props.sortableOpposite;
         var accordionList = props.accordionList;
+        var accordionOpposite = props.accordionOpposite;
         var contactsList = props.contactsList;
         var virtualList = props.virtualList;
         var tab = props.tab;
@@ -55105,7 +55251,9 @@
           sortable: sortable,
           'sortable-tap-hold': sortableTapHold,
           'sortable-enabled': sortableEnabled,
+          'sortable-opposite': sortableOpposite,
           'accordion-list': accordionList,
+          'accordion-opposite': accordionOpposite,
           'contacts-list': contactsList,
           'virtual-list': virtualList,
           tab: tab,
@@ -57109,7 +57257,10 @@
         return {
           _theme: $f7 ? self.$theme : null,
           routerPositionClass: '',
-          largeCollapsed: false
+          largeCollapsed: false,
+          routerNavbarRole: null,
+          routerNavbarRoleDetailRoot: false,
+          routerNavbarMasterStack: false
         };
       })();
 
@@ -57155,7 +57306,13 @@
         'navbar-hidden': hidden,
         'navbar-large': large,
         'navbar-large-transparent': largeTransparent,
-        'navbar-large-collapsed': large && largeCollapsed
+        'navbar-large-collapsed': large && largeCollapsed,
+        'navbar-master': this.state.routerNavbarRole === 'master',
+        'navbar-master-detail': this.state.routerNavbarRole === 'detail',
+        'navbar-master-detail-root': this.state.routerNavbarRoleDetailRoot === true,
+        'navbar-master-stacked': this.state.routerNavbarMasterStack === true,
+        'no-shadow': noShadow,
+        'no-hairline': noHairline
       }, Mixins.colorClasses(props));
 
       if (backLink || slots['nav-left'] || slots.left) {
@@ -57199,8 +57356,6 @@
       var innerEl = _h('div', {
         class: Utils$1.classNames('navbar-inner', innerClass, innerClassName, {
           sliding: sliding,
-          'no-shadow': noShadow,
-          'no-hairline': noHairline,
           'navbar-inner-left-title': addLeftTitleClass,
           'navbar-inner-centered-title': addCenterTitleClass
         })
@@ -57234,6 +57389,9 @@
         f7.on('navbarCollapse', self.onCollapse);
         f7.on('navbarExpand', self.onExpand);
         f7.on('navbarPosition', self.onNavbarPosition);
+        f7.on('navbarRole', self.onNavbarRole);
+        f7.on('navbarMasterStack', self.onNavbarMasterStack);
+        f7.on('navbarMasterUnstack', self.onNavbarMasterUnstack);
       });
     },
 
@@ -57255,6 +57413,9 @@
       f7.off('navbarCollapse', self.onCollapse);
       f7.off('navbarExpand', self.onExpand);
       f7.off('navbarPosition', self.onNavbarPosition);
+      f7.off('navbarRole', self.onNavbarRole);
+      f7.off('navbarMasterStack', self.onNavbarMasterStack);
+      f7.off('navbarMasterUnstack', self.onNavbarMasterUnstack);
       self.eventTargetEl = null;
       delete self.eventTargetEl;
     },
@@ -57290,6 +57451,28 @@
         if (this.eventTargetEl !== navbarEl) { return; }
         this.setState({
           routerPositionClass: ("navbar-" + position)
+        });
+      },
+
+      onNavbarRole: function onNavbarRole(navbarEl, rolesData) {
+        if (this.eventTargetEl !== navbarEl) { return; }
+        this.setState({
+          routerNavbarRole: rolesData.role,
+          routerNavbarRoleDetailRoot: rolesData.detailRoot
+        });
+      },
+
+      onNavbarMasterStack: function onNavbarMasterStack(navbarEl) {
+        if (this.eventTargetEl !== navbarEl) { return; }
+        this.setState({
+          routerNavbarMasterStack: true
+        });
+      },
+
+      onNavbarMasterUnstack: function onNavbarMasterUnstack(navbarEl) {
+        if (this.eventTargetEl !== navbarEl) { return; }
+        this.setState({
+          routerNavbarMasterStack: false
         });
       },
 
@@ -57437,6 +57620,10 @@
         }, [_h('span', {
           class: 'preloader-inner-circle'
         })]);
+      } else if (!theme) {
+        innerEl = _h('span', {
+          class: 'preloader-inner'
+        });
       }
 
       var classes = Utils$1.classNames(className, 'preloader', Mixins.colorClasses(props));
@@ -61859,7 +62046,7 @@
   };
 
   /**
-   * Framework7 Vue 5.1.3
+   * Framework7 Vue 5.2.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -61867,7 +62054,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: November 17, 2019
+   * Released on: December 8, 2019
    */
 
   //
@@ -61990,7 +62177,7 @@
     
 
     
-    var Home = normalizeComponent(
+    var __vue_component__ = normalizeComponent(
       { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
       __vue_inject_styles__,
       __vue_script__,
@@ -62039,7 +62226,7 @@
     
 
     
-    var PanelLeft = normalizeComponent(
+    var __vue_component__$1 = normalizeComponent(
       { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
       __vue_inject_styles__$1,
       __vue_script__$1,
@@ -62089,7 +62276,7 @@
     
 
     
-    var PanelRight = normalizeComponent(
+    var __vue_component__$2 = normalizeComponent(
       { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
       __vue_inject_styles__$2,
       __vue_script__$2,
@@ -62136,7 +62323,7 @@
     
 
     
-    var About = normalizeComponent(
+    var __vue_component__$3 = normalizeComponent(
       { render: __vue_render__$3, staticRenderFns: __vue_staticRenderFns__$3 },
       __vue_inject_styles__$3,
       __vue_script__$3,
@@ -62169,7 +62356,7 @@
   var __vue_script__$4 = script$4;
 
   /* template */
-  var __vue_render__$4 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Accordion","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("List View Accordion")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset Accordion")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":"","inset":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom Collapsible")]),_vm._v(" "),_c('f7-block',{attrs:{"inner":"","accordion-list":""}},_vm._l((3),function(n){return _c('f7-accordion-item',{key:n},[_c('f7-accordion-toggle',[_c('b',[_vm._v("Item "+_vm._s(n))])]),_vm._v(" "),_c('f7-accordion-content',[_vm._v("Content "+_vm._s(n))])],1)}),1)],1)};
+  var __vue_render__$4 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Accordion","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("List View Accordion")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset Accordion")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":"","inset":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Opposite Side")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":"","accordion-opposite":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom Collapsible")]),_vm._v(" "),_c('f7-block',{attrs:{"inner":"","accordion-list":""}},_vm._l((3),function(n){return _c('f7-accordion-item',{key:n},[_c('f7-accordion-toggle',[_c('b',[_vm._v("Item "+_vm._s(n))])]),_vm._v(" "),_c('f7-accordion-content',[_vm._v("Content "+_vm._s(n))])],1)}),1)],1)};
   var __vue_staticRenderFns__$4 = [];
 
     /* style */
@@ -62188,7 +62375,7 @@
     
 
     
-    var Accordion$2 = normalizeComponent(
+    var __vue_component__$4 = normalizeComponent(
       { render: __vue_render__$4, staticRenderFns: __vue_staticRenderFns__$4 },
       __vue_inject_styles__$4,
       __vue_script__$4,
@@ -62286,7 +62473,7 @@
     
 
     
-    var ActionSheet = normalizeComponent(
+    var __vue_component__$5 = normalizeComponent(
       { render: __vue_render__$5, staticRenderFns: __vue_staticRenderFns__$5 },
       __vue_inject_styles__$5,
       __vue_script__$5,
@@ -62361,7 +62548,7 @@
     
 
     
-    var Appbar$1 = normalizeComponent(
+    var __vue_component__$6 = normalizeComponent(
       { render: __vue_render__$6, staticRenderFns: __vue_staticRenderFns__$6 },
       __vue_inject_styles__$6,
       __vue_script__$6,
@@ -62786,7 +62973,7 @@
     
 
     
-    var Autocomplete$2 = normalizeComponent(
+    var __vue_component__$7 = normalizeComponent(
       { render: __vue_render__$7, staticRenderFns: __vue_staticRenderFns__$7 },
       __vue_inject_styles__$7,
       __vue_script__$7,
@@ -62838,7 +63025,7 @@
     
 
     
-    var Badge = normalizeComponent(
+    var __vue_component__$8 = normalizeComponent(
       { render: __vue_render__$8, staticRenderFns: __vue_staticRenderFns__$8 },
       __vue_inject_styles__$8,
       __vue_script__$8,
@@ -62891,7 +63078,7 @@
     
 
     
-    var Buttons = normalizeComponent(
+    var __vue_component__$9 = normalizeComponent(
       { render: __vue_render__$9, staticRenderFns: __vue_staticRenderFns__$9 },
       __vue_inject_styles__$9,
       __vue_script__$9,
@@ -62976,7 +63163,7 @@
     
 
     
-    var Calendar$2 = normalizeComponent(
+    var __vue_component__$a = normalizeComponent(
       { render: __vue_render__$a, staticRenderFns: __vue_staticRenderFns__$a },
       __vue_inject_styles__$a,
       __vue_script__$a,
@@ -63127,7 +63314,7 @@
     
 
     
-    var CalendarPage = normalizeComponent(
+    var __vue_component__$b = normalizeComponent(
       { render: __vue_render__$b, staticRenderFns: __vue_staticRenderFns__$b },
       __vue_inject_styles__$b,
       __vue_script__$b,
@@ -63181,7 +63368,7 @@
     
 
     
-    var Cards = normalizeComponent(
+    var __vue_component__$c = normalizeComponent(
       { render: __vue_render__$c, staticRenderFns: __vue_staticRenderFns__$c },
       __vue_inject_styles__$c,
       __vue_script__$c,
@@ -63232,7 +63419,7 @@
     
 
     
-    var CardsExpandable = normalizeComponent(
+    var __vue_component__$d = normalizeComponent(
       { render: __vue_render__$d, staticRenderFns: __vue_staticRenderFns__$d },
       __vue_inject_styles__$d,
       __vue_script__$d,
@@ -63308,7 +63495,7 @@
     
 
     
-    var Checkbox$1 = normalizeComponent(
+    var __vue_component__$e = normalizeComponent(
       { render: __vue_render__$e, staticRenderFns: __vue_staticRenderFns__$e },
       __vue_inject_styles__$e,
       __vue_script__$e,
@@ -63367,7 +63554,7 @@
     
 
     
-    var Chips = normalizeComponent(
+    var __vue_component__$f = normalizeComponent(
       { render: __vue_render__$f, staticRenderFns: __vue_staticRenderFns__$f },
       __vue_inject_styles__$f,
       __vue_script__$f,
@@ -63536,7 +63723,7 @@
     
 
     
-    var ColorPicker$2 = normalizeComponent(
+    var __vue_component__$g = normalizeComponent(
       { render: __vue_render__$g, staticRenderFns: __vue_staticRenderFns__$g },
       __vue_inject_styles__$g,
       __vue_script__$g,
@@ -63584,7 +63771,7 @@
     
 
     
-    var ContactsList$1 = normalizeComponent(
+    var __vue_component__$h = normalizeComponent(
       { render: __vue_render__$h, staticRenderFns: __vue_staticRenderFns__$h },
       __vue_inject_styles__$h,
       __vue_script__$h,
@@ -63633,7 +63820,7 @@
     
 
     
-    var ContentBlock = normalizeComponent(
+    var __vue_component__$i = normalizeComponent(
       { render: __vue_render__$i, staticRenderFns: __vue_staticRenderFns__$i },
       __vue_inject_styles__$i,
       __vue_script__$i,
@@ -63681,7 +63868,7 @@
     
 
     
-    var DataTable$2 = normalizeComponent(
+    var __vue_component__$j = normalizeComponent(
       { render: __vue_render__$j, staticRenderFns: __vue_staticRenderFns__$j },
       __vue_inject_styles__$j,
       __vue_script__$j,
@@ -63823,7 +64010,7 @@
     
 
     
-    var Dialog$2 = normalizeComponent(
+    var __vue_component__$k = normalizeComponent(
       { render: __vue_render__$k, staticRenderFns: __vue_staticRenderFns__$k },
       __vue_inject_styles__$k,
       __vue_script__$k,
@@ -63872,7 +64059,7 @@
     
 
     
-    var Elevation$1 = normalizeComponent(
+    var __vue_component__$l = normalizeComponent(
       { render: __vue_render__$l, staticRenderFns: __vue_staticRenderFns__$l },
       __vue_inject_styles__$l,
       __vue_script__$l,
@@ -63916,7 +64103,7 @@
     
 
     
-    var Fab$2 = normalizeComponent(
+    var __vue_component__$m = normalizeComponent(
       { render: __vue_render__$m, staticRenderFns: __vue_staticRenderFns__$m },
       __vue_inject_styles__$m,
       __vue_script__$m,
@@ -63960,7 +64147,7 @@
     
 
     
-    var FabMorph = normalizeComponent(
+    var __vue_component__$n = normalizeComponent(
       { render: __vue_render__$n, staticRenderFns: __vue_staticRenderFns__$n },
       __vue_inject_styles__$n,
       __vue_script__$n,
@@ -64006,7 +64193,7 @@
     
 
     
-    var FormStorage$1 = normalizeComponent(
+    var __vue_component__$o = normalizeComponent(
       { render: __vue_render__$o, staticRenderFns: __vue_staticRenderFns__$o },
       __vue_inject_styles__$o,
       __vue_script__$o,
@@ -64063,7 +64250,7 @@
     
 
     
-    var Gauge$2 = normalizeComponent(
+    var __vue_component__$p = normalizeComponent(
       { render: __vue_render__$p, staticRenderFns: __vue_staticRenderFns__$p },
       __vue_inject_styles__$p,
       __vue_script__$p,
@@ -64112,7 +64299,7 @@
     
 
     
-    var Grid$2 = normalizeComponent(
+    var __vue_component__$q = normalizeComponent(
       { render: __vue_render__$q, staticRenderFns: __vue_staticRenderFns__$q },
       __vue_inject_styles__$q,
       __vue_script__$q,
@@ -64174,7 +64361,7 @@
     
 
     
-    var Icons = normalizeComponent(
+    var __vue_component__$r = normalizeComponent(
       { render: __vue_render__$r, staticRenderFns: __vue_staticRenderFns__$r },
       __vue_inject_styles__$r,
       __vue_script__$r,
@@ -64251,7 +64438,7 @@
     
 
     
-    var InfiniteScroll$2 = normalizeComponent(
+    var __vue_component__$s = normalizeComponent(
       { render: __vue_render__$s, staticRenderFns: __vue_staticRenderFns__$s },
       __vue_inject_styles__$s,
       __vue_script__$s,
@@ -64302,7 +64489,7 @@
     
 
     
-    var Inputs = normalizeComponent(
+    var __vue_component__$t = normalizeComponent(
       { render: __vue_render__$t, staticRenderFns: __vue_staticRenderFns__$t },
       __vue_inject_styles__$t,
       __vue_script__$t,
@@ -64348,7 +64535,7 @@
     
 
     
-    var LazyLoad = normalizeComponent(
+    var __vue_component__$u = normalizeComponent(
       { render: __vue_render__$u, staticRenderFns: __vue_staticRenderFns__$u },
       __vue_inject_styles__$u,
       __vue_script__$u,
@@ -64403,7 +64590,7 @@
     
 
     
-    var List = normalizeComponent(
+    var __vue_component__$v = normalizeComponent(
       { render: __vue_render__$v, staticRenderFns: __vue_staticRenderFns__$v },
       __vue_inject_styles__$v,
       __vue_script__$v,
@@ -64452,7 +64639,7 @@
     
 
     
-    var ListIndex$2 = normalizeComponent(
+    var __vue_component__$w = normalizeComponent(
       { render: __vue_render__$w, staticRenderFns: __vue_staticRenderFns__$w },
       __vue_inject_styles__$w,
       __vue_script__$w,
@@ -64524,7 +64711,7 @@
     
 
     
-    var LoginScreen$2 = normalizeComponent(
+    var __vue_component__$x = normalizeComponent(
       { render: __vue_render__$x, staticRenderFns: __vue_staticRenderFns__$x },
       __vue_inject_styles__$x,
       __vue_script__$x,
@@ -64590,7 +64777,7 @@
     
 
     
-    var LoginScreenPage = normalizeComponent(
+    var __vue_component__$y = normalizeComponent(
       { render: __vue_render__$y, staticRenderFns: __vue_staticRenderFns__$y },
       __vue_inject_styles__$y,
       __vue_script__$y,
@@ -64695,7 +64882,7 @@
     
 
     
-    var Menu$2 = normalizeComponent(
+    var __vue_component__$z = normalizeComponent(
       { render: __vue_render__$z, staticRenderFns: __vue_staticRenderFns__$z },
       __vue_inject_styles__$z,
       __vue_script__$z,
@@ -64953,7 +65140,7 @@
     
 
     
-    var Messages$2 = normalizeComponent(
+    var __vue_component__$A = normalizeComponent(
       { render: __vue_render__$A, staticRenderFns: __vue_staticRenderFns__$A },
       __vue_inject_styles__$A,
       __vue_script__$A,
@@ -65003,7 +65190,7 @@
     
 
     
-    var Navbar$2 = normalizeComponent(
+    var __vue_component__$B = normalizeComponent(
       { render: __vue_render__$B, staticRenderFns: __vue_staticRenderFns__$B },
       __vue_inject_styles__$B,
       __vue_script__$B,
@@ -65049,7 +65236,7 @@
     
 
     
-    var NavbarHideScroll = normalizeComponent(
+    var __vue_component__$C = normalizeComponent(
       { render: __vue_render__$C, staticRenderFns: __vue_staticRenderFns__$C },
       __vue_inject_styles__$C,
       __vue_script__$C,
@@ -65178,7 +65365,7 @@
     
 
     
-    var Notifications = normalizeComponent(
+    var __vue_component__$D = normalizeComponent(
       { render: __vue_render__$D, staticRenderFns: __vue_staticRenderFns__$D },
       __vue_inject_styles__$D,
       __vue_script__$D,
@@ -65226,7 +65413,7 @@
     
 
     
-    var Panel$2 = normalizeComponent(
+    var __vue_component__$E = normalizeComponent(
       { render: __vue_render__$E, staticRenderFns: __vue_staticRenderFns__$E },
       __vue_inject_styles__$E,
       __vue_script__$E,
@@ -65295,7 +65482,7 @@
     
 
     
-    var PhotoBrowser$2 = normalizeComponent(
+    var __vue_component__$F = normalizeComponent(
       { render: __vue_render__$F, staticRenderFns: __vue_staticRenderFns__$F },
       __vue_inject_styles__$F,
       __vue_script__$F,
@@ -65519,7 +65706,7 @@
     
 
     
-    var Picker$2 = normalizeComponent(
+    var __vue_component__$G = normalizeComponent(
       { render: __vue_render__$G, staticRenderFns: __vue_staticRenderFns__$G },
       __vue_inject_styles__$G,
       __vue_script__$G,
@@ -65594,7 +65781,7 @@
     
 
     
-    var Popup$2 = normalizeComponent(
+    var __vue_component__$H = normalizeComponent(
       { render: __vue_render__$H, staticRenderFns: __vue_staticRenderFns__$H },
       __vue_inject_styles__$H,
       __vue_script__$H,
@@ -65646,7 +65833,7 @@
     
 
     
-    var Popover$2 = normalizeComponent(
+    var __vue_component__$I = normalizeComponent(
       { render: __vue_render__$I, staticRenderFns: __vue_staticRenderFns__$I },
       __vue_inject_styles__$I,
       __vue_script__$I,
@@ -65718,7 +65905,7 @@
     
 
     
-    var Preloader$2 = normalizeComponent(
+    var __vue_component__$J = normalizeComponent(
       { render: __vue_render__$J, staticRenderFns: __vue_staticRenderFns__$J },
       __vue_inject_styles__$J,
       __vue_script__$J,
@@ -65817,7 +66004,7 @@
     
 
     
-    var Progressbar$2 = normalizeComponent(
+    var __vue_component__$K = normalizeComponent(
       { render: __vue_render__$K, staticRenderFns: __vue_staticRenderFns__$K },
       __vue_inject_styles__$K,
       __vue_script__$K,
@@ -65906,7 +66093,7 @@
     
 
     
-    var PullToRefresh$2 = normalizeComponent(
+    var __vue_component__$L = normalizeComponent(
       { render: __vue_render__$L, staticRenderFns: __vue_staticRenderFns__$L },
       __vue_inject_styles__$L,
       __vue_script__$L,
@@ -65956,7 +66143,7 @@
     
 
     
-    var Radio$1 = normalizeComponent(
+    var __vue_component__$M = normalizeComponent(
       { render: __vue_render__$M, staticRenderFns: __vue_staticRenderFns__$M },
       __vue_inject_styles__$M,
       __vue_script__$M,
@@ -66020,7 +66207,7 @@
     
 
     
-    var Range$2 = normalizeComponent(
+    var __vue_component__$N = normalizeComponent(
       { render: __vue_render__$N, staticRenderFns: __vue_staticRenderFns__$N },
       __vue_inject_styles__$N,
       __vue_script__$N,
@@ -66069,7 +66256,7 @@
     
 
     
-    var Searchbar$2 = normalizeComponent(
+    var __vue_component__$O = normalizeComponent(
       { render: __vue_render__$O, staticRenderFns: __vue_staticRenderFns__$O },
       __vue_inject_styles__$O,
       __vue_script__$O,
@@ -66120,7 +66307,7 @@
     
 
     
-    var SearchbarExpandable = normalizeComponent(
+    var __vue_component__$P = normalizeComponent(
       { render: __vue_render__$P, staticRenderFns: __vue_staticRenderFns__$P },
       __vue_inject_styles__$P,
       __vue_script__$P,
@@ -66210,7 +66397,7 @@
     
 
     
-    var SheetModal = normalizeComponent(
+    var __vue_component__$Q = normalizeComponent(
       { render: __vue_render__$Q, staticRenderFns: __vue_staticRenderFns__$Q },
       __vue_inject_styles__$Q,
       __vue_script__$Q,
@@ -66280,7 +66467,7 @@
     
 
     
-    var Skeleton$1 = normalizeComponent(
+    var __vue_component__$R = normalizeComponent(
       { render: __vue_render__$R, staticRenderFns: __vue_staticRenderFns__$R },
       __vue_inject_styles__$R,
       __vue_script__$R,
@@ -66328,7 +66515,7 @@
     
 
     
-    var SmartSelect$2 = normalizeComponent(
+    var __vue_component__$S = normalizeComponent(
       { render: __vue_render__$S, staticRenderFns: __vue_staticRenderFns__$S },
       __vue_inject_styles__$S,
       __vue_script__$S,
@@ -66353,6 +66540,7 @@
       f7NavRight: f7NavRight,
       f7Link: f7Link,
       f7Icon: f7Icon,
+      f7BlockTitle: f7BlockTitle,
     },
   };
 
@@ -66360,7 +66548,7 @@
   var __vue_script__$T = script$T;
 
   /* template */
-  var __vue_render__$T = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Sortable List","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"sortable-toggle":".sortable"}},[_vm._v("Toggle")])],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Just click \"Toggle\" button on navigation bar to enable/disable sorting")])]),_vm._v(" "),_c('f7-list',{attrs:{"sortable":""}},[_c('f7-list-item',{attrs:{"title":"1 Jenna Smith","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"2 John Doe","after":"Director"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"3 John Doe","after":"Developer"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"4 Aaron Darling","after":"Manager"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"5 Calvin Johnson","after":"Accounter"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"6 John Smith","after":"SEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"7 Chloe","after":"Manager"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{attrs:{"media-list":"","sortable":""}},[_c('f7-list-item',{attrs:{"title":"Yellow Submarine","after":"$15","subtitle":"Beatles","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-1.jpg","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Don't Stop Me Now","after":"$22","subtitle":"Queen","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-2.jpg","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Billie Jean","after":"$16","subtitle":"Michael Jackson","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-3.jpg","width":"80"},slot:"media"})])],1)],1)};
+  var __vue_render__$T = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Sortable List","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"sortable-toggle":".sortable"}},[_vm._v("Toggle")])],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Just click \"Toggle\" button on navigation bar to enable/disable sorting")])]),_vm._v(" "),_c('f7-list',{attrs:{"sortable":""}},[_c('f7-list-item',{attrs:{"title":"1 Jenna Smith","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"2 John Doe","after":"Director"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"3 John Doe","after":"Developer"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"4 Aaron Darling","after":"Manager"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"5 Calvin Johnson","after":"Accounter"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"6 John Smith","after":"SEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"7 Chloe","after":"Manager"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{attrs:{"media-list":"","sortable":""}},[_c('f7-list-item',{attrs:{"title":"Yellow Submarine","after":"$15","subtitle":"Beatles","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-1.jpg","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Don't Stop Me Now","after":"$22","subtitle":"Queen","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-2.jpg","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Billie Jean","after":"$16","subtitle":"Michael Jackson","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-3.jpg","width":"80"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Opposite Side")]),_vm._v(" "),_c('f7-list',{attrs:{"sortable":"","sortable-opposite":""}},[_c('f7-list-item',{attrs:{"title":"1 Jenna Smith","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"2 John Doe","after":"Director"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"3 John Doe","after":"Developer"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"4 Aaron Darling","after":"Manager"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"5 Calvin Johnson","after":"Accounter"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"6 John Smith","after":"SEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"7 Chloe","after":"Manager"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1)],1)};
   var __vue_staticRenderFns__$T = [];
 
     /* style */
@@ -66379,7 +66567,7 @@
     
 
     
-    var Sortable$2 = normalizeComponent(
+    var __vue_component__$T = normalizeComponent(
       { render: __vue_render__$T, staticRenderFns: __vue_staticRenderFns__$T },
       __vue_inject_styles__$T,
       __vue_script__$T,
@@ -66457,7 +66645,7 @@
     
 
     
-    var Stepper$2 = normalizeComponent(
+    var __vue_component__$U = normalizeComponent(
       { render: __vue_render__$U, staticRenderFns: __vue_staticRenderFns__$U },
       __vue_inject_styles__$U,
       __vue_script__$U,
@@ -66501,7 +66689,7 @@
     
 
     
-    var Subnavbar$1 = normalizeComponent(
+    var __vue_component__$V = normalizeComponent(
       { render: __vue_render__$V, staticRenderFns: __vue_staticRenderFns__$V },
       __vue_inject_styles__$V,
       __vue_script__$V,
@@ -66545,7 +66733,7 @@
     
 
     
-    var SubnavbarTitle = normalizeComponent(
+    var __vue_component__$W = normalizeComponent(
       { render: __vue_render__$W, staticRenderFns: __vue_staticRenderFns__$W },
       __vue_inject_styles__$W,
       __vue_script__$W,
@@ -66590,7 +66778,7 @@
     
 
     
-    var Swiper$2 = normalizeComponent(
+    var __vue_component__$X = normalizeComponent(
       { render: __vue_render__$X, staticRenderFns: __vue_staticRenderFns__$X },
       __vue_inject_styles__$X,
       __vue_script__$X,
@@ -66635,7 +66823,7 @@
     
 
     
-    var SwiperHorizontal = normalizeComponent(
+    var __vue_component__$Y = normalizeComponent(
       { render: __vue_render__$Y, staticRenderFns: __vue_staticRenderFns__$Y },
       __vue_inject_styles__$Y,
       __vue_script__$Y,
@@ -66680,7 +66868,7 @@
     
 
     
-    var SwiperVertical = normalizeComponent(
+    var __vue_component__$Z = normalizeComponent(
       { render: __vue_render__$Z, staticRenderFns: __vue_staticRenderFns__$Z },
       __vue_inject_styles__$Z,
       __vue_script__$Z,
@@ -66725,7 +66913,7 @@
     
 
     
-    var SwiperSpaceBetween = normalizeComponent(
+    var __vue_component__$_ = normalizeComponent(
       { render: __vue_render__$_, staticRenderFns: __vue_staticRenderFns__$_ },
       __vue_inject_styles__$_,
       __vue_script__$_,
@@ -66771,7 +66959,7 @@
     
 
     
-    var SwiperMultiple = normalizeComponent(
+    var __vue_component__$$ = normalizeComponent(
       { render: __vue_render__$$, staticRenderFns: __vue_staticRenderFns__$$ },
       __vue_inject_styles__$$,
       __vue_script__$$,
@@ -66816,7 +67004,7 @@
     
 
     
-    var SwiperNested = normalizeComponent(
+    var __vue_component__$10 = normalizeComponent(
       { render: __vue_render__$10, staticRenderFns: __vue_staticRenderFns__$10 },
       __vue_inject_styles__$10,
       __vue_script__$10,
@@ -66861,7 +67049,7 @@
     
 
     
-    var SwiperLoop = normalizeComponent(
+    var __vue_component__$11 = normalizeComponent(
       { render: __vue_render__$11, staticRenderFns: __vue_staticRenderFns__$11 },
       __vue_inject_styles__$11,
       __vue_script__$11,
@@ -66906,7 +67094,7 @@
     
 
     
-    var Swiper3dCube = normalizeComponent(
+    var __vue_component__$12 = normalizeComponent(
       { render: __vue_render__$12, staticRenderFns: __vue_staticRenderFns__$12 },
       __vue_inject_styles__$12,
       __vue_script__$12,
@@ -66951,7 +67139,7 @@
     
 
     
-    var Swiper3dCoverflow = normalizeComponent(
+    var __vue_component__$13 = normalizeComponent(
       { render: __vue_render__$13, staticRenderFns: __vue_staticRenderFns__$13 },
       __vue_inject_styles__$13,
       __vue_script__$13,
@@ -66996,7 +67184,7 @@
     
 
     
-    var Swiper3dFlip = normalizeComponent(
+    var __vue_component__$14 = normalizeComponent(
       { render: __vue_render__$14, staticRenderFns: __vue_staticRenderFns__$14 },
       __vue_inject_styles__$14,
       __vue_script__$14,
@@ -67041,7 +67229,7 @@
     
 
     
-    var SwiperFade = normalizeComponent(
+    var __vue_component__$15 = normalizeComponent(
       { render: __vue_render__$15, staticRenderFns: __vue_staticRenderFns__$15 },
       __vue_inject_styles__$15,
       __vue_script__$15,
@@ -67086,7 +67274,7 @@
     
 
     
-    var SwiperScrollbar = normalizeComponent(
+    var __vue_component__$16 = normalizeComponent(
       { render: __vue_render__$16, staticRenderFns: __vue_staticRenderFns__$16 },
       __vue_inject_styles__$16,
       __vue_script__$16,
@@ -67161,7 +67349,7 @@
     
 
     
-    var SwiperGallery = normalizeComponent(
+    var __vue_component__$17 = normalizeComponent(
       { render: __vue_render__$17, staticRenderFns: __vue_staticRenderFns__$17 },
       __vue_inject_styles__$17,
       __vue_script__$17,
@@ -67206,7 +67394,7 @@
     
 
     
-    var SwiperCustomControls = normalizeComponent(
+    var __vue_component__$18 = normalizeComponent(
       { render: __vue_render__$18, staticRenderFns: __vue_staticRenderFns__$18 },
       __vue_inject_styles__$18,
       __vue_script__$18,
@@ -67251,7 +67439,7 @@
     
 
     
-    var SwiperParallax = normalizeComponent(
+    var __vue_component__$19 = normalizeComponent(
       { render: __vue_render__$19, staticRenderFns: __vue_staticRenderFns__$19 },
       __vue_inject_styles__$19,
       __vue_script__$19,
@@ -67296,7 +67484,7 @@
     
 
     
-    var SwiperLazy = normalizeComponent(
+    var __vue_component__$1a = normalizeComponent(
       { render: __vue_render__$1a, staticRenderFns: __vue_staticRenderFns__$1a },
       __vue_inject_styles__$1a,
       __vue_script__$1a,
@@ -67341,7 +67529,7 @@
     
 
     
-    var SwiperPaginationProgress = normalizeComponent(
+    var __vue_component__$1b = normalizeComponent(
       { render: __vue_render__$1b, staticRenderFns: __vue_staticRenderFns__$1b },
       __vue_inject_styles__$1b,
       __vue_script__$1b,
@@ -67386,7 +67574,7 @@
     
 
     
-    var SwiperPaginationFraction = normalizeComponent(
+    var __vue_component__$1c = normalizeComponent(
       { render: __vue_render__$1c, staticRenderFns: __vue_staticRenderFns__$1c },
       __vue_inject_styles__$1c,
       __vue_script__$1c,
@@ -67431,7 +67619,7 @@
     
 
     
-    var SwiperZoom = normalizeComponent(
+    var __vue_component__$1d = normalizeComponent(
       { render: __vue_render__$1d, staticRenderFns: __vue_staticRenderFns__$1d },
       __vue_inject_styles__$1d,
       __vue_script__$1d,
@@ -67532,7 +67720,7 @@
     
 
     
-    var Swipeout$2 = normalizeComponent(
+    var __vue_component__$1e = normalizeComponent(
       { render: __vue_render__$1e, staticRenderFns: __vue_staticRenderFns__$1e },
       __vue_inject_styles__$1e,
       __vue_script__$1e,
@@ -67579,7 +67767,7 @@
     
 
     
-    var Tabs$1 = normalizeComponent(
+    var __vue_component__$1f = normalizeComponent(
       { render: __vue_render__$1f, staticRenderFns: __vue_staticRenderFns__$1f },
       __vue_inject_styles__$1f,
       __vue_script__$1f,
@@ -67623,7 +67811,7 @@
     
 
     
-    var TabsStatic = normalizeComponent(
+    var __vue_component__$1g = normalizeComponent(
       { render: __vue_render__$1g, staticRenderFns: __vue_staticRenderFns__$1g },
       __vue_inject_styles__$1g,
       __vue_script__$1g,
@@ -67667,7 +67855,7 @@
     
 
     
-    var TabsAnimated = normalizeComponent(
+    var __vue_component__$1h = normalizeComponent(
       { render: __vue_render__$1h, staticRenderFns: __vue_staticRenderFns__$1h },
       __vue_inject_styles__$1h,
       __vue_script__$1h,
@@ -67711,7 +67899,7 @@
     
 
     
-    var TabsSwipeable = normalizeComponent(
+    var __vue_component__$1i = normalizeComponent(
       { render: __vue_render__$1i, staticRenderFns: __vue_staticRenderFns__$1i },
       __vue_inject_styles__$1i,
       __vue_script__$1i,
@@ -67755,7 +67943,7 @@
     
 
     
-    var TabsRoutable = normalizeComponent(
+    var __vue_component__$1j = normalizeComponent(
       { render: __vue_render__$1j, staticRenderFns: __vue_staticRenderFns__$1j },
       __vue_inject_styles__$1j,
       __vue_script__$1j,
@@ -67829,7 +68017,7 @@
     
 
     
-    var TextEditor$2 = normalizeComponent(
+    var __vue_component__$1k = normalizeComponent(
       { render: __vue_render__$1k, staticRenderFns: __vue_staticRenderFns__$1k },
       __vue_inject_styles__$1k,
       __vue_script__$1k,
@@ -67998,7 +68186,7 @@
     
 
     
-    var Toast$2 = normalizeComponent(
+    var __vue_component__$1l = normalizeComponent(
       { render: __vue_render__$1l, staticRenderFns: __vue_staticRenderFns__$1l },
       __vue_inject_styles__$1l,
       __vue_script__$1l,
@@ -68047,7 +68235,7 @@
     
 
     
-    var Toggle$2 = normalizeComponent(
+    var __vue_component__$1m = normalizeComponent(
       { render: __vue_render__$1m, staticRenderFns: __vue_staticRenderFns__$1m },
       __vue_inject_styles__$1m,
       __vue_script__$1m,
@@ -68101,7 +68289,7 @@
     
 
     
-    var ToolbarTabbar = normalizeComponent(
+    var __vue_component__$1n = normalizeComponent(
       { render: __vue_render__$1n, staticRenderFns: __vue_staticRenderFns__$1n },
       __vue_inject_styles__$1n,
       __vue_script__$1n,
@@ -68155,7 +68343,7 @@
     
 
     
-    var Tabbar = normalizeComponent(
+    var __vue_component__$1o = normalizeComponent(
       { render: __vue_render__$1o, staticRenderFns: __vue_staticRenderFns__$1o },
       __vue_inject_styles__$1o,
       __vue_script__$1o,
@@ -68209,7 +68397,7 @@
     
 
     
-    var TabbarLabels = normalizeComponent(
+    var __vue_component__$1p = normalizeComponent(
       { render: __vue_render__$1p, staticRenderFns: __vue_staticRenderFns__$1p },
       __vue_inject_styles__$1p,
       __vue_script__$1p,
@@ -68264,7 +68452,7 @@
     
 
     
-    var TabbarScrollable = normalizeComponent(
+    var __vue_component__$1q = normalizeComponent(
       { render: __vue_render__$1q, staticRenderFns: __vue_staticRenderFns__$1q },
       __vue_inject_styles__$1q,
       __vue_script__$1q,
@@ -68308,7 +68496,7 @@
     
 
     
-    var ToolbarHideScroll = normalizeComponent(
+    var __vue_component__$1r = normalizeComponent(
       { render: __vue_render__$1r, staticRenderFns: __vue_staticRenderFns__$1r },
       __vue_inject_styles__$1r,
       __vue_script__$1r,
@@ -68378,7 +68566,7 @@
     
 
     
-    var Tooltip$2 = normalizeComponent(
+    var __vue_component__$1s = normalizeComponent(
       { render: __vue_render__$1s, staticRenderFns: __vue_staticRenderFns__$1s },
       __vue_inject_styles__$1s,
       __vue_script__$1s,
@@ -68422,7 +68610,7 @@
     
 
     
-    var Timeline$1 = normalizeComponent(
+    var __vue_component__$1t = normalizeComponent(
       { render: __vue_render__$1t, staticRenderFns: __vue_staticRenderFns__$1t },
       __vue_inject_styles__$1t,
       __vue_script__$1t,
@@ -68468,7 +68656,7 @@
     
 
     
-    var TimelineVertical = normalizeComponent(
+    var __vue_component__$1u = normalizeComponent(
       { render: __vue_render__$1u, staticRenderFns: __vue_staticRenderFns__$1u },
       __vue_inject_styles__$1u,
       __vue_script__$1u,
@@ -68514,7 +68702,7 @@
     
 
     
-    var TimelineHorizontal = normalizeComponent(
+    var __vue_component__$1v = normalizeComponent(
       { render: __vue_render__$1v, staticRenderFns: __vue_staticRenderFns__$1v },
       __vue_inject_styles__$1v,
       __vue_script__$1v,
@@ -68560,7 +68748,7 @@
     
 
     
-    var TimelineHorizontalCalendar = normalizeComponent(
+    var __vue_component__$1w = normalizeComponent(
       { render: __vue_render__$1w, staticRenderFns: __vue_staticRenderFns__$1w },
       __vue_inject_styles__$1w,
       __vue_script__$1w,
@@ -68647,7 +68835,7 @@
     
 
     
-    var Treeview$2 = normalizeComponent(
+    var __vue_component__$1x = normalizeComponent(
       { render: __vue_render__$1x, staticRenderFns: __vue_staticRenderFns__$1x },
       __vue_inject_styles__$1x,
       __vue_script__$1x,
@@ -68718,7 +68906,7 @@
     
 
     
-    var VirtualList$2 = normalizeComponent(
+    var __vue_component__$1y = normalizeComponent(
       { render: __vue_render__$1y, staticRenderFns: __vue_staticRenderFns__$1y },
       __vue_inject_styles__$1y,
       __vue_script__$1y,
@@ -68873,7 +69061,7 @@
     
 
     
-    var ColorThemes = normalizeComponent(
+    var __vue_component__$1z = normalizeComponent(
       { render: __vue_render__$1z, staticRenderFns: __vue_staticRenderFns__$1z },
       __vue_inject_styles__$1z,
       __vue_script__$1z,
@@ -68926,7 +69114,7 @@
     
 
     
-    var PageTransitions = normalizeComponent(
+    var __vue_component__$1A = normalizeComponent(
       { render: __vue_render__$1A, staticRenderFns: __vue_staticRenderFns__$1A },
       __vue_inject_styles__$1A,
       __vue_script__$1A,
@@ -68975,7 +69163,7 @@
     
 
     
-    var PageTransitionsEffect = normalizeComponent(
+    var __vue_component__$1B = normalizeComponent(
       { render: __vue_render__$1B, staticRenderFns: __vue_staticRenderFns__$1B },
       __vue_inject_styles__$1B,
       __vue_script__$1B,
@@ -69019,7 +69207,7 @@
     
 
     
-    var RoutableModals$1 = normalizeComponent(
+    var __vue_component__$1C = normalizeComponent(
       { render: __vue_render__$1C, staticRenderFns: __vue_staticRenderFns__$1C },
       __vue_inject_styles__$1C,
       __vue_script__$1C,
@@ -69062,7 +69250,7 @@
     
 
     
-    var RoutablePopup = normalizeComponent(
+    var __vue_component__$1D = normalizeComponent(
       { render: __vue_render__$1D, staticRenderFns: __vue_staticRenderFns__$1D },
       __vue_inject_styles__$1D,
       __vue_script__$1D,
@@ -69105,7 +69293,7 @@
     
 
     
-    var RoutableActions = normalizeComponent(
+    var __vue_component__$1E = normalizeComponent(
       { render: __vue_render__$1E, staticRenderFns: __vue_staticRenderFns__$1E },
       __vue_inject_styles__$1E,
       __vue_script__$1E,
@@ -69153,7 +69341,7 @@
     
 
     
-    var MasterDetailMaster = normalizeComponent(
+    var __vue_component__$1F = normalizeComponent(
       { render: __vue_render__$1F, staticRenderFns: __vue_staticRenderFns__$1F },
       __vue_inject_styles__$1F,
       __vue_script__$1F,
@@ -69199,7 +69387,7 @@
     
 
     
-    var MasterDetailDetail = normalizeComponent(
+    var __vue_component__$1G = normalizeComponent(
       { render: __vue_render__$1G, staticRenderFns: __vue_staticRenderFns__$1G },
       __vue_inject_styles__$1G,
       __vue_script__$1G,
@@ -69244,7 +69432,7 @@
     
 
     
-    var NotFound = normalizeComponent(
+    var __vue_component__$1H = normalizeComponent(
       { render: __vue_render__$1H, staticRenderFns: __vue_staticRenderFns__$1H },
       __vue_inject_styles__$1H,
       __vue_script__$1H,
@@ -69262,22 +69450,22 @@
     // Index page
     {
       path: '/',
-      component: Home,
+      component: __vue_component__,
     },
     // About page
     {
       path: '/about/',
-      component: About,
+      component: __vue_component__$3,
     },
     // Left Panel
     {
       path: '/panel-left/',
-      component: PanelLeft,
+      component: __vue_component__$1,
     },
     // Right Panel
     {
       path: '/panel-right/',
-      component: PanelRight,
+      component: __vue_component__$2,
     },
     // Right Panel pages
     {
@@ -69292,324 +69480,324 @@
     // Components
     {
       path: '/accordion/',
-      component: Accordion$2,
+      component: __vue_component__$4,
     },
     {
       path: '/action-sheet/',
-      component: ActionSheet,
+      component: __vue_component__$5,
     },
     {
       path: '/appbar/',
-      component: Appbar$1,
+      component: __vue_component__$6,
     },
     {
       path: '/autocomplete/',
-      component: Autocomplete$2,
+      component: __vue_component__$7,
     },
     {
       path: '/badge/',
-      component: Badge,
+      component: __vue_component__$8,
     },
     {
       path: '/buttons/',
-      component: Buttons,
+      component: __vue_component__$9,
     },
     {
       path: '/calendar/',
-      component: Calendar$2,
+      component: __vue_component__$a,
     },
     {
       path: '/calendar-page/',
-      component: CalendarPage,
+      component: __vue_component__$b,
     },
     {
       path: '/cards/',
-      component: Cards,
+      component: __vue_component__$c,
     },
     {
       path: '/cards-expandable/',
-      component: CardsExpandable,
+      component: __vue_component__$d,
     },
     {
       path: '/checkbox/',
-      component: Checkbox$1,
+      component: __vue_component__$e,
     },
     {
       path: '/chips/',
-      component: Chips,
+      component: __vue_component__$f,
     },
     {
       path: '/color-picker/',
-      component: ColorPicker$2,
+      component: __vue_component__$g,
     },
     {
       path: '/contacts-list/',
-      component: ContactsList$1,
+      component: __vue_component__$h,
     },
     {
       path: '/content-block/',
-      component: ContentBlock,
+      component: __vue_component__$i,
     },
     {
       path: '/data-table/',
-      component: DataTable$2,
+      component: __vue_component__$j,
     },
     {
       path: '/dialog/',
-      component: Dialog$2,
+      component: __vue_component__$k,
     },
     {
       path: '/elevation/',
-      component: Elevation$1,
+      component: __vue_component__$l,
     },
     {
       path: '/fab/',
-      component: Fab$2,
+      component: __vue_component__$m,
     },
     {
       path: '/fab-morph/',
-      component: FabMorph,
+      component: __vue_component__$n,
     },
     {
       path: '/form-storage/',
-      component: FormStorage$1,
+      component: __vue_component__$o,
     },
     {
       path: '/gauge/',
-      component: Gauge$2,
+      component: __vue_component__$p,
     },
     {
       path: '/grid/',
-      component: Grid$2,
+      component: __vue_component__$q,
     },
     {
       path: '/icons/',
-      component: Icons,
+      component: __vue_component__$r,
     },
     {
       path: '/infinite-scroll/',
-      component: InfiniteScroll$2,
+      component: __vue_component__$s,
     },
     {
       path: '/inputs/',
-      component: Inputs,
+      component: __vue_component__$t,
     },
     {
       path: '/lazy-load/',
-      component: LazyLoad,
+      component: __vue_component__$u,
     },
     {
       path: '/list/',
-      component: List,
+      component: __vue_component__$v,
     },
     {
       path: '/list-index/',
-      component: ListIndex$2,
+      component: __vue_component__$w,
     },
     {
       path: '/login-screen/',
-      component: LoginScreen$2,
+      component: __vue_component__$x,
     },
     {
       path: '/login-screen-page/',
-      component: LoginScreenPage,
+      component: __vue_component__$y,
     },
     {
       path: '/menu/',
-      component: Menu$2,
+      component: __vue_component__$z,
     },
     {
       path: '/messages/',
-      component: Messages$2,
+      component: __vue_component__$A,
     },
     {
       path: '/navbar/',
-      component: Navbar$2,
+      component: __vue_component__$B,
     },
     {
       path: '/navbar-hide-scroll/',
-      component: NavbarHideScroll,
+      component: __vue_component__$C,
     },
     {
       path: '/notifications/',
-      component: Notifications,
+      component: __vue_component__$D,
     },
     {
       path: '/panel/',
-      component: Panel$2,
+      component: __vue_component__$E,
     },
     {
       path: '/photo-browser/',
-      component: PhotoBrowser$2,
+      component: __vue_component__$F,
     },
     {
       path: '/picker/',
-      component: Picker$2,
+      component: __vue_component__$G,
     },
     {
       path: '/popup/',
-      component: Popup$2,
+      component: __vue_component__$H,
     },
     {
       path: '/popover/',
-      component: Popover$2,
+      component: __vue_component__$I,
     },
     {
       path: '/preloader/',
-      component: Preloader$2,
+      component: __vue_component__$J,
     },
     {
       path: '/progressbar/',
-      component: Progressbar$2,
+      component: __vue_component__$K,
     },
     {
       path: '/pull-to-refresh/',
-      component: PullToRefresh$2,
+      component: __vue_component__$L,
     },
     {
       path: '/radio/',
-      component: Radio$1,
+      component: __vue_component__$M,
     },
     {
       path: '/range/',
-      component: Range$2,
+      component: __vue_component__$N,
     },
     {
       path: '/searchbar/',
-      component: Searchbar$2,
+      component: __vue_component__$O,
     },
     {
       path: '/searchbar-expandable/',
-      component: SearchbarExpandable,
+      component: __vue_component__$P,
     },
     {
       path: '/sheet-modal/',
-      component: SheetModal,
+      component: __vue_component__$Q,
     },
     {
       path: '/skeleton/',
-      component: Skeleton$1,
+      component: __vue_component__$R,
     },
     {
       path: '/smart-select/',
-      component: SmartSelect$2,
+      component: __vue_component__$S,
     },
     {
       path: '/sortable/',
-      component: Sortable$2,
+      component: __vue_component__$T,
     },
     {
       path: '/stepper/',
-      component: Stepper$2,
+      component: __vue_component__$U,
     },
     {
       path: '/subnavbar/',
-      component: Subnavbar$1,
+      component: __vue_component__$V,
     },
     {
       path: '/subnavbar-title/',
-      component: SubnavbarTitle,
+      component: __vue_component__$W,
     },
     {
       path: '/swiper/',
-      component: Swiper$2,
+      component: __vue_component__$X,
       routes: [
         {
           path: 'swiper-horizontal/',
-          component: SwiperHorizontal,
+          component: __vue_component__$Y,
         },
         {
           path: 'swiper-vertical/',
-          component: SwiperVertical,
+          component: __vue_component__$Z,
         },
         {
           path: 'swiper-space-between/',
-          component: SwiperSpaceBetween,
+          component: __vue_component__$_,
         },
         {
           path: 'swiper-multiple/',
-          component: SwiperMultiple,
+          component: __vue_component__$$,
         },
         {
           path: 'swiper-nested/',
-          component: SwiperNested,
+          component: __vue_component__$10,
         },
         {
           path: 'swiper-loop/',
-          component: SwiperLoop,
+          component: __vue_component__$11,
         },
         {
           path: 'swiper-3d-cube/',
-          component: Swiper3dCube,
+          component: __vue_component__$12,
         },
         {
           path: 'swiper-3d-coverflow/',
-          component: Swiper3dCoverflow,
+          component: __vue_component__$13,
         },
         {
           path: 'swiper-3d-flip/',
-          component: Swiper3dFlip,
+          component: __vue_component__$14,
         },
         {
           path: 'swiper-fade/',
-          component: SwiperFade,
+          component: __vue_component__$15,
         },
         {
           path: 'swiper-scrollbar/',
-          component: SwiperScrollbar,
+          component: __vue_component__$16,
         },
         {
           path: 'swiper-gallery/',
-          component: SwiperGallery,
+          component: __vue_component__$17,
         },
         {
           path: 'swiper-custom-controls/',
-          component: SwiperCustomControls,
+          component: __vue_component__$18,
         },
         {
           path: 'swiper-parallax/',
-          component: SwiperParallax,
+          component: __vue_component__$19,
         },
         {
           path: 'swiper-lazy/',
-          component: SwiperLazy,
+          component: __vue_component__$1a,
         },
         {
           path: 'swiper-pagination-progress/',
-          component: SwiperPaginationProgress,
+          component: __vue_component__$1b,
         },
         {
           path: 'swiper-pagination-fraction/',
-          component: SwiperPaginationFraction,
+          component: __vue_component__$1c,
         },
         {
           path: 'swiper-zoom/',
-          component: SwiperZoom,
+          component: __vue_component__$1d,
         } ],
     },
     {
       path: '/swipeout/',
-      component: Swipeout$2,
+      component: __vue_component__$1e,
     },
     {
       path: '/tabs/',
-      component: Tabs$1,
+      component: __vue_component__$1f,
     },
     {
       path: '/tabs-static/',
-      component: TabsStatic,
+      component: __vue_component__$1g,
     },
     {
       path: '/tabs-animated/',
-      component: TabsAnimated,
+      component: __vue_component__$1h,
     },
     {
       path: '/tabs-swipeable/',
-      component: TabsSwipeable,
+      component: __vue_component__$1i,
     },
     {
       path: '/tabs-routable/',
-      component: TabsRoutable,
+      component: __vue_component__$1j,
       tabs: [
         {
           path: '/',
@@ -69629,115 +69817,115 @@
     },
     {
       path: '/text-editor/',
-      component: TextEditor$2,
+      component: __vue_component__$1k,
     },
     {
       path: '/toast/',
-      component: Toast$2,
+      component: __vue_component__$1l,
     },
     {
       path: '/toggle/',
-      component: Toggle$2,
+      component: __vue_component__$1m,
     },
     {
       path: '/toolbar-tabbar/',
-      component: ToolbarTabbar,
+      component: __vue_component__$1n,
       routes: [
         {
           path: 'tabbar/',
-          component: Tabbar,
+          component: __vue_component__$1o,
         },
         {
           path: 'tabbar-labels/',
-          component: TabbarLabels,
+          component: __vue_component__$1p,
         },
         {
           path: 'tabbar-scrollable/',
-          component: TabbarScrollable,
+          component: __vue_component__$1q,
         },
         {
           path: 'toolbar-hide-scroll/',
-          component: ToolbarHideScroll,
+          component: __vue_component__$1r,
         } ],
     },
     {
       path: '/tooltip/',
-      component: Tooltip$2,
+      component: __vue_component__$1s,
     },
     {
       path: '/timeline/',
-      component: Timeline$1,
+      component: __vue_component__$1t,
     },
     {
       path: '/timeline-vertical/',
-      component: TimelineVertical,
+      component: __vue_component__$1u,
     },
     {
       path: '/timeline-horizontal/',
-      component: TimelineHorizontal,
+      component: __vue_component__$1v,
     },
     {
       path: '/timeline-horizontal-calendar/',
-      component: TimelineHorizontalCalendar,
+      component: __vue_component__$1w,
     },
     {
       path: '/treeview/',
-      component: Treeview$2,
+      component: __vue_component__$1x,
     },
     {
       path: '/virtual-list/',
-      component: VirtualList$2,
+      component: __vue_component__$1y,
     },
 
     // Color Themes
     {
       path: '/color-themes/',
-      component: ColorThemes,
+      component: __vue_component__$1z,
     },
 
     // Page Transitions
     {
       path: '/page-transitions/',
-      component: PageTransitions,
+      component: __vue_component__$1A,
     },
     {
       path: '/page-transitions/:effect/',
-      component: PageTransitionsEffect,
+      component: __vue_component__$1B,
     },
 
     // Routable Modals
     {
       path: '/routable-modals/',
-      component: RoutableModals$1,
+      component: __vue_component__$1C,
       routes: [
         {
           path: 'popup/',
           popup: {
-            component: RoutablePopup,
+            component: __vue_component__$1D,
           },
         },
         {
           path: 'actions/',
           popup: {
-            component: RoutableActions,
+            component: __vue_component__$1E,
           },
         } ],
     },
     {
       path: '/master-detail/',
-      component: MasterDetailMaster,
+      component: __vue_component__$1F,
       master: true,
       detailRoutes: [
         {
           path: '/master-detail/:id/',
-          component: MasterDetailDetail,
+          component: __vue_component__$1G,
         } ]
     },
 
     // Default route (404 page). MUST BE THE LAST
     {
       path: '(.*)',
-      component: NotFound,
+      component: __vue_component__$1H,
     } ];
 
   //
@@ -69800,7 +69988,7 @@
     
 
     
-    var App = normalizeComponent(
+    var __vue_component__$1I = normalizeComponent(
       { render: __vue_render__$1I, staticRenderFns: __vue_staticRenderFns__$1I },
       __vue_inject_styles__$1I,
       __vue_script__$1I,
@@ -69819,7 +70007,7 @@
   var app = new Vue({
     // Root Element
     el: '#app',
-    render: function (c) { return c(App); },
+    render: function (c) { return c(__vue_component__$1I); },
   });
 
   return app;
