@@ -15,35 +15,38 @@ function trackOutboundClick(url, category) {
   if (!url) return;
   window.ga('send', 'event', category, 'click', url);
 }
-/*
-const sponsorLinks = [
-  '.footer .custom-sponsors a',
-  '.footer .keycdn-link',
-  '.footer .vpsserver-link',
-  '.home-sponsors-list a',
-  '.sponsors a.sponsor:not(.sponsor-join)',
-  '.docs-nav-sponsors a',
-];
-const supportLinks = [
-  'a[href*="patreon.com"]',
-  'a[href*="teespring.com"]',
-];
 
-$(sponsorLinks.join(',')).on('click', function onClick() {
-  const url = this.href;
-  trackOutboundClick(url, 'sponsorlink');
-});
-$(supportLinks.join(',')).on('click', function onClick() {
-  const url = this.href;
-  trackOutboundClick(url, 'supportlink');
-});
-*/
+
 $('a').on('click', function onClick() {
   const url = this.href;
   if (!url) return;
   if (url.indexOf('http') !== 0 || url.indexOf(document.location.host) >= 0) return;
   trackOutboundClick(url, 'outbound');
 });
+
+// Shuffle sponsors
+function shuffleArray(array, inPlace = false) {
+  const arr = inPlace ? array : [...array];
+  let j;
+  let x;
+  let i;
+  for (i = arr.length - 1; i > 0; i -= 1) {
+    j = Math.floor(Math.random() * (i + 1));
+    x = arr[i];
+    arr[i] = arr[j];
+    arr[j] = x;
+  }
+  return arr;
+}
+if ($('footer .custom-sponsors a').length) {
+  let sponsors = [];
+  $('footer .custom-sponsors a').each((index, el) => {
+    sponsors.push(el);
+  });
+  sponsors = shuffleArray(sponsors);
+
+  $('footer .custom-sponsors').append($(sponsors));
+}
 
 // Home device theme switch
 $('.home-header .theme-switch a').click(function onClick(e) {
