@@ -205,7 +205,8 @@ block content
         tr
           td $root
           td
-            p Root data and methods you have specified in `data` and `methods` properties on app init
+            p If you use <a href="#main-app-component">Main App Component</a> then it refers to its instance.
+            p Otherwise, it refers to root data and methods you have specified in `data` and `methods` properties on app init
             :code(lang="js")
               var app = new Framework7({
                 // root data
@@ -308,7 +309,26 @@ block content
               // Or in async function/method as:
               await this.$tick();
               console.log('DOM and state updated');
-
+        tr
+          td $f7ready(<span>callback</span>)
+          td
+            p This method need to be used only when you use <a href="#main-app-component">Main App Component</a> to make sure to call Framework7 APIs when app initialized.
+            ```js
+              export default {
+                data() {
+                  ...
+                },
+                methods: {
+                  ...
+                },
+                mounted() {
+                  this.$f7ready(() => {
+                    // now it is safe to call Framework7 APIs
+                    this.$f7.dialog.alert('Hello!');
+                  });
+                },
+              }
+            ```
 
     h2 Component Page Events
     p Component page events handlers can be passed in `on` component property. They are usual DOM <a href="page.html#page-events">Page Events</a>. Because they are DOM events, they accept `event` as first agrument, and <a href="page.html#page-data">Page Data</a> as second argument. There only difference with usual DOM events is that their context (`this`) bound to component context and event handler name must be specified in camelCase format (`page:init` -> `pageInit`):
@@ -557,8 +577,8 @@ block content
           ...
         }
       </script>
-    h3 Usage With WebPack
-    p There is a special <a href="https://github.com/framework7io/framework7-component-loader" target="_blank">framework7-component-loader</a> for WebPack that allows to bundle Single-File Components into main bundle and not to use XHR (e.g. `componentUrl`) to load and parse component files each time.
+    h3 Usage With Webpack
+    p There is a special <a href="https://github.com/framework7io/framework7-component-loader" target="_blank">framework7-component-loader</a> for Webpack that allows to bundle Single-File Components into main bundle and not to use XHR (e.g. `componentUrl`) to load and parse component files each time.
     p This loader parses Single-File component's file and transforms it to plain JS object during bundling process. So, potentially, it can increase app performance because there won't be runtime parsing and compilation.
     p When this loader is configured, we need to store Single-File components in `.f7.html` files and use `export default` for component export:
     :code(lang="html")
@@ -764,6 +784,94 @@ block content
       ul
         li Note that `key` attribute must be unique accross single component.
         li If `key` attribute was not specified and element has an `id` attribute, then `id` attribute will be used as virtual node unique key.
+
+    h2 Main App Component
+    p Since Framework7 version 5.3.0 it is possible to make whole app layout as a component.
+    p To enable it, first, we should keep app root element empty in `index.html`:
+    ```html
+      <body>
+        <!-- empty app root element -->
+        <div id="app"></div>
+      </body>
+    ```
+    p Then we need to create main app component, for example, Single File Component using webpack:
+    ```html
+      <!-- app.f7.html -->
+      <template>
+        <div id="app">
+          {{#if loggedIn}}
+            <div class="panel panel-left panel-reveal panel-init">
+              <div class="view view-init" data-url="/panel/"></div>
+            </div>
+            <div class="view view-main view-init" data-url="/"></div>
+          {{else}}
+            <div class="login-screen modal-in">
+              <div class="view view-init" data-url="/auth/"></div>
+            </div>
+          {{/if}}
+        </div>
+      </template>
+      <script>
+        export default {
+          data() {
+            return {
+              loggedIn: false,
+            }
+          },
+          methods: {
+            login() {
+              this.$setState({ loggedIn: true });
+            },
+            logout() {
+              this.$setState({ loggedIn: false });
+            },
+          },
+        }
+      </script>
+    ```
+    p Finally, when we init Framework7, we need to specify app component on init:
+    ```js
+      // import main app component
+      import App from './path/to/app.f7.html';
+
+      var app = new Framework7({
+        // specify main app component
+        component: App,
+      })
+    ```
+    p Or, if we don't use webpack, we can also load it via XHR:
+    ```js
+      var app = new Framework7({
+        // load main app component
+        componentUrl: './path/to/app.f7.html',
+      })
+    ```
+    p Now, if we need to call main app component methods or change its data, we can reference its instance via `app.rootComponent`. And from other components it is available as `this.$root`.
+    p For example, to call `login()` method of main app component in the example above from other page component, we can just call `this.$root.login()`.
+    p Also note that main app component will be mounted (added to DOM) BEFORE app initialization process finished. So if you need to call Framework7 APIs immediately, use `$f7ready` callback:
+    ```html
+      <template>
+        <div id="app">
+          ...
+        </div>
+      </template>
+      <script>
+        export default {
+          data() {
+            ...
+          },
+          methods: {
+            ...
+          },
+          mounted() {
+            this.$f7ready(() => {
+              // now it is safe to call Framework7 APIs
+              this.$f7.dialog.alert('Hello!');
+            });
+          },
+        }
+      </script>
+    ```
 
     h2 Component Class
     p In addition to Object with properties syntax, there is a Class-based syntax available for components. It is designed to be used in single-file components with webpack with better TypeScript support.

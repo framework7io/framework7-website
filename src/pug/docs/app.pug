@@ -39,6 +39,16 @@ block content
           td body
           td App root element. If you main app layout is not a direct child of the `<body>` then it is required to specify root element here
         tr
+          td component
+          td Router Component
+          td
+          td Load app layout from passed <a href="./router-component.html#main-app-component">main app component</a>. Only for Framework7 Core version
+        tr
+          td componentUrl
+          td string Component
+          td
+          td Path to Single File <a href="./router-component.html#main-app-component">main app component</a> to be loaded via XHR. Only for Framework7 Core version
+        tr
           td id
           td string
           td io.framework7.testapp
@@ -219,6 +229,11 @@ block content
           td a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item, .link, .item-link
           td CSS selector of elements where enabled `activeState` will add appropriate active class
         tr.subparam-row
+          td activeStateOnMouseMove
+          td boolean
+          td false
+          td When enabled it keeps "active state" on mouse move
+        tr.subparam-row
           td iosTouchRipple
           td boolean
           td false
@@ -311,6 +326,9 @@ block content
         tr
           td app.root
           td Dom7 instance with app root element
+        tr
+          td app.rootComponent
+          td Reference to <a href="./router-component.html#main-app-component">main app component</a> instance (if it is used). Only for Framework7 Core version
         tr
           td app.rtl
           td Boolean property indicating app is in RTL layout or not
