@@ -1,5 +1,31 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/FitnessPets-icon-1024.png"
+  iconRounded: true
+  title: "Fitness Pets - The less serious fitness tracker"
+  author:
+    url: https://fitnesspets.eu
+    name: Michiel Janssen
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.FitnessPetsRelease
+    website: https://fitnesspets.eu
+  description: |
+The most simple and fun activity app! Be active to grow your virtual pet!
+  features:
+  - Grow your virtual pet by being active. The more steps you do, the more you will level up your cute pet! 
+  - Go on epic quests. Your steps will let you progress on the map!
+  - Play fun minigames! Gradually unlock new minigames when you progress.
+  - The more you walk, the more gold you receive. Buy cool stuff like silly hats with your gold! 
+  - Keep your motivation boosted with tons of cool medals with that are movie/game inspired
+
+  screenshots:
+  - "#{cdn}/i/showcase/FitnessPets-android-01.png"
+  - "#{cdn}/i/showcase/FitnessPets-android-02.png"
+  - "#{cdn}/i/showcase/FitnessPets-android-03.png"
+  - "#{cdn}/i/showcase/FitnessPets-android-04.png"
+  - "#{cdn}/i/showcase/FitnessPets-android-05.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/ananya-marathi.png"
   iconRounded: true
   title: "मराठी विश्वकोश (Vishwakosh)"
