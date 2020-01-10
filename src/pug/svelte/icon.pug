@@ -1,0 +1,78 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Icon Svelte Component | Framework7 Svelte Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Icon Svelte Component
+    ul.docs-index
+    p Icon Svelte component represents Icon element. It is ready to be used with custom icons, <a href="../icons/" target="_blank">Framework7 Icons</a> and <a href="https://material.io/icons/" target="_blank">Material Icons</a>.
+    h2 Icon Components
+    p There are following components included:
+    ul
+      li `Icon`
+    h2 Icon Properties
+    table.params-table.cols-3
+      thead
+        tr
+          th Prop
+          th Type
+          th Description
+      tbody
+        tr
+          td size
+          td number<br>string
+          td Icon size in px
+        tr
+          td icon
+          td string
+          td Custom icon class
+        tr
+          td f7
+          td string
+          td Name of F7 Icons font icon
+        tr
+          td material
+          td string
+          td Name of Material Icons font icon
+        tr
+          td ios
+          td string
+          td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. `f7:home`
+        tr
+          td md
+          td string
+          td Icon to be used in case of Material theme is used. Consists of icon family and icon name divided by colon, e.g. `material:home`
+        tr
+          td aurora
+          td string
+          td Icon to be used in case of Aurora theme is used. Consists of icon family and icon name divided by colon, e.g. `f7:home`
+        tr
+          td tooltip
+          td string
+          td Icon <a href="../docs/tooltip.html">tooltip</a> text to show on icon hover/press
+    h2 Examples
+    :code(lang="jsx")
+      {/*  Default back icon */}
+      <Icon icon="icon-back"></Icon>
+
+      {/*  Some custom icon */}
+      <Icon icon="icon-home"></Icon>
+
+      {/*  F7 Icons font icon */}
+      <Icon f7="home"></Icon>
+
+      {/*  Material Icons font icon */}
+      <Icon material="home"></Icon>
+
+      {/*  F7 icons font icon with custom size and color */}
+      <Icon f7="home" size="44px" color="blue"></Icon>
+
+      {/*  Conditional icon */}
+      <Icon ios="f7:home" aurora="f7:home" md="material:home"></Icon>

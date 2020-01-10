@@ -1,0 +1,303 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Grid Svelte Component | Framework7 Svelte Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Grid Svelte Component
+    ul.docs-index
+    p Grid Svelte component represents Framework7's <a href="../docs/grid.html">Layout Grid</a>.
+    h2 Grid Components
+    p There are following components included:
+    ul
+      li `Row` - grid row
+      li `Col` - grid column (cell)
+
+    h2 Grid Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Row&gt; properties
+        tr
+          td noGap
+          td boolean
+          td false
+          td Removes spacing between columns
+        tr
+          td tag
+          td string
+          td div
+          td Defines which tag must be used to render row element
+        tr
+          td resizable
+          td boolean
+          td false
+          td Makes row resizable
+        tr
+          td resizableAbsolute
+          td boolean
+          td false
+          td Enables absolute resizing (in `px`)
+        tr
+          td resizableFixed
+          td boolean
+          td false
+          td Keeps resizable row in fixed size (not resizable)
+        tr
+          td resizableHhandler
+          td boolean
+          td true
+          td Adds resize handler element (between rows) to resize them
+        tr
+          th(colspan="4") &lt;Col&gt; properties
+        tr
+          td width
+          td number<br>string
+          td auto
+          td Column width. Check available <a href="../docs/grid.html#column-sizes">Column Sizes</a>
+        tr
+          td xsmall
+          td number<string>
+          td
+          td Column width when app width >= 480px
+        tr
+          td small
+          td number<string>
+          td
+          td Column width when app width >= 568px
+        tr
+          td medium
+          td number<string>
+          td
+          td Column width when app width >= 768px
+        tr
+          td large
+          td number<string>
+          td
+          td Column width when app width >= 1024px
+        tr
+          td xlarge
+          td number<string>
+          td
+          td Column width when app width >= 1200px
+        tr
+          td resizable
+          td boolean
+          td false
+          td Makes column resizable
+        tr
+          td resizableAbsolute
+          td boolean
+          td false
+          td Enables absolute resizing (in `px`)
+        tr
+          td resizableFixed
+          td boolean
+          td false
+          td Keeps resizable column in fixed size (not resizable)
+        tr
+          td resizableHandler
+          td boolean
+          td true
+          td Adds resize handler element (between columns) to resize them
+    h2 Grid Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;Row&gt; events
+        tr
+          td gridResize
+          td Event will be triggered on resizable grid row resize
+        tr
+          th(colspan="2") &lt;Col&gt; events
+        tr
+          td gridResize
+          td Event will be triggered on resizable grid column resize
+    .with-device
+      h2(data-device-preview="../docs-demos/svelte/grid.html") Examples
+      :code(lang="jsx")
+        <Block>
+          <p>Columns within a row are automatically set to have equal width. Otherwise you can define your column with pourcentage of screen you want.</p>
+        </Block>
+
+        <BlockTitle>Columns with gap</BlockTitle>
+        <Block>
+          <Row>
+            <Col>50% (.col)</Col>
+            <Col>50% (.col)</Col>
+          </Row>
+          <Row>
+            <Col>25% (.col)</Col>
+            <Col>25% (.col)</Col>
+            <Col>25% (.col)</Col>
+            <Col>25% (.col)</Col>
+          </Row>
+          <Row>
+            <Col>33% (.col)</Col>
+            <Col>33% (.col)</Col>
+            <Col>33% (.col)</Col>
+          </Row>
+          <Row>
+            <Col>20% (.col)</Col>
+            <Col>20% (.col)</Col>
+            <Col>20% (.col)</Col>
+            <Col>20% (.col)</Col>
+            <Col>20% (.col)</Col>
+          </Row>
+          <Row>
+            <Col width="33">33% (.col-33)</Col>
+            <Col width="66">66% (.col-66)</Col>
+          </Row>
+          <Row>
+            <Col width="25">25% (.col-25)</Col>
+            <Col width="25">25% (.col-25)</Col>
+            <Col width="50">50% (.col-50)</Col>
+          </Row>
+          <Row>
+            <Col width="75">75% (.col-75)</Col>
+            <Col width="25">25% (.col-25)</Col>
+          </Row>
+          <Row>
+            <Col width="80">80% (.col-80)</Col>
+            <Col width="20">20% (.col-20)</Col>
+          </Row>
+        </Block>
+
+        <BlockTitle>No gap between columns</BlockTitle>
+        <Block>
+          <Row noGap>
+            <Col>50% (.col)</Col>
+            <Col>50% (.col)</Col>
+          </Row>
+          <Row noGap>
+            <Col>25% (.col)</Col>
+            <Col>25% (.col)</Col>
+            <Col>25% (.col)</Col>
+            <Col>25% (.col)</Col>
+          </Row>
+          <Row noGap>
+            <Col>33% (.col)</Col>
+            <Col>33% (.col)</Col>
+            <Col>33% (.col)</Col>
+          </Row>
+          <Row noGap>
+            <Col>20% (.col)</Col>
+            <Col>20% (.col)</Col>
+            <Col>20% (.col)</Col>
+            <Col>20% (.col)</Col>
+            <Col>20% (.col)</Col>
+          </Row>
+          <Row noGap>
+            <Col width="33">33% (.col-33)</Col>
+            <Col width="66">66% (.col-66)</Col>
+          </Row>
+          <Row noGap>
+            <Col width="25">25% (.col-25)</Col>
+            <Col width="25">25% (.col-25)</Col>
+            <Col width="50">50% (.col-50)</Col>
+          </Row>
+          <Row noGap>
+            <Col width="75">75% (.col-75)</Col>
+            <Col width="25">25% (.col-25)</Col>
+          </Row>
+          <Row noGap>
+            <Col width="80">80% (.col-80)</Col>
+            <Col width="20">20% (.col-20)</Col>
+          </Row>
+        </Block>
+
+        <BlockTitle>Nested</BlockTitle>
+        <Block>
+          <Row>
+            <Col>50% (.col)
+              <Row>
+                <Col>50% (.col)</Col>
+                <Col>50% (.col)</Col>
+              </Row>
+            </Col>
+            <Col>50% (.col)
+              <Row>
+                <Col width="33">33% (.col-33)</Col>
+                <Col width="66">66% (.col-66)</Col>
+              </Row>
+            </Col>
+          </Row>
+        </Block>
+
+        <BlockTitle>Responsive Grid</BlockTitle>
+        <Block>
+          <p>Grid cells have different size on Phone/Tablet</p>
+          <Row>
+            <Col width="100" medium="50">.col-100.tablet-50</Col>
+            <Col width="100" medium="50">.col-100.tablet-50</Col>
+          </Row>
+          <Row>
+            <Col width="50" medium="25">.col-50.tablet-25</Col>
+            <Col width="50" medium="25">.col-50.tablet-25</Col>
+            <Col width="50" medium="25">.col-50.tablet-25</Col>
+            <Col width="50" medium="25">.col-50.tablet-25</Col>
+          </Row>
+          <Row>
+            <Col width="100" medium="40">.col-100.tablet-40</Col>
+            <Col width="50" medium="60">.col-50.tablet-60</Col>
+            <Col width="50" medium="66">.col-50.tablet-66</Col>
+            <Col width="100" medium="33">.col-100.tablet-33</Col>
+          </Row>
+        </Block>
+
+        <BlockTitle>Resizable Cols</BlockTitle>
+        <Block className="grid-resizable-demo">
+          <Row>
+            <Col resizable style={{minWidth: '20px'}}>1</Col>
+            <Col resizable style={{minWidth: '20px'}}>2</Col>
+            <Col resizable style={{minWidth: '20px'}}>3</Col>
+          </Row>
+        </Block>
+
+        <BlockTitle>Resizable Fixed Col</BlockTitle>
+        <BlockHeader>2nd column has fixed size</BlockHeader>
+        <Block className="grid-resizable-demo">
+          <Row>
+            <Col resizable style={{minWidth: '20px'}}>1</Col>
+            <Col resizable resizableFixed style={{minWidth: '20px'}}>2</Col>
+            <Col resizable style={{minWidth: '20px'}}>3</Col>
+          </Row>
+        </Block>
+
+        <BlockTitle>Resizable Grid</BlockTitle>
+        <Block className="grid-resizable-demo">
+          <Row className="align-items-stretch" style={{height: '300px'}}>
+            <Col resizable className="demo-col-center-content" style={{minWidth: '50px'}}>Left</Col>
+            <Col resizable className="display-flex flex-direction-column" style={{
+              padding: '0px',
+              border: 'none',
+              minWidth: '50px',
+              backgroundColor: 'transparent',
+            }}>
+              <Row resizable style={{height: '50%', minHeight: '50px'}}>
+                <Col className="demo-col-center-content" style={{height: '100%'}}>Center Top</Col>
+              </Row>
+              <Row resizable style={{height: '50%', minHeight: '50px'}}>
+                <Col className="demo-col-center-content" style={{height: '100%'}}>Center Bottom</Col>
+              </Row>
+            </Col>
+            <Col resizable className="demo-col-center-content" style={{minWidth: '50px'}}>Right</Col>
+          </Row>
+        </Block>

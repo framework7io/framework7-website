@@ -1,0 +1,82 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Initialize App | Framework7 Svelte Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Initialize App
+    ul.docs-index
+    p After we have our <a href="app-layout.html">app layout</a> now we need to mount Svelte components and initialize the app. You can read about all possible Framework7 initialization parameters in appropriate <a href="../docs/app.html#app-parameters">Framework7 App Parameters</a> section.
+
+    p We have the following HTML structure in our index file:
+    :code(lang="html")
+      <!-- index.html -->
+
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <!-- ... metas and styles ... -->
+          <link rel="stylesheet" href="path/to/framework7.bundle.min.css">
+        </head>
+        <body>
+          <!-- App Root Element -->
+          <div id="app"></div>
+          <script type="text/javascript" src="path/to/app.js"></script>
+        </body>
+      </html>
+    p In addition, if you're using Rollup or Webpack, you might typically have a root-level app.js or index.js file that mounts your root app component:
+    :code(lang="js")
+      // app.js
+
+      // Import F7 Bundle
+      import Framework7 from 'framework7/framework7-lite.esm.bundle.js';
+
+      // Import F7-Svelte Plugin
+      import Framework7Svelte from 'framework7-svelte';
+
+      // Init F7-Svelte Plugin
+      Framework7.use(Framework7Svelte);
+
+      // Import Main App component
+      import App from './App.svelte';
+
+      // Mount Svelte App
+      const app = new App({
+        target: document.getElementById('app'),
+      });
+    p Your root App.svelte component will typically have a top-level Framework7App component. This component is used to configure your app:
+    :code(lang="svelte")
+      <!-- App.svelte -->
+      <!-- Main Framework7 App component where we pass Framework7 params -->
+      <App params={f7params}>
+        <!-- initial page is specified in routes.js -->
+        <View main url="/" />
+      </App>
+
+      <script>
+        import { App, View, Page, Navbar, Toolbar, Link } from 'framework7-svelte';
+        import routes from './routes.js';
+
+        const f7params = {
+          // Array with app routes
+          routes,
+          // App Name
+          name: 'My App',
+          // App id
+          id: 'com.myapp.test',
+          // ...
+        };
+
+      </script>
+    p In the examples above:
+    ul
+      li we pass <a href="../docs/init-app.html">Framework7 parameters</a> to the `App` main Framework7 app component in its `params` property;
+      li root element used as App target (`document.getElementById('app')`) will be used as Framework7 root element
+    p We also must specify array with routes (if we have navigation between pages in the app). Check out information about <a href="svelte-component-extensions.html">Svelte Component Extensions</a>, router and routes in the <a href="navigation-router.html">Navigation Router</a> section.
+

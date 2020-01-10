@@ -1,0 +1,169 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Navigation Router | Framework7 Svelte Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Navigation Router
+    ul.docs-index
+    p Framework7-Svelte as Framework7 itself comes with powerful and flexible router. And to make it work we must specify <a href="../docs/routes.html">Routes</a>.
+    p The only difference in Framework7-Svelte is that in Svelte we are already composing our application with Svelte components, so we need to map our Pages (Svelte components) to the routes. It can be done by passing Svelte component in `component` property of the route. Here's a basic example:
+    :code(lang="svelte")
+      <!-- App.svelte -->
+      <App params={f7params}>
+        <!-- Current View/Router, initial page will be loaded from home.svelte component -->
+        <View main url="/" />
+      </App>
+      <script>
+        // Import pages components
+        import HomePage from 'home.svelte';
+        import AboutPage from 'about.svelte';
+        import LoginPage from 'login.svelte';
+
+        /*
+          Now we need to map components to routes.
+          We need to pass them along with the F7 app parameters to <App> component
+        */
+
+        const f7params = {
+          name: 'My App',
+          id: 'com.myapp.test',
+          // specify routes for app
+          routes: [
+            {
+              path: '/',
+              component: HomePage,
+            },
+            {
+              path: '/about/',
+              component: AboutPage,
+            },
+            {
+              path: '/login/',
+              component: LoginPage,
+            },
+          ],
+        };
+      </script>
+
+    :code(lang="svelte")
+      <!-- home.svelte -->
+      <Page name="home">
+        <Navbar title="Home Page" />
+        ...
+        <Link href="/about/">About Page</Link>
+        <Link href="/login/">Login Page</Link>
+      </Page>
+      <script>
+        import { Page, Navbar, Link } from 'framework7-svelte';
+      </script>
+    :code(lang="svelte")
+      <!-- about.svelte -->
+      <Page name="about">
+        <Navbar title="About" />
+        <!-- Page content -->
+        ...
+      </Page>
+      <script>
+        import { Page, Navbar } from 'framework7-svelte';
+      </script>
+    :code(lang="svelte")
+      <!-- login.svelte -->
+      <Page name="login">
+        <Navbar title="Login" />
+        <!-- Page content -->
+        ...
+      </Page>
+      <script>
+        import { Page, Navbar } from 'framework7-svelte';
+      </script>
+
+    .important-note
+      p Check the full <a href="../docs/routes.html">Routes Documentation</a> to know about all possible routes options, how to use <a href="../docs/routes.html#nested-routes">Nested Routes</a>, <a href="../docs/routes.html#routable-tabs">Routable Tabs</a> and <a href="../docs/routes.html#routable-modals">Routable Modals</a>.
+
+    h2 Pass Props To Components
+    p It is possible to pass component props to Svelte components loaded by router. There are few ways to do it.
+    p First of all, all route params will be automatically passed as props to component, e.g.
+    :code(lang="js")
+      // route with params
+      {
+        path: '/blog/:postId/comments/:commentId/',
+        component: BlogPost,
+      }
+    p So if we navigate by `/blog/45/comments/122/` URL, then the following data will be passed to props:
+    :code(lang="js")
+      {
+        postId: '45',
+        commentId: '122',
+      }
+    p Another option is to specify props in route's `options`:
+    :code(lang="js")
+      {
+        path: '/some-page/',
+        component: SomeComponent,
+        options: {
+          props: {
+            foo: 'bar',
+            bar: true,
+          },
+        },
+      }
+    p And finally, props can be passed dynamically to route component when we navigate with API:
+    :code(lang="js")
+      f7router.navigate('/some-page/', {
+        props: {
+          foo: 'bar',
+          bar: true,
+        }
+      })
+
+    h2 Async Lazy Components
+    p With Webpack it is possible to load page components on demand, it is possible with F7's route `asyncComponent`, for example:
+    :code(lang="js")
+      {
+        path: '/about/',
+        asyncComponent: () => import('./pages/about.svelte'),
+      },
+    p Or with `async` route if we need more control over it:
+    :code(lang="js")
+      {
+        path: '/about/',
+        async(routeTo, routeFrom, resolve, reject) {
+          // dynamic import component, returns promise
+          import('./pages/about.svelte').then((module) => {
+            // resolve with component
+            resolve({ component: module.default })
+          });
+        } ,
+      },
+
+    h2 Router API
+    p To access router instance and current routes to use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>f7router</b> and <b>f7route</b> component props:
+    :code(lang="svelte")
+      <Page>
+        ...
+        <Link onClick={() => f7router.navigate('/about/')}>About</Link>
+        <Link onClick={() => f7router.back()}>Go Back</Link>
+      </Page>
+      <script>
+        import { onMount } from 'svelte';
+        import { Page, Link } from 'framework7-svelte';
+
+        // Router component will receive f7router prop with current Router instance
+        export let f7router;
+        // Router component will receive f7route prop with current route data
+        export let f7route;
+
+        onMount(() => {
+          // output current route data
+          console.log(f7route); // -> { url: '/foo/', query: { id: 3 }, ... }
+        });
+      </script>
+    .important-note
+      p Please note, that `f7route` and `f7router` component properties are only available inside of custom components that you load according to routes. In parent components (like in View, or where you init your Svelte app instance) and in child components they are not accessible. So in this case use access to initialized <a href="view.html#access-to-view-instance">View Instance</a>, e.g. `f7.views.main.router`

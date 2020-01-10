@@ -1,0 +1,139 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Radio Svelte Component | Framework7 Svelte Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Radio Svelte Component
+    ul.docs-index
+    p Radio Svelte component represents <a href="../docs/radio.html">Radio</a> component.
+    h2 Radio Components
+    p There are following components included:
+    ul
+      li `Radio`
+    h2 Radio Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Radio&gt; properties
+        tr
+          td checked
+          td boolean
+          td
+          td Defines whether the radio input is checked or not
+        tr
+          td defaultChecked
+          td boolean
+          td
+          td Defines whether the checkbox input is checked or not, for the case if it is uncontrolled component
+        tr
+          td name
+          td string<br>number
+          td
+          td Radio input name
+        tr
+          td value
+          td string<br>number<br>boolean
+          td
+          td Radio input value
+        tr
+          td disabled
+          td boolean
+          td
+          td Defines whether the radio input is disabled
+        tr
+          td readonly
+          td boolean
+          td
+          td Defines whether the radio input is readonly
+    h2 Radio Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;Radio&gt; events
+        tr
+          td change
+          td Event will be triggered when radio input state changed
+    h2 Radios List
+    p Radios List is not a separate component, but just a particular case of using <a href="list-view.html">`<List>`</a>, <a href="list-item.html">`<ListItem>`</a>.
+    :code(lang="jsx")
+          <List>
+            {/* Additional "radio" prop to enable radio list item */}
+            <ListItem radio value="check_1" name="demo-radio" checked title="Radio 1"></ListItem>
+            <ListItem radio value="check_2" name="demo-radio" title="Radio 2"></ListItem>
+          </List>
+
+    .with-device
+      h2(data-device-preview="../docs-demos/svelte/radio.html") Examples
+      :code(lang="jsx")
+            <BlockTitle>Inline</BlockTitle>
+            <Block strong>
+              <p>Lorem <Radio name="demo-radio-inline" value="inline-1"/> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <Radio name="demo-radio-inline" value="inline-2" defaultChecked /> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
+            </Block>
+
+            <BlockTitle>Radio Group</BlockTitle>
+            <List>
+              <ListItem radio title="Books" name="demo-radio" value="Books" defaultChecked></ListItem>
+              <ListItem radio title="Movies" value="Movies" name="demo-radio"></ListItem>
+              <ListItem radio title="Food" value="Food" name="demo-radio"></ListItem>
+              <ListItem radio title="Drinks" value="Drinks" name="demo-radio"></ListItem>
+            </List>
+
+
+            <BlockTitle>With Media Lists</BlockTitle>
+            <List mediaList>
+              <ListItem
+                radio
+                defaultChecked
+                name="demo-media-radio"
+                value="1"
+                title="Facebook"
+                after="17:14"
+                subtitle="New messages from John Doe"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></ListItem>
+              <ListItem
+                radio
+                name="demo-media-radio"
+                value="2"
+                title="John Doe (via Twitter)"
+                after="17:11"
+                subtitle="John Doe (@_johndoe) mentioned you on Twitter!"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></ListItem>
+              <ListItem
+                radio
+                name="demo-media-radio"
+                value="3"
+                title="Facebook"
+                after="16:48"
+                subtitle="New messages from John Doe"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></ListItem>
+              <ListItem
+                radio
+                name="demo-media-radio"
+                value="4"
+                title="John Doe (via Twitter)"
+                after="15:32"
+                subtitle="John Doe (@_johndoe) mentioned you on Twitter!"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></ListItem>
+            </List>

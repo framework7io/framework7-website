@@ -1,0 +1,294 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Sheet Modal Svelte Component | Framework7 Svelte Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Sheet Modal Svelte Component
+    ul.docs-index
+    p Sheet Modal is a special overlay type which is similar to Picker/Calendar's overlay. Such modal allows to create custom picker overlays with custom content.
+    p Sheet Modal Svelte component represents <a href="../docs/sheet-modal.html">Sheet Modal</a> component.
+    h2 Sheet Modal Components
+    p There are following components included:
+    ul
+      li `Sheet` - sheet modal element
+    h2 Sheet Modal Properties
+    table.params-table.cols-3
+      thead
+        tr
+          th Prop
+          th Type
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;Sheet&gt; properties
+        tr
+          td position
+          td string
+          td Sheet position, can be `top` or `bottom`. By default is `bottom`
+        tr
+          td top
+          td boolean
+          td Same as `position="top"`
+        tr
+          td bottom
+          td boolean
+          td Same as `position="bottom"`
+        tr
+          td backdrop
+          td boolean
+          td Enable to render additional sheet modal backdrop when required
+        tr
+          td backdropEl
+          td string<br>object
+          td HTML element or string CSS selector of custom backdrop element
+        tr
+          td opened
+          td boolean
+          td Allows to open/close Sheet Modal and set its initial state
+        tr
+          td closeByBackdropClick
+          td boolean
+          td When enabled, sheet will be closed on backdrop click. By default inherits same app parameter value
+        tr
+          td closeByOutsideClick
+          td boolean
+          td When enabled, sheet will be closed on when click outside of it. By default inherits same app parameter value
+        tr
+          td closeOnEscape
+          td boolean
+          td When enabled, sheet will be closed on ESC keyboard key press
+        tr
+          td swipeToClose
+          td boolean
+          td Whether the Sheet can be closed with swipe gesture
+        tr
+          td swipeToStep
+          td boolean
+          td When enabled it will be possible to split opened sheet into two states: partially opened and fully opened that can be controlled with swipe
+        tr
+          td swipeHandler
+          td HTMLElement<br>string
+          td If not passed, then whole Sheet can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (`swipeToClose` or `swipeToStep` must be also enabled)
+        tr
+          td push
+          td boolean
+          td When enabled it will push view behind on open. Works only when top safe area is in place. It can also be enabled by adding `sheet-modal-push` class to Sheet element.
+    h2 Sheet Modal Methods
+    table.methods-table
+      tr
+        th(colspan="2") &lt;Sheet&gt; methods
+      tr
+        td .open(<span>animate</span>)
+        td Open sheet modal
+      tr
+        td .close(<span>animate</span>)
+        td Close sheet modal
+    h2 Sheet Modal Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;Sheet&gt; events
+        tr
+          td sheetOpen
+          td Event will be triggered when Sheet Modal starts its opening animation
+        tr
+          td sheetOpened
+          td Event will be triggered after Sheet Modal completes its opening animation
+        tr
+          td sheetClose
+          td Event will be triggered when Sheet Modal starts its closing animation
+        tr
+          td sheetClosed
+          td Event will be triggered after Sheet Modal completes its closing animation
+        tr
+          td sheetStepOpen
+          td Event will be triggered on Sheet swipe step open/expand
+        tr
+          td sheetStepClose
+          td Event will be triggered on Sheet swipe step close/collapse
+        tr
+          td sheetStepProgress
+          td Event will be triggered on Sheet swipe step between step opened and closed state. As `event.detail` it receives step open progress number (from `0` to `1`)
+
+    h2 Open And Close Sheet Modal
+    p You can control Sheet Modal state, open and closing it:
+    ul
+      li using its <a href="../docs/sheet-modal.html">Sheet Modal API</a>
+      li by passing `true` or `false` to its `opened` prop
+      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant `sheetOpen` property (to open it) and `sheetClose` property to close it
+
+    h2 Access To Sheet Modal Instance
+    p You can access Sheet Modal initialized instance by accessing `.f7Sheet` component's property.
+
+    .with-device
+      h2(data-device-preview="../docs-demos/svelte/sheet-modal.html") Examples
+      :code(lang="jsx")
+        export default class extends React.Component {
+          constructor(props) {
+            super(props);
+
+            this.state = {
+              sheetOpened: false,
+            };
+          }
+          render() {
+            return (
+              <Page onPageBeforeOut={this.onPageBeforeOut.bind(this)} onPageBeforeRemove={this.onPageBeforeRemove.bind(this)}>
+                <Navbar title="Sheet Modal"></Navbar>
+
+                <Block>
+                  <p>
+                    <Button fill sheetOpen=".demo-sheet">Open Sheet</Button>
+                  </p>
+                  <p>
+                    <Button fill onClick={this.createSheet.bind(this)}>Create Dynamic Sheet</Button>
+                  </p>
+                  <p>
+                    <Button fill onClick={() => {this.setState({sheetOpened: true})}}>Open Via Prop Change</Button>
+                  </p>
+                  <p>
+                    <Button fill sheetOpen=".demo-sheet-swipe-to-close">Swipe To Close</Button>
+                  </p>
+                  <p>
+                    <Button fill sheetOpen=".demo-sheet-swipe-to-step">Swipe To Step</Button>
+                  </p>
+                  <p>
+                    <Button fill sheetOpen=".demo-sheet-push">Sheet Push</Button>
+                  </p>
+                </Block>
+
+                <Sheet className="demo-sheet" opened={this.state.sheetOpened} onSheetClosed={() => {this.setState({sheetOpened: false})}}>
+                  <Toolbar>
+                    <div className="left"></div>
+                    <div className="right">
+                      <Link sheetClose>Close</Link>
+                    </div>
+                  </Toolbar>
+                  {/*  Scrollable sheet content */}
+                  <PageContent>
+                    <Block>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus perferendis laboriosam...</p>
+                    </Block>
+                  </PageContent>
+                </Sheet>
+
+                {/* Swipe to close demo sheet */}
+                <Sheet
+                  className="demo-sheet-swipe-to-close"
+                  style={{height: 'auto', '--f7-sheet-bg-color': '#fff'}}
+                  swipeToClose
+                  backdrop
+                >
+                  <PageContent>
+                    <BlockTitle large>Hello!</BlockTitle>
+                    <Block>
+                      <p>Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.</p>
+                      <p>Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?</p>
+                    </Block>
+                  </PageContent>
+                </Sheet>
+
+                {/* Swipe to step demo sheet */}
+                <Sheet
+                  className="demo-sheet-swipe-to-step"
+                  style={{height: 'auto', '--f7-sheet-bg-color': '#fff'}}
+                  swipeToClose
+                  swipeToStep
+                  backdrop
+                >
+                  {/* Initial swipe step sheet content */}
+                  <div className="sheet-modal-swipe-step">
+                    <div className="display-flex padding justify-content-space-between align-items-center">
+                      <div style={{fontSize: '18px'}}><b>Total:</b></div>
+                      <div style={{fontSize: '22px'}}><b>$500</b></div>
+                    </div>
+                    <div className="padding-horizontal padding-bottom">
+                      <Button large fill>Make Payment</Button>
+                      <div className="margin-top text-align-center">Swipe up for more details</div>
+                    </div>
+                  </div>
+                  {/* Rest of the sheet content that will opened with swipe */}
+                  <BlockTitle medium className="margin-top">Your order:</BlockTitle>
+                  <List noHairlines>
+                    <ListItem title="Item 1">
+                      <b slot="after" className="text-color-black">$200</b>
+                    </ListItem>
+                    <ListItem title="Item 2">
+                      <b slot="after" className="text-color-black">$180</b>
+                    </ListItem>
+                    <ListItem title="Delivery">
+                      <b slot="after" className="text-color-black">$120</b>
+                    </ListItem>
+                  </List>
+                </Sheet>
+
+                {/* Sheet Push */}
+                <Sheet className="demo-sheet-push" push>
+                  <Toolbar>
+                    <div className="left"></div>
+                    <div className="right">
+                      <Link sheetClose>Close</Link>
+                    </div>
+                  </Toolbar>
+                  <PageContent>
+                    <Block>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+                    </Block>
+                  </PageContent>
+                </Sheet>
+              </Page>
+            );
+          }
+          createSheet() {
+            const self = this;
+            const $ = self.$$;
+            // Create sheet modal
+            if (!self.sheet) {
+              self.sheet = self.$f7.sheet.create({
+                content: `
+                  <div class="sheet-modal">
+                    <div class="toolbar">
+                      <div class="toolbar-inner justify-content-flex-end">
+                        <a href="#" class="link sheet-close">Close</a>
+                      </div>
+                    </div>
+                    <div class="sheet-modal-inner">
+                      <div class="page-content">
+                        <div class="block">
+                          <p>This sheet modal was created dynamically</p>
+                          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `.trim(),
+              });
+            }
+            // Close inline sheet
+            if ($('.demo-sheet.modal-in').length > 0) self.$f7.sheet.close('.demo-sheet');
+            // Open it
+            self.sheet.open();
+          }
+          onPageBeforeOut() {
+            const self = this;
+            // Close opened sheets on page out
+            self.$f7.sheet.close();
+          }
+          onPageBeforeRemove() {
+            const self = this;
+            // Destroy sheet modal when page removed
+            if (self.sheet) self.sheet.destroy();
+          }
+        };

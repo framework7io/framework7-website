@@ -1,0 +1,65 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Framework7 Svelte Package Structure | Framework7 Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Framework7 Svelte Package Structure
+    ul.docs-index
+    h2 Package
+    p Framework7 Svelte package contains the following files and folders:
+    :code(lang="html")
+      framework7-svelte/
+          components/
+              accordion-content.svelte
+              accordion-item.svelte
+              accordion-toggle.svelte
+              accordion.svelte
+              actions-button.svelte
+              actions-group.svelte
+              actions-label.svelte
+              actions.svelte
+              app.svelte
+              ...
+          framework7-svelte.esm.js
+
+    h2 Components
+    p All Svelte components are located in `components/` folder.
+    :code(lang="js")
+      import App from 'framework7-svelte/components/app.svelte';
+      import Navbar from 'framework7-svelte/components/navbar.svelte';
+
+    p Or they can be imported using named import from main file
+    :code(lang="js")
+      import { App, Navbar } from 'framework7-svelte';
+
+    h2 ES Module
+    p Framework7 Svelte plugin can be imported as an ES-next module:
+    :code(lang="js")
+      // Import Framework7 Core
+      import Framework7 from 'framework7/framework7-lite.js';
+      /*
+      Or import bundle with all components:
+      import Framework7 from 'framework7/framework7-lite.esm.bundle.js';
+      */
+
+      // Import Framework7 Svelte
+      import Framework7Svelte from 'framework7-svelte';
+
+      // Init plugin
+      Framework7.use(Framework7Svelte)
+
+    .important-note
+      p
+        b By default it exports only Framework7-Svelte plugin without any components. To import components separately, we need to use named import:
+      :code(lang="js")
+        import { App, Navbar } from 'framework7-svelte';
+
+    h2 ES-Next
+    p Note, that Framework7 and Framework7-Svelte ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile them as well, as well as `template7`, `dom7` and `ssr-window` modules that used as dependencies.
+
+

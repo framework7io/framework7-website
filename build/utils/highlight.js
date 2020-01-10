@@ -1,7 +1,10 @@
 const Prism = require('prismjs');
 const loadLanguages = require('prismjs/components/index');
+const sveltePrism = require('./svelte-prism');
 
-loadLanguages(['jsx', 'bash', 'css', 'less']);
+sveltePrism(Prism);
+
+loadLanguages(['jsx', 'svelte', 'bash', 'css', 'less']);
 
 function extendLanguage(lang) {
   Prism.languages[lang].function = /[a-z0-9_$]+(?=\()/i;

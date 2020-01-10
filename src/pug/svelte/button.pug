@@ -1,0 +1,460 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Button Svelte Component | Framework7 Svelte Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Button Svelte Component
+    ul.docs-index
+    p Button Svelte component represents Framework7's <a href="../docs/button.html">Button</a> elements.
+
+    h2 Button Components
+    p There are following components included:
+    ul
+      li `Button` - single button
+      li `Segmented` - segmented wrapper for buttons
+
+    h2 Button Properties
+    p Button component has almost the same properties as the <a href="link.html">Link</a> component but with few additional button-specific properties:
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Segmented&gt; properties
+        tr
+          td raised
+          td boolean
+          td false
+          td Makes segmented raised
+        tr
+          td raisedIos
+          td boolean
+          td false
+          td Makes segmented raised only in iOS theme
+        tr
+          td raisedMd
+          td boolean
+          td false
+          td Makes segmented raised only in MD theme
+        tr
+          td raisedAurora
+          td boolean
+          td false
+          td Makes segmented raised only in Aurora theme
+        tr
+          td round
+          td boolean
+          td false
+          td Makes segmented round
+        tr
+          td roundIos
+          td boolean
+          td false
+          td Makes segmented round only in iOS theme
+        tr
+          td roundMd
+          td boolean
+          td false
+          td Makes segmented round only in MD theme
+        tr
+          td roundAurora
+          td boolean
+          td false
+          td Makes segmented round only in Aurora theme
+        tr
+          td strong
+          td boolean
+          td false
+          td Makes strong segmented
+        tr
+          td strongIos
+          td boolean
+          td false
+          td Makes strong segmented only in iOS theme
+        tr
+          td strongMd
+          td boolean
+          td false
+          td Makes strong segmented only in MD theme
+        tr
+          td strongAurora
+          td boolean
+          td false
+          td Makes strong segmented only in Aurora theme
+        tr
+          td tag
+          td string
+          td div
+          td Tag used to render Segmented element
+        tr
+          th(colspan="4") &lt;Button&gt; properties
+        tr
+          td type
+          td string
+          td
+          td If it is one of `submit`, `button` or `reset` then it will be rendered as `<button>` element with same `type` attribute
+        tr
+          td tabLink
+          td string<br>boolean
+          td
+          td Enables tab link and specify CSS selector of the target tab (if specified as a string)
+        tr
+          td tabLinkActive
+          td boolean
+          td false
+          td Makes this tab link active
+        tr
+          td active
+          td boolean
+          td false
+          td Makes this button active state when used in Segmented. Must be used instead of `tab-link-active`
+        tr
+          td text
+          td string
+          td
+          td Button text label
+        tr
+          td noFastClick
+          td boolean
+          td
+          td Disables fast click
+        tr
+          td tooltip
+          td string
+          td
+          td Button <a href="../docs/tooltip.html">tooltip</a> text to show on button hover/press
+        tr
+          td round
+          td boolean
+          td false
+          td Makes button round
+        tr
+          td roundIos
+          td boolean
+          td false
+          td Makes button round for iOS theme only
+        tr
+          td roundMd
+          td boolean
+          td false
+          td Makes button round for MD theme only
+        tr
+          td roundAurora
+          td boolean
+          td false
+          td Makes button round for Aurora theme only
+        tr
+          td large
+          td boolean
+          td false
+          td Makes large button
+        tr
+          td largeIos
+          td boolean
+          td false
+          td Makes large button for iOS theme only
+        tr
+          td largeMd
+          td boolean
+          td false
+          td Makes large button for MD theme only
+        tr
+          td largeAurora
+          td boolean
+          td false
+          td Makes large button for Aurora theme only
+        tr
+          td small
+          td boolean
+          td false
+          td Makes small button
+        tr
+          td smallIos
+          td boolean
+          td false
+          td Makes small button for iOS theme only
+        tr
+          td smallMd
+          td boolean
+          td false
+          td Makes small button for MD theme only
+        tr
+          td smallAurora
+          td boolean
+          td false
+          td Makes small button for Aurora theme only
+        tr
+          td fill
+          td boolean
+          td false
+          td Makes button filled color
+        tr
+          td fillIos
+          td boolean
+          td false
+          td Makes button filled color for iOS theme only
+        tr
+          td fillMd
+          td boolean
+          td false
+          td Makes button filled color for MD theme only
+        tr
+          td fillAurora
+          td boolean
+          td false
+          td Makes button filled color for Aurora theme only
+        tr
+          td raised
+          td boolean
+          td false
+          td Makes button raised
+        tr
+          td raisedIos
+          td boolean
+          td false
+          td Makes button raised only in iOS theme
+        tr
+          td raisedMd
+          td boolean
+          td false
+          td Makes button raised only in MD theme
+        tr
+          td raisedAurora
+          td boolean
+          td false
+          td Makes button raised only in Aurora theme
+        tr
+          td outline
+          td boolean
+          td false
+          td Makes button outline
+        tr
+          td outlineIos
+          td boolean
+          td false
+          td Makes button outline only in iOS theme
+        tr
+          td outlineMd
+          td boolean
+          td false
+          td Makes button outline only in MD theme
+        tr
+          td outlineAurora
+          td boolean
+          td false
+          td Makes button outline only in Aurora theme
+        tr
+          th(colspan="4") &lt;Button&gt; icon related properties
+        +svelteLinkIconProps
+        tr
+          th(colspan="4") &lt;Button&gt; navigation/router related properties
+        +svelteLinkRouterProps
+        tr
+          th(colspan="4") &lt;Button&gt; action related properties
+        +svelteLinkActionsProps
+
+    h2 Button Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;Button&gt; events
+        tr
+          td click
+          td Event will be triggered after click on a button
+
+    .with-device
+      h2(data-device-preview="../docs-demos/svelte/button.html") Examples
+      :code(lang="html")
+            <BlockTitle>Usual Buttons</BlockTitle>
+            <Block>
+              <Row>
+                <Col>
+                  <Button>Button</Button>
+                </Col>
+                <Col>
+                  <Button>Button</Button>
+                </Col>
+                <Col>
+                  <Button round>Round</Button>
+                </Col>
+              </Row>
+            </Block>
+
+            <BlockTitle>Fill Buttons</BlockTitle>
+            <Block>
+              <Row>
+                <Col>
+                  <Button fill>Button</Button>
+                </Col>
+                <Col>
+                  <Button fill>Button</Button>
+                </Col>
+                <Col>
+                  <Button fill round>Round</Button>
+                </Col>
+              </Row>
+            </Block>
+
+            <BlockTitle>Outline Buttons</BlockTitle>
+            <Block>
+              <Row>
+                <Col>
+                  <Button outline>Button</Button>
+                </Col>
+                <Col>
+                  <Button outline>Button</Button>
+                </Col>
+                <Col>
+                  <Button outline round>Round</Button>
+                </Col>
+              </Row>
+            </Block>
+
+            <BlockTitle>Raised Buttons</BlockTitle>
+            <Block>
+              <Row tag="p">
+                <Col tag="span">
+                  <Button raised>Button</Button>
+                </Col>
+                <Col tag="span">
+                  <Button raised fill>Fill</Button>
+                </Col>
+                <Col tag="span">
+                  <Button raised outline>Outline</Button>
+                </Col>
+              </Row>
+              <Row tag="p">
+                <Col tag="span">
+                  <Button raised round>Round</Button>
+                </Col>
+                <Col tag="span">
+                  <Button raised fill round>Fill</Button>
+                </Col>
+                <Col tag="span">
+                  <Button raised outline round>Outline</Button>
+                </Col>
+              </Row>
+            </Block>
+
+            <BlockTitle>Segmented</BlockTitle>
+            <Block>
+              <Segmented raised tag="p">
+                <Button>Button</Button>
+                <Button>Button</Button>
+                <Button active>Active</Button>
+              </Segmented>
+              <Segmented strong tag="p">
+                <Button>Button</Button>
+                <Button>Button</Button>
+                <Button active>Active</Button>
+              </Segmented>
+              <Segmented raised tag="p">
+                <Button outline>Outline</Button>
+                <Button outline>Outline</Button>
+                <Button outline active>Active</Button>
+              </Segmented>
+              <Segmented raised round tag="p">
+                <Button round>Button</Button>
+                <Button round>Button</Button>
+                <Button round active>Active</Button>
+              </Segmented>
+              <Segmented raised round tag="p">
+                <Button round outline>Outline</Button>
+                <Button round outline>Outline</Button>
+                <Button round outline active>Active</Button>
+              </Segmented>
+            </Block>
+
+            <BlockTitle>Large Buttons</BlockTitle>
+            <Block>
+              <Row tag="p">
+                <Col tag="span">
+                  <Button large>Button</Button>
+                </Col>
+                <Col tag="span">
+                  <Button large fill>Fill</Button>
+                </Col>
+              </Row>
+              <Row tag="p">
+                <Col tag="span">
+                  <Button large raised>Raised</Button>
+                </Col>
+                <Col tag="span">
+                  <Button large raised fill>Raised Fill</Button>
+                </Col>
+              </Row>
+            </Block>
+
+            <BlockTitle>Small Buttons</BlockTitle>
+            <Block>
+              <Row tag="p">
+                <Col tag="span">
+                  <Button large small>Button</Button>
+                </Col>
+                <Col tag="span">
+                  <Button large small outline>Outline</Button>
+                </Col>
+                <Col tag="span">
+                  <Button large small fill>Fill</Button>
+                </Col>
+              </Row>
+              <Row tag="p">
+                <Col tag="span">
+                  <Button large small round>Button</Button>
+                </Col>
+                <Col tag="span">
+                  <Button large small outline round>Outline</Button>
+                </Col>
+                <Col tag="span">
+                  <Button large small fill round>Fill</Button>
+                </Col>
+              </Row>
+            </Block>
+
+            <BlockTitle>Color Buttons</BlockTitle>
+            <Block>
+              <Row>
+                <Col>
+                  <Button color="red">Red</Button>
+                </Col>
+                <Col>
+                  <Button color="green">Green</Button>
+                </Col>
+                <Col>
+                  <Button color="blue">Blue</Button>
+                </Col>
+              </Row>
+            </Block>
+
+            <BlockTitle>Color Fill Buttons</BlockTitle>
+            <Block>
+              <Row>
+                <Col>
+                  <Button fill color="red">Red</Button>
+                </Col>
+                <Col>
+                  <Button fill color="green">Green</Button>
+                </Col>
+                <Col>
+                  <Button fill color="blue">Blue</Button>
+                </Col>
+              </Row>
+            </Block>
+
+

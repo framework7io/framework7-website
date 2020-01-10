@@ -1,0 +1,140 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'View Svelte Component | Framework7 Svelte Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 View Svelte Component
+    ul.docs-index
+    p <b>View</b> - is a separate visual part of app with its own settings, navigation and history. Each view also may have different navbar and toolbar layouts, different styles. So it is some kind of app in app. Such kind of functionality allows you easily manipulate each part of your app.
+    p View Svelte component represents Framework7's <a href="../docs/view.html">View</a> component.
+
+    h2 View Components
+    p There are following components included:
+    ul
+      li `View` - single View-router component
+      li `Views` - wrapper element for multiple views used as Tabs
+
+    h2 View Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;View&gt; properties
+        tr
+          td init
+          td boolean
+          td true
+          td Initializes View automatically
+        tr
+          td tab
+          td boolean
+          td
+          td Uses View as Tab
+        tr
+          td tabActive
+          td boolean
+          td
+          td Defines View-Tab as currently active Tab
+        tr
+          td(colspan="4")
+            .important-note(style="font-weight: bold") View Svelte component also accepts all <a href="../docs/view.html#view-parameters">View Parameters</a>. All of them can be passed via separate props on `<View>` component
+        tr
+          th(colspan="4") &lt;Views&gt; properties
+        tr
+          td tabs
+          td boolean
+          td
+          td Uses Views as Tabs wrapper container
+
+    h2 View Events
+    p Swipe-back related events are available only in iOS theme.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          td viewInit
+          td Event will be triggered on View initialization
+        tr
+          td swipebackMove
+          td Event will be triggered during swipe back move
+        tr
+          td swipeBackBeforeChange
+          td Event will be triggered right before swipe back animation to previous page when you release it
+        tr
+          td swipeBackAfterChange
+          td Event will be triggered after swipe back animation to previous page when you release it
+        tr
+          td swipeBackBeforeReset
+          td Event will be triggered right before swipe back animation to current page when you release it
+        tr
+          td swipeBackAfterReset
+          td Event will be triggered after swipe back animation to current page when you release it
+        tr
+          td tabShow
+          td Event will be triggered when View-Tab becomes visible/active
+        tr
+          td tabHide
+          td Event will be triggered when View-Tab becomes invisible/inactive
+    h2 Access To View Instance
+    p If you use automatic initalization to init the View (with `init={true}` prop) and need to use <a href="../docs/view.html">View API</a> (like router) you can access its initialized instance:
+    ul
+      li by accessing `.f7View` component's property
+      li if you have passed <b>name</b> property (e.g. "left") you can access it like `this.$f7.views.left`
+      li main view (with <b>main={true}</b> prop) is always accessible via `this.$f7.views.main`
+
+    h2 Examples
+    h4 Minimal layout
+    :code(lang="jsx")
+          <View main>
+            ...
+          </View>
+
+          {/* Renders to: */}
+
+          <div class="view view-main">
+            ...
+          </div>
+    h4 Views As Tabs
+    :code(lang="jsx")
+          <App>
+            ...
+            <Views tabs>
+              <View id="tab-1" main tab tabActive>...</View>
+              <View id="tab-2" tab>...</View>
+            </Views>
+            ...
+          </App>
+
+          {/* Renders to: */}
+          <div class="framework7-root">
+            <div class="views tabs">
+              <div class="view view-main tab tab-active" id="tab-1">...</div>
+              <div class="view tab" id="tab-2">...</div>
+            </div>
+          </div>
+
+    h4 With parameters
+    :code(lang="jsx")
+          <View
+            url="/home/"
+            animate={false}
+            iosDynamicNavbar={false}
+            pushState={true}
+          >
+            ...
+          </View>

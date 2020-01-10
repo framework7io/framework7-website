@@ -1,0 +1,188 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Block Svelte Component | Framework7 Svelte Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Block Svelte Component
+    ul.docs-index
+    p Block Svelte component represents <a href="../docs/block.html">Block / Content Block</a> element designed (mostly) to add extra formatting and required spacing for text content.
+    h2 Block Components
+    p There are following components included:
+    ul
+      li `Block` - main block element
+      li `BlockTitle` / `F7BlockTitle` - block title. Can be used before Block or List View
+      li `BlockHeader` / `F7BlockHeader` - extra header element. Can be used both inside and outside of block elements
+      li `BlockFooter` / `F7BlockFooter` - extra footer element. Can be used both inside and outside of block elements
+    h2 Block Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Block&gt; properties
+        tr
+          td inset
+          td boolean
+          td
+          td Makes block inset
+        tr
+          td xsmallInset
+          td boolean
+          td
+          td Makes block inset when app width >= 480px
+        tr
+          td smallInset
+          td boolean
+          td
+          td Makes block inset when app width >= 568px
+        tr
+          td mediumInset
+          td boolean
+          td
+          td Makes block inset when app width >= 768px
+        tr
+          td largeInset
+          td boolean
+          td
+          td Makes block inset when app width >= 1024px
+        tr
+          td xlargeInset
+          td boolean
+          td
+          td Makes block inset when app width >= 1200px
+        tr
+          td strong
+          td boolean
+          td
+          td Adds extra highlighting and padding block content
+        tr
+          td accordionList
+          td boolean
+          td
+          td Makes block wrapper for accordion items
+        tr
+          td tabs
+          td boolean
+          td
+          td Adds additional "tabs" class to make the block tabs wrapper
+        tr
+          td tab
+          td boolean
+          td
+          td Adds additional "tab" class when block should be used as a Tab
+        tr
+          td tabActive
+          td boolean
+          td
+          td Adds additional "tab-active" class when block used as a Tab and makes it active tab
+        tr
+          td noHairlines
+          td boolean
+          td
+          td Removes outer <a href="../docs/hairlines.html">hairlines</a>
+        tr
+          td noHairlinesMd
+          td boolean
+          td
+          td Removes outer <a href="../docs/hairlines.html">hairlines</a> for MD theme
+        tr
+          td noHairlinesIos
+          td boolean
+          td
+          td Removes outer <a href="../docs/hairlines.html">hairlines</a> for iOS theme
+        tr
+          th(colspan="4") &lt;BlockTitle&gt; properties
+        tr
+          td medium
+          td boolean
+          td
+          td Makes block title medium size
+        tr
+          td large
+          td boolean
+          td
+          td Makes block title large size
+    .with-device
+      h2(data-device-preview="../docs-demos/svelte/block.html") Examples
+      :code(lang="jsx")
+        export default () => (
+          <Page>
+            <Navbar title="Content Block"></Navbar>
+            <p>This paragraph is outside of content block. Not cool, but useful for any custom elements with custom styling.</p>
+
+            <Block>
+              <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </Block>
+
+            <Block strong>
+              <p>Here comes another text block with additional "block-strong" class. Praesent nec imperdiet diam. Maecenas vel lectus porttitor, consectetur magna nec, viverra sem. Aliquam sed risus dolor. Morbi tincidunt ut libero id sodales. Integer blandit varius nisi quis consectetur. </p>
+            </Block>
+
+            <BlockTitle>Block title</BlockTitle>
+            <Block>
+              <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </Block>
+
+            <BlockTitle>Another ultra long content block title</BlockTitle>
+            <Block strong>
+              <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </Block>
+
+            <BlockTitle>Inset</BlockTitle>
+            <Block strong inset>
+              <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </Block>
+
+            <BlockTitle>Tablet Inset</BlockTitle>
+            <Block strong mediumInset>
+              <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </Block>
+
+            <BlockTitle>With Header & Footer</BlockTitle>
+            <Block>
+              <BlockHeader>Block Header</BlockHeader>
+              <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+              <BlockFooter>Block Footer</BlockFooter>
+            </Block>
+
+            <BlockHeader>Block Header</BlockHeader>
+            <Block>
+              <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </Block>
+            <BlockFooter>Block Footer</BlockFooter>
+
+            <Block strong>
+              <BlockHeader>Block Header</BlockHeader>
+              <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+              <BlockFooter>Block Footer</BlockFooter>
+            </Block>
+
+            <BlockHeader>Block Header</BlockHeader>
+            <Block strong>
+              <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </Block>
+            <BlockFooter>Block Footer</BlockFooter>
+
+            <BlockTitle large>Block Title Large</BlockTitle>
+            <Block strong>
+              <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </Block>
+
+            <BlockTitle medium>Block Title Medium</BlockTitle>
+            <Block strong>
+              <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </Block>
+          </Page>
+        );

@@ -1,0 +1,142 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'App Layout | Framework7 Svelte Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 App Layout
+    p First thing we should do for our App is to create index.html file with app's skeleton.
+    :code(lang="html")
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <!-- Required meta tags-->
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+          <meta name="apple-mobile-web-app-capable" content="yes">
+          <!-- Color theme for statusbar (Android only) -->
+          <meta name="theme-color" content="#2196f3">
+          <!-- Your app title -->
+          <title>My App</title>
+          <!-- Path to Framework7 Library CSS Bundle -->
+          <link rel="stylesheet" href="path/to/framework7.bundle.min.css">
+          <!-- Path to your custom app styles-->
+          <link rel="stylesheet" href="path/to/my-app.css">
+        </head>
+        <body>
+          <!-- App Root Element -->
+          <div id="app"></div>
+
+          <script type="text/javascript" src="path/to/app.js"></script>
+        </body>
+      </html>
+    p The `<div id="app"></div>` is where your main app skeleton should be. You can mount its content as a component or (just for example) we can start to write app skeleton right inside of this div:
+    h2 Basic Layout
+    p Let's look at the very basic app component layout:
+    :code(lang="svelte")
+      <!-- Main Framework7 App component where we pass Framework7 params -->
+      <App params={{ theme: 'auto', name: 'My App', id: 'com.demoapp.test' }}>
+
+        <!-- Your main view, should have "main" prop -->
+        <View main>
+          <!--  Initial Page -->
+          <Page>
+            <!-- Top Navbar -->
+            <Navbar title="Awesome App"></Navbar>
+            <!-- Toolbar -->
+            <Toolbar bottom>
+              <Link>Link 1</Link>
+              <Link>Link 2</Link>
+            </Toolbar>
+            <!-- Page Content -->
+            <p>Page content goes here</p>
+            <Link href="/about/">About App</Link>
+          </Page>
+        </View>
+      </App>
+      <script>
+        import { App, View, Page, Navbar, Toolbar, Link } from 'framework7-svelte';
+      </script>
+
+    h2 Advanced Layout
+    p Now, let's look on more advanced layout where we will also add side panels with views and popup
+    :code(lang="svelte")
+      <!-- Main Framework7 App component where we pass Framework7 params -->
+      <App params={{ theme: 'auto', name: 'My App', id: 'com.demoapp.test' }}>
+
+        <!-- Left Panel with "cover" effect -->
+        <Panel left cover>
+          <View>
+            <Page>
+              <Navbar title="Left Panel"></Navbar>
+              <Block>
+                <p>Here comes the left panel text</p>
+              </Block>
+            </Page>
+          </View>
+        </Panel>
+
+        <!-- Right Panel with "reveal" effect -->
+        <Panel right reveal>
+          <View>
+            <Page>
+              <Navbar title="Right Panel"></Navbar>
+              <Block>
+                <p>Here comes the right panel text</p>
+              </Block>
+            </Page>
+          </View>
+        </Panel>
+
+        <!-- Main view -->
+        <View main>
+          <Page>
+            <Navbar title="Awesome App"></Navbar>
+            <!-- Page content -->
+            <Block>
+              <p>Here comes main view page text</p>
+            </Block>
+            <!-- Buttons to open panels -->
+            <Row>
+              <Col>
+                <Button panelOpen="left">Left Panel</Button>
+              </Col>
+              <Col>
+                <Button panelOpen="right">Right Panel</Button>
+              </Col>
+            </Row>
+            <!-- Button to open popup -->
+            <Button popupOpen="#my-popup">Open Popup</Button>
+          </Page>
+        </View>
+
+        <!-- Popup. All modals should be outside of Views -->
+        <Popup id="my-popup">
+          <View>
+            <Page>
+              <Navbar title="Popup">
+                <!-- Link to close popup -->
+                <NavRight>
+                  <Link popupClose>Close</Link>
+                </NavRight>
+              </Navbar>
+              <Block>
+                <p>Here comes popup text</p>
+              </Block>
+            </Page>
+          </View>
+        </Popup>
+      </App>
+      <script>
+        import { App, NavRight, Panel, View, Page, Navbar, Block, Row, Col, Button, Popup, Link } from 'framework7-svelte';
+      </script>
+
+    p You can read more about views, navbar, toolbar, pages, panels and other components in appropriate sections.
+    h2 Initialize App
+    p Now when we have basic template, we need to <a href="init-app.html">initialize our app</a>.
+

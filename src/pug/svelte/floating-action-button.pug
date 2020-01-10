@@ -1,0 +1,210 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Floating Action Button Svelte Component | Framework7 Svelte Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Floating Action Button Svelte Component
+    ul.docs-index
+    p Floating action buttons (FABs) are used for a promoted action. They are distinguished by a circled icon floating above the UI and have motion behaviors that include morphing, launching, and a transferring anchor point.
+    p Floating Action Button Svelte component represents <a href="../docs/floating-action-button.html">Floating Action Button</a> element.
+    h2 FAB Components
+    p There are following components included:
+    ul
+      li `Fab` - main FAB element
+      li `FabButtons` / `F7FabButtons` - wrapper for multiple FAB buttons used as Speed Dial FAB
+      li `FabButton` / `F7FabButton` - single FAB Speed Dial button
+    h2 FAB Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Fab&gt; properties
+        tr
+          td href
+          td string<br>boolean
+          td
+          td URL of the page to load (if set). Will set `href` attribute on main FAB link. In case of boolean `href="false"` it won't add `href` tag
+        tr
+          td target
+          td string
+          td
+          td Value of link target attribute, e.g. `_blank`, `_self`, etc.
+        tr
+          td position
+          td string
+          td right-bottom
+          td FAB position. Can be one of the following:
+            ul
+              li `right-bottom`
+              li `center-bottom`
+              li `left-bottom`
+              li `right-center`
+              li `center-center`
+              li `left-center`
+              li `right-top`
+              li `center-top`
+              li `left-top`
+        tr
+          td morphTo
+          td string
+          td
+          td String CSS selector of the FAB morph target
+        tr
+          td text
+          td string
+          td
+          td FAB Button text. If specified, then it will be displayed as Extended Fab with text label
+        tr
+          td tooltip
+          td string
+          td
+          td FAB <a href="../docs/tooltip.html">tooltip</a> text to show on button hover/press
+        tr
+          th(colspan="4") &lt;FabButtons&gt; properties
+        tr
+          td position
+          td string
+          td top
+          td Speed dial buttons position, can be one of the following:
+            ul
+              li `top` - buttons will appear on top of FAB
+              li `right` - buttons will appear on right of FAB
+              li `bottom` - buttons will appear on bottom of FAB
+              li `left` - buttons will appear on left of FAB
+              li `center` - buttons will appear around of FAB
+        tr
+          th(colspan="4") &lt;FabButton&gt; properties
+        tr
+          td fabClose
+          td boolean
+          td false
+          td When enabled then clicking on this button will close the FAB
+        tr
+          td target
+          td string
+          td
+          td Value of link target attribute, e.g. `_blank`, `_self`, etc.
+        tr
+          td label
+          td string
+          td
+          td Button text label
+        tr
+          td tooltip
+          td string
+          td
+          td Button <a href="../docs/tooltip.html">tooltip</a> text to show on button hover/press
+    h2 FAB Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;Fab&gt; events
+        tr
+          td click
+          td Event will be triggered after click on FAB
+        tr
+          th(colspan="2") &lt;FabButton&gt; events
+        tr
+          td click
+          td Event will be triggered after click on FAB Speed Dial button
+    h2 FAB Slots
+    p FAB Svelte component (`<Fab>`) has additional slots for custom elements:
+    ul
+      li `default` - child element will be inserted inside of the main FAB link `<a>` element. But if the child is `FabButtons`, then it will be inserted in the end of the main FAB element
+      li `link` - child element will be inserted inside of the main FAB link `<a>` element
+      li `root` - child element will be inserted in the end of the main FAB element
+      li `text` - child element will be inserted in the text element of the Extended FAB
+
+    .with-device
+      h2(data-device-preview="../docs-demos/svelte/floating-action-button.html") Examples
+      :code(lang="jsx")
+            export default () => (
+              <Page>
+                <Navbar title="Floating Action Button" />
+
+                {/* Toolbar FAB Morph Target */}
+                <Toolbar bottom className="fab-morph-target">
+                  <Link>Link 1</Link>
+                  <Link>Link 2</Link>
+                  <Link>Link 3</Link>
+                </Toolbar>
+
+                {/* FAB Left Top (Yellow) */}
+                <Fab position="left-top" slot="fixed" color="yellow">
+                  <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
+                  <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
+                  <FabButtons position="bottom">
+                    <FabButton>1</FabButton>
+                    <FabButton>2</FabButton>
+                    <FabButton>3</FabButton>
+                  </FabButtons>
+                </Fab>
+
+                {/* FAB Right Top (Pink) */}
+                <Fab position="right-top" slot="fixed" color="pink">
+                  <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
+                  <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
+                  <FabButtons position="left">
+                    <FabButton>1</FabButton>
+                    <FabButton>2</FabButton>
+                    <FabButton>3</FabButton>
+                  </FabButtons>
+                </Fab>
+
+                {/* FAB Center (Green) */}
+                <Fab position="center-center" slot="fixed" color="green">
+                  <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
+                  <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
+                  <FabButtons position="center">
+                    <FabButton>1</FabButton>
+                    <FabButton>2</FabButton>
+                    <FabButton>3</FabButton>
+                    <FabButton>4</FabButton>
+                  </FabButtons>
+                </Fab>
+
+                {/* FAB Left Bottom (Blue) */}
+                {/* Will morph to Toolbar */}
+                <Fab position="left-bottom" slot="fixed" morphTo=".toolbar.fab-morph-target">
+                  <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
+                  <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
+                </Fab>
+
+                {/* FAB Right Bottom (Orange) */}
+                <Fab position="right-bottom" slot="fixed" color="orange">
+                  <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
+                  <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
+                  <FabButtons position="top">
+                    <FabButton label="Action 1">1</FabButton>
+                    <FabButton label="Action 2">2</FabButton>
+                  </FabButtons>
+                </Fab>
+
+                {/* Extended FAB Center Bottom (Red) */}
+                <Fab position="center-bottom" slot="fixed" text="Create" color="red">
+                  <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
+                </Fab>
+
+                <Block>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus eligendi est saepe molestias ... voluptatibus eligendi.</p>
+                </Block>
+              </Page>
+            )
+

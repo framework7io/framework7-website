@@ -1,0 +1,20 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Introduction | Framework7 Svelte Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Introduction to Framework7 Svelte
+    .important-note
+      p It is highly recommended for you to be familiar with basics of both Framework7 and Svelte before getting started.
+    p Framework7 Svelte combines power and simplicity of great <a href="https://svelte.dev/">Svelte</a> framework with flexibility and UI of Framework7 mobile framework to build mobile apps in even more easy and quick way.
+    p Framework7 Svelte helps to keep data and content in more structured way and use data-bindings and simplify layout difference for iOS and Material themes (or handle this difference easier).
+    p Framework7 Svelte plugin provides a set of almost all Framework7 elements and components with integration of Framework7 Router to render pages in the "Svelte-way".
+    .important-note
+      p This documentation provides reference for Framework7 Svelte components (their usage examples and properties). For their appearance and how do they work it is recommended to check <a href="../docs/">Framework7 Core Documentation</a>.

@@ -1,0 +1,20 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Installation | Framework7 Svelte Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Installation
+    ul.docs-index
+
+    h2 Framework7 CLI
+    p The most recommended way to start with new Framework7 app is to use <a href="/cli/">Framework7 CLI</a>, it provides most complete amount of combinations with different templates, target devices/platforms, frameworks and some of best practices.
+
+    h2 Ready To Use Templates
+    p You can also check the #[a(href="/templates/") starter app templates and tools] section to start straight away from some pre-setup app.

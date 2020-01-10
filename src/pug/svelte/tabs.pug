@@ -1,0 +1,179 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Tabs Svelte Component | Framework7 Svelte Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Tabs Svelte Component
+    ul.docs-index
+    p Tabs allow to simply switch between different content. Tabs Svelte component represents <a href="../docs/tabs.html">Tabs</a> component.
+    h2 Tabs Components
+    p There are following components included:
+    ul
+      li `Tabs`
+      li `Tab`
+    h2 Tabs Properties
+    table.params-table.cols-3
+      thead
+        tr
+          th Prop
+          th Type
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;Tabs&gt; properties
+        tr
+          td animated
+          td boolean
+          td Enables animated tabs
+        tr
+          td swipeable
+          td boolean
+          td Enables swipeable tabs
+        tr
+          td routable
+          td boolean
+          td Enables routable tabs
+        tr
+          td swiperParams
+          td object
+          td Object with <a href="https://swiperjs.com/api/#parameters" target="_blank">Swiper parameters</a> (applies if `swipeable` enabled)
+        tr
+          th(colspan="3") &lt;Tab&gt; properties
+        tr
+          td tabActive
+          td boolean
+          td Defines currently active/visible tab
+        tr
+          td id
+          td string
+          td Tab ID
+    h2 Tabs Methods
+    table.methods-table
+      tr
+        th(colspan="2") &lt;Tab&gt; methods
+      tr
+        td .show(<span>animate</span>)
+        td Show this tab
+    h2 Tabs Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;Tab&gt; events
+        tr
+          td tabShow
+          td Event will be triggered when Tab becomes visible/active
+        tr
+          td tabHide
+          td Event will be triggered when Tab becomes invisible/inactive
+    h2 Switch Tabs
+    p You can control/switch tabs:
+    ul
+      li by clicking on <a href="button.html">Button</a> or <a href="link.html">Link</a> specifying related tab's ID using `tabLink` prop
+      li using <a href="../docs/tabs.html">Tabs API</a>
+      li using <a href="../docs/tabs.html#routable-tabs">Routable Tabs</a>
+    .with-device
+      h2(data-device-preview="../docs-demos/svelte/tabs.html") Examples
+      h3 Static Tabs
+      :code(lang="jsx")
+            <Page pageContent={false}>
+              <Navbar title="Static Tabs" backLink="Back"></Navbar>
+              <Toolbar tabbar bottom>
+                <Link tabLink="#tab-1" tabLinkActive>Tab 1</Link>
+                <Link tabLink="#tab-2">Tab 2</Link>
+                <Link tabLink="#tab-3">Tab 3</Link>
+              </Toolbar>
+              <Tabs>
+                <Tab id="tab-1" className="page-content" tabActive>
+                  <Block>
+                    <p>Tab 1 content</p>
+                    ...
+                  </Block>
+                </Tab>
+                <Tab id="tab-2" className="page-content">
+                  <Block>
+                    <p>Tab 2 content</p>
+                    ...
+                  </Block>
+                </Tab>
+                <Tab id="tab-3" className="page-content">
+                  <Block>
+                    <p>Tab 3 content</p>
+                    ...
+                  </Block>
+                </Tab>
+              </Tabs>
+            </Page>
+
+      h3 Animated Tabs
+      :code(lang="jsx")
+            <Page pageContent={false}>
+              <Navbar title="Animated Tabs" backLink="Back"></Navbar>
+              <Toolbar tabbar bottom>
+                <Link tabLink="#tab-1" tabLinkActive>Tab 1</Link>
+                <Link tabLink="#tab-2">Tab 2</Link>
+                <Link tabLink="#tab-3">Tab 3</Link>
+              </Toolbar>
+              <Tabs animated>
+                <Tab id="tab-1" className="page-content" tabActive>
+                  <Block>
+                    <p>Tab 1 content</p>
+                    ...
+                  </Block>
+                </Tab>
+                <Tab id="tab-2" className="page-content">
+                  <Block>
+                    <p>Tab 2 content</p>
+                    ...
+                  </Block>
+                </Tab>
+                <Tab id="tab-3" className="page-content">
+                  <Block>
+                    <p>Tab 3 content</p>
+                    ...
+                  </Block>
+                </Tab>
+              </Tabs>
+            </Page>
+
+      h3 Swipeable Tabs
+      :code(lang="jsx")
+            <Page pageContent={false}>
+              <Navbar title="Swipeable Tabs" backLink="Back"></Navbar>
+              <Toolbar tabbar bottom>
+                <Link tabLink="#tab-1" tabLinkActive>Tab 1</Link>
+                <Link tabLink="#tab-2">Tab 2</Link>
+                <Link tabLink="#tab-3">Tab 3</Link>
+              </Toolbar>
+              <Tabs swipeable>
+                <Tab id="tab-1" className="page-content" tabActive>
+                  <Block>
+                    <p>Tab 1 content</p>
+                    ...
+                  </Block>
+                </Tab>
+                <Tab id="tab-2" className="page-content">
+                  <Block>
+                    <p>Tab 2 content</p>
+                    ...
+                  </Block>
+                </Tab>
+                <Tab id="tab-3" className="page-content">
+                  <Block>
+                    <p>Tab 3 content</p>
+                    ...
+                  </Block>
+                </Tab>
+              </Tabs>
+            </Page>

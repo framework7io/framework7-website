@@ -1,0 +1,139 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Virtual List Svelte Component | Framework7 Svelte Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Virtual List Svelte Component
+    ul.docs-index
+    p Virtual List is not a separate Svelte component, but just a particular case of using <a href="list-view.html">&lt;List&gt;</a>, <a href="list-item.html">&lt;ListItem&gt;</a> Svelte components and special Framework7's <a href="../docs/virtual-list.html">Virtual List</a> component.
+
+    h2 Virtual List Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;List&gt; properties
+        tr
+          td virtualList
+          td boolean
+          td false
+          td Enables Virtual List
+        tr
+          td virtualListParams
+          td object
+          td
+          td Object with <a href="../docs/virtual-list.html#virtual-list-parameters">Virtual List Parameters</a>
+
+    h2 Virtual List Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;List&gt; events
+        tr
+          td virtualItemBeforeInsert
+          td Event will be triggered before item will be added to virtual document fragment
+        tr
+          td virtualItemsBeforeInsert
+          td Event will be triggered after current DOM list will be removed and before new document will be inserted
+        tr
+          td virtualItemsAfterInsert
+          td Event will be triggered after new document fragment with items inserted
+        tr
+          td virtualBeforeClear
+          td Event will be triggered before current DOM list will be removed and replaced with new document fragment
+
+    h2 Access To Virtual List Instance
+    p You can access Virtual List initialized instance by accessing `.f7VirtualList` <List> component's property.
+
+    .with-device
+      h2(data-device-preview="../docs-demos/svelte/virtual-list.html") Examples
+      p Here is the full page example with Virtual List and Searchbar to search through Virtual List items:
+      :code(lang="jsx")
+            export default class extends React.Component {
+              constructor(props) {
+                super(props);
+
+                const items = [];
+                for (let i = 1; i <= 10000; i += 1) {
+                  items.push({
+                    title: `Item ${i}`,
+                    subtitle: `Subtitle ${i}`,
+                  });
+                }
+                this.state = {
+                  items,
+                  vlData: {
+                    items: [],
+                  },
+                };
+              }
+              searchAll(query, items) {
+                const found = [];
+                for (let i = 0; i < items.length; i += 1) {
+                  if (items[i].title.toLowerCase().indexOf(query.toLowerCase()) >= 0 || query.trim() === '') found.push(i);
+                }
+                return found; // return array with mathced indexes
+              }
+              renderExternal(vl, vlData) {
+                this.setState({ vlData });
+              }
+              render() {
+                return (
+                  <Page>
+                    <Navbar title="Virtual List" backLink="Back">
+                      <Subnavbar inner={false}>
+                        <Searchbar
+                          searchContainer=".virtual-list"
+                          searchItem="li"
+                          searchIn=".item-title"
+                          disableButton={!this.$theme.aurora}
+                        ></Searchbar>
+                      </Subnavbar>
+                    </Navbar>
+                    <Block>
+                      <p>Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.</p>
+                      <p>Here is the example of virtual list with 10 000 items:</p>
+                    </Block>
+                    <List className="searchbar-not-found">
+                      <ListItem title="Nothing found"></ListItem>
+                    </List>
+                    <List
+                      className="searchbar-found"
+                      medialList
+                      virtualList
+                      virtualListParams={{ items: this.state.items, searchAll: this.searchAll, renderExternal: this.renderExternal.bind(this), height: this.$theme.ios ? 63 : (this.$theme.md ? 73 : 46)}}
+                    >
+                      <ul>
+                        {this.state.vlData.items.map((item, index) => (
+                          <ListItem
+                            key={index}
+                            mediaItem
+                            link="#"
+                            title={item.title}
+                            subtitle={item.subtitle}
+                            style={{top: `${this.state.vlData.topPosition}px`}}
+                          ></ListItem>
+                        ))}
+                      </ul>
+                    </List>
+                  </Page>
+                )
+              }
+            }

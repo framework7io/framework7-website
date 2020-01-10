@@ -1,0 +1,78 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Contacts List Svelte Component | Framework7 Svelte Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Contacts List Svelte Component
+    ul.docs-index
+    p Contacts List is not a separate component, but just a particular case of using <a href="list-view.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.
+
+    h2 Contacts List Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;List&gt; properties
+        tr
+          td contactsList
+          td boolean
+          td false
+          td Adds required additional styles for Contacts List
+
+    .with-device
+      h2(data-device-preview="../docs-demos/svelte/contacts-list.html") Examples
+      :code(lang="jsx")
+            export default () => (
+              <Page>
+                <Navbar title="Contacts List"></Navbar>
+                <List contactsList>
+                  <ListGroup>
+                    <ListItem title="A" groupTitle></ListItem>
+                    <ListItem title="Aaron "></ListItem>
+                    <ListItem title="Abbie"></ListItem>
+                    <ListItem title="Adam"></ListItem>
+                    <ListItem title="Adele"></ListItem>
+                    <ListItem title="Agatha"></ListItem>
+                    <ListItem title="Agnes"></ListItem>
+                    <ListItem title="Albert"></ListItem>
+                    <ListItem title="Alexander"></ListItem>
+                  </ListGroup>
+                  <ListGroup>
+                    <ListItem title="B" groupTitle></ListItem>
+                    <ListItem title="Bailey"></ListItem>
+                    <ListItem title="Barclay"></ListItem>
+                    <ListItem title="Bartolo"></ListItem>
+                    <ListItem title="Bellamy"></ListItem>
+                    <ListItem title="Belle"></ListItem>
+                    <ListItem title="Benjamin"></ListItem>
+                  </ListGroup>
+                  <ListGroup>
+                    <ListItem title="C" groupTitle></ListItem>
+                    <ListItem title="Caiden"></ListItem>
+                    <ListItem title="Calvin"></ListItem>
+                    <ListItem title="Candy"></ListItem>
+                    <ListItem title="Carl"></ListItem>
+                    <ListItem title="Cherilyn"></ListItem>
+                    <ListItem title="Chester"></ListItem>
+                    <ListItem title="Chloe"></ListItem>
+                  </ListGroup>
+                  <ListGroup>
+                    <ListItem title="V" groupTitle></ListItem>
+                    <ListItem title="Vladimir"></ListItem>
+                  </ListGroup>
+                </List>
+              </Page>
+            );

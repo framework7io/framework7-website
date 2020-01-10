@@ -1,0 +1,674 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'List Item Svelte Component | Framework7 Svelte Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 List Item Svelte Component
+    ul.docs-index
+
+    h2 List Item Components
+    p There are following components included:
+    ul
+      li `ListItem` / `F7ListItem` - main list item element
+      li `ListItemRow` / `F7ListItemRow` - list item row element for custom layout
+      li `ListItemCell` / `F7ListItemCell` - list item cell element for custom layout
+
+    h2 List Item Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;ListItem&gt; properties
+        tr
+          td title
+          td string
+          td
+          td List item title
+        tr
+          td subtitle
+          td string
+          td
+          td List item subtitle (only for Media List)
+        tr
+          td text
+          td string
+          td
+          td List item text (only for Media List)
+        tr
+          td header
+          td string
+          td
+          td List item header text
+        tr
+          td footer
+          td string
+          td
+          td List item footer text
+        tr
+          td media
+          td string
+          td
+          td List item media image URL
+        tr
+          td after
+          td string
+          td
+          td List item label
+        tr
+          td badge
+          td string<br>number
+          td
+          td List item Badge
+        tr
+          td badgeColor
+          td string
+          td
+          td List item Badge color. One of the <a href="../docs/color-themes.html">default colors</a>
+        tr
+          td mediaItem
+          td boolean
+          td
+          td Enables Media list item for the current list item
+        tr
+          td divider
+          td boolean
+          td
+          td Converts list item to list item divider
+        tr
+          td groupTitle
+          td boolean
+          td
+          td Converts list item to list group title
+        tr
+          td noFastClick
+          td boolean
+          td
+          td Disables fast click
+        tr
+          td target
+          td boolean
+          td
+          td List item link target attribute
+        tr
+          td noChevron
+          td boolean
+          td false
+          td Removes "chevron" icon on list item link
+        tr
+          td chevronCenter
+          td boolean
+          td false
+          td Sets "chevron" icon on media list item on center (vertically)
+        tr
+          td tooltip
+          td string
+          td
+          td List button <a href="../docs/tooltip.html">tooltip</a> text to show on button hover/press
+        tr
+          th(colspan="4") &lt;ListItem&gt; Form inputs specific properties
+        tr
+          td inlineLabel
+          td boolean
+          td false
+          td Enables inline-styled labels for <a href="inputs.html">Form Inputs</a>. By default inherirt `inlineLabels` prop on parent `<List>`
+        tr
+          td itemInput
+          td boolean
+          td false
+          td Enables additional styling for <a href="inputs.html">Form Inputs</a> inside. By default will try to detect based on content
+        tr
+          td itemInputWithInfo
+          td boolean
+          td false
+          td Enables additional styling for <a href="inputs.html">Form Inputs</a> with additional info. By default will try to detect based on content
+        tr
+          th(colspan="4") &lt;ListItem&gt; Swipeout specific properties
+        tr
+          td swipeout
+          td boolean
+          td
+          td Converts list item to <a href="swipeout.html">swipeout list item</a>
+        tr
+          td swipeoutOpened
+          td boolean
+          td
+          td Defines whether swipe actions should be opened or not. Note, only one swipeout item can be opened at same  time
+        tr
+          th(colspan="4") &lt;ListItem&gt; Accordion specific properties
+        tr
+          td accordionItem
+          td boolean
+          td false
+          td Converts list item to <a href="accordion.html">accordion list item</a>
+        tr
+          td accordionItemOpened
+          td boolean
+          td false
+          td Makes accordion item opened
+        tr
+          th(colspan="4") &lt;ListItem&gt; Sortable List specific properties
+        tr
+          td sortable
+          td boolean
+          td
+          td Allows to disable (when `false`) sorting of specific list item. Note, that it makes sense and work only on first or last items in the list and won't work correctly if you disable sortable for some of the items in the middle.
+        tr
+          th(colspan="4") &lt;ListItem&gt; Virtual List specific properties
+        tr
+          td virtualListIndex
+          td number
+          td
+          td Allows to pass list item index (from whole collection) when used in Virtual List. Useful to be used together with Sortable to know correct changed indexes
+        tr
+          th(colspan="4") &lt;ListItem&gt; Smart Select specific properties
+        tr
+          td smartSelect
+          td boolean
+          td false
+          td Enables Smart Select behavior
+        tr
+          td smartSelectParams
+          td object
+          td
+          td Object with <a href="../docs/smart-select.html#smart-select-parameters">Smart Select Parameters</a>
+        tr
+          th(colspan="4") &lt;ListItem&gt; Checkboxes & Radios specific properties
+        tr
+          td checkbox
+          td boolean
+          td false
+          td Enables checkbox-item
+        tr
+          td radio
+          td boolean
+          td false
+          td Enables radio-item
+        tr
+          td checked
+          td boolean
+          td false
+          td Whether the checkbox/radio input is checked
+        tr
+          td defaultChecked
+          td boolean
+          td
+          td Defines whether the checkbox input is checked or not, for the case if it is uncontrolled component
+        tr
+          td indeterminate
+          td boolean
+          td
+          td Defines whether the checkbox input is in indeterminate state or not
+        tr
+          td name
+          td string
+          td
+          td Checkbox/radio input name
+        tr
+          td value
+          td string<br>number
+          td
+          td Checkbox/radio input value
+        tr
+          td readonly
+          td boolean
+          td false
+          td Whether the checkbox/radio input is readonly
+        tr
+          td disabled
+          td boolean
+          td false
+          td Whether the checkbox/radio input is disabled
+        tr
+          td required
+          td boolean
+          td false
+          td Whether the checkbox/radio input is required
+        tr
+          th(colspan="4") &lt;ListItem&gt; navigation/router related properties
+        tr
+          td link
+          td boolean<br>string
+          td
+          td Enables link and link URL if specified as string. Same as `href` prop
+        tr
+        +svelteLinkRouterProps
+        tr
+          th(colspan="4") &lt;ListItem&gt; action related properties
+        +svelteLinkActionsProps
+
+    h2 List Item Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;ListItem&gt; events
+        tr
+          td click
+          td Event will be triggeres when user clicks on list item
+        tr
+          td change
+          td Event will be triggeres when "change" event occurs on list item input (radio or checkbox)
+        tr
+          td swipeout
+          td Event will be triggered while you move swipeout element. First handler argument contains `progress` object with current opened progress percentage
+        tr
+          td swipeoutOpen
+          td Event will be triggered when swipeout element starts its opening animation
+        tr
+          td swipeoutOpened
+          td Event will be triggered after swipeout element completes its opening animation
+        tr
+          td swipeoutClose
+          td Event will be triggered when swipeout element starts its closing animation
+        tr
+          td swipeoutClosed
+          td Event will be triggered after swipeout element completes its closing animation
+        tr
+          td swipeoutDelete
+          td Event will be triggered after swipeout element starts its delete animation
+        tr
+          td swipeoutDeleted
+          td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
+        tr
+          td accordionBeforeOpen
+          td Event will be triggered right before accordion content starts its opening animation. First handler argument receives `prevent` function that will prevent accordion from opening when called.
+        tr
+          td accordionOpen
+          td Event will be triggered when accordion content starts its opening animation.
+        tr
+          td accordionOpened
+          td Event will be triggered after accordion content completes its opening animation.
+        tr
+          td accordionBeforeClose
+          td Event will be triggered right before accordion content starts its closing animation. First handler argument receives `prevent` function that will prevent accordion from closing when called.
+        tr
+          td accordionClose
+          td Event will be triggered when accordion content starts its closing animation.
+        tr
+          td accordionClosed
+          td Event will be triggered after accordion content completes its closing animation.
+
+    h2 List Item Slots
+    p List Item Svelte component (`<ListItem>`) has additional slots for custom elements:
+    ul
+      li `root-start` - element will be inserted in the beginning of `<li>` element
+      li `root` / `root-end` - element will be inserted in the end of `<li>` element
+      li `content-start` - element will be inserted in the beginning of `<div class="item-content">` element
+      li `content` / `content-end` - element will be inserted in the end of `<div class="item-content">` element
+      li `inner-start` - element will be inserted in the beginning of `<div class="item-inner">` element
+      li `default` / `inner` / `inner-end` - element will be inserted in the end of `<div class="item-inner">` element
+      li `media` - element will be inserted inside of `<div class="item-media">` element
+      li `before-title` - element will be inserted before `<div class="item-title">` element
+      li `title` - element will be inserted inside of `<div class="item-title">` element
+      li `after-title` - element will be inserted after `<div class="item-title">` element
+      li `subtitle` - element will be inserted inside of `<div class="item-subtitle">` element
+      li `text` - element will be inserted inside of `<div class="item-text">` element
+      li `header` - element will be inserted inside of `<div class="item-header">` element
+      li `footer` - element will be inserted inside of `<div class="item-footer">` element
+      li `after-start` - element will be inserted in the beginning of `<div class="item-after">` element
+      li `after` / `after-end` - element will be inserted in the end of `<div class="item-after">` element
+    :code(lang="jsx")
+          <List media-list>
+            <ListItem
+              link="/home/"
+              title="Item Title"
+              subtitle="Item Subtitle"
+              text="Text"
+              after="Read more"
+              >
+                <img src="path-to-my-image.jpg" slot="media">
+                <div slot="root-start">Root Start</div>
+                <div slot="root">Root End</div>
+                <div slot="content-start">Content Start</div>
+                <div slot="content">Content End</div>
+                <div slot="media-start">Media Start</div>
+                <div slot="media">Media</div>
+                <span slot="after-start">After Start</span>
+                <span slot="after">After End</span>
+                <div slot="inner-start">Inner Start</div>
+                <div slot="inner">Inner End</div>
+                <div slot="before-title">Before Title</div>
+                <div slot="after-title">After Title</div>
+            </ListItem>
+          </List>
+
+          {/* Renders to: */}
+
+          <div class="list media-list">
+            <ul>
+              <li>
+                <div>Root Start</div>
+                <a href="/home/" class="item-link">
+                  <div class="item-content">
+                    <div>Content Start</div>
+                    <div class="item-media">
+                      <img src="path-to-my-image.jpg">
+                    </div>
+                    <div class="item-inner">
+                      <div>Inner Start</div>
+                      <div class="item-title-row">
+                        <div>Before Title</div>
+                        <div class="item-title">Item Title</div>
+                        <div>After Title</div>
+                        <div class="item-after">
+                          <span>After Start</span>
+                          <span>Read more</span>
+                          <span>After End</span>
+                        </div>
+                      </div>
+                      <div class="item-subtitle">Item Subtitle</div>
+                      <div class="item-text">Text</div>
+                      <div>Inner End</div>
+                    </div>
+                    <div>Content End</div>
+                  </div>
+                </a>
+                <div>Root End</div>
+              </li>
+            </ul>
+          </div>
+
+    .with-device
+      h2(data-device-preview="../docs-demos/svelte/list-view.html") Examples
+      h4 Simple List
+      :code(lang="jsx")
+            <BlockTitle>Simple List</BlockTitle>
+            <List simple-list>
+              <ListItem title="Item 1"></ListItem>
+              <ListItem title="Item 2"></ListItem>
+              <ListItem title="Item 3"></ListItem>
+            </List>
+      h4 Simple List Links
+      :code(lang="jsx")
+            <BlockTitle>Simple Links List</BlockTitle>
+            <List>
+              <ListItem title="Link 1" link="#"></ListItem>
+              <ListItem title="Link 2" link="#"></ListItem>
+              <ListItem title="Link 3" link="#"></ListItem>
+            </List>
+      h4 Data list, with icons
+      :code(lang="jsx")
+            <BlockTitle>Data list, with icons</BlockTitle>
+            <List>
+              <ListItem title="Ivan Petrov" after="CEO">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem title="John Doe" badge="5">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem title="Jenna Smith">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+            </List>
+      h4 Links
+      :code(lang="jsx")
+            <BlockTitle>Links</BlockTitle>
+            <List>
+              <ListItem link="#" title="Ivan Petrov" after="CEO">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="John Doe" after="Cleaner">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="Jenna Smith">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+            </List>
+      h4 Links, Header, Footer
+      :code(lang="jsx")
+            <BlockTitle>Links, Header, Footer</BlockTitle>
+            <List>
+              <ListItem link="#" header="Name" title="John Doe" after="Edit">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" header="Phone" title="+7 90 111-22-3344" after="Edit">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" header="Email" title="john@doe" footer="Home" after="Edit">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" header="Email" title="john@framework7" footer="Work" after="Edit">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+            </List>
+      h4 Links, no icons
+      :code(lang="jsx")
+            <BlockTitle>Links, no icons</BlockTitle>
+            <List>
+              <ListItem link="#" title="Ivan Petrov"></ListItem>
+              <ListItem link="#" title="John Doe"></ListItem>
+              <ListItem divider title="Divider Here"></ListItem>
+              <ListItem link="#" title="Ivan Petrov"></ListItem>
+              <ListItem link="#" title="Jenna Smith"></ListItem>
+            </List>
+      h4 Grouped with sticky titles
+      :code(lang="jsx")
+            <BlockTitle>Grouped with sticky titles</BlockTitle>
+            <List>
+              <ListGroup>
+                <ListItem title="A" groupTitle></ListItem>
+                <ListItem title="Aaron "></ListItem>
+                <ListItem title="Abbie"></ListItem>
+                <ListItem title="Adam"></ListItem>
+              </ListGroup>
+              <ListGroup>
+                <ListItem title="B" groupTitle></ListItem>
+                <ListItem title="Bailey"></ListItem>
+                <ListItem title="Barclay"></ListItem>
+                <ListItem title="Bartolo"></ListItem>
+              </ListGroup>
+              <ListGroup>
+                <ListItem title="C" groupTitle></ListItem>
+                <ListItem title="Caiden"></ListItem>
+                <ListItem title="Calvin"></ListItem>
+                <ListItem title="Candy"></ListItem>
+              </ListGroup>
+            </List>
+      h4 Mixed and nested
+      :code(lang="jsx")
+            <BlockTitle>Mixed and nested</BlockTitle>
+            <List>
+              <ListItem link="#" title="Ivan Petrov" after="CEO">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="Two icons here">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem title="No icons here"></ListItem>
+              <li>
+                <ul>
+                  <ListItem link="#" title="Ivan Petrov" after="CEO">
+                    <Icon slot="media" icon="demo-list-icon"></Icon>
+                  </ListItem>
+                  <ListItem link="#" title="Two icons here">
+                    <Icon slot="media" icon="demo-list-icon"></Icon>
+                    <Icon slot="media" icon="demo-list-icon"></Icon>
+                  </ListItem>
+                  <ListItem title="No icons here"></ListItem>
+                  <ListItem link="#" title="Ultra long text goes here, no, it is really really long">
+                    <Icon slot="media" icon="demo-list-icon"></Icon>
+                  </ListItem>
+                  <ListItem title="With toggle">
+                    <Icon slot="media" icon="demo-list-icon"></Icon>
+                    <Toggle slot="after"></Toggle>
+                  </ListItem>
+                </ul>
+              </li>
+              <ListItem link="#" title="Ultra long text goes here, no, it is really really long">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem title="With toggle">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+                <Toggle slot="after"></Toggle>
+              </ListItem>
+            </List>
+      h4 Mixed, inset
+      :code(lang="jsx")
+            <BlockTitle>Mixed, inset</BlockTitle>
+            <List>
+              <ListItem link="#" title="Ivan Petrov" after="CEO">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="Two icons here">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="Ultra long text goes here, no, it is really really long">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem title="With toggle">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+                <Toggle slot="after"></Toggle>
+              </ListItem>
+              <BlockFooter>
+                <p>Here comes some useful information about list above</p>
+              </BlockFooter>
+            </List>
+      h4 Tablet inset
+      :code(lang="jsx")
+            <BlockTitle>Tablet inset</BlockTitle>
+            <List mediumInset>
+              <ListItem link="#" title="Ivan Petrov" after="CEO">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="Two icons here">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="Ultra long text goes here, no, it is really really long">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <BlockFooter>
+                <p>This list block will look like "inset" only on tablets (iPad)</p>
+              </BlockFooter>
+            </List>
+      h4 Media Lists
+      :code(lang="jsx")
+            <BlockTitle>Media Lists</BlockTitle>
+            <Block>
+              <p>Media Lists are almost the same as Data Lists, but with a more flexible layout for visualization of more complex data, like products, services, userc, etc.</p>
+            </Block>
+            <BlockTitle>Songs</BlockTitle>
+            <List mediaList>
+              <ListItem
+                link="#"
+                title="Yellow Submarine"
+                after="$15"
+                subtitle="Beatles"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              >
+                <img slot="media" src="https://cdn.framework7.io/placeholder/people-160x160-1.jpg" width="80" />
+              </ListItem>
+              <ListItem
+                link="#"
+                title="Don't Stop Me Now"
+                after="$22"
+                subtitle="Queen"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              >
+                <img slot="media" src="https://cdn.framework7.io/placeholder/people-160x160-2.jpg" width="80" />
+              </ListItem>
+              <ListItem
+                link="#"
+                title="Billie Jean"
+                after="$16"
+                subtitle="Michael Jackson"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              >
+                <img slot="media" src="https://cdn.framework7.io/placeholder/people-160x160-3.jpg" width="80" />
+              </ListItem>
+            </List>
+      h4 Mail App
+      :code(lang="jsx")
+            <BlockTitle>Mail App</BlockTitle>
+            <List mediaList>
+              <ListItem
+                link="#"
+                title="Facebook"
+                after="17:14"
+                subtitle="New messages from John Doe"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></ListItem>
+              <ListItem
+                link="#"
+                title="John Doe (via Twitter)"
+                after="17:11"
+                subtitle="John Doe (@_johndoe) mentioned you on Twitter!"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></ListItem>
+              <ListItem
+                link="#"
+                title="Facebook"
+                after="16:48"
+                subtitle="New messages from John Doe"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></ListItem>
+              <ListItem
+                link="#"
+                title="John Doe (via Twitter)"
+                after="15:32"
+                subtitle="John Doe (@_johndoe) mentioned you on Twitter!"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></ListItem>
+            </List>
+      h4 Something more simple
+      :code(lang="jsx")
+            <BlockTitle>Something more simple</BlockTitle>
+            <List mediaList>
+              <ListItem
+                title="Yellow Submarine"
+                subtitle="Beatles">
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-1.jpg" width="44" />
+              </ListItem>
+              <ListItem
+                link="#"
+                title="Don't Stop Me Now"
+                subtitle="Queen">
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-2.jpg" width="44" />
+              </ListItem>
+              <ListItem
+                title="Billie Jean"
+                subtitle="Michael Jackson">
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-3.jpg" width="44" />
+              </ListItem>
+            </List>
+      h4 Inset
+      :code(lang="jsx")
+            <BlockTitle>Inset</BlockTitle>
+            <List mediaList inset>
+              <ListItem
+                link="#"
+                title="Yellow Submarine"
+                subtitle="Beatles">
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg" width="44" />
+              </ListItem>
+              <ListItem
+                link="#"
+                title="Don't Stop Me Now"
+                subtitle="Queen">
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg" width="44" />
+              </ListItem>
+              <ListItem
+                link="#"
+                title="Billie Jean"
+                subtitle="Michael Jackson">
+                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg" width="44" />
+              </ListItem>
+            </List>
