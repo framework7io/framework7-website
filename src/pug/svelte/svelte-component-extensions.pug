@@ -12,145 +12,106 @@ block content
     +improveDocsLink
     h1 Svelte Component Extensions
     ul.docs-index
-    p <b>After</b> Svelte mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that will be available in all Svelte components (Class components):
-    h2 Components Properties
+    p <b>After</b> Svelte mounts the app and init Framework7, we will have Framework7's initialized instance and some other useful properties.
+    h2 Framework7 Instance & Utils
+    p In addition to Framework7 Svelte components there are some useful props and methods we can import from `framework7-svelte`:
+    ```js
+      import { f7, f7ready, theme } from 'framework7-svelte';
+      // ...
+    ```
     table.methods-table
       tbody
         tr
-          td this.$f7ready
-          td Callback function that will be executed when Framework7 fully intialized. Useful to use in components when you need to access Framework7 API and to be sure it is ready. So it is safe to put all Framework7 related logic into this callback. As an argument it receives initialized Framework7 instance. For example:
-            :code(lang="js")
-              export default class extends React.Component {
-                ...
-                render() {
-                  ...
-                },
-                componentDidMount() {
-                  this.$f7ready((f7) => {
-                    f7.dialog.alert('Component mounted');
-                  });
-                },
-                ...
-              };
-        tr
-          td this.$f7
+          td f7
           td Main Framework7's initialized instance. It allows you to use any of Framework7 APIs
         tr
-          td this.$$<br>this.Dom7
-          td Access to built-in <a href="../docs/dom7.html">Dom7</a> DOM library that utilizes most edge and high-performance methods for DOM manipulation
-        tr
-          td this.$device
-          td Access to <a href="../docs/device.html">Device</a> utilities
-        tr
-          td this.$request
-          td Access to <a href="../docs/request.html">Request</a> library for XHR requests
-        tr
-          td this.$utils
-          td Access to <a href="../docs/utils.html">Utils</a> object with few useful utilities
-        tr
-          td this.$theme
-          td Object with boolean properties with information about currently used theme (iOS, MD or Aurora): `this.$theme.ios`, `this.$theme.material` and `this.$theme.aurora`
-        tr
-          td this.$f7router
-          td
-            p.important-note This property only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
-            p Framework7 Router Instance. It has a lot of useful <a href="../docs/view.html#router-api-methods-properties">Methods & Properties</a> to use for navigation
-        tr
-          td this.$f7route
-          td
-            p.important-note This property only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
-            p Object with current route data that was used to load this page, tab or modal. It has the following properties
-            ul
-              li `url` - route URL
-              li `path` - route path
-              li `query` - object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{id: '5', foo: 'bar'}`
-              li `params` - route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{userId: '55', postId: '12'}`
-              li `name` - route name
-              li `hash` - route URL hash
-              li `route` - object with matching route from available routes
-              li `context` - context that was passed to the route
+          td f7ready
+          td Callback function that will be executed when Framework7 fully intialized. Useful to use in components when you need to access Framework7 API and to be sure it is ready. So it is safe to put all Framework7 related logic into this callback. For example:
+            ```svelte
+              <Page>
+                <Link onClick={onClick}>Click</Link>
+              </Page>
+              <script>
+                import { onMount } from 'svelte';
+                import { f7, f7ready, Page } from 'framework7-svelte';
 
-    p If you use functional components, then previously described extensions will not work. Framework7 instance, `f7ready` method and `theme` can be imported directly from Framework7-Svelte library. Device, Request and Support can be imported directly from Framework7 core library.
+                function onClick() {
+                  // Safe to use without f7ready
+                  f7.dialog.alert('Clicked!');
+                }
+
+                onMount(() => {
+                  f7ready(() => {
+                    // Framework7 initialized
+                    f7.dialog.alert('Hello world');
+                  })
+                })
+              </script>
+            ```
+        tr
+          td theme
+          td Object with boolean properties with information about currently used theme (iOS, MD or Aurora): `theme.ios`, `theme.material` and `theme.aurora`
+
+    p If you need other useful Framework7 utils you can import them directly from Framework7 core library:
+
+    table.methods-table
+      tbody
+        tr
+          td Device
+          td <a href="../docs/device.html">Device</a> utilities
+        tr
+          td Request
+          td <a href="../docs/request.html">Request</a> library for XHR requests
+        tr
+          td Utils
+          td <a href="../docs/utils.html">Utils</a> object with few useful utilities
     :code(lang="js")
-      import { Device, Request, Support } from 'framework7';
-      import { f7, f7ready, theme } from 'framework7-react';
+      import { Device, Request, Utils } from 'framework7';
+      import { f7, f7ready, theme } from 'framework7-svelte';
 
-    :code(lang="js")
-      import { f7, f7ready } from 'framework7-react';
+      // ...
 
-      export default class extends React.Component {
-        ...
-        render() {
-          ...
-        },
-        componentDidMount() {
-          f7ready(() => {
-            f7.dialog.alert('Component mounted');
-          });
-        },
-        ...
-      };
-
-    h2 Phenome.js
-    p Framework7-Svelte components are build with <a target="_blank" href="https://github.com/phenomejs/phenome">Phenome.js</a>, so they are empowered with some extra features like Slots and Events.
     h2 Slots
-    p All Framework7-Svelte components use `slots` to distribute children across component structure. They work exactly the same as <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots">Web Component Slots</a> and <a href="https://vuejs.org/v2/guide/components-slots.html" target="_blank">Vue.js Slots</a>.
+    p All Framework7 Svelte components use `slots` to distribute children across component structure. But due to Svelte limitation it is not allowed to use slots on custom components, so sometimes you may need to wrap it with dummy HTML element or use HTML layout instead:
     p For example
-    :code(lang="jsx")
-          export default () => (
-            <Page>
-              <p slot="fixed">I'm fixed page element</p>
-              <p>I'm in scrollable page area</p>
-              <List>
-                <ListItem>
-                  <img slot="media" src="path/to/image.png" />
-                  <span slot="title">Title 1</span>
-                  <span slot="title">Title 2</span>
-                </ListItem>
-              </List>
-            </Page>
-          )
-    p Renders to:
-    :code(lang="html")
-          <div class="page">
-            <p slot="fixed">I'm fixed page element</p>
-            <div class="page-content">
-              <p>I'm in scrollable page area</p>
-              <div class="list">
-                <ul>
-                  <li>
-                    <div class="item-content">
-                      <div class="item-media">
-                        <img slot="media" src="path/to/image.png" />
-                      </div>
-                      <div class="item-inner">
-                        <div class="item-title">
-                          <span slot="title">Title 1</span>
-                          <span slot="title">Title 2</span>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+    ```svelte
+      <Page>
+        <List>
+          <ListItem title="Toggle">
+            <!-- wrap with extra element -->
+            <span slot="after">
+              <Toggle />
+            </span>
+          </ListItem>
+        </List>
+      </Page>
+    ```
+
     h2 Events
-    p All Framework7-Svelte components support events, which are actually props, and their listeners must be assigned as `on$Event` prop.
-    p For example `<Page>` component supports `pageInit`, `pageBeforeIn` and other <a href="page.html#page-events">events</a>, so to handle such events:
-    :code(lang="jsx")
-          export default class extends React.Component {
-            render() {
-              return (
-                <Page onPageBeforeIn={this.onPageBeforeIn.bind(this)} onPageInit={this.onPageInit.bind(this)}>
-                  ...
-                </Page>
-              )
-            }
-            onPageBeforeIn() {
-              // do something on page before in
-            }
-            onPageInit() {
-              // do something on page init
-            }
-          }
+    p All Framework7 Svelte components support events. But the way how Svelte handles events (by emitting CustomEvent) can be inconvenient when we need to get event arguments (via `event.detail`) and especially when there are few arguments.
+    p So all Framework7 Svelte components emit events with arguments as array:
+    ```svelte
+      <Page on:pageInit={onPageInit}>
+        <!-- -->
+      </Page>
+      <script>
+        // pageInit event has one argument with page data
+        function onPageInit(event) {
+          // it will be available in event.detail array
+          const pageData = event.detail[0]
+          console.log(pageData);
+        }
+      </script>
+    ```
+    p To workaround this, all Framework7 Svelte component events has same `on${Event}` prop callback:
+    ```svelte
+      <Page onPageInit={onPageInit}>
+        <!-- -->
+      </Page>
+      <script>
+        // pageInit event has one argument with page data
+        function onPageInit(pageData) {
+          console.log(pageData);
+        }
+      </script>
+    ```

@@ -19,9 +19,9 @@ block content
     p There are following components included:
     ul
       li `Actions` - action sheet element
-      li `ActionsGroup` / `F7ActionsGroup` - action sheet buttons group
-      li `ActionsButton` / `F7ActionsButton` - action sheet button
-      li `ActionsLabel` / `F7ActionsLabel` - action sheet label
+      li `ActionsGroup` - action sheet buttons group
+      li `ActionsButton` - action sheet button
+      li `ActionsLabel` - action sheet label
     h2 Action Sheet Properties
     table.params-table
       thead
@@ -158,11 +158,11 @@ block content
                   <Page>
                     <Navbar title="Action Sheet"></Navbar>
                     <Block strong>
-                      <p className="row">
+                      <p class="row">
                         {/* One group, open by direct accessing instance .open() method */}
-                        <Button className="col" raised onClick={() => this.refs.actionsOneGroup.open()}>One group</Button>
+                        <Button class="col" raised onClick={() => this.refs.actionsOneGroup.open()}>One group</Button>
                         {/*  Two groups, open by "actionsOpen" attribute */}
-                        <Button className="col" raised actionsOpen="#actions-two-groups">Two groups</Button>
+                        <Button class="col" raised actionsOpen="#actions-two-groups">Two groups</Button>
                       </p>
                       <p>
                         {/* Actions Grid, open by changing actionGridOpened state property */}
@@ -176,7 +176,7 @@ block content
                         Action Sheet can be automatically converted to Popover (for tablets). This button will open Popover on tablets and Action Sheet on phones:
                         <Button
                           style={{ display: 'inline-block' }}
-                          className="button-to-popover"
+                          class="button-to-popover"
                           onClick={this.openActionsPopover.bind(this)}>
                             Actions
                           </Button>

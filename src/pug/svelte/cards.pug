@@ -19,9 +19,9 @@ block content
     p There are following components included:
     ul
       li `Card`
-      li `CardHeader` / `F7CardHeader`
-      li `CardContent` / `F7CardContent`
-      li `CardFooter` / `F7CardFooter`
+      li `CardHeader`
+      li `CardContent`
+      li `CardFooter`
     h2 Card Properties
     table.params-table
       thead
@@ -191,14 +191,14 @@ block content
         ></Card>
 
         <BlockTitle>Styled Cards</BlockTitle>
-        <Card className="demo-card-header-pic">
+        <Card class="demo-card-header-pic">
           <CardHeader
-            className="no-border"
+            class="no-border"
             valign="bottom"
             style={{ backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-1000x600-3.jpg)' }}
           >Journey To Mountains</CardHeader>
           <CardContent>
-            <p className="date">Posted on January 21, 2015</p>
+            <p class="date">Posted on January 21, 2015</p>
             <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...</p>
           </CardContent>
           <CardFooter>
@@ -206,14 +206,14 @@ block content
             <Link>Read more</Link>
           </CardFooter>
         </Card>
-        <Card className="demo-card-header-pic">
+        <Card class="demo-card-header-pic">
           <CardHeader
-            className="no-border"
+            class="no-border"
             valign="bottom"
             style={{ backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-1000x600-6.jpg)' }}
           >Journey To Mountains</CardHeader>
           <CardContent>
-            <p className="date">Posted on January 21, 2015</p>
+            <p class="date">Posted on January 21, 2015</p>
             <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...</p>
           </CardContent>
           <CardFooter>
@@ -223,32 +223,32 @@ block content
         </Card>
 
         <BlockTitle>Facebook Cards</BlockTitle>
-        <Card className="demo-facebook-card">
-          <CardHeader className="no-border">
-            <div className="demo-facebook-avatar"><img src="https://cdn.framework7.io/placeholder/people-68x68-1.jpg" width="34" height="34"/></div>
-            <div className="demo-facebook-name">John Doe</div>
-            <div className="demo-facebook-date">Monday at 3:47 PM</div>
+        <Card class="demo-facebook-card">
+          <CardHeader class="no-border">
+            <div class="demo-facebook-avatar"><img src="https://cdn.framework7.io/placeholder/people-68x68-1.jpg" width="34" height="34"/></div>
+            <div class="demo-facebook-name">John Doe</div>
+            <div class="demo-facebook-date">Monday at 3:47 PM</div>
           </CardHeader>
           <CardContent padding={false}>
             <img src="https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg" width="100%"/>
           </CardContent>
-          <CardFooter className="no-border">
+          <CardFooter class="no-border">
             <Link>Like</Link>
             <Link>Comment</Link>
             <Link>Share</Link>
           </CardFooter>
         </Card>
-        <Card className="demo-facebook-card">
-          <CardHeader className="no-border">
-            <div className="demo-facebook-avatar"><img src="https://cdn.framework7.io/placeholder/people-68x68-1.jpg" width="34" height="34"/></div>
-            <div className="demo-facebook-name">John Doe</div>
-            <div className="demo-facebook-date">Monday at 2:15 PM</div>
+        <Card class="demo-facebook-card">
+          <CardHeader class="no-border">
+            <div class="demo-facebook-avatar"><img src="https://cdn.framework7.io/placeholder/people-68x68-1.jpg" width="34" height="34"/></div>
+            <div class="demo-facebook-name">John Doe</div>
+            <div class="demo-facebook-date">Monday at 2:15 PM</div>
           </CardHeader>
           <CardContent>
             <p>What a nice photo i took yesterday!</p><img src="https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg" width="100%"/>
-            <p className="likes">Likes: 112 &nbsp;&nbsp; Comments: 43</p>
+            <p class="likes">Likes: 112 &nbsp;&nbsp; Comments: 43</p>
           </CardContent>
-          <CardFooter className="no-border">
+          <CardFooter class="no-border">
             <Link>Like</Link>
             <Link>Comment</Link>
             <Link>Share</Link>
@@ -299,15 +299,15 @@ block content
         <BlockTitle>Expandable Cards</BlockTitle>
         <Card expandable>
           <CardContent padding={false}>
-            <div className="bg-color-red" style={{height: '300px'}}>
-              <CardHeader textColor="white" className="display-block">
+            <div class="bg-color-red" style={{height: '300px'}}>
+              <CardHeader textColor="white" class="display-block">
                 Framework7
                 <br />
                 <small style={{opacity: 0.7}}>Build Mobile Apps</small>
               </CardHeader>
-              <Link cardClose color="white" className="card-opened-fade-in" style={{position: 'absolute', right: '15px', top: '15px'}} iconF7="multiply_circle_fill" />
+              <Link cardClose color="white" class="card-opened-fade-in" style={{position: 'absolute', right: '15px', top: '15px'}} iconF7="multiply_circle_fill" />
             </div>
-            <div className="card-content-padding">
+            <div class="card-content-padding">
               <p>Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel...</p>
             </div>
           </CardContent>
@@ -315,15 +315,15 @@ block content
 
         <Card expandable>
           <CardContent padding={false}>
-            <div className="bg-color-yellow" style={{height: '300px'}}>
-              <CardHeader textColor="black" className="display-block">
+            <div class="bg-color-yellow" style={{height: '300px'}}>
+              <CardHeader textColor="black" class="display-block">
                 Framework7
                 <br/>
                 <small style={{opacity: 0.7}}>Build Mobile Apps</small>
               </CardHeader>
-              <Link cardClose color="black" className="card-opened-fade-in" style={{position: 'absolute', right: '15px', top: '15px'}} iconF7="multiply_circle_fill" />
+              <Link cardClose color="black" class="card-opened-fade-in" style={{position: 'absolute', right: '15px', top: '15px'}} iconF7="multiply_circle_fill" />
             </div>
-            <div className="card-content-padding">
+            <div class="card-content-padding">
               <p>Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel...</p>
             </div>
           </CardContent>

@@ -145,7 +145,7 @@ block content
                   </p>
                 </Block>
 
-                <Popup className="demo-popup" opened={this.state.popupOpened} onPopupClosed={() => this.setState({popupOpened : false})}>
+                <Popup class="demo-popup" opened={this.state.popupOpened} onPopupClosed={() => this.setState({popupOpened : false})}>
                   <Page>
                     <Navbar title="Popup Title">
                       <NavRight>
@@ -160,7 +160,7 @@ block content
                   </Page>
                 </Popup>
 
-                <Popup className="demo-popup-swipe" swipeToClose>
+                <Popup class="demo-popup-swipe" swipeToClose>
                   <Page>
                     <Navbar title="Swipe To Close">
                       <NavRight>
@@ -168,23 +168,23 @@ block content
                       </NavRight>
                     </Navbar>
 
-                    <div style={{height: '100%'}} className="display-flex justify-content-center align-items-center">
+                    <div style={{height: '100%'}} class="display-flex justify-content-center align-items-center">
                       <p>Swipe me up or down</p>
                     </div>
                   </Page>
                 </Popup>
 
-                <Popup className="demo-popup-swipe-handler" swipeToClose swipeHandler=".swipe-handler">
+                <Popup class="demo-popup-swipe-handler" swipeToClose swipeHandler=".swipe-handler">
                   <Page>
                     <BlockTitle large>Hello!</BlockTitle>
                     <Block strong>
-                      <p className="swipe-handler"><b>Swipe works only on this paragraph</b></p>
+                      <p class="swipe-handler"><b>Swipe works only on this paragraph</b></p>
                       <p>Lorem ipsum dolor sit amet...</p>
                     </Block>
                   </Page>
                 </Popup>
 
-                <Popup className="demo-popup-push" push>
+                <Popup class="demo-popup-push" push>
                   <Page>
                     <Navbar title="Popup Push">
                       <NavRight>
