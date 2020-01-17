@@ -1,4 +1,4 @@
-<App params>
+<App>
   <View main>
     <Page>
       <Navbar title="Accordion" />

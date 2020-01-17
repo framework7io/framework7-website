@@ -16,8 +16,8 @@ block content
             <Appbar>
               <div className="left">
                 <Button small panelToggle="left" className="display-flex" iconF7="bars" />
-                <Button small className="display-flex margin-left-half" iconF7="reply_fill" />
-                <Button small className="display-flex margin-left-half" iconF7="forward_fill" />
+                <Button small className="display-flex margin-left-half" iconF7="square_list" />
+                <Button small className="display-flex margin-left-half" iconF7="arrowshape_turn_up_left_fill" />
               </div>
               <div className="right">
                 <Searchbar
@@ -27,6 +27,11 @@ block content
                 />
               </div>
             </Appbar>
+            <Panel left>
+              <Block>
+                <p>Panel left content</p>
+              </Block>
+            </Panel>
             <View main>
               <Page>
                 <Navbar title="Appbar" />

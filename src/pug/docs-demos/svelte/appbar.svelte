@@ -1,10 +1,9 @@
-
 <App>
   <Appbar>
     <div class="left">
       <Button small panelToggle="left" class="display-flex" iconF7="bars" />
-      <Button small class="display-flex margin-left-half" iconF7="reply_fill" />
-      <Button small class="display-flex margin-left-half" iconF7="forward_fill" />
+      <Button small class="display-flex margin-left-half" iconF7="square_list" />
+      <Button small class="display-flex margin-left-half" iconF7="arrowshape_turn_up_left_fill" />
     </div>
     <div class="right">
       <Searchbar
@@ -14,6 +13,11 @@
       />
     </div>
   </Appbar>
+  <Panel left>
+    <Block>
+      <p>Panel left content</p>
+    </Block>
+  </Panel>
   <View main>
     <Page>
       <Navbar title="Appbar" />
@@ -25,5 +29,5 @@
 </App>
 
 <script>
-  import {App, Appbar, Button, Searchbar, View, Page, Navbar, Block} from 'framework7-svelte';
+  import {App, Appbar, Panel, Button, Searchbar, View, Page, Navbar, Block} from 'framework7-svelte';
 </script>

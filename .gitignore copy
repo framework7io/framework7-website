@@ -15,6 +15,7 @@ public/docs-demos/vue/*.html
 public/docs-demos/svelte/*.html
 public/docs-demos/svelte/*.js
 public/docs-demos/svelte/*.css
+public/docs-demos/svelte/*.css.map
 public/docs-demos/svelte/*.map
 public/vue/*.html
 public/react/*.html

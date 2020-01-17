@@ -57,21 +57,22 @@ function buildOne(name, cb) {
       },
     });
   }).then(() => {
-    console.log(`Finished pug ${name} in ${Date.now() - time}ms`);
+    console.log(`Finished svelte: ${name} in ${Date.now() - time}ms`);
     if (cb) cb();
   });
 }
 
-function buildAll(cb) {
+async function buildAll(cb) {
   const svelteDemos = fs.readdirSync(path.resolve(__dirname, '../src/pug/docs-demos/svelte'))
     .filter(f => f.indexOf('.svelte') >= 0)
     .map(f => f.split('.svelte')[0]);
 
-  Promise.all(
-    svelteDemos.map(name => buildOne(name)),
-  ).then(() => {
-    if (cb) cb();
-  });
+  // eslint-disable-next-line
+  for (name of svelteDemos) {
+    // eslint-disable-next-line
+    await buildOne(name);
+  }
+  if (cb) cb();
 }
 
 module.exports = {

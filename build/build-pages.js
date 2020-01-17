@@ -13,6 +13,7 @@ const getYamlData = require('./utils/get-yaml-data');
 const inlineSvg = require('./utils/inline-svg');
 const cssVars = require('./utils/css-vars');
 const codeFilter = require('./utils/code-filter');
+const svelteSourceFilter = require('./utils/svelte-source-filter');
 const codeInlineFilter = require('./utils/code-inline-filter');
 const createIndex = require('./utils/create-index');
 const createMobilePreviewLinks = require('./utils/create-mobile-preview-links');
@@ -21,6 +22,7 @@ const createCodeFilter = require('./utils/create-code-filter');
 
 if (!pug.filter && !pug.filters.code) {
   pug.filters = {
+    svelteSource: svelteSourceFilter,
     code: codeFilter,
     code_inline: codeInlineFilter,
   };
