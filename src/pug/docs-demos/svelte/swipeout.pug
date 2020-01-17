@@ -4,19 +4,19 @@
         self.actions.open();
       }
       mark() {
-        const app = this.$f7;
+        const app = f7
         app.dialog.alert('Mark');
       }
       reply() {
-        const app = this.$f7;
+        const app = f7
         app.dialog.alert('Reply');
       }
       forward() {
-        const app = this.$f7;
+        const app = f7
         app.dialog.alert('Forward');
       }
       onDeleted() {
-        const app = this.$f7;
+        const app = f7
         app.dialog.alert('Thanks, item removed!');
       }
       onPageBeforeRemove() {
@@ -25,7 +25,7 @@
       }
       onPageInit() {
         const self = this;
-        const app = self.$f7;
+        const app = f7
         self.actions = app.actions.create({
           buttons: [
             [
@@ -262,3 +262,7 @@
               </Page>
             </View>
           </App>
+
+<script>
+  import {f7, App, View, Page, Navbar, Block, BlockTitle, List, ListItem, SwipeoutActions, SwipeoutButton} from 'framework7-svelte';
+</script>

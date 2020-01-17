@@ -6,7 +6,7 @@
       }
       signIn() {
         const self = this;
-        const app = self.$f7;
+        const app = f7
         const router = self.$f7router;
         app.dialog.alert(`Username: ${self.state.username}<br>Password: ${self.state.password}`, () => {
           router.back();
@@ -62,7 +62,7 @@
       }
       signIn() {
         const self = this;
-        const app = self.$f7;
+        const app = f7
 
         app.dialog.alert(`Username: ${self.state.username}<br>Password: ${self.state.password}`, () => {
           app.loginScreen.close();
@@ -122,3 +122,7 @@
               </Page>
             </View>
           </App>
+
+<script>
+  import {f7, Page, LoginScreenTitle, List, ListInput, ListButton, BlockFooter, App, View, Navbar, Block, ListItem, Button, LoginScreen} from 'framework7-svelte';
+</script>

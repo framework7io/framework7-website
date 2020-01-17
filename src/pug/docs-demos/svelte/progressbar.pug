@@ -15,12 +15,12 @@ block content
       }
       setInlineProgress(value) {
         const self = this;
-        const app = self.$f7;
+        const app = f7
         app.progressbar.set('#demo-inline-progressbar', value);
       }
       showDeterminate(inline) {
         const self = this;
-        const app = self.$f7;
+        const app = f7
         if (self.determinateLoading) return;
         self.determinateLoading = true;
         let progressBarEl;
@@ -47,7 +47,7 @@ block content
       }
       showInfinite(multiColor) {
         const self = this;
-        const app = self.$f7;
+        const app = f7
         if (self.infiniteLoading) return;
         self.infiniteLoading = true;
         if (multiColor) {
@@ -145,3 +145,7 @@ block content
               </Page>
             </View>
           </App>
+
+<script>
+  import {f7, App, View, Page, Navbar, Block, BlockTitle, Progressbar, Segmented, Button, List, ListItem} from 'framework7-svelte';
+</script>

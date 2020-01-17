@@ -1,23 +1,23 @@
 
       openIndicator() {
         const self = this;
-        self.$f7.preloader.show();
+        f7.preloader.show();
         setTimeout(() => {
-          self.$f7.preloader.hide();
+          f7.preloader.hide();
         }, 2000);
       }
       openDialog() {
         const self = this;
-        self.$f7.dialog.preloader();
+        f7.dialog.preloader();
         setTimeout(() => {
-          self.$f7.dialog.close();
+          f7.dialog.close();
         }, 2000);
       }
       openCustomDialog() {
         const self = this;
-        self.$f7.dialog.preloader('My text...');
+        f7.dialog.preloader('My text...');
         setTimeout(() => {
-          self.$f7.dialog.close();
+          f7.dialog.close();
         }, 2000);
       }
       render() {
@@ -90,3 +90,7 @@
     .demo-preloaders .col {
       line-height: 42px;
     }
+
+<script>
+  import {f7, App, View, Page, Navbar, Block, BlockTitle, Col, Preloader} from 'framework7-svelte';
+</script>

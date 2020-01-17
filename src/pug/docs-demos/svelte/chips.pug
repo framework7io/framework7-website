@@ -12,7 +12,7 @@ block content
       }
       deleteChip(e) {
         const $$ = this.$$;
-        const app = this.$f7;
+        const app = f7
         const target = e.target;
         app.dialog.confirm('Do you want to delete this tiny demo Chip?', () => {
           $$(target).parents('.chip').remove();
@@ -96,3 +96,7 @@ block content
               </Page>
             </View>
           </App>
+
+<script>
+  import {f7, App, View, Page, Navbar, BlockTitle, Block, Chip, Icon} from 'framework7-svelte';
+</script>

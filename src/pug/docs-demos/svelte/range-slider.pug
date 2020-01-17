@@ -19,8 +19,8 @@ block content
       componentDidMount() {
         setTimeout(() => {
           this.$$('.range-slider').each((index, el) => {
-            this.$f7.range.get(el).calcSize();
-            this.$f7.range.get(el).layout();
+            f7.range.get(el).calcSize();
+            f7.range.get(el).layout();
           })
         }, 0);
       }
@@ -211,3 +211,7 @@ block content
               </Page>
             </View>
           </App>
+
+<script>
+  import {f7, App, View, Page, Navbar, BlockTitle, List, ListItem, ListItemCell, Icon, Range, Block} from 'framework7-svelte';
+</script>

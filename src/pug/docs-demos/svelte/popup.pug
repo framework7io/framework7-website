@@ -14,7 +14,7 @@ block content
         const self = this;
         // Create popup
         if (!self.popup) {
-          self.popup = self.$f7.popup.create({
+          self.popup = f7.popup.create({
             content: `
               <div class="popup">
                 <div class="page">
@@ -125,3 +125,7 @@ block content
               </Page>
             </View>
           </App>
+
+<script>
+  import {f7, App, View, Page, Navbar, Block, Button, Popup, NavRight, Link, BlockTitle} from 'framework7-svelte';
+</script>
