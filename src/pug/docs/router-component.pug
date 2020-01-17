@@ -787,6 +787,10 @@ block content
 
     h2 Main App Component
     p Since Framework7 version 5.3.0 it is possible to make whole app layout as a component.
+
+    .important-note
+      p Note that due to VDOM implementation it is highly recommended to add unique `id` or `key` attribute to every auto initialized View (View with `view-init` class):
+
     p To enable it, first, we should keep app root element empty in `index.html`:
     ```html
       <body>
@@ -801,12 +805,13 @@ block content
         <div id="app">
           {{#if loggedIn}}
             <div class="panel panel-left panel-reveal panel-init">
-              <div class="view view-init" data-url="/panel/"></div>
+              <!-- every View has unique ID attribute -->
+              <div class="view view-init" id="view-panel" data-url="/panel/"></div>
             </div>
-            <div class="view view-main view-init" data-url="/"></div>
+            <div class="view view-main view-init" id="view-main" data-url="/"></div>
           {{else}}
             <div class="login-screen modal-in">
-              <div class="view view-init" data-url="/auth/"></div>
+              <div class="view view-init" id="view-auth" data-url="/auth/"></div>
             </div>
           {{/if}}
         </div>
