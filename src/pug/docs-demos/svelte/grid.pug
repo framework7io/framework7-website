@@ -133,9 +133,9 @@
                 <BlockTitle>Resizable Cols</BlockTitle>
                 <Block class="grid-resizable-demo">
                   <Row>
-                    <Col resizable style={{minWidth: '20px'}}>1</Col>
-                    <Col resizable style={{minWidth: '20px'}}>2</Col>
-                    <Col resizable style={{minWidth: '20px'}}>3</Col>
+                    <Col resizable style="min-width: 20px">1</Col>
+                    <Col resizable style="min-width: 20px">2</Col>
+                    <Col resizable style="min-width: 20px">3</Col>
                   </Row>
                 </Block>
 
@@ -143,30 +143,25 @@
                 <BlockHeader>2nd column has fixed size</BlockHeader>
                 <Block class="grid-resizable-demo">
                   <Row>
-                    <Col resizable style={{minWidth: '20px'}}>1</Col>
-                    <Col resizable resizableFixed style={{minWidth: '20px'}}>2</Col>
-                    <Col resizable style={{minWidth: '20px'}}>3</Col>
+                    <Col resizable style="min-width: 20px">1</Col>
+                    <Col resizable resizableFixed style="min-width: 20px">2</Col>
+                    <Col resizable style="min-width: 20px">3</Col>
                   </Row>
                 </Block>
 
                 <BlockTitle>Resizable Grid</BlockTitle>
                 <Block class="grid-resizable-demo">
-                  <Row class="align-items-stretch" style={{height: '300px'}}>
-                    <Col resizable class="demo-col-center-content" style={{minWidth: '50px'}}>Left</Col>
-                    <Col resizable class="display-flex flex-direction-column" style={{
-                      padding: '0px',
-                      border: 'none',
-                      minWidth: '50px',
-                      backgroundColor: 'transparent',
-                    }}>
-                      <Row resizable style={{height: '50%', minHeight: '50px'}}>
-                        <Col class="demo-col-center-content" style={{height: '100%'}}>Center Top</Col>
+                  <Row class="align-items-stretch" style="height: 300px">
+                    <Col resizable class="demo-col-center-content" style="min-width: 50px">Left</Col>
+                    <Col resizable class="display-flex flex-direction-column" style="padding: 0px; border: none; min-width: 50px; background-color: transparent">
+                      <Row resizable style="height: 50%; min-height: 50px">
+                        <Col class="demo-col-center-content" style="height: 100%">Center Top</Col>
                       </Row>
-                      <Row resizable style={{height: '50%', minHeight: '50px'}}>
-                        <Col class="demo-col-center-content" style={{height: '100%'}}>Center Bottom</Col>
+                      <Row resizable style="height: 50%; min-height: 50px">
+                        <Col class="demo-col-center-content" style="height: 100%">Center Bottom</Col>
                       </Row>
                     </Col>
-                    <Col resizable class="demo-col-center-content" style={{minWidth: '50px'}}>Right</Col>
+                    <Col resizable class="demo-col-center-content" style="min-width: 50px">Right</Col>
                   </Row>
                 </Block>
               </Page>

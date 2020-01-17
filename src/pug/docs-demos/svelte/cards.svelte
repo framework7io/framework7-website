@@ -37,7 +37,7 @@
         <CardHeader
           class="no-border"
           valign="bottom"
-          style={{ backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-1000x600-3.jpg)' }}
+          style="background-image: url(https://cdn.framework7.io/placeholder/nature-1000x600-3.jpg)"
         >Journey To Mountains</CardHeader>
         <CardContent>
           <p class="date">Posted on January 21, 2015</p>
@@ -52,7 +52,7 @@
         <CardHeader
           class="no-border"
           valign="bottom"
-          style={{ backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-1000x600-6.jpg)' }}
+          style="background-image: url(https://cdn.framework7.io/placeholder/people-1000x600-6.jpg)"
         >Journey To Mountains</CardHeader>
         <CardContent>
           <p class="date">Posted on January 21, 2015</p>
@@ -141,13 +141,13 @@
       <BlockTitle>Expandable Cards</BlockTitle>
       <Card expandable>
         <CardContent padding={false}>
-          <div class="bg-color-red" style={{height: '300px'}}>
+          <div class="bg-color-red" style="height: 300px">
             <CardHeader textColor="white" class="display-block">
               Framework7
               <br />
-              <small style={{opacity: 0.7}}>Build Mobile Apps</small>
+              <small style="opacity: 0.7">Build Mobile Apps</small>
             </CardHeader>
-            <Link cardClose color="white" class="card-opened-fade-in" style={{position: 'absolute', right: '15px', top: '15px'}} iconF7="multiply_circle_fill" />
+            <Link cardClose color="white" class="card-opened-fade-in" style="position: absolute; right: 15px; top: 15px" iconF7="multiply_circle_fill" />
           </div>
           <div class="card-content-padding">
             <p>Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).</p>
@@ -160,13 +160,13 @@
 
       <Card expandable>
         <CardContent padding={false}>
-          <div class="bg-color-yellow" style={{height: '300px'}}>
+          <div class="bg-color-yellow" style="height: 300px">
             <CardHeader textColor="black" class="display-block">
               Framework7
               <br/>
-              <small style={{opacity: 0.7}}>Build Mobile Apps</small>
+              <small style="opacity: 0.7">Build Mobile Apps</small>
             </CardHeader>
-            <Link cardClose color="black" class="card-opened-fade-in" style={{position: 'absolute', right: '15px', top: '15px'}} iconF7="multiply_circle_fill" />
+            <Link cardClose color="black" class="card-opened-fade-in" style="position: absolute; right: 15px; top: 15px" iconF7="multiply_circle_fill" />
           </div>
           <div class="card-content-padding">
             <p>Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).</p>
