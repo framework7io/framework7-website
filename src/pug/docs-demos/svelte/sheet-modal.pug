@@ -87,10 +87,10 @@ block content
                 </Block>
 
                 {this.state.renderSheet && (
-                  <Sheet className="demo-sheet" opened={this.state.sheetOpened} onSheetClosed={() => {this.setState({sheetOpened: false})}}>
+                  <Sheet class="demo-sheet" opened={this.state.sheetOpened} onSheetClosed={() => {this.setState({sheetOpened: false})}}>
                     <Toolbar>
-                      <div className="left"></div>
-                      <div className="right">
+                      <div class="left"></div>
+                      <div class="right">
                         <Link sheetClose>Close</Link>
                       </div>
                     </Toolbar>
@@ -109,7 +109,7 @@ block content
 
                 {this.state.renderSheet && (
                   <Sheet
-                    className="demo-sheet-swipe-to-close"
+                    class="demo-sheet-swipe-to-close"
                     style={{height: 'auto', '--f7-sheet-bg-color': '#fff'}}
                     swipeToClose
                     backdrop
@@ -126,42 +126,42 @@ block content
 
                 {this.state.renderSheet && (
                   <Sheet
-                    className="demo-sheet-swipe-to-step"
+                    class="demo-sheet-swipe-to-step"
                     style={{height: 'auto', '--f7-sheet-bg-color': '#fff'}}
                     swipeToClose
                     swipeToStep
                     backdrop
                   >
-                    <div className="sheet-modal-swipe-step">
-                      <div className="display-flex padding justify-content-space-between align-items-center">
+                    <div class="sheet-modal-swipe-step">
+                      <div class="display-flex padding justify-content-space-between align-items-center">
                         <div style={{fontSize: '18px'}}><b>Total:</b></div>
                         <div style={{fontSize: '22px'}}><b>$500</b></div>
                       </div>
-                      <div className="padding-horizontal padding-bottom">
+                      <div class="padding-horizontal padding-bottom">
                         <Button large fill>Make Payment</Button>
-                        <div className="margin-top text-align-center">Swipe up for more details</div>
+                        <div class="margin-top text-align-center">Swipe up for more details</div>
                       </div>
                     </div>
-                    <BlockTitle medium className="margin-top">Your order:</BlockTitle>
+                    <BlockTitle medium class="margin-top">Your order:</BlockTitle>
                     <List noHairlines>
                       <ListItem title="Item 1">
-                        <b slot="after" className="text-color-black">$200</b>
+                        <b slot="after" class="text-color-black">$200</b>
                       </ListItem>
                       <ListItem title="Item 2">
-                        <b slot="after" className="text-color-black">$180</b>
+                        <b slot="after" class="text-color-black">$180</b>
                       </ListItem>
                       <ListItem title="Delivery">
-                        <b slot="after" className="text-color-black">$120</b>
+                        <b slot="after" class="text-color-black">$120</b>
                       </ListItem>
                     </List>
                   </Sheet>
                 )}
 
                 {this.state.renderSheet && (
-                  <Sheet className="demo-sheet-push" push>
+                  <Sheet class="demo-sheet-push" push>
                     <Toolbar>
-                      <div className="left"></div>
-                      <div className="right">
+                      <div class="left"></div>
+                      <div class="right">
                         <Link sheetClose>Close</Link>
                       </div>
                     </Toolbar>
@@ -179,6 +179,3 @@ block content
               </Page>
             </View>
           </App>
-        )
-      }
-    }

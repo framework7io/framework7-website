@@ -1,15 +1,4 @@
-extends _layout
 
-block content
-  script(type="text/babel").
-    class AppComponent extends React.Component {
-      constructor() {
-        super();
-
-        this.state = {
-
-        };
-      }
       more() {
         const self = this;
         self.actions.open();
@@ -273,6 +262,3 @@ block content
               </Page>
             </View>
           </App>
-        )
-      }
-    }

@@ -34,10 +34,10 @@ block content
                 <BlockTitle>Volume</BlockTitle>
                 <List simpleList>
                   <ListItem>
-                    <ListItemCell className="width-auto flex-shrink-0">
+                    <ListItemCell class="width-auto flex-shrink-0">
                       <Icon ios="f7:speaker_fill" aurora="f7:speaker_fill" md="material:volume_mute"></Icon>
                     </ListItemCell>
-                    <ListItemCell className="flex-shrink-3">
+                    <ListItemCell class="flex-shrink-3">
                       <Range
                         min={0}
                         max={100}
@@ -45,7 +45,7 @@ block content
                         value={10}
                       ></Range>
                     </ListItemCell>
-                    <ListItemCell className="width-auto flex-shrink-0">
+                    <ListItemCell class="width-auto flex-shrink-0">
                       <Icon ios="f7:speaker_3_fill" aurora="f7:speaker_3_fill" md="material:volume_up"></Icon>
                     </ListItemCell>
                   </ListItem>
@@ -54,10 +54,10 @@ block content
                 <BlockTitle>Brightness</BlockTitle>
                 <List simpleList>
                   <ListItem>
-                    <ListItemCell className="width-auto flex-shrink-0">
+                    <ListItemCell class="width-auto flex-shrink-0">
                       <Icon ios="f7:sun_min" aurora="f7:sun_min" md="material:brightness_low"></Icon>
                     </ListItemCell>
-                    <ListItemCell className="flex-shrink-3">
+                    <ListItemCell class="flex-shrink-3">
                       <Range
                         min={0}
                         max={100}
@@ -67,19 +67,19 @@ block content
                         color="orange"
                       ></Range>
                     </ListItemCell>
-                    <ListItemCell className="width-auto flex-shrink-0">
+                    <ListItemCell class="width-auto flex-shrink-0">
                       <Icon ios="f7:sun_max" aurora="f7:sun_max" md="material:brightness_high"></Icon>
                     </ListItemCell>
                   </ListItem>
                 </List>
 
-                <BlockTitle className="display-flex justify-content-space-between">Price Filter <span>${this.state.priceMin} - ${this.state.priceMax}</span></BlockTitle>
+                <BlockTitle class="display-flex justify-content-space-between">Price Filter <span>${this.state.priceMin} - ${this.state.priceMax}</span></BlockTitle>
                 <List simpleList>
                   <ListItem>
-                    <ListItemCell className="width-auto flex-shrink-0">
+                    <ListItemCell class="width-auto flex-shrink-0">
                       <Icon ios="f7:money_dollar_round" aurora="f7:money_dollar_round" md="material:attach_money"></Icon>
                     </ListItemCell>
-                    <ListItemCell className="flex-shrink-3">
+                    <ListItemCell class="flex-shrink-3">
                       <Range
                         min={0}
                         max={500}
@@ -91,7 +91,7 @@ block content
                         onRangeChange={this.onPriceChange.bind(this)}
                       ></Range>
                     </ListItemCell>
-                    <ListItemCell className="width-auto flex-shrink-0">
+                    <ListItemCell class="width-auto flex-shrink-0">
                       <Icon ios="f7:money_dollar_round_fill" aurora="f7:money_dollar_round_fill" md="material:monetization_on"></Icon>
                     </ListItemCell>
                   </ListItem>
@@ -112,9 +112,9 @@ block content
                 </Block>
 
                 <BlockTitle>Vertical</BlockTitle>
-                <Block strong className="display-flex justify-content-center">
+                <Block strong class="display-flex justify-content-center">
                   <Range
-                    className="margin-right"
+                    class="margin-right"
                     style={{height: '160px'}}
                     vertical={true}
                     min={0}
@@ -124,7 +124,7 @@ block content
                     value={25}
                   />
                   <Range
-                    className="margin-horizontal"
+                    class="margin-horizontal"
                     style={{height: '160px'}}
                     vertical={true}
                     min={0}
@@ -134,7 +134,7 @@ block content
                     value={50}
                   />
                   <Range
-                    className="margin-horizontal"
+                    class="margin-horizontal"
                     style={{height: '160px'}}
                     vertical={true}
                     min={0}
@@ -144,7 +144,7 @@ block content
                     value={75}
                   />
                   <Range
-                    className="margin-left"
+                    class="margin-left"
                     style={{height: '160px'}}
                     dual={true}
                     vertical={true}
@@ -157,9 +157,9 @@ block content
                 </Block>
 
                 <BlockTitle>Vertical Reversed</BlockTitle>
-                <Block strong className="display-flex justify-content-center">
+                <Block strong class="display-flex justify-content-center">
                   <Range
-                    className="margin-right"
+                    class="margin-right"
                     color="red"
                     style={{height: '160px'}}
                     vertical={true}
@@ -171,7 +171,7 @@ block content
                     value={25}
                   />
                   <Range
-                    className="margin-horizontal"
+                    class="margin-horizontal"
                     color="red"
                     style={{height: '160px'}}
                     vertical={true}
@@ -183,7 +183,7 @@ block content
                     value={50}
                   />
                   <Range
-                    className="margin-horizontal"
+                    class="margin-horizontal"
                     color="red"
                     style={{height: '160px'}}
                     vertical={true}
@@ -195,7 +195,7 @@ block content
                     value={75}
                   />
                   <Range
-                    className="margin-left"
+                    class="margin-left"
                     color="red"
                     style={{height: '160px'}}
                     dual={true}
@@ -211,6 +211,3 @@ block content
               </Page>
             </View>
           </App>
-        )
-      }
-    }

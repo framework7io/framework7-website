@@ -1,20 +1,7 @@
-extends _layout
 
-block content
-  script(type="text/babel").
-    class AppComponent extends React.Component {
-      constructor() {
-        super();
-
-        this.state = {
-
-        };
-      }
-      render() {
-        return (
           <App>
             <View main>
-              <Page className="grid-demo">
+              <Page class="grid-demo">
                 <Navbar title="Grid / Layout"></Navbar>
                 <Block>
                   <p>Columns within a row are automatically set to have equal width. Otherwise you can define your column with pourcentage of screen you want.</p>
@@ -144,7 +131,7 @@ block content
                 </Block>
 
                 <BlockTitle>Resizable Cols</BlockTitle>
-                <Block className="grid-resizable-demo">
+                <Block class="grid-resizable-demo">
                   <Row>
                     <Col resizable style={{minWidth: '20px'}}>1</Col>
                     <Col resizable style={{minWidth: '20px'}}>2</Col>
@@ -154,7 +141,7 @@ block content
 
                 <BlockTitle>Resizable Fixed Col</BlockTitle>
                 <BlockHeader>2nd column has fixed size</BlockHeader>
-                <Block className="grid-resizable-demo">
+                <Block class="grid-resizable-demo">
                   <Row>
                     <Col resizable style={{minWidth: '20px'}}>1</Col>
                     <Col resizable resizableFixed style={{minWidth: '20px'}}>2</Col>
@@ -163,31 +150,28 @@ block content
                 </Block>
 
                 <BlockTitle>Resizable Grid</BlockTitle>
-                <Block className="grid-resizable-demo">
-                  <Row className="align-items-stretch" style={{height: '300px'}}>
-                    <Col resizable className="demo-col-center-content" style={{minWidth: '50px'}}>Left</Col>
-                    <Col resizable className="display-flex flex-direction-column" style={{
+                <Block class="grid-resizable-demo">
+                  <Row class="align-items-stretch" style={{height: '300px'}}>
+                    <Col resizable class="demo-col-center-content" style={{minWidth: '50px'}}>Left</Col>
+                    <Col resizable class="display-flex flex-direction-column" style={{
                       padding: '0px',
                       border: 'none',
                       minWidth: '50px',
                       backgroundColor: 'transparent',
                     }}>
                       <Row resizable style={{height: '50%', minHeight: '50px'}}>
-                        <Col className="demo-col-center-content" style={{height: '100%'}}>Center Top</Col>
+                        <Col class="demo-col-center-content" style={{height: '100%'}}>Center Top</Col>
                       </Row>
                       <Row resizable style={{height: '50%', minHeight: '50px'}}>
-                        <Col className="demo-col-center-content" style={{height: '100%'}}>Center Bottom</Col>
+                        <Col class="demo-col-center-content" style={{height: '100%'}}>Center Bottom</Col>
                       </Row>
                     </Col>
-                    <Col resizable className="demo-col-center-content" style={{minWidth: '50px'}}>Right</Col>
+                    <Col resizable class="demo-col-center-content" style={{minWidth: '50px'}}>Right</Col>
                   </Row>
                 </Block>
               </Page>
             </View>
           </App>
-        )
-      }
-    }
   style.
     .grid-demo div[class*="col"] {
       background: #fff;

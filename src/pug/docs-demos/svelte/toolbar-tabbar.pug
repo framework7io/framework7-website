@@ -58,7 +58,7 @@ block content
             </Toolbar>
 
             <Tabs>
-              <Tab id="tab-1" className="page-content" tabActive>
+              <Tab id="tab-1" class="page-content" tabActive>
                 <Block>
                   <p>Tab 1 content</p>
                   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
@@ -70,7 +70,7 @@ block content
                   <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
                 </Block>
               </Tab>
-              <Tab id="tab-2" className="page-content">
+              <Tab id="tab-2" class="page-content">
                 <Block>
                   <p>Tab 2 content</p>
                   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
@@ -82,7 +82,7 @@ block content
                   <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
                 </Block>
               </Tab>
-              <Tab id="tab-3" className="page-content">
+              <Tab id="tab-3" class="page-content">
                 <Block>
                   <p>Tab 3 content</p>
                   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
@@ -122,7 +122,7 @@ block content
             </Toolbar>
 
             <Tabs>
-              <Tab id="tab-1" className="page-content" tabActive>
+              <Tab id="tab-1" class="page-content" tabActive>
                 <Block>
                   <p>Tab 1 content</p>
                   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
@@ -134,7 +134,7 @@ block content
                   <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
                 </Block>
               </Tab>
-              <Tab id="tab-2" className="page-content">
+              <Tab id="tab-2" class="page-content">
                 <Block>
                   <p>Tab 2 content</p>
                   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
@@ -146,7 +146,7 @@ block content
                   <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
                 </Block>
               </Tab>
-              <Tab id="tab-3" className="page-content">
+              <Tab id="tab-3" class="page-content">
                 <Block>
                   <p>Tab 3 content</p>
                   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
@@ -195,7 +195,7 @@ block content
                 <Tab
                   key={tab}
                   id={`tab-${tab}`}
-                  className="page-content"
+                  class="page-content"
                   tabActive={index === 0}
                 >
                   <Block>
@@ -263,16 +263,7 @@ block content
       },
     ];
 
-    class AppComponent extends React.Component {
-      constructor() {
-        super();
 
-        this.state = {
-
-        };
-      }
-      render() {
-        return (
           <App routes={routes}>
             <View main>
               <Page>
@@ -287,6 +278,3 @@ block content
               </Page>
             </View>
           </App>
-        )
-      }
-    }

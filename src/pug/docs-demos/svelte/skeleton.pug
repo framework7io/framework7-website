@@ -30,7 +30,7 @@ block content
                 <Navbar title="Menu" />
 
                 <BlockTitle>Skeleton List</BlockTitle>
-                <List mediaList className="skeleton-text">
+                <List mediaList class="skeleton-text">
                   <ListItem
                     title="Title"
                     subtitle="Subtitle"
@@ -49,7 +49,7 @@ block content
 
                 <BlockTitle>Skeleton Card</BlockTitle>
                 <Card
-                  className="skeleton-text"
+                  class="skeleton-text"
                   title="Card Header"
                   content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit."
                   footer="Card Footer"
@@ -58,9 +58,9 @@ block content
                 <BlockTitle>Loading Effects</BlockTitle>
                 <Block strong>
                   <Row tag="p">
-                    <Button fill small round className="col" onClick={() => this.load('fade')}>Fade</Button>
-                    <Button fill small round className="col" onClick={() => this.load('blink')}>Blink</Button>
-                    <Button fill small round className="col" onClick={() => this.load('pulse')}>Pulse</Button>
+                    <Button fill small round class="col" onClick={() => this.load('fade')}>Fade</Button>
+                    <Button fill small round class="col" onClick={() => this.load('blink')}>Blink</Button>
+                    <Button fill small round class="col" onClick={() => this.load('pulse')}>Pulse</Button>
                   </Row>
                 </Block>
                 {this.state.loading
@@ -69,7 +69,7 @@ block content
                       {[1,2,3].map(n => (
                         <ListItem
                           key={n}
-                          className={`skeleton-text skeleton-effect-${this.state.effect}`}
+                          class={`skeleton-text skeleton-effect-${this.state.effect}`}
                           title="Full Name"
                           subtitle="Position"
                           text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."
@@ -108,6 +108,3 @@ block content
               </Page>
             </View>
           </App>
-        )
-      }
-    }

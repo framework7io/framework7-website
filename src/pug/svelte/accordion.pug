@@ -73,8 +73,7 @@ block content
       h2(data-device-preview="../docs-demos/svelte/accordion.html") Examples
       :code(lang="svelte")
         <Page>
-          <Navbar title="Accordion" backLink="Back" />
-
+          <Navbar title="Accordion" />
           <BlockTitle>List View Accordion</BlockTitle>
           <List accordionList>
             <ListItem accordionItem title="Lorem Ipsum">
@@ -139,7 +138,6 @@ block content
             </ListItem>
           </List>
 
-
           <BlockTitle>Opposite Side</BlockTitle>
           <List accordionList accordionOpposite>
             <ListItem accordionItem title="Lorem Ipsum">
@@ -174,24 +172,11 @@ block content
 
           <BlockTitle>Custom Collapsible</BlockTitle>
           <Block inner accordionList>
-            {#each [0,1,2] as n}
-              <AccordionItem>
-                <AccordionToggle><b>Item {n + 1}</b></AccordionToggle>
-                <AccordionContent>Content {n + 1}</AccordionContent>
-              </AccordionItem>
+            {#each [1,2,3] as n}
+            <AccordionItem >
+              <AccordionToggle><b>Item {n}</b></AccordionToggle>
+              <AccordionContent>Content {n}</AccordionContent>
+            </AccordionItem>
             {/each}
           </Block>
         </Page>
-        <script>
-          import {
-            Page,
-            Navbar,
-            BlockTitle,
-            Block,
-            List,
-            ListItem,
-            AccordionContent,
-            AccordionItem,
-            AccordionToggle
-          } from 'framework7-svelte';
-        </script>

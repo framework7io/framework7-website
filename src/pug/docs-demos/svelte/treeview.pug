@@ -58,7 +58,7 @@ block content
                 <Navbar title="Treeview"/>
 
                 <BlockTitle>Basic tree view</BlockTitle>
-                <Block strong className="no-padding-horizontal">
+                <Block strong class="no-padding-horizontal">
                   <Treeview>
                     <TreeviewItem label="Item 1">
                       <TreeviewItem label="Sub Item 1">
@@ -85,11 +85,11 @@ block content
                 </Block>
 
                 <BlockTitle>With icons</BlockTitle>
-                <Block strong className="no-padding-horizontal">
+                <Block strong class="no-padding-horizontal">
                   <Treeview>
                     <TreeviewItem label="images" iconF7="folder_fill">
-                      <TreeviewItem label="avatar.png" iconF7="images_fill" />
-                      <TreeviewItem label="background.jpg" iconF7="images_fill" />
+                      <TreeviewItem label="avatar.png" iconF7="photo_fill" />
+                      <TreeviewItem label="background.jpg" iconF7="photo_fill" />
                     </TreeviewItem>
                     <TreeviewItem label="documents" iconF7="folder_fill">
                       <TreeviewItem label="cv.docx" iconF7="document_text_fill" />
@@ -101,7 +101,7 @@ block content
                 </Block>
 
                 <BlockTitle>With checkboxes</BlockTitle>
-                <Block strong className="no-padding-horizontal">
+                <Block strong class="no-padding-horizontal">
                   <Treeview>
                     <TreeviewItem label="images" iconF7="folder_fill">
                       <Checkbox slot="content-start"
@@ -112,7 +112,7 @@ block content
                           this.setState({...this.state});
                         }}
                       />
-                      <TreeviewItem label="avatar.png" iconF7="images_fill">
+                      <TreeviewItem label="avatar.png" iconF7="photo_fill">
                         <Checkbox slot="content-start"
                           checked={this.state.checkboxes.images['avatar.png']}
                           onChange={(e) => {
@@ -121,7 +121,7 @@ block content
                           }}
                         />
                       </TreeviewItem>
-                      <TreeviewItem label="background.jpg" iconF7="images_fill">
+                      <TreeviewItem label="background.jpg" iconF7="photo_fill">
                         <Checkbox slot="content-start"
                           checked={this.state.checkboxes.images['background.jpg']}
                           onChange={(e) => {
@@ -175,11 +175,11 @@ block content
                 </Block>
 
                 <BlockTitle>Whole item as toggle</BlockTitle>
-                <Block strong className="no-padding-horizontal">
+                <Block strong class="no-padding-horizontal">
                   <Treeview>
                     <TreeviewItem itemToggle label="images" iconF7="folder_fill">
-                      <TreeviewItem label="avatar.png" iconF7="images_fill" />
-                      <TreeviewItem label="background.jpg" iconF7="images_fill" />
+                      <TreeviewItem label="avatar.png" iconF7="photo_fill" />
+                      <TreeviewItem label="background.jpg" iconF7="photo_fill" />
                     </TreeviewItem>
                     <TreeviewItem itemToggle label="documents" iconF7="folder_fill">
                       <TreeviewItem label="cv.docx" iconF7="document_text_fill" />
@@ -191,7 +191,7 @@ block content
                 </Block>
 
                 <BlockTitle>Selectable</BlockTitle>
-                <Block strong className="no-padding-horizontal">
+                <Block strong class="no-padding-horizontal">
                   <Treeview>
                     <TreeviewItem
                       selectable
@@ -204,14 +204,14 @@ block content
                         selectable
                         selected={this.state.selectedItem === 'avatar.png'}
                         label="avatar.png"
-                        iconF7="images_fill"
+                        iconF7="photo_fill"
                         onClick={(e) => this.toggleSelectable(e, 'avatar.png')}
                       />
                       <TreeviewItem
                         selectable
                         selected={this.state.selectedItem === 'background.jpg'}
                         label="background.jpg"
-                        iconF7="images_fill"
+                        iconF7="photo_fill"
                         onClick={(e) => this.toggleSelectable(e, 'background.jpg')}
                       />
                     </TreeviewItem>
@@ -255,7 +255,7 @@ block content
                 </Block>
 
                 <BlockTitle>Preload children</BlockTitle>
-                <Block strong className="no-padding-horizontal">
+                <Block strong class="no-padding-horizontal">
                   <Treeview>
                     <TreeviewItem
                       toggle
@@ -276,7 +276,7 @@ block content
                 </Block>
 
                 <BlockTitle>With links</BlockTitle>
-                <Block strong className="no-padding-horizontal">
+                <Block strong class="no-padding-horizontal">
                   <Treeview>
                     <TreeviewItem iconF7="data_fill" itemToggle label="Modals">
                       <TreeviewItem link="/popup/" iconF7="link" label="Popup" />
@@ -292,6 +292,3 @@ block content
               </Page>
             </View>
           </App>
-        )
-      }
-    }

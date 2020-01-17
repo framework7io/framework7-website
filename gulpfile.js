@@ -7,13 +7,16 @@ const buildStyles = require('./build/build-styles');
 const buildPages = require('./build/build-pages');
 const buildScript = require('./build/build-script');
 
+const buildSvelteDemos = require('./build/build-svelte-demos');
+
 /* ==================================================================
 Build Styles
 ================================================================== */
 gulp.task('less', buildStyles);
 gulp.task('pug', buildPages);
 gulp.task('js', buildScript);
-gulp.task('build', gulp.series(['pug', 'less', 'js']));
+gulp.task('svelte', buildSvelteDemos.all);
+gulp.task('build', gulp.series(['pug', 'less', 'js', 'svelte']));
 
 /* =================================
 Watch
@@ -23,6 +26,7 @@ gulp.task('watch', () => {
   gulp.watch('./src/less/**/*.*', gulp.series(['less']));
   gulp.watch('./src/pug/**/*.pug', { events: ['change'] }).on('change', (changedPath) => {
     const filePath = changedPath.split('src/pug/')[1];
+    if (filePath.indexOf('docs-demos/svelte') >= 0) return;
     if (filePath.indexOf('_') === 0 || filePath.indexOf('_layout.pug') >= 0) {
       buildPages();
       return;
@@ -42,6 +46,10 @@ gulp.task('watch', () => {
       src,
       dest,
     });
+  });
+  gulp.watch('./src/pug/**/*.svelte', { events: ['change'] }).on('change', (changedPath) => {
+    const name = changedPath.split('src/pug/docs-demos/svelte/')[1].split('.svelte')[0];
+    buildSvelteDemos.one(name);
   });
 });
 

@@ -1,23 +1,10 @@
-extends _layout
 
-block content
-  script(type="text/babel").
-    class AppComponent extends React.Component {
-      constructor() {
-        super();
-
-        this.state = {
-
-        };
-      }
-      render() {
-        return (
           <App>
             <View main>
               <Page>
                 <Navbar title="Floating Action Button" />
 
-                <Toolbar bottom className="fab-morph-target">
+                <Toolbar bottom class="fab-morph-target">
                   <Link>Link 1</Link>
                   <Link>Link 2</Link>
                   <Link>Link 3</Link>
@@ -91,6 +78,3 @@ block content
               </Page>
             </View>
           </App>
-        )
-      }
-    }

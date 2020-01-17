@@ -1,4 +1,3 @@
-block vars
 doctype
 html
   head
@@ -12,31 +11,5 @@ html
     link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
   body
     #app
-    script(src="https://unpkg.com/svelte@3.16.7/compiler.js")
-    //- script(src="../../packages/svelte/framework7-react.bundle.min.js")
-    script(src="../../packages/core/js/framework7.bundle.min.js")
-    block content
-    script.
-      var theme = 'ios';
-      if (location.href.indexOf('theme=md') >= 0) theme = 'md';
-      if (location.href.indexOf('theme=aurora') >= 0) theme = 'aurora';
-
-      //- if (Framework7.use) Framework7.use(Framework7Svelte, { theme: theme });
-      //- else if (Framework7.Class && Framework7.Class.use) Framework7.Class.use(Framework7Svelte, { theme: theme });
-
-      var plugin = {
-        params: {
-          theme: theme,
-        }
-      };
-
-      if (Framework7.use) Framework7.use(plugin);
-      else if (Framework7.Class && Framework7.Class.use) Framework7.Class.use(plugin);
-
-      window.onload = function () {
-        if (typeof AppComponent !== 'undefined') {
-          const app = new AppComponent({
-            target: document.getElementById('app'),
-          });
-        }
-      }
+    script(src="../../packages/core/js/framework7-lite.bundle.min.js")
+    script(src=F7_SVELTE_DEMO+'.js')

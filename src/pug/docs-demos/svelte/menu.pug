@@ -1,17 +1,4 @@
-extends _layout
 
-block content
-  script(type="text/babel").
-    class AppComponent extends React.Component {
-      constructor() {
-        super();
-
-        this.state = {
-
-        };
-      }
-      render() {
-        return (
           <App>
             <View main>
               <Page>
@@ -72,11 +59,11 @@ block content
                     <MenuDropdown right>
                       <MenuDropdownItem href="#">
                         <span>Share on Facebook</span>
-                        <Icon className="margin-left" f7="logo_facebook" />
+                        <Icon class="margin-left" f7="logo_facebook" />
                       </MenuDropdownItem>
                       <MenuDropdownItem href="#">
                         <span>Share on Twitter</span>
-                        <Icon className="margin-left" f7="logo_twitter" />
+                        <Icon class="margin-left" f7="logo_twitter" />
                       </MenuDropdownItem>
                     </MenuDropdown>
                   </MenuItem>
@@ -86,6 +73,3 @@ block content
               </Page>
             </View>
           </App>
-        )
-      }
-    }

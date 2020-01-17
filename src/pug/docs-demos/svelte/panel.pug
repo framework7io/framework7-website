@@ -8,16 +8,7 @@ block content
       max-width: 90vw;
     }
   script(type="text/babel").
-    class AppComponent extends React.Component {
-      constructor() {
-        super();
 
-        this.state = {
-
-        };
-      }
-      render() {
-        return (
           <App>
             <Panel resizable left reveal>
               <View>
@@ -37,7 +28,7 @@ block content
               <Page>
                 <Navbar title="Panel"></Navbar>
 
-                <Block className="row">
+                <Block class="row">
                   <Col>
                     <Button raised panelOpen="left">Open left panel</Button>
                   </Col>
@@ -48,6 +39,3 @@ block content
               </Page>
             </View>
           </App>
-        )
-      }
-    }

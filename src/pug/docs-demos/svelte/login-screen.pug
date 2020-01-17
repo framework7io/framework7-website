@@ -1,10 +1,3 @@
-extends _layout
-
-block content
-  script(type="text/babel").
-    class LoginScreenPage extends React.Component {
-      constructor() {
-        super();
 
         this.state = {
           username: '',
@@ -97,7 +90,7 @@ block content
                   <Button raised large fill onClick={() => {this.setState({loginScreenOpened : true})}}>Open Via Prop Change</Button>
                 </Block>
 
-                <LoginScreen className="demo-login-screen" opened={this.state.loginScreenOpened} onLoginScreenClosed={() => {this.setState({loginScreenOpened : false})}}>
+                <LoginScreen class="demo-login-screen" opened={this.state.loginScreenOpened} onLoginScreenClosed={() => {this.setState({loginScreenOpened : false})}}>
                   <Page loginScreen>
                     <LoginScreenTitle>Framework7</LoginScreenTitle>
                     <List form>
@@ -129,6 +122,3 @@ block content
               </Page>
             </View>
           </App>
-        )
-      }
-    }
