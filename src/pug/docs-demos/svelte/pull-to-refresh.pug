@@ -49,7 +49,7 @@ block content
         return (
           <App>
             <View main>
-              <Page ptr onPtrRefresh={this.loadMore.bind(this)}>
+              <Page ptr onPtrRefresh={loadMore}>
                 <Navbar title="Pull To Refresh"></Navbar>
                 <List mediaList>
                   {this.state.items.map((item, index) => (

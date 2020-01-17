@@ -268,10 +268,10 @@ block content
                 <BlockTitle>Custom value element</BlockTitle>
                 <List>
                   <ListItem title={`Apples ${this.state.applesCount}`}>
-                    <Stepper buttonsOnly={true} small raised slot="after" onStepperChange={this.setApples.bind(this)}></Stepper>
+                    <Stepper buttonsOnly={true} small raised slot="after" onStepperChange={setApples}></Stepper>
                   </ListItem>
                   <ListItem title={`Oranges ${this.state.orangesCount}`}>
-                    <Stepper buttonsOnly={true} small raised slot="after" onStepperChange={this.setOranges.bind(this)}></Stepper>
+                    <Stepper buttonsOnly={true} small raised slot="after" onStepperChange={setOranges}></Stepper>
                   </ListItem>
                 </List>
 
@@ -286,7 +286,7 @@ block content
                       buttonsOnly={true}
                       small
                       slot="after"
-                      onStepperChange={this.setMeetingTime.bind(this)}
+                      onStepperChange={setMeetingTime}
                     ></Stepper>
                   </ListItem>
                 </List>

@@ -127,7 +127,7 @@ block content
                     iconAurora="f7:arrow_up_fill"
                     iconMd="material:send"
                     slot="inner-end"
-                    onClick={this.sendMessage.bind(this)}
+                    onClick={sendMessage}
                   ></Link>
                   <MessagebarAttachments>
                     {this.state.attachments.map((image, index) => (
@@ -144,7 +144,7 @@ block content
                         key={index}
                         image={image}
                         checked={this.state.attachments.indexOf(image) >= 0}
-                        onChange={this.handleAttachment.bind(this)}
+                        onChange={handleAttachment}
                       ></MessagebarSheetImage>
                     ))}
                   </MessagebarSheet>
