@@ -4,7 +4,7 @@ const sveltePrism = require('./svelte-prism');
 
 sveltePrism(Prism);
 
-loadLanguages(['jsx', 'svelte', 'bash', 'css', 'less']);
+loadLanguages(['jsx', 'bash', 'css', 'less']);
 
 function extendLanguage(lang) {
   Prism.languages[lang].function = /[a-z0-9_$]+(?=\()/i;

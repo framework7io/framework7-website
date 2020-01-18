@@ -180,49 +180,49 @@
   </View>
 </App>
 <style>
-  .demo-card-header-pic .card-header {
+  :global(.demo-card-header-pic .card-header) {
     height: 40vw;
     background-size: cover;
     background-position: center;
     color: #fff;
   }
-  .demo-card-header-pic .card-content-padding .date{
+  :global(.demo-card-header-pic .card-content-padding .date){
     color: #8e8e93;
   }
-  .demo-facebook-card .card-header {
+  :global(.demo-facebook-card .card-header) {
     display: block;
     padding: 10px;
   }
-  .demo-facebook-card .demo-facebook-avatar {
+  :global(.demo-facebook-card .demo-facebook-avatar) {
     float: left;
   }
-  .demo-facebook-card .demo-facebook-name {
+  :global(.demo-facebook-card .demo-facebook-name) {
     margin-left: 44px;
     font-size: 14px;
     font-weight: 500;
   }
-  .demo-facebook-card .demo-facebook-date {
+  :global(.demo-facebook-card .demo-facebook-date) {
     margin-left: 44px;
     font-size: 13px;
     color: #8e8e93;
   }
-  .demo-facebook-card .card-footer {
+  :global(.demo-facebook-card .card-footer) {
     background: #fafafa;
   }
-  .theme-dark .demo-facebook-card .card-footer {
+  :global(.theme-dark .demo-facebook-card .card-footer) {
     background-color: transparent;
   }
-  .demo-facebook-card .card-footer a {
+  :global(.demo-facebook-card .card-footer a) {
     color: #81848b;
     font-weight: 500;
   }
-  .demo-facebook-card .card-content img {
+  :global(.demo-facebook-card .card-content img) {
     display: block;
   }
-  .demo-facebook-card .card-content-padding {
+  :global(.demo-facebook-card .card-content-padding) {
     padding: 15px 10px;
   }
-  .demo-facebook-card .card-content-padding .likes {
+  :global(.demo-facebook-card .card-content-padding .likes) {
     color: #8e8e93;
   }
 </style>

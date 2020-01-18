@@ -33,7 +33,7 @@ function buildOne(name, cb) {
       svelte({
         dev: false,
         css: (css) => {
-          css.write(`./public/docs-demos/svelte/${name}.css`);
+          css.write(`./public/docs-demos/svelte/${name}.css`, false);
         },
       }),
       resolve({

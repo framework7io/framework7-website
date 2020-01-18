@@ -118,23 +118,6 @@ block content
           td
           td List button <a href="../docs/tooltip.html">tooltip</a> text to show on button hover/press
         tr
-          th(colspan="4") &lt;ListItem&gt; Form inputs specific properties
-        tr
-          td inlineLabel
-          td boolean
-          td false
-          td Enables inline-styled labels for <a href="inputs.html">Form Inputs</a>. By default inherirt `inlineLabels` prop on parent `<List>`
-        tr
-          td itemInput
-          td boolean
-          td false
-          td Enables additional styling for <a href="inputs.html">Form Inputs</a> inside. By default will try to detect based on content
-        tr
-          td itemInputWithInfo
-          td boolean
-          td false
-          td Enables additional styling for <a href="inputs.html">Form Inputs</a> with additional info. By default will try to detect based on content
-        tr
           th(colspan="4") &lt;ListItem&gt; Swipeout specific properties
         tr
           td swipeout
@@ -324,7 +307,7 @@ block content
       li `after-start` - element will be inserted in the beginning of `<div class="item-after">` element
       li `after` / `after-end` - element will be inserted in the end of `<div class="item-after">` element
     :code(lang="jsx")
-          <List media-list>
+          <List mediaList>
             <ListItem
               link="/home/"
               title="Item Title"

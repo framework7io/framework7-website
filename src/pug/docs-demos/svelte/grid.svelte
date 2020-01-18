@@ -167,7 +167,7 @@
   </View>
 </App>
 <style>
-  .grid-demo div[class*="col"] {
+  :global(.grid-demo div[class*="col"]) {
     background: #fff;
     text-align: center;
     color: #000;
@@ -176,13 +176,13 @@
     margin-bottom: 15px;
     font-size: 12px;
   }
-  .grid-resizable-demo {
+  :global(.grid-resizable-demo) {
     --f7-grid-row-gap: 16px;
   }
-  .grid-resizable-demo div[class*="col"] {
+  :global(.grid-resizable-demo div[class*="col"]) {
     margin-bottom: 0;
   }
-  .grid-resizable-demo .demo-col-center-content {
+  :global(.grid-resizable-demo .demo-col-center-content) {
     display: flex;
     align-items: center;
     justify-content: center;

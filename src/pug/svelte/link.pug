@@ -117,53 +117,53 @@ block content
 
     h2 Examples
     h4 Navigation Link
-    :code(lang="jsx")
+    :code(lang="svelte")
           <Link href="/about/">About</Link>
 
     h4 Back Navigation Link
-    :code(lang="jsx")
+    :code(lang="svelte")
           <Link back>Back</Link>
 
     h4 With Router Parameters
-    :code(lang="jsx")
+    :code(lang="svelte")
           <Link href="/about/" animate={false} ignoreCache={true}>About</Link>
 
     h4 External Link
-    :code(lang="jsx")
+    :code(lang="svelte")
           <Link href="http://google.com" external>Google</Link>
 
     h4 Tab Link
-    :code(lang="jsx")
-          {/* Tabs  */}
+    :code(lang="svelte")
+          <!-- Tabs -->
           <Tabs>
             <Tab id="tab-1" tabActive>Tab 1</Tab>
             <Tab id="tab-1">Tab 2</Tab>
           </Tabs>
-          {/* Switch Between Tabs  */}
+          <!-- Switch Between Tabs -->
           <Link tabLink="#tab-1" tabLinkActive>Show Tab 1</Link>
           <Link tabLink="#tab-2">Show Tab 2</Link>
 
     h4 Routable Tabs
-    :code(lang="jsx")
-          {/* Tabs  */}
+    :code(lang="svelte")
+          <!-- Tabs -->
           <Tabs>
             <Tab id="tab-1"></Tab>
             <Tab id="tab-2"></Tab>
           </Tabs>
-          {/* Switch Between Tabs  */}
+          <!-- Switch Between Tabs -->
           <Link tabLink routeTabId="tab-1" href="/tabs/">Show Tab 1</Link>
           <Link tabLink routeTabId="tab-2" href="/tabs/tab-2/">Show Tab 2</Link>
 
     h4 Open And Close Panel
-    :code(lang="jsx")
+    :code(lang="svelte")
           <Link panelOpen="left">Open Left Panel</Link>
           <Link panelClose>Close Panel</Link>
 
     h4 Open and Close Popup
-    :code(lang="jsx")
+    :code(lang="svelte")
           <Link popupOpen="#my-popup">Open Popup</Link>
           <Link popupClose="#my-popup">Close Popup</Link>
 
     h4 With Icon & Color
-    :code(lang="jsx")
+    :code(lang="svelte")
           <Link iconF7="home" text="Home" color="red"></Link>

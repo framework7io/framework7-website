@@ -149,11 +149,6 @@ block content
             p If `type="colorpicker"` then value must be passed as what <a href="/docs/color-picker.html" target="_blank">Color Picker</a> accepts - Object with colors, for example `value={{hex: '#ff0000'}}`
             p If `type="texteditor"` then value should be HTML string
         tr
-          td defaultValue
-          td string<br>number
-          td
-          td Input value, in case of uncontrolled component
-        tr
           td size
           td string<br>number
           td
@@ -356,11 +351,6 @@ block content
             p If `type="colorpicker"` then value must be passed as what <a href="/docs/color-picker.html" target="_blank">Color Picker</a> accepts - Object with colors, for example `value={{hex: '#ff0000'}}`
             p If `type="texteditor"` then value should be HTML string
         tr
-          td defaultValue
-          td string<br>number
-          td
-          td Input value, in case of uncontrolled component
-        tr
           td size
           td string<br>number
           td
@@ -546,7 +536,7 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/svelte/inputs.html") Examples
       h4 Full Layout / Inline Labels
-      :code(lang="jsx")
+      :code(lang="svelte")
         <List inlineLabels noHairlinesMd>
           <ListInput
             label="Name"
@@ -554,7 +544,7 @@ block content
             placeholder="Your name"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -563,7 +553,7 @@ block content
             placeholder="Your password"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -572,7 +562,7 @@ block content
             placeholder="Your e-mail"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -581,7 +571,7 @@ block content
             placeholder="URL"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -590,7 +580,7 @@ block content
             placeholder="Your phone number"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -599,7 +589,7 @@ block content
             defaultValue="Male"
             placeholder="Please choose..."
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
           </ListInput>
@@ -610,7 +600,7 @@ block content
             defaultValue="2014-04-30"
             placeholder="Please choose..."
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -618,15 +608,17 @@ block content
             type="datetime-local"
             placeholder="Please choose..."
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
             label="Range"
             input={false}
           >
-            <Icon icon="demo-list-icon" slot="media"/>
-            <Range slot="input" value={50} min={0} max={100} step={1}/>
+            <i class="icon demo-list-icon" slot="media"/>
+            <span slot="input">
+              <Range value={50} min={0} max={100} step={1}/>
+            </span>
           </ListInput>
 
           <ListInput
@@ -634,7 +626,7 @@ block content
             type="textarea"
             placeholder="Bio"
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -643,12 +635,12 @@ block content
             resizable
             placeholder="Bio"
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
         </List>
 
       h4 Full Layout / Stacked Labels
-      :code(lang="jsx")
+      :code(lang="svelte")
         <List noHairlinesMd>
           <ListInput
             label="Name"
@@ -656,7 +648,7 @@ block content
             placeholder="Your name"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -665,7 +657,7 @@ block content
             placeholder="Your password"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -674,7 +666,7 @@ block content
             placeholder="Your e-mail"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -683,7 +675,7 @@ block content
             placeholder="URL"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -692,7 +684,7 @@ block content
             placeholder="Your phone number"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -701,7 +693,7 @@ block content
             defaultValue="Male"
             placeholder="Please choose..."
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
           </ListInput>
@@ -712,7 +704,7 @@ block content
             defaultValue="2014-04-30"
             placeholder="Please choose..."
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -720,15 +712,17 @@ block content
             type="datetime-local"
             placeholder="Please choose..."
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
             label="Range"
             input={false}
           >
-            <Icon icon="demo-list-icon" slot="media"/>
-            <Range slot="input" value={50} min={0} max={100} step={1}/>
+            <i class="icon demo-list-icon" slot="media"/>
+            <span slot="input">
+              <Range value={50} min={0} max={100} step={1}/>
+            </span>
           </ListInput>
 
           <ListInput
@@ -736,7 +730,7 @@ block content
             type="textarea"
             placeholder="Bio"
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -745,51 +739,51 @@ block content
             resizable
             placeholder="Bio"
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
         </List>
 
       h4 Date Pickers
-      :code(lang="jsx")
+      :code(lang="svelte")
         <List noHairlinesMd>
           <ListInput
             label="Default setup"
             type="datepicker"
             placeholder="Your birth date"
             readonly
-          />
+          ></ListInput>
           <ListInput
             label="Custom date format"
             type="datepicker"
             placeholder="Select date"
             readonly
             calendarParams={{dateFormat: 'DD, MM dd, yyyy'}}
-          />
+          ></ListInput>
           <ListInput
             label="Multiple Values"
             type="datepicker"
             placeholder="Select multiple dates"
             readonly
             calendarParams={{ dateFormat: 'M dd yyyy', multiple: true }}
-          />
+          ></ListInput>
           <ListInput
             label="Range Picker"
             type="datepicker"
             placeholder="Select date range"
             readonly
             calendarParams={{ dateFormat: 'M dd yyyy', rangePicker: true }}
-          />
+          ></ListInput>
           <ListInput
             label="Open in Modal"
             type="datepicker"
             placeholder="Select date"
             readonly
             calendarParams={{openIn: 'customModal', header: true, footer: true, dateFormat: 'MM dd yyyy'}}
-          />
+          ></ListInput>
         </List>
 
       h4 Color Pickers
-      :code(lang="jsx")
+      :code(lang="svelte")
         <List noHairlinesMd>
           <ListInput
             type="colorpicker"
@@ -939,7 +933,7 @@ block content
         </List>
 
       h4 Floating Labels
-      :code(lang="jsx")
+      :code(lang="svelte")
         <List noHairlinesMd>
           <ListInput
             label="Name"
@@ -948,7 +942,7 @@ block content
             placeholder="Your name"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -958,7 +952,7 @@ block content
             placeholder="Your password"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -968,7 +962,7 @@ block content
             placeholder="Your e-mail"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -978,7 +972,7 @@ block content
             placeholder="URL"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -988,7 +982,7 @@ block content
             placeholder="Your phone number"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -998,12 +992,12 @@ block content
             resizable
             placeholder="Bio"
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
         </List>
 
       h4 Floating Labels + Outline Inputs
-      :code(lang="jsx")
+      :code(lang="svelte")
         <List noHairlinesMd>
           <ListInput
             outline
@@ -1013,7 +1007,7 @@ block content
             placeholder="Your name"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media" />
+            <i class="icon demo-list-icon" slot="media" />
           </ListInput>
           <ListInput
             outline
@@ -1023,7 +1017,7 @@ block content
             placeholder="Your password"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media" />
+            <i class="icon demo-list-icon" slot="media" />
           </ListInput>
           <ListInput
             outline
@@ -1033,7 +1027,7 @@ block content
             placeholder="Your e-mail"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media" />
+            <i class="icon demo-list-icon" slot="media" />
           </ListInput>
           <ListInput
             outline
@@ -1043,7 +1037,7 @@ block content
             placeholder="URL"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media" />
+            <i class="icon demo-list-icon" slot="media" />
           </ListInput>
           <ListInput
             outline
@@ -1053,7 +1047,7 @@ block content
             placeholder="Your phone number"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media" />
+            <i class="icon demo-list-icon" slot="media" />
           </ListInput>
           <ListInput
             outline
@@ -1064,12 +1058,12 @@ block content
             placeholder="Bio"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media" />
+            <i class="icon demo-list-icon" slot="media" />
           </ListInput>
         </List>
 
       h4 Validation + Additional Info
-      :code(lang="jsx")
+      :code(lang="svelte")
         <List noHairlinesMd>
           <ListInput
             label="Name"
@@ -1080,7 +1074,7 @@ block content
             validate
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -1092,7 +1086,7 @@ block content
             pattern="apple|banana"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
             <span slot="info">Pattern validation (<b>apple|banana</b>)</span>
           </ListInput>
 
@@ -1105,7 +1099,7 @@ block content
             validate
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -1117,7 +1111,7 @@ block content
             validate
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -1131,20 +1125,20 @@ block content
             pattern="[0-9]*"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
         </List>
 
       h4 Icon + Input
-      :code(lang="jsx")
+      :code(lang="svelte")
         <List noHairlinesMd>
           <ListInput
             type="text"
             placeholder="Your name"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -1152,7 +1146,7 @@ block content
             placeholder="Your password"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -1160,7 +1154,7 @@ block content
             placeholder="Your e-mail"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
           <ListInput
@@ -1168,13 +1162,13 @@ block content
             placeholder="URL"
             clearButton
           >
-            <Icon icon="demo-list-icon" slot="media"/>
+            <i class="icon demo-list-icon" slot="media"/>
           </ListInput>
 
         </List>
 
       h4 Label + Input
-      :code(lang="jsx")
+      :code(lang="svelte")
         <List noHairlinesMd>
           <ListInput
             label="Name"
@@ -1206,7 +1200,7 @@ block content
         </List>
 
       h4 Only Inputs
-      :code(lang="jsx")
+      :code(lang="svelte")
         <List noHairlinesMd>
           <ListInput
             type="text"
@@ -1234,7 +1228,7 @@ block content
         </List>
 
       h4 Inputs + Additional Info
-      :code(lang="jsx")
+      :code(lang="svelte")
         <List noHairlinesMd>
           <ListInput
             type="text"
@@ -1266,7 +1260,7 @@ block content
         </List>
 
       h4 Only Inputs Inset
-      :code(lang="jsx")
+      :code(lang="svelte")
         <List inset>
           <ListInput
             type="text"

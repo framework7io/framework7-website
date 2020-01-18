@@ -8,7 +8,7 @@
         scrollList={true}
         label={true}
         onListIndexSelect={onIndexSelect}
-      ></ListIndex>
+      />
       <List contactsList ul={false}>
         <ListGroup>
           <ListItem title="A" groupTitle></ListItem>

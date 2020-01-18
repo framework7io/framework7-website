@@ -4,7 +4,7 @@
       <Navbar title="Buttons" />
 
       <BlockTitle>Usual Buttons</BlockTitle>
-      <Block>
+      <Block strong>
         <Row>
           <Col>
             <Button>Button</Button>
@@ -19,7 +19,7 @@
       </Block>
 
       <BlockTitle>Fill Buttons</BlockTitle>
-      <Block>
+      <Block strong>
         <Row>
           <Col>
             <Button fill>Button</Button>
@@ -34,7 +34,7 @@
       </Block>
 
       <BlockTitle>Outline Buttons</BlockTitle>
-      <Block>
+      <Block strong>
         <Row>
           <Col>
             <Button outline>Button</Button>
@@ -49,7 +49,7 @@
       </Block>
 
       <BlockTitle>Raised Buttons</BlockTitle>
-      <Block>
+      <Block strong>
         <Row tag="p">
           <Col tag="span">
             <Button raised>Button</Button>
@@ -75,7 +75,7 @@
       </Block>
 
       <BlockTitle>Segmented</BlockTitle>
-      <Block>
+      <Block strong>
         <Segmented raised tag="p">
           <Button>Button</Button>
           <Button>Button</Button>
@@ -104,7 +104,7 @@
       </Block>
 
       <BlockTitle>Large Buttons</BlockTitle>
-      <Block>
+      <Block strong>
         <Row tag="p">
           <Col tag="span">
             <Button large>Button</Button>
@@ -124,7 +124,7 @@
       </Block>
 
       <BlockTitle>Small Buttons</BlockTitle>
-      <Block>
+      <Block strong>
         <Row tag="p">
           <Col tag="span">
             <Button large small>Button</Button>
@@ -150,7 +150,7 @@
       </Block>
 
       <BlockTitle>Color Buttons</BlockTitle>
-      <Block>
+      <Block strong>
         <Row>
           <Col>
             <Button color="red">Red</Button>
@@ -165,7 +165,7 @@
       </Block>
 
       <BlockTitle>Color Fill Buttons</BlockTitle>
-      <Block>
+      <Block strong>
         <Row>
           <Col>
             <Button fill color="red">Red</Button>
