@@ -240,58 +240,58 @@ block content
       li `input-wrap-start` - element will be inserted as a child of `<div class="searchbar-input-wrap">` element in the beginning
       li `input-wrap-end` - element will be inserted as a child of `<div class="searchbar-input-wrap">` element in the end
     h4 Without Slots:
-    :code(lang="jsx")
-          <Searchbar
-            disableButtonText="Cancel"
-            placeholder="Search in items"
-            clearButton={true}
-          ></Searchbar>
+    :code(lang="svelte")
+      <Searchbar
+        disableButtonText="Cancel"
+        placeholder="Search in items"
+        clearButton={true}
+      />
 
-          {/* Renders to: */}
+      <!-- Renders to: -->
 
-          <form class="searchbar">
-            <div class="searchbar-inner">
-              <div class="searchbar-input-wrap">
-                <input type="search" placeholder="Search">
-                <i class="searchbar-icon"></i>
-                <span class="input-clear-button"></span>
-              </div>
-              <span class="searchbar-disable-button">Cancel</span>
-            </div>
-          </form>
+      <form class="searchbar">
+        <div class="searchbar-inner">
+          <div class="searchbar-input-wrap">
+            <input type="search" placeholder="Search">
+            <i class="searchbar-icon"></i>
+            <span class="input-clear-button"></span>
+          </div>
+          <span class="searchbar-disable-button">Cancel</span>
+        </div>
+      </form>
     h4 With Slots:
-    :code(lang="jsx")
-          <Searchbar
-            disableButtonText="Cancel"
-            placeholder="Search in items"
-            clearButton={true}
-          >
-            <div slot="inner-start">Inner Start</div>
-            <div slot="inner-end">Inner End</div>
+    :code(lang="svelte")
+      <Searchbar
+        disableButtonText="Cancel"
+        placeholder="Search in items"
+        clearButton={true}
+      >
+        <div slot="inner-start">Inner Start</div>
+        <div slot="inner-end">Inner End</div>
+        <div slot="input-wrap-start">Input Wrap Start</div>
+        <div slot="input-wrap-end">Input Wrap End</div>
+        <div slot="before-inner">Before Inner</div>
+        <div slot="after-inner">After Inner</div>
+      </Searchbar>
+
+      <!-- Renders to: -->
+
+      <form class="searchbar">
+        <div slot="before-inner">Before Inner</div>
+        <div class="searchbar-inner">
+          <div slot="inner-start">Inner Start</div>
+          <div class="searchbar-input-wrap">
             <div slot="input-wrap-start">Input Wrap Start</div>
+            <input type="search" placeholder="Search">
+            <i class="searchbar-icon"></i>
+            <span class="input-clear-button"></span>
             <div slot="input-wrap-end">Input Wrap End</div>
-            <div slot="before-inner">Before Inner</div>
-            <div slot="after-inner">After Inner</div>
-          </Searchbar>
-
-          {/* Renders to: */}
-
-          <form class="searchbar">
-            <div slot="before-inner">Before Inner</div>
-            <div class="searchbar-inner">
-              <div slot="inner-start">Inner Start</div>
-              <div class="searchbar-input-wrap">
-                <div slot="input-wrap-start">Input Wrap Start</div>
-                <input type="search" placeholder="Search">
-                <i class="searchbar-icon"></i>
-                <span class="input-clear-button"></span>
-                <div slot="input-wrap-end">Input Wrap End</div>
-              </div>
-              <span class="searchbar-disable-button">Cancel</span>
-              <div slot="inner-end">Inner End</div>
-            </div>
-            <div slot="after-inner">After Inner</div>
-          </form>
+          </div>
+          <span class="searchbar-disable-button">Cancel</span>
+          <div slot="inner-end">Inner End</div>
+        </div>
+        <div slot="after-inner">After Inner</div>
+      </form>
 
     h2 Access To Searchbar Instance
     p If you use automatic initalization to init Searchbar (with `init={true}` prop) and need to use Searchbar API you can access its initialized instance by accessing `.f7Searchbar` component's property.
@@ -299,126 +299,132 @@ block content
     .with-device
       h2 Examples
       h4(data-device-preview="../docs-demos/svelte/searchbar.html") Usual Searchbar
-      :code(lang="jsx")
-        export default () => (
-          <Page>
-            <Navbar title="Searchbar">
-              <Subnavbar inner={false}>
-                <Searchbar
-                  searchContainer=".search-list"
-                  searchIn=".item-title"
-                  disableButton={!this.$theme.aurora}
-                ></Searchbar>
-              </Subnavbar>
-            </Navbar>
-            <List class="searchbar-not-found">
-              <ListItem title="Nothing found" />
-            </List>
-            <List class="search-list searchbar-found">
-              <ListItem title="Acura" />
-              <ListItem title="Audi" />
-              <ListItem title="BMW" />
-              <ListItem title="Cadillac " />
-              <ListItem title="Chevrolet " />
-              <ListItem title="Chrysler " />
-              <ListItem title="Dodge " />
-              <ListItem title="Ferrari " />
-              <ListItem title="Ford " />
-              <ListItem title="GMC " />
-              <ListItem title="Honda" />
-              <ListItem title="Hummer" />
-              <ListItem title="Hyundai" />
-              <ListItem title="Infiniti " />
-              <ListItem title="Isuzu " />
-              <ListItem title="Jaguar " />
-              <ListItem title="Jeep " />
-              <ListItem title="Kia" />
-              <ListItem title="Lamborghini " />
-              <ListItem title="Land Rover" />
-              <ListItem title="Lexus " />
-              <ListItem title="Lincoln " />
-              <ListItem title="Lotus " />
-              <ListItem title="Mazda" />
-              <ListItem title="Mercedes-Benz" />
-              <ListItem title="Mercury " />
-              <ListItem title="Mitsubishi" />
-              <ListItem title="Nissan " />
-              <ListItem title="Oldsmobile " />
-              <ListItem title="Peugeot " />
-              <ListItem title="Pontiac " />
-              <ListItem title="Porsche" />
-              <ListItem title="Regal" />
-              <ListItem title="Saab " />
-              <ListItem title="Saturn " />
-              <ListItem title="Subaru " />
-              <ListItem title="Suzuki " />
-              <ListItem title="Toyota" />
-              <ListItem title="Volkswagen" />
-              <ListItem title="Volvo" />
-            </List>
-          </Page>
-        );
-
-      h4(data-device-preview="../docs-demos/svelte/searchbar-expandable.html") Expandable Searchbar
-      :code(lang="jsx")
-        export default () => (
-          <Page>
-            <Navbar title="Searchbar">
-              <NavRight>
-                <Link searchbarEnable=".searchbar-demo" iconIos="f7:search" iconAurora="f7:search" iconMd="material:search"></Link>
-              </NavRight>
+      :code(lang="svelte")
+        <Page>
+          <Navbar title="Searchbar">
+            <Subnavbar inner={false}>
               <Searchbar
-                class="searchbar-demo"
-                expandable
                 searchContainer=".search-list"
                 searchIn=".item-title"
-                disableButton={!this.$theme.aurora}
-              ></Searchbar>
-            </Navbar>
-            <List class="searchbar-not-found">
-              <ListItem title="Nothing found" />
-            </List>
-            <List class="search-list searchbar-found">
-              <ListItem title="Acura" />
-              <ListItem title="Audi" />
-              <ListItem title="BMW" />
-              <ListItem title="Cadillac " />
-              <ListItem title="Chevrolet " />
-              <ListItem title="Chrysler " />
-              <ListItem title="Dodge " />
-              <ListItem title="Ferrari " />
-              <ListItem title="Ford " />
-              <ListItem title="GMC " />
-              <ListItem title="Honda" />
-              <ListItem title="Hummer" />
-              <ListItem title="Hyundai" />
-              <ListItem title="Infiniti " />
-              <ListItem title="Isuzu " />
-              <ListItem title="Jaguar " />
-              <ListItem title="Jeep " />
-              <ListItem title="Kia" />
-              <ListItem title="Lamborghini " />
-              <ListItem title="Land Rover" />
-              <ListItem title="Lexus " />
-              <ListItem title="Lincoln " />
-              <ListItem title="Lotus " />
-              <ListItem title="Mazda" />
-              <ListItem title="Mercedes-Benz" />
-              <ListItem title="Mercury " />
-              <ListItem title="Mitsubishi" />
-              <ListItem title="Nissan " />
-              <ListItem title="Oldsmobile " />
-              <ListItem title="Peugeot " />
-              <ListItem title="Pontiac " />
-              <ListItem title="Porsche" />
-              <ListItem title="Regal" />
-              <ListItem title="Saab " />
-              <ListItem title="Saturn " />
-              <ListItem title="Subaru " />
-              <ListItem title="Suzuki " />
-              <ListItem title="Toyota" />
-              <ListItem title="Volkswagen" />
-              <ListItem title="Volvo" />
-            </List>
-          </Page>
-        );
+                disableButton={!theme.aurora}
+              />
+            </Subnavbar>
+          </Navbar>
+          <List class="searchbar-not-found">
+            <ListItem title="Nothing found"></ListItem>
+          </List>
+          <List class="search-list searchbar-found">
+            <ListItem title="Acura" />
+            <ListItem title="Audi" />
+            <ListItem title="BMW" />
+            <ListItem title="Cadillac " />
+            <ListItem title="Chevrolet " />
+            <ListItem title="Chrysler " />
+            <ListItem title="Dodge " />
+            <ListItem title="Ferrari " />
+            <ListItem title="Ford " />
+            <ListItem title="GMC " />
+            <ListItem title="Honda" />
+            <ListItem title="Hummer" />
+            <ListItem title="Hyundai" />
+            <ListItem title="Infiniti " />
+            <ListItem title="Isuzu " />
+            <ListItem title="Jaguar " />
+            <ListItem title="Jeep " />
+            <ListItem title="Kia" />
+            <ListItem title="Lamborghini " />
+            <ListItem title="Land Rover" />
+            <ListItem title="Lexus " />
+            <ListItem title="Lincoln " />
+            <ListItem title="Lotus " />
+            <ListItem title="Mazda" />
+            <ListItem title="Mercedes-Benz" />
+            <ListItem title="Mercury " />
+            <ListItem title="Mitsubishi" />
+            <ListItem title="Nissan " />
+            <ListItem title="Oldsmobile " />
+            <ListItem title="Peugeot " />
+            <ListItem title="Pontiac " />
+            <ListItem title="Porsche" />
+            <ListItem title="Regal" />
+            <ListItem title="Saab " />
+            <ListItem title="Saturn " />
+            <ListItem title="Subaru " />
+            <ListItem title="Suzuki " />
+            <ListItem title="Toyota" />
+            <ListItem title="Volkswagen" />
+            <ListItem title="Volvo" />
+          </List>
+        </Page>
+
+        <script>
+          import {theme, App, View, Page, Navbar, Subnavbar, Searchbar, List, ListItem} from 'framework7-svelte';
+        </script>
+
+
+      h4(data-device-preview="../docs-demos/svelte/searchbar-expandable.html") Expandable Searchbar
+      :code(lang="svelte")
+        <Page>
+          <Navbar title="Searchbar">
+            <NavRight>
+              <Link searchbarEnable=".searchbar-demo" iconIos="f7:search" iconAurora="f7:search" iconMd="material:search"></Link>
+            </NavRight>
+            <Searchbar
+              class="searchbar-demo"
+              expandable
+              searchContainer=".search-list"
+              searchIn=".item-title"
+              disableButton={!theme.aurora}
+            />
+          </Navbar>
+          <List class="searchbar-not-found">
+            <ListItem title="Nothing found"></ListItem>
+          </List>
+          <List class="search-list searchbar-found">
+            <ListItem title="Acura" />
+            <ListItem title="Audi" />
+            <ListItem title="BMW" />
+            <ListItem title="Cadillac " />
+            <ListItem title="Chevrolet " />
+            <ListItem title="Chrysler " />
+            <ListItem title="Dodge " />
+            <ListItem title="Ferrari " />
+            <ListItem title="Ford " />
+            <ListItem title="GMC " />
+            <ListItem title="Honda" />
+            <ListItem title="Hummer" />
+            <ListItem title="Hyundai" />
+            <ListItem title="Infiniti " />
+            <ListItem title="Isuzu " />
+            <ListItem title="Jaguar " />
+            <ListItem title="Jeep " />
+            <ListItem title="Kia" />
+            <ListItem title="Lamborghini " />
+            <ListItem title="Land Rover" />
+            <ListItem title="Lexus " />
+            <ListItem title="Lincoln " />
+            <ListItem title="Lotus " />
+            <ListItem title="Mazda" />
+            <ListItem title="Mercedes-Benz" />
+            <ListItem title="Mercury " />
+            <ListItem title="Mitsubishi" />
+            <ListItem title="Nissan " />
+            <ListItem title="Oldsmobile " />
+            <ListItem title="Peugeot " />
+            <ListItem title="Pontiac " />
+            <ListItem title="Porsche" />
+            <ListItem title="Regal" />
+            <ListItem title="Saab " />
+            <ListItem title="Saturn " />
+            <ListItem title="Subaru " />
+            <ListItem title="Suzuki " />
+            <ListItem title="Toyota" />
+            <ListItem title="Volkswagen" />
+            <ListItem title="Volvo" />
+          </List>
+        </Page>
+
+        <script>
+          import {theme, App, View, Page, Navbar, NavRight, Link, Searchbar, List, ListItem} from 'framework7-svelte';
+        </script>
+

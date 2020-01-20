@@ -40,10 +40,10 @@ function buildOne(name, cb) {
         browser: true,
         dedupe: importee => importee === 'svelte' || importee.startsWith('svelte/'),
       }),
-      babel({
-        extensions: ['.js', '.mjs', '.html', '.svelte'],
-      }),
-      terser(),
+      // babel({
+      //   extensions: ['.js', '.mjs', '.html', '.svelte'],
+      // }),
+      // terser(),
     ],
   }).then((bundle) => {
     return bundle.write({

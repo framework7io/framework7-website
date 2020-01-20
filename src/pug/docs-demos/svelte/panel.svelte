@@ -19,10 +19,10 @@
 
       <Block class="row">
         <Col>
-          <Button raised panelOpen="left">Open left panel</Button>
+          <Button raised fill panelOpen="left">Open left panel</Button>
         </Col>
         <Col>
-          <Button raised panelOpen="right">Open right panel</Button>
+          <Button raised fill panelOpen="right">Open right panel</Button>
         </Col>
       </Block>
     </Page>
@@ -30,7 +30,7 @@
 </App>
 <style>
   /* Limit resizable panel width */
-  .panel {
+  :global(.panel) {
     min-width: 100px;
     max-width: 90vw;
   }

@@ -164,45 +164,4 @@ block content
     p You can access Panel initialized instance by accessing `.f7Panel` component's property.
     .with-device
       h2(data-device-preview="../docs-demos/svelte/panel.html") Examples
-      :code(lang="css")
-        /* Limit resizable panel width */
-        .panel {
-          min-width: 100px;
-          max-width: 90vw;
-        }
-      :code(lang="jsx")
-        <App>
-          {/* Left resizable Panel with Reveal effect */}
-          <Panel left reveal resizable>
-            <View>
-              <Page>
-                <Block>Left panel content</Block>
-              </Page>
-            </View>
-          </Panel>
-
-          {/* Right resizable Panel with Cover effect and dark layout theme */}
-          <Panel right resizable themeDark>
-            <View>
-              <Page>
-                <Block>Right panel content</Block>
-              </Page>
-            </View>
-          </Panel>
-
-          {/* Main view */}
-          <View main>
-            <Page>
-              <Navbar title="Panel"></Navbar>
-
-              <Block class="row">
-                <Col>
-                  <Button raised panelOpen="left">Open left panel</Button>
-                </Col>
-                <Col>
-                  <Button raised panelOpen="right">Open right panel</Button>
-                </Col>
-              </Block>
-            </Page>
-          </View>
-        </App>
+      include:svelteSource(strip=false) ../docs-demos/svelte/panel.svelte
