@@ -68,7 +68,7 @@ block content
     ul
       li `before-wrapper` - element will be inserted right before `<div class="swiper-wrapper">` element
       li `after-wrapper` - element will be inserted right after `<div class="swiper-wrapper">` element
-    :code(lang="jsx")
+    :code(lang="svelte")
           <Swiper>
             <div slot="before-wrapper">Before Wrapper</div>
             <div slot="after-wrapper">After Wrapper</div>
@@ -89,25 +89,28 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/svelte/swiper.html") Examples
       h4 Minimal layout
-      :code(lang="jsx")
-            <Swiper>
-              <SwiperSlide>Slide 1</SwiperSlide>
-              <SwiperSlide>Slide 2</SwiperSlide>
-              <SwiperSlide>Slide 3</SwiperSlide>
-            </Swiper>
+      :code(lang="svelte")
+        <Swiper>
+          <SwiperSlide>Slide 1</SwiperSlide>
+          <SwiperSlide>Slide 2</SwiperSlide>
+          <SwiperSlide>Slide 3</SwiperSlide>
+        </Swiper>
       h4 With all controls
-      :code(lang="jsx")
-            <Swiper pagination navigation scrollbar>
-              <SwiperSlide>Slide 1</SwiperSlide>
-              <SwiperSlide>Slide 2</SwiperSlide>
-              <SwiperSlide>Slide 3</SwiperSlide>
-            </Swiper>
+      :code(lang="svelte")
+        <Swiper pagination navigation scrollbar>
+          <SwiperSlide>Slide 1</SwiperSlide>
+          <SwiperSlide>Slide 2</SwiperSlide>
+          <SwiperSlide>Slide 3</SwiperSlide>
+        </Swiper>
 
       h4 With additional parameters
       p You can pass any additional <a href="https://swiperjs.com/api" target="_blank">Swiper API</a> parameters using `params` property:
-      :code(lang="jsx")
-            <Swiper navigation params={{speed:500, slidesPerView: 3, spaceBetween: 20}}>
-              <SwiperSlide>Slide 1</SwiperSlide>
-              <SwiperSlide>Slide 2</SwiperSlide>
-              <SwiperSlide>Slide 3</SwiperSlide>
-            </Swiper>
+      :code(lang="svelte")
+        <Swiper navigation params={{speed:500, slidesPerView: 3, spaceBetween: 20}}>
+          <SwiperSlide>Slide 1</SwiperSlide>
+          <SwiperSlide>Slide 2</SwiperSlide>
+          <SwiperSlide>Slide 3</SwiperSlide>
+          <SwiperSlide>Slide 4</SwiperSlide>
+          <SwiperSlide>Slide 5</SwiperSlide>
+          <SwiperSlide>Slide 6</SwiperSlide>
+        </Swiper>

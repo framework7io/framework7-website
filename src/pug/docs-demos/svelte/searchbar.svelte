@@ -1,6 +1,5 @@
 <App>
   <View main>
-    {#if mounted}
     <Page withSubnavbar>
       <Navbar title="Searchbar">
         <Subnavbar inner={false}>
@@ -57,15 +56,9 @@
         <ListItem title="Volvo" />
       </List>
     </Page>
-    {/if}
   </View>
 </App>
 
 <script>
-  import {f7ready, theme, App, View, Page, Navbar, Subnavbar, Searchbar, List, ListItem} from 'framework7-svelte';
-
-  let mounted = false;
-  f7ready(() => {
-    mounted = true;
-  });
+  import {theme, App, View, Page, Navbar, Subnavbar, Searchbar, List, ListItem} from 'framework7-svelte';
 </script>

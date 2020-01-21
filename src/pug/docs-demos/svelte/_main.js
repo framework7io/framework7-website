@@ -15,7 +15,7 @@ const themePlugin = {
 };
 
 Framework7.use(themePlugin);
-Framework7.use(Framework7Svelte);
+Framework7.use(Framework7Svelte, { theme });
 
 // Init Svelte App
 const app = new App({
