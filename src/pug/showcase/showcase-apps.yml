@@ -1,5 +1,35 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/godial-logo.png"
+  iconRounded: false
+  title: "GoDial - Automatic Call Dialer and CRM"
+  author:
+    url: https://godial.cc
+    name: Avifa Infotech Pvt Ltd
+  links:
+    appstore: https://apps.apple.com/in/app/godial-auto-call-center-crm/id1492309932
+    googleplay: https://play.google.com/store/apps/details?id=com.avifa.godial
+    website: https://godial.cc
+  description: |
+    GoDial Turns your phone into a Call Center. Increases Sales. Manages Prospects. And Much more.
+  features:
+  - Schedule Callbacks
+  - Dial through large call lists
+  - Rechurn old contacts and increase connectivity
+  - Save notes to contacts
+  - Advance CRM like features, like lead stage visualization or sending proposal
+  - Sale Ninja AI - Magically suggest the best contacts to dial
+
+  screenshots:
+  - "#{cdn}/i/showcase/main.jpg"
+  - "#{cdn}/i/showcase/dial.jpg"
+  - "#{cdn}/i/showcase/dispose.jpg"
+  - "#{cdn}/i/showcase/import.jpg"
+  - "#{cdn}/i/showcase/rechurn.jpg"
+##########
+-
+##########
+-
   iconUrl: "#{cdn}/i/showcase/FitnessPets-icon-1024.png"
   iconRounded: true
   title: "Fitness Pets - The less serious fitness tracker"
