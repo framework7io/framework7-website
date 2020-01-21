@@ -8,7 +8,7 @@
             title={item.title}
             subtitle={item.author}
           >
-            <img slot="media" src={item.cover} width="44" />
+            <img slot="media" src={item.cover} width="44" alt="" />
           </ListItem>
         {/each}
       </List>
