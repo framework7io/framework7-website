@@ -1,6 +1,6 @@
 ##########
 -
-  iconUrl: "#{cdn}/i/showcase/godial-logo.png"
+  iconUrl: "#{cdn}/i/showcase/godial.png"
   iconRounded: false
   title: "GoDial - Automatic Call Dialer and CRM"
   author:
@@ -21,11 +21,11 @@
   - Sale Ninja AI - Magically suggest the best contacts to dial
 
   screenshots:
-  - "#{cdn}/i/showcase/main.jpg"
-  - "#{cdn}/i/showcase/dial.jpg"
-  - "#{cdn}/i/showcase/dispose.jpg"
-  - "#{cdn}/i/showcase/import.jpg"
-  - "#{cdn}/i/showcase/rechurn.jpg"
+  - "#{cdn}/i/showcase/godial1.jpg"
+  - "#{cdn}/i/showcase/godial2.jpg"
+  - "#{cdn}/i/showcase/godial3.jpg"
+  - "#{cdn}/i/showcase/godial4.jpg"
+  - "#{cdn}/i/showcase/godial5.jpg"
 ##########
 -
 ##########
