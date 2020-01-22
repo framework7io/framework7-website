@@ -54,10 +54,6 @@ public/packages/vue/utils
 public/packages/vue/framework7-vue.esm.bundle.js
 public/packages/vue/framework7-vue.esm.js
 public/packages/vue/*.d.ts
-public/packages/svelte/components
-public/packages/svelte/runtime-helpers
-public/packages/svelte/utils
-public/packages/svelte/framework7-svelte.esm.js
 public/packages/svelte/*.d.ts
 search-index.json
 public/kitchen-sink/react/src

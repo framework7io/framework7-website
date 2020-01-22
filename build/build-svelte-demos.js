@@ -5,8 +5,8 @@ const fs = require('fs');
 const rollup = require('rollup');
 const resolve = require('@rollup/plugin-node-resolve');
 const replace = require('@rollup/plugin-replace');
-const terser = require('rollup-plugin-terser').terser;
-const babel = require('rollup-plugin-babel');
+// const terser = require('rollup-plugin-terser').terser;
+// const babel = require('rollup-plugin-babel');
 const svelte = require('rollup-plugin-svelte');
 
 const pugContent = fs.readFileSync('./src/pug/docs-demos/svelte/_layout.pug', 'utf8');
