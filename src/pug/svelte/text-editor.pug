@@ -101,7 +101,7 @@ block content
           td
             p Object with custom buttons. Object property key is the button id that should be used in `buttons` to enable it.
             p For example to specify custom button that will add `<hr>` we can use following declaration:
-            :code(lang="jsx")
+            :code(lang="svelte")
               <TextEditor
                 customButtons={{
                   // property key is the button id
@@ -114,7 +114,6 @@ block content
                     }
                   }
                 }}
-                {/* now we use custom button id "hr" to add it to buttons */}
                 buttons={['bold', 'italic', 'hr']}
               />
             ```
@@ -172,7 +171,18 @@ block content
           td Event will be triggered right before Text Editor instance will be destroyed
 
     h2 Access To Text Editor Instance
-    p If you need to use <a href="../docs/text-editor.html">Text Editor API</a> you can access its initialized instance by accessing `.f7TextEditor` component's property.
+    p If you need to use <a href="../docs/text-editor.html">Text Editor API</a> you can access its initialized instance by calling `.instance()` component's method. For example:
+    ```svelte
+      <TextEditor bind:this={component}>...</TextEditor>
+
+      <script>
+        let component;
+
+        // to get instance in some method
+        component.instance()
+      </script>
+    ```
+
 
     .with-device
       h2(data-device-preview="../docs-demos/svelte/text-editor.html") Examples

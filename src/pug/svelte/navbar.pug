@@ -208,7 +208,7 @@ block content
       li `right` - element will be inserted in navbar's right element
       li `title` - element will be inserted in navbar's title element
       li `title-large` - element will be inserted in navbar's large title text element
-    :code(lang="jsx")
+    :code(lang="svelte")
       <Navbar title="My App">
         <a href="#" slot="left">Left Link</a>
         <a href="#" slot="right">Right Link</a>
@@ -217,7 +217,7 @@ block content
         <div>Default slot</div>
       </Navbar>
 
-      {/* Renders to: */}
+      <!-- Renders to: -->
 
       <div class="navbar">
         <div class="navbar-bg"></div>
@@ -237,41 +237,35 @@ block content
 
     h2 Examples
     h4 Minimal layout
-    :code(lang="jsx")
-          <Navbar title="My App"></Navbar>
+    :code(lang="svelte")
+      <Navbar title="My App"></Navbar>
 
     h4 Minimal layout with back link
-    :code(lang="jsx")
-          <Navbar title="My App" backLink="Back"></Navbar>
+    :code(lang="svelte")
+      <Navbar title="My App" backLink="Back"></Navbar>
 
     h4 Without "sliding" transition effect (affects iOS theme only)
-    :code(lang="jsx")
-          <Navbar title="My App" backLink="Back" sliding="{false}"></Navbar>
+    :code(lang="svelte")
+      <Navbar title="My App" backLink="Back" sliding="{false}"></Navbar>
 
     h4 With additional right link to open right panel
-    :code(lang="jsx")
+    :code(lang="svelte")
       <Navbar title="My App" backLink="Back">
         <NavRight>
           <Link icon="icon-bars" panelOpen="right"></Link>
         </NavRight>
       </Navbar>
 
-      {/* or */}
-
-      <Navbar title="My App" backLink="Back">
-        <Link slot="right" icon="icon-bars" panelOpen="right"></Link>
-      </Navbar>
-
     h4 With large title
-    :code(lang="jsx")
+    :code(lang="svelte")
       <Navbar title="My App" backLink="Back" large></Navbar>
 
-      {/* with different large title text */}
+      <!-- with different large title text -->
 
       <Navbar title="My App" backLink="Back" large titleLarge="Large Title"></Navbar>
 
     h4 All three parts
-    :code(lang="jsx")
+    :code(lang="svelte")
       <Navbar>
         <NavLeft backLink="Back"></NavLeft>
         <NavTitle>My App</NavTitle>
@@ -281,7 +275,7 @@ block content
       </Navbar>
 
     h4 Full custom layout
-    :code(lang="jsx")
+    :code(lang="svelte")
       <Navbar>
         <NavLeft>
           <Link>Left Link</Link>

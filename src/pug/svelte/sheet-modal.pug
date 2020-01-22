@@ -130,7 +130,18 @@ block content
       li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant `sheetOpen` property (to open it) and `sheetClose` property to close it
 
     h2 Access To Sheet Modal Instance
-    p You can access Sheet Modal initialized instance by accessing `.f7Sheet` component's property.
+    p You can access Sheet Modal initialized instance by calling `.instance()` component's method. For example:
+    ```svelte
+      <Sheet bind:this={component}>...</Sheet>
+
+      <script>
+        let component;
+
+        // to get instance in some method
+        component.instance()
+      </script>
+    ```
+
 
     .with-device
       h2(data-device-preview="../docs-demos/svelte/sheet-modal.html") Examples

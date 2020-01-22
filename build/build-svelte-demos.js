@@ -13,6 +13,10 @@ const pugContent = fs.readFileSync('./src/pug/docs-demos/svelte/_layout.pug', 'u
 const pugTemplate = pug.compile(pugContent);
 
 function buildOne(name, cb) {
+  if (name.indexOf('_') >= 0) {
+    if (cb) cb();
+    return Promise.resolve();
+  }
   const time = Date.now();
   console.log(`Starting svelte: ${name}`);
 
@@ -65,6 +69,7 @@ function buildOne(name, cb) {
 async function buildAll(cb) {
   const svelteDemos = fs.readdirSync(path.resolve(__dirname, '../src/pug/docs-demos/svelte'))
     .filter(f => f.indexOf('.svelte') >= 0)
+    .filter(f => f.indexOf('_') < 0)
     .map(f => f.split('.svelte')[0]);
 
   // eslint-disable-next-line

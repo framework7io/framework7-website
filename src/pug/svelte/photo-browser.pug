@@ -199,7 +199,18 @@ block content
           td .expositionDisable();
           td Disable exposition mode
     h2 Access To Photo Browser Instance
-    p You can access Photo Browser initialized instance by accessing `.f7PhotoBrowser` component's property.
+    p You can access Photo Browser initialized instance by calling `.instance()` component's method. For example:
+    ```svelte
+      <PhotoBrowser bind:this={component}>...</PhotoBrowser>
+
+      <script>
+        let component;
+
+        // to get instance in some method
+        component.instance()
+      </script>
+    ```
+
     .with-device
       h2(data-device-preview="../docs-demos/svelte/photo-browser.html") Examples
       :code(lang="svelte")

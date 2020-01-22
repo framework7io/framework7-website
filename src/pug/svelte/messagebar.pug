@@ -235,7 +235,18 @@ block content
       </div>
 
     h2 Access To Messagebar Instance
-    p If you use automatic initalization to init Messagebar (with `init={true}` prop) and need to use its <a href="../docs/messagebar.html#messagebar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing `.f7Messagebar` component's property.
+    p If you use automatic initalization to init Messagebar (with `init={true}` prop) and need to use its <a href="../docs/messagebar.html#messagebar-methods-properties">Methods and Properties</a> you can access its initialized instance by calling `.instance()` component's method. For example:
+    ```svelte
+      <Messagebar bind:this={component}>...</Messagebar>
+
+      <script>
+        let component;
+
+        // to get instance in some method
+        component.instance()
+      </script>
+    ```
+
 
     .with-device
       h2(data-device-preview="../docs-demos/svelte/messages.html") Examples

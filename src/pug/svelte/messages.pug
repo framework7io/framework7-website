@@ -62,7 +62,7 @@ block content
           td messages
           td array
           td
-          td Array with initial messages. Each message in array should be presented as object with <a href="../docs/messages.html#single-message-parameters">message parameters</a>. Pass messages here if you don't use single-message components. Otherwise leave all bindings and data rendering to React
+          td Array with initial messages. Each message in array should be presented as object with <a href="../docs/messages.html#single-message-parameters">message parameters</a>. Pass messages here if you don't use single-message components. Otherwise leave all bindings and data rendering to Svelte
         //- tr
           td
             | first-message-rule<br><br>
@@ -280,7 +280,18 @@ block content
       </div>
 
     h2 Access To Messages Instance
-    p If you use automatic initalization to init Messages (with `init={true}` prop) and need to use <a href="../docs/messages.html">Messages API</a> you can access its initialized instance by accessing `.f7Messages` component's property.
+    p If you use automatic initalization to init Messages (with `init={true}` prop) and need to use <a href="../docs/messages.html">Messages API</a> you can access its initialized instance by calling `.instance()` component's method. For example:
+    ```svelte
+      <Messages bind:this={component}>...</Messages>
+
+      <script>
+        let component;
+
+        // to get instance in some method
+        component.instance()
+      </script>
+    ```
+
 
     .with-device
       h2(data-device-preview="../docs-demos/svelte/messages.html") Examples

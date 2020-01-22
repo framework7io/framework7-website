@@ -107,7 +107,18 @@ block content
       li by passing `true` or `false` to its `opened` prop
       li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant `popupOpen` property (to open it) and `popupClose` property to close it
     h2 Access To Popup Instance
-    p You can access Popup initialized instance by accessing `.f7Popup` component's property.
+    p You can access Popup initialized instance by calling `.instance()` component's method. For example:
+    ```svelte
+      <Popup bind:this={component}>...</Popup>
+
+      <script>
+        let component;
+
+        // to get instance in some method
+        component.instance()
+      </script>
+    ```
+
     .with-device
       h2(data-device-preview="../docs-demos/svelte/popup.html") Examples
       include:svelteSource ../docs-demos/svelte/popup.svelte

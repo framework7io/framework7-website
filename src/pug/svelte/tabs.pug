@@ -86,94 +86,10 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/svelte/tabs.html") Examples
       h3 Static Tabs
-      :code(lang="jsx")
-            <Page pageContent={false}>
-              <Navbar title="Static Tabs" backLink="Back"></Navbar>
-              <Toolbar tabbar bottom>
-                <Link tabLink="#tab-1" tabLinkActive>Tab 1</Link>
-                <Link tabLink="#tab-2">Tab 2</Link>
-                <Link tabLink="#tab-3">Tab 3</Link>
-              </Toolbar>
-              <Tabs>
-                <Tab id="tab-1" class="page-content" tabActive>
-                  <Block>
-                    <p>Tab 1 content</p>
-                    ...
-                  </Block>
-                </Tab>
-                <Tab id="tab-2" class="page-content">
-                  <Block>
-                    <p>Tab 2 content</p>
-                    ...
-                  </Block>
-                </Tab>
-                <Tab id="tab-3" class="page-content">
-                  <Block>
-                    <p>Tab 3 content</p>
-                    ...
-                  </Block>
-                </Tab>
-              </Tabs>
-            </Page>
+      include:svelteSource ../docs-demos/svelte/tabs-static.svelte
 
       h3 Animated Tabs
-      :code(lang="jsx")
-            <Page pageContent={false}>
-              <Navbar title="Animated Tabs" backLink="Back"></Navbar>
-              <Toolbar tabbar bottom>
-                <Link tabLink="#tab-1" tabLinkActive>Tab 1</Link>
-                <Link tabLink="#tab-2">Tab 2</Link>
-                <Link tabLink="#tab-3">Tab 3</Link>
-              </Toolbar>
-              <Tabs animated>
-                <Tab id="tab-1" class="page-content" tabActive>
-                  <Block>
-                    <p>Tab 1 content</p>
-                    ...
-                  </Block>
-                </Tab>
-                <Tab id="tab-2" class="page-content">
-                  <Block>
-                    <p>Tab 2 content</p>
-                    ...
-                  </Block>
-                </Tab>
-                <Tab id="tab-3" class="page-content">
-                  <Block>
-                    <p>Tab 3 content</p>
-                    ...
-                  </Block>
-                </Tab>
-              </Tabs>
-            </Page>
+      include:svelteSource ../docs-demos/svelte/tabs-animated.svelte
 
       h3 Swipeable Tabs
-      :code(lang="jsx")
-            <Page pageContent={false}>
-              <Navbar title="Swipeable Tabs" backLink="Back"></Navbar>
-              <Toolbar tabbar bottom>
-                <Link tabLink="#tab-1" tabLinkActive>Tab 1</Link>
-                <Link tabLink="#tab-2">Tab 2</Link>
-                <Link tabLink="#tab-3">Tab 3</Link>
-              </Toolbar>
-              <Tabs swipeable>
-                <Tab id="tab-1" class="page-content" tabActive>
-                  <Block>
-                    <p>Tab 1 content</p>
-                    ...
-                  </Block>
-                </Tab>
-                <Tab id="tab-2" class="page-content">
-                  <Block>
-                    <p>Tab 2 content</p>
-                    ...
-                  </Block>
-                </Tab>
-                <Tab id="tab-3" class="page-content">
-                  <Block>
-                    <p>Tab 3 content</p>
-                    ...
-                  </Block>
-                </Tab>
-              </Tabs>
-            </Page>
+      include:svelteSource ../docs-demos/svelte/tabs-swipeable.svelte

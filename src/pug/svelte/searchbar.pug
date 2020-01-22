@@ -294,7 +294,18 @@ block content
       </form>
 
     h2 Access To Searchbar Instance
-    p If you use automatic initalization to init Searchbar (with `init={true}` prop) and need to use Searchbar API you can access its initialized instance by accessing `.f7Searchbar` component's property.
+    p If you use automatic initalization to init Searchbar (with `init={true}` prop) and need to use Searchbar API you can access its initialized instance by calling `.instance()` component's method. For example:
+    ```svelte
+      <Searchbar bind:this={component}>...</Searchbar>
+
+      <script>
+        let component;
+
+        // to get instance in some method
+        component.instance()
+      </script>
+    ```
+
 
     .with-device
       h2 Examples
