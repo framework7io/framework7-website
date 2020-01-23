@@ -96,6 +96,7 @@ function parseFolder(folder, docs) {
 parseFolder('docs', 'Framework7 API');
 parseFolder('vue', 'Framework7 Vue');
 parseFolder('react', 'Framework7 React');
+parseFolder('svelte', 'Framework7 Svelte');
 
 fs.writeFileSync('./search-index.json', JSON.stringify(searchData, null, 2));
 

@@ -42,6 +42,7 @@
     "jsdom": "^13.2.0",
     "prismjs": "^1.18.0",
     "pug": "^2.0.3",
+    "remarkable": "^2.0.0",
     "rollup": "^1.29.0",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-svelte": "^5.1.1",

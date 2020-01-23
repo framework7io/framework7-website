@@ -19,6 +19,7 @@ const createIndex = require('./utils/create-index');
 const createMobilePreviewLinks = require('./utils/create-mobile-preview-links');
 const createInlineCodeTags = require('./utils/create-inline-code-tags');
 const createCodeFilter = require('./utils/create-code-filter');
+const changelog = require('./utils/changelog');
 
 if (!pug.filter && !pug.filters.code) {
   pug.filters = {
@@ -62,6 +63,7 @@ function buildPages(cb, { src = ['**/*.pug', '!**/_*.pug', '!_*.pug', '!docs-dem
         getYamlData,
         inlineSvg,
         cssVars,
+        changelog,
       },
     }))
     .on('error', (err) => {
