@@ -52,34 +52,14 @@
   }
   .buttons {
     a {
-      background: @redColor;
-      color: #fff;
-      text-align: center;
-      box-sizing: border-box;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      .solid-button();
       min-width: 200px;
-      height: 60px;
-      font-size: 24px;
-      text-decoration: none;
-      border-radius: 44px;
-      transition: 200ms;
-      font-weight: bold;
-      padding: 0 30px;
-      box-shadow: 0px 10px 20px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.3);
       i {
         font-size: 34px;
         width: 1em;
         height: 1em;
         margin-right: 5px;
       }
-    }
-    a:hover {
-      box-shadow: 0px 10px 20px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.5);
-    }
-    a:active {
-      box-shadow: 0px 5px 10px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.2);
     }
   }
 
@@ -367,8 +347,6 @@
   .home-header {
     .logo-title {
       max-width: 320px;
-    }
-    .buttons, .links, .release-info {
     }
     .slogan {
       font-size: 34px;
