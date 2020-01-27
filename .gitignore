@@ -5,6 +5,7 @@ node_modules/
 public/css/main.css
 public/js/main.js
 public/js/main.js.map
+public/changelog/*.html
 public/contribute/index.html
 public/cli/*.html
 public/docs/*.html
