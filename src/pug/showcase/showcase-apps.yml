@@ -28,8 +28,6 @@
   - "#{cdn}/i/showcase/godial5.jpg"
 ##########
 -
-##########
--
   iconUrl: "#{cdn}/i/showcase/FitnessPets-icon-1024.png"
   iconRounded: true
   title: "Fitness Pets - The less serious fitness tracker"
