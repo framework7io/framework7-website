@@ -1,13 +1,13 @@
 /**
- * Framework7 5.3.2
+ * Framework7 5.4.0
  * Full featured mobile HTML framework for building iOS & Android apps
- * http://framework7.io/
+ * https://framework7.io/
  *
  * Copyright 2014-2020 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: January 18, 2020
+ * Released on: January 29, 2020
  */
 
 (function (global, factory) {
@@ -3511,12 +3511,14 @@
       };
 
       // Init
-      if (Device.cordova && app.params.initOnDeviceReady) {
-        $(doc).on('deviceready', function () {
+      if (app.params.init) {
+        if (Device.cordova && app.params.initOnDeviceReady) {
+          $(doc).on('deviceready', function () {
+            app.init();
+          });
+        } else {
           app.init();
-        });
-      } else {
-        app.init();
+        }
       }
 
       // Return app instance
@@ -17540,10 +17542,20 @@
       var progress;
       var isV;
       var isH;
+      var $cardScrollableEl;
       function onTouchStart(e) {
         if (!$(e.target).closest($cardEl).length) { return; }
         if (!$cardEl.hasClass('card-opened')) { return; }
-        cardScrollTop = $cardContentEl.scrollTop();
+        $cardScrollableEl = $cardEl.find(cardParams.scrollableEl);
+
+        if ($cardScrollableEl[0]
+          && $cardScrollableEl[0] !== $cardContentEl[0]
+          && !$cardScrollableEl[0].contains(e.target)
+        ) {
+          cardScrollTop = 0;
+        } else {
+          cardScrollTop = $cardScrollableEl.scrollTop();
+        }
         isTouched = true;
         touchStartX = e.targetTouches[0].pageX;
         touchStartY = e.targetTouches[0].pageY;
@@ -17578,9 +17590,9 @@
         isMoved = true;
         progress = isV ? Math.max((touchEndY - touchStartY) / 150, 0) : Math.max((touchEndX - touchStartX) / (cardWidth / 2), 0);
         if ((progress > 0 && isV) || isH) {
-          if (isV && app.device.ios) {
-            $cardContentEl.css('-webkit-overflow-scrolling', 'auto');
-            $cardContentEl.scrollTop(0);
+          if (isV && app.device.ios && $cardScrollableEl[0] === $cardContentEl[0]) {
+            $cardScrollableEl.css('-webkit-overflow-scrolling', 'auto');
+            $cardScrollableEl.scrollTop(0);
           }
           e.preventDefault();
         }
@@ -17599,7 +17611,7 @@
         isTouched = false;
         isMoved = false;
         if (app.device.ios) {
-          $cardContentEl.css('-webkit-overflow-scrolling', '');
+          $cardScrollableEl.css('-webkit-overflow-scrolling', '');
         }
         if (progress >= 0.8) {
           app.card.close($cardEl);
@@ -17642,6 +17654,7 @@
       if (!$pageEl.length) { return; }
 
       var cardParams = Object.assign({ animate: animate }, app.params.card, $cardEl.dataset());
+      var $cardScrollableEl = $cardEl.find(cardParams.scrollableEl);
 
       var $navbarEl;
       var $toolbarEl;
@@ -17725,6 +17738,9 @@
       $cardContentEl
         .transform('')
         .scrollTop(0, animate ? 300 : 0);
+      if ($cardScrollableEl.length && $cardScrollableEl[0] !== $cardContentEl[0]) {
+        $cardScrollableEl.scrollTop(0, animate ? 300 : 0);
+      }
       if (animate) {
         $cardContentEl.transitionEnd(function () {
           transitionEnd();
@@ -17759,6 +17775,7 @@
         hideNavbarOnOpen: true,
         hideStatusbarOnOpen: true,
         hideToolbarOnOpen: true,
+        scrollableEl: '.card-content',
         swipeToClose: true,
         closeByBackdropClick: true,
         backdrop: true,
@@ -19932,9 +19949,6 @@
         }
       }
 
-      // View
-      var view;
-
       // Url
       var url = params.url;
       if (!url) {
@@ -19958,7 +19972,6 @@
         multiple: multiple,
         inputType: inputType,
         id: id,
-        view: view,
         inputName: (inputType + "-" + id),
         selectName: $selectEl.attr('name'),
         maxLength: $selectEl.attr('maxlength') || params.maxLength,
@@ -20047,6 +20060,8 @@
     SmartSelect.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     SmartSelect.prototype.constructor = SmartSelect;
 
+    var prototypeAccessors = { view: { configurable: true } };
+
     SmartSelect.prototype.setValue = function setValue (value) {
       var ss = this;
       var newValue = value;
@@ -20107,16 +20122,20 @@
       return ss.$selectEl.val();
     };
 
-    SmartSelect.prototype.getView = function getView () {
-      var ss = this;
-      var view = ss.view || ss.params.view;
-      if (!view) {
-        view = ss.$el.parents('.view').length && ss.$el.parents('.view')[0].f7View;
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var params = ref.params;
+      var $el = ref.$el;
+      var view;
+      if (params.view) {
+        view = params.view;
       }
       if (!view) {
+        view = $el.parents('.view').length && $el.parents('.view')[0].f7View;
+      }
+      if (!view && params.openIn === 'page') {
         throw Error('Smart Select requires initialized View');
       }
-      ss.view = view;
       return view;
     };
 
@@ -20449,9 +20468,8 @@
       if (ss.opened) { return ss; }
       ss.getItemsData();
       var pageHtml = ss.renderPage(ss.items);
-      var view = ss.getView();
 
-      view.router.navigate({
+      ss.view.router.navigate({
         url: ss.url,
         route: {
           content: pageHtml,
@@ -20501,9 +20519,8 @@
         },
       };
 
-      if (ss.params.routableModals) {
-        var view = ss.getView();
-        view.router.navigate({
+      if (ss.params.routableModals && ss.view) {
+        ss.view.router.navigate({
           url: ss.url,
           route: {
             path: ss.url,
@@ -20545,9 +20562,8 @@
         },
       };
 
-      if (ss.params.routableModals) {
-        var view = ss.getView();
-        view.router.navigate({
+      if (ss.params.routableModals && ss.view) {
+        ss.view.router.navigate({
           url: ss.url,
           route: {
             path: ss.url,
@@ -20583,9 +20599,8 @@
           },
         },
       };
-      if (ss.params.routableModals) {
-        var view = ss.getView();
-        view.router.navigate({
+      if (ss.params.routableModals && ss.view) {
+        ss.view.router.navigate({
           url: ss.url,
           route: {
             path: ss.url,
@@ -20621,9 +20636,8 @@
     SmartSelect.prototype.close = function close () {
       var ss = this;
       if (!ss.opened) { return ss; }
-      if (ss.params.routableModals || ss.openedIn === 'page') {
-        var view = ss.getView();
-        view.router.back();
+      if ((ss.params.routableModals && ss.view) || ss.openedIn === 'page') {
+        ss.view.router.back();
       } else {
         ss.modal.once('modalClosed', function () {
           Utils.nextTick(function () {
@@ -20652,6 +20666,8 @@
       Utils.deleteProps(ss);
       ss.destroyed = true;
     };
+
+    Object.defineProperties( SmartSelect.prototype, prototypeAccessors );
 
     return SmartSelect;
   }(Framework7Class));
@@ -21003,12 +21019,6 @@
         $inputEl = $(calendar.params.inputEl);
       }
 
-      var view;
-      if ($inputEl) {
-        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
-      }
-      if (!view) { view = app.views.main; }
-
       var isHorizontal = calendar.params.direction === 'horizontal';
 
       var inverter = 1;
@@ -21028,7 +21038,6 @@
         url: calendar.params.url,
         isHorizontal: isHorizontal,
         inverter: inverter,
-        view: view,
         animating: false,
         hasTimePicker: calendar.params.timePicker && !calendar.params.rangePicker && !calendar.params.multiple,
       });
@@ -21386,6 +21395,23 @@
     if ( Framework7Class ) Calendar.__proto__ = Framework7Class;
     Calendar.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Calendar.prototype.constructor = Calendar;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var $inputEl = ref.$inputEl;
+      var app = ref.app;
+      var params = ref.params;
+      var view;
+      if (params.view) {
+        view = params.view;
+      } else if ($inputEl) {
+        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+      }
+      if (!view) { view = app.views.main; }
+      return view;
+    };
 
     Calendar.prototype.getIntlNames = function getIntlNames () {
       var calendar = this;
@@ -22646,7 +22672,7 @@
         modalParams.push = params.sheetPush;
         modalParams.swipeToClose = params.sheetSwipeToClose;
       }
-      if (params.routableModals) {
+      if (params.routableModals && calendar.view) {
         calendar.view.router.navigate({
           url: calendar.url,
           route: ( obj = {
@@ -22669,7 +22695,7 @@
         calendar.onClosed();
         return;
       }
-      if (calendar.params.routableModals) {
+      if (calendar.params.routableModals && calendar.view) {
         calendar.view.router.back();
       } else {
         calendar.modal.close();
@@ -22727,6 +22753,8 @@
       Utils.deleteProps(calendar);
       calendar.destroyed = true;
     };
+
+    Object.defineProperties( Calendar.prototype, prototypeAccessors );
 
     return Calendar;
   }(Framework7Class));
@@ -23207,11 +23235,14 @@
         $inputEl = $(picker.params.inputEl);
       }
 
-      var view;
-      if ($inputEl) {
-        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+
+      var $scrollToEl = picker.params.scrollToInput ? $inputEl : undefined;
+      if (picker.params.scrollToEl) {
+        var scrollToEl = $(picker.params.scrollToEl);
+        if (scrollToEl.length > 0) {
+          $scrollToEl = scrollToEl;
+        }
       }
-      if (!view) { view = app.views.main; }
 
       Utils.extend(picker, {
         app: app,
@@ -23222,10 +23253,10 @@
         cols: [],
         $inputEl: $inputEl,
         inputEl: $inputEl && $inputEl[0],
+        $scrollToEl: $scrollToEl,
         initialized: false,
         opened: false,
         url: picker.params.url,
-        view: view,
       });
 
       function onResize() {
@@ -23288,6 +23319,23 @@
     if ( Framework7Class ) Picker.__proto__ = Framework7Class;
     Picker.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Picker.prototype.constructor = Picker;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var app = ref.app;
+      var params = ref.params;
+      var $inputEl = ref.$inputEl;
+      var view;
+      if (params.view) {
+        view = params.view;
+      } else if ($inputEl) {
+        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+      }
+      if (!view) { view = app.views.main; }
+      return view;
+    };
 
     Picker.prototype.initInput = function initInput () {
       var picker = this;
@@ -23600,6 +23648,7 @@
       var opened = picker.opened;
       var inline = picker.inline;
       var $inputEl = picker.$inputEl;
+      var $scrollToEl = picker.$scrollToEl;
       var params = picker.params;
       if (opened) { return; }
       if (picker.cols.length === 0 && params.cols.length) {
@@ -23619,7 +23668,7 @@
       var modalType = isPopover ? 'popover' : 'sheet';
       var modalParams = {
         targetEl: $inputEl,
-        scrollToEl: params.scrollToInput ? $inputEl : undefined,
+        scrollToEl: $scrollToEl,
         content: picker.render(),
         backdrop: typeof params.backdrop !== 'undefined' ? params.backdrop : isPopover,
         on: {
@@ -23639,7 +23688,7 @@
         modalParams.push = params.sheetPush;
         modalParams.swipeToClose = params.sheetSwipeToClose;
       }
-      if (params.routableModals) {
+      if (params.routableModals && picker.view) {
         picker.view.router.navigate({
           url: picker.url,
           route: ( obj = {
@@ -23662,7 +23711,7 @@
         picker.onClosed();
         return;
       }
-      if (picker.params.routableModals) {
+      if (picker.params.routableModals && picker.view) {
         picker.view.router.back();
       } else {
         picker.modal.close();
@@ -23716,6 +23765,8 @@
       picker.destroyed = true;
     };
 
+    Object.defineProperties( Picker.prototype, prototypeAccessors );
+
     return Picker;
   }(Framework7Class));
 
@@ -23764,6 +23815,7 @@
         inputReadOnly: true,
         closeByOutsideClick: true,
         scrollToInput: true,
+        scrollToEl: undefined,
         toolbar: true,
         toolbarCloseText: 'Done',
         cssClass: null,
@@ -34116,7 +34168,6 @@
         opened: false,
         activeIndex: pb.params.swiper.initialSlide,
         url: pb.params.url,
-        view: pb.params.view || app.views.main,
         swipeToClose: {
           allow: true,
           isTouched: false,
@@ -34139,6 +34190,15 @@
     if ( Framework7Class ) PhotoBrowser.__proto__ = Framework7Class;
     PhotoBrowser.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     PhotoBrowser.prototype.constructor = PhotoBrowser;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var params = ref.params;
+      var app = ref.app;
+      return params.view || app.views.main;
+    };
 
     PhotoBrowser.prototype.onSlideChange = function onSlideChange (swiper) {
       var pb = this;
@@ -34588,7 +34648,7 @@
         },
       };
 
-      if (pb.params.routableModals) {
+      if (pb.params.routableModals && pb.view) {
         pb.view.router.navigate({
           url: pb.url,
           route: {
@@ -34627,7 +34687,7 @@
         },
       };
 
-      if (pb.params.routableModals) {
+      if (pb.params.routableModals && pb.view) {
         pb.view.router.navigate({
           url: pb.url,
           route: {
@@ -34702,8 +34762,8 @@
     PhotoBrowser.prototype.close = function close () {
       var pb = this;
       if (!pb.opened) { return pb; }
-      if (pb.params.routableModals || pb.openedIn === 'page') {
-        if (pb.view) { pb.view.router.back(); }
+      if ((pb.params.routableModals && pb.view) || pb.openedIn === 'page') {
+        pb.view.router.back();
       } else {
         pb.modal.once('modalClosed', function () {
           Utils.nextTick(function () {
@@ -34731,6 +34791,8 @@
       pb.destroyed = true;
       pb = null;
     };
+
+    Object.defineProperties( PhotoBrowser.prototype, prototypeAccessors );
 
     return PhotoBrowser;
   }(Framework7Class));
@@ -35083,15 +35145,6 @@
         if ($inputEl.length) { $inputEl[0].f7Autocomplete = ac; }
       }
 
-      var view;
-      if (ac.params.view) {
-        view = ac.params.view;
-      } else if ($openerEl || $inputEl) {
-        var $el = $openerEl || $inputEl;
-        view = $el.closest('.view').length && $el.closest('.view')[0].f7View;
-      }
-      if (!view) { view = app.views.main; }
-
       var id = Utils.id();
 
       var url = params.url;
@@ -35111,7 +35164,6 @@
         $inputEl: $inputEl,
         inputEl: $inputEl && $inputEl[0],
         id: id,
-        view: view,
         url: url,
         value: ac.params.value || [],
         inputType: inputType,
@@ -35377,6 +35429,24 @@
     if ( Framework7Class ) Autocomplete.__proto__ = Framework7Class;
     Autocomplete.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Autocomplete.prototype.constructor = Autocomplete;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ac = this;
+      var $openerEl = ac.$openerEl;
+      var $inputEl = ac.$inputEl;
+      var app = ac.app;
+      var view;
+      if (ac.params.view) {
+        view = ac.params.view;
+      } else if ($openerEl || $inputEl) {
+        var $el = $openerEl || $inputEl;
+        view = $el.closest('.view').length && $el.closest('.view')[0].f7View;
+      }
+      if (!view) { view = app.views.main; }
+      return view;
+    };
 
     Autocomplete.prototype.positionDropdown = function positionDropdown () {
       var obj;
@@ -35730,7 +35800,7 @@
         },
       };
 
-      if (ac.params.routableModals) {
+      if (ac.params.routableModals && ac.view) {
         ac.view.router.navigate({
           url: ac.url,
           route: {
@@ -35785,7 +35855,7 @@
       if (ac.params.openIn === 'dropdown') {
         ac.onClose();
         ac.onClosed();
-      } else if (ac.params.routableModals || ac.openedIn === 'page') {
+      } else if ((ac.params.routableModals && ac.view) || ac.openedIn === 'page') {
         ac.view.router.back({ animate: ac.params.animate });
       } else {
         ac.modal.once('modalClosed', function () {
@@ -35818,6 +35888,8 @@
       Utils.deleteProps(ac);
       ac.destroyed = true;
     };
+
+    Object.defineProperties( Autocomplete.prototype, prototypeAccessors );
 
     return Autocomplete;
   }(Framework7Class));
@@ -37829,15 +37901,6 @@
         $targetEl = $(self.params.targetEl);
       }
 
-      var view;
-      if ($inputEl) {
-        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
-      }
-      if (!view && $targetEl) {
-        view = $targetEl.parents('.view').length && $targetEl.parents('.view')[0].f7View;
-      }
-      if (!view) { view = app.views.main; }
-
       Utils.extend(self, {
         app: app,
         $containerEl: $containerEl,
@@ -37850,7 +37913,6 @@
         initialized: false,
         opened: false,
         url: self.params.url,
-        view: view,
         modules: {
           'alpha-slider': moduleAlphaSlider,
           'current-color': moduleCurrentColor,
@@ -37929,6 +37991,30 @@
     if ( Framework7Class ) ColorPicker.__proto__ = Framework7Class;
     ColorPicker.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     ColorPicker.prototype.constructor = ColorPicker;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var $inputEl = ref.$inputEl;
+      var $targetEl = ref.$targetEl;
+      var app = ref.app;
+      var params = ref.params;
+      var view;
+      if (params.view) {
+        view = params.view;
+      } else {
+        if ($inputEl) {
+          view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+        }
+        if (!view && $targetEl) {
+          view = $targetEl.parents('.view').length && $targetEl.parents('.view')[0].f7View;
+        }
+      }
+      if (!view) { view = app.views.main; }
+
+      return view;
+    };
 
     ColorPicker.prototype.attachEvents = function attachEvents () {
       var self = this;
@@ -38525,7 +38611,7 @@
           modalParams.push = params.sheetPush;
           modalParams.swipeToClose = params.sheetSwipeToClose;
         }
-        if (params.routableModals) {
+        if (params.routableModals && self.view) {
           self.view.router.navigate({
             url: self.url,
             route: ( obj = {
@@ -38549,7 +38635,7 @@
         self.onClosed();
         return;
       }
-      if (self.params.routableModals) {
+      if ((self.params.routableModals && self.view) || self.params.openIn === 'page') {
         self.view.router.back();
       } else {
         self.modal.close();
@@ -38609,6 +38695,8 @@
       Utils.deleteProps(self);
       self.destroyed = true;
     };
+
+    Object.defineProperties( ColorPicker.prototype, prototypeAccessors );
 
     return ColorPicker;
   }(Framework7Class));
@@ -39621,15 +39709,15 @@
   };
 
   /**
-   * Framework7 5.3.2
+   * Framework7 5.4.0
    * Full featured mobile HTML framework for building iOS & Android apps
-   * http://framework7.io/
+   * https://framework7.io/
    *
    * Copyright 2014-2020 Vladimir Kharlampidi
    *
    * Released under the MIT License
    *
-   * Released on: January 18, 2020
+   * Released on: January 29, 2020
    */
 
   // Install Core Modules & Components

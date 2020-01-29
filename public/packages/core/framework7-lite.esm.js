@@ -1,13 +1,13 @@
 /**
- * Framework7 5.3.2
+ * Framework7 5.4.0
  * Full featured mobile HTML framework for building iOS & Android apps
- * http://framework7.io/
+ * https://framework7.io/
  *
  * Copyright 2014-2020 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: January 18, 2020
+ * Released on: January 29, 2020
  */
 
 import Template7 from 'template7';

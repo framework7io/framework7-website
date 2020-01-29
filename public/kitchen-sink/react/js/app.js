@@ -12644,12 +12644,14 @@
 	    }; // Init
 
 
-	    if (Device.cordova && app.params.initOnDeviceReady) {
-	      $(doc).on('deviceready', function () {
+	    if (app.params.init) {
+	      if (Device.cordova && app.params.initOnDeviceReady) {
+	        $(doc).on('deviceready', function () {
+	          app.init();
+	        });
+	      } else {
 	        app.init();
-	      });
-	    } else {
-	      app.init();
+	      }
 	    } // Return app instance
 
 
@@ -29752,11 +29754,19 @@
 	    var progress;
 	    var isV;
 	    var isH;
+	    var $cardScrollableEl;
 
 	    function onTouchStart(e) {
 	      if (!$(e.target).closest($cardEl).length) return;
 	      if (!$cardEl.hasClass('card-opened')) return;
-	      cardScrollTop = $cardContentEl.scrollTop();
+	      $cardScrollableEl = $cardEl.find(cardParams.scrollableEl);
+
+	      if ($cardScrollableEl[0] && $cardScrollableEl[0] !== $cardContentEl[0] && !$cardScrollableEl[0].contains(e.target)) {
+	        cardScrollTop = 0;
+	      } else {
+	        cardScrollTop = $cardScrollableEl.scrollTop();
+	      }
+
 	      isTouched = true;
 	      touchStartX = e.targetTouches[0].pageX;
 	      touchStartY = e.targetTouches[0].pageY;
@@ -29796,9 +29806,9 @@
 	      progress = isV ? Math.max((touchEndY - touchStartY) / 150, 0) : Math.max((touchEndX - touchStartX) / (cardWidth / 2), 0);
 
 	      if (progress > 0 && isV || isH) {
-	        if (isV && app.device.ios) {
-	          $cardContentEl.css('-webkit-overflow-scrolling', 'auto');
-	          $cardContentEl.scrollTop(0);
+	        if (isV && app.device.ios && $cardScrollableEl[0] === $cardContentEl[0]) {
+	          $cardScrollableEl.css('-webkit-overflow-scrolling', 'auto');
+	          $cardScrollableEl.scrollTop(0);
 	        }
 
 	        e.preventDefault();
@@ -29821,7 +29831,7 @@
 	      isMoved = false;
 
 	      if (app.device.ios) {
-	        $cardContentEl.css('-webkit-overflow-scrolling', '');
+	        $cardScrollableEl.css('-webkit-overflow-scrolling', '');
 	      }
 
 	      if (progress >= 0.8) {
@@ -29863,6 +29873,7 @@
 	    var cardParams = Object.assign({
 	      animate: animate
 	    }, app.params.card, $cardEl.dataset());
+	    var $cardScrollableEl = $cardEl.find(cardParams.scrollableEl);
 	    var $navbarEl;
 	    var $toolbarEl;
 	    var $backdropEl;
@@ -29952,6 +29963,10 @@
 
 	    $cardContentEl.transform('').scrollTop(0, animate ? 300 : 0);
 
+	    if ($cardScrollableEl.length && $cardScrollableEl[0] !== $cardContentEl[0]) {
+	      $cardScrollableEl.scrollTop(0, animate ? 300 : 0);
+	    }
+
 	    if (animate) {
 	      $cardContentEl.transitionEnd(function () {
 	        transitionEnd();
@@ -29986,6 +30001,7 @@
 	      hideNavbarOnOpen: true,
 	      hideStatusbarOnOpen: true,
 	      hideToolbarOnOpen: true,
+	      scrollableEl: '.card-content',
 	      swipeToClose: true,
 	      closeByBackdropClick: true,
 	      backdrop: true
@@ -32345,10 +32361,8 @@
 	        $valueEl = $('<div class="item-after"></div>');
 	        $valueEl.insertAfter($el.find('.item-title'));
 	      }
-	    } // View
+	    } // Url
 
-
-	    var view; // Url
 
 	    var url = params.url;
 
@@ -32371,7 +32385,6 @@
 	      multiple: multiple,
 	      inputType: inputType,
 	      id: id,
-	      view: view,
 	      inputName: "".concat(inputType, "-").concat(id),
 	      selectName: $selectEl.attr('name'),
 	      maxLength: $selectEl.attr('maxlength') || params.maxLength
@@ -32537,23 +32550,6 @@
 	    value: function getValue() {
 	      var ss = this;
 	      return ss.$selectEl.val();
-	    }
-	  }, {
-	    key: "getView",
-	    value: function getView() {
-	      var ss = this;
-	      var view = ss.view || ss.params.view;
-
-	      if (!view) {
-	        view = ss.$el.parents('.view').length && ss.$el.parents('.view')[0].f7View;
-	      }
-
-	      if (!view) {
-	        throw Error('Smart Select requires initialized View');
-	      }
-
-	      ss.view = view;
-	      return view;
 	    }
 	  }, {
 	    key: "checkMaxLength",
@@ -32919,8 +32915,7 @@
 	      if (ss.opened) return ss;
 	      ss.getItemsData();
 	      var pageHtml = ss.renderPage(ss.items);
-	      var view = ss.getView();
-	      view.router.navigate({
+	      ss.view.router.navigate({
 	        url: ss.url,
 	        route: {
 	          content: pageHtml,
@@ -32970,9 +32965,8 @@
 	        }
 	      };
 
-	      if (ss.params.routableModals) {
-	        var view = ss.getView();
-	        view.router.navigate({
+	      if (ss.params.routableModals && ss.view) {
+	        ss.view.router.navigate({
 	          url: ss.url,
 	          route: {
 	            path: ss.url,
@@ -33015,9 +33009,8 @@
 	        }
 	      };
 
-	      if (ss.params.routableModals) {
-	        var view = ss.getView();
-	        view.router.navigate({
+	      if (ss.params.routableModals && ss.view) {
+	        ss.view.router.navigate({
 	          url: ss.url,
 	          route: {
 	            path: ss.url,
@@ -33056,9 +33049,8 @@
 	        }
 	      };
 
-	      if (ss.params.routableModals) {
-	        var view = ss.getView();
-	        view.router.navigate({
+	      if (ss.params.routableModals && ss.view) {
+	        ss.view.router.navigate({
 	          url: ss.url,
 	          route: {
 	            path: ss.url,
@@ -33103,9 +33095,8 @@
 	      var ss = this;
 	      if (!ss.opened) return ss;
 
-	      if (ss.params.routableModals || ss.openedIn === 'page') {
-	        var view = ss.getView();
-	        view.router.back();
+	      if (ss.params.routableModals && ss.view || ss.openedIn === 'page') {
+	        ss.view.router.back();
 	      } else {
 	        ss.modal.once('modalClosed', function () {
 	          Utils.nextTick(function () {
@@ -33136,6 +33127,27 @@
 	      delete ss.$el[0].f7SmartSelect;
 	      Utils.deleteProps(ss);
 	      ss.destroyed = true;
+	    }
+	  }, {
+	    key: "view",
+	    get: function get() {
+	      var params = this.params,
+	          $el = this.$el;
+	      var view;
+
+	      if (params.view) {
+	        view = params.view;
+	      }
+
+	      if (!view) {
+	        view = $el.parents('.view').length && $el.parents('.view')[0].f7View;
+	      }
+
+	      if (!view && params.openIn === 'page') {
+	        throw Error('Smart Select requires initialized View');
+	      }
+
+	      return view;
 	    }
 	  }]);
 
@@ -33525,13 +33537,6 @@
 	      $inputEl = $(calendar.params.inputEl);
 	    }
 
-	    var view;
-
-	    if ($inputEl) {
-	      view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
-	    }
-
-	    if (!view) view = app.views.main;
 	    var isHorizontal = calendar.params.direction === 'horizontal';
 	    var inverter = 1;
 
@@ -33551,7 +33556,6 @@
 	      url: calendar.params.url,
 	      isHorizontal: isHorizontal,
 	      inverter: inverter,
-	      view: view,
 	      animating: false,
 	      hasTimePicker: calendar.params.timePicker && !calendar.params.rangePicker && !calendar.params.multiple
 	    });
@@ -35331,7 +35335,7 @@
 	        modalParams.swipeToClose = params.sheetSwipeToClose;
 	      }
 
-	      if (params.routableModals) {
+	      if (params.routableModals && calendar.view) {
 	        calendar.view.router.navigate({
 	          url: calendar.url,
 	          route: _defineProperty({
@@ -35357,7 +35361,7 @@
 	        return;
 	      }
 
-	      if (calendar.params.routableModals) {
+	      if (calendar.params.routableModals && calendar.view) {
 	        calendar.view.router.back();
 	      } else {
 	        calendar.modal.close();
@@ -35416,6 +35420,23 @@
 	      if ($el && $el.length) delete calendar.$el[0].f7Calendar;
 	      Utils.deleteProps(calendar);
 	      calendar.destroyed = true;
+	    }
+	  }, {
+	    key: "view",
+	    get: function get() {
+	      var $inputEl = this.$inputEl,
+	          app = this.app,
+	          params = this.params;
+	      var view;
+
+	      if (params.view) {
+	        view = params.view;
+	      } else if ($inputEl) {
+	        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+	      }
+
+	      if (!view) view = app.views.main;
+	      return view;
 	    }
 	  }]);
 
@@ -35935,13 +35956,16 @@
 	      $inputEl = $(picker.params.inputEl);
 	    }
 
-	    var view;
+	    var $scrollToEl = picker.params.scrollToInput ? $inputEl : undefined;
 
-	    if ($inputEl) {
-	      view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+	    if (picker.params.scrollToEl) {
+	      var scrollToEl = $(picker.params.scrollToEl);
+
+	      if (scrollToEl.length > 0) {
+	        $scrollToEl = scrollToEl;
+	      }
 	    }
 
-	    if (!view) view = app.views.main;
 	    Utils.extend(picker, {
 	      app: app,
 	      $containerEl: $containerEl,
@@ -35951,10 +35975,10 @@
 	      cols: [],
 	      $inputEl: $inputEl,
 	      inputEl: $inputEl && $inputEl[0],
+	      $scrollToEl: $scrollToEl,
 	      initialized: false,
 	      opened: false,
-	      url: picker.params.url,
-	      view: view
+	      url: picker.params.url
 	    });
 
 	    function onResize() {
@@ -36376,6 +36400,7 @@
 	          opened = picker.opened,
 	          inline = picker.inline,
 	          $inputEl = picker.$inputEl,
+	          $scrollToEl = picker.$scrollToEl,
 	          params = picker.params;
 	      if (opened) return;
 
@@ -36398,7 +36423,7 @@
 	      var modalType = isPopover ? 'popover' : 'sheet';
 	      var modalParams = {
 	        targetEl: $inputEl,
-	        scrollToEl: params.scrollToInput ? $inputEl : undefined,
+	        scrollToEl: $scrollToEl,
 	        content: picker.render(),
 	        backdrop: typeof params.backdrop !== 'undefined' ? params.backdrop : isPopover,
 	        on: {
@@ -36426,7 +36451,7 @@
 	        modalParams.swipeToClose = params.sheetSwipeToClose;
 	      }
 
-	      if (params.routableModals) {
+	      if (params.routableModals && picker.view) {
 	        picker.view.router.navigate({
 	          url: picker.url,
 	          route: _defineProperty({
@@ -36452,7 +36477,7 @@
 	        return;
 	      }
 
-	      if (picker.params.routableModals) {
+	      if (picker.params.routableModals && picker.view) {
 	        picker.view.router.back();
 	      } else {
 	        picker.modal.close();
@@ -36507,6 +36532,23 @@
 	      Utils.deleteProps(picker);
 	      picker.destroyed = true;
 	    }
+	  }, {
+	    key: "view",
+	    get: function get() {
+	      var app = this.app,
+	          params = this.params,
+	          $inputEl = this.$inputEl;
+	      var view;
+
+	      if (params.view) {
+	        view = params.view;
+	      } else if ($inputEl) {
+	        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+	      }
+
+	      if (!view) view = app.views.main;
+	      return view;
+	    }
 	  }]);
 
 	  return Picker;
@@ -36559,6 +36601,7 @@
 	      inputReadOnly: true,
 	      closeByOutsideClick: true,
 	      scrollToInput: true,
+	      scrollToEl: undefined,
 	      toolbar: true,
 	      toolbarCloseText: 'Done',
 	      cssClass: null,
@@ -47398,7 +47441,6 @@
 	      opened: false,
 	      activeIndex: pb.params.swiper.initialSlide,
 	      url: pb.params.url,
-	      view: pb.params.view || app.views.main,
 	      swipeToClose: {
 	        allow: true,
 	        isTouched: false,
@@ -47900,7 +47942,7 @@
 	        }
 	      };
 
-	      if (pb.params.routableModals) {
+	      if (pb.params.routableModals && pb.view) {
 	        pb.view.router.navigate({
 	          url: pb.url,
 	          route: {
@@ -47939,7 +47981,7 @@
 	        }
 	      };
 
-	      if (pb.params.routableModals) {
+	      if (pb.params.routableModals && pb.view) {
 	        pb.view.router.navigate({
 	          url: pb.url,
 	          route: {
@@ -48034,8 +48076,8 @@
 	      var pb = this;
 	      if (!pb.opened) return pb;
 
-	      if (pb.params.routableModals || pb.openedIn === 'page') {
-	        if (pb.view) pb.view.router.back();
+	      if (pb.params.routableModals && pb.view || pb.openedIn === 'page') {
+	        pb.view.router.back();
 	      } else {
 	        pb.modal.once('modalClosed', function () {
 	          Utils.nextTick(function () {
@@ -48068,6 +48110,13 @@
 	      Utils.deleteProps(pb);
 	      pb.destroyed = true;
 	      pb = null;
+	    }
+	  }, {
+	    key: "view",
+	    get: function get() {
+	      var params = this.params,
+	          app = this.app;
+	      return params.view || app.views.main;
 	    }
 	  }]);
 
@@ -48446,16 +48495,6 @@
 	      if ($inputEl.length) $inputEl[0].f7Autocomplete = ac;
 	    }
 
-	    var view;
-
-	    if (ac.params.view) {
-	      view = ac.params.view;
-	    } else if ($openerEl || $inputEl) {
-	      var $el = $openerEl || $inputEl;
-	      view = $el.closest('.view').length && $el.closest('.view')[0].f7View;
-	    }
-
-	    if (!view) view = app.views.main;
 	    var id = Utils.id();
 	    var url = params.url;
 
@@ -48473,7 +48512,6 @@
 	      $inputEl: $inputEl,
 	      inputEl: $inputEl && $inputEl[0],
 	      id: id,
-	      view: view,
 	      url: url,
 	      value: ac.params.value || [],
 	      inputType: inputType,
@@ -49152,7 +49190,7 @@
 	        }
 	      };
 
-	      if (ac.params.routableModals) {
+	      if (ac.params.routableModals && ac.view) {
 	        ac.view.router.navigate({
 	          url: ac.url,
 	          route: {
@@ -49216,7 +49254,7 @@
 	      if (ac.params.openIn === 'dropdown') {
 	        ac.onClose();
 	        ac.onClosed();
-	      } else if (ac.params.routableModals || ac.openedIn === 'page') {
+	      } else if (ac.params.routableModals && ac.view || ac.openedIn === 'page') {
 	        ac.view.router.back({
 	          animate: ac.params.animate
 	        });
@@ -49256,6 +49294,25 @@
 
 	      Utils.deleteProps(ac);
 	      ac.destroyed = true;
+	    }
+	  }, {
+	    key: "view",
+	    get: function get() {
+	      var ac = this;
+	      var $openerEl = ac.$openerEl,
+	          $inputEl = ac.$inputEl,
+	          app = ac.app;
+	      var view;
+
+	      if (ac.params.view) {
+	        view = ac.params.view;
+	      } else if ($openerEl || $inputEl) {
+	        var $el = $openerEl || $inputEl;
+	        view = $el.closest('.view').length && $el.closest('.view')[0].f7View;
+	      }
+
+	      if (!view) view = app.views.main;
+	      return view;
 	    }
 	  }]);
 
@@ -51344,17 +51401,6 @@
 	      $targetEl = $(self.params.targetEl);
 	    }
 
-	    var view;
-
-	    if ($inputEl) {
-	      view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
-	    }
-
-	    if (!view && $targetEl) {
-	      view = $targetEl.parents('.view').length && $targetEl.parents('.view')[0].f7View;
-	    }
-
-	    if (!view) view = app.views.main;
 	    Utils.extend(self, {
 	      app: app,
 	      $containerEl: $containerEl,
@@ -51367,7 +51413,6 @@
 	      initialized: false,
 	      opened: false,
 	      url: self.params.url,
-	      view: view,
 	      modules: {
 	        'alpha-slider': moduleAlphaSlider,
 	        'current-color': moduleCurrentColor,
@@ -52111,7 +52156,7 @@
 	          modalParams.swipeToClose = params.sheetSwipeToClose;
 	        }
 
-	        if (params.routableModals) {
+	        if (params.routableModals && self.view) {
 	          self.view.router.navigate({
 	            url: self.url,
 	            route: _defineProperty({
@@ -52138,7 +52183,7 @@
 	        return;
 	      }
 
-	      if (self.params.routableModals) {
+	      if (self.params.routableModals && self.view || self.params.openIn === 'page') {
 	        self.view.router.back();
 	      } else {
 	        self.modal.close();
@@ -52202,6 +52247,30 @@
 	      if ($el && $el.length) delete self.$el[0].f7ColorPicker;
 	      Utils.deleteProps(self);
 	      self.destroyed = true;
+	    }
+	  }, {
+	    key: "view",
+	    get: function get() {
+	      var $inputEl = this.$inputEl,
+	          $targetEl = this.$targetEl,
+	          app = this.app,
+	          params = this.params;
+	      var view;
+
+	      if (params.view) {
+	        view = params.view;
+	      } else {
+	        if ($inputEl) {
+	          view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+	        }
+
+	        if (!view && $targetEl) {
+	          view = $targetEl.parents('.view').length && $targetEl.parents('.view')[0].f7View;
+	        }
+	      }
+
+	      if (!view) view = app.views.main;
+	      return view;
 	    }
 	  }]);
 
@@ -53288,15 +53357,15 @@
 	};
 
 	/**
-	 * Framework7 5.3.2
+	 * Framework7 5.4.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
-	 * http://framework7.io/
+	 * https://framework7.io/
 	 *
 	 * Copyright 2014-2020 Vladimir Kharlampidi
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: January 18, 2020
+	 * Released on: January 29, 2020
 	 */
 
 
@@ -53309,6 +53378,10 @@
 	ServiceWorkerModule, Statusbar$1, View$1, Navbar$1, Toolbar$1, Subnavbar, TouchRipple$1, Modal$1, Appbar, Dialog$1, Popup$1, LoginScreen$1, Popover$1, Actions$1, Sheet$1, Toast$1, Preloader$1, Progressbar$1, Sortable$1, Swipeout$1, Accordion$1, ContactsList, VirtualList$1, ListIndex$1, Timeline, Tabs, Panel$1, Card, Chip, Form, Input$1, Checkbox, Radio, Toggle$1, Range$1, Stepper$1, SmartSelect$1, Grid$1, Calendar$1, Picker$1, InfiniteScroll$1, PullToRefresh$1, Lazy$1, DataTable$1, Fab$1, Searchbar$1, Messages$1, Messagebar$1, Swiper$1, PhotoBrowser$1, Notification$1, Autocomplete$1, Tooltip$1, Gauge$1, Skeleton, Menu$1, ColorPicker$1, Treeview$1, TextEditor$1, Elevation, Typography, Vi$1]);
 
 	var Utils$1 = {
+	  text: function text(_text) {
+	    if (typeof _text === 'undefined' || _text === null) return '';
+	    return _text;
+	  },
 	  noUndefinedProps: function noUndefinedProps(obj) {
 	    var o = {};
 	    Object.keys(obj).forEach(function (key) {
@@ -54764,20 +54837,14 @@
 	  _inherits(F7Appbar, _React$Component);
 
 	  function F7Appbar(props, context) {
-	    var _this;
-
 	    _classCallCheck(this, F7Appbar);
 
-	    _this = _possibleConstructorReturn(this, _getPrototypeOf(F7Appbar).call(this, props, context));
-	    _this.__reactRefs = {};
-	    return _this;
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7Appbar).call(this, props, context));
 	  }
 
 	  _createClass(F7Appbar, [{
 	    key: "render",
 	    value: function render() {
-	      var _this2 = this;
-
 	      var self = this;
 	      var props = self.props;
 	      var inner = props.inner,
@@ -54792,9 +54859,6 @@
 
 	      if (inner) {
 	        innerEl = react.createElement('div', {
-	          ref: function ref(__reactNode) {
-	            _this2.__reactRefs['inner'] = __reactNode;
-	          },
 	          className: Utils$1.classNames('appbar-inner', innerClass, innerClassName)
 	        }, this.slots['default']);
 	      }
@@ -54804,9 +54868,6 @@
 	        'no-hairline': noHairline
 	      }, Mixins.colorClasses(props));
 	      return react.createElement('div', {
-	        ref: function ref(__reactNode) {
-	          _this2.__reactRefs['el'] = __reactNode;
-	        },
 	        id: id,
 	        style: style,
 	        className: classes
@@ -54817,12 +54878,6 @@
 	    get: function get() {
 	      return __reactComponentSlots(this.props);
 	    }
-	  }, {
-	    key: "refs",
-	    get: function get() {
-	      return this.__reactRefs;
-	    },
-	    set: function set(refs) {}
 	  }]);
 
 	  return F7Appbar;
@@ -55910,6 +55965,7 @@
 	          hideNavbarOnOpen = props.hideNavbarOnOpen,
 	          hideToolbarOnOpen = props.hideToolbarOnOpen,
 	          hideStatusbarOnOpen = props.hideStatusbarOnOpen,
+	          scrollableEl = props.scrollableEl,
 	          swipeToClose = props.swipeToClose,
 	          closeByBackdropClick = props.closeByBackdropClick,
 	          backdrop = props.backdrop,
@@ -55952,6 +56008,7 @@
 	        'data-hide-navbar-on-open': typeof hideNavbarOnOpen === 'undefined' ? hideNavbarOnOpen : hideNavbarOnOpen.toString(),
 	        'data-hide-toolbar-on-open': typeof hideToolbarOnOpen === 'undefined' ? hideToolbarOnOpen : hideToolbarOnOpen.toString(),
 	        'data-hide-statusbar-on-open': typeof hideStatusbarOnOpen === 'undefined' ? hideStatusbarOnOpen : hideStatusbarOnOpen.toString(),
+	        'data-scrollable-el': scrollableEl,
 	        'data-swipe-to-close': typeof swipeToClose === 'undefined' ? swipeToClose : swipeToClose.toString(),
 	        'data-close-by-backdrop-click': typeof closeByBackdropClick === 'undefined' ? closeByBackdropClick : closeByBackdropClick.toString(),
 	        'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString(),
@@ -56058,6 +56115,10 @@
 	  },
 	  hideStatusbarOnOpen: {
 	    type: Boolean,
+	    default: undefined
+	  },
+	  scrollableEl: {
+	    type: String,
 	    default: undefined
 	  },
 	  swipeToClose: {
@@ -56270,16 +56331,38 @@
 	          style = props.style,
 	          mediaTextColor = props.mediaTextColor,
 	          mediaBgColor = props.mediaBgColor,
-	          outline = props.outline;
+	          outline = props.outline,
+	          icon = props.icon,
+	          iconMaterial = props.iconMaterial,
+	          iconF7 = props.iconF7,
+	          iconMd = props.iconMd,
+	          iconIos = props.iconIos,
+	          iconAurora = props.iconAurora,
+	          iconColor = props.iconColor,
+	          iconSize = props.iconSize;
+	      var iconEl;
 	      var mediaEl;
 	      var labelEl;
 	      var deleteEl;
 
-	      if (media || self.slots && self.slots.media) {
+	      if (icon || iconMaterial || iconF7 || iconMd || iconIos || iconAurora) {
+	        iconEl = react.createElement(F7Icon, {
+	          material: iconMaterial,
+	          f7: iconF7,
+	          icon: icon,
+	          md: iconMd,
+	          ios: iconIos,
+	          aurora: iconAurora,
+	          color: iconColor,
+	          size: iconSize
+	        });
+	      }
+
+	      if (media || iconEl || self.slots && self.slots.media) {
 	        var mediaClasses = Utils$1.classNames('chip-media', mediaTextColor && "text-color-".concat(mediaTextColor), mediaBgColor && "bg-color-".concat(mediaBgColor));
 	        mediaEl = react.createElement('div', {
 	          className: mediaClasses
-	        }, media || this.slots['media']);
+	        }, iconEl, media, this.slots['media']);
 	      }
 
 	      if (text || self.slots && self.slots.text) {
@@ -56362,7 +56445,7 @@
 	  mediaBgColor: String,
 	  mediaTextColor: String,
 	  outline: Boolean
-	}, Mixins.colorProps));
+	}, Mixins.colorProps, {}, Mixins.linkIconProps));
 
 	F7Chip.displayName = 'f7-chip';
 
@@ -57176,8 +57259,7 @@
 	          el: self.refs.el,
 	          on: {
 	            change: function change(toggle) {
-	              var checked = toggle.checked;
-	              self.dispatchEvent('toggle:change toggleChange', checked);
+	              self.dispatchEvent('toggle:change toggleChange', toggle.checked);
 	            }
 	          }
 	        });
@@ -57565,7 +57647,6 @@
 	      var props = this.props;
 	      var mode = props.mode,
 	          value = props.value,
-	          palceholder = props.palceholder,
 	          buttons = props.buttons,
 	          customButtons = props.customButtons,
 	          dividers = props.dividers,
@@ -57577,7 +57658,6 @@
 	        el: this.refs.el,
 	        mode: mode,
 	        value: value,
-	        palceholder: palceholder,
 	        buttons: buttons,
 	        customButtons: customButtons,
 	        dividers: dividers,
@@ -58022,9 +58102,6 @@
 	        }, Mixins.colorClasses(props));
 	        return react.createElement('div', {
 	          id: id,
-	          ref: function ref(__reactNode) {
-	            _this2.__reactRefs['wrapEl'] = __reactNode;
-	          },
 	          className: wrapClasses,
 	          style: style
 	        }, inputEl, errorMessage && errorMessageForce && react.createElement('div', {
@@ -63153,7 +63230,7 @@
 	    }();
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onBackClick', 'onHide', 'onShow', 'onExpand', 'onCollapse', 'onNavbarPosition']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onBackClick', 'onHide', 'onShow', 'onExpand', 'onCollapse', 'onNavbarPosition', 'onNavbarRole', 'onNavbarMasterStack', 'onNavbarMasterUnstack']);
 	    })();
 
 	    return _this;
@@ -65579,7 +65656,7 @@
 	    key: "toggle",
 	    value: function toggle() {
 	      if (!this.f7Searchbar) return undefined;
-	      return this.toggle.disable();
+	      return this.f7Searchbar.toggle();
 	    }
 	  }, {
 	    key: "clear",
@@ -68577,15 +68654,16 @@
 	    Plugin.installed = true;
 	    var Framework7 = this;
 	    f7.Framework7 = Framework7;
-	    f7.events = new Framework7.Events();
-	    var Extend = params.React ? params.React.Component : react.Component; // eslint-disable-line
-	    // Define protos
+	    f7.events = new Framework7.Events(); // eslint-disable-next-line
+
+	    var Extend = params.React ? params.React.Component : react.Component; // DEFINE_INSTANCE_PROTOS_START
 
 	    Object.defineProperty(Extend.prototype, '$f7', {
 	      get: function get() {
 	        return f7.instance;
 	      }
-	    });
+	    }); // DEFINE_INSTANCE_PROTOS_END
+
 	    var theme = params.theme;
 	    if (theme === 'md') f7Theme.md = true;
 	    if (theme === 'ios') f7Theme.ios = true;
@@ -68601,7 +68679,8 @@
 	      f7Theme.ios = f7.instance.theme === 'ios';
 	      f7Theme.md = f7.instance.theme === 'md';
 	      f7Theme.aurora = f7.instance.theme === 'aurora';
-	    });
+	    }); // DEFINE_PROTOS_START
+
 	    Object.defineProperty(Extend.prototype, '$theme', {
 	      get: function get() {
 	        return {
@@ -68646,22 +68725,23 @@
 	        var self = this;
 	        self._f7router = value;
 	      }
-	    }); // Extend F7 Router
+	    }); // DEFINE_PROTOS_END
+	    // Extend F7 Router
 
 	    Framework7.Router.use(componentsRouter);
 	  }
 	};
 
 	/**
-	 * Framework7 React 5.3.2
+	 * Framework7 React 5.4.0
 	 * Build full featured iOS & Android apps using Framework7 & React
-	 * http://framework7.io/react/
+	 * https://framework7.io/react/
 	 *
 	 * Copyright 2014-2020 Vladimir Kharlampidi
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: January 18, 2020
+	 * Released on: January 29, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
@@ -69283,7 +69363,7 @@
 	    large: true,
 	    largeTransparent: true,
 	    title: "About",
-	    "title-large": "About",
+	    titleLarge: "About",
 	    backLink: "Framework7"
 	  }), react.createElement(BlockTitle, {
 	    medium: true
@@ -69750,7 +69830,7 @@
 	      var $ = self.$$; // Simple Dropdown
 
 	      self.autocompleteDropdownSimple = app.autocomplete.create({
-	        inputEl: '#autocomplete-dropdown input',
+	        inputEl: '#autocomplete-dropdown',
 	        openIn: 'dropdown',
 	        source: function source(query, render) {
 	          var results = [];
@@ -69771,7 +69851,7 @@
 	      }); // Dropdown with input expand
 
 	      self.autocompleteDropdownExpand = app.autocomplete.create({
-	        inputEl: '#autocomplete-dropdown-expand input',
+	        inputEl: '#autocomplete-dropdown-expand',
 	        openIn: 'dropdown',
 	        expandInput: true,
 	        // expand input
@@ -69794,7 +69874,7 @@
 	      }); // Dropdown with all values
 
 	      self.autocompleteDropdownAll = app.autocomplete.create({
-	        inputEl: '#autocomplete-dropdown-all input',
+	        inputEl: '#autocomplete-dropdown-all',
 	        openIn: 'dropdown',
 	        source: function source(query, render) {
 	          var results = []; // Find matched items
@@ -69809,7 +69889,7 @@
 	      }); // Dropdown with placeholder
 
 	      self.autocompleteDropdownPlaceholder = app.autocomplete.create({
-	        inputEl: '#autocomplete-dropdown-placeholder input',
+	        inputEl: '#autocomplete-dropdown-placeholder',
 	        openIn: 'dropdown',
 	        dropdownPlaceholderText: 'Try to type "Apple"',
 	        source: function source(query, render) {
@@ -69831,7 +69911,7 @@
 	      }); // Dropdown with typeahead
 
 	      self.autocompleteDropdownTypeahead = app.autocomplete.create({
-	        inputEl: '#autocomplete-dropdown-typeahead input',
+	        inputEl: '#autocomplete-dropdown-typeahead',
 	        openIn: 'dropdown',
 	        dropdownPlaceholderText: 'Try to type "Pineapple"',
 	        typeahead: true,
@@ -69854,7 +69934,7 @@
 	      }); // Dropdown with ajax data
 
 	      self.autocompleteDropdownAjax = app.autocomplete.create({
-	        inputEl: '#autocomplete-dropdown-ajax input',
+	        inputEl: '#autocomplete-dropdown-ajax',
 	        openIn: 'dropdown',
 	        preloader: true,
 	        // enable preloader
@@ -69903,7 +69983,7 @@
 	      }); // Dropdown with ajax data
 
 	      self.autocompleteDropdownAjaxTypeahead = app.autocomplete.create({
-	        inputEl: '#autocomplete-dropdown-ajax-typeahead input',
+	        inputEl: '#autocomplete-dropdown-ajax-typeahead',
 	        openIn: 'dropdown',
 	        preloader: true,
 	        // enable preloader
@@ -70160,8 +70240,8 @@
 	  }, react.createElement(NavRight, null, react.createElement(Link, {
 	    iconOnly: true
 	  }, react.createElement(Icon, {
-	    ios: "f7:person_round_fill",
-	    aurora: "f7:person_round_fill",
+	    ios: "f7:person_circle_fill",
+	    aurora: "f7:person_circle_fill",
 	    md: "material:person"
 	  }, react.createElement(Badge, {
 	    color: "red"
@@ -70234,23 +70314,31 @@
 	  return react.createElement(Page, null, react.createElement(Navbar$2, {
 	    title: "Buttons",
 	    backLink: "Back"
-	  }), react.createElement(BlockTitle, null, "Usual Buttons"), react.createElement(Block, null, react.createElement(Row, null, react.createElement(Col, null, react.createElement(Button, null, "Button")), react.createElement(Col, null, react.createElement(Button, null, "Button")), react.createElement(Col, null, react.createElement(Button, {
+	  }), react.createElement(BlockTitle, null, "Usual Buttons"), react.createElement(Block, {
+	    strong: true
+	  }, react.createElement(Row, null, react.createElement(Col, null, react.createElement(Button, null, "Button")), react.createElement(Col, null, react.createElement(Button, null, "Button")), react.createElement(Col, null, react.createElement(Button, {
 	    round: true
-	  }, "Round")))), react.createElement(BlockTitle, null, "Fill Buttons"), react.createElement(Block, null, react.createElement(Row, null, react.createElement(Col, null, react.createElement(Button, {
+	  }, "Round")))), react.createElement(BlockTitle, null, "Fill Buttons"), react.createElement(Block, {
+	    strong: true
+	  }, react.createElement(Row, null, react.createElement(Col, null, react.createElement(Button, {
 	    fill: true
 	  }, "Button")), react.createElement(Col, null, react.createElement(Button, {
 	    fill: true
 	  }, "Button")), react.createElement(Col, null, react.createElement(Button, {
 	    fill: true,
 	    round: true
-	  }, "Round")))), react.createElement(BlockTitle, null, "Outline Buttons"), react.createElement(Block, null, react.createElement(Row, null, react.createElement(Col, null, react.createElement(Button, {
+	  }, "Round")))), react.createElement(BlockTitle, null, "Outline Buttons"), react.createElement(Block, {
+	    strong: true
+	  }, react.createElement(Row, null, react.createElement(Col, null, react.createElement(Button, {
 	    outline: true
 	  }, "Button")), react.createElement(Col, null, react.createElement(Button, {
 	    outline: true
 	  }, "Button")), react.createElement(Col, null, react.createElement(Button, {
 	    outline: true,
 	    round: true
-	  }, "Round")))), react.createElement(BlockTitle, null, "Raised Buttons"), react.createElement(Block, null, react.createElement(Row, {
+	  }, "Round")))), react.createElement(BlockTitle, null, "Raised Buttons"), react.createElement(Block, {
+	    strong: true
+	  }, react.createElement(Row, {
 	    tag: "p"
 	  }, react.createElement(Col, {
 	    tag: "span"
@@ -70285,14 +70373,24 @@
 	    raised: true,
 	    outline: true,
 	    round: true
-	  }, "Outline")))), react.createElement(BlockTitle, null, "Segmented"), react.createElement(Block, null, react.createElement(Segmented, {
-	    raised: true,
+	  }, "Outline")))), react.createElement(BlockTitle, null, "Segmented"), react.createElement(Block, {
+	    strong: true
+	  }, react.createElement(Segmented, {
+	    tag: "p"
+	  }, react.createElement(Button, null, "Button"), react.createElement(Button, null, "Button"), react.createElement(Button, {
+	    active: true
+	  }, "Active")), react.createElement(Segmented, {
+	    strong: true,
 	    tag: "p"
 	  }, react.createElement(Button, null, "Button"), react.createElement(Button, null, "Button"), react.createElement(Button, {
 	    active: true
 	  }, "Active")), react.createElement(Segmented, {
 	    raised: true,
 	    tag: "p"
+	  }, react.createElement(Button, null, "Button"), react.createElement(Button, null, "Button"), react.createElement(Button, {
+	    active: true
+	  }, "Active")), react.createElement(Segmented, {
+	    tag: "p"
 	  }, react.createElement(Button, {
 	    outline: true
 	  }, "Outline"), react.createElement(Button, {
@@ -70312,7 +70410,6 @@
 	    round: true,
 	    active: true
 	  }, "Active")), react.createElement(Segmented, {
-	    raised: true,
 	    round: true,
 	    tag: "p"
 	  }, react.createElement(Button, {
@@ -70325,7 +70422,9 @@
 	    round: true,
 	    outline: true,
 	    active: true
-	  }, "Active"))), react.createElement(BlockTitle, null, "Large Buttons"), react.createElement(Block, null, react.createElement(Row, {
+	  }, "Active"))), react.createElement(BlockTitle, null, "Large Buttons"), react.createElement(Block, {
+	    strong: true
+	  }, react.createElement(Row, {
 	    tag: "p"
 	  }, react.createElement(Col, {
 	    tag: "span"
@@ -70349,7 +70448,9 @@
 	    large: true,
 	    raised: true,
 	    fill: true
-	  }, "Raised Fill")))), react.createElement(BlockTitle, null, "Small Buttons"), react.createElement(Block, null, react.createElement(Row, {
+	  }, "Raised Fill")))), react.createElement(BlockTitle, null, "Small Buttons"), react.createElement(Block, {
+	    strong: true
+	  }, react.createElement(Row, {
 	    tag: "p"
 	  }, react.createElement(Col, {
 	    tag: "span"
@@ -70390,13 +70491,17 @@
 	    small: true,
 	    fill: true,
 	    round: true
-	  }, "Fill")))), react.createElement(BlockTitle, null, "Color Buttons"), react.createElement(Block, null, react.createElement(Row, null, react.createElement(Col, null, react.createElement(Button, {
+	  }, "Fill")))), react.createElement(BlockTitle, null, "Color Buttons"), react.createElement(Block, {
+	    strong: true
+	  }, react.createElement(Row, null, react.createElement(Col, null, react.createElement(Button, {
 	    color: "red"
 	  }, "Red")), react.createElement(Col, null, react.createElement(Button, {
 	    color: "green"
 	  }, "Green")), react.createElement(Col, null, react.createElement(Button, {
 	    color: "blue"
-	  }, "Blue")))), react.createElement(BlockTitle, null, "Color Fill Buttons"), react.createElement(Block, null, react.createElement(Row, null, react.createElement(Col, null, react.createElement(Button, {
+	  }, "Blue")))), react.createElement(BlockTitle, null, "Color Fill Buttons"), react.createElement(Block, {
+	    strong: true
+	  }, react.createElement(Row, null, react.createElement(Col, null, react.createElement(Button, {
 	    fill: true,
 	    color: "red"
 	  }, "Red")), react.createElement(Col, null, react.createElement(Button, {
@@ -70468,6 +70573,7 @@
 	        placeholder: "Select date and time",
 	        readonly: true,
 	        calendarParams: {
+	          timePicker: true,
 	          dateFormat: {
 	            month: 'numeric',
 	            day: 'numeric',
@@ -70513,6 +70619,7 @@
 	        title: "Open Calendar Page",
 	        link: "/calendar-page/"
 	      })), react.createElement(BlockTitle, null, "Inline with custom toolbar"), react.createElement(Block, {
+	        strong: true,
 	        className: "no-padding"
 	      }, react.createElement("div", {
 	        id: "demo-calendar-inline-container"
@@ -70637,7 +70744,7 @@
 	          title: item.title,
 	          after: item.time
 	        }, react.createElement("div", {
-	          class: "event-color",
+	          className: "event-color",
 	          style: {
 	            'background-color': item.color
 	          },
@@ -70660,8 +70767,8 @@
 
 	      if (currentEvents.length) {
 	        currentEvents.forEach(function (event) {
-	          var hours = event.date.getHours();
-	          var minutes = event.date.getMinutes();
+	          var hours = event.hours;
+	          var minutes = event.minutes;
 	          if (minutes < 10) minutes = "0".concat(minutes);
 	          eventItems.push({
 	            title: event.title,
@@ -70677,7 +70784,7 @@
 	    }
 	  }, {
 	    key: "onPageInit",
-	    value: function onPageInit(e, page) {
+	    value: function onPageInit(page) {
 	      var self = this;
 	      var app = self.$f7;
 	      var $ = self.$$;
@@ -70817,7 +70924,7 @@
 	  }, react.createElement(CardContent, {
 	    padding: false
 	  }, react.createElement(List, {
-	    "medial-list": true
+	    mediaList: true
 	  }, react.createElement(ListItem, {
 	    title: "Yellow Submarine",
 	    subtitle: "Beatles"
@@ -71242,35 +71349,35 @@
 	      }, react.createElement(Chip$1, {
 	        text: "Example Chip",
 	        deleteable: true,
-	        onClick: this.deleteChipBound
+	        onDelete: this.deleteChipBound
 	      }), react.createElement(Chip$1, {
 	        text: "Chris",
 	        media: "C",
 	        mediaBgColor: "orange",
 	        textColor: "black",
 	        deleteable: true,
-	        onClick: this.deleteChipBound
+	        onDelete: this.deleteChipBound
 	      }), react.createElement(Chip$1, {
 	        text: "Jane Doe",
 	        deleteable: true,
-	        onClick: this.deleteChipBound
+	        onDelete: this.deleteChipBound
 	      }, react.createElement("img", {
 	        slot: "media",
 	        src: "https://cdn.framework7.io/placeholder/people-100x100-9.jpg"
 	      })), react.createElement(Chip$1, {
 	        text: "One More Chip",
 	        deleteable: true,
-	        onClick: this.deleteChipBound
+	        onDelete: this.deleteChipBound
 	      }), react.createElement(Chip$1, {
 	        text: "Jennifer",
 	        mediaBgColor: "pink",
 	        media: "J",
 	        deleteable: true,
-	        onClick: this.deleteChipBound
+	        onDelete: this.deleteChipBound
 	      }), react.createElement(Chip$1, {
 	        text: "Adam Smith",
 	        deleteable: true,
-	        onClick: this.deleteChipBound
+	        onDelete: this.deleteChipBound
 	      }, react.createElement("img", {
 	        slot: "media",
 	        src: "https://cdn.framework7.io/placeholder/people-100x100-7.jpg"
@@ -71543,7 +71650,7 @@
 	          modules: ['hsb-sliders'],
 	          sliderValue: true,
 	          sliderLabel: true,
-	          targetEl: 'hsb-picker-target',
+	          targetEl: '.hsb-picker-target',
 	          formatValue: function formatValue(value) {
 	            return "hsb(".concat(value.hsb[0], ", ").concat(value.hsb[1] * 1000 / 10, "%, ").concat(value.hsb[2] * 1000 / 10, "%)");
 	          }
@@ -73056,6 +73163,7 @@
 	    label: "Range",
 	    input: false
 	  }, react.createElement(Range$2, {
+	    input: true,
 	    name: "range",
 	    slot: "input",
 	    value: 50,
@@ -74287,7 +74395,9 @@
 	    icon: "icon-f7"
 	  }), react.createElement(Toggle$2, {
 	    slot: "after"
-	  }))), react.createElement(BlockTitle, null, "Mixed, inset"), react.createElement(List, null, react.createElement(ListItem, {
+	  }))), react.createElement(BlockTitle, null, "Mixed, inset"), react.createElement(List, {
+	    inset: true
+	  }, react.createElement(ListItem, {
 	    link: "#",
 	    title: "Ivan Petrov",
 	    after: "CEO"
@@ -75696,7 +75806,11 @@
 	      return react.createElement(Page, null, react.createElement(Navbar$2, {
 	        title: "Photo Browser",
 	        backLink: "Back"
-	      }), react.createElement(Block, null, react.createElement("p", null, "Photo Browser is a standalone and highly configurable component that allows to open window with photo viewer and navigation elements with the following features:"), react.createElement("ul", null, react.createElement("li", null, "Swiper between photos"), react.createElement("li", null, "Multi-gestures support for zooming"), react.createElement("li", null, "Toggle zoom by double tap on photo"), react.createElement("li", null, "Single click on photo to toggle Exposition mode"))), react.createElement(Block, null, react.createElement("p", null, "Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:"), react.createElement(Row, null, react.createElement(Col, null, react.createElement(PhotoBrowser$2, {
+	      }), react.createElement(Block, {
+	        strong: true
+	      }, react.createElement("p", null, "Photo Browser is a standalone and highly configurable component that allows to open window with photo viewer and navigation elements with the following features:"), react.createElement("ul", null, react.createElement("li", null, "Swiper between photos"), react.createElement("li", null, "Multi-gestures support for zooming"), react.createElement("li", null, "Toggle zoom by double tap on photo"), react.createElement("li", null, "Single click on photo to toggle Exposition mode"))), react.createElement(Block, {
+	        strong: true
+	      }, react.createElement("p", null, "Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:"), react.createElement(Row, null, react.createElement(Col, null, react.createElement(PhotoBrowser$2, {
 	        photos: this.state.photos,
 	        ref: function ref(el) {
 	          _this2.standalone = el;
@@ -75720,7 +75834,7 @@
 	      }, "Popup")), react.createElement(Col, null, react.createElement(PhotoBrowser$2, {
 	        photos: this.state.photos,
 	        type: "page",
-	        backLinkText: "Back",
+	        pageBackLinkText: "Back",
 	        ref: function ref(el) {
 	          _this2.page = el;
 	        }
@@ -75729,7 +75843,9 @@
 	        onClick: function onClick() {
 	          return _this2.page.open();
 	        }
-	      }, "Page")))), react.createElement(Block, null, react.createElement("p", null, "Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:"), react.createElement(Row, null, react.createElement(Col, null, react.createElement(PhotoBrowser$2, {
+	      }, "Page")))), react.createElement(Block, {
+	        strong: true
+	      }, react.createElement("p", null, "Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:"), react.createElement(Row, null, react.createElement(Col, null, react.createElement(PhotoBrowser$2, {
 	        photos: this.state.photos,
 	        theme: "dark",
 	        ref: function ref(el) {
@@ -75756,7 +75872,7 @@
 	        photos: this.state.photos,
 	        theme: "dark",
 	        type: "page",
-	        backLinkText: "Back",
+	        pageBackLinkText: "Back",
 	        ref: function ref(el) {
 	          _this2.pageDark = el;
 	        }
@@ -76106,7 +76222,7 @@
 
 	      if (!self.popup) {
 	        self.popup = self.$f7.popup.create({
-	          content: "\n          <div className=\"popup\">\n            <div className=\"page\">\n              <div className=\"navbar\">\n                <div className=\"navbar-inner\">\n                  <div className=\"navbar-bg\">\n                  <div className=\"title\">Dynamic Popup</div>\n                  <div className=\"right\"><a href=\"#\" className=\"link popup-close\">Close</a></div>\n                </div>\n              </div>\n              <div className=\"page-content\">\n                <div className=\"block\">\n                  <p>This popup was created dynamically</p>\n                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.</p>\n                </div>\n              </div>\n            </div>\n          </div>\n        ".trim()
+	          content: "\n          <div class=\"popup\">\n            <div class=\"page\">\n              <div class=\"navbar\">\n                <div class=\"navbar-inner\">\n                  <div class=\"navbar-bg\"></div>\n                  <div class=\"title\">Dynamic Popup</div>\n                  <div class=\"right\"><a href=\"#\" class=\"link popup-close\">Close</a></div>\n                </div>\n              </div>\n              <div class=\"page-content\">\n                <div class=\"block\">\n                  <p>This popup was created dynamically</p>\n                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.</p>\n                </div>\n              </div>\n            </div>\n          </div>\n        ".trim()
 	        });
 	      } // Open it
 
@@ -76185,6 +76301,7 @@
 	        title: "Preloader",
 	        backLink: "Back"
 	      }), react.createElement(Block, null, react.createElement("p", null, "How about an activity indicator? Framework7 has a nice one. The F7 Preloader is made with SVG and animated with CSS so it can be easily resized.")), react.createElement(BlockTitle, null, "Default"), react.createElement(Block, {
+	        strong: true,
 	        className: "row demo-preloaders align-items-stretch text-align-center"
 	      }, react.createElement(Col, null, react.createElement(Preloader$2, null)), react.createElement(Col, {
 	        style: {
@@ -76202,6 +76319,7 @@
 	        size: 42,
 	        color: "white"
 	      }))), react.createElement(BlockTitle, null, "Color Preloaders"), react.createElement(Block, {
+	        strong: true,
 	        className: "row text-align-center"
 	      }, react.createElement(Col, null, react.createElement(Preloader$2, {
 	        color: "red"
@@ -76212,10 +76330,13 @@
 	      })), react.createElement(Col, null, react.createElement(Preloader$2, {
 	        color: "blue"
 	      }))), react.createElement(BlockTitle, null, "Multi-color (MD-theme only)"), react.createElement(Block, {
+	        strong: true,
 	        className: "text-align-center"
 	      }, react.createElement(Preloader$2, {
 	        color: "multi"
-	      })), react.createElement(BlockTitle, null, "Preloader Modals"), react.createElement(Block, null, react.createElement("p", null, "With ", react.createElement("b", null, "app.preloader.show()"), " you can show small overlay with preloader indicator."), react.createElement("p", null, react.createElement("a", {
+	      })), react.createElement(BlockTitle, null, "Preloader Modals"), react.createElement(Block, {
+	        strong: true
+	      }, react.createElement("p", null, "With ", react.createElement("b", null, "app.preloader.show()"), " you can show small overlay with preloader indicator."), react.createElement("p", null, react.createElement("a", {
 	        className: "button button-fill",
 	        onClick: this.openIndicator.bind(this)
 	      }, "Open Small Indicator")), react.createElement("p", null, "With ", react.createElement("b", null, "app.dialog.preloader()"), " you can show dialog modal with preloader indicator."), react.createElement("p", null, react.createElement("a", {
@@ -76380,7 +76501,7 @@
 	      if (inline) {
 	        progressBarEl = app.progressbar.show('#demo-determinate-container', 0);
 	      } else {
-	        progressBarEl = app.progressbar.show(0, app.theme === 'md' ? 'yellow' : 'blue');
+	        progressBarEl = app.progressbar.show(0);
 	      }
 
 	      var progress = 0;
@@ -76413,7 +76534,7 @@
 	      if (multiColor) {
 	        app.progressbar.show('multi');
 	      } else {
-	        app.progressbar.show(app.theme === 'md' ? 'yellow' : 'blue');
+	        app.progressbar.show();
 	      }
 
 	      setTimeout(function () {
@@ -77071,7 +77192,9 @@
 	      }, react.createElement(Navbar$2, {
 	        title: "Sheet Modal",
 	        backLink: "Back"
-	      }), react.createElement(Block, null, react.createElement("p", null, "Sheet Modals slide up from the bottom of the screen to reveal more content. Such modals allow to create custom overlays with custom content."), react.createElement(Row, {
+	      }), react.createElement(Block, {
+	        strong: true
+	      }, react.createElement("p", null, "Sheet Modals slide up from the bottom of the screen to reveal more content. Such modals allow to create custom overlays with custom content."), react.createElement(Row, {
 	        tag: "p"
 	      }, react.createElement(Button, {
 	        className: "col",
@@ -78040,7 +78163,7 @@
 	    title: "Swiper Slider",
 	    backLink: "Back"
 	  }), react.createElement(Block, null, react.createElement("p", null, "Framework7 comes with powerful and most modern touch slider ever -", react.createElement("a", {
-	    href: "http://idangero.us/swiper",
+	    href: "https://swiperjs.com",
 	    className: "external",
 	    target: "_blank"
 	  }, "Swiper Slider"), "with super flexible configuration and lot, lot of features. Just check the following demos:")), react.createElement(List, null, react.createElement(ListItem, {
@@ -79327,7 +79450,9 @@
 	      }, react.createElement(Navbar$2, {
 	        title: "Toast",
 	        backLink: "Back"
-	      }), react.createElement(Block, null, react.createElement("p", null, "Toasts provide brief feedback about an operation through a message on the screen."), react.createElement("p", null, react.createElement(Button, {
+	      }), react.createElement(Block, {
+	        strong: true
+	      }, react.createElement("p", null, "Toasts provide brief feedback about an operation through a message on the screen."), react.createElement("p", null, react.createElement(Button, {
 	        fill: true,
 	        onClick: this.showToastBottom.bind(this)
 	      }, "Toast on Bottom")), react.createElement("p", null, react.createElement(Button, {

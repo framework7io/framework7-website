@@ -1,13 +1,13 @@
 /**
- * Framework7 Vue 5.3.2
+ * Framework7 Vue 5.4.0
  * Build full featured iOS & Android apps using Framework7 & Vue
- * http://framework7.io/vue/
+ * https://framework7.io/vue/
  *
  * Copyright 2014-2020 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: January 18, 2020
+ * Released on: January 29, 2020
  */
 
 (function (global, factory) {
@@ -19,6 +19,10 @@
   Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
 
   var Utils = {
+    text: function text(text$1) {
+      if (typeof text$1 === 'undefined' || text$1 === null) { return ''; }
+      return text$1;
+    },
     noUndefinedProps: function noUndefinedProps(obj) {
       var o = {};
       Object.keys(obj).forEach(function (key) {
@@ -1128,7 +1132,6 @@
 
       if (inner) {
         innerEl = _h('div', {
-          ref: 'inner',
           class: Utils.classNames('appbar-inner', innerClass, innerClassName)
         }, [this.$slots['default']]);
       }
@@ -1138,7 +1141,6 @@
         'no-hairline': noHairline
       }, Mixins.colorClasses(props));
       return _h('div', {
-        ref: 'el',
         style: style,
         class: classes,
         attrs: {
@@ -2029,6 +2031,10 @@
         type: Boolean,
         default: undefined
       },
+      scrollableEl: {
+        type: String,
+        default: undefined
+      },
       swipeToClose: {
         type: Boolean,
         default: undefined
@@ -2119,6 +2125,7 @@
       var hideNavbarOnOpen = props.hideNavbarOnOpen;
       var hideToolbarOnOpen = props.hideToolbarOnOpen;
       var hideStatusbarOnOpen = props.hideStatusbarOnOpen;
+      var scrollableEl = props.scrollableEl;
       var swipeToClose = props.swipeToClose;
       var closeByBackdropClick = props.closeByBackdropClick;
       var backdrop = props.backdrop;
@@ -2162,6 +2169,7 @@
           'data-hide-navbar-on-open': typeof hideNavbarOnOpen === 'undefined' ? hideNavbarOnOpen : hideNavbarOnOpen.toString(),
           'data-hide-toolbar-on-open': typeof hideToolbarOnOpen === 'undefined' ? hideToolbarOnOpen : hideToolbarOnOpen.toString(),
           'data-hide-statusbar-on-open': typeof hideStatusbarOnOpen === 'undefined' ? hideStatusbarOnOpen : hideStatusbarOnOpen.toString(),
+          'data-scrollable-el': scrollableEl,
           'data-swipe-to-close': typeof swipeToClose === 'undefined' ? swipeToClose : swipeToClose.toString(),
           'data-close-by-backdrop-click': typeof closeByBackdropClick === 'undefined' ? closeByBackdropClick : closeByBackdropClick.toString(),
           'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString(),
@@ -2353,7 +2361,7 @@
       mediaBgColor: String,
       mediaTextColor: String,
       outline: Boolean
-    }, Mixins.colorProps),
+    }, Mixins.colorProps, {}, Mixins.linkIconProps),
 
     render: function render() {
       var _h = this.$createElement;
@@ -2368,15 +2376,39 @@
       var mediaTextColor = props.mediaTextColor;
       var mediaBgColor = props.mediaBgColor;
       var outline = props.outline;
+      var icon = props.icon;
+      var iconMaterial = props.iconMaterial;
+      var iconF7 = props.iconF7;
+      var iconMd = props.iconMd;
+      var iconIos = props.iconIos;
+      var iconAurora = props.iconAurora;
+      var iconColor = props.iconColor;
+      var iconSize = props.iconSize;
+      var iconEl;
       var mediaEl;
       var labelEl;
       var deleteEl;
 
-      if (media || self.$slots && self.$slots.media) {
+      if (icon || iconMaterial || iconF7 || iconMd || iconIos || iconAurora) {
+        iconEl = _h(f7Icon, {
+          attrs: {
+            material: iconMaterial,
+            f7: iconF7,
+            icon: icon,
+            md: iconMd,
+            ios: iconIos,
+            aurora: iconAurora,
+            color: iconColor,
+            size: iconSize
+          }
+        });
+      }
+
+      if (media || iconEl || self.$slots && self.$slots.media) {
         var mediaClasses = Utils.classNames('chip-media', mediaTextColor && ("text-color-" + mediaTextColor), mediaBgColor && ("bg-color-" + mediaBgColor));
         mediaEl = _h('div', {
           class: mediaClasses
-        }, [media || this.$slots['media']]);
+        }, [iconEl, media, this.$slots['media']]);
       }
 
       if (text || self.$slots && self.$slots.text) {
@@ -3145,8 +3177,7 @@
           el: self.$refs.el,
           on: {
             change: function change(toggle) {
-              var checked = toggle.checked;
-              self.dispatchEvent('toggle:change toggleChange', checked);
+              self.dispatchEvent('toggle:change toggleChange', toggle.checked);
             }
 
           }
@@ -3437,7 +3468,6 @@
       var props = this.props;
       var mode = props.mode;
       var value = props.value;
-      var palceholder = props.palceholder;
       var buttons = props.buttons;
       var customButtons = props.customButtons;
       var dividers = props.dividers;
@@ -3449,7 +3479,6 @@
         el: this.$refs.el,
         mode: mode,
         value: value,
-        palceholder: palceholder,
         buttons: buttons,
         customButtons: customButtons,
         dividers: dividers,
@@ -3832,7 +3861,6 @@
           'input-dropdown': dropdown === 'auto' ? type === 'select' : dropdown
         }, Mixins.colorClasses(props));
         return _h('div', {
-          ref: 'wrapEl',
           class: wrapClasses,
           style: style,
           attrs: {
@@ -8508,7 +8536,7 @@
     },
 
     created: function created() {
-      Utils.bindMethods(this, ['onBackClick', 'onHide', 'onShow', 'onExpand', 'onCollapse', 'onNavbarPosition']);
+      Utils.bindMethods(this, ['onBackClick', 'onHide', 'onShow', 'onExpand', 'onCollapse', 'onNavbarPosition', 'onNavbarRole', 'onNavbarMasterStack', 'onNavbarMasterUnstack']);
     },
 
     mounted: function mounted() {
@@ -10770,7 +10798,7 @@
 
       toggle: function toggle() {
         if (!this.f7Searchbar) { return undefined; }
-        return this.toggle.disable();
+        return this.f7Searchbar.toggle();
       },
 
       clear: function clear() {
@@ -13090,15 +13118,15 @@
   };
 
   /**
-   * Framework7 Vue 5.3.2
+   * Framework7 Vue 5.4.0
    * Build full featured iOS & Android apps using Framework7 & Vue
-   * http://framework7.io/vue/
+   * https://framework7.io/vue/
    *
    * Copyright 2014-2020 Vladimir Kharlampidi
    *
    * Released under the MIT License
    *
-   * Released on: January 18, 2020
+   * Released on: January 29, 2020
    */
 
   function f7ready(callback) {
@@ -13120,7 +13148,8 @@
       f7.Framework7 = Framework7;
       f7.events = new Framework7.Events();
 
-      var Extend = params.Vue || Vue; // eslint-disable-line
+      // eslint-disable-next-line
+      var Extend = params.Vue || Vue;
 
       Vue.component('f7-accordion-content', f7AccordionContent);
       Vue.component('f7-accordion-item', f7AccordionItem);
@@ -13214,12 +13243,13 @@
       Vue.component('f7-view', f7View);
       Vue.component('f7-views', f7Views);
 
-      // Define protos
+      // DEFINE_INSTANCE_PROTOS_START
       Object.defineProperty(Extend.prototype, '$f7', {
         get: function get() {
           return f7.instance;
         },
       });
+      // DEFINE_INSTANCE_PROTOS_END
 
       var theme = params.theme;
       if (theme === 'md') { f7Theme.md = true; }
@@ -13235,6 +13265,8 @@
         f7Theme.md = f7.instance.theme === 'md';
         f7Theme.aurora = f7.instance.theme === 'aurora';
       });
+
+      // DEFINE_PROTOS_START
       Object.defineProperty(Extend.prototype, '$theme', {
         get: function get() {
           return {
@@ -13244,7 +13276,6 @@
           };
         },
       });
-
 
       Extend.prototype.Dom7 = Framework7.$;
       Extend.prototype.$$ = Framework7.$;
@@ -13310,6 +13341,7 @@
           self._f7router = value;
         },
       });
+      // DEFINE_PROTOS_END
 
       // Extend F7 Router
       Framework7.Router.use(componentsRouter);

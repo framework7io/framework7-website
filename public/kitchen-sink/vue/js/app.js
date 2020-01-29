@@ -10989,12 +10989,14 @@
       };
 
       // Init
-      if (Device.cordova && app.params.initOnDeviceReady) {
-        $(doc).on('deviceready', function () {
+      if (app.params.init) {
+        if (Device.cordova && app.params.initOnDeviceReady) {
+          $(doc).on('deviceready', function () {
+            app.init();
+          });
+        } else {
           app.init();
-        });
-      } else {
-        app.init();
+        }
       }
 
       // Return app instance
@@ -26851,10 +26853,20 @@
       var progress;
       var isV;
       var isH;
+      var $cardScrollableEl;
       function onTouchStart(e) {
         if (!$(e.target).closest($cardEl).length) { return; }
         if (!$cardEl.hasClass('card-opened')) { return; }
-        cardScrollTop = $cardContentEl.scrollTop();
+        $cardScrollableEl = $cardEl.find(cardParams.scrollableEl);
+
+        if ($cardScrollableEl[0]
+          && $cardScrollableEl[0] !== $cardContentEl[0]
+          && !$cardScrollableEl[0].contains(e.target)
+        ) {
+          cardScrollTop = 0;
+        } else {
+          cardScrollTop = $cardScrollableEl.scrollTop();
+        }
         isTouched = true;
         touchStartX = e.targetTouches[0].pageX;
         touchStartY = e.targetTouches[0].pageY;
@@ -26889,9 +26901,9 @@
         isMoved = true;
         progress = isV ? Math.max((touchEndY - touchStartY) / 150, 0) : Math.max((touchEndX - touchStartX) / (cardWidth / 2), 0);
         if ((progress > 0 && isV) || isH) {
-          if (isV && app.device.ios) {
-            $cardContentEl.css('-webkit-overflow-scrolling', 'auto');
-            $cardContentEl.scrollTop(0);
+          if (isV && app.device.ios && $cardScrollableEl[0] === $cardContentEl[0]) {
+            $cardScrollableEl.css('-webkit-overflow-scrolling', 'auto');
+            $cardScrollableEl.scrollTop(0);
           }
           e.preventDefault();
         }
@@ -26910,7 +26922,7 @@
         isTouched = false;
         isMoved = false;
         if (app.device.ios) {
-          $cardContentEl.css('-webkit-overflow-scrolling', '');
+          $cardScrollableEl.css('-webkit-overflow-scrolling', '');
         }
         if (progress >= 0.8) {
           app.card.close($cardEl);
@@ -26953,6 +26965,7 @@
       if (!$pageEl.length) { return; }
 
       var cardParams = Object.assign({ animate: animate }, app.params.card, $cardEl.dataset());
+      var $cardScrollableEl = $cardEl.find(cardParams.scrollableEl);
 
       var $navbarEl;
       var $toolbarEl;
@@ -27036,6 +27049,9 @@
       $cardContentEl
         .transform('')
         .scrollTop(0, animate ? 300 : 0);
+      if ($cardScrollableEl.length && $cardScrollableEl[0] !== $cardContentEl[0]) {
+        $cardScrollableEl.scrollTop(0, animate ? 300 : 0);
+      }
       if (animate) {
         $cardContentEl.transitionEnd(function () {
           transitionEnd();
@@ -27070,6 +27086,7 @@
         hideNavbarOnOpen: true,
         hideStatusbarOnOpen: true,
         hideToolbarOnOpen: true,
+        scrollableEl: '.card-content',
         swipeToClose: true,
         closeByBackdropClick: true,
         backdrop: true,
@@ -29243,9 +29260,6 @@
         }
       }
 
-      // View
-      var view;
-
       // Url
       var url = params.url;
       if (!url) {
@@ -29269,7 +29283,6 @@
         multiple: multiple,
         inputType: inputType,
         id: id,
-        view: view,
         inputName: (inputType + "-" + id),
         selectName: $selectEl.attr('name'),
         maxLength: $selectEl.attr('maxlength') || params.maxLength,
@@ -29358,6 +29371,8 @@
     SmartSelect.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     SmartSelect.prototype.constructor = SmartSelect;
 
+    var prototypeAccessors = { view: { configurable: true } };
+
     SmartSelect.prototype.setValue = function setValue (value) {
       var ss = this;
       var newValue = value;
@@ -29418,16 +29433,20 @@
       return ss.$selectEl.val();
     };
 
-    SmartSelect.prototype.getView = function getView () {
-      var ss = this;
-      var view = ss.view || ss.params.view;
-      if (!view) {
-        view = ss.$el.parents('.view').length && ss.$el.parents('.view')[0].f7View;
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var params = ref.params;
+      var $el = ref.$el;
+      var view;
+      if (params.view) {
+        view = params.view;
       }
       if (!view) {
+        view = $el.parents('.view').length && $el.parents('.view')[0].f7View;
+      }
+      if (!view && params.openIn === 'page') {
         throw Error('Smart Select requires initialized View');
       }
-      ss.view = view;
       return view;
     };
 
@@ -29760,9 +29779,8 @@
       if (ss.opened) { return ss; }
       ss.getItemsData();
       var pageHtml = ss.renderPage(ss.items);
-      var view = ss.getView();
 
-      view.router.navigate({
+      ss.view.router.navigate({
         url: ss.url,
         route: {
           content: pageHtml,
@@ -29812,9 +29830,8 @@
         },
       };
 
-      if (ss.params.routableModals) {
-        var view = ss.getView();
-        view.router.navigate({
+      if (ss.params.routableModals && ss.view) {
+        ss.view.router.navigate({
           url: ss.url,
           route: {
             path: ss.url,
@@ -29856,9 +29873,8 @@
         },
       };
 
-      if (ss.params.routableModals) {
-        var view = ss.getView();
-        view.router.navigate({
+      if (ss.params.routableModals && ss.view) {
+        ss.view.router.navigate({
           url: ss.url,
           route: {
             path: ss.url,
@@ -29894,9 +29910,8 @@
           },
         },
       };
-      if (ss.params.routableModals) {
-        var view = ss.getView();
-        view.router.navigate({
+      if (ss.params.routableModals && ss.view) {
+        ss.view.router.navigate({
           url: ss.url,
           route: {
             path: ss.url,
@@ -29932,9 +29947,8 @@
     SmartSelect.prototype.close = function close () {
       var ss = this;
       if (!ss.opened) { return ss; }
-      if (ss.params.routableModals || ss.openedIn === 'page') {
-        var view = ss.getView();
-        view.router.back();
+      if ((ss.params.routableModals && ss.view) || ss.openedIn === 'page') {
+        ss.view.router.back();
       } else {
         ss.modal.once('modalClosed', function () {
           Utils.nextTick(function () {
@@ -29963,6 +29977,8 @@
       Utils.deleteProps(ss);
       ss.destroyed = true;
     };
+
+    Object.defineProperties( SmartSelect.prototype, prototypeAccessors );
 
     return SmartSelect;
   }(Framework7Class));
@@ -30314,12 +30330,6 @@
         $inputEl = $(calendar.params.inputEl);
       }
 
-      var view;
-      if ($inputEl) {
-        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
-      }
-      if (!view) { view = app.views.main; }
-
       var isHorizontal = calendar.params.direction === 'horizontal';
 
       var inverter = 1;
@@ -30339,7 +30349,6 @@
         url: calendar.params.url,
         isHorizontal: isHorizontal,
         inverter: inverter,
-        view: view,
         animating: false,
         hasTimePicker: calendar.params.timePicker && !calendar.params.rangePicker && !calendar.params.multiple,
       });
@@ -30697,6 +30706,23 @@
     if ( Framework7Class ) Calendar.__proto__ = Framework7Class;
     Calendar.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Calendar.prototype.constructor = Calendar;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var $inputEl = ref.$inputEl;
+      var app = ref.app;
+      var params = ref.params;
+      var view;
+      if (params.view) {
+        view = params.view;
+      } else if ($inputEl) {
+        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+      }
+      if (!view) { view = app.views.main; }
+      return view;
+    };
 
     Calendar.prototype.getIntlNames = function getIntlNames () {
       var calendar = this;
@@ -31957,7 +31983,7 @@
         modalParams.push = params.sheetPush;
         modalParams.swipeToClose = params.sheetSwipeToClose;
       }
-      if (params.routableModals) {
+      if (params.routableModals && calendar.view) {
         calendar.view.router.navigate({
           url: calendar.url,
           route: ( obj = {
@@ -31980,7 +32006,7 @@
         calendar.onClosed();
         return;
       }
-      if (calendar.params.routableModals) {
+      if (calendar.params.routableModals && calendar.view) {
         calendar.view.router.back();
       } else {
         calendar.modal.close();
@@ -32038,6 +32064,8 @@
       Utils.deleteProps(calendar);
       calendar.destroyed = true;
     };
+
+    Object.defineProperties( Calendar.prototype, prototypeAccessors );
 
     return Calendar;
   }(Framework7Class));
@@ -32518,11 +32546,14 @@
         $inputEl = $(picker.params.inputEl);
       }
 
-      var view;
-      if ($inputEl) {
-        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+
+      var $scrollToEl = picker.params.scrollToInput ? $inputEl : undefined;
+      if (picker.params.scrollToEl) {
+        var scrollToEl = $(picker.params.scrollToEl);
+        if (scrollToEl.length > 0) {
+          $scrollToEl = scrollToEl;
+        }
       }
-      if (!view) { view = app.views.main; }
 
       Utils.extend(picker, {
         app: app,
@@ -32533,10 +32564,10 @@
         cols: [],
         $inputEl: $inputEl,
         inputEl: $inputEl && $inputEl[0],
+        $scrollToEl: $scrollToEl,
         initialized: false,
         opened: false,
         url: picker.params.url,
-        view: view,
       });
 
       function onResize() {
@@ -32599,6 +32630,23 @@
     if ( Framework7Class ) Picker.__proto__ = Framework7Class;
     Picker.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Picker.prototype.constructor = Picker;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var app = ref.app;
+      var params = ref.params;
+      var $inputEl = ref.$inputEl;
+      var view;
+      if (params.view) {
+        view = params.view;
+      } else if ($inputEl) {
+        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+      }
+      if (!view) { view = app.views.main; }
+      return view;
+    };
 
     Picker.prototype.initInput = function initInput () {
       var picker = this;
@@ -32911,6 +32959,7 @@
       var opened = picker.opened;
       var inline = picker.inline;
       var $inputEl = picker.$inputEl;
+      var $scrollToEl = picker.$scrollToEl;
       var params = picker.params;
       if (opened) { return; }
       if (picker.cols.length === 0 && params.cols.length) {
@@ -32930,7 +32979,7 @@
       var modalType = isPopover ? 'popover' : 'sheet';
       var modalParams = {
         targetEl: $inputEl,
-        scrollToEl: params.scrollToInput ? $inputEl : undefined,
+        scrollToEl: $scrollToEl,
         content: picker.render(),
         backdrop: typeof params.backdrop !== 'undefined' ? params.backdrop : isPopover,
         on: {
@@ -32950,7 +32999,7 @@
         modalParams.push = params.sheetPush;
         modalParams.swipeToClose = params.sheetSwipeToClose;
       }
-      if (params.routableModals) {
+      if (params.routableModals && picker.view) {
         picker.view.router.navigate({
           url: picker.url,
           route: ( obj = {
@@ -32973,7 +33022,7 @@
         picker.onClosed();
         return;
       }
-      if (picker.params.routableModals) {
+      if (picker.params.routableModals && picker.view) {
         picker.view.router.back();
       } else {
         picker.modal.close();
@@ -33027,6 +33076,8 @@
       picker.destroyed = true;
     };
 
+    Object.defineProperties( Picker.prototype, prototypeAccessors );
+
     return Picker;
   }(Framework7Class));
 
@@ -33075,6 +33126,7 @@
         inputReadOnly: true,
         closeByOutsideClick: true,
         scrollToInput: true,
+        scrollToEl: undefined,
         toolbar: true,
         toolbarCloseText: 'Done',
         cssClass: null,
@@ -43427,7 +43479,6 @@
         opened: false,
         activeIndex: pb.params.swiper.initialSlide,
         url: pb.params.url,
-        view: pb.params.view || app.views.main,
         swipeToClose: {
           allow: true,
           isTouched: false,
@@ -43450,6 +43501,15 @@
     if ( Framework7Class ) PhotoBrowser.__proto__ = Framework7Class;
     PhotoBrowser.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     PhotoBrowser.prototype.constructor = PhotoBrowser;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var params = ref.params;
+      var app = ref.app;
+      return params.view || app.views.main;
+    };
 
     PhotoBrowser.prototype.onSlideChange = function onSlideChange (swiper) {
       var pb = this;
@@ -43899,7 +43959,7 @@
         },
       };
 
-      if (pb.params.routableModals) {
+      if (pb.params.routableModals && pb.view) {
         pb.view.router.navigate({
           url: pb.url,
           route: {
@@ -43938,7 +43998,7 @@
         },
       };
 
-      if (pb.params.routableModals) {
+      if (pb.params.routableModals && pb.view) {
         pb.view.router.navigate({
           url: pb.url,
           route: {
@@ -44013,8 +44073,8 @@
     PhotoBrowser.prototype.close = function close () {
       var pb = this;
       if (!pb.opened) { return pb; }
-      if (pb.params.routableModals || pb.openedIn === 'page') {
-        if (pb.view) { pb.view.router.back(); }
+      if ((pb.params.routableModals && pb.view) || pb.openedIn === 'page') {
+        pb.view.router.back();
       } else {
         pb.modal.once('modalClosed', function () {
           Utils.nextTick(function () {
@@ -44042,6 +44102,8 @@
       pb.destroyed = true;
       pb = null;
     };
+
+    Object.defineProperties( PhotoBrowser.prototype, prototypeAccessors );
 
     return PhotoBrowser;
   }(Framework7Class));
@@ -44394,15 +44456,6 @@
         if ($inputEl.length) { $inputEl[0].f7Autocomplete = ac; }
       }
 
-      var view;
-      if (ac.params.view) {
-        view = ac.params.view;
-      } else if ($openerEl || $inputEl) {
-        var $el = $openerEl || $inputEl;
-        view = $el.closest('.view').length && $el.closest('.view')[0].f7View;
-      }
-      if (!view) { view = app.views.main; }
-
       var id = Utils.id();
 
       var url = params.url;
@@ -44422,7 +44475,6 @@
         $inputEl: $inputEl,
         inputEl: $inputEl && $inputEl[0],
         id: id,
-        view: view,
         url: url,
         value: ac.params.value || [],
         inputType: inputType,
@@ -44688,6 +44740,24 @@
     if ( Framework7Class ) Autocomplete.__proto__ = Framework7Class;
     Autocomplete.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Autocomplete.prototype.constructor = Autocomplete;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ac = this;
+      var $openerEl = ac.$openerEl;
+      var $inputEl = ac.$inputEl;
+      var app = ac.app;
+      var view;
+      if (ac.params.view) {
+        view = ac.params.view;
+      } else if ($openerEl || $inputEl) {
+        var $el = $openerEl || $inputEl;
+        view = $el.closest('.view').length && $el.closest('.view')[0].f7View;
+      }
+      if (!view) { view = app.views.main; }
+      return view;
+    };
 
     Autocomplete.prototype.positionDropdown = function positionDropdown () {
       var obj;
@@ -45041,7 +45111,7 @@
         },
       };
 
-      if (ac.params.routableModals) {
+      if (ac.params.routableModals && ac.view) {
         ac.view.router.navigate({
           url: ac.url,
           route: {
@@ -45096,7 +45166,7 @@
       if (ac.params.openIn === 'dropdown') {
         ac.onClose();
         ac.onClosed();
-      } else if (ac.params.routableModals || ac.openedIn === 'page') {
+      } else if ((ac.params.routableModals && ac.view) || ac.openedIn === 'page') {
         ac.view.router.back({ animate: ac.params.animate });
       } else {
         ac.modal.once('modalClosed', function () {
@@ -45129,6 +45199,8 @@
       Utils.deleteProps(ac);
       ac.destroyed = true;
     };
+
+    Object.defineProperties( Autocomplete.prototype, prototypeAccessors );
 
     return Autocomplete;
   }(Framework7Class));
@@ -47140,15 +47212,6 @@
         $targetEl = $(self.params.targetEl);
       }
 
-      var view;
-      if ($inputEl) {
-        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
-      }
-      if (!view && $targetEl) {
-        view = $targetEl.parents('.view').length && $targetEl.parents('.view')[0].f7View;
-      }
-      if (!view) { view = app.views.main; }
-
       Utils.extend(self, {
         app: app,
         $containerEl: $containerEl,
@@ -47161,7 +47224,6 @@
         initialized: false,
         opened: false,
         url: self.params.url,
-        view: view,
         modules: {
           'alpha-slider': moduleAlphaSlider,
           'current-color': moduleCurrentColor,
@@ -47240,6 +47302,30 @@
     if ( Framework7Class ) ColorPicker.__proto__ = Framework7Class;
     ColorPicker.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     ColorPicker.prototype.constructor = ColorPicker;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var $inputEl = ref.$inputEl;
+      var $targetEl = ref.$targetEl;
+      var app = ref.app;
+      var params = ref.params;
+      var view;
+      if (params.view) {
+        view = params.view;
+      } else {
+        if ($inputEl) {
+          view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+        }
+        if (!view && $targetEl) {
+          view = $targetEl.parents('.view').length && $targetEl.parents('.view')[0].f7View;
+        }
+      }
+      if (!view) { view = app.views.main; }
+
+      return view;
+    };
 
     ColorPicker.prototype.attachEvents = function attachEvents () {
       var self = this;
@@ -47836,7 +47922,7 @@
           modalParams.push = params.sheetPush;
           modalParams.swipeToClose = params.sheetSwipeToClose;
         }
-        if (params.routableModals) {
+        if (params.routableModals && self.view) {
           self.view.router.navigate({
             url: self.url,
             route: ( obj = {
@@ -47860,7 +47946,7 @@
         self.onClosed();
         return;
       }
-      if (self.params.routableModals) {
+      if ((self.params.routableModals && self.view) || self.params.openIn === 'page') {
         self.view.router.back();
       } else {
         self.modal.close();
@@ -47920,6 +48006,8 @@
       Utils.deleteProps(self);
       self.destroyed = true;
     };
+
+    Object.defineProperties( ColorPicker.prototype, prototypeAccessors );
 
     return ColorPicker;
   }(Framework7Class));
@@ -48932,15 +49020,15 @@
   };
 
   /**
-   * Framework7 5.3.2
+   * Framework7 5.4.0
    * Full featured mobile HTML framework for building iOS & Android apps
-   * http://framework7.io/
+   * https://framework7.io/
    *
    * Copyright 2014-2020 Vladimir Kharlampidi
    *
    * Released under the MIT License
    *
-   * Released on: January 18, 2020
+   * Released on: January 29, 2020
    */
 
   // Install Core Modules & Components
@@ -49024,6 +49112,10 @@
   ]);
 
   var Utils$1 = {
+    text: function text(text$1) {
+      if (typeof text$1 === 'undefined' || text$1 === null) { return ''; }
+      return text$1;
+    },
     noUndefinedProps: function noUndefinedProps(obj) {
       var o = {};
       Object.keys(obj).forEach(function (key) {
@@ -50133,7 +50225,6 @@
 
       if (inner) {
         innerEl = _h('div', {
-          ref: 'inner',
           class: Utils$1.classNames('appbar-inner', innerClass, innerClassName)
         }, [this.$slots['default']]);
       }
@@ -50143,7 +50234,6 @@
         'no-hairline': noHairline
       }, Mixins.colorClasses(props));
       return _h('div', {
-        ref: 'el',
         style: style,
         class: classes,
         attrs: {
@@ -51034,6 +51124,10 @@
         type: Boolean,
         default: undefined
       },
+      scrollableEl: {
+        type: String,
+        default: undefined
+      },
       swipeToClose: {
         type: Boolean,
         default: undefined
@@ -51124,6 +51218,7 @@
       var hideNavbarOnOpen = props.hideNavbarOnOpen;
       var hideToolbarOnOpen = props.hideToolbarOnOpen;
       var hideStatusbarOnOpen = props.hideStatusbarOnOpen;
+      var scrollableEl = props.scrollableEl;
       var swipeToClose = props.swipeToClose;
       var closeByBackdropClick = props.closeByBackdropClick;
       var backdrop = props.backdrop;
@@ -51167,6 +51262,7 @@
           'data-hide-navbar-on-open': typeof hideNavbarOnOpen === 'undefined' ? hideNavbarOnOpen : hideNavbarOnOpen.toString(),
           'data-hide-toolbar-on-open': typeof hideToolbarOnOpen === 'undefined' ? hideToolbarOnOpen : hideToolbarOnOpen.toString(),
           'data-hide-statusbar-on-open': typeof hideStatusbarOnOpen === 'undefined' ? hideStatusbarOnOpen : hideStatusbarOnOpen.toString(),
+          'data-scrollable-el': scrollableEl,
           'data-swipe-to-close': typeof swipeToClose === 'undefined' ? swipeToClose : swipeToClose.toString(),
           'data-close-by-backdrop-click': typeof closeByBackdropClick === 'undefined' ? closeByBackdropClick : closeByBackdropClick.toString(),
           'data-backdrop': typeof backdrop === 'undefined' ? backdrop : backdrop.toString(),
@@ -51358,7 +51454,7 @@
       mediaBgColor: String,
       mediaTextColor: String,
       outline: Boolean
-    }, Mixins.colorProps),
+    }, Mixins.colorProps, {}, Mixins.linkIconProps),
 
     render: function render() {
       var _h = this.$createElement;
@@ -51373,15 +51469,39 @@
       var mediaTextColor = props.mediaTextColor;
       var mediaBgColor = props.mediaBgColor;
       var outline = props.outline;
+      var icon = props.icon;
+      var iconMaterial = props.iconMaterial;
+      var iconF7 = props.iconF7;
+      var iconMd = props.iconMd;
+      var iconIos = props.iconIos;
+      var iconAurora = props.iconAurora;
+      var iconColor = props.iconColor;
+      var iconSize = props.iconSize;
+      var iconEl;
       var mediaEl;
       var labelEl;
       var deleteEl;
 
-      if (media || self.$slots && self.$slots.media) {
+      if (icon || iconMaterial || iconF7 || iconMd || iconIos || iconAurora) {
+        iconEl = _h(f7Icon, {
+          attrs: {
+            material: iconMaterial,
+            f7: iconF7,
+            icon: icon,
+            md: iconMd,
+            ios: iconIos,
+            aurora: iconAurora,
+            color: iconColor,
+            size: iconSize
+          }
+        });
+      }
+
+      if (media || iconEl || self.$slots && self.$slots.media) {
         var mediaClasses = Utils$1.classNames('chip-media', mediaTextColor && ("text-color-" + mediaTextColor), mediaBgColor && ("bg-color-" + mediaBgColor));
         mediaEl = _h('div', {
           class: mediaClasses
-        }, [media || this.$slots['media']]);
+        }, [iconEl, media, this.$slots['media']]);
       }
 
       if (text || self.$slots && self.$slots.text) {
@@ -52150,8 +52270,7 @@
           el: self.$refs.el,
           on: {
             change: function change(toggle) {
-              var checked = toggle.checked;
-              self.dispatchEvent('toggle:change toggleChange', checked);
+              self.dispatchEvent('toggle:change toggleChange', toggle.checked);
             }
 
           }
@@ -52442,7 +52561,6 @@
       var props = this.props;
       var mode = props.mode;
       var value = props.value;
-      var palceholder = props.palceholder;
       var buttons = props.buttons;
       var customButtons = props.customButtons;
       var dividers = props.dividers;
@@ -52454,7 +52572,6 @@
         el: this.$refs.el,
         mode: mode,
         value: value,
-        palceholder: palceholder,
         buttons: buttons,
         customButtons: customButtons,
         dividers: dividers,
@@ -52837,7 +52954,6 @@
           'input-dropdown': dropdown === 'auto' ? type === 'select' : dropdown
         }, Mixins.colorClasses(props));
         return _h('div', {
-          ref: 'wrapEl',
           class: wrapClasses,
           style: style,
           attrs: {
@@ -57513,7 +57629,7 @@
     },
 
     created: function created() {
-      Utils$1.bindMethods(this, ['onBackClick', 'onHide', 'onShow', 'onExpand', 'onCollapse', 'onNavbarPosition']);
+      Utils$1.bindMethods(this, ['onBackClick', 'onHide', 'onShow', 'onExpand', 'onCollapse', 'onNavbarPosition', 'onNavbarRole', 'onNavbarMasterStack', 'onNavbarMasterUnstack']);
     },
 
     mounted: function mounted() {
@@ -59775,7 +59891,7 @@
 
       toggle: function toggle() {
         if (!this.f7Searchbar) { return undefined; }
-        return this.toggle.disable();
+        return this.f7Searchbar.toggle();
       },
 
       clear: function clear() {
@@ -62079,15 +62195,17 @@
       f7.Framework7 = Framework7;
       f7.events = new Framework7.Events();
 
-      var Extend = params.Vue || Vue; // eslint-disable-line
+      // eslint-disable-next-line
+      var Extend = params.Vue || Vue;
 
       
-      // Define protos
+      // DEFINE_INSTANCE_PROTOS_START
       Object.defineProperty(Extend.prototype, '$f7', {
         get: function get() {
           return f7.instance;
         },
       });
+      // DEFINE_INSTANCE_PROTOS_END
 
       var theme = params.theme;
       if (theme === 'md') { f7Theme.md = true; }
@@ -62103,6 +62221,8 @@
         f7Theme.md = f7.instance.theme === 'md';
         f7Theme.aurora = f7.instance.theme === 'aurora';
       });
+
+      // DEFINE_PROTOS_START
       Object.defineProperty(Extend.prototype, '$theme', {
         get: function get() {
           return {
@@ -62112,7 +62232,6 @@
           };
         },
       });
-
 
       Extend.prototype.Dom7 = Framework7.$;
       Extend.prototype.$$ = Framework7.$;
@@ -62178,6 +62297,7 @@
           self._f7router = value;
         },
       });
+      // DEFINE_PROTOS_END
 
       // Extend F7 Router
       Framework7.Router.use(componentsRouter);
@@ -62185,15 +62305,15 @@
   };
 
   /**
-   * Framework7 Vue 5.3.2
+   * Framework7 Vue 5.4.0
    * Build full featured iOS & Android apps using Framework7 & Vue
-   * http://framework7.io/vue/
+   * https://framework7.io/vue/
    *
    * Copyright 2014-2020 Vladimir Kharlampidi
    *
    * Released under the MIT License
    *
-   * Released on: January 18, 2020
+   * Released on: January 29, 2020
    */
 
   //
@@ -63142,7 +63262,7 @@
   var __vue_script__$8 = script$8;
 
   /* template */
-  var __vue_render__$8 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"sliding":"","back-link":"Back","title":"Badge"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-only":""}},[_c('f7-icon',{attrs:{"ios":"f7:person_round_fill","aurora":"f7:person_round_fill","md":"material:person"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("5")])],1)],1)],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_c('f7-icon',{attrs:{"ios":"f7:envelope_fill","aurora":"f7:envelope_fill","md":"material:email"}},[_c('f7-badge',{attrs:{"color":"green"}},[_vm._v("5")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Inbox")])],1),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_c('f7-icon',{attrs:{"ios":"f7:calendar_fill","aurora":"f7:calendar_fill","md":"material:today"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("7")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Calendar")])],1),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_c('f7-icon',{attrs:{"ios":"f7:cloud_upload_fill","aurora":"f7:cloud_upload_fill","md":"material:file_upload"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("1")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Upload")])],1)],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Foo Bar","badge":"0"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ivan Petrov","badge":"CEO","badge-color":"blue"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"John Doe","badge":"5","badge-color":"green"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jane Doe","badge":"NEW","badge-color":"orange"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1)],1)};
+  var __vue_render__$8 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"sliding":"","back-link":"Back","title":"Badge"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-only":""}},[_c('f7-icon',{attrs:{"ios":"f7:person_circle_fill","aurora":"f7:person_circle_fill","md":"material:person"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("5")])],1)],1)],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_c('f7-icon',{attrs:{"ios":"f7:envelope_fill","aurora":"f7:envelope_fill","md":"material:email"}},[_c('f7-badge',{attrs:{"color":"green"}},[_vm._v("5")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Inbox")])],1),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_c('f7-icon',{attrs:{"ios":"f7:calendar_fill","aurora":"f7:calendar_fill","md":"material:today"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("7")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Calendar")])],1),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_c('f7-icon',{attrs:{"ios":"f7:cloud_upload_fill","aurora":"f7:cloud_upload_fill","md":"material:file_upload"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("1")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Upload")])],1)],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Foo Bar","badge":"0"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ivan Petrov","badge":"CEO","badge-color":"blue"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"John Doe","badge":"5","badge-color":"green"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jane Doe","badge":"NEW","badge-color":"orange"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1)],1)};
   var __vue_staticRenderFns__$8 = [];
 
     /* style */
@@ -63195,7 +63315,7 @@
   var __vue_script__$9 = script$9;
 
   /* template */
-  var __vue_render__$9 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Buttons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Usual Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Fill Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":""}},[_vm._v("Outline")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","round":""}},[_vm._v("Round")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":"","round":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":"","round":""}},[_vm._v("Outline")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Segmented")]),_vm._v(" "),_c('f7-block',[_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":"","active":""}},[_vm._v("Active")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Large Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":""}},[_vm._v("Raised")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":"","fill":""}},[_vm._v("Raised Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Small Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","round":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":"","round":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":"","round":""}},[_vm._v("Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Fill Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("List-Block Buttons")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"List Button 1"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 2"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 3"}})],1),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"Large Red Button","color":"red"}})],1)],1)};
+  var __vue_render__$9 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Buttons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Usual Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Fill Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":""}},[_vm._v("Outline")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","round":""}},[_vm._v("Round")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":"","round":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":"","round":""}},[_vm._v("Outline")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Segmented")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-segmented',{attrs:{"tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"strong":"","tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"tag":"p"}},[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":"","active":""}},[_vm._v("Active")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Large Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":""}},[_vm._v("Raised")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":"","fill":""}},[_vm._v("Raised Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Small Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","round":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":"","round":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":"","round":""}},[_vm._v("Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Fill Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("List-Block Buttons")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"List Button 1"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 2"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 3"}})],1),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"Large Red Button","color":"red"}})],1)],1)};
   var __vue_staticRenderFns__$9 = [];
 
     /* style */
@@ -63280,7 +63400,7 @@
   var __vue_script__$a = script$a;
 
   /* template */
-  var __vue_render__$a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Calendar","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Calendar is a touch optimized component that provides an easy way to handle dates.")]),_vm._v(" "),_c('p',[_vm._v("Calendar could be used as inline component or as overlay. Overlay Calendar will be automatically converted to Popover on tablets (iPad).")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default setup")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Your birth date","readonly":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom date format")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select date","readonly":"","calendar-params":{dateFormat: { weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' }}}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Date + Time")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select date and time","readonly":"","calendar-params":{dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }}}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Multiple Values")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select multiple dates","readonly":"","calendar-params":{ dateFormat: { month: 'short', day: 'numeric' }, multiple: true }}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Range Picker")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select date range","readonly":"","calendar-params":{ rangePicker: true }}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Open in Modal")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select date","readonly":"","calendar-params":{openIn: 'customModal', header: true, footer: true}}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Calendar Page")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Open Calendar Page","link":"/calendar-page/"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inline with custom toolbar")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding"},[_c('div',{attrs:{"id":"demo-calendar-inline-container"}})])],1)};
+  var __vue_render__$a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Calendar","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Calendar is a touch optimized component that provides an easy way to handle dates.")]),_vm._v(" "),_c('p',[_vm._v("Calendar could be used as inline component or as overlay. Overlay Calendar will be automatically converted to Popover on tablets (iPad).")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default setup")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Your birth date","readonly":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom date format")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select date","readonly":"","calendar-params":{dateFormat: { weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' }}}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Date + Time")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select date and time","readonly":"","calendar-params":{timePicker: true, dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }}}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Multiple Values")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select multiple dates","readonly":"","calendar-params":{ dateFormat: { month: 'short', day: 'numeric' }, multiple: true }}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Range Picker")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select date range","readonly":"","calendar-params":{ rangePicker: true }}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Open in Modal")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"datepicker","placeholder":"Select date","readonly":"","calendar-params":{openIn: 'customModal', header: true, footer: true}}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Calendar Page")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Open Calendar Page","link":"/calendar-page/"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inline with custom toolbar")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding",attrs:{"strong":""}},[_c('div',{attrs:{"id":"demo-calendar-inline-container"}})])],1)};
   var __vue_staticRenderFns__$a = [];
 
     /* style */
@@ -63381,8 +63501,8 @@
         var eventItems = [];
         if (currentEvents.length) {
           currentEvents.forEach(function (event) {
-            var hours = event.date.getHours();
-            var minutes = event.date.getMinutes();
+            var hours = event.hours;
+            var minutes = event.minutes;
             if (minutes < 10) { minutes = "0" + minutes; }
             eventItems.push({
               title: event.title,
@@ -63393,7 +63513,7 @@
         }
         self.eventItems = eventItems;
       },
-      onPageInit: function onPageInit(e, page) {
+      onPageInit: function onPageInit(page) {
         var self = this;
         var app = self.$f7;
         var $ = self.$$;
@@ -63431,7 +63551,7 @@
   var __vue_script__$b = script$b;
 
   /* template */
-  var __vue_render__$b = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"back-link":"Back","no-shadow":""}},[_c('f7-nav-title',{staticClass:"navbar-calendar-title"})],1),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block block-strong no-padding no-margin no-hairline-top",attrs:{"id":"calendar"}}),_vm._v(" "),_c('f7-list',{staticClass:"no-margin no-hairlines no-safe-area-left",attrs:{"id":"calendar-events"}},[_vm._l((_vm.eventItems),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":item.title,"after":item.time}},[_c('div',{staticClass:"event-color",style:({'background-color': item.color}),attrs:{"slot":"root-start"},slot:"root-start"})])}),_vm._v(" "),(_vm.eventItems.length === 0)?_c('f7-list-item',[_c('span',{staticClass:"text-color-gray",attrs:{"slot":"title"},slot:"title"},[_vm._v("No events for this day")])]):_vm._e()],2)],1)],1)};
+  var __vue_render__$b = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"back-link":"Back","no-shadow":""}},[_c('f7-nav-title',{staticClass:"navbar-calendar-title"})],1),_vm._v(" "),_c('div',{staticClass:"block block-strong no-padding no-margin no-hairline-top",attrs:{"id":"calendar"}}),_vm._v(" "),_c('f7-list',{staticClass:"no-margin no-hairlines no-safe-area-left",attrs:{"id":"calendar-events"}},[_vm._l((_vm.eventItems),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":item.title,"after":item.time}},[_c('div',{staticClass:"event-color",style:({'background-color': item.color}),attrs:{"slot":"root-start"},slot:"root-start"})])}),_vm._v(" "),(_vm.eventItems.length === 0)?_c('f7-list-item',[_c('span',{staticClass:"text-color-gray",attrs:{"slot":"title"},slot:"title"},[_vm._v("No events for this day")])]):_vm._e()],2)],1)};
   var __vue_staticRenderFns__$b = [];
 
     /* style */
@@ -63671,7 +63791,7 @@
   var __vue_script__$f = script$f;
 
   /* template */
-  var __vue_render__$f = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Chips","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Chips With Text")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Example Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Another Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"One More Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Fourth Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Last One"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"outline":"","text":"Example Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Another Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"One More Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Fourth Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Last One"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Icon Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Add Contact","media-bg-color":"blue"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:plus_circle","aurora":"f7:plus_circle","md":"material:add_circle"},slot:"media"})],1),_vm._v(" "),_c('f7-chip',{attrs:{"text":"London","media-bg-color":"green"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:compass","aurora":"f7:compass","md":"material:location_on"},slot:"media"})],1),_vm._v(" "),_c('f7-chip',{attrs:{"text":"John Doe","media-bg-color":"red"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:person","aurora":"f7:person","md":"material:person"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Contact Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Jane Doe"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-9.jpg"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"John Doe"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-3.jpg"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Adam Smith"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-7.jpg"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jennifer","media-bg-color":"pink","media":"J"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Chris","media-bg-color":"yellow","media-text-color":"black","media":"C"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Kate","media-bg-color":"red","media":"K"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Deletable Chips / Tags")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Example Chip","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Chris","media":"C","media-bg-color":"orange","text-color":"black","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jane Doe","deleteable":""},on:{"click":_vm.deleteChip}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-9.jpg"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"One More Chip","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jennifer","media-bg-color":"pink","media":"J","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Adam Smith","deleteable":""},on:{"click":_vm.deleteChip}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-7.jpg"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Red Chip","color":"red"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Green Chip","color":"green"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Blue Chip","color":"blue"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Orange Chip","color":"orange"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Pink Chip","color":"pink"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Red Chip","color":"red"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Green Chip","color":"green"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Blue Chip","color":"blue"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Orange Chip","color":"orange"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Pink Chip","color":"pink"}})],1)],1)};
+  var __vue_render__$f = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Chips","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Chips With Text")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Example Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Another Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"One More Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Fourth Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Last One"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"outline":"","text":"Example Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Another Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"One More Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Fourth Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Last One"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Icon Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Add Contact","media-bg-color":"blue"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:plus_circle","aurora":"f7:plus_circle","md":"material:add_circle"},slot:"media"})],1),_vm._v(" "),_c('f7-chip',{attrs:{"text":"London","media-bg-color":"green"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:compass","aurora":"f7:compass","md":"material:location_on"},slot:"media"})],1),_vm._v(" "),_c('f7-chip',{attrs:{"text":"John Doe","media-bg-color":"red"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:person","aurora":"f7:person","md":"material:person"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Contact Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Jane Doe"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-9.jpg"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"John Doe"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-3.jpg"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Adam Smith"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-7.jpg"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jennifer","media-bg-color":"pink","media":"J"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Chris","media-bg-color":"yellow","media-text-color":"black","media":"C"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Kate","media-bg-color":"red","media":"K"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Deletable Chips / Tags")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Example Chip","deleteable":""},on:{"delete":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Chris","media":"C","media-bg-color":"orange","text-color":"black","deleteable":""},on:{"delete":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jane Doe","deleteable":""},on:{"delete":_vm.deleteChip}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-9.jpg"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"One More Chip","deleteable":""},on:{"delete":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jennifer","media-bg-color":"pink","media":"J","deleteable":""},on:{"delete":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Adam Smith","deleteable":""},on:{"delete":_vm.deleteChip}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-100x100-7.jpg"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Red Chip","color":"red"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Green Chip","color":"green"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Blue Chip","color":"blue"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Orange Chip","color":"orange"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Pink Chip","color":"pink"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Red Chip","color":"red"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Green Chip","color":"green"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Blue Chip","color":"blue"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Orange Chip","color":"orange"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Pink Chip","color":"pink"}})],1)],1)};
   var __vue_staticRenderFns__$f = [];
 
     /* style */
@@ -64707,7 +64827,7 @@
   var __vue_script__$v = script$v;
 
   /* template */
-  var __vue_render__$v = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"List View","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 allows you to be flexible with list views (table views). You can make them as navigation menus, you can use there icons, inputs, and any elements inside of the list, and even make them nested:")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Simple List")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Simple Links List")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Link 1","link":"#"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Link 2","link":"#"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Link 3","link":"#"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Data list, with icons")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"John Doe","badge":"5"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jenna Smith"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Links")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe","after":"Cleaner"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Jenna Smith"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Links, Header, Footer")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","header":"Name","title":"John Doe","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","header":"Phone","title":"+7 90 111-22-3344","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","header":"Email","title":"john@doe","footer":"Home","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","header":"Email","title":"john@framework7","footer":"Work","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Links, no icons")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"divider":"","title":"Divider Here"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Jenna Smith"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Grouped with sticky titles")]),_vm._v(" "),_c('f7-list',[_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"A","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aaron "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Abbie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Adam"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"B","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bailey"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Barclay"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bartolo"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"C","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Caiden"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Calvin"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Candy"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Mixed and nested")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"No icons here"}}),_vm._v(" "),_c('li',[_c('ul',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"No icons here"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"With toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-toggle',{attrs:{"slot":"after"},slot:"after"})],1)],1)]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"With toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-toggle',{attrs:{"slot":"after"},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Mixed, inset")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"With toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-toggle',{attrs:{"slot":"after"},slot:"after"})],1),_vm._v(" "),_c('f7-block-footer',[_c('p',[_vm._v("Here comes some useful information about list above")])])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Tablet inset")]),_vm._v(" "),_c('f7-list',{attrs:{"medium-inset":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-block-footer',[_c('p',[_vm._v("This list block will look like \"inset\" only on tablets (iPad)")])])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Media Lists")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Media Lists are almost the same as Data Lists, but with a more flexible layout for visualization of more complex data, like products, services, userc, etc.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Songs")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Yellow Submarine","after":"$15","subtitle":"Beatles","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-1.jpg","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Don't Stop Me Now","after":"$22","subtitle":"Queen","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-2.jpg","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Billie Jean","after":"$16","subtitle":"Michael Jackson","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-3.jpg","width":"80"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Mail App")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Something more simple")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"title":"Yellow Submarine","subtitle":"Beatles"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-1.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Don't Stop Me Now","subtitle":"Queen"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-2.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Billie Jean","subtitle":"Michael Jackson"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-3.jpg","width":"44"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":"","inset":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Yellow Submarine","subtitle":"Beatles"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Don't Stop Me Now","subtitle":"Queen"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Billie Jean","subtitle":"Michael Jackson"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg","width":"44"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom Table-like Layout")]),_vm._v(" "),_c('f7-list',[_c('li',[_c('a',{staticClass:"item-link item-content",attrs:{"href":"#"}},[_c('div',{staticClass:"item-inner item-cell"},[_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-2")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-3")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-2")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 3-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-2\n              ")]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-3\n              ")])])])])])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"item-link item-content",attrs:{"href":"#"}},[_c('div',{staticClass:"item-inner item-cell"},[_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-2")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-3")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-2")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 3-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-2\n              ")]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-3\n              ")])])])])])])])],1)};
+  var __vue_render__$v = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"List View","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 allows you to be flexible with list views (table views). You can make them as navigation menus, you can use there icons, inputs, and any elements inside of the list, and even make them nested:")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Simple List")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Simple Links List")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Link 1","link":"#"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Link 2","link":"#"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Link 3","link":"#"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Data list, with icons")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"John Doe","badge":"5"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jenna Smith"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Links")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe","after":"Cleaner"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Jenna Smith"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Links, Header, Footer")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","header":"Name","title":"John Doe","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","header":"Phone","title":"+7 90 111-22-3344","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","header":"Email","title":"john@doe","footer":"Home","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","header":"Email","title":"john@framework7","footer":"Work","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Links, no icons")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"divider":"","title":"Divider Here"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Jenna Smith"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Grouped with sticky titles")]),_vm._v(" "),_c('f7-list',[_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"A","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aaron "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Abbie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Adam"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"B","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bailey"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Barclay"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bartolo"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"C","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Caiden"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Calvin"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Candy"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Mixed and nested")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"No icons here"}}),_vm._v(" "),_c('li',[_c('ul',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"No icons here"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"With toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-toggle',{attrs:{"slot":"after"},slot:"after"})],1)],1)]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"With toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-toggle',{attrs:{"slot":"after"},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Mixed, inset")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"With toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-toggle',{attrs:{"slot":"after"},slot:"after"})],1),_vm._v(" "),_c('f7-block-footer',[_c('p',[_vm._v("Here comes some useful information about list above")])])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Tablet inset")]),_vm._v(" "),_c('f7-list',{attrs:{"medium-inset":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-block-footer',[_c('p',[_vm._v("This list block will look like \"inset\" only on tablets (iPad)")])])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Media Lists")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Media Lists are almost the same as Data Lists, but with a more flexible layout for visualization of more complex data, like products, services, userc, etc.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Songs")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Yellow Submarine","after":"$15","subtitle":"Beatles","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-1.jpg","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Don't Stop Me Now","after":"$22","subtitle":"Queen","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-2.jpg","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Billie Jean","after":"$16","subtitle":"Michael Jackson","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/people-160x160-3.jpg","width":"80"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Mail App")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Something more simple")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"title":"Yellow Submarine","subtitle":"Beatles"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-1.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Don't Stop Me Now","subtitle":"Queen"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-2.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Billie Jean","subtitle":"Michael Jackson"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-3.jpg","width":"44"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":"","inset":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Yellow Submarine","subtitle":"Beatles"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Don't Stop Me Now","subtitle":"Queen"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Billie Jean","subtitle":"Michael Jackson"}},[_c('img',{attrs:{"slot":"media","src":"https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg","width":"44"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom Table-like Layout")]),_vm._v(" "),_c('f7-list',[_c('li',[_c('a',{staticClass:"item-link item-content",attrs:{"href":"#"}},[_c('div',{staticClass:"item-inner item-cell"},[_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-2")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-3")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-2")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 3-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-2\n              ")]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-3\n              ")])])])])])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"item-link item-content",attrs:{"href":"#"}},[_c('div',{staticClass:"item-inner item-cell"},[_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-2")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-3")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-2")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 3-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-2\n              ")]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-3\n              ")])])])])])])])],1)};
   var __vue_staticRenderFns__$v = [];
 
     /* style */
@@ -65599,7 +65719,7 @@
   var __vue_script__$F = script$F;
 
   /* template */
-  var __vue_render__$F = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Photo Browser","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser is a standalone and highly configurable component that allows to open window with photo viewer and navigation elements with the following features:")]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("Swiper between photos")]),_vm._v(" "),_c('li',[_vm._v("Multi-gestures support for zooming")]),_vm._v(" "),_c('li',[_vm._v("Toggle zoom by double tap on photo")]),_vm._v(" "),_c('li',[_vm._v("Single click on photo to toggle Exposition mode")])])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standalone",attrs:{"photos":_vm.photos}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.standalone.open()}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popup",attrs:{"photos":_vm.photos,"type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.popup.open()}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"page",attrs:{"photos":_vm.photos,"type":"page","back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.page.open()}}},[_vm._v("Page")])],1)],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standaloneDark",attrs:{"photos":_vm.photos,"theme":"dark"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.standaloneDark.open()}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popupDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.popupDark.open()}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"pageDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"page","back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.pageDark.open()}}},[_vm._v("Page")])],1)],1)],1)],1)};
+  var __vue_render__$F = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Photo Browser","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Photo Browser is a standalone and highly configurable component that allows to open window with photo viewer and navigation elements with the following features:")]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("Swiper between photos")]),_vm._v(" "),_c('li',[_vm._v("Multi-gestures support for zooming")]),_vm._v(" "),_c('li',[_vm._v("Toggle zoom by double tap on photo")]),_vm._v(" "),_c('li',[_vm._v("Single click on photo to toggle Exposition mode")])])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standalone",attrs:{"photos":_vm.photos}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.standalone.open()}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popup",attrs:{"photos":_vm.photos,"type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.popup.open()}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"page",attrs:{"photos":_vm.photos,"type":"page","page-back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.page.open()}}},[_vm._v("Page")])],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standaloneDark",attrs:{"photos":_vm.photos,"theme":"dark"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.standaloneDark.open()}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popupDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.popupDark.open()}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"pageDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"page","page-back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.pageDark.open()}}},[_vm._v("Page")])],1)],1)],1)],1)};
   var __vue_staticRenderFns__$F = [];
 
     /* style */
@@ -66022,7 +66142,7 @@
   var __vue_script__$J = script$J;
 
   /* template */
-  var __vue_render__$J = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Preloader","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("How about an activity indicator? Framework7 has a nice one. The F7 Preloader is made with SVG and animated with CSS so it can be easily resized.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('f7-block',{staticClass:"row demo-preloaders align-items-stretch text-align-center"},[_c('f7-col',[_c('f7-preloader')],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"color":"white"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"size":42}})],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"size":42,"color":"white"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Preloaders")]),_vm._v(" "),_c('f7-block',{staticClass:"row text-align-center"},[_c('f7-col',[_c('f7-preloader',{attrs:{"color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"orange"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"blue"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Multi-color (MD-theme only)")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center"},[_c('f7-preloader',{attrs:{"color":"multi"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Preloader Modals")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("With "),_c('b',[_vm._v("app.preloader.show()")]),_vm._v(" you can show small overlay with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openIndicator}},[_vm._v("Open Small Indicator")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader()")]),_vm._v(" you can show dialog modal with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openDialog}},[_vm._v("Open Dialog Preloader")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader('My text...')")]),_vm._v(" you can show dialog preloader modal with custom title.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openCustomDialog}},[_vm._v("Open Dialog Preloader")])])])],1)};
+  var __vue_render__$J = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Preloader","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("How about an activity indicator? Framework7 has a nice one. The F7 Preloader is made with SVG and animated with CSS so it can be easily resized.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('f7-block',{staticClass:"row demo-preloaders align-items-stretch text-align-center",attrs:{"strong":""}},[_c('f7-col',[_c('f7-preloader')],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"color":"white"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"size":42}})],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"size":42,"color":"white"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Preloaders")]),_vm._v(" "),_c('f7-block',{staticClass:"row text-align-center",attrs:{"strong":""}},[_c('f7-col',[_c('f7-preloader',{attrs:{"color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"orange"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"blue"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Multi-color (MD-theme only)")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-preloader',{attrs:{"color":"multi"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Preloader Modals")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("With "),_c('b',[_vm._v("app.preloader.show()")]),_vm._v(" you can show small overlay with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openIndicator}},[_vm._v("Open Small Indicator")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader()")]),_vm._v(" you can show dialog modal with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openDialog}},[_vm._v("Open Dialog Preloader")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader('My text...')")]),_vm._v(" you can show dialog preloader modal with custom title.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openCustomDialog}},[_vm._v("Open Dialog Preloader")])])])],1)};
   var __vue_staticRenderFns__$J = [];
 
     /* style */
@@ -66081,7 +66201,7 @@
         if (inline) {
           progressBarEl = app.progressbar.show('#demo-determinate-container', 0);
         } else {
-          progressBarEl = app.progressbar.show(0, app.theme === 'md' ? 'yellow' : 'blue');
+          progressBarEl = app.progressbar.show(0);
         }
         var progress = 0;
         function simulateLoading() {
@@ -66107,7 +66227,7 @@
         if (multiColor) {
           app.progressbar.show('multi');
         } else {
-          app.progressbar.show(app.theme === 'md' ? 'yellow' : 'blue');
+          app.progressbar.show();
         }
         setTimeout(function () {
           self.infiniteLoading = false;
@@ -66895,7 +67015,7 @@
   var __vue_script__$X = script$X;
 
   /* template */
-  var __vue_render__$X = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Swiper Slider","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"block"},[_c('p',[_vm._v("\n      Framework7 comes with powerful and most modern touch slider ever -\n      "),_c('a',{staticClass:"external",attrs:{"href":"http://idangero.us/swiper","target":"_blank"}},[_vm._v("Swiper Slider")]),_vm._v("\n      with super flexible configuration and lot, lot of features. Just check the following demos:\n    ")])]),_vm._v(" "),_c('div',{staticClass:"list links-list"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"swiper-horizontal/"}},[_vm._v("Swiper Horizontal")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-vertical/"}},[_vm._v("Swiper Vertical")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-space-between/"}},[_vm._v("Space Between Slides")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-multiple/"}},[_vm._v("Multiple Per Page")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-nested/"}},[_vm._v("Nested Swipers")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-loop/"}},[_vm._v("Infinite Loop Mode")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-cube/"}},[_vm._v("3D Cube Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-coverflow/"}},[_vm._v("3D Coverflow Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-flip/"}},[_vm._v("3D Flip Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-fade/"}},[_vm._v("Fade Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-scrollbar/"}},[_vm._v("With Scrollbar")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-gallery/"}},[_vm._v("Thumbs Gallery")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-custom-controls/"}},[_vm._v("Custom Controls")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-parallax/"}},[_vm._v("Parallax")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-lazy/"}},[_vm._v("Lazy Loading")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-pagination-progress/"}},[_vm._v("Progress Pagination")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-pagination-fraction/"}},[_vm._v("Fraction Pagination")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-zoom/"}},[_vm._v("Zoom")])])])])],1)};
+  var __vue_render__$X = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Swiper Slider","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"block"},[_c('p',[_vm._v("\n      Framework7 comes with powerful and most modern touch slider ever -\n      "),_c('a',{staticClass:"external",attrs:{"href":"https://swiperjs.com","target":"_blank"}},[_vm._v("Swiper Slider")]),_vm._v("\n      with super flexible configuration and lot, lot of features. Just check the following demos:\n    ")])]),_vm._v(" "),_c('div',{staticClass:"list links-list"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"swiper-horizontal/"}},[_vm._v("Swiper Horizontal")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-vertical/"}},[_vm._v("Swiper Vertical")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-space-between/"}},[_vm._v("Space Between Slides")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-multiple/"}},[_vm._v("Multiple Per Page")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-nested/"}},[_vm._v("Nested Swipers")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-loop/"}},[_vm._v("Infinite Loop Mode")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-cube/"}},[_vm._v("3D Cube Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-coverflow/"}},[_vm._v("3D Coverflow Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-flip/"}},[_vm._v("3D Flip Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-fade/"}},[_vm._v("Fade Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-scrollbar/"}},[_vm._v("With Scrollbar")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-gallery/"}},[_vm._v("Thumbs Gallery")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-custom-controls/"}},[_vm._v("Custom Controls")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-parallax/"}},[_vm._v("Parallax")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-lazy/"}},[_vm._v("Lazy Loading")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-pagination-progress/"}},[_vm._v("Progress Pagination")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-pagination-fraction/"}},[_vm._v("Fraction Pagination")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-zoom/"}},[_vm._v("Zoom")])])])])],1)};
   var __vue_staticRenderFns__$X = [];
 
     /* style */
@@ -68303,7 +68423,7 @@
   var __vue_script__$1l = script$1l;
 
   /* template */
-  var __vue_render__$1l = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Toast","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toasts provide brief feedback about an operation through a message on the screen.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastBottom}},[_vm._v("Toast on Bottom")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastTop}},[_vm._v("Toast on Top")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastCenter}},[_vm._v("Toast on Center")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastIcon}},[_vm._v("Toast with icon")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastLargeMessage}},[_vm._v("Toast with large message")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithButton}},[_vm._v("Toast with close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCustomButton}},[_vm._v("Toast with custom button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCallback}},[_vm._v("Toast with callback on close")])],1)])],1)};
+  var __vue_render__$1l = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Toast","back-link":"Back"}}),_vm._v(" "),_c('f7-blocks',{attrs:{"strong":""}},[_c('p',[_vm._v("Toasts provide brief feedback about an operation through a message on the screen.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastBottom}},[_vm._v("Toast on Bottom")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastTop}},[_vm._v("Toast on Top")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastCenter}},[_vm._v("Toast on Center")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastIcon}},[_vm._v("Toast with icon")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastLargeMessage}},[_vm._v("Toast with large message")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithButton}},[_vm._v("Toast with close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCustomButton}},[_vm._v("Toast with custom button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCallback}},[_vm._v("Toast with callback on close")])],1)])],1)};
   var __vue_staticRenderFns__$1l = [];
 
     /* style */
