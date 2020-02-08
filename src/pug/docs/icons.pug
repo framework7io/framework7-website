@@ -36,7 +36,7 @@ block content
     h3 HTML Example
     p It’s easy to incorporate icons into your web page. Here’s a small example:
     :code(lang="html")
-          <i class="f7-icons">home</i>
+          <i class="f7-icons">house</i>
     p This example uses a typographic feature called <a href="http://alistapart.com/article/the-era-of-symbol-fonts" target="_blank">ligatures</a>, which allows rendering of an icon glyph simply by using its textual name. The replacement is done automatically by the web browser and provides more readable code than the equivalent numeric character reference.
     h3 Styling Icons
     h4 Sizing
@@ -48,25 +48,25 @@ block content
           .size-50 { font-size: 50px }
 
     :code(lang="html")
-          <i class="f7-icons size-22">home</i>
-          <i class="f7-icons size-25">home</i>
-          <i class="f7-icons size-29">home</i>
-          <i class="f7-icons size-50">home</i>
+          <i class="f7-icons size-22">house</i>
+          <i class="f7-icons size-25">house</i>
+          <i class="f7-icons size-29">house</i>
+          <i class="f7-icons size-50">house</i>
     h4 Coloring
     p Using the icon font allows for easy styling of an icon in any <a href="color-themes.html">default color</a> or custom color.
     :code(lang="css")
           .color-custom { color: #ff0000 }
 
     :code(lang="html")
-          <i class="icon f7-icons color-red">home</i>
-          <i class="icon f7-icons color-yellow">home</i>
-          <i class="icon f7-icons color-custom">home</i>
+          <i class="icon f7-icons color-red">house</i>
+          <i class="icon f7-icons color-yellow">house</i>
+          <i class="icon f7-icons color-custom">house</i>
     h2 Using Both F7 Icons & Material Icons
     p To keep best practise its better to use F7 Icons font for iOS theme and Material Icons font for MD theme. But what to do in case you develop your app for both MD and iOS themes?
     p In this case we may use router's `{theme}-only` and `if-{theme}` and `if-not-{theme}` helper classes to have F7 icon in iOS theme and Material icons in MD theme:
     :code(lang="html")
-      <i class="f7-icons if-not-md">home</i>
-      <i class="material-icons md-only">home</i>
-    p In this case we will have only `<i class="f7-icons if-not-md">home&lt;/i&gt;` when app running with iOS or Aurora themes and only `<i class="material-icons md-only">home&lt;/i&gt;` when app is in MD theme.
+      <i class="f7-icons if-not-md">house</i>
+      <i class="material-icons md-only">house</i>
+    p In this case we will have only `<i class="f7-icons if-not-md">house&lt;/i&gt;` when app running with iOS or Aurora themes and only `<i class="material-icons md-only">house&lt;/i&gt;` when app is in MD theme.
 
     +cssVars('icon')
