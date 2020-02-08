@@ -12,6 +12,8 @@
 	}
 
 	function _typeof(obj) {
+	  "@babel/helpers - typeof";
+
 	  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
 	    _typeof = function (obj) {
 	      return typeof obj;
@@ -11855,7 +11857,7 @@
 	    touch: function checkTouch() {
 	      return !!(win.navigator.maxTouchPoints > 0 || 'ontouchstart' in win || win.DocumentTouch && doc instanceof win.DocumentTouch);
 	    }(),
-	    pointerEvents: !!win.PointerEvent && 'maxTouchPoints' in win.navigator && win.navigator.maxTouchPoints > 0,
+	    pointerEvents: !!win.PointerEvent,
 	    observer: function checkObserver() {
 	      return 'MutationObserver' in win || 'WebkitMutationObserver' in win;
 	    }(),
@@ -13060,6 +13062,7 @@
 
 	  if (options.headers) {
 	    Object.keys(options.headers).forEach(function (headerName) {
+	      if (typeof options.headers[headerName] === 'undefined') return;
 	      xhr.setRequestHeader(headerName, options.headers[headerName]);
 	    });
 	  } // Check for crossDomain
@@ -37452,20 +37455,26 @@
 	    var $imageEl = $(imageEl);
 	    var bg = $imageEl.attr('data-background');
 	    var src = bg || $imageEl.attr('data-src');
-	    if (!src) return;
 
 	    function onLoad() {
 	      $imageEl.removeClass('lazy').addClass('lazy-loaded');
 
 	      if (bg) {
 	        $imageEl.css('background-image', "url(".concat(src, ")"));
-	      } else {
+	      } else if (src) {
 	        $imageEl.attr('src', src);
 	      }
 
 	      if (callback) callback(imageEl);
 	      $imageEl.trigger('lazy:loaded');
 	      app.emit('lazyLoaded', $imageEl[0]);
+	    }
+
+	    if (!src) {
+	      $imageEl.trigger('lazy:load');
+	      app.emit('lazyLoad', $imageEl[0]);
+	      onLoad();
+	      return;
 	    }
 
 	    function onError() {
@@ -40859,7 +40868,7 @@
 
 	  var skip = Math.min(swiper.params.slidesPerGroupSkip, slideIndex);
 	  var snapIndex = skip + Math.floor((slideIndex - skip) / swiper.params.slidesPerGroup);
-	  if (snapIndex >= slidesGrid.length) snapIndex = slidesGrid.length - 1;
+	  if (snapIndex >= snapGrid.length) snapIndex = snapGrid.length - 1;
 
 	  if ((activeIndex || params.initialSlide || 0) === (previousIndex || 0) && runCallbacks) {
 	    swiper.emit('beforeSlideChangeStart');
@@ -42848,7 +42857,7 @@
 	        startTranslate: undefined,
 	        allowThresholdMove: undefined,
 	        // Form elements to match
-	        formElements: 'input, select, option, textarea, button, video',
+	        formElements: 'input, select, option, textarea, button, video, label',
 	        // Last click time
 	        lastClickTime: Utils.now(),
 	        clickTimeout: undefined,
@@ -49438,6 +49447,15 @@
 	    var touchesStart = {};
 	    var isTouched;
 
+	    function handleClick() {
+	      if (tooltip.opened) tooltip.hide();else tooltip.show(this);
+	    }
+
+	    function handleClickOut(e) {
+	      if (tooltip.opened && ($(e.target).closest($targetEl).length || $(e.target).closest(tooltip.$el).length)) return;
+	      tooltip.hide();
+	    }
+
 	    function handleTouchStart(e) {
 	      if (isTouched) return;
 	      isTouched = true;
@@ -49481,6 +49499,12 @@
 	    tooltip.attachEvents = function attachEvents() {
 	      $el.on('transitionend', handleTransitionEnd);
 
+	      if (tooltip.params.trigger === 'click') {
+	        $targetEl.on('click', handleClick);
+	        $('html').on('click', handleClickOut);
+	        return;
+	      }
+
 	      if (Support.touch) {
 	        var passive = Support.passiveListener ? {
 	          passive: true
@@ -49496,6 +49520,12 @@
 
 	    tooltip.detachEvents = function detachEvents() {
 	      $el.off('transitionend', handleTransitionEnd);
+
+	      if (tooltip.params.trigger === 'click') {
+	        $targetEl.off('click', handleClick);
+	        $('html').off('click', handleClickOut);
+	        return;
+	      }
 
 	      if (Support.touch) {
 	        var passive = Support.passiveListener ? {
@@ -49739,7 +49769,8 @@
 	      text: null,
 	      cssClass: null,
 	      render: null,
-	      offset: 0
+	      offset: 0,
+	      trigger: 'hover'
 	    }
 	  },
 	  on: {
@@ -53357,7 +53388,7 @@
 	};
 
 	/**
-	 * Framework7 5.4.0
+	 * Framework7 5.4.1
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -53365,7 +53396,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: January 29, 2020
+	 * Released on: February 8, 2020
 	 */
 
 
@@ -55312,12 +55343,15 @@
 	      var self = this;
 	      var el = self.refs.el;
 	      if (!el) return;
-	      var tooltip = self.props.tooltip;
+	      var _self$props = self.props,
+	          tooltip = _self$props.tooltip,
+	          tooltipTrigger = _self$props.tooltipTrigger;
 	      if (!tooltip) return;
 	      self.$f7ready(function (f7) {
 	        self.f7Tooltip = f7.tooltip.create({
 	          targetEl: el,
-	          text: tooltip
+	          text: tooltip,
+	          trigger: tooltipTrigger
 	        });
 	      });
 	    }
@@ -55339,7 +55373,8 @@
 	        if (newText && !self.f7Tooltip && self.$f7) {
 	          self.f7Tooltip = self.$f7.tooltip.create({
 	            targetEl: self.refs.el,
-	            text: newText
+	            text: newText,
+	            trigger: self.props.tooltipTrigger
 	          });
 	          return;
 	        }
@@ -55352,12 +55387,12 @@
 	    key: "iconTextComputed",
 	    get: function get() {
 	      var self = this;
-	      var _self$props = self.props,
-	          material = _self$props.material,
-	          f7 = _self$props.f7,
-	          md = _self$props.md,
-	          ios = _self$props.ios,
-	          aurora = _self$props.aurora;
+	      var _self$props2 = self.props,
+	          material = _self$props2.material,
+	          f7 = _self$props2.f7,
+	          md = _self$props2.md,
+	          ios = _self$props2.ios,
+	          aurora = _self$props2.aurora;
 	      var theme = self.state._theme;
 	      var text = material || f7;
 
@@ -55441,6 +55476,7 @@
 	  aurora: String,
 	  md: String,
 	  tooltip: String,
+	  tooltipTrigger: String,
 	  size: [String, Number]
 	}, Mixins.colorProps));
 
@@ -55552,7 +55588,8 @@
 	        if (newText && !self.f7Tooltip && self.$f7) {
 	          self.f7Tooltip = self.$f7.tooltip.create({
 	            targetEl: self.refs.el,
-	            text: newText
+	            text: newText,
+	            trigger: self.props.tooltipTrigger
 	          });
 	          return;
 	        }
@@ -55577,6 +55614,7 @@
 	      el.addEventListener('click', self.onClick);
 	      var _self$props = self.props,
 	          tooltip = _self$props.tooltip,
+	          tooltipTrigger = _self$props.tooltipTrigger,
 	          routeProps = _self$props.routeProps;
 
 	      if (routeProps) {
@@ -55587,7 +55625,8 @@
 	      self.$f7ready(function (f7) {
 	        self.f7Tooltip = f7.tooltip.create({
 	          targetEl: el,
-	          text: tooltip
+	          text: tooltip,
+	          trigger: tooltipTrigger
 	        });
 	      });
 	    }
@@ -55739,7 +55778,8 @@
 	  outlineAurora: Boolean,
 	  active: Boolean,
 	  disabled: Boolean,
-	  tooltip: String
+	  tooltip: String,
+	  tooltipTrigger: String
 	}, Mixins.colorProps, {}, Mixins.linkIconProps, {}, Mixins.linkRouterProps, {}, Mixins.linkActionsProps));
 
 	F7Button.displayName = 'f7-button';
@@ -56677,12 +56717,15 @@
 	    value: function componentDidMount() {
 	      var self = this;
 	      self.refs.el.addEventListener('click', self.onClick);
-	      var tooltip = self.props.tooltip;
+	      var _self$props = self.props,
+	          tooltip = _self$props.tooltip,
+	          tooltipTrigger = _self$props.tooltipTrigger;
 	      if (!tooltip) return;
 	      self.$f7ready(function (f7) {
 	        self.f7Tooltip = f7.tooltip.create({
 	          targetEl: self.refs.el,
-	          text: tooltip
+	          text: tooltip,
+	          trigger: tooltipTrigger
 	        });
 	      });
 	    }
@@ -56713,7 +56756,8 @@
 	        if (newText && !self.f7Tooltip && self.$f7) {
 	          self.f7Tooltip = self.$f7.tooltip.create({
 	            targetEl: self.refs.el,
-	            text: newText
+	            text: newText,
+	            trigger: self.props.tooltipTrigger
 	          });
 	          return;
 	        }
@@ -56745,7 +56789,8 @@
 	  fabClose: Boolean,
 	  label: String,
 	  target: String,
-	  tooltip: String
+	  tooltip: String,
+	  tooltipTrigger: String
 	}, Mixins.colorProps));
 
 	F7FabButton.displayName = 'f7-fab-button';
@@ -56918,12 +56963,15 @@
 	        self.refs.linkEl.addEventListener('click', self.onClick);
 	      }
 
-	      var tooltip = self.props.tooltip;
+	      var _self$props = self.props,
+	          tooltip = _self$props.tooltip,
+	          tooltipTrigger = _self$props.tooltipTrigger;
 	      if (!tooltip) return;
 	      self.$f7ready(function (f7) {
 	        self.f7Tooltip = f7.tooltip.create({
 	          targetEl: self.refs.el,
-	          text: tooltip
+	          text: tooltip,
+	          trigger: tooltipTrigger
 	        });
 	      });
 	    }
@@ -56954,7 +57002,8 @@
 	        if (newText && !self.f7Tooltip && self.$f7) {
 	          self.f7Tooltip = self.$f7.tooltip.create({
 	            targetEl: self.refs.el,
-	            text: newText
+	            text: newText,
+	            trigger: self.props.tooltipTrigger
 	          });
 	          return;
 	        }
@@ -56991,7 +57040,8 @@
 	    type: String,
 	    default: 'right-bottom'
 	  },
-	  tooltip: String
+	  tooltip: String,
+	  tooltipTrigger: String
 	}, Mixins.colorProps));
 
 	F7Fab.displayName = 'f7-fab';
@@ -58478,7 +58528,8 @@
 	        if (newText && !self.f7Tooltip && self.$f7) {
 	          self.f7Tooltip = self.$f7.tooltip.create({
 	            targetEl: self.refs.el,
-	            text: newText
+	            text: newText,
+	            trigger: self.props.tooltipTrigger
 	          });
 	          return;
 	        }
@@ -58505,6 +58556,7 @@
 	          tabbarLabel = _self$props.tabbarLabel,
 	          tabLink = _self$props.tabLink,
 	          tooltip = _self$props.tooltip,
+	          tooltipTrigger = _self$props.tooltipTrigger,
 	          smartSelect = _self$props.smartSelect,
 	          smartSelectParams = _self$props.smartSelectParams,
 	          routeProps = _self$props.routeProps;
@@ -58529,7 +58581,8 @@
 	        if (tooltip) {
 	          self.f7Tooltip = f7.tooltip.create({
 	            targetEl: el,
-	            text: tooltip
+	            text: tooltip,
+	            trigger: tooltipTrigger
 	          });
 	        }
 	      });
@@ -58613,6 +58666,7 @@
 	  },
 	  target: String,
 	  tooltip: String,
+	  tooltipTrigger: String,
 	  smartSelect: Boolean,
 	  smartSelectParams: Object
 	}, Mixins.colorProps, {}, Mixins.linkIconProps, {}, Mixins.linkRouterProps, {}, Mixins.linkActionsProps));
@@ -58700,7 +58754,8 @@
 	        if (newText && !self.f7Tooltip && self.$f7) {
 	          self.f7Tooltip = self.$f7.tooltip.create({
 	            targetEl: self.refs.el,
-	            text: newText
+	            text: newText,
+	            trigger: self.props.tooltipTrigger
 	          });
 	          return;
 	        }
@@ -58724,7 +58779,8 @@
 	      var linkEl = self.refs.linkEl;
 	      var _self$props = self.props,
 	          routeProps = _self$props.routeProps,
-	          tooltip = _self$props.tooltip;
+	          tooltip = _self$props.tooltip,
+	          tooltipTrigger = _self$props.tooltipTrigger;
 
 	      if (routeProps) {
 	        linkEl.f7RouteProps = routeProps;
@@ -58735,7 +58791,8 @@
 	        if (tooltip) {
 	          self.f7Tooltip = f7.tooltip.create({
 	            targetEl: linkEl,
-	            text: tooltip
+	            text: tooltip,
+	            trigger: tooltipTrigger
 	          });
 	        }
 	      });
@@ -58804,7 +58861,8 @@
 	  link: [Boolean, String],
 	  href: [Boolean, String],
 	  target: String,
-	  tooltip: String
+	  tooltip: String,
+	  tooltipTrigger: String
 	}, Mixins.colorProps, {}, Mixins.linkRouterProps, {}, Mixins.linkActionsProps));
 
 	F7ListButton.displayName = 'f7-list-button';
@@ -60429,7 +60487,8 @@
 	        if (newText && !self.f7Tooltip && self.$f7) {
 	          self.f7Tooltip = self.$f7.tooltip.create({
 	            targetEl: self.refs.el,
-	            text: newText
+	            text: newText,
+	            trigger: self.props.tooltipTrigger
 	          });
 	          return;
 	        }
@@ -60506,7 +60565,8 @@
 	          accordionItem = _self$props2.accordionItem,
 	          smartSelectParams = _self$props2.smartSelectParams,
 	          routeProps = _self$props2.routeProps,
-	          tooltip = _self$props2.tooltip;
+	          tooltip = _self$props2.tooltip,
+	          tooltipTrigger = _self$props2.tooltipTrigger;
 	      var needsEvents = !(link || href || accordionItem || smartSelect);
 
 	      if (!needsEvents && linkEl) {
@@ -60566,7 +60626,8 @@
 	        if (tooltip) {
 	          self.f7Tooltip = f7.tooltip.create({
 	            targetEl: el,
-	            text: tooltip
+	            text: tooltip,
+	            trigger: tooltipTrigger
 	          });
 	        }
 	      });
@@ -60607,6 +60668,7 @@
 	  header: [String, Number],
 	  footer: [String, Number],
 	  tooltip: String,
+	  tooltipTrigger: String,
 	  link: [Boolean, String],
 	  target: String,
 	  after: [String, Number],
@@ -68733,7 +68795,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.4.0
+	 * Framework7 React 5.4.1
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -68741,7 +68803,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: January 29, 2020
+	 * Released on: February 8, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;

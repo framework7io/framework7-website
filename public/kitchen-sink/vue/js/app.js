@@ -10252,7 +10252,7 @@
         return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
       }()),
 
-      pointerEvents: !!win.PointerEvent && ('maxTouchPoints' in win.navigator) && win.navigator.maxTouchPoints > 0,
+      pointerEvents: !!win.PointerEvent,
 
       observer: (function checkObserver() {
         return ('MutationObserver' in win || 'WebkitMutationObserver' in win);
@@ -11395,6 +11395,7 @@
     // Additional headers
     if (options.headers) {
       Object.keys(options.headers).forEach(function (headerName) {
+        if (typeof options.headers[headerName] === 'undefined') { return; }
         xhr.setRequestHeader(headerName, options.headers[headerName]);
       });
     }
@@ -33951,12 +33952,12 @@
 
       var bg = $imageEl.attr('data-background');
       var src = bg || $imageEl.attr('data-src');
-      if (!src) { return; }
+
       function onLoad() {
         $imageEl.removeClass('lazy').addClass('lazy-loaded');
         if (bg) {
           $imageEl.css('background-image', ("url(" + src + ")"));
-        } else {
+        } else if (src) {
           $imageEl.attr('src', src);
         }
         if (callback) { callback(imageEl); }
@@ -33964,6 +33965,12 @@
         app.emit('lazyLoaded', $imageEl[0]);
       }
 
+      if (!src) {
+        $imageEl.trigger('lazy:load');
+        app.emit('lazyLoad', $imageEl[0]);
+        onLoad();
+        return;
+      }
       function onError() {
         $imageEl.removeClass('lazy').addClass('lazy-loaded');
         if (bg) {
@@ -37107,7 +37114,7 @@
 
     var skip = Math.min(swiper.params.slidesPerGroupSkip, slideIndex);
     var snapIndex = skip + Math.floor((slideIndex - skip) / swiper.params.slidesPerGroup);
-    if (snapIndex >= slidesGrid.length) { snapIndex = slidesGrid.length - 1; }
+    if (snapIndex >= snapGrid.length) { snapIndex = snapGrid.length - 1; }
 
     if ((activeIndex || params.initialSlide || 0) === (previousIndex || 0) && runCallbacks) {
       swiper.emit('beforeSlideChangeStart');
@@ -39000,7 +39007,7 @@
           startTranslate: undefined,
           allowThresholdMove: undefined,
           // Form elements to match
-          formElements: 'input, select, option, textarea, button, video',
+          formElements: 'input, select, option, textarea, button, video, label',
           // Last click time
           lastClickTime: Utils.now(),
           clickTimeout: undefined,
@@ -45339,6 +45346,17 @@
 
       var touchesStart = {};
       var isTouched;
+      function handleClick() {
+        if (tooltip.opened) { tooltip.hide(); }
+        else { tooltip.show(this); }
+      }
+      function handleClickOut(e) {
+        if (tooltip.opened && (
+          $(e.target).closest($targetEl).length
+          || $(e.target).closest(tooltip.$el).length
+        )) { return; }
+        tooltip.hide();
+      }
       function handleTouchStart(e) {
         if (isTouched) { return; }
         isTouched = true;
@@ -45378,6 +45396,11 @@
 
       tooltip.attachEvents = function attachEvents() {
         $el.on('transitionend', handleTransitionEnd);
+        if (tooltip.params.trigger === 'click') {
+          $targetEl.on('click', handleClick);
+          $('html').on('click', handleClickOut);
+          return;
+        }
         if (Support.touch) {
           var passive = Support.passiveListener ? { passive: true } : false;
           $targetEl.on(app.touchEvents.start, handleTouchStart, passive);
@@ -45390,6 +45413,11 @@
       };
       tooltip.detachEvents = function detachEvents() {
         $el.off('transitionend', handleTransitionEnd);
+        if (tooltip.params.trigger === 'click') {
+          $targetEl.off('click', handleClick);
+          $('html').off('click', handleClickOut);
+          return;
+        }
         if (Support.touch) {
           var passive = Support.passiveListener ? { passive: true } : false;
           $targetEl.off(app.touchEvents.start, handleTouchStart, passive);
@@ -45609,6 +45637,7 @@
         cssClass: null,
         render: null,
         offset: 0,
+        trigger: 'hover',
       },
     },
     on: {
@@ -49020,7 +49049,7 @@
   };
 
   /**
-   * Framework7 5.4.0
+   * Framework7 5.4.1
    * Full featured mobile HTML framework for building iOS & Android apps
    * https://framework7.io/
    *
@@ -49028,7 +49057,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: January 29, 2020
+   * Released on: February 8, 2020
    */
 
   // Install Core Modules & Components
@@ -50511,6 +50540,7 @@
       aurora: String,
       md: String,
       tooltip: String,
+      tooltipTrigger: String,
       size: [String, Number]
     }, Mixins.colorProps),
 
@@ -50581,7 +50611,8 @@
         if (newText && !self.f7Tooltip && self.$f7) {
           self.f7Tooltip = self.$f7.tooltip.create({
             targetEl: self.$refs.el,
-            text: newText
+            text: newText,
+            trigger: self.props.tooltipTrigger
           });
           return;
         }
@@ -50597,11 +50628,13 @@
       if (!el) { return; }
       var ref = self.props;
       var tooltip = ref.tooltip;
+      var tooltipTrigger = ref.tooltipTrigger;
       if (!tooltip) { return; }
       self.$f7ready(function (f7) {
         self.f7Tooltip = f7.tooltip.create({
           targetEl: el,
-          text: tooltip
+          text: tooltip,
+          trigger: tooltipTrigger
         });
       });
     },
@@ -50771,7 +50804,8 @@
       outlineAurora: Boolean,
       active: Boolean,
       disabled: Boolean,
-      tooltip: String
+      tooltip: String,
+      tooltipTrigger: String
     }, Mixins.colorProps, {}, Mixins.linkIconProps, {}, Mixins.linkRouterProps, {}, Mixins.linkActionsProps),
 
     render: function render() {
@@ -50939,7 +50973,8 @@
         if (newText && !self.f7Tooltip && self.$f7) {
           self.f7Tooltip = self.$f7.tooltip.create({
             targetEl: self.$refs.el,
-            text: newText
+            text: newText,
+            trigger: self.props.tooltipTrigger
           });
           return;
         }
@@ -50959,6 +50994,7 @@
       el.addEventListener('click', self.onClick);
       var ref = self.props;
       var tooltip = ref.tooltip;
+      var tooltipTrigger = ref.tooltipTrigger;
       var routeProps = ref.routeProps;
 
       if (routeProps) {
@@ -50969,7 +51005,8 @@
       self.$f7ready(function (f7) {
         self.f7Tooltip = f7.tooltip.create({
           targetEl: el,
-          text: tooltip
+          text: tooltip,
+          trigger: tooltipTrigger
         });
       });
     },
@@ -51703,7 +51740,8 @@
       fabClose: Boolean,
       label: String,
       target: String,
-      tooltip: String
+      tooltip: String,
+      tooltipTrigger: String
     }, Mixins.colorProps),
 
     render: function render() {
@@ -51747,11 +51785,13 @@
       self.$refs.el.addEventListener('click', self.onClick);
       var ref = self.props;
       var tooltip = ref.tooltip;
+      var tooltipTrigger = ref.tooltipTrigger;
       if (!tooltip) { return; }
       self.$f7ready(function (f7) {
         self.f7Tooltip = f7.tooltip.create({
           targetEl: self.$refs.el,
-          text: tooltip
+          text: tooltip,
+          trigger: tooltipTrigger
         });
       });
     },
@@ -51794,7 +51834,8 @@
         if (newText && !self.f7Tooltip && self.$f7) {
           self.f7Tooltip = self.$f7.tooltip.create({
             targetEl: self.$refs.el,
-            text: newText
+            text: newText,
+            trigger: self.props.tooltipTrigger
           });
           return;
         }
@@ -51858,7 +51899,8 @@
         type: String,
         default: 'right-bottom'
       },
-      tooltip: String
+      tooltip: String,
+      tooltipTrigger: String
     }, Mixins.colorProps),
 
     render: function render() {
@@ -51944,7 +51986,8 @@
         if (newText && !self.f7Tooltip && self.$f7) {
           self.f7Tooltip = self.$f7.tooltip.create({
             targetEl: self.$refs.el,
-            text: newText
+            text: newText,
+            trigger: self.props.tooltipTrigger
           });
           return;
         }
@@ -51967,11 +52010,13 @@
 
       var ref = self.props;
       var tooltip = ref.tooltip;
+      var tooltipTrigger = ref.tooltipTrigger;
       if (!tooltip) { return; }
       self.$f7ready(function (f7) {
         self.f7Tooltip = f7.tooltip.create({
           targetEl: self.$refs.el,
-          text: tooltip
+          text: tooltip,
+          trigger: tooltipTrigger
         });
       });
     },
@@ -53273,6 +53318,7 @@
       },
       target: String,
       tooltip: String,
+      tooltipTrigger: String,
       smartSelect: Boolean,
       smartSelectParams: Object
     }, Mixins.colorProps, {}, Mixins.linkIconProps, {}, Mixins.linkRouterProps, {}, Mixins.linkActionsProps),
@@ -53381,7 +53427,8 @@
         if (newText && !self.f7Tooltip && self.$f7) {
           self.f7Tooltip = self.$f7.tooltip.create({
             targetEl: self.$refs.el,
-            text: newText
+            text: newText,
+            trigger: self.props.tooltipTrigger
           });
           return;
         }
@@ -53403,6 +53450,7 @@
       var tabbarLabel = ref.tabbarLabel;
       var tabLink = ref.tabLink;
       var tooltip = ref.tooltip;
+      var tooltipTrigger = ref.tooltipTrigger;
       var smartSelect = ref.smartSelect;
       var smartSelectParams = ref.smartSelectParams;
       var routeProps = ref.routeProps;
@@ -53427,7 +53475,8 @@
         if (tooltip) {
           self.f7Tooltip = f7.tooltip.create({
             targetEl: el,
-            text: tooltip
+            text: tooltip,
+            trigger: tooltipTrigger
           });
         }
       });
@@ -53530,7 +53579,8 @@
       link: [Boolean, String],
       href: [Boolean, String],
       target: String,
-      tooltip: String
+      tooltip: String,
+      tooltipTrigger: String
     }, Mixins.colorProps, {}, Mixins.linkRouterProps, {}, Mixins.linkActionsProps),
 
     render: function render() {
@@ -53601,7 +53651,8 @@
         if (newText && !self.f7Tooltip && self.$f7) {
           self.f7Tooltip = self.$f7.tooltip.create({
             targetEl: self.$refs.el,
-            text: newText
+            text: newText,
+            trigger: self.props.tooltipTrigger
           });
           return;
         }
@@ -53621,6 +53672,7 @@
       var ref = self.props;
       var routeProps = ref.routeProps;
       var tooltip = ref.tooltip;
+      var tooltipTrigger = ref.tooltipTrigger;
 
       if (routeProps) {
         linkEl.f7RouteProps = routeProps;
@@ -53631,7 +53683,8 @@
         if (tooltip) {
           self.f7Tooltip = f7.tooltip.create({
             targetEl: linkEl,
-            text: tooltip
+            text: tooltip,
+            trigger: tooltipTrigger
           });
         }
       });
@@ -54817,6 +54870,7 @@
       header: [String, Number],
       footer: [String, Number],
       tooltip: String,
+      tooltipTrigger: String,
       link: [Boolean, String],
       target: String,
       after: [String, Number],
@@ -55039,7 +55093,8 @@
         if (newText && !self.f7Tooltip && self.$f7) {
           self.f7Tooltip = self.$f7.tooltip.create({
             targetEl: self.$refs.el,
-            text: newText
+            text: newText,
+            trigger: self.props.tooltipTrigger
           });
           return;
         }
@@ -55080,6 +55135,7 @@
       var smartSelectParams = ref$1.smartSelectParams;
       var routeProps = ref$1.routeProps;
       var tooltip = ref$1.tooltip;
+      var tooltipTrigger = ref$1.tooltipTrigger;
       var needsEvents = !(link || href || accordionItem || smartSelect);
 
       if (!needsEvents && linkEl) {
@@ -55139,7 +55195,8 @@
         if (tooltip) {
           self.f7Tooltip = f7.tooltip.create({
             targetEl: el,
-            text: tooltip
+            text: tooltip,
+            trigger: tooltipTrigger
           });
         }
       });
@@ -62305,7 +62362,7 @@
   };
 
   /**
-   * Framework7 Vue 5.4.0
+   * Framework7 Vue 5.4.1
    * Build full featured iOS & Android apps using Framework7 & Vue
    * https://framework7.io/vue/
    *
@@ -62313,7 +62370,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: January 29, 2020
+   * Released on: February 8, 2020
    */
 
   //
