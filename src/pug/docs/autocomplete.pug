@@ -689,6 +689,7 @@ block content
                     query: query,
                   },
                   success: function (data) {
+                  console.log("data",data);
                     // Find matched items
                     for (var i = 0; i < data.length; i++) {
                       if (data[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(data[i]);
