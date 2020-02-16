@@ -172,7 +172,8 @@ main {
   }
 }
 
-.carbon {
+.carbon,
+.header-sponsor {
   width: 300px;
   font-size: 13px;
   line-height: 1.4;
@@ -192,19 +193,31 @@ main {
     width: 130px;
     height: 100px;
   }
-  .carbon-img {
+  .carbon-img,
+  .header-sponsor-image {
     display: block;
     float: left;
   }
-  .carbon-text {
+  .carbon-text,
+  .header-sponsor-text {
     margin-top: 3px;
     margin-left: 140px;
   }
-  .carbon-poweredby {
+  .header-sponsor-text {
+    line-height: 1.35;
+  }
+  .carbon-poweredby,
+  .header-sponsor-label {
     opacity: 0.8;
     font-size: 12px;
     margin-top: 10px;
     margin-left: 140px;
+  }
+  .header-sponsor-label {
+    display: block;
+    margin-top: 0;
+    font-size: 10px;
+    opacity: 0.5;
   }
 }
 .carbon-placeholder {

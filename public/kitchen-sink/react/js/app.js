@@ -29684,7 +29684,7 @@
 	      width: "".concat(maxWidth, "px"),
 	      height: "".concat(maxHeight, "px")
 	    }).transform("translate3d(".concat(app.rtl ? cardLeftOffset + translateX : -cardLeftOffset - translateX, "px, 0px, 0) scale(").concat(1 / scaleX, ", ").concat(1 / scaleY, ")"));
-	    $cardEl.transform("translate3d(".concat(translateX, "px, ").concat(translateY, "px, 0) scale(").concat(scaleX, ", ").concat(scaleY, ")"));
+	    $cardEl.transform("translate3d(".concat(app.rtl ? -translateX : translateX, "px, ").concat(translateY, "px, 0) scale(").concat(scaleX, ", ").concat(scaleY, ")"));
 
 	    if (cardParams.animate) {
 	      $cardEl.transitionEnd(function () {
@@ -29739,7 +29739,7 @@
 
 	      translateX = (cardRightOffset - cardLeftOffset) / 2;
 	      translateY = (cardBottomOffset - cardTopOffset) / 2;
-	      $cardEl.transform("translate3d(".concat(translateX, "px, ").concat(translateY, "px, 0) scale(").concat(scaleX, ", ").concat(scaleY, ")"));
+	      $cardEl.transform("translate3d(".concat(app.rtl ? -translateX : translateX, "px, ").concat(translateY, "px, 0) scale(").concat(scaleX, ", ").concat(scaleY, ")"));
 	      $cardContentEl.css({
 	        width: "".concat(maxWidth, "px"),
 	        height: "".concat(maxHeight, "px")
@@ -29824,7 +29824,7 @@
 	        isMoved = false;
 	        app.card.close($cardEl);
 	      } else {
-	        $cardEl.transform("translate3d(".concat(translateX, "px, ").concat(translateY, "px, 0) scale(").concat(scaleX * (1 - progress * 0.2), ", ").concat(scaleY * (1 - progress * 0.2), ")"));
+	        $cardEl.transform("translate3d(".concat(app.rtl ? -translateX : translateX, "px, ").concat(translateY, "px, 0) scale(").concat(scaleX * (1 - progress * 0.2), ", ").concat(scaleY * (1 - progress * 0.2), ")"));
 	      }
 	    }
 
@@ -29840,7 +29840,7 @@
 	      if (progress >= 0.8) {
 	        app.card.close($cardEl);
 	      } else {
-	        $cardEl.addClass('card-transitioning').transform("translate3d(".concat(translateX, "px, ").concat(translateY, "px, 0) scale(").concat(scaleX, ", ").concat(scaleY, ")"));
+	        $cardEl.addClass('card-transitioning').transform("translate3d(".concat(app.rtl ? -translateX : translateX, "px, ").concat(translateY, "px, 0) scale(").concat(scaleX, ", ").concat(scaleY, ")"));
 	      }
 	    }
 
@@ -52553,7 +52553,8 @@
 	    self.onBlur = self.onBlur.bind(self);
 	    self.onInput = self.onInput.bind(self);
 	    self.onPaste = self.onPaste.bind(self);
-	    self.onSelectionChange = self.onSelectionChange.bind(self); // Handle Events
+	    self.onSelectionChange = self.onSelectionChange.bind(self);
+	    self.closeKeyboardToolbar = self.closeKeyboardToolbar.bind(self); // Handle Events
 
 	    self.attachEvents = function attachEvents() {
 	      if (self.params.mode === 'toolbar') {
@@ -52562,6 +52563,7 @@
 
 	      if (self.params.mode === 'keyboard-toolbar') {
 	        self.$keyboardToolbarEl.on('click', 'button', self.onButtonClick);
+	        self.$el.parents('.page').on('page:beforeout', self.closeKeyboardToolbar);
 	      }
 
 	      if (self.params.mode === 'popover' && self.popover) {
@@ -52582,6 +52584,7 @@
 
 	      if (self.params.mode === 'keyboard-toolbar') {
 	        self.$keyboardToolbarEl.off('click', 'button', self.onButtonClick);
+	        self.$el.parents('.page').off('page:beforeout', self.closeKeyboardToolbar);
 	      }
 
 	      if (self.params.mode === 'popover' && self.popover) {
@@ -53022,6 +53025,10 @@
 	      self.emit('local::beforeDestroy textEditorBeforeDestroy', self);
 	      self.detachEvents();
 
+	      if (self.params.mode === 'keyboard-toolbar' && self.$keyboardToolbarEl) {
+	        self.$keyboardToolbarEl.remove();
+	      }
+
 	      if (self.popover) {
 	        self.popover.close(false);
 	        self.popover.destroy();
@@ -53388,7 +53395,7 @@
 	};
 
 	/**
-	 * Framework7 5.4.1
+	 * Framework7 5.4.2
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -53396,7 +53403,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: February 8, 2020
+	 * Released on: February 16, 2020
 	 */
 
 
@@ -55133,13 +55140,13 @@
 	    key: "onTabShow",
 	    value: function onTabShow(el) {
 	      if (this.eventTargetEl !== el) return;
-	      this.dispatchEvent('tabShow tab:show');
+	      this.dispatchEvent('tabShow tab:show', el);
 	    }
 	  }, {
 	    key: "onTabHide",
 	    value: function onTabHide(el) {
 	      if (this.eventTargetEl !== el) return;
-	      this.dispatchEvent('tabHide tab:hide');
+	      this.dispatchEvent('tabHide tab:hide', el);
 	    }
 	  }, {
 	    key: "render",
@@ -60756,13 +60763,13 @@
 	    key: "onTabShow",
 	    value: function onTabShow(el) {
 	      if (this.eventTargetEl !== el) return;
-	      this.dispatchEvent('tab:show tabShow');
+	      this.dispatchEvent('tab:show tabShow', el);
 	    }
 	  }, {
 	    key: "onTabHide",
 	    value: function onTabHide(el) {
 	      if (this.eventTargetEl !== el) return;
-	      this.dispatchEvent('tab:hide tabHide');
+	      this.dispatchEvent('tab:hide tabHide', el);
 	    }
 	  }, {
 	    key: "render",
@@ -63784,13 +63791,13 @@
 	    key: "onTabShow",
 	    value: function onTabShow(el) {
 	      if (this.eventTargetEl !== el) return;
-	      this.dispatchEvent('tab:show tabShow');
+	      this.dispatchEvent('tab:show tabShow', el);
 	    }
 	  }, {
 	    key: "onTabHide",
 	    value: function onTabHide(el) {
 	      if (this.eventTargetEl !== el) return;
-	      this.dispatchEvent('tab:hide tabHide');
+	      this.dispatchEvent('tab:hide tabHide', el);
 	    }
 	  }, {
 	    key: "render",
@@ -67461,13 +67468,13 @@
 	    key: "onTabShow",
 	    value: function onTabShow(el) {
 	      if (this.eventTargetEl !== el) return;
-	      this.dispatchEvent('tab:show tabShow');
+	      this.dispatchEvent('tab:show tabShow', el);
 	    }
 	  }, {
 	    key: "onTabHide",
 	    value: function onTabHide(el) {
 	      if (this.eventTargetEl !== el) return;
-	      this.dispatchEvent('tab:hide tabHide');
+	      this.dispatchEvent('tab:hide tabHide', el);
 	    }
 	  }, {
 	    key: "render",
@@ -68246,14 +68253,14 @@
 	    key: "onTabShow",
 	    value: function onTabShow(el) {
 	      if (el === this.refs.el) {
-	        this.dispatchEvent('tab:show tabShow');
+	        this.dispatchEvent('tab:show tabShow', el);
 	      }
 	    }
 	  }, {
 	    key: "onTabHide",
 	    value: function onTabHide(el) {
 	      if (el === this.refs.el) {
-	        this.dispatchEvent('tab:hide tabHide');
+	        this.dispatchEvent('tab:hide tabHide', el);
 	      }
 	    }
 	  }, {
@@ -68795,7 +68802,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.4.1
+	 * Framework7 React 5.4.2
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -68803,7 +68810,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: February 8, 2020
+	 * Released on: February 16, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;

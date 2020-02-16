@@ -147,7 +147,8 @@
       color: @redColor;
     }
   }
-  .carbon {
+  .carbon,
+  .header-sponsor {
     margin-left: auto;
     position: relative;
     top: 0;
@@ -174,12 +175,15 @@
   }
 }
 
-.bsa-cpc {
+.bsa-cpc,
+.internal-header-adline {
   border-top: 1px solid rgba(0,0,0,0.1);
   background: @redColor;
   height: 30px;
   position: relative;
   z-index: 100;
+}
+.bsa-cpc {
   #_default_ {
     margin: 0px auto;
     box-sizing: border-box;
@@ -239,6 +243,36 @@
     line-height: 1;
     margin-right: 8px;
     display: inline-block;
+  }
+}
+.internal-header-adline {
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  a {
+    color: #fff;
+  }
+  a:hover {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+  }
+  span {
+    padding: 3px 6px;
+    border-radius: 2px;
+    background-color: #fff;
+    color: @redColor;
+    text-transform: uppercase;
+    font-size: 10px;
+    line-height: 1;
+    margin-right: 8px;
+    display: inline-block;
+    vertical-align: middle;
+    font-weight: 500;
+    position: relative;
+    top: -1px;
   }
 }
 
@@ -365,7 +399,8 @@
       margin-bottom: -40px;
       z-index: 100;
     }
-    .carbon {
+    .carbon,
+    .header-sponsor {
       margin: 0;
       max-width: 100%;
       margin-top: 20px;
