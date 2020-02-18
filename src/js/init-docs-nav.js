@@ -2,7 +2,7 @@ import $ from 'dom7';
 
 function handleNavToggleScroll() {
   const st = window.scrollY;
-  const headerHeight = $('.internal-header')[0].offsetHeight + $('.bsa-cpc')[0].offsetHeight;
+  const headerHeight = $('.internal-header')[0].offsetHeight + $('.bsa-cpc, .internal-header-adline')[0].offsetHeight;
 
   const pos = Math.max(headerHeight - st, 0);
   $('.docs-nav-toggle').transform(`translateY(${pos}px)`);
