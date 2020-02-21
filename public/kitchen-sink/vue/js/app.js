@@ -11414,11 +11414,9 @@
       Utils.extend(xhr, options.xhrFields);
     }
 
-    var xhrTimeout;
 
     // Handle XHR
     xhr.onload = function onload() {
-      if (xhrTimeout) { clearTimeout(xhrTimeout); }
       if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 0) {
         var responseData;
         if (options.dataType === 'json') {
@@ -11448,21 +11446,17 @@
     };
 
     xhr.onerror = function onerror() {
-      if (xhrTimeout) { clearTimeout(xhrTimeout); }
       fireCallback('error', xhr, xhr.status, xhr.status);
       fireCallback('complete', xhr, 'error');
     };
 
     // Timeout
     if (options.timeout > 0) {
-      xhr.onabort = function onabort() {
-        if (xhrTimeout) { clearTimeout(xhrTimeout); }
-      };
-      xhrTimeout = setTimeout(function () {
-        xhr.abort();
+      xhr.timeout = options.timeout;
+      xhr.ontimeout = function () {
         fireCallback('error', xhr, 'timeout', 'timeout');
         fireCallback('complete', xhr, 'timeout');
-      }, options.timeout);
+      };
     }
 
     // Ajax start callback
@@ -14964,7 +14958,7 @@
         router.emit('pageMasterUnstack', $newPage[0]);
         if (dynamicNavbar) {
           $(app.navbar.getElByPage($newPage)).removeClass('navbar-master-stacked');
-          router.emi('navbarMasterUnstack', app.navbar.getElByPage($newPage));
+          router.emit('navbarMasterUnstack', app.navbar.getElByPage($newPage));
         }
       }
       // Page init and before init events
@@ -22970,12 +22964,25 @@
       app.root.append(("\n      <div class=\"preloader-backdrop\"></div>\n      <div class=\"preloader-modal\">\n        <div class=\"preloader color-" + color + "\">" + preloaderInner + "</div>\n      </div>\n    "));
       Preloader.visible = true;
     },
+    showIn: function showIn(el, color) {
+      if ( color === void 0 ) color = 'white';
+
+      var app = this;
+      var preloaderInner = Utils[((app.theme) + "PreloaderContent")] || '';
+      $(el || 'html').addClass('with-modal-preloader');
+      $(el || app.root).append(("\n      <div class=\"preloader-backdrop\"></div>\n      <div class=\"preloader-modal\">\n        <div class=\"preloader color-" + color + "\">" + preloaderInner + "</div>\n      </div>\n    "));
+    },
     hide: function hide() {
       var app = this;
       if (!Preloader.visible) { return; }
       $('html').removeClass('with-modal-preloader');
       app.root.find('.preloader-backdrop, .preloader-modal').remove();
       Preloader.visible = false;
+    },
+    hideIn: function hideIn(el) {
+      var app = this;
+      $(el || 'html').removeClass('with-modal-preloader');
+      $(el || app.root).find('.preloader-backdrop, .preloader-modal').remove();
     },
   };
   var Preloader$1 = {
@@ -22987,6 +22994,8 @@
           init: Preloader.init.bind(app),
           show: Preloader.show.bind(app),
           hide: Preloader.hide.bind(app),
+          showIn: Preloader.showIn.bind(app),
+          hideIn: Preloader.hideIn.bind(app),
         },
       });
     },
@@ -34441,6 +34450,7 @@
       } else {
         $fabEl.addClass('fab-opened');
       }
+      $fabEl.siblings('.fab-backdrop').addClass('backdrop-in');
       $fabEl.trigger('fab:open');
     },
     close: function close(fabEl) {
@@ -34458,6 +34468,7 @@
       } else {
         $fabEl.removeClass('fab-opened');
       }
+      $fabEl.siblings('.fab-backdrop').removeClass('backdrop-in');
       $fabEl.trigger('fab:close');
     },
     toggle: function toggle(fabEl) {
@@ -34499,6 +34510,10 @@
 
         var app = this;
         app.fab.close(data.fab);
+      },
+      '.fab-backdrop': function close() {
+        var app = this;
+        app.fab.close();
       },
     },
   };
@@ -49055,7 +49070,7 @@
   };
 
   /**
-   * Framework7 5.4.2
+   * Framework7 5.4.5
    * Full featured mobile HTML framework for building iOS & Android apps
    * https://framework7.io/
    *
@@ -49063,7 +49078,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: February 16, 2020
+   * Released on: February 21, 2020
    */
 
   // Install Core Modules & Components
@@ -62368,7 +62383,7 @@
   };
 
   /**
-   * Framework7 Vue 5.4.2
+   * Framework7 Vue 5.4.5
    * Build full featured iOS & Android apps using Framework7 & Vue
    * https://framework7.io/vue/
    *
@@ -62376,7 +62391,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: February 16, 2020
+   * Released on: February 21, 2020
    */
 
   //

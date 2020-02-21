@@ -79,12 +79,32 @@ block content
         | - show Preloader overlay
       ul.method-parameters
         li
-          span.parameter parameters
-          |  - <span class="parameter-type">color</span>. Preloader color, one of the <a href="color-themes.html">default colors</a>
+          span.parameter color
+          |  - <span class="parameter-type">string</span>. Preloader color, one of the <a href="color-themes.html">default colors</a>
     .method-wrap
       p
         span.method app.preloader.hide()
         | - hide Preloader overlay
+    .method-wrap
+      p
+        span.method app.preloader.showIn(<span>el</span>, <span>color</span>)
+        | - show Preloader overlay in specified element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Element where preloader overlay will be added
+        li
+          span.parameter color
+          |  - <span class="parameter-type">string</span>. Preloader color, one of the <a href="color-themes.html">default colors</a>
+    .method-wrap
+      p
+        span.method app.preloader.hideIn(<span>el</span>)
+        | - hide Preloader overlay in specified element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Element where preloader overlay should be removed from
+
     p For example:
     :code(lang="js")
           var app = new Framework7();

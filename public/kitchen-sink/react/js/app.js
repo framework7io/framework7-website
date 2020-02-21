@@ -13079,13 +13079,10 @@
 
 	  if (options.xhrFields) {
 	    Utils.extend(xhr, options.xhrFields);
-	  }
+	  } // Handle XHR
 
-	  var xhrTimeout; // Handle XHR
 
 	  xhr.onload = function onload() {
-	    if (xhrTimeout) clearTimeout(xhrTimeout);
-
 	    if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 0) {
 	      var responseData;
 
@@ -13120,22 +13117,18 @@
 	  };
 
 	  xhr.onerror = function onerror() {
-	    if (xhrTimeout) clearTimeout(xhrTimeout);
 	    fireCallback('error', xhr, xhr.status, xhr.status);
 	    fireCallback('complete', xhr, 'error');
 	  }; // Timeout
 
 
 	  if (options.timeout > 0) {
-	    xhr.onabort = function onabort() {
-	      if (xhrTimeout) clearTimeout(xhrTimeout);
-	    };
+	    xhr.timeout = options.timeout;
 
-	    xhrTimeout = setTimeout(function () {
-	      xhr.abort();
+	    xhr.ontimeout = function () {
 	      fireCallback('error', xhr, 'timeout', 'timeout');
 	      fireCallback('complete', xhr, 'timeout');
-	    }, options.timeout);
+	    };
 	  } // Ajax start callback
 
 
@@ -17068,7 +17061,7 @@
 
 	      if (dynamicNavbar) {
 	        $(app.navbar.getElByPage($newPage)).removeClass('navbar-master-stacked');
-	        router.emi('navbarMasterUnstack', app.navbar.getElByPage($newPage));
+	        router.emit('navbarMasterUnstack', app.navbar.getElByPage($newPage));
 	      }
 	    } // Page init and before init events
 
@@ -25618,12 +25611,24 @@
 	    app.root.append("\n      <div class=\"preloader-backdrop\"></div>\n      <div class=\"preloader-modal\">\n        <div class=\"preloader color-".concat(color, "\">").concat(preloaderInner, "</div>\n      </div>\n    "));
 	    Preloader.visible = true;
 	  },
+	  showIn: function showIn(el) {
+	    var color = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'white';
+	    var app = this;
+	    var preloaderInner = Utils["".concat(app.theme, "PreloaderContent")] || '';
+	    $(el || 'html').addClass('with-modal-preloader');
+	    $(el || app.root).append("\n      <div class=\"preloader-backdrop\"></div>\n      <div class=\"preloader-modal\">\n        <div class=\"preloader color-".concat(color, "\">").concat(preloaderInner, "</div>\n      </div>\n    "));
+	  },
 	  hide: function hide() {
 	    var app = this;
 	    if (!Preloader.visible) return;
 	    $('html').removeClass('with-modal-preloader');
 	    app.root.find('.preloader-backdrop, .preloader-modal').remove();
 	    Preloader.visible = false;
+	  },
+	  hideIn: function hideIn(el) {
+	    var app = this;
+	    $(el || 'html').removeClass('with-modal-preloader');
+	    $(el || app.root).find('.preloader-backdrop, .preloader-modal').remove();
 	  }
 	};
 	var Preloader$1 = {
@@ -25634,7 +25639,9 @@
 	      preloader: {
 	        init: Preloader.init.bind(app),
 	        show: Preloader.show.bind(app),
-	        hide: Preloader.hide.bind(app)
+	        hide: Preloader.hide.bind(app),
+	        showIn: Preloader.showIn.bind(app),
+	        hideIn: Preloader.hideIn.bind(app)
 	      }
 	    });
 	  },
@@ -37935,6 +37942,7 @@
 	      $fabEl.addClass('fab-opened');
 	    }
 
+	    $fabEl.siblings('.fab-backdrop').addClass('backdrop-in');
 	    $fabEl.trigger('fab:open');
 	  },
 	  close: function close() {
@@ -37953,6 +37961,7 @@
 	      $fabEl.removeClass('fab-opened');
 	    }
 
+	    $fabEl.siblings('.fab-backdrop').removeClass('backdrop-in');
 	    $fabEl.trigger('fab:close');
 	  },
 	  toggle: function toggle(fabEl) {
@@ -37990,6 +37999,10 @@
 	      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      var app = this;
 	      app.fab.close(data.fab);
+	    },
+	    '.fab-backdrop': function close() {
+	      var app = this;
+	      app.fab.close();
 	    }
 	  }
 	};
@@ -53395,7 +53408,7 @@
 	};
 
 	/**
-	 * Framework7 5.4.2
+	 * Framework7 5.4.5
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -53403,7 +53416,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: February 16, 2020
+	 * Released on: February 21, 2020
 	 */
 
 
@@ -56647,6 +56660,45 @@
 	}, Mixins.colorProps));
 
 	F7Col.displayName = 'f7-col';
+
+	var F7FabBackdrop =
+	/*#__PURE__*/
+	function (_React$Component) {
+	  _inherits(F7FabBackdrop, _React$Component);
+
+	  function F7FabBackdrop(props, context) {
+	    _classCallCheck(this, F7FabBackdrop);
+
+	    return _possibleConstructorReturn(this, _getPrototypeOf(F7FabBackdrop).call(this, props, context));
+	  }
+
+	  _createClass(F7FabBackdrop, [{
+	    key: "render",
+	    value: function render() {
+	      var self = this;
+	      var props = self.props;
+	      var className = props.className,
+	          id = props.id,
+	          style = props.style;
+	      var classes = Utils$1.classNames(className, 'fab-backdrop');
+	      return react.createElement('div', {
+	        id: id,
+	        style: style,
+	        className: classes
+	      });
+	    }
+	  }]);
+
+	  return F7FabBackdrop;
+	}(react.Component);
+
+	__reactComponentSetProps(F7FabBackdrop, {
+	  id: [String, Number],
+	  className: String,
+	  style: Object
+	});
+
+	F7FabBackdrop.displayName = 'f7-fab-backdrop';
 
 	var F7FabButton =
 	/*#__PURE__*/
@@ -68802,7 +68854,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.4.2
+	 * Framework7 React 5.4.5
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -68810,7 +68862,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: February 16, 2020
+	 * Released on: February 21, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;

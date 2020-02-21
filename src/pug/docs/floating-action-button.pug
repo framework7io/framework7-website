@@ -126,6 +126,24 @@ block content
             </a>
             ...
           </div>
+    h4 Speed Dial With Backdrop
+    p It is also possible to add backdrop (semi-transparent overlay) behind the FAB that will become visible on FAB open.
+    p To make it work, we just need to add backdrop element on same level as FAB element:
+    ```html
+      <div class="page">
+        <!-- FAB backdrop -->
+        <div class="fab-backdrop"></div>
+
+        <!-- FAB -->
+        <div class="fab fab-right-bottom">
+          ...
+        </div>
+
+        <div class="page-content">
+          ...
+        </div>
+      </div>
+    ```
     h2 FAB Morph
     p There is also ability for FAB to morph to any visible element on page.
     :code(lang="html")
@@ -202,91 +220,126 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/floating-action-button.html") Examples
       :code(lang="html")
-            <div class="page">
-              <div class="navbar">
-                <div class="navbar-bg"></div>
-                <div class="navbar-inner">
-                  <div class="title">Floating Action Button</div>
-                </div>
-              </div>
-              <!-- Toolbar FAB Morph Target -->
-              <div class="toolbar toolbar-bottom fab-morph-target">
-                <div class="toolbar-inner">
-                  <!-- Each Toolbar link will close FAB (morph back) on click -->
-                  <a class="link fab-close">Link 1</a>
-                  <a class="link fab-close">Link 2</a>
-                  <a class="link fab-close">Link 3</a>
-                </div>
-              </div>
-
-              <!-- FAB Left Top (Yellow) -->
-              <div class="fab fab-left-top color-yellow">
-                <a href="#">
-                  <!-- Icons For iOS Theme -->
-                  <i class="icon f7-icons if-not-md">plus</i>
-                  <i class="icon f7-icons if-not-md">xmark</i>
-                  <!-- Icons For MD Theme -->
-                  <i class="icon material-icons md-only">add</i>
-                  <i class="icon material-icons md-only">close</i>
-                </a>
-                <!-- FAB speed dial actions -->
-                <div class="fab-buttons fab-buttons-bottom">
-                  <a href="">1</a>
-                  <a href="">2</a>
-                  <a href="">3</a>
-                </div>
-              </div>
-
-              <!-- FAB Right Top (Pink) -->
-              <div class="fab fab-right-top color-pink">
-                ...
-                <div class="fab-buttons fab-buttons-left">
-                  ...
-                </div>
-              </div>
-
-              <!-- FAB Center (Green) -->
-              <div class="fab fab-center-center color-green">
-                ...
-                <div class="fab-buttons fab-buttons-center">
-                  ...
-                </div>
-              </div>
-
-              <!-- FAB Left Bottom (Blue) -->
-              <!-- Will morph to Toolbar -->
-              <div class="fab fab-left-bottom fab-morph color-blue" data-morph-to=".toolbar">
-                ...
-              </div>
-
-              <!-- FAB Right Bottom (Orange) -->
-              <div class="fab fab-right-bottom">
-                ...
-                <!-- FAB speed dial actions with labels -->
-                <div class="fab-buttons fab-buttons-top">
-                  <a href="#" class="fab-label-button">
-                    <span>1</span>
-                    <span class="fab-label">Action 1</span>
-                  </a>
-                  <a href="#" class="fab-label-button">
-                    <span>2</span>
-                    <span class="fab-label">Action 2</span>
-                  </a>
-                </div>
-              </div>
-
-              <!-- Extended FAB Center Bottom (Red) -->
-              <div class="fab fab-extended fab-center-bottom color-red">
-                <a href="#">
-                  <i class="icon f7-icons if-not-md">plus</i>
-                  <i class="icon material-icons md-only">add</i>
-                  <div class="fab-text">Create</div>
-                </a>
-              </div>
-
-              <div class="page-content">
-                <div class="block">
-                  <p>Lorem ipsum dolor sit amet...</p>
-                </div>
-              </div>
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner">
+              <div class="title">Floating Action Button</div>
             </div>
+          </div>
+          <!-- Toolbar FAB Morph Target -->
+          <div class="toolbar toolbar-bottom fab-morph-target">
+            <div class="toolbar-inner">
+              <!-- Each Toolbar link will close FAB (morph back) on click -->
+              <a class="link fab-close">Link 1</a>
+              <a class="link fab-close">Link 2</a>
+              <a class="link fab-close">Link 3</a>
+            </div>
+          </div>
+
+          <!-- FAB Left Top (Yellow) -->
+          <div class="fab fab-left-top color-yellow">
+            <a href="#">
+              <!-- Icons For iOS Theme -->
+              <i class="icon f7-icons if-not-md">plus</i>
+              <i class="icon f7-icons if-not-md">xmark</i>
+              <!-- Icons For MD Theme -->
+              <i class="icon material-icons md-only">add</i>
+              <i class="icon material-icons md-only">close</i>
+            </a>
+            <!-- FAB speed dial actions -->
+            <div class="fab-buttons fab-buttons-bottom">
+              <a href="">1</a>
+              <a href="">2</a>
+              <a href="">3</a>
+            </div>
+          </div>
+
+          <!-- FAB Right Top (Pink) -->
+          <div class="fab fab-right-top color-pink">
+            ...
+            <div class="fab-buttons fab-buttons-left">
+              ...
+            </div>
+          </div>
+
+          <!-- FAB Center (Green) -->
+          <div class="fab fab-center-center color-green">
+            ...
+            <div class="fab-buttons fab-buttons-center">
+              ...
+            </div>
+          </div>
+
+          <!-- FAB Left Bottom (Blue) -->
+          <!-- Will morph to Toolbar -->
+          <div class="fab fab-left-bottom fab-morph color-blue" data-morph-to=".toolbar">
+            ...
+          </div>
+
+          <!-- FAB Right Bottom (Orange) -->
+          <div class="fab fab-right-bottom">
+            ...
+            <!-- FAB speed dial actions with labels -->
+            <div class="fab-buttons fab-buttons-top">
+              <a href="#" class="fab-label-button">
+                <span>1</span>
+                <span class="fab-label">Action 1</span>
+              </a>
+              <a href="#" class="fab-label-button">
+                <span>2</span>
+                <span class="fab-label">Action 2</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Extended FAB Center Bottom (Red) -->
+          <div class="fab fab-extended fab-center-bottom color-red">
+            <a href="#">
+              <i class="icon f7-icons if-not-md">plus</i>
+              <i class="icon material-icons md-only">add</i>
+              <div class="fab-text">Create</div>
+            </a>
+          </div>
+
+          <div class="page-content">
+            <div class="block">
+              <p>Lorem ipsum dolor sit amet...</p>
+            </div>
+          </div>
+        </div>
+      h4(data-device-preview="../docs-demos/core/floating-action-button-backdrop.html") With Backdrop
+      ```html
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner">
+              <div class="title">FAB Backdrop</div>
+            </div>
+          </div>
+
+          <!-- FAB Backdrop -->
+          <div class="fab-backdrop"></div>
+
+          <!-- FAB Right Bottom -->
+          <div class="fab fab-right-bottom">
+            ...
+            <div class="fab-buttons fab-buttons-top">
+              <a href="#" class="fab-label-button">
+                <span>1</span>
+                <span class="fab-label">Action 1</span>
+              </a>
+              <a href="#" class="fab-label-button">
+                <span>2</span>
+                <span class="fab-label">Action 2</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="page-content">
+            <div class="block">
+              <p>Lorem ipsum dolor sit amet...</p>
+            </div>
+          </div>
+        </div>
+      ```
