@@ -1,5 +1,26 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/developers-leaderboard.png"
+  iconRounded: true
+  title: "Developers Leaderboard"
+  author:
+    url: https://leaderboard.tech
+    name: Vladimir Kharlampidi
+  links:
+    website: https://leaderboard.tech
+  description: |
+    Main idea of the <a href="https://leaderboard.tech" target="_blank">leaderboard.tech</a> is motivation! Here you can check which languages and technologies your friends love and being passionate about based on their real projects. It can help to find new connections in your City / Country, who work with the same tech-stack as you do.
+
+    Profiles and ranks are being generated for developers registered at <a href="https://codersrank.io" target="_blank">CodersRank</a> and based on the developers' connected GitHub, GitLab, Stackoverflow accounts + additionally added GIT repositories. The profile shows the experience you have by the connected accounts you add.
+
+  screenshots:
+  - "#{cdn}/i/showcase/developers-leaderboard-1.png"
+  - "#{cdn}/i/showcase/developers-leaderboard-2.png"
+  - "#{cdn}/i/showcase/developers-leaderboard-3.png"
+  - "#{cdn}/i/showcase/developers-leaderboard-4.png"
+  - "#{cdn}/i/showcase/developers-leaderboard-5.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/godial.png"
   iconRounded: false
   title: "GoDial - Automatic Call Dialer and CRM"
