@@ -662,6 +662,28 @@ block content
           td router.updateCurrentUrl(<span>url</span>)
           td Updates current route url, and updates `router.currentRoute` properties (query, params, hash, etc.) based on passed url. This method doesn't load or reload any content. It just changes current route url.
         tr
+          td router.generateUrl({<span>name</span>, <span>query</span>, <span>params</span>})
+          td
+            p Generates route url based on a given route name. For example, if we the following route:
+              ```js
+                {
+                  name: 'blogPost',
+                  path: '/blog/post/:postId',
+                  ...
+                }
+              ```
+            p Then we can get URL for route, like this:
+            ```js
+              const url = router.generateUrl({
+                name: 'blogPost',
+                // only for route with required params
+                params: { postId: 1234 },
+                // optional query
+                query: { foo: 'bar' }
+              });
+              console.log(url); /* /blog/post/1234?foo=bar */
+            ```
+        tr
           td router.on(<span>event</span>, <span>handler</span>)
           td Add event handler
         tr

@@ -108,6 +108,16 @@ block content
               </div>
           </div>
 
+    h3 Transparent Navbar
+    p This feature available since Framework7 version 5.5.0.
+    p Transparent navbar appears with transparent background and transparent title and on page scroll it becomes opaque. To enable transparent navbar we need to add `navbar-transparent` class to `navbar`:
+    ```html
+      <!-- additional "navbar-transparent" class -->
+      <div class="navbar navbar-transparent">
+        ...
+      </div>
+    ```
+
     h3 Large Title
     p Large-title navbar has additional "row" (or "bar") with large title text, which is get collapsed on page scroll. To make it large we need to add additional `navbar-large` class to `navbar` and add additional `title-large` element to it:
     :code(lang="html")
@@ -132,10 +142,10 @@ block content
 
     h3 Large Transparent Title
     p We can also enabled large-title navbar to be "transparent". When it is enabled, navbar background and its main title are hidden until page scrolled.
-    p To make large title transparent we need additional `navbar-large-transparent` class:
+    p To make large title transparent we need additional `navbar-transparent` class:
     :code(lang="html")
-      <!-- additional "navbar-large-transparent" class -->
-      <div class="navbar navbar-large navbar-large-transparent">
+      <!-- additional "navbar-transparent" class -->
+      <div class="navbar navbar-large navbar-transparent">
         <div class="navbar-bg"></div>
         <div class="navbar-inner">
           ...
@@ -385,6 +395,11 @@ block content
           td boolean
           td true
           td When enabled it will snap page scroll to large title collapse/expand positions, so it will make impossible to leave page scroll in the middle of large title position. Has effect only when `collapseLargeTitleOnScroll` is enabled.
+        tr
+          td snapPageScrollToTransparentNavbar
+          td boolean
+          td true
+          td When enabled it will snap page scroll to transparent navbar size, so it will make impossible to leave page scroll in the middle of transparent navbar position.
 
 
     p For example:
@@ -536,6 +551,30 @@ block content
           </div>
         </div>
 
+      h3 Transparent Navbar
+      :code(lang="html")
+        <div class="page">
+          <!-- Transparent Navbar, has additional "navbar-transparent" class -->
+          <div class="navbar navbar-transparent">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner sliding">
+              <div class="left">
+                <a class="link back">
+                  <i class="icon icon-back"></i>
+                  <span class="if-not-md">Back</span>
+                </a>
+              </div>
+              <div class="title">Fixed Navbar</div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="block">
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
+              ...
+            </div>
+          </div>
+        </div>
+
       h3 Large Title
       :code(lang="html")
         <div class="page">
@@ -567,8 +606,8 @@ block content
       h3 Large Transparent
       :code(lang="html")
         <div class="page">
-          <!-- Additional "navbar-large-transparent" class -->
-          <div class="navbar navbar-large navbar-large-transparent">
+          <!-- Additional "navbar-transparent" class -->
+          <div class="navbar navbar-large navbar-transparent">
             <div class="navbar-bg"></div>
             <div class="navbar-inner sliding">
               <div class="left">

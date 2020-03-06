@@ -853,6 +853,19 @@ block content
     ```
     p Now, if we need to call main app component methods or change its data, we can reference its instance via `app.rootComponent`. And from other components it is available as `this.$root`.
     p For example, to call `login()` method of main app component in the example above from other page component, we can just call `this.$root.login()`.
+    .important-note
+      p If you need to update Root component state from other component, do it in this way:
+      ```js
+        // update value
+        this.$root.firstName = 'Vladimir';
+        // call $update on root component
+        this.$root.$update();
+      ```
+      p or
+      ```js
+        this.$root.$setState({ firstName: 'Vladimir' })
+      ```
+      p In this case it will auto update all components that depend on `$root` state automatically.
     p Also note that main app component will be mounted (added to DOM) BEFORE app initialization process finished. So if you need to call Framework7 APIs immediately, use `$f7ready` callback:
     ```html
       <template>

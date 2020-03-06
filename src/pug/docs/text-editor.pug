@@ -264,6 +264,9 @@ block content
           th Description
       tbody
         tr
+          td texteditor:init
+          td Event will be triggered when on editor initialization
+        tr
           td texteditor:change
           td Event will be triggered when editor value has been changed
         tr
@@ -308,11 +311,20 @@ block content
           th Description
       tbody
         tr
+          td init
+          td textEditor
+          td(rowspan="2")
+            span (editor)
+          td(rowspan="2") Event will be triggered when on editor initialization.
+        tr
+          td textEditorInit
+          td app
+        tr
           td change
           td textEditor
           td(rowspan="2")
-            span (editor, value)
-          td(rowspan="2") Event will be triggered when editor value has been changed.
+            span (editor)
+          td(rowspan="2") Event will be triggered when on editor initialization.
         tr
           td textEditorChange
           td app

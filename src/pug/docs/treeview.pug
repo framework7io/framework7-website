@@ -174,7 +174,8 @@ block content
         tr
           td treeview:loadchildren
           td Treeview Item Element<span>&lt;div class="treeview-item"&gt;</span>
-          td Event will be triggered on first open of Treeview item with `treeview-load-children` class. In `event.detail` it contains function to hide loading preloader.
+          td
+            p Event will be triggered on first open of Treeview item with `treeview-load-children` class. In `event.detail` it contains function to hide loading preloader.
     h3 App Events
     p Treeview also emits events on app instance.
     table.events-table
@@ -202,6 +203,48 @@ block content
 
     h2 Load Children
     p It is also possible to load children on treeview item open. To make it work, we, at first, need to add `treeview-load-children` class to such treeview item. And then listen for `treeview:loadchildren` event to proceed with loading. Check the examples below for implementation example.
+    ```html
+      <div class="treeview">
+        <div class="treeview-item treeview-load-children">
+          ...
+          <div class="treeview-item-children">
+            ...
+          </div>
+        </div>
+      </div>
+      <script>
+        $('.treeview-load-children').on('treeview:loadchildren', (e) => {
+          loadChildren: function (e) {
+            const done = e.detail;
+            fetch('some-url')
+              .then(() => {
+                // ... update UI and call done
+                done();
+              })
+              .catch((err) => {
+                // in case of error, call done(true) to cancel loading effect
+                done(true);
+              })
+          },
+        })
+
+        //- or
+
+        app.on('treeviewLoadChildren', (itemEl, done) => {
+          loadChildren: function (e) {
+            fetch('some-url')
+              .then(() => {
+                // ... update UI and call done
+                done();
+              })
+              .catch((err) => {
+                // in case of error, call done(true) to cancel loading effect
+                done(true);
+              })
+          },
+        })
+      </script>
+    ```
 
     +cssVars('treeview')
 
