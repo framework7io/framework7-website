@@ -297,6 +297,23 @@ block content
           td popup:closed
           td Popup Element<span>&lt;div class="popup"&gt;</span>
           td Event will be triggered after Popup completes its closing animation
+        tr
+          td popup:swipestart
+          td Popup Element<span>&lt;div class="popup"&gt;</span>
+          td Event will be triggered in the beginning of swipe-to-close interaction (when user just started to drag popup)
+        tr
+          td popup:swipemove
+          td Popup Element<span>&lt;div class="popup"&gt;</span>
+          td Event will be triggered on swipe-to-close move interaction
+        tr
+          td popup:swipeend
+          td Popup Element<span>&lt;div class="popup"&gt;</span>
+          td Event will be triggered on swipe-to-close release
+        tr
+          td popup:swipeclose
+          td Popup Element<span>&lt;div class="popup"&gt;</span>
+          td Event will be triggered when popup closed with swipe
+
     h3 App and Popup Instance Events
     p Popup instance emits events on both self instance and app instance. App instance events has same names prefixed with `popup`.
     table.events-table.double-events-table
@@ -350,6 +367,43 @@ block content
           td(rowspan="2") Event will be triggered right before Popup instance will be destroyed. As an argument event handler receives popup instance
         tr
           td popupBeforeDestroy
+          td <span>popup</span>
+          td app
+
+        tr
+          td swipeStart
+          td <span>popup</span>
+          td popup
+          td(rowspan="2")  Event will be triggered in the beginning of swipe-to-close interaction (when user just started to drag popup)
+        tr
+          td popupSwipeStart
+          td <span>popup</span>
+          td app
+        tr
+          td swipeMove
+          td <span>popup</span>
+          td popup
+          td(rowspan="2")  Event will be triggered on swipe-to-close move interaction
+        tr
+          td popupSwipeMove
+          td <span>popup</span>
+          td app
+        tr
+          td swipeEnd
+          td <span>popup</span>
+          td popup
+          td(rowspan="2")  Event will be triggered on swipe-to-close release
+        tr
+          td popupSwipeEnd
+          td <span>popup</span>
+          td app
+        tr
+          td swipeClose
+          td <span>popup</span>
+          td popup
+          td(rowspan="2")  Event will be triggered when popup closed with swipe
+        tr
+          td popupSwipeClose
           td <span>popup</span>
           td app
 

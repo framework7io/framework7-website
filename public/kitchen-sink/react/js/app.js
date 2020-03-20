@@ -15691,6 +15691,10 @@
 
 	  if (dynamicNavbar && $newNavbarEl.length) {
 	    $newNavbarEl.removeClass('navbar-previous navbar-current navbar-next').addClass("navbar-".concat(newPagePosition).concat(isMaster ? ' navbar-master' : '').concat(isDetail ? ' navbar-master-detail' : '').concat(isDetailRoot ? ' navbar-master-detail-root' : '')).removeClass('stacked');
+	    $newNavbarEl.trigger('navbar:position', {
+	      position: 'newPagePosition'
+	    });
+	    router.emit('navbarPosition', $newNavbarEl[0], 'newPagePosition');
 
 	    if (isMaster || isDetail) {
 	      router.emit('navbarRole', $newNavbarEl[0], {
@@ -16991,6 +16995,10 @@
 
 	  if (dynamicNavbar && $newNavbarEl.length > 0) {
 	    $newNavbarEl.addClass("navbar-previous".concat(isMaster ? ' navbar-master' : '').concat(isDetail ? ' navbar-master-detail' : '').concat(isDetailRoot ? ' navbar-master-detail-root' : '')).removeClass('stacked').removeAttr('aria-hidden');
+	    $newNavbarEl.trigger('navbar:position', {
+	      position: 'previous'
+	    });
+	    router.emit('navbarPosition', $newNavbarEl[0], 'previous');
 
 	    if (isMaster || isDetailRoot) {
 	      router.emit('navbarRole', $newNavbarEl[0], {
@@ -22402,11 +22410,16 @@
 	      }
 	    }
 
+	    var previousCollapseProgress = null;
+	    var collapseProgress = null;
+
 	    function handleLargeNavbarCollapse() {
 	      var isHidden = $navbarEl.hasClass('navbar-hidden') || $navbarEl.parent('.navbars').hasClass('navbar-hidden');
 	      if (isHidden) return;
 	      var isLargeTransparent = $navbarEl.hasClass('navbar-large-transparent') || $navbarEl.hasClass('navbar-large') && $navbarEl.hasClass('navbar-transparent');
-	      var collapseProgress = Math.min(Math.max(currentScrollTop / navbarTitleLargeHeight, 0), 1);
+	      previousCollapseProgress = collapseProgress;
+	      collapseProgress = Math.min(Math.max(currentScrollTop / navbarTitleLargeHeight, 0), 1);
+	      var previousCollapseWasInMiddle = previousCollapseProgress > 0 && previousCollapseProgress < 1;
 	      var inSearchbarExpanded = $navbarEl.hasClass('with-searchbar-expandable-enabled');
 	      if (inSearchbarExpanded) return;
 	      navbarCollapsed = $navbarEl.hasClass('navbar-large-collapsed');
@@ -22417,21 +22430,20 @@
 	        app.navbar.collapseLargeTitle($navbarEl[0]);
 	      }
 
-	      if (collapseProgress === 0 && navbarCollapsed || collapseProgress === 1 && !navbarCollapsed // || ((collapseProgress === 1 && navbarCollapsed) || (collapseProgress === 0 && !navbarCollapsed))
-	      ) {
-	          if (app.theme === 'md') {
-	            $navbarEl.find('.navbar-inner').css('overflow', '');
-	          }
+	      if (collapseProgress === 0 && navbarCollapsed || collapseProgress === 0 && previousCollapseWasInMiddle || collapseProgress === 1 && !navbarCollapsed || collapseProgress === 1 && previousCollapseWasInMiddle) {
+	        if (app.theme === 'md') {
+	          $navbarEl.find('.navbar-inner').css('overflow', '');
+	        }
 
-	          $navbarEl.find('.title').css('opacity', '');
-	          $navbarEl.find('.title-large-text, .subnavbar').css('transform', '');
+	        $navbarEl.find('.title').css('opacity', '');
+	        $navbarEl.find('.title-large-text, .subnavbar').css('transform', '');
 
-	          if (isLargeTransparent) {
-	            $navbarEl.find('.navbar-bg').css('opacity', '');
-	          } else {
-	            $navbarEl.find('.navbar-bg').css('transform', '');
-	          }
-	        } else if (collapseProgress > 0 && collapseProgress < 1) {
+	        if (isLargeTransparent) {
+	          $navbarEl.find('.navbar-bg').css('opacity', '');
+	        } else {
+	          $navbarEl.find('.navbar-bg').css('transform', '');
+	        }
+	      } else if (collapseProgress > 0 && collapseProgress < 1) {
 	        if (app.theme === 'md') {
 	          $navbarEl.find('.navbar-inner').css('overflow', 'visible');
 	        }
@@ -24121,6 +24133,11 @@
 	        }
 
 	        isMoved = true;
+	        popup.emit('local::swipeStart popupSwipeStart', popup);
+	        popup.$el.trigger('popup:swipestart');
+	      } else {
+	        popup.emit('local::swipeMove popupSwipeMove', popup);
+	        popup.$el.trigger('popup:swipemove');
 	      }
 
 	      e.preventDefault();
@@ -24141,6 +24158,8 @@
 	        return;
 	      }
 
+	      popup.emit('local::swipeEnd popupSwipeEnd', popup);
+	      popup.$el.trigger('popup:swipeend');
 	      isMoved = false;
 	      allowSwipeToClose = false;
 	      $el.transition('');
@@ -24169,6 +24188,8 @@
 	          }
 
 	          $el.transform('');
+	          popup.emit('local::swipeclose popupSwipeClose', popup);
+	          popup.$el.trigger('popup:swipeclose');
 	          popup.close();
 	          allowSwipeToClose = true;
 	        });
@@ -24848,7 +24869,25 @@
 	          targetX: targetX,
 	          targetY: targetY,
 	          targetWidth: targetWidth,
-	          targetHeight: targetHeight
+	          targetHeight: targetHeight,
+	          on: {
+	            open: function open() {
+	              actions.$el.trigger("modal:open ".concat(actions.type.toLowerCase(), ":open"));
+	              actions.emit("local::open modalOpen ".concat(actions.type, "Open"), actions);
+	            },
+	            opened: function opened() {
+	              actions.$el.trigger("modal:opened ".concat(actions.type.toLowerCase(), ":opened"));
+	              actions.emit("local::opened modalOpened ".concat(actions.type, "Opened"), actions);
+	            },
+	            close: function close() {
+	              actions.$el.trigger("modal:close ".concat(actions.type.toLowerCase(), ":close"));
+	              actions.emit("local::close modalClose ".concat(actions.type, "Close"), actions);
+	            },
+	            closed: function closed() {
+	              actions.$el.trigger("modal:closed ".concat(actions.type.toLowerCase(), ":closed"));
+	              actions.emit("local::closed modalClosed ".concat(actions.type, "Closed"), actions);
+	            }
+	          }
 	        });
 	        popover.open(animate);
 	        popover.once('popoverOpened', function () {
@@ -24962,7 +25001,8 @@
 	      var actions = this;
 	      if (actions.params.render) return actions.params.render.call(actions, actions);
 	      var groups = actions.groups;
-	      return "\n      <div class=\"actions-modal".concat(actions.params.grid ? ' actions-grid' : '', "\">\n        ").concat(groups.map(function (group) {
+	      var cssClass = actions.params.cssClass;
+	      return "\n      <div class=\"actions-modal".concat(actions.params.grid ? ' actions-grid' : '', " ").concat(cssClass || '', "\">\n        ").concat(groups.map(function (group) {
 	        return "<div class=\"actions-group\">\n            ".concat(group.map(function (button) {
 	          var buttonClasses = ["actions-".concat(button.label ? 'label' : 'button')];
 	          var color = button.color,
@@ -24991,7 +25031,8 @@
 	      var actions = this;
 	      if (actions.params.renderPopover) return actions.params.renderPopover.call(actions, actions);
 	      var groups = actions.groups;
-	      return "\n      <div class=\"popover popover-from-actions\">\n        <div class=\"popover-inner\">\n          ".concat(groups.map(function (group) {
+	      var cssClass = actions.params.cssClass;
+	      return "\n      <div class=\"popover popover-from-actions ".concat(cssClass || '', "\">\n        <div class=\"popover-inner\">\n          ").concat(groups.map(function (group) {
 	        return "\n            <div class=\"list\">\n              <ul>\n                ".concat(group.map(function (button) {
 	          var itemClasses = [];
 	          var color = button.color,
@@ -25034,6 +25075,7 @@
 	      forceToPopover: false,
 	      backdrop: true,
 	      backdropEl: undefined,
+	      cssClass: null,
 	      closeByBackdropClick: true,
 	      closeOnEscape: false,
 	      render: null,
@@ -30181,6 +30223,10 @@
 	          width: '',
 	          height: ''
 	        });
+	      }
+
+	      if ($backdropEl && $backdropEl.length) {
+	        $backdropEl.removeClass('card-backdrop-in card-backdrop-out');
 	      }
 
 	      $cardEl.removeClass('card-closing card-no-transition');
@@ -53667,7 +53713,7 @@
 	};
 
 	/**
-	 * Framework7 5.5.0
+	 * Framework7 5.5.1
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -53675,7 +53721,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: March 6, 2020
+	 * Released on: March 20, 2020
 	 */
 
 
@@ -58761,7 +58807,13 @@
 	          iconAurora = props.iconAurora,
 	          id = props.id,
 	          style = props.style;
-	      var defaultSlots = self.slots.default;
+	      var defaultSlots = self.slots.default || [];
+	      Object.keys(self.slots).forEach(function (key) {
+	        if (typeof self.slots[key] === 'undefined' || key === 'default') return;
+	        self.slots[key].forEach(function (child) {
+	          return defaultSlots.push(child);
+	        });
+	      });
 	      var iconEl;
 	      var textEl;
 	      var badgeEl;
@@ -65552,13 +65604,33 @@
 	    _this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onSwipeStart', 'onSwipeMove', 'onSwipeEnd', 'onSwipeClose']);
 	    })();
 
 	    return _this;
 	  }
 
 	  _createClass(F7Popup, [{
+	    key: "onSwipeStart",
+	    value: function onSwipeStart(instance) {
+	      this.dispatchEvent('popup:swipestart popupSwipeStart', instance);
+	    }
+	  }, {
+	    key: "onSwipeMove",
+	    value: function onSwipeMove(instance) {
+	      this.dispatchEvent('popup:swipemove popupSwipeMove', instance);
+	    }
+	  }, {
+	    key: "onSwipeEnd",
+	    value: function onSwipeEnd(instance) {
+	      this.dispatchEvent('popup:swipeend popupSwipeEnd', instance);
+	    }
+	  }, {
+	    key: "onSwipeClose",
+	    value: function onSwipeClose(instance) {
+	      this.dispatchEvent('popup:swipeclose popupSwipeClose', instance);
+	    }
+	  }, {
 	    key: "onOpen",
 	    value: function onOpen(instance) {
 	      this.dispatchEvent('popup:open popupOpen', instance);
@@ -65640,6 +65712,10 @@
 	      var popupParams = {
 	        el: el,
 	        on: {
+	          swipeStart: self.onSwipeStart,
+	          swipeMove: self.onSwipeMove,
+	          swipeEnd: self.onSwipeEnd,
+	          swipeClose: self.onSwipeClose,
 	          open: self.onOpen,
 	          opened: self.onOpened,
 	          close: self.onClose,
@@ -69157,7 +69233,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.5.0
+	 * Framework7 React 5.5.1
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -69165,7 +69241,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: March 6, 2020
+	 * Released on: March 20, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
@@ -69269,7 +69345,7 @@
 	        className: "page-home"
 	      }, react.createElement(Navbar$2, {
 	        large: true,
-	        largeTransparent: true,
+	        transparent: true,
 	        sliding: false
 	      }, react.createElement(NavLeft, null, react.createElement(Link, {
 	        panelOpen: "left",
@@ -69785,7 +69861,7 @@
 	    className: "page-about"
 	  }, react.createElement(Navbar$2, {
 	    large: true,
-	    largeTransparent: true,
+	    transparent: true,
 	    title: "About",
 	    titleLarge: "About",
 	    backLink: "Framework7"
@@ -76611,7 +76687,7 @@
 	      }, react.createElement(View$2, null, react.createElement(Page, null, react.createElement(Navbar$2, {
 	        title: "Push Popup",
 	        large: true,
-	        largeTransparent: true
+	        transparent: true
 	      }, react.createElement(NavRight, null, react.createElement(Link, {
 	        popupClose: true
 	      }, "Close"))), react.createElement(Block, null, react.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus."), react.createElement("p", null, "Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero."), react.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus."))))), react.createElement(Popup$2, {
