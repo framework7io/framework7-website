@@ -238,11 +238,14 @@ block content
               li.method-returns Method returns Searchbar's instance
         tr
           td app.searchbar.search(<span>el</span>, <span>query</span>)
-          td get Searchbar instance by HTML element
+          td Trigger searchbar to search `query`
             ul.method-parameters
               li
                 span.parameter el
                 |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Searchbar element.
+              li
+                span.parameter query
+                |  - <span class="parameter-type">string</span>. Search query.
               li.method-returns Method returns Searchbar's instance
     h2 Searchbar Parameters
     p Let's look on list of all available parameters we need to create/init Searchbar:
