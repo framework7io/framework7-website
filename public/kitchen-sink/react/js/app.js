@@ -12453,8 +12453,28 @@
 	    app: app,
 	    domProp: 'f7Modal'
 	  }), {
-	    open: function open(el, animate) {
+	    open: function open(el, animate, targetEl) {
 	      var $el = $(el);
+
+	      if ($el.length > 1 && targetEl) {
+	        // check if same modal in other page
+	        var $targetPage = $(targetEl).parents('.page');
+
+	        if ($targetPage.length) {
+	          $el.each(function (index, modalEl) {
+	            var $modalEl = $(modalEl);
+
+	            if ($modalEl.parents($targetPage)[0] === $targetPage[0]) {
+	              $el = $modalEl;
+	            }
+	          });
+	        }
+	      }
+
+	      if ($el.length > 1) {
+	        $el = $el.eq($el.length - 1);
+	      }
+
 	      if (!$el.length) return undefined;
 	      var instance = $el[0].f7Modal;
 	      if (!instance) instance = new constructor(app, {
@@ -12465,8 +12485,29 @@
 	    close: function close() {
 	      var el = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultSelector;
 	      var animate = arguments.length > 1 ? arguments[1] : undefined;
+	      var targetEl = arguments.length > 2 ? arguments[2] : undefined;
 	      var $el = $(el);
 	      if (!$el.length) return undefined;
+
+	      if ($el.length > 1) {
+	        // check if close link (targetEl) in this modal
+	        var $parentEl;
+
+	        if (targetEl) {
+	          var $targetEl = $(targetEl);
+
+	          if ($targetEl.length) {
+	            $parentEl = $targetEl.parents($el);
+	          }
+	        }
+
+	        if ($parentEl && $parentEl.length > 0) {
+	          $el = $parentEl;
+	        } else {
+	          $el = $el.eq($el.length - 1);
+	        }
+	      }
+
 	      var instance = $el[0].f7Modal;
 	      if (!instance) instance = new constructor(app, {
 	        el: $el
@@ -15692,9 +15733,9 @@
 	  if (dynamicNavbar && $newNavbarEl.length) {
 	    $newNavbarEl.removeClass('navbar-previous navbar-current navbar-next').addClass("navbar-".concat(newPagePosition).concat(isMaster ? ' navbar-master' : '').concat(isDetail ? ' navbar-master-detail' : '').concat(isDetailRoot ? ' navbar-master-detail-root' : '')).removeClass('stacked');
 	    $newNavbarEl.trigger('navbar:position', {
-	      position: 'newPagePosition'
+	      position: newPagePosition
 	    });
-	    router.emit('navbarPosition', $newNavbarEl[0], 'newPagePosition');
+	    router.emit('navbarPosition', $newNavbarEl[0], newPagePosition);
 
 	    if (isMaster || isDetail) {
 	      router.emit('navbarRole', $newNavbarEl[0], {
@@ -24290,19 +24331,20 @@
 	    app.popup = ModalMethods({
 	      app: app,
 	      constructor: Popup,
-	      defaultSelector: '.popup.modal-in'
+	      defaultSelector: '.popup.modal-in',
+	      parentSelector: '.popup'
 	    });
 	  },
 	  clicks: {
 	    '.popup-open': function openPopup($clickedEl) {
 	      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      var app = this;
-	      app.popup.open(data.popup, data.animate);
+	      app.popup.open(data.popup, data.animate, $clickedEl);
 	    },
 	    '.popup-close': function closePopup($clickedEl) {
 	      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      var app = this;
-	      app.popup.close(data.popup, data.animate);
+	      app.popup.close(data.popup, data.animate, $clickedEl);
 	    }
 	  }
 	};
@@ -24375,12 +24417,12 @@
 	    '.login-screen-open': function openLoginScreen($clickedEl) {
 	      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      var app = this;
-	      app.loginScreen.open(data.loginScreen, data.animate);
+	      app.loginScreen.open(data.loginScreen, data.animate, $clickedEl);
 	    },
 	    '.login-screen-close': function closeLoginScreen($clickedEl) {
 	      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      var app = this;
-	      app.loginScreen.close(data.loginScreen, data.animate);
+	      app.loginScreen.close(data.loginScreen, data.animate, $clickedEl);
 	    }
 	  }
 	};
@@ -24730,6 +24772,26 @@
 	    }), {
 	      open: function open(popoverEl, targetEl, animate) {
 	        var $popoverEl = $(popoverEl);
+
+	        if ($popoverEl.length > 1) {
+	          // check if same popover in other page
+	          var $targetPage = $(targetEl).parents('.page');
+
+	          if ($targetPage.length) {
+	            $popoverEl.each(function (index, el) {
+	              var $el = $(el);
+
+	              if ($el.parents($targetPage)[0] === $targetPage[0]) {
+	                $popoverEl = $el;
+	              }
+	            });
+	          }
+	        }
+
+	        if ($popoverEl.length > 1) {
+	          $popoverEl = $popoverEl.eq($popoverEl.length - 1);
+	        }
+
 	        var popover = $popoverEl[0].f7Modal;
 	        if (!popover) popover = new Popover(app, {
 	          el: $popoverEl,
@@ -24748,7 +24810,7 @@
 	    '.popover-close': function closePopover($clickedEl) {
 	      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      var app = this;
-	      app.popover.close(data.popover, data.animate);
+	      app.popover.close(data.popover, data.animate, $clickedEl);
 	    }
 	  }
 	};
@@ -25097,12 +25159,12 @@
 	    '.actions-open': function openActions($clickedEl) {
 	      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      var app = this;
-	      app.actions.open(data.actions, data.animate);
+	      app.actions.open(data.actions, data.animate, $clickedEl);
 	    },
 	    '.actions-close': function closeActions($clickedEl) {
 	      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      var app = this;
-	      app.actions.close(data.actions, data.animate);
+	      app.actions.close(data.actions, data.animate, $clickedEl);
 	    }
 	  }
 	};
@@ -25705,12 +25767,12 @@
 	        app.sheet.close('.sheet-modal.modal-in');
 	      }
 
-	      app.sheet.open(data.sheet, data.animate);
+	      app.sheet.open(data.sheet, data.animate, $clickedEl);
 	    },
 	    '.sheet-close': function closeSheet($clickedEl) {
 	      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      var app = this;
-	      app.sheet.close(data.sheet, data.animate);
+	      app.sheet.close(data.sheet, data.animate, $clickedEl);
 	    }
 	  }
 	};
@@ -30750,12 +30812,12 @@
 	  },
 	  validate: function validate(inputEl) {
 	    var $inputEl = $(inputEl);
-	    if (!$inputEl.length) return;
+	    if (!$inputEl.length) return true;
 	    var $itemInputEl = $inputEl.parents('.item-input');
 	    var $inputWrapEl = $inputEl.parents('.input');
 	    var validity = $inputEl[0].validity;
 	    var validationMessage = $inputEl.dataset().errorMessage || $inputEl[0].validationMessage || '';
-	    if (!validity) return;
+	    if (!validity) return true;
 
 	    if (!validity.valid) {
 	      var $errorEl = $inputEl.nextAll('.item-input-error-message, .input-error-message');
@@ -30777,17 +30839,20 @@
 	      $itemInputEl.addClass('item-input-invalid');
 	      $inputWrapEl.addClass('input-invalid');
 	      $inputEl.addClass('input-invalid');
-	    } else {
-	      $itemInputEl.removeClass('item-input-invalid item-input-with-error-message');
-	      $inputWrapEl.removeClass('input-invalid input-with-error-message');
-	      $inputEl.removeClass('input-invalid');
+	      return false;
 	    }
+
+	    $itemInputEl.removeClass('item-input-invalid item-input-with-error-message');
+	    $inputWrapEl.removeClass('input-invalid input-with-error-message');
+	    $inputEl.removeClass('input-invalid');
+	    return true;
 	  },
 	  validateInputs: function validateInputs(el) {
 	    var app = this;
-	    $(el).find('input, textarea, select').each(function (index, inputEl) {
-	      app.input.validate(inputEl);
+	    var validates = $(el).find('input, textarea, select').toArray().map(function (inputEl) {
+	      return app.input.validate(inputEl);
 	    });
+	    return validates.indexOf(false) < 0;
 	  },
 	  focus: function focus(inputEl) {
 	    var $inputEl = $(inputEl);
@@ -53713,7 +53778,7 @@
 	};
 
 	/**
-	 * Framework7 5.5.1
+	 * Framework7 5.5.3
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -53721,7 +53786,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: March 20, 2020
+	 * Released on: March 28, 2020
 	 */
 
 
@@ -58232,14 +58297,18 @@
 	      if (!f7 || !inputEl) return;
 	      var validity = inputEl.validity;
 	      if (!validity) return;
+	      var onValidate = self.props.onValidate;
 
 	      if (!validity.valid) {
+	        if (onValidate) onValidate(false);
+
 	        if (self.state.inputInvalid !== true) {
 	          self.setState({
 	            inputInvalid: true
 	          });
 	        }
 	      } else if (self.state.inputInvalid !== false) {
+	        if (onValidate) onValidate(true);
 	        self.setState({
 	          inputInvalid: false
 	        });
@@ -58729,6 +58798,7 @@
 	  pattern: String,
 	  validate: [Boolean, String],
 	  validateOnBlur: Boolean,
+	  onValidate: Function,
 	  tabindex: [String, Number],
 	  resizable: Boolean,
 	  clearButton: Boolean,
@@ -59520,14 +59590,18 @@
 	      if (!f7 || !inputEl) return;
 	      var validity = inputEl.validity;
 	      if (!validity) return;
+	      var onValidate = self.props.onValidate;
 
 	      if (!validity.valid) {
+	        if (onValidate) onValidate(false);
+
 	        if (self.state.inputInvalid !== true) {
 	          self.setState({
 	            inputInvalid: true
 	          });
 	        }
 	      } else if (self.state.inputInvalid !== false) {
+	        if (onValidate) onValidate(true);
 	        self.setState({
 	          inputInvalid: false
 	        });
@@ -60051,6 +60125,7 @@
 	  pattern: String,
 	  validate: [Boolean, String],
 	  validateOnBlur: Boolean,
+	  onValidate: Function,
 	  tabindex: [String, Number],
 	  resizable: Boolean,
 	  clearButton: Boolean,
@@ -69233,7 +69308,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.5.1
+	 * Framework7 React 5.5.3
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -69241,7 +69316,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: March 20, 2020
+	 * Released on: March 28, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;

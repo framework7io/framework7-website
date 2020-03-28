@@ -105,6 +105,18 @@ block content
           td false
           td When enabled then input will be validated on blur only.
         tr
+          td onValidate
+          td function
+          td
+          td Callback to be executed on input validation, returns boolean value indication whether the input is valid or not.
+            ```html
+              <f7-list-input
+                type="email"
+                validate
+                :onValidate="(isValid) => setInputValid(isValid)"
+              />
+            ```
+        tr
           td error-message
           td string
           td
@@ -307,6 +319,18 @@ block content
           td boolean
           td false
           td When enabled then input will be validated on blur only.
+        tr
+          td onValidate
+          td function
+          td
+          td Callback to be executed on input validation, returns boolean value indication whether the input is valid or not.
+            ```html
+              <f7-input
+                type="email"
+                validate
+                :onValidate="(isValid) => setInputValid(isValid)"
+              />
+            ```
         tr
           td error-message
           td string
