@@ -19,6 +19,10 @@ gold:
   imageUrl: "/i/sponsors/sparheld.jpg"
 silver:
 -
+  title: Infatica - Global Peer-to-Business Proxu Network
+  link: https://infatica.io
+  imageUrl: "/i/sponsors/infatica.svg"
+-
   title: Thorium Builder - full visual Framework7 app builder
   link: https://www.thoriumbuilder.com/
   imageUrl: "/i/sponsors/thorium.png"
