@@ -31015,7 +31015,12 @@
 	      app.emit('inputClear', previousValue);
 	    }
 
+	    function preventDefault(e) {
+	      e.preventDefault();
+	    }
+
 	    $(doc).on('click', '.input-clear-button', clearInput);
+	    $(doc).on('mousedown', '.input-clear-button', preventDefault);
 	    $(doc).on('change input', 'input, textarea, select, .item-input [contenteditable]', onChange, true);
 	    $(doc).on('focus', 'input, textarea, select, .item-input [contenteditable]', onFocus, true);
 	    $(doc).on('blur', 'input, textarea, select, .item-input [contenteditable]', onBlur, true);
@@ -53778,7 +53783,7 @@
 	};
 
 	/**
-	 * Framework7 5.5.3
+	 * Framework7 5.5.4
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -53786,7 +53791,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: March 28, 2020
+	 * Released on: April 3, 2020
 	 */
 
 
@@ -63890,13 +63895,11 @@
 	      var addCenterTitleClass = theme && theme.md && self.$f7 && self.$f7.params.navbar.mdCenterTitle || theme && theme.aurora && self.$f7 && self.$f7.params.navbar.auroraCenterTitle;
 	      var slots = self.slots;
 	      var isLarge = large || largeTransparent;
-	      var isLargeTransparent = isLarge && (largeTransparent || transparent);
-	      var isTransparent = !isLarge && transparent;
+	      var isTransparent = transparent || isLarge && largeTransparent;
 	      var isTransparentVisible = isTransparent && transparentVisible;
 	      var classes = Utils$1.classNames(className, 'navbar', routerPositionClass && routerPositionClass, {
 	        'navbar-hidden': hidden,
 	        'navbar-large': isLarge,
-	        'navbar-large-transparent': isLargeTransparent,
 	        'navbar-large-collapsed': isLarge && largeCollapsed,
 	        'navbar-transparent': isTransparent,
 	        'navbar-transparent-visible': isTransparentVisible,
@@ -69308,7 +69311,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.5.3
+	 * Framework7 React 5.5.4
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -69316,7 +69319,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: March 28, 2020
+	 * Released on: April 3, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
