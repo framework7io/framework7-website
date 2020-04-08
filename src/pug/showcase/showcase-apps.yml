@@ -1,3 +1,24 @@
+-
+  iconUrl: "#{cdn}/i/showcase/moodmeter_icon.png"
+  iconRounded: true
+  title: "Mood Meter : Track and monitor your mood"
+  author:
+    url: http://www.nandiraju.com
+    name: Srikanth Nandiraju.
+  links:
+    appstore: https://apps.apple.com/us/app/mood-meter/id391278676
+    googleplay: https://play.google.com/store/apps/details?id=com.jaw_drop.moodmeter&hl=en_IN
+  description: |
+    Introspect into your mood changes with this handy app.Tracking mood is easy. Simply touch on the picture that matches closest to your current mood. Enter an optional note that comes to your mind or that triggered your emotion and hit save. The app captures all of your such mood swings and creates a journal history with your description. The mood meters show the comparisons of your different mood's.
+  screenshots:
+  - "#{cdn}/i/showcase/moometer_login.png"
+  - "#{cdn}/i/showcase/moodmeter_signup.png"
+  - "#{cdn}/i/showcase/moodmeter_moods.png"
+  - "#{cdn}/i/showcase/moodmeter_settings.png"
+  - "#{cdn}/i/showcase/moodmeter_history.png"
+  - "#{cdn}/i/showcase/moodmeter_feed.png"
+  - "#{cdn}/i/showcase/moodmeter_capture.png"
+  - "#{cdn}/i/showcase/moodmeter_mask.png"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/Quotes.png"
