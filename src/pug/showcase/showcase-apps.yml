@@ -1,5 +1,27 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/Quotes.png"
+  iconRounded: true
+  title: "Quotes-Inspirational , motivational , life quotes"
+  author:
+    url: https://saporasocial.me
+    name: Sapora Inc.
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=io.saporainc.quotes
+    website: https://saporasocial.me
+  description: |
+    We’re delighted to announce the second app in our ecosystem knows as “Quotes”. It comes with over 5000 quotes , 11 different background bundled under 2.5 MB which is even less than that of a image. Amazing isn’t? Morever, it works without an internet connection which makes it your go-to companion in low or no network areas.
+  screenshots:
+  - "#{cdn}/i/showcase/Quotes-1.png"
+  - "#{cdn}/i/showcase/Quotes-2.png"
+  - "#{cdn}/i/showcase/Quotes-3.png"
+  - "#{cdn}/i/showcase/Quotes-4.png"
+  - "#{cdn}/i/showcase/Quotes-5.png"
+  - "#{cdn}/i/showcase/Quotes-6.png"
+  - "#{cdn}/i/showcase/Quotes-7.png"
+  - "#{cdn}/i/showcase/Quotes-8.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/developers-leaderboard.png"
   iconRounded: true
   title: "Developers Leaderboard"
