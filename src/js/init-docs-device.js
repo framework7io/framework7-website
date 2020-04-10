@@ -17,6 +17,8 @@ function handleDeviceScroll() {
   let stopPosition;
   if ($('.stop-scroll-device').length > 0) {
     stopPosition = $('.stop-scroll-device').offset().top + st - deviceStartOffset;
+  } else if ($('.docs-page-nav').length > 0) {
+    stopPosition = $('.docs-page-nav').offset().top - $('.docs-page-nav')[0].offsetHeight + st - deviceStartOffset;
   } else {
     stopPosition = $('.docs-content .with-device').offset().top + $('.docs-content .with-device').outerHeight() + st - deviceStartOffset;
   }
