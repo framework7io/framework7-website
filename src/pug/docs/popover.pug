@@ -188,6 +188,13 @@ block content
                 closeByBackdropClick: false,
               }
             });
+    p If you use auto-initialized popovers (e.g. you don't create them via `app.popover.create`), it is possible to pass all available popover parameters via `data-` attributes. For example:
+    ```html
+      <!-- Pass parameters as kebab-case data attributes -->
+      <div class="popover" data-close-on-escape="true" data-backdrop="false">
+        ...
+      </div>
+    ```
     h2 Popover Methods & Properties
     p So to create Popover we have to call:
     :code(lang="js")

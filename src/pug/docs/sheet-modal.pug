@@ -240,6 +240,13 @@ block content
                 closeByBackdropClick: false,
               }
             });
+    p If you use auto-initialized sheet modals (e.g. you don't create them via `app.sheet.create`), it is possible to pass all available sheet parameters via `data-` attributes. For example:
+    ```html
+      <!-- Pass parameters as kebab-case data attributes -->
+      <div class="sheet-modal" data-close-on-escape="true" data-swipe-to-close="true">
+        ...
+      </div>
+    ```
     h2 Sheet Methods & Properties
     p So to create Sheet we have to call:
     :code(lang="js")

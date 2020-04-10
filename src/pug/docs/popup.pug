@@ -169,6 +169,13 @@ block content
                 closeByBackdropClick: false,
               }
             });
+    p If you use auto-initialized popups (e.g. you don't create them via `app.popup.create`), it is possible to pass all available popup parameters via `data-` attributes. For example:
+    ```html
+      <!-- Pass parameters as kebab-case data attributes -->
+      <div class="popup" data-close-on-escape="true" data-swipe-to-close="to-bottom">
+        ...
+      </div>
+    ```
     h2 Popup Methods & Properties
     p So to create Popup we have to call:
     :code(lang="js")
