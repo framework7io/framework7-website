@@ -154,6 +154,50 @@ block content
         "--f7-theme-color-tint": "#ff2929"
       }
 
+    .with-device.with-device-inline
+      h2 Generate Color Theme
+      .docs-demo-device.docs-inline-device
+        .docs-demo-device-buttons
+          a(data-theme="ios").active
+            i.f7-icons logo_apple
+          a(data-theme="md")
+            i.f7-icons logo_android
+          a(data-theme="aurora")
+            i.f7-icons device_desktop
+        .docs-demo-device-iframe
+          iframe(width="320", height="548", frameborder="0", scrolling="on", src="/docs-demos/core/color-themes-generate.html")
+          .fade-overlay
+      form.docs-color-form
+        fieldset.docs-color-form-col
+          p
+            b Layout Theme
+          label.docs-color-form-radio
+            input(name="theme" value="light" type="radio" checked)
+            span Light
+          label.docs-color-form-radio
+            input(name="theme" value="dark" type="radio")
+            span Dark
+        fieldset.docs-color-form-col
+          p
+            b Navigation Bars Style
+          label.docs-color-form-radio
+            input(name="bars" value="empty" type="radio" checked)
+            span Empty
+          label.docs-color-form-radio
+            input(name="bars" value="fill" type="radio")
+            span Fill
+        fieldset
+          p
+            b Color
+          p
+            label.docs-color-form-input
+              span HEX Color
+              input(type="text" name="color" placeholder="#ff0000")
+      h4 Generated Styles
+      p Copy following CSS styles to your app's styles:
+      <pre class="docs-color-form-code">
+        <code class="css"><span class="token comment">/*<br>  Change color or navigation bars style to see genearted styles<br>*/</span></code>
+      </pre>
     h2 CSS Variables
     :code(lang="css")
       /*====================
