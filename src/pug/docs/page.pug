@@ -69,6 +69,14 @@ block content
           td page:beforeremove
           td Page Element<span>&lt;div class="page"&gt;</span>
           td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. This event won't be triggered for `keepAlive` routes.
+        tr
+          td page:tabshow
+          td Page Element<span>&lt;div class="page"&gt;</span>
+          td Event will be triggered when page's parent <a href="tabs.html#views-as-tabs">View as Tab</a> becomes visible
+        tr
+          td page:tabhide
+          td Page Element<span>&lt;div class="page"&gt;</span>
+          td Event will be triggered when page's parent <a href="tabs.html#views-as-tabs">View as Tab</a> becomes hidden
     p Lets see how we can use these events. There are two ways to add page event handlers:
     :code(lang="js")
           // Option 1. Using one 'page:init' handler for all pages

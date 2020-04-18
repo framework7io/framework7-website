@@ -124,10 +124,18 @@ block content
     h3 Segmented Layout
     p Segmented control layout is pretty simple, just a `<div>` with a `segmented` class around buttons:
     :code
-          <div class="segmented">
-            <a class="button button-active">Tab 1</a>
-            <a class="button">Tab 2</a>
-          </div>
+      <div class="segmented">
+        <a class="button button-active">Tab 1</a>
+        <a class="button">Tab 2</a>
+      </div>
+    p Segmented "strong" requires additional element to correctly indicate active state:
+    :code
+      <div class="segmented segmented-strong">
+        <a class="button button-active">Tab 1</a>
+        <a class="button">Tab 2</a>
+        <!-- addition element required in segmented strong -->
+        <span class="segmented-highlight"></span>
+      </div>
     h3 Segmented Modifier Classes
     p As well as buttons, segmented also supports few additional classes for styling:
     table.props-table
@@ -231,6 +239,7 @@ block content
                 <button class="button">Button</button>
                 <button class="button">Button</button>
                 <button class="button button-active">Active</button>
+                <span class="segmented-highlight"></span>
               </p>
               <p class="segmented">
                 <button class="button button-outline">Outline</button>

@@ -336,6 +336,9 @@ block content
           td app.theme
           td String with current app theme. Can be `md`, `ios` or `aurora`
         tr
+          td app.darkTheme
+          td Boolean property that indicates whether the dark theme active or not. This property has effect only when `autoDarkTheme` enabled.
+        tr
           td app.data
           td Object with app root data passed on intialization
         tr
@@ -500,11 +503,31 @@ block content
           td connection
           td <span>(isOnline)</span>
           td Event will be fired on network state change
+        tr
+          td darkThemeChange
+          td <span>(isDarkTheme)</span>
+          td Event will be fired on device preferred color scheme change. It has effect only when `autoDarkTheme` enabled
     p And again, most of components that has JavaScript API may extend this list of events like Panel component will also trigger additional events on app instance.
-    p Example:
+    p Examples:
     :code(lang="js")
       app.on('panelOpen', function (panel) {
         console.log('Panel ' + panel.side + ' opened');
+      });
+
+      app.on('connection', function (isOnline) {
+        if (isOnline) {
+          console.log('app is online now')
+        } else {
+          console.log('app is offline now')
+        }
+      });
+
+      app.on('darkThemeChange', function (isDark) {
+        if (isDark) {
+          console.log('color scheme changed to Dark')
+        } else {
+          console.log('color scheme changed to Light')
+        }
       });
 
     h2 CSS Variables

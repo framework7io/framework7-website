@@ -238,6 +238,14 @@ block content
           td tab:hide
           td Tab Element<span>&lt;div class="tab"&gt;</span>
           td Event will be triggered when Tab becomes hidden/inactive
+        tr
+          td page:tabshow
+          td Page Element<span>&lt;div class="page"&gt;</span>
+          td Event will be triggered when page's parent <a href="#views-as-tabs">View as Tab</a> becomes visible
+        tr
+          td page:tabhide
+          td Page Element<span>&lt;div class="page"&gt;</span>
+          td Event will be triggered when page's parent <a href="#views-as-tabs">View as Tab</a> becomes hidden
     h3 App Instance Events
     p There are app instance events as well:
     table.events-table
@@ -258,6 +266,16 @@ block content
           td <span>tabEl</span>
           td app
           td Event will be triggered when Tab becomes hidden/inactive. As an argument event handler receives tab that became hidden
+        tr
+          td pageTabShow
+          td <span>pageEl</span>
+          td app
+          td Event will be triggered when page's parent <a href="#views-as-tabs">View as Tab</a> becomes visible. As an argument event handler receives page element which is a child of the View-Tab that became visible
+        tr
+          td pageTabHide
+          td <span>pageEl</span>
+          td app
+          td Event will be triggered when page's parent <a href="#views-as-tabs">View as Tab</a> becomes hidden. As an argument event handler receives page element which is a child of the View-Tab that became hidden
 
     h2 Routable Tabs
     p Tabs can be routable. What routable tabs means and why is it good?
