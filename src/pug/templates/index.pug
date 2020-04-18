@@ -40,7 +40,7 @@ block content
     .apps.templates
       each app in templates.official
         .app
-          a.app-icon(href=app.url, target="_blank", data-hover-text="Download")
+          a.app-icon(href=app.url, target="_blank", data-hover-text="Source")
             if (app.iconUrl)
               img(src=app.iconUrl.replace('#{cdn}', cdn))
             else if (app.icon)
@@ -55,7 +55,7 @@ block content
             if app.author
               .app-author by <a href="#{app.author.url}" target="_blank">#{app.author.name}</a>
             .app-buttons
-              a(href=app.url, target="_blank") Download
+              a(href=app.url, target="_blank") Source
               if app.previewUrl
                 a(href=app.previewUrl, target="_blank") Preview
             .app-description #{app.description}
@@ -64,7 +64,7 @@ block content
   .apps.templates
     each app in templates.community
       .app
-        a.app-icon(href=app.url, target="_blank", data-hover-text="Download")
+        a.app-icon(href=app.url, target="_blank", data-hover-text="Source")
           if (app.iconUrl)
             img(src=app.iconUrl.replace('#{cdn}', cdn))
           else if (app.icon)
@@ -79,7 +79,7 @@ block content
           if app.author
             .app-author by <a href="#{app.author.url}" target="_blank">#{app.author.name}</a>
           .app-buttons
-            a(href=app.url, target="_blank") Download
+            a(href=app.url, target="_blank") Source
             if app.previewUrl
               a(href=app.previewUrl, target="_blank") Preview
           .app-description #{app.description}

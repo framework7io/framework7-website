@@ -1,6 +1,30 @@
 official:
 community:
 -
+  title: Framework7 iOS App Store
+  iconUrl: "https://f7appstore.netlify.app/static/icons/512x512.png"
+  author:
+    url: https://github.com/nolimits4web/
+    name: Vladimir Kharlampidi
+  url: https://github.com/framework7io/framework7-appstore-react
+  previewUrl: https://f7appstore.netlify.app/
+  description: iOS App Store UI made with Framework7 and React
+  badges:
+  - v5
+  - React
+-
+  title: Framework7 Recipes
+  icon:
+    text: Framework7 Recipes
+    bgColor: '#ee350f'
+    textColor: '#fff'
+  author:
+    url: https://github.com/framework7io/framework7-recipes
+    name: Community
+  url: https://github.com/framework7io/framework7-recipes
+  previewUrl: https://framework7io.github.io/framework7-recipes/
+  description: Framework7 proof of concept templates, layouts and scripts
+-
   title: Telefones Úteis
   iconUrl: "/i/templates/telefones.png"
   author:
