@@ -12000,7 +12000,8 @@
 	    windows: false,
 	    cordova: !!(win.cordova || win.phonegap),
 	    phonegap: !!(win.cordova || win.phonegap),
-	    electron: false
+	    electron: false,
+	    nwjs: false
 	  };
 	  var screenWidth = win.screen.width;
 	  var screenHeight = win.screen.height;
@@ -12014,6 +12015,7 @@
 	  var firefox = ua.indexOf('Gecko/') >= 0 && ua.indexOf('Firefox/') >= 0;
 	  var windows = platform === 'Win32';
 	  var electron = ua.toLowerCase().indexOf('electron') >= 0;
+	  var nwjs = typeof nw !== 'undefined' && typeof process !== 'undefined' && typeof process.versions !== 'undefined' && typeof process.versions.nw !== 'undefined';
 	  var macos = platform === 'MacIntel'; // iPadOs 13 fix
 
 	  if (!ipad && macos && Support.touch && (screenWidth === 1024 && screenHeight === 1366 || // Pro 12.9
@@ -12069,10 +12071,11 @@
 	  device.webview = device.webView;
 	  device.standalone = device.webView; // Desktop
 
-	  device.desktop = !(device.ios || device.android) || electron;
+	  device.desktop = !(device.ios || device.android) || electron || nwjs;
 
 	  if (device.desktop) {
 	    device.electron = electron;
+	    device.nwjs = nwjs;
 	    device.macos = macos;
 	    device.windows = windows;
 
@@ -12785,8 +12788,12 @@
 
 	      if (media === DARK) {
 	        html.classList.add('theme-dark');
+	        app.darkTheme = true;
+	        app.emit('darkThemeChange', true);
 	      } else if (media === LIGHT) {
 	        html.classList.remove('theme-dark');
+	        app.darkTheme = false;
+	        app.emit('darkThemeChange', false);
 	      }
 	    }; // Init
 
@@ -12845,8 +12852,12 @@
 
 	      if (app.mq.dark && app.mq.dark.matches) {
 	        html.classList.add('theme-dark');
+	        app.darkTheme = true;
+	        app.emit('darkThemeChange', true);
 	      } else if (app.mq.light && app.mq.light.matches) {
 	        html.classList.remove('theme-dark');
+	        app.darkTheme = false;
+	        app.emit('darkThemeChange', false);
 	      }
 	    }
 	  }, {
@@ -24814,10 +24825,15 @@
 	        }
 
 	        var popover = $popoverEl[0].f7Modal;
-	        if (!popover) popover = new Popover(app, {
-	          el: $popoverEl,
-	          targetEl: targetEl
-	        });
+	        var data = $popoverEl.dataset();
+
+	        if (!popover) {
+	          popover = new Popover(app, Object.assign({
+	            el: $popoverEl,
+	            targetEl: targetEl
+	          }, data));
+	        }
+
 	        return popover.open(targetEl, animate);
 	      }
 	    });
@@ -28497,6 +28513,13 @@
 	    $oldTabEl.removeClass('tab-active');
 
 	    if (!swiper || swiper && !swiper.animating || swiper && tabRoute) {
+	      if ($oldTabEl.hasClass('view') && $oldTabEl.children('.page').length) {
+	        $oldTabEl.children('.page').each(function (pageIndex, pageEl) {
+	          $(pageEl).trigger('page:tabhide');
+	          app.emit('pageTabHide', pageEl);
+	        });
+	      }
+
 	      $oldTabEl.trigger('tab:hide');
 	      app.emit('tabHide', $oldTabEl[0]);
 	    } // Trigger 'show' event on new tab
@@ -28505,6 +28528,13 @@
 	    $newTabEl.addClass('tab-active');
 
 	    if (!swiper || swiper && !swiper.animating || swiper && tabRoute) {
+	      if ($newTabEl.hasClass('view') && $newTabEl.children('.page').length) {
+	        $newTabEl.children('.page').each(function (pageIndex, pageEl) {
+	          $(pageEl).trigger('page:tabshow');
+	          app.emit('pageTabShow', pageEl);
+	        });
+	      }
+
 	      $newTabEl.trigger('tab:show');
 	      app.emit('tabShow', $newTabEl[0]);
 	    } // Find related link for new tab
@@ -52932,7 +52962,7 @@
 	  // f7-icon, material-icon, command
 	  bold: ['bold', 'format_bold', 'bold'],
 	  italic: ['italic', 'format_italic', 'italic'],
-	  underline: ['underline', 'format_underline', 'underline'],
+	  underline: ['underline', 'format_underlined', 'underline'],
 	  strikeThrough: ['strikethrough', 'strikethrough_s', 'strikeThrough'],
 	  orderedList: ['list_number', 'format_list_numbered', 'insertOrderedList'],
 	  unorderedList: ['list_bullet', 'format_list_bulleted', 'insertUnorderedList'],
@@ -53859,7 +53889,7 @@
 	};
 
 	/**
-	 * Framework7 5.5.5
+	 * Framework7 5.6.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -53867,7 +53897,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: April 10, 2020
+	 * Released on: April 18, 2020
 	 */
 
 
@@ -58491,6 +58521,7 @@
 	          name = props.name,
 	          value = props.value,
 	          defaultValue = props.defaultValue,
+	          inputmode = props.inputmode,
 	          placeholder = props.placeholder,
 	          id = props.id,
 	          inputId = props.inputId,
@@ -58574,6 +58605,7 @@
 	            name: name,
 	            type: needsType ? inputType : undefined,
 	            placeholder: placeholder,
+	            inputMode: inputmode,
 	            id: inputId,
 	            size: size,
 	            accept: accept,
@@ -58852,6 +58884,7 @@
 	  name: String,
 	  value: [String, Number, Array, Date, Object],
 	  defaultValue: [String, Number, Array],
+	  inputmode: String,
 	  placeholder: String,
 	  id: [String, Number],
 	  className: String,
@@ -59798,6 +59831,7 @@
 	          readonly = props.readonly,
 	          required = props.required,
 	          disabled = props.disabled,
+	          inputmode = props.inputmode,
 	          placeholder = props.placeholder,
 	          inputId = props.inputId,
 	          size = props.size,
@@ -59875,6 +59909,7 @@
 	            name: name,
 	            type: needsType ? inputType : undefined,
 	            placeholder: placeholder,
+	            inputMode: inputmode,
 	            id: inputId,
 	            size: size,
 	            accept: accept,
@@ -60183,6 +60218,7 @@
 	  name: String,
 	  value: [String, Number, Array, Date, Object],
 	  defaultValue: [String, Number, Array],
+	  inputmode: String,
 	  readonly: Boolean,
 	  required: Boolean,
 	  disabled: Boolean,
@@ -60802,6 +60838,8 @@
 	          header = props.header,
 	          footer = props.footer,
 	          link = props.link,
+	          tabLink = props.tabLink,
+	          tabLinkActive = props.tabLinkActive,
 	          href = props.href,
 	          target = props.target,
 	          after = props.after,
@@ -60869,11 +60907,14 @@
 	        if (link || href || accordionItem || smartSelect) {
 	          var linkAttrs = Object.assign({
 	            href: link === true ? '' : link || href,
-	            target: target
+	            target: target,
+	            'data-tab': Utils$1.isStringProp(tabLink) && tabLink || undefined
 	          }, Mixins.linkRouterAttrs(props), {}, Mixins.linkActionsAttrs(props));
 	          var linkClasses = Utils$1.classNames({
 	            'item-link': true,
-	            'smart-select': smartSelect
+	            'smart-select': smartSelect,
+	            'tab-link': tabLink || tabLink === '',
+	            'tab-link-active': tabLinkActive
 	          }, Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
 	          linkEl = react.createElement('a', Object.assign({
 	            ref: function ref(__reactNode) {
@@ -61197,6 +61238,8 @@
 	  tooltipTrigger: String,
 	  link: [Boolean, String],
 	  target: String,
+	  tabLink: [Boolean, String],
+	  tabLinkActive: Boolean,
 	  after: [String, Number],
 	  badge: [String, Number],
 	  badgeColor: String,
@@ -63420,8 +63463,8 @@
 	      }
 	    }
 	  }, {
-	    key: "componentWillUpdate",
-	    value: function componentWillUpdate() {
+	    key: "getSnapshotBeforeUpdate",
+	    value: function getSnapshotBeforeUpdate() {
 	      var self = this;
 	      if (!self.props.init) return;
 	      var el = self.refs.el;
@@ -64555,7 +64598,7 @@
 	    }();
 
 	    (function () {
-	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageBeforeUnmount', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack', 'onPageNavbarLargeCollapsed', 'onPageNavbarLargeExpanded', 'onCardOpened', 'onCardClose']);
+	      Utils$1.bindMethods(_assertThisInitialized(_this), ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageBeforeUnmount', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack', 'onPageNavbarLargeCollapsed', 'onPageNavbarLargeExpanded', 'onCardOpened', 'onCardClose', 'onPageTabShow', 'onPageTabHide']);
 	    })();
 
 	    return _this;
@@ -64804,6 +64847,18 @@
 	      });
 	    }
 	  }, {
+	    key: "onPageTabShow",
+	    value: function onPageTabShow(pageEl) {
+	      if (this.eventTargetEl !== pageEl) return;
+	      this.dispatchEvent('page:tabshow pageTabShow');
+	    }
+	  }, {
+	    key: "onPageTabHide",
+	    value: function onPageTabHide(pageEl) {
+	      if (this.eventTargetEl !== pageEl) return;
+	      this.dispatchEvent('page:tabhide pageTabHide');
+	    }
+	  }, {
 	    key: "render",
 	    value: function render() {
 	      var _this2 = this;
@@ -64972,6 +65027,8 @@
 	      f7.off('pageNavbarLargeExpanded', self.onPageNavbarLargeExpanded);
 	      f7.off('cardOpened', self.onCardOpened);
 	      f7.off('cardClose', self.onCardClose);
+	      f7.off('pageTabShow', self.onPageTabShow);
+	      f7.off('pageTabHide', self.onPageTabHide);
 	      self.eventTargetEl = null;
 	      delete self.eventTargetEl;
 	    }
@@ -65001,6 +65058,8 @@
 	        f7.on('pageNavbarLargeExpanded', self.onPageNavbarLargeExpanded);
 	        f7.on('cardOpened', self.onCardOpened);
 	        f7.on('cardClose', self.onCardClose);
+	        f7.on('pageTabShow', self.onPageTabShow);
+	        f7.on('pageTabHide', self.onPageTabHide);
 	      });
 	    }
 	  }, {
@@ -66721,7 +66780,9 @@
 	        id: id,
 	        style: style,
 	        className: classNames
-	      }, this.slots['default']);
+	      }, this.slots['default'], (strong || strongIos || strongMd || strongAurora) && react.createElement('span', {
+	        className: 'segmented-highlight'
+	      }));
 	    }
 	  }, {
 	    key: "slots",
@@ -69387,7 +69448,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.5.5
+	 * Framework7 React 5.6.0
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -69395,7 +69456,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: April 10, 2020
+	 * Released on: April 18, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
@@ -70964,223 +71025,267 @@
 	  }))));
 	});
 
-	var Buttons = (function () {
-	  return /*#__PURE__*/react.createElement(Page, null, /*#__PURE__*/react.createElement(Navbar$2, {
-	    title: "Buttons",
-	    backLink: "Back"
-	  }), /*#__PURE__*/react.createElement(BlockTitle, null, "Usual Buttons"), /*#__PURE__*/react.createElement(Block, {
-	    strong: true
-	  }, /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, null, "Button")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, null, "Button")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    round: true
-	  }, "Round")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Fill Buttons"), /*#__PURE__*/react.createElement(Block, {
-	    strong: true
-	  }, /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    fill: true
-	  }, "Button")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    fill: true
-	  }, "Button")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    fill: true,
-	    round: true
-	  }, "Round")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Outline Buttons"), /*#__PURE__*/react.createElement(Block, {
-	    strong: true
-	  }, /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    outline: true
-	  }, "Button")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    outline: true
-	  }, "Button")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    outline: true,
-	    round: true
-	  }, "Round")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Raised Buttons"), /*#__PURE__*/react.createElement(Block, {
-	    strong: true
-	  }, /*#__PURE__*/react.createElement(Row, {
-	    tag: "p"
-	  }, /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    raised: true
-	  }, "Button")), /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    raised: true,
-	    fill: true
-	  }, "Fill")), /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    raised: true,
-	    outline: true
-	  }, "Outline"))), /*#__PURE__*/react.createElement(Row, {
-	    tag: "p"
-	  }, /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    raised: true,
-	    round: true
-	  }, "Round")), /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    raised: true,
-	    fill: true,
-	    round: true
-	  }, "Fill")), /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    raised: true,
-	    outline: true,
-	    round: true
-	  }, "Outline")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Segmented"), /*#__PURE__*/react.createElement(Block, {
-	    strong: true
-	  }, /*#__PURE__*/react.createElement(Segmented, {
-	    tag: "p"
-	  }, /*#__PURE__*/react.createElement(Button, null, "Button"), /*#__PURE__*/react.createElement(Button, null, "Button"), /*#__PURE__*/react.createElement(Button, {
-	    active: true
-	  }, "Active")), /*#__PURE__*/react.createElement(Segmented, {
-	    strong: true,
-	    tag: "p"
-	  }, /*#__PURE__*/react.createElement(Button, null, "Button"), /*#__PURE__*/react.createElement(Button, null, "Button"), /*#__PURE__*/react.createElement(Button, {
-	    active: true
-	  }, "Active")), /*#__PURE__*/react.createElement(Segmented, {
-	    raised: true,
-	    tag: "p"
-	  }, /*#__PURE__*/react.createElement(Button, null, "Button"), /*#__PURE__*/react.createElement(Button, null, "Button"), /*#__PURE__*/react.createElement(Button, {
-	    active: true
-	  }, "Active")), /*#__PURE__*/react.createElement(Segmented, {
-	    tag: "p"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    outline: true
-	  }, "Outline"), /*#__PURE__*/react.createElement(Button, {
-	    outline: true
-	  }, "Outline"), /*#__PURE__*/react.createElement(Button, {
-	    outline: true,
-	    active: true
-	  }, "Active")), /*#__PURE__*/react.createElement(Segmented, {
-	    raised: true,
-	    round: true,
-	    tag: "p"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    round: true
-	  }, "Button"), /*#__PURE__*/react.createElement(Button, {
-	    round: true
-	  }, "Button"), /*#__PURE__*/react.createElement(Button, {
-	    round: true,
-	    active: true
-	  }, "Active")), /*#__PURE__*/react.createElement(Segmented, {
-	    round: true,
-	    tag: "p"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    round: true,
-	    outline: true
-	  }, "Outline"), /*#__PURE__*/react.createElement(Button, {
-	    round: true,
-	    outline: true
-	  }, "Outline"), /*#__PURE__*/react.createElement(Button, {
-	    round: true,
-	    outline: true,
-	    active: true
-	  }, "Active"))), /*#__PURE__*/react.createElement(BlockTitle, null, "Large Buttons"), /*#__PURE__*/react.createElement(Block, {
-	    strong: true
-	  }, /*#__PURE__*/react.createElement(Row, {
-	    tag: "p"
-	  }, /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    large: true
-	  }, "Button")), /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    large: true,
-	    fill: true
-	  }, "Fill"))), /*#__PURE__*/react.createElement(Row, {
-	    tag: "p"
-	  }, /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    large: true,
-	    raised: true
-	  }, "Raised")), /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    large: true,
-	    raised: true,
-	    fill: true
-	  }, "Raised Fill")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Small Buttons"), /*#__PURE__*/react.createElement(Block, {
-	    strong: true
-	  }, /*#__PURE__*/react.createElement(Row, {
-	    tag: "p"
-	  }, /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    large: true,
-	    small: true
-	  }, "Button")), /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    large: true,
-	    small: true,
-	    outline: true
-	  }, "Outline")), /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    large: true,
-	    small: true,
-	    fill: true
-	  }, "Fill"))), /*#__PURE__*/react.createElement(Row, {
-	    tag: "p"
-	  }, /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    large: true,
-	    small: true,
-	    round: true
-	  }, "Button")), /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    large: true,
-	    small: true,
-	    outline: true,
-	    round: true
-	  }, "Outline")), /*#__PURE__*/react.createElement(Col, {
-	    tag: "span"
-	  }, /*#__PURE__*/react.createElement(Button, {
-	    large: true,
-	    small: true,
-	    fill: true,
-	    round: true
-	  }, "Fill")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Color Buttons"), /*#__PURE__*/react.createElement(Block, {
-	    strong: true
-	  }, /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    color: "red"
-	  }, "Red")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    color: "green"
-	  }, "Green")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    color: "blue"
-	  }, "Blue")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Color Fill Buttons"), /*#__PURE__*/react.createElement(Block, {
-	    strong: true
-	  }, /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    fill: true,
-	    color: "red"
-	  }, "Red")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    fill: true,
-	    color: "green"
-	  }, "Green")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
-	    fill: true,
-	    color: "blue"
-	  }, "Blue")))), /*#__PURE__*/react.createElement(BlockTitle, null, "List-Block Buttons"), /*#__PURE__*/react.createElement(List, {
-	    inset: true
-	  }, /*#__PURE__*/react.createElement(ListButton, {
-	    title: "List Button 1"
-	  }), /*#__PURE__*/react.createElement(ListButton, {
-	    title: "List Button 2"
-	  }), /*#__PURE__*/react.createElement(ListButton, {
-	    title: "List Button 3"
-	  })), /*#__PURE__*/react.createElement(List, {
-	    inset: true
-	  }, /*#__PURE__*/react.createElement(ListButton, {
-	    title: "Large Red Button",
-	    color: "red"
-	  })));
-	});
-
 	var _default$4 = /*#__PURE__*/function (_React$Component) {
+	  _inherits(_default, _React$Component);
+
+	  var _super = _createSuper(_default);
+
+	  function _default() {
+	    var _this;
+
+	    _classCallCheck(this, _default);
+
+	    _this = _super.call(this);
+	    _this.state = {
+	      activeStrongButton: 0
+	    };
+	    return _this;
+	  }
+
+	  _createClass(_default, [{
+	    key: "render",
+	    value: function render() {
+	      var _this2 = this;
+
+	      return /*#__PURE__*/react.createElement(Page, null, /*#__PURE__*/react.createElement(Navbar$2, {
+	        title: "Buttons",
+	        backLink: "Back"
+	      }), /*#__PURE__*/react.createElement(BlockTitle, null, "Usual Buttons"), /*#__PURE__*/react.createElement(Block, {
+	        strong: true
+	      }, /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, null, "Button")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, null, "Button")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        round: true
+	      }, "Round")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Fill Buttons"), /*#__PURE__*/react.createElement(Block, {
+	        strong: true
+	      }, /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        fill: true
+	      }, "Button")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        fill: true
+	      }, "Button")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        fill: true,
+	        round: true
+	      }, "Round")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Outline Buttons"), /*#__PURE__*/react.createElement(Block, {
+	        strong: true
+	      }, /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        outline: true
+	      }, "Button")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        outline: true
+	      }, "Button")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        outline: true,
+	        round: true
+	      }, "Round")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Raised Buttons"), /*#__PURE__*/react.createElement(Block, {
+	        strong: true
+	      }, /*#__PURE__*/react.createElement(Row, {
+	        tag: "p"
+	      }, /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        raised: true
+	      }, "Button")), /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        raised: true,
+	        fill: true
+	      }, "Fill")), /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        raised: true,
+	        outline: true
+	      }, "Outline"))), /*#__PURE__*/react.createElement(Row, {
+	        tag: "p"
+	      }, /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        raised: true,
+	        round: true
+	      }, "Round")), /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        raised: true,
+	        fill: true,
+	        round: true
+	      }, "Fill")), /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        raised: true,
+	        outline: true,
+	        round: true
+	      }, "Outline")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Segmented"), /*#__PURE__*/react.createElement(Block, {
+	        strong: true
+	      }, /*#__PURE__*/react.createElement(Segmented, {
+	        tag: "p"
+	      }, /*#__PURE__*/react.createElement(Button, null, "Button"), /*#__PURE__*/react.createElement(Button, null, "Button"), /*#__PURE__*/react.createElement(Button, {
+	        active: true
+	      }, "Active")), /*#__PURE__*/react.createElement(Segmented, {
+	        strong: true,
+	        tag: "p"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        active: this.state.activeStrongButton === 0,
+	        onClick: function onClick() {
+	          return _this2.setState({
+	            activeStrongButton: 0
+	          });
+	        }
+	      }, "Button"), /*#__PURE__*/react.createElement(Button, {
+	        active: this.state.activeStrongButton === 1,
+	        onClick: function onClick() {
+	          return _this2.setState({
+	            activeStrongButton: 1
+	          });
+	        }
+	      }, "Button"), /*#__PURE__*/react.createElement(Button, {
+	        active: this.state.activeStrongButton === 2,
+	        onClick: function onClick() {
+	          return _this2.setState({
+	            activeStrongButton: 2
+	          });
+	        }
+	      }, "Button")), /*#__PURE__*/react.createElement(Segmented, {
+	        raised: true,
+	        tag: "p"
+	      }, /*#__PURE__*/react.createElement(Button, null, "Button"), /*#__PURE__*/react.createElement(Button, null, "Button"), /*#__PURE__*/react.createElement(Button, {
+	        active: true
+	      }, "Active")), /*#__PURE__*/react.createElement(Segmented, {
+	        tag: "p"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        outline: true
+	      }, "Outline"), /*#__PURE__*/react.createElement(Button, {
+	        outline: true
+	      }, "Outline"), /*#__PURE__*/react.createElement(Button, {
+	        outline: true,
+	        active: true
+	      }, "Active")), /*#__PURE__*/react.createElement(Segmented, {
+	        raised: true,
+	        round: true,
+	        tag: "p"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        round: true
+	      }, "Button"), /*#__PURE__*/react.createElement(Button, {
+	        round: true
+	      }, "Button"), /*#__PURE__*/react.createElement(Button, {
+	        round: true,
+	        active: true
+	      }, "Active")), /*#__PURE__*/react.createElement(Segmented, {
+	        round: true,
+	        tag: "p"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        round: true,
+	        outline: true
+	      }, "Outline"), /*#__PURE__*/react.createElement(Button, {
+	        round: true,
+	        outline: true
+	      }, "Outline"), /*#__PURE__*/react.createElement(Button, {
+	        round: true,
+	        outline: true,
+	        active: true
+	      }, "Active"))), /*#__PURE__*/react.createElement(BlockTitle, null, "Large Buttons"), /*#__PURE__*/react.createElement(Block, {
+	        strong: true
+	      }, /*#__PURE__*/react.createElement(Row, {
+	        tag: "p"
+	      }, /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        large: true
+	      }, "Button")), /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        large: true,
+	        fill: true
+	      }, "Fill"))), /*#__PURE__*/react.createElement(Row, {
+	        tag: "p"
+	      }, /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        large: true,
+	        raised: true
+	      }, "Raised")), /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        large: true,
+	        raised: true,
+	        fill: true
+	      }, "Raised Fill")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Small Buttons"), /*#__PURE__*/react.createElement(Block, {
+	        strong: true
+	      }, /*#__PURE__*/react.createElement(Row, {
+	        tag: "p"
+	      }, /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        large: true,
+	        small: true
+	      }, "Button")), /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        large: true,
+	        small: true,
+	        outline: true
+	      }, "Outline")), /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        large: true,
+	        small: true,
+	        fill: true
+	      }, "Fill"))), /*#__PURE__*/react.createElement(Row, {
+	        tag: "p"
+	      }, /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        large: true,
+	        small: true,
+	        round: true
+	      }, "Button")), /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        large: true,
+	        small: true,
+	        outline: true,
+	        round: true
+	      }, "Outline")), /*#__PURE__*/react.createElement(Col, {
+	        tag: "span"
+	      }, /*#__PURE__*/react.createElement(Button, {
+	        large: true,
+	        small: true,
+	        fill: true,
+	        round: true
+	      }, "Fill")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Color Buttons"), /*#__PURE__*/react.createElement(Block, {
+	        strong: true
+	      }, /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        color: "red"
+	      }, "Red")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        color: "green"
+	      }, "Green")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        color: "blue"
+	      }, "Blue")))), /*#__PURE__*/react.createElement(BlockTitle, null, "Color Fill Buttons"), /*#__PURE__*/react.createElement(Block, {
+	        strong: true
+	      }, /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        fill: true,
+	        color: "red"
+	      }, "Red")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        fill: true,
+	        color: "green"
+	      }, "Green")), /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Button, {
+	        fill: true,
+	        color: "blue"
+	      }, "Blue")))), /*#__PURE__*/react.createElement(BlockTitle, null, "List-Block Buttons"), /*#__PURE__*/react.createElement(List, {
+	        inset: true
+	      }, /*#__PURE__*/react.createElement(ListButton, {
+	        title: "List Button 1"
+	      }), /*#__PURE__*/react.createElement(ListButton, {
+	        title: "List Button 2"
+	      }), /*#__PURE__*/react.createElement(ListButton, {
+	        title: "List Button 3"
+	      })), /*#__PURE__*/react.createElement(List, {
+	        inset: true
+	      }, /*#__PURE__*/react.createElement(ListButton, {
+	        title: "Large Red Button",
+	        color: "red"
+	      })));
+	    }
+	  }]);
+
+	  return _default;
+	}(react.Component);
+
+	var _default$5 = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -71320,7 +71425,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$5 = /*#__PURE__*/function (_React$Component) {
+	var _default$6 = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -71743,7 +71848,7 @@
 	  }, "Close")))))));
 	});
 
-	var _default$6 = /*#__PURE__*/function (_React$Component) {
+	var _default$7 = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -71892,7 +71997,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$7 = /*#__PURE__*/function (_React$Component) {
+	var _default$8 = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -72089,7 +72194,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$8 = /*#__PURE__*/function (_React$Component) {
+	var _default$9 = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -73329,7 +73434,7 @@
 	  }, "4.3")))))));
 	});
 
-	var _default$9 = /*#__PURE__*/function (_React$Component) {
+	var _default$a = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -73833,7 +73938,7 @@
 	  })));
 	});
 
-	var _default$a = /*#__PURE__*/function (_React$Component) {
+	var _default$b = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -74227,7 +74332,7 @@
 	  })))));
 	});
 
-	var _default$b = /*#__PURE__*/function (_React$Component) {
+	var _default$c = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -75226,7 +75331,7 @@
 	  }, /*#__PURE__*/react.createElement(ListItemRow, null, /*#__PURE__*/react.createElement(ListItemCell, null, "Cell 1-1"), /*#__PURE__*/react.createElement(ListItemCell, null, "Cell 1-2"), /*#__PURE__*/react.createElement(ListItemCell, null, "Cell 1-3")), /*#__PURE__*/react.createElement(ListItemRow, null, /*#__PURE__*/react.createElement(ListItemCell, null, "Cell 2-1"), /*#__PURE__*/react.createElement(ListItemCell, null, "Cell 2-2")), /*#__PURE__*/react.createElement(ListItemRow, null, /*#__PURE__*/react.createElement(ListItemCell, null, "Cell 3-1"), /*#__PURE__*/react.createElement(ListItemCell, null, /*#__PURE__*/react.createElement(ListItemRow, null, "Cell 3-2"), /*#__PURE__*/react.createElement(ListItemRow, null, "Cell 3-3"))))))));
 	});
 
-	var _default$c = /*#__PURE__*/function (_React$Component) {
+	var _default$d = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -75523,7 +75628,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$d = /*#__PURE__*/function (_React$Component) {
+	var _default$e = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -75617,7 +75722,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$e = /*#__PURE__*/function (_React$Component) {
+	var _default$f = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -75686,7 +75791,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$f = /*#__PURE__*/function (_React$Component) {
+	var _default$g = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -75953,7 +76058,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$g = /*#__PURE__*/function (_React$Component) {
+	var _default$h = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -76274,7 +76379,7 @@
 	  }, /*#__PURE__*/react.createElement("p", null, "Navbar will be hidden if you scroll bottom")), /*#__PURE__*/react.createElement(Block, null, /*#__PURE__*/react.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex."), /*#__PURE__*/react.createElement("p", null, "Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error."), /*#__PURE__*/react.createElement("p", null, "Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio."), /*#__PURE__*/react.createElement("p", null, "Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita."), /*#__PURE__*/react.createElement("p", null, "Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint."), /*#__PURE__*/react.createElement("p", null, "Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!"), /*#__PURE__*/react.createElement("p", null, "Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid."), /*#__PURE__*/react.createElement("p", null, "Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!"), /*#__PURE__*/react.createElement("p", null, "Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!"), /*#__PURE__*/react.createElement("p", null, "Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?"), /*#__PURE__*/react.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex."), /*#__PURE__*/react.createElement("p", null, "Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error."), /*#__PURE__*/react.createElement("p", null, "Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio."), /*#__PURE__*/react.createElement("p", null, "Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita."), /*#__PURE__*/react.createElement("p", null, "Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint."), /*#__PURE__*/react.createElement("p", null, "Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!"), /*#__PURE__*/react.createElement("p", null, "Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid."), /*#__PURE__*/react.createElement("p", null, "Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!"), /*#__PURE__*/react.createElement("p", null, "Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!"), /*#__PURE__*/react.createElement("p", null, "Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?"), /*#__PURE__*/react.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex."), /*#__PURE__*/react.createElement("p", null, "Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error."), /*#__PURE__*/react.createElement("p", null, "Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio."), /*#__PURE__*/react.createElement("p", null, "Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita."), /*#__PURE__*/react.createElement("p", null, "Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint."), /*#__PURE__*/react.createElement("p", null, "Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!"), /*#__PURE__*/react.createElement("p", null, "Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid."), /*#__PURE__*/react.createElement("p", null, "Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!"), /*#__PURE__*/react.createElement("p", null, "Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!"), /*#__PURE__*/react.createElement("p", null, "Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")));
 	});
 
-	var _default$h = /*#__PURE__*/function (_React$Component) {
+	var _default$i = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -76426,7 +76531,7 @@
 	  }, "Open right panel"))));
 	});
 
-	var _default$i = /*#__PURE__*/function (_React$Component) {
+	var _default$j = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -76542,7 +76647,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$j = /*#__PURE__*/function (_React$Component) {
+	var _default$k = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -76768,7 +76873,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$k = /*#__PURE__*/function (_React$Component) {
+	var _default$l = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -76937,7 +77042,7 @@
 	  }))));
 	});
 
-	var _default$l = /*#__PURE__*/function (_React$Component) {
+	var _default$m = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -77033,7 +77138,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$m = /*#__PURE__*/function (_React$Component) {
+	var _default$n = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -77201,7 +77306,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$n = /*#__PURE__*/function (_React$Component) {
+	var _default$o = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -77356,7 +77461,7 @@
 	  })));
 	});
 
-	var _default$o = /*#__PURE__*/function (_React$Component) {
+	var _default$p = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -77581,7 +77686,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$p = /*#__PURE__*/function (_React$Component) {
+	var _default$q = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -77697,7 +77802,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$q = /*#__PURE__*/function (_React$Component) {
+	var _default$r = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -77818,7 +77923,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$r = /*#__PURE__*/function (_React$Component) {
+	var _default$s = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -78026,7 +78131,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$s = /*#__PURE__*/function (_React$Component) {
+	var _default$t = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -78428,7 +78533,7 @@
 	  }))));
 	});
 
-	var _default$t = /*#__PURE__*/function (_React$Component) {
+	var _default$u = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -79188,7 +79293,7 @@
 	  }, /*#__PURE__*/react.createElement(SwiperSlide, null, "Slide 1"), /*#__PURE__*/react.createElement(SwiperSlide, null, "Slide 2"), /*#__PURE__*/react.createElement(SwiperSlide, null, "Slide 3"), /*#__PURE__*/react.createElement(SwiperSlide, null, "Slide 4"), /*#__PURE__*/react.createElement(SwiperSlide, null, "Slide 5"), /*#__PURE__*/react.createElement(SwiperSlide, null, "Slide 6"), /*#__PURE__*/react.createElement(SwiperSlide, null, "Slide 7"), /*#__PURE__*/react.createElement(SwiperSlide, null, "Slide 8"), /*#__PURE__*/react.createElement(SwiperSlide, null, "Slide 9"), /*#__PURE__*/react.createElement(SwiperSlide, null, "Slide 10")));
 	});
 
-	var _default$u = /*#__PURE__*/function (_React$Component) {
+	var _default$v = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -79516,7 +79621,7 @@
 	  }))));
 	});
 
-	var _default$v = /*#__PURE__*/function (_React$Component) {
+	var _default$w = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -79990,7 +80095,7 @@
 	  })));
 	});
 
-	var _default$w = /*#__PURE__*/function (_React$Component) {
+	var _default$x = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -80084,7 +80189,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$x = /*#__PURE__*/function (_React$Component) {
+	var _default$y = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -80317,7 +80422,7 @@
 	  }))));
 	});
 
-	var _default$y = /*#__PURE__*/function (_React$Component) {
+	var _default$z = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -80377,7 +80482,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$z = /*#__PURE__*/function (_React$Component) {
+	var _default$A = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -80446,7 +80551,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$A = /*#__PURE__*/function (_React$Component) {
+	var _default$B = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -80527,7 +80632,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$B = /*#__PURE__*/function (_React$Component) {
+	var _default$C = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -80606,7 +80711,7 @@
 	  }, /*#__PURE__*/react.createElement("p", null, "Toolbar will be hidden if you scroll bottom")), /*#__PURE__*/react.createElement(Block, null, /*#__PURE__*/react.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex."), /*#__PURE__*/react.createElement("p", null, "Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error."), /*#__PURE__*/react.createElement("p", null, "Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio."), /*#__PURE__*/react.createElement("p", null, "Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita."), /*#__PURE__*/react.createElement("p", null, "Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint."), /*#__PURE__*/react.createElement("p", null, "Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!"), /*#__PURE__*/react.createElement("p", null, "Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid."), /*#__PURE__*/react.createElement("p", null, "Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!"), /*#__PURE__*/react.createElement("p", null, "Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!"), /*#__PURE__*/react.createElement("p", null, "Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?"), /*#__PURE__*/react.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex."), /*#__PURE__*/react.createElement("p", null, "Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error."), /*#__PURE__*/react.createElement("p", null, "Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio."), /*#__PURE__*/react.createElement("p", null, "Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita."), /*#__PURE__*/react.createElement("p", null, "Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint."), /*#__PURE__*/react.createElement("p", null, "Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!"), /*#__PURE__*/react.createElement("p", null, "Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid."), /*#__PURE__*/react.createElement("p", null, "Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!"), /*#__PURE__*/react.createElement("p", null, "Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!"), /*#__PURE__*/react.createElement("p", null, "Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?"), /*#__PURE__*/react.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex."), /*#__PURE__*/react.createElement("p", null, "Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error."), /*#__PURE__*/react.createElement("p", null, "Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio."), /*#__PURE__*/react.createElement("p", null, "Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita."), /*#__PURE__*/react.createElement("p", null, "Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint."), /*#__PURE__*/react.createElement("p", null, "Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!"), /*#__PURE__*/react.createElement("p", null, "Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid."), /*#__PURE__*/react.createElement("p", null, "Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!"), /*#__PURE__*/react.createElement("p", null, "Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!"), /*#__PURE__*/react.createElement("p", null, "Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")));
 	});
 
-	var _default$C = /*#__PURE__*/function (_React$Component) {
+	var _default$D = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -82395,7 +82500,7 @@
 	  }, "Task 1")))))));
 	});
 
-	var _default$D = /*#__PURE__*/function (_React$Component) {
+	var _default$E = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -82769,7 +82874,7 @@
 	  return _default;
 	}(react.Component);
 
-	var _default$E = /*#__PURE__*/function (_React$Component) {
+	var _default$F = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -82870,7 +82975,7 @@
 	var globalCustomColor = '';
 	var globalCustomProperties = '';
 
-	var _default$F = /*#__PURE__*/function (_React$Component) {
+	var _default$G = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -83205,7 +83310,7 @@
 	  }, "Detail Page 3")));
 	});
 
-	var _default$G = /*#__PURE__*/function (_React$Component) {
+	var _default$H = /*#__PURE__*/function (_React$Component) {
 	  _inherits(_default, _React$Component);
 
 	  var _super = _createSuper(_default);
@@ -83281,13 +83386,13 @@
 	  component: Badge$1
 	}, {
 	  path: '/buttons/',
-	  component: Buttons
-	}, {
-	  path: '/calendar/',
 	  component: _default$4
 	}, {
-	  path: '/calendar-page/',
+	  path: '/calendar/',
 	  component: _default$5
+	}, {
+	  path: '/calendar-page/',
+	  component: _default$6
 	}, {
 	  path: '/cards/',
 	  component: Cards
@@ -83296,13 +83401,13 @@
 	  component: CardsExpandable
 	}, {
 	  path: '/checkbox/',
-	  component: _default$6
-	}, {
-	  path: '/chips/',
 	  component: _default$7
 	}, {
-	  path: '/color-picker/',
+	  path: '/chips/',
 	  component: _default$8
+	}, {
+	  path: '/color-picker/',
+	  component: _default$9
 	}, {
 	  path: '/contacts-list/',
 	  component: ContactsList$1
@@ -83314,7 +83419,7 @@
 	  component: DataTable$2
 	}, {
 	  path: '/dialog/',
-	  component: _default$9
+	  component: _default$a
 	}, {
 	  path: '/elevation/',
 	  component: Elevation$1
@@ -83329,7 +83434,7 @@
 	  component: FormStorage$1
 	}, {
 	  path: '/gauge/',
-	  component: _default$a
+	  component: _default$b
 	}, {
 	  path: '/grid/',
 	  component: Grid$2
@@ -83338,7 +83443,7 @@
 	  component: Icons
 	}, {
 	  path: '/infinite-scroll/',
-	  component: _default$b
+	  component: _default$c
 	}, {
 	  path: '/inputs/',
 	  component: Inputs
@@ -83350,19 +83455,19 @@
 	  component: List$1
 	}, {
 	  path: '/list-index/',
-	  component: _default$c
-	}, {
-	  path: '/login-screen/',
 	  component: _default$d
 	}, {
-	  path: '/login-screen-page/',
+	  path: '/login-screen/',
 	  component: _default$e
 	}, {
-	  path: '/menu/',
+	  path: '/login-screen-page/',
 	  component: _default$f
 	}, {
-	  path: '/messages/',
+	  path: '/menu/',
 	  component: _default$g
+	}, {
+	  path: '/messages/',
+	  component: _default$h
 	}, {
 	  path: '/navbar/',
 	  component: Navbar$3
@@ -83371,49 +83476,49 @@
 	  component: NavbarHideScroll
 	}, {
 	  path: '/notifications/',
-	  component: _default$h
+	  component: _default$i
 	}, {
 	  path: '/panel/',
 	  component: Panel$3
 	}, {
 	  path: '/photo-browser/',
-	  component: _default$i
-	}, {
-	  path: '/picker/',
 	  component: _default$j
 	}, {
-	  path: '/popup/',
+	  path: '/picker/',
 	  component: _default$k
+	}, {
+	  path: '/popup/',
+	  component: _default$l
 	}, {
 	  path: '/popover/',
 	  component: Popover$3
 	}, {
 	  path: '/preloader/',
-	  component: _default$l
-	}, {
-	  path: '/progressbar/',
 	  component: _default$m
 	}, {
-	  path: '/pull-to-refresh/',
+	  path: '/progressbar/',
 	  component: _default$n
+	}, {
+	  path: '/pull-to-refresh/',
+	  component: _default$o
 	}, {
 	  path: '/radio/',
 	  component: Radio$2
 	}, {
 	  path: '/range/',
-	  component: _default$o
-	}, {
-	  path: '/searchbar/',
 	  component: _default$p
 	}, {
-	  path: '/searchbar-expandable/',
+	  path: '/searchbar/',
 	  component: _default$q
 	}, {
-	  path: '/sheet-modal/',
+	  path: '/searchbar-expandable/',
 	  component: _default$r
 	}, {
-	  path: '/skeleton/',
+	  path: '/sheet-modal/',
 	  component: _default$s
+	}, {
+	  path: '/skeleton/',
+	  component: _default$t
 	}, {
 	  path: '/smart-select/',
 	  component: SmartSelect$2
@@ -83422,7 +83527,7 @@
 	  component: Sortable$2
 	}, {
 	  path: '/stepper/',
-	  component: _default$t
+	  component: _default$u
 	}, {
 	  path: '/subnavbar/',
 	  component: Subnavbar$2
@@ -83467,7 +83572,7 @@
 	    component: SwiperScrollbar
 	  }, {
 	    path: 'swiper-gallery/',
-	    component: _default$u
+	    component: _default$v
 	  }, {
 	    path: 'swiper-custom-controls/',
 	    component: SwiperCustomControls
@@ -83489,7 +83594,7 @@
 	  }]
 	}, {
 	  path: '/swipeout/',
-	  component: _default$v
+	  component: _default$w
 	}, {
 	  path: '/tabs/',
 	  component: Tabs$2
@@ -83520,32 +83625,32 @@
 	  }]
 	}, {
 	  path: '/text-editor/',
-	  component: _default$w
+	  component: _default$x
 	}, {
 	  path: '/toast/',
-	  component: _default$x
+	  component: _default$y
 	}, {
 	  path: '/toggle/',
 	  component: Toggle$3
 	}, {
 	  path: '/toolbar-tabbar/',
-	  component: _default$y,
+	  component: _default$z,
 	  routes: [{
 	    path: 'tabbar/',
-	    component: _default$z
-	  }, {
-	    path: 'tabbar-labels/',
 	    component: _default$A
 	  }, {
-	    path: 'tabbar-scrollable/',
+	    path: 'tabbar-labels/',
 	    component: _default$B
+	  }, {
+	    path: 'tabbar-scrollable/',
+	    component: _default$C
 	  }, {
 	    path: 'toolbar-hide-scroll/',
 	    component: ToolbarHideScroll
 	  }]
 	}, {
 	  path: '/tooltip/',
-	  component: _default$C
+	  component: _default$D
 	}, {
 	  path: '/timeline/',
 	  component: Timeline$1
@@ -83560,14 +83665,14 @@
 	  component: TimelineHorizontalCalendar
 	}, {
 	  path: '/treeview/',
-	  component: _default$D
+	  component: _default$E
 	}, {
 	  path: '/virtual-list/',
-	  component: _default$E
+	  component: _default$F
 	}, // Color Themes
 	{
 	  path: '/color-themes/',
-	  component: _default$F
+	  component: _default$G
 	}, // Page Transitions
 	{
 	  path: '/page-transitions/',
@@ -83596,7 +83701,7 @@
 	  master: true
 	}, {
 	  path: '/master-detail/:id/',
-	  component: _default$G
+	  component: _default$H
 	}, // Default route (404 page). MUST BE THE LAST
 	{
 	  path: '(.*)',

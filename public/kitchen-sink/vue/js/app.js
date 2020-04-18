@@ -10304,6 +10304,7 @@
       cordova: !!(win.cordova || win.phonegap),
       phonegap: !!(win.cordova || win.phonegap),
       electron: false,
+      nwjs: false,
     };
 
     var screenWidth = win.screen.width;
@@ -10318,6 +10319,7 @@
     var firefox = ua.indexOf('Gecko/') >= 0 && ua.indexOf('Firefox/') >= 0;
     var windows = platform === 'Win32';
     var electron = ua.toLowerCase().indexOf('electron') >= 0;
+    var nwjs = typeof nw !== 'undefined' && typeof process !== 'undefined' && typeof process.versions !== 'undefined' && typeof process.versions.nw !== 'undefined';
     var macos = platform === 'MacIntel';
 
     // iPadOs 13 fix
@@ -10377,9 +10379,10 @@
     device.standalone = device.webView;
 
     // Desktop
-    device.desktop = !(device.ios || device.android) || electron;
+    device.desktop = !(device.ios || device.android) || electron || nwjs;
     if (device.desktop) {
       device.electron = electron;
+      device.nwjs = nwjs;
       device.macos = macos;
       device.windows = windows;
       if (device.macos) {
@@ -11019,8 +11022,12 @@
         var html = doc.querySelector('html');
         if (media === DARK) {
           html.classList.add('theme-dark');
+          app.darkTheme = true;
+          app.emit('darkThemeChange', true);
         } else if (media === LIGHT) {
           html.classList.remove('theme-dark');
+          app.darkTheme = false;
+          app.emit('darkThemeChange', false);
         }
       };
 
@@ -11079,8 +11086,12 @@
       }
       if (app.mq.dark && app.mq.dark.matches) {
         html.classList.add('theme-dark');
+        app.darkTheme = true;
+        app.emit('darkThemeChange', true);
       } else if (app.mq.light && app.mq.light.matches) {
         html.classList.remove('theme-dark');
+        app.darkTheme = false;
+        app.emit('darkThemeChange', false);
       }
     };
 
@@ -22102,7 +22113,16 @@
               $popoverEl = $popoverEl.eq($popoverEl.length - 1);
             }
             var popover = $popoverEl[0].f7Modal;
-            if (!popover) { popover = new Popover(app, { el: $popoverEl, targetEl: targetEl }); }
+            var data = $popoverEl.dataset();
+            if (!popover) {
+              popover = new Popover(app, Object.assign(
+                {
+                  el: $popoverEl,
+                  targetEl: targetEl,
+                },
+                data
+              ));
+            }
             return popover.open(targetEl, animate);
           },
         }
@@ -25531,6 +25551,12 @@
       var $oldTabEl = $tabsEl.children('.tab-active');
       $oldTabEl.removeClass('tab-active');
       if (!swiper || (swiper && !swiper.animating) || (swiper && tabRoute)) {
+        if ($oldTabEl.hasClass('view') && $oldTabEl.children('.page').length) {
+          $oldTabEl.children('.page').each(function (pageIndex, pageEl) {
+            $(pageEl).trigger('page:tabhide');
+            app.emit('pageTabHide', pageEl);
+          });
+        }
         $oldTabEl.trigger('tab:hide');
         app.emit('tabHide', $oldTabEl[0]);
       }
@@ -25538,6 +25564,12 @@
       // Trigger 'show' event on new tab
       $newTabEl.addClass('tab-active');
       if (!swiper || (swiper && !swiper.animating) || (swiper && tabRoute)) {
+        if ($newTabEl.hasClass('view') && $newTabEl.children('.page').length) {
+          $newTabEl.children('.page').each(function (pageIndex, pageEl) {
+            $(pageEl).trigger('page:tabshow');
+            app.emit('pageTabShow', pageEl);
+          });
+        }
         $newTabEl.trigger('tab:show');
         app.emit('tabShow', $newTabEl[0]);
       }
@@ -48540,7 +48572,7 @@
     // f7-icon, material-icon, command
     bold: ['bold', 'format_bold', 'bold'],
     italic: ['italic', 'format_italic', 'italic'],
-    underline: ['underline', 'format_underline', 'underline'],
+    underline: ['underline', 'format_underlined', 'underline'],
     strikeThrough: ['strikethrough', 'strikethrough_s', 'strikeThrough'],
     orderedList: ['list_number', 'format_list_numbered', 'insertOrderedList'],
     unorderedList: ['list_bullet', 'format_list_bulleted', 'insertUnorderedList'],
@@ -49382,7 +49414,7 @@
   };
 
   /**
-   * Framework7 5.5.5
+   * Framework7 5.6.0
    * Full featured mobile HTML framework for building iOS & Android apps
    * https://framework7.io/
    *
@@ -49390,7 +49422,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: April 10, 2020
+   * Released on: April 18, 2020
    */
 
   // Install Core Modules & Components
@@ -53071,6 +53103,7 @@
       name: String,
       value: [String, Number, Array, Date, Object],
       defaultValue: [String, Number, Array],
+      inputmode: String,
       placeholder: String,
       id: [String, Number],
       inputId: [String, Number],
@@ -53143,6 +53176,7 @@
       var name = props.name;
       var value = props.value;
       var defaultValue = props.defaultValue;
+      var inputmode = props.inputmode;
       var placeholder = props.placeholder;
       var id = props.id;
       var inputId = props.inputId;
@@ -53239,6 +53273,7 @@
               name: name,
               type: needsType ? inputType : undefined,
               placeholder: placeholder,
+              inputmode: inputmode,
               id: inputId,
               size: size,
               accept: accept,
@@ -54276,6 +54311,7 @@
       name: String,
       value: [String, Number, Array, Date, Object],
       defaultValue: [String, Number, Array],
+      inputmode: String,
       readonly: Boolean,
       required: Boolean,
       disabled: Boolean,
@@ -54356,6 +54392,7 @@
       var readonly = props.readonly;
       var required = props.required;
       var disabled = props.disabled;
+      var inputmode = props.inputmode;
       var placeholder = props.placeholder;
       var inputId = props.inputId;
       var size = props.size;
@@ -54445,6 +54482,7 @@
               name: name,
               type: needsType ? inputType : undefined,
               placeholder: placeholder,
+              inputmode: inputmode,
               id: inputId,
               size: size,
               accept: accept,
@@ -55222,6 +55260,8 @@
       tooltipTrigger: String,
       link: [Boolean, String],
       target: String,
+      tabLink: [Boolean, String],
+      tabLinkActive: Boolean,
       after: [String, Number],
       badge: [String, Number],
       badgeColor: String,
@@ -55291,6 +55331,8 @@
       var header = props.header;
       var footer = props.footer;
       var link = props.link;
+      var tabLink = props.tabLink;
+      var tabLinkActive = props.tabLinkActive;
       var href = props.href;
       var target = props.target;
       var after = props.after;
@@ -55362,11 +55404,14 @@
         if (link || href || accordionItem || smartSelect) {
           var linkAttrs = Object.assign({
             href: link === true ? '' : link || href,
-            target: target
+            target: target,
+            'data-tab': Utils$1.isStringProp(tabLink) && tabLink || undefined
           }, Mixins.linkRouterAttrs(props), {}, Mixins.linkActionsAttrs(props));
           var linkClasses = Utils$1.classNames({
             'item-link': true,
-            'smart-select': smartSelect
+            'smart-select': smartSelect,
+            'tab-link': tabLink || tabLink === '',
+            'tab-link-active': tabLinkActive
           }, Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
           linkEl = _h('a', __vueComponentTransformJSXProps(Object.assign({
             ref: 'linkEl',
@@ -58782,7 +58827,7 @@
     },
 
     created: function created() {
-      Utils$1.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageBeforeUnmount', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack', 'onPageNavbarLargeCollapsed', 'onPageNavbarLargeExpanded', 'onCardOpened', 'onCardClose']);
+      Utils$1.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageBeforeUnmount', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack', 'onPageNavbarLargeCollapsed', 'onPageNavbarLargeExpanded', 'onCardOpened', 'onCardClose', 'onPageTabShow', 'onPageTabHide']);
     },
 
     mounted: function mounted() {
@@ -58809,6 +58854,8 @@
         f7.on('pageNavbarLargeExpanded', self.onPageNavbarLargeExpanded);
         f7.on('cardOpened', self.onCardOpened);
         f7.on('cardClose', self.onCardClose);
+        f7.on('pageTabShow', self.onPageTabShow);
+        f7.on('pageTabHide', self.onPageTabHide);
       });
     },
 
@@ -58835,6 +58882,8 @@
       f7.off('pageNavbarLargeExpanded', self.onPageNavbarLargeExpanded);
       f7.off('cardOpened', self.onCardOpened);
       f7.off('cardClose', self.onCardClose);
+      f7.off('pageTabShow', self.onPageTabShow);
+      f7.off('pageTabHide', self.onPageTabHide);
       self.eventTargetEl = null;
       delete self.eventTargetEl;
     },
@@ -59055,6 +59104,16 @@
         this.setState({
           hasCardExpandableOpened: false
         });
+      },
+
+      onPageTabShow: function onPageTabShow(pageEl) {
+        if (this.eventTargetEl !== pageEl) { return; }
+        this.dispatchEvent('page:tabshow pageTabShow');
+      },
+
+      onPageTabHide: function onPageTabHide(pageEl) {
+        if (this.eventTargetEl !== pageEl) { return; }
+        this.dispatchEvent('page:tabhide pageTabHide');
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -60472,7 +60531,9 @@
         attrs: {
           id: id
         }
-      }, [this.$slots['default']]);
+      }, [this.$slots['default'], (strong || strongIos || strongMd || strongAurora) && _h('span', {
+        class: 'segmented-highlight'
+      })]);
     },
 
     computed: {
@@ -62770,7 +62831,7 @@
   };
 
   /**
-   * Framework7 Vue 5.5.5
+   * Framework7 Vue 5.6.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * https://framework7.io/vue/
    *
@@ -62778,7 +62839,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: April 10, 2020
+   * Released on: April 18, 2020
    */
 
   //
@@ -63773,14 +63834,19 @@
       f7ListButton: f7ListButton,
       f7Button: f7Button,
       f7Segmented: f7Segmented,
-    }
+    },
+    data: function data() {
+      return {
+        activeStrongButton: 0,
+      };
+    },
   };
 
   /* script */
   var __vue_script__$9 = script$9;
 
   /* template */
-  var __vue_render__$9 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Buttons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Usual Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Fill Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":""}},[_vm._v("Outline")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","round":""}},[_vm._v("Round")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":"","round":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":"","round":""}},[_vm._v("Outline")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Segmented")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-segmented',{attrs:{"tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"strong":"","tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"tag":"p"}},[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":"","active":""}},[_vm._v("Active")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Large Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":""}},[_vm._v("Raised")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":"","fill":""}},[_vm._v("Raised Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Small Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","round":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":"","round":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":"","round":""}},[_vm._v("Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Fill Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("List-Block Buttons")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"List Button 1"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 2"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 3"}})],1),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"Large Red Button","color":"red"}})],1)],1)};
+  var __vue_render__$9 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Buttons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Usual Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Fill Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":""}},[_vm._v("Outline")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","round":""}},[_vm._v("Round")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":"","round":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":"","round":""}},[_vm._v("Outline")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Segmented")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-segmented',{attrs:{"tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"strong":"","tag":"p"}},[_c('f7-button',{attrs:{"active":_vm.activeStrongButton === 0},on:{"click":function($event){_vm.activeStrongButton = 0;}}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":_vm.activeStrongButton === 1},on:{"click":function($event){_vm.activeStrongButton = 1;}}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":_vm.activeStrongButton === 2},on:{"click":function($event){_vm.activeStrongButton = 2;}}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"tag":"p"}},[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":"","active":""}},[_vm._v("Active")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Large Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":""}},[_vm._v("Raised")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":"","fill":""}},[_vm._v("Raised Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Small Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","round":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":"","round":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":"","round":""}},[_vm._v("Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Fill Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("List-Block Buttons")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"List Button 1"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 2"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 3"}})],1),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"Large Red Button","color":"red"}})],1)],1)};
   var __vue_staticRenderFns__$9 = [];
 
     /* style */
