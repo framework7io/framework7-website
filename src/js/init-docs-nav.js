@@ -37,6 +37,10 @@ export default function initDocsNav() {
       loc = loc.split('/');
       loc = loc[loc.length - 1];
     }
+    if (!loc) {
+      loc = document.location.href;
+      loc = loc.split(document.location.host)[1];
+    }
 
     let $activeListItem;
     $('.docs-nav a').each(function forEach() {

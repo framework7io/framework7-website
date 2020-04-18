@@ -1,0 +1,66 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Create App | Framework7 CLI';
+
+block content
+  .docs-nav
+    include ../_docs-menu-cli
+  .docs-content
+    +improveDocsLink
+
+    h1 Create App with Framework7 CLI
+    ul.docs-index
+
+    h2 Create App
+
+    p To create Framework7 app, run the following command in the directory where you want to create the app:
+
+    ```shell
+      $ framework7 create
+    ```
+
+    p Program will prompt for few questions about framework and template you want to start with.
+
+    h2 Skip Update
+
+    p On `create` command CLI will first check for CLI update to always deliver latest and better experience. If, for some reason, you want to disable it, you can run command with `--skipUpdate` flag:
+
+    ```shell
+      $ framework7 create --skipUpdate
+    ```
+
+    h2 User Interface
+
+    p Framework7 CLI allows to launch create app process with user interface. This way is the most recommended as it provides a much higher configuration of the created project.
+
+    p To launch it with UI, run the `create` command with `--ui` flag in the directory where you want to create the app:
+
+    ```shell
+      $ framework7 create --ui
+    ```
+
+    p It will launch UI where you will be able to configure the project:
+
+    p
+      img(src="/i/docs/cli-ui.png", style="width: 1000px; max-width: 100%: box-shadow: 0px 2px 5px rgba(0,0,0,0.1); border-radius: 5px; border: 1px solid rgba(0,0,0,0.1)")
+
+    p By default it launches server on `localhost:3001` address. If you want to change the port then use `--port <n>` argument:
+
+    ```shell
+      $ framework7 create --ui --port 8080
+    ```
+
+    h2 NPX
+
+    p If you didn't install Framework7 CLI globally, you can create the app using <a href="https://github.com/npm/npx" target="_blank">npx</a> command.
+
+    p For example:
+
+    ```shell
+      $ npx framework7-cli create --ui
+    ```
+
+
+
+

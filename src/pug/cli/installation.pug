@@ -1,0 +1,31 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Installation | Framework7 CLI';
+
+block content
+  .docs-nav
+    include ../_docs-menu-cli
+  .docs-content
+    +improveDocsLink
+    h1 Framework7 CLI Installation
+
+    p First of all make sure you have latest stable Node.js and NPM installed on your machine.
+    p If you are going to targer Native/Hybrid apps then you also need to install <a href="https://cordova.apache.org/" target="_blank">Cordova</a> first (may require `sudo`):
+    ```shell
+      $ npm install -g cordova
+    ```
+
+    p Now we can install Framework7 CLI (may require `sudo`):
+    ```shell
+      $ npm install -g framework7-cli
+    ```
+
+    p If you have issues with installation related to access errors, you may try to run the command with additional flags:
+    ```shell
+      $ npm install -g framework7-cli --unsafe-perm=true --allow-root
+    ```
+
+    p If you don't want to install it globally, it can also be used with <a href="https://github.com/npm/npx" target="_blank">npx</a>.
+
+

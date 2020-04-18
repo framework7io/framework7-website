@@ -2,7 +2,7 @@ official:
 community:
 -
   title: Framework7 iOS App Store
-  iconUrl: "https://f7appstore.netlify.app/static/icons/512x512.png"
+  iconUrl: "/i/templates/appstore.png"
   author:
     url: https://github.com/nolimits4web/
     name: Vladimir Kharlampidi
