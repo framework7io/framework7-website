@@ -210,6 +210,19 @@ block content
           td 0
           td Minimum app width to enable Master Detail view for master routes (routes with `master: true` parameter)
         tr
+          td masterDetailResizable
+          td boolean
+          td false
+          td
+            p Enables resizable Master Detail layout
+            p To specify Master Detail resizable min/max width, it needs to be set on page-master in styles, for example:
+            ```css
+              .view-master-detail .page-master {
+                min-width: 200px;
+                max-width: 80vw;
+              }
+            ```
+        tr
           td reloadDetail
           td boolean
           td false
@@ -513,6 +526,10 @@ block content
           td view:init
           td View Element<span>&lt;div class="view"&gt;</span>
           td Event will be triggered on view initialization
+        tr
+          td view:resize
+          td View Element<span>&lt;div class="view"&gt;</span>
+          td Event will be triggered on Master Detail resize (when `masterDetailResizable` enabled)
     h3 View Instance Events
     p View instance emits events on both self instance and app instance. App instance events has same names prefixed with `view`.
     table.events-table.double-events-table
@@ -531,6 +548,15 @@ block content
           td(rowspan="2") Event will be triggered on view initialization
         tr
           td viewInit
+          td app
+        tr
+          td resize
+          td view
+          td(rowspan="2")
+            span (view, width)
+          td(rowspan="2") Event will be triggered on Master Detail resize (when `masterDetailResizable` enabled)
+        tr
+          td viewResize
           td app
     h2 Router API / Methods & Properties
     p View's main purpose is a navigating/routing between pages. We can access its router instance by `view.router`. It has a lot of useful methods and properties to take control over routing and navigation:

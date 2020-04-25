@@ -9,13 +9,71 @@
       </Block>
 
       <BlockTitle>Radio Group</BlockTitle>
+      <BlockHeader>Icon in the beginning of the list item</BlockHeader>
       <List>
-        <ListItem radio title="Books" name="demo-radio" value="Books" checked></ListItem>
-        <ListItem radio title="Movies" value="Movies" name="demo-radio"></ListItem>
-        <ListItem radio title="Food" value="Food" name="demo-radio"></ListItem>
-        <ListItem radio title="Drinks" value="Drinks" name="demo-radio"></ListItem>
+        <ListItem
+          radio
+          radioIcon="start"
+          title="Books"
+          value="Books"
+          name="demo-radio-start"
+          checked
+        ></ListItem>
+        <ListItem
+          radio
+          radioIcon="start"
+          title="Movies"
+          value="Movies"
+          name="demo-radio-start"
+        ></ListItem>
+        <ListItem
+          radio
+          radioIcon="start"
+          title="Food"
+          value="Food"
+          name="demo-radio-start"
+        ></ListItem>
+        <ListItem
+          radio
+          radioIcon="start"
+          title="Drinks"
+          value="Drinks"
+          name="demo-radio-start"
+        ></ListItem>
       </List>
 
+      <BlockHeader>Icon in the end of the list item</BlockHeader>
+      <List>
+        <ListItem
+          radio
+          radioIcon="end"
+          title="Books"
+          value="Books"
+          name="demo-radio-end"
+          checked
+        ></ListItem>
+        <ListItem
+          radio
+          radioIcon="end"
+          title="Movies"
+          value="Movies"
+          name="demo-radio-end"
+        ></ListItem>
+        <ListItem
+          radio
+          radioIcon="end"
+          title="Food"
+          value="Food"
+          name="demo-radio-end"
+        ></ListItem>
+        <ListItem
+          radio
+          radioIcon="end"
+          title="Drinks"
+          value="Drinks"
+          name="demo-radio-end"
+        ></ListItem>
+      </List>
 
       <BlockTitle>With Media Lists</BlockTitle>
       <List mediaList>
@@ -62,5 +120,5 @@
 </App>
 
 <script>
-  import {App, View, Page, Navbar, BlockTitle, Block, Radio, List, ListItem} from 'framework7-svelte';
+  import {App, View, Page, Navbar, BlockTitle, BlockHeader, Block, Radio, List, ListItem} from 'framework7-svelte';
 </script>
