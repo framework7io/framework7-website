@@ -37,7 +37,7 @@
     "gulp-less": "^4.0.1",
     "gulp-open": "^3.0.1",
     "gulp-pug": "^4.0.1",
-    "jquery": "^3.4.0",
+    "jquery": "^3.5.0",
     "js-yaml": "^3.13.1",
     "jsdom": "^13.2.0",
     "prismjs": "^1.18.0",
