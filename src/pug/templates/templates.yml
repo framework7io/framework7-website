@@ -1,6 +1,18 @@
 official:
 community:
 -
+  title: HackerNews7
+  iconUrl: https://github.com/GuillaumeBiton/HackerNews7/raw/master/assets-src/apple-touch-icon.png
+  author:
+    url: https://github.com/GuillaumeBiton
+    name: Guillaume Biton
+  url: https://github.com/GuillaumeBiton/hackernews7-svelte
+  previewUrl: http://guillaumebiton.github.io/hackernews7-svelte/
+  description: Hacker News Reader powered by Framework7 and Svelte
+  badges:
+  - v5
+  - Svelte
+-
   title: Framework7 iOS App Store
   iconUrl: "/i/templates/appstore.png"
   author:
