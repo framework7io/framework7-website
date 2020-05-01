@@ -17566,7 +17566,11 @@
 	      var prevOpenedModals = modalToClose.$el.prevAll('.modal-in');
 
 	      if (prevOpenedModals.length && prevOpenedModals[0].f7Modal) {
-	        previousRoute = prevOpenedModals[0].f7Modal.route;
+	        var modalEl = prevOpenedModals[0]; // check if current router not inside of the modalEl
+
+	        if (!router.$el.parents(modalEl).length) {
+	          previousRoute = modalEl.f7Modal.route;
+	        }
 	      }
 	    }
 
@@ -22018,7 +22022,12 @@
 	  var $viewsEl = $('.views');
 	  if ($viewsEl.length === 0) $viewsEl = app.root; // Find active view as tab
 
-	  var $viewEl = $viewsEl.children('.view'); // Propably in tabs or split view
+	  var $viewEl = $viewsEl.children('.view');
+
+	  if ($viewEl.length === 0) {
+	    $viewEl = $viewsEl.children('.tabs').children('.view');
+	  } // Propably in tabs or split view
+
 
 	  if ($viewEl.length > 1) {
 	    if ($viewEl.hasClass('tab')) {
@@ -29675,6 +29684,16 @@
 	      app.panel.allowOpen = true;
 	      $('html').removeClass('with-panel-closing');
 	      panel.$el.removeClass('panel-out');
+
+	      if (panel.$backdropEl) {
+	        var otherPanel = app.panel.get('.panel-in');
+	        var shouldHideBackdrop = !otherPanel || otherPanel && !otherPanel.$backdropEl;
+
+	        if (shouldHideBackdrop) {
+	          panel.$backdropEl.removeClass('panel-backdrop-in');
+	        }
+	      }
+
 	      panel.$el.trigger('panel:closed');
 	      panel.emit('local::closed panelClosed', panel);
 	    }
@@ -29756,7 +29775,11 @@
 
 	      $el[animate ? 'removeClass' : 'addClass']('not-animated');
 	      $el.addClass('panel-in');
-	      $backdropEl[animate ? 'removeClass' : 'addClass']('not-animated');
+
+	      if ($backdropEl) {
+	        $backdropEl.addClass('panel-backdrop-in');
+	        $backdropEl[animate ? 'removeClass' : 'addClass']('not-animated');
+	      }
 
 	      if (panel.effect === 'cover') {
 	        /* eslint no-underscore-dangle: ["error", { "allow": ["_clientLeft"] }] */
@@ -29809,7 +29832,11 @@
 	          opened = panel.opened;
 	      if (!opened || $el.hasClass('panel-in-breakpoint') || !$el.hasClass('panel-in')) return panel;
 	      $el[animate ? 'removeClass' : 'addClass']('not-animated');
-	      $backdropEl[animate ? 'removeClass' : 'addClass']('not-animated');
+
+	      if ($backdropEl) {
+	        $backdropEl[animate ? 'removeClass' : 'addClass']('not-animated');
+	      }
+
 	      var transitionEndTarget = effect === 'reveal' ? $el.nextAll('.view, .views').eq(0) : $el;
 
 	      function transitionEnd() {
@@ -53470,7 +53497,8 @@
 	        if (!selection.isCollapsed && selection.rangeCount) {
 	          var range = selection.getRangeAt(0);
 	          var rect = range.getBoundingClientRect();
-	          self.openPopover(rect.x + (win.scrollX || 0), rect.y + (win.scrollY || 0), rect.width, rect.height);
+	          var rootEl = self.app.root[0] || doc.body;
+	          self.openPopover(rect.x + (win.scrollX || 0) - rootEl.offsetLeft, rect.y + (win.scrollY || 0) - rootEl.offsetTop, rect.width, rect.height);
 	        } else if (selection.isCollapsed) {
 	          self.closePopover();
 	        }
@@ -54138,7 +54166,7 @@
 	};
 
 	/**
-	 * Framework7 5.7.0
+	 * Framework7 5.7.1
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -54146,7 +54174,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: April 25, 2020
+	 * Released on: May 1, 2020
 	 */
 
 
@@ -55400,7 +55428,7 @@
 	  forceToPopover: Boolean,
 	  target: [String, Object],
 	  backdrop: Boolean,
-	  backdropEl: [String, Object, window.HTMLElement],
+	  backdropEl: [String, Object],
 	  closeByBackdropClick: Boolean,
 	  closeByOutsideClick: Boolean,
 	  closeOnEscape: Boolean
@@ -66054,7 +66082,7 @@
 	  opened: Boolean,
 	  target: [String, Object],
 	  backdrop: Boolean,
-	  backdropEl: [String, Object, window.HTMLElement],
+	  backdropEl: [String, Object],
 	  closeByBackdropClick: Boolean,
 	  closeByOutsideClick: Boolean,
 	  closeOnEscape: Boolean
@@ -66260,14 +66288,14 @@
 	  opened: Boolean,
 	  animate: Boolean,
 	  backdrop: Boolean,
-	  backdropEl: [String, Object, window.HTMLElement],
+	  backdropEl: [String, Object],
 	  closeByBackdropClick: Boolean,
 	  closeOnEscape: Boolean,
 	  swipeToClose: {
 	    type: [Boolean, String],
 	    default: false
 	  },
-	  swipeHandler: [String, Object, window.HTMLElement],
+	  swipeHandler: [String, Object],
 	  push: Boolean
 	}, Mixins.colorProps));
 
@@ -67307,14 +67335,14 @@
 	  bottom: Boolean,
 	  position: String,
 	  backdrop: Boolean,
-	  backdropEl: [String, Object, window.HTMLElement],
+	  backdropEl: [String, Object],
 	  closeByBackdropClick: Boolean,
 	  closeByOutsideClick: Boolean,
 	  closeOnEscape: Boolean,
 	  push: Boolean,
 	  swipeToClose: Boolean,
 	  swipeToStep: Boolean,
-	  swipeHandler: [String, Object, window.HTMLElement]
+	  swipeHandler: [String, Object]
 	}, Mixins.colorProps));
 
 	F7Sheet.displayName = 'f7-sheet';
@@ -69715,7 +69743,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.7.0
+	 * Framework7 React 5.7.1
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -69723,7 +69751,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: April 25, 2020
+	 * Released on: May 1, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
