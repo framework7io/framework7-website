@@ -249,10 +249,10 @@ block content
           $$('.articles').html(res.data);
           console.log('Load was performed');
         })
-        .catch(function (xhr, status, message) {
-          console.log(xhr)
-          console.log(status)
-          console.log(message)
+        .catch(function (err) {
+          console.log(err.xhr)
+          console.log(err.status)
+          console.log(err.message)
         })
     h3 `post()`
     .method-wrap
