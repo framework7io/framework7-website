@@ -1,5 +1,31 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/hafla.png"
+  iconRounded: true
+  title: "hafla"
+  author:
+    url: https://gohafla.com
+    name: hafla
+  links:
+    appstore: https://apps.apple.com/us/app/hafla/id1449585171
+    googleplay: https://play.google.com/store/apps/details?id=com.sny.app
+    website: https://gohafla.com
+  description: |
+    Do you also quickly lose track when planning your leisure time in everyday life or in a new city?
+    Now it's easier than ever to organize activities alone or with friends and experience new cool adventures!
+    hafla is an app for planning and managing your activities with friends. You can use hafla just as well to get to know a new city. It connects you via your contacts with your friends who already use hafla.
+    Create an event, invite your friends and off you go!
+    In a group chat you can easily discuss the details and manage events.
+    No idea what you should do tomorrow? hafla helps here too! We suggest local activities that you might enjoy.
+    Once you have found the right activity, organize it with friends and enjoy the hafla way of life!
+  screenshots:
+  - "#{cdn}/i/showcase/hafla-1.png"
+  - "#{cdn}/i/showcase/hafla-2.png"
+  - "#{cdn}/i/showcase/hafla-3.png"
+  - "#{cdn}/i/showcase/hafla-4.png"
+  - "#{cdn}/i/showcase/hafla-5.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/Quotes.png"
   iconRounded: true
   title: "Quotes-Inspirational , motivational , life quotes"
