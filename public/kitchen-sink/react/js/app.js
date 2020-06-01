@@ -16368,6 +16368,7 @@
 	  var url;
 	  var createRoute;
 	  var name;
+	  var path;
 	  var query;
 	  var params;
 	  var route;
@@ -16378,12 +16379,14 @@
 	    url = navigateParams.url;
 	    createRoute = navigateParams.route;
 	    name = navigateParams.name;
+	    path = navigateParams.path;
 	    query = navigateParams.query;
 	    params = navigateParams.params;
 	  }
 
-	  if (name) {
+	  if (name || path) {
 	    url = router.generateUrl({
+	      path: path,
 	      name: name,
 	      params: params,
 	      query: query
@@ -16536,7 +16539,10 @@
 	    }
 
 	    if (preloadMaster || masterLoaded && navigateOptions.reloadAll) {
-	      router.navigate(route.route.masterRoute.path, {
+	      router.navigate({
+	        path: route.route.masterRoute.path,
+	        params: route.params || {}
+	      }, {
 	        animate: false,
 	        reloadAll: navigateOptions.reloadAll,
 	        reloadCurrent: navigateOptions.reloadCurrent,
@@ -18447,18 +18453,23 @@
 	      }
 
 	      var name = parameters.name,
+	          path = parameters.path,
 	          params = parameters.params,
 	          query = parameters.query;
 
-	      if (!name) {
-	        throw new Error('Framework7: name parameter is required');
+	      if (!name && !path) {
+	        throw new Error('Framework7: "name" or "path" parameter is required');
 	      }
 
 	      var router = this;
-	      var route = router.findRouteByKey('name', name);
+	      var route = name ? router.findRouteByKey('name', name) : router.findRouteByKey('path', path);
 
 	      if (!route) {
-	        throw new Error("Framework7: route with name \"".concat(name, "\" not found"));
+	        if (name) {
+	          throw new Error("Framework7: route with name \"".concat(name, "\" not found"));
+	        } else {
+	          throw new Error("Framework7: route with path \"".concat(path, "\" not found"));
+	        }
 	      }
 
 	      var url = router.constructRouteUrl(route, {
@@ -27652,17 +27663,17 @@
 	    var $tabEl;
 	    var $panelEl;
 	    var $popupEl;
-	    var isAnimatedTabs;
 
 	    vl.attachEvents = function attachEvents() {
 	      $pageEl = vl.$el.parents('.page').eq(0);
-	      $tabEl = vl.$el.parents('.tab').eq(0);
-	      isAnimatedTabs = $tabEl.parents('.tabs-animated-wrap, .tabs-swipeable-wrap').length > 0;
+	      $tabEl = vl.$el.parents('.tab').filter(function (tabElIndex, tabEl) {
+	        return $(tabEl).parent('.tabs').parent('.tabs-animated-wrap, .tabs-swipeable-wrap').length === 0;
+	      }).eq(0);
 	      $panelEl = vl.$el.parents('.panel').eq(0);
 	      $popupEl = vl.$el.parents('.popup').eq(0);
 	      vl.$scrollableParentEl.on('scroll', handleScrollBound);
 	      if ($pageEl.length) $pageEl.on('page:reinit', handleResizeBound);
-	      if ($tabEl.length && !isAnimatedTabs) $tabEl.on('tab:show', handleResizeBound);
+	      if ($tabEl.length) $tabEl.on('tab:show', handleResizeBound);
 	      if ($panelEl.length) $panelEl.on('panel:open', handleResizeBound);
 	      if ($popupEl.length) $popupEl.on('popup:open', handleResizeBound);
 	      app.on('resize', handleResizeBound);
@@ -27671,7 +27682,7 @@
 	    vl.detachEvents = function attachEvents() {
 	      vl.$scrollableParentEl.off('scroll', handleScrollBound);
 	      if ($pageEl.length) $pageEl.off('page:reinit', handleResizeBound);
-	      if ($tabEl.length && !isAnimatedTabs) $tabEl.off('tab:show', handleResizeBound);
+	      if ($tabEl.length) $tabEl.off('tab:show', handleResizeBound);
 	      if ($panelEl.length) $panelEl.off('panel:open', handleResizeBound);
 	      if ($popupEl.length) $popupEl.off('popup:open', handleResizeBound);
 	      app.off('resize', handleResizeBound);
@@ -28654,16 +28665,18 @@
 	    var tabLinkEl;
 	    var animate;
 	    var tabRoute;
+	    var animatedInit;
 
 	    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
 	      args[_key] = arguments[_key];
 	    }
 
-	    if (args.length === 1 && args[0].constructor === Object) {
+	    if (args.length === 1 && args[0] && args[0].constructor === Object) {
 	      tabEl = args[0].tabEl;
 	      tabLinkEl = args[0].tabLinkEl;
 	      animate = args[0].animate;
 	      tabRoute = args[0].tabRoute;
+	      animatedInit = args[0].animatedInit;
 	    } else {
 	      tabEl = args[0];
 	      tabLinkEl = args[1];
@@ -28692,7 +28705,7 @@
 	      $newTabEl[0].f7TabRoute = tabRoute;
 	    }
 
-	    if ($newTabEl.length === 0 || $newTabEl.hasClass('tab-active')) {
+	    if (!animatedInit && ($newTabEl.length === 0 || $newTabEl.hasClass('tab-active'))) {
 	      return {
 	        $newTabEl: $newTabEl,
 	        newTabEl: $newTabEl[0]
@@ -28763,7 +28776,7 @@
 	    var $oldTabEl = $tabsEl.children('.tab-active');
 	    $oldTabEl.removeClass('tab-active');
 
-	    if (!swiper || swiper && !swiper.animating || swiper && tabRoute) {
+	    if (!animatedInit && (!swiper || swiper && !swiper.animating || swiper && tabRoute)) {
 	      if ($oldTabEl.hasClass('view') && $oldTabEl.children('.page').length) {
 	        $oldTabEl.children('.page').each(function (pageIndex, pageEl) {
 	          $(pageEl).trigger('page:tabhide');
@@ -28778,7 +28791,7 @@
 
 	    $newTabEl.addClass('tab-active');
 
-	    if (!swiper || swiper && !swiper.animating || swiper && tabRoute) {
+	    if (!animatedInit && (!swiper || swiper && !swiper.animating || swiper && tabRoute)) {
 	      if ($newTabEl.hasClass('view') && $newTabEl.children('.page').length) {
 	        $newTabEl.children('.page').each(function (pageIndex, pageEl) {
 	          $(pageEl).trigger('page:tabshow');
@@ -28899,12 +28912,25 @@
 	      }
 	    });
 	  },
+	  on: {
+	    'pageInit tabMounted': function onInit(pageOrTabEl) {
+	      var $el = $(pageOrTabEl.el || pageOrTabEl);
+	      var animatedTabEl = $el.find('.tabs-animated-wrap > .tabs > .tab-active')[0];
+	      if (!animatedTabEl) return;
+	      var app = this;
+	      app.tab.show({
+	        tabEl: animatedTabEl,
+	        animatedInit: true,
+	        animate: false
+	      });
+	    }
+	  },
 	  clicks: {
 	    '.tab-link': function tabLinkClick($clickedEl) {
 	      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-	      var app = this;
 
 	      if ($clickedEl.attr('href') && $clickedEl.attr('href').indexOf('#') === 0 || $clickedEl.attr('data-tab')) {
+	        var app = this;
 	        app.tab.show({
 	          tabEl: data.tab || $clickedEl.attr('href'),
 	          tabLinkEl: $clickedEl,
@@ -29380,7 +29406,6 @@
 
 	    $el.removeClass('panel-resizing');
 	    Utils.nextFrame(function () {
-	      if (visibleByBreakpoint) return;
 	      $el.transition('');
 
 	      if (effect === 'reveal') {
@@ -48474,12 +48499,13 @@
 	    swiper.update();
 	  }
 
-	  var $tabEl = $swiperEl.parents('.tab');
-	  var isAnimatedTabs = $tabEl.parents('.tabs-animated-wrap, .tabs-swipeable-wrap').length > 0;
+	  var $tabEl = $swiperEl.parents('.tab').filter(function (tabElIndex, tabEl) {
+	    return $(tabEl).parent('.tabs').parent('.tabs-animated-wrap, .tabs-swipeable-wrap').length === 0;
+	  }).eq(0);
 	  $swiperEl.parents('.popup, .login-screen, .sheet-modal, .popover').on('modal:open', updateSwiper);
 	  $swiperEl.parents('.panel').on('panel:open', updateSwiper);
 
-	  if ($tabEl && $tabEl.length && !isAnimatedTabs) {
+	  if ($tabEl && $tabEl.length) {
 	    $tabEl.on('tab:show', updateSwiper);
 	  }
 
@@ -48487,7 +48513,7 @@
 	    $swiperEl.parents('.popup, .login-screen, .sheet-modal, .popover').off('modal:open', updateSwiper);
 	    $swiperEl.parents('.panel').off('panel:open', updateSwiper);
 
-	    if ($tabEl && $tabEl.length && !isAnimatedTabs) {
+	    if ($tabEl && $tabEl.length) {
 	      $tabEl.off('tab:show', updateSwiper);
 	    }
 	  });
@@ -54609,7 +54635,7 @@
 	};
 
 	/**
-	 * Framework7 5.7.5
+	 * Framework7 5.7.6
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -54617,7 +54643,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: May 16, 2020
+	 * Released on: June 1, 2020
 	 */
 
 
@@ -60770,6 +60796,18 @@
 	    key: "componentDidUpdate",
 	    value: function componentDidUpdate(prevProps, prevState) {
 	      var _this3 = this;
+
+	      __reactComponentWatch(this, 'props.colorPickerParams', prevProps, prevState, function () {
+	        var self = _this3;
+	        if (!self.$f7 || !self.f7ColorPicker) return;
+	        Utils$1.extend(self.f7ColorPicker.params, self.colorPickerParams || {});
+	      });
+
+	      __reactComponentWatch(this, 'props.calendarParams', prevProps, prevState, function () {
+	        var self = _this3;
+	        if (!self.$f7 || !self.f7Calendar) return;
+	        Utils$1.extend(self.f7Calendar.params, self.f7Calendar || {});
+	      });
 
 	      __reactComponentWatch(this, 'props.value', prevProps, prevState, function () {
 	        var self = _this3;
@@ -70185,7 +70223,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.7.5
+	 * Framework7 React 5.7.6
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -70193,7 +70231,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: May 16, 2020
+	 * Released on: June 1, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
