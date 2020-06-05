@@ -54635,7 +54635,7 @@
 	};
 
 	/**
-	 * Framework7 5.7.6
+	 * Framework7 5.7.7
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -54643,7 +54643,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: June 1, 2020
+	 * Released on: June 5, 2020
 	 */
 
 
@@ -59494,6 +59494,18 @@
 	    value: function componentDidUpdate(prevProps, prevState) {
 	      var _this3 = this;
 
+	      __reactComponentWatch(this, 'props.colorPickerParams', prevProps, prevState, function () {
+	        var self = _this3;
+	        if (!self.$f7 || !self.f7ColorPicker) return;
+	        Utils$1.extend(self.f7ColorPicker.params, self.colorPickerParams || {});
+	      });
+
+	      __reactComponentWatch(this, 'props.calendarParams', prevProps, prevState, function () {
+	        var self = _this3;
+	        if (!self.$f7 || !self.f7Calendar) return;
+	        Utils$1.extend(self.f7Calendar.params, self.calendarParams || {});
+	      });
+
 	      __reactComponentWatch(this, 'props.value', prevProps, prevState, function () {
 	        var self = _this3;
 	        var type = self.props.type;
@@ -60806,7 +60818,7 @@
 	      __reactComponentWatch(this, 'props.calendarParams', prevProps, prevState, function () {
 	        var self = _this3;
 	        if (!self.$f7 || !self.f7Calendar) return;
-	        Utils$1.extend(self.f7Calendar.params, self.f7Calendar || {});
+	        Utils$1.extend(self.f7Calendar.params, self.calendarParams || {});
 	      });
 
 	      __reactComponentWatch(this, 'props.value', prevProps, prevState, function () {
@@ -68230,6 +68242,17 @@
 	      return __reactComponentDispatchEvent.apply(void 0, [this, events].concat(args));
 	    }
 	  }, {
+	    key: "componentDidUpdate",
+	    value: function componentDidUpdate(prevProps, prevState) {
+	      var _this3 = this;
+
+	      __reactComponentWatch(this, 'props.value', prevProps, prevState, function (newValue) {
+	        var self = _this3;
+	        if (!self.f7Stepper) return;
+	        self.f7Stepper.setValue(newValue);
+	      });
+	    }
+	  }, {
 	    key: "classes",
 	    get: function get() {
 	      var self = this;
@@ -70223,7 +70246,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.7.6
+	 * Framework7 React 5.7.7
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -70231,7 +70254,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: June 1, 2020
+	 * Released on: June 5, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
