@@ -16315,7 +16315,7 @@
 	    return router;
 	  }
 
-	  if (url || templateUrl || componentUrl) {
+	  if (url || templateUrl || componentUrl || component) {
 	    router.allowPageChange = false;
 	  } // Proceed
 
@@ -21708,8 +21708,9 @@
 	  } else if (componentString.indexOf('<style scoped>') >= 0) {
 	    styleScoped = true;
 	    style = componentString.split('<style scoped>')[1].split('</style>')[0];
-	    style = style.replace(/{{this}}/g, "[data-f7-".concat(id, "]")).replace(/[\n]?([^{^}]*){/ig, function (string, rules) {
-	      // eslint-disable-next-line
+	    style = style.replace(/{{this}}/g, "[data-f7-".concat(id, "]")).replace(/[\n]?([^{^}]*){/gi, function (string, rules) {
+	      if (rules.indexOf('"') >= 0 || rules.indexOf("'") >= 0) return string; // eslint-disable-next-line
+
 	      rules = rules.split(',').map(function (rule) {
 	        if (rule.indexOf('@') >= 0) return rule;
 	        if (rule.indexOf("[data-f7-".concat(id, "]")) >= 0) return rule;
@@ -54635,7 +54636,7 @@
 	};
 
 	/**
-	 * Framework7 5.7.7
+	 * Framework7 5.7.8
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -54643,7 +54644,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: June 5, 2020
+	 * Released on: June 13, 2020
 	 */
 
 
@@ -56183,30 +56184,102 @@
 	  var _super = _createSuper(F7Badge);
 
 	  function F7Badge(props, context) {
+	    var _this;
+
 	    _classCallCheck(this, F7Badge);
 
-	    return _super.call(this, props, context);
+	    _this = _super.call(this, props, context);
+	    _this.__reactRefs = {};
+	    return _this;
 	  }
 
 	  _createClass(F7Badge, [{
 	    key: "render",
 	    value: function render() {
+	      var _this2 = this;
+
 	      var props = this.props;
 	      var className = props.className,
 	          id = props.id,
 	          style = props.style;
 	      var classes = Utils$1.classNames(className, 'badge', Mixins.colorClasses(props));
 	      return react.createElement('span', {
+	        ref: function ref(__reactNode) {
+	          _this2.__reactRefs['el'] = __reactNode;
+	        },
 	        id: id,
 	        style: style,
 	        className: classes
 	      }, this.slots['default']);
 	    }
 	  }, {
+	    key: "componentWillUnmount",
+	    value: function componentWillUnmount() {
+	      var self = this;
+
+	      if (self.f7Tooltip && self.f7Tooltip.destroy) {
+	        self.f7Tooltip.destroy();
+	        self.f7Tooltip = null;
+	        delete self.f7Tooltip;
+	      }
+	    }
+	  }, {
+	    key: "componentDidMount",
+	    value: function componentDidMount() {
+	      var self = this;
+	      var el = self.refs.el;
+	      if (!el) return;
+	      var _self$props = self.props,
+	          tooltip = _self$props.tooltip,
+	          tooltipTrigger = _self$props.tooltipTrigger;
+	      if (!tooltip) return;
+	      self.$f7ready(function (f7) {
+	        self.f7Tooltip = f7.tooltip.create({
+	          targetEl: el,
+	          text: tooltip,
+	          trigger: tooltipTrigger
+	        });
+	      });
+	    }
+	  }, {
+	    key: "componentDidUpdate",
+	    value: function componentDidUpdate(prevProps, prevState) {
+	      var _this3 = this;
+
+	      __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
+	        var self = _this3;
+
+	        if (!newText && self.f7Tooltip) {
+	          self.f7Tooltip.destroy();
+	          self.f7Tooltip = null;
+	          delete self.f7Tooltip;
+	          return;
+	        }
+
+	        if (newText && !self.f7Tooltip && self.$f7) {
+	          self.f7Tooltip = self.$f7.tooltip.create({
+	            targetEl: self.refs.el,
+	            text: newText,
+	            trigger: self.props.tooltipTrigger
+	          });
+	          return;
+	        }
+
+	        if (!newText || !self.f7Tooltip) return;
+	        self.f7Tooltip.setText(newText);
+	      });
+	    }
+	  }, {
 	    key: "slots",
 	    get: function get() {
 	      return __reactComponentSlots(this.props);
 	    }
+	  }, {
+	    key: "refs",
+	    get: function get() {
+	      return this.__reactRefs;
+	    },
+	    set: function set(refs) {}
 	  }]);
 
 	  return F7Badge;
@@ -56215,7 +56288,9 @@
 	__reactComponentSetProps(F7Badge, Object.assign({
 	  id: [String, Number],
 	  className: String,
-	  style: Object
+	  style: Object,
+	  tooltip: String,
+	  tooltipTrigger: String
 	}, Mixins.colorProps));
 
 	F7Badge.displayName = 'f7-badge';
@@ -57682,20 +57757,41 @@
 	  }, {
 	    key: "componentWillUnmount",
 	    value: function componentWillUnmount() {
-	      this.refs.el.removeEventListener('click', this.onClick);
+	      var self = this;
+	      self.refs.el.removeEventListener('click', self.onClick);
 
-	      if (this.refs.deleteEl) {
-	        this.refs.deleteEl.removeEventListener('click', this.onDeleteClick);
+	      if (self.refs.deleteEl) {
+	        self.refs.deleteEl.removeEventListener('click', self.onDeleteClick);
+	      }
+
+	      if (self.f7Tooltip && self.f7Tooltip.destroy) {
+	        self.f7Tooltip.destroy();
+	        self.f7Tooltip = null;
+	        delete self.f7Tooltip;
 	      }
 	    }
 	  }, {
 	    key: "componentDidMount",
 	    value: function componentDidMount() {
-	      this.refs.el.addEventListener('click', this.onClick);
+	      var self = this;
+	      var el = self.refs.el;
+	      el.addEventListener('click', self.onClick);
 
-	      if (this.refs.deleteEl) {
-	        this.refs.deleteEl.addEventListener('click', this.onDeleteClick);
+	      if (self.refs.deleteEl) {
+	        self.refs.deleteEl.addEventListener('click', self.onDeleteClick);
 	      }
+
+	      var _self$props = self.props,
+	          tooltip = _self$props.tooltip,
+	          tooltipTrigger = _self$props.tooltipTrigger;
+	      if (!tooltip) return;
+	      self.$f7ready(function (f7) {
+	        self.f7Tooltip = f7.tooltip.create({
+	          targetEl: el,
+	          text: tooltip,
+	          trigger: tooltipTrigger
+	        });
+	      });
 	    }
 	  }, {
 	    key: "dispatchEvent",
@@ -57705,6 +57801,34 @@
 	      }
 
 	      return __reactComponentDispatchEvent.apply(void 0, [this, events].concat(args));
+	    }
+	  }, {
+	    key: "componentDidUpdate",
+	    value: function componentDidUpdate(prevProps, prevState) {
+	      var _this3 = this;
+
+	      __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
+	        var self = _this3;
+
+	        if (!newText && self.f7Tooltip) {
+	          self.f7Tooltip.destroy();
+	          self.f7Tooltip = null;
+	          delete self.f7Tooltip;
+	          return;
+	        }
+
+	        if (newText && !self.f7Tooltip && self.$f7) {
+	          self.f7Tooltip = self.$f7.tooltip.create({
+	            targetEl: self.refs.el,
+	            text: newText,
+	            trigger: self.props.tooltipTrigger
+	          });
+	          return;
+	        }
+
+	        if (!newText || !self.f7Tooltip) return;
+	        self.f7Tooltip.setText(newText);
+	      });
 	    }
 	  }, {
 	    key: "slots",
@@ -57731,7 +57855,9 @@
 	  deleteable: Boolean,
 	  mediaBgColor: String,
 	  mediaTextColor: String,
-	  outline: Boolean
+	  outline: Boolean,
+	  tooltip: String,
+	  tooltipTrigger: String
 	}, Mixins.colorProps, {}, Mixins.linkIconProps));
 
 	F7Chip.displayName = 'f7-chip';
@@ -70246,7 +70372,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.7.7
+	 * Framework7 React 5.7.8
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -70254,7 +70380,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: June 5, 2020
+	 * Released on: June 13, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;

@@ -59,6 +59,19 @@ block content
           td boolean
           td false
           td Makes Card outline
+        tr
+          td tooltip
+          td string
+          td
+          td <a href="../docs/tooltip.html">tooltip</a> text to show on hover/press
+        tr
+          td tooltip-trigger
+          td string
+          td hover
+          td Defines how to trigger (open) Tooltip. Can be `hover` or `click`. If `hover` tooltip will be toggled on mouse hover on desktop, and with tap and hold on touch devices
+        tr
+          th(colspan="4") &lt;f7-chip&gt; icon related properties
+        +vueLinkIconProps
     h2 Chip Events
     table.events-table
       thead
