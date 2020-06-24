@@ -21,8 +21,6 @@
   - "#{cdn}/i/showcase/health-right-5.png"
 ##########
 -
-##########
--
   iconUrl: "#{cdn}/i/showcase/hafla.png"
   iconRounded: true
   title: "hafla"
