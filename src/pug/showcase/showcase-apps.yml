@@ -1,5 +1,26 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/health-right.png"
+  iconRounded: false
+  title: "Health Right : Simplified Medical Travel"
+  author:
+    url: https://vikas-sheoran.web.app
+    name: Vikas Sheoran
+  links:
+    website: https://healthright.co.in
+  description: |
+    Health Right is a medical knowledge driven facilitator platform where technology and management comes together to bridge the gap of a disease or ailment and the required treatment.
+    Team Health Right is committed to help maximum people realize their highest possible level of health.
+    At Health Right we help and handhold the people at each step in exercising their objective RIGHT of better health.
+    A seamless medical care services stream awaits as you take your first step towards Health Right . . .
+  screenshots:
+  - "#{cdn}/i/showcase/health-right-1.png"
+  - "#{cdn}/i/showcase/health-right-2.png"
+  - "#{cdn}/i/showcase/health-right-3.png"
+  - "#{cdn}/i/showcase/health-right-4.png"
+  - "#{cdn}/i/showcase/health-right-5.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/hafla.png"
   iconRounded: true
   title: "hafla"
