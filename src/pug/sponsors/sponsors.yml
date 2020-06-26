@@ -19,6 +19,22 @@ gold:
   imageUrl: "/i/sponsors/sparheld.jpg"
 silver:
 -
+  title: NettiCasinoHEX.com
+  link: https://netticasinohex.com
+  imageUrl: "/i/sponsors/netticasinohex.png"
+-
+  title: CasinoHEX.se
+  link: https://casinohex.se
+  imageUrl: "/i/sponsors/casinohexse.png"
+-
+  title: CasinoHEX.at
+  link: https://casinohex.at
+  imageUrl: "/i/sponsors/casinohexat.png"
+-
+  title: Kasinot.fi
+  link: https://www.kasinot.fi
+  imageUrl: "/i/sponsors/kasinotfi.png"
+-
   title: Infatica - Global Peer-to-Business Proxy Network
   link: https://infatica.io
   imageUrl: "/i/sponsors/infatica.svg"
