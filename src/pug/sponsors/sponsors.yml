@@ -19,6 +19,14 @@ gold:
   imageUrl: "/i/sponsors/sparheld.jpg"
 silver:
 -
+  title: Casinot
+  link: https://www.casinot.net
+  imageUrl: "/i/sponsors/casinotnet.png"
+-
+  title: ParasKasino
+  link: https://www.paraskasino.fi
+  imageUrl: "/i/sponsors/paraskasino.png"
+-
   title: NettiCasinoHEX.com
   link: https://netticasinohex.com
   imageUrl: "/i/sponsors/netticasinohex.png"
@@ -34,10 +42,6 @@ silver:
   title: Kasinot.fi
   link: https://www.kasinot.fi
   imageUrl: "/i/sponsors/kasinotfi.png"
--
-  title: Infatica - Global Peer-to-Business Proxy Network
-  link: https://infatica.io
-  imageUrl: "/i/sponsors/infatica.svg"
 -
   title: Thorium Builder - full visual Framework7 app builder
   link: https://www.thoriumbuilder.com/
