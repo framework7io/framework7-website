@@ -1,5 +1,35 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/simba.jpg"
+  iconRounded: true
+  title: "ZIGGU SIMBA"
+  author:
+    url: https://github.com/godwon2095
+    name: SeongWon Jang
+  links:
+    appstore: https://apps.apple.com/gb/app/%EC%A7%81%EA%B5%AC%EC%8B%AC%EB%B0%94-%EA%B5%AD%EA%B0%80%EB%B3%84-%EA%B0%80%EA%B2%A9%EB%B9%84%EA%B5%90/id1493628365
+    googleplay: https://play.google.com/store/apps/details?id=com.simbaing
+  description: |
+    The smart solution to procuring the hottest brands around the world, SIMBA, collects data from various e-commerce platforms to analyze and provide real-time price comparisons, as well as streamlined channels for international shipping.
+    Find the lowest price for the item!
+    Compare real-time prices from major marketplaces around the world and sort by country to find the lowest price anywhere in the world!
+    One check-out for all platforms!
+    Use one shopping cart to check out once for products from any number of e-commerce platforms. Review all respective local taxes and fees at check-out!
+    Shop internationally without hassle!
+    The shortest and quickest shipping routes are calculated real-time. From order confirmation, local tracking, international shipping, customs, and tariffs, the whole process will be taken care of!
+    Simple buying, SIMBA!
+  screenshots:
+  - "#{cdn}/i/showcase/simba1.png"
+  - "#{cdn}/i/showcase/simba2.png"
+  - "#{cdn}/i/showcase/simba3.png"
+  - "#{cdn}/i/showcase/simba4.png"
+  - "#{cdn}/i/showcase/simba5.png"
+  - "#{cdn}/i/showcase/simba6.png"
+  - "#{cdn}/i/showcase/simba7.png"
+  - "#{cdn}/i/showcase/simba8.png"
+  - "#{cdn}/i/showcase/simba9.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/health-right.png"
   iconRounded: false
   title: "Health Right : Simplified Medical Travel"
