@@ -17659,8 +17659,9 @@
 	    if (previousRoute && modalToClose) {
 	      var isBrokenPushState = Device.ie || Device.edge || Device.firefox && !Device.ios;
 	      var needHistoryBack = router.params.pushState && navigateOptions.pushState !== false;
+	      var currentRouteWithoutPushState = router.currentRoute && router.currentRoute.route && router.currentRoute.route.options && router.currentRoute.route.options.pushState === false;
 
-	      if (needHistoryBack && !isBrokenPushState) {
+	      if (needHistoryBack && !isBrokenPushState && !currentRouteWithoutPushState) {
 	        History.back();
 	      }
 
@@ -17668,7 +17669,7 @@
 	      router.history.pop();
 	      router.saveHistory();
 
-	      if (needHistoryBack && isBrokenPushState) {
+	      if (needHistoryBack && isBrokenPushState && !currentRouteWithoutPushState) {
 	        History.back();
 	      }
 
@@ -29484,6 +29485,8 @@
 	    var panel = _assertThisInitialized(_this);
 
 	    panel.params = extendedParams;
+	    panel.$containerEl = panel.params.containerEl ? $(panel.params.containerEl).eq(0) : app.root;
+	    panel.containerEl = panel.$containerEl[0];
 	    var $el;
 
 	    if (panel.params.el) {
@@ -29509,11 +29512,11 @@
 	    if (panel.params.backdrop && panel.params.backdropEl) {
 	      $backdropEl = $(panel.params.backdropEl);
 	    } else if (panel.params.backdrop) {
-	      $backdropEl = app.root.children('.panel-backdrop');
+	      $backdropEl = panel.$containerEl.children('.panel-backdrop');
 
 	      if ($backdropEl.length === 0) {
 	        $backdropEl = $('<div class="panel-backdrop"></div>');
-	        app.root.prepend($backdropEl);
+	        panel.$containerEl.prepend($backdropEl);
 	      }
 	    }
 
@@ -29539,13 +29542,12 @@
 	    key: "getViewEl",
 	    value: function getViewEl() {
 	      var panel = this;
-	      var app = panel.app;
 	      var viewEl;
 
-	      if (app.root.children('.views').length > 0) {
-	        viewEl = app.root.children('.views')[0];
+	      if (panel.$containerEl.children('.views').length > 0) {
+	        viewEl = panel.$containerEl.children('.views')[0];
 	      } else {
-	        viewEl = app.root.children('.view')[0];
+	        viewEl = panel.$containerEl.children('.view')[0];
 	      }
 
 	      return viewEl;
@@ -29817,24 +29819,24 @@
 	    value: function insertToRoot() {
 	      var panel = this;
 	      var $el = panel.$el,
-	          app = panel.app,
-	          $backdropEl = panel.$backdropEl;
+	          $backdropEl = panel.$backdropEl,
+	          $containerEl = panel.$containerEl;
 	      var $panelParentEl = $el.parent();
 	      var wasInDom = $el.parents(document).length > 0;
 
-	      if (!$panelParentEl.is(app.root) || $el.prevAll('.views, .view').length) {
-	        var $insertBeforeEl = app.root.children('.panel, .views, .view').eq(0);
-	        var $insertAfterEl = app.root.children('.panel-backdrop').eq(0);
+	      if (!$panelParentEl.is($containerEl) || $el.prevAll('.views, .view').length) {
+	        var $insertBeforeEl = $containerEl.children('.panel, .views, .view').eq(0);
+	        var $insertAfterEl = $containerEl.children('.panel-backdrop').eq(0);
 
 	        if ($insertBeforeEl.length) {
 	          $el.insertBefore($insertBeforeEl);
 	        } else if ($insertAfterEl) {
 	          $el.insertBefore($insertAfterEl);
 	        } else {
-	          app.root.prepend($el);
+	          $containerEl.prepend($el);
 	        }
 
-	        if ($backdropEl && $backdropEl.length && (!$backdropEl.parent().is(app.root) && $backdropEl.nextAll('.panel').length === 0 || $backdropEl.parent().is(app.root) && $backdropEl.nextAll('.panel').length === 0)) {
+	        if ($backdropEl && $backdropEl.length && (!$backdropEl.parent().is($containerEl) && $backdropEl.nextAll('.panel').length === 0 || $backdropEl.parent().is($containerEl) && $backdropEl.nextAll('.panel').length === 0)) {
 	          $backdropEl.insertBefore($el);
 	        }
 
@@ -30055,7 +30057,8 @@
 	      swipeOnlyClose: false,
 	      swipeActiveArea: 0,
 	      swipeThreshold: 0,
-	      closeByBackdropClick: true
+	      closeByBackdropClick: true,
+	      containerEl: undefined
 	    }
 	  },
 	  static: {
@@ -33449,7 +33452,7 @@
 	    value: function renderSearchbar() {
 	      var ss = this;
 	      if (ss.params.renderSearchbar) return ss.params.renderSearchbar.call(ss);
-	      var searchbarHTML = "\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" placeholder=\"".concat(ss.params.searchbarPlaceholder, "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          ").concat(ss.params.searchbarDisableButton ? "\n          <span class=\"searchbar-disable-button\">".concat(ss.params.searchbarDisableText, "</span>\n          ") : '', "\n        </div>\n      </form>\n    ");
+	      var searchbarHTML = "\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" spellcheck=\"".concat(ss.params.searchbarSpellcheck || 'false', "\" placeholder=\"").concat(ss.params.searchbarPlaceholder, "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          ").concat(ss.params.searchbarDisableButton ? "\n          <span class=\"searchbar-disable-button\">".concat(ss.params.searchbarDisableText, "</span>\n          ") : '', "\n        </div>\n      </form>\n    ");
 	      return searchbarHTML;
 	    }
 	  }, {
@@ -33988,6 +33991,7 @@
 	      searchbarPlaceholder: 'Search',
 	      searchbarDisableText: 'Cancel',
 	      searchbarDisableButton: undefined,
+	      searchbarSpellcheck: false,
 	      closeOnSelect: false,
 	      virtualList: false,
 	      virtualListHeight: undefined,
@@ -50218,7 +50222,7 @@
 	    value: function renderSearchbar() {
 	      var ac = this;
 	      if (ac.params.renderSearchbar) return ac.params.renderSearchbar.call(ac);
-	      var searchbarHTML = "\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" placeholder=\"".concat(ac.params.searchbarPlaceholder, "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          ").concat(ac.params.searchbarDisableButton ? "\n          <span class=\"searchbar-disable-button\">".concat(ac.params.searchbarDisableText, "</span>\n          ") : '', "\n        </div>\n      </form>\n    ").trim();
+	      var searchbarHTML = "\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" spellcheck=\"".concat(ac.params.searchbarSpellcheck || 'false', "\" placeholder=\"").concat(ac.params.searchbarPlaceholder, "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          ").concat(ac.params.searchbarDisableButton ? "\n          <span class=\"searchbar-disable-button\">".concat(ac.params.searchbarDisableText, "</span>\n          ") : '', "\n        </div>\n      </form>\n    ").trim();
 	      return searchbarHTML;
 	    }
 	  }, {
@@ -50604,6 +50608,7 @@
 	      searchbarPlaceholder: 'Search...',
 	      searchbarDisableText: 'Cancel',
 	      searchbarDisableButton: undefined,
+	      searchbarSpellcheck: false,
 	      popupPush: false,
 	      popupSwipeToClose: undefined,
 	      animate: true,
@@ -54687,7 +54692,7 @@
 	};
 
 	/**
-	 * Framework7 5.7.11
+	 * Framework7 5.7.12
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -54695,7 +54700,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: August 17, 2020
+	 * Released on: September 3, 2020
 	 */
 
 
@@ -67378,6 +67383,7 @@
 	      var disableEl;
 	      var props = self.props;
 	      var placeholder = props.placeholder,
+	          spellcheck = props.spellcheck,
 	          clearButton = props.clearButton,
 	          disableButton = props.disableButton,
 	          disableButtonText = props.disableButtonText,
@@ -67424,6 +67430,7 @@
 	          },
 	          value: value,
 	          placeholder: placeholder,
+	          spellCheck: spellcheck,
 	          type: 'search',
 	          onInput: self.onInput,
 	          onChange: self.onChange.bind(self),
@@ -67598,6 +67605,10 @@
 	  placeholder: {
 	    type: String,
 	    default: 'Search'
+	  },
+	  spellcheck: {
+	    type: Boolean,
+	    default: undefined
 	  },
 	  disableButton: {
 	    type: Boolean,
@@ -70423,7 +70434,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.7.11
+	 * Framework7 React 5.7.12
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -70431,7 +70442,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: August 17, 2020
+	 * Released on: September 3, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
