@@ -25,6 +25,17 @@ community:
   - v5
   - React
 -
+  title: Framework7 iOS App Store
+  iconUrl: "/i/templates/appstore.png"
+  author:
+    url: https://github.com/immanuel192/
+    name: Trung Dang
+  url: https://github.com/immanuel192/framework7-appstore-vue
+  description: iOS App Store UI made with Framework7 and Vue
+  badges:
+  - v5
+  - Vue
+-
   title: Framework7 Recipes
   icon:
     text: Framework7 Recipes
