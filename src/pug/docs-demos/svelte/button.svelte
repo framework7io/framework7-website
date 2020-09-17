@@ -86,7 +86,7 @@
           <Button>Button</Button>
           <Button active>Active</Button>
         </Segmented>
-        <Segmented raised tag="p">
+        <Segmented tag="p">
           <Button outline>Outline</Button>
           <Button outline>Outline</Button>
           <Button outline active>Active</Button>
@@ -96,7 +96,7 @@
           <Button round>Button</Button>
           <Button round active>Active</Button>
         </Segmented>
-        <Segmented raised round tag="p">
+        <Segmented round tag="p">
           <Button round outline>Outline</Button>
           <Button round outline>Outline</Button>
           <Button round outline active>Active</Button>
