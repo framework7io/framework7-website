@@ -142,7 +142,7 @@ block content
     p With Webpack it is possible to load page components on demand, it is possible with F7's async route, for example:
     :code(lang="js")
           {
-            path: '/about',
+            path: '/about/',
             async(routeTo, routeFrom, resolve, reject) {
               // dynamic import component; returns promise
               const vueComponent = () => import('./pages/about.vue');
