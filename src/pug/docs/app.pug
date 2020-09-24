@@ -18,7 +18,7 @@ block content
             id: 'com.myapp.test',
             // Enable swipe panel
             panel: {
-              swipe: 'left',
+              swipe: true,
             },
             // ... other parameters
           });
@@ -289,9 +289,8 @@ block content
             id: 'com.myapp.test',
             // Extended by Panel component:
             panel: {
-              swipe: 'left',
-              leftBreakpoint: 768,
-              rightBreakpoint: 1024,
+              swipe: true,
+              visibleBreakpoint: 1024,
             },
             // Extended by Dialog component:
             dialog: {
