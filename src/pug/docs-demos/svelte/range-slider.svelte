@@ -40,7 +40,7 @@
             ></Range>
           </ListItemCell>
           <ListItemCell class="width-auto flex-shrink-0">
-            <Icon ios="f7:sun_max" aurora="f7:sun_max" md="material:brightness_high"></Icon>
+            <Icon ios="f7:sun_max_fill" aurora="f7:sun_max_fill" md="material:brightness_high"></Icon>
           </ListItemCell>
         </ListItem>
       </List>
@@ -52,7 +52,7 @@
       <List simpleList>
         <ListItem>
           <ListItemCell class="width-auto flex-shrink-0">
-            <Icon ios="f7:money_dollar_round" aurora="f7:money_dollar_round" md="material:attach_money"></Icon>
+            <Icon ios="f7:money_dollar_circle" aurora="f7:money_dollar_circle" md="material:attach_money"></Icon>
           </ListItemCell>
           <ListItemCell class="flex-shrink-3">
             <Range
@@ -67,7 +67,7 @@
             ></Range>
           </ListItemCell>
           <ListItemCell class="width-auto flex-shrink-0">
-            <Icon ios="f7:money_dollar_round_fill" aurora="f7:money_dollar_round_fill" md="material:monetization_on"></Icon>
+            <Icon ios="f7:money_dollar_circle_fill" aurora="f7:money_dollar_circle_fill" md="material:monetization_on"></Icon>
           </ListItemCell>
         </ListItem>
       </List>
