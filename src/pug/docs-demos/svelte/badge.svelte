@@ -5,7 +5,7 @@
       <Navbar sliding title="Badge">
         <NavRight>
           <Link iconOnly>
-            <Icon ios="f7:person_fill" aurora="f7:person_fill" md="material:person">
+            <Icon ios="f7:person_circle_fill" aurora="f7:person_circle_fill" md="material:person">
               <Badge color="red">5</Badge>
             </Icon>
           </Link>
