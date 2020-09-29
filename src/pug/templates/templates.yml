@@ -1,6 +1,53 @@
 official:
 community:
 -
+  title: HackerNews7
+  iconUrl: https://github.com/GuillaumeBiton/HackerNews7/raw/master/assets-src/apple-touch-icon.png
+  author:
+    url: https://github.com/GuillaumeBiton
+    name: Guillaume Biton
+  url: https://github.com/GuillaumeBiton/hackernews7-svelte
+  previewUrl: http://guillaumebiton.github.io/hackernews7-svelte/
+  description: Hacker News Reader powered by Framework7 and Svelte
+  badges:
+  - v5
+  - Svelte
+-
+  title: Framework7 iOS App Store
+  iconUrl: "/i/templates/appstore.png"
+  author:
+    url: https://github.com/nolimits4web/
+    name: Vladimir Kharlampidi
+  url: https://github.com/framework7io/framework7-appstore-react
+  previewUrl: https://f7appstore.netlify.app/
+  description: iOS App Store UI made with Framework7 and React
+  badges:
+  - v5
+  - React
+-
+  title: Framework7 iOS App Store
+  iconUrl: "/i/templates/appstore.png"
+  author:
+    url: https://github.com/immanuel192/
+    name: Trung Dang
+  url: https://github.com/immanuel192/framework7-appstore-vue
+  description: iOS App Store UI made with Framework7 and Vue
+  badges:
+  - v5
+  - Vue
+-
+  title: Framework7 Recipes
+  icon:
+    text: Framework7 Recipes
+    bgColor: '#ee350f'
+    textColor: '#fff'
+  author:
+    url: https://github.com/framework7io/framework7-recipes
+    name: Community
+  url: https://github.com/framework7io/framework7-recipes
+  previewUrl: https://framework7io.github.io/framework7-recipes/
+  description: Framework7 proof of concept templates, layouts and scripts
+-
   title: Telefones Úteis
   iconUrl: "/i/templates/telefones.png"
   author:

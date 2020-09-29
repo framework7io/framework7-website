@@ -3,12 +3,14 @@ import initDocsSearch from './init-docs-search';
 import initDocsDevice from './init-docs-device';
 import initDocsNav from './init-docs-nav';
 import initDocsHeaders from './init-docs-headers';
+import initDocsColorForm from './init-docs-color-form';
 import copyToClipboard from './copy-to-clipboard';
 
 initDocsSearch();
 initDocsDevice();
 initDocsNav();
 initDocsHeaders();
+initDocsColorForm();
 
 function trackOutboundClick(url, category) {
   if (!window.ga || !url) return;

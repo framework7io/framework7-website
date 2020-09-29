@@ -1,5 +1,82 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/simba.jpg"
+  iconRounded: true
+  title: "ZIGGU SIMBA"
+  author:
+    url: https://github.com/godwon2095
+    name: SeongWon Jang
+  links:
+    appstore: https://apps.apple.com/gb/app/%EC%A7%81%EA%B5%AC%EC%8B%AC%EB%B0%94-%EA%B5%AD%EA%B0%80%EB%B3%84-%EA%B0%80%EA%B2%A9%EB%B9%84%EA%B5%90/id1493628365
+    googleplay: https://play.google.com/store/apps/details?id=com.simbaing
+  description: |
+    The smart solution to procuring the hottest brands around the world, SIMBA, collects data from various e-commerce platforms to analyze and provide real-time price comparisons, as well as streamlined channels for international shipping.
+    Find the lowest price for the item!
+    Compare real-time prices from major marketplaces around the world and sort by country to find the lowest price anywhere in the world!
+    One check-out for all platforms!
+    Use one shopping cart to check out once for products from any number of e-commerce platforms. Review all respective local taxes and fees at check-out!
+    Shop internationally without hassle!
+    The shortest and quickest shipping routes are calculated real-time. From order confirmation, local tracking, international shipping, customs, and tariffs, the whole process will be taken care of!
+    Simple buying, SIMBA!
+  screenshots:
+  - "#{cdn}/i/showcase/simba1.png"
+  - "#{cdn}/i/showcase/simba2.png"
+  - "#{cdn}/i/showcase/simba3.png"
+  - "#{cdn}/i/showcase/simba4.png"
+  - "#{cdn}/i/showcase/simba5.png"
+  - "#{cdn}/i/showcase/simba6.png"
+  - "#{cdn}/i/showcase/simba7.png"
+  - "#{cdn}/i/showcase/simba8.png"
+  - "#{cdn}/i/showcase/simba9.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/health-right.png"
+  iconRounded: false
+  title: "Health Right : Simplified Medical Travel"
+  author:
+    url: https://vikas-sheoran.web.app
+    name: Vikas Sheoran
+  links:
+    website: https://healthright.co.in
+  description: |
+    Health Right is a medical knowledge driven facilitator platform where technology and management comes together to bridge the gap of a disease or ailment and the required treatment.
+    Team Health Right is committed to help maximum people realize their highest possible level of health.
+    At Health Right we help and handhold the people at each step in exercising their objective RIGHT of better health.
+    A seamless medical care services stream awaits as you take your first step towards Health Right . . .
+  screenshots:
+  - "#{cdn}/i/showcase/health-right-1.png"
+  - "#{cdn}/i/showcase/health-right-2.png"
+  - "#{cdn}/i/showcase/health-right-3.png"
+  - "#{cdn}/i/showcase/health-right-4.png"
+  - "#{cdn}/i/showcase/health-right-5.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/hafla.png"
+  iconRounded: true
+  title: "hafla"
+  author:
+    url: https://gohafla.com
+    name: hafla
+  links:
+    appstore: https://apps.apple.com/us/app/hafla/id1449585171
+    googleplay: https://play.google.com/store/apps/details?id=com.sny.app
+    website: https://gohafla.com
+  description: |
+    Do you also quickly lose track when planning your leisure time in everyday life or in a new city?
+    Now it's easier than ever to organize activities alone or with friends and experience new cool adventures!
+    hafla is an app for planning and managing your activities with friends. You can use hafla just as well to get to know a new city. It connects you via your contacts with your friends who already use hafla.
+    Create an event, invite your friends and off you go!
+    In a group chat you can easily discuss the details and manage events.
+    No idea what you should do tomorrow? hafla helps here too! We suggest local activities that you might enjoy.
+    Once you have found the right activity, organize it with friends and enjoy the hafla way of life!
+  screenshots:
+  - "#{cdn}/i/showcase/hafla-1.png"
+  - "#{cdn}/i/showcase/hafla-2.png"
+  - "#{cdn}/i/showcase/hafla-3.png"
+  - "#{cdn}/i/showcase/hafla-4.png"
+  - "#{cdn}/i/showcase/hafla-5.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/Quotes.png"
   iconRounded: true
   title: "Quotes-Inspirational , motivational , life quotes"

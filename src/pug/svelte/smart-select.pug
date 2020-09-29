@@ -39,7 +39,18 @@ block content
           td Object with <a href="../docs/smart-select.html#smart-select-parameters">Smart Select Parameters</a>
 
     h2 Access To Smart Select Instance
-    p You can access Smart Select initialized instance by accessing `.f7SmartSelect` property of `<ListItem>` component.
+    p You can access Smart Select initialized instance by calling `.smartSelectInstance` method of `<ListItem>` component.
+    ```svelte
+      <ListItem smartSelect bind:this={component} ... />
+
+      <script>
+        //
+        let component;
+
+        // to get instance in some method
+        const smartSelectInstance = component.smartSelectInstance();
+      </script>
+    ```
 
     .with-device
       h2(data-device-preview="../docs-demos/svelte/smart-select.html") Examples

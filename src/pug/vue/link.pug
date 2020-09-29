@@ -71,6 +71,11 @@ block content
           td
           td Link <a href="../docs/tooltip.html">tooltip</a> text to show on link hover/press
         tr
+          td tooltip-trigger
+          td string
+          td hover
+          td Defines how to trigger (open) Tooltip. Can be `hover` or `click`. If `hover` tooltip will be toggled on mouse hover on desktop, and with tap and hold on touch devices
+        tr
           th(colspan="4") &lt;f7-link&gt; Smart Select related properties
         tr
           td smart-select
@@ -132,7 +137,7 @@ block content
           <!-- Tabs -->
           <f7-tabs>
             <f7-tab id="tab-1" tab-active>Tab 1</f7-tab>
-            <f7-tab id="tab-1">Tab 2</f7-tab>
+            <f7-tab id="tab-2">Tab 2</f7-tab>
           </f7-tabs>
           <!-- Switch Between Tabs -->
           <f7-link tab-link="#tab-1" tab-link-active>Show Tab 1</f7-link>
@@ -161,4 +166,4 @@ block content
 
     h4 With Icon & Color
     :code(lang="html")
-          <f7-link icon-f7="home" text="Home" color="red"></f7-link>
+          <f7-link icon-f7="house" text="Home" color="red"></f7-link>

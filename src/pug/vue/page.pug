@@ -210,6 +210,12 @@ block content
           td page:beforeremove
           td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. This event won't be triggered for `keepAlive` routes.
         tr
+          td page:tabshow
+          td Event will be triggered when page's parent <a href="/docs/tabs.html#views-as-tabs">View as Tab</a> becomes visible
+        tr
+          td page:tabhide
+          td Event will be triggered when page's parent <a href="/docs/tabs.html#views-as-tabs">View as Tab</a> becomes hidden
+        tr
           td ptr:pullstart
           td Event will be triggered when you start to move pull to refresh content
         tr

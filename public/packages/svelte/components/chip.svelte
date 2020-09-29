@@ -1,16 +1,15 @@
 <script>
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount, onDestroy } from 'svelte';
 
   import Mixins from '../utils/mixins';
   import Utils from '../utils/utils';
+  import restProps from '../utils/rest-props';
   import hasSlots from '../utils/has-slots';
+  import f7 from '../utils/f7';
 
   import Icon from './icon.svelte';
 
   const dispatch = createEventDispatcher();
-
-  export let id = undefined;
-  export let style = undefined;
 
   let className = undefined;
   export { className as class };
@@ -21,6 +20,12 @@
   export let mediaBgColor = undefined;
   export let mediaTextColor = undefined;
   export let outline = undefined;
+
+  export let tooltip = undefined;
+  export let tooltipTrigger = undefined;
+
+  let el;
+  let f7Tooltip;
 
   $: classes = Utils.classNames(
     className,
@@ -41,8 +46,51 @@
   $: hasMediaSlots = hasSlots(arguments, 'media');
   // eslint-disable-next-line
   $: hasTextSlots = hasSlots(arguments, 'text');
+  // eslint-disable-next-line
+  $: hasDefaultSlots = hasSlots(arguments, 'default');
 
   $: hasIcon = $$props.icon || $$props.iconMaterial || $$props.iconF7 || $$props.iconMd || $$props.iconIos || $$props.iconAurora;
+
+  let tooltipText = tooltip;
+  function watchTooltip(newText) {
+    const oldText = tooltipText;
+    if (oldText === newText) return;
+    tooltipText = newText;
+    if (!newText && f7Tooltip) {
+      f7Tooltip.destroy();
+      f7Tooltip = null;
+      return;
+    }
+    if (newText && !f7Tooltip && f7.instance) {
+      f7Tooltip = f7.instance.tooltip.create({
+        targetEl: el,
+        text: newText,
+        trigger: tooltipTrigger,
+      });
+      return;
+    }
+    if (!newText || !f7Tooltip) return;
+    f7Tooltip.setText(newText);
+  }
+  $: watchTooltip(tooltip);
+
+  onMount(() => {
+    if (!tooltip) return;
+    f7.ready(() => {
+      f7Tooltip = f7.instance.tooltip.create({
+        targetEl: el,
+        text: tooltip,
+        trigger: tooltipTrigger,
+      });
+    });
+  });
+
+  onDestroy(() => {
+    if (f7Tooltip && f7Tooltip.destroy) {
+      f7Tooltip.destroy();
+      f7Tooltip = null;
+    }
+  });
 
   function onClick(e) {
     dispatch('click', [e]);
@@ -56,7 +104,7 @@
 </script>
 <!-- svelte-ignore a11y-missing-attribute -->
 <!-- svelte-ignore a11y-missing-content -->
-<div id={id} style={style} class={classes} on:click={onClick}>
+<div bind:this={el} class={classes} on:click={onClick} {...restProps($$restProps)}>
   {#if media || hasMediaSlots || hasIcon}
     <div class={mediaClasses}>
       {#if hasIcon}
@@ -75,10 +123,11 @@
       <slot name="media" />
     </div>
   {/if}
-  {#if text || hasTextSlots}
+  {#if text || hasTextSlots || hasDefaultSlots}
     <div class="chip-label">
       {Utils.text(text)}
       <slot name="text" />
+      <slot />
     </div>
   {/if}
   {#if deleteable}

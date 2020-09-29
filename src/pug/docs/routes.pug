@@ -371,42 +371,54 @@ block content
           th Type
           th Description
       tbody
-      tr
-        td animate
-        td boolean
-        td whether the page should be animated or not (overwrites default router settings)
-      tr
-        td history
-        td boolean
-        td whether the page should be saved in router history
-      tr
-        td pushState
-        td boolean
-        td whether the page should be saved in browser state. In case you are using `pushState`, then you can pass here `false` to prevent route getting in browser history
-      tr
-        td reloadCurrent
-        td boolean
-        td replace the current page with the new one from route
-      tr
-        td reloadPrevious
-        td boolean
-        td replace the previous page in history with the new one from route
-      tr
-        td reloadAll
-        td boolean
-        td load new page and remove all previous pages from history and DOM
-      tr
-        td context
-        td object
-        td custom/extended context for Template7/Component page (when route loaded from `template`, `templateUrl`, `component` or `componentUrl`)
-      tr
-        td props
-        td object
-        td props that will be passed as Vue/React page component props
-      tr
-        td transition
-        td string
-        td <a href="./view.html#custom-page-transitions">Custom page transition name</a>
+        tr
+          td animate
+          td boolean
+          td whether the page should be animated or not (overwrites default router settings)
+        tr
+          td history
+          td boolean
+          td whether the page should be saved in router history
+        tr
+          td pushState
+          td boolean
+          td whether the page should be saved in browser state. In case you are using `pushState`, then you can pass here `false` to prevent route getting in browser history
+        tr
+          td reloadCurrent
+          td boolean
+          td replace the current page with the new one from route, no animation in this case
+        tr
+          td reloadPrevious
+          td boolean
+          td replace the previous page in history with the new one from route
+        tr
+          td reloadAll
+          td boolean
+          td load new page and remove all previous pages from history and DOM
+        tr
+          td clearPreviousHistory
+          td boolean
+          td previous pages history will be cleared after reloading/navigate to the specified route
+        tr
+          td context
+          td object
+          td custom/extended context for Template7/Component page (when route loaded from `template`, `templateUrl`, `component` or `componentUrl`)
+        tr
+          td ignoreCache
+          td boolean
+          td if set to `true` then it will ignore if such URL in cache and reload it using XHR again
+        tr
+          td force
+          td boolean
+          td if set to `true` then it will ignore previous page in history and load specified one
+        tr
+          td props
+          td object
+          td props that will be passed as Vue/React page component props
+        tr
+          td transition
+          td string
+          td <a href="./view.html#custom-page-transitions">Custom page transition name</a>
     h2 Async Route
     p `async` route property is very powerful tool designed to return dynamic route properties. It is a function with the following arguments:
     .method-wrap
@@ -681,7 +693,7 @@ block content
         },
         // Use async route to check if the user is logged in:
         {
-          path: '/secured-page/',
+          path: '/secured-content/',
           async(routeTo, routeFrom, resolve, reject) {
             if (userIsLoggedIn) {
               resolve({
@@ -795,7 +807,7 @@ block content
         },
         {
           path: 'profile-edit',
-          url: 'profile.html',
+          url: 'profile-edit.html',
           beforeLeave: function (routeTo, routeFrom, resolve, reject) {
             if (/* user didn't save edited form */) {
               app.dialog.confirm(

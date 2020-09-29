@@ -8,6 +8,21 @@ body.body-docs {
     display: flex;
   }
 }
+.docs-page-nav {
+  border-top: 1px solid #eee;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 2em;
+  padding-top: 1em;
+  a {
+    font-weight: 600;
+  }
+  a:hover {
+    text-decoration: none;
+    opacity: 0.55;
+  }
+}
 .docs-start-button {
   text-align: center;
   margin: 2em 0 1em;
@@ -33,6 +48,18 @@ body.body-docs {
     padding-right: 340px;
     .device-spacer {
       height: 400px;
+    }
+  }
+  .with-device-inline {
+    position: relative;
+    .docs-inline-device {
+      position: absolute;
+      right: -20px;
+      top: 0;
+      @media (max-width: 600px) {
+        position: relative;
+        right: 0;
+      }
     }
   }
   h2[id], h3[id] {
@@ -320,6 +347,10 @@ ul.method-parameters {
       + a {
         margin-top: 10px;
       }
+    }
+    .patreon-button {
+      white-space: nowrap;
+      color: @redColor;
     }
   }
   ul {
@@ -627,5 +658,66 @@ ul.method-parameters {
         content:'device_desktop';
       }
     }
+  }
+  .docs-content table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+.docs-color-form {
+  fieldset {
+    margin: 1em 0;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    padding: 16px;
+    background: #fff;
+    box-sizing: border-box;
+    line-height: 1.3;
+    legend {
+      font-weight: bold;
+      display: block;
+      margin: 0;
+    }
+    p {
+      margin-top: 0;
+    }
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+  @media (min-width: 1100px) {
+    &-col {
+      float: left;
+      width: calc(50% - 8px);
+    }
+    &-col + &-col {
+      float: right;
+    }
+  }
+  &-radio {
+    display: inline-flex;
+    margin-right: 32px;
+    align-items: center;
+    cursor: pointer;
+    input {
+      margin: 0;
+      margin-right: 8px;
+    }
+  }
+  &-input {
+    display: inline-flex;
+    align-items: center;
+    input {
+      margin-left: 8px;
+    }
+    input[type="text"] {
+      border-radius: 4px;
+      padding: 4px 8px;
+      border: 1px solid #ddd;
+    }
+  }
+  &-code code {
+    min-height: 210px;
   }
 }

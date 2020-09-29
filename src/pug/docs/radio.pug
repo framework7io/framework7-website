@@ -14,51 +14,88 @@ block content
     ul.docs-index
     h2 Radio Layout
     p Radio layout is pretty simple:
-    :code(lang="html")
-          <!-- radio element -->
-          <label class="radio">
-            <!-- radio input -->
-            <input type="radio">
-            <!-- radio icon -->
-            <i class="icon-radio"></i>
-          </label>
+    ```html
+      <!-- radio element -->
+      <label class="radio">
+        <!-- radio input -->
+        <input type="radio">
+        <!-- radio icon -->
+        <i class="icon-radio"></i>
+      </label>
+    ```
     h2 Radio Group/List
     p To create Radio group/list we need to use <a href="list-view.html">List View</a> with few additions:
-    :code(lang="html")
-          <div class="list">
-            <ul>
-              <!-- Single radio item -->
-              <li>
-                <label class="item-radio item-content">
-                  <!-- Radio input -->
-                  <input type="radio" name="my-radio" value="radio-1"/>
-                  <!-- Radio icon -->
-                  <i class="icon icon-radio"></i>
-                  <div class="item-inner">
-                    <!-- Radio Title -->
-                    <div class="item-title">Books</div>
-                  </div>
-                </label>
-              </li>
-              <!-- Another radio item -->
-              <li>
-                <label class="item-radio item-content">
-                  <!-- Checked by default -->
-                  <input type="radio" name="my-radio" value="radio-2" checked/>
-                  <i class="icon icon-radio"></i>
-                  <div class="item-inner">
-                    <div class="item-title">Music</div>
-                  </div>
-                </label>
-              </li>
-              ...
-            </ul>
-          </div>
+    ```html
+      <div class="list">
+        <ul>
+          <!-- Single radio item -->
+          <li>
+            <label class="item-radio item-content">
+              <!-- Radio input -->
+              <input type="radio" name="my-radio" value="radio-1"/>
+              <!-- Radio icon -->
+              <i class="icon icon-radio"></i>
+              <div class="item-inner">
+                <!-- Radio Title -->
+                <div class="item-title">Books</div>
+              </div>
+            </label>
+          </li>
+          <!-- Another radio item -->
+          <li>
+            <label class="item-radio item-content">
+              <!-- Checked by default -->
+              <input type="radio" name="my-radio" value="radio-2" checked/>
+              <i class="icon icon-radio"></i>
+              <div class="item-inner">
+                <div class="item-title">Music</div>
+              </div>
+            </label>
+          </li>
+          ...
+        </ul>
+      </div>
+    ```
     .important-note
       ul
         li `item-content` must be a `<label>` element with additional `item-radio` class
         li Radio input (`<input type="radio">`) must be a first child of `item-content`
         li Radio icon must be <b>after</b> radio input
+    h3 Radio Icon Position
+    p By default radio list item icon is displayed in the end of the list item in iOS theme, and in the beginning of the list item in MD and Aurora themes.
+    p And it is possible to override this behavior to specify position of radio list item icon - in the beginning or in the end of the list item.
+    p To do this, we need to add additional `item-radio-icon-start` or `item-radio-icon-end` class to `item-radio`:
+    ```html
+      <!-- Additional "item-radio-icon-start" class will force radio icon to appear in the beginning of the list item for all themes -->
+      <li>
+        <!-- Additional "item-radio-icon-start" class -->
+        <label class="item-radio item-radio-icon-start item-content">
+          <!-- Radio input -->
+          <input type="radio" name="my-radio" value="radio-1"/>
+          <!-- Radio icon -->
+          <i class="icon icon-radio"></i>
+          <div class="item-inner">
+            <!-- Radio Title -->
+            <div class="item-title">Books</div>
+          </div>
+        </label>
+      </li>
+
+      <!-- Additional "item-radio-icon-end" class will force radio icon to appear in the end of the list item for all themes -->
+      <li>
+        <!-- Additional "item-radio-icon-end" class -->
+        <label class="item-radio item-radio-icon-end item-content">
+          <!-- Radio input -->
+          <input type="radio" name="my-radio" value="radio-1"/>
+          <!-- Radio icon -->
+          <i class="icon icon-radio"></i>
+          <div class="item-inner">
+            <!-- Radio Title -->
+            <div class="item-title">Books</div>
+          </div>
+        </label>
+      </li>
+    ```
 
     +cssVars('radio')
 
@@ -66,110 +103,156 @@ block content
       h2(data-device-preview="../docs-demos/core/radio.html") Examples
       h4 Inline
       :code(lang="html")
-            <div class="block block-strong">
-              <p>Lorem <label class="radio"><input type="radio" name="demo-radio-inline"><i class="icon-radio"></i></label> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <label class="radio"><input type="radio" name="demo-radio-inline"><i class="icon-radio"></i></label> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
-            </div>
+        <div class="block block-strong">
+          <p>Lorem <label class="radio"><input type="radio" name="demo-radio-inline"><i class="icon-radio"></i></label> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <label class="radio"><input type="radio" name="demo-radio-inline"><i class="icon-radio"></i></label> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
+        </div>
       h4 Radio Group
-      :code(lang="html")
-            <div class="list">
-              <ul>
-                <li>
-                  <label class="item-radio item-content">
-                    <input type="radio" name="demo-radio" value="Books" checked />
-                    <i class="icon icon-radio"></i>
-                    <div class="item-inner">
-                      <div class="item-title">Books</div>
-                    </div>
-                  </label>
-                </li>
-                <li>
-                  <label class="item-radio item-content">
-                    <input type="radio" name="demo-radio" value="Movies"/>
-                    <i class="icon icon-radio"></i>
-                    <div class="item-inner">
-                      <div class="item-title">Movies</div>
-                    </div>
-                  </label>
-                </li>
-                <li>
-                  <label class="item-radio item-content">
-                    <input type="radio" name="demo-radio" value="Food"/>
-                    <i class="icon icon-radio"></i>
-                    <div class="item-inner">
-                      <div class="item-title">Food</div>
-                    </div>
-                  </label>
-                </li>
-                <li>
-                  <label class="item-radio item-content">
-                    <input type="radio" name="demo-radio" value="Drinks"/>
-                    <i class="icon icon-radio"></i>
-                    <div class="item-inner">
-                      <div class="item-title">Drinks</div>
-                    </div>
-                  </label>
-                </li>
-              </ul>
-            </div>
+      h5 Icon in the beginning of the list item
+      ```html
+        <div class="list">
+          <ul>
+            <li>
+              <label class="item-radio item-radio-icon-start item-content">
+                <input type="radio" name="demo-radio-start" value="Books" checked />
+                <i class="icon icon-radio"></i>
+                <div class="item-inner">
+                  <div class="item-title">Books</div>
+                </div>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-radio-icon-start item-content">
+                <input type="radio" name="demo-radio-start" value="Movies"/>
+                <i class="icon icon-radio"></i>
+                <div class="item-inner">
+                  <div class="item-title">Movies</div>
+                </div>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-radio-icon-start item-content">
+                <input type="radio" name="demo-radio-start" value="Food"/>
+                <i class="icon icon-radio"></i>
+                <div class="item-inner">
+                  <div class="item-title">Food</div>
+                </div>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-radio-icon-start item-content">
+                <input type="radio" name="demo-radio-start" value="Drinks"/>
+                <i class="icon icon-radio"></i>
+                <div class="item-inner">
+                  <div class="item-title">Drinks</div>
+                </div>
+              </label>
+            </li>
+          </ul>
+        </div>
+      ```
+      h5 Icon in the end of the list item
+      ```html
+        <div class="list">
+          <ul>
+            <li>
+              <label class="item-radio item-radio-icon-end item-content">
+                <input type="radio" name="demo-radio-end" value="Books" checked />
+                <i class="icon icon-radio"></i>
+                <div class="item-inner">
+                  <div class="item-title">Books</div>
+                </div>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-radio-icon-end item-content">
+                <input type="radio" name="demo-radio-end" value="Movies"/>
+                <i class="icon icon-radio"></i>
+                <div class="item-inner">
+                  <div class="item-title">Movies</div>
+                </div>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-radio-icon-end item-content">
+                <input type="radio" name="demo-radio-end" value="Food"/>
+                <i class="icon icon-radio"></i>
+                <div class="item-inner">
+                  <div class="item-title">Food</div>
+                </div>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-radio-icon-end item-content">
+                <input type="radio" name="demo-radio-end" value="Drinks"/>
+                <i class="icon icon-radio"></i>
+                <div class="item-inner">
+                  <div class="item-title">Drinks</div>
+                </div>
+              </label>
+            </li>
+          </ul>
+        </div>
+      ```
       h4 With Media Lists
-      :code(lang="html")
-            <div class="list media-list">
-              <ul>
-                <li>
-                  <label class="item-radio item-content">
-                    <input type="radio" name="demo-media-radio" value="1" checked />
-                    <i class="icon icon-radio" checked></i>
-                    <div class="item-inner">
-                      <div class="item-title-row">
-                        <div class="item-title">Facebook</div>
-                        <div class="item-after">17:14</div>
-                      </div>
-                      <div class="item-subtitle">New messages from John Doe</div>
-                      <div class="item-text">Lorem ipsum ...</div>
-                    </div>
-                  </label>
-                </li>
-                <li>
-                  <label class="item-radio item-content">
-                    <input type="radio" name="demo-media-radio" value="2"/>
-                    <i class="icon icon-radio"></i>
-                    <div class="item-inner">
-                      <div class="item-title-row">
-                        <div class="item-title">John Doe (via Twitter)</div>
-                        <div class="item-after">17:11</div>
-                      </div>
-                      <div class="item-subtitle">John Doe (@_johndoe) mentioned you on Twitter!</div>
-                      <div class="item-text">Lorem ipsum ...</div>
-                    </div>
-                  </label>
-                </li>
-                <li>
-                  <label class="item-radio item-content">
-                    <input type="radio" name="demo-media-radio" value="3"/>
-                    <i class="icon icon-radio"></i>
-                    <div class="item-inner">
-                      <div class="item-title-row">
-                        <div class="item-title">Facebook</div>
-                        <div class="item-after">16:48</div>
-                      </div>
-                      <div class="item-subtitle">New messages from John Doe</div>
-                      <div class="item-text">Lorem ipsum ...</div>
-                    </div>
-                  </label>
-                </li>
-                <li>
-                  <label class="item-radio item-content">
-                    <input type="radio" name="demo-media-radio" value="4"/>
-                    <i class="icon icon-radio"></i>
-                    <div class="item-inner">
-                      <div class="item-title-row">
-                        <div class="item-title">John Doe (via Twitter)</div>
-                        <div class="item-after">15:32</div>
-                      </div>
-                      <div class="item-subtitle">John Doe (@_johndoe) mentioned you on Twitter!</div>
-                      <div class="item-text">Lorem ipsum ...</div>
-                    </div>
-                  </label>
-                </li>
-              </ul>
-            </div>
+      ```html
+        <div class="list media-list">
+          <ul>
+            <li>
+              <label class="item-radio item-radio-icon-start item-content">
+                <input type="radio" name="demo-media-radio" value="1" checked />
+                <i class="icon icon-radio" checked></i>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Facebook</div>
+                    <div class="item-after">17:14</div>
+                  </div>
+                  <div class="item-subtitle">New messages from John Doe</div>
+                  <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                </div>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-radio-icon-start item-content">
+                <input type="radio" name="demo-media-radio" value="2"/>
+                <i class="icon icon-radio"></i>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">John Doe (via Twitter)</div>
+                    <div class="item-after">17:11</div>
+                  </div>
+                  <div class="item-subtitle">John Doe (@_johndoe) mentioned you on Twitter!</div>
+                  <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                </div>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-radio-icon-start item-content">
+                <input type="radio" name="demo-media-radio" value="3"/>
+                <i class="icon icon-radio"></i>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Facebook</div>
+                    <div class="item-after">16:48</div>
+                  </div>
+                  <div class="item-subtitle">New messages from John Doe</div>
+                  <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                </div>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-radio-icon-start item-content">
+                <input type="radio" name="demo-media-radio" value="4"/>
+                <i class="icon icon-radio"></i>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">John Doe (via Twitter)</div>
+                    <div class="item-after">15:32</div>
+                  </div>
+                  <div class="item-subtitle">John Doe (@_johndoe) mentioned you on Twitter!</div>
+                  <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                </div>
+              </label>
+            </li>
+          </ul>
+        </div>
+      ```

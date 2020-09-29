@@ -2,6 +2,222 @@
 
 # Change Log
 
+# [v5.7.12](https://github.com/framework7io/framework7/compare/v5.7.11...v5.7.12) - September 3, 2020
+  * Core
+    * Autocomplete
+      * Added `searchbarSpellcheck` parameter to enable/disable spell check on searchbar's input. Disabled by default
+    * Panel
+      * Now accepts new `containerEl` parameter to be able be mounted to other element rather than root
+    * Smart Select
+      * Added `searchbarSpellcheck` parameter to enable/disable spell check on searchbar's input. Disabled by default
+  * React/Svelte/Vue
+    * Searchbar
+      * Added `spellcheck` prop to set `spellcheck` attributte on input element
+    * ListInput
+      * Fixed not working `onTextEditorChange` prop in Svelte component
+    * Minor fixes
+
+# [v5.7.11](https://github.com/framework7io/framework7/compare/v5.7.10...v5.7.11) - August 17, 2020
+  * Core
+    * Gauge
+      * Fixed issue when gauge text wasn't appear on update
+    * Router Component
+      * Fixed issue when empty `value` attribute was removed on `<option>` element
+  * Svelte
+    * List
+      * Fixed issue with not working `sortableSort` event
+
+# [v5.7.10](https://github.com/framework7io/framework7/compare/v5.7.9...v5.7.10) - July 14, 2020
+  * Core
+    * Tooltip
+      * Fixed issue with positioning for SVG elements
+
+# [v5.7.9](https://github.com/framework7io/framework7/compare/v5.7.8...v5.7.9) - July 12, 2020
+  * Core
+    * Router Component
+      * Fixed issue with multiple event handler arguments
+    * Searchbar
+      * Not it won't scroll page on expandable open when navbar large collapsed
+    * Treeview
+      * Changed style to use/set item `min-height` instead of `height`
+    * View
+      * Now it will be also auto initialized on dynamically created panel open
+    * Minor fixes
+
+# [v5.7.8](https://github.com/framework7io/framework7/compare/v5.7.7...v5.7.8) - June 13, 2020
+  * Core
+    * Card
+      * Expandable card now has `user-select: none` when it is closed
+    * Router Component
+      * Fixed issue with parsing scoped styles that have `"{"` content
+  * React/Svelte/Vue
+    * Badge
+      * Added support for Tooltip with `tooltip` and `tooltipTrigger` props
+    * Chip
+      * Added support for Tooltip with `tooltip` and `tooltipTrigger` props
+  * Minor fixes
+
+# [v5.7.7](https://github.com/framework7io/framework7/compare/v5.7.6...v5.7.7) - June 5, 2020
+  * React/Svelte/Vue
+    * ListInput
+      * Fixed issue with infinite loop when updating `calendarParams`
+    * Stepper
+      * Auto update stepper internal value on `value` prop update
+  * Minor Fixes
+
+# [v5.7.6](https://github.com/framework7io/framework7/compare/v5.7.5...v5.7.6) - June 1, 2020
+  * Core
+    * Range slider
+      * Fix for better handling touch events on Windows
+    * Router
+      * Fixed issue with parsing route params for Master Detail master page when navigating directly to detail page
+    * Tabs
+      * Automatically set initial animated tab position based on `tab-active` class
+  * React/Svelte/Vue
+    * List
+      * Added `virtualListInstance()` methods to get Virtual List instance in Svelte
+    * ListItem
+      * Added `smartSelectInstance()` method to get Smart Select instance in Svelte
+    * ListInput
+      * Auto update Color Picker and Calendar params on `calendarParams` and `colorPickerParams` props changes
+  * Minor fixes
+
+# [v5.7.5](https://github.com/framework7io/framework7/compare/v5.7.2...v5.7.5) - May 16, 2020
+  * Core
+    * Input
+      * Now `app.input.validate()` and `app.input.validateInputs()` should correctly work with readonly inputs (like in Calendar, Picker, Color Picker, etc.)
+    * Range
+      * Added support for `scaleSteps: 1`
+      * Fixed issue when it didn't update size in parent resizable panel
+    * Swiper updated to latest 5.4.0
+      * Hash Navigation
+        * Added `hashChange` and `hashSet` events (#3557)
+      * Lazy
+        * Added support for `<picture>` lazy loading (#3560)
+      * Mousewheel
+        * Potentially improved vertical scrolling issues on Windows/Linux
+      * `History` and `Hash Navigation` modules are now included in Framework7 version of Swiper
+    * Toast
+      * Added `horizontalPosition` parameter - to set horizontal alignment on wide screen
+    * Touch
+      * Tweaked touch events detection
+  * React/Vue/Svelte
+    * Fab
+      * Fixed issue when it rendered not correctly without icon
+    * Chip
+      * Now it has default slot which goes to text label
+
+# [v5.7.2](https://github.com/framework7io/framework7/compare/v5.7.1...v5.7.2) - May 9, 2020
+  * Core
+    * Autocomplete
+      * Fixed wrong padding when used as dropdown in searchbar
+    * Buttons
+      * Fixed rendering issue with "strong" segmented happened some times in iOS
+    * Device
+      * Better iPad detection
+    * Panel
+      * Now it auto-hides/restores on push Popup or Sheet modal open
+    * View
+      * Fixed `current` view detection when using layout with swipeable tabs
+  * Svelte
+    * All components now supports `$$restProps` under the hood, it means all extra props passed to components will be set as html attributes on component element
+  * Minor fixes and improvements
+
+# [v5.7.1](https://github.com/framework7io/framework7/compare/v5.7.0...v5.7.1) - May 1, 2020
+  * Core
+    * CSS
+      * `body` background color changed to `#000` when dark theme enabled
+    * Panel
+      * Now it correctly handles disabling backdrop.
+    * Text Editor
+      * Popover now calculates position relative to app root element (#3618)
+    * View
+      * Fixed `current` view detection when using layout with swipeable tabs
+  * Minor fixes
+
+# [v5.7.0](https://github.com/framework7io/framework7/compare/v5.6.0...v5.7.0) - April 25, 2020
+  * Core
+    * Card
+      * Fixed issue when expandable card didn't work when expandable card was opened in another page
+      * Fixed issue when used with "hide on scroll" Navbar/Toolbar on iOS
+    * Panel
+      * New `swipeNoFollow` parameter - fallback option for potentially better performance on old/slow devices. If you enable it, then swipe panel will not follow your finger during touch move, it will be automatically opened/closed on swipe left/right. (default false)
+    * Popup
+      * Disabled top/bottom safe areas on "tablet" when opened not as full screen popup
+      * Now it correctly handles and stack multiple opened "push" popups
+    * Radio
+      * Now radio icon can be rendered in the beginning or in the end of the list item, by adding `item-radio-icon-start` or `item-radio-icon-end` class to `item-radio` list element
+    * Smart Select
+      * Add support for more data-option-icon properties:
+        * `data-option-icon` - if it just a string then will create an icon with this class. If it is in the format of `f7:icon_name` then it will create a F7-Icons icon. If it is in the format of `md:icon_name` then it will create a Material Icons icon
+        * `data-option-icon-ios` - same as `data-option-icon` but will apply only when iOS theme is active
+        * `data-option-icon-md` - same as `data-option-icon` but will apply only when MD theme is active
+        * `data-option-icon-aurora` - same as `data-option-icon` but will apply only when Aurora theme is active
+    * Swiper - updated to latest 5.3.8
+      * Core
+        * Fix iOS bug with double bounce on free mode momentum bounce
+      * A11y
+        * Fixed focus ring on navigation buttons (#3544)
+        * Fixed RegExp issue in paginationBulletMessage (#3540, #3541)
+      * Thumbs
+        * Added thumbs.autoScrollOffset parameter that allows to set on what thumbs active slide from edge it should automaticall move scroll thumbs
+    * View
+      * New `masterDetailResizable` parameter to enable resizable Master Detail layout
+      * New `viewResize` / `view:resize` event on Master Detail resize
+  * React/Vue/Svelte
+    * ListItem
+      * New `radioIcon` string property to define where to display radio icon - in the beginning or in the end of the list item. Can be `start` or `end`
+    * Navbar
+      * Fixed not working `onBackClick` event in Svelte
+    * Panel
+      * New `swipeNoFollow` boolean property - fallback option for potentially better performance on old/slow devices. If you enable it, then swipe panel will not follow your finger during touch move, it will be automatically opened/closed on swipe left/right. (default false)
+    * View
+      * New `materDetailResizable` boolean property to enable resizable Master Detail layout
+      * New `viewResize` / `view:resize` event on Master Detail resize
+  * Minor fixes
+
+# [v5.6.0](https://github.com/framework7io/framework7/compare/v5.5.5...v5.6.0) - April 18, 2020
+  * Core
+    * App
+      * Added new app instance boolean property `app.darkTheme`. This property has effect only when `autoDarkTheme` enabled and indicates whether the dark theme active or not
+      * Added new app instance event `darkThemeChange`. It has effect only when `autoDarkTheme` enabled and fires on device preferred color scheme change
+    * Checkbox
+      * Fixed styles in RTL mode
+    * Device
+      * Added `nwjs` property that is true when app running under NW.js environment
+    * Router
+      * New `pageTabShow`/`page:tabshow` and `pageTabHide`/`page:tabhide` page events. These events fires on page's parent View-Tab show/hide
+    * Segmented
+      * Added animation for "strong" segmented active button
+      * **BREAKING CHANGE** - now "strong" segmented requires new `<span class="segmented-highlight">` element
+  * React/Vue/Svelte
+    * Input
+      * Added support for `inputmode` input attribute
+    * ListInput
+      * Added support for `inputmode` input attribute
+      * Fixed issue with `errorMessage` in Svelte
+    * ListItem
+      * Added `tabLink` and `tabLinkActive` props to make list item as a tab link
+    * Page
+      * New `pageTabShow`/`page:tabshow` and `pageTabHide`/`page:tabhide` page events. These events fire on page's parent View-Tab show/hide
+  * Minor fixes
+
+# [v5.5.5](https://github.com/framework7io/framework7/compare/v5.5.4...v5.5.5) - April 10, 2020
+  * Core
+    * Modals (Popup, Actions, Popover, Login Screen, etc.)
+      * Now it is possible to specify all modal parameters via `data-` attributes, e.g.
+        ```html
+          <div class="sheet-modal" data-swipe-to-close="true" data-close-on-escape="true">
+            ...
+          </div>
+        ```
+    * Swiper - updated to latest 5.3.7
+      * Core
+        * Fixed `cssMode` behavior in RTL layout
+      * Zoom
+        * Fixed issue with not working double-tap to toggle with virtual slides
+  * Minor fixes
+
 # [v5.5.4](https://github.com/framework7io/framework7/compare/v5.5.3...v5.5.4) - April 2, 2020
   * Core
     * Input

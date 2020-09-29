@@ -2,6 +2,10 @@ diamond:
 platinum:
 gold:
 -
+  title: WFM Buddy - Delighting your Workforce
+  link: https://www.wfmbuddy.com/
+  imageUrl: "/i/sponsors/wfmbuddy.png"
+-
   title: Privicy - Privacy control for consumers
   link: https://privicy.com/
   imageUrl: "/i/sponsors/privicy.png"
@@ -15,9 +19,29 @@ gold:
   imageUrl: "/i/sponsors/sparheld.jpg"
 silver:
 -
-  title: Infatica - Global Peer-to-Business Proxy Network
-  link: https://infatica.io
-  imageUrl: "/i/sponsors/infatica.svg"
+  title: Casinot
+  link: https://www.casinot.net
+  imageUrl: "/i/sponsors/casinotnet.png"
+-
+  title: ParasKasino
+  link: https://www.paraskasino.fi
+  imageUrl: "/i/sponsors/paraskasino.png"
+-
+  title: NettiCasinoHEX.com
+  link: https://netticasinohex.com
+  imageUrl: "/i/sponsors/netticasinohex.png"
+-
+  title: CasinoHEX.se
+  link: https://casinohex.se
+  imageUrl: "/i/sponsors/casinohexse.png"
+-
+  title: CasinoHEX.at
+  link: https://casinohex.at
+  imageUrl: "/i/sponsors/casinohexat.png"
+-
+  title: Kasinot.fi
+  link: https://www.kasinot.fi
+  imageUrl: "/i/sponsors/kasinotfi.png"
 -
   title: Thorium Builder - full visual Framework7 app builder
   link: https://www.thoriumbuilder.com/
@@ -30,27 +54,59 @@ silver:
   title: Tommy
   link: http://mytommy.com
   imageUrl: "/i/sponsors/tommy.png"
--
-  title: securCom
-  link: https://www.securcom.me/
-  imageUrl: "/i/sponsors/securcom.png"
 topSupporter:
 -
-  title: vpn for popcorn time
-  link: https://cooltechzone.com/popcorn-time-vpn
-  imageUrl: "/i/sponsors/cooltechzone.png"
+  title: RajBet online casino India
+  link: https://raj.bet
+  imageUrl: "/i/sponsors/rajbet.png"
+-
+  title: Linux VPS Monovm
+  link: https://monovm.com/linux-vps/
+  imageUrl: "/i/sponsors/monovm.jpg"
+-
+  title: Findmate - International Dating & Friends
+  link: https://findmate.app
+  imageUrl: "/i/sponsors/findmate.png"
+-
+  title: "#1 Guide to Online Casinos in New Zealand"
+  link: https://onlinecasinoguide.co.nz
+  imageUrl: "/i/sponsors/onlinecasinoguide.png"
+-
+  title: VPN services for torrenting
+  link: https://vpn-review.com/vpn-for-torrenting
+  imageUrl: "/i/sponsors/vpn.png"
+-
+  title: Neue Online Casinos
+  link: https://www.neueonlinecasinos.de
+  imageUrl: "/i/sponsors/neueonlinecasinos.svg"
+-
+  title: Tutlance.com - Pay For Homework Answers, Assignments and Essay Solutions
+  link: https://tutlance.com
+  imageUrl: "/i/sponsors/tutlance.png"
+-
+  title: EduBirdie - The professional essay writing service for students who can't even
+  link: https://edubirdie.com
+  imageUrl: "/i/sponsors/edubirdie.png"
+-
+  title: Nätcasinon
+  link: https://www.natcasinon.com
+  imageUrl: "/i/sponsors/natcasinon.png"
+-
+  title: Baocasino
+  link: https://www.baocasino.com
+  imageUrl: "/i/sponsors/baocasino.png"
+-
+  title: Parhaat Nettikasinot
+  link: https://www.parhaatnettikasinot.com
+  imageUrl: "/i/sponsors/parhaatnettikasinot.png"
+-
+  title: Paraphrasing tool- rewrite, paraphrase your article
+  link: https://paraphrasetools.com
+  imageUrl: "/i/sponsors/paraphrasetools.png"
 -
   title:
   link: https://www.bonus.com.de/
   imageUrl: "/i/sponsors/bonusfinder.png"
--
-  title: Rolex Replica Watches
-  link: https://www.upscalerolex.to/
-  imageUrl: "/i/sponsors/upscalerolex.jpg"
--
-  title: Ananya MultiTech Private Limited
-  link: http://ananyamultitech.com/
-  imageUrl: "/i/sponsors/ananya.png"
 -
   title: Kqapius, INC.
   link: https://kqapi.us
@@ -59,14 +115,6 @@ topSupporter:
   title: Write My Paper For Me
   link: https://writersperhour.com/write-my-paper
   imageUrl: "/i/sponsors/writersperhour.jpg"
--
-  title: Linux VPS Monovm
-  link: https://monovm.com/linux-vps/
-  imageUrl: "/i/sponsors/monovm.jpg"
--
-  title: Unicorn.io - Choose your Dream Job
-  link: https://unicorn.io/
-  imageUrl: "/i/sponsors/unicorn.svg"
 -
   title: Bid4Papers - Write My Essay
   link: https://bid4papers.com/write-my-essay.html
@@ -89,7 +137,7 @@ topSupporter:
   imageUrl: "/i/sponsors/cyberbrain.png"
 -
   title: HICAPPS - Health Informatics Custom APPs
-  link: https://hicapps.cl/web/
+  link: https://hicapps.cl
   imageUrl: "/i/sponsors/hicapps.png"
 -
   title: Blokt - Cryptocurrency News

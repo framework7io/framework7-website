@@ -172,18 +172,18 @@ block content
     p We can use following app methods to control FABs:
     table.methods-table
       tr
-        td app.fab.open(fabEl, targetEl)
+        td app.fab.open(<span>fabEl</span>, <span>targetEl</span>)
         td Open FAB speed dial actions/buttons, or morph it to specified target
           ul.method-parameters
             li <span class="parameter">fabEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required FAB
             li <span class="parameter">targetEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of FAB morph target. <em>Optional</em>
       tr
-        td app.fab.close(fabEl)
+        td app.fab.close(<span>fabEl</span>)
         td Close FAB speed dial actions/buttons, or morph it back from specified target
           ul.method-parameters
             li <span class="parameter">fabEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required FAB
       tr
-        td app.fab.toggle(fabEl)
+        td app.fab.toggle(<span>fabEl</span>)
         td Toggle FAB speed dial actions/buttons
           ul.method-parameters
             li <span class="parameter">fabEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required FAB
@@ -278,7 +278,7 @@ block content
           </div>
 
           <!-- FAB Right Bottom (Orange) -->
-          <div class="fab fab-right-bottom">
+          <div class="fab fab-right-bottom color-orange">
             ...
             <!-- FAB speed dial actions with labels -->
             <div class="fab-buttons fab-buttons-top">

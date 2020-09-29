@@ -44,8 +44,25 @@ block content
       </div>
     .important-note
       p Note that smart select works only in initialized Views, because it used Router to load smart select pages or open modals!
-    h3 Custom Option Icons, Colors and Images
-    p You can also specify Smart Select page' list view element custom icon, image or color. We need to use additional `data-option-icon`, `data-option-image` attributes on smart select `<select>` (to set default image for all options) or on `<option>` to set image or icon on single option.
+    h3 Custom Option Icons
+    p We can specify Smart Select page' list view (option) icons by using `data-option-icon` attributes on `<option>` elements:
+    ul
+      li `data-option-icon` - if it just a string then will create an icon with this class. If it is in the format of `f7:icon_name` then it will create a F7-Icons icon. If it is in the format of `md:icon_name` then it will create a Material Icons icon
+      li `data-option-icon-ios` - same as `data-option-icon` but will apply only when iOS theme is active
+      li `data-option-icon-md` - same as `data-option-icon` but will apply only when MD theme is active
+      li `data-option-icon-aurora` - same as `data-option-icon` but will apply only when Aurora theme is active
+    p For example:
+    ul
+      li `<option data-option-icon="my-icon">` will produce the `<i class="icon my-icon"></i>` list item icon
+      li `<option data-option-icon="f7:house_fill">` will produce the `<i class="icon f7-icons">house_fill</i>` list item icon
+      li `<option data-option-icon="material:home">` will produce the `<i class="icon material-icons">home</i>` list item icon
+      li `<option data-option-icon-ios="f7:house" data-option-icon-md="material:home">` will produce:
+        ul
+          li `<i class="icon f7-icons">house</i>` - when iOS theme is active
+          li `<i class="icon material-icons">home</i>` - when MD theme is active
+
+    h3 Custom Option Colors and Images
+    p We can also specify Smart Select page' list view element image or color. We need to use additional `data-option-image` attributes on smart select `<select>` (to set default image for all options) or on `<option>` to set image or icon on single option.
     p For single option we may also use `data-option-color` and `data-option-class` attributes to add specific option color or css class for additional styling
     :code(lang="html")
       <li>
@@ -295,6 +312,11 @@ block content
           td string
           td Cancel
           td Searchbar "cancel" link text. Has effect only in iOS theme
+        tr
+          td searchbarSpellcheck
+          td boolean
+          td false
+          td Sets value of `spellcheck` attribute on Searchbar's input element
         tr
           td appendSearchbarNotFound
           td boolean<br>string<br>HTMLElement

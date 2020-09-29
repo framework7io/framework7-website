@@ -2,13 +2,11 @@
   import { createEventDispatcher, onMount, onDestroy, setContext } from 'svelte';
   import Mixins from '../utils/mixins';
   import Utils from '../utils/utils';
+  import restProps from '../utils/rest-props';
   import f7 from '../utils/f7';
   import hasSlots from '../utils/has-slots';
 
   const dispatch = createEventDispatcher();
-
-  export let id = undefined;
-  export let style = undefined;
 
   let className = undefined;
   export { className as class };
@@ -61,6 +59,10 @@
 
   let el;
   let f7VirtualList;
+
+  export function virtualListInstance() {
+    return f7VirtualList;
+  }
 
   setContext('f7ListMedia', mediaList);
   setContext('f7ListSortable', sortable);
@@ -123,8 +125,8 @@
     dispatch('sortableDisable');
     if (typeof $$props.onSortableDisable === 'function') $$props.onSortableDisable();
   }
-  function onSortableSort(sortableEl, sortData, listEl) {
-    if (sortableEl !== listEl) return;
+  function onSortableSort(listItemEl, sortData, listEl) {
+    if (listEl !== el) return;
     dispatch('sortableSort', [sortData]);
     if (typeof $$props.onSortableSort === 'function') $$props.onSortableSort(sortData);
   }
@@ -197,12 +199,11 @@
 <!-- svelte-ignore a11y-missing-attribute -->
 {#if form}
   <form
-    id={id}
     bind:this={el}
-    style={style}
     class={classes}
     data-sortable-move-elements={typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined}
     on:submit={onSubmit}
+    {...restProps($$restProps)}
   >
     <slot name="before-list" />
     {#if hasUlSlots && ul}
@@ -217,11 +218,10 @@
   </form>
 {:else}
   <div
-    id={id}
     bind:this={el}
-    style={style}
     class={classes}
     data-sortable-move-elements={typeof sortableMoveElements !== 'undefined' ? sortableMoveElements.toString() : undefined}
+    {...restProps($$restProps)}
   >
     <slot name="before-list" />
     {#if hasUlSlots && ul}

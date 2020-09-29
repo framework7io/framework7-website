@@ -178,6 +178,11 @@ block content
           td Cancel
           td Searchbar "Cancel" button text
         tr
+          td searchbarSpellcheck
+          td boolean
+          td false
+          td Sets value of `spellcheck` attribute on Searchbar's input element
+        tr
           td notFoundText
           td string
           td Nothing found
@@ -814,7 +819,7 @@ block content
             })
       h4 Simple Standalone Autocomplete
       :code(lang="html")
-            div class="list">
+            <div class="list">
               <div class="block-header">Simple Standalone Autocomplete</div>
               <ul>
                 <li>

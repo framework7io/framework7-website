@@ -57,12 +57,17 @@ block content
           td false
           td Keeps resizable row in fixed size (not resizable)
         tr
-          td resizableHhandler
+          td resizableHandler
           td boolean
           td true
           td Adds resize handler element (between rows) to resize them
         tr
           th(colspan="4") &lt;Col&gt; properties
+        tr
+          td tag
+          td string
+          td div
+          td Defines which tag must be used to render column element
         tr
           td width
           td number<br>string
@@ -70,27 +75,27 @@ block content
           td Column width. Check available <a href="../docs/grid.html#column-sizes">Column Sizes</a>
         tr
           td xsmall
-          td number<string>
+          td number<br>string
           td
           td Column width when app width >= 480px
         tr
           td small
-          td number<string>
+          td number<br>string
           td
           td Column width when app width >= 568px
         tr
           td medium
-          td number<string>
+          td number<br>string
           td
           td Column width when app width >= 768px
         tr
           td large
-          td number<string>
+          td number<br>string
           td
           td Column width when app width >= 1024px
         tr
           td xlarge
-          td number<string>
+          td number<br>string
           td
           td Column width when app width >= 1200px
         tr
@@ -245,20 +250,20 @@ block content
         <Block>
           <p>Grid cells have different size on Phone/Tablet</p>
           <Row>
-            <Col width="100" medium="50">.col-100.tablet-50</Col>
-            <Col width="100" medium="50">.col-100.tablet-50</Col>
+            <Col width="100" medium="50">.col-100.medium-50</Col>
+            <Col width="100" medium="50">.col-100.medium-50</Col>
           </Row>
           <Row>
-            <Col width="50" medium="25">.col-50.tablet-25</Col>
-            <Col width="50" medium="25">.col-50.tablet-25</Col>
-            <Col width="50" medium="25">.col-50.tablet-25</Col>
-            <Col width="50" medium="25">.col-50.tablet-25</Col>
+            <Col width="50" medium="25">.col-50.medium-25</Col>
+            <Col width="50" medium="25">.col-50.medium-25</Col>
+            <Col width="50" medium="25">.col-50.medium-25</Col>
+            <Col width="50" medium="25">.col-50.medium-25</Col>
           </Row>
           <Row>
-            <Col width="100" medium="40">.col-100.tablet-40</Col>
-            <Col width="50" medium="60">.col-50.tablet-60</Col>
-            <Col width="50" medium="66">.col-50.tablet-66</Col>
-            <Col width="100" medium="33">.col-100.tablet-33</Col>
+            <Col width="100" medium="40">.col-100.medium-40</Col>
+            <Col width="50" medium="60">.col-50.medium-60</Col>
+            <Col width="50" medium="66">.col-50.medium-66</Col>
+            <Col width="100" medium="33">.col-100.medium-33</Col>
           </Row>
         </Block>
 

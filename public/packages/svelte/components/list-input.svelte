@@ -2,14 +2,12 @@
   import { createEventDispatcher, onMount, afterUpdate, onDestroy, getContext } from 'svelte';
   import Mixins from '../utils/mixins';
   import Utils from '../utils/utils';
+  import restProps from '../utils/rest-props';
   import f7 from '../utils/f7';
   import hasSlots from '../utils/has-slots';
   import TextEditor from './text-editor.svelte';
 
   const dispatch = createEventDispatcher();
-
-  export let id = undefined;
-  export let style = undefined;
 
   let className = undefined;
   export { className as class };
@@ -25,6 +23,7 @@
   export let type = 'text';
   export let name = undefined;
   export let value = undefined;
+  export let inputmode = undefined;
   export let readonly = undefined;
   export let required = undefined;
   export let disabled = undefined;
@@ -87,6 +86,14 @@
   let f7Calendar;
   let f7ColorPicker;
 
+  export function calendarInstance() {
+    return f7Calendar;
+  }
+
+  export function colorPickerInstance() {
+    return f7ColorPicker;
+  }
+
   $: isSortable = sortable || getContext('f7ListSortable');
   $: isSortableOpposite = sortableOpposite || getContext('f7ListSortableOpposite');
 
@@ -138,7 +145,19 @@
     }
   }
 
+  function watchColorPickerParams() {
+    if (!f7.instance || !f7ColorPicker) return;
+    Utils.extend(f7ColorPicker.params, colorPickerParams || {});
+  }
+
+  function watchCalendarParams() {
+    if (!f7.instance || !f7Calendar) return;
+    Utils.extend(f7Calendar.params, calendarParams || {});
+  }
+
   $: watchValue(value);
+  $: watchColorPickerParams(colorPickerParams);
+  $: watchCalendarParams(calendarParams);
 
   $: inputType = type === 'datepicker' || type === 'colorpicker'
     ? 'text'
@@ -255,6 +274,7 @@
     if (typeof $$props.onChange === 'function') $$props.onChange(...args);
     if (type === 'texteditor') {
       dispatch('textEditorChange', [args[1]]);
+      if (typeof $$props.onTextEditorChange === 'function') $$props.onTextEditorChange(...args);
     }
   }
 
@@ -356,7 +376,7 @@
 <!-- svelte-ignore a11y-autofocus -->
 <!-- svelte-ignore a11y-missing-attribute -->
 {#if wrap}
-  <li id={id} style={style} class={classes}>
+  <li class={classes} {...restProps($$restProps)}>
     <slot name="root-start" />
     <div class={itemContentClasses}>
       <slot name="content-start" />
@@ -429,6 +449,7 @@
                 placeholder={placeholder}
                 id={inputId}
                 size={size}
+                inputmode={inputmode}
                 accept={accept}
                 autocomplete={autocomplete}
                 autocorrect={autocorrect}
@@ -475,6 +496,7 @@
                 style={inputStyle}
                 name={name}
                 type={inputType}
+                inputmode={inputmode}
                 placeholder={placeholder}
                 id={inputId}
                 size={size}
@@ -510,7 +532,7 @@
             {/if}
           {/if}
           <slot name="input" />
-          {#if hasErrorMessage && errorMessageForce} && (
+          {#if hasErrorMessage && errorMessageForce}
             <div class="item-input-error-message">
               {Utils.text(errorMessage)}
               <slot name="error-message"/>
@@ -539,7 +561,7 @@
     <slot name="root-end" />
   </li>
 {:else}
-  <div class={itemContentClasses}>
+  <div class={itemContentClasses} {...restProps($$restProps)}>
     <slot name="content-start" />
     {#if isSortable && isSortableOpposite}
       <div class="sortable-handler" />
@@ -610,6 +632,7 @@
               placeholder={placeholder}
               id={inputId}
               size={size}
+              inputmode={inputmode}
               accept={accept}
               autocomplete={autocomplete}
               autocorrect={autocorrect}
@@ -656,6 +679,7 @@
               style={inputStyle}
               name={name}
               type={inputType}
+              inputmode={inputmode}
               placeholder={placeholder}
               id={inputId}
               size={size}
@@ -691,7 +715,7 @@
           {/if}
         {/if}
         <slot name="input" />
-        {#if hasErrorMessage && errorMessageForce} && (
+        {#if hasErrorMessage && errorMessageForce}
           <div class="item-input-error-message">
             {Utils.text(errorMessage)}
             <slot name="error-message"/>

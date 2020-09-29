@@ -199,11 +199,11 @@ block content
                   <f7-treeview-item label="background.jpg" icon-f7="photo_fill" />
                 </f7-treeview-item>
                 <f7-treeview-item label="documents" icon-f7="folder_fill">
-                  <f7-treeview-item label="cv.docx" icon-f7="document_text_fill" />
-                  <f7-treeview-item label="info.docx" icon-f7="document_text_fill" />
+                  <f7-treeview-item label="cv.docx" icon-f7="doc_text_fill" />
+                  <f7-treeview-item label="info.docx" icon-f7="doc_text_fill" />
                 </f7-treeview-item>
                 <f7-treeview-item label=".gitignore" icon-f7="logo_github" />
-                <f7-treeview-item label="index.html" icon-f7="document_text_fill" />
+                <f7-treeview-item label="index.html" icon-f7="doc_text_fill" />
               </f7-treeview>
             </f7-block>
 
@@ -235,13 +235,13 @@ block content
                     :indeterminate="Object.values(checkboxes.documents).indexOf(false) >= 0 && Object.values(checkboxes.documents).indexOf(true) >= 0"
                     @change="(e) => Object.keys(checkboxes.documents).forEach(k => checkboxes.documents[k] = e.target.checked)"
                   />
-                  <f7-treeview-item label="cv.docx" icon-f7="document_text_fill">
+                  <f7-treeview-item label="cv.docx" icon-f7="doc_text_fill">
                     <f7-checkbox slot="content-start"
                       :checked="checkboxes.documents['cv.docx']"
                       @change="checkboxes.documents['cv.docx'] = $event.target.checked"
                     />
                   </f7-treeview-item>
-                  <f7-treeview-item label="info.docx" icon-f7="document_text_fill">
+                  <f7-treeview-item label="info.docx" icon-f7="doc_text_fill">
                     <f7-checkbox slot="content-start"
                       :checked="checkboxes.documents['info.docx']"
                       @change="checkboxes.documents['info.docx'] = $event.target.checked"
@@ -254,7 +254,7 @@ block content
                     @change="checkboxes['.gitignore'] = $event.target.checked"
                   />
                 </f7-treeview-item>
-                <f7-treeview-item label="index.html" icon-f7="document_text_fill">
+                <f7-treeview-item label="index.html" icon-f7="doc_text_fill">
                   <f7-checkbox slot="content-start"
                     :checked="checkboxes['index.html']"
                     @change="checkboxes['index.html'] = $event.target.checked"
@@ -271,11 +271,11 @@ block content
                   <f7-treeview-item label="background.jpg" icon-f7="photo_fill" />
                 </f7-treeview-item>
                 <f7-treeview-item item-toggle label="documents" icon-f7="folder_fill">
-                  <f7-treeview-item label="cv.docx" icon-f7="document_text_fill" />
-                  <f7-treeview-item label="info.docx" icon-f7="document_text_fill" />
+                  <f7-treeview-item label="cv.docx" icon-f7="doc_text_fill" />
+                  <f7-treeview-item label="info.docx" icon-f7="doc_text_fill" />
                 </f7-treeview-item>
                 <f7-treeview-item label=".gitignore" icon-f7="logo_github" />
-                <f7-treeview-item label="index.html" icon-f7="document_text_fill" />
+                <f7-treeview-item label="index.html" icon-f7="doc_text_fill" />
               </f7-treeview>
             </f7-block>
 
@@ -315,14 +315,14 @@ block content
                     selectable
                     :selected="selectedItem === 'cv.docx'"
                     label="cv.docx"
-                    icon-f7="document_text_fill"
+                    icon-f7="doc_text_fill"
                     @click="toggleSelectable($event, 'cv.docx')"
                   />
                   <f7-treeview-item
                     selectable
                     :selected="selectedItem === 'info.docx'"
                     label="info.docx"
-                    icon-f7="document_text_fill"
+                    icon-f7="doc_text_fill"
                     @click="toggleSelectable($event, 'info.docx')"
                   />
                 </f7-treeview-item>
@@ -337,7 +337,7 @@ block content
                   selectable
                   :selected="selectedItem === 'index.html'"
                   label="index.html"
-                  icon-f7="document_text_fill"
+                  icon-f7="doc_text_fill"
                   @click="toggleSelectable($event, 'index.html')"
                 />
               </f7-treeview>
@@ -349,14 +349,14 @@ block content
                 <f7-treeview-item
                   toggle
                   load-children
-                  icon-f7="persons"
+                  icon-f7="person_2_fill"
                   label="Users"
                   @treeview:loadchildren="loadChildren"
                 >
                   <f7-treeview-item
                     v-for="(item, index) in loadedChildren"
                     :key="index"
-                    icon-f7="person"
+                    icon-f7="person_fill"
                     :label="item.name"
                   />
                 </f7-treeview-item>
@@ -366,12 +366,12 @@ block content
             <f7-block-title>With links</f7-block-title>
             <f7-block strong class="no-padding-horizontal">
               <f7-treeview>
-                <f7-treeview-item icon-f7="data_fill" item-toggle label="Modals">
+                <f7-treeview-item icon-f7="square_grid_2x2_fill" item-toggle label="Modals">
                   <f7-treeview-item link="/popup/" icon-f7="link" label="Popup" />
                   <f7-treeview-item link="/dialog/" icon-f7="link" label="Dialog" />
                   <f7-treeview-item link="/action-sheet/" icon-f7="link" label="Action Sheet" />
                 </f7-treeview-item>
-                <f7-treeview-item icon-f7="data_fill" item-toggle label="Navigation Bars">
+                <f7-treeview-item icon-f7="square_grid_2x2_fill" item-toggle label="Navigation Bars">
                   <f7-treeview-item link="/navbar/" icon-f7="link" label="Navbar" />
                   <f7-treeview-item link="/toolbar-tabbar/" icon-f7="link" label="Toolbar & Tabbar" />
                 </f7-treeview-item>

@@ -60,7 +60,19 @@ block content
           td Event will be triggered before current DOM list will be removed and replaced with new document fragment
 
     h2 Access To Virtual List Instance
-    p You can access Virtual List initialized instance by accessing `.f7VirtualList` <List> component's property.
+
+    p You can access Virtual List initialized instance by calling `.virtualListInstance` method of `<ListItem>` component.
+    ```svelte
+      <List virtualList bind:this={component} ... />
+
+      <script>
+        //
+        let component;
+
+        // to get instance in some method
+        const vlInstance = component.virtualListInstance();
+      </script>
+    ```
 
     .with-device
       h2(data-device-preview="../docs-demos/svelte/virtual-list.html") Examples

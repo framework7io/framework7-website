@@ -15,11 +15,16 @@ function handleDeviceScroll() {
     devicePosition = device.parent().outerHeight() - device.outerHeight();
   }
   let stopPosition;
+  let stopPositionStopScrollDevice;
+  let stopPositionPageNav;
+  const stopPositionContent = $('.docs-content .with-device').offset().top + $('.docs-content .with-device').outerHeight() + st - deviceStartOffset;
   if ($('.stop-scroll-device').length > 0) {
-    stopPosition = $('.stop-scroll-device').offset().top + st - deviceStartOffset;
-  } else {
-    stopPosition = $('.docs-content .with-device').offset().top + $('.docs-content .with-device').outerHeight() + st - deviceStartOffset;
+    stopPositionStopScrollDevice = $('.stop-scroll-device').offset().top + st - deviceStartOffset;
   }
+  if ($('.docs-page-nav').length > 0) {
+    stopPositionPageNav = $('.docs-page-nav').offset().top - $('.docs-page-nav')[0].offsetHeight + st - deviceStartOffset;
+  }
+  stopPosition = Math.min(...[stopPositionStopScrollDevice, stopPositionPageNav, stopPositionContent].filter(pos => !!pos));
   if (stopPosition) {
     stopPosition -= device.outerHeight();
   }

@@ -1,0 +1,76 @@
+extends _layout
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-bg
+        .navbar-inner
+          .title Color Themes
+          .right
+            a.link Link
+          .title-large
+            .title-large-text Color Themes
+      .toolbar.toolbar-bottom
+        .toolbar-inner
+          a.link Link 1
+          a.link Link 2
+      .page-content
+        .block
+          p.segmented
+            a(href="#").button.button-outline.button-active Button 1
+            a(href="#").button.button-outline Button 2
+            a(href="#").button.button-outline Button 3
+          p
+            a(href="#").button.button-large.button-fill Fill Button
+        .list
+          ul
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="default", checked)
+                i.icon.icon-radio
+                .item-inner
+                  .item-title Radio 1
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="red")
+                i.icon.icon-radio
+                .item-inner
+                  .item-title Radio 2
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="red")
+                i.icon.icon-radio
+                .item-inner
+                  .item-title Radio 3
+        .list
+          ul
+            li
+              label.item-checkbox.item-content
+                input(type="checkbox", name="color-checkbox", value="1", checked)
+                i.icon.icon-checkbox
+                .item-inner
+                  .item-title Checkbox 1
+            li
+              label.item-checkbox.item-content
+                input(type="checkbox", name="color-checkbox", value="2")
+                i.icon.icon-checkbox
+                .item-inner
+                  .item-title Checkbox 2
+            li
+              label.item-checkbox.item-content
+                input(type="checkbox", name="color-checkbox", value="3")
+                i.icon.icon-checkbox
+                .item-inner
+                  .item-title Checkbox 3
+        .block
+          p.segmented
+            a(href="#").button.button-outline.button-active Button 1
+            a(href="#").button.button-outline Button 2
+            a(href="#").button.button-outline Button 3
+          p
+            a(href="#").button.button-large.button-fill Fill Button
+
+block scripts
+  script.
+    new Framework7();
+

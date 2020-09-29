@@ -180,6 +180,11 @@ block content
           td false
           td Enables radio-item
         tr
+          td radioIcon
+          td string
+          td
+          td Allows to specify radio icon position - in the beggining or in the end of the list item. Can be `start` or `end`. By default radio list item icon is displayed in the end of the list item in iOS theme, and in the beginning of the list item in MD and Aurora themes.
+        tr
           td checked
           td boolean
           td false
@@ -221,6 +226,16 @@ block content
           td boolean<br>string
           td
           td Enables link and link URL if specified as string. Same as `href` prop
+        tr
+          td tabLink
+          td string<br>boolean
+          td
+          td Enables tab link and specify CSS selector of the target tab (if specified as a string)
+        tr
+          td tabLinkActive
+          td boolean
+          td
+          td Makes this tab link active
         tr
         +svelteLinkRouterProps
         tr

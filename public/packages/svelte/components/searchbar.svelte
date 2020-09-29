@@ -2,12 +2,10 @@
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
   import Mixins from '../utils/mixins';
   import Utils from '../utils/utils';
+  import restProps from '../utils/rest-props';
   import f7 from '../utils/f7';
 
   const dispatch = createEventDispatcher();
-
-  export let id = undefined;
-  export let style = undefined;
 
   let className = undefined;
   export { className as class };
@@ -16,6 +14,7 @@
   export let noHairline = false;
   export let form = true;
   export let placeholder = 'Search';
+  export let spellcheck = undefined;
   export let disableButton = true;
   export let disableButtonText = 'Cancel';
   export let clearButton = true;
@@ -178,7 +177,7 @@
   });
 </script>
 {#if form}
-  <form bind:this={el} id={id} style={style} class={classes} on:submit={onSubmit} data-f7-slot={f7Slot}>
+  <form bind:this={el} class={classes} on:submit={onSubmit} data-f7-slot={f7Slot} {...restProps($$restProps)}>
     <slot name="before-inner" />
     <div class="searchbar-inner">
       <slot name="inner-start" />
@@ -187,6 +186,7 @@
         <input
           value={typeof value === 'undefined' ? '' : value}
           placeholder={placeholder}
+          spellcheck={spellcheck}
           type="search"
           on:input={onInput}
           on:change={onChange}
@@ -208,7 +208,7 @@
     <slot name="after-inner" />
   </form>
 {:else}
-  <div bind:this={el} id={id} style={style} class={classes} data-f7-slot={f7Slot}>
+  <div bind:this={el} class={classes} data-f7-slot={f7Slot} {...restProps($$restProps)}>
     <slot name="before-inner" />
     <div class="searchbar-inner">
       <slot name="inner-start" />
@@ -217,6 +217,7 @@
         <input
           value={typeof value === 'undefined' ? '' : value}
           placeholder={placeholder}
+          spellcheck={spellcheck}
           type="search"
           on:input={onInput}
           on:change={onChange}
