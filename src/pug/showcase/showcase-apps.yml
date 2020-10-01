@@ -1,5 +1,27 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/Lasso.png"
+  iconRounded: true
+  title: "Lasso - Memo, Notes, Summary Journal Diary Minutes"
+  author:
+    url: https://saporasocial.me
+    name: Sapora Inc.
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=me.sapora.lasso
+    website: https://saporasocial.me
+  description: |
+  Lasso allows you to create, edit & delete memos which will increase your productivity and helps you in organising your life.Keep track of your day so that you can manage your day.Create shopping list, take notes,create diary entry, plan a event, write articles or simply track your tasks to increase your productivity and priortise what matters to you.
+  screenshots:
+  - "#{cdn}/i/showcase/Lasso-1.png"
+  - "#{cdn}/i/showcase/Lasso-2.png"
+  - "#{cdn}/i/showcase/Lasso-3.png"
+  - "#{cdn}/i/showcase/Lasso-4.png"
+  - "#{cdn}/i/showcase/Lasso-5.png"
+  - "#{cdn}/i/showcase/Lasso-6.png"
+  - "#{cdn}/i/showcase/Lasso-7.png"
+  - "#{cdn}/i/showcase/Lasso-8.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/simba.jpg"
   iconRounded: true
   title: "ZIGGU SIMBA"
