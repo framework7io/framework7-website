@@ -1,4 +1,4 @@
-Framework7-Website
+Framework7 - just save your data by offline docs by our website :
 ==================
 Framework7's website to use these docs offline
 
