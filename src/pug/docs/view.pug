@@ -615,7 +615,7 @@ block content
           td router.navigate(<span>url, options</span>)
           td Navigate to (load) new page
             ul.method-parameters
-              li <span class="parameter">url</span> <span class="parameter-type">string</span> - url to navigate to
+              li <span class="parameter">url</span> - <span class="parameter-type">string</span> - url to navigate to
               li <span class="parameter">options</span> - <span class="parameter-type">object</span> with additional navigation properties (optional):
                 ul
                   li <span class="parameter">reloadCurrent</span> (<span class="parameter-type">boolean</span>) - replace the current page with the new one from route, no animation in this case
@@ -633,7 +633,7 @@ block content
           td router.navigate(<span>parameters, options</span>)
           td Navigate to (load) new page by parameters. This method allows to navigate to route by its `name`.
             ul.method-parameters
-              li <span class="parameter">parameters</span> <span class="parameter-type">object</span> - object with route `name`, `query`, `params` to navigate to.
+              li <span class="parameter">parameters</span> - <span class="parameter-type">object</span> - object with route `name`, `query`, `params` to navigate to.
               li <span class="parameter">options</span> - <span class="parameter-type">object</span> with additional navigation properties (optional). Same as in previous example.
             p For example, if we have the following route:
             :code(lang="js")
@@ -662,7 +662,7 @@ block content
           td router.back(<span>url, options</span>)
           td Go back to previous page, going back in View history
             ul.method-parameters
-              li <span class="parameter">url</span> <span class="parameter-type">string</span> - url to navigate to (optional).
+              li <span class="parameter">url</span> - <span class="parameter-type">string</span> - url to navigate to (optional).
                 ul
                   li If not specified, then it will go back to the previous page in history.
                   li If specified and there is previous page in history then it will be ignored.
@@ -1008,7 +1008,7 @@ block content
       li `page-master` - will be set on Master page
       li `page-master-detail` - will be set on every Detail page
       li `page-master-detail-root` - will be set on first (root) Detail page
-      li `navbar-master` - will be set on Master navbar (only in iOS theme with `diosDnamicNavbar` enabled)
+      li `navbar-master` - will be set on Master navbar (only in iOS theme with `iosDynamicNavbar` enabled)
       li `navbar-master-detail` - will be set on every Detail navbar (only in iOS theme with `iosDynamicNavbar` enabled)
       li `navbar-master-detail-root` - will be set on first (root) Detail navbar (only in iOS theme with `iosDynamicNavbar` enabled)
     p For example:
