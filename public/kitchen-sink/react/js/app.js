@@ -12071,7 +12071,7 @@
 	  var nwjs = typeof nw !== 'undefined' && typeof process !== 'undefined' && typeof process.versions !== 'undefined' && typeof process.versions.nw !== 'undefined';
 	  var macos = platform === 'MacIntel'; // iPadOs 13 fix
 
-	  var iPadScreens = ['1024x1366', '1366x1024', '834x1194', '1194x834', '834x1112', '1112x834', '768x1024', '1024x768'];
+	  var iPadScreens = ['1024x1366', '1366x1024', '834x1194', '1194x834', '834x1112', '1112x834', '768x1024', '1024x768', '820x1180', '1180x820', '810x1080', '1080x810'];
 
 	  if (!ipad && macos && Support.touch && iPadScreens.indexOf("".concat(screenWidth, "x").concat(screenHeight)) >= 0) {
 	    ipad = ua.match(/(Version)\/([\d.]+)/);
@@ -15128,36 +15128,51 @@
 	    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
 	        progress = _ref.progress,
 	        reset = _ref.reset,
-	        transition = _ref.transition;
+	        transition = _ref.transition,
+	        reflow = _ref.reflow;
 
 	    var styles = ['overflow', 'transform', 'transform-origin', 'opacity'];
 
-	    for (var i = 0; i < animatableNavEls.length; i += 1) {
-	      var el = animatableNavEls[i];
+	    if (transition === true || transition === false) {
+	      for (var i = 0; i < animatableNavEls.length; i += 1) {
+	        var el = animatableNavEls[i];
 
-	      if (el && el.el) {
-	        if (transition === true) el.el.classList.add('navbar-page-transitioning');
-	        if (transition === false) el.el.classList.remove('navbar-page-transitioning');
+	        if (el && el.el) {
+	          if (transition === true) el.el.classList.add('navbar-page-transitioning');
+	          if (transition === false) el.el.classList.remove('navbar-page-transitioning');
+	        }
+	      }
+	    }
 
-	        if (el.className && !el.classNameSet && !reset) {
-	          el.el.classList.add(el.className);
-	          el.classNameSet = true;
+	    if (reflow && animatableNavEls.length && animatableNavEls[0] && animatableNavEls[0].el) {
+	      // eslint-disable-next-line
+	      animatableNavEls[0].el._clientLeft = animatableNavEls[0].el.clientLeft;
+	    }
+
+	    for (var _i = 0; _i < animatableNavEls.length; _i += 1) {
+	      var _el = animatableNavEls[_i];
+
+	      if (_el && _el.el) {
+	        if (_el.className && !_el.classNameSet && !reset) {
+	          _el.el.classList.add(_el.className);
+
+	          _el.classNameSet = true;
 	        }
 
-	        if (el.className && reset) {
-	          el.el.classList.remove(el.className);
+	        if (_el.className && reset) {
+	          _el.el.classList.remove(_el.className);
 	        }
 
 	        for (var j = 0; j < styles.length; j += 1) {
 	          var styleProp = styles[j];
 
-	          if (el[styleProp]) {
+	          if (_el[styleProp]) {
 	            if (reset) {
-	              el.el.style[styleProp] = '';
-	            } else if (typeof el[styleProp] === 'function') {
-	              el.el.style[styleProp] = el[styleProp](progress);
+	              _el.el.style[styleProp] = '';
+	            } else if (typeof _el[styleProp] === 'function') {
+	              _el.el.style[styleProp] = _el[styleProp](progress);
 	            } else {
-	              el.el.style[styleProp] = el[styleProp];
+	              _el.el.style[styleProp] = _el[styleProp];
 	            }
 	          }
 	        }
@@ -15331,10 +15346,11 @@
 	    isTouched = false;
 	    isMoved = false;
 	    router.swipeBackActive = false;
-	    $([$currentPageEl[0], $previousPageEl[0]]).removeClass('page-swipeback-active');
+	    var $pages = $([$currentPageEl[0], $previousPageEl[0]]);
+	    $pages.removeClass('page-swipeback-active');
 
 	    if (touchesDiff === 0) {
-	      $([$currentPageEl[0], $previousPageEl[0]]).transform('');
+	      $pages.transform('');
 	      if ($pageShadowEl && $pageShadowEl.length > 0) $pageShadowEl.remove();
 	      if ($pageOpacityEl && $pageOpacityEl.length > 0) $pageOpacityEl.remove();
 
@@ -15366,12 +15382,20 @@
 	    // Add transitioning class for transition-duration
 
 
-	    $([$currentPageEl[0], $previousPageEl[0]]).addClass('page-transitioning page-transitioning-swipeback').transform('');
+	    $pages.addClass('page-transitioning page-transitioning-swipeback');
+
+	    if (!pageChanged) {
+	      // eslint-disable-next-line
+	      $currentPageEl[0]._clientLeft = $currentPageEl[0].clientLeft;
+	    }
+
+	    $pages.transform('');
 
 	    if (dynamicNavbar) {
 	      setAnimatableNavElements({
 	        progress: pageChanged ? 1 : 0,
-	        transition: true
+	        transition: true,
+	        reflow: !pageChanged
 	      });
 	    }
 
@@ -15406,7 +15430,7 @@
 	    }
 
 	    $currentPageEl.transitionEnd(function () {
-	      $([$currentPageEl[0], $previousPageEl[0]]).removeClass('page-transitioning page-transitioning-swipeback');
+	      $pages.removeClass('page-transitioning page-transitioning-swipeback');
 
 	      if (dynamicNavbar) {
 	        setAnimatableNavElements({
@@ -54692,7 +54716,7 @@
 	};
 
 	/**
-	 * Framework7 5.7.12
+	 * Framework7 5.7.13
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -54700,7 +54724,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: September 3, 2020
+	 * Released on: October 9, 2020
 	 */
 
 
@@ -70434,7 +70458,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.7.12
+	 * Framework7 React 5.7.13
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -70442,7 +70466,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: September 3, 2020
+	 * Released on: October 9, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
@@ -73637,7 +73661,7 @@
 	    className: "data-table"
 	  }, /*#__PURE__*/react.createElement("table", null, /*#__PURE__*/react.createElement("thead", null, /*#__PURE__*/react.createElement("tr", null, /*#__PURE__*/react.createElement("th", {
 	    className: "label-cell"
-	  }, "Desert (100g serving)"), /*#__PURE__*/react.createElement("th", {
+	  }, "Dessert (100g serving)"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
 	  }, "Calories"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
@@ -73689,7 +73713,7 @@
 	    className: "data-table"
 	  }, /*#__PURE__*/react.createElement("table", null, /*#__PURE__*/react.createElement("thead", null, /*#__PURE__*/react.createElement("tr", null, /*#__PURE__*/react.createElement("th", {
 	    className: "label-cell"
-	  }, "Desert (100g serving)"), /*#__PURE__*/react.createElement("th", {
+	  }, "Dessert (100g serving)"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
 	  }, "Calories"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
@@ -73743,7 +73767,7 @@
 	    className: "checkbox-cell"
 	  }, /*#__PURE__*/react.createElement(Checkbox$1, null)), /*#__PURE__*/react.createElement("th", {
 	    className: "label-cell"
-	  }, "Desert (100g serving)"), /*#__PURE__*/react.createElement("th", {
+	  }, "Dessert (100g serving)"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
 	  }, "Calories"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
@@ -73815,7 +73839,7 @@
 	    className: "checkbox-cell"
 	  }, /*#__PURE__*/react.createElement(Checkbox$1, null)), /*#__PURE__*/react.createElement("th", {
 	    className: "label-cell"
-	  }, "Desert (100g serving)"), /*#__PURE__*/react.createElement("th", {
+	  }, "Dessert (100g serving)"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
 	  }, "Calories"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
@@ -73949,7 +73973,7 @@
 	    className: "checkbox-cell"
 	  }, /*#__PURE__*/react.createElement(Checkbox$1, null)), /*#__PURE__*/react.createElement("th", {
 	    className: "label-cell"
-	  }, "Desert (100g serving)"), /*#__PURE__*/react.createElement("th", {
+	  }, "Dessert (100g serving)"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
 	  }, "Calories"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
@@ -74039,7 +74063,7 @@
 	    className: "checkbox-cell"
 	  }, /*#__PURE__*/react.createElement(Checkbox$1, null)), /*#__PURE__*/react.createElement("th", {
 	    className: "label-cell sortable-cell sortable-cell-active"
-	  }, "Desert (100g serving)"), /*#__PURE__*/react.createElement("th", {
+	  }, "Dessert (100g serving)"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell sortable-cell"
 	  }, "Calories"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell sortable-cell"
@@ -74147,7 +74171,7 @@
 	    className: "checkbox-cell"
 	  }, /*#__PURE__*/react.createElement(Checkbox$1, null)), /*#__PURE__*/react.createElement("th", {
 	    className: "label-cell"
-	  }, "Desert (100g serving)"), /*#__PURE__*/react.createElement("th", {
+	  }, "Dessert (100g serving)"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
 	  }, "Calories"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
@@ -74241,7 +74265,7 @@
 	    className: "checkbox-cell"
 	  }, /*#__PURE__*/react.createElement(Checkbox$1, null)), /*#__PURE__*/react.createElement("th", {
 	    className: "label-cell"
-	  }, "Desert (100g serving)"), /*#__PURE__*/react.createElement("th", {
+	  }, "Dessert (100g serving)"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
 	  }, "Calories"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
@@ -74369,7 +74393,7 @@
 	    padding: false
 	  }, /*#__PURE__*/react.createElement("table", null, /*#__PURE__*/react.createElement("thead", null, /*#__PURE__*/react.createElement("tr", null, /*#__PURE__*/react.createElement("th", {
 	    className: "label-cell"
-	  }, "Desert (100g serving)"), /*#__PURE__*/react.createElement("th", {
+	  }, "Dessert (100g serving)"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
 	  }, "Calories"), /*#__PURE__*/react.createElement("th", {
 	    className: "numeric-cell"
@@ -74535,7 +74559,7 @@
 	    key: "openPassword",
 	    value: function openPassword() {
 	      var app = this.$f7;
-	      app.dialog.password('Enter your username and password', function (password) {
+	      app.dialog.password('Enter your password', function (password) {
 	        app.dialog.alert("Thank you!<br>Password:".concat(password));
 	      });
 	    }
@@ -75291,7 +75315,7 @@
 	    return /*#__PURE__*/react.createElement(Col, {
 	      key: index,
 	      width: "33",
-	      tabletWidth: "15",
+	      medium: "15",
 	      className: "demo-icon"
 	    }, /*#__PURE__*/react.createElement("div", {
 	      className: "demo-icon-icon"
@@ -75306,7 +75330,7 @@
 	    return /*#__PURE__*/react.createElement(Col, {
 	      key: index,
 	      width: "33",
-	      tabletWidth: "15",
+	      medium: "15",
 	      className: "demo-icon"
 	    }, /*#__PURE__*/react.createElement("div", {
 	      className: "demo-icon-icon"
@@ -76195,7 +76219,7 @@
 	  }, /*#__PURE__*/react.createElement(Icon, {
 	    slot: "media",
 	    icon: "icon-f7"
-	  })), /*#__PURE__*/react.createElement(BlockFooter, null, /*#__PURE__*/react.createElement("p", null, "This list block will look like \"inset\" only on tablets (iPad)"))), /*#__PURE__*/react.createElement(BlockTitle, null, "Media Lists"), /*#__PURE__*/react.createElement(Block, null, /*#__PURE__*/react.createElement("p", null, "Media Lists are almost the same as Data Lists, but with a more flexible layout for visualization of more complex data, like products, services, userc, etc.")), /*#__PURE__*/react.createElement(BlockTitle, null, "Songs"), /*#__PURE__*/react.createElement(List, {
+	  })), /*#__PURE__*/react.createElement(BlockFooter, null, /*#__PURE__*/react.createElement("p", null, "This list block will look like \"inset\" only on tablets (iPad)"))), /*#__PURE__*/react.createElement(BlockTitle, null, "Media Lists"), /*#__PURE__*/react.createElement(Block, null, /*#__PURE__*/react.createElement("p", null, "Media Lists are almost the same as Data Lists, but with a more flexible layout for visualization of more complex data, like products, services, users, etc.")), /*#__PURE__*/react.createElement(BlockTitle, null, "Songs"), /*#__PURE__*/react.createElement(List, {
 	    mediaList: true
 	  }, /*#__PURE__*/react.createElement(ListItem, {
 	    link: "#",
@@ -79854,7 +79878,7 @@
 	        raised: true,
 	        slot: "after",
 	        onStepperChange: this.setMeetingTime.bind(this)
-	      }))), /*#__PURE__*/react.createElement(BlockTitle, null, "Manual input"), /*#__PURE__*/react.createElement(BlockHeader, null, "It is possible to enter value manually from keyboard or mobile keypad. When click on input field, stepper enter into manual input mode, which allow type value from keyboar and check fractional part with defined accurancy. Click outside or enter Return key, ending manual mode."), /*#__PURE__*/react.createElement(Block, {
+	      }))), /*#__PURE__*/react.createElement(BlockTitle, null, "Manual input"), /*#__PURE__*/react.createElement(BlockHeader, null, "It is possible to enter value manually from keyboard or mobile keypad. When click on input field, stepper enter into manual input mode, which allow type value from keyboard and check fractional part with defined accurancy. Click outside or enter Return key, ending manual mode."), /*#__PURE__*/react.createElement(Block, {
 	        strong: true,
 	        className: "text-align-center"
 	      }, /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(Stepper$2, {
@@ -84081,8 +84105,8 @@
 	      }, /*#__PURE__*/react.createElement("p", null, "Framework7 comes with ", this.state.colors.length, " color themes set."), /*#__PURE__*/react.createElement(Row, null, this.state.colors.map(function (color, index) {
 	        return /*#__PURE__*/react.createElement(Col, {
 	          width: "33",
-	          tabletWidth: "25",
-	          desktopWidth: "20",
+	          medium: "25",
+	          large: "20",
 	          key: index
 	        }, /*#__PURE__*/react.createElement(Button, {
 	          fill: true,
@@ -84096,16 +84120,16 @@
 	        }, color));
 	      }), /*#__PURE__*/react.createElement(Col, {
 	        width: "33",
-	        tabletWidth: "25",
-	        desktopWidth: "20"
+	        medium: "25",
+	        large: "20"
 	      }), /*#__PURE__*/react.createElement(Col, {
 	        width: "33",
-	        tabletWidth: "25",
-	        desktopWidth: "20"
+	        medium: "25",
+	        large: "20"
 	      }), /*#__PURE__*/react.createElement(Col, {
 	        width: "33",
-	        tabletWidth: "25",
-	        desktopWidth: "20"
+	        medium: "25",
+	        large: "20"
 	      }))), /*#__PURE__*/react.createElement(BlockTitle, {
 	        medium: true
 	      }, "Custom Color Theme"), /*#__PURE__*/react.createElement(List, null, /*#__PURE__*/react.createElement(ListInput, {
