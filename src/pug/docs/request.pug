@@ -163,7 +163,7 @@ block content
             p.important-note If you `return false` in this callback it will cancel the request
         tr
           td error
-          td function (xhr, status)
+          td function (xhr, status, message)
           td
           td A function to be called if the request fails
             p.important-note This callback is not available with promise API
@@ -212,7 +212,7 @@ block content
           |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
         li
           span.parameter error
-          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+          |  - <span class="parameter-type">function (xhr, status, message)</span> - A callback function that is executed if the request fails. <em>Optional</em>
         li
           span.parameter dataType
           |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be `text` or `json`. <em>Optional</em>
@@ -271,7 +271,7 @@ block content
           |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
         li
           span.parameter error
-          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+          |  - <span class="parameter-type">function (xhr, status, message)</span> - A callback function that is executed if the request fails. <em>Optional</em>
         li
           span.parameter dataType
           |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be `text` or `json`. <em>Optional</em>
@@ -284,12 +284,12 @@ block content
     .method-wrap
       p
         span.method app.request.promise.post(<span>url</span>, <span>data</span>,  <span>dataType</span>)
-        span - Load data from the server using a HTTP GET request
+        span - Load data from the server using a HTTP POST request
       p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
     .method-wrap
       p
         span.method Framework7.request.promise.post(<span>url</span>, <span>data</span>,  <span>dataType</span>)
-        span - Load data from the server using a HTTP GET request
+        span - Load data from the server using a HTTP POST request
       p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
     p For example:
     :code(lang="js")
@@ -325,21 +325,22 @@ block content
           |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
         li
           span.parameter error
-          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+          |  - <span class="parameter-type">function (xhr, status, message)</span> - A callback function that is executed if the request fails. <em>Optional</em>
       p.method-returns Method nothing returns
     .method-wrap
       p
         span.method Framework7.request.json(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
+        span - Load JSON-encoded data from the server using a GET HTTP request
       p.method-returns Method returns nothing
     .method-wrap
       p
         span.method app.request.promise.json(<span>url</span>, <span>data</span>)
-        span - Load data from the server using a HTTP GET request
+        span - Load JSON-encoded data from the server using a GET HTTP request
       p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
     .method-wrap
       p
         span.method Framework7.request.promise.json(<span>url</span>, <span>data</span>)
-        span - Load data from the server using a HTTP GET request
+        span - Load JSON-encoded data from the server using a GET HTTP request
       p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
     p For example:
     :code(lang="js")
@@ -376,7 +377,7 @@ block content
           |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
         li
           span.parameter error
-          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+          |  - <span class="parameter-type">function (xhr, status, message)</span> - A callback function that is executed if the request fails. <em>Optional</em>
         li
           span.parameter dataType
           |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be `text` or `json`. By default is `json`. <em>Optional</em>
@@ -389,12 +390,12 @@ block content
     .method-wrap
       p
         span.method app.request.promise.postJSON(<span>url</span>, <span>data</span>,  <span>dataType</span>)
-        span - Load data from the server using a HTTP GET request
+        span - Send JSON data using a HTTP POST request
       p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
     .method-wrap
       p
         span.method Framework7.request.promise.postJSON(<span>url</span>, <span>data</span>,  <span>dataType</span>)
-        span - Load data from the server using a HTTP GET request
+        span - Send JSON data using a HTTP POST request
       p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
 
     p For example:
