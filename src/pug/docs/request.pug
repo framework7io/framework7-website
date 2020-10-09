@@ -163,7 +163,7 @@ block content
             p.important-note If you `return false` in this callback it will cancel the request
         tr
           td error
-          td function (xhr, status)
+          td function (xhr, status, message)
           td
           td A function to be called if the request fails
             p.important-note This callback is not available with promise API
@@ -212,7 +212,7 @@ block content
           |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
         li
           span.parameter error
-          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+          |  - <span class="parameter-type">function (xhr, status, message)</span> - A callback function that is executed if the request fails. <em>Optional</em>
         li
           span.parameter dataType
           |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be `text` or `json`. <em>Optional</em>
@@ -271,7 +271,7 @@ block content
           |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
         li
           span.parameter error
-          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+          |  - <span class="parameter-type">function (xhr, status, message)</span> - A callback function that is executed if the request fails. <em>Optional</em>
         li
           span.parameter dataType
           |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be `text` or `json`. <em>Optional</em>
@@ -325,7 +325,7 @@ block content
           |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
         li
           span.parameter error
-          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+          |  - <span class="parameter-type">function (xhr, status, message)</span> - A callback function that is executed if the request fails. <em>Optional</em>
       p.method-returns Method nothing returns
     .method-wrap
       p
@@ -377,7 +377,7 @@ block content
           |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
         li
           span.parameter error
-          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+          |  - <span class="parameter-type">function (xhr, status, message)</span> - A callback function that is executed if the request fails. <em>Optional</em>
         li
           span.parameter dataType
           |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be `text` or `json`. By default is `json`. <em>Optional</em>
