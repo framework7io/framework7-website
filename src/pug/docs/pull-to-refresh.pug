@@ -205,7 +205,7 @@ block content
           td pullMove
           td ptr
           td <span>(el, data)</span>
-          td(rowspan="2") Event will be triggered when you start to move pull to refresh content. As an argument event handler receives ptr element and ptr data containing the following properties:
+          td(rowspan="2") Event will be triggered during you move pull to refresh content. As an argument event handler receives ptr element and ptr data containing the following properties:
             ul
               li `event` - touchmove event
               li `scrollTop` - current scroll top position
@@ -230,7 +230,7 @@ block content
           td refresh
           td ptr
           td <span>(el, done)</span>
-          td(rowspan="2") Event will be triggered when pull to refresh enters. As an argument event handler receives ptr element and `done` function to reset PTR state
+          td(rowspan="2") Event will be triggered when pull to refresh enters in "refreshing" state. As an argument event handler receives ptr element and `done` function to reset PTR state
         tr
           td ptrRefresh
           td app
@@ -240,7 +240,7 @@ block content
           td done
           td ptr
           td <span>(el)</span>
-          td(rowspan="2") Event will be triggered right before PTR instance will be destroyed. As an argument event handler receives ptr element
+          td(rowspan="2") Event will be triggered after pull to refresh is done and it is back to initial state (after calling `ptr.done` method). As an argument event handler receives ptr element
         tr
           td ptrDone
           td app
