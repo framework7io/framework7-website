@@ -56,6 +56,10 @@ silver:
   imageUrl: "/i/sponsors/tommy.png"
 topSupporter:
 -
+  title: Nettikasinot
+  link: https://nettikasinot247.fi
+  imageUrl: "/i/sponsors/nettikasinot.png"
+-
   title: Vuokrattavat asunnot - koko Suomelle
   link: https://vuokrakohteet.fi
   imageUrl: "/i/sponsors/vuokrakohteet.png"
