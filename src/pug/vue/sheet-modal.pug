@@ -46,7 +46,7 @@ block content
           td boolean
           td Enable to render additional sheet modal backdrop when required
         tr
-          td backdropEl
+          td backdrop-el
           td string<br>object
           td HTML element or string CSS selector of custom backdrop element
         tr
@@ -54,27 +54,27 @@ block content
           td boolean
           td Allows to open/close Sheet Modal and set its initial state
         tr
-          td closeByBackdropClick
+          td close-by-backdrop-click
           td boolean
           td When enabled, sheet will be closed on backdrop click. By default inherits same app parameter value
         tr
-          td closeByOutsideClick
+          td close-by-outside-click
           td boolean
           td When enabled, sheet will be closed on when click outside of it. By default inherits same app parameter value
         tr
-          td closeOnEscape
+          td close-on-escape
           td boolean
           td When enabled, sheet will be closed on ESC keyboard key press
         tr
-          td swipeToClose
+          td swipe-to-close
           td boolean
           td Whether the Sheet can be closed with swipe gesture
         tr
-          td swipeToStep
+          td swipe-to-step
           td boolean
           td When enabled it will be possible to split opened sheet into two states: partially opened and fully opened that can be controlled with swipe
         tr
-          td swipeHandler
+          td swipe-handler
           td HTMLElement<br>string
           td If not passed, then whole Sheet can be swiped to close. You can pass here HTML element or string CSS selector of custom element that will be used as a swipe target. (`swipeToClose` or `swipeToStep` must be also enabled)
         tr
