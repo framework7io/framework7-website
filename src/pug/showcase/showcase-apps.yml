@@ -1,5 +1,34 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/myShopper.png"
+  iconRounded: true
+  title: "Lasso - Memo, Notes, Summary Journal Diary Minutes"
+  author:
+    url: https://www.my-shopper.eu/
+    name: Andreas Kraemling
+  links:
+    appstore: https://apps.apple.com/app/id1307940165
+    googleplay: https://play.google.com/store/apps/details?id=de.bn.oak.shoma
+    website: https://www.my-shopper.eu/
+  description: |
+    Tired of managing your different shopping list? Save your time and use this intuitive shopping list:
+    
+    - ONE shopping list for all items & shops
+    - support of tablet mode
+    - Favorites
+    - Categories can be sorted per shop
+    - Preconfigured list of articles, categories and shops that can be extended any time
+    - Sync between devices
+    ...
+  screenshots:
+  - "#{cdn}/i/showcase/myShopper-1.png"
+  - "#{cdn}/i/showcase/myShopper-2.png"
+  - "#{cdn}/i/showcase/myShopper-3.png"
+  - "#{cdn}/i/showcase/myShopper-4.png"
+  - "#{cdn}/i/showcase/myShopper-5.png"
+  - "#{cdn}/i/showcase/myShopper-6.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/Lasso.png"
   iconRounded: true
   title: "Lasso - Memo, Notes, Summary Journal Diary Minutes"
