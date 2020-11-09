@@ -11351,7 +11351,7 @@
         beforeOpen (xhr, options),
         beforeSend (xhr, options),
         error (xhr, status, message),
-        complete (xhr, stautus),
+        complete (xhr, status),
         success (response, status, xhr),
         statusCode ()
       */
@@ -31656,6 +31656,8 @@
             valueDate = new Date(i);
             $wrapperEl.find((".calendar-day[data-date=\"" + (valueDate.getFullYear()) + "-" + (valueDate.getMonth()) + "-" + (valueDate.getDate()) + "\"]")).addClass('calendar-day-selected');
           }
+          valueDate = new Date(new Date(value[1]).getTime());
+          $wrapperEl.find((".calendar-day[data-date=\"" + (valueDate.getFullYear()) + "-" + (valueDate.getMonth()) + "-" + (valueDate.getDate()) + "\"]")).addClass('calendar-day-selected');
         } else {
           for (i = 0; i < calendar.value.length; i += 1) {
             valueDate = new Date(value[i]);
@@ -50166,7 +50168,7 @@
   };
 
   /**
-   * Framework7 5.7.13
+   * Framework7 5.7.14
    * Full featured mobile HTML framework for building iOS & Android apps
    * https://framework7.io/
    *
@@ -50174,7 +50176,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: October 9, 2020
+   * Released on: November 9, 2020
    */
 
   // Install Core Modules & Components
@@ -63735,7 +63737,7 @@
   };
 
   /**
-   * Framework7 Vue 5.7.13
+   * Framework7 Vue 5.7.14
    * Build full featured iOS & Android apps using Framework7 & Vue
    * https://framework7.io/vue/
    *
@@ -63743,7 +63745,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: October 9, 2020
+   * Released on: November 9, 2020
    */
 
   //
@@ -67154,7 +67156,7 @@
   var __vue_script__$F = script$F;
 
   /* template */
-  var __vue_render__$F = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Photo Browser","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Photo Browser is a standalone and highly configurable component that allows to open window with photo viewer and navigation elements with the following features:")]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("Swiper between photos")]),_vm._v(" "),_c('li',[_vm._v("Multi-gestures support for zooming")]),_vm._v(" "),_c('li',[_vm._v("Toggle zoom by double tap on photo")]),_vm._v(" "),_c('li',[_vm._v("Single click on photo to toggle Exposition mode")])])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standalone",attrs:{"photos":_vm.photos}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.standalone.open()}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popup",attrs:{"photos":_vm.photos,"type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.popup.open()}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"page",attrs:{"photos":_vm.photos,"type":"page","page-back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.page.open()}}},[_vm._v("Page")])],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standaloneDark",attrs:{"photos":_vm.photos,"theme":"dark"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.standaloneDark.open()}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popupDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.popupDark.open()}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"pageDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"page","page-back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.pageDark.open()}}},[_vm._v("Page")])],1)],1)],1)],1)};
+  var __vue_render__$F = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Photo Browser","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Photo Browser is a standalone and highly configurable component that allows to open window with photo viewer and navigation elements with the following features:")]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("Swiper between photos")]),_vm._v(" "),_c('li',[_vm._v("Multi-gestures support for zooming")]),_vm._v(" "),_c('li',[_vm._v("Toggle zoom by double tap on photo")]),_vm._v(" "),_c('li',[_vm._v("Single click on photo to toggle Exposition mode")])])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standalone",attrs:{"photos":_vm.photos}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.standalone.open()}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popup",attrs:{"photos":_vm.photos,"type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.popup.open()}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"page",attrs:{"photos":_vm.photos,"type":"page","page-back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.page.open()}}},[_vm._v("Page")])],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Photo Browser supports 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standaloneDark",attrs:{"photos":_vm.photos,"theme":"dark"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.standaloneDark.open()}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popupDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.popupDark.open()}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"pageDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"page","page-back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){return _vm.$refs.pageDark.open()}}},[_vm._v("Page")])],1)],1)],1)],1)};
   var __vue_staticRenderFns__$F = [];
 
     /* style */
@@ -70470,7 +70472,7 @@
             'info.docx': false,
           },
           '.gitignore': false,
-          '.index.html': false,
+          'index.html': false,
         },
         selectedItem: null,
         loadedChildren: [],

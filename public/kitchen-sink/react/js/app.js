@@ -13106,7 +13106,7 @@
 	      beforeOpen (xhr, options),
 	      beforeSend (xhr, options),
 	      error (xhr, status, message),
-	      complete (xhr, stautus),
+	      complete (xhr, status),
 	      success (response, status, xhr),
 	      statusCode ()
 	    */
@@ -35080,6 +35080,9 @@
 	            valueDate = new Date(i);
 	            $wrapperEl.find(".calendar-day[data-date=\"".concat(valueDate.getFullYear(), "-").concat(valueDate.getMonth(), "-").concat(valueDate.getDate(), "\"]")).addClass('calendar-day-selected');
 	          }
+
+	          valueDate = new Date(new Date(value[1]).getTime());
+	          $wrapperEl.find(".calendar-day[data-date=\"".concat(valueDate.getFullYear(), "-").concat(valueDate.getMonth(), "-").concat(valueDate.getDate(), "\"]")).addClass('calendar-day-selected');
 	        } else {
 	          for (i = 0; i < calendar.value.length; i += 1) {
 	            valueDate = new Date(value[i]);
@@ -54716,7 +54719,7 @@
 	};
 
 	/**
-	 * Framework7 5.7.13
+	 * Framework7 5.7.14
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * https://framework7.io/
 	 *
@@ -54724,7 +54727,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: October 9, 2020
+	 * Released on: November 9, 2020
 	 */
 
 
@@ -70458,7 +70461,7 @@
 	};
 
 	/**
-	 * Framework7 React 5.7.13
+	 * Framework7 React 5.7.14
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * https://framework7.io/react/
 	 *
@@ -70466,7 +70469,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: October 9, 2020
+	 * Released on: November 9, 2020
 	 */
 	var AccordionContent = F7AccordionContent;
 	var AccordionItem = F7AccordionItem;
@@ -77614,7 +77617,7 @@
 	        }
 	      }, "Page")))), /*#__PURE__*/react.createElement(Block, {
 	        strong: true
-	      }, /*#__PURE__*/react.createElement("p", null, "Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:"), /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(PhotoBrowser$2, {
+	      }, /*#__PURE__*/react.createElement("p", null, "Photo Browser supports 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:"), /*#__PURE__*/react.createElement(Row, null, /*#__PURE__*/react.createElement(Col, null, /*#__PURE__*/react.createElement(PhotoBrowser$2, {
 	        photos: this.state.photos,
 	        theme: "dark",
 	        ref: function ref(el) {
@@ -83565,7 +83568,7 @@
 	          'info.docx': false
 	        },
 	        '.gitignore': false,
-	        '.index.html': false
+	        'index.html': false
 	      },
 	      selectedItem: null,
 	      loadedChildren: []
