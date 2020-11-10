@@ -1,4 +1,36 @@
 ##########
+- iconUrl: "#{cdn}/i/showcase/cbrrates.png"
+  iconRounded: true
+  title: "Курсы валют ЦБ России"
+  author:
+    url: https://www.itilev.ru/cv.html
+    name: Ивайло Тилев
+  links:
+    appstore: https://apps.apple.com/ru/app/id1359763896
+    website: https://www.itilev.ru/app/cbrrates
+  description: |
+  Простое и удобное приложение для отслеживание курсов валют и драгоценных металлов Центрального Банка России.
+
+  Курсы валют Центрального Банка России обновляемые ежедневно между 13:00 и 14:30 по Московскому времени (+03:00 GMT), кроме выходных и праздничных дней.
+
+  На главном экране можно установить до 6 валют для подробного отслеживание изменения курса (последние 14 значений), а так же установить оповещение при его изменение на заданную  относительную величину.
+
+  Для каждой валюты есть возможность посмотреть динамику изменения в табличном и графическом виде. Так же можно увидеть стоимость обмена одной валюты на другую. На главном экране есть простой калькулятор валют.
+
+  Для получения более ранних значений изменения курса необходима подписка.
+
+  Курсы валют с сайта ЦБ России https://www.cbr.ru
+  screenshots:
+    - "#{cdn}/i/showcase/cbrrates-1.png"
+    - "#{cdn}/i/showcase/cbrrates-2.png"
+    - "#{cdn}/i/showcase/cbrrates-3.png"
+    - "#{cdn}/i/showcase/cbrrates-4.png"
+    - "#{cdn}/i/showcase/cbrrates-5.png"
+    - "#{cdn}/i/showcase/cbrrates-6.png"
+    - "#{cdn}/i/showcase/cbrrates-7.png"
+    - "#{cdn}/i/showcase/cbrrates-8.png"
+    - "#{cdn}/i/showcase/cbrrates-9.png"
+##########
 -
   iconUrl: "#{cdn}/i/showcase/myShopper.png"
   iconRounded: true
@@ -12,7 +44,7 @@
     website: https://www.my-shopper.eu/
   description: |
     Tired of managing your different shopping list? Save your time and use this intuitive shopping list:
-    
+
     - ONE shopping list for all items & shops
     - support of tablet mode
     - Favorites
