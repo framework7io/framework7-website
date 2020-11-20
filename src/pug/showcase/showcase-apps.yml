@@ -1,5 +1,5 @@
 ##########
-- iconUrl: ""
+- iconUrl: "{cdn}/i/showcase/easyquick-logo.png"
   iconRounded: true
   title: "EasyQuick Shop - Open an Online Store & Sell"
   author:
@@ -50,7 +50,15 @@
     No matter the size of your business EasyQuick Shop got you covered with all the tools on a single platform that you need to run an online business.
   
   screenshots:
-    - ""
+    - "{cdn}/i/showcase/easyquick-screen-1.png"
+    - "{cdn}/i/showcase/easyquick-screen-2.png"
+    - "{cdn}/i/showcase/easyquick-screen-3.png"
+    - "{cdn}/i/showcase/easyquick-screen-4.png"
+    - "{cdn}/i/showcase/easyquick-screen-5.png"
+    - "{cdn}/i/showcase/easyquick-screen-6.png"
+    - "{cdn}/i/showcase/easyquick-screen-7.png"
+    - "{cdn}/i/showcase/easyquick-screen-8.png"
+    - "{cdn}/i/showcase/easyquick-screen-9.png"
 
 ##########
 - iconUrl: "#{cdn}/i/showcase/cbrrates.png"
