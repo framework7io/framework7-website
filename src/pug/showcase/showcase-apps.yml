@@ -1,5 +1,5 @@
 ##########
-- iconUrl: "{cdn}/i/showcase/easyquick-logo.png"
+- iconUrl: "#{cdn}/i/showcase/easyquick-logo.png"
   iconRounded: true
   title: "EasyQuick Shop - Open an Online Store & Sell"
   author:
@@ -10,55 +10,29 @@
     website: https://easyquick.shop
   description: |
     EasyQuick Shop gives you the fastest way to open an online store - in minutes, and start selling! Whether you have one or multiple stores this app makes it easy for you to manage your orders, products and deliveries, and get you connected with your customers.
-
     Start selling like a pro!
-    
   features:
-  
-    Create your online shop:
-
      - With a unique Shop ID with open your online store in minutes
-
-    Manage your online shopfront:
-
      - Upload your products and images
      - Edit and update your product details
      - Get to share your shop and product links on social media
-
-    Process and manage orders:
-
      - Fulfill your store orders with ease
      - Enable your return customers to make one-click reorders in-app and see your sales grow
-
-    Monitor your store performance on your dashboard:
-
      - View your business stats by day/week/month
-
-    Follow up and connect with customers:
-
      - Live chat with your customers and get instant feedback on the products and service
      - Get custom feedback and improve your business over-time
-
-    Enroll Sellers:
-
      - Grow your business by empowering other sellers with the right tools
-
-    Enroll Shippers:
-
      - Go local with your deliveries and ensure your customers get timely deliveries and your shippers have the right tools for the job
-
-    No matter the size of your business EasyQuick Shop got you covered with all the tools on a single platform that you need to run an online business.
-  
   screenshots:
-    - "{cdn}/i/showcase/easyquick-screen-1.png"
-    - "{cdn}/i/showcase/easyquick-screen-2.png"
-    - "{cdn}/i/showcase/easyquick-screen-3.png"
-    - "{cdn}/i/showcase/easyquick-screen-4.png"
-    - "{cdn}/i/showcase/easyquick-screen-5.png"
-    - "{cdn}/i/showcase/easyquick-screen-6.png"
-    - "{cdn}/i/showcase/easyquick-screen-7.png"
-    - "{cdn}/i/showcase/easyquick-screen-8.png"
-    - "{cdn}/i/showcase/easyquick-screen-9.png"
+    - "#{cdn}/i/showcase/easyquick-screen-1.png"
+    - "#{cdn}/i/showcase/easyquick-screen-2.png"
+    - "#{cdn}/i/showcase/easyquick-screen-3.png"
+    - "#{cdn}/i/showcase/easyquick-screen-4.png"
+    - "#{cdn}/i/showcase/easyquick-screen-5.png"
+    - "#{cdn}/i/showcase/easyquick-screen-6.png"
+    - "#{cdn}/i/showcase/easyquick-screen-7.png"
+    - "#{cdn}/i/showcase/easyquick-screen-8.png"
+    - "#{cdn}/i/showcase/easyquick-screen-9.png"
 
 ##########
 - iconUrl: "#{cdn}/i/showcase/cbrrates.png"
