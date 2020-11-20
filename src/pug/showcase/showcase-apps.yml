@@ -1,4 +1,40 @@
 ##########
+- iconUrl: "#{cdn}/i/showcase/easyquick-logo.png"
+  iconRounded: true
+  title: "EasyQuick Shop - Open an Online Store & Sell"
+  author:
+    url: https://easyquick.shop
+    name: David Kagiri
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=easyquick.shop
+    website: https://easyquick.shop
+  description: |
+    EasyQuick Shop gives you the fastest way to open an online store - in minutes, and start selling! Whether you have one or multiple stores this app makes it easy for you to manage your orders, products and deliveries, and get you connected with your customers.
+    Start selling like a pro!
+  features:
+     - With a unique Shop ID with open your online store in minutes
+     - Upload your products and images
+     - Edit and update your product details
+     - Get to share your shop and product links on social media
+     - Fulfill your store orders with ease
+     - Enable your return customers to make one-click reorders in-app and see your sales grow
+     - View your business stats by day/week/month
+     - Live chat with your customers and get instant feedback on the products and service
+     - Get custom feedback and improve your business over-time
+     - Grow your business by empowering other sellers with the right tools
+     - Go local with your deliveries and ensure your customers get timely deliveries and your shippers have the right tools for the job
+  screenshots:
+    - "#{cdn}/i/showcase/easyquick-screen-1.png"
+    - "#{cdn}/i/showcase/easyquick-screen-2.png"
+    - "#{cdn}/i/showcase/easyquick-screen-3.png"
+    - "#{cdn}/i/showcase/easyquick-screen-4.png"
+    - "#{cdn}/i/showcase/easyquick-screen-5.png"
+    - "#{cdn}/i/showcase/easyquick-screen-6.png"
+    - "#{cdn}/i/showcase/easyquick-screen-7.png"
+    - "#{cdn}/i/showcase/easyquick-screen-8.png"
+    - "#{cdn}/i/showcase/easyquick-screen-9.png"
+
+##########
 - iconUrl: "#{cdn}/i/showcase/cbrrates.png"
   iconRounded: true
   title: "Курсы валют ЦБ России"
