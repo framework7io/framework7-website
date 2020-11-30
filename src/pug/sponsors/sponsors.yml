@@ -56,6 +56,10 @@ silver:
   imageUrl: "/i/sponsors/tommy.png"
 topSupporter:
 -
+  title: Magento Development Services. Develop Magento — GoMage
+  link: https://www.gomage.com
+  imageUrl: "/i/sponsors/gomage.svg"
+-
   title: Faveable - Ranking the Best Products on the Planet
   link: https://faveable.com
   imageUrl: "/i/sponsors/faveable.svg"
