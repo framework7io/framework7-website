@@ -200,7 +200,7 @@
 
   f7ready(() => {
     setTimeout(() => {
-      f7.$('.range-slider').each((index, el) => {
+      f7.$('.range-slider').each((el, index) => {
         f7.range.get(el).calcSize();
         f7.range.get(el).layout();
       })

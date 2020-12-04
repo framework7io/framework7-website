@@ -14,13 +14,17 @@ block content
     p Framework7 utils is a set of helper methods that used internally and can be handy during development as well.
     p It is available as a `utils` property of Framework7 class (`Framework7.utils`) and same property on initialized app instance (`app.utils`):
     :code(lang="js")
-          // If we need it in place where we don't have access to app instance or before we init the app
-          var now = Framework7.utils.now();
+      // If we need it in place where we don't have access to app instance or before we init the app
+      var now = Framework7.utils.now();
 
 
-          // After we init the app we can access it as app instance property
-          var app = new Framework7({ /*...*/ });
-          var now = app.utils.now();
+      // After we init the app we can access it as app instance property
+      var app = new Framework7({ /*...*/ });
+      var now = app.utils.now();
+    p It can also be imported using ES modules:
+    ```js
+      import { utils } from 'framework7';
+    ```
 
     h2 Utils Methods
 
@@ -82,20 +86,6 @@ block content
           |  - <span class="parameter-type">number</span> - The ID value returned by the call to app.utils.requestAnimationFrame() that requested the callback
     :code(lang="js")
           app.utils.cancelAnimationFrame(animId);
-
-    h3 `removeDiacritics()`
-    .method-wrap
-      p
-        span.method app.utils.removeDiacritics(<span>text</span>)
-        span - Replace diacritics in specified text string with standard latin characters
-      ul.method-parameters
-        li
-          span.parameter text
-          |  - <span class="parameter-type">string</span> - Text string
-
-    :code(lang="js")
-          var text = app.utils.removeDiacritics('ÁÓL');
-          console.log(text); //-> 'AOL'
 
     h3 `nextFrame()`
     .method-wrap

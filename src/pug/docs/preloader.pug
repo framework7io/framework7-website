@@ -30,23 +30,15 @@ block content
           <span class="preloader-inner-line"></span>
           <span class="preloader-inner-line"></span>
           <span class="preloader-inner-line"></span>
-          <span class="preloader-inner-line"></span>
-          <span class="preloader-inner-line"></span>
-          <span class="preloader-inner-line"></span>
-          <span class="preloader-inner-line"></span>
         </span>
       </div>
     h4 MD Theme Preloader Layout
     :code(lang="html")
       <div class="preloader">
         <span class="preloader-inner">
-          <span class="preloader-inner-gap"></span>
-          <span class="preloader-inner-left">
-              <span class="preloader-inner-half-circle"></span>
-          </span>
-          <span class="preloader-inner-right">
-              <span class="preloader-inner-half-circle"></span>
-          </span>
+          <svg viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="16"></circle>
+          </svg>
         </span>
       </div>
     h4 Aurora Theme Preloader Layout
@@ -68,7 +60,7 @@ block content
           <!-- Green preloader -->
           <div class="preloader color-green"></div>
 
-          <!-- Multicolor preloader (MD theme only) -->
+          <!-- Multicolor preloader -->
           <div class="preloader color-multi"></div>
     h2 Preloader Overlay / Preloader API
     p It is also possible to call special Preloader overlay which is useful if you need to block user actions until something is loaded. This kind of preloader will appear in front of app and block any user actions behind it.
@@ -113,7 +105,7 @@ block content
           app.preloader.show();
 
           // Perform Ajax request
-          app.request.get('someurl.html', function (data) {
+          app.request.get('someurl.html').then(() => {
             // Hide preloader when Ajax request completed
             app.preloader.hide();
           });
@@ -162,7 +154,7 @@ block content
               </div>
             </div>
       :code(lang="html")
-            <div class="block-title">Multi-color (MD-theme only)</div>
+            <div class="block-title">Multi-color</div>
             <div class="block block-strong text-align-center">
               <div class="preloader color-multi"></div>
             </div>

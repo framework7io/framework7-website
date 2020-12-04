@@ -18,7 +18,7 @@ block content
       }
       componentDidMount() {
         setTimeout(() => {
-          this.$$('.range-slider').each((index, el) => {
+          this.$$('.range-slider').each((el, index) => {
             this.$f7.range.get(el).calcSize();
             this.$f7.range.get(el).layout();
           })

@@ -1,15 +1,17 @@
 const fs = require('fs');
 const rollup = require('rollup');
-const babel = require('rollup-plugin-babel');
-const resolve = require('@rollup/plugin-node-resolve');
+const {babel} = require('@rollup/plugin-babel');
+const {nodeResolve} = require('@rollup/plugin-node-resolve');
 const Terser = require('terser');
 
 function build(cb) {
   rollup.rollup({
     input: './src/js/main.js',
     plugins: [
-      resolve(),
-      babel(),
+      nodeResolve(),
+      babel({
+        babelHelpers: 'bundled'
+      }),
     ],
   }).then((bundle) => {
     return bundle.write({
@@ -20,10 +22,10 @@ function build(cb) {
       sourcemap: true,
       sourcemapFile: './public/js/main.js.map',
     });
-  }).then((bundle) => {
+  }).then(async (bundle) => {
     const result = bundle.output[0];
 
-    const minified = Terser.minify(result.code, {
+    const minified = await Terser.minify(result.code, {
       sourceMap: {
         content: result.map,
         url: 'main.js.map',

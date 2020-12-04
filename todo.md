@@ -1,0 +1,126 @@
+- Core
+  - Dialog
+    - Added `containerEl` property to specify where to mount the modal
+  - Calendar
+    - Time Picker now supports AM/PM period selection based on selected locale or timePickerFormat
+  - Swipeout
+    - New `app.params.swipeout.overswipeRatio` (default to `1.2`) allows to configure how more to swipe to enable overswipe
+  - Page
+    - New Page Title element
+  - List
+    - All new Menu List style for List
+  - Package
+    - New types in `framework7/types`
+      - `Framework7Params` -> `Framework7Parameters`
+  - Swiper
+    - Updated to v6
+  - Skeleton Elements
+    - Used as dependency
+    - New React, Svelte and Vue components
+    - CSS vars renamed without `--f7-` prefix
+  - View/Router
+    - `pushState...` parameters renamed to `browserHistory...`
+    - New `browserHistoryInitialMatch` parameter
+    - Route's `master` property that indicates whether it is a master route or not now can be a method that receives `(f7, router)` (app and router instances) and should return boolean.
+    - Route's `beforeEnter`, `beforeLeave`, `redirect` and `async` methods now receive a single object with following props
+      - `to`
+      - `from`
+      - `resolve`
+      - `reject`
+      - `direction` (new in v6 - can be `forward` or `backward`)
+      - `router` (new in v6 - current router instance)
+    - Now it is possible to specify how to open page route with `data-open-in` attribute, e.g.
+      ```html
+      <a href="/about/" data-open-in="popup">About</a>
+      ```
+  - Tooltip
+    - New `containerEl` parameter
+    - New `delegated` parameter. Enables tooltip for all elements matching to `targetEl` selector (e.g. attaches event handler to document). `targetEl` parameter must be a CSS Selector (string)
+    - New `trigger: 'manual'` value
+    - New `.setTarget(targetEl)` instance method to change tooltip target after it was created
+  - Pie Chart
+    - All new Pie Chart component
+  - Area Chart
+    - All new Area Chart component
+  - Gauge
+    - Renamed `$gaugeSvgEl` property to `$svgEl`
+  - Panel
+    - Improved support for nested panels. Now panel can be created and correctly opened inside of the page (including with breakpoints)
+  - Button
+    - New loading buttons
+- Vue
+  - Rewritten to new Vue v3 API (no Vue v2 support anymore)
+  - `App` component now receives all app parameters as props
+  - Removed all prototypes methods (\$$, $f7, $f7ready, $f7route, $f7router, $utils, $device, $theme, \$request)
+    - Now they should be imported as `import {f7, f7ready, theme} from 'framework7-vue'`. `Dom7`, `device`, `request` can be used as `f7.` accessors or imported from `framework7`
+  - Removed `umd` version
+  - Added v-model support
+    - Checkbox, ListItem, Radio, Toggle, MessagebarSheetImage
+      - Support for `v-model:checked`
+    - Actions, LoginScreen, Panel, Popover, Popup, Sheet
+      - Support for `v-model:opened`
+    - Card
+      - Support for `v-model:expandableOpened`
+    - Input, ListInput, Messagebar, Searchbar, Stepper, Range
+      - Support for `v-model:value`
+  - `browserHistory` must be used with `browserHistoryInitialMatch`
+- React
+  - KS updated to use hooks API only
+  - `App` component now receives all app parameters as props
+  - New ref's object
+  - Rewritten with hooks
+  - Instances in refs are functions
+  - Removed all prototypes methods (\$$, $f7, $f7ready, $f7route, $f7router, $utils, $device, $theme, \$request)
+    - Now they should be imported as `import {f7, f7ready, theme} from 'framework7-react'`. `Dom7`, `device`, `request` can be used as `f7.` accessors or imported from `framework7`
+  - Removed `umd` version
+  - `browserHistory` must be used with `browserHistoryInitialMatch`
+  - Fast Refresh support
+- Svelte
+  - `App` component now receives all app parameters as props
+  - Added `bind:$property` support
+    - Checkbox, ListItem, Radio, Toggle, MessagebarSheetImage
+      - Support for `bind:checked`
+    - Actions, LoginScreen, Panel, Popover, Popup, Sheet
+      - Support for `bind:opened`
+    - Card
+      - Support for `bind:expandableOpened`
+    - Input, ListInput, Messagebar, Searchbar, Stepper, Range
+      - Support for `bind:value`
+  - `browserHistory` must be used with `browserHistoryInitialMatch`
+- Common for React/Svelte/Vue
+  - Button, Link, ListButon, ListItem, MenuDropdownItem, MenuItem, TreeviewItem
+    - New `openIn` prop to specify how to open page route (e.g. open page as `popup`, `sheet`, `panel` etc)
+    - Support for loading button (button with preloader) with new props:
+      - `preloader` - enables button to have preloader
+      - `loading` - controls button state to show/hide preloader and hide/show button text (switch button to loading state)
+      - `preloaderColor` - button's preloader color
+      - `preloaderSize` - button's preloader size
+  - Pie Chart
+    - New Pie Chart component
+  - Area Chart
+    - New Area Chart component
+  - Input
+    - Added `error-message` slot
+  - List
+    - New `menuList` boolean property to enable menu List
+  - ListItem
+    - New `selected` boolean property to mark menu list item as selected
+  - Popover
+    - `target` prop renamed to `targetEl`
+  - Popover, Login Screen, Actions, Sheet
+    - Added `animate` property
+    - Removed component open/close methods
+    - Added `containerEl` property to specify where to mount the modal
+  - Sheet
+    - Added `fixed` and `static` slots
+  - Panel
+    - Removed component open/close methods
+  - Messagebar
+    - Removed component methods
+  - Messages
+    - Removed component methods
+    - Added `typing` prop
+  - Toggle
+    - Added support for tooltip with `tooltip` and `tooltipTrigger` props
+  - MenuItem
+    - Added support for tooltip with `tooltip` and `tooltipTrigger` props

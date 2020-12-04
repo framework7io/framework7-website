@@ -3,7 +3,7 @@ const pug = require('pug');
 const fs = require('fs');
 
 const rollup = require('rollup');
-const resolve = require('@rollup/plugin-node-resolve');
+const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const replace = require('@rollup/plugin-replace');
 // const terser = require('rollup-plugin-terser').terser;
 // const babel = require('rollup-plugin-babel');
@@ -40,9 +40,9 @@ function buildOne(name, cb) {
           css.write(`./public/docs-demos/svelte/${name}.css`, false);
         },
       }),
-      resolve({
+      nodeResolve({
         browser: true,
-        dedupe: importee => importee === 'svelte' || importee.startsWith('svelte/'),
+        dedupe: (importee) => importee === 'svelte' || importee.startsWith('svelte/'),
       }),
       // babel({
       //   extensions: ['.js', '.mjs', '.html', '.svelte'],
@@ -68,9 +68,9 @@ function buildOne(name, cb) {
 
 async function buildAll(cb) {
   const svelteDemos = fs.readdirSync(path.resolve(__dirname, '../src/pug/docs-demos/svelte'))
-    .filter(f => f.indexOf('.svelte') >= 0)
-    .filter(f => f.indexOf('_') < 0)
-    .map(f => f.split('.svelte')[0]);
+    .filter((f) => f.indexOf('.svelte') >= 0)
+    .filter((f) => f.indexOf('_') < 0)
+    .map((f) => f.split('.svelte')[0]);
 
   // eslint-disable-next-line
   for (name of svelteDemos) {

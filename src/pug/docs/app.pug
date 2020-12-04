@@ -13,15 +13,15 @@ block content
     ul.docs-index
     p When we init the app we can use the `new Framework7` constructor and pass an object with main app parameters:
     :code(lang="js")
-          var app = new Framework7({
-            // App id
-            id: 'com.myapp.test',
-            // Enable swipe panel
-            panel: {
-              swipe: true,
-            },
-            // ... other parameters
-          });
+      var app = new Framework7({
+        // App id
+        id: 'com.myapp.test',
+        // Enable swipe panel
+        panel: {
+          swipe: true,
+        },
+        // ... other parameters
+      });
     p This constructor returns main app Framework7 instance.
     h2 App Parameters
     p Lets look at the list of available parameters:
@@ -34,7 +34,7 @@ block content
           th Description
       tbody
         tr
-          td root
+          td el
           td string
           td body
           td App root element. If you main app layout is not a direct child of the `<body>` then it is required to specify root element here
@@ -74,40 +74,15 @@ block content
           td
           td App language. Can be used by other components. By default equal to the current browser/webview language (i.e. `navigator.language`).
         tr
+          td userAgent
+          td string
+          td
+          td User agent string. Required when used on server-side environments for correct device detection.
+        tr
           td routes
           td array
           td []
           td Array with default routes to all views.
-        tr
-          td data
-          td function
-          td
-          td App root data. Must be a function that returns an object with root data. For example:
-            :code(lang="js")
-                  var app = new Framework7({
-                    data: function () {
-                      return {
-                        username: 'vladimir',
-                        firstName: 'Vladimir',
-                        lastName: 'Kharlampidi'
-                      };
-                    },
-                  });
-            p Note, that `this` inside of this data function points to `app` Framework7 instance.
-        tr
-          td methods
-          td object
-          td {}
-          td App root methods. Object with methods, e.g.
-            :code(lang="js")
-                  var app = new Framework7({
-                    methods: {
-                      alert: function() {
-                        app.dialog.alert('Hello World');
-                      }
-                    }
-                  });
-            p Note, that `this` inside of each method points to app Framework7 instance.
         tr
           td lazyModulesPath
           td string
@@ -253,6 +228,11 @@ block content
           td string
           td .ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content, .list.accordion-list .accordion-item-toggle
           td CSS selector of elements to apply touch ripple effect on click
+        tr.subparam-row
+          td touchRippleInsetElements
+          td string
+          td .ripple-inset, .icon-only, .searchbar-disable-button, .input-clear-button, .notification-close-button, .md .navbar .link.back
+          td CSS selector of elements to apply inset touch ripple effect on click
         tr.subparam-close-row
           td(colspan="4") }
         tr
@@ -323,11 +303,11 @@ block content
           td app.language
           td App language
         tr
-          td app.root
-          td Dom7 instance with app root element
+          td app.el
+          td App root HTML element
         tr
-          td app.rootComponent
-          td Reference to <a href="./router-component.html#main-app-component">main app component</a> instance (if it is used). Only for Framework7 Core version
+          td app.$el
+          td Dom7 instance with app root HTML element
         tr
           td app.rtl
           td Boolean property indicating app is in RTL layout or not
@@ -337,12 +317,6 @@ block content
         tr
           td app.darkTheme
           td Boolean property that indicates whether the dark theme active or not. This property has effect only when `autoDarkTheme` enabled.
-        tr
-          td app.data
-          td Object with app root data passed on intialization
-        tr
-          td app.methods
-          td Object with app root methods
         tr
           td app.width
           td App width in px
@@ -361,9 +335,6 @@ block content
         tr
           td app.$
           td Dom7 alias
-        tr
-          td app.t7
-          td Template7 alias
         tr
           td app.params
           td App parameters
@@ -420,11 +391,11 @@ block content
     p Same as with app parameters most of components that has JavaScript API may extend this list of properties with the property named as component. For example Panel component extends app instance properties with `panel` property that accepts Panel specific properties and methods.
     p Example:
     :code(lang="js")
-          // Open panel
-          app.panel.open('left');
+      // Open panel
+      app.panel.open('left');
 
-          // Hide statusbar
-          app.statusbar.hide();
+      // Hide statusbar
+      app.statusbar.hide();
     h2 App Events
     p App instance emits the following core events:
     table.events-table

@@ -431,7 +431,7 @@ block content
           td .filter(<span>callback</span>)
           td Filter collection of elements
             :code(lang="js")
-                  var redLinks = $$('a').filter(function(index, el) {
+                  var redLinks = $$('a').filter(function(el, index) {
                       return $$(this).hasClass('red');
                   })
 

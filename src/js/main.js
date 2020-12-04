@@ -1,10 +1,14 @@
-import $ from 'dom7';
+import $, * as methods from 'dom7';
 import initDocsSearch from './init-docs-search';
 import initDocsDevice from './init-docs-device';
 import initDocsNav from './init-docs-nav';
 import initDocsHeaders from './init-docs-headers';
 import initDocsColorForm from './init-docs-color-form';
 import copyToClipboard from './copy-to-clipboard';
+
+Object.keys(methods).forEach((key) => {
+  $.fn[key] = methods[key];
+});
 
 initDocsSearch();
 initDocsDevice();
@@ -42,7 +46,7 @@ function shuffleArray(array, inPlace = false) {
 }
 if ($('footer .custom-sponsors a').length) {
   let sponsors = [];
-  $('footer .custom-sponsors a').each((index, el) => {
+  $('footer .custom-sponsors a').each((el) => {
     sponsors.push(el);
   });
   sponsors = shuffleArray(sponsors);

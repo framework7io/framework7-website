@@ -106,11 +106,6 @@ block content
           td
           td If `number` - list item height in px. If `function` then function should return item height. By default equals to `44` for iOS theme, `48` for MD theme, `38` for Aurora theme.
         tr
-          td itemTemplate
-          td string<br>function
-          td
-          td Template7 string template or Template7 compiled template that used to render single item. Template should contain full HTML layout for single item, including wrapping `<li></li>` tags
-        tr
           td renderItem
           td function(item)
           td
@@ -369,18 +364,22 @@ block content
                 }
                 return found; //return array with mathced indexes
               },
-              // List item Template7 template
-              itemTemplate:
-                '<li>' +
-                  '<a href="#" class="item-link item-content">' +
-                    '<div class="item-inner">' +
-                      '<div class="item-title-row">' +
-                        '<div class="item-title">{{title}}</div>' +
-                      '</div>' +
-                      '<div class="item-subtitle">{{subtitle}}</div>' +
-                    '</div>' +
-                  '</a>' +
-                '</li>',
+              // List item render function
+              renderItem(item) {
+                return `
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">${item.title}</div>
+                      </div>
+                      <div class="item-subtitle">${item.subtitle}</div>
+                    </div>
+                  </a>
+                </li>
+                `;
+              },
+
               // Item height
               height: app.theme === 'ios' ? 63 : (app.theme === 'md' ? 73 : 46),
             });

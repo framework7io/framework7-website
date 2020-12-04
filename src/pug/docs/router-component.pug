@@ -26,10 +26,6 @@ block content
           td array
           td Array with component mixins
         tr
-          td template
-          td string
-          td Template7 template string. Will be compiled as Template7 template
-        tr
           td render
           td function
           td Render function to render component. Must return full html string or HTMLElement
@@ -693,10 +689,10 @@ block content
               var self = this;
               var app = self.$app;
               // request user data on page init
-              app.request.get('http://api.website.com/get-user-profile', (user) => {
+              app.request.get('https://api.website.com/get-user-profile').then((res) => {
                 // update component state with new state
                 self.$setState({
-                  user: user,
+                  user: res.data,
                 });
               });
             },

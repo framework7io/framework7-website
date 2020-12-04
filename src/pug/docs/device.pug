@@ -13,17 +13,38 @@ block content
     p Framework7 comes with Device detection library with which contains useful information about device and platform.
     p It is available as a `device` property of Framework7 class (`Framework7.device`) and same property on initialized app instance (`app.device`):
     :code(lang="js")
-          // If we need it in place where we don't have access to app instance or before we init the app
-          if (Framework7.device.ios) {
-            console.log('It is iOS device');
-          }
+      // If we need it in place where we don't have access to app instance or before we init the app
+      if (Framework7.device.ios) {
+        console.log('It is iOS device');
+      }
 
 
-          // After we init the app we can access it as app instance property
-          var app = new Framework7({ /*...*/ });
-          if (app.device.android) {
-            console.log('It is android device');
-          }
+      // After we init the app we can access it as app instance property
+      var app = new Framework7({ /*...*/ });
+      if (app.device.android) {
+        console.log('It is android device');
+      }
+    h2 `getDevice`
+    p When we use Framework7 on server-side environments or with ES modules, we need to use `getDevice` util instead:
+    ```js
+      import { getDevice } from 'framework7';
+
+      const device = getDevice();
+
+      if (device.android) {
+        console.log('It is android device');
+      }
+    ```
+    p If we use it on server-side, we can also pass `userAgent` for the case if we know it based on the request:
+    ```js
+      import { getDevice } from 'framework7';
+
+      const device = getDevice({ userAgent: 'SOME_USER_AGENT' });
+
+      if (device.android) {
+        console.log('It is android device');
+      }
+    ```
     h2 Methods & Properties
     table.methods-table
       tbody

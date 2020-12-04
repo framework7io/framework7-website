@@ -6,6 +6,7 @@ const searchData = [];
 
 let currentData = [];
 try {
+  // eslint-disable-next-line
   currentData = require('../search-index.json') || [];
 } catch (e) {
   // no index
@@ -78,7 +79,7 @@ function parseFolder(folder, docs) {
         if ($el.is('table')) {
           text += $.makeArray($el.find('tr'))
             .map((row) => {
-              return $.makeArray($(row).find('td')).map(cell => $(cell).text().trim()).join(' | ');
+              return $.makeArray($(row).find('td')).map((cell) => $(cell).text().trim()).join(' | ');
             })
             .join('\n');
         } else {

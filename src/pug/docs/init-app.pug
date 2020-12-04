@@ -15,54 +15,54 @@ block content
     p In the example above we use `app` variable where we store Framework7 initialized instance for easy access in future. It is not necessary to name it `app`, it could be any name you like.
     p It was pretty simple. But Framework7 also provides more customization on initialization by passing object with parameters:
     :code(lang="js")
-          var app = new Framework7({
-            // App root element
-            root: '#app',
-            // App Name
-            name: 'My App',
-            // App id
-            id: 'com.myapp.test',
-            // Enable swipe panel
-            panel: {
-              swipe: true,
-            },
-            // Add default routes
-            routes: [
-              {
-                path: '/about/',
-                url: 'about.html',
-              },
-            ],
-            // ... other parameters
-          });
+      var app = new Framework7({
+        // App root element
+        el: '#app',
+        // App Name
+        name: 'My App',
+        // App id
+        id: 'com.myapp.test',
+        // Enable swipe panel
+        panel: {
+          swipe: true,
+        },
+        // Add default routes
+        routes: [
+          {
+            path: '/about/',
+            url: 'about.html',
+          },
+        ],
+        // ... other parameters
+      });
     p For list of all available app parameters check the <a href="app.html">App / Core</a> section.
     p Now after we initialized our app, we need to initialize our <a href="view.html">View</a> (`<div class="view view-main">` in app layout). The View is basically the app router which is responsible for navigation:
     :code(lang="js")
-          var mainView = app.views.create('.view-main');
+      var mainView = app.views.create('.view-main');
     p So your final initialization code in `my-app.js` could look like:
     :code(lang="js")
-          var app = new Framework7({
-            // App root element
-            root: '#app',
-            // App Name
-            name: 'My App',
-            // App id
-            id: 'com.myapp.test',
-            // Enable swipe panel
-            panel: {
-              swipe: true,
-            },
-            // Add default routes
-            routes: [
-              {
-                path: '/about/',
-                url: 'about.html',
-              },
-            ],
-            // ... other parameters
-          });
+      var app = new Framework7({
+        // App root element
+        el: '#app',
+        // App Name
+        name: 'My App',
+        // App id
+        id: 'com.myapp.test',
+        // Enable swipe panel
+        panel: {
+          swipe: true,
+        },
+        // Add default routes
+        routes: [
+          {
+            path: '/about/',
+            url: 'about.html',
+          },
+        ],
+        // ... other parameters
+      });
 
-          var mainView = app.views.create('.view-main');
+      var mainView = app.views.create('.view-main');
 
     h2 What's next
     p Ok, now we know how to scaffold and init the app. Now we need to check the <a href="app.html">App / Core</a> component to learn more about its parameters and methods, how Router works, learn more about <a href="view.html">Views</a>, <a href="page.html">Pages</a> and the rest of the components.

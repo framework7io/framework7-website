@@ -154,15 +154,6 @@ block content
                     url: 'http://myapp.com/posts/{{userId}}/{{postId}}'
                   }
         tr
-          td template
-          td string<br>function
-          td Load page content from passed Template7 template string or function
-        tr
-          td templateUrl
-          td string
-          td Load page content from url via Ajax, and compile it using Template7
-            p Also supports dynamic route params from <a href="#route-path">route path</a> using `{{paramName}}` expression
-        tr
           td component
           td object
           td Load page from passed Framework7 <a href="router-component.html">Router Component</a>
@@ -330,22 +321,16 @@ block content
             // Async
             {
               path: '/something/',
-              async: function (routeTo, routeFrom, resolve, reject) {
+              async: function ({ app, to, from, resolve, reject }) {
                 // Requested route
-                console.log(routeTo);
-                // Get external data and return template7 template
-                this.app.request.json('http://some-endpoint/', function (data) {
+                console.log(to);
+                // Get external data and return page content
+                app.request.json('http://some-endpoint/').then(function (res) {
                   resolve(
-                    // How and what to load: template
+                    // How and what to load
                     {
-                      template: '<div class="page">{{users}}</div>'
+                      content: `<div class="page">${res.data.users}</div>`
                     },
-                    // Custom template context
-                    {
-                      context: {
-                        users: data,
-                      },
-                    }
                   );
                 });
               }
@@ -399,10 +384,6 @@ block content
           td clearPreviousHistory
           td boolean
           td previous pages history will be cleared after reloading/navigate to the specified route
-        tr
-          td context
-          td object
-          td custom/extended context for Template7/Component page (when route loaded from `template`, `templateUrl`, `component` or `componentUrl`)
         tr
           td ignoreCache
           td boolean

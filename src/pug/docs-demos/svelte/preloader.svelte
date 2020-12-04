@@ -39,7 +39,7 @@
         </Col>
       </Block>
 
-      <BlockTitle>Multi-color (MD-theme only)</BlockTitle>
+      <BlockTitle>Multi-color</BlockTitle>
       <Block strong class="text-align-center">
         <Preloader color="multi"></Preloader>
       </Block>

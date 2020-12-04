@@ -13,34 +13,41 @@ block content
     p Framework7 also comes with features detection library.
     p It is available as a `support` property of Framework7 class (`Framework7.support`) and same property on initialized app instance (`app.support`):
     :code(lang="js")
-          // If we need it in place where we don't have access to app instance or before we init the app
-          if (!Framework7.support.touch) {
-            console.log('No touch support');
-          }
+      // If we need it in place where we don't have access to app instance or before we init the app
+      if (!Framework7.support.touch) {
+        console.log('No touch support');
+      }
 
 
-          // After we init the app we can access it as app instance property
-          var app = new Framework7({ /*...*/ });
-          if (!app.support.touch) {
-            console.log('No touch support');
-          }
-    h3 Support Properties
+      // After we init the app we can access it as app instance property
+      var app = new Framework7({ /*...*/ });
+      if (!app.support.touch) {
+        console.log('No touch support');
+      }
+
+    h2 `getSupport`
+    p When we use Framework7 with ES modules, we need to use `getSupport` util instead:
+    ```js
+      import { getSupport } from 'framework7';
+
+      const support = getSupport();
+
+      if (!app.support.touch) {
+        console.log('No touch support');
+      }
+    ```
+
+    h2 Support Properties
     table.methods-table
       tr
         td touch
         td Touch events support (touchstart, touchmove, touchend)
       tr
-        td transforms3d
-        td CSS 3D Transforms support
+        td pointerEvents
+        td Pointer events support
       tr
-        td flexbox
-        td CSS Flexbox model support
-      tr
-        td observer
-        td Mutation Observers support
+        td intersectionObserver
+        td Intersection Observer support
       tr
         td passiveListener
         td Passive event listener support
-      tr
-        td gestures
-        td Gestures event support (gesturestart, gesturechange, gestureend)

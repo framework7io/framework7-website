@@ -15,54 +15,41 @@ block content
     p It is available as a `request` property of Framework7 class (`Framework7.request`) and same property on initialized app instance (`app.request`):
     :code(lang="js")
       // If we need it in place where we don't have access to app instance or before we init the app
-      Framework7.request.get('somepage.html', function (data) {
-        console.log(data);
+      Framework7.request.get('somepage.html').then((res) => {
+        console.log(res.data);
       });
 
 
       // After we init the app we can access it as app instance property
       var app = new Framework7({ /*...*/ });
 
-      app.request.get('somepage.html', function (data) {
-        console.log(data);
+      app.request.get('somepage.html').then((res) => {
+        console.log(res.data);
       });
+    p It is also possible to import it when using ES modules:
+    ```js
+      import { request } from 'framework7';
+
+      request.get('somepage.html')
+    ```
     h2 API
     .method-wrap
       p
-        span.method app.request(<span>parameters</span>)
-        span - Load data from the server
+        span.method app.request(<span>options</span>)
       ul.method-parameters
         li
-          span.parameter parameters
+          span.parameter options
           |  - <span class="parameter-type">object</span> - Request parameters
-      p.method-returns Returns plain XHR object
+      p.method-returns Returns promise that will be resolved with the `{ data, xhr, status, options }` object and rejected in case of error with `{ xhr, status, message, options }` object.
     .method-wrap
       p
-        span.method Framework7.request(<span>parameters</span>)
-        span - Load data from the server
+        span.method Framework7.request(<span>options</span>)
       ul.method-parameters
         li
-          span.parameter parameters
+          span.parameter options
           |  - <span class="parameter-type">object</span> - Request parameters
-      p.method-returns Returns plain XHR object
-    .method-wrap
-      p
-        span.method app.request.promise(<span>parameters</span>)
-        span - Load data from the server
-      ul.method-parameters
-        li
-          span.parameter parameters
-          |  - <span class="parameter-type">object</span> - Request parameters
-      p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
-    .method-wrap
-      p
-        span.method Framework7.request.promise(<span>parameters</span>)
-        span - Load data from the server
-      ul.method-parameters
-        li
-          span.parameter parameters
-          |  - <span class="parameter-type">object</span> - Request parameters
-      p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
+      p.method-returns Returns promise that will be resolved with the `{ data, xhr, status, options }` object and rejected in case of error with `{ xhr, status, message, options }` object.
+
     p Let's look at the list of available parameters
     table.params-table
       thead
@@ -143,6 +130,11 @@ block content
           td 0
           td Set a timeout (in milliseconds) for the request
         tr
+          td abortController
+          td <a href="#abort-controller">AbortController</a>
+          td
+          td Allows to pass <a href="#abort-controller">abort controller</a> to have an option to abort the request
+        tr
           th(colspan="4") Callbacks
         tr
           td beforeCreate
@@ -194,7 +186,7 @@ block content
               })
 
     h2 Shorthand Methods
-    p Request comes with some pre configured methods for ease of use.
+    p Request comes with some pre configured methods for ease of use. All methods return same Promise as main `request` method.
     h3 `get()`
     .method-wrap
       p
@@ -216,35 +208,18 @@ block content
         li
           span.parameter dataType
           |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be `text` or `json`. <em>Optional</em>
-      p.method-returns Returns plain XHR object
     .method-wrap
       p
         span.method Framework7.request.get(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
         span - Load data from the server using a HTTP GET request
-      p.method-returns Returns plain XHR object
-    .method-wrap
-      p
-        span.method app.request.promise.get(<span>url</span>, <span>data</span>,  <span>dataType</span>)
-        span - Load data from the server using a HTTP GET request
-      p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
-    .method-wrap
-      p
-        span.method Framework7.request.promise.get(<span>url</span>, <span>data</span>,  <span>dataType</span>)
-        span - Load data from the server using a HTTP GET request
-      p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
+
     p For example:
     :code(lang="js")
       var app = new Framework7();
 
       var $$ = Dom7;
 
-      app.request.get('blog-post.php', { foo:'bar', id: 5 }, function (data) {
-        $$('.articles').html(data);
-        console.log('Load was performed');
-      });
-
-      /* Or with promise API */
-      app.request.promise.get('blog-post.php', { foo: 'bar', id:5 })
+      app.request.get('blog-post.php', { foo: 'bar', id:5 })
         .then(function (res) {
           $$('.articles').html(res.data);
           console.log('Load was performed');
@@ -275,35 +250,18 @@ block content
         li
           span.parameter dataType
           |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be `text` or `json`. <em>Optional</em>
-      p.method-returns Returns plain XHR object
     .method-wrap
       p
         span.method Framework7.request.post(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
         span - Load data from the server using a HTTP POST request
-      p.method-returns Returns plain XHR object
-    .method-wrap
-      p
-        span.method app.request.promise.post(<span>url</span>, <span>data</span>,  <span>dataType</span>)
-        span - Load data from the server using a HTTP POST request
-      p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
-    .method-wrap
-      p
-        span.method Framework7.request.promise.post(<span>url</span>, <span>data</span>,  <span>dataType</span>)
-        span - Load data from the server using a HTTP POST request
-      p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
+
     p For example:
     :code(lang="js")
       var app = new Framework7();
 
       var $$ = Dom7;
 
-      app.request.post('auth.php', { username:'foo', password: 'bar' }, function (data) {
-        $$('.login').html(data);
-        console.log('Load was performed');
-      });
-
-      /* or with promise API */
-      app.request.promise.post('auth.php', { username:'foo', password: 'bar' })
+      app.request.post('auth.php', { username:'foo', password: 'bar' })
         .then(function (res) {
           $$('.login').html(res.data);
           console.log('Load was performed');
@@ -326,36 +284,15 @@ block content
         li
           span.parameter error
           |  - <span class="parameter-type">function (xhr, status, message)</span> - A callback function that is executed if the request fails. <em>Optional</em>
-      p.method-returns Method nothing returns
     .method-wrap
       p
         span.method Framework7.request.json(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
         span - Load JSON-encoded data from the server using a GET HTTP request
-      p.method-returns Method returns nothing
-    .method-wrap
-      p
-        span.method app.request.promise.json(<span>url</span>, <span>data</span>)
-        span - Load JSON-encoded data from the server using a GET HTTP request
-      p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
-    .method-wrap
-      p
-        span.method Framework7.request.promise.json(<span>url</span>, <span>data</span>)
-        span - Load JSON-encoded data from the server using a GET HTTP request
-      p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
     p For example:
     :code(lang="js")
-      Framework7.request.json('items.json', function (data) {
-        console.log(data);
-      });
-
       var app = new Framework7();
 
-      app.request.json('users.json', function (data) {
-        console.log(data);
-      });
-
-      /* or with promise API */
-      app.request.promise.json('users.json')
+      app.request.json('users.json')
         .then(function (res) {
           console.log(res.data);
         });
@@ -381,22 +318,10 @@ block content
         li
           span.parameter dataType
           |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be `text` or `json`. By default is `json`. <em>Optional</em>
-      p.method-returns Returns plain XHR object
     .method-wrap
       p
         span.method Framework7.request.postJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
         span - Send JSON data using a HTTP POST request
-      p.method-returns Returns plain XHR object
-    .method-wrap
-      p
-        span.method app.request.promise.postJSON(<span>url</span>, <span>data</span>,  <span>dataType</span>)
-        span - Send JSON data using a HTTP POST request
-      p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
-    .method-wrap
-      p
-        span.method Framework7.request.promise.postJSON(<span>url</span>, <span>data</span>,  <span>dataType</span>)
-        span - Send JSON data using a HTTP POST request
-      p.method-returns Returns promise that will be resolved with the `{data, xhr, status}` object and rejected in case of error with `{ xhr, status, message }` object.
 
     p For example:
     :code(lang="js")
@@ -404,27 +329,22 @@ block content
 
       var $$ = Dom7;
 
-      app.request.postJSON('http://api.myapp.com', { username:'foo', password: 'bar' }, function (data) {
-        console.log(data);
-      });
-
-      /* or with promise API */
-      app.request.promise.postJSON('http://api.myapp.com', { username:'foo', password: 'bar' })
+      app.request.postJSON('http://api.myapp.com', { username:'foo', password: 'bar' })
         .then(function (res) {
           console.log(res.data);
         });
     h2 Request Setup
     .method-wrap
       p
-        span.method app.request.setup(<span>parameters</span>)
+        span.method app.request.setup(<span>options</span>)
         span - Set default values for future Ajax requests. <b>Its use is not recommended</b>
       ul.method-parameters
         li
-          span.parameter parameters
+          span.parameter options
           |  - <span class="parameter-type">object</span> - Default requests parameters
     .method-wrap
       p
-        span.method Framework7.request.setup(<span>parameters</span>)
+        span.method Framework7.request.setup(<span>options</span>)
         span - Set default values for future Ajax requests. <b>Its use is not recommended</b>
     p For example:
     :code(lang="js")
@@ -444,4 +364,24 @@ block content
         tr
           td xhr.requestUrl
           td String with request URL
+    h2 Abort Controller
+    p Because `.request()` returns Promise, we don't have access to XHR object before Promise will be resolved or rejected.
+    p For this case we need to create special Abort Controller, pass it to the request and we will be able to abort it in future:
+    ```js
+      var app = new Framework7(...);
+
+      // create Abort Controller
+      var abortController = app.request.abortController();
+
+      // send request
+      app.request({
+        url: 'somepage.php',
+        // pass abort controller to the request
+        abortController: abortController,
+        // ...
+      });
+
+      // now we can abort the request
+      abortController.abort();
+    ```
 
