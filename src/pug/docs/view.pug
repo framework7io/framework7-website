@@ -35,7 +35,7 @@ block content
           </body>
     p As you see <strong>View</strong> may be almost in any part of your app.
     h4 Main View
-    p Your main view should have additional <strong>view-main</strong> class. Why we need main view? By default all links (which is not in any initialized view) will load pages in main view. Also if you use `pushState` hash navigation then it works only for main view's navigation.
+    p Your main view should have additional <strong>view-main</strong> class. Why we need main view? By default all links (which is not in any initialized view) will load pages in main view. Also if you use `browserHistory` hash navigation then it works only for main view's navigation.
     h2 Multiple Views Layout
     p In case we have the app with multiple views in app root, so called "Tabbed Views" app, we must wrap our views with additional `<div class="views">` element.
     .important-note
@@ -400,37 +400,47 @@ block content
           td true
           td Enable/disable opacity animation during swipe back action. You can disable it to improve performance. For Aurora theme
         tr
-          th(colspan="4") Push State
+          th(colspan="4") Browser History
         tr
-          td pushState
+          td browserHistory
           td boolean
           td false
           td If you develop web app (not PhoneGap or Home Screen web app) it is useful to enable hash navigation (browser url will look like "http://my-webapp.com/#!/about.html"). User as well will be able to navigate through app's history by using browser's default back and forward buttons.
         tr
-          td pushStateRoot
+          td browserHistoryRoot
           td string
           td
-          td Push state root URL separator, for example "http://my-app.com/". It is useful only in case when you use empty ("") pushStateSeparator
+          td Browser history root URL separator, for example "http://my-app.com/". It is useful only in case when you use empty ("") `browserHistorySeparator`
         tr
-          td pushStateAnimate
+          td browserHistoryAnimate
           td boolean
           td true
-          td Enable/disable page transitions on push state change
+          td Enable/disable page transitions on browser history change
         tr
-          td pushStateAnimateOnLoad
+          td browserHistoryAnimateOnLoad
           td boolean
           td false
-          td Enable/disable push state page transition on app load
+          td Enable/disable browser history page transition on app load
         tr
-          td pushStateSeparator
+          td browserHistorySeparator
           td string
           td #!
-          td Push state URL separator, can be changed for something like '#page/' and then your push state urls will look like "http://myapp.com/#page/about.html"
+          td Browser history URL separator, can be changed for something like '#page/' and then your browser history urls will look like "http://myapp.com/#page/about.html"
         tr
-          td pushStateOnLoad
+          td browserHistoryOnLoad
           td boolean
           td true
-          td Disable to ignore parsing push state URL and loading page on app load
+          td Disable to ignore parsing browser history URL and loading page on app load
+        tr
+          td browserHistoryInitialMatch
+          td boolean
+          td false
+          td Set to `true` when your server cofigured to respond with content that matches to requested URL (e.g. using with server-side rendering frameworks like Nuxt.js, Next.js, and others). Also must be enabled when used in Framework7-React/Vue/Svelte. By default disabled
+        tr
+          td browserHistoryStoreHistory
+          td boolean
+          td true
+          td When enabled (by default), it will store router history in localStorage and try to restore it on next web app visit
         tr
           th(colspan="4") Events Handlers
         tr
@@ -624,7 +634,7 @@ block content
                   li <span class="parameter">clearPreviousHistory</span> (<span class="parameter-type">boolean</span>) - previous pages history will be cleared after reloading/navigate to the specified route
                   li <span class="parameter">animate</span> (<span class="parameter-type">boolean</span>) - whether the page should be animated or not (overwrites default router settings)
                   li <span class="parameter">history</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in router history
-                  li <span class="parameter">pushState</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using `pushState`, then you can pass here `false` to prevent route getting in browser history
+                  li <span class="parameter">browserHistory</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using `browserHistory`, then you can pass here `false` to prevent route getting in browser history
                   li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to `true` then it will ignore if such URL in cache and reload it using XHR again
                   li <span class="parameter">props</span> (<span class="parameter-type">object</span>) - props that will be passed as page component props
                   li <span class="parameter">transition</span> (<span class="parameter-type">string</span>) - route <a href="#custom-page-transitions">custom page transition name</a>
@@ -669,7 +679,7 @@ block content
               li <span class="parameter">options</span> - <span class="parameter-type">object</span> with additional navigation properties (optional):
                 ul
                   li <span class="parameter">animate</span> (<span class="parameter-type">boolean</span>) - whether the page should be animated or not (overwrites default router settings)
-                  li <span class="parameter">pushState</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using `pushState`, then you can pass here `false` to prevent route getting in browser history
+                  li <span class="parameter">browserHistory</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using `browserHistory`, then you can pass here `false` to prevent route getting in browser history
                   li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to `true` then it will ignore if such URL in cache and reload it using XHR again
                   li <span class="parameter">force</span> (<span class="parameter-type">boolean</span>) - if set to `true` then it will ignore previous page in history and load specified one
         tr
@@ -941,10 +951,10 @@ block content
           </div>
     p But what about View parameters. In this case we may pass them in `data-` attributes.
     .important-note
-      p Parameters that used in camelCase, for example `pushState`, in data- attributes should be used as kebab-case as <b>data-push-state</b>
+      p Parameters that used in camelCase, for example `browserHistory`, in data- attributes should be used as kebab-case as <b>data-browser-history</b>
     :code(lang="html")
           <!-- view parameters in data- attributes -->
-          <div class="view view-init" data-url="/" data-name="home" data-push-state="true">
+          <div class="view view-init" data-url="/" data-name="home" data-browser-history="true">
             ...
           </div>
     p In this case if you need to access created View instance you can use:

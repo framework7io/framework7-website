@@ -18,7 +18,7 @@ block content
     h2 Sheet Modal Components
     p There are following components included:
     ul
-      li `Sheet` / `F7Sheet` - sheet modal element
+      li `Sheet`  - sheet modal element
     h2 Sheet Modal Properties
     table.params-table.cols-3
       thead
@@ -81,16 +81,7 @@ block content
           td push
           td boolean
           td When enabled it will push view behind on open. Works only when top safe area is in place. It can also be enabled by adding `sheet-modal-push` class to Sheet element.
-    h2 Sheet Modal Methods
-    table.methods-table
-      tr
-        th(colspan="2") &lt;Sheet&gt; methods
-      tr
-        td .open(<span>animate</span>)
-        td Open sheet modal
-      tr
-        td .close(<span>animate</span>)
-        td Close sheet modal
+
     h2 Sheet Modal Events
     table.events-table
       thead
@@ -121,6 +112,31 @@ block content
         tr
           td sheetStepProgress
           td Event will be triggered on Sheet swipe step between step opened and closed state. As `event.detail` it receives step open progress number (from `0` to `1`)
+
+    h2 Sheet Modal Slots
+    p `<Sheet>` component has additional slots for custom elements:
+    ul
+      li `default` - element will be inserted as a child of scrollable `<div class="sheet-modal-inner">` element
+      li `static` - same as `default`
+      li `fixed` - element will be inserted before the scrollable `<div class="sheet-modal-inner">` element
+
+    ```jsx
+      <Sheet>
+        <span slot="fixed">Fixed slot</span>
+        <span slot="static">Static slot</span>
+        <span>Default slot</span>
+      </Sheet>
+    ```
+    p Renders to
+    ```html
+      <div class="sheet-modal">
+        <span>Fixed slot</span>
+        <div class="sheet-modal-inner">
+          <span>Default slot</span>
+          <span>Static slot</span>
+        </div>
+      </div>
+    ```
 
     h2 Open And Close Sheet Modal
     p You can control Sheet Modal state, open and closing it:

@@ -337,7 +337,7 @@ block content
             }
           ],
     h2 Route Path
-    p As stated above, the route's `path` property means the path/url that will be displayed in browser window address bar (if `pushState` enabled) when the following route will be loaded either by api or clicking on a link with same path.
+    p As stated above, the route's `path` property means the path/url that will be displayed in browser window address bar (if `browserHistory` enabled) when the following route will be loaded either by api or clicking on a link with same path.
     p There is also support for dynamic paths. So if you have the following path in your route `/blog/users/:userId/posts/:postId/` and click the link with the with the `/blog/users/12/posts/25` href then on loaded page we access `route.params` object containing `{ userId: 12, postId: 25 }`
     p Route path matching is handled by <a href="https://github.com/pillarjs/path-to-regexp" target="_blank">Path To Regexp</a> library, so everything what is supported there is supported in Framework7 as well. For example, if you want to add default route which match all paths, we can use regular expression like:
     :code(lang="js")
@@ -365,9 +365,9 @@ block content
           td boolean
           td whether the page should be saved in router history
         tr
-          td pushState
+          td browserHistory
           td boolean
-          td whether the page should be saved in browser state. In case you are using `pushState`, then you can pass here `false` to prevent route getting in browser history
+          td whether the page should be saved in browser state. In case you are using `browserHistory`, then you can pass here `false` to prevent route getting in browser history
         tr
           td reloadCurrent
           td boolean
@@ -547,7 +547,7 @@ block content
     ul
       li First of all, it provides opportunity to navigate to tabs by usual links instead of so called special tab-links.
       li Second, when navigating to such route you can load a page with required tab opened.
-      li Third, with enabled Push State, the same tab will be opened when you navigate back and forward in history.
+      li Third, with enabled Browser History, the same tab will be opened when you navigate back and forward in history.
       li And the last but not least, when using routable tabs you can load tabs content in the same ways as for pages, i.e. using `url`, `content`, `template`, `templateUrl`, `component` or `componentUrl`
     p First of all we need to specify tabs routes in app routes. Lets assume we have a page with routable tabs on /tabs/ route:
     :code(lang="js")
@@ -616,7 +616,7 @@ block content
     p And same features as for routable tabs and pages:
     ul
       li it provides opportunity to open modals by usual links instead of so called special links or API,
-      li with enabled Push State, the same modal will be opened when you refresh browser, navigate back and forward in history,
+      li with enabled Browser History, the same modal will be opened when you refresh browser, navigate back and forward in history,
       li with routable modals you can load modal itself and its content in the same ways as for pages, i.e. using `url`, `content`, `template`, `templateUrl`, `component` or `componentUrl`
     :code(lang="js")
       routes = [
@@ -704,7 +704,7 @@ block content
     p Panels (Side Panels) can also be routable with same features as for routable modals and pages:
     ul
       li it provides opportunity to open Panel by usual links instead of so called special links or API,
-      li with enabled Push State, the same Panel will be opened when you refresh browser, navigate back and forward in history,
+      li with enabled Browser History, the same Panel will be opened when you refresh browser, navigate back and forward in history,
       li with routable Panels you can load Panel itself and its content in the same ways as for pages and modals, i.e. using `url`, `content`, `template`, `templateUrl`, `component` or `componentUrl`
     :code(lang="js")
       routes = [

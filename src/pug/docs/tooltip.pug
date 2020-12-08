@@ -106,7 +106,9 @@ block content
           td trigger
           td string
           td hover
-          td Defines how to trigger (open) Tooltip. Can be `hover` or `click`. If `hover` tooltip will be toggled on mouse hover on desktop, and with tap and hold on touch devices
+          td Defines how to trigger (open) Tooltip. Can be `hover`, `click` or `manual`.
+            p If `hover` - tooltip will be toggled on mouse hover on desktop, and with tap and hold on touch devices
+            p If `manual` - tooltip visibility should be controlled with `tooltip.show()` and `tooltip.hide()` methods
         tr
           td cssClass
           td string
@@ -117,6 +119,16 @@ block content
           td function (tooltip)
           td
           td Function to render tooltip element, must return full tooltip HTML layout string
+        tr
+          td containerEl
+          td HTMLElement<br>string
+          td
+          td Element to mount Tooltip to. (default to app root element `app.el`)
+        tr
+          td delegated
+          td boolean
+          td false
+          td Enabled delegated tooltip. Useful if you need to show same tooltip for multiple elements. In this case `targetEl` must be specified as CSS Selector string, and same tooltip will be reused for specified elements.
         tr
           td on
           td object
@@ -177,6 +189,9 @@ block content
         tr
           td tooltip.setText(<span>text</span>)
           td Change tooltip text or HTML content to the new one
+        tr
+          td tooltip.setTargetEl(<span>targetEl</span>)
+          td Changes tooltip's target element to specified one
         tr
           td tooltip.destroy()
           td Destroys tooltip instance

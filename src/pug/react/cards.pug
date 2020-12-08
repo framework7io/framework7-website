@@ -18,10 +18,10 @@ block content
     h2 Card Components
     p There are following components included:
     ul
-      li `Card` / `F7Card`
-      li `CardHeader` / `F7CardHeader`
-      li `CardContent` / `F7CardContent`
-      li `CardFooter` / `F7CardFooter`
+      li `Card`
+      li `CardHeader`
+      li `CardContent`
+      li `CardFooter`
     h2 Card Properties
     table.params-table
       thead
@@ -150,6 +150,36 @@ block content
         tr
           td cardClosed
           td Event will be triggered after expandable card completes its closing animation
+
+    h2 Card Slots
+    p `<Card>` component has the following slots:
+    ul
+      ul
+      li `default` - element will be inserted as a child of card content element
+      li `content` - same as `default`
+      li `header` - element will be inserted as a child of card header element
+      li `footer` - element will be inserted as a child of card footer element
+    ```html
+      <Card>
+        <span slot="header">Header</span>
+        <span slot="content">Content</span>
+        <span slot="footer">Footer</span>
+      </Card>
+    ```
+    p Renders to
+    ```html
+      <div class="card">
+        <div class="card-header">
+          <span>Header</span>
+        </div>
+        <div class="card-content">
+          <span>Content</span>
+        </div>
+        <div class="card-footer">
+          <span>Footer</span>
+        </div>
+      </div>
+    ```
 
     .with-device
       h2(data-device-preview="../docs-demos/react/cards.html") Examples

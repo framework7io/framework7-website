@@ -18,10 +18,10 @@ block content
     h2 Menu Components
     p There are following components included:
     ul
-      li `Menu` / `F7Menu`
-      li `MenuItem` / `F7MenuItem`
-      li `MenuDropdown` / `F7MenuDropdown`
-      li `MenuDropdownItem` / `F7MenuDropdownItem`
+      li `Menu`
+      li `MenuItem`
+      li `MenuDropdown`
+      li `MenuDropdownItem`
     h2 Menu Properties
     table.params-table
       thead
@@ -53,6 +53,16 @@ block content
           td boolean
           td
           td Enable if to render menu item as link (`<a>`) element if you don't need to specific `href`
+        tr
+          td tooltip
+          td string
+          td
+          td <a href="../docs/tooltip.html">tooltip</a> text to show on hover/press
+        tr
+          td tooltipTrigger
+          td string
+          td hover
+          td Defines how to trigger (open) Tooltip. Can be `hover`, `click` or `manual`
         tr
           th(colspan="4") &lt;MenuItem&gt; icon related properties
         +reactLinkIconProps

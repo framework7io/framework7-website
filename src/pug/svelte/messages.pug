@@ -58,6 +58,11 @@ block content
           td boolean
           td true
           td If enabled then messages autoscrolling will happen only when user is on top/bottom of the messages view
+        tr
+          td typing
+          td boolean
+          td false
+          td Allows to display/toggle typing message indicator
         //- tr
           td messages
           td array
@@ -170,31 +175,6 @@ block content
           td boolean
           td false
           td Defines that this message user's avatar URL is the same as on previous message
-
-    h2 Messages Methods
-    table.methods-table
-      tr
-        th(colspan="2") &lt;Messages&gt; methods
-      tr
-        td .scroll(<span>duration, position</span>);
-        td Scroll messages to top/bottom depending on `newMessagesFirst` parameter
-          ul.method-parameters
-            li
-              span.parameter duration
-              |  - <span class="parameter-type">number</span> scroll duration in ms
-            li
-              span.parameter position
-              |  - <span class="parameter-type">number</span> scroll position in px
-      tr
-        td .showTyping(<span>message</span>);
-        td Show typing message indicator
-            ul.method-parameters
-              li
-                span.parameter message
-                |  - <span class="parameter-type">object</span> - <a href="../docs/messages.html#single-message-parameters">parameters of message</a> to add
-      tr
-        td .hideTyping()
-        td Hide typing message indicator
 
     h2 Messages Events
     table.events-table

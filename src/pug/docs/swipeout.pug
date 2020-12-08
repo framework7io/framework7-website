@@ -213,6 +213,11 @@ block content
           td number
           td 0
           td Delay in ms to remove swipeout item if `removeElementsWithTimeout` is enabled.
+        tr
+          td overswipeRatio
+          td number
+          td 1.2
+          td Defines how much/hard needed to swipe to trigger overswipe (defaults to 1.2)
     p To change these parameters we need to pass them on app init under `swipeout` property, for example:
     :code(lang="js")
           var app = new Framework7({

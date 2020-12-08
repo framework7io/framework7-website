@@ -1,10 +1,4 @@
 - Core
-  - Dialog
-    - Added `containerEl` property to specify where to mount the modal
-  - Calendar
-    - Time Picker now supports AM/PM period selection based on selected locale or timePickerFormat
-  - Swipeout
-    - New `app.params.swipeout.overswipeRatio` (default to `1.2`) allows to configure how more to swipe to enable overswipe
   - Page
     - New Page Title element
   - List
@@ -19,8 +13,6 @@
     - New React, Svelte and Vue components
     - CSS vars renamed without `--f7-` prefix
   - View/Router
-    - `pushState...` parameters renamed to `browserHistory...`
-    - New `browserHistoryInitialMatch` parameter
     - Route's `master` property that indicates whether it is a master route or not now can be a method that receives `(f7, router)` (app and router instances) and should return boolean.
     - Route's `beforeEnter`, `beforeLeave`, `redirect` and `async` methods now receive a single object with following props
       - `to`
@@ -33,17 +25,10 @@
       ```html
       <a href="/about/" data-open-in="popup">About</a>
       ```
-  - Tooltip
-    - New `containerEl` parameter
-    - New `delegated` parameter. Enables tooltip for all elements matching to `targetEl` selector (e.g. attaches event handler to document). `targetEl` parameter must be a CSS Selector (string)
-    - New `trigger: 'manual'` value
-    - New `.setTarget(targetEl)` instance method to change tooltip target after it was created
   - Pie Chart
     - All new Pie Chart component
   - Area Chart
     - All new Area Chart component
-  - Gauge
-    - Renamed `$gaugeSvgEl` property to `$svgEl`
   - Panel
     - Improved support for nested panels. Now panel can be created and correctly opened inside of the page (including with breakpoints)
   - Button
@@ -89,7 +74,6 @@
   - `browserHistory` must be used with `browserHistoryInitialMatch`
 - Common for React/Svelte/Vue
   - Button, Link, ListButon, ListItem, MenuDropdownItem, MenuItem, TreeviewItem
-    - New `openIn` prop to specify how to open page route (e.g. open page as `popup`, `sheet`, `panel` etc)
     - Support for loading button (button with preloader) with new props:
       - `preloader` - enables button to have preloader
       - `loading` - controls button state to show/hide preloader and hide/show button text (switch button to loading state)
@@ -105,22 +89,6 @@
     - New `menuList` boolean property to enable menu List
   - ListItem
     - New `selected` boolean property to mark menu list item as selected
-  - Popover
-    - `target` prop renamed to `targetEl`
-  - Popover, Login Screen, Actions, Sheet
+  - Popover, Login Screen, Actions, Sheet, Popup
     - Added `animate` property
-    - Removed component open/close methods
     - Added `containerEl` property to specify where to mount the modal
-  - Sheet
-    - Added `fixed` and `static` slots
-  - Panel
-    - Removed component open/close methods
-  - Messagebar
-    - Removed component methods
-  - Messages
-    - Removed component methods
-    - Added `typing` prop
-  - Toggle
-    - Added support for tooltip with `tooltip` and `tooltipTrigger` props
-  - MenuItem
-    - Added support for tooltip with `tooltip` and `tooltipTrigger` props

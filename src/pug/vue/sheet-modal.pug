@@ -81,16 +81,7 @@ block content
           td push
           td boolean
           td When enabled it will push view behind on open. Works only when top safe area is in place. It can also be enabled by adding `sheet-modal-push` class to Sheet element.
-    h2 Sheet Modal Methods
-    table.methods-table
-      tr
-        th(colspan="2") &lt;f7-sheet&gt; methods
-      tr
-        td .open(<span>animate</span>)
-        td Open sheet modal
-      tr
-        td .close(<span>animate</span>)
-        td Close sheet modal
+
     h2 Sheet Modal Events
     table.events-table
       thead
@@ -122,12 +113,43 @@ block content
           td sheet:stepprogress
           td Event will be triggered on Sheet swipe step between step opened and closed state. As `event.detail` it receives step open progress number (from `0` to `1`)
 
+
+    h2 Sheet Modal Slots
+    p `<f7-sheet>` component has additional slots for custom elements:
+    ul
+      li `default` - element will be inserted as a child of scrollable `<div class="sheet-modal-inner">` element
+      li `static` - same as `default`
+      li `fixed` - element will be inserted before the scrollable `<div class="sheet-modal-inner">` element
+
+    ```html
+      <f7-sheet>
+        <template #fixed>
+          <span>Fixed slot</span>
+        </template>
+        <template #static>
+          <span>Static slot</span>
+        </template>
+        <span>Default slot</span>
+      </f7-sheet>
+    ```
+    p Renders to
+    ```html
+      <div class="sheet-modal">
+        <span>Fixed slot</span>
+        <div class="sheet-modal-inner">
+          <span>Default slot</span>
+          <span>Static slot</span>
+        </div>
+      </div>
+    ```
+
     h2 Open And Close Sheet Modal
     p You can control Sheet Modal state, open and closing it:
     ul
       li using its <a href="../docs/sheet-modal.html">Sheet Modal API</a>
       li by passing `true` or `false` to its `opened` prop
       li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant `sheet-open` property (to open it) and `sheet-close` property to close it
+
 
     h2 Access To Sheet Modal Instance
     p You can access Sheet Modal initialized instance by accessing `.f7Sheet` component's property.

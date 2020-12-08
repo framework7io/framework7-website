@@ -152,6 +152,36 @@ block content
           td card:closed
           td Event will be triggered after expandable card completes its closing animation
 
+    h2 Card Slots
+    p `<f7-card>` component has the following slots:
+    ul
+      ul
+      li `default` - element will be inserted as a child of card content element
+      li `content` - same as `default`
+      li `header` - element will be inserted as a child of card header element
+      li `footer` - element will be inserted as a child of card footer element
+    ```html
+      <f7-card>
+        <span slot="header">Header</span>
+        <span slot="content">Content</span>
+        <span slot="footer">Footer</span>
+      </f7-card>
+    ```
+    p Renders to
+    ```html
+      <div class="card">
+        <div class="card-header">
+          <span>Header</span>
+        </div>
+        <div class="card-content">
+          <span>Content</span>
+        </div>
+        <div class="card-footer">
+          <span>Footer</span>
+        </div>
+      </div>
+    ```
+
     .with-device
       h2(data-device-preview="../docs-demos/vue/cards.html") Examples
       :code(lang="html")

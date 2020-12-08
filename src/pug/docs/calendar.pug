@@ -265,12 +265,14 @@ block content
           td timePicker
           td boolean
           td false
-          td Enables time picker
+          td Enables time picker.
         tr
           td timePickerFormat
           td object
           td {hour: 'numeric', minute: 'numeric'}
-          td Time format displayed in time selector. It accepts <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat#Parameters">`Intl.DateTimeFormat`.`options`</a>
+          td
+            p Time format displayed in time selector. It accepts <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat#Parameters">`Intl.DateTimeFormat`.`options`</a>
+            p `AM/PM` format depends on selected specified `locale`, or on browser locale if not specified
         tr
           td timePickerPlaceholder
           td string
