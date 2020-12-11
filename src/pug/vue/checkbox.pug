@@ -80,54 +80,28 @@ block content
             <f7-list-item checkbox value="check_2" title="Checkbox 2"></f7-list-item>
           </f7-list>
     h2 Checkbox v-model
-    p `v-model` <b>is not supported</b> on Checkbox vue component. Instead, just use the combination of `checked` property and `@change` event:
+    p Checkbox Vue component supports `v-model` on `checked` property:
     :code(lang="html")
-          <template>
-            <f7-page>
-             <!-- With boolean value -->
-             <f7-checkbox :checked="jobIsDone" @change="jobIsDone = $event.target.checked"></f7-checkbox>
-
-              <!-- With array value -->
-              <f7-checkbox
-                value="banana"
-                :checked="fruits.indexOf('banana') >= 0"
-                @change="checkFruits"
-              ></f7-checkbox>
-
-              <f7-checkbox
-                value="orange"
-                :checked="fruits.indexOf('orange') >= 0"
-                @change="checkFruits"
-              ></f7-checkbox>
-
-              <f7-checkbox
-                value="apple"
-                :checked="fruits.indexOf('apple') >= 0"
-                @change="checkFruits"
-              ></f7-checkbox>
-            </f7-page>
-          </template>
-          <script>
-            export default {
-              data() {
-                return {
-                  jobIsDone: false,
-                  fruits: [],
-                };
-              },
-              methods: {
-                checkFruits(event) {
-                  const self = this;
-                  const value = event.target.value;
-                  if (event.target.checked) {
-                    self.fruits.push(value);
-                  } else {
-                    self.fruits.splice(self.fruits.indexOf(value), 1);
-                  }
-                },
-              },
+      <template>
+        <f7-page>
+          <p>
+            <f7-checkbox v-model:checked="jobIsDone" />
+          </p>
+          <f7-list>
+            <f7-list-item checkbox v-model:checked="jobIsDone" title="Checkbox 1"></f7-list-item>
+          </f7-list>
+          <p>Job is done: {{ jobIsDone }}</p>
+        </f7-page>
+      </template>
+      <script>
+        export default {
+          data() {
+            return {
+              jobIsDone: false,
             };
-          </script>
+          }
+        };
+      </script>
     .with-device
       h2(data-device-preview="../docs-demos/vue/checkbox.html") Examples
       h4 Inline

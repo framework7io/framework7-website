@@ -90,6 +90,24 @@ block content
         tr
           td .toggle()
           td Toggle checkbox state
+    h2 Toggle v-model
+    p Toggle Vue component supports `v-model` on `checked` property:
+    :code(lang="html")
+      <template>
+        <f7-page>
+          <f7-toggle v-model:checked="jobIsDone" />
+          <p>Job is done: {{ jobIsDone }}</p>
+        </f7-page>
+      </template>
+      <script>
+        export default {
+          data() {
+            return {
+              jobIsDone: false,
+            };
+          }
+        };
+      </script>
     .with-device
       h2(data-device-preview="../docs-demos/vue/toggle.html") Examples
       :code(lang="html")

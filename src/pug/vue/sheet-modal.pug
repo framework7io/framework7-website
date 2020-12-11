@@ -143,6 +143,28 @@ block content
       </div>
     ```
 
+    h2 Sheet Modal v-model
+    p Sheet Modal component supports `v-model` on `opened` prop:
+    ```html
+      <template>
+        <f7-page>
+          <f7-sheet v-model:opened="isOpened">
+            ...
+          </f7-sheet>
+          <p>Modal is opened: {{ isOpened }}</p>
+        </f7-page>
+      </template>
+      <script>
+        export default {
+          data() {
+            return {
+              isOpened: false,
+            };
+          }
+        };
+      </script>
+    ```
+
     h2 Open And Close Sheet Modal
     p You can control Sheet Modal state, open and closing it:
     ul

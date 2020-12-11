@@ -208,6 +208,26 @@ block content
             <div>After inner</div>
           </div>
 
+    h2 Messagebar v-model
+    p `f7-messagebar` component supports `v-model` on `value` prop:
+    ```html
+      <template>
+        ...
+        <f7-messagebar
+          v-model:value="messageText"
+        />
+        ...
+      </template>
+      <script>
+        export default {
+          data() {
+            messageText: '',
+          },
+          ...
+        };
+      </script>
+    ```
+
     h2 Access To Messagebar Instance
     p If you use automatic initalization to init Messagebar (with `init:true` prop) and need to use its <a href="../docs/messagebar.html#messagebar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing `.f7Messagebar` component's property.
 

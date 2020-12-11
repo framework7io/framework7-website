@@ -18,87 +18,39 @@ block content
     ul
       li `f7-app`
     h2 App Properties
-    table.params-table
-      thead
-        tr
-          th Prop
-          th Type
-          th Default
-          th Description
-      tbody
-        tr
-          td params
-          td object
-          td
-          td Object with <a href="../docs/app.html#app-parameters">Framework7 parameters</a>
-        tr
-          td routes
-          td array
-          td
-          td Array with default routes for all views. Same as `params.routes` so you can use this one if you feel more comfortable with such approach
-        tr
-          td id
-          td string
-          td
-          td App element ID attribute
+    p `f7-app` component receives all <a href="/docs/app.html#app-parameters" target="_blank">App parameters</a> as component props.
     h2 Examples
-    p Passing all parameters in `params` prop
     :code(lang="html")
-          <template>
-            <f7-app :params="f7params">
-              <!-- ...  -->
-            </f7-app>
-          </template>
+      <template>
+        <f7-app v-bind="f7params">
+          <!-- ...  -->
+        </f7-app>
+      </template>
 
-          <script>
-            import AboutPage from './about.vue';
-            import ServicesPage from './services.vue';
+      <script>
+        import AboutPage from './about.vue';
+        import ServicesPage from './services.vue';
 
-            export default {
-              data() {
-                return {
-                  f7params: {
-                    name: 'My App',
-                    id: 'com.myapp.test',
-                    // routes
-                    routes: [
-                      {
-                        path: '/about/',
-                        component: AboutPage,
-                      },
-                      {
-                        path: '/services/',
-                        component: ServicesPage,
-                      },
-                    ],
-                    // ... other params
-                  }
-                }
-              }
-            }
-          </script>
-    p Passing routes in separate prop:
-    :code(lang="html")
-          <template>
-            <f7-app :params="f7params" :routes="routes">
-              <!-- ...  -->
-            </f7-app>
-          </template>
-
-          <script>
-            import routes from './routes';
-
-            export default {
-              data() {
-                return {
-                  f7params: {
-                    name: 'My App',
-                    id: 'com.myapp.test',
-                    // ... other params
+        export default {
+          data() {
+            return {
+              f7params: {
+                name: 'My App',
+                id: 'com.myapp.test',
+                // routes
+                routes: [
+                  {
+                    path: '/about/',
+                    component: AboutPage,
                   },
-                  // routes
-                  routes,
-                }
+                  {
+                    path: '/services/',
+                    component: ServicesPage,
+                  },
+                ],
+                // ... other params
               }
             }
-          </script>
+          }
+        }
+      </script>

@@ -103,6 +103,29 @@ block content
         tr
           td popup:swipeclose
           td Event will be triggered when popup closed with swipe
+
+    h2 Popup v-model
+    p Popup component supports `v-model` on `opened` prop:
+    ```html
+      <template>
+        <f7-page>
+          <f7-popup v-model:opened="isOpened">
+            ...
+          </f7-popup>
+          <p>Modal is opened: {{ isOpened }}</p>
+        </f7-page>
+      </template>
+      <script>
+        export default {
+          data() {
+            return {
+              isOpened: false,
+            };
+          }
+        };
+      </script>
+    ```
+
     h2 Open And Close Popup
     p You can control Popup state, open and closing it:
     ul

@@ -17,34 +17,13 @@ block content
     p There are following components included:
     ul
       li `App`
+
     h2 App Properties
-    table.params-table
-      thead
-        tr
-          th Prop
-          th Type
-          th Default
-          th Description
-      tbody
-        tr
-          td params
-          td object
-          td
-          td Object with <a href="../docs/app.html#app-parameters">Framework7 parameters</a>
-        tr
-          td routes
-          td array
-          td
-          td Array with default routes for all views. Same as `params.routes` so you can use this one if you feel more comfortable with such approach
-        tr
-          td id
-          td string
-          td
-          td App element ID attribute
+    p `App` component receives all <a href="/docs/app.html#app-parameters" target="_blank">App parameters</a> as component props.
+
     h2 Examples
-    p Passing all parameters in `params` prop
     :code(lang="svelte")
-      <App params={f7params}>
+      <App {...f7params}>
         ...
       </App>
       <script>
@@ -68,19 +47,4 @@ block content
           ],
           // ... other params
         }
-      </script>
-    p Passing routes in separate prop:
-    :code(lang="svelte")
-      <App params={f7params} routes={routes}>
-        ...
-      </App>
-      <script>
-        import { App } from 'framework7-svelte';
-        import routes from './routes';
-
-        const f7params = {
-          name: 'My App',
-          id: 'com.myapp.test',
-          // ... other params
-        };
       </script>

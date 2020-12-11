@@ -150,16 +150,31 @@ block content
         tr
           td range:changed
           td Event will be triggered on slider knob release after value change
-    h2 Range Slider Methods
-    table.methods-table
-        tr
-          th(colspan="2") &lt;f7-range&gt; methods
-        tr
-          td .setValue(<span>newValue</span>)
-          td Set new range slider value
-        tr
-          td .getValue()
-          td Returns range slider value
+
+    h2 Stepper v-model
+    p `f7-range` component supports `v-model` on `value` prop:
+    ```html
+      <template>
+        <p>Value is {{ count }}</p>
+        ...
+        <f7-range
+          :min="0"
+          :max="100"
+          :step="1"
+          v-model:value="count"
+        />
+        ...
+      </template>
+      <script>
+        export default {
+          data() {
+            count: 50,
+          },
+          ...
+        };
+      </script>
+    ```
+
     .with-device
       h2(data-device-preview="../docs-demos/vue/range-slider.html") Examples
       :code(lang="html")

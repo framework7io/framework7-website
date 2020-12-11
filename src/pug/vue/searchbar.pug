@@ -298,8 +298,30 @@ block content
             <div slot="after-inner">After Inner</div>
           </form>
 
+    h2 Searchbar v-model
+    p `f7-searchbar` component supports `v-model` on `value` prop:
+    ```html
+      <template>
+        ...
+        <f7-searchbar
+          search-container=".search-list"
+          v-model:value="searchQuery"
+        />
+        ...
+      </template>
+      <script>
+        export default {
+          data() {
+            searchQuery: '',
+          },
+          ...
+        };
+      </script>
+    ```
+
     h2 Access To Searchbar Instance
     p If you use automatic initalization to init Searchbar (with `init:true` prop) and need to use Searchbar API you can access its initialized instance by accessing `.f7Searchbar` component's property.
+
 
     .with-device
       h2 Examples

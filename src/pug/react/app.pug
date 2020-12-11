@@ -18,68 +18,31 @@ block content
     ul
       li `App`
     h2 App Properties
-    table.params-table
-      thead
-        tr
-          th Prop
-          th Type
-          th Default
-          th Description
-      tbody
-        tr
-          td params
-          td object
-          td
-          td Object with <a href="../docs/app.html#app-parameters">Framework7 parameters</a>
-        tr
-          td routes
-          td array
-          td
-          td Array with default routes for all views. Same as `params.routes` so you can use this one if you feel more comfortable with such approach
-        tr
-          td id
-          td string
-          td
-          td App element ID attribute
+    p `App` component receives all <a href="/docs/app.html#app-parameters" target="_blank">App parameters</a> as component props.
+
     h2 Examples
-    p Passing all parameters in `params` prop
     :code(lang="jsx")
-          import AboutPage from './about.jsx';
-          import ServicesPage from './services.jsx';
+      import AboutPage from './about.jsx';
+      import ServicesPage from './services.jsx';
 
-          const f7params = {
-            name: 'My App',
-            id: 'com.myapp.test',
-            // routes
-            routes: [
-              {
-                path: '/about/',
-                component: AboutPage,
-              },
-              {
-                path: '/services/',
-                component: ServicesPage,
-              },
-            ],
-            // ... other params
-          }
-          export default () => (
-            <App params={f7params}>
-              ...
-            </App>
-          );
-    p Passing routes in separate prop:
-    :code(lang="jsx")
-          import routes from './routes';
-
-          const f7params = {
-            name: 'My App',
-            id: 'com.myapp.test',
-            // ... other params
-          };
-
-          export default () => (
-            <App params={f7params} routes={routes}>
-              ...
-            </App>
-          );
+      const f7params = {
+        name: 'My App',
+        id: 'com.myapp.test',
+        // routes
+        routes: [
+          {
+            path: '/about/',
+            component: AboutPage,
+          },
+          {
+            path: '/services/',
+            component: ServicesPage,
+          },
+        ],
+        // ... other params
+      }
+      export default () => (
+        <App {...f7params}>
+          ...
+        </App>
+      );

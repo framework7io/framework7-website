@@ -124,6 +124,29 @@ block content
         tr
           td actions:closed
           td Event will be triggered after Action Sheet completes its closing animation
+
+    h2 Action Sheet v-model
+    p Action Sheet component supports `v-model` on `opened` prop:
+    ```html
+      <template>
+        <f7-page>
+          <f7-actions v-model:opened="isOpened">
+            ...
+          </f7-actions>
+          <p>Modal is opened: {{ isOpened }}</p>
+        </f7-page>
+      </template>
+      <script>
+        export default {
+          data() {
+            return {
+              isOpened: false,
+            };
+          }
+        };
+      </script>
+    ```
+
     h2 Open And Close Action Sheet
     p In addition to Action Sheet open()/close() methods, you can open and close it:
     ul
@@ -131,6 +154,7 @@ block content
       li by passing `true` or `false` to its `opened` prop
     h2 Access To Action Sheet Instance
     p You can access Action Sheet initialized instance by accessing `.f7Actions` component's property.
+
     .with-device
       h2(data-device-preview="../docs-demos/vue/action-sheet.html") Examples
       :code

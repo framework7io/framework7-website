@@ -69,11 +69,32 @@ block content
     h2 Radios List
     p Radios List is not a separate component, but just a particular case of using <a href="list-view.html">`<f7-list>`</a>, <a href="list-item.html">`<f7-list-item>`</a>.
     :code(lang="html")
-          <f7-list>
-            <!-- Additional "radio" prop to enable radio list item -->
-            <f7-list-item radio value="check_1" name="demo-radio" checked title="Radio 1"></f7-list-item>
-            <f7-list-item radio value="check_2" name="demo-radio" title="Radio 2"></f7-list-item>
-          </f7-list>
+      <f7-list>
+        <!-- Additional "radio" prop to enable radio list item -->
+        <f7-list-item radio value="check_1" name="demo-radio" checked title="Radio 1"></f7-list-item>
+        <f7-list-item radio value="check_2" name="demo-radio" title="Radio 2"></f7-list-item>
+      </f7-list>
+    h2 Radio v-model
+    p Radio Vue component supports `v-model` on `checked` property:
+    :code(lang="html")
+      <template>
+        <f7-page>
+          <f7-radio v-model:checked="carsSelected" />
+          <f7-radio v-model:checked="booksSelected" />
+          <p>Cars selected: {{ carsSelected }}</p>
+          <p>Books selected: {{ booksSelected }}</p>
+        </f7-page>
+      </template>
+      <script>
+        export default {
+          data() {
+            return {
+              carsSelected: false,
+              booksSelected: false,
+            };
+          }
+        };
+      </script>
     h2 Radio v-model
     p `v-model` <b>is not supported</b> on Radio vue component. Instead, just use the combination of `checked` property and `@change` event:
     :code(lang="html")

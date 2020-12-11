@@ -226,6 +226,28 @@ block content
         tr
           td .getValue()
           td Returns stepper value
+
+    h2 Stepper v-model
+    p `f7-stepper` component supports `v-model` on `value` prop:
+    ```html
+      <template>
+        <p>Value is {{ count }}</p>
+        ...
+        <f7-stepper
+          v-model:value="count"
+        />
+        ...
+      </template>
+      <script>
+        export default {
+          data() {
+            count: 1,
+          },
+          ...
+        };
+      </script>
+    ```
+
     .with-device
       h2(data-device-preview="../docs-demos/vue/stepper.html") Examples
       :code

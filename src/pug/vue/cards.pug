@@ -182,6 +182,28 @@ block content
       </div>
     ```
 
+    h2 Card v-model
+    p Expandable Card component supports `v-model` on `expandable-opened` prop:
+    ```html
+      <template>
+        <f7-page>
+          <f7-card expandable v-model:expandable-opened="isOpened">
+            ...
+          </f7-card>
+          <p>Card is opened: {{ isOpened }}</p>
+        </f7-page>
+      </template>
+      <script>
+        export default {
+          data() {
+            return {
+              isOpened: false,
+            };
+          }
+        };
+      </script>
+    ```
+
     .with-device
       h2(data-device-preview="../docs-demos/vue/cards.html") Examples
       :code(lang="html")

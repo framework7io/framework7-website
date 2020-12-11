@@ -568,28 +568,39 @@ block content
       li `media` - element will be inserted inside of `<div class="item-media">` element
 
     h2 Input v-model
-    p `v-model` <b>is not supported</b> on `f7-list-input` / `f7-input` vue components. Instead, just use the combination of `value` property and `@input` event:
-    :code(lang="html")
+    p `f7-list-input` and `f7-input` Vue components support `v-model` on `value` prop:
+    ```html
       <template>
+        <p>Name is {{ name }}</p>
+        <p>Email is {{ email }}</p>
         ...
         <f7-list-input
           label="Name"
           type="text"
-          :value="name"
-          @input="name = $event.target.value"
           placeholder="Your name"
           clear-button
-        ></f7-list-input>
+          v-model:value="name"
+        />
+
+        <f7-input
+          type="text"
+          placeholder="Your email"
+          clear-button
+          v-model:value="email"
+        />
         ...
       </template>
       <script>
         export default {
           data() {
             name: '',
+            email: '',
           },
           ...
         };
       </script>
+    ```
+
     .with-device
       h2(data-device-preview="../docs-demos/vue/inputs.html") Examples
       h4 Full Layout / Inline Labels

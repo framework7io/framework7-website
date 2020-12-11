@@ -87,6 +87,29 @@ block content
         tr
           td popover:closed
           td Event will be triggered after Popover completes its closing animation
+
+    h2 Popover v-model
+    p Popover component supports `v-model` on `opened` prop:
+    ```html
+      <template>
+        <f7-page>
+          <f7-popover v-model:opened="isOpened">
+            ...
+          </f7-popover>
+          <p>Modal is opened: {{ isOpened }}</p>
+        </f7-page>
+      </template>
+      <script>
+        export default {
+          data() {
+            return {
+              isOpened: false,
+            };
+          }
+        };
+      </script>
+    ```
+
     h2 Open And Close Popover
     p You can control Popover state, open and closing it:
     ul
