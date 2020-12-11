@@ -1,0 +1,60 @@
+{
+  "name": "framework7",
+  "version": "6.0.0-beta.4",
+  "description": "Full featured mobile HTML framework for building iOS & Android apps",
+  "main": "cjs/framework7.js",
+  "module": "esm/framework7.js",
+  "jsnext:main": "esm/framework7.js",
+  "typings": "framework7.d.ts",
+  "sideEffects": [
+    "*.less",
+    "*.css",
+    "cjs/utils/dom7.js",
+    "esm/utils/dom7.js"
+  ],
+  "scripts": {
+    "postinstall": "echo \"\u001b[35m\u001b[1mLove Framework7? Support project by donating or pledging on patreon:\u001b[22m\u001b[39m\n > \u001b[32mhttps://patreon.com/vladimirkharlampidi\u001b[0m\n\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/framework7io/framework7.git"
+  },
+  "keywords": [
+    "mobile",
+    "framework",
+    "framework7",
+    "cordova",
+    "ios",
+    "iphone",
+    "ipad",
+    "apple",
+    "phonegap",
+    "native",
+    "touch",
+    "appstore",
+    "app",
+    "f7",
+    "material",
+    "android",
+    "google",
+    "googleplay"
+  ],
+  "author": "Vladimir Kharlampidi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/framework7io/framework7/issues"
+  },
+  "homepage": "https://framework7.io/",
+  "funding": {
+    "type": "patreon",
+    "url": "https://www.patreon.com/vladimirkharlampidi"
+  },
+  "dependencies": {
+    "dom7": "^3.0.0",
+    "htm": "^3.0.4",
+    "path-to-regexp": "^6.2.0",
+    "skeleton-elements": "^3.2.0",
+    "ssr-window": "^3.0.0",
+    "swiper": "^6.3.5"
+  }
+}

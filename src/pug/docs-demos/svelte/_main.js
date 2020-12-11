@@ -1,8 +1,7 @@
-import Framework7 from 'framework7';
+import Framework7 from 'framework7/lite-bundle';
 import Framework7Svelte from 'framework7-svelte';
 
 import App from './F7_SVELTE_DEMO.svelte';
-
 
 let theme = 'ios';
 if (window.location.href.indexOf('theme=md') >= 0) theme = 'md';
