@@ -21,12 +21,22 @@
     "Firefox >= 52",
     "Samsung >= 6"
   ],
+  "scripts": {
+    "start": "gulp server -local",
+    "build": "gulp build",
+    "build-js": "gulp js",
+    "build-less": "gulp less",
+    "build-pug": "gulp pug",
+    "build-vue-demo": "gulp vue",
+    "build-svelte-demo": "gulp svelte"
+  },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/plugin-replace": "^2.3.4",
+    "@vue/compiler-sfc": "^3.0.4",
     "dom7": "^3.0.0",
     "eslint": "^7.14.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -52,7 +62,8 @@
     "strip-indent": "^3.0.0",
     "svelte": "^3.31.0",
     "terser": "^5.5.1",
-    "through2": "^4.0.2"
+    "through2": "^4.0.2",
+    "vue": "^3.0.4"
   },
   "dependencies": {
     "framework7": "^6.0.0-beta.4",

@@ -68,11 +68,11 @@ block content
       ...
 
     h2 Skeleton Effects
-    p Skeleton elements also support three animation effects: Fade, Blink and Pulse.
+    p Skeleton elements also support three animation effects: Fade, Wave and Pulse.
     p To enable special skeleton animation effect, we can need add one of the following classes to skeleton elements, or to parent element containing skeleton elements:
     ul
       li `skeleton-effect-fade` - to add fade effect
-      li `skeleton-effect-blink` - to add blink effect
+      li `skeleton-effect-wave` - to add wave effect
       li `skeleton-effect-pulse` - to add pulse effect
 
     +cssVars('skeleton')
@@ -129,7 +129,7 @@ block content
           <div class="block block-strong">
             <p class="row">
               <a href="#" class="col button button-fill button-small button-round" @click="load('fade')">Fade</a>
-              <a href="#" class="col button button-fill button-small button-round" @click="load('blink')">Blink</a>
+              <a href="#" class="col button button-fill button-small button-round" @click="load('wave')">Wave</a>
               <a href="#" class="col button button-fill button-small button-round" @click="load('pulse')">Pulse</a>
             </p>
           </div>

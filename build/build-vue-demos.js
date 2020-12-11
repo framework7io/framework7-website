@@ -30,15 +30,11 @@ function buildOne(name, cb) {
     plugins: [
       replace({
         delimiters: ['', ''],
-        "from 'framework7/lite'": `from '${path.resolve(__dirname, '../public/packages/core/esm/framework7-lite-bundle.js')}'`,
-        "from 'framework7-vue'": `from '${path.resolve(__dirname, '../public/packages/vue/esm/framework7-vue.js')}'`,
         F7_VUE_DEMO: name,
+        'process.env.NODE_ENV': "'production'",
       }),
       vue({
-        emitCss: true,
-        compilerOptions: {
-          dev: false,
-        },
+        target: 'browser',
       }),
       css({
         output: `${name}.css`,

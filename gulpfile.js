@@ -8,6 +8,7 @@ const buildPages = require('./build/build-pages');
 const buildScript = require('./build/build-script');
 
 const buildSvelteDemos = require('./build/build-svelte-demos');
+const buildVueDemos = require('./build/build-vue-demos');
 
 /* ==================================================================
 Build Styles
@@ -16,6 +17,7 @@ gulp.task('less', buildStyles);
 gulp.task('pug', buildPages);
 gulp.task('js', buildScript);
 gulp.task('svelte', buildSvelteDemos.all);
+gulp.task('vue', buildVueDemos.all);
 gulp.task('build', gulp.series(['pug', 'less', 'js', 'svelte']));
 
 /* =================================
@@ -50,6 +52,10 @@ gulp.task('watch', () => {
   gulp.watch('./src/pug/**/*.svelte', { events: ['change'] }).on('change', (changedPath) => {
     const name = changedPath.split('src/pug/docs-demos/svelte/')[1].split('.svelte')[0];
     buildSvelteDemos.one(name);
+  });
+  gulp.watch('./src/pug/**/*.vue', { events: ['change'] }).on('change', (changedPath) => {
+    const name = changedPath.split('src/pug/docs-demos/vue/')[1].split('.vue')[0];
+    buildVueDemos.one(name);
   });
 });
 

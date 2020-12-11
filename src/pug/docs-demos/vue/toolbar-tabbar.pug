@@ -1,7 +1,4 @@
-extends _layout
-
-block content
-  template#app-template.
+<template>
     <f7-app :routes="routes">
       <f7-view main>
         <f7-page>
@@ -222,7 +219,8 @@ block content
     </f7-page>
 
 
-  script.
+</template>
+<script>
     var routes = [
       {
         path: '/toolbar/',
@@ -276,7 +274,7 @@ block content
         },
       },
     ];
-    var component = {
+    export default {
       data() {
         return {
           routes: routes,

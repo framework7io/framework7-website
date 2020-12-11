@@ -1,4 +1,3 @@
-block vars
 doctype
 html
   head
@@ -10,36 +9,7 @@ html
     link(rel="stylesheet", href="../../packages/core/framework7-bundle.min.css")
     link(rel="stylesheet" href="../../css/framework7-icons.css")
     link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+    link(rel="stylesheet" href=F7_VUE_DEMO+'.css')
   body
     #app
-    block content
-    script(src="https://cdn.jsdelivr.net/npm/vue")
-    script(src="../../packages/vue/framework7-vue.bundle.min.js")
-    script(src="../../packages/core/framework7-bundle.min.js")
-    script.
-      var theme = 'ios';
-      if (location.href.indexOf('theme=md') >= 0) theme = 'md';
-      if (location.href.indexOf('theme=aurora') >= 0) theme = 'aurora';
-
-      if (Framework7.use) Framework7.use(Framework7Vue, { theme: theme });
-      else if (Framework7.Class && Framework7.Class.use) Framework7.Class.use(Framework7Vue, { theme: theme });
-
-      var plugin = {
-        params: {
-          theme: theme,
-        }
-      };
-
-      if (Framework7.use) Framework7.use(plugin);
-      else if (Framework7.Class && Framework7.Class.use) Framework7.Class.use(plugin);
-
-      if (typeof component === 'undefined') {
-        var component = {};
-      }
-      if (typeof routes === 'undefined') {
-        var routes = [];
-      }
-      component.el = '#app';
-      component.template = '#app-template';
-
-      new Vue(component);
+    script(src=F7_VUE_DEMO+'.js')

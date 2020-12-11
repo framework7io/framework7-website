@@ -1,7 +1,4 @@
-extends _layout
-
-block content
-  template#app-template.
+<template>
     <f7-app>
       <f7-view main>
         <f7-page>
@@ -29,24 +26,26 @@ block content
               :indeterminate="movies.length === 1"
               @change="onMoviesChange"
             >
-              <ul slot="root">
-                <f7-list-item
-                  checkbox
-                  title="Movie 1"
-                  name="demo-checkbox"
-                  value="Movie 1"
-                  :checked="movies.indexOf('Movie 1') >= 0"
-                  @change="onMovieChange"
-                ></f7-list-item>
-                <f7-list-item
-                  checkbox
-                  title="Movie 2"
-                  name="demo-checkbox"
-                  value="Movie 2"
-                  :checked="movies.indexOf('Movie 2') >= 0"
-                  @change="onMovieChange"
-                ></f7-list-item>
-              </ul>
+              <template #root>
+                <ul>
+                  <f7-list-item
+                    checkbox
+                    title="Movie 1"
+                    name="demo-checkbox"
+                    value="Movie 1"
+                    :checked="movies.indexOf('Movie 1') >= 0"
+                    @change="onMovieChange"
+                  ></f7-list-item>
+                  <f7-list-item
+                    checkbox
+                    title="Movie 2"
+                    name="demo-checkbox"
+                    value="Movie 2"
+                    :checked="movies.indexOf('Movie 2') >= 0"
+                    @change="onMovieChange"
+                  ></f7-list-item>
+                </ul>
+              </template>
             </f7-list-item>
           </f7-list>
 
@@ -90,8 +89,9 @@ block content
       </f7-view>
     </f7-app>
 
-  script.
-    var component = {
+</template>
+<script>
+    export default {
       data: function () {
         return {
           movies: ['Movie 1'],

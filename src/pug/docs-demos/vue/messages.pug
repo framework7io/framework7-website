@@ -1,7 +1,4 @@
-extends _layout
-
-block content
-  template#app-template.
+<template>
     <f7-app>
       <f7-view main>
         <f7-page>
@@ -75,8 +72,9 @@ block content
       </f7-view>
     </f7-app>
 
-  script.
-    var component = {
+</template>
+<script>
+    export default {
       data() {
         return {
           attachments: [],

@@ -1,0 +1,43 @@
+<template>
+  <f7-app>
+    <!-- Left resizable Panel with Reveal effect -->
+    <f7-panel left reveal resizable>
+      <f7-view>
+        <f7-page>
+          <f7-block>Left panel content</f7-block>
+        </f7-page>
+      </f7-view>
+    </f7-panel>
+
+    <!-- Right resizable Panel with Cover effect and dark layout theme -->
+    <f7-panel right resizable theme-dark>
+      <f7-view>
+        <f7-page>
+          <f7-block>Right panel content</f7-block>
+        </f7-page>
+      </f7-view>
+    </f7-panel>
+
+    <f7-view main>
+      <f7-page>
+        <f7-navbar title="Panel"></f7-navbar>
+
+        <f7-block class="row">
+          <f7-col>
+            <f7-button raised fill panel-open="left">Open left panel</f7-button>
+          </f7-col>
+          <f7-col>
+            <f7-button raised fill panel-open="right">Open right panel</f7-button>
+          </f7-col>
+        </f7-block>
+      </f7-page>
+    </f7-view>
+  </f7-app>
+</template>
+<style>
+  /* Limit resizable panel width */
+  .panel {
+    min-width: 100px;
+    max-width: 90vw;
+  }
+</style>

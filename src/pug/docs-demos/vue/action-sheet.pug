@@ -1,7 +1,4 @@
-extends _layout
-
-block content
-  template#app-template.
+<template>
     <f7-app>
       <f7-view main>
         <f7-page>
@@ -50,29 +47,41 @@ block content
           <f7-actions :grid="true" :opened="actionGridOpened" @actions:closed="actionGridOpened = false">
             <f7-actions-group>
               <f7-actions-button>
-                <img slot="media" src="https://cdn.framework7.io/placeholder/people-96x96-1.jpg" width="48"/>
+                <template #media>
+                  <img src="https://cdn.framework7.io/placeholder/people-96x96-1.jpg" width="48"/>
+                </template>
                 <span>Button 1</span>
               </f7-actions-button>
               <f7-actions-button>
-                <img slot="media" src="https://cdn.framework7.io/placeholder/people-96x96-2.jpg" width="48"/>
+                <template #media>
+                  <img src="https://cdn.framework7.io/placeholder/people-96x96-2.jpg" width="48"/>
+                </template>
                 <span>Button 2</span>
               </f7-actions-button>
               <f7-actions-button>
-                <img slot="media" src="https://cdn.framework7.io/placeholder/people-96x96-3.jpg" width="48"/>
+                <template #media>
+                  <img src="https://cdn.framework7.io/placeholder/people-96x96-3.jpg" width="48"/>
+                </template>
                 <span>Button 3</span>
               </f7-actions-button>
             </f7-actions-group>
             <f7-actions-group>
               <f7-actions-button>
-                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-96x96-4.jpg" width="48"/>
+                <template #media>
+                  <img src="https://cdn.framework7.io/placeholder/fashion-96x96-4.jpg" width="48"/>
+                </template>
                 <span>Button 4</span>
               </f7-actions-button>
               <f7-actions-button>
-                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-96x96-5.jpg" width="48"/>
+                <template #media>
+                  <img src="https://cdn.framework7.io/placeholder/fashion-96x96-5.jpg" width="48"/>
+                </template>
                 <span>Button 5</span>
               </f7-actions-button>
               <f7-actions-button>
-                <img slot="media" src="https://cdn.framework7.io/placeholder/fashion-96x96-6.jpg" width="48"/>
+                <template #media>
+                  <img src="https://cdn.framework7.io/placeholder/fashion-96x96-6.jpg" width="48"/>
+                </template>
                 <span>Button 6</span>
               </f7-actions-button>
             </f7-actions-group>
@@ -81,8 +90,9 @@ block content
       </f7-view>
     </f7-app>
 
-  script.
-    var component = {
+</template>
+<script>
+    export default {
       data() {
         return {
           actionGridOpened: false,
