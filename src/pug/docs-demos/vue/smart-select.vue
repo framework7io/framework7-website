@@ -3,7 +3,7 @@
     <f7-view main>
       <f7-page>
         <f7-navbar title="Smart Select"></f7-navbar>
-        <f7-list v-if="showPageSS">
+        <f7-list>
           <f7-list-item title="Fruit" smart-select>
             <select name="fruits">
               <option value="apple" selected>Apple</option>
@@ -61,18 +61,3 @@
     </f7-view>
   </f7-app>
 </template>
-<script>
-  export default {
-    data() {
-      return {
-        showPageSS: false,
-      };
-    },
-    mounted() {
-      const self = this;
-      setTimeout(()=>{
-        self.showPageSS = true;
-      },0);
-    },
-  }
-</script>

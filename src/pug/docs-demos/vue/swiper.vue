@@ -18,7 +18,7 @@
         </f7-swiper>
 
         <f7-block-title>With additional parameters</f7-block-title>
-        <f7-swiper navigation :params="{speed:500, slidesPerView: 3, spaceBetween: 20}">
+        <f7-swiper navigation :speed="500" :slidesPerView="3" :spaceBetween="20">
           <f7-swiper-slide>Slide 1</f7-swiper-slide>
           <f7-swiper-slide>Slide 2</f7-swiper-slide>
           <f7-swiper-slide>Slide 3</f7-swiper-slide>

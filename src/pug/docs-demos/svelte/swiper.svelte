@@ -17,7 +17,7 @@
       </Swiper>
 
       <BlockTitle>With additional parameters</BlockTitle>
-      <Swiper navigation params={{speed:500, slidesPerView: 3, spaceBetween: 20}}>
+      <Swiper navigation speed={500} slidesPerView={3} spaceBetween={20}>
         <SwiperSlide>Slide 1</SwiperSlide>
         <SwiperSlide>Slide 2</SwiperSlide>
         <SwiperSlide>Slide 3</SwiperSlide>
