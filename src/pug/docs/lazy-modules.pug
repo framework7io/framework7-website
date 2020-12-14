@@ -117,7 +117,7 @@ block content
         /* Page where we need Gauge and Calendar modules to be loaded */
         {
           path: '/gauge-calendar/',
-          async: function (routeTo, routeFrom, resolve, reject) {
+          async: function ({ resolve }) {
             // load modules
             loadF7Modules(['gauge', 'calendar']).then(() => {
               // resolve route
@@ -378,7 +378,7 @@ block content
         {
           path: '/gauge-calendar/',
           modules: ['gauge', 'calendar'], // will load these components before loading route
-          async: function(routeTo, routeFrom, resolve, reject) {
+          async: function({ resolve }) {
             app.loadModules(['gauge', 'calendar']).then(() => {
               resolve({
                 componentUrl: './gauge-calendar.html',
@@ -594,7 +594,7 @@ block content
         tr
           td Text Editor
           td `text-editor`
-          td `framework7/components/text-editor.js`          
+          td `framework7/components/text-editor.js`
 
 
 

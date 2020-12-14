@@ -125,18 +125,18 @@ block content
     h2 Async Lazy Components
     p With Webpack it is possible to load page components on demand, it is possible with F7's async route, for example:
     :code(lang="js")
-          {
-            path: '/about/',
-            async(routeTo, routeFrom, resolve, reject) {
-              // dynamic import component; returns promise
-              const reactComponent = () => import('./pages/about.jsx');
-              // resolve promise
-              reactComponent().then((rc) => {
-                // resolve with component
-                resolve({ component: rc.default })
-              });
-            } ,
-          },
+      {
+        path: '/about/',
+        async({ resolve }) {
+          // dynamic import component; returns promise
+          const reactComponent = () => import('./pages/about.jsx');
+          // resolve promise
+          reactComponent().then((rc) => {
+            // resolve with component
+            resolve({ component: rc.default })
+          });
+        } ,
+      },
 
     h2 Router API
     p To access router instance and use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>$f7router</b> property of component:

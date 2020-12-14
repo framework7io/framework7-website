@@ -143,7 +143,7 @@ block content
     :code(lang="js")
           {
             path: '/about/',
-            async(routeTo, routeFrom, resolve, reject) {
+            async({ resolve }) {
               // dynamic import component; returns promise
               const vueComponent = () => import('./pages/about.vue');
               // resolve promise

@@ -134,7 +134,7 @@ block content
     :code(lang="js")
       {
         path: '/about/',
-        async(routeTo, routeFrom, resolve, reject) {
+        async({ resolve }) {
           // dynamic import component, returns promise
           import('./pages/about.svelte').then((module) => {
             // resolve with component
