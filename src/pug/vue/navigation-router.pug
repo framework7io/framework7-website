@@ -17,7 +17,7 @@ block content
     :code(lang="html")
           <!-- app.vue -->
           <template>
-            <f7-app :params="f7params">
+            <f7-app v-bind="f7params">
               <!-- Current View/Router, initial page will be loaded from home.vue component -->
               <f7-view main url="/"></f7-view>
             </f7-app>
@@ -65,42 +65,42 @@ block content
           </script>
 
     :code(lang="html")
-          <!-- home.vue -->
-          <template>
-            <f7-page name="home">
-              <f7-navbar title="Home"></f7-navbar>
-              <!-- Page content -->
-              ...
-              <f7-link href="/about/">About Page</f7-link>
-              <f7-link href="/login/">Login Page</f7-link>
-            </f7-page>
-          </template>
-          <script>
-            export default {}
-          </script>
+      <!-- home.vue -->
+      <template>
+        <f7-page name="home">
+          <f7-navbar title="Home"></f7-navbar>
+          <!-- Page content -->
+          ...
+          <f7-link href="/about/">About Page</f7-link>
+          <f7-link href="/login/">Login Page</f7-link>
+        </f7-page>
+      </template>
+      <script>
+        export default {}
+      </script>
 
 
-          <!-- about.vue -->
-          <template>
-            <f7-page name="about">
-              <f7-navbar title="About"></f7-navbar>
-              <!-- Page content -->
-            </f7-page>
-          </template>
-          <script>
-            export default {}
-          </script>
+      <!-- about.vue -->
+      <template>
+        <f7-page name="about">
+          <f7-navbar title="About"></f7-navbar>
+          <!-- Page content -->
+        </f7-page>
+      </template>
+      <script>
+        export default {}
+      </script>
 
-          <!-- login.vue -->
-          <template>
-            <f7-page name="login">
-              <f7-navbar title="Login"></f7-navbar>
-              <!-- Page content -->
-            </f7-page>
-          </template>
-          <script>
-            export default {}
-          </script>
+      <!-- login.vue -->
+      <template>
+        <f7-page name="login">
+          <f7-navbar title="Login"></f7-navbar>
+          <!-- Page content -->
+        </f7-page>
+      </template>
+      <script>
+        export default {}
+      </script>
     .important-note
       p Check the full <a href="../docs/routes.html">Routes Documentation</a> to know about all possible routes options, how to use <a href="../docs/routes.html#nested-routes">Nested Routes</a>, <a href="../docs/routes.html#routable-tabs">Routable Tabs</a> and <a href="../docs/routes.html#routable-modals">Routable Modals</a>.
     h2 Pass Props To Components
@@ -132,7 +132,7 @@ block content
       }
     p And finally, props can be passed dynamically to route component when we navigate with API:
     :code(lang="js")
-      this.$f7router.navigate('/some-page/', {
+      f7router.navigate('/some-page/', {
         props: {
           foo: 'bar',
           bar: true,
@@ -141,22 +141,32 @@ block content
     h2 Async Lazy Components
     p With Webpack it is possible to load page components on demand, it is possible with F7's async route, for example:
     :code(lang="js")
-          {
-            path: '/about/',
-            async({ resolve }) {
-              // dynamic import component; returns promise
-              const vueComponent = () => import('./pages/about.vue');
-              // resolve promise
-              vueComponent().then((vc) => {
-                // resolve with component
-                resolve({ component: vc.default })
-              });
-            } ,
-          },
+      {
+        path: '/about/',
+        async({ resolve }) {
+          // dynamic import component; returns promise
+          const vueComponent = () => import('./pages/about.vue');
+          // resolve promise
+          vueComponent().then((vc) => {
+            // resolve with component
+            resolve({ component: vc.default })
+          });
+        } ,
+      },
     h2 Router API
-    p To access router instance and use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>$f7router</b> property of component:
+    p To access router instance and use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>f7router</b> component prop of component:
     :code(lang="html")
-          <f7-link @click="$f7router.navigate('/about/')">About</f7-link>
-          <f7-link @click="$f7router.back()">Go Back</f7-link>
+      <template>
+        ...
+        <f7-link @click="f7router.navigate('/about/')">About</f7-link>
+        <f7-link @click="f7router.back()">Go Back</f7-link>
+      </template>
+      <script>
+        export default {
+          props: {
+            f7router: Object,
+          }
+        }
+      </script>
     .important-note
-      p Please note, that `$f7route` and `$f7router` component properties are only available inside of custom page components that you load according to routes. In parent components (like in View, or where you init your Vue app instance) and in child components they are not accessible. So in this case use access to initialized <a href="view.html#access-to-view-instance">View Instance</a>, e.g. `$f7.views.main.router`
+      p Please note, that `f7route` and `f7router` component props are only available inside of custom page components that you load according to routes. In parent components (like in View, or where you init your Vue app instance) and in child components they are not accessible. So in this case use access to initialized <a href="view.html#access-to-view-instance">View Instance</a>, e.g. `f7.views.main.router`

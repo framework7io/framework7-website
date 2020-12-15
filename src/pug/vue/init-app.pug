@@ -13,77 +13,8 @@ block content
     h1 Initialize App
     ul.docs-index
     p After we have our <a href="app-layout.html">app layout</a> now we need to mount Vue components and initialize the app. You can read about all possible Framework7 initialization parameters in appropriate <a href="../docs/app.html#app-parameters">Framework7 App Parameters</a> section.
-    h2 Plain Initialization Structure
-    p Let's look at the simple plain app structure, where we don't use any bundlers in our app, just a plain html + js files. Full layout again, but with script:
-    :code(lang="html")
-      <!-- index.html -->
 
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <!-- ... metas and styles ... -->
-          <link rel="stylesheet" href="path/to/framework7-bundle.min.css">
-        </head>
-        <body>
-          <!-- App Root Element -->
-          <div id="app">
-            <!-- Main Framework7 App component where we pass Framework7 params -->
-            <f7-app :params="$root.f7params">
-
-              <f7-view main>
-                <!-- Initial Page -->
-                <f7-page>
-                  <f7-navbar title="Awesome App"></f7-navbar>
-                  <f7-toolbar bottom>
-                    <f7-link>Link 1</f7-link>
-                    <f7-link>Link 2</f7-link>
-                  </f7-toolbar>
-                  <p>Page content goes here</p>
-                  <f7-link href="/about/">About App</f7-link>
-                </f7-page>
-              </f7-view>
-            </f7-app>
-          </div>
-          <script type="text/javascript" src="path/to/vue.min.js"></script>
-          <script type="text/javascript" src="path/to/framework7-bundle.min.js"></script>
-          <script type="text/javascript" src="path/to/framework7-vue.bundle.min.js"></script>
-          <script type="text/javascript" src="path/to/my-app.js"></script>
-        </body>
-      </html>
-    :code(lang="js")
-          /* my-app.js */
-
-          // First of all, we need to initialize/enable Framework7 Vue plugin:
-          // We need to pass Framework7Vue plugin to Framework7's .use() method
-          Framework7.use(Framework7Vue);
-
-          // Init Vue App
-          new Vue({
-            // App Root Element
-            el: '#app',
-
-            // App root data
-            data() {
-              return {
-                // Framework7 parameters that we pass to <f7-app> component
-                f7params: {
-                  // Array with app routes
-                  routes: [...]
-                  // App Name
-                  name: 'My App',
-                  // App id
-                  id: 'com.myapp.test',
-                  // ...
-                }
-              };
-            },
-            // App root methods
-            methods: {
-              // ....
-            }
-          })
-    h2 ES Modules
-    p If you use Webpack, Rollup or another bundler with ES-next modules support, we may have the following structure:
+    p Assuming you use Webpack, Rollup or another bundler with ES-next modules support, we may have the following structure:
     :code(lang="html")
       <!-- index.html -->
 
@@ -96,20 +27,20 @@ block content
         <body>
           <!-- App Root Element -->
           <div id="app"></div>
-          <script type="text/javascript" src="path/to/my-app.js"></script>
+
+          <!-- Scripts will be auto injected -->
         </body>
       </html>
     :code(lang="js")
       /* my-app.js */
 
-      // Import Vue
-      import Vue from 'vue'
+      import { createApp } from 'vue'
 
       // Import F7 Bundle
-      import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
+      import Framework7 from 'framework7/lite-bundle'
 
       // Import F7-Vue Plugin Bundle (with all F7 components registered)
-      import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
+      import Framework7Vue, { registerComponents } from 'framework7-vue/bundle'
 
       // Init F7-Vue Plugin
       Framework7.use(Framework7Vue);
@@ -118,17 +49,17 @@ block content
       import App from './app.vue';
 
       // Init App
-      new Vue({
-        el: '#app',
-        render: (h) => h(App),
-        // ...
-      });
+      const app = createApp(App);
+
+      // Register all Framework7 Vue components
+      registerComponents(app);
+
     :code(lang="html")
       <!-- app.vue -->
 
       <template>
         <!-- Main Framework7 App component where we pass Framework7 params -->
-        <f7-app :params="f7params">
+        <f7-app v-bind="f7params">
           <!-- initial page is specified in routes.js -->
           <f7-view main url="/"></f7-view>
         </f7-app>

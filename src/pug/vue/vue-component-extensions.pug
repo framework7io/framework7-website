@@ -11,84 +11,98 @@ block content
   .docs-content
     +improveDocsLink
     h1 Vue Component Extensions
-    p <b>After</b> Vue mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that will be available in all Vue components:
-    table.methods-table
-      tbody
-        tr
-          td this.$f7ready
-          td Callback function that will be executed when Framework7 fully intialized. Useful to use in components when you need to access Framework7 API and to be sure it is ready. So it is safe to put all Framework7 related logic into this callback. As an argument it receives initialized Framework7 instance. For example:
-            :code(lang="html")
-                  <template>
-                    ...
-                  </template>
-                  <script>
-                    export default {
-                      ...
-                      mounted() {
-                        this.$f7ready((f7) => {
-                          f7.dialog.alert('Component mounted');
-                        });
-                      },
-                    };
-                  </script>
-        tr
-          td this.$f7
-          td Main Framework7's initialized instance. It allows you to use any of Framework7 APIs
-        tr
-          td this.$$<br>this.Dom7
-          td Access to built-in <a href="../docs/dom7.html">Dom7</a> DOM library that utilizes most edge and high-performance methods for DOM manipulation
-        tr
-          td this.$device
-          td Access to <a href="../docs/device.html">Device</a> utilities
-        tr
-          td this.$request
-          td Access to <a href="../docs/request.html">Request</a> library for XHR requests
-        tr
-          td this.$utils
-          td Access to <a href="../docs/utils.html">Utils</a> object with few useful utilities
-        tr
-          td this.$theme
-          td Object with boolean properties with information about currently used theme (iOS, MD or Aurora ): `this.$theme.ios`, `this.$theme.material` and `this.$theme.aurora`
-        tr
-          td this.$f7router
-          td
-            p.important-note This property only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
-            p Framework7 Router Instance. It has a lot of useful <a href="../docs/view.html#router-api-methods-properties">Methods & Properties</a> to use for navigation
-        tr
-          td this.$f7route
-          td
-            p.important-note This property only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
-            p Object with current route data that was used to load this page, tab or modal. It has the following properties
-            ul
-              li `url` - route URL
-              li `path` - route path
-              li `query` - object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{id: '5', foo: 'bar'}`
-              li `params` - route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{userId: '55', postId: '12'}`
-              li `name` - route name
-              li `hash` - route URL hash
-              li `route` - object with matching route from available routes
-              li `context` - context that was passed to the route
-
-    p If you use functional components, then previously described extensions will not work. Framework7 instance, `f7ready` method and `theme` can be imported directly from Framework7-Vue library. Device, Request and Support can be imported directly from Framework7 core library.
-    :code(lang="js")
-      import { Device, Request, Support } from 'framework7';
-      import { f7, f7ready, theme } from 'framework7-vue';
-
+    p <b>After</b> Vue mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that can be imported from `framework7-vue` package.
+    h2 `f7ready`
+    p It is a callback function that will be executed when Framework7 fully intialized. Useful to use in components when you need to access Framework7 API and to be sure it is ready. So it is safe to put all Framework7 related logic into this callback. As an argument it receives initialized Framework7 instance. For example:
     :code(lang="html")
       <template>
         ...
       </template>
       <script>
-        import { f7, f7ready } from 'framework7-vue';
+        import { f7ready } from 'framework7-vue';
 
         export default {
           ...
           mounted() {
-            f7ready(() => {
+            f7ready((f7) => {
               f7.dialog.alert('Component mounted');
-            })
+            });
           },
         };
       </script>
+    h2 `f7`
+    p Main Framework7's initialized instance. It allows you to use any of Framework7 APIs.
+    p If you are sure that on the moment when you access Framework7 instance, it was already initialized, you can import and use it directly:
+    ```html
+      <template>
+        ...
+      </template>
+      <script>
+        import { f7 } from 'framework7-vue';
 
+        export default {
+          ...
+          methods: {
+            doSomething() {
+              f7.dialog.alert('Hello world');
+            }
+          },
+        };
+      </script>
+    ```
+    h2 `theme`
+    p It is an object with boolean properties with information about currently used theme (iOS, MD or Aurora ): `theme.ios`, `theme.material` and `theme.aurora`.
+    ```html
+      <template>
+        ...
+      </template>
+      <script>
+        import { theme } from 'framework7-vue';
 
+        export default {
+          ...
+          mounted() {
+            if (theme.ios) {
+              console.log('Currently active theme is iOS-theme')
+            }
+          },
+        };
+      </script>
+    ```
+    h2 `f7route` and `f7router`
+    p <a href="/docs/view.html#router-api-methods-properties">Router instance</a> and current route are passed via props to router components:
+    p.important-note This properties only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
+    ```html
+      <template>
+        ...
+      </template>
+      <script>
+        import { theme } from 'framework7-vue';
+
+        export default {
+          // define props so the component will receive it
+          props: {
+            f7route: Object,
+            f7router: Object,
+          },
+          ...
+          mounted() {
+            console.log(this.f7route.url)
+          },
+          methods: {
+            navigate() {
+              this.f7router.navigate('/some-page/')
+            }
+          }
+        };
+      </script>
+    ```
+    p `f7route` is the current route, object with the following properties:
+    ul
+      li `url` - route URL
+      li `path` - route path
+      li `query` - object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{id: '5', foo: 'bar'}`
+      li `params` - route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{userId: '55', postId: '12'}`
+      li `name` - route name
+      li `hash` - route URL hash
+      li `route` - object with matching route from available routes

@@ -14,54 +14,36 @@ block content
     p Framework7 Vue package contains the following files and folders:
     :code(lang="html")
       framework7-vue/
-          components/
-              accordion-content.js
-              accordion-item.js
-              accordion-toggle.js
+          bundle/
+          cjs/
+            components/
               accordion.js
-              actions-button.js
-              actions-group.js
-              actions-label.js
-              actions.js
-              app.js
+              accordion-content.js
               ...
-          framework7-vue.bundle.js
-          framework7-vue.bundle.min.js
-          framework7-vue.esm.bundle.js
-          framework7-vue.esm.js
+            framework7-vue-bundle.js
+            framework7-vue.js
+          components/
+              accordion/
+                package.json
+              accordion-item/
+                package.json
+              ...
+          esm/
+            components/
+              accordion.js
+              accordion-content.js
+              ...
+            framework7-vue-bundle.js
+            framework7-vue.js
 
-    h2 Browser Script (UMD)
-    p `framework7-vue.bundle.js` is so called #[a(href="https://github.com/umdjs/umd", target="_blank") UMD]-format JavaScript intended to be used directly in browser (e.g. with `<script src="...">`) or with libraries like Require.js. It already contains all Framework7-Vue components registered.
-    p It is not recommended to use this version for production, just for development and testing
-
-    h2 Components
-    p All Vue components are located in `components/` folder and can be used with core (not bundle) version. These components are ES modules.
+    h2 Vue Plugin
+    p Framework7 Vue plugin provided as  ES/CJS module:
     :code(lang="js")
-      import App from 'framework7-vue/components/app.js';
-      import Navbar from 'framework7-vue/components/navbar.js';
-
-      // register component
-      Vue.component('f7-app', App);
-      Vue.component('f7-navbar', Navbar);
-
-    p Or they can be imported using named import from main file
-    :code(lang="js")
-      import { f7App, f7Navbar } from 'framework7-vue';
-
-      Vue.component('f7-app', f7App);
-      Vue.component('f7-navbar', f7Navbar);
-
-    h2 ES Module
-    p Framework7 Vue plugin can be imported as an ES-next module:
-    :code(lang="js")
-      // Import Vue
-      import Vue from 'vue';
-
       // Import Framework7 Core
-      import Framework7 from 'framework7/framework7-lite.js';
+      import Framework7 from 'framework7/lite';
       /*
       Or import bundle with all components:
-      import Framework7 from 'framework7/framework7-lite.esm.bundle.js';
+      import Framework7 from 'framework7/lite-bundle';
       */
 
       // Import Framework7 Vue
@@ -72,22 +54,50 @@ block content
 
     .important-note
       p
-        b By default it exports only Framework7-Vue plugin without any components. To import components separately, we need to use named import:
-      :code(lang="js")
-        import { f7App, f7Navbar } from 'framework7-vue';
+        b By default it exports only Framework7-Vue plugin without any Vue components. To import components separately, we need to use named import:
+      :code(lang="html")
+        <template>
+          <f7-app>
+            <f7-view>
+              ...
+            </f7-view>
+          </f7-app>
+        </template>
+        <script>
+        import { f7App, f7View } from 'framework7-vue';
 
-    h2 ES Module Bundle
+        export default {
+          components: {
+            f7App,
+            f7Navbar,
+          },
+          ...
+        }
+        </script>
+
+    h2 Bundle
     p If you need to include all Framework7-Vue components, we can include its another script bundle with all Vue components registered:
     :code(lang="js")
       // Import Vue
-      import Vue from 'vue';
+      import { createApp } from 'vue';
 
       // Import Framework7 Bundle
-      import Framework7 from 'framework7/framework7-lite.esm.bundle.js';
+      import Framework7 from 'framework7/lite-bundle';
 
-      // Import Framework7-Vue with all components
-      import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js';
+      // Import Framework7-Vue with helper to register all components
+      import Framework7Vue, { registerComponents } from 'framework7-vue/bundle';
+
+      // Import your main app component
+      import App from 'path/to/app.vue';
 
       // Init plugin and register all components
       Framework7.use(Framework7Vue);
+
+      // create Vue app
+      const app = createApp(App);
+
+      // register all Framework7 Vue components by passing Vue app instance there
+      registerComponents(app);
+
+
 
