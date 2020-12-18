@@ -9,6 +9,7 @@ const buildScript = require('./build/build-script');
 
 const buildSvelteDemos = require('./build/build-svelte-demos');
 const buildVueDemos = require('./build/build-vue-demos');
+const buildReactDemos = require('./build/build-react-demos');
 
 /* ==================================================================
 Build Styles
@@ -18,7 +19,8 @@ gulp.task('pug', buildPages);
 gulp.task('js', buildScript);
 gulp.task('svelte', buildSvelteDemos.all);
 gulp.task('vue', buildVueDemos.all);
-gulp.task('build', gulp.series(['pug', 'less', 'js', 'svelte']));
+gulp.task('react', buildReactDemos.all);
+gulp.task('build', gulp.series(['pug', 'less', 'js', 'svelte', 'vue', 'react']));
 
 /* =================================
 Watch

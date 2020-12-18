@@ -20,7 +20,7 @@
   - Button
     - New loading buttons
 - Vue
-  - Rewritten to new Vue v3 API (no Vue v2 support anymore)
+  - ADD BANNER: Rewritten to new Vue v3 API (no Vue v2 support anymore)
   - Removed all prototypes methods (\$$, $f7, $f7ready, $f7route, $f7router, $utils, $device, $theme, \$request)
     - Now they should be imported as `import {f7, f7ready, theme} from 'framework7-vue'`. `Dom7`, `device`, `request` can be used as `f7.` accessors or imported from `framework7`
   - Removed `umd` version

@@ -18,6 +18,11 @@ public/docs-demos/vue/*.js
 public/docs-demos/vue/*.css
 public/docs-demos/vue/*.map
 
+public/docs-demos/react/*.html
+public/docs-demos/react/*.js
+public/docs-demos/react/*.css
+public/docs-demos/react/*.map
+
 public/docs-demos/svelte/*.html
 public/docs-demos/svelte/*.js
 public/docs-demos/svelte/*.css

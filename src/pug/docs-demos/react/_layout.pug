@@ -1,4 +1,3 @@
-block vars
 doctype
 html
   head
@@ -10,36 +9,8 @@ html
     link(rel="stylesheet", href="../../packages/core/framework7-bundle.min.css")
     link(rel="stylesheet" href="../../css/framework7-icons.css")
     link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+    link(href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900" rel="stylesheet")
+    link(rel="stylesheet" href=F7_REACT_DEMO+'.css')
   body
     #app
-    script(src="https://unpkg.com/@babel/standalone/babel.min.js")
-    script(src="https://unpkg.com/react@16.4.1/umd/react.production.min.js")
-    script(src="https://unpkg.com/react-dom@16.4.1/umd/react-dom.production.min.js")
-    script(src="../../packages/react/framework7-react.bundle.min.js")
-    script(src="../../packages/core/framework7-bundle.min.js")
-    block content
-    script.
-      var theme = 'ios';
-      if (location.href.indexOf('theme=md') >= 0) theme = 'md';
-      if (location.href.indexOf('theme=aurora') >= 0) theme = 'aurora';
-
-      if (Framework7.use) Framework7.use(Framework7React, { theme: theme });
-      else if (Framework7.Class && Framework7.Class.use) Framework7.Class.use(Framework7React, { theme: theme });
-
-      var plugin = {
-        params: {
-          theme: theme,
-        }
-      };
-
-      if (Framework7.use) Framework7.use(plugin);
-      else if (Framework7.Class && Framework7.Class.use) Framework7.Class.use(plugin);
-
-      window.onload = function () {
-        if (typeof AppComponent !== 'undefined') {
-          ReactDOM.render(
-            React.createElement(AppComponent),
-            document.getElementById('app')
-          );
-        }
-      }
+    script(src=F7_REACT_DEMO+'.js')
