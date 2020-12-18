@@ -25,41 +25,46 @@ function buildOne(name, cb) {
   fs.writeFileSync(`./public/docs-demos/vue/${name}.html`, html);
   fs.writeFileSync(`./public/docs-demos/vue/${name}.css`, '');
 
-  return rollup.rollup({
-    input: './src/pug/docs-demos/vue/_main.js',
-    plugins: [
-      replace({
-        delimiters: ['', ''],
-        F7_VUE_DEMO: name,
-        'process.env.NODE_ENV': "'production'",
-      }),
-      vue({
-        target: 'browser',
-      }),
-      css({
-        output: `${name}.css`,
-      }),
-      nodeResolve({
-        browser: true,
-        dedupe: (importee) => importee === 'vue' || importee.startsWith('vue/'),
-      }),
-    ],
-  }).then((bundle) => {
-    return bundle.write({
-      strict: true,
-      file: `./public/docs-demos/vue/${name}.js`,
-      format: 'umd',
-      name,
-      sourcemap: false,
+  return rollup
+    .rollup({
+      input: './src/pug/docs-demos/vue/_main.js',
+      treeshake: false,
+      plugins: [
+        replace({
+          delimiters: ['', ''],
+          F7_VUE_DEMO: name,
+          'process.env.NODE_ENV': "'production'",
+        }),
+        vue({
+          target: 'browser',
+        }),
+        css({
+          output: `${name}.css`,
+        }),
+        nodeResolve({
+          browser: true,
+          dedupe: (importee) => importee === 'vue' || importee.startsWith('vue/'),
+        }),
+      ],
+    })
+    .then((bundle) => {
+      return bundle.write({
+        strict: true,
+        file: `./public/docs-demos/vue/${name}.js`,
+        format: 'umd',
+        name,
+        sourcemap: false,
+      });
+    })
+    .then(() => {
+      console.log(`Finished vue: ${name} in ${Date.now() - time}ms`);
+      if (cb) cb();
     });
-  }).then(() => {
-    console.log(`Finished vue: ${name} in ${Date.now() - time}ms`);
-    if (cb) cb();
-  });
 }
 
 async function buildAll(cb) {
-  const vueDemos = fs.readdirSync(path.resolve(__dirname, '../src/pug/docs-demos/vue'))
+  const vueDemos = fs
+    .readdirSync(path.resolve(__dirname, '../src/pug/docs-demos/vue'))
     .filter((f) => f.indexOf('.vue') >= 0)
     .filter((f) => f.indexOf('_') < 0)
     .map((f) => f.split('.vue')[0]);

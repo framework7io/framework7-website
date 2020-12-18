@@ -15,6 +15,7 @@ const cssVars = require('./utils/css-vars');
 const codeFilter = require('./utils/code-filter');
 const svelteSourceFilter = require('./utils/svelte-source-filter');
 const vueSourceFilter = require('./utils/vue-source-filter');
+const reactSourceFilter = require('./utils/react-source-filter');
 const codeInlineFilter = require('./utils/code-inline-filter');
 const createIndex = require('./utils/create-index');
 const createMobilePreviewLinks = require('./utils/create-mobile-preview-links');
@@ -26,48 +27,66 @@ if (!pug.filter && !pug.filters.code) {
   pug.filters = {
     svelteSource: svelteSourceFilter,
     vueSource: vueSourceFilter,
+    reactSource: reactSourceFilter,
     code: codeFilter,
     code_inline: codeInlineFilter,
   };
 }
 
-function buildPages(cb, { src = ['**/*.pug', '!**/_*.pug', '!_*.pug', '!docs-demos/svelte/*.pug'], dest = './public' } = {}) {
-  const cdn = process.argv.slice(3) ? process.argv.slice(3).toString().replace('-', '') !== 'local' : true;
+function buildPages(
+  cb,
+  {
+    src = ['**/*.pug', '!**/_*.pug', '!_*.pug', '!docs-demos/svelte/*.pug'],
+    dest = './public',
+  } = {},
+) {
+  const cdn = process.argv.slice(3)
+    ? process.argv.slice(3).toString().replace('-', '') !== 'local'
+    : true;
   const time = Date.now();
 
   const name = src[0] === '**/*.pug' ? 'all' : src.join(', ');
 
   console.log(`Starting pug: ${name}`);
 
-  gulp.src(src, { cwd: 'src/pug' })
-    .pipe(gulpData((file) => { return { srcFileUrl: getSrcFileUrl(file) }; }))
-    .pipe(through2.obj((file, _, cbInternal) => {
-      if (file.isBuffer()) {
-        let content = file.contents.toString();
-        content = createIndex(content, file.path);
-        content = createMobilePreviewLinks(content, file.path);
-        content = createCodeFilter(content);
-        content = createInlineCodeTags(content);
-        file.contents = Buffer.from(content);
-      }
-      cbInternal(null, file);
-    }))
-    .pipe(gulpPug({
-      pug,
-      pretty: false,
-      locals: {
-        release: {
-          version: pkg.releaseVersion,
-          date: pkg.releaseDate,
+  gulp
+    .src(src, { cwd: 'src/pug' })
+    .pipe(
+      gulpData((file) => {
+        return { srcFileUrl: getSrcFileUrl(file) };
+      }),
+    )
+    .pipe(
+      through2.obj((file, _, cbInternal) => {
+        if (file.isBuffer()) {
+          let content = file.contents.toString();
+          content = createIndex(content, file.path);
+          content = createMobilePreviewLinks(content, file.path);
+          content = createCodeFilter(content);
+          content = createInlineCodeTags(content);
+          file.contents = Buffer.from(content);
+        }
+        cbInternal(null, file);
+      }),
+    )
+    .pipe(
+      gulpPug({
+        pug,
+        pretty: false,
+        locals: {
+          release: {
+            version: pkg.releaseVersion,
+            date: pkg.releaseDate,
+          },
+          cdn: cdn ? pkg.cdn : '',
+          icons: iconsManifest.icons,
+          getYamlData,
+          inlineSvg,
+          cssVars,
+          releaseNotes,
         },
-        cdn: cdn ? pkg.cdn : '',
-        icons: iconsManifest.icons,
-        getYamlData,
-        inlineSvg,
-        cssVars,
-        releaseNotes,
-      },
-    }))
+      }),
+    )
     .on('error', (err) => {
       console.log(err);
     })

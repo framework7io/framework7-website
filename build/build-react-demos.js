@@ -26,42 +26,47 @@ function buildOne(name, cb) {
   fs.writeFileSync(`./public/docs-demos/react/${name}.html`, html);
   fs.writeFileSync(`./public/docs-demos/react/${name}.css`, '');
 
-  return rollup.rollup({
-    input: './src/pug/docs-demos/react/_main.js',
-    plugins: [
-      replace({
-        delimiters: ['', ''],
-        F7_REACT_DEMO: name,
-        'process.env.NODE_ENV': "'production'",
-      }),
-      css({
-        output: `${name}.css`,
-      }),
-      nodeResolve({
-        browser: true,
-        // dedupe: (importee) => importee === 'react' || importee.startsWith('react/'),
-      }),
-      commonjs(),
-      babel({
-        babelHelpers: 'bundled',
-      }),
-    ],
-  }).then((bundle) => {
-    return bundle.write({
-      strict: true,
-      file: `./public/docs-demos/react/${name}.js`,
-      format: 'umd',
-      name,
-      sourcemap: false,
+  return rollup
+    .rollup({
+      input: './src/pug/docs-demos/react/_main.js',
+      treeshake: false,
+      plugins: [
+        replace({
+          delimiters: ['', ''],
+          F7_REACT_DEMO: name,
+          'process.env.NODE_ENV': "'production'",
+        }),
+        css({
+          output: `${name}.css`,
+        }),
+        nodeResolve({
+          browser: true,
+          // dedupe: (importee) => importee === 'react' || importee.startsWith('react/'),
+        }),
+        commonjs(),
+        babel({
+          babelHelpers: 'bundled',
+        }),
+      ],
+    })
+    .then((bundle) => {
+      return bundle.write({
+        strict: true,
+        file: `./public/docs-demos/react/${name}.js`,
+        format: 'umd',
+        name,
+        sourcemap: false,
+      });
+    })
+    .then(() => {
+      console.log(`Finished react: ${name} in ${Date.now() - time}ms`);
+      if (cb) cb();
     });
-  }).then(() => {
-    console.log(`Finished react: ${name} in ${Date.now() - time}ms`);
-    if (cb) cb();
-  });
 }
 
 async function buildAll(cb) {
-  const reactDemos = fs.readdirSync(path.resolve(__dirname, '../src/pug/docs-demos/react'))
+  const reactDemos = fs
+    .readdirSync(path.resolve(__dirname, '../src/pug/docs-demos/react'))
     .filter((f) => f.indexOf('.jsx') >= 0)
     .filter((f) => f.indexOf('_') < 0)
     .map((f) => f.split('.jsx')[0]);

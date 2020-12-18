@@ -1,3 +1,5 @@
+import React from 'react';
+import {  } from 'framework7-react';
 import {  } from 'framework7-react';
 .grid-demo div[class*='col'] {
   background: #fff;

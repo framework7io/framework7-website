@@ -11,7 +11,6 @@
           <li>Single click on photo to toggle Exposition mode</li>
         </ul>
       </Block>
-      {#if mounted}
       <Block strong>
         <p>Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:</p>
         <Row>
@@ -46,15 +45,13 @@
           </Col>
         </Row>
       </Block>
-      {/if}
     </Page>
   </View>
 </App>
 
 <script>
-  import {f7ready, App, View, Page, Navbar, Block, Row, Col, PhotoBrowser, Button} from 'framework7-svelte';
+  import {App, View, Page, Navbar, Block, Row, Col, PhotoBrowser, Button} from 'framework7-svelte';
 
-  let mounted;
 
   let standalone;
   let popup;
@@ -68,11 +65,5 @@
     'https://placekitten.com/800/800',
     'https://placekitten.com/1024/1024',
   ];
-
-  f7ready(() => {
-    setTimeout(() => {
-      mounted = true;
-    }, 100);
-  });
 
 </script>

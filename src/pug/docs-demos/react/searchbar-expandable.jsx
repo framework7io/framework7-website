@@ -1,4 +1,16 @@
 import React from 'react';
+import {
+  App,
+  View,
+  Page,
+  Navbar,
+  NavRight,
+  Link,
+  Searchbar,
+  List,
+  ListItem,
+  theme,
+} from 'framework7-react';
 
 export default () => (
   <App>
@@ -18,7 +30,7 @@ export default () => (
             expandable
             searchContainer=".search-list"
             searchIn=".item-title"
-            disableButton={!this.$theme.aurora}
+            disableButton={!theme.aurora}
           ></Searchbar>
         </Navbar>
         <List className="searchbar-not-found">

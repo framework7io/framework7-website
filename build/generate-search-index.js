@@ -13,7 +13,8 @@ try {
 }
 
 function generateTitleHash(title) {
-  return title.trim()
+  return title
+    .trim()
     .replace(/\ /g, '-')
     .replace(/\//g, '-')
     .replace(/"/g, '')
@@ -30,14 +31,17 @@ function generateTitleHash(title) {
 
 function addSection(section) {
   if (section.text) {
-    section.text = section.text.map((el) => {
-      return el
-        .replace(/([ ]{2,})/g, ' ')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/([\n ]{2,})/g, '\n')
-        .replace(/([\n]{2,})/g, '\n');
-    }).join('\n').replace(/([\n ]{2,})/g, '\n');
+    section.text = section.text
+      .map((el) => {
+        return el
+          .replace(/([ ]{2,})/g, ' ')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/([\n ]{2,})/g, '\n')
+          .replace(/([\n]{2,})/g, '\n');
+      })
+      .join('\n')
+      .replace(/([\n ]{2,})/g, '\n');
   }
   searchData.push(section);
 }
@@ -79,7 +83,9 @@ function parseFolder(folder, docs) {
         if ($el.is('table')) {
           text += $.makeArray($el.find('tr'))
             .map((row) => {
-              return $.makeArray($(row).find('td')).map((cell) => $(cell).text().trim()).join(' | ');
+              return $.makeArray($(row).find('td'))
+                .map((cell) => $(cell).text().trim())
+                .join(' | ');
             })
             .join('\n');
         } else {

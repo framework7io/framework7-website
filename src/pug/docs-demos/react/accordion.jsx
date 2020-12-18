@@ -1,4 +1,17 @@
 import React from 'react';
+import {
+  App,
+  View,
+  Page,
+  Navbar,
+  BlockTitle,
+  List,
+  ListItem,
+  AccordionContent,
+  Block,
+  AccordionItem,
+  AccordionToggle,
+} from 'framework7-react';
 
 export default () => (
   <App>

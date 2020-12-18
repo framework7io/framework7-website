@@ -10,6 +10,7 @@ module.exports = {
   },
   rules: {
     'react/display-name': 'off',
+    'react/no-unescaped-entities': 'off',
     'no-param-reassign': 'off',
     'import/no-extraneous-dependencies': 'off',
     'prefer-destructuring': 'off',

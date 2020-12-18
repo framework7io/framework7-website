@@ -15,38 +15,38 @@
   </f7-app>
 </template>
 <script>
-  import ToolbarPage from './toolbar-tabbar_toolbar.svelte';
-  import TabbarPage from './toolbar-tabbar_tabbar.svelte';
-  import TabbarLabelsPage from './toolbar-tabbar_tabbar-labels.svelte';
-  import TabbarScrollablePage from './toolbar-tabbar_tabbar-scrollable.svelte';
-  import ToolbarHidePage from './toolbar-tabbar_toolbar-hide-scroll.svelte';
+import ToolbarPage from './toolbar-tabbar_toolbar.vue';
+import TabbarPage from './toolbar-tabbar_tabbar.vue';
+import TabbarLabelsPage from './toolbar-tabbar_tabbar-labels.vue';
+import TabbarScrollablePage from './toolbar-tabbar_tabbar-scrollable.vue';
+import ToolbarHidePage from './toolbar-tabbar_toolbar-hide-scroll.vue';
 
-  export default {
-    data() {
-      return {
-        routes: [
-          {
-            path: '/toolbar/',
-            component: ToolbarPage,
-          },
-          {
-            path: '/tabbar/',
-            component: TabbarPage,
-          },
-          {
-            path: '/tabbar-labels/',
-            component: TabbarLabelsPage,
-          },
-          {
-            path: '/tabbar-scrollable/',
-            component: TabbarScrollablePage,
-          },
-          {
-            path: '/toolbar-hide-scroll/',
-            component: ToolbarHidePage,
-          },
-        ],
-      };
-    },
-  }
+export default {
+  data() {
+    return {
+      routes: [
+        {
+          path: '/toolbar/',
+          component: ToolbarPage,
+        },
+        {
+          path: '/tabbar/',
+          component: TabbarPage,
+        },
+        {
+          path: '/tabbar-labels/',
+          component: TabbarLabelsPage,
+        },
+        {
+          path: '/tabbar-scrollable/',
+          component: TabbarScrollablePage,
+        },
+        {
+          path: '/toolbar-hide-scroll/',
+          component: ToolbarHidePage,
+        },
+      ],
+    };
+  },
+};
 </script>

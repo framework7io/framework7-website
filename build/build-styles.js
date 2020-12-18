@@ -5,10 +5,13 @@ const connect = require('gulp-connect');
 const cleanCss = require('gulp-clean-css');
 
 function buildLess(cb) {
-  gulp.src(['./src/less/main.less'])
-    .pipe(gulpLess({
-      paths: [path.join(__dirname, 'less', 'includes')],
-    }))
+  gulp
+    .src(['./src/less/main.less'])
+    .pipe(
+      gulpLess({
+        paths: [path.join(__dirname, 'less', 'includes')],
+      }),
+    )
     .pipe(cleanCss({ compatibility: '*,-properties.zeroUnits', level: 2 }))
     .pipe(gulp.dest('./public/css/'))
     .pipe(connect.reload())

@@ -1,11 +1,10 @@
 <App>
   <View main>
     <Page>
-      <Navbar title="Messages"></Navbar>
+      <Navbar title="Messages" />
 
       <Messagebar
         placeholder={placeholder}
-        bind:this={messagebarComponent}
         attachmentsVisible={attachmentsVisible}
         sheetVisible={sheetVisible}
         value={messageText}
@@ -75,11 +74,27 @@
     </Page>
   </View>
 </App>
-<script>
-  import { onMount, onDestroy } from 'svelte';
-  import { f7, f7ready, App, View, Navbar, Page, Messages, MessagesTitle, Message, Messagebar, Icon, MessagebarAttachments, MessagebarAttachment, MessagebarSheet, MessagebarSheetImage } from 'framework7-svelte';
 
-  let messagebarComponent;
+<script>
+  import { onMount } from 'svelte';
+  import {
+    f7,
+    f7ready,
+    App,
+    View,
+    Navbar,
+    Page,
+    Messages,
+    MessagesTitle,
+    Message,
+    Messagebar,
+    Icon,
+    MessagebarAttachments,
+    MessagebarAttachment,
+    MessagebarSheet,
+    MessagebarSheetImage,
+  } from 'framework7-svelte';
+
   let messagebarInstance;
 
   let attachments = [];
@@ -118,7 +133,6 @@
     {
       type: 'sent',
       image: 'https://cdn.framework7.io/placeholder/cats-200x260-4.jpg',
-
     },
     {
       name: 'Kate',
@@ -139,7 +153,7 @@
       avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
     },
   ];
-  let images = [
+  const images = [
     'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg',
     'https://cdn.framework7.io/placeholder/cats-200x300-2.jpg',
     'https://cdn.framework7.io/placeholder/cats-400x300-3.jpg',
@@ -151,7 +165,7 @@
     'https://cdn.framework7.io/placeholder/cats-400x300-9.jpg',
     'https://cdn.framework7.io/placeholder/cats-300x150-10.jpg',
   ];
-  let people = [
+  const people = [
     {
       name: 'Kate Johnson',
       avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
@@ -161,7 +175,7 @@
       avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
     },
   ];
-  let answers = [
+  const answers = [
     'Yes!',
     'No',
     'Hm...',
@@ -182,26 +196,33 @@
 
   onMount(() => {
     f7ready(() => {
-      messagebarInstance = messagebarComponent.instance();
+      messagebarInstance = f7.messagebar.get('.messagebar');
     });
   });
 
   function isFirstMessage(message, index) {
     const previousMessage = messagesData[index - 1];
     if (message.isTitle) return false;
-    if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
+    if (
+      !previousMessage ||
+      previousMessage.type !== message.type ||
+      previousMessage.name !== message.name
+    )
+      return true;
     return false;
   }
   function isLastMessage(message, index) {
     const nextMessage = messagesData[index + 1];
     if (message.isTitle) return false;
-    if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+    if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name)
+      return true;
     return false;
   }
   function isTailMessage(message, index) {
     const nextMessage = messagesData[index + 1];
     if (message.isTitle) return false;
-    if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+    if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name)
+      return true;
     return false;
   }
   function deleteAttachment(image) {
@@ -265,15 +286,19 @@
         avatar: person.avatar,
       };
       setTimeout(() => {
-        messagesData = [...messagesData, {
-          text: answer,
-          type: 'received',
-          name: person.name,
-          avatar: person.avatar,
-        }];
+        messagesData = [
+          ...messagesData,
+          {
+            text: answer,
+            type: 'received',
+            name: person.name,
+            avatar: person.avatar,
+          },
+        ];
         typingMessage = null;
         responseInProgress = false;
       }, 4000);
     }, 1000);
   }
 </script>
+

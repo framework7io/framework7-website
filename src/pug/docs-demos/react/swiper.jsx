@@ -1,4 +1,5 @@
 import React from 'react';
+import { App, View, Page, Navbar, BlockTitle, Swiper, SwiperSlide, Block } from 'framework7-react';
 import './swiper.css';
 
 export default () => (

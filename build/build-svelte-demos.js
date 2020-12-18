@@ -25,46 +25,51 @@ function buildOne(name, cb) {
   fs.writeFileSync(`./public/docs-demos/svelte/${name}.html`, html);
   fs.writeFileSync(`./public/docs-demos/svelte/${name}.css`, '');
 
-  return rollup.rollup({
-    input: './src/pug/docs-demos/svelte/_main.js',
-    plugins: [
-      replace({
-        delimiters: ['', ''],
-        F7_SVELTE_DEMO: name,
-      }),
-      svelte({
-        emitCss: true,
-        compilerOptions: {
-          dev: false,
+  return rollup
+    .rollup({
+      input: './src/pug/docs-demos/svelte/_main.js',
+      treeshake: false,
+      plugins: [
+        replace({
+          delimiters: ['', ''],
+          F7_SVELTE_DEMO: name,
+        }),
+        svelte({
+          emitCss: true,
+          compilerOptions: {
+            dev: false,
+          },
+        }),
+        css({
+          output: `${name}.css`,
+        }),
+        nodeResolve({
+          browser: true,
+          dedupe: (importee) => importee === 'svelte' || importee.startsWith('svelte/'),
+        }),
+      ],
+    })
+    .then((bundle) => {
+      return bundle.write({
+        strict: true,
+        file: `./public/docs-demos/svelte/${name}.js`,
+        format: 'umd',
+        name,
+        sourcemap: false,
+        globals: {
+          framework7: 'Framework7',
         },
-      }),
-      css({
-        output: `${name}.css`,
-      }),
-      nodeResolve({
-        browser: true,
-        dedupe: (importee) => importee === 'svelte' || importee.startsWith('svelte/'),
-      }),
-    ],
-  }).then((bundle) => {
-    return bundle.write({
-      strict: true,
-      file: `./public/docs-demos/svelte/${name}.js`,
-      format: 'umd',
-      name,
-      sourcemap: false,
-      globals: {
-        framework7: 'Framework7',
-      },
+      });
+    })
+    .then(() => {
+      console.log(`Finished svelte: ${name} in ${Date.now() - time}ms`);
+      if (cb) cb();
     });
-  }).then(() => {
-    console.log(`Finished svelte: ${name} in ${Date.now() - time}ms`);
-    if (cb) cb();
-  });
 }
 
 async function buildAll(cb) {
-  const svelteDemos = fs.readdirSync(path.resolve(__dirname, '../src/pug/docs-demos/svelte'))
+  const svelteDemos = fs
+    .readdirSync(path.resolve(__dirname, '../src/pug/docs-demos/svelte'))
     .filter((f) => f.indexOf('.svelte') >= 0)
     .filter((f) => f.indexOf('_') < 0)
     .map((f) => f.split('.svelte')[0]);

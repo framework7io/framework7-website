@@ -13,28 +13,28 @@
   </f7-app>
 </template>
 <script>
-  import TabsStatic from './tabs_static.svelte';
-  import TabsAnimated from './tabs_animated.svelte';
-  import TabsSwipeable from './tabs_swipeable.svelte';
+import TabsStatic from './tabs_static.vue';
+import TabsAnimated from './tabs_animated.vue';
+import TabsSwipeable from './tabs_swipeable.vue';
 
-  export default {
-    data() {
-      return {
-        routes: [
-          {
-            path: '/tabs-static/',
-            component: TabsStatic,
-          },
-          {
-            path: '/tabs-animated/',
-            component: TabsAnimated,
-          },
-          {
-            path: '/tabs-swipeable/',
-            component: TabsSwipeable,
-          },
-        ],
-      };
-    },
-  }
+export default {
+  data() {
+    return {
+      routes: [
+        {
+          path: '/tabs-static/',
+          component: TabsStatic,
+        },
+        {
+          path: '/tabs-animated/',
+          component: TabsAnimated,
+        },
+        {
+          path: '/tabs-swipeable/',
+          component: TabsSwipeable,
+        },
+      ],
+    };
+  },
+};
 </script>

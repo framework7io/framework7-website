@@ -1,4 +1,15 @@
 import React from 'react';
+import {
+  App,
+  View,
+  Page,
+  Navbar,
+  Block,
+  BlockTitle,
+  Row,
+  Col,
+  BlockHeader,
+} from 'framework7-react';
 import './grid.css';
 
 export default () => (

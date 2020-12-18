@@ -4,8 +4,8 @@
       <Navbar title="Action Sheet" />
       <Block strong>
         <p class="row">
-          <!-- One group, open by direct accessing instance .open() method -->
-          <Button class="col" raised onClick={() => actionsOneGroup.open()}>One group</Button>
+          <!-- One group, open by "actionsOpen" attribute -->
+          <Button class="col" raised actionsOpen="#actions-one-group">One group</Button>
           <!--  Two groups, open by "actionsOpen" attribute -->
           <Button class="col" raised actionsOpen="#actions-two-groups">Two groups</Button>
         </p>
@@ -30,7 +30,7 @@
       </Block>
 
       <!-- One Group -->
-      <Actions bind:this={actionsOneGroup}>
+      <Actions id="actions-one-group">
         <ActionsGroup>
           <ActionsLabel>Do something</ActionsLabel>
           <ActionsButton bold>Button 1</ActionsButton>
@@ -90,7 +90,6 @@
   import { f7, App, View, Page, Navbar, Block, BlockTitle, Button, Actions, ActionsGroup, ActionsLabel, ActionsButton } from 'framework7-svelte';
 
   let actionGridOpened = false;
-  let actionsOneGroup;
   let actionsToPopover = null;
   let buttonToPopoverWrapper;
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { App, Appbar, Button, Searchbar, Panel, Block, View, Page, Navbar } from 'framework7-react';
 
 export default () => (
   <App>

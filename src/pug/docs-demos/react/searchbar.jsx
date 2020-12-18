@@ -1,4 +1,15 @@
 import React from 'react';
+import {
+  App,
+  View,
+  Page,
+  Navbar,
+  Subnavbar,
+  Searchbar,
+  List,
+  ListItem,
+  theme,
+} from 'framework7-react';
 
 export default () => (
   <App>
@@ -9,7 +20,7 @@ export default () => (
             <Searchbar
               searchContainer=".search-list"
               searchIn=".item-title"
-              disableButton={!this.$theme.aurora}
+              disableButton={!theme.aurora}
             ></Searchbar>
           </Subnavbar>
         </Navbar>

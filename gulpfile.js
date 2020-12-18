@@ -20,7 +20,7 @@ gulp.task('js', buildScript);
 gulp.task('svelte', buildSvelteDemos.all);
 gulp.task('vue', buildVueDemos.all);
 gulp.task('react', buildReactDemos.all);
-gulp.task('build', gulp.series(['pug', 'less', 'js', 'svelte', 'vue', 'react']));
+gulp.task('build', gulp.series(['svelte', 'vue', 'react', 'pug', 'less', 'js']));
 
 /* =================================
 Watch
@@ -43,9 +43,8 @@ gulp.task('watch', () => {
     } else {
       src.push(filePath);
     }
-    const dest = filePath.split('/')[0] === filePath
-      ? './public/'
-      : `./public/${path.parse(filePath).dir}`;
+    const dest =
+      filePath.split('/')[0] === filePath ? './public/' : `./public/${path.parse(filePath).dir}`;
     buildPages(null, {
       src,
       dest,
@@ -58,6 +57,10 @@ gulp.task('watch', () => {
   gulp.watch('./src/pug/**/*.vue', { events: ['change'] }).on('change', (changedPath) => {
     const name = changedPath.split('src/pug/docs-demos/vue/')[1].split('.vue')[0];
     buildVueDemos.one(name);
+  });
+  gulp.watch('./src/pug/**/*.jsx', { events: ['change'] }).on('change', (changedPath) => {
+    const name = changedPath.split('src/pug/docs-demos/react/')[1].split('.jsx')[0];
+    buildReactDemos.one(name);
   });
 });
 
