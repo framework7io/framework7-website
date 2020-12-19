@@ -26,6 +26,10 @@
 - Svelte
   - Store
 - Common for React/Svelte/Vue
+  - Swiper
+    - Mention official docs API
+  - Skeleton Elements
+    - Mention official docs API
   - Menu List
   - List
     - New `menuList` boolean property to enable menu List
