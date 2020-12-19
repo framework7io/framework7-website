@@ -14,37 +14,34 @@ block content
     p Framework7 Svelte package contains the following files and folders:
     :code(lang="html")
       framework7-svelte/
-          components/
-              accordion-content.svelte
-              accordion-item.svelte
-              accordion-toggle.svelte
-              accordion.svelte
-              actions-button.svelte
-              actions-group.svelte
-              actions-label.svelte
-              actions.svelte
-              app.svelte
+          bundle/
+          cjs/
+            components/
+              accordion.js
+              accordion-content.js
               ...
-          framework7-svelte.esm.js
+            framework7-svelte.js
+          components/
+              accordion/
+                package.json
+              accordion-item/
+                package.json
+              ...
+          esm/
+            components/
+              accordion.js
+              accordion-content.js
+              ...
+            framework7-svelte.js
 
-    h2 Components
-    p All Svelte components are located in `components/` folder.
-    :code(lang="js")
-      import App from 'framework7-svelte/components/app.svelte';
-      import Navbar from 'framework7-svelte/components/navbar.svelte';
-
-    p Or they can be imported using named import from main file
-    :code(lang="js")
-      import { App, Navbar } from 'framework7-svelte';
-
-    h2 ES Module
-    p Framework7 Svelte plugin can be imported as an ES-next module:
+    h2 Svelte Plugin
+    p Framework7 Svelte plugin provided as ES/CJS module:
     :code(lang="js")
       // Import Framework7 Core
-      import Framework7 from 'framework7/framework7-lite.js';
+      import Framework7 from 'framework7/lite';
       /*
       Or import bundle with all components:
-      import Framework7 from 'framework7/framework7-lite.esm.bundle.js';
+      import Framework7 from 'framework7/lite-bundle';
       */
 
       // Import Framework7 Svelte
@@ -55,7 +52,13 @@ block content
 
     .important-note
       p
-        b By default it exports only Framework7 Svelte plugin without any components. To import components separately, we need to use named import:
-      :code(lang="js")
-        import { App, Navbar } from 'framework7-svelte';
-
+        b By default it exports only Framework7-Svelte plugin without any Svelte components. To import components separately, we need to use named import:
+      :code(lang="svelte")
+        <App>
+          <View>
+            ...
+          </View>
+        </App>
+        <script>
+          import { App, View } from 'framework7-svelte';
+        </script>

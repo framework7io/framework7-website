@@ -48,7 +48,7 @@ block content
           };
 
           export default () => (
-            <App params={f7params}>
+            <App { ...f7params }>
               {/* Current View/Router, initial page will be loaded from home.jsx component */}
               <View main url="/" />
             </App>
@@ -115,7 +115,7 @@ block content
       }
     p And finally, props can be passed dynamically to route component when we navigate with API:
     :code(lang="js")
-      this.$f7router.navigate('/some-page/', {
+      f7router.navigate('/some-page/', {
         props: {
           foo: 'bar',
           bar: true,
@@ -123,7 +123,13 @@ block content
       })
 
     h2 Async Lazy Components
-    p With Webpack it is possible to load page components on demand, it is possible with F7's async route, for example:
+    p With Webpack it is possible to load page components on demand, it is possible with F7's route `asyncComponent`, for example:
+    :code(lang="js")
+      {
+        path: '/about/',
+        asyncComponent: () => import('./pages/about.jsx'),
+      },
+    p Or with `async` route if we need more control over it:
     :code(lang="js")
       {
         path: '/about/',
@@ -139,9 +145,15 @@ block content
       },
 
     h2 Router API
-    p To access router instance and use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>$f7router</b> property of component:
+    p To access router instance and use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>f7router</b> component prop of component:
     :code(lang="jsx")
-          <Link onClick={() => this.$f7router.navigate('/about/')}>About</Link>
-          <Link onClick={() => this.$f7router.back()}>Go Back</Link>
+      export default ({ f7router }) => {
+        return (
+          <Page>
+            <Link onClick={() => f7route.navigate('/about/')}>About</Link>
+            <Link onClick={() => f7route.back()}>Back</Link>
+          </Page>
+        )
+      }
     .important-note
-      p Please note, that `$f7route` and `$f7router` component properties are only available inside of custom page components that you load according to routes. In parent components (like in View, or where you init your React app instance) and in child components they are not accessible. So in this case use access to initialized <a href="view.html#access-to-view-instance">View Instance</a>, e.g. `$f7.views.main.router`
+      p Please note, that `f7route` and `f7router` component props are only available inside of custom page components that you load according to routes. In parent components (like in View, or where you init your React app instance) and in child components they are not accessible. So in this case use access to initialized <a href="view.html#access-to-view-instance">View Instance</a>, e.g. `f7.views.main.router`

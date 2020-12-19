@@ -16,7 +16,7 @@ block content
     p The only difference in Framework7 Svelte is that in Svelte we are already composing our application with Svelte components, so we need to map our Pages (Svelte components) to the routes. It can be done by passing Svelte component in `component` property of the route. Here's a basic example:
     :code(lang="svelte")
       <!-- App.svelte -->
-      <App params={f7params}>
+      <App { ...f7params }>
         <!-- Current View/Router, initial page will be loaded from home.svelte component -->
         <View main url="/" />
       </App>
@@ -144,29 +144,7 @@ block content
       },
 
     h2 Router API
-    p To access router instance and current routes to use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>f7router</b> and <b>f7route</b> component props:
-
-    table.methods-table
-      tbody
-        tr
-          td f7router
-          td
-            p.important-note This property only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
-            p Framework7 Router Instance. It has a lot of useful <a href="../docs/view.html#router-api-methods-properties">Methods & Properties</a> to use for navigation
-        tr
-          td f7route
-          td
-            p.important-note This property only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
-            p Object with current route data that was used to load this page, tab or modal. It has the following properties
-            ul
-              li `url` - route URL
-              li `path` - route path
-              li `query` - object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{id: '5', foo: 'bar'}`
-              li `params` - route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{userId: '55', postId: '12'}`
-              li `name` - route name
-              li `hash` - route URL hash
-              li `route` - object with matching route from available routes
-              li `context` - context that was passed to the route
+    p To access router instance and use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>f7router</b> component prop of component:
 
     :code(lang="svelte")
       <Page>

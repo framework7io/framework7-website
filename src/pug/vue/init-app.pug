@@ -54,6 +54,9 @@ block content
       // Register all Framework7 Vue components
       registerComponents(app);
 
+      // Mounte Vue App
+      app.mount('#app');
+
     :code(lang="html")
       <!-- app.vue -->
 
@@ -87,7 +90,7 @@ block content
 
     p In the examples above:
     ul
-      li we pass <a href="../docs/init-app.html">Framework7 parameters</a> to the `f7-app` main Framework7 app component in its `params` property;
-      li element passed in Vue's `el` parameter will be used as Framework7 root element
+      li we pass <a href="../docs/init-app.html">Framework7 parameters</a> to the `f7-app` main Framework7 app component in its properties;
+      li root element passed to Vue's `createApp` will be used as Framework7 root element
     p We also must specify array with routes (if we have navigation between pages in the app). Check out information about <a href="vue-component-extensions.html">Vue Component Extensions</a>, router and routes in the <a href="navigation-router.html">Navigation Router</a> section.
 

@@ -139,7 +139,13 @@ block content
         }
       })
     h2 Async Lazy Components
-    p With Webpack it is possible to load page components on demand, it is possible with F7's async route, for example:
+    p With Webpack it is possible to load page components on demand, it is possible with F7's route `asyncComponent`, for example:
+    :code(lang="js")
+      {
+        path: '/about/',
+        asyncComponent: () => import('./pages/about.vue'),
+      },
+    p Or with `async` route if we need more control over it:
     :code(lang="js")
       {
         path: '/about/',

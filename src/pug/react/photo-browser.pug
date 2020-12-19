@@ -178,7 +178,7 @@ block content
           td photoBrowserSwipeToClose
           td This event will be triggered when user close Photo Browser with swipe up/down.
     h2 Photo Browser Methods
-    p The following Photo Browser components methods are available (e.g. by accesing it via <b>$refs</b>):
+    p The following Photo Browser components methods are available (e.g. by accesing it via <b>ref</b>):
     table.methods-table
       tbody
         tr
@@ -198,8 +198,7 @@ block content
         tr
           td .expositionDisable();
           td Disable exposition mode
-    h2 Access To Photo Browser Instance
-    p You can access Photo Browser initialized instance by accessing `.f7PhotoBrowser` component's property.
+
     .with-device
       h2(data-device-preview="../docs-demos/react/photo-browser.html") Examples
       include:reactSource ../docs-demos/react/photo-browser.jsx

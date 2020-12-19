@@ -10,7 +10,7 @@ block content
   .docs-content
     +improveDocsLink
     h1 App Layout
-    p First thing we should do for our App is to create index.html file with app's skeleton.
+    p First thing we should do for our App is to create index.html file with app's skeleton. Framework7 React intended to be used with bundlers like webpack, so the index.html styles and scripts should be auto injected/generated.
     :code(lang="html")
       <!DOCTYPE html>
       <html>
@@ -23,16 +23,14 @@ block content
           <meta name="theme-color" content="#2196f3">
           <!-- Your app title -->
           <title>My App</title>
-          <!-- Path to Framework7 Library CSS Bundle -->
+          <!-- Framework7 styles -->
           <link rel="stylesheet" href="path/to/framework7-bundle.min.css">
-          <!-- Path to your custom app styles-->
-          <link rel="stylesheet" href="path/to/my-app.css">
         </head>
         <body>
           <!-- App Root Element -->
           <div id="app"></div>
 
-          <script type="text/javascript" src="path/to/app.js"></script>
+          <!-- Scripts will be auto injected -->
         </body>
       </html>
     p The `<div id="app"></div>` is where your main app skeleton should be. You can mount its content as a component or (just for example) we can start to write app skeleton right inside of this div:
@@ -44,7 +42,7 @@ block content
 
       export default () => (
         // Main Framework7 App component where we pass Framework7 params
-        <App params={{ theme: 'auto', name: 'My App', id: 'com.demoapp.test' }}>
+        <App theme="auto" name="My App" id="com.demoapp.test">
 
           {/* Your main view, should have "main" prop */}
           <View main>
@@ -74,7 +72,7 @@ block content
 
       export default () => (
         /* Main Framework7 App component where we pass Framework7 params */
-        <App params={{ theme: 'auto', name: 'My App', id: 'com.demoapp.test' }}>
+        <App theme="auto" name="My App" id="com.demoapp.test">
 
           {/* Left Panel with "cover" effect */}
           <Panel left cover>

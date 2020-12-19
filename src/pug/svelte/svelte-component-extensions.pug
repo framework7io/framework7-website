@@ -12,64 +12,78 @@ block content
     +improveDocsLink
     h1 Svelte Component Extensions
     ul.docs-index
-    p <b>After</b> Svelte mounts the app and init Framework7, we will have Framework7's initialized instance and some other useful properties.
-    h2 Framework7 Instance & Utils
-    p In addition to Framework7 Svelte components there are some useful props and methods we can import from `framework7-svelte`:
-    ```js
-      import { f7, f7ready, theme } from 'framework7-svelte';
-      // ...
+    p <b>After</b> Svelte mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that can be imported from `framework7-react` package.
+    h2 `f7ready`
+    p It is a callback function that will be executed when Framework7 fully intialized. Useful to use in components when you need to access Framework7 API and to be sure it is ready. So it is safe to put all Framework7 related logic into this callback. As an argument it receives initialized Framework7 instance. For example:
+    :code(lang="html")
+      ...
+      <script>
+        import { onMount } from 'svelte';
+        import { f7ready } from 'framework7-react';
+
+        onMount(() => {
+          f7ready(() => {
+            // Framework7 initialized
+            f7.dialog.alert('Component mounted');
+          })
+        })
+      </script>
+    h2 `f7`
+    p Main Framework7's initialized instance. It allows you to use any of Framework7 APIs.
+    p If you are sure that on the moment when you access Framework7 instance, it was already initialized, you can import and use it directly:
+    ```html
+      <script>
+        import { f7 } from 'framework7-vue';
+
+        const doSomething = () => {
+          f7.dialog.alert('Hello world');
+        }
+
+        // ...
+      </script>
     ```
-    table.methods-table
-      tbody
-        tr
-          td f7
-          td Main Framework7's initialized instance. It allows you to use any of Framework7 APIs
-        tr
-          td f7ready
-          td Callback function that will be executed when Framework7 fully intialized. Useful to use in components when you need to access Framework7 API and to be sure it is ready. So it is safe to put all Framework7 related logic into this callback. For example:
-            ```svelte
-              <Page>
-                <Link onClick={onClick}>Click</Link>
-              </Page>
-              <script>
-                import { onMount } from 'svelte';
-                import { f7, f7ready, Page } from 'framework7-svelte';
+    h2 `theme`
+    p It is an object with boolean properties with information about currently used theme (iOS, MD or Aurora ): `theme.ios`, `theme.material` and `theme.aurora`.
+    ```html
+      <script>
+        import { theme } from 'framework7-vue';
 
-                function onClick() {
-                  // Safe to use without f7ready
-                  f7.dialog.alert('Clicked!');
-                }
+        if (theme.ios) {
+          console.log('Currently active theme is iOS-theme')
+        }
 
-                onMount(() => {
-                  f7ready(() => {
-                    // Framework7 initialized
-                    f7.dialog.alert('Hello world');
-                  })
-                })
-              </script>
-            ```
-        tr
-          td theme
-          td Object with boolean properties with information about currently used theme (iOS, MD or Aurora): `theme.ios`, `theme.material` and `theme.aurora`
+        // ...
+      </script>
+    ```
+    h2 `f7route` and `f7router`
+    p <a href="/docs/view.html#router-api-methods-properties">Router instance</a> and current route are passed via props to router components:
+    p.important-note This properties only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
+    ```html
+      <script>
+        import { onMount } from 'svelte';
+        // define props so the component will receive it
+        export let f7route;
+        export let f7router;
 
-    p If you need other useful Framework7 utils you can import them directly from Framework7 core library:
+        onMount(() => {
+          console.log(f7route.url)
+        });
 
-    table.methods-table
-      tbody
-        tr
-          td Device
-          td <a href="../docs/device.html">Device</a> utilities
-        tr
-          td Request
-          td <a href="../docs/request.html">Request</a> library for XHR requests
-        tr
-          td Utils
-          td <a href="../docs/utils.html">Utils</a> object with few useful utilities
-    :code(lang="js")
-      import { Device, Request, Utils } from 'framework7';
-      import { f7, f7ready, theme } from 'framework7-svelte';
-
-      // ...
+        const navigate = () => {
+          f7router.navigate('/some-page/');
+        }
+        // ...
+      </script>
+    ```
+    p `f7route` is the current route, object with the following properties:
+    ul
+      li `url` - route URL
+      li `path` - route path
+      li `query` - object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{id: '5', foo: 'bar'}`
+      li `params` - route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{userId: '55', postId: '12'}`
+      li `name` - route name
+      li `hash` - route URL hash
+      li `route` - object with matching route from available routes
 
     h2 Slots
     p All Framework7 Svelte components use `slots` to distribute children across component structure. But due to Svelte limitation it is not allowed to use slots on custom components, so sometimes you may need to wrap it with dummy HTML element or use HTML layout instead:

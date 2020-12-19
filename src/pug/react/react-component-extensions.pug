@@ -12,145 +12,137 @@ block content
     +improveDocsLink
     h1 React Component Extensions
     ul.docs-index
-    p <b>After</b> React mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that will be available in all React components (Class components):
-    h2 Components Properties
-    table.methods-table
-      tbody
-        tr
-          td this.$f7ready
-          td Callback function that will be executed when Framework7 fully intialized. Useful to use in components when you need to access Framework7 API and to be sure it is ready. So it is safe to put all Framework7 related logic into this callback. As an argument it receives initialized Framework7 instance. For example:
-            :code(lang="js")
-              export default class extends React.Component {
-                ...
-                render() {
-                  ...
-                },
-                componentDidMount() {
-                  this.$f7ready((f7) => {
-                    f7.dialog.alert('Component mounted');
-                  });
-                },
-                ...
-              };
-        tr
-          td this.$f7
-          td Main Framework7's initialized instance. It allows you to use any of Framework7 APIs
-        tr
-          td this.$$<br>this.Dom7
-          td Access to built-in <a href="../docs/dom7.html">Dom7</a> DOM library that utilizes most edge and high-performance methods for DOM manipulation
-        tr
-          td this.$device
-          td Access to <a href="../docs/device.html">Device</a> utilities
-        tr
-          td this.$request
-          td Access to <a href="../docs/request.html">Request</a> library for XHR requests
-        tr
-          td this.$utils
-          td Access to <a href="../docs/utils.html">Utils</a> object with few useful utilities
-        tr
-          td this.$theme
-          td Object with boolean properties with information about currently used theme (iOS, MD or Aurora): `this.$theme.ios`, `this.$theme.material` and `this.$theme.aurora`
-        tr
-          td this.$f7router
-          td
-            p.important-note This property only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
-            p Framework7 Router Instance. It has a lot of useful <a href="../docs/view.html#router-api-methods-properties">Methods & Properties</a> to use for navigation
-        tr
-          td this.$f7route
-          td
-            p.important-note This property only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
-            p Object with current route data that was used to load this page, tab or modal. It has the following properties
-            ul
-              li `url` - route URL
-              li `path` - route path
-              li `query` - object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{id: '5', foo: 'bar'}`
-              li `params` - route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{userId: '55', postId: '12'}`
-              li `name` - route name
-              li `hash` - route URL hash
-              li `route` - object with matching route from available routes
-              li `context` - context that was passed to the route
-
-    p If you use functional components, then previously described extensions will not work. Framework7 instance, `f7ready` method and `theme` can be imported directly from Framework7-React library. Device, Request and Support can be imported directly from Framework7 core library.
+    p <b>After</b> React mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that can be imported from `framework7-react` package.
+    h2 `f7ready`
+    p It is a callback function that will be executed when Framework7 fully intialized. Useful to use in components when you need to access Framework7 API and to be sure it is ready. So it is safe to put all Framework7 related logic into this callback. As an argument it receives initialized Framework7 instance. For example:
     :code(lang="js")
-      import { Device, Request, Support } from 'framework7';
-      import { f7, f7ready, theme } from 'framework7-react';
+      import React, { useEffect } from 'react';
+      import { f7ready } from 'framework7-react';
 
-    :code(lang="js")
-      import { f7, f7ready } from 'framework7-react';
+      export default () => {
 
-      export default class extends React.Component {
-        ...
-        render() {
-          ...
-        },
-        componentDidMount() {
-          f7ready(() => {
+        useEffect(() => {
+          f7ready((f7) => {
             f7.dialog.alert('Component mounted');
-          });
-        },
-        ...
-      };
+          })
+        }, []);
 
-    h2 Phenome.js
-    p Framework7-React components are build with <a target="_blank" href="https://github.com/phenomejs/phenome">Phenome.js</a>, so they are empowered with some extra features like Slots and Events.
+        // ...
+
+      }
+    h2 `f7`
+    p Main Framework7's initialized instance. It allows you to use any of Framework7 APIs.
+    p If you are sure that on the moment when you access Framework7 instance, it was already initialized, you can import and use it directly:
+    ```js
+      import { f7 } from 'framework7-vue';
+
+      export default () => {
+
+        const doSomething = () => {
+          f7.dialog.alert('Hello world');
+        }
+
+        // ...
+
+      };
+    ```
+    h2 `theme`
+    p It is an object with boolean properties with information about currently used theme (iOS, MD or Aurora ): `theme.ios`, `theme.material` and `theme.aurora`.
+    ```js
+      import { theme } from 'framework7-vue';
+
+      export default () => {
+
+        if (theme.ios) {
+          console.log('Currently active theme is iOS-theme')
+        }
+
+        // ...
+      }
+    ```
+    h2 `f7route` and `f7router`
+    p <a href="/docs/view.html#router-api-methods-properties">Router instance</a> and current route are passed via props to router components:
+    p.important-note This properties only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
+    ```js
+      // will be received in props
+      export default ({ f7route, f7router }) => {
+        useEffect(() => {
+          console.log(f7route.url)
+        }, []);
+        const navigate = () => {
+          f7router.navigate('/some-page/');
+        }
+        // ...
+      }
+    ```
+    p `f7route` is the current route, object with the following properties:
+    ul
+      li `url` - route URL
+      li `path` - route path
+      li `query` - object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{id: '5', foo: 'bar'}`
+      li `params` - route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{userId: '55', postId: '12'}`
+      li `name` - route name
+      li `hash` - route URL hash
+      li `route` - object with matching route from available routes
+
     h2 Slots
-    p All Framework7-React components use `slots` to distribute children across component structure. They work exactly the same as <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots">Web Component Slots</a> and <a href="https://vuejs.org/v2/guide/components-slots.html" target="_blank">Vue.js Slots</a>.
+    p All Framework7-React components use `slots` to distribute children across component structure. They work very similar to <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots">Web Component Slots</a> and <a href="https://vuejs.org/v2/guide/components-slots.html" target="_blank">Vue.js Slots</a>.
     p For example
     :code(lang="jsx")
-          export default () => (
-            <Page>
-              <p slot="fixed">I'm fixed page element</p>
-              <p>I'm in scrollable page area</p>
-              <List>
-                <ListItem>
-                  <img slot="media" src="path/to/image.png" />
-                  <span slot="title">Title 1</span>
-                  <span slot="title">Title 2</span>
-                </ListItem>
-              </List>
-            </Page>
-          )
+      export default () => (
+        <Page>
+          <p slot="fixed">I'm fixed page element</p>
+          <p>I'm in scrollable page area</p>
+          <List>
+            <ListItem>
+              <img slot="media" src="path/to/image.png" />
+              <span slot="title">Title 1</span>
+              <span slot="title">Title 2</span>
+            </ListItem>
+          </List>
+        </Page>
+      )
     p Renders to:
     :code(lang="html")
-          <div class="page">
-            <p slot="fixed">I'm fixed page element</p>
-            <div class="page-content">
-              <p>I'm in scrollable page area</p>
-              <div class="list">
-                <ul>
-                  <li>
-                    <div class="item-content">
-                      <div class="item-media">
-                        <img slot="media" src="path/to/image.png" />
-                      </div>
-                      <div class="item-inner">
-                        <div class="item-title">
-                          <span slot="title">Title 1</span>
-                          <span slot="title">Title 2</span>
-                        </div>
-                      </div>
+      <div class="page">
+        <p slot="fixed">I'm fixed page element</p>
+        <div class="page-content">
+          <p>I'm in scrollable page area</p>
+          <div class="list">
+            <ul>
+              <li>
+                <div class="item-content">
+                  <div class="item-media">
+                    <img slot="media" src="path/to/image.png" />
+                  </div>
+                  <div class="item-inner">
+                    <div class="item-title">
+                      <span slot="title">Title 1</span>
+                      <span slot="title">Title 2</span>
                     </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
           </div>
+        </div>
+      </div>
     h2 Events
     p All Framework7-React components support events, which are actually props, and their listeners must be assigned as `on$Event` prop.
     p For example `<Page>` component supports `pageInit`, `pageBeforeIn` and other <a href="page.html#page-events">events</a>, so to handle such events:
     :code(lang="jsx")
-          export default class extends React.Component {
-            render() {
-              return (
-                <Page onPageBeforeIn={this.onPageBeforeIn.bind(this)} onPageInit={this.onPageInit.bind(this)}>
-                  ...
-                </Page>
-              )
-            }
-            onPageBeforeIn() {
-              // do something on page before in
-            }
-            onPageInit() {
-              // do something on page init
-            }
-          }
+      export default () => {
+        const onPageBeforeIn = () => {
+          // do something on page before in
+        }
+
+        const onPageInit = () => {
+          // do something on page init
+        }
+
+        return (
+          <Page onPageBeforeIn={onPageBeforeIn} onPageInit={onPageInit}>
+            ...
+          </Page>
+        )
+      }
