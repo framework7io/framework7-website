@@ -47,29 +47,4 @@ block content
           td When enabled the additional "subnavbar-inner" wrapper element will be added
     .with-device
       h2(data-device-preview="../docs-demos/react/subnavbar.html") Examples
-      :code(lang="jsx")
-            export default () => (
-              <Page pageContent={false}>
-                <Navbar title="Subnavbar">
-                  <Subnavbar>
-                    <Segmented raised>
-                      <Button tabLink="#tab1" tabLinkActive>Tab 1</Button>
-                      <Button tabLink="#tab2">Tab 2</Button>
-                    </Segmented>
-                  </Subnavbar>
-                </Navbar>
-                <Tabs>
-                  <Tab id="tab1" tabActive className="page-content">
-                    <Block>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nisi nisi, tincidunt ut eleifend non, sagittis a elit. Sed consequat odio at leo varius viverra...</p>
-                    </Block>
-                  </Tab>
-                  <Tab id="tab2" className="page-content">
-                    <Block>
-                      <p>Donec iaculis posuere massa sed dignissim. Praesent id nibh nec massa mollis egestas. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas...</p>
-                    </Block>
-                  </Tab>
-                </Tabs>
-              </Page>
-            )
-
+      include:reactSource ../docs-demos/react/subnavbar.jsx

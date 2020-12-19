@@ -41,44 +41,4 @@ block content
           td Defines how to trigger (open) Tooltip. Can be `hover`, `click` or `manual`
     .with-device
       h2(data-device-preview="../docs-demos/react/badge.html") Examples
-      :code(lang="jsx")
-            export default () => (
-              <Page>
-                <Navbar sliding title="Badge">
-                  <NavRight>
-                    <Link iconOnly>
-                      <Icon ios="f7:person_circle_fill" aurora="f7:person_circle_fill" md="material:person">
-                        <Badge color="red">5</Badge>
-                      </Icon>
-                    </Link>
-                  </NavRight>
-                </Navbar>
-                <Toolbar tabbar labels bottom>
-                  <Link tabLink="#tab-1" tabLinkActive>
-                    <Icon className="icon-fill" ios="f7:envelope_fill" aurora="f7:envelope_fill" md="material:email">
-                      <Badge color="green">5</Badge>
-                    </Icon>
-                    <span className="tabbar-label">Inbox</span>
-                  </Link>
-                  <Link tabLink="#tab-2">
-                    <Icon ios="f7:today" aurora="f7:today" md="material:today">
-                      <Badge color="red">7</Badge>
-                    </Icon>
-                    <span className="tabbar-label">Calendar</span>
-                  </Link>
-                  <Link tabLink="#tab-3">
-                    <Icon ios="f7:cloud" aurora="f7:cloud" md="material:file_upload">
-                      <Badge color="red">1</Badge>
-                    </Icon>
-                    <span className="tabbar-label">Upload</span>
-                  </Link>
-                </Toolbar>
-
-                <List>
-                  <ListItem title="Foo Bar" badge="0"/>
-                  <ListItem title="Ivan Petrov" badge="CEO" badgeColor="blue"/>
-                  <ListItem title="John Doe" badge="5" badgeColor="green"/>
-                  <ListItem title="Jane Doe" badge="NEW" badgeColor="orange"/>
-                </List>
-              </Page>
-            );
+      include:reactSource ../docs-demos/react/badge.jsx

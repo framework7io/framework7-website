@@ -29,7 +29,6 @@
             </f7-col>
             <f7-col>
               <f7-photo-browser
-                v-if="showPagePb"
                 :photos="photos"
                 type="page"
                 back-link-text="Back"
@@ -68,7 +67,6 @@
             </f7-col>
             <f7-col>
               <f7-photo-browser
-                v-if="showPagePb"
                 :photos="photos"
                 theme="dark"
                 type="page"
@@ -89,15 +87,8 @@
 export default {
   data() {
     return {
-      showPagePb: false,
       photos: ['https://placekitten.com/800/800', 'https://placekitten.com/1024/1024'],
     };
-  },
-  mounted() {
-    const self = this;
-    setTimeout(() => {
-      self.showPagePb = true;
-    }, 0);
   },
 };
 </script>

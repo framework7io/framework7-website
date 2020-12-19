@@ -52,7 +52,6 @@
 <script>
   import {App, View, Page, Navbar, Block, Row, Col, PhotoBrowser, Button} from 'framework7-svelte';
 
-
   let standalone;
   let popup;
   let page;

@@ -188,7 +188,7 @@
 </App>
 
 <script>
-  import {f7, f7ready, App, View, Page, Navbar, BlockTitle, List, ListItem, ListItemCell, Icon, Range, Block} from 'framework7-svelte';
+  import {App, View, Page, Navbar, BlockTitle, List, ListItem, ListItemCell, Icon, Range, Block} from 'framework7-svelte';
 
   let priceMin = 200;
   let priceMax = 400;
@@ -197,13 +197,4 @@
     priceMin = values[0];
     priceMax = values[1];
   }
-
-  f7ready(() => {
-    setTimeout(() => {
-      f7.$('.range-slider').each((el, index) => {
-        f7.range.get(el).calcSize();
-        f7.range.get(el).layout();
-      })
-    }, 0);
-  });
 </script>
