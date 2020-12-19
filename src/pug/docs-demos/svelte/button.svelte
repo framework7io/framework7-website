@@ -149,6 +149,13 @@
         </Row>
       </Block>
 
+      <BlockTitle>Preloader Button</BlockTitle>
+      <Block strong>
+        <Button fill preloader loading={isLoading} onClick={load}>
+          Load
+        </Button>
+      </Block>
+
       <BlockTitle>Color Buttons</BlockTitle>
       <Block strong>
         <Row>
@@ -183,4 +190,14 @@
 </App>
 <script>
   import {App, View, Page, Navbar, BlockTitle, Block, Row, Col, Button, Segmented} from 'framework7-svelte';
+
+  let isLoading = false;
+
+  const load = () => {
+    if (isLoading) return;
+    isLoading = true;
+    setTimeout(() => {
+      isLoading = false;
+    }, 4000);
+  };
 </script>

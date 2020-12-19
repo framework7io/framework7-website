@@ -5,7 +5,7 @@
         <f7-navbar title="Buttons"></f7-navbar>
 
         <f7-block-title>Usual Buttons</f7-block-title>
-        <f7-block>
+        <f7-block strong>
           <f7-row>
             <f7-col>
               <f7-button>Button</f7-button>
@@ -20,7 +20,7 @@
         </f7-block>
 
         <f7-block-title>Fill Buttons</f7-block-title>
-        <f7-block>
+        <f7-block strong>
           <f7-row>
             <f7-col>
               <f7-button fill>Button</f7-button>
@@ -35,7 +35,7 @@
         </f7-block>
 
         <f7-block-title>Outline Buttons</f7-block-title>
-        <f7-block>
+        <f7-block strong>
           <f7-row>
             <f7-col>
               <f7-button outline>Button</f7-button>
@@ -50,7 +50,7 @@
         </f7-block>
 
         <f7-block-title>Raised Buttons</f7-block-title>
-        <f7-block>
+        <f7-block strong>
           <f7-row tag="p">
             <f7-col tag="span">
               <f7-button raised>Button</f7-button>
@@ -76,7 +76,7 @@
         </f7-block>
 
         <f7-block-title>Segmented</f7-block-title>
-        <f7-block>
+        <f7-block strong>
           <f7-segmented raised tag="p">
             <f7-button>Button</f7-button>
             <f7-button>Button</f7-button>
@@ -105,7 +105,7 @@
         </f7-block>
 
         <f7-block-title>Large Buttons</f7-block-title>
-        <f7-block>
+        <f7-block strong>
           <f7-row tag="p">
             <f7-col tag="span">
               <f7-button large>Button</f7-button>
@@ -125,7 +125,7 @@
         </f7-block>
 
         <f7-block-title>Small Buttons</f7-block-title>
-        <f7-block>
+        <f7-block strong>
           <f7-row tag="p">
             <f7-col tag="span">
               <f7-button large small>Button</f7-button>
@@ -150,8 +150,13 @@
           </f7-row>
         </f7-block>
 
+        <f7-block-title>Preloader Button</f7-block-title>
+        <f7-block strong>
+          <f7-button fill preloader :loading="isLoading" @click="load"> Load </f7-button>
+        </f7-block>
+
         <f7-block-title>Color Buttons</f7-block-title>
-        <f7-block>
+        <f7-block strong>
           <f7-row>
             <f7-col>
               <f7-button color="red">Red</f7-button>
@@ -166,7 +171,7 @@
         </f7-block>
 
         <f7-block-title>Color Fill Buttons</f7-block-title>
-        <f7-block>
+        <f7-block strong>
           <f7-row>
             <f7-col>
               <f7-button fill color="red">Red</f7-button>
@@ -183,3 +188,25 @@
     </f7-view>
   </f7-app>
 </template>
+
+<script>
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const isLoading = ref(false);
+    const load = () => {
+      if (isLoading.value) return;
+      isLoading.value = true;
+      setTimeout(() => {
+        isLoading.value = false;
+      }, 4000);
+    };
+
+    return {
+      isLoading,
+      load,
+    };
+  },
+};
+</script>

@@ -20,20 +20,13 @@
   - Button
     - New loading buttons
 - Vue
-  - ADD BANNER: Rewritten to new Vue v3 API (no Vue v2 support anymore)
+  - Store
 - React
-  - New ref's object
+  - Store
+- Svelte
+  - Store
 - Common for React/Svelte/Vue
-  - Button, Link, ListButon, ListItem, MenuDropdownItem, MenuItem, TreeviewItem
-    - Support for loading button (button with preloader) with new props:
-      - `preloader` - enables button to have preloader
-      - `loading` - controls button state to show/hide preloader and hide/show button text (switch button to loading state)
-      - `preloaderColor` - button's preloader color
-      - `preloaderSize` - button's preloader size
-  - Pie Chart
-    - New Pie Chart component
-  - Area Chart
-    - New Area Chart component
+  - Menu List
   - List
     - New `menuList` boolean property to enable menu List
   - ListItem
