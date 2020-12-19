@@ -131,7 +131,10 @@
                 </template>
               </f7-list-item>
               <f7-list-item title="No icons here"></f7-list-item>
-              <f7-list-item link="#" title="Ultra long text goes here, no, it is really really long">
+              <f7-list-item
+                link="#"
+                title="Ultra long text goes here, no, it is really really long"
+              >
                 <template #media>
                   <f7-icon icon="demo-list-icon"></f7-icon>
                 </template>
@@ -216,7 +219,10 @@
 
         <f7-block-title>Media Lists</f7-block-title>
         <f7-block>
-          <p>Media Lists are almost the same as Data Lists, but with a more flexible layout for visualization of more complex data, like products, services, users, etc.</p>
+          <p>
+            Media Lists are almost the same as Data Lists, but with a more flexible layout for
+            visualization of more complex data, like products, services, users, etc.
+          </p>
         </f7-block>
         <f7-block-title>Songs</f7-block-title>
         <f7-list media-list>
@@ -287,24 +293,17 @@
         </f7-list>
         <f7-block-title>Something more simple</f7-block-title>
         <f7-list media-list>
-          <f7-list-item
-            title="Yellow Submarine"
-            subtitle="Beatles">
+          <f7-list-item title="Yellow Submarine" subtitle="Beatles">
             <template #media>
               <img src="https://cdn.framework7.io/placeholder/fashion-88x88-1.jpg" width="44" />
             </template>
           </f7-list-item>
-          <f7-list-item
-            link="#"
-            title="Don't Stop Me Now"
-            subtitle="Queen">
+          <f7-list-item link="#" title="Don't Stop Me Now" subtitle="Queen">
             <template #media>
               <img src="https://cdn.framework7.io/placeholder/fashion-88x88-2.jpg" width="44" />
             </template>
           </f7-list-item>
-          <f7-list-item
-            title="Billie Jean"
-            subtitle="Michael Jackson">
+          <f7-list-item title="Billie Jean" subtitle="Michael Jackson">
             <template #media>
               <img src="https://cdn.framework7.io/placeholder/fashion-88x88-3.jpg" width="44" />
             </template>
@@ -312,26 +311,17 @@
         </f7-list>
         <f7-block-title>Inset</f7-block-title>
         <f7-list media-list inset>
-          <f7-list-item
-            link="#"
-            title="Yellow Submarine"
-            subtitle="Beatles">
+          <f7-list-item link="#" title="Yellow Submarine" subtitle="Beatles">
             <template #media>
               <img src="https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg" width="44" />
             </template>
           </f7-list-item>
-          <f7-list-item
-            link="#"
-            title="Don't Stop Me Now"
-            subtitle="Queen">
+          <f7-list-item link="#" title="Don't Stop Me Now" subtitle="Queen">
             <template #media>
               <img src="https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg" width="44" />
             </template>
           </f7-list-item>
-          <f7-list-item
-            link="#"
-            title="Billie Jean"
-            subtitle="Michael Jackson">
+          <f7-list-item link="#" title="Billie Jean" subtitle="Michael Jackson">
             <template #media>
               <img src="https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg" width="44" />
             </template>
@@ -343,25 +333,32 @@
 </template>
 
 <style>
-    .demo-list-icon, .icon-f7 {
-      background: #ccc;
-      display: block;
-      position: relative;
-    }
-    .ios .demo-list-icon, .ios .icon-f7, .ios .icon-vi {
-      width: 29px;
-      height: 29px;
-      border-radius: 6px;
-      box-sizing: border-box;
-    }
-    .md .demo-list-icon, .md .icon-f7, .md .icon-vi {
-      width: 24px;
-      height: 24px;
-      border-radius: 4px;
-    }
-    .aurora .demo-list-icon, .aurora .icon-f7, .aurora .icon-vi {
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
-    }
+.demo-list-icon,
+.icon-f7 {
+  background: #ccc;
+  display: block;
+  position: relative;
+}
+.ios .demo-list-icon,
+.ios .icon-f7,
+.ios .icon-vi {
+  width: 29px;
+  height: 29px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.md .demo-list-icon,
+.md .icon-f7,
+.md .icon-vi {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
+.aurora .demo-list-icon,
+.aurora .icon-f7,
+.aurora .icon-vi {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
 </style>

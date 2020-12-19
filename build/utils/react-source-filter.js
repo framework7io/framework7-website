@@ -1,4 +1,6 @@
 const codeFilter = require('./code-filter');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = (src, { strip = true } = {}) => {
   if (strip) {
@@ -29,6 +31,16 @@ module.exports = (src, { strip = true } = {}) => {
       .replace('  App,\n', '')
       .replace('  View,\n', '');
   }
+  let cssContent = '';
+  if (src.match(/import '.\/([a-z-]*).css'/)) {
+    const filename = src.match(/import '.\/([a-z-]*).css'/)[1];
+    cssContent = fs.readFileSync(
+      path.resolve(__dirname, `../../src/pug/docs-demos/react/${filename}.css`),
+      'utf-8',
+    );
+    cssContent = `/* ${filename}.css */\n${cssContent}`;
+    cssContent = codeFilter(cssContent, { lang: 'css' });
+  }
 
-  return codeFilter(src, { lang: 'jsx' });
+  return codeFilter(src, { lang: 'jsx' }) + cssContent;
 };
