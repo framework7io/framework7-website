@@ -1,0 +1,79 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Pie Chart Vue Component | Framework7 Vue Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Pie Chart Vue Component
+    ul.docs-index
+    p Framework7 comes with simple Pie Chart component. It produces nice looking fully responsive SVG charts.
+    h2 Pie Chart Components
+    p There are following components included:
+    ul
+      li `f7-pie-chart`
+    h2 Pie Chart Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td size
+          td number
+          td 320
+          td Generated SVG image size (in px)
+        tr
+          td tooltip
+          td boolean
+          td false
+          td Enables tooltip on hover
+        tr
+          td datasets
+          td array
+          td []
+          td Chart data sets. Each object in `datasets` array has the following properties:
+            ```js
+              /** Dataset value */
+              value: number;
+              /** Dataset HEX color */
+              color?: string;
+              /** Dataset label */
+              label?: string;
+            ```
+        tr
+          td format-tooltip
+          td function(data)
+          td
+          td Custom render function that must return tooltip's HTML content. Received `data` object has the following properties:
+            ```js
+              index: number;
+              value: number;
+              label: string;
+              color: string;
+              percentage: number;
+            ```
+    h2 Pie Chart Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          td select
+          td <span>(index, item)</span>
+          td Event will be triggered (when tooltip enabled) on chart hover
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/pie-chart.html") Examples
+      include:vueSource ../docs-demos/vue/pie-chart.vue

@@ -1,0 +1,143 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Area Chart Svelte Component | Framework7 Svelte Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Area Chart Svelte Component
+    ul.docs-index
+    p Framework7 comes with simple Area Chart component. It produces nice looking fully responsive SVG charts.
+    h2 Area Chart Components
+    p There are following components included:
+    ul
+      li `AreaChart`
+    h2 Area Chart Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td width
+          td number
+          td 640
+          td Generated SVG image width (in px)
+        tr
+          td height
+          td number
+          td 320
+          td Generated SVG image height (in px)
+        tr
+          td datasets
+          td array
+          td []
+          td Chart data sets. Each object in `datasets` array has the following properties:
+            ```js
+              /** Dataset value */
+              values: number[];
+              /** Dataset HEX color */
+              color?: string;
+              /** Dataset label */
+              label?: string;
+            ```
+        tr
+          td lineChart
+          td boolean
+          td false
+          td Enables lines chart (instead of area chart)
+        tr
+          td axis
+          td boolean
+          td false
+          td Enables chart horizontal (X) axis
+        tr
+          td axisLabels
+          td array
+          td []
+          td Chart horizontal (X) axis labels. Should have same amount of items as dataset values
+        tr
+          td tooltip
+          td boolean
+          td false
+          td Enables tooltip on hover
+        tr
+          td legend
+          td boolean
+          td false
+          td Enables chart legend
+        tr
+          td toggleDatasets
+          td boolean
+          td false
+          td When enabled it will toggle data sets on legend items click
+        tr
+          td maxAxisLabels
+          td number
+          td 8
+          td Max numbers of axis labels (ticks) to be visible on axis
+        tr
+          td formatAxisLabel
+          td function(label)
+          td
+          td Custom render function to format axis label text
+        tr
+          td formatLegendLabel
+          td function(label)
+          td
+          td Custom render function to format legend label text
+        tr
+          td formatTooltip
+          td function(data)
+          td
+          td Custom render function that must return tooltip's HTML content. Received `data` object has the following properties:
+            ```js
+              index: number;
+              total: number;
+              datasets: {
+                color?: string;
+                label: any;
+                value: number;
+              }
+            ```
+        tr
+          td formatTooltipAxisLabel
+          td function(label)
+          td
+          td Custom render function to format axis label text in Tooltip
+        tr
+          td formatTooltipTotal
+          td function(total)
+          td
+          td Custom render function to format total value text in Tooltip
+        tr
+          td formatTooltipDataset
+          td function(label, value, color)
+          td
+          td Custom render function to format dataset text in Tooltip
+
+
+    h2 Area Chart Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          td select
+          td <span>(index)</span>
+          td Event will be triggered (when tooltip enabled) on chart hover
+    .with-device
+      h2(data-device-preview="../docs-demos/svelte/area-chart.html") Examples
+      include:svelteSource ../docs-demos/svelte/area-chart.svelte
