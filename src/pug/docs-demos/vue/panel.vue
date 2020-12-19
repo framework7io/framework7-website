@@ -22,22 +22,40 @@
       <f7-page>
         <f7-navbar title="Panel"></f7-navbar>
 
-        <f7-block class="row">
-          <f7-col>
-            <f7-button raised fill panel-open="left">Open left panel</f7-button>
-          </f7-col>
-          <f7-col>
-            <f7-button raised fill panel-open="right">Open right panel</f7-button>
-          </f7-col>
+        <f7-panel id="panel-nested" theme-dark left cover container-el="#panel-page">
+          <f7-page>
+            <f7-block strong>
+              <p>This is page-nested Panel.</p>
+              <p>
+                <f7-link panel-close>Close me</f7-link>
+              </p>
+            </f7-block>
+          </f7-page>
+        </f7-panel>
+
+        <f7-block>
+          <f7-row tag="p">
+            <f7-col tag="span">
+              <f7-button raised fill panel-open="left"> Open left panel </f7-button>
+            </f7-col>
+            <f7-col tag="span">
+              <f7-button raised fill panel-open="right"> Open right panel </f7-button>
+            </f7-col>
+          </f7-row>
+          <f7-row tag="p">
+            <f7-col tag="span">
+              <f7-button raised fill panel-open="#panel-nested"> Open nested panel </f7-button>
+            </f7-col>
+          </f7-row>
         </f7-block>
       </f7-page>
     </f7-view>
   </f7-app>
 </template>
 <style>
-  /* Limit resizable panel width */
-  .panel {
-    min-width: 100px;
-    max-width: 90vw;
-  }
+/* Limit resizable panel width */
+.panel {
+  min-width: 100px;
+  max-width: 90vw;
+}
 </style>
