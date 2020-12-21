@@ -28,6 +28,8 @@ module.exports = (src, { strip = true } = {}) => {
           .join('\n'),
       )
       .trim()
+      .replace('import { App, View, ', 'import { ')
+      .replace('import { View, App, ', 'import { ')
       .replace('  App,\n', '')
       .replace('  View,\n', '');
   }

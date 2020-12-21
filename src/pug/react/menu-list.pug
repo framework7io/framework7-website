@@ -1,0 +1,20 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Menu List React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Menu List React Component
+    p Menu List is not a separate component, but just a particular case of using <a href="list-view.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.
+    p To enable Menu List we need to add `menuList` prop to `List` component, and control currently selected menu list item by setting `selected` prop on relevant `ListItem`
+
+    .with-device
+      h2(data-device-preview="../docs-demos/react/menu-list.html") Examples
+      include:reactSource ../docs-demos/react/menu-list.jsx

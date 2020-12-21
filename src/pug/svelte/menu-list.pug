@@ -1,0 +1,20 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Menu List Svelte Component | Framework7 Svelte Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    +improveDocsLink
+    h1 Menu List Svelte Component
+    p Menu List is not a separate component, but just a particular case of using <a href="list-view.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.
+    p To enable Menu List we need to add `menuList` prop to `List` component, and control currently selected menu list item by setting `selected` prop on relevant `ListItem`
+
+    .with-device
+      h2(data-device-preview="../docs-demos/svelte/menu-list.html") Examples
+      include:svelteSource ../docs-demos/svelte/menu-list.svelte
