@@ -2,7 +2,7 @@
   <f7-app>
     <f7-view main>
       <f7-page>
-        <f7-navbar title="Skeleton"></f7-navbar>
+        <f7-navbar title="Skeleton Elements"></f7-navbar>
 
         <f7-block-title>Skeleton List</f7-block-title>
         <f7-list media-list class="skeleton-text">
@@ -12,7 +12,9 @@
             text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum."
           >
             <template #media>
-              <f7-skeleton-block style="width: 40px; height: 40px; border-radius: 50%"></f7-skeleton-block>
+              <f7-skeleton-block
+                style="width: 40px; height: 40px; border-radius: 50%"
+              ></f7-skeleton-block>
             </template>
           </f7-list-item>
           <f7-list-item
@@ -21,7 +23,9 @@
             text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum."
           >
             <template #media>
-              <f7-skeleton-block style="width: 40px; height: 40px; border-radius: 50%"></f7-skeleton-block>
+              <f7-skeleton-block
+                style="width: 40px; height: 40px; border-radius: 50%"
+              ></f7-skeleton-block>
             </template>
           </f7-list-item>
         </f7-list>
@@ -53,7 +57,9 @@
             text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."
           >
             <template #media>
-              <f7-skeleton-block style="width: 40px; height: 40px; border-radius: 50%"></f7-skeleton-block>
+              <f7-skeleton-block
+                style="width: 40px; height: 40px; border-radius: 50%"
+              ></f7-skeleton-block>
             </template>
           </f7-list-item>
         </f7-list>
@@ -64,7 +70,10 @@
             text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."
           >
             <template #media>
-              <img src="https://placeimg.com/80/80/people/1" style="width: 40px; height: 40px; border-radius: 50%">
+              <img
+                src="https://placeimg.com/80/80/people/1"
+                style="width: 40px; height: 40px; border-radius: 50%"
+              />
             </template>
           </f7-list-item>
           <f7-list-item
@@ -73,7 +82,10 @@
             text="Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."
           >
             <template #media>
-              <img src="https://placeimg.com/80/80/people/2" style="width: 40px; height: 40px; border-radius: 50%">
+              <img
+                src="https://placeimg.com/80/80/people/2"
+                style="width: 40px; height: 40px; border-radius: 50%"
+              />
             </template>
           </f7-list-item>
           <f7-list-item
@@ -82,33 +94,35 @@
             text="Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."
           >
             <template #media>
-              <img src="https://placeimg.com/80/80/people/3" style="width: 40px; height: 40px; border-radius: 50%">
+              <img
+                src="https://placeimg.com/80/80/people/3"
+                style="width: 40px; height: 40px; border-radius: 50%"
+              />
             </template>
           </f7-list-item>
         </f7-list>
-
       </f7-page>
     </f7-view>
   </f7-app>
 </template>
 <script>
-  export default {
-    data: function () {
-      return {
-        loading: false,
-        effect: null,
-      }
+export default {
+  data: function () {
+    return {
+      loading: false,
+      effect: null,
+    };
+  },
+  methods: {
+    load: function (effect) {
+      var self = this;
+      if (self.loading) return;
+      self.effect = effect;
+      self.loading = true;
+      setTimeout(() => {
+        self.loading = false;
+      }, 3000);
     },
-    methods: {
-      load: function (effect) {
-        var self = this;
-        if (self.loading) return;
-        self.effect = effect;
-        self.loading = true;
-        setTimeout(() => {
-          self.loading = false;
-        }, 3000);
-      }
-    }
-  }
+  },
+};
 </script>

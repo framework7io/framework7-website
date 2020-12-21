@@ -1,7 +1,7 @@
 <App>
   <View main>
     <Page>
-      <Navbar title="Menu" />
+      <Navbar title="Skeleton Elements" />
 
       <BlockTitle>Skeleton List</BlockTitle>
       <List mediaList class="skeleton-text">

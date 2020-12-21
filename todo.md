@@ -21,7 +21,3 @@
     - New loading buttons
 - Common for React/Svelte/Vue
   - Store
-  - Swiper
-    - Mention official docs API
-  - Skeleton Elements
-    - Mention official docs API
