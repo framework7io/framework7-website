@@ -10,7 +10,6 @@
     - Updated to v6
   - Skeleton Elements
     - Used as dependency
-    - New React, Svelte and Vue components
   - Pie Chart
     - All new Pie Chart component
   - Area Chart
