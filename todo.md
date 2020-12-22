@@ -19,4 +19,4 @@
   - Button
     - New loading buttons
 - Common for React/Svelte/Vue
-  - Store
+  - Migration guide

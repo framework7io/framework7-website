@@ -1,0 +1,307 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Store | Framework7 Vue Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Store
+    p Framework7 comes with a built-in lightweight application state management library - Store. It serves as a centralized Store for all the components in an application.
+    p You can use library-specific state management libraries like Vuex for Vue, Redux for React, and use built-in Svelte store functionality. But in case if something simple is required then Framework7 Store can be a good fit.
+    ul.docs-index
+
+    h2 Create Store
+    p First of all we need to create the store. Let's create separate `store.js` file for that:
+    ```js
+      // First import createStore function from Framework7 core
+      import { createStore } from 'framework7/lite';
+
+      // create store
+      const store = createStore({
+        // start with the state (store data)
+        state: {
+          users: [],
+          // ...
+        },
+
+        // actions to operate with state and for async manipulations
+        actions: {
+          // context object containing store state will be passed as an argument
+          getUser({ state }) {
+            // fetch users from API
+            fetch('some-url')
+              .then((res) => res.json())
+              .then((users) => {
+                // assign new users to store state.users
+                state.users = users;
+              })
+          },
+          // ...
+        },
+
+        // getters to retreive the state
+        getters: {
+          // context object containing store state will be passed as an argument
+          users({ state }) {
+            return state.users;
+          }
+        }
+
+      })
+
+      // export store
+      export default store;
+    ```
+    p In this example we used the following API function:
+    .method-wrap
+      p
+        span.method createStore(<span>storeParameters</span>)
+        | - create store
+      ul.method-parameters
+        li
+          span.parameter storeParameters
+          |  - <span class="parameter-type">object</span>. Object with store parameters
+      p.method-returns Method returns created store instance
+    h2 Store Parameters
+    p Now, let look at `storeParameters` object:
+    h3 State
+    p State is the single object contains all your application level state and serves as the "single source of truth." This also means usually you will have only one store for each application. A single state tree makes it straightforward to locate a specific piece of state, and allows us to easily take snapshots of the current app state for debugging purposes.
+    h3 Actions
+    p Actions are used to modify the state, for async manipulations, or to call other store actions. Action handlers receive a context object with store state and dispatch method to call other actions. So you can access `context.store` to access the state, or call other actions with `context.dispatch`.
+    p As second argument actions handlers may receive any custom data.
+    p.important-note To keep store reactive, state modification should be done with assignment. For example:
+    ```js
+      // modification of current state property - NOT REACTIVE
+      state.users.push(...users);
+
+      // assignemt to new value - REACTIVE
+      state.users = [...state.users, ...users];
+    ```
+    h3 Getters
+    p Getters handlers are used to return data from the store state. Also handy when we need to compute derived state based on store state, for example filtering through a list of items:
+    ```js
+      const store = createStore({
+        state: {
+          users: [
+            { id: 1, name: '...', registered: true },
+            { id: 2, name: '...', registered: false }
+          ]
+        },
+        getters: {
+          registeredUsers: ({ state }) => {
+            return state.users.filter((user) => user.registered);
+          }
+        }
+      })
+    ```
+    p Getter handlers also receive a context object but only with the store state. It is not possible, for example, to call other actions from getters.
+
+    h2 Use Store
+    p Now when we created out store, let's findout how to use it.
+    p First of all we need to pass created store to the main App component:
+    ```html
+      <template>
+        <!-- pass store to the App's "store" prop -->
+        <f7-app store={store}>
+          <f7-view main>
+            <!-- ... -->
+          </f7-view>
+        </f7-app>
+      </template>
+      <script>
+      // import our store
+      import store from './store.js';
+
+      export default {
+        setup() {
+          return {
+            store,
+          }
+        }
+      }
+      </script>
+    ```
+
+    h3 Access Store & State
+    p It is possible to access store (and its state) directly by referencing the store instance we created:
+    ```js
+      import store from 'path/to/store.js';
+
+      console.log(store.state.users);
+    ```
+    p Or by accessing Framework7 instance' `store` property:
+    ```js
+      import { f7 } from 'framework7-vue';
+
+      console.log(f7.store.state.users);
+    ```
+
+    h3 Dispatching Actions
+    p To call an action we need to call `store.dispatch` method with the name of action to call.
+    p If we have the following store action:
+    :code(lang="js")
+      const store = createStore({
+        // ...
+        actions: {
+          // handler receives custom data in second argument
+          getUser({ state }, { total }) {
+            fetch(`some-url?total=${total}`)
+              .then((res) => res.json())
+              .then((users) => {
+                state.users = users;
+              })
+          },
+        },
+        // ...
+      })
+    p we have to call `store.dispatch` method:
+    ```js
+      import store from 'path/to/store.js';
+
+      // call 'getUsers' actions
+      store.dispatch('getUsers', { total: 10 })
+    ```
+    p If, in action handler, we want to call another action handler:
+    :code(lang="js")
+      const store = createStore({
+        // ...
+        actions: {
+          setLoading({ state }, isLoading) {
+            state.isLoading = isLoading;
+          },
+          // handler context also contains "dispatch" method
+          getUser({ state, dispatch }, { total }) {
+            // call other action
+            dispatch('setLoading', true);
+            fetch(`some-url?total=${total}`)
+              .then((res) => res.json())
+              .then((users) => {
+                state.users = users;
+                // call other action
+                dispatch('setLoading', false);
+              })
+          },
+        },
+        // ...
+      });
+
+    h3 Getters
+    p Getters values can be accessed as static properties of `store.getters` object.
+    ```js
+      const store = createStore({
+        state: {
+          count: 10,
+        },
+        getters: {
+          count({ state }) {
+            return state.count;
+          },
+          double({ state }) {
+            return state.count * 2;
+          },
+        },
+      });
+    ```
+    ```js
+      import store from 'path/to/store.js';
+
+      const count = store.getters.count;
+      const double = store.getters.double;
+    ```
+    p Getter value is the static object with `.value` property containing the result of getters handler, so:
+    ```js
+      console.log(count.value) // -> 10
+      console.log(double.value) // -> 20
+    ```
+    p.important-note Getters, unlike state, are meant to be reactive. So when you don't need any reactivity you can just access `store.state` directly, otherwise use getters.
+
+    h2 Usage With Vue Components
+    p There is a special `useStore` helper for use in Vue components to keep store reactive (auto update components when state/getters values changed).
+    .method-wrap
+      p
+        span.method useStore(<span>getterName</span>)
+        | - returns directly getter value and subscribes to the state updates
+      ul.method-parameters
+        li
+          span.parameter getterName
+          |  - <span class="parameter-type">string</span> - name of the getters handler
+      p.method-returns Method returns getter handler value
+    p If we need to get getter value from another store instance then we also need to pass the store:
+    .method-wrap
+      p
+        span.method useStore(<span>store</span>, <span>getterName</span>)
+        | - returns directly getter value and subscribes to the state updates
+      ul.method-parameters
+        li
+          span.parameter store
+          |  - <span class="parameter-type">store instance</span> - store instance to look getters from. If not specified then default store passed to the `<App>` component will be used.
+        li
+          span.parameter getterName
+          |  - <span class="parameter-type">string</span> - name of the getters handler
+      p.method-returns Method returns getter handler value
+    p If we have the following store:
+    ```js
+      const store = createStore({
+        state: {
+          users: [],
+        },
+        actions: {
+          getUsers({ state }) {
+            // ...
+          },
+        },
+        getters: {
+          users({ state }) {
+            return state.users;
+          }
+        },
+      });
+    ```
+    p Then, for example, we should use the following in Vue component:
+    ```html
+      <template>
+        <f7-page>
+          <f7-list>
+            <f7-list-item v-for="user in users" :title="user.name" />
+          </f7-list>
+        </f7-page>
+      </template>
+      <script>
+        import { onMounted } from 'vue';
+        // import special useStore helper/hook
+        import { useStore } from 'framework7-vue';
+        // import store
+        import store from 'path/to/store.js'
+
+        export default {
+          setup() {
+            // retreive "users" getter handler value. Initially empty array
+            const users = useStore('users');
+
+            onMounted(() => {
+              // load users when component mounted
+              store.dispatch('getUsers');
+            });
+
+            return {
+              users,
+            }
+          }
+        }
+      </script>
+    ```
+    p Because we used Framework7 `useStore` helper/hook, the component will be auto updated when users loaded.
+
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/store.html") Examples
+      include:reactSource ../docs-demos/vue/store.js
+      include:vueSource(strip=false) ../docs-demos/vue/store_page.vue
+
+
+
