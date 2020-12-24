@@ -18,5 +18,5 @@
     - Improved support for nested panels. Now panel can be created and correctly opened inside of the page (including with breakpoints)
   - Button
     - New loading buttons
-- Common for React/Svelte/Vue
+  - Store
   - Migration guide

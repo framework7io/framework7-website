@@ -21,6 +21,7 @@ block content
 
       // After we init the app we can access it as app instance property
       var app = new Framework7({ /*...*/ });
+
       if (!app.support.touch) {
         console.log('No touch support');
       }
@@ -32,7 +33,7 @@ block content
 
       const support = getSupport();
 
-      if (!app.support.touch) {
+      if (!support.touch) {
         console.log('No touch support');
       }
     ```
