@@ -1,0 +1,47 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Menu List | Framework7 Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Menu List
+    ul.docs-index
+    p Menu List is an extension of <a href="list-view.html">List View</a>. Menu List unlike usual links list is designed to indicate currently active screen (or section) of your app. Think about it like a Tabbar but in a form of a list.
+    h2 Menu List Layout
+    p Let's look at layout structure of menu lists in your list views:
+    :code(lang="html")
+      <div class="list menu-list">
+        <ul>
+          <li>
+            <a href="#" class="item-content item-link item-selected">
+              <div class="item-inner">
+                <div class="item-title">Item 1</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="item-content item-link>
+              <div class="item-inner">
+                <div class="item-title">Item 2</div>
+              </div>
+            </a>
+          </li>
+          ...
+        </ul>
+      </div>
+    p Where
+    ul
+      li `menu-list` - additional class that must be added to List to enable menu list appearance
+        ul
+          li `item-selected` - additional class added menu list item to indicated it is currently active item
+
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/menu-list.html") Example
+      include:coreSource ../docs-demos/core/menu-list.f7.html

@@ -11,6 +11,7 @@ public/cli/*.html
 public/docs/*.html
 public/docs-demos/*.html
 public/docs-demos/core/*.html
+public/docs-demos/core/*.js
 public/docs-demos/react/*.html
 
 public/docs-demos/vue/*.html
@@ -44,3 +45,6 @@ search-index.json
 public/kitchen-sink/react/src
 public/kitchen-sink/vue/src
 public/kitchen-sink/svelte/src
+
+src/pug/docs-demos/core/*.html
+!src/pug/docs-demos/core/*.f7.html

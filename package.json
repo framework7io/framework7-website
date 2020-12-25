@@ -27,9 +27,10 @@
     "build-js": "gulp js",
     "build-less": "gulp less",
     "build-pug": "gulp pug",
-    "build-vue-demo": "gulp vue",
-    "build-svelte-demo": "gulp svelte",
-    "build-react-demo": "gulp react"
+    "build-core-demos": "gulp core-demos",
+    "build-vue-demos": "gulp vue-demos",
+    "build-svelte-demos": "gulp svelte-demos",
+    "build-react-demos": "gulp react-demos"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

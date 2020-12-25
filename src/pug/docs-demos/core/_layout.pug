@@ -1,4 +1,3 @@
-block vars
 doctype
 html
   head
@@ -13,20 +12,5 @@ html
     link(href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900" rel="stylesheet")
   body
     #app
-      block content
-
-    script(type="text/javascript", src="../../packages/core/framework7-bundle.min.js")
-    script.
-      var theme = 'ios';
-      if (location.href.indexOf('theme=md') >= 0) theme = 'md';
-      if (location.href.indexOf('theme=aurora') >= 0) theme = 'aurora';
-      var plugin = {
-        params: {
-          theme: theme,
-          el: '#app',
-        }
-      };
-      if (Framework7.use) Framework7.use(plugin);
-      else if (Framework7.Class && Framework7.Class.use) Framework7.Class.use(plugin);
-
-    block scripts
+    script(src="../../packages/core/framework7-bundle.min.js")
+    script(src=F7_CORE_DEMO+'.js')

@@ -7,6 +7,7 @@ const buildStyles = require('./build/build-styles');
 const buildPages = require('./build/build-pages');
 const buildScript = require('./build/build-script');
 
+const buildCoreDemos = require('./build/build-core-demos');
 const buildSvelteDemos = require('./build/build-svelte-demos');
 const buildVueDemos = require('./build/build-vue-demos');
 const buildReactDemos = require('./build/build-react-demos');
@@ -17,10 +18,14 @@ Build Styles
 gulp.task('less', buildStyles);
 gulp.task('pug', buildPages);
 gulp.task('js', buildScript);
-gulp.task('svelte', buildSvelteDemos.all);
-gulp.task('vue', buildVueDemos.all);
-gulp.task('react', buildReactDemos.all);
-gulp.task('build', gulp.series(['svelte', 'vue', 'react', 'pug', 'less', 'js']));
+gulp.task('core-demos', buildCoreDemos.all);
+gulp.task('svelte-demos', buildSvelteDemos.all);
+gulp.task('vue-demos', buildVueDemos.all);
+gulp.task('react-demos', buildReactDemos.all);
+gulp.task(
+  'build',
+  gulp.series(['core-demos', 'svelte-demos', 'vue-demos', 'react-demos', 'pug', 'less', 'js']),
+);
 
 /* =================================
 Watch
@@ -49,6 +54,10 @@ gulp.task('watch', () => {
       src,
       dest,
     });
+  });
+  gulp.watch('./src/pug/**/*.f7.html', { events: ['change'] }).on('change', (changedPath) => {
+    const name = changedPath.split('src/pug/docs-demos/core/')[1].split('.f7.html')[0];
+    buildCoreDemos.one(name);
   });
   gulp.watch('./src/pug/**/*.svelte', { events: ['change'] }).on('change', (changedPath) => {
     const name = changedPath.split('src/pug/docs-demos/svelte/')[1].split('.svelte')[0];

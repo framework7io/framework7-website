@@ -1,0 +1,224 @@
+<template>
+  <div id="app">
+    <div class="view view-init view-main">
+      <!-- source start -->
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Action Sheet</div>
+          </div>
+        </div>
+
+        <div class="page-content">
+          <div class="block">
+            <p>
+              <a href="#" class="ac-1">One group, three buttons</a>
+            </p>
+            <p>
+              <a href="#" class="ac-2">One group, title, three buttons</a>
+            </p>
+            <p>
+              <a href="#" class="ac-3">Two groups</a>
+            </p>
+            <p>
+              <a href="#" class="ac-4">Three groups</a>
+            </p>
+            <p>
+              <a href="#" class="ac-5">With callbacks on click</a>
+            </p>
+            <p>
+              <a href="#" class="ac-6">Actions grid</a>
+            </p>
+          </div>
+        </div>
+
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $, $f7, $on }) => {
+
+    $on('pageInit', () => {
+      //- One group, three buttons
+      var ac1 = $f7.actions.create({
+        buttons: [
+          {
+            text: 'Button1',
+            bold: true
+          },
+          {
+            text: 'Button2'
+          },
+          {
+            text: 'Cancel',
+            color: 'red'
+          },
+        ]
+      })
+
+      //- One group, title, three buttons
+      var ac2 = $f7.actions.create({
+        buttons: [
+          {
+            text: 'Do something',
+            label: true
+          },
+          {
+            text: 'Button1',
+            bold: true
+          },
+          {
+            text: 'Button2',
+          },
+          {
+            text: 'Cancel',
+            color: 'red'
+          },
+        ]
+      });
+      //- Two groups
+      var ac3 = $f7.actions.create({
+        buttons: [
+          // First group
+          [
+            {
+              text: 'Do something',
+              label: true
+            },
+            {
+              text: 'Button1',
+              bold: true
+            },
+            {
+              text: 'Button2',
+            }
+          ],
+          // Second group
+          [
+            {
+              text: 'Cancel',
+              color: 'red'
+            }
+          ]
+        ]
+      });
+      //- Three groups
+      var ac4 = $f7.actions.create({
+        buttons: [
+          [
+            {
+              text: 'Share',
+              label: true
+            },
+            {
+              text: 'Mail',
+            },
+            {
+              text: 'Messages',
+            }
+          ],
+          [
+            {
+              text: 'Social share',
+              label: true
+            },
+            {
+              text: 'Facebook',
+            },
+            {
+              text: 'Twitter',
+            }
+          ],
+          [
+            {
+              text: 'Cancel',
+              color: 'red'
+            }
+          ]
+        ],
+      });
+      //- With callbacks on click
+      var ac5 = $f7.actions.create({
+        buttons: [
+          {
+            text: 'Button1',
+            onClick: function () {
+              $f7.dialog.alert('Button1 clicked')
+            }
+          },
+          {
+            text: 'Button2',
+            onClick: function () {
+              $f7.dialog.alert('Button2 clicked')
+            }
+          },
+          {
+            text: 'Cancel',
+            color: 'red',
+            onClick: function () {
+              $f7.dialog.alert('Cancel clicked')
+            }
+          },
+        ]
+      });
+      //- Actions Grid
+      var ac6 = $f7.actions.create({
+        grid: true,
+        buttons: [
+          [
+            {
+              text: 'Button 1',
+              icon: '<img src="https://cdn.framework7.io/placeholder/people-96x96-1.jpg" width="48"/>'
+            },
+            {
+              text: 'Button 2',
+              icon: '<img src="https://cdn.framework7.io/placeholder/people-96x96-2.jpg" width="48">'
+            },
+            {
+              text: 'Button 3',
+              icon: '<img src="https://cdn.framework7.io/placeholder/people-96x96-3.jpg" width="48">'
+            },
+          ],
+          [
+            {
+              text: 'Button 1',
+              icon: '<img src="https://cdn.framework7.io/placeholder/fashion-96x96-4.jpg" width="48"/>'
+            },
+            {
+              text: 'Button 2',
+              icon: '<img src="https://cdn.framework7.io/placeholder/fashion-96x96-5.jpg" width="48">'
+            },
+            {
+              text: 'Button 3',
+              icon: '<img src="https://cdn.framework7.io/placeholder/fashion-96x96-6.jpg" width="48">'
+            },
+          ]
+        ]
+      });
+
+      $('.ac-1').on('click', () => {
+        ac1.open();
+      });
+      $('.ac-2').on('click', () => {
+        ac2.open();
+      });
+      $('.ac-3').on('click', () => {
+        ac3.open();
+      });
+      $('.ac-4').on('click', () => {
+        ac4.open();
+      });
+      $('.ac-5').on('click', () => {
+        ac5.open();
+      });
+      $('.ac-6').on('click', () => {
+        ac6.open();
+      });
+    })
+
+    return $render;
+  }
+</script>

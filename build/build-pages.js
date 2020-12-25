@@ -13,6 +13,7 @@ const getYamlData = require('./utils/get-yaml-data');
 const inlineSvg = require('./utils/inline-svg');
 const cssVars = require('./utils/css-vars');
 const codeFilter = require('./utils/code-filter');
+const coreSourceFilter = require('./utils/core-source-filter');
 const svelteSourceFilter = require('./utils/svelte-source-filter');
 const vueSourceFilter = require('./utils/vue-source-filter');
 const reactSourceFilter = require('./utils/react-source-filter');
@@ -25,6 +26,7 @@ const releaseNotes = require('./utils/release-notes');
 
 if (!pug.filter && !pug.filters.code) {
   pug.filters = {
+    coreSource: coreSourceFilter,
     svelteSource: svelteSourceFilter,
     vueSource: vueSourceFilter,
     reactSource: reactSourceFilter,
@@ -46,6 +48,12 @@ function buildPages(
   const time = Date.now();
 
   const name = src[0] === '**/*.pug' ? 'all' : src.join(', ');
+
+  let pretty = false;
+  if (src[0] && src[0].indexOf('docs-demos/core') >= 0) {
+    pretty = true;
+    dest = './src/pug/docs-demos/core';
+  }
 
   console.log(`Starting pug: ${name}`);
 
@@ -72,7 +80,7 @@ function buildPages(
     .pipe(
       gulpPug({
         pug,
-        pretty: false,
+        pretty,
         locals: {
           release: {
             version: pkg.releaseVersion,

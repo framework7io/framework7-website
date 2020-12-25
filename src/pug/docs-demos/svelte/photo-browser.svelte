@@ -2,48 +2,40 @@
   <View main>
     <Page>
       <Navbar title="Photo Browser" />
-      <Block strong>
-        <p>Photo Browser is a standalone and highly configurable component that allows to open window with photo viewer and navigation elements with the following features:</p>
-        <ul>
-          <li>Swiper between photos</li>
-          <li>Multi-gestures support for zooming</li>
-          <li>Toggle zoom by double tap on photo</li>
-          <li>Single click on photo to toggle Exposition mode</li>
-        </ul>
-      </Block>
+
       <Block strong>
         <p>Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:</p>
-        <Row>
-          <Col>
-            <PhotoBrowser photos={photos} bind:this={standalone} />
-            <Button fill raised onClick={() => standalone.open()}>Standalone</Button>
-          </Col>
-          <Col>
-            <PhotoBrowser photos={photos} type="popup" bind:this={popup} />
-            <Button fill raised onClick={() => popup.open()}>Popup</Button>
-          </Col>
-          <Col>
-            <PhotoBrowser photos={photos} type="page" pageBackLinkText="Back" bind:this={page} />
-            <Button fill raised onClick={() => page.open()}>Page</Button>
-          </Col>
-        </Row>
+
+        <p>
+          <PhotoBrowser photos={photos} bind:this={standalone} />
+          <Button fill raised onClick={() => standalone.open()}>Standalone</Button>
+        </p>
+        <p>
+          <PhotoBrowser photos={photos} type="popup" bind:this={popup} />
+          <Button fill raised onClick={() => popup.open()}>Popup</Button>
+        </p>
+        <p>
+          <PhotoBrowser photos={photos} type="page" pageBackLinkText="Back" bind:this={page} />
+          <Button fill raised onClick={() => page.open()}>Page</Button>
+        </p>
+
       </Block>
       <Block strong>
         <p>Photo Browser supports 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:</p>
-        <Row>
-          <Col>
-            <PhotoBrowser photos={photos} theme="dark" bind:this={standaloneDark} />
-            <Button fill raised onClick={() => standaloneDark.open()}>Standalone</Button>
-          </Col>
-          <Col>
-            <PhotoBrowser photos={photos} theme="dark" type="popup" bind:this={popupDark} />
-            <Button fill raised onClick={() => popupDark.open()}>Popup</Button>
-          </Col>
-          <Col>
-            <PhotoBrowser photos={photos} theme="dark" type="page" pageBackLinkText="Back" bind:this={pageDark} />
-            <Button fill raised onClick={() => pageDark.open()}>Page</Button>
-          </Col>
-        </Row>
+
+        <p>
+          <PhotoBrowser photos={photos} theme="dark" bind:this={standaloneDark} />
+          <Button fill raised onClick={() => standaloneDark.open()}>Standalone</Button>
+        </p>
+        <p>
+          <PhotoBrowser photos={photos} theme="dark" type="popup" bind:this={popupDark} />
+          <Button fill raised onClick={() => popupDark.open()}>Popup</Button>
+        </p>
+        <p>
+          <PhotoBrowser photos={photos} theme="dark" type="page" pageBackLinkText="Back" bind:this={pageDark} />
+          <Button fill raised onClick={() => pageDark.open()}>Page</Button>
+        </p>
+
       </Block>
     </Page>
   </View>
