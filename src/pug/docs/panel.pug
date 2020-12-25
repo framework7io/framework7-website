@@ -720,13 +720,13 @@ block content
       :code(lang="js")
         var app = new Framework7();
 
-        var $$ = Dom7;
+        var $ = Dom7;
 
         // Dom Events
-        $$('.panel-left').on('panel:open', function () {
+        $('.panel-left').on('panel:open', function () {
           console.log('Panel left: open');
         });
-        $$('.panel-left').on('panel:opened', function () {
+        $('.panel-left').on('panel:opened', function () {
           console.log('Panel left: opened');
         });
 
