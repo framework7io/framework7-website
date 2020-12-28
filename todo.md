@@ -1,5 +1,4 @@
 - Core
-  - Convert all other demos to new router components
   - Page
     - New Page Title element
   - Package

@@ -45,7 +45,7 @@ body.body-docs {
   }
 
   .with-device {
-    padding-right: 340px;
+    padding-right: 395px;
     .device-spacer {
       height: 400px;
     }
@@ -62,11 +62,13 @@ body.body-docs {
       }
     }
   }
-  h2[id], h3[id] {
+  h2[id],
+  h3[id] {
     cursor: pointer;
   }
 }
-.ios-only, .md-only {
+.ios-only,
+.md-only {
   background: #f4f4f4;
   padding: 10px 10px;
   font-weight: bold;
@@ -100,7 +102,7 @@ b.ios-only {
   font-size: 12px;
   font-weight: 500;
   padding: 3px 6px;
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 3px;
 }
 .docs-demo-device {
@@ -115,8 +117,8 @@ b.ios-only {
   backface-visibility: hidden;
 
   iframe {
-    width: 320px;
-    height: 600px;
+    width: 375px;
+    height: 768px;
     border-radius: 12px;
     position: relative;
     overflow: hidden;
@@ -189,7 +191,7 @@ b.ios-only {
     visibility: hidden;
     opacity: 0;
     transition: 200ms;
-    pointer-events:none;
+    pointer-events: none;
     z-index: 100;
     &.visible {
       transition: 0ms;
@@ -213,7 +215,8 @@ b.ios-only {
   p:first-child {
     margin-top: 0;
   }
-  p:last-child, ul:last-child {
+  p:last-child,
+  ul:last-child {
     margin-bottom: 0;
   }
   .method-parameters {
@@ -228,7 +231,8 @@ b.ios-only {
     font-size: 14px;
   }
 }
-p.method, span.method {
+p.method,
+span.method {
   .monospace();
   color: #000;
   font-weight: 500;
@@ -282,7 +286,6 @@ ul.method-parameters {
     &:hover {
       opacity: 1;
     }
-
   }
   ul {
     list-style: none;
@@ -416,7 +419,8 @@ ul.method-parameters {
     top: 0;
     z-index: 300;
     display: none;
-    &:after, &:before {
+    &:after,
+    &:before {
       content: '';
       display: block;
       height: 2px;
@@ -440,7 +444,7 @@ ul.method-parameters {
   input.with-query + .disable-search {
     display: block;
   }
-  input[type="search"] {
+  input[type='search'] {
     border: none;
     appearance: none;
     -webkit-appearance: none;
@@ -459,9 +463,10 @@ ul.method-parameters {
     font-size: 13px;
     z-index: 200;
     position: relative;
-    &:focus, &.with-query {
+    &:focus,
+    &.with-query {
       border-color: transparent;
-      box-shadow: 0px 5px 10px rgba(0,0,0,0.1);
+      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
       font-size: 14px;
     }
   }
@@ -561,7 +566,7 @@ ul.method-parameters {
     width: 260px;
     &.docs-nav-visible {
       transform: translateX(0%);
-      box-shadow: 20px 0 50px rgba(0,0,0,0.3);
+      box-shadow: 20px 0 50px rgba(0, 0, 0, 0.3);
     }
   }
 }
@@ -570,29 +575,7 @@ ul.method-parameters {
     right: 10px;
   }
 }
-@media (max-width: 600px) {
-  // .docs-content {
-  //   h1, h2, h3, h4 {
-  //     position: sticky;
-  //     z-index: 10;
-  //     top: 0;
-  //     margin-left: -15px;
-  //     margin-right: -15px;
-  //     padding-left: 15px;
-  //     padding-right: 15px;
-  //     background: #fff;
-  //     transform: translate3d(0,0,0);
-  //     &.docs-header-stuck {
-  //       padding-left: 60px;
-  //       font-size: 16px;
-  //       font-weight: bold;
-  //       height: 44px;
-  //       display: flex;
-  //       justify-content: flex-start;
-  //       align-items: center;
-  //     }
-  //   }
-  // }
+@media (max-width: 768px) {
   .docs-demo-device:not(.docs-inline-device),
   .docs-demo-device:not(.docs-inline-device).visible {
     display: none;
@@ -645,17 +628,17 @@ ul.method-parameters {
     }
     .mobile-preview-ios {
       &:before {
-        content:'logo_ios';
+        content: 'logo_ios';
       }
     }
     .mobile-preview-md {
       &:before {
-        content:'logo_android';
+        content: 'logo_android';
       }
     }
     .mobile-preview-aurora {
       &:before {
-        content:'device_desktop';
+        content: 'device_desktop';
       }
     }
   }
@@ -711,7 +694,7 @@ ul.method-parameters {
     input {
       margin-left: 8px;
     }
-    input[type="text"] {
+    input[type='text'] {
       border-radius: 4px;
       padding: 4px 8px;
       border: 1px solid #ddd;
