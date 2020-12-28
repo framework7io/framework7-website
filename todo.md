@@ -3,7 +3,6 @@
     - New Page Title element
   - Package
     - New types in `framework7/types`
-      - `Framework7Params` -> `Framework7Parameters`
   - Button
     - New loading buttons
   - Store

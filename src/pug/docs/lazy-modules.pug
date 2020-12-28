@@ -54,8 +54,8 @@ block content
       import Framework7 from 'framework7';
 
       // import framework7 modules/components we need on initial page
-      import Searchbar from 'framework7/components/searchbar/searchbar.js';
-      import Accordion from 'framework7/components/accordion/accordion.js';
+      import Searchbar from 'framework7/components/searchbar';
+      import Accordion from 'framework7/components/accordion';
 
       // install core modules
       Framework7.use([Searchbar, Accordion]);
@@ -66,7 +66,7 @@ block content
       });
     p Later when we need to install additional F7 module we can use dynamic imports:
     :code(lang="js")
-      import('framework7/components/gauge/gauge.js')
+      import('framework7/components/gauge')
         .then(module => app.loadModule(module.default))
         .then(() => {
           // module loaded and we can use gauge api
@@ -76,8 +76,8 @@ block content
     :code(lang="js")
       Promise
         .all([
-          import('framework7/components/gauge/gauge.js'),
-          import('framework7/components/calendar/calendar.js')
+          import('framework7/components/gauge'),
+          import('framework7/components/calendar')
         ])
         .then((modules) => {
           // loaded module will be at ".default" prop of import result
@@ -93,7 +93,7 @@ block content
     :code(lang="js")
       function loadF7Modules(moduleNames) {
         var modulesToLoad = moduleNames.map((moduleName) => {
-          return import(`framework7/components/${moduleName}/${moduleName}.js`);
+          return import(`framework7/components/${moduleName}`);
         });
         return Promise.all(modulesToLoad)
           .then((modules) => {
@@ -137,151 +137,154 @@ block content
       tbody
         tr
           td Dialog
-          td `framework7/components/dialog/dialog.js`
+          td `framework7/components/dialog`
         tr
           td Popup
-          td `framework7/components/popup/popup.js`
+          td `framework7/components/popup`
         tr
           td LoginScreen
-          td `framework7/components/login-screen/login-screen.js`
+          td `framework7/components/login-screen`
         tr
           td Popover
-          td `framework7/components/popover/popover.js`
+          td `framework7/components/popover`
         tr
           td Actions
-          td `framework7/components/actions/actions.js`
+          td `framework7/components/actions`
         tr
           td Sheet
-          td `framework7/components/sheet/sheet.js`
+          td `framework7/components/sheet`
         tr
           td Toast
-          td `framework7/components/toast/toast.js`
+          td `framework7/components/toast`
         tr
           td Preloader
-          td `framework7/components/preloader/preloader.js`
+          td `framework7/components/preloader`
         tr
           td Progressbar
-          td `framework7/components/progressbar/progressbar.js`
+          td `framework7/components/progressbar`
         tr
           td Sortable
-          td `framework7/components/sortable/sortable.js`
+          td `framework7/components/sortable`
         tr
           td Swipeout
-          td `framework7/components/swipeout/swipeout.js`
+          td `framework7/components/swipeout`
         tr
           td Accordion
-          td `framework7/components/accordion/accordion.js`
+          td `framework7/components/accordion`
         tr
           td ContactsList
-          td `framework7/components/contacts-list/contacts-list.js`
+          td `framework7/components/contacts-list`
         tr
           td VirtualList
-          td `framework7/components/virtual-list/virtual-list.js`
+          td `framework7/components/virtual-list`
         tr
           td ListIndex
-          td `framework7/components/list-index/list-index.js`
+          td `framework7/components/list-index`
         tr
           td Timeline
-          td `framework7/components/timeline/timeline.js`
+          td `framework7/components/timeline`
         tr
           td Tabs
-          td `framework7/components/tabs/tabs.js`
+          td `framework7/components/tabs`
         tr
           td Panel
-          td `framework7/components/panel/panel.js`
+          td `framework7/components/panel`
         tr
           td Card
-          td `framework7/components/card/card.js`
+          td `framework7/components/card`
         tr
           td Chip
-          td `framework7/components/chip/chip.js`
+          td `framework7/components/chip`
         tr
           td Form
-          td `framework7/components/form/form.js`
+          td `framework7/components/form`
         tr
           td Input
-          td `framework7/components/input/input.js`
+          td `framework7/components/input`
         tr
           td Checkbox
-          td `framework7/components/checkbox/checkbox.js`
+          td `framework7/components/checkbox`
         tr
           td Radio
-          td `framework7/components/radio/radio.js`
+          td `framework7/components/radio`
         tr
           td Toggle
-          td `framework7/components/toggle/toggle.js`
+          td `framework7/components/toggle`
         tr
           td Range
-          td `framework7/components/range/range.js`
+          td `framework7/components/range`
         tr
           td Stepper
-          td `framework7/components/stepper/stepper.js`
+          td `framework7/components/stepper`
         tr
           td SmartSelect
-          td `framework7/components/smart-select/smart-select.js`
+          td `framework7/components/smart-select`
         tr
           td Grid
-          td `framework7/components/grid/grid.js`
+          td `framework7/components/grid`
         tr
           td Calendar
-          td `framework7/components/calendar/calendar.js`
+          td `framework7/components/calendar`
         tr
           td Picker
-          td `framework7/components/picker/picker.js`
+          td `framework7/components/picker`
         tr
           td InfiniteScroll
-          td `framework7/components/infinite-scroll/infinite-scroll.js`
+          td `framework7/components/infinite-scroll`
         tr
           td PullToRefresh
-          td `framework7/components/pull-to-refresh/pull-to-refresh.js`
+          td `framework7/components/pull-to-refresh`
         tr
           td Lazy
-          td `framework7/components/lazy/lazy.js`
+          td `framework7/components/lazy`
         tr
           td DataTable
-          td `framework7/components/data-table/data-table.js`
+          td `framework7/components/data-table`
         tr
           td Fab
-          td `framework7/components/fab/fab.js`
+          td `framework7/components/fab`
         tr
           td Searchbar
-          td `framework7/components/searchbar/searchbar.js`
+          td `framework7/components/searchbar`
         tr
           td Messages
-          td `framework7/components/messages/messages.js`
+          td `framework7/components/messages`
         tr
           td Messagebar
-          td `framework7/components/messagebar/messagebar.js`
+          td `framework7/components/messagebar`
         tr
           td Swiper
-          td `framework7/components/swiper/swiper.js`
+          td `framework7/components/swiper`
         tr
           td PhotoBrowser
-          td `framework7/components/photo-browser/photo-browser.js`
+          td `framework7/components/photo-browser`
         tr
           td Notification
-          td `framework7/components/notification/notification.js`
+          td `framework7/components/notification`
         tr
           td Autocomplete
-          td `framework7/components/autocomplete/autocomplete.js`
+          td `framework7/components/autocomplete`
         tr
           td Tooltip
-          td `framework7/components/tooltip/tooltip.js`
+          td `framework7/components/tooltip`
         tr
           td Gauge
-          td `framework7/components/gauge/gauge.js`
+          td `framework7/components/gauge`
         tr
           td Skeleton
-          td `framework7/components/skeleton/skeleton.js`
+          td `framework7/components/skeleton`
         tr
           td Menu
-          td `framework7/components/menu/menu.js`
+          td `framework7/components/menu`
         tr
-          td Vi
-          td `framework7/components/vi/vi.js`
+          td Pie Chart
+          td `framework7/components/pie-chart`
+        tr
+          td Area Chart
+          td `framework7/components/area-chart`
         tr
           td Typography
-          td `framework7/components/typography/typography.js`
+          td `framework7/components/typography`
     h2 Browser Modules
     p Browser modules are intended to be used in development setup without bundlers (like Webpack or Rollup).
     p First of all, in our main <a href="app-layout.html">app layout</a> we need to use so called minimal core Framework7 library instead of `framework7.bundle.js` and `framework7.bundle.css` scripts and styles that contains whole framework.
@@ -314,8 +317,8 @@ block content
           <!-- Path to Framework7 Core Library CSS -->
           <link rel="stylesheet" href="path/to/framework7/css/framework7.min.css">
           <!-- Include modules required for initial page -->
-          <link rel="stylesheet" href="path/to/framework7/components/accordion.css">
-          <link rel="stylesheet" href="path/to/framework7/components/searchbar.css">
+          <link rel="stylesheet" href="path/to/framework7/components/accordion/accordion.css">
+          <link rel="stylesheet" href="path/to/framework7/components/searchbar/searchbar.css">
           <!-- Path to your custom app styles-->
           <link rel="stylesheet" href="path/to/my-app.css">
         </head>
@@ -326,8 +329,8 @@ block content
           <!-- Path to Framework7 Core Library JS-->
           <script type="text/javascript" src="path/to/framework7/js/framework7.min.js"></script>
           <!-- Include modules required for initial page -->
-          <script type="text/javascript" src="path/to/framework7/components/accordion.js"></script>
-          <script type="text/javascript" src="path/to/framework7/components/searchbar.js"></script>
+          <script type="text/javascript" src="path/to/framework7/components/accordion/accordion.js"></script>
+          <script type="text/javascript" src="path/to/framework7/components/searchbar/searchbar.js"></script>
           <!-- Path to your app js-->
           <script type="text/javascript" src="path/to/my-app.js"></script>
         </body>
@@ -349,10 +352,10 @@ block content
       p Note, that browser modules also load modules styles automatically. So loading `gauge.js` will also automatically load `gauge.css` stylesheet.
     p So the above expression `app.loadModules(['calendar', 'gauge'])` will load the following files:
     ul
-      li path/to/framework7/components/calendar.js
-      li path/to/framework7/components/calendar.css
-      li path/to/framework7/components/gauge.js
-      li path/to/framework7/components/gauge.css
+      li path/to/framework7/components/calendar/calendar.js
+      li path/to/framework7/components/calendar/calendar.css
+      li path/to/framework7/components/gauge/gauge.js
+      li path/to/framework7/components/gauge/gauge.css
     p When we need to preload modules for specific route and we use browser modules, then we can just use route's `modules` property:
     :code(lang="js")
       var routes = [
@@ -398,203 +401,207 @@ block content
         tr
           td Dialog
           td `dialog`
-          td `framework7/components/dialog.js`
+          td `framework7/components/dialog/dialog.js`
         tr
           td Popup
           td `popup`
-          td `framework7/components/popup.js`
+          td `framework7/components/popup/popup.js`
         tr
           td LoginScreen
           td `login-screen`
-          td `framework7/components/login-screen.js`
+          td `framework7/components/login-screen/login-screen.js`
         tr
           td Popover
           td `popover`
-          td `framework7/components/popover.js`
+          td `framework7/components/popover/popover.js`
         tr
           td Actions
           td `actions`
-          td `framework7/components/actions.js`
+          td `framework7/components/actions/actions.js`
         tr
           td Sheet
           td `sheet`
-          td `framework7/components/sheet.js`
+          td `framework7/components/sheet/sheet.js`
         tr
           td Toast
           td `toast`
-          td `framework7/components/toast.js`
+          td `framework7/components/toast/toast.js`
         tr
           td Preloader
           td `preloader`
-          td `framework7/components/preloader.js`
+          td `framework7/components/preloader/preloader.js`
         tr
           td Progressbar
           td `progressbar`
-          td `framework7/components/progressbar.js`
+          td `framework7/components/progressbar/progressbar.js`
         tr
           td Sortable
           td `sortable`
-          td `framework7/components/sortable.js`
+          td `framework7/components/sortable/sortable.js`
         tr
           td Swipeout
           td `swipeout`
-          td `framework7/components/swipeout.js`
+          td `framework7/components/swipeout/swipeout.js`
         tr
           td Accordion
           td `accordion`
-          td `framework7/components/accordion.js`
+          td `framework7/components/accordion/accordion.js`
         tr
           td ContactsList
           td `contacts-list`
-          td `framework7/components/contacts-list.js`
+          td `framework7/components/contacts-list/contacts-list.js`
         tr
           td VirtualList
           td `virtual-list`
-          td `framework7/components/virtual-list.js`
+          td `framework7/components/virtual-list/virtual-list.js`
         tr
           td ListIndex
           td `list-index`
-          td `framework7/components/list-index.js`
+          td `framework7/components/list-index/list-index.js`
         tr
           td Timeline
           td `timeline`
-          td `framework7/components/timeline.js`
+          td `framework7/components/timeline/timeline.js`
         tr
           td Tabs
           td `tabs`
-          td `framework7/components/tabs.js`
+          td `framework7/components/tabs/tabs.js`
         tr
           td Panel
           td `panel`
-          td `framework7/components/panel.js`
+          td `framework7/components/panel/panel.js`
         tr
           td Card
           td `card`
-          td `framework7/components/card.js`
+          td `framework7/components/card/card.js`
         tr
           td Chip
           td `chip`
-          td `framework7/components/chip.js`
+          td `framework7/components/chip/chip.js`
         tr
           td Form
           td `form`
-          td `framework7/components/form.js`
+          td `framework7/components/form/form.js`
         tr
           td Input
           td `input`
-          td `framework7/components/input.js`
+          td `framework7/components/input/input.js`
         tr
           td Checkbox
           td `checkbox`
-          td `framework7/components/checkbox.js`
+          td `framework7/components/checkbox/checkbox.js`
         tr
           td Radio
           td `radio`
-          td `framework7/components/radio.js`
+          td `framework7/components/radio/radio.js`
         tr
           td Toggle
           td `toggle`
-          td `framework7/components/toggle.js`
+          td `framework7/components/toggle/toggle.js`
         tr
           td Range
           td `range`
-          td `framework7/components/range.js`
+          td `framework7/components/range/range.js`
         tr
           td Stepper
           td `stepper`
-          td `framework7/components/stepper.js`
+          td `framework7/components/stepper/stepper.js`
         tr
           td SmartSelect
           td `smart-select`
-          td `framework7/components/smart-select.js`
+          td `framework7/components/smart-select/smart-select.js`
         tr
           td Grid
           td `grid`
-          td `framework7/components/grid.js`
+          td `framework7/components/grid/grid.js`
         tr
           td Calendar
           td `calendar`
-          td `framework7/components/calendar.js`
+          td `framework7/components/calendar/calendar.js`
         tr
           td Picker
           td `picker`
-          td `framework7/components/picker.js`
+          td `framework7/components/picker/picker.js`
         tr
           td InfiniteScroll
           td `infinite-scroll`
-          td `framework7/components/infinite-scroll.js`
+          td `framework7/components/infinite-scroll/infinite-scroll.js`
         tr
           td PullToRefresh
           td `pull-to-refresh`
-          td `framework7/components/pull-to-refresh.js`
+          td `framework7/components/pull-to-refresh/pull-to-refresh.js`
         tr
           td Lazy
           td `lazy`
-          td `framework7/components/lazy.js`
+          td `framework7/components/lazy/lazy.js`
         tr
           td DataTable
           td `data-table`
-          td `framework7/components/data-table.js`
+          td `framework7/components/data-table/data-table.js`
         tr
           td Fab
           td `fab`
-          td `framework7/components/fab.js`
+          td `framework7/components/fab/fab.js`
         tr
           td Searchbar
           td `searchbar`
-          td `framework7/components/searchbar.js`
+          td `framework7/components/searchbar/searchbar.js`
         tr
           td Messages
           td `messages`
-          td `framework7/components/messages.js`
+          td `framework7/components/messages/messages.js`
         tr
           td Messagebar
           td `messagebar`
-          td `framework7/components/messagebar.js`
+          td `framework7/components/messagebar/messagebar.js`
         tr
           td Swiper
           td `swiper`
-          td `framework7/components/swiper.js`
+          td `framework7/components/swiper/swiper.js`
         tr
           td PhotoBrowser
           td `photo`
-          td `framework7/components/browser/photo-browser.js`
+          td `framework7/components/browser/photo-browser/browser/photo-browser.js`
         tr
           td Notification
           td `notification`
-          td `framework7/components/notification.js`
+          td `framework7/components/notification/notification.js`
         tr
           td Autocomplete
           td `autocomplete`
-          td `framework7/components/autocomplete.js`
+          td `framework7/components/autocomplete/autocomplete.js`
         tr
           td Tooltip
           td `tooltip`
-          td `framework7/components/tooltip.js`
+          td `framework7/components/tooltip/tooltip.js`
         tr
           td Gauge
           td `gauge`
-          td `framework7/components/gauge.js`
+          td `framework7/components/gauge/gauge.js`
         tr
           td Skeleton
           td `skeleton`
-          td `framework7/components/skeleton.js`
+          td `framework7/components/skeleton/skeleton.js`
         tr
           td Menu
           td `menu`
-          td `framework7/components/menu.js`
+          td `framework7/components/menu/menu.js`
         tr
-          td Vi
-          td `vi`
-          td `framework7/components/vi.js`
+          td Pie Chart
+          td `pie-chart`
+          td `framework7/components/pie-chart/pie-chart.js`
+        tr
+          td Area Chart
+          td `area-chart`
+          td `framework7/components/area-chart/area-chart.js`
         tr
           td Typography
           td `typography`
-          td `framework7/components/typography.js`
+          td `framework7/components/typography/typography.js`
         tr
           td Text Editor
           td `text-editor`
-          td `framework7/components/text-editor.js`
+          td `framework7/components/text-editor/text-editor.js`
 
 
 
