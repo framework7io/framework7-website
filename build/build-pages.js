@@ -49,15 +49,7 @@ function buildPages(
 
   const name = src[0] === '**/*.pug' ? 'all' : src.join(', ');
 
-  let pretty = false;
-  if (
-    src[0] &&
-    src[0].indexOf('docs-demos/core') >= 0 &&
-    (src[0].indexOf('-f7') >= 0 || src[0].indexOf('.f7') >= 0)
-  ) {
-    pretty = true;
-    dest = './src/pug/docs-demos/core';
-  }
+  const pretty = false;
 
   console.log(`Starting pug: ${name}`);
 

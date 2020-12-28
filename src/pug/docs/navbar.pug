@@ -504,189 +504,23 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/navbar.html") Examples
       h3 Static Navbar
-      :code(lang="html")
-            <div class="page">
-              <div class="page-content">
-                <!-- Static Navbar -->
-                <div class="navbar">
-                  <div class="navbar-bg"></div>
-                  <div class="navbar-inner">
-                    <div class="left">
-                      <a class="link back">
-                        <i class="icon icon-back"></i>
-                        <span class="if-not-md">Back</span>
-                      </a>
-                    </div>
-                    <div class="title">Static Navbar</div>
-                    <div class="right"></div>
-                  </div>
-                </div>
-                <div class="block">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
-                  ...
-                </div>
-              </div>
-            </div>
+      include:coreSource ../docs-demos/core/navbar_static.f7.html
+
       h3 Fixed Navbar
-      :code(lang="html")
-        <div class="page">
-          <!-- Fixed/Dynamic Navbar -->
-          <div class="navbar">
-            <div class="navbar-bg"></div>
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a class="link back">
-                  <i class="icon icon-back"></i>
-                  <span class="if-not-md">Back</span>
-                </a>
-              </div>
-              <div class="title">Fixed Navbar</div>
-            </div>
-          </div>
-          <div class="page-content">
-            <div class="block">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
-              ...
-            </div>
-          </div>
-        </div>
+      include:coreSource ../docs-demos/core/navbar_fixed.f7.html
 
       h3 Transparent Navbar
-      :code(lang="html")
-        <div class="page">
-          <!-- Transparent Navbar, has additional "navbar-transparent" class -->
-          <div class="navbar navbar-transparent">
-            <div class="navbar-bg"></div>
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a class="link back">
-                  <i class="icon icon-back"></i>
-                  <span class="if-not-md">Back</span>
-                </a>
-              </div>
-              <div class="title">Fixed Navbar</div>
-            </div>
-          </div>
-          <div class="page-content">
-            <div class="block">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
-              ...
-            </div>
-          </div>
-        </div>
+      include:coreSource ../docs-demos/core/navbar_transparent.f7.html
 
       h3 Large Title
-      :code(lang="html")
-        <div class="page">
-          <!-- Additional "navbar-large" class on navbar -->
-          <div class="navbar navbar-large">
-            <div class="navbar-bg"></div>
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a class="link back">
-                  <i class="icon icon-back"></i>
-                  <span class="if-not-md">Back</span>
-                </a>
-              </div>
-              <div class="title">Large Title</div>
-              <!-- Large title element -->
-              <div class="title-large">
-                <div class="title-large-text">Large Title</div>
-              </div>
-            </div>
-          </div>
-          <div class="page-content">
-            <div class="block">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
-              ...
-            </div>
-          </div>
-        </div>
+      include:coreSource ../docs-demos/core/navbar_large.f7.html
 
       h3 Large Transparent
-      :code(lang="html")
-        <div class="page">
-          <!-- Additional "navbar-transparent" class -->
-          <div class="navbar navbar-large navbar-transparent">
-            <div class="navbar-bg"></div>
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a class="link back">
-                  <i class="icon icon-back"></i>
-                  <span class="if-not-md">Back</span>
-                </a>
-              </div>
-              <div class="title">Large Transparent</div>
-              <!-- Large title element -->
-              <div class="title-large">
-                <div class="title-large-text">Large Title</div>
-              </div>
-            </div>
-          </div>
-          <div class="page-content">
-            <div class="block">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
-              ...
-            </div>
-          </div>
-        </div>
+      include:coreSource ../docs-demos/core/navbar_large-transparent.f7.html
 
       h3 Navbar API
-      :code(lang="html")
-            <div class="page">
-              <div class="navbar">
-                <div class="navbar-bg"></div>
-                <div class="navbar-inner sliding">
-                  <div class="left">
-                    <a class="link back">
-                      <i class="icon icon-back"></i>
-                      <span class="if-not-md">Back</span>
-                    </a>
-                  </div>
-                  <div class="title">Navbar API</div>
-                </div>
-              </div>
-              <div class="page-content">
-                <div class="block">
-                  <p><a class="button button-raised hide-navbar">Hide Navbar</a></p>
-                  <p><a class="button button-raised show-navbar">Show Navbar</a></p>
-                  <p>Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.</p>
-                  ...
-                </div>
-              </div>
-            </div>
-      :code(lang="js")
-            var app = new Framework7();
+      include:coreSource ../docs-demos/core/navbar_api.f7.html
 
-            var $$ = Dom7;
-
-            $$('.hide-navbar').on('click', function () {
-              app.navbar.hide('.navbar');
-            });
-            $$('.show-navbar').on('click', function () {
-              app.navbar.show('.navbar');
-            });
       h3 Hide On Scroll
-      :code(lang="html")
-            <div class="page">
-              <div class="navbar">
-                <div class="navbar-bg"></div>
-                <div class="navbar-inner sliding">
-                  <div class="left">
-                    <a class="link back">
-                      <i class="icon icon-back"></i>
-                      <span class="if-not-md">Back</span>
-                    </a>
-                  </div>
-                  <div class="title">Hide On Scroll</div>
-                </div>
-              </div>
-              <!-- Additional "hide-navbar-on-scroll" class to hide navbar on scroll automatically -->
-              <div class="page-content hide-navbar-on-scroll">
-                <div class="block">
-                  <p>Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.</p>
-                  ...
-                </div>
-              </div>
-            </div>
+      include:coreSource ../docs-demos/core/navbar_hide-on-scroll.f7.html
 

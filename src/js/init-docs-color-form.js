@@ -3,9 +3,7 @@ import $ from 'dom7';
 function colorHexToRgb(hex) {
   const h = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => r + r + g + g + b + b);
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h);
-  return result
-    ? result.slice(1).map(n => parseInt(n, 16))
-    : null;
+  return result ? result.slice(1).map((n) => parseInt(n, 16)) : null;
 }
 
 function colorRgbToHsl(r, g, b) {
@@ -26,10 +24,12 @@ function colorRgbToHsl(r, g, b) {
   return [h * 60, s, l];
 }
 function colorRgbToHex(r, g, b) {
-  const result = [r, g, b].map((n) => {
-    const hex = n.toString(16);
-    return hex.length === 1 ? `0${hex}` : hex;
-  }).join('');
+  const result = [r, g, b]
+    .map((n) => {
+      const hex = n.toString(16);
+      return hex.length === 1 ? `0${hex}` : hex;
+    })
+    .join('');
   return `#${result}`;
 }
 function colorHslToRgb(h, s, l) {
@@ -45,15 +45,15 @@ function colorHslToRgb(h, s, l) {
   else if (hp <= 4) rgb1 = [0, x, c];
   else if (hp <= 5) rgb1 = [x, 0, c];
   else if (hp <= 6) rgb1 = [c, 0, x];
-  const m = l - (c / 2);
-  return rgb1.map(n => Math.max(0, Math.min(255, Math.round(255 * (n + m)))));
+  const m = l - c / 2;
+  return rgb1.map((n) => Math.max(0, Math.min(255, Math.round(255 * (n + m)))));
 }
 function colorThemeCSSProperties(hex) {
   const rgb = colorHexToRgb(hex);
   if (!rgb) return {};
   const hsl = colorRgbToHsl(...rgb);
-  const hslShade = [hsl[0], hsl[1], Math.max(0, (hsl[2] - 0.08))];
-  const hslTint = [hsl[0], hsl[1], Math.max(0, (hsl[2] + 0.08))];
+  const hslShade = [hsl[0], hsl[1], Math.max(0, hsl[2] - 0.08)];
+  const hslTint = [hsl[0], hsl[1], Math.max(0, hsl[2] + 0.08)];
   const shade = colorRgbToHex(...colorHslToRgb(...hslShade));
   const tint = colorRgbToHex(...colorHslToRgb(...hslTint));
   return {
@@ -74,12 +74,12 @@ function getStyles(color = '', bars = 'light') {
 /* Custom color theme */
 :root {
   ${Object.keys(colorThemeProperties)
-    .map(key => `${key}: ${colorThemeProperties[key]};`)
+    .map((key) => `${key}: ${colorThemeProperties[key]};`)
     .join('\n  ')}
 }`;
   }
   if (bars === 'fill') {
-    colorThemeRgb = colorThemeRgb.split(',').map(el => el.trim());
+    colorThemeRgb = colorThemeRgb.split(',').map((el) => el.trim());
     styles += `
 /* Invert navigation bars to fill style */
 :root,
@@ -105,6 +105,7 @@ function getStyles(color = '', bars = 'light') {
 .calendar-footer {
   --f7-touch-ripple-color: var(--f7-touch-ripple-white);
   --f7-link-highlight-color: var(--f7-link-highlight-white);
+  --f7-link-touch-ripple-color: var(--f7-touch-ripple-white);
   --f7-button-text-color: #fff;
   --f7-button-pressed-bg-color: rgba(255,255,255,0.1);
 }
@@ -138,9 +139,14 @@ function updateCSSVars($form) {
   const color = $form.find('input[name="color"]').val();
 
   const styles = getStyles(color, bars);
-  $('.docs-color-form-code').find('code').html(styles || `
+  $('.docs-color-form-code')
+    .find('code')
+    .html(
+      styles ||
+        `
   <span class="token comment">/*<br>  Change color or navigation bars style to see genearted styles<br>*/</span>
-  `.trim());
+  `.trim(),
+    );
 
   const $doc = $($form.prev('.docs-demo-device').find('iframe')[0].contentDocument);
   let $styles = $doc.find('style#colors');
@@ -161,8 +167,11 @@ function initDocsColorForm() {
   $form.on('input', () => {
     updateCSSVars($form);
   });
-  $form.prev('.docs-demo-device').find('iframe').on('load', () => {
-    updateCSSVars($form);
-  });
+  $form
+    .prev('.docs-demo-device')
+    .find('iframe')
+    .on('load', () => {
+      updateCSSVars($form);
+    });
 }
 export default initDocsColorForm;

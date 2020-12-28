@@ -1,0 +1,67 @@
+<template>
+  <div id="app">
+    <div class="view view-main">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner sliding">
+            <div class="title">Page Transitions</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="list links-list">
+            <ul>
+              <li><a href="/page-transitions/f7-circle" data-transition="f7-circle">f7-circle</a></li>
+              <li><a href="/page-transitions/f7-cover" data-transition="f7-cover">f7-cover</a></li>
+              <li><a href="/page-transitions/f7-cover-v" data-transition="f7-cover-v">f7-cover-v</a></li>
+              <li><a href="/page-transitions/f7-dive" data-transition="f7-dive">f7-dive</a></li>
+              <li><a href="/page-transitions/f7-fade" data-transition="f7-fade">f7-fade</a></li>
+              <li><a href="/page-transitions/f7-flip" data-transition="f7-flip">f7-flip</a></li>
+              <li><a href="/page-transitions/f7-parallax" data-transition="f7-parallax">f7-parallax</a></li>
+              <li><a href="/page-transitions/f7-push" data-transition="f7-push">f7-push</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $f7, $onMounted }) => {
+    $onMounted(() => {
+      $f7.views.create('.view-main', {
+        routes: [
+          {
+            path: '/page-transitions/:effect',
+            component: (props, { $h }) => {
+
+              return () => $h`
+              <div class="page">
+                <div class="navbar">
+                  <div class="navbar-bg"></div>
+                  <div class="navbar-inner sliding">
+                    <div class="left">
+                      <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="if-not-md">Back</span>
+                      </a>
+                    </div>
+                    <div class="title">${props.effect}</div>
+                  </div>
+                </div>
+                <div class="page-content">
+                  <div class="block block-strong text-align-center">
+                    <p>This page was loaded with <b>${props.effect}</b> transition.</p>
+                  </div>
+                </div>
+              </div>
+              `;
+            }
+          },
+        ]
+      })
+    })
+
+    return $render;
+  }
+</script>

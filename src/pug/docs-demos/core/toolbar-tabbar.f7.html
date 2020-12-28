@@ -1,0 +1,45 @@
+<template>
+  <div id="app">
+    <div class="view view-main">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner sliding">
+            <div class="title">Toolbar / Tabbar</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="list links-list">
+            <ul>
+              <li><a href="/static/">Static Toolbar</a></li>
+              <li><a href="/fixed/">Fixed Toolbar</a></li>
+              <li><a href="/api/">Toolbar API</a></li>
+              <li><a href="/hide-on-scroll/">Hide On Scroll</a></li>
+              <li><a href="/tabbar/">Tabbar</a></li>
+              <li><a href="/tabbar-labels/">Tabbar With Labels</a></li>
+              <li><a href="/tabbar-scrollable/">Scrollable Tabbar</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  const routes = [
+    { path: '/static/', componentUrl: './toolbar-tabbar_static.f7.html' },
+    { path: '/fixed/', componentUrl: './toolbar-tabbar_fixed.f7.html' },
+    { path: '/api/', componentUrl: './toolbar-tabbar_api.f7.html' },
+    { path: '/hide-on-scroll/', componentUrl: './toolbar-tabbar_hide-on-scroll.f7.html' },
+    { path: '/tabbar/', componentUrl: './toolbar-tabbar_tabbar.f7.html' },
+    { path: '/tabbar-labels/', componentUrl: './toolbar-tabbar_tabbar-labels.f7.html' },
+    { path: '/tabbar-scrollable/', componentUrl: './toolbar-tabbar_tabbar-scrollable.f7.html' },
+  ]
+  export default (props, { $onMounted, $f7 }) => {
+    $onMounted(() => {
+      $f7.views.create('.view-main', { routes })
+    });
+
+    return $render;
+  }
+</script>

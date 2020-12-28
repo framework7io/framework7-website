@@ -1,0 +1,68 @@
+<template>
+  <div id="app">
+    <div class="view view-main">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner sliding">
+            <div class="left"><a class="link">Left</a></div>
+            <div class="title">Navbar</div>
+            <div class="right"><a class="link">Right</a></div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="list links-list">
+            <ul>
+              <li><a href="/static/">Static Navbar</a></li>
+              <li><a href="/fixed/">Fixed Navbar</a></li>
+              <li><a href="/transparent/">Transparent Navbar</a></li>
+              <li><a href="/large/">Large Title</a></li>
+              <li><a href="/large-transparent/">Large Transparent</a></li>
+              <li><a href="/api/">Navbar API</a></li>
+              <li><a href="/hide-on-scroll/">Hide On Scroll</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  const routes = [
+    {
+      path: '/static/',
+      componentUrl: './navbar_static.f7.html'
+    },
+    {
+      path: '/fixed/',
+      componentUrl: './navbar_fixed.f7.html'
+    },
+    {
+      path: '/transparent/',
+      componentUrl: './navbar_transparent.f7.html'
+    },
+    {
+      path: '/large/',
+      componentUrl: './navbar_large.f7.html'
+    },
+    {
+      path: '/large-transparent/',
+      componentUrl: './navbar_large-transparent.f7.html'
+    },
+    {
+      path: '/api/',
+      componentUrl: './navbar_api.f7.html'
+    },
+    {
+      path: '/hide-on-scroll/',
+      componentUrl: './navbar_hide-on-scroll.f7.html'
+    },
+  ]
+  export default (props, { $f7, $onMounted }) => {
+    $onMounted(() => {
+      $f7.views.create('.view-main', { routes })
+    })
+
+    return $render;
+  }
+</script>

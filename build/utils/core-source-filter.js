@@ -35,6 +35,9 @@ module.exports = (src, { strip = true, unwrapTemplate = false } = {}) => {
     src = src.split('<template>')[1].split('</template>')[0];
     src = stripIndent(src).trim();
   }
+  if (src.indexOf('// SKIP SOURCE START') >= 0) {
+    src = src.split('// SKIP SOURCE START')[0] + src.split('// SKIP SOURCE END')[1];
+  }
 
   return codeFilter(src, { lang: 'html' });
 };
