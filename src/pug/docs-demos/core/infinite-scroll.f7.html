@@ -1,0 +1,61 @@
+<template>
+  <div id="app">
+    <div class="view view-main view-init">
+      <!-- source start -->
+      <div class="page" data-page="home">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title sliding">Infinite Scroll</div>
+          </div>
+        </div>
+        <div class="page-content infinite-scroll-content" @infinite=${loadMore}>
+          <div class="list simple-list">
+            <ul>
+              ${items.map((item, index) => $h`
+              <li key=${index}>Item ${item}</li>
+              `)}
+            </ul>
+          </div>
+          ${hasMoreItems && $h`
+          <div class="preloader infinite-scroll-preloader"></div>
+          `}
+        </div>
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $, $update }) => {
+    let allowInfinite = true;
+    let hasMoreItems = true;
+    let lastItem = 20;
+    const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+    const loadMore = () => {
+      if (!allowInfinite) return;
+      allowInfinite = false;
+
+      setTimeout(function () {
+        if (lastItem >= 200) {
+          hasMoreItems = false;
+          $update();
+          return;
+        }
+
+        for (var i = 1; i <= 20; i++) {
+          items.push(lastItem + i);
+        }
+
+        allowInfinite = true;
+        lastItem += 20;
+
+        $update();
+      }, 1000);
+    }
+
+    return $render;
+
+  }
+</script>

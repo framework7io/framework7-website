@@ -234,7 +234,8 @@ function modalLoad(modalType, route, loadOptions, direction) {
       from: router.currentRoute,
       resolve: asyncResolve,
       reject: asyncReject,
-      direction: direction
+      direction: direction,
+      app: app
     });
   }
 

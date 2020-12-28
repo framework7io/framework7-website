@@ -86,79 +86,7 @@ block content
             td Event will be triggered on `app.form.fillFromData` call
 
       h3 Form Data Example
-      :code(lang="html")
-            <form class="list" id="my-form">
-              <ul>
-                <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title item-label">Name</div>
-                      <div class="item-input-wrap">
-                        <input type="text" name="name" placeholder="Your name">
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title item-label">E-mail</div>
-                      <div class="item-input-wrap">
-                        <input type="email" name="email" placeholder="E-mail">
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title item-label">Gender</div>
-                      <div class="item-input-wrap">
-                        <select name="gender">
-                          <option value="male" selected>Male</option>
-                          <option value="female">Female</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="item-content">
-                    <div class="item-inner">
-                      <div class="item-title">Toggle</div>
-                      <div class="item-after">
-                        <label class="toggle toggle-init">
-                          <input type="checkbox" name="toggle" value="yes"><i class="toggle-icon"></i>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </form>
-            <div class="block block-strong row">
-              <div class="col"><a class="button convert-form-to-data" href="#">Get Data</a></div>
-              <div class="col"><a class="button fill-form-from-data" href="#">Fill Form</a></div>
-            </div>
-      :code(lang="js")
-            var app = new Framework7();
-
-            var $$ = Dom7;
-
-            $$('.convert-form-to-data').on('click', function(){
-              var formData = app.form.convertToData('#my-form');
-              alert(JSON.stringify(formData));
-            });
-
-            $$('.fill-form-from-data').on('click', function(){
-              var formData = {
-                'name': 'John',
-                'email': 'john@doe.com',
-                'gender': 'female',
-                'toggle': ['yes'],
-              }
-              app.form.fillFromData('#my-form', formData);
-            });
+      include:coreSource ../docs-demos/core/form-data.f7.html
 
       h2(data-device-preview="../docs-demos/core/form-storage.html") Form Storage
       p With form storage it is easy to store and parse forms data automatically, especially on Ajax loaded pages. And the most interesting part is that when you load this page again Framework7 will parse this data and fill up all form fields automatically!
@@ -230,66 +158,7 @@ block content
               span (form, data)
             td Event will be triggered right after form data saved
       h3 Form Storage Example
-      :code(lang="html")
-            <form class="list form-store-data" id="my-form">
-              <ul>
-                <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title item-label">Name</div>
-                      <div class="item-input-wrap">
-                        <input type="text" name="name" placeholder="Your name">
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title item-label">E-mail</div>
-                      <div class="item-input-wrap">
-                        <input type="email" name="email" placeholder="E-mail">
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title item-label">Ignore form storage</div>
-                      <div class="item-input-wrap">
-                        <input class="no-store-data" type="text" name="text" placeholder="This value won't be stored">
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title item-label">Gender</div>
-                      <div class="item-input-wrap">
-                        <select name="gender">
-                          <option value="male" selected>Male</option>
-                          <option value="female">Female</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="item-content">
-                    <div class="item-inner">
-                      <div class="item-title">Switch</div>
-                      <div class="item-after">
-                        <label class="toggle">
-                          <input type="checkbox" name="switch" value="yes"><i class="toggle-icon"></i>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </form>
+      include:coreSource ../docs-demos/core/form-storage.f7.html
     h2 Ajax Form Submit
     p Framework7 allows automatically send form data using Ajax.
     p It could be done in two ways

@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.0-beta.4
+ * Framework7 6.0.0-beta.7
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: November 30, 2020
+ * Released on: December 28, 2020
  */
 
 (function (global, factory) {
@@ -5030,6 +5030,7 @@
           app.$el = $$1(el);
           app.$el[0].f7 = app;
           app.$elComponent = el.f7Component;
+          app.el = app.$el[0];
           if (callback) callback();
         }, function () {});
       };
@@ -7769,7 +7770,8 @@
           to: route,
           resolve: redirectResolve,
           reject: redirectReject,
-          direction: direction
+          direction: direction,
+          app: router.app
         });
 
         if (redirectUrl && typeof redirectUrl === 'string') {
@@ -7817,7 +7819,8 @@
           reject: function reject() {
             _reject();
           },
-          direction: direction
+          direction: direction,
+          app: router.app
         });
       }
 
@@ -8845,7 +8848,8 @@
             from: router.currentRoute,
             resolve: asyncResolve,
             reject: asyncReject,
-            direction: 'forward'
+            direction: 'forward',
+            app: app
           });
         }
 
@@ -9131,7 +9135,8 @@
           to: currentRoute,
           from: previousRoute,
           resolve: asyncResolve,
-          reject: asyncReject
+          reject: asyncReject,
+          app: router.app
         });
       } else if (tabRoute.asyncComponent) {
         asyncComponent(router, tabRoute.asyncComponent, asyncResolve, asyncReject);
@@ -9389,7 +9394,8 @@
           from: router.currentRoute,
           resolve: asyncResolve,
           reject: asyncReject,
-          direction: direction
+          direction: direction,
+          app: app
         });
       }
 
@@ -10243,7 +10249,8 @@
             from: router.currentRoute,
             resolve: asyncResolve,
             reject: asyncReject,
-            direction: 'backward'
+            direction: 'backward',
+            app: app
           });
         }
 
@@ -13786,6 +13793,8 @@
       var _proto = Component.prototype;
 
       _proto.on = function on(eventName, handler) {
+        if (!this.__eventHandlers) return;
+
         this.__eventHandlers.push({
           eventName: eventName,
           handler: handler
@@ -13793,6 +13802,8 @@
       };
 
       _proto.once = function once(eventName, handler) {
+        if (!this.__eventHandlers) return;
+
         this.__onceEventHandlers.push({
           eventName: eventName,
           handler: handler
@@ -13838,7 +13849,7 @@
           $: $$1,
           $id: this.id,
           $f7: this.f7,
-          $f7ready: this.f7ready,
+          $f7ready: this.f7ready.bind(this),
           $theme: this.theme,
           $tick: this.tick.bind(this),
           $update: this.update.bind(this),
@@ -13887,6 +13898,7 @@
 
       _proto.attachEvents = function attachEvents() {
         var $el = this.$el;
+        if (!this.__eventHandlers) return;
 
         this.__eventHandlers.forEach(function (_ref2) {
           var eventName = _ref2.eventName,
@@ -13903,6 +13915,7 @@
 
       _proto.detachEvents = function detachEvents() {
         var $el = this.$el;
+        if (!this.__eventHandlers) return;
 
         this.__eventHandlers.forEach(function (_ref4) {
           var eventName = _ref4.eventName,
@@ -14010,6 +14023,7 @@
       _proto.destroy = function destroy() {
         var _this8 = this;
 
+        if (this.__destroyed) return;
         var window = getWindow();
         this.hook('onBeforeUnmount');
         if (this.styleEl) $$1(this.styleEl).remove();
@@ -14413,8 +14427,7 @@
 
           var result = actions[actionName]({
             state: store.state,
-            action: store.action,
-            get: store.get
+            dispatch: store.dispatch
           }, data);
           resolve(result);
         });

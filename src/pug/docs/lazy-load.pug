@@ -180,43 +180,4 @@ block content
       $$('div.lazy').trigger('lazy');
     .with-device
       h2(data-device-preview="../docs-demos/core/lazy-load.html") Examples
-      :code(lang="css")
-            img.demo-lazy {
-              width: 100%;
-              height: auto;
-              display: block;
-            }
-            div.demo-lazy {
-              background: #aaa;
-              background-size: cover;
-              height: 60vw;
-            }
-      :code(lang="html")
-            <div class="page-content">
-              <div class="block block-strong">
-                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-1.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
-                <p>Lorem ipsum ...</p>
-                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-2.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
-                <p>Aenean id congue orci...</p>
-                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-3.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
-                <p>Pellentesque aliquam maximus ...</p>
-                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-4.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
-                <p>Duis ullamcorper velit id enim rutrum...</p>
-                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-5.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
-                <p>Suspendisse potenti...</p>
-                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-6.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
-                <p>Lorem ipsum ...</p>
-                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-7.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
-                <p>Aenean id congue orci...</p>
-                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-8.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
-                <p>Lorem ipsum ...</p>
-                <p> <img data-src="https://cdn.framework7.io/placeholder/people-500x500-1.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
-                <p>Pellentesque aliquam maximus ...</p>
-                <p> <img data-src="https://cdn.framework7.io/placeholder/nature-500x500-10.jpg" width="1500" height="1500" class="lazy lazy-fade-in demo-lazy"/></p>
-                <p>Duis ullamcorper velit...</p>
-                <p><b>Using as background image:</b></p>
-                <div data-background="https://cdn.framework7.io/placeholder/people-500x500-10.jpg" class="lazy lazy-fade-in demo-lazy"></div>
-                <p>Suspendisse potenti...</p>
-              </div>
-            </div>
-
+      include:coreSource ../docs-demos/core/lazy-load.f7.html

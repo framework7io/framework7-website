@@ -32,7 +32,8 @@ function processQueue(router, routerQueue, routeQueue, to, from, resolve, _rejec
       reject: function reject() {
         _reject();
       },
-      direction: direction
+      direction: direction,
+      app: router.app
     });
   }
 

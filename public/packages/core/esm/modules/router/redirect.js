@@ -30,7 +30,8 @@ export default function redirect(direction, route, options) {
       to: route,
       resolve: redirectResolve,
       reject: redirectReject,
-      direction: direction
+      direction: direction,
+      app: router.app
     });
 
     if (redirectUrl && typeof redirectUrl === 'string') {

@@ -236,6 +236,7 @@ var Framework7 = /*#__PURE__*/function (_Framework7Class) {
       app.$el = (0, _dom.default)(el);
       app.$el[0].f7 = app;
       app.$elComponent = el.f7Component;
+      app.el = app.$el[0];
       if (callback) callback();
     }, function () {});
   };

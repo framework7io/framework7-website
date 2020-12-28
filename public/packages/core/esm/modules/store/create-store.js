@@ -128,8 +128,7 @@ function createStore(storeParams) {
 
       var result = actions[actionName]({
         state: store.state,
-        action: store.action,
-        get: store.get
+        dispatch: store.dispatch
       }, data);
       resolve(result);
     });

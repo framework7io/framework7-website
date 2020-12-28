@@ -5,8 +5,6 @@
   - Package
     - New types in `framework7/types`
       - `Framework7Params` -> `Framework7Parameters`
-  - Panel
-    - Improved support for nested panels. Now panel can be created and correctly opened inside of the page (including with breakpoints)
   - Button
     - New loading buttons
   - Store

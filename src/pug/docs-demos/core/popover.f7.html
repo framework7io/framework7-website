@@ -1,0 +1,70 @@
+<template>
+  <div id="app">
+    <div class="view view-main view-init">
+      <!-- source start -->
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="left"><a class="link popover-open" href="#" data-popover=".popover-about">About</a></div>
+            <div class="title">Popover</div>
+            <div class="right"><a class="link popover-open" href="#" data-popover=".popover-links">Links</a></div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block">
+            <p><a class="link popover-open" href="#" data-popover=".popover-about">Open About Popover</a></p>
+            <p><a class="link popover-open" href="#" data-popover=".popover-links">Open Links Popover</a></p>
+          </div>
+        </div>
+
+        <div class="popover popover-about">
+          <div class="popover-inner">
+            <div class="block">
+              <p>About</p>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a
+                nunc.
+                Quisque sodales scelerisque est, at porta justo cursus ac.</p>
+            </div>
+          </div>
+        </div>
+        <div class="popover popover-links">
+          <div class="popover-inner">
+            <div class="list">
+              <ul>
+                <li><a class="list-button item-link" href="#">Link 1</a></li>
+                <li><a class="list-button item-link" href="#">Link 2</a></li>
+                <li><a class="list-button item-link" href="#">Link 3</a></li>
+                <li><a class="list-button item-link" href="#">Link 4</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>
+
+<style>
+  .popover {
+    width: 200px;
+  }
+</style>
+
+<script>
+  export default (props, { $, $f7, $on }) => {
+
+    $on('pageInit', () => {
+      // DOM events for About popover
+      $('.popover-about').on('popover:open', function (e) {
+        console.log('About popover open');
+      });
+      $('.popover-about').on('popover:opened', function (e) {
+        console.log('About popover opened');
+      });
+    })
+
+    return $render;
+  }
+</script>

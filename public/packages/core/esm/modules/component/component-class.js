@@ -123,6 +123,8 @@ var Component = /*#__PURE__*/function () {
   var _proto = Component.prototype;
 
   _proto.on = function on(eventName, handler) {
+    if (!this.__eventHandlers) return;
+
     this.__eventHandlers.push({
       eventName: eventName,
       handler: handler
@@ -130,6 +132,8 @@ var Component = /*#__PURE__*/function () {
   };
 
   _proto.once = function once(eventName, handler) {
+    if (!this.__eventHandlers) return;
+
     this.__onceEventHandlers.push({
       eventName: eventName,
       handler: handler
@@ -175,7 +179,7 @@ var Component = /*#__PURE__*/function () {
       $: $,
       $id: this.id,
       $f7: this.f7,
-      $f7ready: this.f7ready,
+      $f7ready: this.f7ready.bind(this),
       $theme: this.theme,
       $tick: this.tick.bind(this),
       $update: this.update.bind(this),
@@ -224,6 +228,7 @@ var Component = /*#__PURE__*/function () {
 
   _proto.attachEvents = function attachEvents() {
     var $el = this.$el;
+    if (!this.__eventHandlers) return;
 
     this.__eventHandlers.forEach(function (_ref2) {
       var eventName = _ref2.eventName,
@@ -240,6 +245,7 @@ var Component = /*#__PURE__*/function () {
 
   _proto.detachEvents = function detachEvents() {
     var $el = this.$el;
+    if (!this.__eventHandlers) return;
 
     this.__eventHandlers.forEach(function (_ref4) {
       var eventName = _ref4.eventName,
@@ -347,6 +353,7 @@ var Component = /*#__PURE__*/function () {
   _proto.destroy = function destroy() {
     var _this8 = this;
 
+    if (this.__destroyed) return;
     var window = getWindow();
     this.hook('onBeforeUnmount');
     if (this.styleEl) $(this.styleEl).remove();

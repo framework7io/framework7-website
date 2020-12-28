@@ -862,7 +862,8 @@ function back() {
         from: router.currentRoute,
         resolve: asyncResolve,
         reject: asyncReject,
-        direction: 'backward'
+        direction: 'backward',
+        app: app
       });
     }
 

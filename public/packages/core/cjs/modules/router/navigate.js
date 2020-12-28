@@ -977,7 +977,8 @@ function navigate(navigateParams, navigateOptions) {
         from: router.currentRoute,
         resolve: asyncResolve,
         reject: asyncReject,
-        direction: 'forward'
+        direction: 'forward',
+        app: app
       });
     }
 

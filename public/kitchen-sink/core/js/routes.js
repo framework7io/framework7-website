@@ -2,8 +2,11 @@ var routes = [
   // Index page
   {
     path: '/',
-    url: './index.html',
+    componentUrl: './pages/home.html',
     name: 'home',
+    master(f7) {
+      return f7.theme === 'aurora';
+    },
   },
   // About page
   {
@@ -14,53 +17,53 @@ var routes = [
   // Right Panel pages
   {
     path: '/panel-right-1/',
-    content: '\
-      <div class="page">\
-        <div class="navbar">\
-          <div class="navbar-bg"></div>\
-          <div class="navbar-inner sliding">\
-            <div class="left">\
-              <a href="#" class="link back">\
-                <i class="icon icon-back"></i>\
-                <span class="if-not-md">Back</span>\
-              </a>\
-            </div>\
-            <div class="title">Panel Page 1</div>\
-          </div>\
-        </div>\
-        <div class="page-content">\
-          <div class="block">\
-            <p>This is a right panel page 1</p>\
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo saepe aspernatur inventore dolorum voluptates consequatur tempore ipsum! Quia, incidunt, aliquam sit veritatis nisi aliquid porro similique ipsa mollitia eaque ex!</p>\
-          </div>\
-        </div>\
-      </div>\
-    ',
+    content: `
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner sliding">
+            <div class="left">
+              <a href="#" class="link back">
+                <i class="icon icon-back"></i>
+                <span class="if-not-md">Back</span>
+              </a>
+            </div>
+            <div class="title">Panel Page 1</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block">
+            <p>This is a right panel page 1</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo saepe aspernatur inventore dolorum voluptates consequatur tempore ipsum! Quia, incidunt, aliquam sit veritatis nisi aliquid porro similique ipsa mollitia eaque ex!</p>
+          </div>
+        </div>
+      </div>
+    `,
   },
   {
     path: '/panel-right-2/',
-    content: '\
-      <div class="page">\
-        <div class="navbar">\
-          <div class="navbar-bg"></div>\
-          <div class="navbar-inner sliding">\
-            <div class="left">\
-              <a href="#" class="link back">\
-                <i class="icon icon-back"></i>\
-                <span class="if-not-md">Back</span>\
-              </a>\
-            </div>\
-            <div class="title">Panel Page 2</div>\
-          </div>\
-        </div>\
-        <div class="page-content">\
-          <div class="block">\
-            <p>This is a right panel page 2</p>\
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo saepe aspernatur inventore dolorum voluptates consequatur tempore ipsum! Quia, incidunt, aliquam sit veritatis nisi aliquid porro similique ipsa mollitia eaque ex!</p>\
-          </div>\
-        </div>\
-      </div>\
-    ',
+    content: `
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner sliding">
+            <div class="left">
+              <a href="#" class="link back">
+                <i class="icon icon-back"></i>
+                <span class="if-not-md">Back</span>
+              </a>
+            </div>
+            <div class="title">Panel Page 2</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block">
+            <p>This is a right panel page 2</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo saepe aspernatur inventore dolorum voluptates consequatur tempore ipsum! Quia, incidunt, aliquam sit veritatis nisi aliquid porro similique ipsa mollitia eaque ex!</p>
+          </div>
+        </div>
+      </div>
+    `,
   },
 
   // Components
@@ -77,12 +80,16 @@ var routes = [
     componentUrl: './pages/appbar.html',
   },
   {
+    path: '/area-chart/',
+    componentUrl: './pages/area-chart.html',
+  },
+  {
     path: '/autocomplete/',
     componentUrl: './pages/autocomplete.html',
   },
   {
     path: '/badge/',
-    componentUrl: './pages/badge.html',
+    url: './pages/badge.html',
   },
   {
     path: '/buttons/',
@@ -193,6 +200,10 @@ var routes = [
     componentUrl: './pages/menu.html',
   },
   {
+    path: '/menu-list/',
+    componentUrl: './pages/menu-list.html',
+  },
+  {
     path: '/messages/',
     componentUrl: './pages/messages.html',
   },
@@ -219,6 +230,10 @@ var routes = [
   {
     path: '/picker/',
     componentUrl: './pages/picker.html',
+  },
+  {
+    path: '/pie-chart/',
+    componentUrl: './pages/pie-chart.html',
   },
   {
     path: '/popup/',
@@ -389,44 +404,44 @@ var routes = [
       {
         path: '/',
         id: 'tab1',
-        content: ' \
-        <div class="block"> \
-          <p>Tab 1 content</p> \
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p> \
-          <p>Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.</p> \
-          <p>Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.</p> \
-        </div> \
-        ',
+        content: `
+        <div class="block">
+          <p>Tab 1 content</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
+          <p>Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.</p>
+          <p>Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.</p>
+        </div>
+        `,
       },
       {
         path: '/tab2/',
         id: 'tab2',
-        content: '\
-        <div class="block"> \
-          <p>Tab 2 content</p> \
-          <p>Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!</p> \
-          <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p> \
-          <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p> \
-        </div> \
-        ',
+        content: `
+        <div class="block">
+          <p>Tab 2 content</p>
+          <p>Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!</p>
+          <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p>
+          <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
+        </div>
+        `,
       },
       {
         path: '/tab3/',
         id: 'tab3',
-        content: '\
-        <div class="block"> \
-          <p>Tab 3 content</p> \
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p> \
-          <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p> \
-          <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p> \
-        </div> \
-        ',
+        content: `
+        <div class="block">
+          <p>Tab 3 content</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
+          <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p>
+          <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
+        </div>
+        `,
       },
     ],
   },
   {
     path: '/text-editor/',
-    componentUrl: './pages/text-editor.html'
+    componentUrl: './pages/text-editor.html',
   },
   {
     path: '/toast/',
@@ -513,24 +528,8 @@ var routes = [
 
   // Page Loaders
   {
-    path: '/page-loader-template7/:user/:userId/:posts/:postId/',
-    templateUrl: './pages/page-loader-template7.html',
-    // additional context
-    options: {
-      context: {
-        foo: 'bar',
-      },
-    },
-  },
-  {
     path: '/page-loader-component/:user/:userId/:posts/:postId/',
     componentUrl: './pages/page-loader-component.html',
-    // additional context
-    options: {
-      context: {
-        foo: 'bar',
-      },
-    },
   },
   {
     path: '/master-detail/',
@@ -539,9 +538,9 @@ var routes = [
     detailRoutes: [
       {
         path: '/master-detail/:id/',
-        templateUrl: './pages/master-detail-detail.html',
+        componentUrl: './pages/master-detail-detail.html',
       },
-    ]
+    ],
   },
 
   // Default route (404 page). MUST BE THE LAST

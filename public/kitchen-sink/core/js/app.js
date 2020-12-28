@@ -10,21 +10,11 @@ if (document.location.search.indexOf('theme=') >= 0) {
 // Init App
 var app = new Framework7({
   id: 'io.framework7.testapp',
-  root: '#app',
-  theme: theme,
-  data: function () {
-    return {
-      user: {
-        firstName: 'John',
-        lastName: 'Doe',
-      },
-    };
-  },
-  methods: {
-    helloWorld: function () {
-      app.dialog.alert('Hello World!');
-    },
-  },
+  el: '#app',
+  theme,
+  // store.js,
+  store: store,
+  // routes.js,
   routes: routes,
   popup: {
     closeOnEscape: true,
