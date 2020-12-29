@@ -1,7 +1,7 @@
 {
   "name": "framework7-website",
-  "releaseVersion": "5.7.14",
-  "releaseDate": "November 9, 2020",
+  "releaseVersion": "6.0.0-beta.7",
+  "releaseDate": "December 29, 2020",
   "description": "Framework7 Website",
   "cdn": "//cdn.framework7.io",
   "keywords": [
