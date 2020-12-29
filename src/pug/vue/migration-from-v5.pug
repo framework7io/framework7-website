@@ -35,12 +35,12 @@ block content
     h3 Dom7
     p Framework7 v6 uses new Dom7 v3. It has breaking changes for all "iteration" methods like `.each()` and `.map()`. Specifically, order of arguments has been swapped to match native JavaScript array iterators:
     ```js
-      // in v5
+      // in v5 (Dom7 v2)
       $('p').each((index, el) => {
         // ...
       })
 
-      // in v6 - arguments are swapped, element is now always the first argument
+      // in v6 (Dom7 v3) - arguments are swapped, element is now always the first argument
       $('p').each((el, index) => {
         // ...
       })

@@ -29,6 +29,10 @@ module.exports = (src, { strip = true, unwrapTemplate = false } = {}) => {
         /[ ]*<\/template>/,
         '</template>',
       );
+      if (src.indexOf('<script>') < 0 && src.indexOf('<style>') < 0) {
+        src = src.split('<template>')[1].split('</template>')[0];
+        src = stripIndent(src).trim();
+      }
     }
   }
   if (unwrapTemplate) {

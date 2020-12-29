@@ -1,9 +1,4 @@
 - Core
-  - Page
-    - New Page Title element
   - Package
     - New types in `framework7/types`
-  - Button
-    - New loading buttons
   - Store
-  - Migration guide

@@ -100,6 +100,14 @@
               <button class="col button button-small button-round button-fill">Fill</button>
             </p>
           </div>
+          <div class="block-title">Preloader Buttons</div>
+          <div class="block block-strong">
+            <button class="button button-large button-fill button-preloader ${isLoading ? 'button-loading' : ''}"
+              @click=${load}>
+              <span class="preloader"></span>
+              <span>Load</span>
+            </button>
+          </div>
           <div class="block-title">Color Buttons</div>
           <div class="block block-strong">
             <p class="row">
@@ -141,3 +149,19 @@
     </div>
   </div>
 </template>
+<script>
+  export default (props, { $update }) => {
+    let isLoading = false;
+
+    const load = () => {
+      isLoading = true;
+      $update();
+      setTimeout(() => {
+        isLoading = false;
+        $update();
+      }, 3000);
+    }
+
+    return $render;
+  }
+</script>

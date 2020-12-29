@@ -661,6 +661,28 @@ block content
       li when you click on link with `/right-panel-ajax/` href attribute it will perform Ajax request to `right-panel.html` file and open it as a Right Panel,
       li when you click on link with `/panel-component/` href attribute it will perform Ajax request to `panel-component.html` file, parse it as a Router Component and open it as a Panel,
 
+    h2 Nested Panels
+    p In addition to main app panels, it is also possible to have nested panels, for example inside of the Page. To make Panel nested we need to specify its `containerEl` parameter pointing on parent container (e.g. Page element) and put it before `page-content` element:
+    ```html
+      <div class="page" id="panel-page">
+        <div class="navbar">
+          <!-- ... -->
+        </div>
+
+        <!-- Nested panel has parent page specified in containerEl parameter -->
+        <div class="panel panel-left panel-cover panel-init theme-dark" id="panel-nested" data-container-el="#panel-page">
+          <div class="page">
+            <!-- ... -->
+          </div>
+        </div>
+
+        <!-- Rest of the page -->
+        <div class="page-content">
+          <!-- ... -->
+        </div>
+      </div>
+    ```
+
     +cssVars('panel')
 
     .with-device

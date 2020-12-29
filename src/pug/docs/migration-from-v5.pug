@@ -1,0 +1,258 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Migration from Framework7 v5 | Framework7 Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Migration from Framework7 v5
+    ul.docs-index
+    p In this article we will walk through most of the breaking changes to check what needs to be done to migrate your app from Framework7 v5 to Framework7 v6.
+
+    h2 Package
+    p Core version has <a href="package.html">new package structure</a>, and you may need to tweak your imports for `lite` and `bundle` versions:
+    ul
+      li `framework7/framework7.esm.js` is now `framework7`
+      li `framework7/framework7.esm.bundle.js` is now `framework7/bundle`
+      li `framework7/framework7-lite.esm.js` is now `framework7/lite`
+      li `framework7/framework7-lite.esm.bundle.js` is now `framework7/lite-bundle`
+    p So if you have something like this in v5:
+    ```js
+      import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
+    ```
+    p it should be changed to:
+    ```js
+      import Framework7 from 'framework7/lite-bundle'
+    ```
+
+    h2 Dom7
+    p Framework7 v6 uses new Dom7 v3. It has breaking changes for all "iteration" methods like `.each()` and `.map()`. Specifically, order of arguments has been swapped to match native JavaScript array iterators:
+    ```js
+      // in v5 (Dom7 v2)
+      $('p').each((index, el) => {
+        // ...
+      })
+
+      // in v6 (Dom7 v3) - arguments are swapped, element is now always the first argument
+      $('p').each((el, index) => {
+        // ...
+      })
+    ```
+
+    h2 Template7
+    p Template7 template library has been completely removed from Framework7. If your app still needs it, just install it manually:
+    ```
+      npm i template7
+    ```
+    ```js
+      import Template7 from 'template7';
+
+      Template7.compile('...');
+    ```
+
+    h2 Request
+    p Request library's import has been renamed from `Request` to `request`. Also now it uses Promises for all methods. Check updated <a href="request.html">Request documentation</a>.
+    ```js
+      // import renamed
+      import { request } from 'framework7/lite';
+
+      // not it always uses Promises
+      request.get('some-url').then((res) => {
+        console.log(res.data);
+      });
+    ```
+
+    h2 Device & Support
+    p Device & Support imports are also changed. Now only getters functions are available for imports.
+    p In v5 we had:
+    ```js
+      import { Device, Support } from 'framework7';
+
+      if (Device.android) {
+        console.log('it is Android');
+      }
+
+      if (Support.touch) {
+        console.log('touch is supported');
+      }
+    ```
+    p In v6 we should use different approach:
+    ```js
+      import { getDevice, getSupport } from 'framework7';
+
+      const device = getDevice();
+      const support = getSupport();
+
+      if (device.android) {
+        console.log('it is Android');
+      }
+
+      if (support.touch) {
+        console.log('touch is supported');
+      }
+    ```
+
+    h2 Utils
+    p Utils import has been renamed from `Utils` to `utils`:
+    ```js
+      // in v5
+      import { Utils } from 'framework7';
+
+      // in v6
+      import { utils } from 'framework7';
+    ```
+
+    h2 View/Router
+    h3 Route Callback Context
+    p Route's `beforeEnter`, `beforeLeave`, `redirect` and `async` methods now receive a single object with following props:
+    ul
+      li `to`
+      li `from`
+      li `resolve`
+      li `reject`
+      li `direction` (new in v6 - can be `forward` or `backward`)
+      li `router` (new in v6 - current router instance)
+      li `app` (new in v6 - f7 app instance)
+    p Check updated <a href="routes.html">Routes documentation</a> for more details and examples.
+
+    h3 `pushState` -> `browserHistory`
+    p `pushState` parameters renamed to `browserHistory`:
+
+    ```js
+      // in v5
+      app.views.create('.view-main', {
+        pushState: true,
+        pushStateSeparator: '',
+      });
+
+      // in v6
+      app.views.create('.view-main', {
+        browserHistory: true,
+        browserHistorySeparator: '',
+      });
+    ```
+    h3 Route `context`
+    p Route's `options.context` property has been removed in favor of using `options.props`. Check updated <a href="routes.html">Routes documentation</a> for more details and examples.
+
+    h3 Route `template` and `templateUrl`
+    p With removal of Template7, routes loaded by `template` and `templateUrl` are not supported anymore. Such routes should be migrated to <a href="router-component.html">Router Component</a>
+
+    h2 App `data` & `methods`
+    p App `data` and `methods` parameters for storing "global" app state are completely removed.
+    p Now Framework7 comes with new Store library for managing app state. Check <a href="store.html">new Store documentation</a> and how to use in Framework7 Vue.
+
+    h2 App `root`
+    p App `root` parameter (to pass app root element) renamed to `el`:
+    ```js
+      // in v5
+      const app = new Framework7({
+        root: '#app'
+      })
+
+      // in v6
+      const app = new Framework7({
+        el: '#app'
+      })
+    ```
+
+    p `app.root` property with Dom7 instance of root element, renamed to `app.$el`
+
+    h2 Virtual List
+    p With removal of Template7, `itemTemplate` feature, to render virtual list items by Template7 template, is not supported anymore. It should be migrated to `renderItem` callback
+
+    h2 Preloader
+    p Preloader layour for MD theme has been changed to new SVG layout. Check updated <a href="./preloader.html">Preloader documentation</a> for more details and examples.
+
+    h2 Skeleton Elements
+    p Skeleton Elements now also integrated as a standalone library. For the full API documentation and more examples check out the official <a href="https://skeleton-elements.dev/core/" target="_blank">Skeleton Elements for HTML & CSS documentation</a>.
+
+    h2 New Router Component
+    p Framework7 v6 has completely new syntax and functionality for Router Component. So v5 version which used Template7 is not supported anymore, and you should migrate all components to <a href="router-component.html">new Router Component syntax</a>.
+    p For example in v5:
+    ```html
+      <template>
+        <div class="page">
+          <p>Value is: {{foo}}</p>
+          <p>
+            <a href="#" @click="changeValue">Change value</a>
+          </p>
+          <ul>
+            {{each items}}
+            <li>{{title}}</li>
+            {{/each}}
+          </ul>
+        </div>
+      </template>
+      <script>
+        export default {
+          data() {
+            return {
+              foo: 'bar',
+              items: [
+                {
+                  title: 'Item 1'
+                },
+                {
+                  title: 'Item 2'
+                },
+              ]
+            }
+          },
+          methods: {
+            changeValue() {
+              this.foo = 'bar 2';
+              this.$update();
+            },
+          },
+          on: {
+            pageInit() {
+              this.$app.dialog.alert('page init')
+            }
+          }
+        }
+      </script>
+    ```
+    p Should be changed to this in v6:
+    :code(lang="html")
+      <template>
+        <div class="page">
+          <p>Value is: ${foo}</p>
+          <p>
+            <a href="#" @click=${changeValue}>Change value</a>
+          </p>
+          <ul>
+            ${items.map((item) => $h`
+            <li>${item.title}</li>
+            `)}
+          </ul>
+        </div>
+      </template>
+      <script>
+        export default (props, { $f7, $on, $update }) => {
+          let foo = 'bar';
+          const items = [
+            {
+              title: 'Item 1'
+            },
+            {
+              title: 'Item 2'
+            },
+          ];
+
+          const changeValue = () => {
+            foo = 'bar 2';
+            $update();
+          }
+
+          $on('pageInit', () => {
+            $f7.dialog.alert('page init')
+          })
+
+          return $render;
+        }
+      </script>
+

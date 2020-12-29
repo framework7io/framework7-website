@@ -104,6 +104,12 @@ block content
           td button-active
           td Active/selected button state. For use inside of Segmented
         tr
+          td button-preloader
+          td Should be added to button with preloader to make loading buttons
+        tr
+          td button-loading
+          td Controls button state to show/hide preloader and hide/show button text (switch button to loading state). `button-preloader` should be also added to button
+        tr
           td color-[color]
           td Color button, where <b>[color]</b> is one of the <a href="color-themes.html">default colors</a>
     p And of course we can mix these classes:
@@ -119,6 +125,22 @@ block content
 
           <!-- small red button -->
           <a class="button button-small color-red">Button</a>
+    h2 Preloader Button
+    p It is possible to create dynamic preloader button. Such button must have Preloader inside and button text wrapped with `<span>` tag, and additional `button-preloader` class:
+    ```html
+      <button class="button button-preloader">
+        <span class="preloader"></span>
+        <span>Load</span>
+      </button>
+    ```
+    p And to show preloader we need to add extra `button-loading` class (it will show inner preloader and hide button text):
+    ```html
+      <button class="button button-preloader button-loading">
+        <span class="preloader"></span>
+        <span>Load</span>
+      </button>
+    ```
+
     h2 Segmented Control
     p A segmented control is a linear set of two or more segments (buttons), each of which functions as a mutually exclusive button. Within the control, all buttons are equal in width. Segmented controls are often used to display different views (switch tabs).
     h3 Segmented Layout
