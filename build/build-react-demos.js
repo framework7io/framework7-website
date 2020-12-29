@@ -45,6 +45,8 @@ function buildOne(name, cb) {
         }),
         commonjs(),
         babel({
+          presets: ['@babel/preset-react'],
+          configFile: false,
           babelHelpers: 'bundled',
         }),
       ],
