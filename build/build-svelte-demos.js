@@ -68,6 +68,20 @@ function buildOne(name, cb) {
 }
 
 async function buildAll(cb) {
+  try {
+    fs.readdirSync(path.resolve(__dirname, '../public/docs-demos/svelte'))
+      .filter(
+        (file) =>
+          (file.includes('.js') && !file.includes('.json')) ||
+          file.includes('.css') ||
+          file.includes('.html'),
+      )
+      .forEach((file) => {
+        fs.unlinkSync(path.resolve(__dirname, `../public/docs-demos/svelte/${file}`));
+      });
+  } catch (err) {
+    // err happened
+  }
   const svelteDemos = fs
     .readdirSync(path.resolve(__dirname, '../src/pug/docs-demos/svelte'))
     .filter((f) => f.indexOf('.svelte') >= 0)

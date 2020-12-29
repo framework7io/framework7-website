@@ -67,6 +67,15 @@ function buildOne(name, cb) {
 }
 
 async function buildAll(cb) {
+  try {
+    fs.readdirSync(path.resolve(__dirname, '../public/docs-demos/react'))
+      .filter((file) => file.includes('.js') || file.includes('.css') || file.includes('.html'))
+      .forEach((file) => {
+        fs.unlinkSync(path.resolve(__dirname, `../public/docs-demos/react/${file}`));
+      });
+  } catch (err) {
+    // err happened
+  }
   const reactDemos = fs
     .readdirSync(path.resolve(__dirname, '../src/pug/docs-demos/react'))
     .filter((f) => f.indexOf('.jsx') >= 0)

@@ -40,10 +40,23 @@ function buildOne(name, cb) {
 }
 
 async function buildAll(cb) {
+  try {
+    fs.readdirSync(path.resolve(__dirname, '../public/docs-demos/core'))
+      .filter(
+        (file) =>
+          (file.includes('.js') && !file.includes('.json')) ||
+          file.includes('.css') ||
+          file.includes('.html'),
+      )
+      .forEach((file) => {
+        fs.unlinkSync(path.resolve(__dirname, `../public/docs-demos/core/${file}`));
+      });
+  } catch (err) {
+    // err happened
+  }
   const coreDemos = fs
     .readdirSync(path.resolve(__dirname, '../src/pug/docs-demos/core'))
-    .filter((f) => f.indexOf('.html') >= 0)
-    .filter((f) => f.indexOf('.f7.html') < 0);
+    .filter((f) => f.includes('.f7.html') && !f.includes('_'));
 
   // eslint-disable-next-line
   for (name of coreDemos) {

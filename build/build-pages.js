@@ -4,6 +4,8 @@ const gulpPug = require('gulp-pug');
 const connect = require('gulp-connect');
 const pug = require('pug');
 const through2 = require('through2');
+const fs = require('fs');
+const path = require('path');
 
 const pkg = require('../package.json');
 const iconsManifest = require('./manifest-icons.json');
@@ -13,11 +15,13 @@ const getYamlData = require('./utils/get-yaml-data');
 const inlineSvg = require('./utils/inline-svg');
 const cssVars = require('./utils/css-vars');
 const codeFilter = require('./utils/code-filter');
+const codeInlineFilter = require('./utils/code-inline-filter');
+
 const coreSourceFilter = require('./utils/core-source-filter');
 const svelteSourceFilter = require('./utils/svelte-source-filter');
 const vueSourceFilter = require('./utils/vue-source-filter');
 const reactSourceFilter = require('./utils/react-source-filter');
-const codeInlineFilter = require('./utils/code-inline-filter');
+
 const createIndex = require('./utils/create-index');
 const createMobilePreviewLinks = require('./utils/create-mobile-preview-links');
 const createInlineCodeTags = require('./utils/create-inline-code-tags');
@@ -35,6 +39,43 @@ if (!pug.filter && !pug.filters.code) {
   };
 }
 
+const docs = [];
+const vue = [];
+const svelte = [];
+const react = [];
+
+const cleanup = () => {
+  const removeDocs = fs
+    .readdirSync(path.resolve(__dirname, '../public/docs'))
+    .filter((file) => file.includes('.html'))
+    .filter((file) => docs.indexOf(file.split('.html')[0]) < 0);
+  const removeVue = fs
+    .readdirSync(path.resolve(__dirname, '../public/vue'))
+    .filter((file) => file.includes('.html'))
+    .filter((file) => vue.indexOf(file.split('.html')[0]) < 0);
+  const removeReact = fs
+    .readdirSync(path.resolve(__dirname, '../public/react'))
+    .filter((file) => file.includes('.html'))
+    .filter((file) => react.indexOf(file.split('.html')[0]) < 0);
+  const removeSvelte = fs
+    .readdirSync(path.resolve(__dirname, '../public/svelte'))
+    .filter((file) => file.includes('.html'))
+    .filter((file) => svelte.indexOf(file.split('.html')[0]) < 0);
+
+  removeDocs.forEach((file) => {
+    fs.unlinkSync(path.resolve(__dirname, `../public/docs/${file}`));
+  });
+  removeVue.forEach((file) => {
+    fs.unlinkSync(path.resolve(__dirname, `../public/vue/${file}`));
+  });
+  removeReact.forEach((file) => {
+    fs.unlinkSync(path.resolve(__dirname, `../public/react/${file}`));
+  });
+  removeSvelte.forEach((file) => {
+    fs.unlinkSync(path.resolve(__dirname, `../public/svelte/${file}`));
+  });
+};
+
 function buildPages(
   cb,
   {
@@ -46,9 +87,7 @@ function buildPages(
     ? process.argv.slice(3).toString().replace('-', '') !== 'local'
     : true;
   const time = Date.now();
-
   const name = src[0] === '**/*.pug' ? 'all' : src.join(', ');
-
   const pretty = false;
 
   console.log(`Starting pug: ${name}`);
@@ -57,6 +96,16 @@ function buildPages(
     .src(src, { cwd: 'src/pug' })
     .pipe(
       gulpData((file) => {
+        if (file.path) {
+          if (file.path.includes('pug/docs/'))
+            docs.push(file.path.split('pug/docs/')[1].split('.pug')[0]);
+          if (file.path.includes('pug/vue/'))
+            vue.push(file.path.split('pug/vue/')[1].split('.pug')[0]);
+          if (file.path.includes('pug/react/'))
+            react.push(file.path.split('pug/react/')[1].split('.pug')[0]);
+          if (file.path.includes('pug/svelte/'))
+            svelte.push(file.path.split('pug/svelte/')[1].split('.pug')[0]);
+        }
         return { srcFileUrl: getSrcFileUrl(file) };
       }),
     )
@@ -97,6 +146,7 @@ function buildPages(
     .pipe(gulp.dest(dest))
     .pipe(connect.reload())
     .on('end', () => {
+      cleanup();
       console.log(`Finished pug ${name} in ${Date.now() - time}ms`);
       if (cb) cb();
     });
