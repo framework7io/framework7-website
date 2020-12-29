@@ -1,0 +1,46 @@
+<template>
+  <div id="app">
+    <div class="view view-main" data-url="/"></div>
+  </div>
+</template>
+<script>
+  const store = Framework7.createStore({
+    state: {
+      loading: false,
+      users: [],
+    },
+    actions: {
+      getUsers({ state }) {
+        state.loading = true;
+        setTimeout(() => {
+          state.users = ['User 1', 'User 2', 'User 3', 'User 4', 'User 5'];
+          state.loading = false;
+        }, 3000);
+      },
+    },
+    getters: {
+      loading({ state }) {
+        return state.loading;
+      },
+      users({ state }) {
+        return state.users;
+      },
+    },
+  });
+
+  export default (props, { $f7, $onMounted }) => {
+    $f7.store = store;
+    $onMounted(() => {
+      $f7.views.create('.view-main', {
+        url: '/',
+        routes: [
+          {
+            path: '/',
+            componentUrl: './store_page.f7.html',
+          },
+        ]
+      })
+    })
+    return $render;
+  }
+</script>

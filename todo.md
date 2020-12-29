@@ -1,4 +1,4 @@
 - Core
   - Package
     - New types in `framework7/types`
-  - Store
+  - New Router components

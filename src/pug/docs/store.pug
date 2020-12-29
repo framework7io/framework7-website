@@ -1,14 +1,13 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'react';
-  - var title = 'Store | Framework7 React Documentation';
+  - var title = 'Store | Framework7 Documentation';
 
 block content
   include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-menu-react
+    include ../_docs-menu
   .docs-content
     +improveDocsLink
     h1 Store
@@ -20,7 +19,7 @@ block content
     p First of all we need to create the store. Let's create separate `store.js` file for that:
     ```js
       // First import createStore function from Framework7 core
-      import { createStore } from 'framework7/lite';
+      import { createStore } from 'framework7';
 
       // create store
       const store = createStore({
@@ -57,6 +56,15 @@ block content
 
       // export store
       export default store;
+    ```
+    p If you are not using modules, then `store.js` file will look like:
+    ```js
+      // save store as global object
+      window.store = Framework7.createStore({
+        state: { /* ... */ },
+        actions: { /* ... */ },
+        getters: { /* ... */ },
+      })
     ```
     p In this example we used the following API function:
     .method-wrap
@@ -104,24 +112,16 @@ block content
 
     h2 Use Store
     p Now when we created out store, let's find out how to use it.
-    p First of all we need to pass created store to the main App component:
-    ```jsx
-      import React from 'react';
-      import { App, View } from 'framework7-react';
+    p First of all we need to pass created store to the main App instance:
+    ```js
       // import our store
       import store from 'path/to/store.js';
 
-      export const App = () => {
-        // ...
-        return (
-          {/* pass store to the App's "store" prop */ }
-          <App store={store}>
-            <View main>
-              {/* ... */}
-            </View>
-          </App>
-        )
-      }
+      const app = new Framework7({
+        // pass store to the app's "store" parameter
+        store,
+        ...
+      })
     ```
 
     h3 Access Store & State
@@ -133,9 +133,15 @@ block content
     ```
     p Or by accessing Framework7 instance' `store` property:
     ```js
-      import { f7 } from 'framework7-react';
+      import store from 'path/to/store.js';
 
-      console.log(f7.store.state.users);
+      const app = new Framework7({
+        store,
+        ...
+      })
+
+      // somewhere later
+      console.log(app.store.state.users);
     ```
 
     h3 Dispatching Actions
@@ -217,30 +223,13 @@ block content
     ```
     p.important-note Getters, unlike state, are meant to be reactive. So when you don't need any reactivity you can just access `store.state` directly, otherwise use getters.
 
-    h2 Usage With React Components
-    p There is a special `useStore` helper for use in React components to keep store reactive (auto update components when state/getters values changed).
-    .method-wrap
-      p
-        span.method useStore(<span>getterName</span>)
-        | - returns directly getter value and subscribes to the state updates
-      ul.method-parameters
-        li
-          span.parameter getterName
-          |  - <span class="parameter-type">string</span> - name of the getters handler
-      p.method-returns Method returns getter handler value
-    p If we need to get getter value from another store instance then we also need to pass the store:
-    .method-wrap
-      p
-        span.method useStore(<span>store</span>, <span>getterName</span>)
-        | - returns directly getter value and subscribes to the state updates
-      ul.method-parameters
-        li
-          span.parameter store
-          |  - <span class="parameter-type">store instance</span> - store instance to look getters from. If not specified then default store passed to the `<App>` component will be used.
-        li
-          span.parameter getterName
-          |  - <span class="parameter-type">string</span> - name of the getters handler
-      p.method-returns Method returns getter handler value
+    h2 Usage With Router Components
+    p Router component context has `$store` property with the following properties:
+    ul
+      li `state` - with store state
+      li `dispatch` - to call actions
+      li `getters` - to access reactive getters handlers
+
     p If we have the following store:
     ```js
       const store = createStore({
@@ -259,40 +248,63 @@ block content
         },
       });
     ```
-    p Then, for example, we should use the following in React component:
-    ```jsx
-      import React, { useEffect } from 'react';
-      // import special useStore helper/hook
-      import { useStore, Page, List, ListItem } from 'framework7-react';
-      // import store
-      import store from 'path/to/store.js'
+    p Then, for example, we should use the following in Router component:
+    :code(lang="html")
+      <template>
+        <div class="page">
+          <ul>
+            <!-- getter has value in ".value" property -->
+            ${users.value.map((user) => $h`
+              <li>${user.name}</li>
+            `)}
+          </ul>
+        </div>
+      </template>
+      <script>
+        export default (props, { $store, $on }) => {
+          // retreive "users" getter handler value. Initially empty array
+          const users = $store.getters('users');
 
-      export const UsersPage = () => {
-        // retreive "users" getter handler value. Initially empty array
-        const users = useStore('users');
+          $on('pageInit', () => {
+            // load users on page init
+            store.dispatch('getUsers');
+          });
 
-        useEffect(() => {
-          // load users when component mounted
-          store.dispatch('getUsers');
-        }, []);
-
-        return (
-          <Page>
-            <List>
-              {users.map((user, index) => (
-                <ListItem title={user.name} key={index} />
-              ))}
-            </List>
-          </Page>
-        )
-      }
-    ```
-    p Because we used Framework7 `useStore` helper/hook, the component will be auto updated when users loaded.
+          return $render;
+        }
+      </script>
 
     .with-device
-      h2(data-device-preview="../docs-demos/react/store.html") Examples
-      include:reactSource ../docs-demos/react/store.js
-      include:reactSource(strip=false) ../docs-demos/react/store_page.jsx
+      h2(data-device-preview="../docs-demos/core/store.html") Examples
+      :code(lang="js")
+        import { createStore } from 'store';
+
+        const store = createStore({
+          state: {
+            loading: false,
+            users: [],
+          },
+          actions: {
+            getUsers({ state }) {
+              state.loading = true;
+              setTimeout(() => {
+                state.users = ['User 1', 'User 2', 'User 3', 'User 4', 'User 5'];
+                state.loading = false;
+              }, 3000);
+            },
+          },
+          getters: {
+            loading({ state }) {
+              return state.loading;
+            },
+            users({ state }) {
+              return state.users;
+            },
+          },
+        });
+
+        export default store;
+      include:coreSource ../docs-demos/core/store_page.f7.html
 
 
 

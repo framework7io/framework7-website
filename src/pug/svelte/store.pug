@@ -71,9 +71,9 @@ block content
     h2 Store Parameters
     p Now, let look at `storeParameters` object:
     h3 State
-    p State is the single object contains all your application level state and serves as the "single source of truth." This also means usually you will have only one store for each application. A single state tree makes it straightforward to locate a specific piece of state, and allows us to easily take snapshots of the current app state for debugging purposes.
+    p `state` is the single object contains all your application level state and serves as the "single source of truth." This also means usually you will have only one store for each application. A single state tree makes it straightforward to locate a specific piece of state, and allows us to easily take snapshots of the current app state for debugging purposes.
     h3 Actions
-    p Actions are used to modify the state, for async manipulations, or to call other store actions. Action handlers receive a context object with store state and dispatch method to call other actions. So you can access `context.store` to access the state, or call other actions with `context.dispatch`.
+    p `actions` are used to modify the state, for async manipulations, or to call other store actions. Action handlers receive a context object with store state and dispatch method to call other actions. So you can access `context.store` to access the state, or call other actions with `context.dispatch`.
     p As second argument actions handlers may receive any custom data.
     p.important-note To keep store reactive, state modification should be done with assignment. For example:
     ```js
@@ -84,7 +84,7 @@ block content
       state.users = [...state.users, ...users];
     ```
     h3 Getters
-    p Getters handlers are used to return data from the store state. Also handy when we need to compute derived state based on store state, for example filtering through a list of items:
+    p `getters` handlers are used to return data from the store state. Also handy when we need to compute derived state based on store state, for example filtering through a list of items:
     ```js
       const store = createStore({
         state: {
@@ -103,7 +103,7 @@ block content
     p Getter handlers also receive a context object but only with the store state. It is not possible, for example, to call other actions from getters.
 
     h2 Use Store
-    p Now when we created out store, let's findout how to use it.
+    p Now when we created out store, let's find out how to use it.
     p First of all we need to pass created store to the main App component:
     ```svelte
       <!-- pass store to the App's "store" prop -->
@@ -115,7 +115,7 @@ block content
       <script>
         import { App, View } from 'framework7-svelte';
         // import our store
-        import store from './store.js';
+        import store from 'path/to/store.js';
       </script>
     ```
 
