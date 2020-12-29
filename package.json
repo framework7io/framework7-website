@@ -30,7 +30,8 @@
     "build-core-demos": "gulp core-demos",
     "build-vue-demos": "gulp vue-demos",
     "build-svelte-demos": "gulp svelte-demos",
-    "build-react-demos": "gulp react-demos"
+    "build-react-demos": "gulp react-demos",
+    "update-framework7": "node build/update-framework7.js"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -48,6 +49,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.3.0",
     "eslint-plugin-react": "^7.21.5",
+    "exec-sh": "^0.3.4",
     "gulp": "^4.0.2",
     "gulp-clean-css": "^4.3.0",
     "gulp-connect": "^5.7.0",
@@ -76,9 +78,9 @@
     "vue": "^3.0.4"
   },
   "dependencies": {
-    "framework7": "^6.0.0-beta.4",
-    "framework7-react": "^6.0.0-beta.4",
-    "framework7-svelte": "^6.0.0-beta.4",
-    "framework7-vue": "^6.0.0-beta.4"
+    "framework7": "^6.0.0-beta.7",
+    "framework7-react": "^6.0.0-beta.7",
+    "framework7-svelte": "^6.0.0-beta.7",
+    "framework7-vue": "^6.0.0-beta.7"
   }
 }
