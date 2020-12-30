@@ -8,6 +8,7 @@ const update = async () => {
   await exec('npm update framework7-svelte');
   await exec('cp -r ../framework7/packages/* public/packages/');
   await exec('cp -r ../framework7/kitchen-sink/* public/kitchen-sink/');
+  await exec('cp ../framework7/CHANGELOG.md src/CHANGELOG.md');
 
   const corePkg = require('../public/packages/core/package.json');
   const currentPkg = require('../package.json');
