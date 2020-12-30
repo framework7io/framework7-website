@@ -1,5 +1,4 @@
 const gulp = require('gulp');
-const gulpData = require('gulp-data');
 const gulpPug = require('gulp-pug');
 const connect = require('gulp-connect');
 const pug = require('pug');
@@ -8,9 +7,6 @@ const through2 = require('through2');
 const pkg = require('../package.json');
 const iconsManifest = require('./manifest-icons.json');
 
-const getSrcFileUrl = require('./utils/get-src-file-url');
-const getYamlData = require('./utils/get-yaml-data');
-const inlineSvg = require('./utils/inline-svg');
 const cssVars = require('./utils/css-vars');
 const codeFilter = require('./utils/code-filter');
 const svelteSourceFilter = require('./utils/svelte-source-filter');
@@ -19,7 +15,6 @@ const createIndex = require('./utils/create-index');
 const createMobilePreviewLinks = require('./utils/create-mobile-preview-links');
 const createInlineCodeTags = require('./utils/create-inline-code-tags');
 const createCodeFilter = require('./utils/create-code-filter');
-const releaseNotes = require('./utils/release-notes');
 
 if (!pug.filter && !pug.filters.code) {
   pug.filters = {
@@ -38,7 +33,6 @@ function buildPages(cb, { src = ['**/*.pug', '!**/_*.pug', '!_*.pug', '!docs-dem
   console.log(`Starting pug: ${name}`);
 
   gulp.src(src, { cwd: 'src/pug' })
-    .pipe(gulpData((file) => { return { srcFileUrl: getSrcFileUrl(file) }; }))
     .pipe(through2.obj((file, _, cbInternal) => {
       if (file.isBuffer()) {
         let content = file.contents.toString();
@@ -60,10 +54,7 @@ function buildPages(cb, { src = ['**/*.pug', '!**/_*.pug', '!_*.pug', '!docs-dem
         },
         cdn: cdn ? pkg.cdn : '',
         icons: iconsManifest.icons,
-        getYamlData,
-        inlineSvg,
         cssVars,
-        releaseNotes,
       },
     }))
     .on('error', (err) => {
