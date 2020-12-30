@@ -26,6 +26,7 @@ function calcDevice(_temp) {
     cordova: !!(window.cordova || window.phonegap),
     phonegap: !!(window.cordova || window.phonegap),
     electron: false,
+    capacitor: !!window.Capacitor,
     nwjs: false
   };
   var screenWidth = window.screen.width;

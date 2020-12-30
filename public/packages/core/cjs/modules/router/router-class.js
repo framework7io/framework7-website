@@ -1188,7 +1188,7 @@ var Router = /*#__PURE__*/function (_Framework7Class) {
         browserHistorySeparator = _router$params.browserHistorySeparator;
     var browserHistoryRoot = router.params.browserHistoryRoot;
 
-    if (window.cordova && browserHistory && !browserHistorySeparator && !browserHistoryRoot && location.pathname.indexOf('index.html')) {
+    if ((window.cordova || window.Capacitor && window.Capacitor.isNative) && browserHistory && !browserHistorySeparator && !browserHistoryRoot && location.pathname.indexOf('index.html')) {
       // eslint-disable-next-line
       console.warn('Framework7: wrong or not complete browserHistory configuration, trying to guess browserHistoryRoot');
       browserHistoryRoot = location.pathname.split('index.html')[0];

@@ -457,7 +457,7 @@ function initTouch() {
   }
 
   document.addEventListener('contextmenu', function (e) {
-    if (params.disableContextMenu && (device.ios || device.android || device.cordova)) {
+    if (params.disableContextMenu && (device.ios || device.android || device.cordova || window.Capacitor && window.Capacitor.isNative)) {
       e.preventDefault();
     }
 

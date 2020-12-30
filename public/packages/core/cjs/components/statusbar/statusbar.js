@@ -13,6 +13,11 @@ var _getDevice = require("../../shared/get-device");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var isCapacitor = function isCapacitor() {
+  var window = (0, _ssrWindow.getWindow)();
+  return window.Capacitor && window.Capacitor.isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.StatusBar;
+};
+
 var Statusbar = {
   hide: function hide() {
     var window = (0, _ssrWindow.getWindow)();
@@ -21,6 +26,10 @@ var Statusbar = {
     if (device.cordova && window.StatusBar) {
       window.StatusBar.hide();
     }
+
+    if (isCapacitor()) {
+      window.Capacitor.Plugins.StatusBar.hide();
+    }
   },
   show: function show() {
     var window = (0, _ssrWindow.getWindow)();
@@ -28,6 +37,10 @@ var Statusbar = {
 
     if (device.cordova && window.StatusBar) {
       window.StatusBar.show();
+    }
+
+    if (isCapacitor()) {
+      window.Capacitor.Plugins.StatusBar.show();
     }
   },
   onClick: function onClick() {
@@ -69,6 +82,18 @@ var Statusbar = {
         window.StatusBar.styleDefault();
       }
     }
+
+    if (isCapacitor()) {
+      if (color === 'white') {
+        window.Capacitor.Plugins.StatusBar.setStyle({
+          style: 'DARK'
+        });
+      } else {
+        window.Capacitor.Plugins.StatusBar.setStyle({
+          style: 'LIGHT'
+        });
+      }
+    }
   },
   setBackgroundColor: function setBackgroundColor(color) {
     var window = (0, _ssrWindow.getWindow)();
@@ -77,16 +102,29 @@ var Statusbar = {
     if (device.cordova && window.StatusBar) {
       window.StatusBar.backgroundColorByHexString(color);
     }
+
+    if (isCapacitor()) {
+      window.Capacitor.Plugins.StatusBar.setBackgroundColor({
+        color: color
+      });
+    }
   },
   isVisible: function isVisible() {
     var window = (0, _ssrWindow.getWindow)();
     var device = (0, _getDevice.getDevice)();
+    return new Promise(function (resolve) {
+      if (device.cordova && window.StatusBar) {
+        resolve(window.StatusBar.isVisible);
+      }
 
-    if (device.cordova && window.StatusBar) {
-      return window.StatusBar.isVisible;
-    }
+      if (isCapacitor()) {
+        window.Capacitor.Plugins.StatusBar.getInfo().then(function (info) {
+          resolve(info.visible);
+        });
+      }
 
-    return false;
+      resolve(false);
+    });
   },
   overlaysWebView: function overlaysWebView(overlays) {
     if (overlays === void 0) {
@@ -99,6 +137,12 @@ var Statusbar = {
     if (device.cordova && window.StatusBar) {
       window.StatusBar.overlaysWebView(overlays);
     }
+
+    if (isCapacitor()) {
+      window.Capacitor.Plugins.StatusBar.setOverlaysWebView({
+        overlay: overlays
+      });
+    }
   },
   init: function init() {
     var app = this;
@@ -106,37 +150,39 @@ var Statusbar = {
     var device = (0, _getDevice.getDevice)();
     var params = app.params.statusbar;
     if (!params.enabled) return;
+    var isCordova = device.cordova && window.StatusBar;
+    var isCap = isCapacitor();
 
-    if (device.cordova && window.StatusBar) {
+    if (isCordova || isCap) {
       if (params.scrollTopOnClick) {
         (0, _dom.default)(window).on('statusTap', Statusbar.onClick.bind(app));
       }
 
       if (device.ios) {
         if (params.iosOverlaysWebView) {
-          window.StatusBar.overlaysWebView(true);
+          Statusbar.overlaysWebView(true);
         } else {
-          window.StatusBar.overlaysWebView(false);
+          Statusbar.overlaysWebView(false);
         }
 
         if (params.iosTextColor === 'white') {
-          window.StatusBar.styleLightContent();
+          Statusbar.setTextColor('white');
         } else {
-          window.StatusBar.styleDefault();
+          Statusbar.setTextColor('black');
         }
       }
 
       if (device.android) {
         if (params.androidOverlaysWebView) {
-          window.StatusBar.overlaysWebView(true);
+          Statusbar.overlaysWebView(true);
         } else {
-          window.StatusBar.overlaysWebView(false);
+          Statusbar.overlaysWebView(false);
         }
 
         if (params.androidTextColor === 'white') {
-          window.StatusBar.styleLightContent();
+          Statusbar.setTextColor('white');
         } else {
-          window.StatusBar.styleDefault();
+          Statusbar.setTextColor('black');
         }
       }
     }

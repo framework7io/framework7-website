@@ -138,7 +138,7 @@ var Dialog = /*#__PURE__*/function (_Modal) {
           $(buttonEl).on('click', buttonOnClick);
         });
 
-        if (addKeyboardHander && !device.ios && !device.android && !device.cordova) {
+        if (addKeyboardHander && !device.ios && !device.android && !device.cordova && !device.capacitor) {
           $(document).on('keydown', onKeyDown);
         }
       });
@@ -147,7 +147,7 @@ var Dialog = /*#__PURE__*/function (_Modal) {
           $(buttonEl).off('click', buttonOnClick);
         });
 
-        if (addKeyboardHander && !device.ios && !device.android && !device.cordova) {
+        if (addKeyboardHander && !device.ios && !device.android && !device.cordova && !device.capacitor) {
           $(document).off('keydown', onKeyDown);
         }
 

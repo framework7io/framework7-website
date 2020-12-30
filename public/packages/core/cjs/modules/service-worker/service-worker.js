@@ -86,7 +86,7 @@ var _default = {
       var window = (0, _ssrWindow.getWindow)();
       if (!('serviceWorker' in window.navigator)) return;
       var app = this;
-      if (app.device.cordova) return;
+      if (app.device.cordova || window.Capacitor && window.Capacitor.isNative) return;
       if (!app.serviceWorker.container) return;
       var paths = app.params.serviceWorker.path;
       var scope = app.params.serviceWorker.scope;

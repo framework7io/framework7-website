@@ -40,6 +40,10 @@ var _default = {
 
       if (device.cordova || device.phonegap) {
         classNames.push('device-cordova');
+      }
+
+      if (device.capacitor) {
+        classNames.push('device-capacitor');
       } // Add html classes
 
 

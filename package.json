@@ -1,7 +1,7 @@
 {
   "name": "framework7-website",
-  "releaseVersion": "6.0.0-beta.7",
-  "releaseDate": "December 29, 2020",
+  "releaseVersion": "6.0.0-beta.10",
+  "releaseDate": "December 30, 2020",
   "description": "Framework7 Website",
   "cdn": "//cdn.framework7.io",
   "keywords": [
@@ -78,9 +78,9 @@
     "vue": "^3.0.4"
   },
   "dependencies": {
-    "framework7": "^6.0.0-beta.7",
-    "framework7-react": "^6.0.0-beta.7",
-    "framework7-svelte": "^6.0.0-beta.7",
-    "framework7-vue": "^6.0.0-beta.7"
+    "framework7": "^6.0.0-beta.10",
+    "framework7-react": "^6.0.0-beta.10",
+    "framework7-svelte": "^6.0.0-beta.10",
+    "framework7-vue": "^6.0.0-beta.10"
   }
 }

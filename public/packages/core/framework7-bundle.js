@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.0-beta.7
+ * Framework7 6.0.0-beta.10
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: December 28, 2020
+ * Released on: December 30, 2020
  */
 
 (function (global, factory) {
@@ -4114,6 +4114,7 @@
         cordova: !!(window.cordova || window.phonegap),
         phonegap: !!(window.cordova || window.phonegap),
         electron: false,
+        capacitor: !!window.Capacitor,
         nwjs: false
       };
       var screenWidth = window.screen.width;
@@ -5199,6 +5200,10 @@
 
           if (device.cordova || device.phonegap) {
             classNames.push('device-cordova');
+          }
+
+          if (device.capacitor) {
+            classNames.push('device-capacitor');
           } // Add html classes
 
 
@@ -6279,7 +6284,7 @@
       }
 
       document.addEventListener('contextmenu', function (e) {
-        if (params.disableContextMenu && (device.ios || device.android || device.cordova)) {
+        if (params.disableContextMenu && (device.ios || device.android || device.cordova || window.Capacitor && window.Capacitor.isNative)) {
           e.preventDefault();
         }
 
@@ -11478,7 +11483,7 @@
             browserHistorySeparator = _router$params.browserHistorySeparator;
         var browserHistoryRoot = router.params.browserHistoryRoot;
 
-        if (window.cordova && browserHistory && !browserHistorySeparator && !browserHistoryRoot && location.pathname.indexOf('index.html')) {
+        if ((window.cordova || window.Capacitor && window.Capacitor.isNative) && browserHistory && !browserHistorySeparator && !browserHistoryRoot && location.pathname.indexOf('index.html')) {
           // eslint-disable-next-line
           console.warn('Framework7: wrong or not complete browserHistory configuration, trying to guess browserHistoryRoot');
           browserHistoryRoot = location.pathname.split('index.html')[0];
@@ -12188,6 +12193,11 @@
             if (url && window.cordova && window.cordova.InAppBrowser && (target === '_system' || target === '_blank')) {
               e.preventDefault();
               window.cordova.InAppBrowser.open(url, target);
+            } else if (url && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser && (target === '_system' || target === '_blank')) {
+              e.preventDefault();
+              window.Capacitor.Plugins.Browser.open({
+                url: url
+              });
             }
 
             return;
@@ -14289,7 +14299,7 @@
           var window = getWindow();
           if (!('serviceWorker' in window.navigator)) return;
           var app = this;
-          if (app.device.cordova) return;
+          if (app.device.cordova || window.Capacitor && window.Capacitor.isNative) return;
           if (!app.serviceWorker.container) return;
           var paths = app.params.serviceWorker.path;
           var scope = app.params.serviceWorker.scope;
@@ -14446,6 +14456,11 @@
       }
     };
 
+    var isCapacitor = function isCapacitor() {
+      var window = getWindow();
+      return window.Capacitor && window.Capacitor.isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.StatusBar;
+    };
+
     var Statusbar = {
       hide: function hide() {
         var window = getWindow();
@@ -14454,6 +14469,10 @@
         if (device.cordova && window.StatusBar) {
           window.StatusBar.hide();
         }
+
+        if (isCapacitor()) {
+          window.Capacitor.Plugins.StatusBar.hide();
+        }
       },
       show: function show() {
         var window = getWindow();
@@ -14461,6 +14480,10 @@
 
         if (device.cordova && window.StatusBar) {
           window.StatusBar.show();
+        }
+
+        if (isCapacitor()) {
+          window.Capacitor.Plugins.StatusBar.show();
         }
       },
       onClick: function onClick() {
@@ -14502,6 +14525,18 @@
             window.StatusBar.styleDefault();
           }
         }
+
+        if (isCapacitor()) {
+          if (color === 'white') {
+            window.Capacitor.Plugins.StatusBar.setStyle({
+              style: 'DARK'
+            });
+          } else {
+            window.Capacitor.Plugins.StatusBar.setStyle({
+              style: 'LIGHT'
+            });
+          }
+        }
       },
       setBackgroundColor: function setBackgroundColor(color) {
         var window = getWindow();
@@ -14510,16 +14545,29 @@
         if (device.cordova && window.StatusBar) {
           window.StatusBar.backgroundColorByHexString(color);
         }
+
+        if (isCapacitor()) {
+          window.Capacitor.Plugins.StatusBar.setBackgroundColor({
+            color: color
+          });
+        }
       },
       isVisible: function isVisible() {
         var window = getWindow();
         var device = getDevice();
+        return new Promise(function (resolve) {
+          if (device.cordova && window.StatusBar) {
+            resolve(window.StatusBar.isVisible);
+          }
 
-        if (device.cordova && window.StatusBar) {
-          return window.StatusBar.isVisible;
-        }
+          if (isCapacitor()) {
+            window.Capacitor.Plugins.StatusBar.getInfo().then(function (info) {
+              resolve(info.visible);
+            });
+          }
 
-        return false;
+          resolve(false);
+        });
       },
       overlaysWebView: function overlaysWebView(overlays) {
         if (overlays === void 0) {
@@ -14532,6 +14580,12 @@
         if (device.cordova && window.StatusBar) {
           window.StatusBar.overlaysWebView(overlays);
         }
+
+        if (isCapacitor()) {
+          window.Capacitor.Plugins.StatusBar.setOverlaysWebView({
+            overlay: overlays
+          });
+        }
       },
       init: function init() {
         var app = this;
@@ -14539,37 +14593,39 @@
         var device = getDevice();
         var params = app.params.statusbar;
         if (!params.enabled) return;
+        var isCordova = device.cordova && window.StatusBar;
+        var isCap = isCapacitor();
 
-        if (device.cordova && window.StatusBar) {
+        if (isCordova || isCap) {
           if (params.scrollTopOnClick) {
             $$1(window).on('statusTap', Statusbar.onClick.bind(app));
           }
 
           if (device.ios) {
             if (params.iosOverlaysWebView) {
-              window.StatusBar.overlaysWebView(true);
+              Statusbar.overlaysWebView(true);
             } else {
-              window.StatusBar.overlaysWebView(false);
+              Statusbar.overlaysWebView(false);
             }
 
             if (params.iosTextColor === 'white') {
-              window.StatusBar.styleLightContent();
+              Statusbar.setTextColor('white');
             } else {
-              window.StatusBar.styleDefault();
+              Statusbar.setTextColor('black');
             }
           }
 
           if (device.android) {
             if (params.androidOverlaysWebView) {
-              window.StatusBar.overlaysWebView(true);
+              Statusbar.overlaysWebView(true);
             } else {
-              window.StatusBar.overlaysWebView(false);
+              Statusbar.overlaysWebView(false);
             }
 
             if (params.androidTextColor === 'white') {
-              window.StatusBar.styleLightContent();
+              Statusbar.setTextColor('white');
             } else {
-              window.StatusBar.styleDefault();
+              Statusbar.setTextColor('black');
             }
           }
         }
@@ -16479,7 +16535,7 @@
               $$1(buttonEl).on('click', buttonOnClick);
             });
 
-            if (addKeyboardHander && !device.ios && !device.android && !device.cordova) {
+            if (addKeyboardHander && !device.ios && !device.android && !device.cordova && !device.capacitor) {
               $$1(document).on('keydown', onKeyDown);
             }
           });
@@ -16488,7 +16544,7 @@
               $$1(buttonEl).off('click', buttonOnClick);
             });
 
-            if (addKeyboardHander && !device.ios && !device.android && !device.cordova) {
+            if (addKeyboardHander && !device.ios && !device.android && !device.cordova && !device.capacitor) {
               $$1(document).off('keydown', onKeyDown);
             }
 
@@ -48620,7 +48676,7 @@
         }
 
         if (self.params.mode === 'keyboard-toolbar') {
-          if (!device.cordova && !device.android) {
+          if (!(device.cordova || device.capacitor) && !device.android) {
             self.params.mode = 'popover';
           }
         }
