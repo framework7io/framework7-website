@@ -1,0 +1,152 @@
+<template>
+  <div id="app">
+    <div class="view view-init view-main">
+      <!-- source start -->
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner sliding">
+            <div class="title">Photo Browser</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block-title">Light Theme</div>
+          <div class="block block-strong">
+            <p><a class="button button-fill pb-standalone" href="#">Standalone</a></p>
+            <p><a class="button button-fill pb-popup" href="#">Popup</a></p>
+            <p><a class="button button-fill pb-page" href="#">Page</a></p>
+          </div>
+          <div class="block-title">Dark Theme</div>
+          <div class="block block-strong row">
+            <div class="col-50"><a class="button button-fill pb-standalone-dark" href="#">Standalone</a></div>
+            <div class="col-50"><a class="button button-fill pb-popup-dark" href="#">Popup</a></div>
+          </div>
+          <div class="block block-strong"><a class="button button-fill pb-standalone-captions" href="#">With
+              Captions</a></div>
+          <div class="block block-strong"><a class="button button-fill pb-standalone-video" href="#">With Video</a>
+          </div>
+        </div>
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $, $f7, $onMounted }) => {
+    $onMounted(() => {
+      /*=== Default standalone ===*/
+      var myPhotoBrowserStandalone = $f7.photoBrowser.create({
+        photos: [
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+        ]
+      });
+      //Open photo browser on click
+      $('.pb-standalone').on('click', function () {
+        myPhotoBrowserStandalone.open();
+      });
+
+      /*=== Popup ===*/
+      var myPhotoBrowserPopup = $f7.photoBrowser.create({
+        photos: [
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+        ],
+        type: 'popup'
+      });
+      $('.pb-popup').on('click', function () {
+        myPhotoBrowserPopup.open();
+      });
+
+      /*=== As Page ===*/
+      var myPhotoBrowserPage = $f7.photoBrowser.create({
+        photos: [
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+        ],
+        type: 'page',
+        pageBackLinkText: 'Back'
+      });
+      $('.pb-page').on('click', function () {
+        myPhotoBrowserPage.open();
+      });
+
+      /*=== Standalone Dark ===*/
+      var myPhotoBrowserDark = $f7.photoBrowser.create({
+        photos: [
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+        ],
+        theme: 'dark'
+      });
+      $('.pb-standalone-dark').on('click', function () {
+        myPhotoBrowserDark.open();
+      });
+
+      /*=== Popup Dark ===*/
+      var myPhotoBrowserPopupDark = $f7.photoBrowser.create({
+        photos: [
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+          'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+        ],
+        theme: 'dark',
+        type: 'popup'
+      });
+      $('.pb-popup-dark').on('click', function () {
+        myPhotoBrowserPopupDark.open();
+      });
+
+      /*=== With Captions ===*/
+      var myPhotoBrowserCaptions = $f7.photoBrowser.create({
+        photos: [
+          {
+            url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-1.jpg',
+            caption: 'Caption 1 Text'
+          },
+          {
+            url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+            caption: 'Second Caption Text'
+          },
+          // This one without caption
+          {
+            url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+          },
+        ],
+        theme: 'dark',
+        type: 'standalone'
+      });
+      $('.pb-standalone-captions').on('click', function () {
+        myPhotoBrowserCaptions.open();
+      });
+
+      /*=== With Video ===*/
+      var myPhotoBrowserVideo = $f7.photoBrowser.create({
+        photos: [
+          {
+            html: '<iframe src="//www.youtube.com/embed/lmc21V-zBq0" frameborder="0" allowfullscreen></iframe>',
+            caption: 'Woodkid - Run Boy Run (Official HD Video)'
+          },
+          {
+            url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-2.jpg',
+            caption: 'Second Caption Text'
+          },
+          {
+            url: 'https://cdn.framework7.io/placeholder/sports-1024x1024-3.jpg',
+          },
+        ],
+        theme: 'dark',
+        type: 'standalone'
+      });
+      $('.pb-standalone-video').on('click', function () {
+        myPhotoBrowserVideo.open();
+      });
+    })
+
+    return $render;
+  }
+</script>

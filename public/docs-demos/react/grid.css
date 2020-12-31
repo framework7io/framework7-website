@@ -1,0 +1,20 @@
+.grid-demo div[class*='col'] {
+  background: #fff;
+  text-align: center;
+  color: #000;
+  border: 1px solid #ddd;
+  padding: 5px;
+  margin-bottom: 15px;
+  font-size: 12px;
+}
+.grid-resizable-demo {
+  --f7-grid-row-gap: 16px;
+}
+.grid-resizable-demo div[class*='col'] {
+  margin-bottom: 0;
+}
+.grid-resizable-demo .demo-col-center-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

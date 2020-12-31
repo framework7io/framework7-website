@@ -1,0 +1,104 @@
+<template>
+  <div id="app">
+    <div class="view view-main">
+      <!-- source start -->
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Login Screen</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block block-strong">
+            <p>
+              <!-- Open in login screen that already in DOM-->
+              <a href="#" class="button button-fill login-screen-open" data-login-screen=".login-screen">Open As
+                Modal</a>
+            </p>
+            <p>
+              <!-- Load page with login screen (login-screen-page.f7.html) -->
+              <a href="/login-screen/" class="button button-fill">Open As Page</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-screen">
+        <div class="view">
+          <div class="page">
+            <div class="page-content login-screen-content">
+              <div class="login-screen-title">My App</div>
+              <form>
+                <div class="list">
+                  <ul>
+                    <li class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title item-label">Username</div>
+                        <div class="item-input-wrap">
+                          <input type="text" name="username" placeholder="Your username" />
+                        </div>
+                      </div>
+                    </li>
+                    <li class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title item-label">Password</div>
+                        <div class="item-input-wrap">
+                          <input type="password" name="password" placeholder="Your password" />
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="list">
+                  <ul>
+                    <li><a class="list-button" href="#">Sign In</a></li>
+                  </ul>
+                  <div class="block-footer">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <p><a class="link login-screen-close" href="#">Close Login Screen</a></p>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, ctx) => {
+    const { $ } = ctx;
+    // Login Screen-Modal DOM events
+    $('.login-screen').on('loginscreen:open', function (e) {
+      console.log('Login screen open')
+    });
+    $('.login-screen').on('loginscreen:opened', function (e) {
+      console.log('Login screen opened')
+    });
+    $('.login-screen').on('loginscreen:close', function (e) {
+      console.log('Login screen close')
+    });
+    $('.login-screen').on('loginscreen:closed', function (e) {
+      console.log('Login screen closed')
+    });
+
+    // SKIP SOURCE START
+    ctx.$onMounted(() => {
+      ctx.$f7.views.create('.view-main', {
+        routes: [
+          {
+            path: '/login-screen/',
+            componentUrl: './login-screen_page.f7.html',
+          }
+        ]
+      })
+    })
+    // SKIP SOURCE END
+
+    return $render;
+  }
+
+</script>

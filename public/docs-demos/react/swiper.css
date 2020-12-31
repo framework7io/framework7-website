@@ -1,0 +1,8 @@
+.swiper-slide {
+  background: #fff;
+  text-align: center;
+  font-size: 18px;
+  line-height: 200px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+}

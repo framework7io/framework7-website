@@ -1,0 +1,157 @@
+<template>
+  <div id="app">
+    <div class="view view-main view-init">
+      <!-- source start -->
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Popup</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block">
+            <p>
+              <a class="button popup-open" href="#" data-popup=".popup-about">Open About Popup</a>
+            </p>
+            <p>
+              <a class="button popup-open" href="#" data-popup=".popup-services">Open Services Popup</a>
+            </p>
+            <p>
+              <a class="button dynamic-popup" href="#">Create dynamic Popup</a>
+            </p>
+            <p>
+              <a class="button popup-open" href="#" data-popup=".popup-swipe-to-close">Popup with swipe to close</a>
+            </p>
+            <p>
+              <a class="button popup-open" href="#" data-popup=".popup-swipe-to-close-handler">Popup with swipe to close
+                handler</a>
+            </p>
+            <p>
+              <a class="button popup-open" href="#" data-popup=".popup-push">Popup Push</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="popup popup-about">
+        <div class="block">
+          <p>About</p>
+          <p><a class="link popup-close" href="#">Close popup</a></p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc.
+            Quisque sodales scelerisque est, at porta justo cursus ac. Integer vitae quam a ante lobortis lobortis. Nam
+            vehicula sagittis quam, sit amet congue purus consequat sed. Maecenas eget mattis lectus. Aliquam luctus
+            luctus leo ac fringilla. Sed nec eros vel purus tincidunt tincidunt in in orci. Sed tellus neque,
+            pellentesque
+            nec metus id, congue elementum odio. Donec turpis tellus, mollis ac leo eget, accumsan fermentum lorem.
+            Aliquam et elementum neque. Vestibulum sed egestas ipsum.</p>
+        </div>
+      </div>
+      <div class="popup popup-services">
+        <div class="block">
+          <p>Services</p>
+          <p><a class="link popup-close" href="#">Close popup</a></p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc.
+            Quisque sodales scelerisque est, at porta justo cursus ac. Integer vitae quam a ante lobortis lobortis. Nam
+            vehicula sagittis quam, sit amet congue purus consequat sed. Maecenas eget mattis lectus. Aliquam luctus
+            luctus leo ac fringilla. Sed nec eros vel purus tincidunt tincidunt in in orci. Sed tellus neque,
+            pellentesque
+            nec metus id, congue elementum odio. Donec turpis tellus, mollis ac leo eget, accumsan fermentum lorem.
+            Aliquam et elementum neque. Vestibulum sed egestas ipsum.</p>
+        </div>
+      </div>
+      <div class="popup popup-swipe-to-close">
+        <div class="block text-align-center">
+          <p>Swipe me up or down to close</p>
+        </div>
+      </div>
+      <div class="popup popup-swipe-to-close-handler">
+        <div class="block">
+          <p class="my-swipe-to-close-handler"><b>Swipe works only on this paragraph</b></p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc.
+            Quisque sodales scelerisque est, at porta justo cursus ac. Integer vitae quam a ante lobortis lobortis. Nam
+            vehicula sagittis quam, sit amet congue purus consequat sed. Maecenas eget mattis lectus. Aliquam luctus
+            luctus leo ac fringilla. Sed nec eros vel purus tincidunt tincidunt in in orci. Sed tellus neque,
+            pellentesque
+            nec metus id, congue elementum odio. Donec turpis tellus, mollis ac leo eget, accumsan fermentum lorem.
+            Aliquam et elementum neque. Vestibulum sed egestas ipsum.</p>
+        </div>
+      </div>
+      <div class="popup popup-push">
+        <div class="block">
+          <p>Popup Push</p>
+          <p><a class="link popup-close" href="#">Close popup</a></p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc.
+            Quisque sodales scelerisque est, at porta justo cursus ac. Integer vitae quam a ante lobortis lobortis. Nam
+            vehicula sagittis quam, sit amet congue purus consequat sed. Maecenas eget mattis lectus. Aliquam luctus
+            luctus leo ac fringilla. Sed nec eros vel purus tincidunt tincidunt in in orci. Sed tellus neque,
+            pellentesque
+            nec metus id, congue elementum odio. Donec turpis tellus, mollis ac leo eget, accumsan fermentum lorem.
+            Aliquam et elementum neque. Vestibulum sed egestas ipsum.</p>
+        </div>
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $f7, $, $on }) => {
+    $on('pageInit', () => {
+      // DOM events for About popup
+      $('.popup-about').on('popup:open', function (e) {
+        console.log('About popup open');
+      });
+      $('.popup-about').on('popup:opened', function (e) {
+        console.log('About popup opened');
+      });
+
+      // Create dynamic Popup
+      var dynamicPopup = $f7.popup.create({
+        content: `
+          <div class="popup">
+            <div class="block">
+              <p>Popup created dynamically.</p>
+              <p><a href="#" class="link popup-close">Close me</a></p>
+            </div>
+          </div>
+        `,
+        // Events
+        on: {
+          open: function (popup) {
+            console.log('Popup open');
+          },
+          opened: function (popup) {
+            console.log('Popup opened');
+          },
+        }
+      });
+      // Events also can be assigned on instance later
+      dynamicPopup.on('close', function (popup) {
+        console.log('Popup close');
+      });
+      dynamicPopup.on('closed', function (popup) {
+        console.log('Popup closed');
+      });
+
+      // Open dynamic popup
+      $('.dynamic-popup').on('click', function () {
+        console.log('asd')
+        dynamicPopup.open();
+      });
+
+      // Create Popup with swipe to close
+      var swipeToClosePopup = $f7.popup.create({
+        el: '.popup-swipe-to-close',
+        swipeToClose: true,
+      });
+
+      // Create Popup with swipe to close handler
+      var swipeToClosePopup = $f7.popup.create({
+        el: '.popup-swipe-to-close-handler',
+        swipeToClose: true,
+        swipeHandler: '.my-swipe-to-close-handler',
+      });
+    })
+
+    return $render;
+  }
+</script>

@@ -1,0 +1,98 @@
+<template>
+  <div id="app">
+    <div class="view view-main view-init">
+      <!-- source start -->
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Notifications</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block">
+            <p><a class="button button-fill open-full" href="#">Full-layout notification</a></p>
+            <p><a class="button button-fill open-with-button" href="#">With close button</a></p>
+            <p><a class="button button-fill open-click-to-close" href="#">Click to close</a></p>
+            <p><a class="button button-fill open-callback-on-close" href="#">Callback on close</a></p>
+          </div>
+        </div>
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>
+<style>
+  .demo-icon {
+    background: #EE350F;
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+  }
+</style>
+<script>
+  export default (props, { $, $f7, $on }) => {
+    $on('pageInit', () => {
+      // Create full-layout notification
+      var notificationFull = $f7.notification.create({
+        icon: '<i class="icon demo-icon">7</i>',
+        title: 'Framework7',
+        titleRightText: 'now',
+        subtitle: 'This is a subtitle',
+        text: 'This is a simple notification message',
+        closeTimeout: 3000,
+      });
+
+      // Create notification with close button
+      var notificationWithButton = $f7.notification.create({
+        icon: '<i class="icon demo-icon">7</i>',
+        title: 'Framework7',
+        subtitle: 'Notification with close button',
+        text: 'Click (x) button to close me',
+        closeButton: true,
+      });
+
+      // Create notification with click to close
+      var notificationClickToClose = $f7.notification.create({
+        icon: '<i class="icon demo-icon">7</i>',
+        title: 'Framework7',
+        titleRightText: 'now',
+        subtitle: 'Notification with close on click',
+        text: 'Click me to close',
+        closeOnClick: true,
+      })
+
+      // With callback on close
+      var notificationCallbackOnClose = $f7.notification.create({
+        icon: '<i class="icon demo-icon">7</i>',
+        title: 'Framework7',
+        titleRightText: 'now',
+        subtitle: 'Notification with close on click',
+        text: 'Click me to close',
+        closeOnClick: true,
+        on: {
+          close: function () {
+            $f7.dialog.alert('Notification closed');
+          },
+        },
+      });
+
+      // Open Notifications
+      $('.open-full').on('click', function () {
+        notificationFull.open();
+      });
+      $('.open-with-button').on('click', function () {
+        notificationWithButton.open();
+      });
+      $('.open-click-to-close').on('click', function () {
+        notificationClickToClose.open();
+      });
+      $('.open-callback-on-close').on('click', function () {
+        notificationCallbackOnClose.open();
+      });
+    })
+
+    return $render;
+  }
+
+</script>

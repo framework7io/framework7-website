@@ -1,0 +1,99 @@
+<template>
+  <div id="app">
+    <div class="panel panel-left panel-reveal panel-resizable panel-init">
+      <div class="block">
+        <p>Left Panel content here</p>
+        <p><a class="panel-close" href="#">Close me</a></p>
+        <p><a class="panel-open" href="#" data-panel=".panel-right-1">Open Right Panel</a></p>
+      </div>
+    </div>
+    <div class="panel panel-right panel-right-1 panel-cover panel-resizable panel-init">
+      <div class="block">
+        <p>Right Panel content here</p>
+        <p><a class="panel-close" href="#">Close me</a></p>
+        <p><a class="panel-open" href="#" data-panel="left">Open Left Panel</a></p>
+      </div>
+    </div>
+    <div class="panel panel-right panel-right-2 panel-cover panel-init theme-dark">
+      <div class="page">
+        <div class="block">
+          <p>Here comes another 3rd panel.</p>
+          <p><a class="panel-close" href="#">Close me</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="view view-main view-init">
+      <div class="page" id="panel-page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Panels</div>
+          </div>
+        </div>
+
+        <!-- Nested panel -->
+        <div class="panel panel-left panel-cover panel-init theme-dark" id="panel-nested"
+          data-container-el="#panel-page">
+          <div class="page">
+            <div class="page-content">
+              <div class="block block-strong">
+                <p>This is page-nested Panel.</p>
+                <p><a href="#" class="panel-close">Close me</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-content">
+          <div class="block block-strong">
+            <p><a class="button button-fill panel-open" href="#" data-panel=".panel-left">Open Left Panel</a></p>
+            <p><a class="button button-fill panel-open" href="#" data-panel=".panel-right-1">Open Right Panel</a></p>
+            <p><a class="button button-fill panel-open" href="#" data-panel=".panel-right-2">Open Another Panel</a></p>
+            <p><a class="button button-fill panel-open" href="#" data-panel="#panel-nested">Open nested panel</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<style>
+  .panel {
+    min-width: 100px;
+    max-width: 90vw;
+  }
+</style>
+<script>
+  export default (props, { $, $f7, $f7ready }) => {
+    $f7ready(() => {
+      // Dom Events
+      $('.panel-left').on('panel:open', function () {
+        console.log('Panel left: open');
+      });
+      $('.panel-left').on('panel:opened', function () {
+        console.log('Panel left: opened');
+      });
+
+      // Instance Events
+      var panelRight = $f7.panel.get('.panel-right-1');
+      panelRight.on('open', function () {
+        console.log('Panel right: open');
+      });
+      panelRight.on('opened', function () {
+        console.log('Panel right: opened');
+      });
+
+      // App Events
+      $f7.on('panelClose', function (panel) {
+        console.log('Panel ' + panel.side + ': close');
+      });
+      $f7.on('panelClosed', function (panel) {
+        console.log('Panel ' + panel.side + ': closed');
+      });
+      $f7.on('panelResize', function (panel, newPanelWidth) {
+        console.log('Panel resized to ' + newPanelWidth + 'px');
+      });
+    })
+
+    return $render;
+  }
+</script>

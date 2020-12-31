@@ -1,0 +1,79 @@
+<template>
+  <div id="app">
+    <div class="view view-main view-init">
+      <!-- source start -->
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Form Storage</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block">Just fill up the form below and then go to any other page, or try to close this site, and
+            when you will back here form fields will keep your data.</div>
+          <form class="list form-store-data" id="my-form">
+            <ul>
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Name</div>
+                    <div class="item-input-wrap">
+                      <input type="text" name="name" placeholder="Your name" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">E-mail</div>
+                    <div class="item-input-wrap">
+                      <input type="email" name="email" placeholder="E-mail" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Ignore form storage</div>
+                    <div class="item-input-wrap">
+                      <input class="no-store-data" type="text" name="text" placeholder="This value won't be stored" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Gender</div>
+                    <div class="item-input-wrap">
+                      <select name="gender">
+                        <option value="male" selected="selected">Male</option>
+                        <option value="female">Female</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Switch</div>
+                    <div class="item-after">
+                      <label class="toggle">
+                        <input type="checkbox" name="switch" value="yes" /><i class="toggle-icon"></i>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </form>
+        </div>
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>

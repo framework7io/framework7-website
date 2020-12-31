@@ -1,0 +1,93 @@
+<template>
+  <div id="app">
+    <div class="view view-main view-init">
+      <!-- source start -->
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Form To Data</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <form class="list" id="my-form">
+            <ul>
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Name</div>
+                    <div class="item-input-wrap">
+                      <input type="text" name="name" placeholder="Your name" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">E-mail</div>
+                    <div class="item-input-wrap">
+                      <input type="email" name="email" placeholder="E-mail" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Gender</div>
+                    <div class="item-input-wrap">
+                      <select name="gender">
+                        <option value="male" selected="selected">Male</option>
+                        <option value="female">Female</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Toggle</div>
+                    <div class="item-after">
+                      <label class="toggle toggle-init">
+                        <input type="checkbox" name="toggle" value="yes" /><i class="toggle-icon"></i>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </form>
+          <div class="block block-strong row">
+            <div class="col"><a class="button button-fill convert-form-to-data" href="#">Get Data</a></div>
+            <div class="col"><a class="button button-fill fill-form-from-data" href="#">Fill Form</a></div>
+          </div>
+        </div>
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $, $on, $f7 }) => {
+    $on('pageInit', () => {
+      $('.convert-form-to-data').on('click', function () {
+        var formData = $f7.form.convertToData('#my-form');
+        alert(JSON.stringify(formData));
+      });
+
+      $('.fill-form-from-data').on('click', function () {
+        var formData = {
+          'name': 'John',
+          'email': 'john@doe.com',
+          'gender': 'female',
+          'toggle': ['yes'],
+        }
+        $f7.form.fillFromData('#my-form', formData);
+      });
+    });
+
+    return $render;
+  }
+</script>

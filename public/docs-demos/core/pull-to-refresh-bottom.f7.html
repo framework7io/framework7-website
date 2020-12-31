@@ -1,0 +1,84 @@
+<template>
+  <div id="app">
+    <div class="view view-main view-init">
+      <!-- source start -->
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Pull To Refresh Bottom</div>
+          </div>
+        </div>
+        <div class="page-content ptr-content ptr-bottom" @ptr:refresh=${loadMore}>
+          <div class="ptr-preloader">
+            <div class="preloader"></div>
+            <div class="ptr-arrow"></div>
+          </div>
+          <div class="list media-list">
+            <ul>
+              ${items.map((item) => $h`
+              <li class="item-content">
+                <div class="item-media"><img src=${item.picURL} width="44" /></div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">${item.song}</div>
+                  </div>
+                  <div class="item-subtitle">${item.author}</div>
+                </div>
+              </li>
+              `)}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $update }) => {
+    // Dummy Content
+    const songs = ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'];
+    const authors = ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers'];
+    let items = [
+      {
+        picURL: 'https://cdn.framework7.io/placeholder/abstract-88x88-1.jpg',
+        song: 'Yellow Submarine',
+        author: 'Beatles',
+      },
+      {
+        picURL: 'https://cdn.framework7.io/placeholder/abstract-88x88-2.jpg',
+        song: 'Don\'t Stop Me Now',
+        author: 'Queen',
+      },
+      {
+        picURL: 'https://cdn.framework7.io/placeholder/abstract-88x88-3.jpg',
+        song: 'Billie Jean',
+        author: 'Michael Jackson',
+      },
+    ]
+
+    const loadMore = (e, done) => {
+      // Emulate 2s loading
+      setTimeout(() => {
+        const picURL = 'https://cdn.framework7.io/placeholder/abstract-88x88-' + (Math.floor(Math.random() * 10) + 1) + '.jpg';
+        const song = songs[Math.floor(Math.random() * songs.length)];
+        const author = authors[Math.floor(Math.random() * authors.length)];
+        // Add new item
+        items.push({
+          picURL,
+          song,
+          author,
+        });
+
+        // Update state to rerender
+        $update();
+
+        // When loading done, we need to reset it
+        done();
+      }, 2000);
+    }
+
+    return $render;
+  }
+</script>

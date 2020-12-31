@@ -1,0 +1,220 @@
+<template>
+  <div id="app">
+    <div class="view view-main view-init">
+      <!-- source start -->
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <!-- In data-sheet attribute we specify CSS selector of sheet we need to open-->
+            <div class="title">Sheet Modal</div>
+            <div class="right"><a class="link sheet-open" href="#" data-sheet=".my-sheet">Open Sheet</a></div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block block-strong">
+            <!-- In data-sheet attribute we specify CSS selector of sheet we need to open-->
+            <p><a class="button button-fill sheet-open" href="#" data-sheet=".my-sheet">Open Sheet</a></p>
+            <!-- Link to close sheet-->
+            <p><a class="button button-fill sheet-close" href="#" data-sheet=".my-sheet">Close Sheet</a></p>
+            <p><a class="button button-fill dynamic-sheet" href="#">Create Dynamic Sheet</a></p>
+            <p><a class="button button-fill sheet-open" href="#" data-sheet=".my-sheet-top">Open Top Sheet</a></p>
+            <p><a class="button button-fill sheet-open" href="#" data-sheet=".my-sheet-swipe-to-close">Swipe To
+                Close</a></p>
+            <p><a class="button button-fill sheet-open" href="#" data-sheet=".my-sheet-swipe-to-step">Swipe To Step</a>
+            </p>
+            <p><a class="button button-fill sheet-open" href="#" data-sheet=".my-sheet-push">Sheet Push</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="sheet-modal my-sheet">
+        <div class="toolbar">
+          <div class="toolbar-inner">
+            <div class="left"></div>
+            <div class="right"><a class="link sheet-close" href="#">Done</a></div>
+          </div>
+        </div>
+        <div class="sheet-modal-inner">
+          <div class="block">
+            <h4>Info</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a
+              nunc. Quisque sodales scelerisque est, at porta justo cursus ac.</p>
+          </div>
+        </div>
+      </div>
+      <div class="sheet-modal sheet-modal-top my-sheet-top">
+        <div class="toolbar toolbar-bottom">
+          <div class="toolbar-inner">
+            <div class="left"></div>
+            <div class="right"><a class="link sheet-close" href="#">Done</a></div>
+          </div>
+        </div>
+        <div class="sheet-modal-inner">
+          <div class="block">
+            <h4>Info</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a
+              nunc. Quisque sodales scelerisque est, at porta justo cursus ac.</p>
+          </div>
+        </div>
+      </div>
+      <div class="sheet-modal my-sheet-swipe-to-close" style="height:auto; --f7-sheet-bg-color: #fff;">
+        <div class="sheet-modal-inner">
+          <div class="page-content">
+            <div class="block-title block-title-large">Hello!</div>
+            <div class="block">
+              <p><b>Swipe me down to close</b></p>
+              <p>Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus
+                similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem
+                libero minus dignissimos repellat.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sheet-modal my-sheet-swipe-to-step" style="height:auto; --f7-sheet-bg-color: #fff;">
+        <div class="sheet-modal-inner">
+          <div class="sheet-modal-swipe-step">
+            <div class="display-flex padding justify-content-space-between align-items-center">
+              <div style="font-size: 18px"><b>Total:</b></div>
+              <div style="font-size: 22px"><b>$500</b></div>
+            </div>
+            <div class="padding-horizontal padding-bottom">
+              <a class="button button-large button-fill">Make Payment</a>
+              <div class="margin-top text-align-center">Swipe up for more details</div>
+            </div>
+          </div>
+          <div class="block-title block-title-medium margin-top">Your order:</div>
+          <div class="list no-hairlines">
+            <ul>
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Item 1</div>
+                  <div class="item-after text-color-black"><b>$200</b></div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Item 2</div>
+                  <div class="item-after text-color-black"><b>$180</b></div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Delivery</div>
+                  <div class="item-after text-color-black"><b>$120</b></div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="sheet-modal sheet-modal-push my-sheet-push">
+        <div class="toolbar">
+          <div class="toolbar-inner">
+            <div class="left"></div>
+            <div class="right">
+              <a class="link sheet-close">Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="sheet-modal-inner">
+          <div class="page-content">
+            <div class="block">
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus
+                perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias
+                ex adipisci.</p>
+              <p>Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique
+                quis facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam.
+                Consequatur, nisi, enim.</p>
+              <p>Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus
+                similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem
+                libero minus dignissimos repellat.</p>
+              <p>Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente
+                ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt,
+                perferendis voluptates doloribus?</p>
+              <p>Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam
+                obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt
+                praesentium velit ipsa illo iusto.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $on, $, $f7 }) => {
+    $on('pageInit', () => {
+      // DOM events for my-sheet sheet
+      $('.my-sheet').on('sheet:open', function (e) {
+        console.log('my-sheet open');
+      });
+      $('.my-sheet').on('sheet:opened', function (e) {
+        console.log('my-sheet opened');
+      });
+
+      // Create dynamic Sheet
+      var dynamicSheet = app.sheet.create({
+        content: `
+          <div class="sheet-modal">
+            <div class="toolbar">
+              <div class="toolbar-inner">
+                <div class="left"></div>
+                <div class="right">
+                  <a class="link sheet-close">Done</a>
+                </div>
+              </div>
+            </div>
+            <div class="sheet-modal-inner">
+              <div class="block">
+                <p>Sheet created dynamically.</p>
+                <p><a href="#" class="link sheet-close">Close me</a></p>
+              </div>
+            </div>
+          </div>
+        `,
+        // Events
+        on: {
+          open: function (sheet) {
+            console.log('Sheet open');
+          },
+          opened: function (sheet) {
+            console.log('Sheet opened');
+          },
+        }
+      });
+      // Events also can be assigned on instance later
+      dynamicSheet.on('close', function (sheet) {
+        console.log('Sheet close');
+      });
+      dynamicSheet.on('closed', function (sheet) {
+        console.log('Sheet closed');
+      });
+
+      // Open dynamic sheet
+      $('.dynamic-sheet').on('click', function () {
+        // Close inline sheet before
+        app.sheet.close('.my-sheet');
+
+        // Open dynamic sheet
+        dynamicSheet.open();
+      });
+
+      // Create swipe-to-close Sheet
+      app.sheet.create({
+        el: '.my-sheet-swipe-to-close',
+        swipeToClose: true,
+        backdrop: true,
+      });
+      // Create swipe-to-step Sheet
+      app.sheet.create({
+        el: '.my-sheet-swipe-to-step',
+        swipeToClose: true,
+        swipeToStep: true,
+        backdrop: true,
+      });
+    })
+
+    return $render;
+  }
+</script>

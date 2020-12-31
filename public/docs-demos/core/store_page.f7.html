@@ -1,0 +1,48 @@
+<template>
+  <div class="page">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner">
+        <div class="title">Store</div>
+      </div>
+    </div>
+    <div class="page-content">
+      ${users.value.length > 0 ? $h`
+        <div class="list">
+          <ul>
+            ${users.value.map((user) => $h`
+            <li class="item-content">
+              <div class="item-inner">
+                <div class="item-title">${user}</div>
+              </div>
+            </li>
+            `)}
+          </ul>
+        </div>
+      ` : $h`
+        <div class="block block-strong">
+          <a
+            href="#"
+            class="button button-fill button-preloader ${loading.value ? 'button-loading' : ''}"
+            @click=${loadUsers}
+          >
+            <span class="preloader"></span>
+            <span>Load Users</span>
+          </a>
+        </div>
+      `}
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $store }) => {
+    const loading = $store.getters.loading;
+    const users = $store.getters.users;
+
+    const loadUsers = () => {
+      $store.dispatch('getUsers');
+    };
+
+    return $render;
+  };
+</script>

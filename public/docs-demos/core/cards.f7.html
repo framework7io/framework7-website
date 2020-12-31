@@ -1,0 +1,263 @@
+<template>
+  <div id="app">
+    <div class="view view-main view-init">
+      <!-- source start -->
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Cards</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block-title">Simple Cards</div>
+          <div class="card">
+            <div class="card-content card-content-padding">This is a simple card with plain text, but cards can also
+              contain their own header, footer, list view, image, or any other element.</div>
+          </div>
+          <div class="card">
+            <div class="card-header">Card header</div>
+            <div class="card-content card-content-padding">Card with header and footer. Card headers are used to display
+              card titles and footers for additional information or just for custom actions.</div>
+            <div class="card-footer">Card Footer</div>
+          </div>
+          <div class="card">
+            <div class="card-content card-content-padding">Another card. Lorem ipsum dolor sit amet, consectetur
+              adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna
+              justo. </div>
+          </div>
+          <div class="block-title">Outline Cards</div>
+          <div class="card card-outline">
+            <div class="card-content card-content-padding">This is a simple card with plain text, but cards can also
+              contain their own header, footer, list view, image, or any other element.</div>
+          </div>
+          <div class="card card-outline">
+            <div class="card-header">Card header</div>
+            <div class="card-content card-content-padding">Card with header and footer. Card headers are used to display
+              card titles and footers for additional information or just for custom actions.</div>
+            <div class="card-footer">Card Footer</div>
+          </div>
+          <div class="card card-outline">
+            <div class="card-content card-content-padding">Another card. Lorem ipsum dolor sit amet, consectetur
+              adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna
+              justo. </div>
+          </div>
+          <div class="block-title">Styled Cards</div>
+          <div class="card demo-card-header-pic">
+            <div style="background-image:url(https://cdn.framework7.io/placeholder/nature-1000x600-3.jpg)"
+              class="card-header align-items-flex-end">Journey To Mountains</div>
+            <div class="card-content card-content-padding">
+              <p class="date">Posted on January 21, 2015</p>
+              <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus
+                quis nibh hendrerit...</p>
+            </div>
+            <div class="card-footer"><a href="#" class="link">Like</a><a href="#" class="link">Read more</a></div>
+          </div>
+          <div class="card demo-card-header-pic">
+            <div style="background-image:url(https://cdn.framework7.io/placeholder/people-1000x600-6.jpg)"
+              class="card-header align-items-flex-end">Lorem Ipsum</div>
+            <div class="card-content card-content-padding">
+              <p class="date">Posted on January 21, 2015</p>
+              <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus
+                quis nibh hendrerit...</p>
+            </div>
+            <div class="card-footer"><a href="#" class="link">Like</a><a href="#" class="link">Read more</a></div>
+          </div>
+          <div class="block-title">Facebook Cards</div>
+          <div class="card demo-facebook-card">
+            <div class="card-header">
+              <div class="demo-facebook-avatar"><img src="https://cdn.framework7.io/placeholder/people-68x68-1.jpg"
+                  width="34" height="34" /></div>
+              <div class="demo-facebook-name">John Doe</div>
+              <div class="demo-facebook-date">Monday at 3:47 PM</div>
+            </div>
+            <div class="card-content"> <img src="https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg"
+                width="100%" /></div>
+            <div class="card-footer"><a href="#" class="link">Like</a><a href="#" class="link">Comment</a><a href="#"
+                class="link">Share</a></div>
+          </div>
+          <div class="card demo-facebook-card">
+            <div class="card-header">
+              <div class="demo-facebook-avatar"><img src="https://cdn.framework7.io/placeholder/people-68x68-1.jpg"
+                  width="34" height="34" /></div>
+              <div class="demo-facebook-name">John Doe</div>
+              <div class="demo-facebook-date">Monday at 2:15 PM</div>
+            </div>
+            <div class="card-content card-content-padding">
+              <p>What a nice photo i took yesterday!</p><img
+                src="https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg" width="100%" />
+              <p class="likes">Likes: 112 &nbsp;&nbsp; Comments: 43</p>
+            </div>
+            <div class="card-footer"><a href="#" class="link">Like</a><a href="#" class="link">Comment</a><a href="#"
+                class="link">Share</a></div>
+          </div>
+          <div class="block-title">Cards With List View</div>
+          <div class="card">
+            <div class="card-content">
+              <div class="list links-list no-ios-edges">
+                <ul>
+                  <li><a href="#">Link 1</a></li>
+                  <li><a href="#">Link 2</a></li>
+                  <li><a href="#">Link 3</a></li>
+                  <li><a href="#">Link 4</a></li>
+                  <li><a href="#">Link 5</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">New Releases:</div>
+            <div class="card-content">
+              <div class="list media-list no-ios-edges">
+                <ul>
+                  <li class="item-content">
+                    <div class="item-media">
+                      <img src="https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg" width="44" />
+                    </div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Yellow Submarine</div>
+                      </div>
+                      <div class="item-subtitle">Beatles</div>
+                    </div>
+                  </li>
+                  <li class="item-content">
+                    <div class="item-media">
+                      <img src="https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg" width="44" />
+                    </div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Don't Stop Me Now</div>
+                      </div>
+                      <div class="item-subtitle">Queen</div>
+                    </div>
+                  </li>
+                  <li class="item-content">
+                    <div class="item-media">
+                      <img src="https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg" width="44" />
+                    </div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Billie Jean</div>
+                      </div>
+                      <div class="item-subtitle">Michael Jackson</div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-footer"> <span>January 20, 2015</span><span>5 comments</span></div>
+          </div>
+          <div class="block-title">Expandable Cards</div>
+          <div class="card card-expandable">
+            <div class="card-content">
+              <div class="bg-color-red" style="height: 300px">
+                <div class="card-header text-color-white display-block">Framework7<br />
+                  <small style="opacity: 0.7">Build Mobile Apps</small>
+                </div>
+                <a href="#" class="link card-close card-opened-fade-in color-white"
+                  style="position: absolute; right: 15px; top: 15px">
+                  <i class="icon f7-icons">xmark_circle_fill</i>
+                </a>
+              </div>
+              <div class="card-content-padding">
+                <p>Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web
+                  apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps
+                  tool to show working app prototype as soon as possible in case you need to.</p>
+                <p>The main approach of the Framework7 is to give you an opportunity to create iOS and Android
+                  (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It
+                  doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!
+                </p>
+                <p>Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to
+                  bring the best experience and simplicity.</p>
+                <p>Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or
+                  PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card card-expandable">
+            <div class="card-content">
+              <div class="bg-color-yellow" style="height: 300px">
+                <div class="card-header text-color-black display-block">Framework7<br />
+                  <small style="opacity: 0.7">Build Mobile Apps</small>
+                </div>
+                <a href="#" class="link card-close card-opened-fade-in color-black"
+                  style="position: absolute; right: 15px; top: 15px">
+                  <i class="icon f7-icons">xmark_circle_fill</i>
+                </a>
+              </div>
+              <div class="card-content-padding">
+                <p>Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web
+                  apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps
+                  tool to show working app prototype as soon as possible in case you need to.</p>
+                <p>The main approach of the Framework7 is to give you an opportunity to create iOS and Android
+                  (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It
+                  doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!
+                </p>
+                <p>Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to
+                  bring the best experience and simplicity.</p>
+                <p>Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or
+                  PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>
+<style>
+  .demo-card-header-pic .card-header {
+    height: 40vw;
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+  }
+
+  .demo-card-header-pic .card-content-padding .date {
+    color: #8e8e93;
+  }
+
+  .demo-facebook-card .card-header {
+    display: block;
+    padding: 10px;
+  }
+
+  .demo-facebook-card .demo-facebook-avatar {
+    float: left;
+  }
+
+  .demo-facebook-card .demo-facebook-name {
+    margin-left: 44px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .demo-facebook-card .demo-facebook-date {
+    margin-left: 44px;
+    font-size: 13px;
+    color: #8e8e93;
+  }
+
+  .demo-facebook-card .card-footer {
+    background: #fafafa;
+  }
+
+  .demo-facebook-card .card-footer a {
+    color: #81848b;
+    font-weight: 500;
+  }
+
+  .demo-facebook-card .card-content img {
+    display: block;
+  }
+
+  .demo-facebook-card .card-content-padding {
+    padding: 15px 10px;
+  }
+
+  .demo-facebook-card .card-content-padding .likes {
+    color: #8e8e93;
+  }
+</style>

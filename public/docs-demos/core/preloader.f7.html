@@ -1,0 +1,82 @@
+<template>
+  <div id="app">
+    <div class="view view-main view-init">
+      <!-- source start -->
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Preloader</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block-title">Default</div>
+          <div class="block block-strong align-items-stretch text-align-center">
+            <div class="row text-align-center">
+              <div class="col-25">
+                <div class="preloader"></div>
+              </div>
+              <div class="col-25" style="background: #222">
+                <div class="preloader color-white"></div>
+              </div>
+              <div class="col-25">
+                <div class="preloader" style="width: 44px; height: 44px"></div>
+              </div>
+              <div class="col-25" style="background: #222">
+                <div class="preloader color-white" style="width: 44px; height: 44px"></div>
+              </div>
+            </div>
+          </div>
+          <div class="block-title">Color Preloaders</div>
+          <div class="block block-strong">
+            <div class="row">
+              <div class="col-25">
+                <div class="preloader color-red"></div>
+              </div>
+              <div class="col-25">
+                <div class="preloader color-green"></div>
+              </div>
+              <div class="col-25">
+                <div class="preloader color-orange"></div>
+              </div>
+              <div class="col-25">
+                <div class="preloader color-blue"></div>
+              </div>
+            </div>
+          </div>
+          <div class="block-title">Multi-color</div>
+          <div class="block block-strong text-align-center">
+            <div class="preloader color-multi"></div>
+          </div>
+          <div class="block-title">Preloader Modals</div>
+          <div class="block block-strong">
+            <p>With <b>$f7.preloader.show()</b> you can show small overlay with preloader indicator.</p>
+            <p>
+              <a class="button button-fill open-preloader-indicator">Open Small Indicator</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- source end -->
+    </div>
+  </div>
+</template>
+<style>
+  .col-25 {
+    padding: 5px;
+    text-align: center;
+  }
+</style>
+<script>
+  export default (props, { $, $f7, $on }) => {
+    $on('pageInit', () => {
+      $('.open-preloader-indicator').on('click', function () {
+        $f7.preloader.show();
+        setTimeout(function () {
+          $f7.preloader.hide();
+        }, 3000);
+      });
+    })
+    return $render;
+  }
+</script>

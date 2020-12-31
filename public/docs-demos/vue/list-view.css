@@ -1,0 +1,29 @@
+
+.demo-list-icon,
+.icon-f7 {
+  background: #ccc;
+  display: block;
+  position: relative;
+}
+.ios .demo-list-icon,
+.ios .icon-f7,
+.ios .icon-vi {
+  width: 29px;
+  height: 29px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.md .demo-list-icon,
+.md .icon-f7,
+.md .icon-vi {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
+.aurora .demo-list-icon,
+.aurora .icon-f7,
+.aurora .icon-vi {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
