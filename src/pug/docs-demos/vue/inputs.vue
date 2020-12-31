@@ -64,7 +64,7 @@
           <f7-list-input
             label="Gender"
             type="select"
-            defaultValue="Male"
+            value="Male"
             placeholder="Please choose..."
           >
             <template #media>
@@ -77,7 +77,7 @@
           <f7-list-input
             label="Birthday"
             type="date"
-            defaultValue="2014-04-30"
+            value="2014-04-30"
             placeholder="Please choose..."
           >
             <template #media>
@@ -189,7 +189,7 @@
           <f7-list-input
             label="Gender"
             type="select"
-            defaultValue="Male"
+            value="Male"
             placeholder="Please choose..."
           >
             <template #media>
@@ -202,7 +202,7 @@
           <f7-list-input
             label="Birthday"
             type="date"
-            defaultValue="2014-04-30"
+            value="2014-04-30"
             placeholder="Please choose..."
           >
             <template #media>
