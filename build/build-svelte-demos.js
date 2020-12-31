@@ -1,6 +1,7 @@
 const path = require('path');
 const pug = require('pug');
 const fs = require('fs');
+const Terser = require('terser');
 
 const rollup = require('rollup');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
@@ -61,7 +62,13 @@ function buildOne(name, cb) {
         },
       });
     })
-    .then(() => {
+    .then(async (bundle) => {
+      const result = bundle.output[0];
+
+      const minified = await Terser.minify(result.code);
+
+      fs.writeFileSync(`./public/docs-demos/svelte/${name}.js`, minified.code);
+
       console.log(`Finished svelte: ${name} in ${Date.now() - time}ms`);
       if (cb) cb();
     });

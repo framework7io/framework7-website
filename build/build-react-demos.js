@@ -8,6 +8,7 @@ const replace = require('@rollup/plugin-replace');
 const { babel } = require('@rollup/plugin-babel');
 const css = require('rollup-plugin-css-only');
 const commonjs = require('@rollup/plugin-commonjs');
+const Terser = require('terser');
 
 const pugContent = fs.readFileSync('./src/pug/docs-demos/react/_layout.pug', 'utf8');
 const pugTemplate = pug.compile(pugContent);
@@ -60,7 +61,13 @@ function buildOne(name, cb) {
         sourcemap: false,
       });
     })
-    .then(() => {
+    .then(async (bundle) => {
+      const result = bundle.output[0];
+
+      const minified = await Terser.minify(result.code);
+
+      fs.writeFileSync(`./public/docs-demos/react/${name}.js`, minified.code);
+
       console.log(`Finished react: ${name} in ${Date.now() - time}ms`);
       if (cb) cb();
     });

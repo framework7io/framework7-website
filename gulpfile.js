@@ -22,10 +22,8 @@ gulp.task('core-demos', buildCoreDemos.all);
 gulp.task('svelte-demos', buildSvelteDemos.all);
 gulp.task('vue-demos', buildVueDemos.all);
 gulp.task('react-demos', buildReactDemos.all);
-gulp.task(
-  'build',
-  gulp.series(['core-demos', 'svelte-demos', 'vue-demos', 'react-demos', 'pug', 'less', 'js']),
-);
+gulp.task('build', gulp.series(['pug', 'less', 'js']));
+gulp.task('demos', gulp.series(['core-demos', 'svelte-demos', 'vue-demos', 'react-demos']));
 
 /* =================================
 Watch

@@ -5,8 +5,9 @@ const fs = require('fs');
 const pugContent = fs.readFileSync('./src/pug/docs-demos/core/_layout.pug', 'utf8');
 const pugTemplate = pug.compile(pugContent);
 
-function buildOne(name, cb) {
-  if (name.indexOf('_') >= 0) {
+function buildOne(fileName, cb) {
+  const name = fileName.split('.f7.html')[0];
+  if (name.indexOf('_') >= 0 || !name) {
     if (cb) cb();
     return Promise.resolve();
   }

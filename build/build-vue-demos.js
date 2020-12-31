@@ -7,6 +7,7 @@ const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const replace = require('@rollup/plugin-replace');
 const css = require('rollup-plugin-css-only');
 const vue = require('rollup-plugin-vue');
+const Terser = require('terser');
 
 const pugContent = fs.readFileSync('./src/pug/docs-demos/vue/_layout.pug', 'utf8');
 const pugTemplate = pug.compile(pugContent);
@@ -56,7 +57,13 @@ function buildOne(name, cb) {
         sourcemap: false,
       });
     })
-    .then(() => {
+    .then(async (bundle) => {
+      const result = bundle.output[0];
+
+      const minified = await Terser.minify(result.code);
+
+      fs.writeFileSync(`./public/docs-demos/vue/${name}.js`, minified.code);
+
       console.log(`Finished vue: ${name} in ${Date.now() - time}ms`);
       if (cb) cb();
     });
