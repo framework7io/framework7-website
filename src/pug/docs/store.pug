@@ -44,7 +44,7 @@ block content
           // ...
         },
 
-        // getters to retreive the state
+        // getters to retrieve the state
         getters: {
           // context object containing store state will be passed as an argument
           users({ state }) {
@@ -262,7 +262,7 @@ block content
       </template>
       <script>
         export default (props, { $store, $on }) => {
-          // retreive "users" getter handler value. Initially empty array
+          // retrieve "users" getter handler value. Initially empty array
           const users = $store.getters('users');
 
           $on('pageInit', () => {
