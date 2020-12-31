@@ -26,7 +26,7 @@ export default ({ f7router }) => {
           label="Username"
           type="text"
           placeholder="Your username"
-          value={this.state.username}
+          value={username}
           onInput={(e) => {
             setUsername(e.target.value);
           }}
@@ -35,7 +35,7 @@ export default ({ f7router }) => {
           label="Password"
           type="password"
           placeholder="Your password"
-          value={this.state.password}
+          value={password}
           onInput={(e) => {
             setPassword(e.target.value);
           }}
