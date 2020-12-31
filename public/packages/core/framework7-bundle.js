@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.0-beta.10
+ * Framework7 6.0.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: December 30, 2020
+ * Released on: December 31, 2020
  */
 
 (function (global, factory) {
@@ -48764,6 +48764,17 @@
       _proto.getValue = function getValue() {
         var self = this;
         return self.value;
+      };
+
+      _proto.clearValue = function clearValue() {
+        var self = this;
+        self.setValue('');
+
+        if (self.params.placeholder && !self.$contentEl.html()) {
+          self.insertPlaceholder();
+        }
+
+        return self;
       };
 
       _proto.createLink = function createLink() {

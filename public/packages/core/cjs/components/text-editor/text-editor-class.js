@@ -174,6 +174,17 @@ var TextEditor = /*#__PURE__*/function (_Framework7Class) {
     return self.value;
   };
 
+  _proto.clearValue = function clearValue() {
+    var self = this;
+    self.setValue('');
+
+    if (self.params.placeholder && !self.$contentEl.html()) {
+      self.insertPlaceholder();
+    }
+
+    return self;
+  };
+
   _proto.createLink = function createLink() {
     var self = this;
     var window = (0, _ssrWindow.getWindow)();

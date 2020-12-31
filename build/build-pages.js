@@ -146,7 +146,7 @@ function buildPages(
     .pipe(gulp.dest(dest))
     .pipe(connect.reload())
     .on('end', () => {
-      cleanup();
+      if (name === 'all') cleanup();
       console.log(`Finished pug ${name} in ${Date.now() - time}ms`);
       if (cb) cb();
     });
