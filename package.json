@@ -1,6 +1,6 @@
 {
   "name": "framework7-website",
-  "releaseVersion": "6.0.0",
+  "releaseVersion": "6.0.1",
   "releaseDate": "December 31, 2020",
   "description": "Framework7 Website",
   "cdn": "//cdn.framework7.io",
@@ -27,6 +27,7 @@
     "build-js": "gulp js",
     "build-less": "gulp less",
     "build-pug": "gulp pug",
+    "build-demos": "gulp demos",
     "build-core-demos": "gulp core-demos",
     "build-vue-demos": "gulp vue-demos",
     "build-svelte-demos": "gulp svelte-demos",
@@ -78,9 +79,9 @@
     "vue": "^3.0.4"
   },
   "dependencies": {
-    "framework7": "^6.0.0",
-    "framework7-react": "^6.0.0",
-    "framework7-svelte": "^6.0.0",
-    "framework7-vue": "^6.0.0"
+    "framework7": "^6.0.1",
+    "framework7-react": "^6.0.1",
+    "framework7-svelte": "^6.0.1",
+    "framework7-vue": "^6.0.1"
   }
 }
