@@ -285,16 +285,19 @@ block content
         tr
           td Typography
           td `framework7/components/typography`
+        tr
+          td Text Editor
+          td `framework7/components/text-editor`
     h2 Browser Modules
     p Browser modules are intended to be used in development setup without bundlers (like Webpack or Rollup).
-    p First of all, in our main <a href="app-layout.html">app layout</a> we need to use so called minimal core Framework7 library instead of `framework7.bundle.js` and `framework7.bundle.css` scripts and styles that contains whole framework.
+    p First of all, in our main <a href="app-layout.html">app layout</a> we need to use so called minimal core Framework7 library instead of `framework7-bundle.js` and `framework7-bundle.css` scripts and styles that contains whole framework.
     :code(lang="html")
       <!DOCTYPE html>
       <html>
         <head>
           ...
           <!-- Path to Framework7 Core Library CSS -->
-          <link rel="stylesheet" href="path/to/framework7/css/framework7.min.css">
+          <link rel="stylesheet" href="path/to/framework7/framework7.min.css">
           <!-- Path to your custom app styles-->
           <link rel="stylesheet" href="path/to/my-app.css">
         </head>
@@ -303,7 +306,7 @@ block content
             ...
           </div>
           <!-- Path to Framework7 Core Library JS-->
-          <script type="text/javascript" src="path/to/framework7/js/framework7.min.js"></script>
+          <script type="text/javascript" src="path/to/framework7/framework7.min.js"></script>
           <!-- Path to your app js-->
           <script type="text/javascript" src="path/to/my-app.js"></script>
         </body>
@@ -315,7 +318,7 @@ block content
         <head>
           ...
           <!-- Path to Framework7 Core Library CSS -->
-          <link rel="stylesheet" href="path/to/framework7/css/framework7.min.css">
+          <link rel="stylesheet" href="path/to/framework7/framework7.min.css">
           <!-- Include modules required for initial page -->
           <link rel="stylesheet" href="path/to/framework7/components/accordion/accordion.css">
           <link rel="stylesheet" href="path/to/framework7/components/searchbar/searchbar.css">
@@ -327,7 +330,7 @@ block content
             ...
           </div>
           <!-- Path to Framework7 Core Library JS-->
-          <script type="text/javascript" src="path/to/framework7/js/framework7.min.js"></script>
+          <script type="text/javascript" src="path/to/framework7/framework7.min.js"></script>
           <!-- Include modules required for initial page -->
           <script type="text/javascript" src="path/to/framework7/components/accordion/accordion.js"></script>
           <script type="text/javascript" src="path/to/framework7/components/searchbar/searchbar.js"></script>
