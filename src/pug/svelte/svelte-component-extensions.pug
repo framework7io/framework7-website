@@ -12,14 +12,14 @@ block content
     +improveDocsLink
     h1 Svelte Component Extensions
     ul.docs-index
-    p <b>After</b> Svelte mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that can be imported from `framework7-react` package.
+    p <b>After</b> Svelte mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that can be imported from `framework7-svelte` package.
     h2 `f7ready`
     p It is a callback function that will be executed when Framework7 fully intialized. Useful to use in components when you need to access Framework7 API and to be sure it is ready. So it is safe to put all Framework7 related logic into this callback. As an argument it receives initialized Framework7 instance. For example:
     :code(lang="html")
       ...
       <script>
         import { onMount } from 'svelte';
-        import { f7ready } from 'framework7-react';
+        import { f7ready } from 'framework7-svelte';
 
         onMount(() => {
           f7ready(() => {
@@ -33,7 +33,7 @@ block content
     p If you are sure that on the moment when you access Framework7 instance, it was already initialized, you can import and use it directly:
     ```html
       <script>
-        import { f7 } from 'framework7-vue';
+        import { f7 } from 'framework7-svelte';
 
         const doSomething = () => {
           f7.dialog.alert('Hello world');
@@ -46,7 +46,7 @@ block content
     p It is an object with boolean properties with information about currently used theme (iOS, MD or Aurora ): `theme.ios`, `theme.material` and `theme.aurora`.
     ```html
       <script>
-        import { theme } from 'framework7-vue';
+        import { theme } from 'framework7-svelte';
 
         if (theme.ios) {
           console.log('Currently active theme is iOS-theme')
