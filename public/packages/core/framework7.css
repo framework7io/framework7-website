@@ -1,13 +1,13 @@
 /**
- * Framework7 6.0.1
+ * Framework7 6.0.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2020 Vladimir Kharlampidi
+ * Copyright 2014-2021 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: December 31, 2020
+ * Released on: January 11, 2021
  */
 
 /*====================
@@ -5417,7 +5417,8 @@ button {
   color: var(--f7-button-pressed-text-color, var(--f7-button-text-color, var(--f7-theme-color)));
 }
 input[type='submit'].button,
-input[type='button'].button {
+input[type='button'].button,
+input[type='reset'].button {
   width: 100%;
 }
 .button > i + span,

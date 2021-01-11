@@ -1,13 +1,13 @@
 /**
- * Framework7 6.0.1
+ * Framework7 6.0.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2020 Vladimir Kharlampidi
+ * Copyright 2014-2021 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: December 31, 2020
+ * Released on: January 11, 2021
  */
 
 /*====================
@@ -5417,7 +5417,8 @@ button {
   color: var(--f7-button-pressed-text-color, var(--f7-button-text-color, var(--f7-theme-color)));
 }
 input[type='submit'].button,
-input[type='button'].button {
+input[type='button'].button,
+input[type='reset'].button {
   width: 100%;
 }
 .button > i + span,
@@ -7638,7 +7639,7 @@ html.with-modal-popup-push-closing .framework7-root > .view.theme-dark:after {
   background: none;
 }
 .actions-grid .actions-button {
-  width: 33.33333333%;
+  width: 100% / 3;
   display: block;
   color: var(--f7-actions-grid-button-text-color);
   height: auto;
@@ -9861,7 +9862,7 @@ html.device-android-4 .accordion-item-content {
 }
 .timeline-horizontal .timeline-item {
   display: block;
-  width: 33.33333333vw;
+  width: 100/3vw;
   margin: 0;
   padding: 0;
   flex-shrink: 0;
@@ -9967,7 +9968,7 @@ html.device-android-4 .accordion-item-content {
   width: 30vw;
 }
 .timeline-horizontal.col-33 .timeline-item {
-  width: 33.333333333333336vw;
+  width: 100/3vw;
 }
 .timeline-horizontal.col-35 .timeline-item {
   width: 35vw;
@@ -10034,7 +10035,7 @@ html.device-android-4 .accordion-item-content {
     width: 30vw;
   }
   .timeline-horizontal.tablet-33 .timeline-item {
-    width: 33.333333333333336vw;
+    width: 100/3vw;
   }
   .timeline-horizontal.tablet-35 .timeline-item {
     width: 35vw;
@@ -14682,7 +14683,7 @@ label.item-radio.disabled,
   top: 0;
 }
 .calendar-row {
-  height: 16.66666667%;
+  height: 100% / 6;
   height: calc(100% / 6);
   display: flex;
   flex-shrink: 1;
@@ -14717,7 +14718,7 @@ label.item-radio.disabled,
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  width: 14.28571429%;
+  width: 100% / 7;
   width: calc(100% / 7);
   text-align: center;
   cursor: pointer;
@@ -18642,7 +18643,7 @@ table.data-table {
 }
 /* === Swiper === */
 /**
- * Swiper 6.3.5
+ * Swiper 6.4.5
  * Most modern mobile touch slider and framework with hardware accelerated transitions
  * https://swiperjs.com
  *
@@ -18650,7 +18651,7 @@ table.data-table {
  *
  * Released under the MIT License
  *
- * Released on: October 30, 2020
+ * Released on: December 18, 2020
  */
 
 @font-face {
@@ -20193,50 +20194,61 @@ button.swiper-pagination-bullet {
 /* === Skeleton === */
 :root {
   --skeleton-color: #ccc;
-  --skeleton-icon-color: rgba(0, 0, 0, 0.25); }
+  --skeleton-icon-color: rgba(0, 0, 0, 0.25);
+}
 
 .skeleton-block {
   height: 1em;
   background: var(--skeleton-color) !important;
   width: 100%;
-  display: block; }
+  display: block;
+}
 
 @font-face {
-  font-family: 'skeleton';
+  font-family: "skeleton";
   src: url("data:application/font-woff;charset=utf-8;base64,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") format("woff");
   font-weight: 100, 200, 300, 400, 500, 600, 700, 800, 900;
   font-style: normal, italic;
-  font-display: block; }
-
+  font-display: block;
+}
 .skeleton-text {
-  font-family: 'skeleton' !important;
+  font-family: "skeleton" !important;
   -webkit-user-select: none;
      -moz-user-select: none;
-          user-select: none; }
-  .skeleton-text,
-  .skeleton-text * {
-    color: var(--skeleton-color) !important;
-    letter-spacing: -0.03em !important; }
+          user-select: none;
+}
+.skeleton-text, .skeleton-text * {
+  color: var(--skeleton-color) !important;
+  letter-spacing: -0.03em !important;
+}
 
 .skeleton-image {
-  display: inline-block; }
-  .skeleton-image svg {
-    width: 100%;
-    height: auto; }
-  .skeleton-image polygon {
-    fill: var(--skeleton-color); }
-  .skeleton-image path {
-    fill: var(--skeleton-icon-color); }
+  display: inline-block;
+}
+.skeleton-image svg {
+  max-width: 100%;
+  height: auto;
+}
+.skeleton-image polygon {
+  fill: var(--skeleton-color);
+}
+.skeleton-image path {
+  fill: var(--skeleton-icon-color);
+}
 
 .skeleton-avatar {
-  display: inline-block; }
-  .skeleton-avatar svg {
-    width: 100%;
-    height: auto; }
-  .skeleton-avatar rect {
-    fill: var(--skeleton-color); }
-  .skeleton-avatar path {
-    fill: var(--skeleton-icon-color); }
+  display: inline-block;
+}
+.skeleton-avatar svg {
+  max-width: 100%;
+  height: auto;
+}
+.skeleton-avatar rect {
+  fill: var(--skeleton-color);
+}
+.skeleton-avatar path {
+  fill: var(--skeleton-icon-color);
+}
 
 .skeleton-effect-blink, .skeleton-effect-wave {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%);
@@ -20247,40 +20259,50 @@ button.swiper-pagination-bullet {
   mask-repeat: repeat;
   -webkit-mask-position: 50% top;
   mask-position: 50% top;
-  animation: skeleton-effect-wave 1s infinite; }
-
+  animation: skeleton-effect-wave 1s infinite;
+}
 .skeleton-effect-fade {
-  animation: skeleton-effect-fade 1s infinite; }
-
+  animation: skeleton-effect-fade 1s infinite;
+}
 .skeleton-effect-pulse {
-  animation: skeleton-effect-pulse 1s infinite; }
+  animation: skeleton-effect-pulse 1s infinite;
+}
 
 @keyframes skeleton-effect-fade {
   0% {
-    opacity: 1; }
+    opacity: 1;
+  }
   50% {
-    opacity: 0.2; }
+    opacity: 0.2;
+  }
   100% {
-    opacity: 1; } }
-
+    opacity: 1;
+  }
+}
 @keyframes skeleton-effect-wave {
   0% {
     -webkit-mask-position: 50% top;
-    mask-position: 50% top; }
+    mask-position: 50% top;
+  }
   100% {
     -webkit-mask-position: -150% top;
-    mask-position: -150% top; } }
-
+    mask-position: -150% top;
+  }
+}
 @keyframes skeleton-effect-pulse {
   0% {
-    transform: scale(1); }
+    transform: scale(1);
+  }
   40% {
-    transform: scale(1); }
+    transform: scale(1);
+  }
   50% {
-    transform: scale(0.975); }
+    transform: scale(0.975);
+  }
   100% {
-    transform: scale(1); } }
-
+    transform: scale(1);
+  }
+}
 :root {
   --skeleton-color: #ccc;
   --skeleton-icon-color: rgba(0, 0, 0, 0.25);

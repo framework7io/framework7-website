@@ -1,13 +1,13 @@
 /**
- * Framework7 6.0.1
+ * Framework7 6.0.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2020 Vladimir Kharlampidi
+ * Copyright 2014-2021 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: December 31, 2020
+ * Released on: January 11, 2021
  */
 
 (function (global, factory) {
@@ -34556,7 +34556,7 @@
       create: function create() {
         var swiper = this;
         bindModuleMethods(swiper, {
-          observer: _extends$1(_extends$1({}, Observer), {}, {
+          observer: _extends$1({}, Observer, {
             observers: []
           })
         });
@@ -34710,11 +34710,7 @@
           }
 
           if (self.eventsListeners && self.eventsListeners[event]) {
-            var handlers = [];
             self.eventsListeners[event].forEach(function (eventHandler) {
-              handlers.push(eventHandler);
-            });
-            handlers.forEach(function (eventHandler) {
               eventHandler.apply(context, data);
             });
           }
@@ -34735,7 +34731,7 @@
         width = $el[0].clientWidth;
       }
 
-      if (typeof swiper.params.height !== 'undefined' && swiper.params.width !== null) {
+      if (typeof swiper.params.height !== 'undefined' && swiper.params.height !== null) {
         height = swiper.params.height;
       } else {
         height = $el[0].clientHeight;
@@ -34796,7 +34792,7 @@
       }
 
       var previousSnapGridLength = swiper.snapGrid.length;
-      var previousSlidesGridLength = swiper.snapGrid.length;
+      var previousSlidesGridLength = swiper.slidesGrid.length;
       var spaceBetween = params.spaceBetween;
       var slidePosition = -offsetBefore;
       var prevSlideSize = 0;
@@ -36453,7 +36449,7 @@
       var edgeSwipeDetection = params.edgeSwipeDetection || params.iOSEdgeSwipeDetection;
       var edgeSwipeThreshold = params.edgeSwipeThreshold || params.iOSEdgeSwipeThreshold;
 
-      if (edgeSwipeDetection && (startX <= edgeSwipeThreshold || startX >= window.screen.width - edgeSwipeThreshold)) {
+      if (edgeSwipeDetection && (startX <= edgeSwipeThreshold || startX >= window.innerWidth - edgeSwipeThreshold)) {
         return;
       }
 
@@ -36482,7 +36478,7 @@
 
         var shouldPreventDefault = preventDefault && swiper.allowTouchMove && params.touchStartPreventDefault;
 
-        if (params.touchStartForcePreventDefault || shouldPreventDefault) {
+        if ((params.touchStartForcePreventDefault || shouldPreventDefault) && !$targetEl[0].isContentEditable) {
           e.preventDefault();
         }
       }
@@ -38451,7 +38447,7 @@
       create: function create() {
         var swiper = this;
         bindModuleMethods(swiper, {
-          virtual: _extends$2(_extends$2({}, Virtual), {}, {
+          virtual: _extends$2({}, Virtual, {
             slides: swiper.params.virtual.slides,
             cache: {}
           })
@@ -38546,6 +38542,8 @@
             var point = swiperCoord[i];
 
             if (point[0] >= 0 && point[0] <= windowWidth && point[1] >= 0 && point[1] <= windowHeight) {
+              if (point[0] === 0 && point[1] === 0) continue; // eslint-disable-line
+
               inView = true;
             }
           }
@@ -38737,6 +38735,7 @@
       },
       handle: function handle(event) {
         var e = event;
+        var disableParentSwiper = true;
         var swiper = this;
         var params = swiper.params.mousewheel;
 
@@ -38766,7 +38765,20 @@
         }
 
         if (delta === 0) return true;
-        if (params.invert) delta = -delta;
+        if (params.invert) delta = -delta; // Get the scroll positions
+
+        var positions = swiper.getTranslate() + delta * params.sensitivity;
+        if (positions >= swiper.minTranslate()) positions = swiper.minTranslate();
+        if (positions <= swiper.maxTranslate()) positions = swiper.maxTranslate(); // When loop is true:
+        //     the disableParentSwiper will be true.
+        // When loop is false:
+        //     if the scroll positions is not on edge,
+        //     then the disableParentSwiper will be true.
+        //     if the scroll on edge positions,
+        //     then the disableParentSwiper will be false.
+
+        disableParentSwiper = swiper.params.loop ? true : !(positions === swiper.minTranslate() || positions === swiper.maxTranslate());
+        if (disableParentSwiper && swiper.params.nested) e.stopPropagation();
 
         if (!swiper.params.freeMode) {
           // Register the new event in a variable which stores the relevant data
@@ -39444,7 +39456,7 @@
           }
 
           $el.html(paginationHTML);
-          swiper.pagination.bullets = $el.find("." + params.bulletClass);
+          swiper.pagination.bullets = $el.find("." + params.bulletClass.replace(/ /g, '.'));
         }
 
         if (params.type === 'fraction') {
@@ -39502,7 +39514,7 @@
         }
 
         if (params.clickable) {
-          $el.on('click', "." + params.bulletClass, function onClick(e) {
+          $el.on('click', "." + params.bulletClass.replace(/ /g, '.'), function onClick(e) {
             e.preventDefault();
             var index = $(this).index() * swiper.params.slidesPerGroup;
             if (swiper.params.loop) index += swiper.loopedSlides;
@@ -39525,7 +39537,7 @@
         if (swiper.pagination.bullets) swiper.pagination.bullets.removeClass(params.bulletActiveClass);
 
         if (params.clickable) {
-          $el.off('click', "." + params.bulletClass);
+          $el.off('click', "." + params.bulletClass.replace(/ /g, '.'));
         }
       }
     };
@@ -40897,16 +40909,50 @@
             if (prevSlide.length > 0) swiper.lazy.loadInSlide(slideIndex(prevSlide));
           }
         }
+      },
+      checkInViewOnLoad: function checkInViewOnLoad() {
+        var window = getWindow();
+        var swiper = this;
+        if (!swiper || swiper.destroyed) return;
+        var $scrollElement = swiper.params.lazy.scrollingElement ? $(swiper.params.lazy.scrollingElement) : $(window);
+        var isWindow = $scrollElement[0] === window;
+        var scrollElementWidth = isWindow ? window.innerWidth : $scrollElement[0].offsetWidth;
+        var scrollElementHeight = isWindow ? window.innerHeight : $scrollElement[0].offsetHeight;
+        var swiperOffset = swiper.$el.offset();
+        var rtl = swiper.rtlTranslate;
+        var inView = false;
+        if (rtl) swiperOffset.left -= swiper.$el[0].scrollLeft;
+        var swiperCoord = [[swiperOffset.left, swiperOffset.top], [swiperOffset.left + swiper.width, swiperOffset.top], [swiperOffset.left, swiperOffset.top + swiper.height], [swiperOffset.left + swiper.width, swiperOffset.top + swiper.height]];
+
+        for (var i = 0; i < swiperCoord.length; i += 1) {
+          var point = swiperCoord[i];
+
+          if (point[0] >= 0 && point[0] <= scrollElementWidth && point[1] >= 0 && point[1] <= scrollElementHeight) {
+            if (point[0] === 0 && point[1] === 0) continue; // eslint-disable-line
+
+            inView = true;
+          }
+        }
+
+        if (inView) {
+          swiper.lazy.load();
+          $scrollElement.off('scroll', swiper.lazy.checkInViewOnLoad);
+        } else if (!swiper.lazy.scrollHandlerAttached) {
+          swiper.lazy.scrollHandlerAttached = true;
+          $scrollElement.on('scroll', swiper.lazy.checkInViewOnLoad);
+        }
       }
     };
     var Lazy$3 = {
       name: 'lazy',
       params: {
         lazy: {
+          checkInView: false,
           enabled: false,
           loadPrevNext: false,
           loadPrevNextAmount: 1,
           loadOnTransitionStart: false,
+          scrollingElement: '',
           elementClass: 'swiper-lazy',
           loadingClass: 'swiper-lazy-loading',
           loadedClass: 'swiper-lazy-loaded',
@@ -40929,7 +40975,11 @@
         },
         init: function init(swiper) {
           if (swiper.params.lazy.enabled && !swiper.params.loop && swiper.params.initialSlide === 0) {
-            swiper.lazy.load();
+            if (swiper.params.lazy.checkInView) {
+              swiper.lazy.checkInViewOnLoad();
+            } else {
+              swiper.lazy.load();
+            }
           }
         },
         scroll: function scroll(swiper) {
@@ -41277,7 +41327,7 @@
           }
         }
 
-        if (swiper.pagination && $targetEl.is("." + swiper.params.pagination.bulletClass)) {
+        if (swiper.pagination && $targetEl.is("." + swiper.params.pagination.bulletClass.replace(/ /g, '.'))) {
           $targetEl[0].click();
         }
       },
@@ -41407,7 +41457,7 @@
 
 
         if (swiper.pagination && swiper.params.pagination.clickable && swiper.pagination.bullets && swiper.pagination.bullets.length) {
-          swiper.pagination.$el.on('keydown', "." + swiper.params.pagination.bulletClass, swiper.a11y.onEnterKey);
+          swiper.pagination.$el.on('keydown', "." + swiper.params.pagination.bulletClass.replace(/ /g, '.'), swiper.a11y.onEnterKey);
         }
       },
       destroy: function destroy() {
@@ -41434,7 +41484,7 @@
 
 
         if (swiper.pagination && swiper.params.pagination.clickable && swiper.pagination.bullets && swiper.pagination.bullets.length) {
-          swiper.pagination.$el.off('keydown', "." + swiper.params.pagination.bulletClass, swiper.a11y.onEnterKey);
+          swiper.pagination.$el.off('keydown', "." + swiper.params.pagination.bulletClass.replace(/ /g, '.'), swiper.a11y.onEnterKey);
         }
       }
     };
@@ -41457,7 +41507,7 @@
       create: function create() {
         var swiper = this;
         bindModuleMethods(swiper, {
-          a11y: _extends$b(_extends$b({}, A11y), {}, {
+          a11y: _extends$b({}, A11y, {
             liveRegion: $("<span class=\"" + swiper.params.a11y.notificationClass + "\" aria-live=\"assertive\" aria-atomic=\"true\"></span>")
           })
         });
@@ -41923,7 +41973,7 @@
       create: function create() {
         var swiper = this;
         bindModuleMethods(swiper, {
-          autoplay: _extends$e(_extends$e({}, Autoplay), {}, {
+          autoplay: _extends$e({}, Autoplay, {
             running: false,
             paused: false
           })
@@ -42756,7 +42806,7 @@
     };
 
     /**
-     * Swiper 6.3.5
+     * Swiper 6.4.5
      * Most modern mobile touch slider and framework with hardware accelerated transitions
      * https://swiperjs.com
      *
@@ -42764,7 +42814,7 @@
      *
      * Released under the MIT License
      *
-     * Released on: October 30, 2020
+     * Released on: December 18, 2020
      */
 
     var components = [Virtual$1, Keyboard$1, Mousewheel$1, Navigation$1, Pagination$1, Scrollbar$1, Parallax$1, Zoom$1, Lazy$3, Controller$1, A11y$1, History$2, HashNavigation$1, Autoplay$1, EffectFade, EffectCube, EffectFlip, EffectCoverflow, Thumbs$1];
