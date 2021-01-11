@@ -56,6 +56,11 @@ silver:
   imageUrl: "/i/sponsors/tommy.png"
 topSupporter:
 -
+  title: Forex In Thai - An educational site about Forex trading in Thailand
+  link: https://www.forexinthai.com
+  imageUrl: "/i/sponsors/forex-in-thai.png"
+  oc: https://opencollective.com/forex-in-thai
+-
   title: Parhaat rahapelit netissä | Pelaa ilman rekisteröitymistä
   link: https://www.rahapeleja.com
   imageUrl: "/i/sponsors/rahapelit.png"
@@ -75,14 +80,6 @@ topSupporter:
   title: Best Bitcoin Casinos Reviewed - Best Bitcoin Casino
   link: https://bestbitcoincasino.net
   imageUrl: "/i/sponsors/bestbitcoincasino.png"
--
-  title: Magento Development Services. Develop Magento — GoMage
-  link: https://www.gomage.com
-  imageUrl: "/i/sponsors/gomage.svg"
--
-  title: Faveable - Ranking the Best Products on the Planet
-  link: https://faveable.com
-  imageUrl: "/i/sponsors/faveable.svg"
 -
   title: JohnSlots | Find the Best Online Casinos, Bonuses and Slots 2020
   link: https://www.johnslots.com/en/
@@ -151,10 +148,6 @@ topSupporter:
   title: GunsBet Casino
   link: https://www.gunsbet.com
   imageUrl: "/i/sponsors/gunsbet.png"
--
-  title: Online Casino - Play 1000+ Best Games Free and For Real Money | Mason Slots
-  link: https://masonslots.com
-  imageUrl: "/i/sponsors/masonslots.svg"
 -
   title: Real Time Communications World
   link: https://www.realtimecommunicationsworld.com
