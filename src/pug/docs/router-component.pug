@@ -256,7 +256,7 @@ block content
           td $onMounted
           td
             p Called right after component was be added to DOM
-            ```js
+            :code(lang="js")
               const MyComponent = (props, { $onMounted }) => {
                 // do something when component mounted
                 $onMounted(() => {
@@ -264,7 +264,6 @@ block content
                 });
                 // ...
               }
-            ```
         tr
           td $onBeforeUpdate
           td Called right after component before VDOM will be patched/updated
@@ -1012,3 +1011,139 @@ block content
           <p>Footer content</p>
         </footer>
       </div>
+
+    h2 Template Recepies
+    h3 Conditional Rendering
+    p To implement conditions in JavaScript we usually use `if` (`if-else`) statements. Inside of templates and JSX we can't use them directly and should use JavaScript operators.
+    h4 `if`
+    p For `if` statement we should use logical AND (`&&`) operator:
+    :code
+      <template>
+        <div class="page">
+          ${someVar && $h`
+            <p>Text will be visible when "someVar" is truthy</p>
+          `}
+
+          ${someVar === 1 && $h`
+            <p>Text will be visible when "someVar" equals to 1</p>
+          `}
+        </div>
+      </template>
+      <script>
+        export default () => {
+          const someVar = 1;
+
+          return $render;
+        }
+      </script>
+    p Same using JSX:
+    :code(lang="jsx")
+      export default () => {
+        const someVar = 1;
+
+        return () => (
+          <div class="page">
+            {someVar && (
+              <p>Text will be visible when "someVar" is truthy</p>
+            )}
+
+            {someVar === 1 && (
+              <p>Text will be visible when "someVar" equals to 1</p>
+            )}
+          </div>
+        )
+      }
+    h4 `if-else`
+    p For `if-else` we can use Ternary operator (`?:`) or combination of `&&` and `!` operators:
+    :code
+      <template>
+        <div class="page">
+          ${someVar ? $h`
+            <p>Text will be visible when "someVar" is truthy</p>
+          ` : $h`
+            <p>Text will be visible when "someVar" is falsy</p>
+          `}
+
+          {someVar && (
+            <p>Text will be visible when "someVar" is truthy</p>
+          )}
+          {!someVar && (
+            <p>Text will be visible when "someVar" is falsy</p>
+          )}
+        </div>
+      </template>
+      <script>
+        export default () => {
+          const someVar = 1;
+
+          return $render;
+        }
+      </script>
+    p Same using JSX:
+    :code(lang="jsx")
+      export default () => {
+        const someVar = 1;
+
+        return () => (
+          <div class="page">
+            {someVar ? (
+              <p>Text will be visible when "someVar" is truthy</p>
+            ) : (
+              <p>Text will be visible when "someVar" is falsy</p>
+            )}
+
+            {someVar && (
+              <p>Text will be visible when "someVar" is truthy</p>
+            )}
+            {!someVar && (
+              <p>Text will be visible when "someVar" is falsy</p>
+            )}
+
+          </div>
+        )
+      }
+    h3 Mapping Array To Elements
+    p To map array to elements we use Array's `.map()` method:
+    :code
+      <template>
+        <div class="page">
+          <ul>
+          ${items.map((item) => $h`
+            <li>${item}</li>
+          `)}
+          </ul>
+        </div>
+      </template>
+      <script>
+        export default () => {
+          const items = [
+            'item 1',
+            'item 2',
+            'item 3',
+          ];
+
+          return $render;
+        }
+      </script>
+    p Same using JSX:
+    :code(lang="jsx")
+      export default () => {
+        const items = [
+          'item 1',
+          'item 2',
+          'item 3',
+        ];
+
+        return () => (
+          <div class="page">
+            <ul>
+              {items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+
+
