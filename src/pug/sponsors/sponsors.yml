@@ -56,6 +56,16 @@ silver:
   imageUrl: "/i/sponsors/tommy.png"
 topSupporter:
 -
+  title: Casinority Australia - Best online casino guide for Australian players
+  link: https://casinority.com/au/
+  imageUrl: "/i/sponsors/casinority.png"
+  oc: https://opencollective.com/casinority-australia
+-
+  title: Bao casino Canada - The best online casino in Canada
+  link: https://www.baocasino.com/en-CA
+  imageUrl: "/i/sponsors/bao-casino.png"
+  oc: https://opencollective.com/bao-canada
+-
   title: Forex In Thai - An educational site about Forex trading in Thailand
   link: https://www.forexinthai.com
   imageUrl: "/i/sponsors/forex-in-thai.png"
