@@ -56,6 +56,11 @@ silver:
   imageUrl: "/i/sponsors/tommy.png"
 topSupporter:
 -
+  title: Favorit Sport - Ставки на спорт
+  link: https://www.favorit.com.ua/ru/bets/
+  imageUrl: "/i/sponsors/favorit-sport.png"
+  oc: https://opencollective.com/stavki-na-sport
+-
   title: Casinority Australia - Best online casino guide for Australian players
   link: https://casinority.com/au/
   imageUrl: "/i/sponsors/casinority.png"
