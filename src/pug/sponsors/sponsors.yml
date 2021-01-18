@@ -6,14 +6,6 @@ gold:
   link: https://www.wfmbuddy.com/
   imageUrl: "/i/sponsors/wfmbuddy.png"
 -
-  title: Privicy - Privacy control for consumers
-  link: https://privicy.com/
-  imageUrl: "/i/sponsors/privicy.png"
--
-  title: CodersRank - Ultimate Profile For Coders
-  link: https://codersrank.io/?utm_source=partner&utm_medium=referral&utm_campaign=vladimir
-  imageUrl: "/i/sponsors/codersrank.svg"
--
   title: Sparheld.de - save shopping online
   link: https://www.sparheld.de/
   imageUrl: "/i/sponsors/sparheld.jpg"
@@ -55,6 +47,10 @@ silver:
   link: http://mytommy.com
   imageUrl: "/i/sponsors/tommy.png"
 topSupporter:
+-
+  title: Privicy - Privacy control for consumers
+  link: https://privicy.com/
+  imageUrl: "/i/sponsors/privicy.png"
 -
   title: 大吉カジノ オンライン
   link: https://大吉カジノ.jp
