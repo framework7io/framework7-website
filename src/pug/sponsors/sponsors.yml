@@ -56,6 +56,21 @@ silver:
   imageUrl: "/i/sponsors/tommy.png"
 topSupporter:
 -
+  title: 大吉カジノ オンライン
+  link: https://大吉カジノ.jp
+  imageUrl: "/i/sponsors/daikichi.png"
+  oc: https://opencollective.com/daikichi-casino
+-
+  title: Real Money Casinos NZ by iCasinoReviews.info
+  link: https://icasinoreviews.info
+  imageUrl: "/i/sponsors/icasinoreviews.png"
+  oc: https://opencollective.com/icasinoreviews
+-
+  title: NotGamStop Casinos
+  link: https://notgamstop.com
+  imageUrl: "/i/sponsors/notgamstop.png"
+  oc: https://opencollective.com/notgamstop-casinos
+-
   title: Favorit Sport - Ставки на спорт
   link: https://www.favorit.com.ua/ru/bets/
   imageUrl: "/i/sponsors/favorit-sport.png"
