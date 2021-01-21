@@ -48,6 +48,11 @@ silver:
   imageUrl: "/i/sponsors/tommy.png"
 topSupporter:
 -
+  title: Kajino Bitcoin - № 1 Bitcoin Casino Guide in Japan
+  link: https://kajino.com/bitcoin/
+  imageUrl: "/i/sponsors/kajino-bitcoin.png"
+  oc: https://opencollective.com/kajino-bitcoin
+-
   title: Privicy - Privacy control for consumers
   link: https://privicy.com/
   imageUrl: "/i/sponsors/privicy.png"
