@@ -7,7 +7,7 @@ import h from './snabbdom/h';
 import customComponents from './custom-components';
 import { isObject, eventNameToColonCase } from '../../shared/utils';
 var SELF_CLOSING = 'area base br col command embed hr img input keygen link menuitem meta param source track wbr'.split(' ');
-var PROPS_ATTRS = 'hidden checked disabled readonly selected autofocus autoplay required multiple value indeterminate routeProps'.split(' ');
+var PROPS_ATTRS = 'hidden checked disabled readonly selected autofocus autoplay required multiple value indeterminate routeProps innerHTML'.split(' ');
 var BOOLEAN_PROPS = 'hidden checked disabled readonly selected autofocus autoplay required multiple readOnly indeterminate'.split(' ');
 
 var getTagName = function getTagName(treeNode) {

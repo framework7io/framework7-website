@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.4
+ * Framework7 6.0.5
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: January 19, 2021
+ * Released on: January 26, 2021
  */
 
 (function (global, factory) {
@@ -10970,7 +10970,7 @@
     var customComponents = {};
 
     var SELF_CLOSING = 'area base br col command embed hr img input keygen link menuitem meta param source track wbr'.split(' ');
-    var PROPS_ATTRS = 'hidden checked disabled readonly selected autofocus autoplay required multiple value indeterminate routeProps'.split(' ');
+    var PROPS_ATTRS = 'hidden checked disabled readonly selected autofocus autoplay required multiple value indeterminate routeProps innerHTML'.split(' ');
     var BOOLEAN_PROPS = 'hidden checked disabled readonly selected autofocus autoplay required multiple readOnly indeterminate'.split(' ');
 
     var getTagName = function getTagName(treeNode) {

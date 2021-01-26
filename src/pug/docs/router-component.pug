@@ -744,6 +744,27 @@ block content
         li Note that `key` attribute must be unique accross single component.
         li If `key` attribute was not specified and element has an `id` attribute, then `id` attribute will be used as virtual node unique key.
 
+    h3 innerHTML
+    p If we need to insert HTML string (for example, received from API endpoint), we need to use special `innerHTML` element prop/attribute:
+
+    :code(lang="html")
+      <template>
+        <div class="page">
+          ...
+          <div class="block" innerHTML=${customHTML}></div>
+        </div>
+      </template>
+      <script>
+        export default (props) => {
+          const customHTML = '<p>Hello <b>World!</b></p>';
+
+          return $render;
+        }
+      </script>
+    .important-note
+      p Using `innerHTML` on element will override all its children.
+      p HTML content passed in `innerHTML` is just a string and, for example, component event handlers (like `@click` attribute) won't work.
+
     h2 Main App Component
     p It is possible to make whole app layout as a component.
 

@@ -2,7 +2,13 @@
 
 # Change Log
 
-# [v6.0.4](https://github.com/framework7io/framework7/compare/v6.0.3...v6.0.4) - January 19, 2020
+# [v6.0.5](https://github.com/framework7io/framework7/compare/v6.0.4...v6.0.5) - January 26, 2021
+
+- Core
+  - Router Component
+    - Added support for HTML contents with `innerHTML` attribute/prop
+
+# [v6.0.4](https://github.com/framework7io/framework7/compare/v6.0.3...v6.0.4) - January 19, 2021
 
 - Package
   - Fixed `postinstall` script
@@ -11,7 +17,7 @@
   - Card
     - Fixed rendering of card footer passed by `footer` prop
 
-# [v6.0.3](https://github.com/framework7io/framework7/compare/v6.0.1...v6.0.3) - January 11, 2020
+# [v6.0.3](https://github.com/framework7io/framework7/compare/v6.0.1...v6.0.3) - January 11, 2021
 
 - Core
   - Added compatibility with latest `less` v4
