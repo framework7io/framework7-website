@@ -208,7 +208,22 @@ var TextEditor = /*#__PURE__*/function (_Framework7Class) {
         }
       }
 
-      $selectedLinks = (0, _dom.default)(selectedNodes).closest('a').add((0, _dom.default)(selectedNodes).children('a'));
+      var selectedNodesLinks = [];
+      var $selectedNodes = (0, _dom.default)(selectedNodes);
+
+      for (var i = 0; i < $selectedNodes.length; i += 1) {
+        var childNodes = $selectedNodes[i].children;
+
+        if (childNodes) {
+          for (var j = 0; j < childNodes.length; j += 1) {
+            if ((0, _dom.default)(childNodes[j]).is('a')) {
+              selectedNodesLinks.push(childNodes[j]);
+            }
+          }
+        }
+      }
+
+      $selectedLinks = $selectedNodes.closest('a').add((0, _dom.default)(selectedNodesLinks));
     }
 
     if ($selectedLinks && $selectedLinks.length) {

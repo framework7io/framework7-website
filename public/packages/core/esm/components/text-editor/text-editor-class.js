@@ -196,7 +196,22 @@ var TextEditor = /*#__PURE__*/function (_Framework7Class) {
         }
       }
 
-      $selectedLinks = $(selectedNodes).closest('a').add($(selectedNodes).children('a'));
+      var selectedNodesLinks = [];
+      var $selectedNodes = $(selectedNodes);
+
+      for (var i = 0; i < $selectedNodes.length; i += 1) {
+        var childNodes = $selectedNodes[i].children;
+
+        if (childNodes) {
+          for (var j = 0; j < childNodes.length; j += 1) {
+            if ($(childNodes[j]).is('a')) {
+              selectedNodesLinks.push(childNodes[j]);
+            }
+          }
+        }
+      }
+
+      $selectedLinks = $selectedNodes.closest('a').add($(selectedNodesLinks));
     }
 
     if ($selectedLinks && $selectedLinks.length) {

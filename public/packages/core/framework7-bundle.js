@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.5
+ * Framework7 6.0.6
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -48850,7 +48850,22 @@
             }
           }
 
-          $selectedLinks = $$1(selectedNodes).closest('a').add($$1(selectedNodes).children('a'));
+          var selectedNodesLinks = [];
+          var $selectedNodes = $$1(selectedNodes);
+
+          for (var i = 0; i < $selectedNodes.length; i += 1) {
+            var childNodes = $selectedNodes[i].children;
+
+            if (childNodes) {
+              for (var j = 0; j < childNodes.length; j += 1) {
+                if ($$1(childNodes[j]).is('a')) {
+                  selectedNodesLinks.push(childNodes[j]);
+                }
+              }
+            }
+          }
+
+          $selectedLinks = $selectedNodes.closest('a').add($$1(selectedNodesLinks));
         }
 
         if ($selectedLinks && $selectedLinks.length) {
