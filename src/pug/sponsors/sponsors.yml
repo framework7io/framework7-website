@@ -5,10 +5,6 @@ gold:
   title: WFM Buddy - Delighting your Workforce
   link: https://www.wfmbuddy.com/
   imageUrl: "/i/sponsors/wfmbuddy.png"
--
-  title: Sparheld.de - save shopping online
-  link: https://www.sparheld.de/
-  imageUrl: "/i/sponsors/sparheld.jpg"
 silver:
 -
   title: Casinot
@@ -47,6 +43,11 @@ silver:
   link: http://mytommy.com
   imageUrl: "/i/sponsors/tommy.png"
 topSupporter:
+-
+  title: Write My Paper For Me - Writing Service | My Paper Writer
+  link: https://mypaperwriter.com
+  imageUrl: "/i/sponsors/mypaperwriter.svg"
+  oc: https://opencollective.com/my-paper-writer
 -
   title: Casinopro | Best Casino Comparison Site in Canada
   link: https://casinopro.ca
