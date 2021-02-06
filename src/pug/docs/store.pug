@@ -32,7 +32,7 @@ block content
         // actions to operate with state and for async manipulations
         actions: {
           // context object containing store state will be passed as an argument
-          getUser({ state }) {
+          getUsers({ state }) {
             // fetch users from API
             fetch('some-url')
               .then((res) => res.json())
@@ -79,7 +79,7 @@ block content
     h2 Store Parameters
     p Now, let look at `storeParameters` object:
     h3 State
-    p `state` is the single object contains all your application level state and serves as the "single source of truth." This also means usually you will have only one store for each application. A single state tree makes it straightforward to locate a specific piece of state, and allows us to easily take snapshots of the current app state for debugging purposes.
+    p `state` is the single object contains all your application level state and serves as the "single source of truth". This also means usually you will have only one store for each application. A single state tree makes it straightforward to locate a specific piece of state, and allows us to easily take snapshots of the current app state for debugging purposes.
     h3 Actions
     p `actions` are used to modify the state, for async manipulations, or to call other store actions. Action handlers receive a context object with store state and dispatch method to call other actions. So you can access `context.store` to access the state, or call other actions with `context.dispatch`.
     p As second argument actions handlers may receive any custom data.
@@ -111,7 +111,7 @@ block content
     p Getter handlers also receive a context object but only with the store state. It is not possible, for example, to call other actions from getters.
 
     h2 Use Store
-    p Now when we created out store, let's find out how to use it.
+    p Now when we created our store, let's find out how to use it.
     p First of all we need to pass created store to the main App instance:
     ```js
       // import our store
@@ -152,7 +152,7 @@ block content
         // ...
         actions: {
           // handler receives custom data in second argument
-          getUser({ state }, { total }) {
+          getUsers({ state }, { total }) {
             fetch(`some-url?total=${total}`)
               .then((res) => res.json())
               .then((users) => {
@@ -178,7 +178,7 @@ block content
             state.isLoading = isLoading;
           },
           // handler context also contains "dispatch" method
-          getUser({ state, dispatch }, { total }) {
+          getUsers({ state, dispatch }, { total }) {
             // call other action
             dispatch('setLoading', true);
             fetch(`some-url?total=${total}`)
@@ -218,8 +218,8 @@ block content
     ```
     p Getter value is the static object with `.value` property containing the result of getters handler, so:
     ```js
-      console.log(count.value) // -> 10
-      console.log(double.value) // -> 20
+      console.log(count.value); // -> 10
+      console.log(double.value); // -> 20
     ```
     p.important-note Getters, unlike state, are meant to be reactive. So when you don't need any reactivity you can just access `store.state` directly, otherwise use getters.
 
