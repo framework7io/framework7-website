@@ -71,7 +71,7 @@ block content
     h2 Store Parameters
     p Now, let look at `storeParameters` object:
     h3 State
-    p `state` is the single object contains all your application level state and serves as the "single source of truth." This also means usually you will have only one store for each application. A single state tree makes it straightforward to locate a specific piece of state, and allows us to easily take snapshots of the current app state for debugging purposes.
+    p `state` is the single object contains all your application level state and serves as the "single source of truth". This also means usually you will have only one store for each application. A single state tree makes it straightforward to locate a specific piece of state, and allows us to easily take snapshots of the current app state for debugging purposes.
     h3 Actions
     p `actions` are used to modify the state, for async manipulations, or to call other store actions. Action handlers receive a context object with store state and dispatch method to call other actions. So you can access `context.store` to access the state, or call other actions with `context.dispatch`.
     p As second argument actions handlers may receive any custom data.
