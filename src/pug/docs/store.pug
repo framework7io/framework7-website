@@ -32,7 +32,7 @@ block content
         // actions to operate with state and for async manipulations
         actions: {
           // context object containing store state will be passed as an argument
-          getUser({ state }) {
+          getUsers({ state }) {
             // fetch users from API
             fetch('some-url')
               .then((res) => res.json())
@@ -111,7 +111,7 @@ block content
     p Getter handlers also receive a context object but only with the store state. It is not possible, for example, to call other actions from getters.
 
     h2 Use Store
-    p Now when we created out store, let's find out how to use it.
+    p Now when we created our store, let's find out how to use it.
     p First of all we need to pass created store to the main App instance:
     ```js
       // import our store
@@ -152,7 +152,7 @@ block content
         // ...
         actions: {
           // handler receives custom data in second argument
-          getUser({ state }, { total }) {
+          getUsers({ state }, { total }) {
             fetch(`some-url?total=${total}`)
               .then((res) => res.json())
               .then((users) => {
@@ -178,7 +178,7 @@ block content
             state.isLoading = isLoading;
           },
           // handler context also contains "dispatch" method
-          getUser({ state, dispatch }, { total }) {
+          getUsers({ state, dispatch }, { total }) {
             // call other action
             dispatch('setLoading', true);
             fetch(`some-url?total=${total}`)
