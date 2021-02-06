@@ -216,8 +216,8 @@ block content
     ```
     p Getter value is the static object with `.value` property containing the result of getters handler, so:
     ```js
-      console.log(count.value) // -> 10
-      console.log(double.value) // -> 20
+      console.log(count.value); // -> 10
+      console.log(double.value); // -> 20
     ```
     p.important-note Getters, unlike state, are meant to be reactive. So when you don't need any reactivity you can just access `store.state` directly, otherwise use getters.
 
