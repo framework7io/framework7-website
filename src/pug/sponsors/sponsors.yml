@@ -1,276 +1,215 @@
 diamond:
 platinum:
 gold:
--
-  title: WFM Buddy - Delighting your Workforce
-  link: https://www.wfmbuddy.com/
-  imageUrl: "/i/sponsors/wfmbuddy.png"
+  - title: WFM Buddy - Delighting your Workforce
+    link: https://www.wfmbuddy.com/
+    imageUrl: '/i/sponsors/wfmbuddy.png'
 silver:
--
-  title: Casinot
-  link: https://www.casinot.net
-  imageUrl: "/i/sponsors/casinotnet.png"
--
-  title: ParasKasino
-  link: https://www.paraskasino.fi
-  imageUrl: "/i/sponsors/paraskasino.png"
--
-  title: NettiCasinoHEX.com
-  link: https://netticasinohex.com
-  imageUrl: "/i/sponsors/netticasinohex.png"
--
-  title: CasinoHEX.se
-  link: https://casinohex.se
-  imageUrl: "/i/sponsors/casinohexse.png"
--
-  title: CasinoHEX.at
-  link: https://casinohex.at
-  imageUrl: "/i/sponsors/casinohexat.png"
--
-  title: Kasinot.fi
-  link: https://www.kasinot.fi
-  imageUrl: "/i/sponsors/kasinotfi.png"
--
-  title: Thorium Builder - full visual Framework7 app builder
-  link: https://www.thoriumbuilder.com/
-  imageUrl: "/i/sponsors/thorium.png"
--
-  title: AppValley
-  link: https://app-valley.vip/
-  imageUrl: "/i/sponsors/appvalley.jpg"
--
-  title: Tommy
-  link: http://mytommy.com
-  imageUrl: "/i/sponsors/tommy.png"
+  - title: Casinot
+    link: https://www.casinot.net
+    imageUrl: '/i/sponsors/casinotnet.png'
+  - title: ParasKasino
+    link: https://www.paraskasino.fi
+    imageUrl: '/i/sponsors/paraskasino.png'
+  - title: NettiCasinoHEX.com
+    link: https://netticasinohex.com
+    imageUrl: '/i/sponsors/netticasinohex.png'
+  - title: CasinoHEX.se
+    link: https://casinohex.se
+    imageUrl: '/i/sponsors/casinohexse.png'
+  - title: CasinoHEX.at
+    link: https://casinohex.at
+    imageUrl: '/i/sponsors/casinohexat.png'
+  - title: Kasinot.fi
+    link: https://www.kasinot.fi
+    imageUrl: '/i/sponsors/kasinotfi.png'
+  - title: Thorium Builder - full visual Framework7 app builder
+    link: https://www.thoriumbuilder.com/
+    imageUrl: '/i/sponsors/thorium.png'
+  - title: AppValley
+    link: https://app-valley.vip/
+    imageUrl: '/i/sponsors/appvalley.jpg'
+  - title: Tommy
+    link: http://mytommy.com
+    imageUrl: '/i/sponsors/tommy.png'
 topSupporter:
--
-  title: Write My Paper For Me - Writing Service | My Paper Writer
-  link: https://mypaperwriter.com
-  imageUrl: "/i/sponsors/mypaperwriter.svg"
-  oc: https://opencollective.com/my-paper-writer
--
-  title: Casinopro | Best Casino Comparison Site in Canada
-  link: https://casinopro.ca
-  imageUrl: "/i/sponsors/casinopro.jpg"
-  p: https://www.patreon.com/user/creators?u=49410967
--
-  title: Авто из США под ключ
-  link: https://avtoboom.com.ua
-  imageUrl: "/i/sponsors/avtoboom.png"
-  p: https://www.patreon.com/user/creators?u=49340082
--
-  title: Kajino Bitcoin - № 1 Bitcoin Casino Guide in Japan
-  link: https://kajino.com/bitcoin/
-  imageUrl: "/i/sponsors/kajino-bitcoin.png"
-  oc: https://opencollective.com/kajino-bitcoin
--
-  title: Privicy - Privacy control for consumers
-  link: https://privicy.com/
-  imageUrl: "/i/sponsors/privicy.png"
--
-  title: 大吉カジノ オンライン
-  link: https://大吉カジノ.jp
-  imageUrl: "/i/sponsors/daikichi.png"
-  oc: https://opencollective.com/daikichi-casino
--
-  title: Real Money Casinos NZ by iCasinoReviews.info
-  link: https://icasinoreviews.info
-  imageUrl: "/i/sponsors/icasinoreviews.png"
-  oc: https://opencollective.com/icasinoreviews
--
-  title: NotGamStop Casinos
-  link: https://notgamstop.com
-  imageUrl: "/i/sponsors/notgamstop.png"
-  oc: https://opencollective.com/notgamstop-casinos
--
-  title: Favorit Sport - Ставки на спорт
-  link: https://www.favorit.com.ua/ru/bets/
-  imageUrl: "/i/sponsors/favorit-sport.png"
-  oc: https://opencollective.com/stavki-na-sport
--
-  title: Casinority Australia - Best online casino guide for Australian players
-  link: https://casinority.com/au/
-  imageUrl: "/i/sponsors/casinority.png"
-  oc: https://opencollective.com/casinority-australia
--
-  title: Bao casino Canada - The best online casino in Canada
-  link: https://www.baocasino.com/en-CA
-  imageUrl: "/i/sponsors/bao-casino.png"
-  oc: https://opencollective.com/bao-canada
--
-  title: Forex In Thai - An educational site about Forex trading in Thailand
-  link: https://www.forexinthai.com
-  imageUrl: "/i/sponsors/forex-in-thai.png"
-  oc: https://opencollective.com/forex-in-thai
--
-  title: Parhaat rahapelit netissä | Pelaa ilman rekisteröitymistä
-  link: https://www.rahapeleja.com
-  imageUrl: "/i/sponsors/rahapelit.png"
--
-  title: Pay N Play - Pelaaminen on nyt nopeampaa!
-  link: https://www.paynplay.fi
-  imageUrl: "/i/sponsors/paynplay.png"
--
-  title: CasinoHEX ™ - Genuine Gambling Site Reviews & Free Casino Games
-  link: https://aussiecasinohex.com
-  imageUrl: "/i/sponsors/aussiecasinohex.png"
--
-  title: Buy Instant Instagram Likes - Get more IG likes FAST and CHEAP online
-  link: https://followerspromotion.com/buy-instagram-likes/
-  imageUrl: "/i/sponsors/followerspromotion.png"
--
-  title: Best Bitcoin Casinos Reviewed - Best Bitcoin Casino
-  link: https://bestbitcoincasino.net
-  imageUrl: "/i/sponsors/bestbitcoincasino.png"
--
-  title: JohnSlots | Find the Best Online Casinos, Bonuses and Slots 2020
-  link: https://www.johnslots.com/en/
-  imageUrl: "/i/sponsors/johnslots.jpg"
--
-  title: Top Best Dating Sites of 2020
-  link: https://www.discovermagazine.com/sponsored/top-best-dating-sites-of-2020-dating-sites-apps-are-best-way-to-find
-  imageUrl: "/i/sponsors/discovermagazine.png"
--
-  title: 700+ Free Spins Uten Innskudd 🥇 Beste Free Spins Casinoer
-  link: https://toppcasinobonus.com/gratis-spinn
-  imageUrl: "/i/sponsors/topcasinobonus.svg"
--
-  title: Paras kasino-lista suomalaisille
-  link: https://www.kasinolista.fi
-  imageUrl: "/i/sponsors/kasinolista.png"
--
-  title: Instagram growth service - SimplyGram
-  link: https://www.simplygram.com
-  imageUrl: "/i/sponsors/simplygram.png"
--
-  title: Ramotion - App Development Agency
-  link: https://www.ramotion.com/agency/app-development/
-  imageUrl: "/i/sponsors/ramotion.png"
--
-  title: Buy Instagram Likes from Goread
-  link: https://goread.io/buy-instagram-likes
-  imageUrl: "/i/sponsors/goread.png"
--
-  title: "Coupons4Printing: Promotion Codes, Coupons, Coupon Codes"
-  link: https://www.coupons4printing.com
-  imageUrl: "/i/sponsors/coupons4printing.jpg"
--
-  title: Typy Na Dziś + Analiza Bukmacherska = TwójTyp.pl
-  link: https://twojtyp.pl
-  imageUrl: "/i/sponsors/twojtyp.png"
--
-  title: Evolution Host - A DDoS Protected VPS host that accepts Bitcoin
-  link: https://evolution-host.com
-  imageUrl: "/i/sponsors/evolution-host.png"
--
-  title: Nettikasinot
-  link: https://nettikasinot247.fi
-  imageUrl: "/i/sponsors/nettikasinot.png"
--
-  title: Vuokrattavat asunnot - koko Suomelle
-  link: https://vuokrakohteet.fi
-  imageUrl: "/i/sponsors/vuokrakohteet.png"
--
-  title: Kasinosivut
-  link: https://www.kasinosivu.com
-  imageUrl: "/i/sponsors/kasinosivut.png"
--
-  title: College Papers for Sale | Buy Research Paper Online
-  link: https://www.collegepaperworld.com/research-paper.html
-  imageUrl: "/i/sponsors/collegeresearchpaper.png"
--
-  title: Casino En Ligne Canada, Les Meilleurs Casinos Virtuels Canadiens
-  link: https://casinofiables.com/
-  imageUrl: "/i/sponsors/casinofiables.png"
--
-  title: GunsBet Casino
-  link: https://www.gunsbet.com
-  imageUrl: "/i/sponsors/gunsbet.png"
--
-  title: Real Time Communications World
-  link: https://www.realtimecommunicationsworld.com
-  imageUrl: "/i/sponsors/realtime.jpg"
--
-  title: Write My Essay For Me
-  link: https://papersowl.com/write-my-essay-please
-  imageUrl: "/i/sponsors/papersowl.png"
--
-  title: RajBet online casino India
-  link: https://raj.bet
-  imageUrl: "/i/sponsors/rajbet.png"
--
-  title: Linux VPS Monovm
-  link: https://monovm.com/linux-vps/
-  imageUrl: "/i/sponsors/monovm.jpg"
--
-  title: Findmate - International Dating & Friends
-  link: https://findmate.app
-  imageUrl: "/i/sponsors/findmate.png"
--
-  title: VPN services for torrenting
-  link: https://vpn-review.com/vpn-for-torrenting
-  imageUrl: "/i/sponsors/vpn.png"
--
-  title: Neue Online Casinos
-  link: https://www.neueonlinecasinos.de
-  imageUrl: "/i/sponsors/neueonlinecasinos.svg"
--
-  title: Tutlance.com - Pay For Homework Answers, Assignments and Essay Solutions
-  link: https://tutlance.com
-  imageUrl: "/i/sponsors/tutlance.png"
--
-  title: EduBirdie - The professional essay writing service for students who can't even
-  link: https://edubirdie.com
-  imageUrl: "/i/sponsors/edubirdie.png"
--
-  title: Parhaat Nettikasinot
-  link: https://www.parhaatnettikasinot.com
-  imageUrl: "/i/sponsors/parhaatnettikasinot.png"
--
-  title: Paraphrasing tool- rewrite, paraphrase your article
-  link: https://paraphrasetools.com
-  imageUrl: "/i/sponsors/paraphrasetools.png"
--
-  title:
-  link: https://www.bonus.com.de/
-  imageUrl: "/i/sponsors/bonusfinder.png"
--
-  title: Kqapius, INC.
-  link: https://kqapi.us
-  imageUrl: "/i/sponsors/kqapius.png"
--
-  title: Write My Paper For Me
-  link: https://writersperhour.com/write-my-paper
-  imageUrl: "/i/sponsors/writersperhour.jpg"
--
-  title: Bid4Papers - Write My Essay
-  link: https://bid4papers.com/write-my-essay.html
-  imageUrl: "/i/sponsors/bid4papers.png"
--
-  title: COLOGNE WEBDESIGN
-  link: https://www.colognewebdesign.de/
-  imageUrl: "/i/sponsors/colognewebdesign.png"
--
-  title: Rise — Creative Web Development Agency
-  link: https://rise.co
-  imageUrl: "/i/sponsors/rise.png"
--
-  title: Kidoverse - App for kids to learn, play, create and explore
-  link: https://kidoverse.app/
-  imageUrl: "/i/sponsors/kidoverse.png"
--
-  title: CyberBrain IT Services
-  link: https://www.cyberbrain.nl/
-  imageUrl: "/i/sponsors/cyberbrain.png"
--
-  title: HICAPPS - Health Informatics Custom APPs
-  link: https://hicapps.cl
-  imageUrl: "/i/sponsors/hicapps.png"
--
-  title: Blokt - Cryptocurrency News
-  link: https://blokt.com/
-  imageUrl: "/i/sponsors/blokt.png"
--
-  title: Wappler - The Visual Web App Creator
-  link: https://wappler.io/
-  imageUrl: "/i/sponsors/wappler.png"
+  - title: Best Bitcoin Casinos » Find The Best Crypto Casino (2021)
+    link: https://cryptocasinos.com
+    imageUrl: '/i/sponsors/cryptocasinos.png'
+    p: https://www.patreon.com/user/creators?u=50534171
+  - title: Write My Paper For Me - Writing Service | My Paper Writer
+    link: https://mypaperwriter.com
+    imageUrl: '/i/sponsors/mypaperwriter.svg'
+    oc: https://opencollective.com/my-paper-writer
+  - title: Casinopro | Best Casino Comparison Site in Canada
+    link: https://casinopro.ca
+    imageUrl: '/i/sponsors/casinopro.jpg'
+    p: https://www.patreon.com/user/creators?u=49410967
+  - title: Авто из США под ключ
+    link: https://avtoboom.com.ua
+    imageUrl: '/i/sponsors/avtoboom.png'
+    p: https://www.patreon.com/user/creators?u=49340082
+  - title: Kajino Bitcoin - № 1 Bitcoin Casino Guide in Japan
+    link: https://kajino.com/bitcoin/
+    imageUrl: '/i/sponsors/kajino-bitcoin.png'
+    oc: https://opencollective.com/kajino-bitcoin
+  - title: Privicy - Privacy control for consumers
+    link: https://privicy.com/
+    imageUrl: '/i/sponsors/privicy.png'
+  - title: 大吉カジノ オンライン
+    link: https://大吉カジノ.jp
+    imageUrl: '/i/sponsors/daikichi.png'
+    oc: https://opencollective.com/daikichi-casino
+  - title: Real Money Casinos NZ by iCasinoReviews.info
+    link: https://icasinoreviews.info
+    imageUrl: '/i/sponsors/icasinoreviews.png'
+    oc: https://opencollective.com/icasinoreviews
+  - title: NotGamStop Casinos
+    link: https://notgamstop.com
+    imageUrl: '/i/sponsors/notgamstop.png'
+    oc: https://opencollective.com/notgamstop-casinos
+  - title: Favorit Sport - Ставки на спорт
+    link: https://www.favorit.com.ua/ru/bets/
+    imageUrl: '/i/sponsors/favorit-sport.png'
+    oc: https://opencollective.com/stavki-na-sport
+  - title: Casinority Australia - Best online casino guide for Australian players
+    link: https://casinority.com/au/
+    imageUrl: '/i/sponsors/casinority.png'
+    oc: https://opencollective.com/casinority-australia
+  - title: Bao casino Canada - The best online casino in Canada
+    link: https://www.baocasino.com/en-CA
+    imageUrl: '/i/sponsors/bao-casino.png'
+    oc: https://opencollective.com/bao-canada
+  - title: Forex In Thai - An educational site about Forex trading in Thailand
+    link: https://www.forexinthai.com
+    imageUrl: '/i/sponsors/forex-in-thai.png'
+    oc: https://opencollective.com/forex-in-thai
+  - title: Parhaat rahapelit netissä | Pelaa ilman rekisteröitymistä
+    link: https://www.rahapeleja.com
+    imageUrl: '/i/sponsors/rahapelit.png'
+  - title: Pay N Play - Pelaaminen on nyt nopeampaa!
+    link: https://www.paynplay.fi
+    imageUrl: '/i/sponsors/paynplay.png'
+  - title: CasinoHEX ™ - Genuine Gambling Site Reviews & Free Casino Games
+    link: https://aussiecasinohex.com
+    imageUrl: '/i/sponsors/aussiecasinohex.png'
+  - title: Buy Instant Instagram Likes - Get more IG likes FAST and CHEAP online
+    link: https://followerspromotion.com/buy-instagram-likes/
+    imageUrl: '/i/sponsors/followerspromotion.png'
+  - title: Best Bitcoin Casinos Reviewed - Best Bitcoin Casino
+    link: https://bestbitcoincasino.net
+    imageUrl: '/i/sponsors/bestbitcoincasino.png'
+  - title: JohnSlots | Find the Best Online Casinos, Bonuses and Slots 2020
+    link: https://www.johnslots.com/en/
+    imageUrl: '/i/sponsors/johnslots.jpg'
+  - title: Top Best Dating Sites of 2020
+    link: https://www.discovermagazine.com/sponsored/top-best-dating-sites-of-2020-dating-sites-apps-are-best-way-to-find
+    imageUrl: '/i/sponsors/discovermagazine.png'
+  - title: 700+ Free Spins Uten Innskudd 🥇 Beste Free Spins Casinoer
+    link: https://toppcasinobonus.com/gratis-spinn
+    imageUrl: '/i/sponsors/topcasinobonus.svg'
+  - title: Paras kasino-lista suomalaisille
+    link: https://www.kasinolista.fi
+    imageUrl: '/i/sponsors/kasinolista.png'
+  - title: Instagram growth service - SimplyGram
+    link: https://www.simplygram.com
+    imageUrl: '/i/sponsors/simplygram.png'
+  - title: Ramotion - App Development Agency
+    link: https://www.ramotion.com/agency/app-development/
+    imageUrl: '/i/sponsors/ramotion.png'
+  - title: Buy Instagram Likes from Goread
+    link: https://goread.io/buy-instagram-likes
+    imageUrl: '/i/sponsors/goread.png'
+  - title: 'Coupons4Printing: Promotion Codes, Coupons, Coupon Codes'
+    link: https://www.coupons4printing.com
+    imageUrl: '/i/sponsors/coupons4printing.jpg'
+  - title: Typy Na Dziś + Analiza Bukmacherska = TwójTyp.pl
+    link: https://twojtyp.pl
+    imageUrl: '/i/sponsors/twojtyp.png'
+  - title: Evolution Host - A DDoS Protected VPS host that accepts Bitcoin
+    link: https://evolution-host.com
+    imageUrl: '/i/sponsors/evolution-host.png'
+  - title: Nettikasinot
+    link: https://nettikasinot247.fi
+    imageUrl: '/i/sponsors/nettikasinot.png'
+  - title: Vuokrattavat asunnot - koko Suomelle
+    link: https://vuokrakohteet.fi
+    imageUrl: '/i/sponsors/vuokrakohteet.png'
+  - title: Kasinosivut
+    link: https://www.kasinosivu.com
+    imageUrl: '/i/sponsors/kasinosivut.png'
+  - title: College Papers for Sale | Buy Research Paper Online
+    link: https://www.collegepaperworld.com/research-paper.html
+    imageUrl: '/i/sponsors/collegeresearchpaper.png'
+  - title: Casino En Ligne Canada, Les Meilleurs Casinos Virtuels Canadiens
+    link: https://casinofiables.com/
+    imageUrl: '/i/sponsors/casinofiables.png'
+  - title: GunsBet Casino
+    link: https://www.gunsbet.com
+    imageUrl: '/i/sponsors/gunsbet.png'
+  - title: Real Time Communications World
+    link: https://www.realtimecommunicationsworld.com
+    imageUrl: '/i/sponsors/realtime.jpg'
+  - title: Write My Essay For Me
+    link: https://papersowl.com/write-my-essay-please
+    imageUrl: '/i/sponsors/papersowl.png'
+  - title: RajBet online casino India
+    link: https://raj.bet
+    imageUrl: '/i/sponsors/rajbet.png'
+  - title: Linux VPS Monovm
+    link: https://monovm.com/linux-vps/
+    imageUrl: '/i/sponsors/monovm.jpg'
+  - title: Findmate - International Dating & Friends
+    link: https://findmate.app
+    imageUrl: '/i/sponsors/findmate.png'
+  - title: VPN services for torrenting
+    link: https://vpn-review.com/vpn-for-torrenting
+    imageUrl: '/i/sponsors/vpn.png'
+  - title: Neue Online Casinos
+    link: https://www.neueonlinecasinos.de
+    imageUrl: '/i/sponsors/neueonlinecasinos.svg'
+  - title: Tutlance.com - Pay For Homework Answers, Assignments and Essay Solutions
+    link: https://tutlance.com
+    imageUrl: '/i/sponsors/tutlance.png'
+  - title: EduBirdie - The professional essay writing service for students who can't even
+    link: https://edubirdie.com
+    imageUrl: '/i/sponsors/edubirdie.png'
+  - title: Parhaat Nettikasinot
+    link: https://www.parhaatnettikasinot.com
+    imageUrl: '/i/sponsors/parhaatnettikasinot.png'
+  - title: Paraphrasing tool- rewrite, paraphrase your article
+    link: https://paraphrasetools.com
+    imageUrl: '/i/sponsors/paraphrasetools.png'
+  - title:
+    link: https://www.bonus.com.de/
+    imageUrl: '/i/sponsors/bonusfinder.png'
+  - title: Kqapius, INC.
+    link: https://kqapi.us
+    imageUrl: '/i/sponsors/kqapius.png'
+  - title: Write My Paper For Me
+    link: https://writersperhour.com/write-my-paper
+    imageUrl: '/i/sponsors/writersperhour.jpg'
+  - title: Bid4Papers - Write My Essay
+    link: https://bid4papers.com/write-my-essay.html
+    imageUrl: '/i/sponsors/bid4papers.png'
+  - title: COLOGNE WEBDESIGN
+    link: https://www.colognewebdesign.de/
+    imageUrl: '/i/sponsors/colognewebdesign.png'
+  - title: Rise — Creative Web Development Agency
+    link: https://rise.co
+    imageUrl: '/i/sponsors/rise.png'
+  - title: Kidoverse - App for kids to learn, play, create and explore
+    link: https://kidoverse.app/
+    imageUrl: '/i/sponsors/kidoverse.png'
+  - title: CyberBrain IT Services
+    link: https://www.cyberbrain.nl/
+    imageUrl: '/i/sponsors/cyberbrain.png'
+  - title: HICAPPS - Health Informatics Custom APPs
+    link: https://hicapps.cl
+    imageUrl: '/i/sponsors/hicapps.png'
+  - title: Blokt - Cryptocurrency News
+    link: https://blokt.com/
+    imageUrl: '/i/sponsors/blokt.png'
+  - title: Wappler - The Visual Web App Creator
+    link: https://wappler.io/
+    imageUrl: '/i/sponsors/wappler.png'
