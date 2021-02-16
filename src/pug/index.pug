@@ -174,33 +174,33 @@ html
               .home-sponsors-item.home-sponsor-diamond
                 a(href=sponsor.link, target="_blank")
                   .sponsor-badge.sponsor-badge-diamond(title="Diamond Sponsor")
-                  img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+                  img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.platinum)
             each sponsor in sponsors.platinum
               .home-sponsors-item.home-sponsor-platinum
                 a(href=sponsor.link, target="_blank")
                   .sponsor-badge.sponsor-badge-platinum(title="Platinum Sponsor")
-                  img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+                  img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.gold)
             each sponsor in sponsors.gold
               .home-sponsors-item.home-sponsor-gold
                 a(href=sponsor.link, target="_blank")
-                  img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+                  img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.silver)
             each sponsor in sponsors.silver
               .home-sponsors-item.home-sponsor-silver
                 a(href=sponsor.link, target="_blank")
-                  img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+                  img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.topSupporter)
             each sponsor in sponsors.topSupporter
               .home-sponsors-item
                 a(href=sponsor.link, target="_blank")
                   .sponsor-badge.sponsor-badge-topSupporter(title="Top Supporter")
-                  img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+                  img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
 
     include _footer
     include _footer-scripts

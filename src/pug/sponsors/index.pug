@@ -14,7 +14,7 @@ block content
     if (sponsors.diamond)
       each sponsor in sponsors.diamond
         a.sponsor(href=sponsor.link, target="_blank")
-          img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+          img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
     a.sponsor.sponsor-join(href="https://www.patreon.com/bePatron?c=535869&rid=830901", target="_blank") Become Diamond Sponsor
 
   h2.text-align-center Platinum Sponsor
@@ -22,7 +22,7 @@ block content
     if (sponsors.platinum)
       each sponsor in sponsors.platinum
         a.sponsor(href=sponsor.link, target="_blank")
-          img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+          img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
     a.sponsor.sponsor-join(href="https://www.patreon.com/bePatron?c=535869&rid=830876", target="_blank") Become Platinum Sponsor
 
   h2.text-align-center Gold Sponsor
@@ -30,7 +30,7 @@ block content
     if (sponsors.gold)
       each sponsor in sponsors.gold
         a.sponsor(href=sponsor.link, target="_blank")
-          img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+          img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
     a.sponsor.sponsor-join(href="https://www.patreon.com/bePatron?c=535869&rid=830877", target="_blank") Become Gold Sponsor
 
   h2.text-align-center Silver Sponsor
@@ -38,7 +38,7 @@ block content
     if (sponsors.silver)
       each sponsor in sponsors.silver
         a.sponsor(href=sponsor.link, target="_blank")
-          img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+          img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
     a.sponsor.sponsor-join(href="https://www.patreon.com/bePatron?c=535869&rid=830841", target="_blank") Become Silver Sponsor
 
   h2.text-align-center Top Supporter
@@ -46,7 +46,7 @@ block content
     if (sponsors.topSupporter)
       each sponsor in sponsors.topSupporter
         a.sponsor(href=sponsor.link, target="_blank")
-          img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+          img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
     a.sponsor.sponsor-join(href="https://www.patreon.com/bePatron?c=535869&rid=830842", target="_blank") Become Top Supporter
 
 
