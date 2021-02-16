@@ -33,6 +33,10 @@ silver:
     link: http://mytommy.com
     imageUrl: '/i/sponsors/tommy.png'
 topSupporter:
+  - title: Online Casino Nederland - De website over reviews van de beste casino's in Nederland
+    link: https://nederlandscasinos.net
+    imageUrl: '/i/sponsors/online-casino-nederland.png'
+    oc: https://opencollective.com/nederlandscasinos-net
   - title: Best Online Casinos in Canada
     link: https://realcasinoscanada.com/best-online-casinos
     imageUrl: '/i/sponsors/best-online-casinos-canada.png'
