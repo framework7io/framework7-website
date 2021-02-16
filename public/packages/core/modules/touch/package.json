@@ -5,5 +5,5 @@
   "main": "../../cjs/modules/touch/touch.js",
   "module": "../../esm/modules/touch/touch.js",
   "jsnext:main": "../../esm/modules/touch/touch.js",
-  "typings": "../../types/modules/touch.d.ts"
+  "typings": "../../types/modules/touch/touch.d.ts"
 }

@@ -5,5 +5,5 @@
   "main": "../../cjs/modules/history/history.js",
   "module": "../../esm/modules/history/history.js",
   "jsnext:main": "../../esm/modules/history/history.js",
-  "typings": "../../types/modules/history.d.ts"
+  "typings": "../../types/modules/history/history.d.ts"
 }

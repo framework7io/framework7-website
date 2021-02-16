@@ -5,5 +5,5 @@
   "main": "../../cjs/components/chip/chip.js",
   "module": "../../esm/components/chip/chip.js",
   "jsnext:main": "../../esm/components/chip/chip.js",
-  "typings": "../../types/components/chip.d.ts"
+  "typings": "../../types/components/chip/chip.d.ts"
 }

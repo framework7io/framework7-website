@@ -5,5 +5,5 @@
   "main": "../../cjs/components/notification/notification.js",
   "module": "../../esm/components/notification/notification.js",
   "jsnext:main": "../../esm/components/notification/notification.js",
-  "typings": "../../types/components/notification.d.ts"
+  "typings": "../../types/components/notification/notification.d.ts"
 }

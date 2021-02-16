@@ -5,5 +5,5 @@
   "main": "../../cjs/components/list/list.js",
   "module": "../../esm/components/list/list.js",
   "jsnext:main": "../../esm/components/list/list.js",
-  "typings": "../../types/components/list.d.ts"
+  "typings": "../../types/components/list/list.d.ts"
 }

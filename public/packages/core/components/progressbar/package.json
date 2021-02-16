@@ -5,5 +5,5 @@
   "main": "../../cjs/components/progressbar/progressbar.js",
   "module": "../../esm/components/progressbar/progressbar.js",
   "jsnext:main": "../../esm/components/progressbar/progressbar.js",
-  "typings": "../../types/components/progressbar.d.ts"
+  "typings": "../../types/components/progressbar/progressbar.d.ts"
 }

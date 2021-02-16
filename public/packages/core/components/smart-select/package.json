@@ -5,5 +5,5 @@
   "main": "../../cjs/components/smart-select/smart-select.js",
   "module": "../../esm/components/smart-select/smart-select.js",
   "jsnext:main": "../../esm/components/smart-select/smart-select.js",
-  "typings": "../../types/components/smart-select.d.ts"
+  "typings": "../../types/components/smart-select/smart-select.d.ts"
 }

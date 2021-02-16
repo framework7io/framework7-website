@@ -5,5 +5,5 @@
   "main": "../../cjs/components/infinite-scroll/infinite-scroll.js",
   "module": "../../esm/components/infinite-scroll/infinite-scroll.js",
   "jsnext:main": "../../esm/components/infinite-scroll/infinite-scroll.js",
-  "typings": "../../types/components/infinite-scroll.d.ts"
+  "typings": "../../types/components/infinite-scroll/infinite-scroll.d.ts"
 }

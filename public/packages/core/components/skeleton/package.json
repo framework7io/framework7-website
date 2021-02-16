@@ -5,5 +5,5 @@
   "main": "../../cjs/components/skeleton/skeleton.js",
   "module": "../../esm/components/skeleton/skeleton.js",
   "jsnext:main": "../../esm/components/skeleton/skeleton.js",
-  "typings": "../../types/components/skeleton.d.ts"
+  "typings": "../../types/components/skeleton/skeleton.d.ts"
 }

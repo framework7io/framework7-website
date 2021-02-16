@@ -5,5 +5,5 @@
   "main": "../../cjs/modules/support/support.js",
   "module": "../../esm/modules/support/support.js",
   "jsnext:main": "../../esm/modules/support/support.js",
-  "typings": "../../types/modules/support.d.ts"
+  "typings": "../../types/modules/support/support.d.ts"
 }

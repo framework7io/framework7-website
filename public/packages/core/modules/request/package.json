@@ -5,5 +5,5 @@
   "main": "../../cjs/modules/request/request.js",
   "module": "../../esm/modules/request/request.js",
   "jsnext:main": "../../esm/modules/request/request.js",
-  "typings": "../../types/modules/request.d.ts"
+  "typings": "../../types/modules/request/request.d.ts"
 }

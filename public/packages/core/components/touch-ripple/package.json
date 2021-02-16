@@ -5,5 +5,5 @@
   "main": "../../cjs/components/touch-ripple/touch-ripple.js",
   "module": "../../esm/components/touch-ripple/touch-ripple.js",
   "jsnext:main": "../../esm/components/touch-ripple/touch-ripple.js",
-  "typings": "../../types/components/touch-ripple.d.ts"
+  "typings": "../../types/components/touch-ripple/touch-ripple.d.ts"
 }

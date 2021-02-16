@@ -5,5 +5,5 @@
   "main": "../../cjs/components/autocomplete/autocomplete.js",
   "module": "../../esm/components/autocomplete/autocomplete.js",
   "jsnext:main": "../../esm/components/autocomplete/autocomplete.js",
-  "typings": "../../types/components/autocomplete.d.ts"
+  "typings": "../../types/components/autocomplete/autocomplete.d.ts"
 }

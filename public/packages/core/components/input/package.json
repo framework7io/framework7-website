@@ -5,5 +5,5 @@
   "main": "../../cjs/components/input/input.js",
   "module": "../../esm/components/input/input.js",
   "jsnext:main": "../../esm/components/input/input.js",
-  "typings": "../../types/components/input.d.ts"
+  "typings": "../../types/components/input/input.d.ts"
 }

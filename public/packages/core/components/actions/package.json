@@ -5,5 +5,5 @@
   "main": "../../cjs/components/actions/actions.js",
   "module": "../../esm/components/actions/actions.js",
   "jsnext:main": "../../esm/components/actions/actions.js",
-  "typings": "../../types/components/actions.d.ts"
+  "typings": "../../types/components/actions/actions.d.ts"
 }

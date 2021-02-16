@@ -5,5 +5,5 @@
   "main": "../../cjs/components/badge/badge.js",
   "module": "../../esm/components/badge/badge.js",
   "jsnext:main": "../../esm/components/badge/badge.js",
-  "typings": "../../types/components/badge.d.ts"
+  "typings": "../../types/components/badge/badge.d.ts"
 }

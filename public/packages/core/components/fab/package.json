@@ -5,5 +5,5 @@
   "main": "../../cjs/components/fab/fab.js",
   "module": "../../esm/components/fab/fab.js",
   "jsnext:main": "../../esm/components/fab/fab.js",
-  "typings": "../../types/components/fab.d.ts"
+  "typings": "../../types/components/fab/fab.d.ts"
 }

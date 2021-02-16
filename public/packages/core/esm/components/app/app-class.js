@@ -28,9 +28,9 @@ var Framework7 = /*#__PURE__*/function (_Framework7Class) {
       params = {};
     }
 
-    _this = _Framework7Class.call(this, params) || this;
+    _this = _Framework7Class.call(this, params) || this; // eslint-disable-next-line
 
-    if (Framework7.instance) {
+    if (Framework7.instance && typeof window !== 'undefined') {
       throw new Error("Framework7 is already initialized and can't be initialized more than once");
     }
 
@@ -44,8 +44,8 @@ var Framework7 = /*#__PURE__*/function (_Framework7Class) {
 
     app.device = device;
     app.support = support;
-    var window = getWindow();
-    var document = getDocument();
+    var w = getWindow();
+    var d = getDocument();
     Framework7.instance = app; // Default
 
     var defaults = {
@@ -53,7 +53,7 @@ var Framework7 = /*#__PURE__*/function (_Framework7Class) {
       id: 'io.framework7.myapp',
       el: 'body',
       theme: 'auto',
-      language: window.navigator.language,
+      language: w.navigator.language,
       routes: [],
       name: 'Framework7',
       lazyModulesPath: null,
@@ -94,7 +94,7 @@ var Framework7 = /*#__PURE__*/function (_Framework7Class) {
       }(),
       // Initially passed parameters
       passedParams: passedParams,
-      online: window.navigator.onLine
+      online: w.navigator.onLine
     });
     if (params.store) app.params.store = params.store; // Save Root
 
@@ -109,7 +109,7 @@ var Framework7 = /*#__PURE__*/function (_Framework7Class) {
 
     if (app.params.init) {
       if (device.cordova && app.params.initOnDeviceReady) {
-        $(document).on('deviceready', function () {
+        $(d).on('deviceready', function () {
           app.init();
         });
       } else {

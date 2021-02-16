@@ -5,5 +5,5 @@
   "main": "../../cjs/components/login-screen/login-screen.js",
   "module": "../../esm/components/login-screen/login-screen.js",
   "jsnext:main": "../../esm/components/login-screen/login-screen.js",
-  "typings": "../../types/components/login-screen.d.ts"
+  "typings": "../../types/components/login-screen/login-screen.d.ts"
 }

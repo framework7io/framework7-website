@@ -5,5 +5,5 @@
   "main": "../../cjs/components/pie-chart/pie-chart.js",
   "module": "../../esm/components/pie-chart/pie-chart.js",
   "jsnext:main": "../../esm/components/pie-chart/pie-chart.js",
-  "typings": "../../types/components/pie-chart.d.ts"
+  "typings": "../../types/components/pie-chart/pie-chart.d.ts"
 }

@@ -5,5 +5,5 @@
   "main": "../../cjs/components/searchbar/searchbar.js",
   "module": "../../esm/components/searchbar/searchbar.js",
   "jsnext:main": "../../esm/components/searchbar/searchbar.js",
-  "typings": "../../types/components/searchbar.d.ts"
+  "typings": "../../types/components/searchbar/searchbar.d.ts"
 }

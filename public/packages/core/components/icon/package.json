@@ -5,5 +5,5 @@
   "main": "../../cjs/components/icon/icon.js",
   "module": "../../esm/components/icon/icon.js",
   "jsnext:main": "../../esm/components/icon/icon.js",
-  "typings": "../../types/components/icon.d.ts"
+  "typings": "../../types/components/icon/icon.d.ts"
 }

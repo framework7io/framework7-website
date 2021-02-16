@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.7
+ * Framework7 6.0.8
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: February 5, 2021
+ * Released on: February 16, 2021
  */
 
 (function (global, factory) {
@@ -3326,9 +3326,9 @@
           params = {};
         }
 
-        _this = _Framework7Class.call(this, params) || this;
+        _this = _Framework7Class.call(this, params) || this; // eslint-disable-next-line
 
-        if (Framework7.instance) {
+        if (Framework7.instance && typeof window !== 'undefined') {
           throw new Error("Framework7 is already initialized and can't be initialized more than once");
         }
 
@@ -3342,8 +3342,8 @@
 
         app.device = device;
         app.support = support;
-        var window = getWindow();
-        var document = getDocument();
+        var w = getWindow();
+        var d = getDocument();
         Framework7.instance = app; // Default
 
         var defaults = {
@@ -3351,7 +3351,7 @@
           id: 'io.framework7.myapp',
           el: 'body',
           theme: 'auto',
-          language: window.navigator.language,
+          language: w.navigator.language,
           routes: [],
           name: 'Framework7',
           lazyModulesPath: null,
@@ -3392,7 +3392,7 @@
           }(),
           // Initially passed parameters
           passedParams: passedParams,
-          online: window.navigator.onLine
+          online: w.navigator.onLine
         });
         if (params.store) app.params.store = params.store; // Save Root
 
@@ -3407,7 +3407,7 @@
 
         if (app.params.init) {
           if (device.cordova && app.params.initOnDeviceReady) {
-            $$1(document).on('deviceready', function () {
+            $$1(d).on('deviceready', function () {
               app.init();
             });
           } else {

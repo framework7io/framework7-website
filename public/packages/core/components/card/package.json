@@ -5,5 +5,5 @@
   "main": "../../cjs/components/card/card.js",
   "module": "../../esm/components/card/card.js",
   "jsnext:main": "../../esm/components/card/card.js",
-  "typings": "../../types/components/card.d.ts"
+  "typings": "../../types/components/card/card.d.ts"
 }

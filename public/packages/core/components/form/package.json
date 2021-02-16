@@ -5,5 +5,5 @@
   "main": "../../cjs/components/form/form.js",
   "module": "../../esm/components/form/form.js",
   "jsnext:main": "../../esm/components/form/form.js",
-  "typings": "../../types/components/form.d.ts"
+  "typings": "../../types/components/form/form.d.ts"
 }

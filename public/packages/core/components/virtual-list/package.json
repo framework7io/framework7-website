@@ -5,5 +5,5 @@
   "main": "../../cjs/components/virtual-list/virtual-list.js",
   "module": "../../esm/components/virtual-list/virtual-list.js",
   "jsnext:main": "../../esm/components/virtual-list/virtual-list.js",
-  "typings": "../../types/components/virtual-list.d.ts"
+  "typings": "../../types/components/virtual-list/virtual-list.d.ts"
 }

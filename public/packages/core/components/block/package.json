@@ -5,5 +5,5 @@
   "main": "../../cjs/components/block/block.js",
   "module": "../../esm/components/block/block.js",
   "jsnext:main": "../../esm/components/block/block.js",
-  "typings": "../../types/components/block.d.ts"
+  "typings": "../../types/components/block/block.d.ts"
 }

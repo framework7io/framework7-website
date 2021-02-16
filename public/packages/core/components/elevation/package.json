@@ -5,5 +5,5 @@
   "main": "../../cjs/components/elevation/elevation.js",
   "module": "../../esm/components/elevation/elevation.js",
   "jsnext:main": "../../esm/components/elevation/elevation.js",
-  "typings": "../../types/components/elevation.d.ts"
+  "typings": "../../types/components/elevation/elevation.d.ts"
 }

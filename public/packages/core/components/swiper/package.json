@@ -5,5 +5,5 @@
   "main": "../../cjs/components/swiper/swiper.js",
   "module": "../../esm/components/swiper/swiper.js",
   "jsnext:main": "../../esm/components/swiper/swiper.js",
-  "typings": "../../types/components/swiper.d.ts"
+  "typings": "../../types/components/swiper/swiper.d.ts"
 }

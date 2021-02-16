@@ -5,5 +5,5 @@
   "main": "../../cjs/components/view/view.js",
   "module": "../../esm/components/view/view.js",
   "jsnext:main": "../../esm/components/view/view.js",
-  "typings": "../../types/components/view.d.ts"
+  "typings": "../../types/components/view/view.d.ts"
 }

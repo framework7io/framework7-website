@@ -5,5 +5,5 @@
   "main": "../../cjs/components/panel/panel.js",
   "module": "../../esm/components/panel/panel.js",
   "jsnext:main": "../../esm/components/panel/panel.js",
-  "typings": "../../types/components/panel.d.ts"
+  "typings": "../../types/components/panel/panel.d.ts"
 }

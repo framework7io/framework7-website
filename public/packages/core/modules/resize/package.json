@@ -5,5 +5,5 @@
   "main": "../../cjs/modules/resize/resize.js",
   "module": "../../esm/modules/resize/resize.js",
   "jsnext:main": "../../esm/modules/resize/resize.js",
-  "typings": "../../types/modules/resize.d.ts"
+  "typings": "../../types/modules/resize/resize.d.ts"
 }

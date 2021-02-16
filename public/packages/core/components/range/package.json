@@ -5,5 +5,5 @@
   "main": "../../cjs/components/range/range.js",
   "module": "../../esm/components/range/range.js",
   "jsnext:main": "../../esm/components/range/range.js",
-  "typings": "../../types/components/range.d.ts"
+  "typings": "../../types/components/range/range.d.ts"
 }

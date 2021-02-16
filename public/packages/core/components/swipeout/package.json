@@ -5,5 +5,5 @@
   "main": "../../cjs/components/swipeout/swipeout.js",
   "module": "../../esm/components/swipeout/swipeout.js",
   "jsnext:main": "../../esm/components/swipeout/swipeout.js",
-  "typings": "../../types/components/swipeout.d.ts"
+  "typings": "../../types/components/swipeout/swipeout.d.ts"
 }
