@@ -452,15 +452,15 @@ var PhotoBrowser = /*#__PURE__*/function (_Framework7Class) {
 
     if (pb.params.swipeToClose && pb.params.type !== 'page') {
       (0, _utils.extend)(swiperParams.on, {
-        touchStart: function touchStart(e) {
+        touchStart: function touchStart(swiper, e) {
           pb.onTouchStart(e);
           pb.emit('local::touchStart', e);
         },
-        touchMoveOpposite: function touchMoveOpposite(e) {
+        touchMoveOpposite: function touchMoveOpposite(swiper, e) {
           pb.onTouchMove(e);
           pb.emit('local::touchMoveOpposite', e);
         },
-        touchEnd: function touchEnd(e) {
+        touchEnd: function touchEnd(swiper, e) {
           pb.onTouchEnd(e);
           pb.emit('local::touchEnd', e);
         }
