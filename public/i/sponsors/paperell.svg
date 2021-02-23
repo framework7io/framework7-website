@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="177" height="99" viewBox="0 0 177 99">
+  <defs>
+    <linearGradient id="paperell-a" x1="224.477%" x2="309.406%" y1="178.611%" y2="-225.084%">
+      <stop offset="0%" stop-color="#E78FB7"/>
+      <stop offset="3.036%" stop-color="#E08BB6"/>
+      <stop offset="14.82%" stop-color="#CA7FB3"/>
+      <stop offset="26.73%" stop-color="#BA77B1"/>
+      <stop offset="38.74%" stop-color="#B173B0"/>
+      <stop offset="51.01%" stop-color="#AE71B0"/>
+      <stop offset="100%" stop-color="#4B3A96"/>
+    </linearGradient>
+    <linearGradient id="paperell-b" x1="223.49%" x2="353.675%" y1="239.753%" y2="-303.208%">
+      <stop offset="0%" stop-color="#E78FB7"/>
+      <stop offset="3.036%" stop-color="#E08BB6"/>
+      <stop offset="14.82%" stop-color="#CA7FB3"/>
+      <stop offset="26.73%" stop-color="#BA77B1"/>
+      <stop offset="38.74%" stop-color="#B173B0"/>
+      <stop offset="51.01%" stop-color="#AE71B0"/>
+      <stop offset="100%" stop-color="#4B3A96"/>
+    </linearGradient>
+    <linearGradient id="paperell-c" x1="92.683%" x2="177.612%" y1="178.611%" y2="-225.084%">
+      <stop offset="0%" stop-color="#E78FB7"/>
+      <stop offset="3.036%" stop-color="#E08BB6"/>
+      <stop offset="14.82%" stop-color="#CA7FB3"/>
+      <stop offset="26.73%" stop-color="#BA77B1"/>
+      <stop offset="38.74%" stop-color="#B173B0"/>
+      <stop offset="51.01%" stop-color="#AE71B0"/>
+      <stop offset="100%" stop-color="#4B3A96"/>
+    </linearGradient>
+    <linearGradient id="paperell-d" x1="12.247%" x2="164.212%" y1="242.411%" y2="-306.701%">
+      <stop offset="0%" stop-color="#E78FB7"/>
+      <stop offset="3.036%" stop-color="#E08BB6"/>
+      <stop offset="14.82%" stop-color="#CA7FB3"/>
+      <stop offset="26.73%" stop-color="#BA77B1"/>
+      <stop offset="38.74%" stop-color="#B173B0"/>
+      <stop offset="51.01%" stop-color="#AE71B0"/>
+      <stop offset="100%" stop-color="#4B3A96"/>
+    </linearGradient>
+    <linearGradient id="paperell-e" x1="-23.935%" x2="57.992%" y1="244.262%" y2="-307.818%">
+      <stop offset="0%" stop-color="#E78FB7"/>
+      <stop offset="3.036%" stop-color="#E08BB6"/>
+      <stop offset="14.82%" stop-color="#CA7FB3"/>
+      <stop offset="26.73%" stop-color="#BA77B1"/>
+      <stop offset="38.74%" stop-color="#B173B0"/>
+      <stop offset="51.01%" stop-color="#AE71B0"/>
+      <stop offset="100%" stop-color="#4B3A96"/>
+    </linearGradient>
+    <linearGradient id="paperell-f" x1="-175.774%" x2="-23.808%" y1="242.411%" y2="-306.701%">
+      <stop offset="0%" stop-color="#E78FB7"/>
+      <stop offset="3.036%" stop-color="#E08BB6"/>
+      <stop offset="14.82%" stop-color="#CA7FB3"/>
+      <stop offset="26.73%" stop-color="#BA77B1"/>
+      <stop offset="38.74%" stop-color="#B173B0"/>
+      <stop offset="51.01%" stop-color="#AE71B0"/>
+      <stop offset="100%" stop-color="#4B3A96"/>
+    </linearGradient>
+    <linearGradient id="paperell-g" x1="21.036%" x2="35.331%" y1="203.846%" y2="-193.565%">
+      <stop offset="0%" stop-color="#E78FB7"/>
+      <stop offset="3.036%" stop-color="#E08BB6"/>
+      <stop offset="14.82%" stop-color="#CA7FB3"/>
+      <stop offset="26.73%" stop-color="#BA77B1"/>
+      <stop offset="38.74%" stop-color="#B173B0"/>
+      <stop offset="51.01%" stop-color="#AE71B0"/>
+      <stop offset="100%" stop-color="#4B3A96"/>
+    </linearGradient>
+    <linearGradient id="paperell-h" x1="16.24%" x2="30.535%" y1="203.846%" y2="-193.565%">
+      <stop offset="0%" stop-color="#E78FB7"/>
+      <stop offset="3.036%" stop-color="#E08BB6"/>
+      <stop offset="14.82%" stop-color="#CA7FB3"/>
+      <stop offset="26.73%" stop-color="#BA77B1"/>
+      <stop offset="38.74%" stop-color="#B173B0"/>
+      <stop offset="51.01%" stop-color="#AE71B0"/>
+      <stop offset="100%" stop-color="#4B3A96"/>
+    </linearGradient>
+    <linearGradient id="paperell-i" x1="43.9%" x2="53.942%" y1="134.973%" y2="-23.576%">
+      <stop offset="0%" stop-color="#E78FB7"/>
+      <stop offset="3.036%" stop-color="#E08BB6"/>
+      <stop offset="14.82%" stop-color="#CA7FB3"/>
+      <stop offset="26.73%" stop-color="#BA77B1"/>
+      <stop offset="38.74%" stop-color="#B173B0"/>
+      <stop offset="51.01%" stop-color="#AE71B0"/>
+      <stop offset="100%" stop-color="#4B3A96"/>
+    </linearGradient>
+    <linearGradient id="paperell-j" x1="43.895%" x2="53.948%" y1="135.07%" y2="-23.657%">
+      <stop offset="0%" stop-color="#E78FB7"/>
+      <stop offset="3.036%" stop-color="#E08BB6"/>
+      <stop offset="14.82%" stop-color="#CA7FB3"/>
+      <stop offset="26.73%" stop-color="#BA77B1"/>
+      <stop offset="38.74%" stop-color="#B173B0"/>
+      <stop offset="51.01%" stop-color="#AE71B0"/>
+      <stop offset="100%" stop-color="#4B3A96"/>
+    </linearGradient>
+    <linearGradient id="paperell-k" x1="52.121%" x2="22.42%" y1="97.498%" y2="-197.422%">
+      <stop offset="0%" stop-color="#E78FB7"/>
+      <stop offset="3.036%" stop-color="#E08BB6"/>
+      <stop offset="14.82%" stop-color="#CA7FB3"/>
+      <stop offset="26.73%" stop-color="#BA77B1"/>
+      <stop offset="38.74%" stop-color="#B173B0"/>
+      <stop offset="51.01%" stop-color="#AE71B0"/>
+      <stop offset="100%" stop-color="#4B3A96"/>
+    </linearGradient>
+  </defs>
+  <g fill="none">
+    <g transform="translate(39 66)">
+      <path fill="url(#paperell-a)" d="M14.8,8.5 C16.2,9.3 17.3,10.4 18.1,11.8 C18.9,13.2 19.3,14.8 19.3,16.7 C19.3,18.5 18.9,20.2 18.1,21.6 C17.3,23 16.2,24.1 14.8,24.9 C13.4,25.7 11.8,26.1 10,26.1 C8.7,26.1 7.5,25.8 6.4,25.3 C5.3,24.8 4.4,24.1 3.6,23.1 L3.6,32.6 L0.3,32.6 L0.3,7.5 L3.5,7.5 L3.5,10.4 C4.2,9.4 5.2,8.6 6.3,8.1 C7.4,7.6 8.7,7.3 10,7.3 C11.8,7.3 13.4,7.7 14.8,8.5 Z M13,22.3 C13.9,21.8 14.7,21 15.2,20 C15.7,19 16,17.9 16,16.6 C16,15.3 15.7,14.2 15.2,13.2 C14.7,12.2 13.9,11.5 13,10.9 C12.1,10.4 11,10.1 9.8,10.1 C8.6,10.1 7.6,10.4 6.7,10.9 C5.8,11.4 5,12.2 4.5,13.2 C4,14.2 3.7,15.3 3.7,16.6 C3.7,17.9 4,19 4.5,20 C5,21 5.8,21.7 6.7,22.3 C7.6,22.8 8.7,23.1 9.9,23.1 C11,23.1 12,22.8 13,22.3 Z"/>
+      <path fill="url(#paperell-b)" d="M36.5,9.2 C37.9,10.4 38.5,12.3 38.5,14.8 L38.5,25.9 L35.3,25.9 L35.3,23.5 C34.7,24.4 34,25 32.9,25.5 C31.9,26 30.7,26.2 29.2,26.2 C27.1,26.2 25.5,25.7 24.3,24.7 C23.1,23.7 22.4,22.4 22.4,20.8 C22.4,19.2 23,17.9 24.2,16.9 C25.4,15.9 27.2,15.4 29.8,15.4 L35.1,15.4 L35.1,14.7 C35.1,13.3 34.7,12.2 33.9,11.4 C33.1,10.6 31.8,10.3 30.2,10.3 C29.1,10.3 28.1,10.5 27,10.8 C26,11.2 25.1,11.6 24.4,12.2 L23,9.7 C23.9,8.9 25.1,8.4 26.4,8 C27.7,7.6 29.1,7.4 30.6,7.4 C33.2,7.3 35.1,7.9 36.5,9.2 Z M33.2,22.6 C34.1,22 34.8,21.2 35.2,20.2 L35.2,17.6 L30,17.6 C27.2,17.6 25.8,18.5 25.8,20.4 C25.8,21.3 26.2,22.1 26.9,22.6 C27.6,23.1 28.6,23.4 29.9,23.4 C31.1,23.5 32.2,23.2 33.2,22.6 Z"/>
+      <path fill="url(#paperell-c)" d="M59.2,8.5 C60.6,9.3 61.7,10.4 62.5,11.8 C63.3,13.2 63.7,14.8 63.7,16.7 C63.7,18.5 63.3,20.2 62.5,21.6 C61.7,23 60.6,24.1 59.2,24.9 C57.8,25.7 56.2,26.1 54.4,26.1 C53.1,26.1 51.9,25.8 50.8,25.3 C49.7,24.8 48.8,24.1 48,23.1 L48,32.6 L44.7,32.6 L44.7,7.5 L47.9,7.5 L47.9,10.4 C48.6,9.4 49.6,8.6 50.7,8.1 C51.8,7.6 53.1,7.3 54.4,7.3 C56.2,7.3 57.8,7.7 59.2,8.5 Z M57.3,22.3 C58.2,21.8 59,21 59.5,20 C60,19 60.3,17.9 60.3,16.6 C60.3,15.3 60,14.2 59.5,13.2 C59,12.2 58.2,11.5 57.3,10.9 C56.4,10.4 55.3,10.1 54.1,10.1 C52.9,10.1 51.9,10.4 51,10.9 C50.1,11.4 49.3,12.2 48.8,13.2 C48.3,14.2 48,15.3 48,16.6 C48,17.9 48.3,19 48.8,20 C49.3,21 50.1,21.7 51,22.3 C51.9,22.8 53,23.1 54.2,23.1 C55.3,23.1 56.4,22.8 57.3,22.3 Z"/>
+      <path fill="url(#paperell-d)" d="M84.8,17.7 L69.9,17.7 C70.1,19.3 70.8,20.6 72,21.6 C73.2,22.6 74.7,23.1 76.5,23.1 C78.7,23.1 80.5,22.4 81.8,20.9 L83.6,23 C82.8,24 81.7,24.7 80.5,25.2 C79.3,25.7 77.9,26 76.4,26 C74.5,26 72.7,25.6 71.2,24.8 C69.7,24 68.5,22.9 67.7,21.5 C66.9,20.1 66.5,18.5 66.5,16.7 C66.5,14.9 66.9,13.3 67.7,11.9 C68.5,10.5 69.6,9.4 71,8.6 C72.4,7.8 74,7.4 75.7,7.4 C77.5,7.4 79,7.8 80.4,8.6 C81.8,9.4 82.8,10.5 83.6,11.9 C84.4,13.3 84.8,15 84.8,16.8 C84.9,17 84.9,17.3 84.8,17.7 Z M71.8,11.5 C70.7,12.5 70.1,13.7 69.9,15.3 L81.7,15.3 C81.5,13.8 80.9,12.5 79.8,11.5 C78.7,10.5 77.4,10 75.8,10 C74.2,10 72.9,10.6 71.8,11.5 Z"/>
+      <path fill="url(#paperell-e)" d="M95.2,8.1 C96.3,7.5 97.7,7.3 99.3,7.3 L99.3,10.5 C99.1,10.5 98.9,10.5 98.5,10.5 C96.7,10.5 95.3,11 94.3,12.1 C93.3,13.2 92.8,14.7 92.8,16.7 L92.8,25.8 L89.5,25.8 L89.5,7.5 L92.7,7.5 L92.7,10.6 C93.2,9.5 94.1,8.7 95.2,8.1 Z"/>
+      <path fill="url(#paperell-f)" d="M120.2,17.7 L105.3,17.7 C105.5,19.3 106.2,20.6 107.4,21.6 C108.6,22.6 110.1,23.1 111.9,23.1 C114.1,23.1 115.9,22.4 117.2,20.9 L119,23 C118.2,24 117.1,24.7 115.9,25.2 C114.7,25.7 113.3,26 111.8,26 C109.9,26 108.1,25.6 106.6,24.8 C105.1,24 103.9,22.9 103.1,21.5 C102.3,20.1 101.9,18.5 101.9,16.7 C101.9,14.9 102.3,13.3 103.1,11.9 C103.9,10.5 105,9.4 106.4,8.6 C107.8,7.8 109.4,7.4 111.1,7.4 C112.9,7.4 114.4,7.8 115.8,8.6 C117.2,9.4 118.2,10.5 119,11.9 C119.8,13.3 120.2,15 120.2,16.8 C120.3,17 120.3,17.3 120.2,17.7 Z M107.2,11.5 C106.1,12.5 105.5,13.7 105.3,15.3 L117.1,15.3 C116.9,13.8 116.3,12.5 115.2,11.5 C114.1,10.5 112.8,10 111.2,10 C109.6,10 108.3,10.6 107.2,11.5 Z"/>
+      <polygon fill="url(#paperell-g)" points="124.9 .1 128.2 .1 128.2 25.8 124.9 25.8"/>
+      <polygon fill="url(#paperell-h)" points="134.5 .1 137.8 .1 137.8 25.8 134.5 25.8"/>
+    </g>
+    <path fill="url(#paperell-i)" d="M64.4,4.2 C70.4,6.9 75.1,10.8 78.4,15.8 C81.7,20.8 83.3,26.7 83.3,33.4 C83.3,40.1 81.7,46 78.4,51 C75.1,56 70.5,59.9 64.4,62.6 C58.4,65.3 51.3,66.6 43.1,66.6 L30.4,66.6 L30.4,89.8 L0.6,89.8 L0.6,34.2 L32.1,0.1 L43.1,0.1 C51.3,0.1 58.3,1.5 64.4,4.2 Z M50.3,41 C52.3,39.2 53.3,36.7 53.3,33.4 C53.3,30.1 52.3,27.6 50.3,25.8 C48.3,24 45.3,23.1 41.2,23.1 L30.4,23.1 L30.4,43.8 L41.2,43.8 C45.2,43.7 48.3,42.8 50.3,41 Z" opacity=".4" transform="translate(3 4)"/>
+    <path fill="url(#paperell-j)" d="M63.7,4.5 C69.7,7.2 74.4,11.1 77.7,16.1 C81,21.1 82.6,27 82.6,33.7 C82.6,40.4 81,46.3 77.7,51.3 C74.4,56.3 69.8,60.2 63.7,62.9 C57.7,65.6 50.6,66.9 42.4,66.9 L29.7,66.9 L29.7,90.1 L0,90.1 L0,34.5 L31.4,0.5 L42.4,0.5 C50.6,0.5 57.7,1.8 63.7,4.5 Z M49.6,41.4 C51.6,39.6 52.6,37.1 52.6,33.8 C52.6,30.5 51.6,28 49.6,26.2 C47.6,24.4 44.6,23.5 40.5,23.5 L29.7,23.5 L29.7,44.2 L40.5,44.2 C44.6,44.1 47.6,43.2 49.6,41.4 Z"/>
+    <polygon fill="url(#paperell-k)" points="31.7 .4 33.5 32.1 0 34.5"/>
+  </g>
+</svg>
