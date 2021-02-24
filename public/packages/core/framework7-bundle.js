@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.10
+ * Framework7 6.0.11
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: February 18, 2021
+ * Released on: February 24, 2021
  */
 
 (function (global, factory) {
@@ -14331,40 +14331,46 @@
       var propsQueue = [];
       var gettersDependencies = {};
       var gettersCallbacks = {};
-      Object.keys(getters).forEach(function (key) {
-        gettersDependencies[key] = [];
-        gettersCallbacks[key] = [];
+      Object.keys(getters).forEach(function (getterKey) {
+        gettersDependencies[getterKey] = [];
+        gettersCallbacks[getterKey] = [];
       });
 
-      var addGetterDependencies = function addGetterDependencies(key, deps) {
-        if (!gettersDependencies[key]) gettersDependencies[key] = [];
+      var getGetterValue = function getGetterValue(getterKey) {
+        return getters[getterKey]({
+          state: store.state
+        });
+      };
+
+      var addGetterDependencies = function addGetterDependencies(getterKey, deps) {
+        if (!gettersDependencies[getterKey]) gettersDependencies[getterKey] = [];
         deps.forEach(function (dep) {
-          if (gettersDependencies[key].indexOf(dep) < 0) {
-            gettersDependencies[key].push(dep);
+          if (gettersDependencies[getterKey].indexOf(dep) < 0) {
+            gettersDependencies[getterKey].push(dep);
           }
         });
       };
 
-      var addGetterCallback = function addGetterCallback(key, callback) {
-        if (!gettersCallbacks[key]) gettersCallbacks[key] = [];
-        gettersCallbacks[key].push(callback);
+      var addGetterCallback = function addGetterCallback(getterKey, callback) {
+        if (!gettersCallbacks[getterKey]) gettersCallbacks[getterKey] = [];
+        gettersCallbacks[getterKey].push(callback);
       };
 
-      var runGetterCallbacks = function runGetterCallbacks(stateKey, value) {
+      var runGetterCallbacks = function runGetterCallbacks(stateKey) {
         var keys = Object.keys(gettersDependencies).filter(function (getterKey) {
           return gettersDependencies[getterKey].indexOf(stateKey) >= 0;
         });
         keys.forEach(function (getterKey) {
           if (!gettersCallbacks[getterKey] || !gettersCallbacks[getterKey].length) return;
           gettersCallbacks[getterKey].forEach(function (callback) {
-            callback(value);
+            callback(getGetterValue(getterKey));
           });
         });
       };
 
       var removeGetterCallback = function removeGetterCallback(callback) {
-        Object.keys(gettersCallbacks).forEach(function (key) {
-          var callbacks = gettersCallbacks[key];
+        Object.keys(gettersCallbacks).forEach(function (stateKey) {
+          var callbacks = gettersCallbacks[stateKey];
 
           if (callbacks.indexOf(callback) >= 0) {
             callbacks.splice(callbacks.indexOf(callback), 1);
@@ -14377,16 +14383,14 @@
         removeGetterCallback(callback);
       };
 
-      var getterValue = function getterValue(key) {
-        if (key === 'constructor') return;
+      var getterValue = function getterValue(getterKey) {
+        if (getterKey === 'constructor') return;
         propsQueue = [];
-        var value = getters[key]({
-          state: store.state
-        });
-        addGetterDependencies(key, propsQueue);
+        var value = getGetterValue(getterKey);
+        addGetterDependencies(getterKey, propsQueue);
 
         var onUpdated = function onUpdated(callback) {
-          addGetterCallback(key, callback);
+          addGetterCallback(getterKey, callback);
         };
 
         var obj = {
@@ -14399,7 +14403,7 @@
         };
 
         obj.__callback = callback;
-        addGetterCallback(key, callback); // eslint-disable-next-line
+        addGetterCallback(getterKey, callback); // eslint-disable-next-line
 
         return obj;
       };
@@ -14407,7 +14411,7 @@
       store.state = new Proxy(state, {
         set: function set(target, prop, value) {
           target[prop] = value;
-          runGetterCallbacks(prop, value);
+          runGetterCallbacks(prop);
           return true;
         },
         get: function get(target, prop) {

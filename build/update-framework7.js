@@ -2,12 +2,12 @@ const { promise: exec } = require('exec-sh');
 const fs = require('fs');
 
 const update = async () => {
-  await exec('npm update framework7');
-  await exec('npm update framework7-react');
-  await exec('npm update framework7-vue');
-  await exec('npm update framework7-svelte');
+  await exec('npm update framework7 framework7-react framework7-vue framework7-svelte');
   await exec('cp -r ../framework7/packages/* public/packages/');
-  await exec('cp -r ../framework7/kitchen-sink/* public/kitchen-sink/');
+  await exec('cp -r ../framework7/kitchen-sink/core/* public/kitchen-sink/core');
+  await exec('cp -r ../framework7/kitchen-sink/react/dist/* public/kitchen-sink/react');
+  await exec('cp -r ../framework7/kitchen-sink/vue/dist/* public/kitchen-sink/vue');
+  await exec('cp -r ../framework7/kitchen-sink/svelte/dist/* public/kitchen-sink/svelte');
   await exec('cp ../framework7/CHANGELOG.md src/CHANGELOG.md');
 
   const corePkg = require('../public/packages/core/package.json');
