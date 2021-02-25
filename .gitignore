@@ -50,3 +50,5 @@ public/kitchen-sink/svelte/src
 
 src/pug/docs-demos/core/*.html
 !src/pug/docs-demos/core/*.f7.html
+
+.env.local

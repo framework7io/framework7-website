@@ -168,39 +168,39 @@ html
       .center
         h2 Sponsors
         .home-sponsors-list
-          - var sponsors = getYamlData('sponsors/sponsors.yml');
-          if (sponsors.diamond)
-            each sponsor in sponsors.diamond
+          - var sponsors = getJSONData('sponsors/sponsors.json');
+          if (sponsors.diamondSponsor)
+            each sponsor in sponsors.diamondSponsor
               .home-sponsors-item.home-sponsor-diamond
                 a(href=sponsor.link, target="_blank")
                   .sponsor-badge.sponsor-badge-diamond(title="Diamond Sponsor")
-                  img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
+                  img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
-          if (sponsors.platinum)
-            each sponsor in sponsors.platinum
+          if (sponsors.platinumSponsor)
+            each sponsor in sponsors.platinumSponsor
               .home-sponsors-item.home-sponsor-platinum
                 a(href=sponsor.link, target="_blank")
                   .sponsor-badge.sponsor-badge-platinum(title="Platinum Sponsor")
-                  img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
+                  img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
-          if (sponsors.gold)
-            each sponsor in sponsors.gold
+          if (sponsors.goldSponsor)
+            each sponsor in sponsors.goldSponsor
               .home-sponsors-item.home-sponsor-gold
                 a(href=sponsor.link, target="_blank")
-                  img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
+                  img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
-          if (sponsors.silver)
-            each sponsor in sponsors.silver
+          if (sponsors.silverSponsor)
+            each sponsor in sponsors.silverSponsor
               .home-sponsors-item.home-sponsor-silver
                 a(href=sponsor.link, target="_blank")
-                  img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
+                  img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.topSupporter)
             each sponsor in sponsors.topSupporter
               .home-sponsors-item
                 a(href=sponsor.link, target="_blank")
                   .sponsor-badge.sponsor-badge-topSupporter(title="Top Supporter")
-                  img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
+                  img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
 
     include _footer
     include _footer-scripts

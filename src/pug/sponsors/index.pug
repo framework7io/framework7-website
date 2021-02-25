@@ -5,40 +5,40 @@ block vars
   - var title = 'Framework7 Sponsors';
 
 block content
-  - var sponsors = getYamlData('sponsors/sponsors.yml');
+  - var sponsors = getJSONData('sponsors/sponsors.json');
   h1.text-align-center Framework7 Sponsors
   p.text-align-center.large-text Become Framework7 sponsor by pledging via <a href="https://www.patreon.com/vladimirkharlampidi" target="_blank">Patreon</a>, <a href="/contribute/#donate">donation</a> or <a href="/contribute/">contributing</a> to the project.
 
   h2.text-align-center Diamond Sponsor
   .sponsors.sponsors-diamond
-    if (sponsors.diamond)
-      each sponsor in sponsors.diamond
+    if (sponsors.diamondSponsor)
+      each sponsor in sponsors.diamondSponsor
         a.sponsor(href=sponsor.link, target="_blank")
-          img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
+          img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
     a.sponsor.sponsor-join(href="https://www.patreon.com/bePatron?c=535869&rid=830901", target="_blank") Become Diamond Sponsor
 
   h2.text-align-center Platinum Sponsor
   .sponsors.sponsors-platinum
-    if (sponsors.platinum)
-      each sponsor in sponsors.platinum
+    if (sponsors.platinumSponsor)
+      each sponsor in sponsors.platinumSponsor
         a.sponsor(href=sponsor.link, target="_blank")
-          img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
+          img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
     a.sponsor.sponsor-join(href="https://www.patreon.com/bePatron?c=535869&rid=830876", target="_blank") Become Platinum Sponsor
 
   h2.text-align-center Gold Sponsor
   .sponsors.sponsors-gold
-    if (sponsors.gold)
-      each sponsor in sponsors.gold
+    if (sponsors.goldSponsor)
+      each sponsor in sponsors.goldSponsor
         a.sponsor(href=sponsor.link, target="_blank")
-          img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
+          img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
     a.sponsor.sponsor-join(href="https://www.patreon.com/bePatron?c=535869&rid=830877", target="_blank") Become Gold Sponsor
 
   h2.text-align-center Silver Sponsor
   .sponsors.sponsors-silver
-    if (sponsors.silver)
-      each sponsor in sponsors.silver
+    if (sponsors.silverSponsor)
+      each sponsor in sponsors.silverSponsor
         a.sponsor(href=sponsor.link, target="_blank")
-          img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
+          img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
     a.sponsor.sponsor-join(href="https://www.patreon.com/bePatron?c=535869&rid=830841", target="_blank") Become Silver Sponsor
 
   h2.text-align-center Top Supporter
@@ -46,7 +46,7 @@ block content
     if (sponsors.topSupporter)
       each sponsor in sponsors.topSupporter
         a.sponsor(href=sponsor.link, target="_blank")
-          img(src=sponsor.imageUrl, alt=sponsor.title, title=sponsor.title)
+          img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
     a.sponsor.sponsor-join(href="https://www.patreon.com/bePatron?c=535869&rid=830842", target="_blank") Become Top Supporter
 
 

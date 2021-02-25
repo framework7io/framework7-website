@@ -12,6 +12,7 @@ const iconsManifest = require('./manifest-icons.json');
 
 const getSrcFileUrl = require('./utils/get-src-file-url');
 const getYamlData = require('./utils/get-yaml-data');
+const getJSONData = require('./utils/get-json-data');
 const inlineSvg = require('./utils/inline-svg');
 const cssVars = require('./utils/css-vars');
 const codeFilter = require('./utils/code-filter');
@@ -134,6 +135,7 @@ function buildPages(
           cdn: cdn ? pkg.cdn : '',
           icons: iconsManifest.icons,
           getYamlData,
+          getJSONData,
           inlineSvg,
           cssVars,
           releaseNotes,
