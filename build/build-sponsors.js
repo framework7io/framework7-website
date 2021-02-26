@@ -6,6 +6,13 @@ const writeEmptySponsors = () => {
   fs.writeFileSync(path.resolve(__dirname, '../src/pug/sponsors/sponsors.json'), '{}');
 };
 
+const currentImages = fs.readdirSync(path.resolve(__dirname, '../public/i/sponsors'));
+
+const hasImage = (image) => {
+  const { fileName } = image.fields.file;
+  return currentImages.includes(fileName);
+};
+
 const downloadImage = (image) => {
   const { url, fileName } = image.fields.file;
   return new Promise((resolve, reject) => {
@@ -32,7 +39,9 @@ const getSponsor = (item) => {
     const { createdAt } = item.sys;
     const { title, link, plan, ref, image } = item.fields;
     const downloads = [];
-    if (image) downloads.push(downloadImage(image));
+    if (image && !hasImage(image)) {
+      downloads.push(downloadImage(image));
+    }
     Promise.all(downloads)
       .then(() => {
         const sponsor = {
