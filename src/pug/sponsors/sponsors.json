@@ -129,14 +129,6 @@
       "image": "icasinoreviews.png"
     },
     {
-      "createdAt": "2021-02-25T19:34:45.609Z",
-      "title": "NotGamStop Casinos",
-      "link": "https://notgamstop.com",
-      "plan": "topSupporter",
-      "ref": "https://opencollective.com/notgamstop-casinos",
-      "image": "notgamstop.png"
-    },
-    {
       "createdAt": "2021-02-25T19:34:43.353Z",
       "title": "Favorit Sport - Ставки на спорт",
       "link": "https://www.favorit.com.ua/ru/bets/",
@@ -217,14 +209,6 @@
       "image": "topcasinobonus.svg"
     },
     {
-      "createdAt": "2021-02-25T19:34:17.044Z",
-      "title": "Paras kasino-lista suomalaisille",
-      "link": "https://www.kasinolista.fi",
-      "plan": "topSupporter",
-      "ref": "",
-      "image": "kasinolista.png"
-    },
-    {
       "createdAt": "2021-02-25T19:34:14.866Z",
       "title": "Instagram growth service - SimplyGram",
       "link": "https://www.simplygram.com",
@@ -271,22 +255,6 @@
       "plan": "topSupporter",
       "ref": "",
       "image": "evolution-host.png"
-    },
-    {
-      "createdAt": "2021-02-25T19:34:01.121Z",
-      "title": "Nettikasinot",
-      "link": "https://nettikasinot247.fi",
-      "plan": "topSupporter",
-      "ref": "",
-      "image": "nettikasinot.png"
-    },
-    {
-      "createdAt": "2021-02-25T19:33:59.128Z",
-      "title": "Vuokrattavat asunnot - koko Suomelle",
-      "link": "https://vuokrakohteet.fi",
-      "plan": "topSupporter",
-      "ref": "",
-      "image": "vuokrakohteet.png"
     },
     {
       "createdAt": "2021-02-25T19:33:57.151Z",
@@ -369,14 +337,6 @@
       "image": "vpn.png"
     },
     {
-      "createdAt": "2021-02-25T19:33:34.696Z",
-      "title": "Neue Online Casinos",
-      "link": "https://www.neueonlinecasinos.de",
-      "plan": "topSupporter",
-      "ref": "",
-      "image": "neueonlinecasinos.svg"
-    },
-    {
       "createdAt": "2021-02-25T19:33:32.680Z",
       "title": "Tutlance.com - Pay For Homework Answers, Assignments and Essay Solutions",
       "link": "https://tutlance.com",
@@ -391,14 +351,6 @@
       "plan": "topSupporter",
       "ref": "",
       "image": "edubirdie.png"
-    },
-    {
-      "createdAt": "2021-02-25T19:33:28.188Z",
-      "title": "Parhaat Nettikasinot",
-      "link": "https://www.parhaatnettikasinot.com",
-      "plan": "topSupporter",
-      "ref": "",
-      "image": "parhaatnettikasinot.png"
     },
     {
       "createdAt": "2021-02-25T19:33:24.128Z",
@@ -498,6 +450,21 @@
     }
   ],
   "silverSponsor": [
+    {
+      "createdAt": "2021-03-04T08:44:41.054Z",
+      "title": "Nuevos Casinos Online en España 2021 | Opciones Fiables",
+      "link": "https://www.nuevoscasinos.com",
+      "plan": "silverSponsor",
+      "image": "nuevos-casinos.png"
+    },
+    {
+      "createdAt": "2021-03-04T08:42:13.261Z",
+      "title": "Listing the best and safest online casino options for Aussie players",
+      "link": "https://www.auscasinos.com/new/",
+      "plan": "silverSponsor",
+      "ref": "https://www.auscasinos.com/new/",
+      "image": "aus-casinos.png"
+    },
     {
       "createdAt": "2021-02-25T19:35:42.898Z",
       "title": "Pay for a Research Paper Writing - Paperell.com",
