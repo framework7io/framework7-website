@@ -73,6 +73,7 @@ var Calendar = /*#__PURE__*/function (_Framework7Class) {
       isHorizontal: isHorizontal,
       inverter: inverter,
       animating: false,
+      allowTouchMove: true,
       hasTimePicker: calendar.params.timePicker && !calendar.params.rangePicker && !calendar.params.multiple
     });
     calendar.dayFormatter = new Intl.DateTimeFormat(calendar.params.locale, {
@@ -220,7 +221,7 @@ var Calendar = /*#__PURE__*/function (_Framework7Class) {
           isScrolling = !!(isScrolling || Math.abs(touchCurrentY - touchStartY) > Math.abs(touchCurrentX - touchStartX));
         }
 
-        if (isH && isScrolling) {
+        if (isH && isScrolling || !calendar.allowTouchMove) {
           isTouched = false;
           return;
         }

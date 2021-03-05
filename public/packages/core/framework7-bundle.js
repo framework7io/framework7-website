@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.11
+ * Framework7 6.0.12
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: February 24, 2021
+ * Released on: March 5, 2021
  */
 
 (function (global, factory) {
@@ -27309,6 +27309,7 @@
           isHorizontal: isHorizontal,
           inverter: inverter,
           animating: false,
+          allowTouchMove: true,
           hasTimePicker: calendar.params.timePicker && !calendar.params.rangePicker && !calendar.params.multiple
         });
         calendar.dayFormatter = new Intl.DateTimeFormat(calendar.params.locale, {
@@ -27456,7 +27457,7 @@
               isScrolling = !!(isScrolling || Math.abs(touchCurrentY - touchStartY) > Math.abs(touchCurrentX - touchStartX));
             }
 
-            if (isH && isScrolling) {
+            if (isH && isScrolling || !calendar.allowTouchMove) {
               isTouched = false;
               return;
             }
