@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="73" height="65" viewBox="0 0 73 65">
+  <defs>
+    <linearGradient id="krootez-a" x1="63.405%" x2="56.144%" y1="52.915%" y2="40.46%">
+      <stop offset="0%" stop-color="#AD288C"/>
+      <stop offset="100%" stop-color="#762461"/>
+    </linearGradient>
+    <linearGradient id="krootez-b" x1="38.387%" x2="47.897%" y1="44.421%" y2="60.703%">
+      <stop offset="0%" stop-color="#FF248A"/>
+      <stop offset="100%" stop-color="#B8095E"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <path fill="url(#krootez-a)" d="M70,24 C70,27 71,30 71,32 C71,51 56,65 38,65 C26,65 16,60 10,51 L0,57 L8,47 L18,34 L24,54 L48,24 L54,44 L70,24 Z"/>
+    <path fill="url(#krootez-b)" d="M38,0 C47,0 57,4 63,12 L73,9 L57,30 L51,11 L27,41 L20,21 L5,41 C4,37 4,35 4,32 C4,14 19,0 38,0 Z"/>
+  </g>
+</svg>
