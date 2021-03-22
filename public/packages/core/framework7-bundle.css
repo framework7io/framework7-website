@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.12
+ * Framework7 6.0.14
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: March 5, 2021
+ * Released on: March 22, 2021
  */
 
 /*====================
@@ -7639,7 +7639,7 @@ html.with-modal-popup-push-closing .framework7-root > .view.theme-dark:after {
   background: none;
 }
 .actions-grid .actions-button {
-  width: 100% / 3;
+  width: 33.33333333%;
   display: block;
   color: var(--f7-actions-grid-button-text-color);
   height: auto;
@@ -14683,8 +14683,7 @@ label.item-radio.disabled,
   top: 0;
 }
 .calendar-row {
-  height: 100% / 6;
-  height: calc(100% / 6);
+  height: 16.66666667%;
   display: flex;
   flex-shrink: 1;
   width: 100%;
@@ -14718,8 +14717,7 @@ label.item-radio.disabled,
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  width: 100% / 7;
-  width: calc(100% / 7);
+  width: 14.28571429%;
   text-align: center;
   cursor: pointer;
   z-index: 20;
@@ -14916,7 +14914,7 @@ label.item-radio.disabled,
 }
 .sheet-modal .calendar-month-picker-item {
   width: 25%;
-  height: calc(100% / 3);
+  height: 33.33333333%;
 }
 .sheet-modal .calendar-month-picker-item:nth-child(4n + 1):before {
   display: none !important;
@@ -14926,7 +14924,7 @@ label.item-radio.disabled,
 }
 .popover .calendar-month-picker-item,
 .calendar-modal .calendar-month-picker-item {
-  width: calc(100% / 3);
+  width: 33.33333333%;
   height: 25%;
 }
 .popover .calendar-month-picker-item:nth-child(3n + 1):before,
@@ -20757,8 +20755,8 @@ button.swiper-pagination-bullet {
   height: auto;
 }
 .color-picker-wheel .color-picker-wheel-handle {
-  width: calc(100% / 6);
-  height: calc(100% / 6);
+  width: 16.66666667%;
+  height: 16.66666667%;
   position: absolute;
   box-sizing: border-box;
   border: 2px solid #fff;
