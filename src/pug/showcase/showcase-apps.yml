@@ -3508,3 +3508,29 @@
   - "#{cdn}/i/showcase/farmqascouting2.png"
   - "#{cdn}/i/showcase/farmqascouting3.png"
   - "#{cdn}/i/showcase/farmqascouting4.png"
+
+#############
+-
+  iconUrl: "#{cdn}/i/showcase/filicha_logo.png"
+  iconRounded: true
+  title: "Filicha, Kirala, Al, Sat, Kazan"
+  author:
+    url: http://ynmyazilim.com/
+    name: YNM Software Inc.
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=io.framework7.filicha
+    appstore: https://apps.apple.com/tr/app/filicha/id1499898509?l=tr
+    website: https://filicha.com/
+  description: |
+    Filicha is e-commerce App that made with Framework7
+  features:
+    - Shop all Supermarket items your need,
+    - Credit Card payment
+    - SODEXO payments
+    - MULTINET payments
+    - SETCARD payments
+    - YEMEKMATIK payments
+  screenshots:
+  - "#{cdn}/i/showcase/filicha_image1.png"
+  - "#{cdn}/i/showcase/filicha_image2.png"
+  - "#{cdn}/i/showcase/filicha_image3.png"
