@@ -1,6 +1,6 @@
 ##########
 -
-  iconUrl: "#{cdn}/i/showcase/health-right.png"
+  iconUrl: "#{cdn}/i/showcase/health_right_logo.png"
   iconRounded: false
   title: "Health Right : Simplified Medical Travel"
   author:
