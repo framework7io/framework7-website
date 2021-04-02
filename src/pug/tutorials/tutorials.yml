@@ -1,4 +1,14 @@
 -
+  date: March 31, 2021
+  video: false
+  title: "How to Deploy a Framework7 App to AWS via CI/CD"
+  url: https://dev.to/timo_ernst/how-to-deploy-a-framework7-app-to-aws-via-ci-cd-56if
+  author:
+    name: Timo Ernst
+    url: https://twitter.com/timo_ernst
+  badges:
+  - v6
+-
   date: October 7, 2019
   video: false
   title: "Migration To Framework7 v5"
