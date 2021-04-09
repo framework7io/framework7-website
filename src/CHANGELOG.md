@@ -2,6 +2,12 @@
 
 # Change Log
 
+# [v.6.0.15](https://github.com/framework7io/framework7/compare/v6.0.14...v6.0.15) (2021-04-09)
+
+### Bug Fixes
+
+- **react:** fix events to be reactive in Actions, LoginScreen, Panel, Popover, Popup, Sheet ([8799b44](https://github.com/framework7io/framework7/commit/8799b442da085d131d78c3a4da669d2008e65147))
+
 # [v6.0.14](https://github.com/framework7io/framework7/compare/v6.0.12...v6.0.14) - March 22, 2021
 
 ### Bug Fixes
@@ -752,7 +758,7 @@
   - Dialog
     - Added support for `backdrop` parameter to be able to disable backdrop
   - Sheet
-    - New `sheet.setSwipeSet()` method to update swipe step position if content was modified manually
+    - New `sheet.setSwipeStep()` method to update swipe step position if content was modified manually
   - Tooltip
     - New `offset` parameter to add extra offset to tooltip position
   - Touch
