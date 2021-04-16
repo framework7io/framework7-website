@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.15
+ * Framework7 6.0.16
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 9, 2021
+ * Released on: April 16, 2021
  */
 
 (function (global, factory) {
@@ -33135,12 +33135,9 @@
           return "<div class=\"messages-title\">" + message.text + "</div>";
         }
 
-        var attrs = Object.keys(message.attrs).map(function (attr) {
-          return attr + "=\"" + message.attrs[attr] + "\"";
-        }).join(' ');
         return $jsx$1("div", _extends({
           class: "message message-" + message.type + " " + (message.isTyping ? 'message-typing' : '') + " " + (message.cssClass || '')
-        }, attrs), message.avatar && $jsx$1("div", {
+        }, message.attrs), message.avatar && $jsx$1("div", {
           class: "message-avatar",
           style: "background-image:url(" + message.avatar + ")"
         }), $jsx$1("div", {

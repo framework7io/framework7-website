@@ -131,12 +131,9 @@ var Messages = /*#__PURE__*/function (_Framework7Class) {
       return "<div class=\"messages-title\">" + message.text + "</div>";
     }
 
-    var attrs = Object.keys(message.attrs).map(function (attr) {
-      return attr + "=\"" + message.attrs[attr] + "\"";
-    }).join(' ');
     return $jsx("div", _extends({
       class: "message message-" + message.type + " " + (message.isTyping ? 'message-typing' : '') + " " + (message.cssClass || '')
-    }, attrs), message.avatar && $jsx("div", {
+    }, message.attrs), message.avatar && $jsx("div", {
       class: "message-avatar",
       style: "background-image:url(" + message.avatar + ")"
     }), $jsx("div", {
