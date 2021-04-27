@@ -80,7 +80,7 @@
   </f7-app>
 </template>
 <script>
-import { f7 } from 'framework7-vue';
+import { f7, f7ready } from 'framework7-vue';
 import $ from 'dom7';
 
 export default {
