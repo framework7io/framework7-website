@@ -42,7 +42,7 @@ function calcDevice(_temp) {
 
   var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
   var ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/);
-  var iphone = !ipad && ua.match(/(iPhone\sOS|iOS)\s([\d_]+)/);
+  var iphone = !ipad && ua.match(/(iPhone\sOS|iOS|iPhone;\sCPU\sOS)\s([\d_]+)/);
   var ie = ua.indexOf('MSIE ') >= 0 || ua.indexOf('Trident/') >= 0;
   var edge = ua.indexOf('Edge/') >= 0;
   var firefox = ua.indexOf('Gecko/') >= 0 && ua.indexOf('Firefox/') >= 0;

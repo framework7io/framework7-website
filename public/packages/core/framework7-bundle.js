@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.16
+ * Framework7 6.0.17
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 16, 2021
+ * Released on: April 30, 2021
  */
 
 (function (global, factory) {
@@ -4123,7 +4123,7 @@
 
       var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
       var ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/);
-      var iphone = !ipad && ua.match(/(iPhone\sOS|iOS)\s([\d_]+)/);
+      var iphone = !ipad && ua.match(/(iPhone\sOS|iOS|iPhone;\sCPU\sOS)\s([\d_]+)/);
       var ie = ua.indexOf('MSIE ') >= 0 || ua.indexOf('Trident/') >= 0;
       var edge = ua.indexOf('Edge/') >= 0;
       var firefox = ua.indexOf('Gecko/') >= 0 && ua.indexOf('Firefox/') >= 0;
@@ -16109,6 +16109,10 @@
         }
 
         if (!$el || $el.hasClass('modal-in')) {
+          if (animateModal === false && $el[0] && type !== 'dialog') {
+            $el[0].style.display = 'block';
+          }
+
           return modal;
         }
 

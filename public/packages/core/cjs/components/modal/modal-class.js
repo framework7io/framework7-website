@@ -99,6 +99,10 @@ var Modal = /*#__PURE__*/function (_Framework7Class) {
     }
 
     if (!$el || $el.hasClass('modal-in')) {
+      if (animateModal === false && $el[0] && type !== 'dialog') {
+        $el[0].style.display = 'block';
+      }
+
       return modal;
     }
 
