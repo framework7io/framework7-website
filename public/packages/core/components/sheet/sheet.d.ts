@@ -35,6 +35,8 @@ export namespace Sheet {
     closeByBackdropClick?: boolean;
     /** When enabled, sheet will be closed on when click outside of it */
     closeByOutsideClick?: boolean;
+    /** When enabled, sheet will be closed on ESC keyboard key press (default false) */
+    closeOnEscape?: boolean;
     /** Whether the Sheet Modal should be opened/closed with animation or not. Can be overwritten in .open() and .close() methods. (default true) */
     animate?: boolean;
     /** When enabled it will be possible to close sheet with swipe, can be false or true (default false) */
@@ -93,6 +95,12 @@ export namespace Sheet {
     'sheet:close': () => void;
     /** Event will be triggered after Sheet Modal completes its closing animation */
     'sheet:closed': () => void;
+    /** Event will be triggered on Sheet swipe step open/expand */
+    'sheet:stepopen': () => void;
+    /** Event will be triggered on Sheet swipe step close/collapse */
+    'sheet:stepclose': () => void;
+    /** Event will be triggered on Sheet swipe step between step opened and closed state. As `event.detail` it receives step open progress number (from 0 to 1) */
+    'sheet:stepprogress': () => void;
   }
 
   interface AppMethods {

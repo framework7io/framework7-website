@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.17
+ * Framework7 6.0.18
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 30, 2021
+ * Released on: May 28, 2021
  */
 
 /*====================
@@ -18641,7 +18641,7 @@ table.data-table {
 }
 /* === Swiper === */
 /**
- * Swiper 6.4.15
+ * Swiper 6.6.2
  * Most modern mobile touch slider and framework with hardware accelerated transitions
  * https://swiperjs.com
  *
@@ -18649,7 +18649,7 @@ table.data-table {
  *
  * Released under the MIT License
  *
- * Released on: February 18, 2021
+ * Released on: May 19, 2021
  */
 
 @font-face {
@@ -18792,7 +18792,7 @@ table.data-table {
   top: 50%;
   width: calc(var(--swiper-navigation-size) / 44 * 27);
   height: var(--swiper-navigation-size);
-  margin-top: calc(-1 * var(--swiper-navigation-size) / 2);
+  margin-top: calc(0px - (var(--swiper-navigation-size) / 2));
   z-index: 10;
   cursor: pointer;
   display: flex;
@@ -18909,8 +18909,8 @@ button.swiper-pagination-bullet {
   padding: 0;
   box-shadow: none;
   -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+          -moz-appearance: none;
+       appearance: none;
 }
 .swiper-pagination-clickable .swiper-pagination-bullet {
   cursor: pointer;
@@ -19160,7 +19160,7 @@ button.swiper-pagination-bullet {
   bottom: 0;
   right: 0;
   -webkit-filter: blur(50px);
-  filter: blur(50px);
+          filter: blur(50px);
 }
 .swiper-container-flip {
   overflow: visible;
