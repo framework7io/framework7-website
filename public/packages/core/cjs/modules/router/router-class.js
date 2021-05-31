@@ -624,7 +624,7 @@ var Router = /*#__PURE__*/function (_Framework7Class) {
     }
 
     if (query) {
-      if (typeof query === 'string') url += "?" + query;else url += "?" + (0, _utils.serializeObject)(query);
+      if (typeof query === 'string') url += "?" + query;else if (Object.keys(query).length) url += "?" + (0, _utils.serializeObject)(query);
     }
 
     return url;
@@ -640,7 +640,10 @@ var Router = /*#__PURE__*/function (_Framework7Class) {
     flattenedRoutes.forEach(function (route) {
       if (route.parentPath === parentPath && route.tab && route.tab.id === tabId) {
         if (router.currentRoute.params && Object.keys(router.currentRoute.params).length > 0) {
-          foundTabRouteUrl = router.currentRoute.url;
+          foundTabRouteUrl = router.constructRouteUrl(route, {
+            params: router.currentRoute.params,
+            query: router.currentRoute.query
+          });
         } else {
           foundTabRouteUrl = route.path;
         }
