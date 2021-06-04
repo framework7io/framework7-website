@@ -1,221 +1,204 @@
 official:
 community:
--
-  title: HackerNews7-svelte
-  iconUrl: https://github.com/GuillaumeBiton/HackerNews7/raw/master/assets-src/apple-touch-icon.png
-  author:
-    url: https://github.com/GuillaumeBiton
-    name: Guillaume Biton
-  url: https://github.com/GuillaumeBiton/hackernews7-svelte
-  previewUrl: http://guillaumebiton.github.io/hackernews7-svelte/
-  description: Hacker News Reader powered by Framework7 and Svelte
-  badges:
-  - v6
-  - Svelte
--
-  title: Framework7 iOS App Store
-  iconUrl: "/i/templates/appstore.png"
-  author:
-    url: https://github.com/nolimits4web/
-    name: Vladimir Kharlampidi
-  url: https://github.com/framework7io/framework7-appstore-react
-  previewUrl: https://f7appstore.netlify.app/
-  description: iOS App Store UI made with Framework7 and React
-  badges:
-  - v5
-  - React
--
-  title: Framework7 iOS App Store
-  iconUrl: "/i/templates/appstore.png"
-  author:
-    url: https://github.com/immanuel192/
-    name: Trung Dang
-  url: https://github.com/immanuel192/framework7-appstore-vue
-  description: iOS App Store UI made with Framework7 and Vue
-  badges:
-  - v5
-  - Vue
--
-  title: Framework7 Recipes
-  icon:
-    text: Framework7 Recipes
-    bgColor: '#ee350f'
-    textColor: '#fff'
-  author:
+  - title: HackerNews7-svelte
+    iconUrl: https://github.com/GuillaumeBiton/HackerNews7/raw/master/assets-src/apple-touch-icon.png
+    author:
+      url: https://github.com/GuillaumeBiton
+      name: Guillaume Biton
+    url: https://github.com/GuillaumeBiton/hackernews7-svelte
+    previewUrl: http://guillaumebiton.github.io/hackernews7-svelte/
+    description: Hacker News Reader powered by Framework7 and Svelte
+    badges:
+      - v6
+      - Svelte
+  - title: Framework7 iOS App Store
+    iconUrl: '/i/templates/appstore.png'
+    author:
+      url: https://github.com/nolimits4web/
+      name: Vladimir Kharlampidi
+    url: https://github.com/framework7io/framework7-appstore-react
+    previewUrl: https://f7appstore.netlify.app/
+    description: iOS App Store UI made with Framework7 and React
+    badges:
+      - v6
+      - React
+  - title: Framework7 iOS App Store
+    iconUrl: '/i/templates/appstore.png'
+    author:
+      url: https://github.com/immanuel192/
+      name: Trung Dang
+    url: https://github.com/immanuel192/framework7-appstore-vue
+    description: iOS App Store UI made with Framework7 and Vue
+    badges:
+      - v5
+      - Vue
+  - title: Framework7 Recipes
+    icon:
+      text: Framework7 Recipes
+      bgColor: '#ee350f'
+      textColor: '#fff'
+    author:
+      url: https://github.com/framework7io/framework7-recipes
+      name: Community
     url: https://github.com/framework7io/framework7-recipes
-    name: Community
-  url: https://github.com/framework7io/framework7-recipes
-  previewUrl: https://framework7io.github.io/framework7-recipes/
-  description: Framework7 proof of concept templates, layouts and scripts
--
-  title: Telefones Úteis
-  iconUrl: "/i/templates/telefones.png"
-  author:
-    url: https://github.com/CesarBalzer
-    name: Cesar E. Balzer
-  url: https://github.com/CesarBalzer/telefones_uteis
-  description: Emergency access tool for quick access to emergency services and other public utility numbers, private numbers and others you wish.
-  badges:
-  - v4
--
-  title: HackerNews7
-  iconUrl: https://github.com/GuillaumeBiton/HackerNews7/raw/master/assets-src/apple-touch-icon.png
-  author:
-    url: https://github.com/GuillaumeBiton
-    name: Guillaume Biton
-  url: https://github.com/GuillaumeBiton/HackerNews7
-  previewUrl: http://guillaumebiton.github.io/HackerNews7/
-  description: Hacker News Reader powered by Framework7 which is based on the Official Hacker News API
-  badges:
-  - v4
--
-  title: Simplest Framework7 Template
-  icon:
-    text: The simplest core template possible
-    bgColor: '#df258a'
-    textColor: '#fff'
-  author:
-    url: http://www.timo-ernst.net
-    name: Timo Ernst
-  url: https://github.com/valnub/framework7-simplest-template
-  description: It doesn't get any simpler than this. Just the basics with HTML, CSS and JavaScript. Good for beginners.
-  badges:
-  - v3
--
-  title: Facebook API JavaScript SDK get all Albums and Photos
-  icon:
-    text: Get all Facebook Photos
-    bgColor: '#3B5998'
-    textColor: '#fff'
-  author:
-    url: https://websitebeaver.com/facebook-api-javascript-sdk-get-all-albums-and-photos
-    name: WebsiteBeaver
-  url: https://github.com/WebsiteBeaver/facebook-api-javascript-sdk-get-all-albums-and-photos
-  description: Get all Facebook albums and photos with its API.
-  badges:
-  - v3
-  - Facebook API
--
-  title: Framework7 Parceljs starter app
-  icon:
-    text: F7 Parcel
-    bgColor: '#333'
-    textColor: '#fff'
-  author:
-    url: https://github.com/GuillaumeBiton/
-    name: Guillaume Biton
-  url: https://github.com/GuillaumeBiton/framework7-parcel-template
-  previewUrl: https://guillaumebiton.github.io/framework7-parcel-template/
-  description: Framework7 starter app template bundle up by parcel
-  badges:
-  - v3
-  - Parcel.js
--
-  title: App Framework
-  iconUrl: http://is3.mzstatic.com/image/thumb/Purple127/v4/a5/13/be/a513bea8-7382-589f-dc30-3c032068df0c/source/350x350bb.jpg
-  author:
-    url: https://github.com/scriptPilot/
-    name: Dennis Scheffel
-  url: https://github.com/scriptPilot/app-framework
-  previewUrl: https://demo.app-framework.com/
-  description: App Framework combines great pieces of open source code to support your whole workflow with useful scripts and your app with powerful plugins
-  badges:
-  - Cordova
-  - Vue
-  - v1
--
-  title: F7 - Vue - Webpack - Cordova
-  icon:
-    text: F7 Vue Webpack Cordova
-    bgColor: '#21a8f3'
-    textColor: '#fff'
-  author:
-    url: https://github.com/caiobiodere
-    name: Caio Biodere
-  url: https://github.com/caiobiodere/cordova-template-framework7-vue-webpack
-  description: Framework7 - Vue - Webpack Cordova Template with Webpack Dev Server and Hot Module Replacement
-  badges:
-  - Cordova
-  - Vue
-  - v3
--
-  title: F7 + React + Redux
-  icon:
-    text: F7 + React + Redux
-    bgColor: '#fff'
-    textColor: '#000'
-  author:
-    url: http://github.com/bencompton/
-    name: Ben Compton
-  url: https://github.com/bencompton/framework7-redux-app-template
-  description:
-  badges:
-  - v3
-  - React
-  - Redux
--
-  title: PGChat
-  icon:
-    text: PGChat
-    bgColor: '#fff'
-    textColor: '#333'
-  author:
-    url: http://www.timo-ernst.net/
-    name: Timo Ernst
-  url: https://github.com/valnub/pgchat
-  previewUrl: https://www.timo-ernst.net/misc/pgchat/
-  description: A real-time chat application built on top of Vue.js, Framework7 and PubNub Service.
-  badges:
-  - PubNub
-  - Vue
-  - v1
--
-  title: Weather7 Material
-  iconUrl: "/i/templates/weather7-material.png"
-  author:
-    url: https://github.com/nolimits4web/
-    name: Vladimir Kharlampidi
-  url: https://github.com/framework7io/Weather7-Material
-  description: Weather webapp that demonstrates how easy to create fully functioning Material app with Framework7
-  badges:
-  - v1
-  - YQL
--
-  title: Fresh Tomatoes
-  icon:
-    text: Fresh Tomatoes
-    bgColor: '#3a9425'
-  author:
-    url: http://www.timo-ernst.net/
-    name: Timo Ernst
-  url: https://github.com/valnub/Framework7-with-AngularJS-demo-app
-  previewUrl: http://www.timo-ernst.net/misc/f7angulardemo/
-  description: This is a demo application will list upcoming and current movies from theaters and give you detailed information.
-  badges:
-  - Angular 1.x
-  - v1
--
-  title: CanJS Issue Tracker
-  author:
-    url: http://www.perehnbom.se/
-    name: Per Ehnbom
-  url: https://github.com/perehnbom/canjs-framework7-issuetracker
-  previewUrl: http://perehnbom.github.io/canjs-framework7-issuetracker/
-  description: Example project with CanJS and Framework7. The project highlights how the 2 frameworks can be combined.
-  icon:
-    text: CanJS Issue Tracker
-    bgColor: '#4eb2cf'
-  badges:
-  - CanJS
-  - v1
--
-  title: hiApp
-  iconUrl: https://hi.dearb.me/images/logo.png
-  author:
-    url: http://dearb.me/
-    name: Belin Chung
-  url: https://github.com/BelinChung/HiApp
-  previewUrl: http://dearb.me/hi/build/
-  description: HiApp is a demo app to show how to use Framework 7 to build a hybrid app. HiApp is also a part of Hiliao, which is a real working web app.
-  badges:
-  - v1
+    previewUrl: https://framework7io.github.io/framework7-recipes/
+    description: Framework7 proof of concept templates, layouts and scripts
+  - title: Telefones Úteis
+    iconUrl: '/i/templates/telefones.png'
+    author:
+      url: https://github.com/CesarBalzer
+      name: Cesar E. Balzer
+    url: https://github.com/CesarBalzer/telefones_uteis
+    description: Emergency access tool for quick access to emergency services and other public utility numbers, private numbers and others you wish.
+    badges:
+      - v4
+  - title: HackerNews7
+    iconUrl: https://github.com/GuillaumeBiton/HackerNews7/raw/master/assets-src/apple-touch-icon.png
+    author:
+      url: https://github.com/GuillaumeBiton
+      name: Guillaume Biton
+    url: https://github.com/GuillaumeBiton/HackerNews7
+    previewUrl: http://guillaumebiton.github.io/HackerNews7/
+    description: Hacker News Reader powered by Framework7 which is based on the Official Hacker News API
+    badges:
+      - v4
+  - title: Simplest Framework7 Template
+    icon:
+      text: The simplest core template possible
+      bgColor: '#df258a'
+      textColor: '#fff'
+    author:
+      url: http://www.timo-ernst.net
+      name: Timo Ernst
+    url: https://github.com/valnub/framework7-simplest-template
+    description: It doesn't get any simpler than this. Just the basics with HTML, CSS and JavaScript. Good for beginners.
+    badges:
+      - v3
+  - title: Facebook API JavaScript SDK get all Albums and Photos
+    icon:
+      text: Get all Facebook Photos
+      bgColor: '#3B5998'
+      textColor: '#fff'
+    author:
+      url: https://websitebeaver.com/facebook-api-javascript-sdk-get-all-albums-and-photos
+      name: WebsiteBeaver
+    url: https://github.com/WebsiteBeaver/facebook-api-javascript-sdk-get-all-albums-and-photos
+    description: Get all Facebook albums and photos with its API.
+    badges:
+      - v3
+      - Facebook API
+  - title: Framework7 Parceljs starter app
+    icon:
+      text: F7 Parcel
+      bgColor: '#333'
+      textColor: '#fff'
+    author:
+      url: https://github.com/GuillaumeBiton/
+      name: Guillaume Biton
+    url: https://github.com/GuillaumeBiton/framework7-parcel-template
+    previewUrl: https://guillaumebiton.github.io/framework7-parcel-template/
+    description: Framework7 starter app template bundle up by parcel
+    badges:
+      - v3
+      - Parcel.js
+  - title: App Framework
+    iconUrl: http://is3.mzstatic.com/image/thumb/Purple127/v4/a5/13/be/a513bea8-7382-589f-dc30-3c032068df0c/source/350x350bb.jpg
+    author:
+      url: https://github.com/scriptPilot/
+      name: Dennis Scheffel
+    url: https://github.com/scriptPilot/app-framework
+    previewUrl: https://demo.app-framework.com/
+    description: App Framework combines great pieces of open source code to support your whole workflow with useful scripts and your app with powerful plugins
+    badges:
+      - Cordova
+      - Vue
+      - v1
+  - title: F7 - Vue - Webpack - Cordova
+    icon:
+      text: F7 Vue Webpack Cordova
+      bgColor: '#21a8f3'
+      textColor: '#fff'
+    author:
+      url: https://github.com/caiobiodere
+      name: Caio Biodere
+    url: https://github.com/caiobiodere/cordova-template-framework7-vue-webpack
+    description: Framework7 - Vue - Webpack Cordova Template with Webpack Dev Server and Hot Module Replacement
+    badges:
+      - Cordova
+      - Vue
+      - v3
+  - title: F7 + React + Redux
+    icon:
+      text: F7 + React + Redux
+      bgColor: '#fff'
+      textColor: '#000'
+    author:
+      url: http://github.com/bencompton/
+      name: Ben Compton
+    url: https://github.com/bencompton/framework7-redux-app-template
+    description:
+    badges:
+      - v3
+      - React
+      - Redux
+  - title: PGChat
+    icon:
+      text: PGChat
+      bgColor: '#fff'
+      textColor: '#333'
+    author:
+      url: http://www.timo-ernst.net/
+      name: Timo Ernst
+    url: https://github.com/valnub/pgchat
+    previewUrl: https://www.timo-ernst.net/misc/pgchat/
+    description: A real-time chat application built on top of Vue.js, Framework7 and PubNub Service.
+    badges:
+      - PubNub
+      - Vue
+      - v1
+  - title: Weather7 Material
+    iconUrl: '/i/templates/weather7-material.png'
+    author:
+      url: https://github.com/nolimits4web/
+      name: Vladimir Kharlampidi
+    url: https://github.com/framework7io/Weather7-Material
+    description: Weather webapp that demonstrates how easy to create fully functioning Material app with Framework7
+    badges:
+      - v1
+      - YQL
+  - title: Fresh Tomatoes
+    icon:
+      text: Fresh Tomatoes
+      bgColor: '#3a9425'
+    author:
+      url: http://www.timo-ernst.net/
+      name: Timo Ernst
+    url: https://github.com/valnub/Framework7-with-AngularJS-demo-app
+    previewUrl: http://www.timo-ernst.net/misc/f7angulardemo/
+    description: This is a demo application will list upcoming and current movies from theaters and give you detailed information.
+    badges:
+      - Angular 1.x
+      - v1
+  - title: CanJS Issue Tracker
+    author:
+      url: http://www.perehnbom.se/
+      name: Per Ehnbom
+    url: https://github.com/perehnbom/canjs-framework7-issuetracker
+    previewUrl: http://perehnbom.github.io/canjs-framework7-issuetracker/
+    description: Example project with CanJS and Framework7. The project highlights how the 2 frameworks can be combined.
+    icon:
+      text: CanJS Issue Tracker
+      bgColor: '#4eb2cf'
+    badges:
+      - CanJS
+      - v1
+  - title: hiApp
+    iconUrl: https://hi.dearb.me/images/logo.png
+    author:
+      url: http://dearb.me/
+      name: Belin Chung
+    url: https://github.com/BelinChung/HiApp
+    previewUrl: http://dearb.me/hi/build/
+    description: HiApp is a demo app to show how to use Framework 7 to build a hybrid app. HiApp is also a part of Hiliao, which is a real working web app.
+    badges:
+      - v1
