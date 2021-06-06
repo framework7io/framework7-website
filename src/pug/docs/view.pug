@@ -297,7 +297,7 @@ block content
           td As Router can use Ajax to load HTML content for pages it is good to use caching, especially if your content in those pages updates not very often.
         tr
           td xhrCacheIgnore
-          td boolean
+          td array
           td []
           td Array of URLs (string) that should not be cached
         tr
@@ -307,7 +307,7 @@ block content
           td If "true" then URLs like "about.html?id=2" and "about.html?id=3" will be treated and cached like single "about.html" page
         tr
           td xhrCacheDuration
-          td boolean
+          td number
           td 1000 * 60 * 10
           td Duration in ms (milliseconds) while app will use cache instead of loading page with another Ajax request. By default it takes 10 minutes.
         tr
