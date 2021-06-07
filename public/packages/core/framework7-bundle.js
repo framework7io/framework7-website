@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.19
+ * Framework7 6.0.20
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: May 31, 2021
+ * Released on: June 7, 2021
  */
 
 (function (global, factory) {
@@ -14402,8 +14402,12 @@
         removeGetterCallback(callback);
       };
 
-      var getterValue = function getterValue(getterKey) {
-        if (getterKey === 'constructor') return;
+      var getterValue = function getterValue(getterKey, addCallback) {
+        if (addCallback === void 0) {
+          addCallback = false;
+        }
+
+        if (getterKey === 'constructor') return undefined;
         propsQueue = [];
         var value = getGetterValue(getterKey);
         addGetterDependencies(getterKey, propsQueue);
@@ -14416,6 +14420,10 @@
           value: value,
           onUpdated: onUpdated
         };
+
+        if (!addCallback) {
+          return obj;
+        }
 
         var callback = function callback(v) {
           obj.value = v;
@@ -14448,6 +14456,18 @@
           }
 
           return getterValue(prop);
+        }
+      });
+      store._gettersPlain = new Proxy(getters, {
+        set: function set() {
+          return false;
+        },
+        get: function get(target, prop) {
+          if (!target[prop]) {
+            return undefined;
+          }
+
+          return getterValue(prop, false);
         }
       });
 
