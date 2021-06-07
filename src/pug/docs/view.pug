@@ -297,7 +297,7 @@ block content
           td As Router can use Ajax to load HTML content for pages it is good to use caching, especially if your content in those pages updates not very often.
         tr
           td xhrCacheIgnore
-          td boolean
+          td array
           td []
           td Array of URLs (string) that should not be cached
         tr
@@ -307,7 +307,7 @@ block content
           td If "true" then URLs like "about.html?id=2" and "about.html?id=3" will be treated and cached like single "about.html" page
         tr
           td xhrCacheDuration
-          td boolean
+          td number
           td 1000 * 60 * 10
           td Duration in ms (milliseconds) while app will use cache instead of loading page with another Ajax request. By default it takes 10 minutes.
         tr
@@ -638,7 +638,7 @@ block content
                   li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to `true` then it will ignore if such URL in cache and reload it using XHR again
                   li <span class="parameter">props</span> (<span class="parameter-type">object</span>) - props that will be passed as page component props
                   li <span class="parameter">transition</span> (<span class="parameter-type">string</span>) - route <a href="#custom-page-transitions">custom page transition name</a>
-                  li <span class="parameter">openIn</span> (<span class="parameter-type">boolean</span>) - Allows to open page route as modal or panel. So it can be one of the following: `popup`, `popover`, `loginScreen`, `sheet`, `panel`
+                  li <span class="parameter">openIn</span> (<span class="parameter-type">string</span>) - Allows to open page route as modal or panel. So it can be one of the following: `popup`, `popover`, `loginScreen`, `sheet`, `panel`
         tr
           td router.navigate(<span>parameters, options</span>)
           td Navigate to (load) new page by parameters. This method allows to navigate to route by its `name`.
