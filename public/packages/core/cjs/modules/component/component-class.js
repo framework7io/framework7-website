@@ -44,7 +44,6 @@ var Component = /*#__PURE__*/function () {
         aurora: app.theme === 'aurora'
       },
       style: component.style,
-      __storeCallbacks: [],
       __updateQueue: [],
       __eventHandlers: [],
       __onceEventHandlers: [],
@@ -157,24 +156,23 @@ var Component = /*#__PURE__*/function () {
 
     var _this$f7$store = this.f7.store,
         state = _this$f7$store.state,
-        getters = _this$f7$store.getters,
+        _gettersPlain = _this$f7$store._gettersPlain,
         dispatch = _this$f7$store.dispatch;
     var $store = {
       state: state,
       dispatch: dispatch
     };
-    $store.getters = new Proxy(getters, {
+    $store.getters = new Proxy(_gettersPlain, {
       get: function get(target, prop) {
         var obj = target[prop];
 
-        var callback = function callback() {
+        var callback = function callback(v) {
+          obj.value = v;
+
           _this2.update();
         };
 
         obj.onUpdated(callback);
-
-        _this2.__storeCallbacks.push(callback, obj.__callback);
-
         return obj;
       }
     });
@@ -363,8 +361,6 @@ var Component = /*#__PURE__*/function () {
   };
 
   _proto.destroy = function destroy() {
-    var _this8 = this;
-
     if (this.__destroyed) return;
     var window = (0, _ssrWindow.getWindow)();
     this.hook('onBeforeUnmount');
@@ -387,12 +383,6 @@ var Component = /*#__PURE__*/function () {
 
 
     window.cancelAnimationFrame(this.__requestAnimationFrameId);
-
-    this.__storeCallbacks.forEach(function (callback) {
-      _this8.f7.store.__removeCallback(callback);
-    });
-
-    this.__storeCallbacks = [];
     this.__updateQueue = [];
     this.__eventHandlers = [];
     this.__onceEventHandlers = [];

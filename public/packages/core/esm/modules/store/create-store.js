@@ -76,7 +76,7 @@ function createStore(storeParams) {
 
   var getterValue = function getterValue(getterKey, addCallback) {
     if (addCallback === void 0) {
-      addCallback = false;
+      addCallback = true;
     }
 
     if (getterKey === 'constructor') return undefined;
@@ -127,7 +127,7 @@ function createStore(storeParams) {
         return undefined;
       }
 
-      return getterValue(prop);
+      return getterValue(prop, true);
     }
   });
   store._gettersPlain = new Proxy(getters, {
