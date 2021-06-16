@@ -95,40 +95,6 @@ block content
           }
         };
       </script>
-    h2 Radio v-model
-    p `v-model` <b>is not supported</b> on Radio vue component. Instead, just use the combination of `checked` property and `@change` event:
-    :code(lang="html")
-      <template>
-        <f7-radio
-          name="fruit"
-          value="banana"
-          :checked="fruit === 'banana'"
-          @change="fruit = $event.target.value"
-        ></f7-radio>
-
-        <f7-radio
-          name="fruit"
-          value="orange"
-          :checked="fruit === 'orange'"
-          @change="fruit = $event.target.value"
-        ></f7-radio>
-
-        <f7-radio
-          name="fruit"
-          value="apple"
-          :checked="fruit === 'apple'"
-          @change="fruit = $event.target.value"
-        ></f7-radio>
-      </template>
-      <script>
-        export default {
-          data() {
-            return {
-              fruit: 'apple'
-            };
-          },
-        };
-      </script>
     .with-device
       h2(data-device-preview="../docs-demos/vue/radio.html") Examples
       include:vueSource ../docs-demos/vue/radio.vue
