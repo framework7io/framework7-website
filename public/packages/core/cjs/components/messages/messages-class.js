@@ -407,6 +407,24 @@ var Messages = /*#__PURE__*/function (_Framework7Class) {
     return m.addMessages([messageToAdd], animate, method);
   };
 
+  _proto.setScrollData = function setScrollData() {
+    var m = this; // Define scroll positions before new messages added
+
+    var scrollHeightBefore = m.pageContentEl.scrollHeight;
+    var heightBefore = m.pageContentEl.offsetHeight;
+    var scrollBefore = m.pageContentEl.scrollTop;
+    m.scrollData = {
+      scrollHeightBefore: scrollHeightBefore,
+      heightBefore: heightBefore,
+      scrollBefore: scrollBefore
+    };
+    return {
+      scrollHeightBefore: scrollHeightBefore,
+      heightBefore: heightBefore,
+      scrollBefore: scrollBefore
+    };
+  };
+
   _proto.addMessages = function addMessages() {
     var m = this;
     var messagesToAdd;
@@ -433,12 +451,12 @@ var Messages = /*#__PURE__*/function (_Framework7Class) {
 
     if (typeof method === 'undefined') {
       method = m.params.newMessagesFirst ? 'prepend' : 'append';
-    } // Define scroll positions before new messages added
+    }
 
+    var _m$setScrollData = m.setScrollData(),
+        scrollHeightBefore = _m$setScrollData.scrollHeightBefore,
+        scrollBefore = _m$setScrollData.scrollBefore; // Add message to DOM and data
 
-    var scrollHeightBefore = m.pageContentEl.scrollHeight;
-    var heightBefore = m.pageContentEl.offsetHeight;
-    var scrollBefore = m.pageContentEl.scrollTop; // Add message to DOM and data
 
     var messagesHTML = '';
     var typingMessage = m.messages.filter(function (el) {
@@ -487,21 +505,7 @@ var Messages = /*#__PURE__*/function (_Framework7Class) {
     }
 
     if (m.params.scrollMessages && (method === 'append' && !m.params.newMessagesFirst || method === 'prepend' && m.params.newMessagesFirst && !typingMessage)) {
-      if (m.params.scrollMessagesOnEdge) {
-        var onEdge = false;
-
-        if (m.params.newMessagesFirst && scrollBefore === 0) {
-          onEdge = true;
-        }
-
-        if (!m.params.newMessagesFirst && scrollBefore - (scrollHeightBefore - heightBefore) >= -10) {
-          onEdge = true;
-        }
-
-        if (onEdge) m.scroll(animate ? undefined : 0);
-      } else {
-        m.scroll(animate ? undefined : 0);
-      }
+      m.scrollWithEdgeCheck(animate);
     }
 
     return m;
@@ -552,6 +556,30 @@ var Messages = /*#__PURE__*/function (_Framework7Class) {
     }
 
     return m;
+  };
+
+  _proto.scrollWithEdgeCheck = function scrollWithEdgeCheck(animate) {
+    var m = this;
+    var _m$scrollData = m.scrollData,
+        scrollBefore = _m$scrollData.scrollBefore,
+        scrollHeightBefore = _m$scrollData.scrollHeightBefore,
+        heightBefore = _m$scrollData.heightBefore;
+
+    if (m.params.scrollMessagesOnEdge) {
+      var onEdge = false;
+
+      if (m.params.newMessagesFirst && scrollBefore === 0) {
+        onEdge = true;
+      }
+
+      if (!m.params.newMessagesFirst && scrollBefore - (scrollHeightBefore - heightBefore) >= -10) {
+        onEdge = true;
+      }
+
+      if (onEdge) m.scroll(animate ? undefined : 0);
+    } else {
+      m.scroll(animate ? undefined : 0);
+    }
   };
 
   _proto.scroll = function scroll(duration, scrollTop) {
