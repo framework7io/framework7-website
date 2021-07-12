@@ -18,7 +18,7 @@ block content
           <!-- checkbox element -->
           <label class="checkbox">
             <!-- checkbox input -->
-            <input type="checkbox">
+            <input type="checkbox" />
             <!-- checkbox icon -->
             <i class="icon-checkbox"></i>
           </label>
@@ -31,7 +31,7 @@ block content
               <li>
                 <label class="item-checkbox item-content">
                   <!-- Checkbox input -->
-                  <input type="checkbox"/>
+                  <input type="checkbox" />
                   <!-- Checkbox icon -->
                   <i class="icon icon-checkbox"></i>
                   <div class="item-inner">
@@ -44,7 +44,7 @@ block content
               <li>
                 <label class="item-checkbox item-content">
                   <!-- Checked by default -->
-                  <input type="checkbox" checked/>
+                  <input type="checkbox" checked />
                   <i class="icon icon-checkbox"></i>
                   <div class="item-inner">
                     <div class="item-title">Music</div>
@@ -57,13 +57,13 @@ block content
     .important-note
       ul
         li `item-content` must be a `<label>` element with additional `item-checkbox` class
-        li Checkbox input (`<input type="checkbox">`) must be a first child of `item-content`
+        li Checkbox input (`<input type="checkbox" />`) must be a first child of `item-content`
         li Checkbox icon must be <b>after</b> checkbox input
     h2 Indeterminate State
     p Framework7 comes with visual support for indeterminate checkbox state.
     p In HTML it is not possible to set this state with attribute, it can be set only via JavaScript:
     :code(lang="html")
-      <input type="checkbox" id="my-checkbox">
+      <input type="checkbox" id="my-checkbox" />
     :code(lang="js")
       var checkboxEl = document.querySelector('#my-checkbox');
       checkboxEl.indeterminate = true;

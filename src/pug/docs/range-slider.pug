@@ -19,7 +19,7 @@ block content
           <!-- Range Slider element -->
           <div class="range-slider">
             <!-- range input -->
-            <input type="range" min="0" max="100" step="1" value="10">
+            <input type="range" min="0" max="100" step="1" value="10" />
           </div>
     h3 Dual Range
     p Dual range slider is more simpler as it doesn't require input element because input:range doesn't support dual range:
@@ -349,7 +349,7 @@ block content
     :code(lang="html")
           <!-- Add range-slider-init class -->
           <div class="range-slider range-slider-init">
-            <input type="range" min="0" max="100" step="1" value="10">
+            <input type="range" min="0" max="100" step="1" value="10" />
           </div>
     p In this case if you need to access created Range Slider instance you can use the `app.range.get` app method:
     :code(lang="js")
@@ -365,7 +365,7 @@ block content
         :code(lang="html")
               <!-- min, max, step, value parameters will be set for same input attributes -->
               <div class="range-slider range-slider-init">
-                <input type="range" min="0" max="100" step="1" value="10">
+                <input type="range" min="0" max="100" step="1" value="10" />
               </div>
       li
         p Otherwise, if you don't have input:range inside or you use dual range input you can set all available parameters via `data-` attributes on range slider element.

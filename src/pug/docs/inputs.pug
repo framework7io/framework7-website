@@ -23,7 +23,7 @@ block content
             <div class="item-media">... icon/image here ...</div>
             <div class="item-inner">
               <div class="item-input-wrap">
-                <input type="text" name="name">
+                <input type="text" name="name" />
                 <span class="input-clear-button"></span>
               </div>
             </div>
@@ -52,7 +52,7 @@ block content
             <div class="item-inner">
               <div class="item-title item-label">Name</div>
               <div class="item-input-wrap">
-                <input type="text" name="name">
+                <input type="text" name="name" />
                 <span class="input-clear-button"></span>
               </div>
             </div>
@@ -75,7 +75,7 @@ block content
             <div class="item-inner">
               <div class="item-title item-label">Name</div>
               <div class="item-input-wrap">
-                <input type="text" name="name">
+                <input type="text" name="name" />
                 <span class="input-clear-button"></span>
               </div>
             </div>
@@ -106,7 +106,7 @@ block content
               <!-- "item-floating-label" class on item title -->
               <div class="item-title item-floating-label">Name</div>
               <div class="item-input-wrap">
-                <input type="text" name="name">
+                <input type="text" name="name" />
                 <span class="input-clear-button"></span>
               </div>
             </div>
@@ -125,7 +125,7 @@ block content
             <div class="item-inner">
               <div class="item-title item-label">Name</div>
               <div class="item-input-wrap">
-                <input type="text" name="name">
+                <input type="text" name="name" />
                 <span class="input-clear-button"></span>
               </div>
             </div>
@@ -147,7 +147,7 @@ block content
             <div class="item-inner">
               <div class="item-title item-label">Name</div>
               <div class="item-input-wrap">
-                <input type="text" name="name">
+                <input type="text" name="name" />
                 <span class="input-clear-button"></span>
                 <!-- element with additional information -->
                 <div class="item-input-info">Some information about input field</div>
@@ -195,12 +195,12 @@ block content
             :code(lang="html")
               ...
                 <div class="item-input-wrap">
-                  <input type="text">
+                  <input type="text" />
                 </div>
               ...
               ...
                 <div class="item-input-wrap">
-                  <input type="email">
+                  <input type="email" />
                 </div>
               ...
         tr
@@ -231,7 +231,7 @@ block content
               ...
                 <div class="item-input-wrap">
                   <div class="range-slider">
-                    <input type="range" min="0" max="100" step="0.1">
+                    <input type="range" min="0" max="100" step="0.1" />
                   </div>
                 </div>
               ...
@@ -246,22 +246,22 @@ block content
     p Value validation depends on input `type`. For example `input type="email"` will be validated to match email pattern, etc. It is default browser behavior. In case you want to add custom rule to validate input value, then it must be done using `pattern` input attribute:
     :code(lang="html")
       <!-- default validation, check for value is not empty -->
-      <input type="text" placeholder="Your name" required validate>
+      <input type="text" placeholder="Your name" required validate />
 
       <!-- default email validation, value must be email -->
-      <input type="email" placeholder="Your e-mail" required validate>
+      <input type="email" placeholder="Your e-mail" required validate />
 
       <!-- default url validation -->
-      <input type="url" placeholder="Your URL" required validate>
+      <input type="url" placeholder="Your URL" required validate />
 
       <!-- pattern validation, value must be "apple" or "banana" -->
-      <input type="text" required validate pattern="apple|banana" placeholder="Type 'apple' or 'banana'" >
+      <input type="text" required validate pattern="apple|banana" placeholder="Type 'apple' or 'banana'" />
 
       <!-- pattern validation with custom error message, value must be numbers only -->
-      <input type="text" placeholder="Enter number" required validate pattern="[0-9]*" data-error-message="Only numbers please!">
+      <input type="text" placeholder="Enter number" required validate pattern="[0-9]*" data-error-message="Only numbers please!" />
 
       <!-- this input will be validated only on blur -->
-      <input type="text" placeholder="Your name" required validate data-validate-on-blur="true">
+      <input type="text" placeholder="Your name" required validate data-validate-on-blur="true" />
 
     h2 Input State Classes
     p There are several classes that can be added to input element depending on its state and content:
