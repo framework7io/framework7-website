@@ -1,5 +1,8 @@
 .docs-nav-sponsors
-  //- .title Sponsors
-  //- a(href="https://codersrank.io/?utm_source=partner&utm_medium=referral&utm_campaign=vladimir", title="CodersRank - Ultimate Profile for Coders", target="_blank")
-    img(src="/i/sponsors/codersrank-h.svg")
+  .title Sponsors
+  - var sponsors = getJSONData('sponsors/sponsors.json');
+  if (sponsors.goldSponsor)
+    each sponsor in sponsors.goldSponsor
+      a.sponsor(href=sponsor.link, target="_blank")
+        img(src='/i/sponsors/' + (sponsor.image_h || sponsor.image), alt=sponsor.title, title=sponsor.title)
   include _patreon
