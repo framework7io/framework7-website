@@ -178,6 +178,11 @@ block content
                     },
                   },
         tr
+          td virtualSlides
+          td boolean
+          td true
+          td When enabled then Swiper will use Virtual Slides
+        tr
           th(colspan="4") Render functions
         tr
           td renderNavbar
@@ -394,6 +399,10 @@ block content
           td photobrowser:closed
           td Photo Browser Element
           td Event will be triggered after Photo Browser completes its closing animation
+        tr
+          td photobrowser:beforedestroy
+          td Photo Browser Element
+          td Event will be triggered right before Photo Browser instance will be destroyed
     h3 App and Photo Browser Instance Events
     p Photo Browser instance emits events on both self instance and app instance. App instance events has same names prefixed with `photoBrowser`.
     table.events-table
