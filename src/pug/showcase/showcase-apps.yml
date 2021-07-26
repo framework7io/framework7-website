@@ -1,4 +1,36 @@
 ##########
+- iconUrl: "#{cdn}/i/showcase/RabbitMail-icon.png"
+  iconRounded: true
+  title: Rabbit Mail - Temporary Disposable Email
+  author:
+    url: https://play.google.com/store/apps/dev?id=6508454577639888737
+    name: CandleLight
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.candlelight.rabbitmail
+  description: |
+    You can instantly create a temporary email address for receiving emails.
+    
+    Why we should use Rabbit Mail?
+
+    ● Instantly create a new email address.
+    ● The mailbox is protected from spam, hacking, exploits.
+    ● Read incoming emails, including attachments.
+    ● You can access your mail from the computer.
+    ● Custom email name.
+    ● Quickly delete and/or create new email addresses.
+    ● No ads.
+    ● Your messages is stored for a week unless you delete it.
+    ● It is completely anonymous: personal data, address itself and emails are deleted after you delete the account.
+
+    Note: You cannot send email using this app, only receive. We have no ability to restore accounts or domains once removed. No way we could reset your password.
+  screenshots:
+    - "#{cdn}/i/showcase/RabbitMail-0.png"
+    - "#{cdn}/i/showcase/RabbitMail-1.png"
+    - "#{cdn}/i/showcase/RabbitMail-2.png"
+    - "#{cdn}/i/showcase/RabbitMail-3.png"
+    - "#{cdn}/i/showcase/RabbitMail-4.png"
+
+##########
 - iconUrl: "#{cdn}/i/showcase/easyquick-logo.png"
   iconRounded: true
   title: "EasyQuick Shop - Open an Online Store & Sell"
