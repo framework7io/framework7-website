@@ -1,5 +1,5 @@
 /**
- * Framework7 6.1.0
+ * Framework7 6.1.1
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -9270,7 +9270,7 @@
           }
 
           nextTick$1(function () {
-            if (modalComponent || modalParams.component) {
+            if (modalComponent || modalParams.component || modalParams.asyncComponent) {
               router.removeModal(modal.el);
             }
 

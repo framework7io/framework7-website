@@ -1,6 +1,6 @@
 {
   "name": "framework7-website",
-  "releaseVersion": "6.1.0",
+  "releaseVersion": "6.1.1",
   "releaseDate": "July 26, 2021",
   "description": "Framework7 Website",
   "cdn": "//cdn.framework7.io",
@@ -82,9 +82,9 @@
     "vue": "^3.0.4"
   },
   "dependencies": {
-    "framework7": "^6.1.0",
-    "framework7-react": "^6.1.0",
-    "framework7-svelte": "^6.1.0",
-    "framework7-vue": "^6.1.0"
+    "framework7": "^6.1.1",
+    "framework7-react": "^6.1.1",
+    "framework7-svelte": "^6.1.1",
+    "framework7-vue": "^6.1.1"
   }
 }
