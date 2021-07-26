@@ -56,7 +56,7 @@ function calcDevice(_temp) {
   device.edge = edge;
   device.firefox = firefox; // Android
 
-  if (android && !windows) {
+  if (android) {
     device.os = 'android';
     device.osVersion = android[2];
     device.android = true;

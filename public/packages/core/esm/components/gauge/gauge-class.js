@@ -310,7 +310,7 @@ var Gauge = /*#__PURE__*/function (_Framework7Class) {
     var self = this;
     if (!self.$el || self.destroyed) return;
     self.$el.trigger('gauge:beforedestroy');
-    self.emit('local::beforeDestroy selfBeforeDestroy', self);
+    self.emit('local::beforeDestroy gaugeBeforeDestroy', self);
     self.$svgEl.remove();
     delete self.$el[0].f7Gauge;
     deleteProps(self);

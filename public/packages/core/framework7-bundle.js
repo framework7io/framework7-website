@@ -1,5 +1,5 @@
 /**
- * Framework7 6.0.22
+ * Framework7 6.1.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: June 25, 2021
+ * Released on: July 26, 2021
  */
 
 (function (global, factory) {
@@ -4156,7 +4156,7 @@
       device.edge = edge;
       device.firefox = firefox; // Android
 
-      if (android && !windows) {
+      if (android) {
         device.os = 'android';
         device.osVersion = android[2];
         device.android = true;
@@ -19737,7 +19737,11 @@
           }
 
           isMoved = true;
-          e.preventDefault();
+
+          if (e.cancelable) {
+            e.preventDefault();
+          }
+
           touchesDiff = pageX - touchesStart.x;
           translate = touchesDiff;
 
@@ -46309,7 +46313,7 @@
         var self = this;
         if (!self.$el || self.destroyed) return;
         self.$el.trigger('gauge:beforedestroy');
-        self.emit('local::beforeDestroy selfBeforeDestroy', self);
+        self.emit('local::beforeDestroy gaugeBeforeDestroy', self);
         self.$svgEl.remove();
         delete self.$el[0].f7Gauge;
         deleteProps$1(self);
@@ -49258,6 +49262,10 @@
           if (link && link.trim().length) {
             self.setSelectionRange(currentRange);
             document.execCommand('createLink', false, link.trim());
+            self.$el.trigger('texteditor:insertlink', {
+              url: link.trim()
+            });
+            self.emit('local:insertLink textEditorInsertLink', self, link.trim());
           }
         });
         dialog.$el.find('input').focus();
@@ -49273,6 +49281,10 @@
           if (imageUrl && imageUrl.trim().length) {
             self.setSelectionRange(currentRange);
             document.execCommand('insertImage', false, imageUrl.trim());
+            self.$el.trigger('texteditor:insertimage', {
+              url: imageUrl.trim()
+            });
+            self.emit('local:insertImage textEditorInsertImage', self, imageUrl.trim());
           }
         });
         dialog.$el.find('input').focus();
