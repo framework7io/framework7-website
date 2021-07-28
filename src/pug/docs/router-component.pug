@@ -445,11 +445,11 @@ block content
         ...
         {
           path: '/some-page/',
-          componentUrl: './some-page.f7.html',
+          componentUrl: './some-page.f7',
         },
         ..
       ];
-    p And in `some-page.f7.html`:
+    p And in `some-page.f7`:
     :code(lang="html")
       <!-- component template, uses same tagged template literals -->
       <template>
@@ -504,10 +504,11 @@ block content
     .important-note
       p It is mandatory to have `return $render` in the end of the component function, as it will be replaced by parser with content of the `<template>` tag.
 
-    h3 Usage With Webpack
-    p There is a special <a href="https://github.com/framework7io/framework7-loader" target="_blank">framework7-loader</a> plugin for Webpack that allows to bundle Single-File Components into main bundle and not to use XHR (e.g. `componentUrl`) to load and parse component files each time.
-    p This loader parses Single-File component's file and transforms it to plain JS object during bundling process. So, potentially, it can increase app performance because there won't be runtime parsing and compilation.
-    p When this loader is configured, we need to store Single-File components in `.f7.html` files and use `export default` for component export:
+    h3 Usage With Webpack and Vite
+    p For Webpack there is a special <a href="https://github.com/framework7io/framework7-loader" target="_blank">framework7-loader</a> plugin that allows to bundle Single-File Components into main bundle and not to use XHR (e.g. `componentUrl`) to load and parse component files each time.
+    p For Vite.js there is also special <a href="https://github.com/framework7io/rollup-plugin-framework7" target="_blank">rollup-plugin-framework7</a> plugin to bundle Single-File Components.
+    p These plugins parse Single-File component's file and transforms it to plain JS object during bundling process. So, potentially, it can increase app performance because there won't be runtime parsing and compilation.
+    p When plugin is configured, we need to store Single-File components in `.f7` (or in `.f7.html` for Webpack) files and use `export default` for component export:
     :code(lang="html")
       <template>
         <div class="page">
@@ -551,8 +552,8 @@ block content
     :code(lang="js")
       // routes.js
 
-      import NewsPage from './path/to/news.f7.html';
-      import ServicesPage from './path/to/services.f7.html';
+      import NewsPage from './path/to/news.f7';
+      import ServicesPage from './path/to/services.f7';
 
       export default [
         {
@@ -566,8 +567,8 @@ block content
       ]
 
     h3 JSX
-    p Template literals doesn't have good syntax highlighting inside of HTML documents. But when using with webpack it is also possible to write components in <a href="https://facebook.github.io/jsx/" target="_blank">JSX syntax</a>.
-    p To make it work, we need to store components in `.f7.js` files and write them using JSX:
+    p Template literals doesn't have good syntax highlighting inside of HTML documents. But when using with webpack or Vite, it is also possible to write components in <a href="https://facebook.github.io/jsx/" target="_blank">JSX syntax</a>.
+    p To make it work, we need to store components in `.f7.jsx` files and write them using JSX:
     ```jsx
       export default (props, { $update }) => {
         let value = 10;
@@ -597,8 +598,8 @@ block content
     ```
     p And import them in the same way in `routes.js`:
     ```js
-      import NewsPage from './path/to/news.f7.js';
-      import ServicesPage from './path/to/services.f7.js';
+      import NewsPage from './path/to/news.f7.jsx';
+      import ServicesPage from './path/to/services.f7.jsx';
 
       export default [
         {
@@ -778,9 +779,9 @@ block content
         <div id="app"></div>
       </body>
     ```
-    p Then we need to create main app component, for example, Single File Component using webpack:
+    p Then we need to create main app component, for example, Single File Component using Vite:
     :code(lang="html")
-      <!-- app.f7.html -->
+      <!-- app.f7 -->
       <template>
         <div id="app">
           ${loggedIn.value && $h`
@@ -807,7 +808,7 @@ block content
     p Finally, when we init Framework7, we need to specify app component on init:
     ```js
       // import main app component
-      import App from './path/to/app.f7.html';
+      import App from './path/to/app.f7';
 
       var app = new Framework7({
         // specify main app component
@@ -818,7 +819,7 @@ block content
     ```js
       var app = new Framework7({
         // load main app component
-        componentUrl: './path/to/app.f7.html',
+        componentUrl: './path/to/app.f7',
       })
     ```
 
@@ -913,7 +914,7 @@ block content
       </template>
       <script>
         // import component
-        import ListItem from 'path/to/list-item.f7.html';
+        import ListItem from 'path/to/list-item.f7';
 
         // export main component
         export default () => {
@@ -928,7 +929,7 @@ block content
         )
       }
       /* or
-      import ListItem from 'path/to/list-item.f7.js'
+      import ListItem from 'path/to/list-item.f7.jsx'
       */
 
       export default () => {
