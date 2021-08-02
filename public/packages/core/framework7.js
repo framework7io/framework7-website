@@ -1,5 +1,5 @@
 /**
- * Framework7 6.1.1
+ * Framework7 6.2.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: July 26, 2021
+ * Released on: August 2, 2021
  */
 
 (function (global, factory) {
@@ -4532,10 +4532,18 @@
         }
       }
 
+      var isScrolling;
+      var isSegmentedStrong = false;
+      var segmentedStrongEl = null;
+      var touchMoveActivableIos = '.dialog-button, .actions-button';
+      var isTouchMoveActivable = false;
+      var touchmoveActivableEl = null;
+
       function handleTouchStart(e) {
         isMoved = false;
         tapHoldFired = false;
         preventClick = false;
+        isScrolling = undefined;
 
         if (e.targetTouches.length > 1) {
           if (activableElement) removeActive();
@@ -4561,6 +4569,12 @@
         targetElement = e.target;
         touchStartX = e.targetTouches[0].pageX;
         touchStartY = e.targetTouches[0].pageY;
+        isSegmentedStrong = e.target.closest('.segmented-strong .button-active, .segmented-strong .tab-link-active');
+        isTouchMoveActivable = app.theme === 'ios' && e.target.closest(touchMoveActivableIos);
+
+        if (isSegmentedStrong) {
+          segmentedStrongEl = isSegmentedStrong.closest('.segmented-strong');
+        }
 
         if (params.activeState) {
           activableElement = findActivableElement(targetElement);
@@ -4582,10 +4596,32 @@
       function handleTouchMove(e) {
         var touch;
         var distance;
+        var shouldRemoveActive = true;
 
         if (e.type === 'touchmove') {
           touch = e.targetTouches[0];
           distance = params.touchClicksDistanceThreshold;
+        }
+
+        var touchCurrentX = e.targetTouches[0].pageX;
+        var touchCurrentY = e.targetTouches[0].pageY;
+
+        if (typeof isScrolling === 'undefined') {
+          isScrolling = !!(isScrolling || Math.abs(touchCurrentY - touchStartY) > Math.abs(touchCurrentX - touchStartX));
+        }
+
+        if (isTouchMoveActivable || !isScrolling && isSegmentedStrong && segmentedStrongEl) {
+          if (e.cancelable) e.preventDefault();
+        }
+
+        if (!isScrolling && isSegmentedStrong && segmentedStrongEl) {
+          var elementFromPoint = document.elementFromPoint(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
+          var buttonEl = elementFromPoint.closest('.segmented-strong .button:not(.button-active):not(.tab-link-active)');
+
+          if (buttonEl && segmentedStrongEl.contains(buttonEl)) {
+            $(buttonEl).trigger('click', 'f7Segmented');
+            targetElement = buttonEl;
+          }
         }
 
         if (distance && touch) {
@@ -4600,13 +4636,28 @@
         }
 
         if (isMoved) {
-          preventClick = true;
+          preventClick = true; // Keep active state on touchMove (for dialog and actions buttons)
+
+          if (isTouchMoveActivable) {
+            var _elementFromPoint = document.elementFromPoint(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
+
+            touchmoveActivableEl = _elementFromPoint.closest(touchMoveActivableIos);
+
+            if (touchmoveActivableEl && activableElement && activableElement[0] === touchmoveActivableEl) {
+              shouldRemoveActive = false;
+            } else if (touchmoveActivableEl) {
+              setTimeout(function () {
+                activableElement = findActivableElement(touchmoveActivableEl);
+                addActive();
+              });
+            }
+          }
 
           if (params.tapHold) {
             clearTimeout(tapHoldTimeout);
           }
 
-          if (params.activeState) {
+          if (params.activeState && shouldRemoveActive) {
             clearTimeout(activeTimeout);
             removeActive();
           }
@@ -4618,8 +4669,17 @@
       }
 
       function handleTouchEnd(e) {
+        isScrolling = undefined;
+        isSegmentedStrong = false;
+        segmentedStrongEl = null;
+        isTouchMoveActivable = false;
         clearTimeout(activeTimeout);
         clearTimeout(tapHoldTimeout);
+
+        if (touchmoveActivableEl) {
+          $(touchmoveActivableEl).trigger('click', 'f7TouchMoveActivable');
+          touchmoveActivableEl = null;
+        }
 
         if (document.activeElement === e.target) {
           if (params.activeState) removeActive();
@@ -4651,14 +4711,19 @@
 
       function handleClick(e) {
         var isOverswipe = e && e.detail && e.detail === 'f7Overswipe';
+        var isSegmented = e && e.detail && e.detail === 'f7Segmented'; // eslint-disable-next-line
+
+        var isTouchMoveActivable = e && e.detail && e.detail === 'f7TouchMoveActivable';
         var localPreventClick = preventClick;
 
         if (targetElement && e.target !== targetElement) {
-          if (isOverswipe) {
+          if (isOverswipe || isSegmented || isTouchMoveActivable) {
             localPreventClick = false;
           } else {
             localPreventClick = true;
           }
+        } else if (isTouchMoveActivable) {
+          localPreventClick = false;
         }
 
         if (params.tapHold && params.tapHoldPreventClicks && tapHoldFired) {
@@ -13996,11 +14061,11 @@
         }
       },
       clicks: {
-        '.navbar .title': function onTitleClick($clickedEl) {
+        '.navbar .title': function onTitleClick($clickedEl, clickedData, e) {
           var app = this;
           if (!app.params.navbar.scrollTopOnTitleClick) return;
 
-          if ($clickedEl.closest('a').length > 0) {
+          if ($(e.target).closest('a, button').length > 0) {
             return;
           }
 

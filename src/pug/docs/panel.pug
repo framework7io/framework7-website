@@ -31,7 +31,12 @@ block content
           ...
         </div>
       </body>
-    p After we added panels we need to choose opening effect for each panel. There could be one of two effects: <b>"Reveal"</b> (when panel moves out whole app's content) or <b>"Cover"</b> (when panel overlays app's content). If you want to use "Reveal" effect you should add additional `panel-reveal` class to Panel, or `panel-cover` for cover effect:
+    p After we added panels we need to choose opening effect for each panel. There could be one of the following effects:
+    ul
+      li <b>"reveal"</b> - when panel moves out whole app's content,
+      li <b>"cover"</b> - when panel overlays app's content,
+      li <b>"push"</b> - when both panel and app's content moves out together.
+    p If you want to use "Reveal" effect you should add additional `panel-reveal` class to Panel, `panel-cover` for cover effect, or `panel-push` for push effect:
     :code(lang="html")
       <body>
         <!-- App root element -->
@@ -254,7 +259,7 @@ block content
           td String with panel side: `left` or `right`
         tr
           td panel.effect
-          td String with panel effect: `cover` or `reveal`
+          td String with panel effect: `cover`, `reveal` or `push`
         tr
           td panel.opened
           td Boolean property indicating whether it is opened or not

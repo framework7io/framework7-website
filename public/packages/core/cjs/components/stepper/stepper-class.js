@@ -422,6 +422,7 @@ var Stepper = /*#__PURE__*/function (_Framework7Class) {
     var stepper = this;
     stepper.typeModeChanged = true;
     var inputTxt = String(value);
+    if (inputTxt.length === 1 && inputTxt === '-') return stepper;
 
     if (inputTxt.lastIndexOf('.') + 1 === inputTxt.length || inputTxt.lastIndexOf(',') + 1 === inputTxt.length) {
       if (inputTxt.lastIndexOf('.') !== inputTxt.indexOf('.') || inputTxt.lastIndexOf(',') !== inputTxt.indexOf(',')) {

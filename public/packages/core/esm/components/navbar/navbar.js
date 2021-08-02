@@ -765,11 +765,11 @@ export default {
     }
   },
   clicks: {
-    '.navbar .title': function onTitleClick($clickedEl) {
+    '.navbar .title': function onTitleClick($clickedEl, clickedData, e) {
       var app = this;
       if (!app.params.navbar.scrollTopOnTitleClick) return;
 
-      if ($clickedEl.closest('a').length > 0) {
+      if ($(e.target).closest('a, button').length > 0) {
         return;
       }
 
