@@ -1,4 +1,40 @@
 ##########
+- iconUrl: "#{cdn}/i/showcase/AvatarGen-icon.png"
+  iconRounded: true
+  title: AvatarGen - Avatar Maker
+  author:
+    url: https://play.google.com/store/apps/dev?id=6508454577639888737
+    name: CandleLight
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.candlelight.avatargen
+  description: |
+    Helps users to make avatar right through your mobile phones. Completely offline.
+    
+    AvatarGen is an avatar generator app. You can choose between simple lovely designed characters.
+    
+    App Features:
+    
+    • Seed: It helps you to create various avatars by typing something from your keyboard. Don't use sensitive or personal data as seed!
+    • You can choose male, female, human or avataaars to start your character creation.
+    • The skin color, hair color and clothing color can be customized.
+    • You can save the creation to your mobile phone and update your social network avatar.
+    • It works completely offline.
+    • Share your avatar by sharing your seed text with others.
+    
+    Frequently Asked Questions:
+    
+    + Can I use an email address or other sensitive or personal information as a seed?
+    - No! Sensitive or personal data should never be used as seed. The seed could be read from the source code. The generated avatar could also reveal the seed.
+    
+    + Does a seed always return the same avatar?
+    - Yes, as long as the same version of a avatar collection is used, a seed will always return the same avatar.
+  screenshots:
+    - "#{cdn}/i/showcase/AvatarGen-0.png"
+    - "#{cdn}/i/showcase/AvatarGen-1.png"
+    - "#{cdn}/i/showcase/AvatarGen-2.png"
+    - "#{cdn}/i/showcase/AvatarGen-3.png"
+
+##########
 - iconUrl: "#{cdn}/i/showcase/RabbitMail-icon.png"
   iconRounded: true
   title: Rabbit Mail - Temporary Disposable Email
