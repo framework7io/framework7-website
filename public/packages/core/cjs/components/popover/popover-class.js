@@ -133,6 +133,11 @@ var Popover = /*#__PURE__*/function (_Modal) {
         (0, _dom.default)(window).off('keyboardDidShow keyboardDidHide', handleResize);
       });
     });
+    var touchStartTarget = null;
+
+    function handleTouchStart(e) {
+      touchStartTarget = e.target;
+    }
 
     function handleClick(e) {
       var target = e.target;
@@ -141,9 +146,9 @@ var Popover = /*#__PURE__*/function (_Modal) {
       if (keyboardOpened) return;
 
       if ($target.closest(popover.el).length === 0) {
-        if (popover.params.closeByBackdropClick && popover.params.backdrop && popover.backdropEl && popover.backdropEl === target) {
+        if (popover.params.closeByBackdropClick && popover.params.backdrop && popover.backdropEl && popover.backdropEl === target && touchStartTarget === target) {
           popover.close();
-        } else if (popover.params.closeByOutsideClick) {
+        } else if (popover.params.closeByOutsideClick && touchStartTarget === target) {
           popover.close();
         }
       }
@@ -168,11 +173,13 @@ var Popover = /*#__PURE__*/function (_Modal) {
 
     popover.on('popoverOpened', function () {
       if (popover.params.closeByOutsideClick || popover.params.closeByBackdropClick) {
+        app.on('touchstart', handleTouchStart);
         app.on('click', handleClick);
       }
     });
     popover.on('popoverClose', function () {
       if (popover.params.closeByOutsideClick || popover.params.closeByBackdropClick) {
+        app.off('touchstart', handleTouchStart);
         app.off('click', handleClick);
       }
     });

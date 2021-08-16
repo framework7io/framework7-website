@@ -1,5 +1,5 @@
 /**
- * Framework7 6.2.0
+ * Framework7 6.3.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: August 2, 2021
+ * Released on: August 16, 2021
  */
 
 /*====================
@@ -15313,6 +15313,7 @@ label.item-radio.disabled,
   position: relative;
   top: var(--f7-ptr-top, 0);
   height: var(--f7-ptr-size);
+  pointer-events: none;
 }
 .ptr-preloader .preloader {
   position: absolute;
@@ -15334,86 +15335,47 @@ label.item-radio.disabled,
   top: calc(-1 * var(--f7-page-navbar-offset, 0px) + var(--f7-safe-area-top));
 }
 .ios .ptr-preloader {
-  margin-top: calc(-1 * var(--f7-ptr-size));
+  margin-bottom: calc(-1 * var(--f7-ptr-size));
   width: 100%;
   left: 0;
+  top: 0;
+  position: relative;
 }
-.ios .ptr-arrow {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  background: no-repeat center;
-  z-index: 10;
-  transform: rotate(0deg) translate3d(0, 0, 0);
-  transition-duration: 300ms;
-  transition-property: transform, opacity;
-  width: 12px;
-  height: 20px;
-  margin-left: -6px;
-  margin-top: -10px;
+.ios .ptr-preloader .preloader {
   visibility: visible;
-  color: var(--f7-preloader-color);
 }
-.ios .ptr-arrow:after {
-  font-family: 'framework7-core-icons';
-  font-weight: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'liga';
-  text-align: center;
-  display: block;
-  width: 100%;
-  height: 100%;
-  font-size: 20px;
-  width: 12px;
-  height: 20px;
-  line-height: 20px;
-  font-size: 10px;
-  content: 'ptr_arrow_ios';
-}
-.ios .ptr-content:not(.ptr-refreshing) .ptr-preloader .preloader,
-.ios .ptr-content:not(.ptr-refreshing) .ptr-preloader .preloader-inner {
+.ios .ptr-content:not(.ptr-refreshing):not(.ptr-pull-up) .ptr-preloader .preloader,
+.ios .ptr-content:not(.ptr-refreshing):not(.ptr-pull-up) .ptr-preloader .preloader-inner {
   animation: none;
 }
-.ios .ptr-transitioning,
-.ios .ptr-refreshing {
-  transition-duration: 300ms;
+.ios .ptr-content:not(.ptr-refreshing):not(.ptr-pull-up):not(.ptr-pull-down) .ptr-preloader .preloader-inner-line,
+.ios .ptr-content.ptr-closing .ptr-preloader .preloader-inner-line {
+  opacity: 0 !important;
+}
+.ios .ptr-transitioning > *,
+.ios .ptr-refreshing > * {
+  transition-duration: 200ms;
   transition-property: transform;
 }
-.ios .ptr-refreshing {
+.ios .ptr-transitioning .ptr-preloader .preloader-inner-line {
+  transition-duration: 200ms;
+}
+.ios .ptr-pull-up .ptr-preloader .preloader {
+  animation: ios-ptr-preloader-spin 1s ease-out forwards;
+}
+.ios .ptr-refreshing:not(.ptr-bottom) {
+  transform: none;
+}
+.ios .ptr-refreshing:not(.ptr-bottom) > * {
   transform: translate3d(0, var(--f7-ptr-size), 0);
 }
-.ios .ptr-refreshing .ptr-arrow {
-  visibility: hidden;
-}
-.ios .ptr-refreshing .ptr-preloader .preloader {
-  visibility: visible;
-}
-.ios .ptr-pull-up .ptr-arrow {
-  transform: rotate(180deg) translate3d(0, 0, 0);
-}
-.ios .ptr-no-navbar,
-.ios .ptr-with-navbar-large-transparent,
-.ios .ptr-with-navbar-transparent {
-  margin-top: calc(-1 * var(--f7-ptr-size));
-  height: calc(100% + var(--f7-ptr-size));
-}
-.ios .ptr-no-navbar .ptr-preloader,
-.ios .ptr-with-navbar-large-transparent .ptr-preloader,
-.ios .ptr-with-navbar-transparent .ptr-preloader {
-  margin-top: 0;
+.ios .ptr-refreshing:not(.ptr-bottom) > .ptr-preloader {
+  transform: translate3d(0, 0, 0);
 }
 .ios .ptr-bottom .ptr-preloader {
-  margin-top: 0;
-  margin-bottom: calc(-1 * var(--f7-ptr-size));
+  margin-bottom: 0;
+  margin-top: calc(-1 * var(--f7-ptr-size));
+  position: relative;
 }
 .ios .ptr-bottom.ptr-transitioning > *,
 .ios .ptr-bottom.ptr-refreshing > * {
@@ -15426,40 +15388,16 @@ label.item-radio.disabled,
 .ios .ptr-bottom.ptr-refreshing > * {
   transform: translate3d(0, calc(-1 * var(--f7-ptr-size)), 0);
 }
-.ios .ptr-bottom .ptr-arrow {
-  transform: rotate(180deg) translate3d(0, 0, 0);
+.ios .ptr-bottom.ptr-refreshing > .ptr-preloader {
+  transform: translate3d(0, 0, 0);
 }
-.ios .ptr-bottom.ptr-pull-up .ptr-arrow {
-  transform: rotate(0deg) translate3d(0, 0, 0);
-}
-.ios .ptr-with-navbar-large-transparent .ptr-preloader .preloader,
-.ios .ptr-with-navbar-transparent .ptr-preloader .preloader,
-.ios .ptr-with-navbar-large-transparent .ptr-preloader .ptr-arrow,
-.ios .ptr-with-navbar-transparent .ptr-preloader .ptr-arrow {
-  opacity: 0;
-  transition-duration: 300ms;
-  transition-property: transform, opacity;
-}
-.ios .ptr-with-navbar-large-transparent.ptr-pull-down .ptr-preloader .preloader,
-.ios .ptr-with-navbar-transparent.ptr-pull-down .ptr-preloader .preloader,
-.ios .ptr-with-navbar-large-transparent.ptr-pull-up .ptr-preloader .preloader,
-.ios .ptr-with-navbar-transparent.ptr-pull-up .ptr-preloader .preloader,
-.ios .ptr-with-navbar-large-transparent.ptr-refreshing .ptr-preloader .preloader,
-.ios .ptr-with-navbar-transparent.ptr-refreshing .ptr-preloader .preloader,
-.ios .ptr-with-navbar-large-transparent.ptr-pull-down .ptr-preloader .ptr-arrow,
-.ios .ptr-with-navbar-transparent.ptr-pull-down .ptr-preloader .ptr-arrow,
-.ios .ptr-with-navbar-large-transparent.ptr-pull-up .ptr-preloader .ptr-arrow,
-.ios .ptr-with-navbar-transparent.ptr-pull-up .ptr-preloader .ptr-arrow,
-.ios .ptr-with-navbar-large-transparent.ptr-refreshing .ptr-preloader .ptr-arrow,
-.ios .ptr-with-navbar-transparent.ptr-refreshing .ptr-preloader .ptr-arrow {
-  opacity: 1;
-}
-.ios .ptr-with-navbar-large-transparent.ptr-closing .ptr-preloader .preloader,
-.ios .ptr-with-navbar-transparent.ptr-closing .ptr-preloader .preloader,
-.ios .ptr-with-navbar-large-transparent.ptr-closing .ptr-preloader .ptr-arrow,
-.ios .ptr-with-navbar-transparent.ptr-closing .ptr-preloader .ptr-arrow {
-  opacity: 0;
-  transition-duration: 300ms;
+@keyframes ios-ptr-preloader-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(135deg);
+  }
 }
 .md {
   --f7-ptr-top: -4px;

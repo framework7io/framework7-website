@@ -1,5 +1,5 @@
 /**
- * Framework7 6.2.0
+ * Framework7 6.3.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: August 2, 2021
+ * Released on: August 16, 2021
  */
 
 (function (global, factory) {
@@ -17650,6 +17650,11 @@
             $(window).off('keyboardDidShow keyboardDidHide', handleResize);
           });
         });
+        var touchStartTarget = null;
+
+        function handleTouchStart(e) {
+          touchStartTarget = e.target;
+        }
 
         function handleClick(e) {
           var target = e.target;
@@ -17658,9 +17663,9 @@
           if (keyboardOpened) return;
 
           if ($target.closest(popover.el).length === 0) {
-            if (popover.params.closeByBackdropClick && popover.params.backdrop && popover.backdropEl && popover.backdropEl === target) {
+            if (popover.params.closeByBackdropClick && popover.params.backdrop && popover.backdropEl && popover.backdropEl === target && touchStartTarget === target) {
               popover.close();
-            } else if (popover.params.closeByOutsideClick) {
+            } else if (popover.params.closeByOutsideClick && touchStartTarget === target) {
               popover.close();
             }
           }
@@ -17685,11 +17690,13 @@
 
         popover.on('popoverOpened', function () {
           if (popover.params.closeByOutsideClick || popover.params.closeByBackdropClick) {
+            app.on('touchstart', handleTouchStart);
             app.on('click', handleClick);
           }
         });
         popover.on('popoverClose', function () {
           if (popover.params.closeByOutsideClick || popover.params.closeByBackdropClick) {
+            app.off('touchstart', handleTouchStart);
             app.off('click', handleClick);
           }
         });
@@ -29990,6 +29997,12 @@
           e.preventDefault();
         }
 
+        var htmlTouchStartTarget = null;
+
+        function onHtmlTouchStart(e) {
+          htmlTouchStartTarget = e.target;
+        }
+
         function onHtmlClick(e) {
           if (picker.destroyed || !picker.params) return;
           var $targetEl = $(e.target);
@@ -29998,7 +30011,7 @@
           if ($targetEl.closest('[class*="backdrop"]').length) return;
 
           if ($inputEl && $inputEl.length > 0) {
-            if ($targetEl[0] !== $inputEl[0] && $targetEl.closest('.sheet-modal').length === 0) {
+            if (htmlTouchStartTarget === e.target && $targetEl[0] !== $inputEl[0] && $targetEl.closest('.sheet-modal').length === 0) {
               picker.close();
             }
           } else if ($(e.target).closest('.sheet-modal').length === 0) {
@@ -30038,9 +30051,11 @@
           },
           attachHtmlEvents: function attachHtmlEvents() {
             app.on('click', onHtmlClick);
+            app.on('touchstart', onHtmlTouchStart);
           },
           detachHtmlEvents: function detachHtmlEvents() {
             app.off('click', onHtmlClick);
+            app.off('touchstart', onHtmlTouchStart);
           }
         });
         picker.init();
@@ -30775,11 +30790,16 @@
 
         ptr.done = function done() {
           var $transitionTarget = isMaterial ? $preloaderEl : $el;
-          $transitionTarget.transitionEnd(function () {
+
+          var onTranstionEnd = function onTranstionEnd(e) {
+            if ($(e.target).closest($preloaderEl).length) return;
             $el.removeClass('ptr-transitioning ptr-pull-up ptr-pull-down ptr-closing');
             $el.trigger('ptr:done');
             ptr.emit('local::done ptrDone', $el[0]);
-          });
+            $transitionTarget.off('transitionend', onTranstionEnd);
+          };
+
+          $transitionTarget.on('transitionend', onTranstionEnd);
           $el.removeClass('ptr-refreshing').addClass('ptr-transitioning ptr-closing');
           return ptr;
         };
@@ -30847,6 +30867,23 @@
           triggerDistance = 38;
         }
 
+        function setPreloaderProgress(progress) {
+          if (progress === void 0) {
+            progress = 0;
+          }
+
+          var $bars = $preloaderEl.find('.preloader-inner-line');
+          var perBarProgress = 1 / $bars.length;
+          $bars.forEach(function (barEl, barIndex) {
+            var barProgress = (progress - barIndex * perBarProgress) / perBarProgress;
+            barEl.style.opacity = Math.max(Math.min(barProgress, 1), 0) * 0.27;
+          });
+        }
+
+        function unsetPreloaderProgress() {
+          $preloaderEl.find('.preloader-inner-line').css('opacity', '');
+        }
+
         function handleTouchStart(e) {
           if (isTouched) {
             if (device.os === 'android') {
@@ -30907,6 +30944,11 @@
 
           if (!isMoved) {
             $el.removeClass('ptr-transitioning');
+
+            if (isIos) {
+              setPreloaderProgress(0);
+            }
+
             var targetIsScrollable;
             scrollHeight = $el[0].scrollHeight;
             offsetHeight = $el[0].offsetHeight;
@@ -30982,17 +31024,32 @@
                 $preloaderEl.transform("translate3d(0," + translate + "px,0)").find('.ptr-arrow').transform("rotate(" + (180 * (Math.abs(touchesDiff) / 66) + 100) + "deg)");
               } else {
                 // eslint-disable-next-line
-                if (ptr.bottom) {
+                if (ptr.bottom || isIos) {
                   $el.children().transform("translate3d(0," + translate + "px,0)");
                 } else {
+                  // eslint-disable-next-line
                   $el.transform("translate3d(0," + translate + "px,0)");
                 }
+
+                if (isIos) {
+                  $preloaderEl.transform("translate3d(0,0px,0)");
+                }
               }
+            } else if (isIos && !ptr.bottom) {
+              $preloaderEl.transform("translate3d(0," + scrollTop + "px,0)");
+            }
+
+            var progress;
+
+            if (isIos && !refresh) {
+              progress = useTranslate || forceUseTranslate ? Math.pow(Math.abs(touchesDiff), 0.85) / triggerDistance : Math.abs(touchesDiff) / (triggerDistance * 2);
+              setPreloaderProgress(progress);
             }
 
             if ((useTranslate || forceUseTranslate) && Math.pow(Math.abs(touchesDiff), 0.85) > triggerDistance || !useTranslate && Math.abs(touchesDiff) >= triggerDistance * 2) {
               refresh = true;
               $el.addClass('ptr-pull-up').removeClass('ptr-pull-down');
+              unsetPreloaderProgress();
             } else {
               refresh = false;
               $el.removeClass('ptr-pull-up').addClass('ptr-pull-down');
@@ -31048,8 +31105,9 @@
           if (isMaterial) {
             $preloaderEl.transform('').find('.ptr-arrow').transform('');
           } else {
-            // eslint-disable-next-line
-            if (ptr.bottom) {
+            $preloaderEl.transform('');
+
+            if (ptr.bottom || isIos) {
               $el.children().transform('');
             } else {
               $el.transform('');
@@ -31095,7 +31153,8 @@
           if (isMaterial) {
             $preloaderEl.transform('').find('.ptr-arrow').transform('');
           } else {
-            // eslint-disable-next-line
+            $preloaderEl.transform('');
+
             if (ptr.bottom) {
               $el.children().transform('');
             } else {
@@ -31133,6 +31192,11 @@
 
           if (!mousewheelMoved) {
             $el.removeClass('ptr-transitioning');
+
+            if (isIos) {
+              setPreloaderProgress(0);
+            }
+
             var targetIsScrollable;
             scrollHeight = $el[0].scrollHeight;
             offsetHeight = $el[0].offsetHeight;
@@ -31196,12 +31260,24 @@
                 $el.children().transform("translate3d(0," + translate + "px,0)");
               } else {
                 $el.transform("translate3d(0," + translate + "px,0)");
+
+                if (isIos) {
+                  $preloaderEl.transform("translate3d(0," + -translate + "px,0)");
+                }
               }
+            }
+
+            var progress;
+
+            if (isIos && !refresh) {
+              progress = Math.abs(translate) / triggerDistance;
+              setPreloaderProgress(progress);
             }
 
             if (Math.abs(translate) > triggerDistance) {
               refresh = true;
               $el.addClass('ptr-pull-up').removeClass('ptr-pull-down');
+              unsetPreloaderProgress();
             } else {
               refresh = false;
               $el.removeClass('ptr-pull-up').addClass('ptr-pull-down');
