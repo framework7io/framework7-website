@@ -1,5 +1,5 @@
 /**
- * Framework7 6.3.1
+ * Framework7 6.3.2
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: August 23, 2021
+ * Released on: August 31, 2021
  */
 
 (function (global, factory) {
@@ -34517,6 +34517,15 @@
       return typeof o === 'object' && o !== null && o.constructor && Object.prototype.toString.call(o).slice(8, -1) === 'Object';
     }
 
+    function isNode(node) {
+      // eslint-disable-next-line
+      if (typeof window !== 'undefined' && typeof window.HTMLElement !== 'undefined') {
+        return node instanceof HTMLElement;
+      }
+
+      return node && (node.nodeType === 1 || node.nodeType === 11);
+    }
+
     function extend() {
       var to = Object(arguments.length <= 0 ? undefined : arguments[0]);
       var noExtend = ['__proto__', 'constructor', 'prototype'];
@@ -34524,7 +34533,7 @@
       for (var i = 1; i < arguments.length; i += 1) {
         var nextSource = i < 0 || arguments.length <= i ? undefined : arguments[i];
 
-        if (nextSource !== undefined && nextSource !== null) {
+        if (nextSource !== undefined && nextSource !== null && !isNode(nextSource)) {
           var keysArray = Object.keys(Object(nextSource)).filter(function (key) {
             return noExtend.indexOf(key) < 0;
           });
@@ -34578,8 +34587,25 @@
         classes = '';
       }
 
-      return "." + classes.trim().replace(/([\.:\/])/g, '\\$1') // eslint-disable-line
+      return "." + classes.trim().replace(/([\.:!\/])/g, '\\$1') // eslint-disable-line
       .replace(/ /g, '.');
+    }
+
+    function createElementIfNotDefined($container, params, createElements, checkProps) {
+      var document = getDocument();
+
+      if (createElements) {
+        Object.keys(checkProps).forEach(function (key) {
+          if (!params[key] && params.auto === true) {
+            var element = document.createElement('div');
+            element.className = checkProps[key];
+            $container.append(element);
+            params[key] = element;
+          }
+        });
+      }
+
+      return params;
     }
 
     var support;
@@ -35138,10 +35164,12 @@
 
       if (rtl) slides.css({
         marginLeft: '',
+        marginBottom: '',
         marginTop: ''
       });else slides.css({
         marginRight: '',
-        marginBottom: ''
+        marginBottom: '',
+        marginTop: ''
       });
       var slidesNumberEvenToRows;
 
@@ -35204,7 +35232,7 @@
             column = i - row * slidesPerRow;
           }
 
-          slide.css(getDirectionLabel('margin-top'), row !== 0 && params.spaceBetween && params.spaceBetween + "px");
+          slide.css(getDirectionLabel('margin-top'), row !== 0 ? params.spaceBetween && params.spaceBetween + "px" : '');
         }
 
         if (slide.css('display') === 'none') continue; // eslint-disable-line
@@ -36289,7 +36317,6 @@
       var normalizedSnapGrid = snapGrid.map(function (val) {
         return normalize(val);
       });
-      var currentSnap = snapGrid[normalizedSnapGrid.indexOf(normalizedTranslate)];
       var prevSnap = snapGrid[normalizedSnapGrid.indexOf(normalizedTranslate) - 1];
 
       if (typeof prevSnap === 'undefined' && params.cssMode) {
@@ -36736,6 +36763,21 @@
       removeAllSlides: removeAllSlides
     };
 
+    function closestElement(selector, base) {
+      if (base === void 0) {
+        base = this;
+      }
+
+      function __closestFrom(el) {
+        if (!el || el === getDocument() || el === getWindow()) return null;
+        if (el.assignedSlot) el = el.assignedSlot;
+        var found = el.closest(selector);
+        return found || __closestFrom(el.getRootNode().host);
+      }
+
+      return __closestFrom(base);
+    }
+
     function onTouchStart(event) {
       var swiper = this;
       var document = getDocument();
@@ -36761,7 +36803,7 @@
       data.isTouchEvent = e.type === 'touchstart';
       if (!data.isTouchEvent && 'which' in e && e.which === 3) return;
       if (!data.isTouchEvent && 'button' in e && e.button > 0) return;
-      if (data.isTouched && data.isMoved) return; // change target el for shadow root componenet
+      if (data.isTouched && data.isMoved) return; // change target el for shadow root component
 
       var swipingClassHasValue = !!params.noSwipingClass && params.noSwipingClass !== '';
 
@@ -36769,7 +36811,10 @@
         $targetEl = $$1(event.path[0]);
       }
 
-      if (params.noSwiping && $targetEl.closest(params.noSwipingSelector ? params.noSwipingSelector : "." + params.noSwipingClass)[0]) {
+      var noSwipingSelector = params.noSwipingSelector ? params.noSwipingSelector : "." + params.noSwipingClass;
+      var isTargetShadow = !!(e.target && e.target.shadowRoot); // use closestElement for shadow root element to get the actual closest for nested shadow root element
+
+      if (params.noSwiping && (isTargetShadow ? closestElement(noSwipingSelector, e.target) : $targetEl.closest(noSwipingSelector)[0])) {
         swiper.allowClick = true;
         return;
       }
@@ -36811,9 +36856,9 @@
 
       if (e.type !== 'touchstart') {
         var preventDefault = true;
-        if ($targetEl.is(data.formElements)) preventDefault = false;
+        if ($targetEl.is(data.focusableElements)) preventDefault = false;
 
-        if (document.activeElement && $$1(document.activeElement).is(data.formElements) && document.activeElement !== $targetEl[0]) {
+        if (document.activeElement && $$1(document.activeElement).is(data.focusableElements) && document.activeElement !== $targetEl[0]) {
           document.activeElement.blur();
         }
 
@@ -36889,7 +36934,7 @@
       }
 
       if (data.isTouchEvent && document.activeElement) {
-        if (e.target === document.activeElement && $$1(e.target).is(data.formElements)) {
+        if (e.target === document.activeElement && $$1(e.target).is(data.focusableElements)) {
           data.isMoved = true;
           swiper.allowClick = false;
           return;
@@ -37643,7 +37688,7 @@
       } else if (!wasMultiRow && isMultiRow) {
         $el.addClass(params.containerModifierClass + "multirow");
 
-        if (breakpointParams.slidesPerColumnFill === 'column') {
+        if (breakpointParams.slidesPerColumnFill && breakpointParams.slidesPerColumnFill === 'column' || !breakpointParams.slidesPerColumnFill && params.slidesPerColumnFill === 'column') {
           $el.addClass(params.containerModifierClass + "multirow-column");
         }
 
@@ -37692,7 +37737,6 @@
       if (!breakpoints || base === 'container' && !containerEl) return undefined;
       var breakpoint = false;
       var window = getWindow();
-      var currentWidth = base === 'window' ? window.innerWidth : containerEl.clientWidth;
       var currentHeight = base === 'window' ? window.innerHeight : containerEl.clientHeight;
       var points = Object.keys(breakpoints).map(function (point) {
         if (typeof point === 'string' && point.indexOf('@') === 0) {
@@ -37718,7 +37762,11 @@
             point = _points$i.point,
             value = _points$i.value;
 
-        if (value <= currentWidth) {
+        if (base === 'window') {
+          if (window.matchMedia("(min-width: " + value + "px)").matches) {
+            breakpoint = point;
+          }
+        } else if (value <= containerEl.clientWidth) {
           breakpoint = point;
         }
       }
@@ -37891,7 +37939,9 @@
       updateOnWindowResize: true,
       resizeObserver: false,
       nested: false,
+      createElements: false,
       enabled: true,
+      focusableElements: 'input, select, option, textarea, button, video, label',
       // Overrides
       width: null,
       height: null,
@@ -38097,6 +38147,13 @@
             var moduleParamName = Object.keys(module.params)[0];
             var moduleParams = module.params[moduleParamName];
             if (typeof moduleParams !== 'object' || moduleParams === null) return;
+
+            if (['navigation', 'pagination', 'scrollbar'].indexOf(moduleParamName) >= 0 && params[moduleParamName] === true) {
+              params[moduleParamName] = {
+                auto: true
+              };
+            }
+
             if (!(moduleParamName in params && 'enabled' in moduleParams)) return;
 
             if (params[moduleParamName] === true) {
@@ -38199,7 +38256,7 @@
             startTranslate: undefined,
             allowThresholdMove: undefined,
             // Form elements to match
-            formElements: 'input, select, option, textarea, button, video, label',
+            focusableElements: swiper.params.focusableElements,
             // Last click time
             lastClickTime: now(),
             clickTimeout: undefined,
@@ -38436,18 +38493,38 @@
           return false;
         }
 
-        el.swiper = swiper; // Find Wrapper
+        el.swiper = swiper;
 
-        var $wrapperEl;
+        var getWrapperSelector = function getWrapperSelector() {
+          return "." + (swiper.params.wrapperClass || '').trim().split(' ').join('.');
+        };
 
-        if (el && el.shadowRoot && el.shadowRoot.querySelector) {
-          $wrapperEl = $$1(el.shadowRoot.querySelector("." + swiper.params.wrapperClass)); // Children needs to return slot items
+        var getWrapper = function getWrapper() {
+          if (el && el.shadowRoot && el.shadowRoot.querySelector) {
+            var res = $$1(el.shadowRoot.querySelector(getWrapperSelector())); // Children needs to return slot items
 
-          $wrapperEl.children = function (options) {
-            return $el.children(options);
-          };
-        } else {
-          $wrapperEl = $el.children("." + swiper.params.wrapperClass);
+            res.children = function (options) {
+              return $el.children(options);
+            };
+
+            return res;
+          }
+
+          return $el.children(getWrapperSelector());
+        }; // Find Wrapper
+
+
+        var $wrapperEl = getWrapper();
+
+        if ($wrapperEl.length === 0 && swiper.params.createElements) {
+          var document = getDocument();
+          var wrapper = document.createElement('div');
+          $wrapperEl = $$1(wrapper);
+          wrapper.className = swiper.params.wrapperClass;
+          $el.append(wrapper);
+          $el.children("." + swiper.params.slideClass).each(function (slideEl) {
+            $wrapperEl.append(slideEl);
+          });
         }
 
         extend(swiper, {
@@ -39592,6 +39669,10 @@
       init: function init() {
         var swiper = this;
         var params = swiper.params.navigation;
+        swiper.params.navigation = createElementIfNotDefined(swiper.$el, swiper.params.navigation, swiper.params.createElements, {
+          nextEl: 'swiper-button-next',
+          prevEl: 'swiper-button-prev'
+        });
         if (!(params.nextEl || params.prevEl)) return;
         var $nextEl;
         var $prevEl;
@@ -39955,6 +40036,9 @@
       },
       init: function init() {
         var swiper = this;
+        swiper.params.pagination = createElementIfNotDefined(swiper.$el, swiper.params.pagination, swiper.params.createElements, {
+          el: 'swiper-pagination'
+        });
         var params = swiper.params.pagination;
         if (!params.el) return;
         var $el = $$1(params.el);
@@ -40399,10 +40483,13 @@
       },
       init: function init() {
         var swiper = this;
-        if (!swiper.params.scrollbar.el) return;
         var scrollbar = swiper.scrollbar,
             $swiperEl = swiper.$el;
+        swiper.params.scrollbar = createElementIfNotDefined($swiperEl, swiper.params.scrollbar, swiper.params.createElements, {
+          el: 'swiper-scrollbar'
+        });
         var params = swiper.params.scrollbar;
+        if (!params.el) return;
         var $el = $$1(params.el);
 
         if (swiper.params.uniqueNavElements && typeof params.el === 'string' && $el.length > 1 && $swiperEl.find(params.el).length === 1) {
@@ -40790,11 +40877,6 @@
           gesture.slideWidth = gesture.$slideEl[0].offsetWidth;
           gesture.slideHeight = gesture.$slideEl[0].offsetHeight;
           gesture.$imageWrapEl.transition(0);
-
-          if (swiper.rtl) {
-            image.startX = -image.startX;
-            image.startY = -image.startY;
-          }
         } // Define if we need image drag
 
 
@@ -40940,10 +41022,16 @@
             image = zoom.image;
 
         if (!gesture.$slideEl) {
-          if (swiper.params.virtual && swiper.params.virtual.enabled && swiper.virtual) {
-            gesture.$slideEl = swiper.$wrapperEl.children("." + swiper.params.slideActiveClass);
-          } else {
-            gesture.$slideEl = swiper.slides.eq(swiper.activeIndex);
+          if (e && e.target) {
+            gesture.$slideEl = $$1(e.target).closest("." + swiper.params.slideClass);
+          }
+
+          if (!gesture.$slideEl) {
+            if (swiper.params.virtual && swiper.params.virtual.enabled && swiper.virtual) {
+              gesture.$slideEl = swiper.$wrapperEl.children("." + swiper.params.slideActiveClass);
+            } else {
+              gesture.$slideEl = swiper.slides.eq(swiper.activeIndex);
+            }
           }
 
           gesture.$imageEl = gesture.$slideEl.find('img, svg, canvas, picture, .swiper-zoom-target');
@@ -41435,12 +41523,17 @@
           }
         }
 
+        var passiveListener = swiper.touchEvents.start === 'touchstart' && swiper.support.passiveListener && swiper.params.passiveListeners ? {
+          passive: true,
+          capture: false
+        } : false;
+
         if (inView) {
           swiper.lazy.load();
-          $scrollElement.off('scroll', swiper.lazy.checkInViewOnLoad);
+          $scrollElement.off('scroll', swiper.lazy.checkInViewOnLoad, passiveListener);
         } else if (!swiper.lazy.scrollHandlerAttached) {
           swiper.lazy.scrollHandlerAttached = true;
-          $scrollElement.on('scroll', swiper.lazy.checkInViewOnLoad);
+          $scrollElement.on('scroll', swiper.lazy.checkInViewOnLoad, passiveListener);
         }
       }
     };
@@ -41506,7 +41599,15 @@
           }
         },
         slideChange: function slideChange(swiper) {
-          if (swiper.params.lazy.enabled && swiper.params.cssMode) {
+          var _swiper$params = swiper.params,
+              lazy = _swiper$params.lazy,
+              cssMode = _swiper$params.cssMode,
+              watchSlidesVisibility = _swiper$params.watchSlidesVisibility,
+              watchSlidesProgress = _swiper$params.watchSlidesProgress,
+              touchReleaseOnEdges = _swiper$params.touchReleaseOnEdges,
+              resistanceRatio = _swiper$params.resistanceRatio;
+
+          if (lazy.enabled && (cssMode || (watchSlidesVisibility || watchSlidesProgress) && (touchReleaseOnEdges || resistanceRatio === 0))) {
             swiper.lazy.load();
           }
         }
@@ -41904,9 +42005,13 @@
         }
 
         swiper.a11y.addElRole($$1(swiper.slides), params.slideRole);
-        swiper.slides.each(function (slideEl) {
+        var slidesLength = swiper.params.loop ? swiper.slides.filter(function (el) {
+          return !el.classList.contains(swiper.params.slideDuplicateClass);
+        }).length : swiper.slides.length;
+        swiper.slides.each(function (slideEl, index) {
           var $slideEl = $$1(slideEl);
-          var ariaLabelMessage = params.slideLabelMessage.replace(/\{\{index\}\}/, $slideEl.index() + 1).replace(/\{\{slidesLength\}\}/, swiper.slides.length);
+          var slideIndex = swiper.params.loop ? parseInt($slideEl.attr('data-swiper-slide-index'), 10) : index;
+          var ariaLabelMessage = params.slideLabelMessage.replace(/\{\{index\}\}/, slideIndex + 1).replace(/\{\{slidesLength\}\}/, slidesLength);
           swiper.a11y.addElLabel($slideEl, ariaLabelMessage);
         }); // Navigation
 
@@ -42220,7 +42325,7 @@
       return _extends$6.apply(this, arguments);
     }
     var HashNavigation = {
-      onHashCange: function onHashCange() {
+      onHashChange: function onHashChange() {
         var swiper = this;
         var document = getDocument();
         swiper.emit('hashChange');
@@ -42272,7 +42377,7 @@
         }
 
         if (swiper.params.hashNavigation.watchState) {
-          $$1(window).on('hashchange', swiper.hashNavigation.onHashCange);
+          $$1(window).on('hashchange', swiper.hashNavigation.onHashChange);
         }
       },
       destroy: function destroy() {
@@ -42280,7 +42385,7 @@
         var window = getWindow();
 
         if (swiper.params.hashNavigation.watchState) {
-          $$1(window).off('hashchange', swiper.hashNavigation.onHashCange);
+          $$1(window).off('hashchange', swiper.hashNavigation.onHashChange);
         }
       }
     };
@@ -42458,13 +42563,24 @@
       },
       onMouseEnter: function onMouseEnter() {
         var swiper = this;
-        swiper.autoplay.pause();
+
+        if (swiper.params.autoplay.disableOnInteraction) {
+          swiper.autoplay.stop();
+        } else {
+          swiper.autoplay.pause();
+        }
+
         ['transitionend', 'webkitTransitionEnd'].forEach(function (event) {
           swiper.$wrapperEl[0].removeEventListener(event, swiper.autoplay.onTransitionEnd);
         });
       },
       onMouseLeave: function onMouseLeave() {
         var swiper = this;
+
+        if (swiper.params.autoplay.disableOnInteraction) {
+          return;
+        }
+
         swiper.autoplay.paused = false;
         swiper.autoplay.run();
       },
@@ -43222,7 +43338,19 @@
 
             var prevThumbsIndex = thumbsSwiper.slides.eq(currentThumbsIndex).prevAll("[data-swiper-slide-index=\"" + swiper.realIndex + "\"]").eq(0).index();
             var nextThumbsIndex = thumbsSwiper.slides.eq(currentThumbsIndex).nextAll("[data-swiper-slide-index=\"" + swiper.realIndex + "\"]").eq(0).index();
-            if (typeof prevThumbsIndex === 'undefined') newThumbsIndex = nextThumbsIndex;else if (typeof nextThumbsIndex === 'undefined') newThumbsIndex = prevThumbsIndex;else if (nextThumbsIndex - currentThumbsIndex === currentThumbsIndex - prevThumbsIndex) newThumbsIndex = currentThumbsIndex;else if (nextThumbsIndex - currentThumbsIndex < currentThumbsIndex - prevThumbsIndex) newThumbsIndex = nextThumbsIndex;else newThumbsIndex = prevThumbsIndex;
+
+            if (typeof prevThumbsIndex === 'undefined') {
+              newThumbsIndex = nextThumbsIndex;
+            } else if (typeof nextThumbsIndex === 'undefined') {
+              newThumbsIndex = prevThumbsIndex;
+            } else if (nextThumbsIndex - currentThumbsIndex === currentThumbsIndex - prevThumbsIndex) {
+              newThumbsIndex = thumbsSwiper.params.slidesPerGroup > 1 ? nextThumbsIndex : currentThumbsIndex;
+            } else if (nextThumbsIndex - currentThumbsIndex < currentThumbsIndex - prevThumbsIndex) {
+              newThumbsIndex = nextThumbsIndex;
+            } else {
+              newThumbsIndex = prevThumbsIndex;
+            }
+
             direction = swiper.activeIndex > swiper.previousIndex ? 'next' : 'prev';
           } else {
             newThumbsIndex = swiper.realIndex;
@@ -43240,8 +43368,7 @@
               } else {
                 newThumbsIndex = newThumbsIndex + Math.floor(slidesPerView / 2) - 1;
               }
-            } else if (newThumbsIndex > currentThumbsIndex) {
-              newThumbsIndex = newThumbsIndex - slidesPerView + 1;
+            } else if (newThumbsIndex > currentThumbsIndex && thumbsSwiper.params.slidesPerGroup === 1) {// newThumbsIndex = newThumbsIndex - slidesPerView + 1;
             }
 
             thumbsSwiper.slideTo(newThumbsIndex, initial ? 0 : undefined);
@@ -43334,7 +43461,7 @@
     };
 
     /**
-     * Swiper 6.6.2
+     * Swiper 6.8.4
      * Most modern mobile touch slider and framework with hardware accelerated transitions
      * https://swiperjs.com
      *
@@ -43342,7 +43469,7 @@
      *
      * Released under the MIT License
      *
-     * Released on: May 19, 2021
+     * Released on: August 23, 2021
      */
 
     var components = [Virtual$1, Keyboard$1, Mousewheel$1, Navigation$1, Pagination$1, Scrollbar$1, Parallax$1, Zoom$1, Lazy$1, Controller$1, A11y$1, History$1, HashNavigation$1, Autoplay$1, EffectFade, EffectCube, EffectFlip, EffectCoverflow, Thumbs$1];
