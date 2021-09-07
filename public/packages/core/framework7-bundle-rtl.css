@@ -1,5 +1,5 @@
 /**
- * Framework7 6.3.2
+ * Framework7 6.3.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: August 31, 2021
+ * Released on: September 7, 2021
  */
 
 /*====================
@@ -8497,8 +8497,8 @@ html.with-modal-preloader .page-content,
   */
 }
 .ios {
-  --f7-progressbar-height: 2px;
-  --f7-progressbar-border-radius: 2px;
+  --f7-progressbar-height: 4px;
+  --f7-progressbar-border-radius: 4px;
   --f7-progressbar-bg-color: rgba(0, 0, 0, 0.3);
 }
 .ios .theme-dark,
