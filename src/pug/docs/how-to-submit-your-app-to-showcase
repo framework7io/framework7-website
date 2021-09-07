@@ -1,0 +1,128 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'How to submit your App to the showcase';
+
+block content
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 How to submit your App to the Framework7 showcase
+    p Framework7 showcase <a href="https://framework7.io/showcase/" target="_blank">https://framework7.io/showcase/</a>
+
+h2 1. Prepare your data
+
+p You need to provide text and images.
+
+h3 Images
+
+p Just make sure that you have your images ready on your local folder somewhere and that they are named the same as in your text for showcase-apps.yml.
+
+
+h3 Text
+
+p Here is a template. Replace YOURAPP with your own app name.
+
+p There must be 2 spaces at the beginning of each line except the first ("###...") and 2nd ("-") line. Make sure that your naming does not collide with other names already taken. If anything changes for this format you need to look here for some examples and fix your entry so that it maches the most up-to-date format.
+p So check this file first for some examples and the current file format: https://github.com/framework7io/framework7-website/blob/master/src/pug/showcase/showcase-apps.yml
+
+p Here is a template you will add later to showcase-apps.yml
+
+---- 8< ------------
+#########
+-
+  iconUrl: "#{cdn}/i/showcase/YOURAPP-icon-1024.png"
+  iconRounded: false
+  title: "YOURAPP – Short description"
+  author:
+    url: YOURURL
+    name: YOURAUTHOR
+  links:
+    appstore: LINK-TO-APP-STORE
+    googleplay: LINK-TO-GOOGLE-PLAY
+    website: LINK-TO-YOUR-SUPPORT-PAGE
+  description: |
+YOUR FULL DESCRIPTION HERE
+  features:
+  - LIST SOME FEATURES, FEATURE 1
+  - FEATURE 2
+  - FEATURE 3
+  screenshots:
+  - "#{cdn}/i/showcase/YOURAPP-ios-01.png"
+  - "#{cdn}/i/showcase/YOURAPP-ios-02.png"
+  - "#{cdn}/i/showcase/YOURAPP-ios-03.png"
+  - "#{cdn}/i/showcase/YOURAPP-ios-04.png"
+  - "#{cdn}/i/showcase/YOURAPP-android-01.png"
+  - "#{cdn}/i/showcase/YOURAPP-android-02.png"
+  - "#{cdn}/i/showcase/YOURAPP-android-03.png"
+  - "#{cdn}/i/showcase/YOURAPP-android-04.png"
+---- 8< ------------
+
+
+
+h2 2. Fork Framework7
+
+p Most of the time you have this already done.
+
+p But if you only need to upload it to Framework7 showcase, you need to have to do the following.
+
+p Go to Framework7 main repository at github:
+
+p <a href="https://github.com/framework7io/framework7-website">https://github.com/framework7io/framework7-website</a>
+
+p Hit the "Fork" button at the top right.
+p This will create a fork copy of Framework7 to your own account on GitHub.
+
+
+
+h2 3. Upload your images
+
+p Images must be here:
+p <a href="https://github.com/framework7io/framework7-website/tree/master/i/showcase">https://github.com/framework7io/framework7-website/tree/master/i/showcase</a>
+
+p But you can't upload it here directly. Images must be uploaded to your github copy first. Then do a push request.
+
+
+p Go to your repo:
+
+p https://github.com/YOUR-ACCOUNT-NAME/Framework7-Website/tree/master/i/showcase
+p (Replace YOUR-ACCOUNT-NAME with your github account name)
+
+p Hit "Upload files".
+p Upload files.
+p Commit changes. (Or "Create a new branch for this commit and start a pull request." maybe this also works, I don't know.)
+p Pull request.
+
+
+h2 4. Add your text for showcase-apps.yml
+
+p Add your entry at the top of this file:
+
+<a href="https://github.com/framework7io/framework7-website/blob/master/src/pug/showcase/showcase-apps.yml">https://github.com/framework7io/framework7-website/blob/master/src/pug/showcase/showcase-apps.yml</a>
+
+p Save file. This will create a new branch on your repo.
+p Then do a pull request.
+
+
+h2 5. Then the author will merge your request into his main repository.
+
+p This may take some time. Please be patient. I think you will get a "merge" notification by mail.
+
+
+h2 6. Done
+
+p If everything was OK then you get the following.
+
+p Your App shows up in the Framework7 showcase here:
+
+p <a href="https://framework7.io/showcase/">https://framework7.io/showcase/</a>
+
+p You may check your links to the App Store and Google Play store and to your support page, etc.
+
+p Your new entry is located in:
+p <a href="https://github.com/framework7io/framework7-website/blob/master/src/pug/showcase/showcase-apps.yml">https://github.com/framework7io/framework7-website/blob/master/src/pug/showcase/showcase-apps.yml</a>
+
+p Your images are listed in this folder:
+<a href="https://github.com/framework7io/framework7-website/tree/master/i/showcase">https://github.com/framework7io/framework7-website/tree/master/i/showcase</a>
+
