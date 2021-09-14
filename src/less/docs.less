@@ -343,19 +343,27 @@ ul.method-parameters {
   }
   .docs-nav-sponsors {
     margin-bottom: 20px;
-    a {
-      display: block;
-      padding-right: 20px;
-      + a {
-        margin-top: 5px;
-      }
+    a:not(.patreon-button) {
+      display: flex;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      height: 48px;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      box-sizing: border-box;
+      margin-bottom: 8px;
       img {
         display: block;
+        max-width: 100%;
+        max-height: 100%;
       }
     }
     .patreon-button {
+      border: none;
+      height: auto;
       white-space: nowrap;
       color: @redColor;
+      margin-top: 16px;
     }
   }
   ul {

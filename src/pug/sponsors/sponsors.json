@@ -321,14 +321,6 @@
       "image": "casinority.png"
     },
     {
-      "createdAt": "2021-02-25T19:34:31.048Z",
-      "title": "CasinoHEX ™ - Genuine Gambling Site Reviews & Free Casino Games",
-      "link": "https://aussiecasinohex.com",
-      "plan": "topSupporter",
-      "ref": "",
-      "image": "aussiecasinohex.png"
-    },
-    {
       "createdAt": "2021-02-25T19:34:26.533Z",
       "title": "Best Bitcoin Casinos Reviewed - Best Bitcoin Casino",
       "link": "https://bestbitcoincasino.net",
@@ -682,6 +674,14 @@
       "plan": "goldSponsor",
       "ref": "",
       "image": "wfmbuddy.png"
+    },
+    {
+      "createdAt": "2021-02-25T19:34:31.048Z",
+      "title": "CasinoHEX ™ - Genuine Gambling Site Reviews & Free Casino Games",
+      "link": "https://aussiecasinohex.com",
+      "plan": "goldSponsor",
+      "ref": "",
+      "image": "aussiecasinohex.png"
     }
   ],
   "platinumSponsor": [],

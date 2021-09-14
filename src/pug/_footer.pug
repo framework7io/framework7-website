@@ -63,8 +63,11 @@ footer
       .footer-sponsors
         .footer-sponsors-title Sponsored by
         .custom-sponsors
-          a(href="https://www.wfmbuddy.com/", target="_blank").border
-            img(src='/i/sponsors/wfmbuddy.png' alt="WFM Buddy - Delighting your Workforce" title="WFM Buddy - Delighting your Workforce")
+          - var sponsors = getJSONData('sponsors/sponsors.json');
+          if (sponsors.goldSponsor)
+            each sponsor in sponsors.goldSponsor
+              a.border(href=sponsor.link, target="_blank")
+                img(src='/i/sponsors/' + (sponsor.image_h || sponsor.image), alt=sponsor.title, title=sponsor.title)
         div(id="bsap_1306028" class="bsarocks bsap_692e54a1f79f00fb913f5a1c3ec9eaa5")
     .copy
       .copy-left
