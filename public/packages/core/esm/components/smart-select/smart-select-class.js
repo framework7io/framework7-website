@@ -632,8 +632,9 @@ var SmartSelect = /*#__PURE__*/function (_Framework7Class) {
     } else {
       var $selectedItemEl = $containerEl.find('input:checked').parents('li');
       if (!$selectedItemEl.length) return ss;
-      var $pageContentEl = $containerEl.find('.page-content');
-      $pageContentEl.scrollTop($selectedItemEl.offset().top - $pageContentEl.offset().top - parseInt($pageContentEl.css('padding-top'), 10));
+      var $scrollableEl = $containerEl.find('.page-content, .popover-inner');
+      if (!$scrollableEl.length) return ss;
+      $scrollableEl.scrollTop($selectedItemEl.offset().top - $scrollableEl.offset().top - parseInt($scrollableEl.css('padding-top'), 10));
     }
 
     return ss;

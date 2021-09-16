@@ -1,5 +1,5 @@
 /**
- * Framework7 6.3.3
+ * Framework7 6.3.4
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: September 7, 2021
+ * Released on: September 16, 2021
  */
 
 (function (global, factory) {
@@ -14235,12 +14235,18 @@
         children[_key - 2] = arguments[_key];
       }
 
+      var flatChildren = flattenArray((children || []).filter(function (child) {
+        return ignoreChildren.indexOf(child) < 0;
+      }));
+
+      if (type === 'Fragment') {
+        return flatChildren;
+      }
+
       return {
         type: type,
         props: props || {},
-        children: flattenArray((children || []).filter(function (child) {
-          return ignoreChildren.indexOf(child) < 0;
-        }))
+        children: flatChildren
       };
     };
 
@@ -18065,6 +18071,7 @@
 
           if (convertToPopover && actions.popoverHtml) {
             popover = app.popover.create({
+              containerEl: actions.params.containerEl,
               content: actions.popoverHtml,
               backdrop: actions.params.backdrop,
               targetEl: targetEl,
@@ -26679,8 +26686,9 @@
         } else {
           var $selectedItemEl = $containerEl.find('input:checked').parents('li');
           if (!$selectedItemEl.length) return ss;
-          var $pageContentEl = $containerEl.find('.page-content');
-          $pageContentEl.scrollTop($selectedItemEl.offset().top - $pageContentEl.offset().top - parseInt($pageContentEl.css('padding-top'), 10));
+          var $scrollableEl = $containerEl.find('.page-content, .popover-inner');
+          if (!$scrollableEl.length) return ss;
+          $scrollableEl.scrollTop($selectedItemEl.offset().top - $scrollableEl.offset().top - parseInt($scrollableEl.css('padding-top'), 10));
         }
 
         return ss;

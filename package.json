@@ -1,7 +1,7 @@
 {
   "name": "framework7-website",
-  "releaseVersion": "6.3.3",
-  "releaseDate": "September 7, 2021",
+  "releaseVersion": "6.3.4",
+  "releaseDate": "September 16, 2021",
   "description": "Framework7 Website",
   "cdn": "//cdn.framework7.io",
   "keywords": [
@@ -82,9 +82,9 @@
     "vue": "^3.0.4"
   },
   "dependencies": {
-    "framework7": "^6.3.3",
-    "framework7-react": "^6.3.3",
-    "framework7-svelte": "^6.3.3",
-    "framework7-vue": "^6.3.3"
+    "framework7": "^6.3.4",
+    "framework7-react": "^6.3.4",
+    "framework7-svelte": "^6.3.4",
+    "framework7-vue": "^6.3.4"
   }
 }
