@@ -10,6 +10,7 @@ block content
   - var plugins = getYamlData('plugins/plugins.yml');
 
   h1.text-align-center Framework7 Plugins
+  h2.text-align-center Community Plugins
   .apps.plugins
     each app in plugins
       .app
@@ -32,6 +33,9 @@ block content
             if app.previewUrl
               a(href=app.previewUrl, target="_blank") Preview
           .app-description #{app.description}
+  h2.text-align-center UI Initiative Plugins
+  p.text-align-center Premium Framework7 plugins from <a href="https://uiinitiative.com" target="_blank">UI Initiative</a>
+  .apps.plugins.uiinitiative-apps.uiinitiative-plugins
 
 
 

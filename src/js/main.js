@@ -5,6 +5,8 @@ import initDocsNav from './init-docs-nav';
 import initDocsHeaders from './init-docs-headers';
 import initDocsColorForm from './init-docs-color-form';
 import copyToClipboard from './copy-to-clipboard';
+import initUiInitiativeTemplates from './init-uiinititative-templates';
+import initUiInitiativePlugins from './init-uiinititative-plugins';
 
 Object.keys(methods).forEach((key) => {
   $.fn[key] = methods[key];
@@ -15,13 +17,14 @@ initDocsDevice();
 initDocsNav();
 initDocsHeaders();
 initDocsColorForm();
+initUiInitiativeTemplates();
+initUiInitiativePlugins();
 
 function trackOutboundClick(url, category) {
   if (!window.ga || !url) return;
   if (!url) return;
   window.ga('send', 'event', category, 'click', url);
 }
-
 
 $('a').on('click', function onClick() {
   const url = this.href;
@@ -82,7 +85,9 @@ $('.f7-demo-icon i').on('click', function onClick() {
   const el = this;
   const text = $(el).parent().next().text();
   copyToClipboard(text, () => {
-    const $toastEl = $(`<div class="f7-demo-icons-toast"><b>${text}</b> is copied to clipboard</div>`);
+    const $toastEl = $(
+      `<div class="f7-demo-icons-toast"><b>${text}</b> is copied to clipboard</div>`,
+    );
     $toastEl.once('animationend', () => {
       $toastEl.remove();
     });
@@ -90,19 +95,24 @@ $('.f7-demo-icon i').on('click', function onClick() {
   });
 });
 
-
 // Docs clickable titles
-$('.docs-content').find('h2, h3').on('click', function onClick() {
-  const $h = $(this);
-  if (!$h.attr('id')) return;
-  document.location.hash = $h.attr('id');
-});
+$('.docs-content')
+  .find('h2, h3')
+  .on('click', function onClick() {
+    const $h = $(this);
+    if (!$h.attr('id')) return;
+    document.location.hash = $h.attr('id');
+  });
 
 // Showcase
 $('.showcase-apps .app-icon').on('click', function onClick() {
   const appHtml = $(this).parents('.app').html();
   $('body').append('<div class="showcase-app-preview-backdrop"></div>');
-  $('body').append(`<div class="showcase-app-preview"><span class="showcase-app-preview-close"></span>${appHtml.replace('<h4>', '<h3>').replace('</h4>', '</h3>')}</div>`);
+  $('body').append(
+    `<div class="showcase-app-preview"><span class="showcase-app-preview-close"></span>${appHtml
+      .replace('<h4>', '<h3>')
+      .replace('</h4>', '</h3>')}</div>`,
+  );
   $('body').css('overflow', 'hidden');
 });
 $(document).on('click', '.showcase-app-preview-close, .showcase-app-preview-backdrop', () => {
@@ -111,7 +121,10 @@ $(document).on('click', '.showcase-app-preview-close, .showcase-app-preview-back
 });
 $(document).on('click', '.app-show-shots a', function onClick(e) {
   e.preventDefault();
-  $(this).parent().hide().parents('.showcase-app-preview')
+  $(this)
+    .parent()
+    .hide()
+    .parents('.showcase-app-preview')
     .find('.app-shots')
     .show()
     .find('img')
@@ -132,8 +145,9 @@ function fetchGitStats(local) {
     return;
   }
   if (window.fetch) {
-    window.fetch('https://api.github.com/repos/framework7io/framework7')
-      .then(res => res.json())
+    window
+      .fetch('https://api.github.com/repos/framework7io/framework7')
+      .then((res) => res.json())
       .then((data) => {
         if (!data) return;
         localStorage.setItem('f7-git-stats-date', new Date().getTime());
@@ -151,7 +165,7 @@ function fetchGitStats(local) {
   }
 }
 const gitStatsDate = localStorage.getItem('f7-git-stats-date');
-if (gitStatsDate && (new Date().getTime() - gitStatsDate * 1) < 1000 * 60 * 60) {
+if (gitStatsDate && new Date().getTime() - gitStatsDate * 1 < 1000 * 60 * 60) {
   fetchGitStats(true);
 } else {
   fetchGitStats();
@@ -170,7 +184,9 @@ function testAdBlock() {
     }
     testAd.remove();
     if (adBlockEnabled) {
-      $('.carbon').append('<div class="carbon-placeholder">Support Framework7 development by disabling AdBlock for this website</div>');
+      $('.carbon').append(
+        '<div class="carbon-placeholder">Support Framework7 development by disabling AdBlock for this website</div>',
+      );
     }
   }, 0);
 }

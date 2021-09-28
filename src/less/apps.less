@@ -15,7 +15,7 @@
     margin-left: auto;
     margin-right: auto;
     cursor: pointer;
-    box-shadow: 0px 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
     border-radius: 45px;
     position: relative;
     display: block;
@@ -43,7 +43,7 @@
       bottom: 10px;
       font-size: 12px;
       font-weight: bold;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
       color: #fff;
       padding: 0 10px;
       border-radius: 2em;
@@ -53,8 +53,8 @@
       content: attr(data-hover-text);
     }
     &:hover {
-      box-shadow: 0px 40px 80px rgba(0,0,0,0.1);
-      transform: translate3d(0,0,0) scale(1.05);
+      box-shadow: 0px 40px 80px rgba(0, 0, 0, 0.1);
+      transform: translate3d(0, 0, 0) scale(1.05);
       ~ .app-info {
         transform: translate3d(0, 10px, 0);
       }
@@ -107,7 +107,31 @@
       margin-right: 2px;
     }
   }
+  &.uiinitiative-apps {
+    .app {
+      width: 33.33%;
+    }
+    .app-title {
+      line-height: inherit;
+    }
+    .app-subtitle {
+      font-size: 14px;
+    }
+    .app-cover {
+      display: block;
+      transition: 400ms;
+      width: calc(100% - 32px);
+      margin: 0 auto;
+      &:hover {
+        transform: scale(1.05);
+      }
 
+      img {
+        display: block;
+        border-radius: 12px;
+      }
+    }
+  }
 }
 @media (max-width: 1023px) {
   .apps {
@@ -115,7 +139,6 @@
       width: 100% / 3;
     }
   }
-
 }
 @media (max-width: 800px) {
   .apps {
@@ -128,6 +151,12 @@
     }
     .app-title {
       font-size: 18px;
+    }
+    &.uiinitiative-apps .app {
+      width: 50%;
+      .app-cover {
+        width: calc(100% - 16px);
+      }
     }
   }
 }
@@ -164,6 +193,12 @@
     .app-icon {
       border-radius: 8vw;
       height: 37vw;
+    }
+    &.uiinitiative-apps .app {
+      width: 100%;
+      .app-cover {
+        width: 100%;
+      }
     }
   }
 }
