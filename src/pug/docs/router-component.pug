@@ -178,6 +178,30 @@ block content
 
             p It is not guaranteed that the DOM changes are applied immediately, so if you rely on DOM (e.g. need to get HTML content or attribute values after state changed) then pass `callback` function as argument.
         tr
+          td $ref(<span>initialValue</span>)
+          td
+            p This method creates reactive "variable", which after updating automatically updates component without need to call <code>$update()</code> method.
+            p It returns an object with <code>value</code> property where new value must be assigned to.
+            :code(lang="js")
+              const MyComponent = (props, { $ref, $h }) => {
+                // create reactive object
+                const someVar = $ref('foo'); //-> { value: 'foo' }
+
+                const updateValue = () => {
+                  // update "value" property of the reactive object
+                  someVar.value = 'bar';
+                }
+
+                return () => $h`
+                  <div class="page">
+                    <p>Value is ${someVar.value}</p>
+                    <button @click=${updateValue}>Update Value</button>
+                  </div>
+                `;
+              }
+
+            p It is not guaranteed that the DOM changes are applied immediately, so if you rely on DOM (e.g. need to get HTML content or attribute values after state changed) then pass `callback` function as argument.
+        tr
           td $tick(<span>callback</span>)
           td
             p You can also use this method if you rely on DOM and need to be sure that component state and DOM updated after calling `$update()` methods.

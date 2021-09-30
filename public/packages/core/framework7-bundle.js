@@ -1,5 +1,5 @@
 /**
- * Framework7 6.3.4
+ * Framework7 6.3.5
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: September 16, 2021
+ * Released on: September 30, 2021
  */
 
 (function (global, factory) {
@@ -13903,6 +13903,24 @@
         });
       };
 
+      _proto.getComponentRef = function getComponentRef() {
+        var self = this;
+        return function (initialValue) {
+          var value = initialValue;
+          var obj = {};
+          Object.defineProperty(obj, 'value', {
+            get: function get() {
+              return value;
+            },
+            set: function set(v) {
+              value = v;
+              self.update();
+            }
+          });
+          return obj;
+        };
+      };
+
       _proto.getComponentStore = function getComponentStore() {
         var _this2 = this;
 
@@ -13947,6 +13965,7 @@
           $update: this.update.bind(this),
           $emit: this.emit.bind(this),
           $store: this.getComponentStore(),
+          $ref: this.getComponentRef(),
           $el: {}
         };
         Object.defineProperty(ctx.$el, 'value', {
@@ -14204,7 +14223,7 @@
       if (!scriptContent || !scriptContent.trim()) scriptContent = 'return () => {return $render}'; // Parse Template
 
       if (template) {
-        scriptContent = scriptContent.replace('$render', "function ($$ctx) {\n          var $ = $$ctx.$$;\n          var $h = $$ctx.$h;\n          var $root = $$ctx.$root;\n          var $f7 = $$ctx.$f7;\n          var $f7route = $$ctx.$f7route;\n          var $f7router = $$ctx.$f7router;\n          var $theme = $$ctx.$theme;\n          var $update = $$ctx.$update;\n          var $store = $$ctx.$store;\n\n          return $h`" + template + "`\n        }\n        ").replace(/export default/g, 'return');
+        scriptContent = scriptContent.replace('$render', "function ($$ctx) {\n          var $ = $$ctx.$$;\n          var $h = $$ctx.$h;\n          var $root = $$ctx.$root;\n          var $f7 = $$ctx.$f7;\n          var $f7route = $$ctx.$f7route;\n          var $f7router = $$ctx.$f7router;\n          var $theme = $$ctx.$theme;\n          var $update = $$ctx.$update;\n          var $store = $$ctx.$store;\n          var $ref = $$ctx.$ref;\n\n          return $h`" + template + "`\n        }\n        ").replace(/export default/g, 'return');
       } // Execute Script
 
 

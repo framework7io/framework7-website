@@ -151,6 +151,24 @@ var Component = /*#__PURE__*/function () {
     });
   };
 
+  _proto.getComponentRef = function getComponentRef() {
+    var self = this;
+    return function (initialValue) {
+      var value = initialValue;
+      var obj = {};
+      Object.defineProperty(obj, 'value', {
+        get: function get() {
+          return value;
+        },
+        set: function set(v) {
+          value = v;
+          self.update();
+        }
+      });
+      return obj;
+    };
+  };
+
   _proto.getComponentStore = function getComponentStore() {
     var _this2 = this;
 
@@ -195,6 +213,7 @@ var Component = /*#__PURE__*/function () {
       $update: this.update.bind(this),
       $emit: this.emit.bind(this),
       $store: this.getComponentStore(),
+      $ref: this.getComponentRef(),
       $el: {}
     };
     Object.defineProperty(ctx.$el, 'value', {
