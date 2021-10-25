@@ -1,5 +1,5 @@
 /**
- * Framework7 6.3.5
+ * Framework7 6.3.6
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: September 30, 2021
+ * Released on: October 25, 2021
  */
 
 (function (global, factory) {
@@ -18709,6 +18709,7 @@
               $el.removeClass('modal-in-swipe-step');
               $el.trigger('sheet:stepprogress', 1);
               sheet.emit('local::stepProgress sheetStepProgress', sheet, 1);
+              sheet.emit('local::_swipeStep', false);
               $el.trigger('sheet:stepopen');
               sheet.emit('local::stepOpen sheetStepOpen', sheet);
 
@@ -18727,6 +18728,7 @@
                 $el.addClass('modal-in-swipe-step');
                 $el.trigger('sheet:stepprogress', 0);
                 sheet.emit('local::stepProgress sheetStepProgress', sheet, 0);
+                sheet.emit('local::_swipeStep', true);
                 $el.trigger('sheet:stepclose');
                 sheet.emit('local::stepClose sheetStepClose', sheet);
 
@@ -18742,6 +18744,7 @@
               $el.addClass('modal-in-swipe-step');
               $el.trigger('sheet:stepprogress', 0);
               sheet.emit('local::stepProgress sheetStepProgress', sheet, 0);
+              sheet.emit('local::_swipeStep', true);
               $el.trigger('sheet:stepclose');
               sheet.emit('local::stepClose sheetStepClose', sheet);
 
@@ -18763,6 +18766,7 @@
                 $el.removeClass('modal-in-swipe-step');
                 $el.trigger('sheet:stepprogress', 1);
                 sheet.emit('local::stepProgress sheetStepProgress', sheet, 1);
+                sheet.emit('local::_swipeStep', false);
                 $el.trigger('sheet:stepopen');
                 sheet.emit('local::stepOpen sheetStepOpen', sheet);
 
@@ -18783,6 +18787,7 @@
                 $el.addClass('modal-in-swipe-step');
                 $el.trigger('sheet:stepprogress', 0);
                 sheet.emit('local::stepProgress sheetStepProgress', sheet, 0);
+                sheet.emit('local::_swipeStep', true);
                 $el.trigger('sheet:stepclose');
                 sheet.emit('local::stepClose sheetStepClose', sheet);
 
@@ -18813,6 +18818,7 @@
 
           if (!byResize) {
             $el.addClass('modal-in-swipe-step');
+            sheet.emit('local::_swipeStep', true);
           }
         };
 
@@ -18877,6 +18883,7 @@
         sheet.on('close', function () {
           if (sheet.params.swipeToStep) {
             $el.removeClass('modal-in-swipe-step');
+            sheet.emit('local::_swipeStep', false);
             app.off('resize', onResize);
           }
 
@@ -18908,6 +18915,7 @@
 
         sheet.stepOpen = function stepOpen() {
           $el.removeClass('modal-in-swipe-step');
+          sheet.emit('local::_swipeStep', false);
 
           if (sheet.push) {
             if (!pushOffset) {
@@ -18923,6 +18931,7 @@
 
         sheet.stepClose = function stepClose() {
           $el.addClass('modal-in-swipe-step');
+          sheet.emit('local::_swipeStep', true);
 
           if (sheet.push) {
             sheet.$htmlEl[0].style.removeProperty('--f7-sheet-push-scale');
@@ -18931,6 +18940,7 @@
 
         sheet.stepToggle = function stepToggle() {
           $el.toggleClass('modal-in-swipe-step');
+          sheet.emit('local::_swipeStep', $el.hasClass('modal-in-swipe-step'));
         };
 
         $el[0].f7Modal = sheet;
