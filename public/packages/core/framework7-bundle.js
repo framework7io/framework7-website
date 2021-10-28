@@ -1,5 +1,5 @@
 /**
- * Framework7 6.3.6
+ * Framework7 6.3.7
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: October 25, 2021
+ * Released on: October 28, 2021
  */
 
 (function (global, factory) {
@@ -33008,7 +33008,7 @@
             foundItems = sb.virtualList.params.searchAll(vlQuery, sb.virtualList.items) || [];
           } else if (sb.virtualList.params.searchByItem) {
             for (var i = 0; i < sb.virtualList.items.length; i += 1) {
-              if (sb.virtualList.params.searchByItem(vlQuery, sb.virtualList.params.items[i], i)) {
+              if (sb.virtualList.params.searchByItem(vlQuery, sb.virtualList.items[i], i)) {
                 foundItems.push(i);
               }
             }

@@ -2,6 +2,17 @@
 
 # Change Log
 
+# [6.3.7](https://github.com/framework7io/framework7/compare/v6.3.6...v6.3.7) (2021-10-28)
+
+### Bug Fixes
+
+- **gauge:** fix update method types ([f1b75d5](https://github.com/framework7io/framework7/commit/f1b75d594d98e197f2060a2c9b5d14df517321b7)), closes [#3950](https://github.com/framework7io/framework7/issues/3950)
+- **searchbar:** searchByItem to use current `vl.items` ([68e4a09](https://github.com/framework7io/framework7/commit/68e4a0943494d379f4a8c0dfa0a5a535426df8f0)), closes [#3948](https://github.com/framework7io/framework7/issues/3948)
+
+### Features
+
+- **vue:** reactive `closeByBackdropClick`, `closeByOutsideClick` and `closeOnEscape` props in Sheet component ([db21896](https://github.com/framework7io/framework7/commit/db2189663951353d404d1c5f75c29fd6b408c860)), closes [#3949](https://github.com/framework7io/framework7/issues/3949)
+
 # [6.3.6](https://github.com/framework7io/framework7/compare/v6.3.5...v6.3.6) (2021-10-25)
 
 ### Bug Fixes
@@ -2716,7 +2727,7 @@
 - Actions
   - Fixed issue with error when pass already rendered HTML element to the `actions.create` constructor
   - Fixed issue with not setting actions button bg color
-  - Addedd support for `closeByOutsideClick` logic
+  - Added support for `closeByOutsideClick` logic
 - Searchbar
   - Now hides elements (when required) by setting/unsetting classes instead of directly modifying element `display` property
 - Toast
@@ -2966,7 +2977,7 @@
   - `pushState` now supports for multiple Views at a time
   - Router component's context now can be extended with `options.context` route parameter
   - Router component now supports inline nested `<template>` that won't be parsed by Template7
-  - Addded support for dynamic routes
+  - Added support for dynamic routes
   - Route events, now it is possible to specify `on` object with page events on route object
 - PhotoBrowser
   - Now uses Virtual Slides by default

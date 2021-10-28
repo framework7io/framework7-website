@@ -1,5 +1,5 @@
 /**
- * Framework7 6.3.6
+ * Framework7 6.3.7
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: October 25, 2021
+ * Released on: October 28, 2021
  */
 
 (function (global, factory) {
