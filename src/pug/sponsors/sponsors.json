@@ -1,6 +1,14 @@
 {
   "topSupporter": [
     {
+      "createdAt": "2021-11-24T09:58:57.897Z",
+      "title": "Software Development Company",
+      "link": "https://www.qulix.com",
+      "plan": "topSupporter",
+      "ref": "https://opencollective.com/qulixsystems",
+      "image": "qulix.png"
+    },
+    {
       "createdAt": "2021-11-23T08:55:13.845Z",
       "title": "Top Mobile App Development Companies in 2021 | Techreviewer.co",
       "link": "https://techreviewer.co/top-mobile-development-companies",
