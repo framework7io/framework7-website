@@ -12,8 +12,7 @@
   iconUrl: '/i/plugins/feeds.svg'
   description: Brings easy RSS feeds integration into Framework7 app
   badges:
-    - v2
-    - v3
+    - v6
 
 - title: 3D Panels
   url: https://github.com/framework7io/framework7-plugin-3d-panels
