@@ -33,6 +33,9 @@ block content
         tr
           td sortable:sort
           td Event will be triggered after user release currently sorting element in new position. First handler argument contains object with `from`, `to` and `el` properties with start/new index numbers of sorted list item and the HTML element of sorted list item
+        tr
+          td sortable:move
+          td Event will be triggered on every list item move during sorting
     .with-device
       h2(data-device-preview="../docs-demos/vue/sortable.html") Examples
       include:vueSource ../docs-demos/vue/sortable.vue

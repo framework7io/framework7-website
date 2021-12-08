@@ -139,7 +139,7 @@ var Sortable = {
 
         if (prevTranslate !== currentTranslate) {
           $currentEl.trigger('sortable:move');
-          app.emit('sortableMove', $sortableContainer[0], $currentEl[0]);
+          app.emit('sortableMove', $currentEl[0], $sortableContainer[0]);
         }
 
         $currentEl[0].f7Translate = currentTranslate;

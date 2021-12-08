@@ -1,5 +1,5 @@
 /**
- * Framework7 6.3.10
+ * Framework7 6.3.11
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -19584,7 +19584,7 @@
 
             if (prevTranslate !== currentTranslate) {
               $currentEl.trigger('sortable:move');
-              app.emit('sortableMove', $sortableContainer[0], $currentEl[0]);
+              app.emit('sortableMove', $currentEl[0], $sortableContainer[0]);
             }
 
             $currentEl[0].f7Translate = currentTranslate;

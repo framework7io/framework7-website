@@ -137,6 +137,10 @@ block content
           td sortable:sort
           td List element<span>&lt;li&gt;</span>
           td Event will be triggered after user release currently sorting element in new position. `event.detail` will contain object with `from` and `to` properties with from/to index numbers of sorted list item and `el` property with HTML sorted element
+        tr
+          td sortable:move
+          td List element<span>&lt;li&gt;</span>
+          td Event will be triggered on every list item move during sorting
     h3 App Instance Events
     p Sortable instance emit events on app instance.
     table.events-table
@@ -160,8 +164,13 @@ block content
         tr
           td sortableSort
           td app
-          td <span>listEl, data</span>
+          td <span>itemEl, data, listEl</span>
           td Event will be triggered after user release currently sorting element in new position. `data` is an object with `from` and `to` properties with from/to index numbers of sorted list item `el` property with HTML sorted element
+        tr
+          td sortableMove
+          td app
+          td <span>itemEl, listEl</span>
+          td Event will be triggered on every list item move during sorting
     h2 Sortable On Tap Hold
     p It is possible to bypass sortable enable/disable logic and make list items sortable on item tap and hold (long press). To make it work, we just need additional `sortable-tap-hold` class on sortable list:
     ```html
