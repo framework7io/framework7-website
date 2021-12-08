@@ -14,5 +14,5 @@ Framework7.use(themePlugin);
 // eslint-disable-next-line
 const app = new Framework7({
   el: '#app',
-  componentUrl: './virtual-list.f7.html',
+  componentUrl: './virtual-list_f7.html',
 });

@@ -14,5 +14,5 @@ Framework7.use(themePlugin);
 // eslint-disable-next-line
 const app = new Framework7({
   el: '#app',
-  componentUrl: './accordion.f7.html',
+  componentUrl: './accordion_f7.html',
 });

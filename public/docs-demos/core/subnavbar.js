@@ -14,5 +14,5 @@ Framework7.use(themePlugin);
 // eslint-disable-next-line
 const app = new Framework7({
   el: '#app',
-  componentUrl: './subnavbar.f7.html',
+  componentUrl: './subnavbar_f7.html',
 });

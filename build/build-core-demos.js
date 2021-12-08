@@ -25,14 +25,21 @@ function buildOne(fileName, cb) {
 
   const jsContent = fs
     .readFileSync('./src/pug/docs-demos/core/_main.js', 'utf-8')
-    .replace(/F7_CORE_DEMO/g, name);
+    .replace(/F7_CORE_DEMO/g, name)
+    .replace(/\.f7\.html/g, '_f7.html');
   fs.writeFileSync(`./public/docs-demos/core/${name}.js`, jsContent);
 
   // f7 demos
   f7Demos
     .filter((file) => file.indexOf(`${name}.f7.html`) === 0 || file.indexOf(`${name}_`) === 0)
     .forEach((file) => {
-      fs.copyFileSync(`./src/pug/docs-demos/core/${file}`, `./public/docs-demos/core/${file}`);
+      const fileContent = fs
+        .readFileSync(`./src/pug/docs-demos/core/${file}`, 'utf-8')
+        .replace(/\.f7\.html/g, '_f7.html');
+      fs.writeFileSync(
+        `./public/docs-demos/core/${file.replace(/\.f7\.html/g, '_f7.html')}`,
+        fileContent,
+      );
     });
 
   console.log(`Finished core: ${name} in ${Date.now() - time}ms`);

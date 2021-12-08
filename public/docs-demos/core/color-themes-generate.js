@@ -14,5 +14,5 @@ Framework7.use(themePlugin);
 // eslint-disable-next-line
 const app = new Framework7({
   el: '#app',
-  componentUrl: './color-themes-generate.f7.html',
+  componentUrl: './color-themes-generate_f7.html',
 });

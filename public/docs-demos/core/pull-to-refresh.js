@@ -14,5 +14,5 @@ Framework7.use(themePlugin);
 // eslint-disable-next-line
 const app = new Framework7({
   el: '#app',
-  componentUrl: './pull-to-refresh.f7.html',
+  componentUrl: './pull-to-refresh_f7.html',
 });

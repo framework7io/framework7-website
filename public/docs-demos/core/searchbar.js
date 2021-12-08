@@ -14,5 +14,5 @@ Framework7.use(themePlugin);
 // eslint-disable-next-line
 const app = new Framework7({
   el: '#app',
-  componentUrl: './searchbar.f7.html',
+  componentUrl: './searchbar_f7.html',
 });

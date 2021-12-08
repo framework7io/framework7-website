@@ -14,5 +14,5 @@ Framework7.use(themePlugin);
 // eslint-disable-next-line
 const app = new Framework7({
   el: '#app',
-  componentUrl: './text-editor.f7.html',
+  componentUrl: './text-editor_f7.html',
 });

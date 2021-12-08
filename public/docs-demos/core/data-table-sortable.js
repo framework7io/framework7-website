@@ -14,5 +14,5 @@ Framework7.use(themePlugin);
 // eslint-disable-next-line
 const app = new Framework7({
   el: '#app',
-  componentUrl: './data-table-sortable.f7.html',
+  componentUrl: './data-table-sortable_f7.html',
 });
