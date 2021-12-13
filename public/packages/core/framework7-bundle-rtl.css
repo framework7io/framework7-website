@@ -1,5 +1,5 @@
 /**
- * Framework7 6.3.11
+ * Framework7 6.3.12
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: December 8, 2021
+ * Released on: December 13, 2021
  */
 
 /*====================
@@ -3121,6 +3121,15 @@ html.device-full-viewport body {
   height: var(--f7-tabbar-icon-size);
   line-height: var(--f7-tabbar-icon-size);
 }
+.tabbar .tab-link-highlight,
+.tabbar-labels .tab-link-highlight {
+  position: absolute;
+  left: 0;
+  height: 2px;
+  background: var(--f7-tabbar-link-active-border-color, var(--f7-theme-color));
+  transition-duration: 300ms;
+  right: 0;
+}
 .tabbar-labels {
   --f7-toolbar-height: var(--f7-tabbar-labels-height);
 }
@@ -3381,15 +3390,6 @@ html.device-full-viewport body {
   overflow: hidden;
   position: relative;
 }
-.md .tabbar .tab-link-highlight,
-.md .tabbar-labels .tab-link-highlight {
-  position: absolute;
-  left: 0;
-  height: 2px;
-  background: var(--f7-tabbar-link-active-border-color, var(--f7-theme-color));
-  transition-duration: 300ms;
-  right: 0;
-}
 .md .tabbar-labels .tab-link,
 .md .tabbar-labels .link {
   padding-top: 7px;
@@ -3413,15 +3413,6 @@ html.device-full-viewport body {
   justify-content: center;
   align-items: center;
   margin: 0;
-}
-.aurora .tabbar .tab-link-highlight,
-.aurora .tabbar-labels .tab-link-highlight {
-  position: absolute;
-  left: 0;
-  height: 2px;
-  background: var(--f7-tabbar-link-active-border-color, var(--f7-theme-color));
-  transition-duration: 300ms;
-  right: 0;
 }
 .aurora .tabbar .toolbar-inner,
 .aurora .tabbar-labels .toolbar-inner {
@@ -6780,6 +6771,7 @@ html.with-modal-dialog .page-content {
   }
   .popup:not(.popup-tablet-fullscreen).popup-behind {
     transform: translate3d(0, 0, 0) scale(0.9);
+    pointer-events: none;
   }
   .popup:not(.popup-tablet-fullscreen).popup-behind.modal-out {
     transform: translate3d(0, 100vh, 0) scale(0.9);

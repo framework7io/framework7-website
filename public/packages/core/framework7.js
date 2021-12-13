@@ -1,5 +1,5 @@
 /**
- * Framework7 6.3.11
+ * Framework7 6.3.12
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: December 8, 2021
+ * Released on: December 13, 2021
  */
 
 (function (global, factory) {
@@ -14139,8 +14139,8 @@
     var Toolbar = {
       setHighlight: function setHighlight(tabbarEl) {
         var app = this;
-        if (app.theme === 'ios') return;
         var $tabbarEl = $(tabbarEl);
+        if (app.theme === 'ios' && !$tabbarEl.hasClass('tabbar-highlight')) return;
         if ($tabbarEl.length === 0 || !($tabbarEl.hasClass('tabbar') || $tabbarEl.hasClass('tabbar-labels'))) return;
         var $highlightEl = $tabbarEl.find('.tab-link-highlight');
         var tabLinksCount = $tabbarEl.find('.tab-link').length;

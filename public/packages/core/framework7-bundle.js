@@ -1,5 +1,5 @@
 /**
- * Framework7 6.3.11
+ * Framework7 6.3.12
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: December 8, 2021
+ * Released on: December 13, 2021
  */
 
 (function (global, factory) {
@@ -15796,8 +15796,8 @@
     var Toolbar = {
       setHighlight: function setHighlight(tabbarEl) {
         var app = this;
-        if (app.theme === 'ios') return;
         var $tabbarEl = $(tabbarEl);
+        if (app.theme === 'ios' && !$tabbarEl.hasClass('tabbar-highlight')) return;
         if ($tabbarEl.length === 0 || !($tabbarEl.hasClass('tabbar') || $tabbarEl.hasClass('tabbar-labels'))) return;
         var $highlightEl = $tabbarEl.find('.tab-link-highlight');
         var tabLinksCount = $tabbarEl.find('.tab-link').length;
@@ -21816,12 +21816,11 @@
           if ($tabLinkEl && $tabLinkEl.length > 0) {
             $tabLinkEl.addClass('tab-link-active'); // Material Highlight
 
-            if (app.theme !== 'ios' && app.toolbar) {
-              var $tabbarEl = $tabLinkEl.parents('.tabbar, .tabbar-labels');
+            var $tabbarEl = $tabLinkEl.parents('.tabbar, .tabbar-labels');
+            var hasHighlight = app.toolbar && $tabbarEl.length > 0 && ($tabbarEl.hasClass('tabbar-highlight') || app.theme !== 'ios');
 
-              if ($tabbarEl.length > 0) {
-                app.toolbar.setHighlight($tabbarEl);
-              }
+            if (hasHighlight) {
+              app.toolbar.setHighlight($tabbarEl);
             }
           }
         }
@@ -27496,17 +27495,34 @@
           allowTouchMove: true,
           hasTimePicker: calendar.params.timePicker && !calendar.params.rangePicker && !calendar.params.multiple
         });
-        calendar.dayFormatter = new Intl.DateTimeFormat(calendar.params.locale, {
-          day: 'numeric'
-        });
-        calendar.monthFormatter = new Intl.DateTimeFormat(calendar.params.locale, {
-          month: 'long'
-        });
-        calendar.yearFormatter = new Intl.DateTimeFormat(calendar.params.locale, {
-          year: 'numeric'
-        });
-        calendar.timeSelectorFormatter = new Intl.DateTimeFormat(calendar.params.locale, calendar.params.timePickerFormat);
-        var timeFormatCheckDate = calendar.timeSelectorFormatter.format(new Date()).toLowerCase();
+
+        calendar.dayFormatter = function (date) {
+          var formatter = new Intl.DateTimeFormat(calendar.params.locale, {
+            day: 'numeric'
+          });
+          return formatter.format(date).replace(/日/, '');
+        };
+
+        calendar.monthFormatter = function (date) {
+          var formatter = new Intl.DateTimeFormat(calendar.params.locale, {
+            month: 'long'
+          });
+          return formatter.format(date);
+        };
+
+        calendar.yearFormatter = function (date) {
+          var formatter = new Intl.DateTimeFormat(calendar.params.locale, {
+            year: 'numeric'
+          });
+          return formatter.format(date);
+        };
+
+        calendar.timeSelectorFormatter = function (date) {
+          var formatter = new Intl.DateTimeFormat(calendar.params.locale, calendar.params.timePickerFormat);
+          return formatter.format(date);
+        };
+
+        var timeFormatCheckDate = calendar.timeSelectorFormatter(new Date()).toLowerCase();
         calendar.is12HoursFormat = timeFormatCheckDate.indexOf('pm') >= 0 || timeFormatCheckDate.indexOf('am') >= 0; // Auto names
 
         var _calendar$params = calendar.params,
@@ -27911,7 +27927,7 @@
 
         for (var i = 0; i < 24; i += 1) {
           var date = new Date().setMonth(i, 1);
-          var currentYear = calendar.yearFormatter.format(date);
+          var currentYear = calendar.yearFormatter(date);
 
           if (year && currentYear !== year) {
             if (yearStarted) yearEnded = true;
@@ -28210,7 +28226,7 @@
         }
 
         if ($el && $el.length > 0 && calendar.hasTimePicker) {
-          $el.find('.calendar-time-selector a').text(value && value.length ? calendar.timeSelectorFormatter.format(value[0]) : calendar.params.timePickerPlaceholder);
+          $el.find('.calendar-time-selector a').text(value && value.length ? calendar.timeSelectorFormatter(value[0]) : calendar.params.timePickerPlaceholder);
         }
 
         if ($inputEl && $inputEl.length || params.header) {
@@ -28641,9 +28657,9 @@
         var date = new Date(d);
         var year = date.getFullYear();
         var month = date.getMonth();
-        var localeMonth = calendar.monthNames.indexOf(calendar.monthFormatter.format(date));
+        var localeMonth = calendar.monthNames.indexOf(calendar.monthFormatter(date));
         if (localeMonth < 0) localeMonth = month;
-        var localeYear = calendar.yearFormatter.format(date);
+        var localeYear = calendar.yearFormatter(date);
 
         if (offset === 'next') {
           if (month === 11) date = new Date(year + 1, 0);else date = new Date(year, month + 1, 1);
@@ -28656,9 +28672,9 @@
         if (offset === 'next' || offset === 'prev') {
           month = date.getMonth();
           year = date.getFullYear();
-          localeMonth = calendar.monthNames.indexOf(calendar.monthFormatter.format(date));
+          localeMonth = calendar.monthNames.indexOf(calendar.monthFormatter(date));
           if (localeMonth < 0) localeMonth = month;
-          localeYear = calendar.yearFormatter.format(date);
+          localeYear = calendar.yearFormatter(date);
         }
 
         var currentValues = [];
@@ -28803,7 +28819,7 @@
             dayDate = new Date(dayDate);
             var dayYear = dayDate.getFullYear();
             var dayMonth = dayDate.getMonth();
-            var dayNumberDisplay = calendar.dayFormatter.format(dayDate); // prettier-ignore
+            var dayNumberDisplay = calendar.dayFormatter(dayDate); // prettier-ignore
 
             rowHtml += ("\n          <div data-year=\"" + dayYear + "\" data-month=\"" + dayMonth + "\" data-day=\"" + dayNumber + "\" class=\"calendar-day" + addClass + "\" data-date=\"" + dayYear + "-" + dayMonth + "-" + dayNumber + "\">\n            <span class=\"calendar-day-number\">" + dayNumberDisplay + eventsHtml + "</span>\n          </div>").trim();
           };
@@ -28927,7 +28943,7 @@
           return $jsx("div", {
             "data-year": year,
             class: "calendar-year-picker-item " + (year === currentYear ? 'calendar-year-picker-item-current' : '')
-          }, $jsx("span", null, calendar.yearFormatter.format(new Date().setFullYear(year))));
+          }, $jsx("span", null, calendar.yearFormatter(new Date().setFullYear(year))));
         }));
       } // eslint-disable-next-line
       ;
@@ -28936,7 +28952,7 @@
         var calendar = this;
         var value = calendar.value && calendar.value[0];
         var timeString;
-        if (value) timeString = calendar.timeSelectorFormatter.format(value);
+        if (value) timeString = calendar.timeSelectorFormatter(value);
         return $jsx("div", {
           class: "calendar-time-selector"
         }, $jsx("a", {
