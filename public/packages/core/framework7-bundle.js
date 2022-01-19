@@ -1,13 +1,13 @@
 /**
- * Framework7 6.3.14
+ * Framework7 6.3.15
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2021 Vladimir Kharlampidi
+ * Copyright 2014-2022 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: December 30, 2021
+ * Released on: January 19, 2022
  */
 
 (function (global, factory) {
@@ -19316,7 +19316,7 @@
           $progressbarEl.append($progressbarLine);
         }
 
-        $progressbarLine.transition(typeof duration !== 'undefined' ? duration : '').transform("translate3d(" + (-100 + progressNormalized) + "%,0,0)");
+        $progressbarLine.transition(typeof duration !== 'undefined' ? duration : '').transform("translate3d(" + (-100 + progressNormalized) * (app.rtl ? -1 : 1) + "%,0,0)");
         return $progressbarEl[0];
       },
       show: function show() {

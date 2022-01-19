@@ -1,13 +1,13 @@
 /**
- * Framework7 6.3.14
+ * Framework7 6.3.15
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2021 Vladimir Kharlampidi
+ * Copyright 2014-2022 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: December 30, 2021
+ * Released on: January 19, 2022
  */
 
 /*====================
@@ -8533,10 +8533,10 @@ html.with-modal-preloader .page-content,
   width: 100%;
   height: 100%;
   position: absolute;
-  left: 0;
   top: 0;
-  transform: translate3d(-100%, 0, 0);
   transition-duration: 150ms;
+  right: 0;
+  transform: translate3d(100%, 0, 0);
 }
 .progressbar-infinite {
   z-index: 15000;
@@ -8545,14 +8545,14 @@ html.with-modal-preloader .page-content,
 .progressbar-infinite:after {
   content: '';
   position: absolute;
-  left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  transform-origin: left center;
   transform: translate3d(0, 0, 0);
   display: block;
   background-color: var(--f7-progressbar-progress-color, var(--f7-theme-color));
+  right: 0;
+  transform-origin: right center;
 }
 .progressbar-infinite.color-multi {
   background: none !important;
@@ -8619,10 +8619,10 @@ body > .progressbar-infinite,
 }
 @keyframes ios-progressbar-infinite {
   0% {
-    transform: translate3d(-100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
   }
   100% {
-    transform: translate3d(100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
   }
 }
 @keyframes ios-progressbar-infinite-multicolor {
@@ -8650,33 +8650,33 @@ body > .progressbar-infinite,
 }
 @keyframes md-progressbar-infinite-1 {
   0% {
-    transform: translateX(-10%) scaleX(0.1);
+    transform: translateX(10%) scaleX(0.1);
   }
   25% {
-    transform: translateX(30%) scaleX(0.6);
+    transform: translateX(-30%) scaleX(0.6);
   }
   50% {
-    transform: translateX(100%) scaleX(1);
+    transform: translateX(-100%) scaleX(1);
   }
   100% {
-    transform: translateX(100%) scaleX(1);
+    transform: translateX(-100%) scaleX(1);
   }
 }
 @keyframes md-progressbar-infinite-2 {
   0% {
-    transform: translateX(-100%) scaleX(1);
+    transform: translateX(100%) scaleX(1);
   }
   40% {
-    transform: translateX(-100%) scaleX(1);
+    transform: translateX(100%) scaleX(1);
   }
   75% {
-    transform: translateX(60%) scaleX(0.35);
+    transform: translateX(-60%) scaleX(0.35);
   }
   90% {
-    transform: translateX(100%) scaleX(0.1);
+    transform: translateX(-100%) scaleX(0.1);
   }
   100% {
-    transform: translateX(100%) scaleX(0.1);
+    transform: translateX(-100%) scaleX(0.1);
   }
 }
 @keyframes md-progressbar-infinite-multicolor-bg {
@@ -8748,10 +8748,10 @@ body > .progressbar-infinite,
 }
 @keyframes aurora-progressbar-infinite {
   0% {
-    transform: translate3d(-100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
   }
   100% {
-    transform: translate3d(100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
   }
 }
 @keyframes aurora-progressbar-infinite-multicolor {
@@ -8759,7 +8759,7 @@ body > .progressbar-infinite,
     transform: translate3d(0%, 0, 0);
   }
   100% {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(50%, 0, 0);
   }
 }
 /* === Sortable === */
