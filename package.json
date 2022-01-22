@@ -64,7 +64,7 @@
     "jquery": "^3.5.1",
     "js-yaml": "^3.14.0",
     "jsdom": "^16.4.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.1.1",
     "prettier": "^2.2.1",
     "prismjs": "^1.22.0",
     "pug": "^3.0.0",
