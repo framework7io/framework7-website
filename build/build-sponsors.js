@@ -88,7 +88,7 @@ const buildSponsors = async () => {
     accessToken,
   });
 
-  const entries = await client.getEntries();
+  const entries = await client.getEntries({ limit: 1000 });
 
   let sponsors = [];
   if (entries.items) {
