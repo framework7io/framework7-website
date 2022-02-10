@@ -1,5 +1,5 @@
 /**
- * Framework7 6.3.15
+ * Framework7 6.3.16
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: January 19, 2022
+ * Released on: February 10, 2022
  */
 
 (function (global, factory) {
@@ -7924,7 +7924,7 @@
       var $el = $(el);
       var app = router.app;
       var view = router.view;
-      var options = extend({
+      var options = extend(false, {
         animate: router.params.animate,
         browserHistory: true,
         replaceState: false
@@ -8632,6 +8632,16 @@
         }
 
         var previousPageRoute = $previousPage[0].f7Page.route;
+
+        if (navigateOptions.preload && $previousPage.hasClass('stacked')) {
+          loadBack(router, {
+            el: $previousPage
+          }, extend(navigateOptions, {
+            route: previousPageRoute
+          }));
+          return router;
+        }
+
         processRouteQueue.call(router, previousPageRoute, router.currentRoute, function () {
           loadBack(router, {
             el: $previousPage
