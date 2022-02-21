@@ -442,6 +442,11 @@ block content
           td true
           td When enabled (by default), it will store router history in localStorage and try to restore it on next web app visit
         tr
+          td browserHistoryTabs
+          td string
+          td replace
+          td Can be <code>replace</code> or <code>push</code>. When "replace" (by default), it will replace state on routable tabs change, otherwise (if "push"), it will add to history every routable tab change, so it will be possible to switch back between tabs with browser back button
+        tr
           th(colspan="4") Events Handlers
         tr
           td on
