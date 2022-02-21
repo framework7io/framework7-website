@@ -3,7 +3,17 @@
   position: relative;
   z-index: 500;
   padding-top: 15px;
-  padding-bottom: 20px;
+  padding-bottom: 15px;
+  background: @redColor;
+  color: #fff;
+  .patreon-logo {
+    &::after {
+      background-color: #fff;
+    }
+  }
+  .patreon-button {
+    color: inherit;
+  }
 
   > .center {
     display: flex;
@@ -16,24 +26,23 @@
     margin-right: 30px;
     margin-bottom: -10px;
     width: 160px;
-    height: 140px;
+    height: 150px;
     flex-shrink: 0;
   }
   .logo {
-    background: #fff url('../i/logo.svg') no-repeat center;
+    background: @redColor url('../i/logo-white.svg') no-repeat center;
     background-size: contain;
     display: block;
-    width: 140px;
-    height: 140px;
+    width: 150px;
+    height: 150px;
     margin-left: auto;
     margin-right: auto;
     border-radius: 50%;
     box-sizing: border-box;
-    box-shadow: 0px 10px 20px rgba(red(@redColor),green(@redColor),blue(@redColor), 0.4);
     transition: 600ms;
     transition-property: box-shadow, transform;
     &:hover {
-      box-shadow: 0px 30px 100px rgba(red(@redColor),green(@redColor),blue(@redColor), 0.4);
+      box-shadow: 0px 30px 100px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.4);
       transform: scale(1.05);
     }
   }
@@ -83,7 +92,7 @@
       visibility: hidden;
       position: absolute;
       background: #fff;
-      box-shadow: 0px 10px 50px rgba(0,0,0,0.3);
+      box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.3);
       z-index: 500;
       list-style: none;
       margin: 0;
@@ -118,7 +127,7 @@
       }
       li.divider {
         height: 1px;
-        background: rgba(0,0,0,0.1);
+        background: rgba(0, 0, 0, 0.1);
         margin-left: -20px;
         margin-right: -20px;
       }
@@ -128,11 +137,7 @@
       a {
         color: #000;
         text-decoration: none;
-        &:hover {
-          color: @redColor;
-        }
       }
-
     }
     > li + li {
       margin-left: 15px;
@@ -144,6 +149,9 @@
     }
     > li:hover > a,
     > li.active > a {
+      opacity: 0.55;
+    }
+    ul a:hover {
       color: @redColor;
     }
   }
@@ -157,9 +165,9 @@
     bottom: 0;
     flex-shrink: 0;
     border: none;
-    background: rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.1);
     a {
-      color: #000;
+      color: #fff;
     }
   }
   .patreon-github {
@@ -169,6 +177,7 @@
   .github-buttons {
     margin-left: 20px;
     line-height: 22px;
+    color: inherit;
     a span {
       font-size: 12px;
     }
@@ -177,7 +186,7 @@
 
 .bsa-cpc,
 .internal-header-adline {
-  border-top: 1px solid rgba(0,0,0,0.1);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
   background: @redColor;
   height: 30px;
   position: relative;
@@ -205,7 +214,7 @@
     overflow: hidden;
     line-height: 1;
   }
-  ._default_> * {
+  ._default_ > * {
     vertical-align: middle;
   }
   a {
@@ -213,14 +222,14 @@
     text-decoration: none;
   }
   a:hover {
-    color: rgba(255,255,255,0.7);
+    color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
   }
   .default-image {
     display: none;
   }
   .default-title:after {
-    content: " — ";
+    content: ' — ';
   }
   .default-title,
   .default-description {
@@ -237,7 +246,7 @@
     border-radius: 2px;
     background-color: #fff;
     color: @redColor;
-    content: "Sponsor";
+    content: 'Sponsor';
     text-transform: uppercase;
     font-size: 10px;
     line-height: 1;
@@ -258,7 +267,7 @@
     color: #fff;
   }
   a:hover {
-    color: rgba(255,255,255,0.7);
+    color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
   }
   span {
@@ -344,7 +353,8 @@
     .github-buttons {
       margin-top: 10px;
     }
-    .logo, .logo-holder {
+    .logo,
+    .logo-holder {
       width: 100px;
       height: 100px;
     }
@@ -370,7 +380,7 @@
       height: 55px;
       margin-left: -10px;
       margin-top: 0;
-      box-shadow: 0px 5px 10px rgba(red(@redColor),green(@redColor),blue(@redColor), 0.4);
+      box-shadow: 0px 5px 10px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.4);
     }
     .title img {
       width: calc(100% - 50px);
@@ -417,18 +427,17 @@
       margin-left: 0;
       margin-top: 30px;
       margin-bottom: 20px;
-      >li:hover>a {
+      > li:hover > a {
         background: none;
         opacity: 0.7;
       }
-      >li>a {
+      > li > a {
         padding: 0;
-
       }
-      >li + li {
+      > li + li {
         margin-left: 15px;
       }
-      >li:first-child ul {
+      > li:first-child ul {
         left: 0;
         margin-left: 0;
         transform: translateX(0%) translateY(10px);
@@ -436,7 +445,7 @@
           left: 20px;
         }
       }
-      >li:first-child:hover ul {
+      > li:first-child:hover ul {
         transform: translateX(0%) translateY(0px);
       }
     }

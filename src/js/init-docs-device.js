@@ -17,14 +17,26 @@ function handleDeviceScroll() {
   let stopPosition;
   let stopPositionStopScrollDevice;
   let stopPositionPageNav;
-  const stopPositionContent = $('.docs-content .with-device').offset().top + $('.docs-content .with-device').outerHeight() + st - deviceStartOffset;
+  const stopPositionContent =
+    $('.docs-content .with-device').offset().top +
+    $('.docs-content .with-device').outerHeight() +
+    st -
+    deviceStartOffset;
   if ($('.stop-scroll-device').length > 0) {
     stopPositionStopScrollDevice = $('.stop-scroll-device').offset().top + st - deviceStartOffset;
   }
   if ($('.docs-page-nav').length > 0) {
-    stopPositionPageNav = $('.docs-page-nav').offset().top - $('.docs-page-nav')[0].offsetHeight + st - deviceStartOffset;
+    stopPositionPageNav =
+      $('.docs-page-nav').offset().top -
+      $('.docs-page-nav')[0].offsetHeight +
+      st -
+      deviceStartOffset;
   }
-  stopPosition = Math.min(...[stopPositionStopScrollDevice, stopPositionPageNav, stopPositionContent].filter(pos => !!pos));
+  stopPosition = Math.min(
+    ...[stopPositionStopScrollDevice, stopPositionPageNav, stopPositionContent].filter(
+      (pos) => !!pos,
+    ),
+  );
   if (stopPosition) {
     stopPosition -= device.outerHeight();
   }
@@ -46,12 +58,14 @@ function handleDeviceScroll() {
       newPreviewLink = link.attr('data-device-preview');
     }
   });
-  if (!newPreviewLink) newPreviewLink = $('[data-device-preview]').eq(0).attr('data-device-preview');
+  if (!newPreviewLink)
+    newPreviewLink = $('[data-device-preview]').eq(0).attr('data-device-preview');
   if (newPreviewLink !== demoDevicePreviewLink) {
     demoDevicePreviewLink = newPreviewLink;
     device.find('.fade-overlay').addClass('visible');
     let onLoadTriggerd;
-    device.find('iframe')[0].onload = function onload() {
+    const iframeEl = device.find('iframe')[0];
+    iframeEl.onload = function onload() {
       onLoadTriggerd = true;
       setTimeout(() => {
         device.find('.fade-overlay').removeClass('visible');

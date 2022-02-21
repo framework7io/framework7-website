@@ -1,10 +1,10 @@
 // Docs
 body.body-docs {
   .center {
-    max-width: none;
+    max-width: 1400px;
   }
   main > .center {
-    max-width: none;
+    max-width: 1400px;
     display: flex;
   }
 }
@@ -34,7 +34,6 @@ body.body-docs {
   display: none;
 }
 .docs-content {
-  font-family: -apple-system, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
   flex-shrink: 10;
   box-sizing: border-box;
   position: relative;
@@ -45,7 +44,7 @@ body.body-docs {
   }
 
   .with-device {
-    padding-right: 395px;
+    padding-right: 340px;
     .device-spacer {
       height: 400px;
     }
@@ -109,17 +108,17 @@ b.ios-only {
   position: absolute;
   right: 20px;
   top: 0;
-  background: @darkBrownColor;
+  background: black;
   z-index: 1000;
   margin-top: 40px;
-  padding: 10px 8px;
-  border-radius: 20px;
+  padding: 12px;
+  border-radius: 32px;
   backface-visibility: hidden;
 
   iframe {
-    width: 375px;
-    height: 768px;
-    border-radius: 12px;
+    width: 320px;
+    height: 680px;
+    border-radius: 18px;
     position: relative;
     overflow: hidden;
     border: none;
@@ -127,7 +126,7 @@ b.ios-only {
     padding: 0;
     display: block;
     overflow: hidden;
-    background: @darkBrownColor;
+    background: black;
   }
   &:not(.docs-inline-device) {
     display: none;
@@ -418,8 +417,8 @@ ul.method-parameters {
   position: absolute;
   top: 20px;
   z-index: 10;
-  left: 15px;
-  right: 10px;
+  left: 20px;
+  right: 0px;
   .disable-search {
     cursor: pointer;
     position: absolute;
