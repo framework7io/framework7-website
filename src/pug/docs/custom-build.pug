@@ -148,6 +148,9 @@ block content
                   // Area Chart
                   'area-chart',
 
+                  // Breadcrumbs
+                  'breadcrumbs',
+
                   // Elevation
                   'elevation',
 
@@ -378,6 +381,9 @@ block content
           td Area Chart
           td `framework7/components/area-chart`
         tr
+          td Breadcrumbs
+          td `framework7/components/breadcrumbs`
+        tr
           td Typography
           td `framework7/components/typography`
     h2 Less.js
@@ -385,21 +391,21 @@ block content
     p Create your own `framework7.less` file:
     :code(lang="less")
       // core
-      @import url('path/to/node_modules/framework7/framework7.less');
+      @import 'framework7/less';
 
       // import only components you need
-      @import url('path/to/node_modules/framework7/components/searchbar/searchbar.less');
-      @import url('path/to/node_modules/framework7/components/calendar/calendar.less');
-      @import url('path/to/node_modules/framework7/components/popup/popup.less');
+      @import 'framework7/components/searchbar/less';
+      @import 'framework7/components/calendar/less';
+      @import 'framework7/components/popup/less';
     p We can go even further and specify Framework7's main color theme and required colors in custom `framework7.less` file:
     :code(lang="less")
       // core
-      @import url('path/to/node_modules/framework7/framework7.less');
+      @import 'framework7/less';
 
       // import only components you need
-      @import url('path/to/node_modules/framework7/components/searchbar/searchbar.less');
-      @import url('path/to/node_modules/framework7/components/calendar/calendar.less');
-      @import url('path/to/node_modules/framework7/components/popup/popup.less');
+      @import 'framework7/components/searchbar/less';
+      @import 'framework7/components/calendar/less';
+      @import 'framework7/components/popup/less';
 
       // include/exclude themes
       @includeIosTheme: true;

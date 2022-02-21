@@ -11,19 +11,9 @@ block content
     h1 Framework7 Package Structure
     ul.docs-index
     h2 Package
-    p Framework7 core library contains the following files and folders:
+    p Framework7 core library package contains the following exports:
     :code(lang="html")
       framework7/
-          bundle/
-             package.json
-          cjs/
-              components/
-              modules/
-              shared/
-              framework7-bundle.js
-              framework7-lite-bundle.js
-              framework7-lite.js
-              framework7.js
           components/
               accordion/
                   accordion-aurora.less
@@ -34,48 +24,35 @@ block content
                   accordion.css
                   accordion.d.ts
                   accordion.js
+                  accordion.lazy.js
                   accordion.less
-                  package.json
               ...
-          core/
-              package.json
-          esm/
-              components/
-              modules/
-              shared/
-              framework7-bundle.js
-              framework7-lite-bundle.js
-              framework7-lite.js
-              framework7.js
           less/
-          lite/
-              package.json
-          lite-bundle/
-              package.json
           modules/
           types/
           framework7-bundle-rtl.css
           framework7-bundle-rtl.min.css
           framework7-bundle.css
-          framework7-bundle.js
+          framework7-bundle.esm.js
           framework7-bundle.js
           framework7-bundle.less
           framework7-bundle.min.css
           framework7-bundle.min.js
-          framework7-bundle.min.js
+          framework7-lite-bundle.esm.js
+          framework7-lite.esm.js
           framework7-rtl.css
           framework7-rtl.min.css
+          framework7-types.d.ts
           framework7.css
           framework7.d.ts
-          framework7.js
+          framework7.esm.js
           framework7.js
           framework7.less
           framework7.min.css
           framework7.min.js
-          framework7.min.js
     h2 Lite Version
     p Framework7 "Lite" version (files with `-lite` suffix) doesn't have Framework7 Component (Router Component) functionality, Core APIs for Gauge, Pie Chart and Area Chart components. It is designed to be used with Framework7-Vue/React/Svelte libraries where you use Vue/React/Svelte components instead.
-    p Lite version are only available for ESM and CJS packages.
+    p Lite version is only available for ESM imports.
 
     h2 Styles
     p Main Framework7 styles are located in root package folder:
@@ -97,7 +74,8 @@ block content
 
     h2 ES Module
     .important-note
-      p This feature currently can be used in bundlers like Webpack and Rollup
+      p This feature currently can be used in bundlers like Vite, Webpack and Rollup
+
     p Framework7 can also be imported as an ES-next module:
     :code(lang="js")
       import Framework7 from 'framework7';
@@ -111,6 +89,11 @@ block content
       import Searchbar from 'framework7/components/searchbar/';
       import Calendar from 'framework7/components/calendar/';
       import Popup from 'framework7/components/popup/';
+
+      // Import components styles
+      import 'framework7/components/searchbar/css';
+      import 'framework7/components/calendar/css';
+      import 'framework7/components/popup/css';
 
       // Install F7 Components using .use() method on class:
       Framework7.use([Searchbar, Calendar, Popup]);
@@ -144,3 +127,35 @@ block content
     p "Lite" bundle module is also available:
     :code(lang="js")
       import Framework7 from 'framework7/lite-bundle';
+
+    h2 ES Module Exports
+    p Framework Core package is a pure ESM package, it has the following `exports` field in `package.json`:
+    :code(lang="json")
+      {
+        "exports": {
+          ".": "./framework7.esm.js",
+          "./core": "./framework7.esm.js",
+          "./bundle": "./framework7-bundle.esm.js",
+          "./lite": "./framework7-lite.esm.js",
+          "./lite/bundle": "./framework7-lite-bundle.esm.js",
+          "./lite-bundle": "./framework7-lite-bundle.esm.js",
+          "./less": "./framework7.less",
+          "./css": "./framework7.css",
+          "./css/rtl": "./framework7-rtl.css",
+          "./css/bundle": "./framework7-bundle.css",
+          "./css/bundle/rtl": "./framework7-bundle-rtl.css",
+          "./types": "./framework7-types.d.ts",
+          "./components/appbar": "./components/appbar/appbar.js",
+          "./components/appbar/less": "./components/appbar/appbar.less",
+          "./components/appbar/css": "./components/appbar/appbar.css",
+          "./components/appbar/css/rtl": "./components/appbar/appbar-rtl.css",
+          "./components/dialog": "./components/dialog/dialog.js",
+          "./components/dialog/less": "./components/dialog/dialog.less",
+          "./components/dialog/css": "./components/dialog/dialog.css",
+          "./components/dialog/css/rtl": "./components/dialog/dialog-rtl.css",
+          ...
+        }
+      }
+
+
+

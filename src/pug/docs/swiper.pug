@@ -17,7 +17,7 @@ block content
     p Swiper HTML layout is pretty simple:
     :code(lang="html")
           <!-- Slider container -->
-          <div class="swiper-container">
+          <div class="swiper">
               <!-- Slides wrapper -->
               <div class="swiper-wrapper">
                   <!-- Slides -->
@@ -32,7 +32,7 @@ block content
     p Where:
     ul
       li
-        p `swiper-container` - main slider container with slides and paginations. Required element
+        p `swiper` - main slider container with slides and paginations. Required element
         ul
           li
             p `swiper-wrapper` - additional wrapper for slides. Required element
@@ -76,7 +76,7 @@ block content
 
     p For example:
     :code(lang="js")
-          var swiper = app.swiper.create('.swiper-container', {
+          var swiper = app.swiper.create('.swiper', {
               speed: 400,
               spaceBetween: 100
           });
@@ -88,7 +88,7 @@ block content
     p If you don't need to use Swiper API and your Swiper is inside of the page and <b>presented in DOM on moment of page initialization</b> then it can be auto initialized with just adding additional `swiper-init` class:
     :code(lang="html")
           <!-- swiper-init to initialize swiper automatically -->
-          <div class="swiper-container swiper-init">
+          <div class="swiper swiper-init">
               <div class="swiper-wrapper">
                   <div class="swiper-slide">Slide 1</div>
                   <div class="swiper-slide">Slide 2</div>
@@ -98,7 +98,7 @@ block content
           </div>
     p In this case if you need to access created Swiper instance you can use the `app.swiper.get` app method:
     :code(lang="js")
-          var swiper = app.swiper.get('.swiper-container');
+          var swiper = app.swiper.get('.swiper');
 
           swiper.slideNext();
     p But what about Swiper parameters. In this case we need to pass them in `data-` attributes.
@@ -106,7 +106,7 @@ block content
       p Parameters that used in camelCase, for example `slidesPerView`, in data- attributes should be used as kebab-case as <b>data-slides-per-view</b>
     :code(lang="html")
           <!-- swiper properties in data- attributes -->
-          <div class="swiper-container swiper-init" data-speed="400" data-space-between="40">
+          <div class="swiper swiper-init" data-speed="400" data-space-between="40">
               <div class="swiper-wrapper">
                   <div class="swiper-slide">Slide 1</div>
                   <div class="swiper-slide">Slide 2</div>
@@ -117,7 +117,7 @@ block content
     p Or we can pass all Swiper parameters in <strong>valid JSON format</strong> in `data-swiper` attribute:
     :code(lang="html")
           <!-- swiper properties in JSON format in data-swiper attribute -->
-          <div class="swiper-container swiper-init" data-swiper='{"speed":"400", "spaceBetween":"40"}'>
+          <div class="swiper swiper-init" data-swiper='{"speed":"400", "spaceBetween":"40"}'>
               <div class="swiper-wrapper">
                   <div class="swiper-slide">Slide 1</div>
                   <div class="swiper-slide">Slide 2</div>

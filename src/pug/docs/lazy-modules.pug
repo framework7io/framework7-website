@@ -288,6 +288,9 @@ block content
         tr
           td Text Editor
           td `framework7/components/text-editor`
+        tr
+          td Breadcrumbs
+          td `framework7/components/breadcrumbs`
     h2 Browser Modules
     p Browser modules are intended to be used in development setup without bundlers (like Webpack or Rollup).
     p First of all, in our main <a href="app-layout.html">app layout</a> we need to use so called minimal core Framework7 library instead of `framework7-bundle.js` and `framework7-bundle.css` scripts and styles that contains whole framework.
@@ -332,8 +335,8 @@ block content
           <!-- Path to Framework7 Core Library JS-->
           <script type="text/javascript" src="path/to/framework7/framework7.min.js"></script>
           <!-- Include modules required for initial page -->
-          <script type="text/javascript" src="path/to/framework7/components/accordion/accordion.js"></script>
-          <script type="text/javascript" src="path/to/framework7/components/searchbar/searchbar.js"></script>
+          <script type="text/javascript" src="path/to/framework7/components/accordion/accordion.lazy.js"></script>
+          <script type="text/javascript" src="path/to/framework7/components/searchbar/searchbar.lazy.js"></script>
           <!-- Path to your app js-->
           <script type="text/javascript" src="path/to/my-app.js"></script>
         </body>
@@ -355,9 +358,9 @@ block content
       p Note, that browser modules also load modules styles automatically. So loading `gauge.js` will also automatically load `gauge.css` stylesheet.
     p So the above expression `app.loadModules(['calendar', 'gauge'])` will load the following files:
     ul
-      li path/to/framework7/components/calendar/calendar.js
+      li path/to/framework7/components/calendar/calendar.lazy.js
       li path/to/framework7/components/calendar/calendar.css
-      li path/to/framework7/components/gauge/gauge.js
+      li path/to/framework7/components/gauge/gauge.lazy.js
       li path/to/framework7/components/gauge/gauge.css
     p When we need to preload modules for specific route and we use browser modules, then we can just use route's `modules` property:
     :code(lang="js")
@@ -404,207 +407,211 @@ block content
         tr
           td Dialog
           td `dialog`
-          td `framework7/components/dialog/dialog.js`
+          td `framework7/components/dialog/dialog.lazy.js`
         tr
           td Popup
           td `popup`
-          td `framework7/components/popup/popup.js`
+          td `framework7/components/popup/popup.lazy.js`
         tr
           td LoginScreen
           td `login-screen`
-          td `framework7/components/login-screen/login-screen.js`
+          td `framework7/components/login-screen/login-screen.lazy.js`
         tr
           td Popover
           td `popover`
-          td `framework7/components/popover/popover.js`
+          td `framework7/components/popover/popover.lazy.js`
         tr
           td Actions
           td `actions`
-          td `framework7/components/actions/actions.js`
+          td `framework7/components/actions/actions.lazy.js`
         tr
           td Sheet
           td `sheet`
-          td `framework7/components/sheet/sheet.js`
+          td `framework7/components/sheet/sheet.lazy.js`
         tr
           td Toast
           td `toast`
-          td `framework7/components/toast/toast.js`
+          td `framework7/components/toast/toast.lazy.js`
         tr
           td Preloader
           td `preloader`
-          td `framework7/components/preloader/preloader.js`
+          td `framework7/components/preloader/preloader.lazy.js`
         tr
           td Progressbar
           td `progressbar`
-          td `framework7/components/progressbar/progressbar.js`
+          td `framework7/components/progressbar/progressbar.lazy.js`
         tr
           td Sortable
           td `sortable`
-          td `framework7/components/sortable/sortable.js`
+          td `framework7/components/sortable/sortable.lazy.js`
         tr
           td Swipeout
           td `swipeout`
-          td `framework7/components/swipeout/swipeout.js`
+          td `framework7/components/swipeout/swipeout.lazy.js`
         tr
           td Accordion
           td `accordion`
-          td `framework7/components/accordion/accordion.js`
+          td `framework7/components/accordion/accordion.lazy.js`
         tr
           td ContactsList
           td `contacts-list`
-          td `framework7/components/contacts-list/contacts-list.js`
+          td `framework7/components/contacts-list/contacts-list.lazy.js`
         tr
           td VirtualList
           td `virtual-list`
-          td `framework7/components/virtual-list/virtual-list.js`
+          td `framework7/components/virtual-list/virtual-list.lazy.js`
         tr
           td ListIndex
           td `list-index`
-          td `framework7/components/list-index/list-index.js`
+          td `framework7/components/list-index/list-index.lazy.js`
         tr
           td Timeline
           td `timeline`
-          td `framework7/components/timeline/timeline.js`
+          td `framework7/components/timeline/timeline.lazy.js`
         tr
           td Tabs
           td `tabs`
-          td `framework7/components/tabs/tabs.js`
+          td `framework7/components/tabs/tabs.lazy.js`
         tr
           td Panel
           td `panel`
-          td `framework7/components/panel/panel.js`
+          td `framework7/components/panel/panel.lazy.js`
         tr
           td Card
           td `card`
-          td `framework7/components/card/card.js`
+          td `framework7/components/card/card.lazy.js`
         tr
           td Chip
           td `chip`
-          td `framework7/components/chip/chip.js`
+          td `framework7/components/chip/chip.lazy.js`
         tr
           td Form
           td `form`
-          td `framework7/components/form/form.js`
+          td `framework7/components/form/form.lazy.js`
         tr
           td Input
           td `input`
-          td `framework7/components/input/input.js`
+          td `framework7/components/input/input.lazy.js`
         tr
           td Checkbox
           td `checkbox`
-          td `framework7/components/checkbox/checkbox.js`
+          td `framework7/components/checkbox/checkbox.lazy.js`
         tr
           td Radio
           td `radio`
-          td `framework7/components/radio/radio.js`
+          td `framework7/components/radio/radio.lazy.js`
         tr
           td Toggle
           td `toggle`
-          td `framework7/components/toggle/toggle.js`
+          td `framework7/components/toggle/toggle.lazy.js`
         tr
           td Range
           td `range`
-          td `framework7/components/range/range.js`
+          td `framework7/components/range/range.lazy.js`
         tr
           td Stepper
           td `stepper`
-          td `framework7/components/stepper/stepper.js`
+          td `framework7/components/stepper/stepper.lazy.js`
         tr
           td SmartSelect
           td `smart-select`
-          td `framework7/components/smart-select/smart-select.js`
+          td `framework7/components/smart-select/smart-select.lazy.js`
         tr
           td Grid
           td `grid`
-          td `framework7/components/grid/grid.js`
+          td `framework7/components/grid/grid.lazy.js`
         tr
           td Calendar
           td `calendar`
-          td `framework7/components/calendar/calendar.js`
+          td `framework7/components/calendar/calendar.lazy.js`
         tr
           td Picker
           td `picker`
-          td `framework7/components/picker/picker.js`
+          td `framework7/components/picker/picker.lazy.js`
         tr
           td InfiniteScroll
           td `infinite-scroll`
-          td `framework7/components/infinite-scroll/infinite-scroll.js`
+          td `framework7/components/infinite-scroll/infinite-scroll.lazy.js`
         tr
           td PullToRefresh
           td `pull-to-refresh`
-          td `framework7/components/pull-to-refresh/pull-to-refresh.js`
+          td `framework7/components/pull-to-refresh/pull-to-refresh.lazy.js`
         tr
           td Lazy
           td `lazy`
-          td `framework7/components/lazy/lazy.js`
+          td `framework7/components/lazy/lazy.lazy.js`
         tr
           td DataTable
           td `data-table`
-          td `framework7/components/data-table/data-table.js`
+          td `framework7/components/data-table/data-table.lazy.js`
         tr
           td Fab
           td `fab`
-          td `framework7/components/fab/fab.js`
+          td `framework7/components/fab/fab.lazy.js`
         tr
           td Searchbar
           td `searchbar`
-          td `framework7/components/searchbar/searchbar.js`
+          td `framework7/components/searchbar/searchbar.lazy.js`
         tr
           td Messages
           td `messages`
-          td `framework7/components/messages/messages.js`
+          td `framework7/components/messages/messages.lazy.js`
         tr
           td Messagebar
           td `messagebar`
-          td `framework7/components/messagebar/messagebar.js`
+          td `framework7/components/messagebar/messagebar.lazy.js`
         tr
           td Swiper
           td `swiper`
-          td `framework7/components/swiper/swiper.js`
+          td `framework7/components/swiper/swiper.lazy.js`
         tr
           td PhotoBrowser
           td `photo`
-          td `framework7/components/browser/photo-browser/browser/photo-browser.js`
+          td `framework7/components/browser/photo-browser/browser/photo-browser.lazy.js`
         tr
           td Notification
           td `notification`
-          td `framework7/components/notification/notification.js`
+          td `framework7/components/notification/notification.lazy.js`
         tr
           td Autocomplete
           td `autocomplete`
-          td `framework7/components/autocomplete/autocomplete.js`
+          td `framework7/components/autocomplete/autocomplete.lazy.js`
         tr
           td Tooltip
           td `tooltip`
-          td `framework7/components/tooltip/tooltip.js`
+          td `framework7/components/tooltip/tooltip.lazy.js`
         tr
           td Gauge
           td `gauge`
-          td `framework7/components/gauge/gauge.js`
+          td `framework7/components/gauge/gauge.lazy.js`
         tr
           td Skeleton
           td `skeleton`
-          td `framework7/components/skeleton/skeleton.js`
+          td `framework7/components/skeleton/skeleton.lazy.js`
         tr
           td Menu
           td `menu`
-          td `framework7/components/menu/menu.js`
+          td `framework7/components/menu/menu.lazy.js`
         tr
           td Pie Chart
           td `pie-chart`
-          td `framework7/components/pie-chart/pie-chart.js`
+          td `framework7/components/pie-chart/pie-chart.lazy.js`
         tr
           td Area Chart
           td `area-chart`
-          td `framework7/components/area-chart/area-chart.js`
+          td `framework7/components/area-chart/area-chart.lazy.js`
         tr
           td Typography
           td `typography`
-          td `framework7/components/typography/typography.js`
+          td `framework7/components/typography/typography.lazy.js`
         tr
           td Text Editor
           td `text-editor`
-          td `framework7/components/text-editor/text-editor.js`
+          td `framework7/components/text-editor/text-editor.lazy.js`
+        tr
+          td Breadcrumbs
+          td `text-editor`
+          td `framework7/components/breadcrumbs/breadcrumbs.lazy.js`
 
 
 

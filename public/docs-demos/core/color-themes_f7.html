@@ -209,15 +209,15 @@
           $('.view').attr('class', 'view view-main view-init');
           $('.view').addClass('color-theme-' + $(this).val());
           if ($('.toggle input')[0].checked) {
-            $('.view').addClass('theme-dark');
+            $('.view').addClass('dark');
           }
         }
       });
       $('.toggle input').on('change', function () {
         if (this.checked) {
-          $('.view').addClass('theme-dark');
+          $('.view').addClass('dark');
         } else {
-          $('.view').removeClass('theme-dark');
+          $('.view').removeClass('dark');
         }
       });
     });

@@ -88,8 +88,10 @@
           <i slot="media" class="icon demo-list-icon" />
         </ListItem>
         <ListItem link="#" title="Two icons here">
-          <i slot="media" class="icon demo-list-icon" />
-          <i slot="media" class="icon demo-list-icon" />
+          <svelte:fragment slot="media">
+            <i class="icon demo-list-icon" />
+            <i class="icon demo-list-icon" />
+          </svelte:fragment>
         </ListItem>
         <ListItem title="No icons here"></ListItem>
         <li>
@@ -98,8 +100,10 @@
               <i slot="media" class="icon demo-list-icon" />
             </ListItem>
             <ListItem link="#" title="Two icons here">
-              <i slot="media" class="icon demo-list-icon" />
-              <i slot="media" class="icon demo-list-icon" />
+              <svelte:fragment slot="media">
+                <i class="icon demo-list-icon" />
+                <i class="icon demo-list-icon" />
+              </svelte:fragment>
             </ListItem>
             <ListItem title="No icons here"></ListItem>
             <ListItem link="#" title="Ultra long text goes here, no, it is really really long">
@@ -129,8 +133,10 @@
           <i slot="media" class="icon demo-list-icon" />
         </ListItem>
         <ListItem link="#" title="Two icons here">
-          <i slot="media" class="icon demo-list-icon" />
-          <i slot="media" class="icon demo-list-icon" />
+          <svelte:fragment slot="media">
+          <i class="icon demo-list-icon" />
+          <i class="icon demo-list-icon" />
+          </svelte:fragment>
         </ListItem>
         <ListItem link="#" title="Ultra long text goes here, no, it is really really long">
           <i slot="media" class="icon demo-list-icon" />
@@ -151,8 +157,10 @@
           <i slot="media" class="icon demo-list-icon" />
         </ListItem>
         <ListItem link="#" title="Two icons here">
-          <i slot="media" class="icon demo-list-icon" />
-          <i slot="media" class="icon demo-list-icon" />
+          <svelte:fragment slot="media">
+          <i class="icon demo-list-icon" />
+          <i class="icon demo-list-icon" />
+          </svelte:fragment>
         </ListItem>
         <ListItem link="#" title="Ultra long text goes here, no, it is really really long">
           <i slot="media" class="icon demo-list-icon" />

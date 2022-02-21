@@ -27,7 +27,7 @@
 .demo-facebook-card .card-footer {
   background: #fafafa;
 }
-.theme-dark .demo-facebook-card .card-footer {
+.dark .demo-facebook-card .card-footer {
   background-color: transparent;
 }
 .demo-facebook-card .card-footer a {
