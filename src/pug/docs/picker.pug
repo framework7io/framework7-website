@@ -79,31 +79,6 @@ block content
           td false
           td Enables 3D rotate effect
         tr
-          td momentumRatio
-          td number
-          td 7
-          td Larger values produces more momentum when you release picker after fast touch and move
-        tr
-          td mousewheel
-          td boolean
-          td true
-          td Enables ability to scroll through picker values with mousewheel
-        tr
-          td updateValuesOnMomentum
-          td boolean
-          td false
-          td Updates picker and input values during momentum
-        tr
-          td updateValuesOnTouchmove
-          td boolean
-          td true
-          td Updates picker and input values during touch move
-        tr
-          td updateValuesOnMousewheel
-          td boolean
-          td true
-          td Updates picker and input values during mousewheel scrolling
-        tr
           td freeMode
           td boolean
           td false
@@ -339,8 +314,8 @@ block content
         tr
           th(colspan="2") Methods
         tr
-          td picker.setValue(<span>values</span>, <span>duration</span>)
-          td Set new picker value. `values` is array where each item represents value for each column. `duration` - transition duration in ms
+          td picker.setValue(<span>values</span>)
+          td Set new picker value. `values` is array where each item represents value for each column.
         tr
           td picker.getValue()
           td Returns current picker value
@@ -399,8 +374,8 @@ block content
         tr
           th(colspan="2") Methods
         tr
-          td col.setValue(<span>value</span>, <span>duration</span>)
-          td Set new value for current column. `value` is a new value, `duration` - transition duration in ms
+          td col.setValue(<span>value</span>)
+          td Set new value for current column. `value` is a new value.
         tr
           td col.replaceValues(<span>values</span>, <span>displayValues</span>)
           td Replace column values and displayValues with new ones
