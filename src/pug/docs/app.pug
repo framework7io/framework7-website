@@ -89,7 +89,7 @@ block content
           td
           td Path to Framework7's lazy components. Required to use <a href="lazy-modules.html">Lazy Modules</a> with browser modules.
         tr
-          td autoDarkTheme
+          td autoDarkMode
           td boolean
           td false
           td Automatically enables dark theme based on user system color scheme preference. This feature support is based on <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank">`(prefers-color-scheme)` media query support</a>.
@@ -315,8 +315,8 @@ block content
           td app.theme
           td String with current app theme. Can be `md`, `ios` or `aurora`
         tr
-          td app.darkTheme
-          td Boolean property that indicates whether the dark theme active or not. This property has effect only when `autoDarkTheme` enabled.
+          td app.darkMode
+          td Boolean property that indicates whether the dark theme active or not. This property has effect only when `autoDarkMode` enabled.
         tr
           td app.width
           td App width in px
@@ -359,10 +359,10 @@ block content
         tr
           th(colspan="2") Methods
         tr
-          td app.enableAutoDarkTheme()
+          td app.enableAutoDarkMode()
           td Enables auto dark theme detection
         tr
-          td app.disableAutoDarkTheme()
+          td app.disableAutoDarkMode()
           td Disables auto dark theme detection
         tr
           td app.on(<span>event</span>, <span>handler</span>)
@@ -474,9 +474,9 @@ block content
           td <span>(isOnline)</span>
           td Event will be fired on network state change
         tr
-          td darkThemeChange
+          td darkModeChange
           td <span>(isDarkTheme)</span>
-          td Event will be fired on device preferred color scheme change. It has effect only when `autoDarkTheme` enabled
+          td Event will be fired on device preferred color scheme change. It has effect only when `autoDarkMode` enabled
     p And again, most of components that has JavaScript API may extend this list of events like Panel component will also trigger additional events on app instance.
     p Examples:
     :code(lang="js")
@@ -492,7 +492,7 @@ block content
         }
       });
 
-      app.on('darkThemeChange', function (isDark) {
+      app.on('darkModeChange', function (isDark) {
         if (isDark) {
           console.log('color scheme changed to Dark')
         } else {
@@ -582,8 +582,8 @@ block content
         --f7-bars-bg-color: #f7f7f8;
         --f7-bars-bg-color-rgb: 247, 247, 248;
       }
-      :root .theme-dark,
-      :root.theme-dark {
+      :root .dark,
+      :root.dark {
         --f7-bars-text-color: #fff;
       }
       .ios {
@@ -592,8 +592,8 @@ block content
         --f7-text-color: #000;
         --f7-bars-border-color: rgba(0, 0, 0, 0.25);
       }
-      .ios .theme-dark,
-      .ios.theme-dark {
+      .ios .dark,
+      .ios.dark {
         --f7-text-color: #fff;
         --f7-bars-bg-color: #121212;
         --f7-bars-bg-color-rgb: 19, 19, 19;
@@ -605,8 +605,8 @@ block content
         --f7-bars-border-color: transparent;
         --f7-text-color: #212121;
       }
-      .md .theme-dark,
-      .md.theme-dark {
+      .md .dark,
+      .md.dark {
         --f7-text-color: rgba(255, 255, 255, 0.87);
         --f7-bars-bg-color: #202020;
       }
@@ -616,8 +616,8 @@ block content
         --f7-text-color: #000;
         --f7-bars-border-color: rgba(0, 0, 0, 0.2);
       }
-      .aurora .theme-dark,
-      .aurora.theme-dark {
+      .aurora .dark,
+      .aurora.dark {
         --f7-text-color: #fff;
         --f7-bars-bg-color: #202020;
         --f7-bars-border-color: rgba(255, 255, 255, 0.1);

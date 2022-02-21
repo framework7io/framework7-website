@@ -209,7 +209,7 @@
   :global(.demo-facebook-card .card-footer) {
     background: #fafafa;
   }
-  :global(.theme-dark .demo-facebook-card .card-footer) {
+  :global(.dark .demo-facebook-card .card-footer) {
     background-color: transparent;
   }
   :global(.demo-facebook-card .card-footer a) {

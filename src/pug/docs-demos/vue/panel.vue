@@ -10,7 +10,7 @@
     </f7-panel>
 
     <!-- Right resizable Panel with Cover effect and dark layout theme -->
-    <f7-panel right resizable theme-dark>
+    <f7-panel right resizable dark>
       <f7-view>
         <f7-page>
           <f7-block>Right panel content</f7-block>
@@ -22,7 +22,7 @@
       <f7-page>
         <f7-navbar title="Panel"></f7-navbar>
 
-        <f7-panel id="panel-nested" theme-dark left cover container-el="#panel-page">
+        <f7-panel id="panel-nested" dark left cover container-el="#panel-page">
           <f7-page>
             <f7-block strong>
               <p>This is page-nested Panel.</p>

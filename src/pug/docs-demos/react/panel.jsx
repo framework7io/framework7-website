@@ -11,7 +11,7 @@ export default () => (
         </Page>
       </View>
     </Panel>
-    <Panel resizable right themeDark>
+    <Panel resizable right dark>
       <View>
         <Page>
           <Block>Right panel content</Block>
@@ -22,7 +22,7 @@ export default () => (
       <Page id="panel-page">
         <Navbar title="Panel"></Navbar>
 
-        <Panel left cover themeDark containerEl="#panel-page" id="panel-nested">
+        <Panel left cover dark containerEl="#panel-page" id="panel-nested">
           <Page>
             <Block strong>
               <p>This is page-nested Panel.</p>
