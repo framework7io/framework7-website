@@ -3,6 +3,7 @@ const rollup = require('rollup');
 const { babel } = require('@rollup/plugin-babel');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const Terser = require('terser');
+const replace = require('@rollup/plugin-replace');
 
 function build(cb) {
   rollup
@@ -12,6 +13,10 @@ function build(cb) {
         nodeResolve(),
         babel({
           babelHelpers: 'bundled',
+        }),
+        replace({
+          delimiters: ['', ''],
+          'process.env.NODE_ENV': "'production'",
         }),
       ],
     })

@@ -1,5 +1,5 @@
 /**
- * Framework7 7.0.0-beta.11
+ * Framework7 7.0.0-beta.12
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: February 17, 2022
+ * Released on: February 22, 2022
  */
 
 (function (global, factory) {
@@ -2237,8 +2237,7 @@
         firefox: false,
         macos: false,
         windows: false,
-        cordova: !!(window.cordova || window.phonegap),
-        phonegap: !!(window.cordova || window.phonegap),
+        cordova: !!window.cordova,
         electron: false,
         capacitor: !!window.Capacitor,
         nwjs: false
@@ -3216,7 +3215,7 @@
             }
           }
 
-          if (device.cordova || device.phonegap) {
+          if (device.cordova) {
             classNames.push('device-cordova');
           }
 

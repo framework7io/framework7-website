@@ -65,18 +65,23 @@ function handleDeviceScroll() {
     device.find('.fade-overlay').addClass('visible');
     let onLoadTriggerd;
     const iframeEl = device.find('iframe')[0];
+    const theme = device.find('.docs-demo-device-theme-buttons a.active').attr('data-theme');
+    const mode = device.find('.docs-demo-device-mode-buttons a.active').attr('data-mode');
     iframeEl.onload = function onload() {
       onLoadTriggerd = true;
+      if (mode === 'dark') {
+        iframeEl.contentDocument.documentElement.classList.add('dark');
+      }
       setTimeout(() => {
         device.find('.fade-overlay').removeClass('visible');
-      }, 0);
+      }, 300);
     };
     setTimeout(() => {
       if (!onLoadTriggerd) {
         device.find('.fade-overlay').removeClass('visible');
       }
     }, 1000);
-    device.find('iframe').attr('src', newPreviewLink);
+    device.find('iframe').attr('src', `${newPreviewLink}${theme ? `?theme=${theme}` : ''}`);
   }
 }
 
@@ -92,7 +97,7 @@ export default function initDocsDevice() {
   }
 
   if ($('.docs-demo-device').length > 0) {
-    $('.docs-demo-device-buttons a').on('click', function onClick(e) {
+    $('.docs-demo-device-theme-buttons a').on('click', function onClick(e) {
       e.preventDefault();
       const a = $(this);
       if (a.hasClass('active')) return;
@@ -100,12 +105,34 @@ export default function initDocsDevice() {
       a.addClass('active');
       const device = a.parents('.docs-demo-device');
       const theme = a.attr('data-theme');
-      const src = device.find('iframe').attr('src');
+      const $iframeEl = device.find('iframe');
+      const src = $iframeEl.attr('src');
+      const mode = device.find('.docs-demo-device-mode-buttons a.active').attr('data-mode');
       device.find('.fade-overlay').addClass('visible');
-      device.find('iframe').attr('src', `${src.split('?')[0]}?theme=${theme}`);
-      setTimeout(() => {
-        device.find('.fade-overlay').removeClass('visible');
-      }, 1000);
+      $iframeEl.once('load', () => {
+        if (mode === 'dark') {
+          $iframeEl[0].contentDocument.documentElement.classList.add('dark');
+        }
+        setTimeout(() => {
+          device.find('.fade-overlay').removeClass('visible');
+        }, 300);
+      });
+      $iframeEl.attr('src', `${src.split('?')[0]}?theme=${theme}`);
+    });
+    $('.docs-demo-device-mode-buttons a').on('click', function onClick(e) {
+      e.preventDefault();
+      const a = $(this);
+      if (a.hasClass('active')) return;
+      a.parent().find('.active').removeClass('active');
+      a.addClass('active');
+      const device = a.parents('.docs-demo-device');
+      const mode = a.attr('data-mode');
+      const iframeEl = device.find('iframe')[0];
+      if (mode === 'dark') {
+        iframeEl.contentDocument.documentElement.classList.add('dark');
+      } else {
+        iframeEl.contentDocument.documentElement.classList.remove('dark');
+      }
     });
   }
 }

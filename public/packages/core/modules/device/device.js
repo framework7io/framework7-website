@@ -31,7 +31,7 @@ export default {
         }
       }
 
-      if (device.cordova || device.phonegap) {
+      if (device.cordova) {
         classNames.push('device-cordova');
       }
 

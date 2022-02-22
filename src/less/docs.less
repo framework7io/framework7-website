@@ -136,36 +136,44 @@ b.ios-only {
   }
 
   .docs-demo-device-buttons {
+    display: flex;
+    align-items: center;
     position: absolute;
     left: 50%;
     bottom: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
+    transform: translateX(-50%);
+  }
+  .docs-demo-device-mode-buttons {
+    margin-left: 16px;
+  }
+  .docs-demo-device-theme-buttons,
+  .docs-demo-device-mode-buttons {
     font-size: 0;
     white-space: nowrap;
-    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.075);
+    border-radius: 4px;
+    padding: 4px;
     a {
       padding-top: 4px;
       padding-bottom: 4px;
-      width: 60px;
+      width: 48px;
       text-align: center;
-      background: #f3f3f3;
       color: #777;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      transition: 200ms;
       cursor: pointer;
+      border-radius: 4px;
       text-decoration: none;
+      + a {
+        margin-left: 2px;
+      }
       i {
         font-size: 18px;
       }
-      &:first-child {
-        border-radius: 20px 0 0 20px;
-      }
-      &:last-child {
-        border-radius: 0 20px 20px 0;
-      }
+
       &:hover {
         background: rgba(red(@redColor), green(@redColor), blue(@redColor), 0.2);
       }
@@ -321,6 +329,36 @@ ul.method-parameters {
     text-transform: uppercase;
     margin-bottom: 10px;
     font-weight: 500;
+  }
+}
+.docs-nav-frameworks {
+  display: flex;
+  box-sizing: border-box;
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.075);
+  border-radius: 4px;
+  margin-bottom: 16px;
+  a {
+    width: 25%;
+    display: block;
+    padding: 4px !important;
+    border-radius: 4px;
+    + a {
+      margin-left: 4px;
+    }
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    &.active {
+      background: #fff;
+    }
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: 24px;
+    object-fit: contain;
+    object-position: center;
   }
 }
 .docs-nav-menu {
@@ -560,6 +598,12 @@ ul.method-parameters {
   .docs-nav-toggle {
     display: none;
   }
+  .docs-nav {
+    position: sticky;
+    overflow: auto;
+    top: 0;
+    max-height: 100vh;
+  }
 }
 @media (max-width: 960px) {
   .docs-nav {
@@ -577,6 +621,12 @@ ul.method-parameters {
       transform: translateX(0%);
       box-shadow: 20px 0 50px rgba(0, 0, 0, 0.3);
     }
+  }
+  .docs-nav-searchbar {
+    right: 20px;
+  }
+  .docs-nav-menu {
+    padding-right: 20px;
   }
 }
 @media (max-width: 800px) {
@@ -606,6 +656,7 @@ ul.method-parameters {
     align-items: center;
     flex-wrap: wrap;
     a {
+      font-size: 14px;
       color: #fff;
       display: inline-flex;
       align-items: center;
@@ -613,7 +664,7 @@ ul.method-parameters {
       background: @redColor;
       margin-right: 10px;
       margin-bottom: 10px;
-      padding: 4px 10px;
+      padding: 4px 12px;
       border-radius: 20px;
       text-decoration: none;
       font-weight: 500;
@@ -623,12 +674,12 @@ ul.method-parameters {
     .mobile-preview-aurora {
       &:before {
         font-family: 'Framework7 Icons';
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
         position: relative;
-        margin-right: 5px;
-        line-height: 20px;
+        margin-right: 8px;
+        line-height: 18px;
       }
       &:after {
         content: 'Preview';
@@ -637,7 +688,7 @@ ul.method-parameters {
     }
     .mobile-preview-ios {
       &:before {
-        content: 'logo_ios';
+        content: 'logo_apple';
       }
     }
     .mobile-preview-md {

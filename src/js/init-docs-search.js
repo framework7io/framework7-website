@@ -15,7 +15,9 @@ function renderSearchResults(hits, clear) {
   }
   if (hits.length === 0) {
     $('.docs-nav-searchbar div.search-results').remove();
-    $('.docs-nav-searchbar').append('<div class="search-results no-search-results">No results found<div class="algolia-logo"></div></div>');
+    $('.docs-nav-searchbar').append(
+      '<div class="search-results no-search-results">No results found<div class="algolia-logo"></div></div>',
+    );
     return;
   }
   hits.forEach((hit) => {
@@ -36,31 +38,43 @@ function renderSearchResults(hits, clear) {
     }
   });
   const html = `
-  <ul>${Object.keys(tree).map(doc => `
+  <ul>${Object.keys(tree)
+    .map(
+      (doc) => `
     <li>
       <span>${doc}</span>
-      <ul>${Object.keys(tree[doc]).map(page => `
+      <ul>${Object.keys(tree[doc])
+        .map(
+          (page) => `
         <li>
           <a href="${tree[doc][page].url}">
             <span>${page}</span>
           </a>
-          <ul>${Object.keys(tree[doc][page]).map((section) => {
-            if (section === 'url') return '';
-            return `
+          <ul>${Object.keys(tree[doc][page])
+            .map((section) => {
+              if (section === 'url') return '';
+              return `
               <li>
                 <a href="${tree[doc][page][section].url}">
                   <span>${section}</span>
                   <small>${tree[doc][page][section].text}</small>
                 </a>
               </li>`;
-            }).join('')}
+            })
+            .join('')}
           </ul>
-        </li>`).join('')}
+        </li>`,
+        )
+        .join('')}
       </ul>
-    </li>`).join('')}
+    </li>`,
+    )
+    .join('')}
   </ul>`;
   $('.docs-nav-searchbar div.search-results').remove();
-  $('.docs-nav-searchbar').append(`<div class="search-results">${html}<div class="algolia-logo"></div></div>`);
+  $('.docs-nav-searchbar').append(
+    `<div class="search-results">${html}<div class="algolia-logo"></div></div>`,
+  );
 }
 function searchDocs(query) {
   if (!query) {
@@ -82,7 +96,6 @@ function searchDocs(query) {
     },
   );
 }
-
 
 function initSearch() {
   if (!$('.docs-nav-searchbar').length) return;

@@ -5,7 +5,8 @@ table {
   width: 100%;
   font-size: 14px;
   margin: 1em 0 2em;
-  th,td {
+  th,
+  td {
     padding: 10px 5px;
   }
   thead {
@@ -13,12 +14,14 @@ table {
     font-size: 16px;
   }
   tbody {
-    th, td {
+    th,
+    td {
       border-top: 1px solid #eaeaea;
     }
   }
   thead + tbody tr:first-child {
-    th, td {
+    th,
+    td {
       border-top-width: 2px;
     }
   }
@@ -40,8 +43,12 @@ table {
 }
 table.params-table {
   line-height: 1.4;
-  th, td {
+  th,
+  td {
     vertical-align: top;
+  }
+  tbody td:first-child > a {
+    color: inherit;
   }
   tbody {
     td:first-child:not([colspan]),
@@ -58,11 +65,13 @@ table.params-table {
     td:nth-child(n + 3) {
       word-break: break-word;
     }
-    th[colspan="4"], th[colspan="3"] {
+    th[colspan='4'],
+    th[colspan='3'] {
       .heading-cell();
     }
     td:last-child {
-      &:nth-child(3), &:nth-child(4) {
+      &:nth-child(3),
+      &:nth-child(4) {
         width: 50%;
       }
     }
@@ -73,7 +82,8 @@ table.params-table {
   td p:last-child {
     margin-bottom: 0;
   }
-  tr.subparam-open-row, tr.subparam-close-row {
+  tr.subparam-open-row,
+  tr.subparam-close-row {
     td {
       font-weight: 700;
     }
@@ -91,12 +101,16 @@ table.params-table {
 
 table.methods-table {
   line-height: 1.4;
-  th, td {
+  tbody td:first-child > a {
+    color: inherit;
+  }
+  th,
+  td {
     vertical-align: top;
   }
   tbody td:first-child:not(:last-child) {
     .monospace();
-    color:#000;
+    color: #000;
     white-space: nowrap;
     font-weight: 500;
     font-size: var(--table-monospace-font-size);
@@ -117,7 +131,7 @@ table.methods-table {
     font-style: normal;
     font-style: italic;
   }
-  th[colspan="2"] {
+  th[colspan='2'] {
     .heading-cell();
   }
   td p:first-child {
@@ -133,7 +147,7 @@ table.methods-table {
     tbody td:first-child:not(:last-child) {
       .monospace();
       font-size: var(--table-monospace-font-size);
-      color:#000;
+      color: #000;
       white-space: normal;
       font-weight: 500;
       span {
@@ -142,14 +156,18 @@ table.methods-table {
     }
   }
 }
-table.methods-table, table.params-table {
+table.methods-table,
+table.params-table {
   code {
     white-space: pre-wrap;
   }
 }
 table.events-table {
-
-  tbody td:nth-child(2) span, tbody td:nth-child(3) span {
+  tbody td:first-child > a {
+    color: inherit;
+  }
+  tbody td:nth-child(2) span,
+  tbody td:nth-child(3) span {
     white-space: nowrap;
     .monospace();
     font-size: var(--table-monospace-font-size);
@@ -164,7 +182,7 @@ table.events-table {
   tbody td:first-child:not([colspan]) {
     .monospace();
     font-size: var(--table-monospace-font-size);
-    color:#000;
+    color: #000;
     white-space: nowrap;
     font-weight: 500;
   }
@@ -177,7 +195,7 @@ table.props-table {
   tbody td:first-child {
     .monospace();
     font-size: var(--table-monospace-font-size);
-    color:#000;
+    color: #000;
     white-space: nowrap;
     font-weight: 500;
   }
@@ -191,7 +209,6 @@ table.double-events-table {
   }
   tr:nth-child(4n - 5) {
     background: #fafafa;
-
   }
   tr:nth-child(4n - 4) {
     background: #fafafa;
@@ -222,7 +239,9 @@ table.double-events-table {
       flex-wrap: wrap;
     }
     tbody {
-      th, td, th[colspan] {
+      th,
+      td,
+      th[colspan] {
         display: block;
         border: none;
         padding: 0;

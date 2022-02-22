@@ -2,7 +2,8 @@ import $ from 'dom7';
 
 function handleNavToggleScroll() {
   const st = window.scrollY;
-  const headerHeight = $('.internal-header')[0].offsetHeight + $('.bsa-cpc, .internal-header-adline')[0].offsetHeight;
+  const headerHeight =
+    $('.internal-header')[0].offsetHeight + $('.bsa-cpc, .internal-header-adline')[0].offsetHeight;
 
   const pos = Math.max(headerHeight - st, 0);
   $('.docs-nav-toggle').transform(`translateY(${pos}px)`);
@@ -13,7 +14,12 @@ function findPrevLink(current) {
   if (!prev.length) {
     prev = current.parents('li').prev('li').find('li:last-child');
   }
-  if (prev && prev.length && prev.find('a').attr('href') && prev.find('a').attr('href').indexOf('#') >= 0) {
+  if (
+    prev &&
+    prev.length &&
+    prev.find('a').attr('href') &&
+    prev.find('a').attr('href').indexOf('#') >= 0
+  ) {
     prev = findPrevLink(prev);
   }
   return prev;
@@ -23,7 +29,12 @@ function findNextLink(current) {
   if (!next.length) {
     next = current.parents('li').next('li').find('li:first-child');
   }
-  if (next && next.length && next.find('a').attr('href') && next.find('a').attr('href').indexOf('#') >= 0) {
+  if (
+    next &&
+    next.length &&
+    next.find('a').attr('href') &&
+    next.find('a').attr('href').indexOf('#') >= 0
+  ) {
     next = findNextLink(next);
   }
   return next;
@@ -31,6 +42,7 @@ function findNextLink(current) {
 export default function initDocsNav() {
   if ($('.docs-nav').length > 0) {
     let loc = document.location.href;
+    const originalLoc = loc;
     if (loc.indexOf('?') >= 0) loc = loc.split('?')[0];
     if (loc.indexOf('#') >= 0) loc = loc.split('#')[0];
     if (loc.indexOf('/') >= 0) {
@@ -40,6 +52,17 @@ export default function initDocsNav() {
     if (!loc) {
       loc = document.location.href;
       loc = loc.split(document.location.host)[1];
+    }
+    if ($('.docs-nav-frameworks').length > 0) {
+      if (originalLoc.includes('/docs/')) {
+        $('.docs-nav-frameworks a[href="/docs/"]').addClass('active');
+      } else if (originalLoc.includes('/react/')) {
+        $('.docs-nav-frameworks a[href="/react/"]').addClass('active');
+      } else if (originalLoc.includes('/vue/')) {
+        $('.docs-nav-frameworks a[href="/vue/"]').addClass('active');
+      } else if (originalLoc.includes('/svelte/')) {
+        $('.docs-nav-frameworks a[href="/svelte/"]').addClass('active');
+      }
     }
 
     let $activeListItem;
@@ -62,14 +85,22 @@ export default function initDocsNav() {
         $('.docs-content').append(`
           <div class="docs-page-nav">
             <div class="docs-page-nav-prev">
-              ${$prevListItem.length ? `
+              ${
+                $prevListItem.length
+                  ? `
                 <a href="${$prevListItem.find('a').attr('href')}">← ${$prevListItem.text()}</a>
-              ` : ''}
+              `
+                  : ''
+              }
             </div>
             <div class="docs-page-nav-next">
-              ${$nextListItem.length ? `
+              ${
+                $nextListItem.length
+                  ? `
                 <a href="${$nextListItem.find('a').attr('href')}">${$nextListItem.text()} →</a>
-              ` : ''}</div>
+              `
+                  : ''
+              }</div>
           </div>
         `);
       }

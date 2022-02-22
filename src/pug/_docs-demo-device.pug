@@ -1,11 +1,17 @@
 .docs-demo-device
   .docs-demo-device-buttons
-    a(data-theme="ios").active
-      i.f7-icons logo_apple
-    a(data-theme="md")
-      i.f7-icons logo_android
-    a(data-theme="aurora")
-      i.f7-icons device_desktop
+    .docs-demo-device-theme-buttons
+      a(data-theme="ios").active
+        i.f7-icons logo_apple
+      a(data-theme="md")
+        i.f7-icons logo_android
+      a(data-theme="aurora")
+        i.f7-icons device_desktop
+    .docs-demo-device-mode-buttons
+      a(data-mode="light").active
+        i.f7-icons sun_max_fill
+      a(data-mode="dark")
+        i.f7-icons moon_fill
   .docs-demo-device-iframe
     iframe(width="320", height="548", frameborder="0", scrolling="on")
     .fade-overlay
