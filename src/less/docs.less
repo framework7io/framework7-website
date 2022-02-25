@@ -343,6 +343,9 @@ ul.method-parameters {
   }
   .docs-nav-sponsors {
     margin-bottom: 20px;
+    @media (max-width: 960px) {
+      margin-right: 20px;
+    }
     a:not(.patreon-button) {
       display: flex;
       border: 1px solid rgba(0, 0, 0, 0.1);
@@ -414,71 +417,21 @@ ul.method-parameters {
     }
   }
 }
+.DocSearch-Container {
+  z-index: 3000 !important;
+}
 .docs-nav-searchbar {
   position: absolute;
   top: 20px;
   z-index: 10;
-  left: 15px;
-  right: 10px;
-  .disable-search {
-    cursor: pointer;
-    position: absolute;
-    right: 0;
-    width: 30px;
-    height: 30px;
-    top: 0;
-    z-index: 300;
-    display: none;
-    &:after,
-    &:before {
-      content: '';
-      display: block;
-      height: 2px;
-      width: 16px;
-      background: #aaa;
-      position: absolute;
-      border-radius: 4px;
-      top: 50%;
-      left: 50%;
-      margin-left: -8px;
-      margin-top: -1px;
-      transition: 300ms;
-    }
-    &:after {
-      transform: rotate(45deg);
-    }
-    &:before {
-      transform: rotate(-45deg);
-    }
-  }
-  input.with-query + .disable-search {
-    display: block;
-  }
-  input[type='search'] {
-    border: none;
-    appearance: none;
-    -webkit-appearance: none;
-    background: #fff;
-    outline: 0;
-    display: block;
-    height: 30px;
-    padding: 0 10px;
+  left: 20px;
+  right: 0px;
+  button {
+    margin-left: 0;
     width: 100%;
-    margin: 0;
-    box-sizing: border-box;
-    border-radius: 15px;
-    color: #000;
-    transition: 400ms;
-    border: 2px solid rgba(0, 0, 0, 0.1);
-    font-size: 13px;
-    z-index: 200;
-    position: relative;
-    &:focus,
-    &.with-query {
-      border-color: transparent;
-      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
-      font-size: 14px;
-    }
+  }
+  @media (max-width: 960px) {
+    right: 20px;
   }
 }
 .docs-nav-toggle {
