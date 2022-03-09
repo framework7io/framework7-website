@@ -1,0 +1,61 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Breadcrumbs Vue Component | Framework7 Vue Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Breadcrumbs Vue Component
+    ul.docs-index
+    p Breadcrumbs Vue component represents Framework7's <a href="../docs/breadcrumbs.html">Breadcrumbs</a> component.
+    h2 Breadcrumbs Components
+    p There are following components included:
+    ul
+      li `f7-breadcrumbs`
+      li `f7-breadcrumbs-item`
+      li `f7-breadcrumbs-separator`
+      li `f7-breadcrumbs-collapsed`
+    h2 Breadcrumbs Properties
+     table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-breadcrumbs-item&gt; properties
+        tr
+          td active
+          td boolean
+          td
+          td Marks breadcrumb item as active/current (usually last item in breadcrumbs)
+
+    h2 Breadcrumbs Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-breadcrumbs-item&gt; events
+        tr
+          td click
+          td Fires on breadcrumbs item click
+        tr
+          th(colspan="2") &lt;f7-breadcrumbs-collapsed&gt; events
+        tr
+          td click
+          td Fires on breadcrumbs collapsed click
+
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/breadcrumbs.html") Examples
+      include:vueSource ../docs-demos/vue/breadcrumbs.vue

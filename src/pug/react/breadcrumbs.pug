@@ -1,0 +1,63 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Breadcrumbs React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Breadcrumbs React Component
+    ul.docs-index
+    p Breadcrumbs React component represents Framework7's <a href="../docs/breadcrumbs.html">Breadcrumbs</a> component.
+    h2 Breadcrumbs Components
+    p There are following components included:
+    ul
+      li `Breadcrumbs`
+      li `BreadcrumbsItem`
+      li `BreadcrumbsSeparator`
+      li `BreadcrumbsCollapsed`
+    h2 Breadcrumbs Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;BreadcrumbsItem&gt; properties
+        tr
+          td active
+          td boolean
+          td
+          td Marks breadcrumb item as active/current (usually last item in breadcrumbs)
+
+    h2 Breadcrumbs Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;BreadcrumbsItem&gt; events
+        tr
+          td click
+          td Fires on breadcrumbs item click
+        tr
+          th(colspan="2") &lt;BreadcrumbsCollapsed&gt; events
+        tr
+          td click
+          td Fires on breadcrumbs collapsed click
+
+
+
+    .with-device
+      h2(data-device-preview="../docs-demos/react/breadcrumbs.html") Examples
+      include:reactSource ../docs-demos/react/breadcrumbs.jsx

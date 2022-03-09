@@ -1,0 +1,98 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Breadcrumbs | Framework7 Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Breadcrumbs
+    ul.docs-index
+    p Breadcrumbs allow users to keep track and maintain awareness of their locations within the app or website. They should be used for large sites and apps with hierarchically arranged pages.
+    h2 Breadcrumbs Layout
+    p Common Breadcrumbs layout is the following:
+    ```html
+      <div class="breadcrumbs">
+
+        <div class="breadcrumbs-item">
+          <a href="/home/" class="link">
+            Home
+          </a>
+        </div>
+
+        <div class="breadcrumbs-separator"></div>
+
+        <div class="breadcrumbs-item">
+          <a href="/catalog/" class="link">
+            Catalog
+          </a>
+        </div>
+
+        <div class="breadcrumbs-separator"></div>
+
+        <div class="breadcrumbs-item breadcrumbs-item-active">
+          Phones
+        </div>
+
+        ...
+      </div>
+    ```
+    p Where
+    ul
+      li `breadcrumbs` - main breadcrumbs container
+        ul
+          li `breadcrumbs-item` - single breadcrumb item. Can contain any content
+          li `breadcrumbs-item-active` - current/active navigation item
+          li `breadcrumbs-separator` - separator icon between items
+
+    h2 Collapsed Breadcrumbs Layout
+    p When there are a lot of breadcrumb items, it is possible to add custom "collapsed" button, for example with Popover inside:
+    ```html
+      <div class="breadcrumbs">
+
+        <div class="breadcrumbs-item">
+          <a href="/home/" class="link">
+            Home
+          </a>
+        </div>
+
+        <!-- Collapsed button, also triggers Popover -->
+        <div class="breadcrumbs-collapsed link popover-open" data-popover=".my-popover">
+          <span></span>
+          <!-- Popover inside of collapsed button -->
+          <div class="popover my-popover">
+            <div class="popover-inner">
+              <div class="list">
+                <ul>
+                  <li>
+                    <a href="#" class="item-link item-content popover-close">
+                      <div class="item-inner">
+                        <div class="item-title">Catalog</div>
+                      </div>
+                    </a>
+                  </li>
+                  ...
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="breadcrumbs-item breadcrumbs-item-active">
+          Phones
+        </div>
+
+        ...
+      </div>
+    ```
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/breadcrumbs.html") Example
+      include:coreSource ../docs-demos/core/breadcrumbs.f7.html
+
+
+    +cssVars('breadcrumbs')
