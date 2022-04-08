@@ -1,3 +1,25 @@
+#########
+- iconUrl: "#{cdn}/i/showcase/byztxt-icon-1024.png"
+  iconRounded: false
+  title: "Byztxt Greek New Testament"
+  author:
+    url: https://www.flagsoft.com
+    name: Michael Mustun
+  links:
+    appstore: https://apps.apple.com/ch/app/byztxt-greek-new-testament-l/id809906339?l=en
+    googleplay: 
+    website: https://www.flagsoft.com
+  description: |
+    Interlinear Majority Text NA28. Read the Bible in Koine Greek even if you don’t know the Greek letters. Is it true? Yes it is. What you have here now is the entire New Testament written with the so called Koine Greek which is ancient greek used within the old Byzantine Empire. Below each word in greek you see the transliterated word in plain English for pronunciation. So you can read right ahead even without knowing any greek at all. But I am sure you will find words you already heard of but you did not realize that originally it came from ancient greek. That's fascinating isn't it? The whole Bible is offline ready.
+  features:
+  - Multiple Languages
+  screenshots:
+  - "#{cdn}/i/showcase/byztxt-01.png"
+  - "#{cdn}/i/showcase/byztxt-02.png"
+  - "#{cdn}/i/showcase/byztxt-03.png"
+  - "#{cdn}/i/showcase/byztxt-04.png"
+  - "#{cdn}/i/showcase/byztxt-05.png"
+
 ##########
 - iconUrl: '#{cdn}/i/showcase/AvatarGen-icon.png'
   iconRounded: true
