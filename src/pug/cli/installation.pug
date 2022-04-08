@@ -29,3 +29,16 @@ block content
     p If you don't want to install it globally, it can also be used with <a href="https://github.com/npm/npx" target="_blank">npx</a>.
 
 
+
+    p Problem: icons are missing on macOS
+    p Solution: 
+
+    Add --flat for cpy within postinstall command section in file package.json
+    ```
+    "postinstall": "cpy --flat ./node_modules/framework7-icons/fonts/*.* ./src/fonts/ && cpy --flat ./node_modules/material-icons/iconfont/*.* ./src/fonts/"
+    ```
+    then run:
+    ```
+    npm run postinstall
+    ```
+    And you are good to go.
