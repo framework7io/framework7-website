@@ -31,14 +31,14 @@ block content
 
 
     p Problem: icons are missing on macOS
-    p Solution: 
+    p Solution:
 
-    Add --flat for cpy within postinstall command section in file package.json
+    p Add --flat for cpy within postinstall command section in file package.json
+    ```shell
+      "postinstall": "cpy --flat ./node_modules/framework7-icons/fonts/*.* ./src/fonts/ && cpy --flat ./node_modules/material-icons/iconfont/*.* ./src/fonts/"
     ```
-    "postinstall": "cpy --flat ./node_modules/framework7-icons/fonts/*.* ./src/fonts/ && cpy --flat ./node_modules/material-icons/iconfont/*.* ./src/fonts/"
+    p then run:
+    ```shell
+      npm run postinstall
     ```
-    then run:
-    ```
-    npm run postinstall
-    ```
-    And you are good to go.
+    p And you are good to go.
