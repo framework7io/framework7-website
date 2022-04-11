@@ -1,0 +1,63 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Migration from Framework7 v6 to v7 | Framework7 Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Migration from Framework7 v6 to v7
+    ul.docs-index
+    p In this article we will walk through most of the breaking changes to check what needs to be done to migrate your app from Framework7 v6 to Framework7 v7.
+    p You can also check the <a href="/release-notes/">full changelog here</a>
+
+    h2 Package
+    p Core version has <a href="package.html">new package structure</a>, it is now uses pure ES module structure so you may need to tweak your imports to match <a href="package.html#es-module-exports">package exports</a>.
+
+    p So if you have something like this in v5:
+    ```js
+      import Framework7 from 'framework7'
+      import Searchbar from 'framework7/components/searchbar/searchbar.js'
+      import 'framework7/framework7.css'
+      import 'framework7/components/searchbar/searchbar.css'
+    ```
+    p it should be changed to:
+    ```js
+      import Framework7 from 'framework7'
+      import Searchbar from 'framework7/components/searchbar'
+      import 'framework7/css'
+      import 'framework7/components/searchbar/css'
+    ```
+
+    h2 Dark Mode
+    p Dark "theme" term has been renamed to dark "mode" in v7:
+    ul
+      li `theme-dark` CSS class added to elements (or to `<html>` element) to make layout dark has been renamed to just `dark`
+      li `autoDarkTheme` app parameter has been renamed to `autoDarkMode`
+      li `darkThemeChange` app event has been renamed to `darkModeChange`
+      li `app.darkTheme` app boolean prop has been renamed to `app.darkMode`
+      li `app.enableAutoDarkTheme()` method has been renamed to `app.enableAutoDarkMode()` method
+      li `app.disableAutoDarkTheme()` method has been renamed to `app.disableAutoDarkMode()` method
+      li in React, Vue and Svelte components `themeDark` prop has been renamed to `dark` prop
+
+    h2 Calendar
+    p <a href="calendar.html">Calendar</a> component has updated design and Moth/Year/Time pickers are now opened in popovers. So make sure it doesn't break your design if you did some CSS/JS tweaks there
+
+    h2 Picker
+    p <a href="picker.html">Picker</a> component has been reworked to use CSS Scroll Snap API for smoother experience. So make sure it doesn't break your design if you did some CSS/JS tweaks there
+
+    h2 Swiper v8
+    p Framework7 v7 comes with all new Swiper version 8 which has a lot of new features and bunch of API changes since Swiper v6 (that was in Framework7 v6).
+    p It is recommended to check Swiper update guides on what is new:
+    ul
+      li
+        a(href="https://swiperjs.com/migration-guide" target="_blank") Migration Guide to Swiper 7
+      li
+        a(href="https://swiperjs.com/migration-guide-v8" target="_blank") Migration Guide to Swiper 8
+
+    h2 Photo Browser
+    p Photo Browser by default now uses Swiper's CSS mode on iOS and Android devices, so make sure it still works properly for you
+
