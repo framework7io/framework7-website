@@ -102,9 +102,12 @@ block content
           td Number of items per row. Doesn't compatible when using Virtual List with dynamic height
         tr
           td height
-          td number or function(item)
+          td number or function(item) or "auto"
           td
-          td If `number` - list item height in px. If `function` then function should return item height. By default equals to `44` for iOS theme, `48` for MD theme, `38` for Aurora theme.
+          td
+            p If `number` - list item height in px.
+            p If `function` then function should return item height. By default equals to `44` for iOS theme, `48` for MD theme, `38` for Aurora theme.
+            p If `"auto"` it will calculate each item height automatically. It can work a bit slower in this case, but still much better when it is impossible to determine or predict item height
         tr
           td renderItem
           td function(item)
