@@ -47,11 +47,7 @@ search-index.json
 public/kitchen-sink/react/src
 public/kitchen-sink/vue/src
 public/kitchen-sink/svelte/src
-public/i/sponsors/*.png
-public/i/sponsors/*.jpg
-public/i/sponsors/*.svg
 
 src/pug/docs-demos/core/*.html
 !src/pug/docs-demos/core/*.f7.html
-src/pug/sponsors/sponsors.json
 .env.local

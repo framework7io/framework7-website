@@ -37,7 +37,7 @@ const downloadImage = (image) => {
 const getSponsor = (item) => {
   return new Promise((resolve, reject) => {
     const { createdAt } = item.sys;
-    const { title, link, plan, ref, image } = item.fields;
+    const { title, link, plan, ref, image, endsAt } = item.fields;
     const downloads = [];
     if (image && !hasImage(image)) {
       downloads.push(downloadImage(image));
@@ -50,6 +50,7 @@ const getSponsor = (item) => {
           link,
           plan,
           ref,
+          endDate: endsAt || '',
           image: image ? image.fields.file.fileName : '',
         };
         resolve(sponsor);
