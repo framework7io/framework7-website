@@ -68,7 +68,7 @@ export default function initDocsNav() {
     let $activeListItem;
     $('.docs-nav a').each(function forEach() {
       const link = $(this).attr('href');
-      if (loc === link && link !== '#') {
+      if ((loc === link || loc === link.replace('.html', '')) && link !== '#') {
         $activeListItem = $(this).parent('li');
         $(this).addClass('active').parent('li').addClass('active');
       }
