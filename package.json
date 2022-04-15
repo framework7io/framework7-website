@@ -23,7 +23,6 @@
   ],
   "scripts": {
     "start": "gulp server -local",
-    "build-full": "node ./build/build-sponsors.js && gulp build",
     "build": "gulp build",
     "build-js": "gulp js",
     "build-less": "gulp less",
