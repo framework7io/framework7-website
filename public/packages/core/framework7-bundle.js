@@ -1,5 +1,5 @@
 /**
- * Framework7 7.0.0
+ * Framework7 7.0.1
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -43250,6 +43250,8 @@
       });
       let requireUpdateOnVirtual;
       on('virtualUpdate', () => {
+        if (swiper.params.effect !== effect) return;
+
         if (!swiper.slides.length) {
           requireUpdateOnVirtual = true;
         }
@@ -44054,7 +44056,7 @@
     }
 
     /**
-     * Swiper 8.1.0
+     * Swiper 8.1.1
      * Most modern mobile touch slider and framework with hardware accelerated transitions
      * https://swiperjs.com
      *
@@ -44062,7 +44064,7 @@
      *
      * Released under the MIT License
      *
-     * Released on: April 8, 2022
+     * Released on: April 15, 2022
      */
 
     const modules = [Virtual, Keyboard, Mousewheel, Navigation, Pagination, Scrollbar, Parallax, Zoom, Lazy, Controller, A11y, History, HashNavigation, Autoplay, Thumb, freeMode, Grid, Manipulation, EffectFade, EffectCube, EffectFlip, EffectCoverflow, EffectCreative, EffectCards];
