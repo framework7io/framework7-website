@@ -1,8 +1,13 @@
 import $ from '../../shared/dom7.js';
 import { bindMethods } from '../../shared/utils.js';
 const Progressbar = {
-  set(...args) {
+  set() {
     const app = this;
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
     let [el, progress, duration] = args;
 
     if (typeof args[0] === 'number') {
@@ -39,8 +44,12 @@ const Progressbar = {
     return $progressbarEl[0];
   },
 
-  show(...args) {
+  show() {
     const app = this; // '.page', 50, 'multi'
+
+    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
 
     let [el, progress, color] = args;
     let type = 'determined';
@@ -94,7 +103,11 @@ const Progressbar = {
     return $progressbarEl[0];
   },
 
-  hide(el, removeAfterHide = true) {
+  hide(el, removeAfterHide) {
+    if (removeAfterHide === void 0) {
+      removeAfterHide = true;
+    }
+
     const app = this;
     const $el = $(el || app.$el);
     if ($el.length === 0) return undefined;

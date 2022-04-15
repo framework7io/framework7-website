@@ -8,7 +8,11 @@ import Framework7Class from '../../shared/class.js';
 import $jsx from '../../shared/$jsx.js';
 
 class Autocomplete extends Framework7Class {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params, [app]);
     const ac = this;
     ac.app = app;

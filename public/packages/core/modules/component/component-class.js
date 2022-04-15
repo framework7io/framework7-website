@@ -7,11 +7,16 @@ import vdom from './vdom.js';
 import patch from './patch.js';
 
 class Component {
-  constructor(app, component, props = {}, {
-    el,
-    context,
-    children
-  } = {}) {
+  constructor(app, component, props, _temp) {
+    if (props === void 0) {
+      props = {};
+    }
+
+    let {
+      el,
+      context,
+      children
+    } = _temp === void 0 ? {} : _temp;
     const document = getDocument();
     merge(this, {
       f7: app,
@@ -219,17 +224,19 @@ class Component {
     } = this;
     if (!this.__eventHandlers) return;
 
-    this.__eventHandlers.forEach(({
-      eventName,
-      handler
-    }) => {
+    this.__eventHandlers.forEach(_ref => {
+      let {
+        eventName,
+        handler
+      } = _ref;
       $el.on(eventNameToColonCase(eventName), handler);
     });
 
-    this.__onceEventHandlers.forEach(({
-      eventName,
-      handler
-    }) => {
+    this.__onceEventHandlers.forEach(_ref2 => {
+      let {
+        eventName,
+        handler
+      } = _ref2;
       $el.once(eventNameToColonCase(eventName), handler);
     });
   }
@@ -240,17 +247,19 @@ class Component {
     } = this;
     if (!this.__eventHandlers) return;
 
-    this.__eventHandlers.forEach(({
-      eventName,
-      handler
-    }) => {
+    this.__eventHandlers.forEach(_ref3 => {
+      let {
+        eventName,
+        handler
+      } = _ref3;
       $el.on(eventNameToColonCase(eventName), handler);
     });
 
-    this.__onceEventHandlers.forEach(({
-      eventName,
-      handler
-    }) => {
+    this.__onceEventHandlers.forEach(_ref4 => {
+      let {
+        eventName,
+        handler
+      } = _ref4;
       $el.once(eventNameToColonCase(eventName), handler);
     });
   }
@@ -370,7 +379,11 @@ class Component {
     this.__destroyed = true;
   }
 
-  hook(name, ...args) {
+  hook(name) {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
     if (this.__destroyed) return;
     this[`__${name}`].forEach(handler => {
       handler(...args);

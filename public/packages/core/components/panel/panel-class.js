@@ -6,7 +6,11 @@ import swipePanel from './swipe-panel.js';
 import resizablePanel from './resizable-panel.js';
 
 class Panel extends Framework7Class {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     const extendedParams = extend({
       on: {}
     }, app.params.panel, params);
@@ -138,7 +142,11 @@ class Panel extends Framework7Class {
     return panel;
   }
 
-  setVisibleBreakpoint(emitEvents = true) {
+  setVisibleBreakpoint(emitEvents) {
+    if (emitEvents === void 0) {
+      emitEvents = true;
+    }
+
     const panel = this;
     const app = panel.app;
 
@@ -221,7 +229,11 @@ class Panel extends Framework7Class {
     return panel;
   }
 
-  setCollapsedBreakpoint(emitEvents = true) {
+  setCollapsedBreakpoint(emitEvents) {
+    if (emitEvents === void 0) {
+      emitEvents = true;
+    }
+
     const panel = this;
     const app = panel.app;
 
@@ -303,7 +315,11 @@ class Panel extends Framework7Class {
     return panel;
   }
 
-  onOpen(modifyHtmlClasses = true) {
+  onOpen(modifyHtmlClasses) {
+    if (modifyHtmlClasses === void 0) {
+      modifyHtmlClasses = true;
+    }
+
     const panel = this;
     const app = panel.app;
     panel.opened = true;
@@ -359,7 +375,11 @@ class Panel extends Framework7Class {
     panel.emit('local::closed panelClosed', panel);
   }
 
-  toggle(animate = true) {
+  toggle(animate) {
+    if (animate === void 0) {
+      animate = true;
+    }
+
     const panel = this;
     const breakpoint = panel.params.visibleBreakpoint;
     const app = panel.app;
@@ -409,7 +429,11 @@ class Panel extends Framework7Class {
     }
   }
 
-  open(animate = true) {
+  open(animate) {
+    if (animate === void 0) {
+      animate = true;
+    }
+
     const panel = this;
     const app = panel.app;
     if (!app.panel.allowOpen) return false;
@@ -490,7 +514,11 @@ class Panel extends Framework7Class {
     return true;
   }
 
-  close(animate = true) {
+  close(animate) {
+    if (animate === void 0) {
+      animate = true;
+    }
+
     const panel = this;
     const {
       effect,

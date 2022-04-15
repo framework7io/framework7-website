@@ -16,7 +16,11 @@ export default {
       domProp: 'f7Calendar'
     });
 
-    app.calendar.close = function close(el = '.calendar') {
+    app.calendar.close = function close(el) {
+      if (el === void 0) {
+        el = '.calendar';
+      }
+
       const $el = $(el);
       if ($el.length === 0) return;
       const calendar = $el[0].f7Calendar;

@@ -401,8 +401,13 @@ const Swipeout = {
   allow: true,
   el: undefined,
 
-  open(...args) {
+  open() {
     const app = this;
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
     let [el, side, callback] = args;
 
     if (typeof args[1] === 'function') {
@@ -558,7 +563,11 @@ export default {
   },
 
   clicks: {
-    '.swipeout-open': function openSwipeout($clickedEl, data = {}) {
+    '.swipeout-open': function openSwipeout($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       app.swipeout.open(data.swipeout, data.side);
     },
@@ -568,7 +577,11 @@ export default {
       if ($swipeoutEl.length === 0) return;
       app.swipeout.close($swipeoutEl);
     },
-    '.swipeout-delete': function deleteSwipeout($clickedEl, data = {}) {
+    '.swipeout-delete': function deleteSwipeout($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       const $swipeoutEl = $clickedEl.closest('.swipeout');
       if ($swipeoutEl.length === 0) return;

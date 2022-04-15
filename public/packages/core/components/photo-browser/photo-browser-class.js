@@ -8,7 +8,11 @@ import Framework7Class from '../../shared/class.js';
 import $jsx from '../../shared/$jsx.js';
 
 class PhotoBrowser extends Framework7Class {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params, [app]);
     const pb = this;
     pb.app = app;
@@ -372,35 +376,65 @@ class PhotoBrowser extends Framework7Class {
           pb.emit('local::doubleClick', e);
         },
 
-        slideChange(...args) {
+        slideChange() {
           const swiper = this;
           pb.onSlideChange(swiper);
+
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
           pb.emit('local::slideChange', ...args);
         },
 
-        transitionStart(...args) {
+        transitionStart() {
+          for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+            args[_key2] = arguments[_key2];
+          }
+
           pb.emit('local::transitionStart', ...args);
         },
 
-        transitionEnd(...args) {
+        transitionEnd() {
+          for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+            args[_key3] = arguments[_key3];
+          }
+
           pb.emit('local::transitionEnd', ...args);
         },
 
-        slideChangeTransitionStart(...args) {
+        slideChangeTransitionStart() {
           const swiper = this;
           pb.onSlideChange(swiper);
+
+          for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+            args[_key4] = arguments[_key4];
+          }
+
           pb.emit('local::slideChangeTransitionStart', ...args);
         },
 
-        slideChangeTransitionEnd(...args) {
+        slideChangeTransitionEnd() {
+          for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+            args[_key5] = arguments[_key5];
+          }
+
           pb.emit('local::slideChangeTransitionEnd', ...args);
         },
 
-        lazyImageLoad(...args) {
+        lazyImageLoad() {
+          for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+            args[_key6] = arguments[_key6];
+          }
+
           pb.emit('local::lazyImageLoad', ...args);
         },
 
-        lazyImageReady(...args) {
+        lazyImageReady() {
+          for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+            args[_key7] = arguments[_key7];
+          }
+
           const slideEl = args[0];
           $(slideEl).removeClass('photo-browser-slide-lazy');
           pb.emit('local::lazyImageReady', ...args);

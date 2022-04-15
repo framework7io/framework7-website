@@ -5,7 +5,11 @@ import { getSupport } from '../../shared/get-support.js';
 import Framework7Class from '../../shared/class.js';
 
 class Tooltip extends Framework7Class {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params, [app]);
     const tooltip = this;
     const support = getSupport();

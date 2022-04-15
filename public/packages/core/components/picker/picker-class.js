@@ -9,7 +9,11 @@ import pickerColumn from './picker-column.js';
 import $jsx from '../../shared/$jsx.js';
 
 class Picker extends Framework7Class {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params, [app]);
     const picker = this;
     const device = getDevice();

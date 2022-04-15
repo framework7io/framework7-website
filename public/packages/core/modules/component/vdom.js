@@ -19,9 +19,18 @@ const toCamelCase = name => {
   }).join('');
 };
 
-const propsFromAttrs = (...args) => {
+const propsFromAttrs = function () {
   const context = {};
-  args.forEach((obj = {}) => {
+
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  args.forEach(function (obj) {
+    if (obj === void 0) {
+      obj = {};
+    }
+
     Object.keys(obj).forEach(key => {
       context[toCamelCase(key)] = obj[key];
     });
@@ -29,12 +38,13 @@ const propsFromAttrs = (...args) => {
   return context;
 };
 
-const createCustomComponent = ({
-  f7,
-  treeNode,
-  vnode,
-  data
-}) => {
+const createCustomComponent = _ref => {
+  let {
+    f7,
+    treeNode,
+    vnode,
+    data
+  } = _ref;
   const component = typeof treeNode.type === 'function' ? treeNode.type : customComponents[treeNode.type];
   f7.component.create(component, propsFromAttrs(data.attrs || {}, data.props || {}), {
     el: vnode.elm,
@@ -178,20 +188,21 @@ function getHooks(treeNode, data, f7, initial, isRoot) {
   return hooks;
 }
 
-const getEventHandler = (eventHandler, {
-  stop,
-  prevent,
-  once
-} = {}) => {
+const getEventHandler = function (eventHandler, _temp) {
+  let {
+    stop,
+    prevent,
+    once
+  } = _temp === void 0 ? {} : _temp;
   let fired = false;
 
-  function handler(...args) {
-    const e = args[0];
+  function handler() {
+    const e = arguments.length <= 0 ? undefined : arguments[0];
     if (once && fired) return;
     if (stop) e.stopPropagation();
     if (prevent) e.preventDefault();
     fired = true;
-    eventHandler(...args);
+    eventHandler(...arguments);
   }
 
   return handler;
@@ -357,6 +368,10 @@ const treeNodeToVNode = (treeNode, component, f7, initial, isRoot) => {
   return h(getTagName(treeNode), data, children);
 };
 
-export default function vdom(tree = {}, component, initial) {
+export default function vdom(tree, component, initial) {
+  if (tree === void 0) {
+    tree = {};
+  }
+
   return treeNodeToVNode(tree, component, component.f7, initial, true);
 }

@@ -44,7 +44,11 @@ const Toolbar = {
     app.toolbar.setHighlight(tabbarEl);
   },
 
-  hide(el, animate = true) {
+  hide(el, animate) {
+    if (animate === void 0) {
+      animate = true;
+    }
+
     const app = this;
     const $el = $(el);
     if ($el.hasClass('toolbar-hidden')) return;
@@ -57,7 +61,11 @@ const Toolbar = {
     app.emit('toolbarHide', $el[0]);
   },
 
-  show(el, animate = true) {
+  show(el, animate) {
+    if (animate === void 0) {
+      animate = true;
+    }
+
     const app = this;
     const $el = $(el);
     if (!$el.hasClass('toolbar-hidden')) return;

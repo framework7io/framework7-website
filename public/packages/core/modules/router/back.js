@@ -558,7 +558,7 @@ function loadBack(router, backParams, backOptions, ignorePageChange) {
   return router;
 }
 
-function back(...args) {
+function back() {
   const router = this;
   const device = getDevice();
   if (router.swipeBackActive) return router;
@@ -566,11 +566,11 @@ function back(...args) {
   let navigateOptions;
   let route;
 
-  if (typeof args[0] === 'object') {
-    navigateOptions = args[0] || {};
+  if (typeof (arguments.length <= 0 ? undefined : arguments[0]) === 'object') {
+    navigateOptions = (arguments.length <= 0 ? undefined : arguments[0]) || {};
   } else {
-    navigateUrl = args[0];
-    navigateOptions = args[1] || {};
+    navigateUrl = arguments.length <= 0 ? undefined : arguments[0];
+    navigateOptions = (arguments.length <= 1 ? undefined : arguments[1]) || {};
   }
 
   const {

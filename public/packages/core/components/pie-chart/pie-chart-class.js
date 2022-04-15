@@ -6,7 +6,11 @@ import Framework7Class from '../../shared/class.js';
 import $jsx from '../../shared/$jsx.js';
 
 class PieChart extends Framework7Class {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params, [app]);
     const self = this;
     const defaults = extend({}, app.params.pieChart); // Extend defaults with modules params
@@ -61,11 +65,12 @@ class PieChart extends Framework7Class {
       return [x, y];
     }
 
-    datasets.forEach(({
-      value,
-      label,
-      color
-    }) => {
+    datasets.forEach(_ref => {
+      let {
+        value,
+        label,
+        color
+      } = _ref;
       const percentage = value / this.getSummValue();
       const [startX, startY] = getCoordinatesForPercentage(cumulativePercentage);
       cumulativePercentage += percentage;
@@ -175,7 +180,11 @@ class PieChart extends Framework7Class {
     })));
   }
 
-  update(newParams = {}) {
+  update(newParams) {
+    if (newParams === void 0) {
+      newParams = {};
+    }
+
     const self = this;
     const {
       params

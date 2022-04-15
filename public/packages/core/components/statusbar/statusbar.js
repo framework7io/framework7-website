@@ -122,7 +122,11 @@ const Statusbar = {
     });
   },
 
-  overlaysWebView(overlays = true) {
+  overlaysWebView(overlays) {
+    if (overlays === void 0) {
+      overlays = true;
+    }
+
     const window = getWindow();
     const device = getDevice();
 

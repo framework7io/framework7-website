@@ -4,7 +4,15 @@ export function uniqueNumber() {
   uniqueNum += 1;
   return uniqueNum;
 }
-export function id(mask = 'xxxxxxxxxx', map = '0123456789abcdef') {
+export function id(mask, map) {
+  if (mask === void 0) {
+    mask = 'xxxxxxxxxx';
+  }
+
+  if (map === void 0) {
+    map = '0123456789abcdef';
+  }
+
   const length = map.length;
   return mask.replace(/x/g, () => map[Math.floor(Math.random() * length)]);
 }
@@ -58,7 +66,11 @@ export function cancelAnimationFrame(frameId) {
   const window = getWindow();
   return window.cancelAnimationFrame(frameId);
 }
-export function nextTick(callback, delay = 0) {
+export function nextTick(callback, delay) {
+  if (delay === void 0) {
+    delay = 0;
+  }
+
   return setTimeout(callback, delay);
 }
 export function nextFrame(callback) {
@@ -91,7 +103,11 @@ export function parseUrlQuery(url) {
 
   return query;
 }
-export function getTranslate(el, axis = 'x') {
+export function getTranslate(el, axis) {
+  if (axis === void 0) {
+    axis = 'x';
+  }
+
   const window = getWindow();
   let matrix;
   let curTransform;
@@ -117,19 +133,23 @@ export function getTranslate(el, axis = 'x') {
     // Latest Chrome and webkits Fix
     if (window.WebKitCSSMatrix) curTransform = transformMatrix.m41; // Crazy IE10 Matrix
     else if (matrix.length === 16) curTransform = parseFloat(matrix[12]); // Normal Browsers
-      else curTransform = parseFloat(matrix[4]);
+    else curTransform = parseFloat(matrix[4]);
   }
 
   if (axis === 'y') {
     // Latest Chrome and webkits Fix
     if (window.WebKitCSSMatrix) curTransform = transformMatrix.m42; // Crazy IE10 Matrix
     else if (matrix.length === 16) curTransform = parseFloat(matrix[13]); // Normal Browsers
-      else curTransform = parseFloat(matrix[5]);
+    else curTransform = parseFloat(matrix[5]);
   }
 
   return curTransform || 0;
 }
-export function serializeObject(obj, parents = []) {
+export function serializeObject(obj, parents) {
+  if (parents === void 0) {
+    parents = [];
+  }
+
   if (typeof obj === 'string') return obj;
   const resultArray = [];
   const separator = '&';
@@ -189,7 +209,11 @@ export function serializeObject(obj, parents = []) {
 export function isObject(o) {
   return typeof o === 'object' && o !== null && o.constructor && o.constructor === Object;
 }
-export function merge(...args) {
+export function merge() {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
   const to = args[0];
   args.splice(0, 1);
   const from = args;
@@ -213,10 +237,14 @@ export function merge(...args) {
 
   return to;
 }
-export function extend(...args) {
+export function extend() {
   let deep = true;
   let to;
   let from;
+
+  for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+    args[_key2] = arguments[_key2];
+  }
 
   if (typeof args[0] === 'boolean') {
     deep = args[0];
@@ -330,9 +358,13 @@ export function colorHslToHsb(h, s, l) {
   HSB.s = HSL.l > 0 ? 2 * t / HSB.b : HSB.s;
   return [HSB.h, HSB.s, HSB.b];
 }
-export function colorThemeCSSProperties(...args) {
+export function colorThemeCSSProperties() {
   let hex;
   let rgb;
+
+  for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+    args[_key3] = arguments[_key3];
+  }
 
   if (args.length === 1) {
     hex = args[0];
@@ -368,8 +400,13 @@ export function bindMethods(instance, obj) {
     instance[key] = obj[key];
   });
 }
-export function flattenArray(...args) {
+export function flattenArray() {
   const arr = [];
+
+  for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+    args[_key4] = arguments[_key4];
+  }
+
   args.forEach(arg => {
     if (Array.isArray(arg)) arr.push(...flattenArray(...arg));else arr.push(arg);
   });

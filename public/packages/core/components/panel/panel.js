@@ -42,7 +42,11 @@ export default {
           return new Panel(app, params);
         },
 
-        get(el = '.panel') {
+        get(el) {
+          if (el === void 0) {
+            el = '.panel';
+          }
+
           if (el instanceof Panel) return el;
           if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
 
@@ -51,13 +55,21 @@ export default {
           return $el[0].f7Panel;
         },
 
-        destroy(el = '.panel') {
+        destroy(el) {
+          if (el === void 0) {
+            el = '.panel';
+          }
+
           const panel = app.panel.get(el);
           if (panel && panel.destroy) return panel.destroy();
           return undefined;
         },
 
-        open(el = '.panel', animate) {
+        open(el, animate) {
+          if (el === void 0) {
+            el = '.panel';
+          }
+
           if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
 
           let panel = app.panel.get(el);
@@ -73,7 +85,11 @@ export default {
           return undefined;
         },
 
-        close(el = '.panel-in', animate) {
+        close(el, animate) {
+          if (el === void 0) {
+            el = '.panel-in';
+          }
+
           if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
 
           let panel = app.panel.get(el);
@@ -89,7 +105,11 @@ export default {
           return undefined;
         },
 
-        toggle(el = '.panel', animate) {
+        toggle(el, animate) {
+          if (el === void 0) {
+            el = '.panel';
+          }
+
           if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
 
           let panel = app.panel.get(el);
@@ -160,15 +180,27 @@ export default {
     }
   },
   clicks: {
-    '.panel-open': function open(clickedEl, data = {}) {
+    '.panel-open': function open(clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       app.panel.open(data.panel, data.animate);
     },
-    '.panel-close': function close(clickedEl, data = {}) {
+    '.panel-close': function close(clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       app.panel.close(data.panel, data.animate);
     },
-    '.panel-toggle': function close(clickedEl, data = {}) {
+    '.panel-toggle': function close(clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       app.panel.toggle(data.panel, data.animate);
     },

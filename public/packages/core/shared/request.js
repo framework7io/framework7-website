@@ -59,7 +59,7 @@ const request = requestOptions => new Promise((resolve, reject) => {
   } // Function to run XHR callbacks and events
 
 
-  function fireCallback(callbackName, ...data) {
+  function fireCallback(callbackName) {
     /*
     Callbacks:
     beforeCreate (options),
@@ -72,6 +72,10 @@ const request = requestOptions => new Promise((resolve, reject) => {
     */
     let globalCallbackValue;
     let optionCallbackValue;
+
+    for (var _len = arguments.length, data = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      data[_key - 1] = arguments[_key];
+    }
 
     if (globals[callbackName]) {
       globalCallbackValue = globals[callbackName](...data);
@@ -402,8 +406,12 @@ const request = requestOptions => new Promise((resolve, reject) => {
   xhr.send(postData);
 });
 
-function requestShortcut(method, ...args) {
+function requestShortcut(method) {
   let [url, data, success, error, dataType] = [];
+
+  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    args[_key2 - 1] = arguments[_key2];
+  }
 
   if (typeof args[1] === 'function') {
     [url, success, error, dataType] = args;
@@ -440,11 +448,41 @@ function requestShortcut(method, ...args) {
 }
 
 Object.assign(request, {
-  get: (...args) => requestShortcut('get', ...args),
-  post: (...args) => requestShortcut('post', ...args),
-  json: (...args) => requestShortcut('json', ...args),
-  getJSON: (...args) => requestShortcut('json', ...args),
-  postJSON: (...args) => requestShortcut('postJSON', ...args)
+  get: function () {
+    for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+      args[_key3] = arguments[_key3];
+    }
+
+    return requestShortcut('get', ...args);
+  },
+  post: function () {
+    for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+      args[_key4] = arguments[_key4];
+    }
+
+    return requestShortcut('post', ...args);
+  },
+  json: function () {
+    for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+      args[_key5] = arguments[_key5];
+    }
+
+    return requestShortcut('json', ...args);
+  },
+  getJSON: function () {
+    for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+      args[_key6] = arguments[_key6];
+    }
+
+    return requestShortcut('json', ...args);
+  },
+  postJSON: function () {
+    for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+      args[_key7] = arguments[_key7];
+    }
+
+    return requestShortcut('postJSON', ...args);
+  }
 });
 
 request.abortController = () => {

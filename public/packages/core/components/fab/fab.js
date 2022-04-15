@@ -121,7 +121,11 @@ const Fab = {
     $fabEl.trigger('fab:open');
   },
 
-  close(fabEl = '.fab-opened') {
+  close(fabEl) {
+    if (fabEl === void 0) {
+      fabEl = '.fab-opened';
+    }
+
     const app = this;
     const $fabEl = $(fabEl).eq(0);
     const $buttonsEl = $fabEl.find('.fab-buttons');
@@ -165,11 +169,19 @@ export default {
       const app = this;
       app.fab.toggle($clickedEl.parents('.fab'));
     },
-    '.fab-open': function open($clickedEl, data = {}) {
+    '.fab-open': function open($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       app.fab.open(data.fab);
     },
-    '.fab-close': function close($clickedEl, data = {}) {
+    '.fab-close': function close($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       app.fab.close(data.fab);
     },

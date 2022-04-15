@@ -2,16 +2,23 @@
 
 # Change Log
 
-# [7.0.0] WIP
+# [7.0.0] (2022-04-15)
 
 ### Bug Fixes
 
+- **svelte:** reuse original Framework7 instance ([feda228](https://github.com/framework7io/framework7/commit/feda228523ba672cac2df49b1d6c6ce7d45e91fd)), closes [#3993](https://github.com/framework7io/framework7/issues/3993) [#3992](https://github.com/framework7io/framework7/issues/3992)
+- **core:** fix component types ([249f54c](https://github.com/framework7io/framework7/commit/249f54c8f790a699b51c18c674821e52161f47d4)), closes [#3997](https://github.com/framework7io/framework7/issues/3997)
+- **preloaded:** set initial position to 0 for iOS preloader ([#4002](https://github.com/framework7io/framework7/issues/4002)) ([76e8ef0](https://github.com/framework7io/framework7/commit/76e8ef0b9ae69aa5623bff18fac1d6045b89b34a))
+- **react:** fix Actions and Range types ([5c3087c](https://github.com/framework7io/framework7/commit/5c3087c366acaaa3cf5775df8946c79c3b414392)), closes [#3997](https://github.com/framework7io/framework7/issues/3997)
 - use file extensions in all imports ([f85d52f](https://github.com/framework7io/framework7/commit/f85d52fe7b71c920553872036a2c67da604ec9a7))
 - **vue:** fix missing imports extensions ([3692e28](https://github.com/framework7io/framework7/commit/3692e28d676e478b7dc2cca47262c6e02b5ee8d7))
 - **calendar:** don't close sheet calendar on picker popover click ([f562972](https://github.com/framework7io/framework7/commit/f562972720e7e7eac6f1bcbece6dd6e6ee955379))
 - **calendar:** fix invisible calendar popover on iOS ([f10e7e5](https://github.com/framework7io/framework7/commit/f10e7e51401e1fe4cc2cc4d1b1a10ee024bde398))
 
 ### Features
+
+- **virtual-list:** support virtual items auto height ([c62d15d](https://github.com/framework7io/framework7/commit/c62d15dbde371227802a2be20ad989853438ba0a))
+- **view:** new `initRouterOnTabShow` parameter to load view router only on tab show ([0a67569](https://github.com/framework7io/framework7/commit/0a6756956ec39f138b7629013a99f65a152806cb))
 
 - **calendar:** month picker as popover ([c1cb89f](https://github.com/framework7io/framework7/commit/c1cb89ff9b51b40de2c9ad2b360c2db7c779e8ee))
 - **calendar:** tweak design + time picker as popover ([d2cf190](https://github.com/framework7io/framework7/commit/d2cf190b74cda1acc588a695732f730f1f0ef445))
@@ -44,6 +51,14 @@
 - **framework7-vue:** move to pure ES module package ([e9adee6](https://github.com/framework7io/framework7/commit/e9adee62efd67559f33ed2ce4ec57f4892b0d519))
 - increase build target to more modern browsers ([5efd721](https://github.com/framework7io/framework7/commit/5efd7212c1040c430646cb3acd825879640ca768))
 - **photo-browser:** enables cssMode by default for iOS and Android devices ([d6cb8e3](https://github.com/framework7io/framework7/commit/d6cb8e327165105421587e60ea175d3a7fc257f7))
+
+# [6.3.17](https://github.com/framework7io/framework7/compare/v6.3.16...v6.3.17) (2022-04-11)
+
+### Bug Fixes
+
+- **core:** fix component types ([249f54c](https://github.com/framework7io/framework7/commit/249f54c8f790a699b51c18c674821e52161f47d4)), closes [#3997](https://github.com/framework7io/framework7/issues/3997)
+- **preloaded:** set initial position to 0 for iOS preloader ([#4002](https://github.com/framework7io/framework7/issues/4002)) ([76e8ef0](https://github.com/framework7io/framework7/commit/76e8ef0b9ae69aa5623bff18fac1d6045b89b34a))
+- **react:** fix Actions and Range types ([5c3087c](https://github.com/framework7io/framework7/commit/5c3087c366acaaa3cf5775df8946c79c3b414392)), closes [#3997](https://github.com/framework7io/framework7/issues/3997)
 
 # [7.0.0-beta.11](https://github.com/framework7io/framework7/compare/v7.0.0-beta.10...v7.0.0-beta.11) (2022-02-17)
 

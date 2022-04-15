@@ -8,7 +8,11 @@ import { getSupport } from '../../shared/get-support.js';
 import $jsx from '../../shared/$jsx.js';
 
 class Calendar extends Framework7Class {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params, [app]);
     const calendar = this;
     calendar.params = extend({}, app.params.calendar, params);
@@ -1010,7 +1014,11 @@ class Calendar extends Framework7Class {
     }
   }
 
-  resetMonth(transition = '') {
+  resetMonth(transition) {
+    if (transition === void 0) {
+      transition = '';
+    }
+
     const calendar = this;
     const {
       $wrapperEl,

@@ -235,7 +235,11 @@ const Sortable = {
     });
   },
 
-  enable(el = '.list.sortable') {
+  enable(el) {
+    if (el === void 0) {
+      el = '.list.sortable';
+    }
+
     const app = this;
     const $el = $(el);
     if ($el.length === 0) return;
@@ -244,7 +248,11 @@ const Sortable = {
     app.emit('sortableEnable', $el[0]);
   },
 
-  disable(el = '.list.sortable') {
+  disable(el) {
+    if (el === void 0) {
+      el = '.list.sortable';
+    }
+
     const app = this;
     const $el = $(el);
     if ($el.length === 0) return;
@@ -253,7 +261,11 @@ const Sortable = {
     app.emit('sortableDisable', $el[0]);
   },
 
-  toggle(el = '.list.sortable') {
+  toggle(el) {
+    if (el === void 0) {
+      el = '.list.sortable';
+    }
+
     const app = this;
     const $el = $(el);
     if ($el.length === 0) return;
@@ -290,15 +302,27 @@ export default {
 
   },
   clicks: {
-    '.sortable-enable': function enable($clickedEl, data = {}) {
+    '.sortable-enable': function enable($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       app.sortable.enable(data.sortable);
     },
-    '.sortable-disable': function disable($clickedEl, data = {}) {
+    '.sortable-disable': function disable($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       app.sortable.disable(data.sortable);
     },
-    '.sortable-toggle': function toggle($clickedEl, data = {}) {
+    '.sortable-toggle': function toggle($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       app.sortable.toggle(data.sortable);
     }

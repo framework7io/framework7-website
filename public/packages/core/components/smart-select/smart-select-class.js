@@ -6,7 +6,11 @@ import Framework7Class from '../../shared/class.js';
 import $jsx from '../../shared/$jsx.js';
 
 class SmartSelect extends Framework7Class {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params, [app]);
     const ss = this;
     const defaults = extend({
@@ -396,7 +400,11 @@ class SmartSelect extends Framework7Class {
     const ss = this;
     if (ss.params.renderItem) return ss.params.renderItem.call(ss, item, index);
 
-    function getIconContent(iconValue = '') {
+    function getIconContent(iconValue) {
+      if (iconValue === void 0) {
+        iconValue = '';
+      }
+
       if (iconValue.indexOf(':') >= 0) {
         return iconValue.split(':')[1];
       }
@@ -404,7 +412,11 @@ class SmartSelect extends Framework7Class {
       return '';
     }
 
-    function getIconClass(iconValue = '') {
+    function getIconClass(iconValue) {
+      if (iconValue === void 0) {
+        iconValue = '';
+      }
+
       if (iconValue.indexOf(':') >= 0) {
         let className = iconValue.split(':')[0];
         if (className === 'f7') className = 'f7-icons';

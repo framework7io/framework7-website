@@ -5,7 +5,11 @@ import Framework7Class from '../../shared/class.js';
 import resizableView from './resizable-view.js';
 
 class View extends Framework7Class {
-  constructor(app, el, viewParams = {}) {
+  constructor(app, el, viewParams) {
+    if (viewParams === void 0) {
+      viewParams = {};
+    }
+
     super(viewParams, [app]);
     const view = this;
     const ssr = view.params.routerId;
@@ -207,7 +211,14 @@ class View extends Framework7Class {
         view.initMasterDetail();
       }
 
-      view.router.init();
+      if (view.params.initRouterOnTabShow && view.$el.hasClass('tab') && !view.$el.hasClass('tab-active')) {
+        view.$el.once('tab:show', () => {
+          view.router.init();
+        });
+      } else {
+        view.router.init();
+      }
+
       view.$el.trigger('view:init');
       view.emit('local::init viewInit', view);
     }

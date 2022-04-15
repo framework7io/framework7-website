@@ -16,7 +16,11 @@ export default {
       domProp: 'f7Picker'
     });
 
-    app.picker.close = function close(el = '.picker') {
+    app.picker.close = function close(el) {
+      if (el === void 0) {
+        el = '.picker';
+      }
+
       const $el = $(el);
       if ($el.length === 0) return;
       const picker = $el[0].f7Picker;

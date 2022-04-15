@@ -1,5 +1,5 @@
 /**
- * Framework7 7.0.0-beta.12
+ * Framework7 7.0.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,14 +7,14 @@
  *
  * Released under the MIT License
  *
- * Released on: February 22, 2022
+ * Released on: April 15, 2022
  */
 
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Framework7 = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
     /**
      * SSR Window 4.0.2
@@ -33,7 +33,15 @@
       return obj !== null && typeof obj === 'object' && 'constructor' in obj && obj.constructor === Object;
     }
 
-    function extend$2(target = {}, src = {}) {
+    function extend$2(target, src) {
+      if (target === void 0) {
+        target = {};
+      }
+
+      if (src === void 0) {
+        src = {};
+      }
+
       Object.keys(src).forEach(key => {
         if (typeof target[key] === 'undefined') target[key] = src[key];else if (isObject$2(src[key]) && isObject$2(target[key]) && Object.keys(src[key]).length > 0) {
           extend$2(target[key], src[key]);
@@ -234,7 +242,11 @@
 
     }
 
-    function arrayFlat(arr = []) {
+    function arrayFlat(arr) {
+      if (arr === void 0) {
+        arr = [];
+      }
+
       const res = [];
       arr.forEach(el => {
         if (Array.isArray(el)) {
@@ -325,7 +337,11 @@
 
     $$1.fn = Dom7.prototype; // eslint-disable-next-line
 
-    function addClass(...classes) {
+    function addClass() {
+      for (var _len = arguments.length, classes = new Array(_len), _key = 0; _key < _len; _key++) {
+        classes[_key] = arguments[_key];
+      }
+
       const classNames = arrayFlat(classes.map(c => c.split(' ')));
       this.forEach(el => {
         el.classList.add(...classNames);
@@ -333,7 +349,11 @@
       return this;
     }
 
-    function removeClass(...classes) {
+    function removeClass() {
+      for (var _len2 = arguments.length, classes = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        classes[_key2] = arguments[_key2];
+      }
+
       const classNames = arrayFlat(classes.map(c => c.split(' ')));
       this.forEach(el => {
         el.classList.remove(...classNames);
@@ -341,7 +361,11 @@
       return this;
     }
 
-    function toggleClass(...classes) {
+    function toggleClass() {
+      for (var _len3 = arguments.length, classes = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        classes[_key3] = arguments[_key3];
+      }
+
       const classNames = arrayFlat(classes.map(c => c.split(' ')));
       this.forEach(el => {
         classNames.forEach(className => {
@@ -350,7 +374,11 @@
       });
     }
 
-    function hasClass(...classes) {
+    function hasClass() {
+      for (var _len4 = arguments.length, classes = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        classes[_key4] = arguments[_key4];
+      }
+
       const classNames = arrayFlat(classes.map(c => c.split(' ')));
       return arrayFilter(this, el => {
         return classNames.filter(className => el.classList.contains(className)).length > 0;
@@ -535,7 +563,11 @@
       return this;
     }
 
-    function on(...args) {
+    function on() {
+      for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+        args[_key5] = arguments[_key5];
+      }
+
       let [eventType, targetSelector, listener, capture] = args;
 
       if (typeof args[1] === 'function') {
@@ -608,7 +640,11 @@
       return this;
     }
 
-    function off(...args) {
+    function off() {
+      for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+        args[_key6] = arguments[_key6];
+      }
+
       let [eventType, targetSelector, listener, capture] = args;
 
       if (typeof args[1] === 'function') {
@@ -654,8 +690,13 @@
       return this;
     }
 
-    function once(...args) {
+    function once() {
       const dom = this;
+
+      for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+        args[_key7] = arguments[_key7];
+      }
+
       let [eventName, targetSelector, listener, capture] = args;
 
       if (typeof args[1] === 'function') {
@@ -663,7 +704,11 @@
         targetSelector = undefined;
       }
 
-      function onceHandler(...eventArgs) {
+      function onceHandler() {
+        for (var _len8 = arguments.length, eventArgs = new Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
+          eventArgs[_key8] = arguments[_key8];
+        }
+
         listener.apply(this, eventArgs);
         dom.off(eventName, targetSelector, onceHandler, capture);
 
@@ -676,8 +721,13 @@
       return dom.on(eventName, targetSelector, onceHandler, capture);
     }
 
-    function trigger(...args) {
+    function trigger() {
       const window = getWindow();
+
+      for (var _len9 = arguments.length, args = new Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
+        args[_key9] = arguments[_key9];
+      }
+
       const events = args[0].split(' ');
       const eventData = args[1];
 
@@ -988,12 +1038,12 @@
       return $$1([this[index]]);
     }
 
-    function append(...els) {
+    function append() {
       let newChild;
       const document = getDocument();
 
-      for (let k = 0; k < els.length; k += 1) {
-        newChild = els[k];
+      for (let k = 0; k < arguments.length; k += 1) {
+        newChild = k < 0 || arguments.length <= k ? undefined : arguments[k];
 
         for (let i = 0; i < this.length; i += 1) {
           if (typeof newChild === 'string') {
@@ -1247,10 +1297,14 @@
       return this.remove();
     }
 
-    function add(...els) {
+    function add() {
       const dom = this;
       let i;
       let j;
+
+      for (var _len10 = arguments.length, els = new Array(_len10), _key10 = 0; _key10 < _len10; _key10++) {
+        els[_key10] = arguments[_key10];
+      }
 
       for (i = 0; i < els.length; i += 1) {
         const toAdd = $$1(els[i]);
@@ -1282,8 +1336,13 @@
     } // eslint-disable-next-line
 
 
-    function scrollTo(...args) {
+    function scrollTo() {
       const window = getWindow();
+
+      for (var _len11 = arguments.length, args = new Array(_len11), _key11 = 0; _key11 < _len11; _key11++) {
+        args[_key11] = arguments[_key11];
+      }
+
       let [left, top, duration, easing, callback] = args;
 
       if (args.length === 4 && typeof easing === 'function') {
@@ -1343,7 +1402,11 @@
         if (animateTop && newTop === currentTop) animateTop = false;
         if (animateLeft && newLeft === currentLeft) animateLeft = false;
 
-        function render(time = new Date().getTime()) {
+        function render(time) {
+          if (time === void 0) {
+            time = new Date().getTime();
+          }
+
           if (startTime === null) {
             startTime = time;
           }
@@ -1389,7 +1452,11 @@
     } // scrollTop(top, duration, easing, callback) {
 
 
-    function scrollTop(...args) {
+    function scrollTop() {
+      for (var _len12 = arguments.length, args = new Array(_len12), _key12 = 0; _key12 < _len12; _key12++) {
+        args[_key12] = arguments[_key12];
+      }
+
       let [top, duration, easing, callback] = args;
 
       if (args.length === 3 && typeof easing === 'function') {
@@ -1406,7 +1473,11 @@
       return dom.scrollTo(undefined, top, duration, easing, callback);
     }
 
-    function scrollLeft(...args) {
+    function scrollLeft() {
+      for (var _len13 = arguments.length, args = new Array(_len13), _key13 = 0; _key13 < _len13; _key13++) {
+        args[_key13] = arguments[_key13];
+      }
+
       let [left, duration, easing, callback] = args;
 
       if (args.length === 3 && typeof easing === 'function') {
@@ -1630,7 +1701,11 @@
     const noTrigger = 'resize scroll'.split(' ');
 
     function shortcut(name) {
-      function eventHandler(...args) {
+      function eventHandler() {
+        for (var _len14 = arguments.length, args = new Array(_len14), _key14 = 0; _key14 < _len14; _key14++) {
+          args[_key14] = arguments[_key14];
+        }
+
         if (typeof args[0] === 'undefined') {
           for (let i = 0; i < this.length; i += 1) {
             if (noTrigger.indexOf(name) < 0) {
@@ -1773,7 +1848,15 @@
       uniqueNum += 1;
       return uniqueNum;
     }
-    function id$1(mask = 'xxxxxxxxxx', map = '0123456789abcdef') {
+    function id$1(mask, map) {
+      if (mask === void 0) {
+        mask = 'xxxxxxxxxx';
+      }
+
+      if (map === void 0) {
+        map = '0123456789abcdef';
+      }
+
       const length = map.length;
       return mask.replace(/x/g, () => map[Math.floor(Math.random() * length)]);
     }
@@ -1827,7 +1910,11 @@
       const window = getWindow();
       return window.cancelAnimationFrame(frameId);
     }
-    function nextTick$1(callback, delay = 0) {
+    function nextTick$1(callback, delay) {
+      if (delay === void 0) {
+        delay = 0;
+      }
+
       return setTimeout(callback, delay);
     }
     function nextFrame$1(callback) {
@@ -1860,7 +1947,11 @@
 
       return query;
     }
-    function getTranslate$1(el, axis = 'x') {
+    function getTranslate$1(el, axis) {
+      if (axis === void 0) {
+        axis = 'x';
+      }
+
       const window = getWindow();
       let matrix;
       let curTransform;
@@ -1886,19 +1977,23 @@
         // Latest Chrome and webkits Fix
         if (window.WebKitCSSMatrix) curTransform = transformMatrix.m41; // Crazy IE10 Matrix
         else if (matrix.length === 16) curTransform = parseFloat(matrix[12]); // Normal Browsers
-          else curTransform = parseFloat(matrix[4]);
+        else curTransform = parseFloat(matrix[4]);
       }
 
       if (axis === 'y') {
         // Latest Chrome and webkits Fix
         if (window.WebKitCSSMatrix) curTransform = transformMatrix.m42; // Crazy IE10 Matrix
         else if (matrix.length === 16) curTransform = parseFloat(matrix[13]); // Normal Browsers
-          else curTransform = parseFloat(matrix[5]);
+        else curTransform = parseFloat(matrix[5]);
       }
 
       return curTransform || 0;
     }
-    function serializeObject(obj, parents = []) {
+    function serializeObject(obj, parents) {
+      if (parents === void 0) {
+        parents = [];
+      }
+
       if (typeof obj === 'string') return obj;
       const resultArray = [];
       const separator = '&';
@@ -1958,7 +2053,11 @@
     function isObject$1(o) {
       return typeof o === 'object' && o !== null && o.constructor && o.constructor === Object;
     }
-    function merge(...args) {
+    function merge() {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
       const to = args[0];
       args.splice(0, 1);
       const from = args;
@@ -1982,10 +2081,14 @@
 
       return to;
     }
-    function extend$1(...args) {
+    function extend$1() {
       let deep = true;
       let to;
       let from;
+
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
 
       if (typeof args[0] === 'boolean') {
         deep = args[0];
@@ -2099,9 +2202,13 @@
       HSB.s = HSL.l > 0 ? 2 * t / HSB.b : HSB.s;
       return [HSB.h, HSB.s, HSB.b];
     }
-    function colorThemeCSSProperties(...args) {
+    function colorThemeCSSProperties() {
       let hex;
       let rgb;
+
+      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        args[_key3] = arguments[_key3];
+      }
 
       if (args.length === 1) {
         hex = args[0];
@@ -2137,8 +2244,13 @@
         instance[key] = obj[key];
       });
     }
-    function flattenArray(...args) {
+    function flattenArray() {
       const arr = [];
+
+      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        args[_key4] = arguments[_key4];
+      }
+
       args.forEach(arg => {
         if (Array.isArray(arg)) arr.push(...flattenArray(...arg));else arr.push(arg);
       });
@@ -2217,9 +2329,10 @@
 
     let deviceCalculated;
 
-    function calcDevice$1({
-      userAgent
-    } = {}) {
+    function calcDevice$1(_temp) {
+      let {
+        userAgent
+      } = _temp === void 0 ? {} : _temp;
       const support = getSupport$1();
       const window = getWindow();
       const platform = window.navigator.platform;
@@ -2350,7 +2463,11 @@
       return device;
     }
 
-    function getDevice$1(overrides = {}, reset) {
+    function getDevice$1(overrides, reset) {
+      if (overrides === void 0) {
+        overrides = {};
+      }
+
       if (!deviceCalculated || reset) {
         deviceCalculated = calcDevice$1(overrides);
       }
@@ -2359,7 +2476,11 @@
     }
 
     class EventsClass {
-      constructor(parents = []) {
+      constructor(parents) {
+        if (parents === void 0) {
+          parents = [];
+        }
+
         const self = this;
         self.eventsParents = parents;
         self.eventsListeners = {};
@@ -2380,11 +2501,15 @@
         const self = this;
         if (typeof handler !== 'function') return self;
 
-        function onceHandler(...args) {
+        function onceHandler() {
           self.off(events, onceHandler);
 
           if (onceHandler.f7proxy) {
             delete onceHandler.f7proxy;
+          }
+
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
           }
 
           handler.apply(self, args);
@@ -2411,13 +2536,17 @@
         return self;
       }
 
-      emit(...args) {
+      emit() {
         const self = this;
         if (!self.eventsListeners) return self;
         let events;
         let data;
         let context;
         let eventsParents;
+
+        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          args[_key2] = arguments[_key2];
+        }
 
         if (typeof args[0] === 'string' || Array.isArray(args[0])) {
           events = args[0];
@@ -2458,7 +2587,15 @@
     }
 
     class Framework7Class extends EventsClass {
-      constructor(params = {}, parents = []) {
+      constructor(params, parents) {
+        if (params === void 0) {
+          params = {};
+        }
+
+        if (parents === void 0) {
+          parents = [];
+        }
+
         super(parents);
         const self = this;
         self.params = params;
@@ -2497,7 +2634,15 @@
         });
       }
 
-      useModule(moduleName = '', moduleParams = {}) {
+      useModule(moduleName, moduleParams) {
+        if (moduleName === void 0) {
+          moduleName = '';
+        }
+
+        if (moduleParams === void 0) {
+          moduleParams = {};
+        }
+
         const instance = this;
         if (!instance.modules) return;
         const module = typeof moduleName === 'string' ? instance.modules[moduleName] : moduleName;
@@ -2541,7 +2686,11 @@
         }
       }
 
-      useModules(modulesParams = {}) {
+      useModules(modulesParams) {
+        if (modulesParams === void 0) {
+          modulesParams = {};
+        }
+
         const instance = this;
         if (!instance.modules) return;
         Object.keys(instance.modules).forEach(moduleName => {
@@ -2556,7 +2705,7 @@
         Class.use(components);
       }
 
-      static installModule(module, ...params) {
+      static installModule(module) {
         const Class = this;
         if (!Class.prototype.modules) Class.prototype.modules = {};
         const name = module.name || `${Object.keys(Class.prototype.modules).length}_${now$1()}`;
@@ -2577,13 +2726,17 @@
 
 
         if (module.install) {
+          for (var _len = arguments.length, params = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+            params[_key - 1] = arguments[_key];
+          }
+
           module.install.apply(Class, params);
         }
 
         return Class;
       }
 
-      static use(module, ...params) {
+      static use(module) {
         const Class = this;
 
         if (Array.isArray(module)) {
@@ -2591,12 +2744,20 @@
           return Class;
         }
 
+        for (var _len2 = arguments.length, params = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+          params[_key2 - 1] = arguments[_key2];
+        }
+
         return Class.installModule(module, ...params);
       }
 
     }
 
-    function ConstructorMethods(parameters = {}) {
+    function ConstructorMethods(parameters) {
+      if (parameters === void 0) {
+        parameters = {};
+      }
+
       const {
         defaultSelector,
         constructor: Constructor,
@@ -2605,12 +2766,20 @@
         addMethods
       } = parameters;
       const methods = {
-        create(...args) {
+        create() {
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
           if (app) return new Constructor(app, ...args);
           return new Constructor(...args);
         },
 
-        get(el = defaultSelector) {
+        get(el) {
+          if (el === void 0) {
+            el = defaultSelector;
+          }
+
           if (el instanceof Constructor) return el;
           const $el = $(el);
           if ($el.length === 0) return undefined;
@@ -2627,8 +2796,17 @@
 
       if (addMethods && Array.isArray(addMethods)) {
         addMethods.forEach(methodName => {
-          methods[methodName] = (el = defaultSelector, ...args) => {
+          methods[methodName] = function (el) {
+            if (el === void 0) {
+              el = defaultSelector;
+            }
+
             const instance = methods.get(el);
+
+            for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+              args[_key2 - 1] = arguments[_key2];
+            }
+
             if (instance && instance[methodName]) return instance[methodName](...args);
             return undefined;
           };
@@ -2638,7 +2816,11 @@
       return methods;
     }
 
-    function ModalMethods(parameters = {}) {
+    function ModalMethods(parameters) {
+      if (parameters === void 0) {
+        parameters = {};
+      }
+
       const {
         defaultSelector,
         constructor: Constructor,
@@ -2686,7 +2868,11 @@
           return instance.open(animate);
         },
 
-        close(el = defaultSelector, animate, targetEl) {
+        close(el, animate, targetEl) {
+          if (el === void 0) {
+            el = defaultSelector;
+          }
+
           let $el = $(el);
           if (!$el.length) return undefined;
 
@@ -2869,7 +3055,11 @@
     /* eslint-disable no-underscore-dangle */
 
     class Framework7 extends Framework7Class {
-      constructor(params = {}) {
+      constructor(params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params); // eslint-disable-next-line
 
         if (Framework7.instance && typeof window !== 'undefined') {
@@ -2985,10 +3175,12 @@
           app.mq.light = window.matchMedia(LIGHT);
         }
 
-        app.colorSchemeListener = function colorSchemeListener({
-          matches,
-          media
-        }) {
+        app.colorSchemeListener = function colorSchemeListener(_ref) {
+          let {
+            matches,
+            media
+          } = _ref;
+
           if (!matches) {
             return;
           }
@@ -3130,13 +3322,13 @@
       } // eslint-disable-next-line
 
 
-      loadModule(...args) {
-        return Framework7.loadModule(...args);
+      loadModule() {
+        return Framework7.loadModule(...arguments);
       } // eslint-disable-next-line
 
 
-      loadModules(...args) {
-        return Framework7.loadModules(...args);
+      loadModules() {
+        return Framework7.loadModules(...arguments);
       }
 
       getVnodeHooks(hook, id) {
@@ -3372,7 +3564,7 @@
       } // Function to run XHR callbacks and events
 
 
-      function fireCallback(callbackName, ...data) {
+      function fireCallback(callbackName) {
         /*
         Callbacks:
         beforeCreate (options),
@@ -3385,6 +3577,10 @@
         */
         let globalCallbackValue;
         let optionCallbackValue;
+
+        for (var _len = arguments.length, data = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          data[_key - 1] = arguments[_key];
+        }
 
         if (globals[callbackName]) {
           globalCallbackValue = globals[callbackName](...data);
@@ -3715,8 +3911,12 @@
       xhr.send(postData);
     });
 
-    function requestShortcut(method, ...args) {
+    function requestShortcut(method) {
       let [url, data, success, error, dataType] = [];
+
+      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+        args[_key2 - 1] = arguments[_key2];
+      }
 
       if (typeof args[1] === 'function') {
         [url, success, error, dataType] = args;
@@ -3753,11 +3953,41 @@
     }
 
     Object.assign(request, {
-      get: (...args) => requestShortcut('get', ...args),
-      post: (...args) => requestShortcut('post', ...args),
-      json: (...args) => requestShortcut('json', ...args),
-      getJSON: (...args) => requestShortcut('json', ...args),
-      postJSON: (...args) => requestShortcut('postJSON', ...args)
+      get: function () {
+        for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+          args[_key3] = arguments[_key3];
+        }
+
+        return requestShortcut('get', ...args);
+      },
+      post: function () {
+        for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+          args[_key4] = arguments[_key4];
+        }
+
+        return requestShortcut('post', ...args);
+      },
+      json: function () {
+        for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+          args[_key5] = arguments[_key5];
+        }
+
+        return requestShortcut('json', ...args);
+      },
+      getJSON: function () {
+        for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+          args[_key6] = arguments[_key6];
+        }
+
+        return requestShortcut('json', ...args);
+      },
+      postJSON: function () {
+        for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+          args[_key7] = arguments[_key7];
+        }
+
+        return requestShortcut('postJSON', ...args);
+      }
     });
 
     request.abortController = () => {
@@ -5356,12 +5586,13 @@
         return els;
       }
 
-      function setAnimatableNavElements({
-        progress,
-        reset,
-        transition,
-        reflow
-      } = {}) {
+      function setAnimatableNavElements(_temp) {
+        let {
+          progress,
+          reset,
+          transition,
+          reflow
+        } = _temp === void 0 ? {} : _temp;
         const styles = ['overflow', 'transform', 'transform-origin', 'opacity'];
 
         if (transition === true || transition === false) {
@@ -5766,7 +5997,11 @@
         options.history = true; // eslint-disable-line
       }
 
-      function redirectResolve(redirectUrl, redirectOptions = {}) {
+      function redirectResolve(redirectUrl, redirectOptions) {
+        if (redirectOptions === void 0) {
+          redirectOptions = {};
+        }
+
         router.allowPageChange = true;
         router[method](redirectUrl, extend$1({}, options, redirectOptions));
       }
@@ -5920,7 +6155,11 @@
       });
     }
 
-    function forward(router, el, forwardOptions = {}) {
+    function forward(router, el, forwardOptions) {
+      if (forwardOptions === void 0) {
+        forwardOptions = {};
+      }
+
       const document = getDocument();
       const $el = $(el);
       const app = router.app;
@@ -6519,7 +6758,15 @@
       return router;
     }
 
-    function load(router, loadParams = {}, loadOptions = {}, ignorePageChange) {
+    function load(router, loadParams, loadOptions, ignorePageChange) {
+      if (loadParams === void 0) {
+        loadParams = {};
+      }
+
+      if (loadOptions === void 0) {
+        loadOptions = {};
+      }
+
       if (!router.allowPageChange && !ignorePageChange) return router;
       const params = loadParams;
       const options = loadOptions;
@@ -6634,7 +6881,11 @@
       return router;
     }
 
-    function navigate(navigateParams, navigateOptions = {}) {
+    function navigate(navigateParams, navigateOptions) {
+      if (navigateOptions === void 0) {
+        navigateOptions = {};
+      }
+
       const router = this;
       if (router.swipeBackActive) return router;
       let url;
@@ -6859,7 +7110,11 @@
       return router;
     }
 
-    function tabLoad(tabRoute, loadOptions = {}) {
+    function tabLoad(tabRoute, loadOptions) {
+      if (loadOptions === void 0) {
+        loadOptions = {};
+      }
+
       const router = this;
       const options = extend$1({
         animate: router.params.animate,
@@ -7108,7 +7363,11 @@
       router.removeTabContent($oldTabEl[0], tabRoute);
     }
 
-    function modalLoad(modalType, route, loadOptions = {}, direction) {
+    function modalLoad(modalType, route, loadOptions, direction) {
+      if (loadOptions === void 0) {
+        loadOptions = {};
+      }
+
       const router = this;
       const app = router.app;
       const isPanel = modalType === 'panel';
@@ -7899,7 +8158,7 @@
       return router;
     }
 
-    function back(...args) {
+    function back() {
       const router = this;
       const device = getDevice$1();
       if (router.swipeBackActive) return router;
@@ -7907,11 +8166,11 @@
       let navigateOptions;
       let route;
 
-      if (typeof args[0] === 'object') {
-        navigateOptions = args[0] || {};
+      if (typeof (arguments.length <= 0 ? undefined : arguments[0]) === 'object') {
+        navigateOptions = (arguments.length <= 0 ? undefined : arguments[0]) || {};
       } else {
-        navigateUrl = args[0];
-        navigateOptions = args[1] || {};
+        navigateUrl = arguments.length <= 0 ? undefined : arguments[0];
+        navigateOptions = (arguments.length <= 1 ? undefined : arguments[1]) || {};
       }
 
       const {
@@ -8316,7 +8575,11 @@
           enumerable: true,
           configurable: true,
 
-          set(newRoute = {}) {
+          set(newRoute) {
+            if (newRoute === void 0) {
+              newRoute = {};
+            }
+
             previousRoute = extend$1({}, currentRoute);
             currentRoute = newRoute;
             if (!currentRoute) return;
@@ -8721,7 +8984,11 @@
         return undefined;
       }
 
-      flattenRoutes(routes = this.routes) {
+      flattenRoutes(routes) {
+        if (routes === void 0) {
+          routes = this.routes;
+        }
+
         const router = this;
         let flattenedRoutes = [];
         routes.forEach(route => {
@@ -8789,7 +9056,11 @@
         };
       }
 
-      generateUrl(parameters = {}) {
+      generateUrl(parameters) {
+        if (parameters === void 0) {
+          parameters = {};
+        }
+
         if (typeof parameters === 'string') {
           return parameters;
         }
@@ -8829,10 +9100,11 @@
       } // eslint-disable-next-line
 
 
-      constructRouteUrl(route, {
-        params,
-        query
-      } = {}) {
+      constructRouteUrl(route, _temp) {
+        let {
+          params,
+          query
+        } = _temp === void 0 ? {} : _temp;
         const {
           path
         } = route;
@@ -8953,7 +9225,15 @@
       } // eslint-disable-next-line
 
 
-      replaceRequestUrlParams(url = '', options = {}) {
+      replaceRequestUrlParams(url, options) {
+        if (url === void 0) {
+          url = '';
+        }
+
+        if (options === void 0) {
+          options = {};
+        }
+
         let compiledUrl = url;
 
         if (typeof compiledUrl === 'string' && compiledUrl.indexOf('{{') >= 0 && options && options.route && options.route.params && Object.keys(options.route.params).length) {
@@ -9116,7 +9396,11 @@
         $(el).find(toRemove).remove();
       }
 
-      getPageData(pageEl, navbarEl, from, to, route = {}, pageFromEl) {
+      getPageData(pageEl, navbarEl, from, to, route, pageFromEl) {
+        if (route === void 0) {
+          route = {};
+        }
+
         const router = this;
         const $pageEl = $(pageEl).eq(0);
         const $navbarEl = $(navbarEl).eq(0);
@@ -9163,7 +9447,11 @@
       } // Callbacks
 
 
-      pageCallback(callback, pageEl, navbarEl, from, to, options = {}, pageFromEl) {
+      pageCallback(callback, pageEl, navbarEl, from, to, options, pageFromEl) {
+        if (options === void 0) {
+          options = {};
+        }
+
         if (!pageEl) return;
         const router = this;
         const $pageEl = $(pageEl);
@@ -9888,7 +10176,11 @@
     }
 
     class View$1 extends Framework7Class {
-      constructor(app, el, viewParams = {}) {
+      constructor(app, el, viewParams) {
+        if (viewParams === void 0) {
+          viewParams = {};
+        }
+
         super(viewParams, [app]);
         const view = this;
         const ssr = view.params.routerId;
@@ -10090,7 +10382,14 @@
             view.initMasterDetail();
           }
 
-          view.router.init();
+          if (view.params.initRouterOnTabShow && view.$el.hasClass('tab') && !view.$el.hasClass('tab-active')) {
+            view.$el.once('tab:show', () => {
+              view.router.init();
+            });
+          } else {
+            view.router.init();
+          }
+
           view.$el.trigger('view:init');
           view.emit('local::init viewInit', view);
         }
@@ -10253,7 +10552,11 @@
           return router.navigate(navigateOptions);
         },
 
-        componentLoader(component, componentUrl, options = {}, resolve, reject) {
+        componentLoader(component, componentUrl, options, resolve, reject) {
+          if (options === void 0) {
+            options = {};
+          }
+
           const router = this;
           const {
             app
@@ -10336,41 +10639,48 @@
           }
         },
 
-        modalComponentLoader({
-          component,
-          componentUrl,
-          options,
-          resolve,
-          reject
-        } = {}) {
+        modalComponentLoader(_temp) {
+          let {
+            component,
+            componentUrl,
+            options,
+            resolve,
+            reject
+          } = _temp === void 0 ? {} : _temp;
           const router = this;
           router.componentLoader(component, componentUrl, options, el => {
             resolve(el);
           }, reject);
         },
 
-        tabComponentLoader({
-          component,
-          componentUrl,
-          options,
-          resolve,
-          reject
-        } = {}) {
+        tabComponentLoader(_temp2) {
+          let {
+            component,
+            componentUrl,
+            options,
+            resolve,
+            reject
+          } = _temp2 === void 0 ? {} : _temp2;
           const router = this;
           router.componentLoader(component, componentUrl, options, el => {
             resolve(el);
           }, reject);
         },
 
-        pageComponentLoader({
-          component,
-          componentUrl,
-          options,
-          resolve,
-          reject
-        } = {}) {
+        pageComponentLoader(_temp3) {
+          let {
+            component,
+            componentUrl,
+            options,
+            resolve,
+            reject
+          } = _temp3 === void 0 ? {} : _temp3;
           const router = this;
-          router.componentLoader(component, componentUrl, options, (el, newOptions = {}) => {
+          router.componentLoader(component, componentUrl, options, function (el, newOptions) {
+            if (newOptions === void 0) {
+              newOptions = {};
+            }
+
             resolve(el, newOptions);
           }, reject);
         }
@@ -10409,7 +10719,11 @@
 
     const ignoreChildren$1 = [false, null, '', undefined];
 
-    const h$1 = (type, props, ...children) => {
+    const h$1 = function (type, props) {
+      for (var _len = arguments.length, children = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        children[_key - 2] = arguments[_key];
+      }
+
       return {
         type,
         props: props || {},
@@ -10510,9 +10824,18 @@
       }).join('');
     };
 
-    const propsFromAttrs = (...args) => {
+    const propsFromAttrs = function () {
       const context = {};
-      args.forEach((obj = {}) => {
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      args.forEach(function (obj) {
+        if (obj === void 0) {
+          obj = {};
+        }
+
         Object.keys(obj).forEach(key => {
           context[toCamelCase(key)] = obj[key];
         });
@@ -10520,12 +10843,13 @@
       return context;
     };
 
-    const createCustomComponent = ({
-      f7,
-      treeNode,
-      vnode,
-      data
-    }) => {
+    const createCustomComponent = _ref => {
+      let {
+        f7,
+        treeNode,
+        vnode,
+        data
+      } = _ref;
       const component = typeof treeNode.type === 'function' ? treeNode.type : customComponents[treeNode.type];
       f7.component.create(component, propsFromAttrs(data.attrs || {}, data.props || {}), {
         el: vnode.elm,
@@ -10669,20 +10993,21 @@
       return hooks;
     }
 
-    const getEventHandler = (eventHandler, {
-      stop,
-      prevent,
-      once
-    } = {}) => {
+    const getEventHandler = function (eventHandler, _temp) {
+      let {
+        stop,
+        prevent,
+        once
+      } = _temp === void 0 ? {} : _temp;
       let fired = false;
 
-      function handler(...args) {
-        const e = args[0];
+      function handler() {
+        const e = arguments.length <= 0 ? undefined : arguments[0];
         if (once && fired) return;
         if (stop) e.stopPropagation();
         if (prevent) e.preventDefault();
         fired = true;
-        eventHandler(...args);
+        eventHandler(...arguments);
       }
 
       return handler;
@@ -10848,7 +11173,11 @@
       return h(getTagName(treeNode), data, children);
     };
 
-    function vdom(tree = {}, component, initial) {
+    function vdom(tree, component, initial) {
+      if (tree === void 0) {
+        tree = {};
+      }
+
       return treeNodeToVNode(tree, component, component.f7, initial, true);
     }
 
@@ -11542,7 +11871,11 @@
     }
 
     function createListener() {
-      return function handler(event, ...args) {
+      return function handler(event) {
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments[_key];
+        }
+
         handleEvent(event, args, handler.vnode);
       };
     }
@@ -11608,11 +11941,16 @@
     /* eslint no-underscore-dangle: "off" */
 
     class Component {
-      constructor(app, component, props = {}, {
-        el,
-        context,
-        children
-      } = {}) {
+      constructor(app, component, props, _temp) {
+        if (props === void 0) {
+          props = {};
+        }
+
+        let {
+          el,
+          context,
+          children
+        } = _temp === void 0 ? {} : _temp;
         const document = getDocument();
         merge(this, {
           f7: app,
@@ -11820,17 +12158,19 @@
         } = this;
         if (!this.__eventHandlers) return;
 
-        this.__eventHandlers.forEach(({
-          eventName,
-          handler
-        }) => {
+        this.__eventHandlers.forEach(_ref => {
+          let {
+            eventName,
+            handler
+          } = _ref;
           $el.on(eventNameToColonCase(eventName), handler);
         });
 
-        this.__onceEventHandlers.forEach(({
-          eventName,
-          handler
-        }) => {
+        this.__onceEventHandlers.forEach(_ref2 => {
+          let {
+            eventName,
+            handler
+          } = _ref2;
           $el.once(eventNameToColonCase(eventName), handler);
         });
       }
@@ -11841,17 +12181,19 @@
         } = this;
         if (!this.__eventHandlers) return;
 
-        this.__eventHandlers.forEach(({
-          eventName,
-          handler
-        }) => {
+        this.__eventHandlers.forEach(_ref3 => {
+          let {
+            eventName,
+            handler
+          } = _ref3;
           $el.on(eventNameToColonCase(eventName), handler);
         });
 
-        this.__onceEventHandlers.forEach(({
-          eventName,
-          handler
-        }) => {
+        this.__onceEventHandlers.forEach(_ref4 => {
+          let {
+            eventName,
+            handler
+          } = _ref4;
           $el.once(eventNameToColonCase(eventName), handler);
         });
       }
@@ -11971,7 +12313,11 @@
         this.__destroyed = true;
       }
 
-      hook(name, ...args) {
+      hook(name) {
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments[_key];
+        }
+
         if (this.__destroyed) return;
         this[`__${name}`].forEach(handler => {
           handler(...args);
@@ -12057,7 +12403,11 @@
 
     const ignoreChildren = [false, null, '', undefined];
 
-    const $jsx$1 = (type, props, ...children) => {
+    const $jsx$1 = function (type, props) {
+      for (var _len = arguments.length, children = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        children[_key - 2] = arguments[_key];
+      }
+
       const flatChildren = flattenArray((children || []).filter(child => ignoreChildren.indexOf(child) < 0));
 
       if (type === 'Fragment') {
@@ -12096,12 +12446,13 @@
             return parseComponent(componentString);
           },
 
-          create(component, props, {
-            root,
-            el,
-            context,
-            children
-          }) {
+          create(component, props, _ref) {
+            let {
+              root,
+              el,
+              context,
+              children
+            } = _ref;
             return new Component(app, component, props, {
               root,
               el,
@@ -12226,7 +12577,11 @@
 
     /* eslint-disable no-underscore-dangle */
 
-    function createStore(storeParams = {}) {
+    function createStore(storeParams) {
+      if (storeParams === void 0) {
+        storeParams = {};
+      }
+
       const store = {
         __store: true
       };
@@ -12292,7 +12647,11 @@
         removeGetterCallback(callback);
       };
 
-      const getterValue = (getterKey, addCallback = true) => {
+      const getterValue = function (getterKey, addCallback) {
+        if (addCallback === void 0) {
+          addCallback = true;
+        }
+
         if (getterKey === 'constructor') return undefined;
         propsQueue = [];
         const value = getGetterValue(getterKey);
@@ -12500,7 +12859,11 @@
         });
       },
 
-      overlaysWebView(overlays = true) {
+      overlaysWebView(overlays) {
+        if (overlays === void 0) {
+          overlays = true;
+        }
+
         const window = getWindow();
         const device = getDevice$1();
 
@@ -12645,6 +13008,7 @@
       params: {
         view: {
           init: true,
+          initRouterOnTabShow: false,
           name: undefined,
           main: false,
           router: true,
@@ -12945,7 +13309,19 @@
         }
       },
 
-      hide(el, animate = true, hideStatusbar = false, hideOnlyCurrent = false) {
+      hide(el, animate, hideStatusbar, hideOnlyCurrent) {
+        if (animate === void 0) {
+          animate = true;
+        }
+
+        if (hideStatusbar === void 0) {
+          hideStatusbar = false;
+        }
+
+        if (hideOnlyCurrent === void 0) {
+          hideOnlyCurrent = false;
+        }
+
         const app = this;
         let $el = $(el);
         const isDynamic = $el.hasClass('navbar') && $el.parent('.navbars').length && !hideOnlyCurrent;
@@ -12979,7 +13355,19 @@
         }
       },
 
-      show(el = '.navbar-hidden', animate = true, hideOnlyCurrent = false) {
+      show(el, animate, hideOnlyCurrent) {
+        if (el === void 0) {
+          el = '.navbar-hidden';
+        }
+
+        if (animate === void 0) {
+          animate = true;
+        }
+
+        if (hideOnlyCurrent === void 0) {
+          hideOnlyCurrent = false;
+        }
+
         const app = this;
         let $el = $(el);
         const isDynamic = $el.hasClass('navbar') && $el.parent('.navbars').length && !hideOnlyCurrent;
@@ -13651,7 +14039,11 @@
         app.toolbar.setHighlight(tabbarEl);
       },
 
-      hide(el, animate = true) {
+      hide(el, animate) {
+        if (animate === void 0) {
+          animate = true;
+        }
+
         const app = this;
         const $el = $(el);
         if ($el.hasClass('toolbar-hidden')) return;
@@ -13664,7 +14056,11 @@
         app.emit('toolbarHide', $el[0]);
       },
 
-      show(el, animate = true) {
+      show(el, animate) {
+        if (animate === void 0) {
+          animate = true;
+        }
+
         const app = this;
         const $el = $(el);
         if (!$el.hasClass('toolbar-hidden')) return;
@@ -13961,7 +14357,11 @@
       create() {
         const app = this;
         app.touchRipple = {
-          create(...args) {
+          create() {
+            for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+              args[_key] = arguments[_key];
+            }
+
             return new TouchRipple$1(...args);
           }
 
@@ -14325,8 +14725,13 @@
     };
 
     /* eslint-disable prefer-rest-params */
-    const $jsx = (tag, props, ...args) => {
+    const $jsx = function (tag, props) {
       const attrs = props || {};
+
+      for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        args[_key - 2] = arguments[_key];
+      }
+
       const children = args || [];
       const attrsString = Object.keys(attrs).map(attr => {
         if (attr[0] === '_') {
@@ -14611,7 +15016,11 @@
           defaultSelector: '.dialog.modal-in'
         }), {
           // Shortcuts
-          alert(...args) {
+          alert() {
+            for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+              args[_key] = arguments[_key];
+            }
+
             let [text, title, callbackOk] = args;
 
             if (args.length === 2 && typeof args[1] === 'function') {
@@ -14631,7 +15040,11 @@
             }).open();
           },
 
-          prompt(...args) {
+          prompt() {
+            for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+              args[_key2] = arguments[_key2];
+            }
+
             let [text, title, callbackOk, callbackCancel, defaultValue] = args;
 
             if (typeof args[1] === 'function') {
@@ -14664,7 +15077,11 @@
             }).open();
           },
 
-          confirm(...args) {
+          confirm() {
+            for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+              args[_key3] = arguments[_key3];
+            }
+
             let [text, title, callbackOk, callbackCancel] = args;
 
             if (typeof args[1] === 'function') {
@@ -14689,7 +15106,11 @@
             }).open();
           },
 
-          login(...args) {
+          login() {
+            for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+              args[_key4] = arguments[_key4];
+            }
+
             let [text, title, callbackOk, callbackCancel] = args;
 
             if (typeof args[1] === 'function') {
@@ -14729,7 +15150,11 @@
             }).open();
           },
 
-          password(...args) {
+          password() {
+            for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+              args[_key5] = arguments[_key5];
+            }
+
             let [text, title, callbackOk, callbackCancel] = args;
 
             if (typeof args[1] === 'function') {
@@ -14781,7 +15206,11 @@
             }).open();
           },
 
-          progress(...args) {
+          progress() {
+            for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+              args[_key6] = arguments[_key6];
+            }
+
             let [title, progress, color] = args;
 
             if (args.length === 2) {
@@ -15232,11 +15661,19 @@
       },
 
       clicks: {
-        '.popup-open': function openPopup($clickedEl, data = {}) {
+        '.popup-open': function openPopup($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.popup.open(data.popup, data.animate, $clickedEl);
         },
-        '.popup-close': function closePopup($clickedEl, data = {}) {
+        '.popup-close': function closePopup($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.popup.close(data.popup, data.animate, $clickedEl);
         }
@@ -15297,11 +15734,19 @@
       },
 
       clicks: {
-        '.login-screen-open': function openLoginScreen($clickedEl, data = {}) {
+        '.login-screen-open': function openLoginScreen($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.loginScreen.open(data.loginScreen, data.animate, $clickedEl);
         },
-        '.login-screen-close': function closeLoginScreen($clickedEl, data = {}) {
+        '.login-screen-close': function closeLoginScreen($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.loginScreen.close(data.loginScreen, data.animate, $clickedEl);
         }
@@ -15386,7 +15831,11 @@
           type: 'popover',
           forceBackdropUnique,
 
-          open(...args) {
+          open() {
+            for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+              args[_key] = arguments[_key];
+            }
+
             let [targetEl, animate] = args;
             if (typeof args[0] === 'boolean') [animate, targetEl] = args;
 
@@ -15705,11 +16154,19 @@
       },
 
       clicks: {
-        '.popover-open': function openPopover($clickedEl, data = {}) {
+        '.popover-open': function openPopover($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.popover.open(data.popover, $clickedEl, data.animate);
         },
-        '.popover-close': function closePopover($clickedEl, data = {}) {
+        '.popover-close': function closePopover($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.popover.close(data.popover, data.animate, $clickedEl);
         }
@@ -16108,11 +16565,19 @@
       },
 
       clicks: {
-        '.actions-open': function openActions($clickedEl, data = {}) {
+        '.actions-open': function openActions($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.actions.open(data.actions, data.animate, $clickedEl);
         },
-        '.actions-close': function closeActions($clickedEl, data = {}) {
+        '.actions-close': function closeActions($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.actions.close(data.actions, data.animate, $clickedEl);
         }
@@ -16532,7 +16997,11 @@
           }
         }
 
-        sheet.setSwipeStep = function setSwipeStep(byResize = true) {
+        sheet.setSwipeStep = function setSwipeStep(byResize) {
+          if (byResize === void 0) {
+            byResize = true;
+          }
+
           const $swipeStepEl = $el.find('.sheet-modal-swipe-step').eq(0);
           if (!$swipeStepEl.length) return;
 
@@ -16727,7 +17196,11 @@
       },
 
       clicks: {
-        '.sheet-open': function openSheet($clickedEl, data = {}) {
+        '.sheet-open': function openSheet($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
 
           if ($('.sheet-modal.modal-in').length > 0 && data.sheet && $(data.sheet)[0] !== $('.sheet-modal.modal-in')[0]) {
@@ -16736,7 +17209,11 @@
 
           app.sheet.open(data.sheet, data.animate, $clickedEl);
         },
-        '.sheet-close': function closeSheet($clickedEl, data = {}) {
+        '.sheet-close': function closeSheet($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.sheet.close(data.sheet, data.animate, $clickedEl);
         }
@@ -16910,7 +17387,11 @@
       // Modal
       visible: false,
 
-      show(color = 'white') {
+      show(color) {
+        if (color === void 0) {
+          color = 'white';
+        }
+
         const app = this;
         if (Preloader.visible) return;
         const preloaders = {
@@ -16930,7 +17411,11 @@
         Preloader.visible = true;
       },
 
-      showIn(el, color = 'white') {
+      showIn(el, color) {
+        if (color === void 0) {
+          color = 'white';
+        }
+
         const app = this;
         const preloaders = {
           iosPreloaderContent,
@@ -17009,8 +17494,13 @@
     };
 
     const Progressbar = {
-      set(...args) {
+      set() {
         const app = this;
+
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
         let [el, progress, duration] = args;
 
         if (typeof args[0] === 'number') {
@@ -17047,8 +17537,12 @@
         return $progressbarEl[0];
       },
 
-      show(...args) {
+      show() {
         const app = this; // '.page', 50, 'multi'
+
+        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          args[_key2] = arguments[_key2];
+        }
 
         let [el, progress, color] = args;
         let type = 'determined';
@@ -17102,7 +17596,11 @@
         return $progressbarEl[0];
       },
 
-      hide(el, removeAfterHide = true) {
+      hide(el, removeAfterHide) {
+        if (removeAfterHide === void 0) {
+          removeAfterHide = true;
+        }
+
         const app = this;
         const $el = $(el || app.$el);
         if ($el.length === 0) return undefined;
@@ -17406,7 +17904,11 @@
         });
       },
 
-      enable(el = '.list.sortable') {
+      enable(el) {
+        if (el === void 0) {
+          el = '.list.sortable';
+        }
+
         const app = this;
         const $el = $(el);
         if ($el.length === 0) return;
@@ -17415,7 +17917,11 @@
         app.emit('sortableEnable', $el[0]);
       },
 
-      disable(el = '.list.sortable') {
+      disable(el) {
+        if (el === void 0) {
+          el = '.list.sortable';
+        }
+
         const app = this;
         const $el = $(el);
         if ($el.length === 0) return;
@@ -17424,7 +17930,11 @@
         app.emit('sortableDisable', $el[0]);
       },
 
-      toggle(el = '.list.sortable') {
+      toggle(el) {
+        if (el === void 0) {
+          el = '.list.sortable';
+        }
+
         const app = this;
         const $el = $(el);
         if ($el.length === 0) return;
@@ -17461,15 +17971,27 @@
 
       },
       clicks: {
-        '.sortable-enable': function enable($clickedEl, data = {}) {
+        '.sortable-enable': function enable($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.sortable.enable(data.sortable);
         },
-        '.sortable-disable': function disable($clickedEl, data = {}) {
+        '.sortable-disable': function disable($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.sortable.disable(data.sortable);
         },
-        '.sortable-toggle': function toggle($clickedEl, data = {}) {
+        '.sortable-toggle': function toggle($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.sortable.toggle(data.sortable);
         }
@@ -17875,8 +18397,13 @@
       allow: true,
       el: undefined,
 
-      open(...args) {
+      open() {
         const app = this;
+
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
         let [el, side, callback] = args;
 
         if (typeof args[1] === 'function') {
@@ -18032,7 +18559,11 @@
       },
 
       clicks: {
-        '.swipeout-open': function openSwipeout($clickedEl, data = {}) {
+        '.swipeout-open': function openSwipeout($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.swipeout.open(data.swipeout, data.side);
         },
@@ -18042,7 +18573,11 @@
           if ($swipeoutEl.length === 0) return;
           app.swipeout.close($swipeoutEl);
         },
-        '.swipeout-delete': function deleteSwipeout($clickedEl, data = {}) {
+        '.swipeout-delete': function deleteSwipeout($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           const $swipeoutEl = $clickedEl.closest('.swipeout');
           if ($swipeoutEl.length === 0) return;
@@ -18206,7 +18741,11 @@
     };
 
     class VirtualList$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const vl = this;
         const device = getDevice$1();
@@ -18323,7 +18862,8 @@
           rowsToRender: undefined,
           maxBufferHeight: 0,
           listHeight: undefined,
-          dynamicHeight: typeof vl.params.height === 'function'
+          dynamicHeight: typeof vl.params.height === 'function',
+          autoHeight: vl.params.height === 'auto'
         }); // Install Modules
 
         vl.useModules(); // Attach events
@@ -18364,10 +18904,13 @@
         return vl;
       }
 
-      setListSize() {
+      setListSize(autoHeightRerender) {
         const vl = this;
         const items = vl.filteredItems || vl.items;
-        vl.pageHeight = vl.$scrollableParentEl[0].offsetHeight;
+
+        if (!autoHeightRerender) {
+          vl.pageHeight = vl.$scrollableParentEl[0].offsetHeight;
+        }
 
         if (vl.dynamicHeight) {
           vl.listHeight = 0;
@@ -18377,6 +18920,31 @@
             const itemHeight = vl.params.height(items[i]);
             vl.listHeight += itemHeight;
             vl.heights.push(itemHeight);
+          }
+        } else if (vl.autoHeight) {
+          vl.listHeight = 0;
+          if (!vl.heights) vl.heights = [];
+          if (!vl.heightsCalculated) vl.heightsCalculated = [];
+          const renderedItems = {};
+          vl.$itemsWrapEl.find(`[data-virtual-list-index]`).forEach(el => {
+            renderedItems[parseInt(el.getAttribute('data-virtual-list-index'), 10)] = el;
+          });
+
+          for (let i = 0; i < items.length; i += 1) {
+            const renderedItem = renderedItems[i];
+
+            if (renderedItem) {
+              if (!vl.heightsCalculated.includes(i)) {
+                vl.heights[i] = renderedItem.offsetHeight;
+                vl.heightsCalculated.push(i);
+              }
+            }
+
+            if (typeof vl.heights[i] === 'undefined') {
+              vl.heights[i] = 40;
+            }
+
+            vl.listHeight += vl.heights[i];
           }
         } else {
           vl.listHeight = Math.ceil(items.length / vl.params.cols) * vl.params.height;
@@ -18412,7 +18980,7 @@
         let heightBeforeFirstItem = 0;
         let heightBeforeLastItem = 0;
 
-        if (vl.dynamicHeight) {
+        if (vl.dynamicHeight || vl.autoHeight) {
           let itemTop = 0;
           let itemHeight;
           vl.maxBufferHeight = vl.pageHeight;
@@ -18479,7 +19047,7 @@
 
 
           if (i === fromIndex) {
-            if (vl.dynamicHeight) {
+            if (vl.dynamicHeight || vl.autoHeight) {
               topPosition = heightBeforeFirstItem;
             } else {
               topPosition = i * vl.params.height / vl.params.cols;
@@ -18497,7 +19065,7 @@
 
 
         if (!vl.updatableScroll) {
-          if (vl.dynamicHeight) {
+          if (vl.dynamicHeight || vl.autoHeight) {
             vl.itemsWrapEl.style.height = `${heightBeforeLastItem}px`;
           } else {
             vl.itemsWrapEl.style.height = `${i * vl.params.height / vl.params.cols}px`;
@@ -18537,10 +19105,20 @@
             items: renderExternalItems
           });
         }
+
+        if (vl.autoHeight) {
+          requestAnimationFrame(() => {
+            vl.setListSize(true);
+          });
+        }
       } // Filter
 
 
-      filterItems(indexes, resetScrollTop = true) {
+      filterItems(indexes, resetScrollTop) {
+        if (resetScrollTop === void 0) {
+          resetScrollTop = true;
+        }
+
         const vl = this;
         vl.filteredItems = [];
 
@@ -18573,7 +19151,7 @@
         if (index > vl.items.length) return false;
         let itemTop = 0;
 
-        if (vl.dynamicHeight) {
+        if (vl.dynamicHeight || vl.autoHeight) {
           for (let i = 0; i < index; i += 1) {
             itemTop += vl.heights[i];
           }
@@ -18601,6 +19179,7 @@
         const vl = this;
 
         if (vl.isVisible()) {
+          vl.heightsCalculated = [];
           vl.setListSize();
           vl.render(true);
         }
@@ -18801,6 +19380,7 @@
           vl.domCache = {};
         }
 
+        vl.heightsCalculated = [];
         vl.setListSize();
         vl.render(true);
       }
@@ -18842,7 +19422,11 @@
     };
 
     class ListIndex$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const index = this;
         const defaults = {
@@ -19296,13 +19880,17 @@
     };
 
     const Tab = {
-      show(...args) {
+      show() {
         const app = this;
         let tabEl;
         let tabLinkEl;
         let animate;
         let tabRoute;
         let animatedInit;
+
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
 
         if (args.length === 1 && args[0] && args[0].constructor === Object) {
           tabEl = args[0].tabEl;
@@ -19552,7 +20140,11 @@
         }
       },
       clicks: {
-        '.tab-link': function tabLinkClick($clickedEl, data = {}) {
+        '.tab-link': function tabLinkClick($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           if ($clickedEl.attr('href') && $clickedEl.attr('href').indexOf('#') === 0 || $clickedEl.attr('data-tab')) {
             const app = this;
             app.tab.show({
@@ -20102,7 +20694,11 @@
     }
 
     class Panel$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         const extendedParams = extend$1({
           on: {}
         }, app.params.panel, params);
@@ -20234,7 +20830,11 @@
         return panel;
       }
 
-      setVisibleBreakpoint(emitEvents = true) {
+      setVisibleBreakpoint(emitEvents) {
+        if (emitEvents === void 0) {
+          emitEvents = true;
+        }
+
         const panel = this;
         const app = panel.app;
 
@@ -20317,7 +20917,11 @@
         return panel;
       }
 
-      setCollapsedBreakpoint(emitEvents = true) {
+      setCollapsedBreakpoint(emitEvents) {
+        if (emitEvents === void 0) {
+          emitEvents = true;
+        }
+
         const panel = this;
         const app = panel.app;
 
@@ -20399,7 +21003,11 @@
         return panel;
       }
 
-      onOpen(modifyHtmlClasses = true) {
+      onOpen(modifyHtmlClasses) {
+        if (modifyHtmlClasses === void 0) {
+          modifyHtmlClasses = true;
+        }
+
         const panel = this;
         const app = panel.app;
         panel.opened = true;
@@ -20455,7 +21063,11 @@
         panel.emit('local::closed panelClosed', panel);
       }
 
-      toggle(animate = true) {
+      toggle(animate) {
+        if (animate === void 0) {
+          animate = true;
+        }
+
         const panel = this;
         const breakpoint = panel.params.visibleBreakpoint;
         const app = panel.app;
@@ -20505,7 +21117,11 @@
         }
       }
 
-      open(animate = true) {
+      open(animate) {
+        if (animate === void 0) {
+          animate = true;
+        }
+
         const panel = this;
         const app = panel.app;
         if (!app.panel.allowOpen) return false;
@@ -20586,7 +21202,11 @@
         return true;
       }
 
-      close(animate = true) {
+      close(animate) {
+        if (animate === void 0) {
+          animate = true;
+        }
+
         const panel = this;
         const {
           effect,
@@ -20750,7 +21370,11 @@
               return new Panel$1(app, params);
             },
 
-            get(el = '.panel') {
+            get(el) {
+              if (el === void 0) {
+                el = '.panel';
+              }
+
               if (el instanceof Panel$1) return el;
               if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
 
@@ -20759,13 +21383,21 @@
               return $el[0].f7Panel;
             },
 
-            destroy(el = '.panel') {
+            destroy(el) {
+              if (el === void 0) {
+                el = '.panel';
+              }
+
               const panel = app.panel.get(el);
               if (panel && panel.destroy) return panel.destroy();
               return undefined;
             },
 
-            open(el = '.panel', animate) {
+            open(el, animate) {
+              if (el === void 0) {
+                el = '.panel';
+              }
+
               if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
 
               let panel = app.panel.get(el);
@@ -20781,7 +21413,11 @@
               return undefined;
             },
 
-            close(el = '.panel-in', animate) {
+            close(el, animate) {
+              if (el === void 0) {
+                el = '.panel-in';
+              }
+
               if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
 
               let panel = app.panel.get(el);
@@ -20797,7 +21433,11 @@
               return undefined;
             },
 
-            toggle(el = '.panel', animate) {
+            toggle(el, animate) {
+              if (el === void 0) {
+                el = '.panel';
+              }
+
               if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
 
               let panel = app.panel.get(el);
@@ -20868,15 +21508,27 @@
         }
       },
       clicks: {
-        '.panel-open': function open(clickedEl, data = {}) {
+        '.panel-open': function open(clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.panel.open(data.panel, data.animate);
         },
-        '.panel-close': function close(clickedEl, data = {}) {
+        '.panel-close': function close(clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.panel.close(data.panel, data.animate);
         },
-        '.panel-toggle': function close(clickedEl, data = {}) {
+        '.panel-toggle': function close(clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.panel.toggle(data.panel, data.animate);
         },
@@ -20899,7 +21551,15 @@
 
     /* eslint no-param-reassign: "off" */
     const CardExpandable = {
-      open(cardEl = '.card-expandable', animate = true) {
+      open(cardEl, animate) {
+        if (cardEl === void 0) {
+          cardEl = '.card-expandable';
+        }
+
+        if (animate === void 0) {
+          animate = true;
+        }
+
         const app = this;
         const device = getDevice$1();
         const document = getDocument();
@@ -21267,7 +21927,15 @@
         }
       },
 
-      close(cardEl = '.card-expandable.card-opened', animate = true) {
+      close(cardEl, animate) {
+        if (cardEl === void 0) {
+          cardEl = '.card-expandable.card-opened';
+        }
+
+        if (animate === void 0) {
+          animate = true;
+        }
+
         const app = this;
         const device = getDevice$1();
         const $cardEl = $(cardEl).eq(0);
@@ -21392,7 +22060,11 @@
         }
       },
 
-      toggle(cardEl = '.card-expandable', animate) {
+      toggle(cardEl, animate) {
+        if (cardEl === void 0) {
+          cardEl = '.card-expandable';
+        }
+
         const app = this;
         const $cardEl = $(cardEl).eq(0);
         if (!$cardEl.length) return;
@@ -22021,7 +22693,11 @@
         }
       },
 
-      scrollIntoView(inputEl, duration = 0, centered, force) {
+      scrollIntoView(inputEl, duration, centered, force) {
+        if (duration === void 0) {
+          duration = 0;
+        }
+
         const $inputEl = $(inputEl);
         const $scrollableEl = $inputEl.parents('.page-content, .panel, .card-expandable .card-content').eq(0);
 
@@ -22233,7 +22909,11 @@
     };
 
     class Toggle$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const toggle = this;
         const support = getSupport$1();
@@ -23141,13 +23821,21 @@
           app,
           domProp: 'f7Range'
         }), {
-          getValue(el = '.range-slider') {
+          getValue(el) {
+            if (el === void 0) {
+              el = '.range-slider';
+            }
+
             const range = app.range.get(el);
             if (range) return range.getValue();
             return undefined;
           },
 
-          setValue(el = '.range-slider', value) {
+          setValue(el, value) {
+            if (el === void 0) {
+              el = '.range-slider';
+            }
+
             const range = app.range.get(el);
             if (range) return range.setValue(value);
             return undefined;
@@ -23688,13 +24376,21 @@
           app,
           domProp: 'f7Stepper'
         }), {
-          getValue(el = '.stepper') {
+          getValue(el) {
+            if (el === void 0) {
+              el = '.stepper';
+            }
+
             const stepper = app.stepper.get(el);
             if (stepper) return stepper.getValue();
             return undefined;
           },
 
-          setValue(el = '.stepper', value) {
+          setValue(el, value) {
+            if (el === void 0) {
+              el = '.stepper';
+            }
+
             const stepper = app.stepper.get(el);
             if (stepper) return stepper.setValue(value);
             return undefined;
@@ -23761,7 +24457,11 @@
     };
 
     class SmartSelect$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const ss = this;
         const defaults = extend$1({
@@ -24151,7 +24851,11 @@
         const ss = this;
         if (ss.params.renderItem) return ss.params.renderItem.call(ss, item, index);
 
-        function getIconContent(iconValue = '') {
+        function getIconContent(iconValue) {
+          if (iconValue === void 0) {
+            iconValue = '';
+          }
+
           if (iconValue.indexOf(':') >= 0) {
             return iconValue.split(':')[1];
           }
@@ -24159,7 +24863,11 @@
           return '';
         }
 
-        function getIconClass(iconValue = '') {
+        function getIconClass(iconValue) {
+          if (iconValue === void 0) {
+            iconValue = '';
+          }
+
           if (iconValue.indexOf(':') >= 0) {
             let className = iconValue.split(':')[0];
             if (className === 'f7') className = 'f7-icons';
@@ -25107,7 +25815,11 @@
     };
 
     class Calendar$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const calendar = this;
         calendar.params = extend$1({}, app.params.calendar, params);
@@ -26109,7 +26821,11 @@
         }
       }
 
-      resetMonth(transition = '') {
+      resetMonth(transition) {
+        if (transition === void 0) {
+          transition = '';
+        }
+
         const calendar = this;
         const {
           $wrapperEl,
@@ -27295,7 +28011,11 @@
           domProp: 'f7Calendar'
         });
 
-        app.calendar.close = function close(el = '.calendar') {
+        app.calendar.close = function close(el) {
+          if (el === void 0) {
+            el = '.calendar';
+          }
+
           const $el = $(el);
           if ($el.length === 0) return;
           const calendar = $el[0].f7Calendar;
@@ -27532,7 +28252,11 @@
     }
 
     class Picker$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const picker = this;
         const device = getDevice$1();
@@ -28226,7 +28950,11 @@
           domProp: 'f7Picker'
         });
 
-        app.picker.close = function close(el = '.picker') {
+        app.picker.close = function close(el) {
+          if (el === void 0) {
+            el = '.picker';
+          }
+
           const $el = $(el);
           if ($el.length === 0) return;
           const picker = $el[0].f7Picker;
@@ -28474,7 +29202,11 @@
           triggerDistance = 38;
         }
 
-        function setPreloaderProgress(progress = 0) {
+        function setPreloaderProgress(progress) {
+          if (progress === void 0) {
+            progress = 0;
+          }
+
           const $bars = $preloaderEl.find('.preloader-inner-line');
           const perBarProgress = 1 / $bars.length;
           $bars.forEach((barEl, barIndex) => {
@@ -29316,7 +30048,11 @@
     };
 
     class DataTable$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const table = this;
         const defaults = {}; // Extend defaults with modules params
@@ -29660,7 +30396,11 @@
         $fabEl.trigger('fab:open');
       },
 
-      close(fabEl = '.fab-opened') {
+      close(fabEl) {
+        if (fabEl === void 0) {
+          fabEl = '.fab-opened';
+        }
+
         const app = this;
         const $fabEl = $(fabEl).eq(0);
         const $buttonsEl = $fabEl.find('.fab-buttons');
@@ -29704,11 +30444,19 @@
           const app = this;
           app.fab.toggle($clickedEl.parents('.fab'));
         },
-        '.fab-open': function open($clickedEl, data = {}) {
+        '.fab-open': function open($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.fab.open(data.fab);
         },
-        '.fab-close': function close($clickedEl, data = {}) {
+        '.fab-close': function close($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           app.fab.close(data.fab);
         },
@@ -29994,7 +30742,11 @@
     }
 
     class Searchbar$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const sb = this;
         const defaults = {
@@ -30768,22 +31520,38 @@
 
       },
       clicks: {
-        '.searchbar-clear': function clear($clickedEl, data = {}) {
+        '.searchbar-clear': function clear($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           const sb = app.searchbar.get(data.searchbar);
           if (sb) sb.clear();
         },
-        '.searchbar-enable': function enable($clickedEl, data = {}) {
+        '.searchbar-enable': function enable($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           const sb = app.searchbar.get(data.searchbar);
           if (sb) sb.enable(true);
         },
-        '.searchbar-disable': function disable($clickedEl, data = {}) {
+        '.searchbar-disable': function disable($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           const sb = app.searchbar.get(data.searchbar);
           if (sb) sb.disable();
         },
-        '.searchbar-toggle': function toggle($clickedEl, data = {}) {
+        '.searchbar-toggle': function toggle($clickedEl, data) {
+          if (data === void 0) {
+            data = {};
+          }
+
           const app = this;
           const sb = app.searchbar.get(data.searchbar);
           if (sb) sb.toggle();
@@ -30812,48 +31580,348 @@
       }
     };
 
+    function createMetadataMethodsForProperty(metadataMap, kind, property, decoratorFinishedRef) {
+      return {
+        getMetadata: function (key) {
+          assertNotFinished(decoratorFinishedRef, "getMetadata"), assertMetadataKey(key);
+          var metadataForKey = metadataMap[key];
+          if (void 0 !== metadataForKey) if (1 === kind) {
+            var pub = metadataForKey.public;
+            if (void 0 !== pub) return pub[property];
+          } else if (2 === kind) {
+            var priv = metadataForKey.private;
+            if (void 0 !== priv) return priv.get(property);
+          } else if (Object.hasOwnProperty.call(metadataForKey, "constructor")) return metadataForKey.constructor;
+        },
+        setMetadata: function (key, value) {
+          assertNotFinished(decoratorFinishedRef, "setMetadata"), assertMetadataKey(key);
+          var metadataForKey = metadataMap[key];
+
+          if (void 0 === metadataForKey && (metadataForKey = metadataMap[key] = {}), 1 === kind) {
+            var pub = metadataForKey.public;
+            void 0 === pub && (pub = metadataForKey.public = {}), pub[property] = value;
+          } else if (2 === kind) {
+            var priv = metadataForKey.priv;
+            void 0 === priv && (priv = metadataForKey.private = new Map()), priv.set(property, value);
+          } else metadataForKey.constructor = value;
+        }
+      };
+    }
+
+    function convertMetadataMapToFinal(obj, metadataMap) {
+      var parentMetadataMap = obj[Symbol.metadata || Symbol.for("Symbol.metadata")],
+          metadataKeys = Object.getOwnPropertySymbols(metadataMap);
+
+      if (0 !== metadataKeys.length) {
+        for (var i = 0; i < metadataKeys.length; i++) {
+          var key = metadataKeys[i],
+              metaForKey = metadataMap[key],
+              parentMetaForKey = parentMetadataMap ? parentMetadataMap[key] : null,
+              pub = metaForKey.public,
+              parentPub = parentMetaForKey ? parentMetaForKey.public : null;
+          pub && parentPub && Object.setPrototypeOf(pub, parentPub);
+          var priv = metaForKey.private;
+
+          if (priv) {
+            var privArr = Array.from(priv.values()),
+                parentPriv = parentMetaForKey ? parentMetaForKey.private : null;
+            parentPriv && (privArr = privArr.concat(parentPriv)), metaForKey.private = privArr;
+          }
+
+          parentMetaForKey && Object.setPrototypeOf(metaForKey, parentMetaForKey);
+        }
+
+        parentMetadataMap && Object.setPrototypeOf(metadataMap, parentMetadataMap), obj[Symbol.metadata || Symbol.for("Symbol.metadata")] = metadataMap;
+      }
+    }
+
+    function createAddInitializerMethod(initializers, decoratorFinishedRef) {
+      return function (initializer) {
+        assertNotFinished(decoratorFinishedRef, "addInitializer"), assertCallable(initializer, "An initializer"), initializers.push(initializer);
+      };
+    }
+
+    function memberDec(dec, name, desc, metadataMap, initializers, kind, isStatic, isPrivate, value) {
+      var kindStr;
+
+      switch (kind) {
+        case 1:
+          kindStr = "accessor";
+          break;
+
+        case 2:
+          kindStr = "method";
+          break;
+
+        case 3:
+          kindStr = "getter";
+          break;
+
+        case 4:
+          kindStr = "setter";
+          break;
+
+        default:
+          kindStr = "field";
+      }
+
+      var metadataKind,
+          metadataName,
+          ctx = {
+        kind: kindStr,
+        name: isPrivate ? "#" + name : name,
+        isStatic: isStatic,
+        isPrivate: isPrivate
+      },
+          decoratorFinishedRef = {
+        v: !1
+      };
+
+      if (0 !== kind && (ctx.addInitializer = createAddInitializerMethod(initializers, decoratorFinishedRef)), isPrivate) {
+        metadataKind = 2, metadataName = Symbol(name);
+        var access = {};
+        0 === kind ? (access.get = desc.get, access.set = desc.set) : 2 === kind ? access.get = function () {
+          return desc.value;
+        } : (1 !== kind && 3 !== kind || (access.get = function () {
+          return desc.get.call(this);
+        }), 1 !== kind && 4 !== kind || (access.set = function (v) {
+          desc.set.call(this, v);
+        })), ctx.access = access;
+      } else metadataKind = 1, metadataName = name;
+
+      try {
+        return dec(value, Object.assign(ctx, createMetadataMethodsForProperty(metadataMap, metadataKind, metadataName, decoratorFinishedRef)));
+      } finally {
+        decoratorFinishedRef.v = !0;
+      }
+    }
+
+    function assertNotFinished(decoratorFinishedRef, fnName) {
+      if (decoratorFinishedRef.v) throw new Error("attempted to call " + fnName + " after decoration was finished");
+    }
+
+    function assertMetadataKey(key) {
+      if ("symbol" != typeof key) throw new TypeError("Metadata keys must be symbols, received: " + key);
+    }
+
+    function assertCallable(fn, hint) {
+      if ("function" != typeof fn) throw new TypeError(hint + " must be a function");
+    }
+
+    function assertValidReturnValue(kind, value) {
+      var type = typeof value;
+
+      if (1 === kind) {
+        if ("object" !== type || null === value) throw new TypeError("accessor decorators must return an object with get, set, or init properties or void 0");
+        void 0 !== value.get && assertCallable(value.get, "accessor.get"), void 0 !== value.set && assertCallable(value.set, "accessor.set"), void 0 !== value.init && assertCallable(value.init, "accessor.init"), void 0 !== value.initializer && assertCallable(value.initializer, "accessor.initializer");
+      } else if ("function" !== type) {
+        var hint;
+        throw hint = 0 === kind ? "field" : 10 === kind ? "class" : "method", new TypeError(hint + " decorators must return a function or void 0");
+      }
+    }
+
+    function getInit(desc) {
+      var initializer;
+      return null == (initializer = desc.init) && (initializer = desc.initializer) && "undefined" != typeof console && console.warn(".initializer has been renamed to .init as of March 2022"), initializer;
+    }
+
+    function applyMemberDec(ret, base, decInfo, name, kind, isStatic, isPrivate, metadataMap, initializers) {
+      var desc,
+          initializer,
+          value,
+          newValue,
+          get,
+          set,
+          decs = decInfo[0];
+      if (isPrivate ? desc = 0 === kind || 1 === kind ? {
+        get: decInfo[3],
+        set: decInfo[4]
+      } : 3 === kind ? {
+        get: decInfo[3]
+      } : 4 === kind ? {
+        set: decInfo[3]
+      } : {
+        value: decInfo[3]
+      } : 0 !== kind && (desc = Object.getOwnPropertyDescriptor(base, name)), 1 === kind ? value = {
+        get: desc.get,
+        set: desc.set
+      } : 2 === kind ? value = desc.value : 3 === kind ? value = desc.get : 4 === kind && (value = desc.set), "function" == typeof decs) void 0 !== (newValue = memberDec(decs, name, desc, metadataMap, initializers, kind, isStatic, isPrivate, value)) && (assertValidReturnValue(kind, newValue), 0 === kind ? initializer = newValue : 1 === kind ? (initializer = getInit(newValue), get = newValue.get || value.get, set = newValue.set || value.set, value = {
+        get: get,
+        set: set
+      }) : value = newValue);else for (var i = decs.length - 1; i >= 0; i--) {
+        var newInit;
+        if (void 0 !== (newValue = memberDec(decs[i], name, desc, metadataMap, initializers, kind, isStatic, isPrivate, value))) assertValidReturnValue(kind, newValue), 0 === kind ? newInit = newValue : 1 === kind ? (newInit = getInit(newValue), get = newValue.get || value.get, set = newValue.set || value.set, value = {
+          get: get,
+          set: set
+        }) : value = newValue, void 0 !== newInit && (void 0 === initializer ? initializer = newInit : "function" == typeof initializer ? initializer = [initializer, newInit] : initializer.push(newInit));
+      }
+
+      if (0 === kind || 1 === kind) {
+        if (void 0 === initializer) initializer = function (instance, init) {
+          return init;
+        };else if ("function" != typeof initializer) {
+          var ownInitializers = initializer;
+
+          initializer = function (instance, init) {
+            for (var value = init, i = 0; i < ownInitializers.length; i++) value = ownInitializers[i].call(instance, value);
+
+            return value;
+          };
+        } else {
+          var originalInitializer = initializer;
+
+          initializer = function (instance, init) {
+            return originalInitializer.call(instance, init);
+          };
+        }
+        ret.push(initializer);
+      }
+
+      0 !== kind && (1 === kind ? (desc.get = value.get, desc.set = value.set) : 2 === kind ? desc.value = value : 3 === kind ? desc.get = value : 4 === kind && (desc.set = value), isPrivate ? 1 === kind ? (ret.push(function (instance, args) {
+        return value.get.call(instance, args);
+      }), ret.push(function (instance, args) {
+        return value.set.call(instance, args);
+      })) : 2 === kind ? ret.push(value) : ret.push(function (instance, args) {
+        return value.call(instance, args);
+      }) : Object.defineProperty(base, name, desc));
+    }
+
+    function applyMemberDecs(ret, Class, protoMetadataMap, staticMetadataMap, decInfos) {
+      for (var protoInitializers, staticInitializers, existingProtoNonFields = new Map(), existingStaticNonFields = new Map(), i = 0; i < decInfos.length; i++) {
+        var decInfo = decInfos[i];
+
+        if (Array.isArray(decInfo)) {
+          var base,
+              metadataMap,
+              initializers,
+              kind = decInfo[1],
+              name = decInfo[2],
+              isPrivate = decInfo.length > 3,
+              isStatic = kind >= 5;
+
+          if (isStatic ? (base = Class, metadataMap = staticMetadataMap, 0 !== (kind -= 5) && (initializers = staticInitializers = staticInitializers || [])) : (base = Class.prototype, metadataMap = protoMetadataMap, 0 !== kind && (initializers = protoInitializers = protoInitializers || [])), 0 !== kind && !isPrivate) {
+            var existingNonFields = isStatic ? existingStaticNonFields : existingProtoNonFields,
+                existingKind = existingNonFields.get(name) || 0;
+            if (!0 === existingKind || 3 === existingKind && 4 !== kind || 4 === existingKind && 3 !== kind) throw new Error("Attempted to decorate a public method/accessor that has the same name as a previously decorated public method/accessor. This is not currently supported by the decorators plugin. Property name was: " + name);
+            !existingKind && kind > 2 ? existingNonFields.set(name, kind) : existingNonFields.set(name, !0);
+          }
+
+          applyMemberDec(ret, base, decInfo, name, kind, isStatic, isPrivate, metadataMap, initializers);
+        }
+      }
+
+      pushInitializers(ret, protoInitializers), pushInitializers(ret, staticInitializers);
+    }
+
+    function pushInitializers(ret, initializers) {
+      initializers && ret.push(function (instance) {
+        for (var i = 0; i < initializers.length; i++) initializers[i].call(instance);
+
+        return instance;
+      });
+    }
+
+    function applyClassDecs(ret, targetClass, metadataMap, classDecs) {
+      if (classDecs.length > 0) {
+        for (var initializers = [], newClass = targetClass, name = targetClass.name, i = classDecs.length - 1; i >= 0; i--) {
+          var decoratorFinishedRef = {
+            v: !1
+          };
+
+          try {
+            var ctx = Object.assign({
+              kind: "class",
+              name: name,
+              addInitializer: createAddInitializerMethod(initializers, decoratorFinishedRef)
+            }, createMetadataMethodsForProperty(metadataMap, 0, name, decoratorFinishedRef)),
+                nextNewClass = classDecs[i](newClass, ctx);
+          } finally {
+            decoratorFinishedRef.v = !0;
+          }
+
+          void 0 !== nextNewClass && (assertValidReturnValue(10, nextNewClass), newClass = nextNewClass);
+        }
+
+        ret.push(newClass, function () {
+          for (var i = 0; i < initializers.length; i++) initializers[i].call(newClass);
+        });
+      }
+    }
+
+    function _applyDecs(targetClass, memberDecs, classDecs) {
+      var ret = [],
+          staticMetadataMap = {},
+          protoMetadataMap = {};
+      return applyMemberDecs(ret, targetClass, protoMetadataMap, staticMetadataMap, memberDecs), convertMetadataMapToFinal(targetClass.prototype, protoMetadataMap), applyClassDecs(ret, targetClass, staticMetadataMap, classDecs), convertMetadataMapToFinal(targetClass, staticMetadataMap), ret;
+    }
+
+    function _asyncIterator(iterable) {
+      var method,
+          async,
+          sync,
+          retry = 2;
+
+      for ("undefined" != typeof Symbol && (async = Symbol.asyncIterator, sync = Symbol.iterator); retry--;) {
+        if (async && null != (method = iterable[async])) return method.call(iterable);
+        if (sync && null != (method = iterable[sync])) return new AsyncFromSyncIterator(method.call(iterable));
+        async = "@@asyncIterator", sync = "@@iterator";
+      }
+
+      throw new TypeError("Object is not async iterable");
+    }
+
+    function AsyncFromSyncIterator(s) {
+      function AsyncFromSyncIteratorContinuation(r) {
+        if (Object(r) !== r) return Promise.reject(new TypeError(r + " is not an object."));
+        var done = r.done;
+        return Promise.resolve(r.value).then(function (value) {
+          return {
+            value: value,
+            done: done
+          };
+        });
+      }
+
+      return AsyncFromSyncIterator = function (s) {
+        this.s = s, this.n = s.next;
+      }, AsyncFromSyncIterator.prototype = {
+        s: null,
+        n: null,
+        next: function () {
+          return AsyncFromSyncIteratorContinuation(this.n.apply(this.s, arguments));
+        },
+        return: function (value) {
+          var ret = this.s.return;
+          return void 0 === ret ? Promise.resolve({
+            value: value,
+            done: !0
+          }) : AsyncFromSyncIteratorContinuation(ret.apply(this.s, arguments));
+        },
+        throw: function (value) {
+          var thr = this.s.return;
+          return void 0 === thr ? Promise.reject(value) : AsyncFromSyncIteratorContinuation(thr.apply(this.s, arguments));
+        }
+      }, new AsyncFromSyncIterator(s);
+    }
+
     var REACT_ELEMENT_TYPE;
 
     function _jsx(type, props, key, children) {
-      if (!REACT_ELEMENT_TYPE) {
-        REACT_ELEMENT_TYPE = typeof Symbol === "function" && Symbol["for"] && Symbol["for"]("react.element") || 0xeac7;
-      }
-
-      var defaultProps = type && type.defaultProps;
-      var childrenLength = arguments.length - 3;
-
-      if (!props && childrenLength !== 0) {
-        props = {
-          children: void 0
-        };
-      }
-
-      if (childrenLength === 1) {
-        props.children = children;
-      } else if (childrenLength > 1) {
-        var childArray = new Array(childrenLength);
-
-        for (var i = 0; i < childrenLength; i++) {
-          childArray[i] = arguments[i + 3];
-        }
+      REACT_ELEMENT_TYPE || (REACT_ELEMENT_TYPE = "function" == typeof Symbol && Symbol.for && Symbol.for("react.element") || 60103);
+      var defaultProps = type && type.defaultProps,
+          childrenLength = arguments.length - 3;
+      if (props || 0 === childrenLength || (props = {
+        children: void 0
+      }), 1 === childrenLength) props.children = children;else if (childrenLength > 1) {
+        for (var childArray = new Array(childrenLength), i = 0; i < childrenLength; i++) childArray[i] = arguments[i + 3];
 
         props.children = childArray;
       }
-
-      if (props && defaultProps) {
-        for (var propName in defaultProps) {
-          if (props[propName] === void 0) {
-            props[propName] = defaultProps[propName];
-          }
-        }
-      } else if (!props) {
-        props = defaultProps || {};
-      }
-
+      if (props && defaultProps) for (var propName in defaultProps) void 0 === props[propName] && (props[propName] = defaultProps[propName]);else props || (props = defaultProps || {});
       return {
         $$typeof: REACT_ELEMENT_TYPE,
         type: type,
-        key: key === undefined ? null : "" + key,
+        key: void 0 === key ? null : "" + key,
         ref: null,
         props: props,
         _owner: null
@@ -30865,14 +31933,9 @@
 
       if (Object.getOwnPropertySymbols) {
         var symbols = Object.getOwnPropertySymbols(object);
-
-        if (enumerableOnly) {
-          symbols = symbols.filter(function (sym) {
-            return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-          });
-        }
-
-        keys.push.apply(keys, symbols);
+        enumerableOnly && (symbols = symbols.filter(function (sym) {
+          return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+        })), keys.push.apply(keys, symbols);
       }
 
       return keys;
@@ -30880,19 +31943,12 @@
 
     function _objectSpread2(target) {
       for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i] != null ? arguments[i] : {};
-
-        if (i % 2) {
-          ownKeys(Object(source), true).forEach(function (key) {
-            _defineProperty(target, key, source[key]);
-          });
-        } else if (Object.getOwnPropertyDescriptors) {
-          Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-        } else {
-          ownKeys(Object(source)).forEach(function (key) {
-            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-          });
-        }
+        var source = null != arguments[i] ? arguments[i] : {};
+        i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
+          _defineProperty(target, key, source[key]);
+        }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
       }
 
       return target;
@@ -30901,94 +31957,59 @@
     function _typeof(obj) {
       "@babel/helpers - typeof";
 
-      if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-        _typeof = function (obj) {
-          return typeof obj;
-        };
-      } else {
-        _typeof = function (obj) {
-          return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-        };
-      }
-
-      return _typeof(obj);
+      return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+        return typeof obj;
+      } : function (obj) {
+        return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      }, _typeof(obj);
     }
 
     function _wrapRegExp() {
       _wrapRegExp = function (re, groups) {
-        return new BabelRegExp(re, undefined, groups);
+        return new BabelRegExp(re, void 0, groups);
       };
 
-      var _super = RegExp.prototype;
-
-      var _groups = new WeakMap();
+      var _super = RegExp.prototype,
+          _groups = new WeakMap();
 
       function BabelRegExp(re, flags, groups) {
         var _this = new RegExp(re, flags);
 
-        _groups.set(_this, groups || _groups.get(re));
-
-        return _setPrototypeOf(_this, BabelRegExp.prototype);
+        return _groups.set(_this, groups || _groups.get(re)), _setPrototypeOf(_this, BabelRegExp.prototype);
       }
-
-      _inherits(BabelRegExp, RegExp);
-
-      BabelRegExp.prototype.exec = function (str) {
-        var result = _super.exec.call(this, str);
-
-        if (result) result.groups = buildGroups(result, this);
-        return result;
-      };
-
-      BabelRegExp.prototype[Symbol.replace] = function (str, substitution) {
-        if (typeof substitution === "string") {
-          var groups = _groups.get(this);
-
-          return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)>/g, function (_, name) {
-            return "$" + groups[name];
-          }));
-        } else if (typeof substitution === "function") {
-          var _this = this;
-
-          return _super[Symbol.replace].call(this, str, function () {
-            var args = arguments;
-
-            if (typeof args[args.length - 1] !== "object") {
-              args = [].slice.call(args);
-              args.push(buildGroups(args, _this));
-            }
-
-            return substitution.apply(this, args);
-          });
-        } else {
-          return _super[Symbol.replace].call(this, str, substitution);
-        }
-      };
 
       function buildGroups(result, re) {
         var g = _groups.get(re);
 
         return Object.keys(g).reduce(function (groups, name) {
-          groups[name] = result[g[name]];
-          return groups;
+          return groups[name] = result[g[name]], groups;
         }, Object.create(null));
       }
 
-      return _wrapRegExp.apply(this, arguments);
-    }
+      return _inherits(BabelRegExp, RegExp), BabelRegExp.prototype.exec = function (str) {
+        var result = _super.exec.call(this, str);
 
-    function _asyncIterator(iterable) {
-      var method;
+        return result && (result.groups = buildGroups(result, this)), result;
+      }, BabelRegExp.prototype[Symbol.replace] = function (str, substitution) {
+        if ("string" == typeof substitution) {
+          var groups = _groups.get(this);
 
-      if (typeof Symbol !== "undefined") {
-        if (Symbol.asyncIterator) method = iterable[Symbol.asyncIterator];
-        if (method == null && Symbol.iterator) method = iterable[Symbol.iterator];
-      }
+          return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)>/g, function (_, name) {
+            return "$" + groups[name];
+          }));
+        }
 
-      if (method == null) method = iterable["@@asyncIterator"];
-      if (method == null) method = iterable["@@iterator"];
-      if (method == null) throw new TypeError("Object is not async iterable");
-      return method.call(iterable);
+        if ("function" == typeof substitution) {
+          var _this = this;
+
+          return _super[Symbol.replace].call(this, str, function () {
+            var args = arguments;
+            return "object" != typeof args[args.length - 1] && (args = [].slice.call(args)).push(buildGroups(args, _this)), substitution.apply(this, args);
+          });
+        }
+
+        return _super[Symbol.replace].call(this, str, substitution);
+      }, _wrapRegExp.apply(this, arguments);
     }
 
     function _AwaitValue(value) {
@@ -31210,6 +32231,9 @@
     function _createClass(Constructor, protoProps, staticProps) {
       if (protoProps) _defineProperties(Constructor.prototype, protoProps);
       if (staticProps) _defineProperties(Constructor, staticProps);
+      Object.defineProperty(Constructor, "prototype", {
+        writable: false
+      });
       return Constructor;
     }
 
@@ -31290,7 +32314,7 @@
         var ownKeys = Object.keys(source);
 
         if (typeof Object.getOwnPropertySymbols === 'function') {
-          ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+          ownKeys.push.apply(ownKeys, Object.getOwnPropertySymbols(source).filter(function (sym) {
             return Object.getOwnPropertyDescriptor(source, sym).enumerable;
           }));
         }
@@ -31314,6 +32338,9 @@
           writable: true,
           configurable: true
         }
+      });
+      Object.defineProperty(subClass, "prototype", {
+        writable: false
       });
       if (superClass) _setPrototypeOf(subClass, superClass);
     }
@@ -31530,6 +32557,8 @@
     function _possibleConstructorReturn(self, call) {
       if (call && (typeof call === "object" || typeof call === "function")) {
         return call;
+      } else if (call !== void 0) {
+        throw new TypeError("Derived constructors may only return object or undefined");
       }
 
       return _assertThisInitialized(self);
@@ -31563,7 +32592,7 @@
       return object;
     }
 
-    function _get(target, property, receiver) {
+    function _get() {
       if (typeof Reflect !== "undefined" && Reflect.get) {
         _get = Reflect.get;
       } else {
@@ -31574,14 +32603,14 @@
           var desc = Object.getOwnPropertyDescriptor(base, property);
 
           if (desc.get) {
-            return desc.get.call(receiver);
+            return desc.get.call(arguments.length < 3 ? target : receiver);
           }
 
           return desc.value;
         };
       }
 
-      return _get(target, property, receiver || target);
+      return _get.apply(this, arguments);
     }
 
     function set(target, property, value, receiver) {
@@ -31715,7 +32744,7 @@
     }
 
     function _iterableToArrayLimit(arr, i) {
-      var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]);
+      var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
 
       if (_i == null) return;
       var _arr = [];
@@ -32468,12 +33497,38 @@
       return fn;
     }
 
+    function _checkPrivateRedeclaration(obj, privateCollection) {
+      if (privateCollection.has(obj)) {
+        throw new TypeError("Cannot initialize the same private elements twice on an object");
+      }
+    }
+
+    function _classPrivateFieldInitSpec(obj, privateMap, value) {
+      _checkPrivateRedeclaration(obj, privateMap);
+
+      privateMap.set(obj, value);
+    }
+
+    function _classPrivateMethodInitSpec(obj, privateSet) {
+      _checkPrivateRedeclaration(obj, privateSet);
+
+      privateSet.add(obj);
+    }
+
     function _classPrivateMethodSet() {
       throw new TypeError("attempted to reassign private method");
     }
 
+    function _identity(x) {
+      return x;
+    }
+
     class Messages$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const m = this;
         const defaults = {
@@ -32612,57 +33667,65 @@
         }, message.footer)));
       }
 
-      renderMessages(messagesToRender = this.messages, method = this.params.newMessagesFirst ? 'prepend' : 'append') {
+      renderMessages(messagesToRender, method) {
+        if (messagesToRender === void 0) {
+          messagesToRender = this.messages;
+        }
+
+        if (method === void 0) {
+          method = this.params.newMessagesFirst ? 'prepend' : 'append';
+        }
+
         const m = this;
         const html = messagesToRender.map(message => m.renderMessage(message)).join('');
         m.$el[method](html);
       }
 
-      isFirstMessage(...args) {
+      isFirstMessage() {
         const m = this;
-        if (m.params.firstMessageRule) return m.params.firstMessageRule(...args);
+        if (m.params.firstMessageRule) return m.params.firstMessageRule(...arguments);
         return false;
       }
 
-      isLastMessage(...args) {
+      isLastMessage() {
         const m = this;
-        if (m.params.lastMessageRule) return m.params.lastMessageRule(...args);
+        if (m.params.lastMessageRule) return m.params.lastMessageRule(...arguments);
         return false;
       }
 
-      isTailMessage(...args) {
+      isTailMessage() {
         const m = this;
-        if (m.params.tailMessageRule) return m.params.tailMessageRule(...args);
+        if (m.params.tailMessageRule) return m.params.tailMessageRule(...arguments);
         return false;
       }
 
-      isSameNameMessage(...args) {
+      isSameNameMessage() {
         const m = this;
-        if (m.params.sameNameMessageRule) return m.params.sameNameMessageRule(...args);
+        if (m.params.sameNameMessageRule) return m.params.sameNameMessageRule(...arguments);
         return false;
       }
 
-      isSameHeaderMessage(...args) {
+      isSameHeaderMessage() {
         const m = this;
-        if (m.params.sameHeaderMessageRule) return m.params.sameHeaderMessageRule(...args);
+        if (m.params.sameHeaderMessageRule) return m.params.sameHeaderMessageRule(...arguments);
         return false;
       }
 
-      isSameFooterMessage(...args) {
+      isSameFooterMessage() {
         const m = this;
-        if (m.params.sameFooterMessageRule) return m.params.sameFooterMessageRule(...args);
+        if (m.params.sameFooterMessageRule) return m.params.sameFooterMessageRule(...arguments);
         return false;
       }
 
-      isSameAvatarMessage(...args) {
+      isSameAvatarMessage() {
         const m = this;
-        if (m.params.sameAvatarMessageRule) return m.params.sameAvatarMessageRule(...args);
+        if (m.params.sameAvatarMessageRule) return m.params.sameAvatarMessageRule(...arguments);
         return false;
       }
 
-      isCustomClassMessage(...args) {
+      isCustomClassMessage() {
         const m = this;
-        if (m.params.customClassMessageRule) return m.params.customClassMessageRule(...args);
+        if (m.params.customClassMessageRule) return m.params.customClassMessageRule(...arguments);
         return undefined;
       }
 
@@ -32733,7 +33796,11 @@
         m.$el.html('');
       }
 
-      removeMessage(messageToRemove, layout = true) {
+      removeMessage(messageToRemove, layout) {
+        if (layout === void 0) {
+          layout = true;
+        }
+
         const m = this; // Index or El
 
         let index;
@@ -32760,7 +33827,11 @@
         return m;
       }
 
-      removeMessages(messagesToRemove, layout = true) {
+      removeMessages(messagesToRemove, layout) {
+        if (layout === void 0) {
+          layout = true;
+        }
+
         const m = this;
 
         if (Array.isArray(messagesToRemove)) {
@@ -32781,11 +33852,15 @@
         return m;
       }
 
-      addMessage(...args) {
+      addMessage() {
         const m = this;
         let messageToAdd;
         let animate;
         let method;
+
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
 
         if (typeof args[1] === 'boolean') {
           [messageToAdd, animate, method] = args;
@@ -32822,11 +33897,15 @@
         };
       }
 
-      addMessages(...args) {
+      addMessages() {
         const m = this;
         let messagesToAdd;
         let animate;
         let method;
+
+        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          args[_key2] = arguments[_key2];
+        }
 
         if (typeof args[1] === 'boolean') {
           [messagesToAdd, animate, method] = args;
@@ -32898,7 +33977,11 @@
         return m;
       }
 
-      showTyping(message = {}) {
+      showTyping(message) {
+        if (message === void 0) {
+          message = {};
+        }
+
         const m = this;
         const typingMessage = m.messages.filter(el => el.isTyping)[0];
 
@@ -32964,7 +34047,11 @@
         }
       }
 
-      scroll(duration = 300, scrollTop) {
+      scroll(duration, scrollTop) {
+        if (duration === void 0) {
+          duration = 300;
+        }
+
         const m = this;
         const currentScroll = m.pageContentEl.scrollTop;
         let newScrollTop;
@@ -33078,7 +34165,11 @@
     };
 
     class Messagebar$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const messagebar = this;
         const defaults = {
@@ -33319,7 +34410,11 @@
         }
       }
 
-      attachmentsCreate(innerHTML = '') {
+      attachmentsCreate(innerHTML) {
+        if (innerHTML === void 0) {
+          innerHTML = '';
+        }
+
         const messagebar = this;
         const $attachmentsEl = $(`<div class="messagebar-attachments">${innerHTML}</div>`);
         $attachmentsEl.insertBefore(messagebar.$textareaEl);
@@ -33330,7 +34425,11 @@
         return messagebar;
       }
 
-      attachmentsShow(innerHTML = '') {
+      attachmentsShow(innerHTML) {
+        if (innerHTML === void 0) {
+          innerHTML = '';
+        }
+
         const messagebar = this;
         messagebar.$attachmentsEl = messagebar.$el.find('.messagebar-attachments');
 
@@ -33404,7 +34503,11 @@
         }
       }
 
-      sheetCreate(innerHTML = '') {
+      sheetCreate(innerHTML) {
+        if (innerHTML === void 0) {
+          innerHTML = '';
+        }
+
         const messagebar = this;
         const $sheetEl = $(`<div class="messagebar-sheet">${innerHTML}</div>`);
         messagebar.$el.append($sheetEl);
@@ -33415,7 +34518,11 @@
         return messagebar;
       }
 
-      sheetShow(innerHTML = '') {
+      sheetShow(innerHTML) {
+        if (innerHTML === void 0) {
+          innerHTML = '';
+        }
+
         const messagebar = this;
         messagebar.$sheetEl = messagebar.$el.find('.messagebar-sheet');
 
@@ -33672,14 +34779,14 @@
         // Latest Chrome and webkits Fix
         if (window.WebKitCSSMatrix) curTransform = transformMatrix.m41; // Crazy IE10 Matrix
         else if (matrix.length === 16) curTransform = parseFloat(matrix[12]); // Normal Browsers
-          else curTransform = parseFloat(matrix[4]);
+        else curTransform = parseFloat(matrix[4]);
       }
 
       if (axis === 'y') {
         // Latest Chrome and webkits Fix
         if (window.WebKitCSSMatrix) curTransform = transformMatrix.m42; // Crazy IE10 Matrix
         else if (matrix.length === 16) curTransform = parseFloat(matrix[13]); // Normal Browsers
-          else curTransform = parseFloat(matrix[5]);
+        else curTransform = parseFloat(matrix[5]);
       }
 
       return curTransform || 0;
@@ -35734,8 +36841,6 @@
       if (swiper.support.touch || !swiper.params.simulateTouch || swiper.params.watchOverflow && swiper.isLocked || swiper.params.cssMode) return;
       const el = swiper.params.touchEventsTarget === 'container' ? swiper.el : swiper.wrapperEl;
       el.style.cursor = 'move';
-      el.style.cursor = moving ? '-webkit-grabbing' : '-webkit-grab';
-      el.style.cursor = moving ? '-moz-grabbin' : '-moz-grab';
       el.style.cursor = moving ? 'grabbing' : 'grab';
     }
 
@@ -36337,7 +37442,7 @@
       } // eslint-disable-next-line
 
 
-      if (swiper.translate === -0) swiper.translate = 0;
+      if (swiper.translate === 0) swiper.translate = 0;
       swiper.updateActiveIndex();
       swiper.updateSlidesClasses();
       let newProgress;
@@ -37517,7 +38622,8 @@
       let {
         swiper,
         extendParams,
-        on
+        on,
+        emit
       } = _ref;
       extendParams({
         virtual: {
@@ -37608,6 +38714,8 @@
           if (swiper.lazy && swiper.params.lazy.enabled) {
             swiper.lazy.load();
           }
+
+          emit('virtualUpdate');
         }
 
         if (previousFrom === from && previousTo === to && !force) {
@@ -37616,6 +38724,7 @@
           }
 
           swiper.updateProgress();
+          emit('virtualUpdate');
           return;
         }
 
@@ -37637,6 +38746,8 @@
 
           if (swiper.params.virtual.renderExternalUpdate) {
             onRendered();
+          } else {
+            emit('virtualUpdate');
           }
 
           return;
@@ -38863,7 +39974,7 @@
         }
 
         $el.addClass(params.modifierClass + params.type);
-        $el.addClass(params.modifierClass + swiper.params.direction);
+        $el.addClass(swiper.isHorizontal() ? params.horizontalClass : params.verticalClass);
 
         if (params.type === 'bullets' && params.dynamicBullets) {
           $el.addClass(`${params.modifierClass}${params.type}-dynamic`);
@@ -38903,7 +40014,7 @@
         const $el = swiper.pagination.$el;
         $el.removeClass(params.hiddenClass);
         $el.removeClass(params.modifierClass + params.type);
-        $el.removeClass(params.modifierClass + swiper.params.direction);
+        $el.removeClass(swiper.isHorizontal() ? params.horizontalClass : params.verticalClass);
         if (swiper.pagination.bullets && swiper.pagination.bullets.removeClass) swiper.pagination.bullets.removeClass(params.bulletActiveClass);
 
         if (params.clickable) {
@@ -40569,7 +41680,8 @@
           containerMessage: null,
           containerRoleDescriptionMessage: null,
           itemRoleDescriptionMessage: null,
-          slideRole: 'group'
+          slideRole: 'group',
+          id: null
         }
       });
       let liveRegion = null;
@@ -40761,7 +41873,7 @@
 
 
         const $wrapperEl = swiper.$wrapperEl;
-        const wrapperId = $wrapperEl.attr('id') || `swiper-wrapper-${getRandomNumber(16)}`;
+        const wrapperId = params.id || $wrapperEl.attr('id') || `swiper-wrapper-${getRandomNumber(16)}`;
         const live = swiper.params.autoplay && swiper.params.autoplay.enabled ? 'off' : 'polite';
         addElId($wrapperEl, wrapperId);
         addElLive($wrapperEl, live); // Slide
@@ -41350,7 +42462,7 @@
 
       function onThumbClick() {
         const thumbsSwiper = swiper.thumbs.swiper;
-        if (!thumbsSwiper) return;
+        if (!thumbsSwiper || thumbsSwiper.destroyed) return;
         const clickedIndex = thumbsSwiper.clickedIndex;
         const clickedSlide = thumbsSwiper.clickedSlide;
         if (clickedSlide && $$1(clickedSlide).hasClass(swiper.params.thumbs.slideThumbActiveClass)) return;
@@ -41416,7 +42528,7 @@
 
       function update(initial) {
         const thumbsSwiper = swiper.thumbs.swiper;
-        if (!thumbsSwiper) return;
+        if (!thumbsSwiper || thumbsSwiper.destroyed) return;
         const slidesPerView = thumbsSwiper.params.slidesPerView === 'auto' ? thumbsSwiper.slidesPerViewDynamic() : thumbsSwiper.params.slidesPerView;
         const autoScrollOffset = swiper.params.thumbs.autoScrollOffset;
         const useOffset = autoScrollOffset && !thumbsSwiper.params.loop;
@@ -41509,19 +42621,18 @@
         update(true);
       });
       on('slideChange update resize observerUpdate', () => {
-        if (!swiper.thumbs.swiper) return;
         update();
       });
       on('setTransition', (_s, duration) => {
         const thumbsSwiper = swiper.thumbs.swiper;
-        if (!thumbsSwiper) return;
+        if (!thumbsSwiper || thumbsSwiper.destroyed) return;
         thumbsSwiper.setTransition(duration);
       });
       on('beforeDestroy', () => {
         const thumbsSwiper = swiper.thumbs.swiper;
-        if (!thumbsSwiper) return;
+        if (!thumbsSwiper || thumbsSwiper.destroyed) return;
 
-        if (swiperCreated && thumbsSwiper) {
+        if (swiperCreated) {
           thumbsSwiper.destroy();
         }
       });
@@ -42137,6 +43248,19 @@
         if (swiper.params.effect !== effect) return;
         setTransition(duration);
       });
+      let requireUpdateOnVirtual;
+      on('virtualUpdate', () => {
+        if (!swiper.slides.length) {
+          requireUpdateOnVirtual = true;
+        }
+
+        requestAnimationFrame(() => {
+          if (requireUpdateOnVirtual && swiper.slides && swiper.slides.length) {
+            setTranslate();
+            requireUpdateOnVirtual = false;
+          }
+        });
+      });
     }
 
     function effectTarget(effectParams, $slideEl) {
@@ -42585,7 +43709,8 @@
           const $slideEl = slides.eq(i);
           const slideSize = slidesSizesGrid[i];
           const slideOffset = $slideEl[0].swiperSlideOffset;
-          const offsetMultiplier = (center - slideOffset - slideSize / 2) / slideSize * params.modifier;
+          const centerOffset = (center - slideOffset - slideSize / 2) / slideSize;
+          const offsetMultiplier = typeof params.modifier === 'function' ? params.modifier(centerOffset) : centerOffset * params.modifier;
           let rotateY = isHorizontal ? rotate * offsetMultiplier : 0;
           let rotateX = isHorizontal ? 0 : rotate * offsetMultiplier; // var rotateZ = 0
 
@@ -42812,7 +43937,8 @@
       extendParams({
         cardsEffect: {
           slideShadows: true,
-          transformEl: null
+          transformEl: null,
+          rotate: true
         }
       });
 
@@ -42848,8 +43974,9 @@
           let scale = 1;
           let rotate = -2 * progress;
           let tXAdd = 8 - Math.abs(progress) * 0.75;
-          const isSwipeToNext = (i === activeIndex || i === activeIndex - 1) && progress > 0 && progress < 1 && (isTouched || swiper.params.cssMode) && currentTranslate < startTranslate;
-          const isSwipeToPrev = (i === activeIndex || i === activeIndex + 1) && progress < 0 && progress > -1 && (isTouched || swiper.params.cssMode) && currentTranslate > startTranslate;
+          const slideIndex = swiper.virtual && swiper.params.virtual.enabled ? swiper.virtual.from + i : i;
+          const isSwipeToNext = (slideIndex === activeIndex || slideIndex === activeIndex - 1) && progress > 0 && progress < 1 && (isTouched || swiper.params.cssMode) && currentTranslate < startTranslate;
+          const isSwipeToPrev = (slideIndex === activeIndex || slideIndex === activeIndex + 1) && progress < 0 && progress > -1 && (isTouched || swiper.params.cssMode) && currentTranslate > startTranslate;
 
           if (isSwipeToNext || isSwipeToPrev) {
             const subProgress = (1 - Math.abs((Math.abs(progress) - 0.5) / 0.5)) ** 0.5;
@@ -42878,7 +44005,7 @@
           const scaleString = progress < 0 ? `${1 + (1 - scale) * progress}` : `${1 - (1 - scale) * progress}`;
           const transform = `
         translate3d(${tX}, ${tY}, ${tZ}px)
-        rotateZ(${rotate}deg)
+        rotateZ(${params.rotate ? rotate : 0}deg)
         scale(${scaleString})
       `;
 
@@ -42927,7 +44054,7 @@
     }
 
     /**
-     * Swiper 8.0.6
+     * Swiper 8.1.0
      * Most modern mobile touch slider and framework with hardware accelerated transitions
      * https://swiperjs.com
      *
@@ -42935,7 +44062,7 @@
      *
      * Released under the MIT License
      *
-     * Released on: February 14, 2022
+     * Released on: April 8, 2022
      */
 
     const modules = [Virtual, Keyboard, Mousewheel, Navigation, Pagination, Scrollbar, Parallax, Zoom, Lazy, Controller, A11y, History, HashNavigation, Autoplay, Thumb, freeMode, Grid, Manipulation, EffectFade, EffectCube, EffectFlip, EffectCoverflow, EffectCreative, EffectCards];
@@ -43141,7 +44268,11 @@
     /* eslint indent: ["off"] */
 
     class PhotoBrowser$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const pb = this;
         pb.app = app;
@@ -43505,35 +44636,65 @@
               pb.emit('local::doubleClick', e);
             },
 
-            slideChange(...args) {
+            slideChange() {
               const swiper = this;
               pb.onSlideChange(swiper);
+
+              for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
+              }
+
               pb.emit('local::slideChange', ...args);
             },
 
-            transitionStart(...args) {
+            transitionStart() {
+              for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                args[_key2] = arguments[_key2];
+              }
+
               pb.emit('local::transitionStart', ...args);
             },
 
-            transitionEnd(...args) {
+            transitionEnd() {
+              for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+                args[_key3] = arguments[_key3];
+              }
+
               pb.emit('local::transitionEnd', ...args);
             },
 
-            slideChangeTransitionStart(...args) {
+            slideChangeTransitionStart() {
               const swiper = this;
               pb.onSlideChange(swiper);
+
+              for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+                args[_key4] = arguments[_key4];
+              }
+
               pb.emit('local::slideChangeTransitionStart', ...args);
             },
 
-            slideChangeTransitionEnd(...args) {
+            slideChangeTransitionEnd() {
+              for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+                args[_key5] = arguments[_key5];
+              }
+
               pb.emit('local::slideChangeTransitionEnd', ...args);
             },
 
-            lazyImageLoad(...args) {
+            lazyImageLoad() {
+              for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+                args[_key6] = arguments[_key6];
+              }
+
               pb.emit('local::lazyImageLoad', ...args);
             },
 
-            lazyImageReady(...args) {
+            lazyImageReady() {
+              for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+                args[_key7] = arguments[_key7];
+              }
+
               const slideEl = args[0];
               $(slideEl).removeClass('photo-browser-slide-lazy');
               pb.emit('local::lazyImageReady', ...args);
@@ -44221,7 +45382,11 @@
     /* eslint "no-useless-escape": "off" */
 
     class Autocomplete$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const ac = this;
         ac.app = app;
@@ -45249,7 +46414,11 @@
     };
 
     class Tooltip$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const tooltip = this;
         const support = getSupport$1();
@@ -45772,7 +46941,11 @@
     /* eslint no-nested-ternary: off */
 
     class Gauge$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const self = this;
         const defaults = extend$1({}, app.params.gauge); // Extend defaults with modules params
@@ -45898,7 +47071,11 @@
         }, labelText));
       }
 
-      update(newParams = {}) {
+      update(newParams) {
+        if (newParams === void 0) {
+          newParams = {};
+        }
+
         const self = this;
         const document = getDocument();
         const {
@@ -46168,7 +47345,11 @@
     };
 
     const Menu = {
-      open(el = '.menu-item-dropdown') {
+      open(el) {
+        if (el === void 0) {
+          el = '.menu-item-dropdown';
+        }
+
         const app = this;
         if (!el) return;
         const $el = $(el).closest('.menu-item-dropdown');
@@ -46186,7 +47367,11 @@
         app.emit('menuOpened', $el.eq(0)[0]);
       },
 
-      close(el = '.menu-item-dropdown-opened') {
+      close(el) {
+        if (el === void 0) {
+          el = '.menu-item-dropdown-opened';
+        }
+
         const app = this;
         if (!el) return;
         const $el = $(el).closest('.menu-item-dropdown-opened');
@@ -47779,7 +48964,11 @@
     };
 
     class ColorPicker$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const self = this;
         self.params = extend$1({}, app.params.colorPicker, params);
@@ -48020,7 +49209,15 @@
         return [Math.floor(arr[0] * 10) / 10, Math.floor(arr[1] * 1000) / 1000, Math.floor(arr[2] * 1000) / 1000];
       }
 
-      setValue(value = {}, updateModules = true) {
+      setValue(value, updateModules) {
+        if (value === void 0) {
+          value = {};
+        }
+
+        if (updateModules === void 0) {
+          updateModules = true;
+        }
+
         const self = this;
         if (typeof value === 'undefined') return;
         let {
@@ -48158,7 +49355,11 @@
         return self.value;
       }
 
-      updateValue(fireEvents = true) {
+      updateValue(fireEvents) {
+        if (fireEvents === void 0) {
+          fireEvents = true;
+        }
+
         const self = this;
         const {
           $inputEl,
@@ -48757,7 +49958,11 @@
           domProp: 'f7ColorPicker'
         });
 
-        app.colorPicker.close = function close(el = '.color-picker') {
+        app.colorPicker.close = function close(el) {
+          if (el === void 0) {
+            el = '.color-picker';
+          }
+
           const $el = $(el);
           if ($el.length === 0) return;
           const colorPicker = $el[0].f7ColorPicker;
@@ -49597,7 +50802,11 @@
     };
 
     class PieChart$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const self = this;
         const defaults = extend$1({}, app.params.pieChart); // Extend defaults with modules params
@@ -49652,11 +50861,12 @@
           return [x, y];
         }
 
-        datasets.forEach(({
-          value,
-          label,
-          color
-        }) => {
+        datasets.forEach(_ref => {
+          let {
+            value,
+            label,
+            color
+          } = _ref;
           const percentage = value / this.getSummValue();
           const [startX, startY] = getCoordinatesForPercentage(cumulativePercentage);
           cumulativePercentage += percentage;
@@ -49766,7 +50976,11 @@
         })));
       }
 
-      update(newParams = {}) {
+      update(newParams) {
+        if (newParams === void 0) {
+          newParams = {};
+        }
+
         const self = this;
         const {
           params
@@ -49886,7 +51100,11 @@
     };
 
     class AreaChart$1 extends Framework7Class {
-      constructor(app, params = {}) {
+      constructor(app, params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params, [app]);
         const self = this;
         const defaults = extend$1({}, app.params.areaChart); // Extend defaults with modules params
@@ -49939,9 +51157,10 @@
           hiddenDatasets
         } = this;
         const summValues = [];
-        datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(({
-          values
-        }) => {
+        datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(_ref => {
+          let {
+            values
+          } = _ref;
           values.forEach((value, valueIndex) => {
             if (!summValues[valueIndex]) summValues[valueIndex] = 0;
             summValues[valueIndex] += value;
@@ -49970,9 +51189,10 @@
         let maxValue = 0;
 
         if (lineChart) {
-          datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(({
-            values
-          }) => {
+          datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(_ref2 => {
+            let {
+              values
+            } = _ref2;
             const datasetMaxValue = Math.max(...values);
             if (datasetMaxValue > maxValue) maxValue = datasetMaxValue;
           });
@@ -49980,11 +51200,12 @@
           maxValue = Math.max(...this.getSummValues());
         }
 
-        datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(({
-          label,
-          values,
-          color
-        }) => {
+        datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(_ref3 => {
+          let {
+            label,
+            values,
+            color
+          } = _ref3;
           const points = values.map((originalValue, valueIndex) => {
             lastValues[valueIndex] += originalValue;
             const value = lineChart ? originalValue : lastValues[valueIndex];
@@ -50119,11 +51340,12 @@
 
         const datasetsText = currentValues.length > 0 ? `
       <ul class="area-chart-tooltip-list">
-        ${currentValues.map(({
-      label,
-      color,
-      value
-    }) => {
+        ${currentValues.map(_ref4 => {
+      let {
+        label,
+        color,
+        value
+      } = _ref4;
       const valueText = formatTooltipDataset ? formatTooltipDataset.call(self, label, value, color) : `${label ? `${label}: ` : ''}${value}`;
       return `
               <li><span style="background-color: ${color};"></span>${valueText}</li>
@@ -50302,7 +51524,15 @@
         }), self.formatLegendLabel(dataset.label)))));
       }
 
-      update(newParams = {}, onlySvg = false) {
+      update(newParams, onlySvg) {
+        if (newParams === void 0) {
+          newParams = {};
+        }
+
+        if (onlySvg === void 0) {
+          onlySvg = false;
+        }
+
         const self = this;
         const {
           params
@@ -50461,5 +51691,5 @@
 
     return Framework7;
 
-})));
+}));
 //# sourceMappingURL=framework7-bundle.js.map

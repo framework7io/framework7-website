@@ -20,7 +20,11 @@ import moduleWheel from './modules/wheel.js';
 import $jsx from '../../shared/$jsx.js';
 
 class ColorPicker extends Framework7Class {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params, [app]);
     const self = this;
     self.params = extend({}, app.params.colorPicker, params);
@@ -261,7 +265,15 @@ class ColorPicker extends Framework7Class {
     return [Math.floor(arr[0] * 10) / 10, Math.floor(arr[1] * 1000) / 1000, Math.floor(arr[2] * 1000) / 1000];
   }
 
-  setValue(value = {}, updateModules = true) {
+  setValue(value, updateModules) {
+    if (value === void 0) {
+      value = {};
+    }
+
+    if (updateModules === void 0) {
+      updateModules = true;
+    }
+
     const self = this;
     if (typeof value === 'undefined') return;
     let {
@@ -399,7 +411,11 @@ class ColorPicker extends Framework7Class {
     return self.value;
   }
 
-  updateValue(fireEvents = true) {
+  updateValue(fireEvents) {
+    if (fireEvents === void 0) {
+      fireEvents = true;
+    }
+
     const self = this;
     const {
       $inputEl,

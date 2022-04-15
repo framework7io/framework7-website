@@ -418,7 +418,11 @@ class Sheet extends Modal {
       }
     }
 
-    sheet.setSwipeStep = function setSwipeStep(byResize = true) {
+    sheet.setSwipeStep = function setSwipeStep(byResize) {
+      if (byResize === void 0) {
+        byResize = true;
+      }
+
       const $swipeStepEl = $el.find('.sheet-modal-swipe-step').eq(0);
       if (!$swipeStepEl.length) return;
 

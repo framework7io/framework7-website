@@ -2,7 +2,11 @@ import { extend, nextTick } from '../../shared/utils.js';
 import History from '../../shared/history.js';
 import asyncComponent from './async-component.js';
 
-function modalLoad(modalType, route, loadOptions = {}, direction) {
+function modalLoad(modalType, route, loadOptions, direction) {
+  if (loadOptions === void 0) {
+    loadOptions = {};
+  }
+
   const router = this;
   const app = router.app;
   const isPanel = modalType === 'panel';

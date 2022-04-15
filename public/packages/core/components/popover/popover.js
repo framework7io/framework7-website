@@ -65,11 +65,19 @@ export default {
   },
 
   clicks: {
-    '.popover-open': function openPopover($clickedEl, data = {}) {
+    '.popover-open': function openPopover($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       app.popover.open(data.popover, $clickedEl, data.animate);
     },
-    '.popover-close': function closePopover($clickedEl, data = {}) {
+    '.popover-close': function closePopover($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       app.popover.close(data.popover, data.animate, $clickedEl);
     }

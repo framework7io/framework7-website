@@ -47,7 +47,11 @@ export default {
       defaultSelector: '.dialog.modal-in'
     }), {
       // Shortcuts
-      alert(...args) {
+      alert() {
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
         let [text, title, callbackOk] = args;
 
         if (args.length === 2 && typeof args[1] === 'function') {
@@ -67,7 +71,11 @@ export default {
         }).open();
       },
 
-      prompt(...args) {
+      prompt() {
+        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          args[_key2] = arguments[_key2];
+        }
+
         let [text, title, callbackOk, callbackCancel, defaultValue] = args;
 
         if (typeof args[1] === 'function') {
@@ -100,7 +108,11 @@ export default {
         }).open();
       },
 
-      confirm(...args) {
+      confirm() {
+        for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+          args[_key3] = arguments[_key3];
+        }
+
         let [text, title, callbackOk, callbackCancel] = args;
 
         if (typeof args[1] === 'function') {
@@ -125,7 +137,11 @@ export default {
         }).open();
       },
 
-      login(...args) {
+      login() {
+        for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+          args[_key4] = arguments[_key4];
+        }
+
         let [text, title, callbackOk, callbackCancel] = args;
 
         if (typeof args[1] === 'function') {
@@ -165,7 +181,11 @@ export default {
         }).open();
       },
 
-      password(...args) {
+      password() {
+        for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+          args[_key5] = arguments[_key5];
+        }
+
         let [text, title, callbackOk, callbackCancel] = args;
 
         if (typeof args[1] === 'function') {
@@ -217,7 +237,11 @@ export default {
         }).open();
       },
 
-      progress(...args) {
+      progress() {
+        for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+          args[_key6] = arguments[_key6];
+        }
+
         let [title, progress, color] = args;
 
         if (args.length === 2) {

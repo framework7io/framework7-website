@@ -16,7 +16,11 @@ const Preloader = {
   // Modal
   visible: false,
 
-  show(color = 'white') {
+  show(color) {
+    if (color === void 0) {
+      color = 'white';
+    }
+
     const app = this;
     if (Preloader.visible) return;
     const preloaders = {
@@ -36,7 +40,11 @@ const Preloader = {
     Preloader.visible = true;
   },
 
-  showIn(el, color = 'white') {
+  showIn(el, color) {
+    if (color === void 0) {
+      color = 'white';
+    }
+
     const app = this;
     const preloaders = {
       iosPreloaderContent,

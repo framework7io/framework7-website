@@ -11,7 +11,11 @@ import $ from '../../shared/dom7.js';
 import loadModule from './load-module.js';
 
 class Framework7 extends Framework7Class {
-  constructor(params = {}) {
+  constructor(params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params); // eslint-disable-next-line
 
     if (Framework7.instance && typeof window !== 'undefined') {
@@ -127,10 +131,12 @@ class Framework7 extends Framework7Class {
       app.mq.light = window.matchMedia(LIGHT);
     }
 
-    app.colorSchemeListener = function colorSchemeListener({
-      matches,
-      media
-    }) {
+    app.colorSchemeListener = function colorSchemeListener(_ref) {
+      let {
+        matches,
+        media
+      } = _ref;
+
       if (!matches) {
         return;
       }
@@ -272,13 +278,13 @@ class Framework7 extends Framework7Class {
   } // eslint-disable-next-line
 
 
-  loadModule(...args) {
-    return Framework7.loadModule(...args);
+  loadModule() {
+    return Framework7.loadModule(...arguments);
   } // eslint-disable-next-line
 
 
-  loadModules(...args) {
-    return Framework7.loadModules(...args);
+  loadModules() {
+    return Framework7.loadModules(...arguments);
   }
 
   getVnodeHooks(hook, id) {

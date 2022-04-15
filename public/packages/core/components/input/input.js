@@ -190,7 +190,11 @@ const Input = {
     }
   },
 
-  scrollIntoView(inputEl, duration = 0, centered, force) {
+  scrollIntoView(inputEl, duration, centered, force) {
+    if (duration === void 0) {
+      duration = 0;
+    }
+
     const $inputEl = $(inputEl);
     const $scrollableEl = $inputEl.parents('.page-content, .panel, .card-expandable .card-content').eq(0);
 

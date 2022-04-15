@@ -6,7 +6,11 @@ import { getDevice } from '../../shared/get-device.js';
 import removeDiacritics from './remove-diacritics.js';
 
 class Searchbar extends FrameworkClass {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params, [app]);
     const sb = this;
     const defaults = {

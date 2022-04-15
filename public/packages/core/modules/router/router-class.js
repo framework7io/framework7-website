@@ -56,7 +56,11 @@ class Router extends Framework7Class {
       enumerable: true,
       configurable: true,
 
-      set(newRoute = {}) {
+      set(newRoute) {
+        if (newRoute === void 0) {
+          newRoute = {};
+        }
+
         previousRoute = extend({}, currentRoute);
         currentRoute = newRoute;
         if (!currentRoute) return;
@@ -461,7 +465,11 @@ class Router extends Framework7Class {
     return undefined;
   }
 
-  flattenRoutes(routes = this.routes) {
+  flattenRoutes(routes) {
+    if (routes === void 0) {
+      routes = this.routes;
+    }
+
     const router = this;
     let flattenedRoutes = [];
     routes.forEach(route => {
@@ -529,7 +537,11 @@ class Router extends Framework7Class {
     };
   }
 
-  generateUrl(parameters = {}) {
+  generateUrl(parameters) {
+    if (parameters === void 0) {
+      parameters = {};
+    }
+
     if (typeof parameters === 'string') {
       return parameters;
     }
@@ -569,10 +581,11 @@ class Router extends Framework7Class {
   } // eslint-disable-next-line
 
 
-  constructRouteUrl(route, {
-    params,
-    query
-  } = {}) {
+  constructRouteUrl(route, _temp) {
+    let {
+      params,
+      query
+    } = _temp === void 0 ? {} : _temp;
     const {
       path
     } = route;
@@ -693,7 +706,15 @@ class Router extends Framework7Class {
   } // eslint-disable-next-line
 
 
-  replaceRequestUrlParams(url = '', options = {}) {
+  replaceRequestUrlParams(url, options) {
+    if (url === void 0) {
+      url = '';
+    }
+
+    if (options === void 0) {
+      options = {};
+    }
+
     let compiledUrl = url;
 
     if (typeof compiledUrl === 'string' && compiledUrl.indexOf('{{') >= 0 && options && options.route && options.route.params && Object.keys(options.route.params).length) {
@@ -856,7 +877,11 @@ class Router extends Framework7Class {
     $(el).find(toRemove).remove();
   }
 
-  getPageData(pageEl, navbarEl, from, to, route = {}, pageFromEl) {
+  getPageData(pageEl, navbarEl, from, to, route, pageFromEl) {
+    if (route === void 0) {
+      route = {};
+    }
+
     const router = this;
     const $pageEl = $(pageEl).eq(0);
     const $navbarEl = $(navbarEl).eq(0);
@@ -903,7 +928,11 @@ class Router extends Framework7Class {
   } // Callbacks
 
 
-  pageCallback(callback, pageEl, navbarEl, from, to, options = {}, pageFromEl) {
+  pageCallback(callback, pageEl, navbarEl, from, to, options, pageFromEl) {
+    if (options === void 0) {
+      options = {};
+    }
+
     if (!pageEl) return;
     const router = this;
     const $pageEl = $(pageEl);

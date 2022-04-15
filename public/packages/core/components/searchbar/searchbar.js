@@ -76,22 +76,38 @@ export default {
 
   },
   clicks: {
-    '.searchbar-clear': function clear($clickedEl, data = {}) {
+    '.searchbar-clear': function clear($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       const sb = app.searchbar.get(data.searchbar);
       if (sb) sb.clear();
     },
-    '.searchbar-enable': function enable($clickedEl, data = {}) {
+    '.searchbar-enable': function enable($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       const sb = app.searchbar.get(data.searchbar);
       if (sb) sb.enable(true);
     },
-    '.searchbar-disable': function disable($clickedEl, data = {}) {
+    '.searchbar-disable': function disable($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       const sb = app.searchbar.get(data.searchbar);
       if (sb) sb.disable();
     },
-    '.searchbar-toggle': function toggle($clickedEl, data = {}) {
+    '.searchbar-toggle': function toggle($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       const app = this;
       const sb = app.searchbar.get(data.searchbar);
       if (sb) sb.toggle();

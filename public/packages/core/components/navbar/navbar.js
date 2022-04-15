@@ -154,7 +154,19 @@ const Navbar = {
     }
   },
 
-  hide(el, animate = true, hideStatusbar = false, hideOnlyCurrent = false) {
+  hide(el, animate, hideStatusbar, hideOnlyCurrent) {
+    if (animate === void 0) {
+      animate = true;
+    }
+
+    if (hideStatusbar === void 0) {
+      hideStatusbar = false;
+    }
+
+    if (hideOnlyCurrent === void 0) {
+      hideOnlyCurrent = false;
+    }
+
     const app = this;
     let $el = $(el);
     const isDynamic = $el.hasClass('navbar') && $el.parent('.navbars').length && !hideOnlyCurrent;
@@ -188,7 +200,19 @@ const Navbar = {
     }
   },
 
-  show(el = '.navbar-hidden', animate = true, hideOnlyCurrent = false) {
+  show(el, animate, hideOnlyCurrent) {
+    if (el === void 0) {
+      el = '.navbar-hidden';
+    }
+
+    if (animate === void 0) {
+      animate = true;
+    }
+
+    if (hideOnlyCurrent === void 0) {
+      hideOnlyCurrent = false;
+    }
+
     const app = this;
     let $el = $(el);
     const isDynamic = $el.hasClass('navbar') && $el.parent('.navbars').length && !hideOnlyCurrent;

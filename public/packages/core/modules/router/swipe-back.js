@@ -287,12 +287,13 @@ function SwipeBack(r) {
     return els;
   }
 
-  function setAnimatableNavElements({
-    progress,
-    reset,
-    transition,
-    reflow
-  } = {}) {
+  function setAnimatableNavElements(_temp) {
+    let {
+      progress,
+      reset,
+      transition,
+      reflow
+    } = _temp === void 0 ? {} : _temp;
     const styles = ['overflow', 'transform', 'transform-origin', 'opacity'];
 
     if (transition === true || transition === false) {

@@ -82,7 +82,11 @@ class Popover extends Modal {
       type: 'popover',
       forceBackdropUnique,
 
-      open(...args) {
+      open() {
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
         let [targetEl, animate] = args;
         if (typeof args[0] === 'boolean') [animate, targetEl] = args;
 

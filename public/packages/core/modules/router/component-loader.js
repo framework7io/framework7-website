@@ -48,7 +48,11 @@ export default {
       return router.navigate(navigateOptions);
     },
 
-    componentLoader(component, componentUrl, options = {}, resolve, reject) {
+    componentLoader(component, componentUrl, options, resolve, reject) {
+      if (options === void 0) {
+        options = {};
+      }
+
       const router = this;
       const {
         app
@@ -131,41 +135,48 @@ export default {
       }
     },
 
-    modalComponentLoader({
-      component,
-      componentUrl,
-      options,
-      resolve,
-      reject
-    } = {}) {
+    modalComponentLoader(_temp) {
+      let {
+        component,
+        componentUrl,
+        options,
+        resolve,
+        reject
+      } = _temp === void 0 ? {} : _temp;
       const router = this;
       router.componentLoader(component, componentUrl, options, el => {
         resolve(el);
       }, reject);
     },
 
-    tabComponentLoader({
-      component,
-      componentUrl,
-      options,
-      resolve,
-      reject
-    } = {}) {
+    tabComponentLoader(_temp2) {
+      let {
+        component,
+        componentUrl,
+        options,
+        resolve,
+        reject
+      } = _temp2 === void 0 ? {} : _temp2;
       const router = this;
       router.componentLoader(component, componentUrl, options, el => {
         resolve(el);
       }, reject);
     },
 
-    pageComponentLoader({
-      component,
-      componentUrl,
-      options,
-      resolve,
-      reject
-    } = {}) {
+    pageComponentLoader(_temp3) {
+      let {
+        component,
+        componentUrl,
+        options,
+        resolve,
+        reject
+      } = _temp3 === void 0 ? {} : _temp3;
       const router = this;
-      router.componentLoader(component, componentUrl, options, (el, newOptions = {}) => {
+      router.componentLoader(component, componentUrl, options, function (el, newOptions) {
+        if (newOptions === void 0) {
+          newOptions = {};
+        }
+
         resolve(el, newOptions);
       }, reject);
     }

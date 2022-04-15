@@ -5,7 +5,11 @@ import Framework7Class from '../../shared/class.js';
 import { getDevice } from '../../shared/get-device.js';
 
 class VirtualList extends Framework7Class {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params, [app]);
     const vl = this;
     const device = getDevice();
@@ -122,7 +126,8 @@ class VirtualList extends Framework7Class {
       rowsToRender: undefined,
       maxBufferHeight: 0,
       listHeight: undefined,
-      dynamicHeight: typeof vl.params.height === 'function'
+      dynamicHeight: typeof vl.params.height === 'function',
+      autoHeight: vl.params.height === 'auto'
     }); // Install Modules
 
     vl.useModules(); // Attach events
@@ -163,10 +168,13 @@ class VirtualList extends Framework7Class {
     return vl;
   }
 
-  setListSize() {
+  setListSize(autoHeightRerender) {
     const vl = this;
     const items = vl.filteredItems || vl.items;
-    vl.pageHeight = vl.$scrollableParentEl[0].offsetHeight;
+
+    if (!autoHeightRerender) {
+      vl.pageHeight = vl.$scrollableParentEl[0].offsetHeight;
+    }
 
     if (vl.dynamicHeight) {
       vl.listHeight = 0;
@@ -176,6 +184,31 @@ class VirtualList extends Framework7Class {
         const itemHeight = vl.params.height(items[i]);
         vl.listHeight += itemHeight;
         vl.heights.push(itemHeight);
+      }
+    } else if (vl.autoHeight) {
+      vl.listHeight = 0;
+      if (!vl.heights) vl.heights = [];
+      if (!vl.heightsCalculated) vl.heightsCalculated = [];
+      const renderedItems = {};
+      vl.$itemsWrapEl.find(`[data-virtual-list-index]`).forEach(el => {
+        renderedItems[parseInt(el.getAttribute('data-virtual-list-index'), 10)] = el;
+      });
+
+      for (let i = 0; i < items.length; i += 1) {
+        const renderedItem = renderedItems[i];
+
+        if (renderedItem) {
+          if (!vl.heightsCalculated.includes(i)) {
+            vl.heights[i] = renderedItem.offsetHeight;
+            vl.heightsCalculated.push(i);
+          }
+        }
+
+        if (typeof vl.heights[i] === 'undefined') {
+          vl.heights[i] = 40;
+        }
+
+        vl.listHeight += vl.heights[i];
       }
     } else {
       vl.listHeight = Math.ceil(items.length / vl.params.cols) * vl.params.height;
@@ -211,7 +244,7 @@ class VirtualList extends Framework7Class {
     let heightBeforeFirstItem = 0;
     let heightBeforeLastItem = 0;
 
-    if (vl.dynamicHeight) {
+    if (vl.dynamicHeight || vl.autoHeight) {
       let itemTop = 0;
       let itemHeight;
       vl.maxBufferHeight = vl.pageHeight;
@@ -278,7 +311,7 @@ class VirtualList extends Framework7Class {
 
 
       if (i === fromIndex) {
-        if (vl.dynamicHeight) {
+        if (vl.dynamicHeight || vl.autoHeight) {
           topPosition = heightBeforeFirstItem;
         } else {
           topPosition = i * vl.params.height / vl.params.cols;
@@ -296,7 +329,7 @@ class VirtualList extends Framework7Class {
 
 
     if (!vl.updatableScroll) {
-      if (vl.dynamicHeight) {
+      if (vl.dynamicHeight || vl.autoHeight) {
         vl.itemsWrapEl.style.height = `${heightBeforeLastItem}px`;
       } else {
         vl.itemsWrapEl.style.height = `${i * vl.params.height / vl.params.cols}px`;
@@ -336,10 +369,20 @@ class VirtualList extends Framework7Class {
         items: renderExternalItems
       });
     }
+
+    if (vl.autoHeight) {
+      requestAnimationFrame(() => {
+        vl.setListSize(true);
+      });
+    }
   } // Filter
 
 
-  filterItems(indexes, resetScrollTop = true) {
+  filterItems(indexes, resetScrollTop) {
+    if (resetScrollTop === void 0) {
+      resetScrollTop = true;
+    }
+
     const vl = this;
     vl.filteredItems = [];
 
@@ -372,7 +415,7 @@ class VirtualList extends Framework7Class {
     if (index > vl.items.length) return false;
     let itemTop = 0;
 
-    if (vl.dynamicHeight) {
+    if (vl.dynamicHeight || vl.autoHeight) {
       for (let i = 0; i < index; i += 1) {
         itemTop += vl.heights[i];
       }
@@ -400,6 +443,7 @@ class VirtualList extends Framework7Class {
     const vl = this;
 
     if (vl.isVisible()) {
+      vl.heightsCalculated = [];
       vl.setListSize();
       vl.render(true);
     }
@@ -600,6 +644,7 @@ class VirtualList extends Framework7Class {
       vl.domCache = {};
     }
 
+    vl.heightsCalculated = [];
     vl.setListSize();
     vl.render(true);
   }

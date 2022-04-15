@@ -1,7 +1,11 @@
 import $ from '../../shared/dom7.js';
 import { bindMethods } from '../../shared/utils.js';
 const Menu = {
-  open(el = '.menu-item-dropdown') {
+  open(el) {
+    if (el === void 0) {
+      el = '.menu-item-dropdown';
+    }
+
     const app = this;
     if (!el) return;
     const $el = $(el).closest('.menu-item-dropdown');
@@ -19,7 +23,11 @@ const Menu = {
     app.emit('menuOpened', $el.eq(0)[0]);
   },
 
-  close(el = '.menu-item-dropdown-opened') {
+  close(el) {
+    if (el === void 0) {
+      el = '.menu-item-dropdown-opened';
+    }
+
     const app = this;
     if (!el) return;
     const $el = $(el).closest('.menu-item-dropdown-opened');

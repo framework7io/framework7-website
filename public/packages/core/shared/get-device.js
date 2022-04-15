@@ -2,9 +2,10 @@ import { getWindow } from 'ssr-window';
 import { getSupport } from './get-support.js';
 let deviceCalculated;
 
-function calcDevice({
-  userAgent
-} = {}) {
+function calcDevice(_temp) {
+  let {
+    userAgent
+  } = _temp === void 0 ? {} : _temp;
   const support = getSupport();
   const window = getWindow();
   const platform = window.navigator.platform;
@@ -135,7 +136,11 @@ function calcDevice({
   return device;
 }
 
-function getDevice(overrides = {}, reset) {
+function getDevice(overrides, reset) {
+  if (overrides === void 0) {
+    overrides = {};
+  }
+
   if (!deviceCalculated || reset) {
     deviceCalculated = calcDevice(overrides);
   }

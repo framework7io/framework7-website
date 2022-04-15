@@ -4,7 +4,11 @@ import Framework7Class from '../../shared/class.js';
 import { getSupport } from '../../shared/get-support.js';
 
 class ListIndex extends Framework7Class {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params, [app]);
     const index = this;
     const defaults = {

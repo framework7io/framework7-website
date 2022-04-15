@@ -8,7 +8,11 @@ import Framework7Class from '../../shared/class.js';
 import $jsx from '../../shared/$jsx.js';
 
 class Gauge extends Framework7Class {
-  constructor(app, params = {}) {
+  constructor(app, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
     super(params, [app]);
     const self = this;
     const defaults = extend({}, app.params.gauge); // Extend defaults with modules params
@@ -134,7 +138,11 @@ class Gauge extends Framework7Class {
     }, labelText));
   }
 
-  update(newParams = {}) {
+  update(newParams) {
+    if (newParams === void 0) {
+      newParams = {};
+    }
+
     const self = this;
     const document = getDocument();
     const {

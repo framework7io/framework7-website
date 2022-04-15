@@ -30,12 +30,13 @@ export default {
         return parseComponent(componentString);
       },
 
-      create(component, props, {
-        root,
-        el,
-        context,
-        children
-      }) {
+      create(component, props, _ref) {
+        let {
+          root,
+          el,
+          context,
+          children
+        } = _ref;
         return new Component(app, component, props, {
           root,
           el,

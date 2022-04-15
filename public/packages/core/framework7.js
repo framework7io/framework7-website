@@ -1,5 +1,5 @@
 /**
- * Framework7 7.0.0-beta.12
+ * Framework7 7.0.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,14 +7,14 @@
  *
  * Released under the MIT License
  *
- * Released on: February 22, 2022
+ * Released on: April 15, 2022
  */
 
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Framework7 = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
     /**
      * SSR Window 4.0.2
@@ -33,7 +33,15 @@
       return obj !== null && typeof obj === 'object' && 'constructor' in obj && obj.constructor === Object;
     }
 
-    function extend$1(target = {}, src = {}) {
+    function extend$1(target, src) {
+      if (target === void 0) {
+        target = {};
+      }
+
+      if (src === void 0) {
+        src = {};
+      }
+
       Object.keys(src).forEach(key => {
         if (typeof target[key] === 'undefined') target[key] = src[key];else if (isObject$1(src[key]) && isObject$1(target[key]) && Object.keys(src[key]).length > 0) {
           extend$1(target[key], src[key]);
@@ -234,7 +242,11 @@
 
     }
 
-    function arrayFlat(arr = []) {
+    function arrayFlat(arr) {
+      if (arr === void 0) {
+        arr = [];
+      }
+
       const res = [];
       arr.forEach(el => {
         if (Array.isArray(el)) {
@@ -325,7 +337,11 @@
 
     $$1.fn = Dom7.prototype; // eslint-disable-next-line
 
-    function addClass(...classes) {
+    function addClass() {
+      for (var _len = arguments.length, classes = new Array(_len), _key = 0; _key < _len; _key++) {
+        classes[_key] = arguments[_key];
+      }
+
       const classNames = arrayFlat(classes.map(c => c.split(' ')));
       this.forEach(el => {
         el.classList.add(...classNames);
@@ -333,7 +349,11 @@
       return this;
     }
 
-    function removeClass(...classes) {
+    function removeClass() {
+      for (var _len2 = arguments.length, classes = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        classes[_key2] = arguments[_key2];
+      }
+
       const classNames = arrayFlat(classes.map(c => c.split(' ')));
       this.forEach(el => {
         el.classList.remove(...classNames);
@@ -341,7 +361,11 @@
       return this;
     }
 
-    function toggleClass(...classes) {
+    function toggleClass() {
+      for (var _len3 = arguments.length, classes = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        classes[_key3] = arguments[_key3];
+      }
+
       const classNames = arrayFlat(classes.map(c => c.split(' ')));
       this.forEach(el => {
         classNames.forEach(className => {
@@ -350,7 +374,11 @@
       });
     }
 
-    function hasClass(...classes) {
+    function hasClass() {
+      for (var _len4 = arguments.length, classes = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        classes[_key4] = arguments[_key4];
+      }
+
       const classNames = arrayFlat(classes.map(c => c.split(' ')));
       return arrayFilter(this, el => {
         return classNames.filter(className => el.classList.contains(className)).length > 0;
@@ -535,7 +563,11 @@
       return this;
     }
 
-    function on(...args) {
+    function on() {
+      for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+        args[_key5] = arguments[_key5];
+      }
+
       let [eventType, targetSelector, listener, capture] = args;
 
       if (typeof args[1] === 'function') {
@@ -608,7 +640,11 @@
       return this;
     }
 
-    function off(...args) {
+    function off() {
+      for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+        args[_key6] = arguments[_key6];
+      }
+
       let [eventType, targetSelector, listener, capture] = args;
 
       if (typeof args[1] === 'function') {
@@ -654,8 +690,13 @@
       return this;
     }
 
-    function once(...args) {
+    function once() {
       const dom = this;
+
+      for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+        args[_key7] = arguments[_key7];
+      }
+
       let [eventName, targetSelector, listener, capture] = args;
 
       if (typeof args[1] === 'function') {
@@ -663,7 +704,11 @@
         targetSelector = undefined;
       }
 
-      function onceHandler(...eventArgs) {
+      function onceHandler() {
+        for (var _len8 = arguments.length, eventArgs = new Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
+          eventArgs[_key8] = arguments[_key8];
+        }
+
         listener.apply(this, eventArgs);
         dom.off(eventName, targetSelector, onceHandler, capture);
 
@@ -676,8 +721,13 @@
       return dom.on(eventName, targetSelector, onceHandler, capture);
     }
 
-    function trigger(...args) {
+    function trigger() {
       const window = getWindow();
+
+      for (var _len9 = arguments.length, args = new Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
+        args[_key9] = arguments[_key9];
+      }
+
       const events = args[0].split(' ');
       const eventData = args[1];
 
@@ -988,12 +1038,12 @@
       return $$1([this[index]]);
     }
 
-    function append(...els) {
+    function append() {
       let newChild;
       const document = getDocument();
 
-      for (let k = 0; k < els.length; k += 1) {
-        newChild = els[k];
+      for (let k = 0; k < arguments.length; k += 1) {
+        newChild = k < 0 || arguments.length <= k ? undefined : arguments[k];
 
         for (let i = 0; i < this.length; i += 1) {
           if (typeof newChild === 'string') {
@@ -1247,10 +1297,14 @@
       return this.remove();
     }
 
-    function add(...els) {
+    function add() {
       const dom = this;
       let i;
       let j;
+
+      for (var _len10 = arguments.length, els = new Array(_len10), _key10 = 0; _key10 < _len10; _key10++) {
+        els[_key10] = arguments[_key10];
+      }
 
       for (i = 0; i < els.length; i += 1) {
         const toAdd = $$1(els[i]);
@@ -1282,8 +1336,13 @@
     } // eslint-disable-next-line
 
 
-    function scrollTo(...args) {
+    function scrollTo() {
       const window = getWindow();
+
+      for (var _len11 = arguments.length, args = new Array(_len11), _key11 = 0; _key11 < _len11; _key11++) {
+        args[_key11] = arguments[_key11];
+      }
+
       let [left, top, duration, easing, callback] = args;
 
       if (args.length === 4 && typeof easing === 'function') {
@@ -1343,7 +1402,11 @@
         if (animateTop && newTop === currentTop) animateTop = false;
         if (animateLeft && newLeft === currentLeft) animateLeft = false;
 
-        function render(time = new Date().getTime()) {
+        function render(time) {
+          if (time === void 0) {
+            time = new Date().getTime();
+          }
+
           if (startTime === null) {
             startTime = time;
           }
@@ -1389,7 +1452,11 @@
     } // scrollTop(top, duration, easing, callback) {
 
 
-    function scrollTop(...args) {
+    function scrollTop() {
+      for (var _len12 = arguments.length, args = new Array(_len12), _key12 = 0; _key12 < _len12; _key12++) {
+        args[_key12] = arguments[_key12];
+      }
+
       let [top, duration, easing, callback] = args;
 
       if (args.length === 3 && typeof easing === 'function') {
@@ -1406,7 +1473,11 @@
       return dom.scrollTo(undefined, top, duration, easing, callback);
     }
 
-    function scrollLeft(...args) {
+    function scrollLeft() {
+      for (var _len13 = arguments.length, args = new Array(_len13), _key13 = 0; _key13 < _len13; _key13++) {
+        args[_key13] = arguments[_key13];
+      }
+
       let [left, duration, easing, callback] = args;
 
       if (args.length === 3 && typeof easing === 'function') {
@@ -1630,7 +1701,11 @@
     const noTrigger = 'resize scroll'.split(' ');
 
     function shortcut(name) {
-      function eventHandler(...args) {
+      function eventHandler() {
+        for (var _len14 = arguments.length, args = new Array(_len14), _key14 = 0; _key14 < _len14; _key14++) {
+          args[_key14] = arguments[_key14];
+        }
+
         if (typeof args[0] === 'undefined') {
           for (let i = 0; i < this.length; i += 1) {
             if (noTrigger.indexOf(name) < 0) {
@@ -1773,7 +1848,15 @@
       uniqueNum += 1;
       return uniqueNum;
     }
-    function id(mask = 'xxxxxxxxxx', map = '0123456789abcdef') {
+    function id(mask, map) {
+      if (mask === void 0) {
+        mask = 'xxxxxxxxxx';
+      }
+
+      if (map === void 0) {
+        map = '0123456789abcdef';
+      }
+
       const length = map.length;
       return mask.replace(/x/g, () => map[Math.floor(Math.random() * length)]);
     }
@@ -1827,7 +1910,11 @@
       const window = getWindow();
       return window.cancelAnimationFrame(frameId);
     }
-    function nextTick(callback, delay = 0) {
+    function nextTick(callback, delay) {
+      if (delay === void 0) {
+        delay = 0;
+      }
+
       return setTimeout(callback, delay);
     }
     function nextFrame$1(callback) {
@@ -1860,7 +1947,11 @@
 
       return query;
     }
-    function getTranslate(el, axis = 'x') {
+    function getTranslate(el, axis) {
+      if (axis === void 0) {
+        axis = 'x';
+      }
+
       const window = getWindow();
       let matrix;
       let curTransform;
@@ -1886,19 +1977,23 @@
         // Latest Chrome and webkits Fix
         if (window.WebKitCSSMatrix) curTransform = transformMatrix.m41; // Crazy IE10 Matrix
         else if (matrix.length === 16) curTransform = parseFloat(matrix[12]); // Normal Browsers
-          else curTransform = parseFloat(matrix[4]);
+        else curTransform = parseFloat(matrix[4]);
       }
 
       if (axis === 'y') {
         // Latest Chrome and webkits Fix
         if (window.WebKitCSSMatrix) curTransform = transformMatrix.m42; // Crazy IE10 Matrix
         else if (matrix.length === 16) curTransform = parseFloat(matrix[13]); // Normal Browsers
-          else curTransform = parseFloat(matrix[5]);
+        else curTransform = parseFloat(matrix[5]);
       }
 
       return curTransform || 0;
     }
-    function serializeObject(obj, parents = []) {
+    function serializeObject(obj, parents) {
+      if (parents === void 0) {
+        parents = [];
+      }
+
       if (typeof obj === 'string') return obj;
       const resultArray = [];
       const separator = '&';
@@ -1958,7 +2053,11 @@
     function isObject(o) {
       return typeof o === 'object' && o !== null && o.constructor && o.constructor === Object;
     }
-    function merge(...args) {
+    function merge() {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
       const to = args[0];
       args.splice(0, 1);
       const from = args;
@@ -1982,10 +2081,14 @@
 
       return to;
     }
-    function extend(...args) {
+    function extend() {
       let deep = true;
       let to;
       let from;
+
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
 
       if (typeof args[0] === 'boolean') {
         deep = args[0];
@@ -2099,9 +2202,13 @@
       HSB.s = HSL.l > 0 ? 2 * t / HSB.b : HSB.s;
       return [HSB.h, HSB.s, HSB.b];
     }
-    function colorThemeCSSProperties(...args) {
+    function colorThemeCSSProperties() {
       let hex;
       let rgb;
+
+      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        args[_key3] = arguments[_key3];
+      }
 
       if (args.length === 1) {
         hex = args[0];
@@ -2137,8 +2244,13 @@
         instance[key] = obj[key];
       });
     }
-    function flattenArray(...args) {
+    function flattenArray() {
       const arr = [];
+
+      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        args[_key4] = arguments[_key4];
+      }
+
       args.forEach(arg => {
         if (Array.isArray(arg)) arr.push(...flattenArray(...arg));else arr.push(arg);
       });
@@ -2217,9 +2329,10 @@
 
     let deviceCalculated;
 
-    function calcDevice({
-      userAgent
-    } = {}) {
+    function calcDevice(_temp) {
+      let {
+        userAgent
+      } = _temp === void 0 ? {} : _temp;
       const support = getSupport();
       const window = getWindow();
       const platform = window.navigator.platform;
@@ -2350,7 +2463,11 @@
       return device;
     }
 
-    function getDevice(overrides = {}, reset) {
+    function getDevice(overrides, reset) {
+      if (overrides === void 0) {
+        overrides = {};
+      }
+
       if (!deviceCalculated || reset) {
         deviceCalculated = calcDevice(overrides);
       }
@@ -2359,7 +2476,11 @@
     }
 
     class EventsClass {
-      constructor(parents = []) {
+      constructor(parents) {
+        if (parents === void 0) {
+          parents = [];
+        }
+
         const self = this;
         self.eventsParents = parents;
         self.eventsListeners = {};
@@ -2380,11 +2501,15 @@
         const self = this;
         if (typeof handler !== 'function') return self;
 
-        function onceHandler(...args) {
+        function onceHandler() {
           self.off(events, onceHandler);
 
           if (onceHandler.f7proxy) {
             delete onceHandler.f7proxy;
+          }
+
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
           }
 
           handler.apply(self, args);
@@ -2411,13 +2536,17 @@
         return self;
       }
 
-      emit(...args) {
+      emit() {
         const self = this;
         if (!self.eventsListeners) return self;
         let events;
         let data;
         let context;
         let eventsParents;
+
+        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          args[_key2] = arguments[_key2];
+        }
 
         if (typeof args[0] === 'string' || Array.isArray(args[0])) {
           events = args[0];
@@ -2458,7 +2587,15 @@
     }
 
     class Framework7Class extends EventsClass {
-      constructor(params = {}, parents = []) {
+      constructor(params, parents) {
+        if (params === void 0) {
+          params = {};
+        }
+
+        if (parents === void 0) {
+          parents = [];
+        }
+
         super(parents);
         const self = this;
         self.params = params;
@@ -2497,7 +2634,15 @@
         });
       }
 
-      useModule(moduleName = '', moduleParams = {}) {
+      useModule(moduleName, moduleParams) {
+        if (moduleName === void 0) {
+          moduleName = '';
+        }
+
+        if (moduleParams === void 0) {
+          moduleParams = {};
+        }
+
         const instance = this;
         if (!instance.modules) return;
         const module = typeof moduleName === 'string' ? instance.modules[moduleName] : moduleName;
@@ -2541,7 +2686,11 @@
         }
       }
 
-      useModules(modulesParams = {}) {
+      useModules(modulesParams) {
+        if (modulesParams === void 0) {
+          modulesParams = {};
+        }
+
         const instance = this;
         if (!instance.modules) return;
         Object.keys(instance.modules).forEach(moduleName => {
@@ -2556,7 +2705,7 @@
         Class.use(components);
       }
 
-      static installModule(module, ...params) {
+      static installModule(module) {
         const Class = this;
         if (!Class.prototype.modules) Class.prototype.modules = {};
         const name = module.name || `${Object.keys(Class.prototype.modules).length}_${now()}`;
@@ -2577,13 +2726,17 @@
 
 
         if (module.install) {
+          for (var _len = arguments.length, params = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+            params[_key - 1] = arguments[_key];
+          }
+
           module.install.apply(Class, params);
         }
 
         return Class;
       }
 
-      static use(module, ...params) {
+      static use(module) {
         const Class = this;
 
         if (Array.isArray(module)) {
@@ -2591,12 +2744,20 @@
           return Class;
         }
 
+        for (var _len2 = arguments.length, params = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+          params[_key2 - 1] = arguments[_key2];
+        }
+
         return Class.installModule(module, ...params);
       }
 
     }
 
-    function ConstructorMethods(parameters = {}) {
+    function ConstructorMethods(parameters) {
+      if (parameters === void 0) {
+        parameters = {};
+      }
+
       const {
         defaultSelector,
         constructor: Constructor,
@@ -2605,12 +2766,20 @@
         addMethods
       } = parameters;
       const methods = {
-        create(...args) {
+        create() {
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
           if (app) return new Constructor(app, ...args);
           return new Constructor(...args);
         },
 
-        get(el = defaultSelector) {
+        get(el) {
+          if (el === void 0) {
+            el = defaultSelector;
+          }
+
           if (el instanceof Constructor) return el;
           const $el = $(el);
           if ($el.length === 0) return undefined;
@@ -2627,8 +2796,17 @@
 
       if (addMethods && Array.isArray(addMethods)) {
         addMethods.forEach(methodName => {
-          methods[methodName] = (el = defaultSelector, ...args) => {
+          methods[methodName] = function (el) {
+            if (el === void 0) {
+              el = defaultSelector;
+            }
+
             const instance = methods.get(el);
+
+            for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+              args[_key2 - 1] = arguments[_key2];
+            }
+
             if (instance && instance[methodName]) return instance[methodName](...args);
             return undefined;
           };
@@ -2638,7 +2816,11 @@
       return methods;
     }
 
-    function ModalMethods(parameters = {}) {
+    function ModalMethods(parameters) {
+      if (parameters === void 0) {
+        parameters = {};
+      }
+
       const {
         defaultSelector,
         constructor: Constructor,
@@ -2686,7 +2868,11 @@
           return instance.open(animate);
         },
 
-        close(el = defaultSelector, animate, targetEl) {
+        close(el, animate, targetEl) {
+          if (el === void 0) {
+            el = defaultSelector;
+          }
+
           let $el = $(el);
           if (!$el.length) return undefined;
 
@@ -2869,7 +3055,11 @@
     /* eslint-disable no-underscore-dangle */
 
     class Framework7 extends Framework7Class {
-      constructor(params = {}) {
+      constructor(params) {
+        if (params === void 0) {
+          params = {};
+        }
+
         super(params); // eslint-disable-next-line
 
         if (Framework7.instance && typeof window !== 'undefined') {
@@ -2985,10 +3175,12 @@
           app.mq.light = window.matchMedia(LIGHT);
         }
 
-        app.colorSchemeListener = function colorSchemeListener({
-          matches,
-          media
-        }) {
+        app.colorSchemeListener = function colorSchemeListener(_ref) {
+          let {
+            matches,
+            media
+          } = _ref;
+
           if (!matches) {
             return;
           }
@@ -3130,13 +3322,13 @@
       } // eslint-disable-next-line
 
 
-      loadModule(...args) {
-        return Framework7.loadModule(...args);
+      loadModule() {
+        return Framework7.loadModule(...arguments);
       } // eslint-disable-next-line
 
 
-      loadModules(...args) {
-        return Framework7.loadModules(...args);
+      loadModules() {
+        return Framework7.loadModules(...arguments);
       }
 
       getVnodeHooks(hook, id) {
@@ -3372,7 +3564,7 @@
       } // Function to run XHR callbacks and events
 
 
-      function fireCallback(callbackName, ...data) {
+      function fireCallback(callbackName) {
         /*
         Callbacks:
         beforeCreate (options),
@@ -3385,6 +3577,10 @@
         */
         let globalCallbackValue;
         let optionCallbackValue;
+
+        for (var _len = arguments.length, data = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          data[_key - 1] = arguments[_key];
+        }
 
         if (globals[callbackName]) {
           globalCallbackValue = globals[callbackName](...data);
@@ -3715,8 +3911,12 @@
       xhr.send(postData);
     });
 
-    function requestShortcut(method, ...args) {
+    function requestShortcut(method) {
       let [url, data, success, error, dataType] = [];
+
+      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+        args[_key2 - 1] = arguments[_key2];
+      }
 
       if (typeof args[1] === 'function') {
         [url, success, error, dataType] = args;
@@ -3753,11 +3953,41 @@
     }
 
     Object.assign(request, {
-      get: (...args) => requestShortcut('get', ...args),
-      post: (...args) => requestShortcut('post', ...args),
-      json: (...args) => requestShortcut('json', ...args),
-      getJSON: (...args) => requestShortcut('json', ...args),
-      postJSON: (...args) => requestShortcut('postJSON', ...args)
+      get: function () {
+        for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+          args[_key3] = arguments[_key3];
+        }
+
+        return requestShortcut('get', ...args);
+      },
+      post: function () {
+        for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+          args[_key4] = arguments[_key4];
+        }
+
+        return requestShortcut('post', ...args);
+      },
+      json: function () {
+        for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+          args[_key5] = arguments[_key5];
+        }
+
+        return requestShortcut('json', ...args);
+      },
+      getJSON: function () {
+        for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+          args[_key6] = arguments[_key6];
+        }
+
+        return requestShortcut('json', ...args);
+      },
+      postJSON: function () {
+        for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+          args[_key7] = arguments[_key7];
+        }
+
+        return requestShortcut('postJSON', ...args);
+      }
     });
 
     request.abortController = () => {
@@ -5302,12 +5532,13 @@
         return els;
       }
 
-      function setAnimatableNavElements({
-        progress,
-        reset,
-        transition,
-        reflow
-      } = {}) {
+      function setAnimatableNavElements(_temp) {
+        let {
+          progress,
+          reset,
+          transition,
+          reflow
+        } = _temp === void 0 ? {} : _temp;
         const styles = ['overflow', 'transform', 'transform-origin', 'opacity'];
 
         if (transition === true || transition === false) {
@@ -5712,7 +5943,11 @@
         options.history = true; // eslint-disable-line
       }
 
-      function redirectResolve(redirectUrl, redirectOptions = {}) {
+      function redirectResolve(redirectUrl, redirectOptions) {
+        if (redirectOptions === void 0) {
+          redirectOptions = {};
+        }
+
         router.allowPageChange = true;
         router[method](redirectUrl, extend({}, options, redirectOptions));
       }
@@ -5866,7 +6101,11 @@
       });
     }
 
-    function forward(router, el, forwardOptions = {}) {
+    function forward(router, el, forwardOptions) {
+      if (forwardOptions === void 0) {
+        forwardOptions = {};
+      }
+
       const document = getDocument();
       const $el = $(el);
       const app = router.app;
@@ -6465,7 +6704,15 @@
       return router;
     }
 
-    function load(router, loadParams = {}, loadOptions = {}, ignorePageChange) {
+    function load(router, loadParams, loadOptions, ignorePageChange) {
+      if (loadParams === void 0) {
+        loadParams = {};
+      }
+
+      if (loadOptions === void 0) {
+        loadOptions = {};
+      }
+
       if (!router.allowPageChange && !ignorePageChange) return router;
       const params = loadParams;
       const options = loadOptions;
@@ -6580,7 +6827,11 @@
       return router;
     }
 
-    function navigate(navigateParams, navigateOptions = {}) {
+    function navigate(navigateParams, navigateOptions) {
+      if (navigateOptions === void 0) {
+        navigateOptions = {};
+      }
+
       const router = this;
       if (router.swipeBackActive) return router;
       let url;
@@ -6805,7 +7056,11 @@
       return router;
     }
 
-    function tabLoad(tabRoute, loadOptions = {}) {
+    function tabLoad(tabRoute, loadOptions) {
+      if (loadOptions === void 0) {
+        loadOptions = {};
+      }
+
       const router = this;
       const options = extend({
         animate: router.params.animate,
@@ -7054,7 +7309,11 @@
       router.removeTabContent($oldTabEl[0], tabRoute);
     }
 
-    function modalLoad(modalType, route, loadOptions = {}, direction) {
+    function modalLoad(modalType, route, loadOptions, direction) {
+      if (loadOptions === void 0) {
+        loadOptions = {};
+      }
+
       const router = this;
       const app = router.app;
       const isPanel = modalType === 'panel';
@@ -7845,7 +8104,7 @@
       return router;
     }
 
-    function back(...args) {
+    function back() {
       const router = this;
       const device = getDevice();
       if (router.swipeBackActive) return router;
@@ -7853,11 +8112,11 @@
       let navigateOptions;
       let route;
 
-      if (typeof args[0] === 'object') {
-        navigateOptions = args[0] || {};
+      if (typeof (arguments.length <= 0 ? undefined : arguments[0]) === 'object') {
+        navigateOptions = (arguments.length <= 0 ? undefined : arguments[0]) || {};
       } else {
-        navigateUrl = args[0];
-        navigateOptions = args[1] || {};
+        navigateUrl = arguments.length <= 0 ? undefined : arguments[0];
+        navigateOptions = (arguments.length <= 1 ? undefined : arguments[1]) || {};
       }
 
       const {
@@ -8262,7 +8521,11 @@
           enumerable: true,
           configurable: true,
 
-          set(newRoute = {}) {
+          set(newRoute) {
+            if (newRoute === void 0) {
+              newRoute = {};
+            }
+
             previousRoute = extend({}, currentRoute);
             currentRoute = newRoute;
             if (!currentRoute) return;
@@ -8667,7 +8930,11 @@
         return undefined;
       }
 
-      flattenRoutes(routes = this.routes) {
+      flattenRoutes(routes) {
+        if (routes === void 0) {
+          routes = this.routes;
+        }
+
         const router = this;
         let flattenedRoutes = [];
         routes.forEach(route => {
@@ -8735,7 +9002,11 @@
         };
       }
 
-      generateUrl(parameters = {}) {
+      generateUrl(parameters) {
+        if (parameters === void 0) {
+          parameters = {};
+        }
+
         if (typeof parameters === 'string') {
           return parameters;
         }
@@ -8775,10 +9046,11 @@
       } // eslint-disable-next-line
 
 
-      constructRouteUrl(route, {
-        params,
-        query
-      } = {}) {
+      constructRouteUrl(route, _temp) {
+        let {
+          params,
+          query
+        } = _temp === void 0 ? {} : _temp;
         const {
           path
         } = route;
@@ -8899,7 +9171,15 @@
       } // eslint-disable-next-line
 
 
-      replaceRequestUrlParams(url = '', options = {}) {
+      replaceRequestUrlParams(url, options) {
+        if (url === void 0) {
+          url = '';
+        }
+
+        if (options === void 0) {
+          options = {};
+        }
+
         let compiledUrl = url;
 
         if (typeof compiledUrl === 'string' && compiledUrl.indexOf('{{') >= 0 && options && options.route && options.route.params && Object.keys(options.route.params).length) {
@@ -9062,7 +9342,11 @@
         $(el).find(toRemove).remove();
       }
 
-      getPageData(pageEl, navbarEl, from, to, route = {}, pageFromEl) {
+      getPageData(pageEl, navbarEl, from, to, route, pageFromEl) {
+        if (route === void 0) {
+          route = {};
+        }
+
         const router = this;
         const $pageEl = $(pageEl).eq(0);
         const $navbarEl = $(navbarEl).eq(0);
@@ -9109,7 +9393,11 @@
       } // Callbacks
 
 
-      pageCallback(callback, pageEl, navbarEl, from, to, options = {}, pageFromEl) {
+      pageCallback(callback, pageEl, navbarEl, from, to, options, pageFromEl) {
+        if (options === void 0) {
+          options = {};
+        }
+
         if (!pageEl) return;
         const router = this;
         const $pageEl = $(pageEl);
@@ -9834,7 +10122,11 @@
     }
 
     class View$1 extends Framework7Class {
-      constructor(app, el, viewParams = {}) {
+      constructor(app, el, viewParams) {
+        if (viewParams === void 0) {
+          viewParams = {};
+        }
+
         super(viewParams, [app]);
         const view = this;
         const ssr = view.params.routerId;
@@ -10036,7 +10328,14 @@
             view.initMasterDetail();
           }
 
-          view.router.init();
+          if (view.params.initRouterOnTabShow && view.$el.hasClass('tab') && !view.$el.hasClass('tab-active')) {
+            view.$el.once('tab:show', () => {
+              view.router.init();
+            });
+          } else {
+            view.router.init();
+          }
+
           view.$el.trigger('view:init');
           view.emit('local::init viewInit', view);
         }
@@ -10199,7 +10498,11 @@
           return router.navigate(navigateOptions);
         },
 
-        componentLoader(component, componentUrl, options = {}, resolve, reject) {
+        componentLoader(component, componentUrl, options, resolve, reject) {
+          if (options === void 0) {
+            options = {};
+          }
+
           const router = this;
           const {
             app
@@ -10282,41 +10585,48 @@
           }
         },
 
-        modalComponentLoader({
-          component,
-          componentUrl,
-          options,
-          resolve,
-          reject
-        } = {}) {
+        modalComponentLoader(_temp) {
+          let {
+            component,
+            componentUrl,
+            options,
+            resolve,
+            reject
+          } = _temp === void 0 ? {} : _temp;
           const router = this;
           router.componentLoader(component, componentUrl, options, el => {
             resolve(el);
           }, reject);
         },
 
-        tabComponentLoader({
-          component,
-          componentUrl,
-          options,
-          resolve,
-          reject
-        } = {}) {
+        tabComponentLoader(_temp2) {
+          let {
+            component,
+            componentUrl,
+            options,
+            resolve,
+            reject
+          } = _temp2 === void 0 ? {} : _temp2;
           const router = this;
           router.componentLoader(component, componentUrl, options, el => {
             resolve(el);
           }, reject);
         },
 
-        pageComponentLoader({
-          component,
-          componentUrl,
-          options,
-          resolve,
-          reject
-        } = {}) {
+        pageComponentLoader(_temp3) {
+          let {
+            component,
+            componentUrl,
+            options,
+            resolve,
+            reject
+          } = _temp3 === void 0 ? {} : _temp3;
           const router = this;
-          router.componentLoader(component, componentUrl, options, (el, newOptions = {}) => {
+          router.componentLoader(component, componentUrl, options, function (el, newOptions) {
+            if (newOptions === void 0) {
+              newOptions = {};
+            }
+
             resolve(el, newOptions);
           }, reject);
         }
@@ -10355,7 +10665,11 @@
 
     const ignoreChildren = [false, null, '', undefined];
 
-    const h$1 = (type, props, ...children) => {
+    const h$1 = function (type, props) {
+      for (var _len = arguments.length, children = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        children[_key - 2] = arguments[_key];
+      }
+
       return {
         type,
         props: props || {},
@@ -10455,9 +10769,18 @@
       }).join('');
     };
 
-    const propsFromAttrs = (...args) => {
+    const propsFromAttrs = function () {
       const context = {};
-      args.forEach((obj = {}) => {
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      args.forEach(function (obj) {
+        if (obj === void 0) {
+          obj = {};
+        }
+
         Object.keys(obj).forEach(key => {
           context[toCamelCase(key)] = obj[key];
         });
@@ -10465,12 +10788,13 @@
       return context;
     };
 
-    const createCustomComponent = ({
-      f7,
-      treeNode,
-      vnode,
-      data
-    }) => {
+    const createCustomComponent = _ref => {
+      let {
+        f7,
+        treeNode,
+        vnode,
+        data
+      } = _ref;
       const component = typeof treeNode.type === 'function' ? treeNode.type : customComponents[treeNode.type];
       f7.component.create(component, propsFromAttrs(data.attrs || {}, data.props || {}), {
         el: vnode.elm,
@@ -10614,20 +10938,21 @@
       return hooks;
     }
 
-    const getEventHandler = (eventHandler, {
-      stop,
-      prevent,
-      once
-    } = {}) => {
+    const getEventHandler = function (eventHandler, _temp) {
+      let {
+        stop,
+        prevent,
+        once
+      } = _temp === void 0 ? {} : _temp;
       let fired = false;
 
-      function handler(...args) {
-        const e = args[0];
+      function handler() {
+        const e = arguments.length <= 0 ? undefined : arguments[0];
         if (once && fired) return;
         if (stop) e.stopPropagation();
         if (prevent) e.preventDefault();
         fired = true;
-        eventHandler(...args);
+        eventHandler(...arguments);
       }
 
       return handler;
@@ -10793,7 +11118,11 @@
       return h(getTagName(treeNode), data, children);
     };
 
-    function vdom(tree = {}, component, initial) {
+    function vdom(tree, component, initial) {
+      if (tree === void 0) {
+        tree = {};
+      }
+
       return treeNodeToVNode(tree, component, component.f7, initial, true);
     }
 
@@ -11431,7 +11760,11 @@
     }
 
     function createListener() {
-      return function handler(event, ...args) {
+      return function handler(event) {
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments[_key];
+        }
+
         handleEvent(event, args, handler.vnode);
       };
     }
@@ -11497,11 +11830,16 @@
     /* eslint no-underscore-dangle: "off" */
 
     class Component {
-      constructor(app, component, props = {}, {
-        el,
-        context,
-        children
-      } = {}) {
+      constructor(app, component, props, _temp) {
+        if (props === void 0) {
+          props = {};
+        }
+
+        let {
+          el,
+          context,
+          children
+        } = _temp === void 0 ? {} : _temp;
         const document = getDocument();
         merge(this, {
           f7: app,
@@ -11709,17 +12047,19 @@
         } = this;
         if (!this.__eventHandlers) return;
 
-        this.__eventHandlers.forEach(({
-          eventName,
-          handler
-        }) => {
+        this.__eventHandlers.forEach(_ref => {
+          let {
+            eventName,
+            handler
+          } = _ref;
           $el.on(eventNameToColonCase(eventName), handler);
         });
 
-        this.__onceEventHandlers.forEach(({
-          eventName,
-          handler
-        }) => {
+        this.__onceEventHandlers.forEach(_ref2 => {
+          let {
+            eventName,
+            handler
+          } = _ref2;
           $el.once(eventNameToColonCase(eventName), handler);
         });
       }
@@ -11730,17 +12070,19 @@
         } = this;
         if (!this.__eventHandlers) return;
 
-        this.__eventHandlers.forEach(({
-          eventName,
-          handler
-        }) => {
+        this.__eventHandlers.forEach(_ref3 => {
+          let {
+            eventName,
+            handler
+          } = _ref3;
           $el.on(eventNameToColonCase(eventName), handler);
         });
 
-        this.__onceEventHandlers.forEach(({
-          eventName,
-          handler
-        }) => {
+        this.__onceEventHandlers.forEach(_ref4 => {
+          let {
+            eventName,
+            handler
+          } = _ref4;
           $el.once(eventNameToColonCase(eventName), handler);
         });
       }
@@ -11860,7 +12202,11 @@
         this.__destroyed = true;
       }
 
-      hook(name, ...args) {
+      hook(name) {
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments[_key];
+        }
+
         if (this.__destroyed) return;
         this[`__${name}`].forEach(handler => {
           handler(...args);
@@ -11969,12 +12315,13 @@
             return parseComponent(componentString);
           },
 
-          create(component, props, {
-            root,
-            el,
-            context,
-            children
-          }) {
+          create(component, props, _ref) {
+            let {
+              root,
+              el,
+              context,
+              children
+            } = _ref;
             return new Component(app, component, props, {
               root,
               el,
@@ -12099,7 +12446,11 @@
 
     /* eslint-disable no-underscore-dangle */
 
-    function createStore(storeParams = {}) {
+    function createStore(storeParams) {
+      if (storeParams === void 0) {
+        storeParams = {};
+      }
+
       const store = {
         __store: true
       };
@@ -12165,7 +12516,11 @@
         removeGetterCallback(callback);
       };
 
-      const getterValue = (getterKey, addCallback = true) => {
+      const getterValue = function (getterKey, addCallback) {
+        if (addCallback === void 0) {
+          addCallback = true;
+        }
+
         if (getterKey === 'constructor') return undefined;
         propsQueue = [];
         const value = getGetterValue(getterKey);
@@ -12373,7 +12728,11 @@
         });
       },
 
-      overlaysWebView(overlays = true) {
+      overlaysWebView(overlays) {
+        if (overlays === void 0) {
+          overlays = true;
+        }
+
         const window = getWindow();
         const device = getDevice();
 
@@ -12517,6 +12876,7 @@
       params: {
         view: {
           init: true,
+          initRouterOnTabShow: false,
           name: undefined,
           main: false,
           router: true,
@@ -12817,7 +13177,19 @@
         }
       },
 
-      hide(el, animate = true, hideStatusbar = false, hideOnlyCurrent = false) {
+      hide(el, animate, hideStatusbar, hideOnlyCurrent) {
+        if (animate === void 0) {
+          animate = true;
+        }
+
+        if (hideStatusbar === void 0) {
+          hideStatusbar = false;
+        }
+
+        if (hideOnlyCurrent === void 0) {
+          hideOnlyCurrent = false;
+        }
+
         const app = this;
         let $el = $(el);
         const isDynamic = $el.hasClass('navbar') && $el.parent('.navbars').length && !hideOnlyCurrent;
@@ -12851,7 +13223,19 @@
         }
       },
 
-      show(el = '.navbar-hidden', animate = true, hideOnlyCurrent = false) {
+      show(el, animate, hideOnlyCurrent) {
+        if (el === void 0) {
+          el = '.navbar-hidden';
+        }
+
+        if (animate === void 0) {
+          animate = true;
+        }
+
+        if (hideOnlyCurrent === void 0) {
+          hideOnlyCurrent = false;
+        }
+
         const app = this;
         let $el = $(el);
         const isDynamic = $el.hasClass('navbar') && $el.parent('.navbars').length && !hideOnlyCurrent;
@@ -13523,7 +13907,11 @@
         app.toolbar.setHighlight(tabbarEl);
       },
 
-      hide(el, animate = true) {
+      hide(el, animate) {
+        if (animate === void 0) {
+          animate = true;
+        }
+
         const app = this;
         const $el = $(el);
         if ($el.hasClass('toolbar-hidden')) return;
@@ -13536,7 +13924,11 @@
         app.emit('toolbarHide', $el[0]);
       },
 
-      show(el, animate = true) {
+      show(el, animate) {
+        if (animate === void 0) {
+          animate = true;
+        }
+
         const app = this;
         const $el = $(el);
         if (!$el.hasClass('toolbar-hidden')) return;
@@ -13833,7 +14225,11 @@
       create() {
         const app = this;
         app.touchRipple = {
-          create(...args) {
+          create() {
+            for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+              args[_key] = arguments[_key];
+            }
+
             return new TouchRipple$1(...args);
           }
 
@@ -14203,5 +14599,5 @@
 
     return Framework7;
 
-})));
+}));
 //# sourceMappingURL=framework7.js.map

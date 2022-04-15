@@ -1,13 +1,17 @@
 import $ from '../../shared/dom7.js';
 import { extend } from '../../shared/utils.js';
 const Tab = {
-  show(...args) {
+  show() {
     const app = this;
     let tabEl;
     let tabLinkEl;
     let animate;
     let tabRoute;
     let animatedInit;
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
 
     if (args.length === 1 && args[0] && args[0].constructor === Object) {
       tabEl = args[0].tabEl;
@@ -257,7 +261,11 @@ export default {
     }
   },
   clicks: {
-    '.tab-link': function tabLinkClick($clickedEl, data = {}) {
+    '.tab-link': function tabLinkClick($clickedEl, data) {
+      if (data === void 0) {
+        data = {};
+      }
+
       if ($clickedEl.attr('href') && $clickedEl.attr('href').indexOf('#') === 0 || $clickedEl.attr('data-tab')) {
         const app = this;
         app.tab.show({

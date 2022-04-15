@@ -101,7 +101,11 @@ class PullToRefresh extends Framework7Class {
       triggerDistance = 38;
     }
 
-    function setPreloaderProgress(progress = 0) {
+    function setPreloaderProgress(progress) {
+      if (progress === void 0) {
+        progress = 0;
+      }
+
       const $bars = $preloaderEl.find('.preloader-inner-line');
       const perBarProgress = 1 / $bars.length;
       $bars.forEach((barEl, barIndex) => {

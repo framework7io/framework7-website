@@ -1,7 +1,7 @@
 {
   "name": "framework7-website",
-  "releaseVersion": "7.0.0-beta.12",
-  "releaseDate": "February 22, 2022",
+  "releaseVersion": "7.0.0",
+  "releaseDate": "April 15, 2022",
   "description": "Framework7 Website",
   "cdn": "//cdn.framework7.io",
   "keywords": [
@@ -81,9 +81,9 @@
     "vue": "^3.2.31"
   },
   "dependencies": {
-    "framework7": "^7.0.0-beta.12",
-    "framework7-react": "^7.0.0-beta.12",
-    "framework7-svelte": "^7.0.0-beta.12",
-    "framework7-vue": "^7.0.0-beta.12"
+    "framework7": "^7.0.0",
+    "framework7-react": "^7.0.0",
+    "framework7-svelte": "^7.0.0",
+    "framework7-vue": "^7.0.0"
   }
 }

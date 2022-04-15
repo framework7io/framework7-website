@@ -1,5 +1,9 @@
 class EventsClass {
-  constructor(parents = []) {
+  constructor(parents) {
+    if (parents === void 0) {
+      parents = [];
+    }
+
     const self = this;
     self.eventsParents = parents;
     self.eventsListeners = {};
@@ -20,11 +24,15 @@ class EventsClass {
     const self = this;
     if (typeof handler !== 'function') return self;
 
-    function onceHandler(...args) {
+    function onceHandler() {
       self.off(events, onceHandler);
 
       if (onceHandler.f7proxy) {
         delete onceHandler.f7proxy;
+      }
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
       }
 
       handler.apply(self, args);
@@ -51,13 +59,17 @@ class EventsClass {
     return self;
   }
 
-  emit(...args) {
+  emit() {
     const self = this;
     if (!self.eventsListeners) return self;
     let events;
     let data;
     let context;
     let eventsParents;
+
+    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
 
     if (typeof args[0] === 'string' || Array.isArray(args[0])) {
       events = args[0];

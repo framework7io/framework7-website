@@ -16,7 +16,11 @@ function refreshPage() {
   });
 }
 
-function forward(router, el, forwardOptions = {}) {
+function forward(router, el, forwardOptions) {
+  if (forwardOptions === void 0) {
+    forwardOptions = {};
+  }
+
   const document = getDocument();
   const $el = $(el);
   const app = router.app;
@@ -615,7 +619,15 @@ function forward(router, el, forwardOptions = {}) {
   return router;
 }
 
-function load(router, loadParams = {}, loadOptions = {}, ignorePageChange) {
+function load(router, loadParams, loadOptions, ignorePageChange) {
+  if (loadParams === void 0) {
+    loadParams = {};
+  }
+
+  if (loadOptions === void 0) {
+    loadOptions = {};
+  }
+
   if (!router.allowPageChange && !ignorePageChange) return router;
   const params = loadParams;
   const options = loadOptions;
@@ -730,7 +742,11 @@ function load(router, loadParams = {}, loadOptions = {}, ignorePageChange) {
   return router;
 }
 
-function navigate(navigateParams, navigateOptions = {}) {
+function navigate(navigateParams, navigateOptions) {
+  if (navigateOptions === void 0) {
+    navigateOptions = {};
+  }
+
   const router = this;
   if (router.swipeBackActive) return router;
   let url;
