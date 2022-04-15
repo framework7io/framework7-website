@@ -325,7 +325,7 @@ ul.method-parameters {
     color: #000;
     margin-bottom: 10px;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 14px;
   }
   .subtitle {
     text-transform: uppercase;
@@ -336,7 +336,7 @@ ul.method-parameters {
 .docs-nav-frameworks {
   display: flex;
   box-sizing: border-box;
-  padding: 2px;
+  padding: 4px;
   background: rgba(0, 0, 0, 0.075);
   border-radius: 4px;
   margin-bottom: 16px;
@@ -349,10 +349,11 @@ ul.method-parameters {
       margin-left: 4px;
     }
     &:hover {
-      background: rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.45);
     }
     &.active {
       background: #fff;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
     }
   }
   img {
@@ -377,23 +378,53 @@ ul.method-parameters {
     }
   }
   .docs-nav-sponsors {
-    margin-bottom: 20px;
+    padding-top: 16px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 16px;
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      align-content: center;
+      a {
+        color: @redColor;
+        font-weight: 500;
+        font-size: 11px;
+        padding-right: 0;
+        line-height: 1;
+        letter-spacing: -0.015em;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
     @media (max-width: 960px) {
       margin-right: 20px;
     }
-    a:not(.patreon-button) {
+    &-list {
       display: flex;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      height: 48px;
-      align-items: center;
-      justify-content: center;
-      padding: 4px;
-      box-sizing: border-box;
-      margin-bottom: 8px;
-      img {
-        display: block;
-        max-width: 100%;
-        max-height: 100%;
+      flex-wrap: wrap;
+      a {
+        width: calc(50% - 4px);
+        display: flex;
+        height: 44px;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        margin-bottom: 8px;
+        text-align: center;
+        padding: 0;
+        img {
+          display: block;
+          max-width: 100%;
+          max-height: 100%;
+        }
+      }
+      a:nth-child(2n) {
+        margin-left: 8px;
       }
     }
     .patreon-button {
@@ -401,7 +432,11 @@ ul.method-parameters {
       height: auto;
       white-space: nowrap;
       color: @redColor;
-      margin-top: 16px;
+      margin-bottom: 10px;
+      .patreon-text {
+        font-size: 12px;
+        font-weight: 500;
+      }
     }
   }
   ul {
@@ -423,12 +458,21 @@ ul.method-parameters {
       position: absolute;
       right: 0;
       top: 0;
-      width: 1000px;
+      width: calc(100% + 12px);
       height: 100%;
       padding: 5px 0;
-      background: @redColor;
+      background: rgba(red(@redColor), green(@redColor), blue(@redColor), 0.1);
       top: 50%;
       transform: translateY(-50%);
+      border-radius: 4px;
+      @media (max-width: 960px) {
+        right: -8px;
+        width: auto;
+        left: -12px;
+      }
+    }
+    &.active a {
+      color: @redColor;
     }
   }
   a {
@@ -572,6 +616,7 @@ ul.method-parameters {
     transform: translateX(-100%);
     width: 260px;
     // overflow: auto;
+    padding: 0;
     &.docs-nav-visible {
       transform: translateX(0%);
       box-shadow: 20px 0 50px rgba(0, 0, 0, 0.3);
@@ -580,6 +625,7 @@ ul.method-parameters {
       overflow: auto;
       height: 100%;
       padding-right: 20px;
+      padding: 20px 20px 0 20px;
     }
   }
 }

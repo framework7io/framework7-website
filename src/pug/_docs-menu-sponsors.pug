@@ -1,8 +1,10 @@
 .docs-nav-sponsors
-  .title Sponsors
+  .title
+    span Sponsors
+    a(href="https://www.patreon.com/framework7" target="_blank") Become a sponsor
   - var sponsors = getJSONData('sponsors/sponsors.json');
-  if (sponsors.goldSponsor)
-    each sponsor in sponsors.goldSponsor
-      a.sponsor(href=sponsor.link, target="_blank")
-        img(src='/i/sponsors/' + (sponsor.image_h || sponsor.image), alt=sponsor.title, title=sponsor.title)
-  include _patreon
+  .docs-nav-sponsors-list
+    if (sponsors.goldSponsor)
+      each sponsor in sponsors.goldSponsor
+        a.sponsor(href=sponsor.link, target="_blank")
+          img(src='/i/sponsors/' + (sponsor.image), alt=sponsor.title, title=sponsor.title)
