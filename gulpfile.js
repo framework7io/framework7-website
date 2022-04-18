@@ -6,6 +6,7 @@ const path = require('path');
 const buildStyles = require('./build/build-styles');
 const buildPages = require('./build/build-pages');
 const buildScript = require('./build/build-script');
+const buildSponsors = require('./build/build-sponsors');
 
 const buildCoreDemos = require('./build/build-core-demos');
 const buildSvelteDemos = require('./build/build-svelte-demos');
@@ -16,13 +17,14 @@ const buildReactDemos = require('./build/build-react-demos');
 Build Styles
 ================================================================== */
 gulp.task('less', buildStyles);
+gulp.task('sponsors', buildSponsors);
 gulp.task('pug', buildPages);
 gulp.task('js', buildScript);
 gulp.task('core-demos', buildCoreDemos.all);
 gulp.task('svelte-demos', buildSvelteDemos.all);
 gulp.task('vue-demos', buildVueDemos.all);
 gulp.task('react-demos', buildReactDemos.all);
-gulp.task('build', gulp.series(['pug', 'less', 'js']));
+gulp.task('build', gulp.series(['sponsors', 'pug', 'less', 'js']));
 gulp.task('demos', gulp.series(['core-demos', 'svelte-demos', 'vue-demos', 'react-demos']));
 
 /* =================================

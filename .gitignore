@@ -9,6 +9,7 @@ public/release-notes/*.html
 public/contribute/index.html
 public/cli/*.html
 public/docs/*.html
+public/sponsors/sponsors.json
 
 # public/docs-demos/*.html
 # public/docs-demos/core/*.html
