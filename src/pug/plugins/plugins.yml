@@ -4,7 +4,7 @@
   iconUrl: '/i/plugins/keypad.svg'
   description: Keypad plugin extends Framework7 with additional custom keyboards
   badges:
-    - v5
+    - v7
 
 - title: Feeds
   url: https://github.com/framework7io/framework7-plugin-feeds
@@ -12,7 +12,7 @@
   iconUrl: '/i/plugins/feeds.svg'
   description: Brings easy RSS feeds integration into Framework7 app
   badges:
-    - v6
+    - v7
 
 - title: 3D Panels
   url: https://github.com/framework7io/framework7-plugin-3d-panels
