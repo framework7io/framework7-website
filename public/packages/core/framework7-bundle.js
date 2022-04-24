@@ -1,5 +1,5 @@
 /**
- * Framework7 7.0.1
+ * Framework7 7.0.2
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 15, 2022
+ * Released on: April 24, 2022
  */
 
 (function (global, factory) {
@@ -5223,11 +5223,22 @@
 
       push(viewId, viewState, url) {
         const window = getWindow();
+        const document = getDocument();
+        /* eslint-disable no-param-reassign */
 
         if (url.substr(-3) === '#!/') {
-          // eslint-disable-next-line
           url = url.replace('#!/', '');
+
+          if (url === '') {
+            url = document.location.href;
+
+            if (url.includes('#!/')) {
+              url = document.location.href.split('#!/')[0];
+            }
+          }
         }
+        /* eslint-enable no-param-reassign */
+
 
         if (!History$1.allowChange) {
           History$1.queue.push(() => {
@@ -35189,6 +35200,7 @@
     var eventsEmitter = {
       on(events, handler, priority) {
         const self = this;
+        if (!self.eventsListeners || self.destroyed) return self;
         if (typeof handler !== 'function') return self;
         const method = priority ? 'unshift' : 'push';
         events.split(' ').forEach(event => {
@@ -35200,6 +35212,7 @@
 
       once(events, handler, priority) {
         const self = this;
+        if (!self.eventsListeners || self.destroyed) return self;
         if (typeof handler !== 'function') return self;
 
         function onceHandler() {
@@ -35222,6 +35235,7 @@
 
       onAny(handler, priority) {
         const self = this;
+        if (!self.eventsListeners || self.destroyed) return self;
         if (typeof handler !== 'function') return self;
         const method = priority ? 'unshift' : 'push';
 
@@ -35234,6 +35248,7 @@
 
       offAny(handler) {
         const self = this;
+        if (!self.eventsListeners || self.destroyed) return self;
         if (!self.eventsAnyListeners) return self;
         const index = self.eventsAnyListeners.indexOf(handler);
 
@@ -35246,6 +35261,7 @@
 
       off(events, handler) {
         const self = this;
+        if (!self.eventsListeners || self.destroyed) return self;
         if (!self.eventsListeners) return self;
         events.split(' ').forEach(event => {
           if (typeof handler === 'undefined') {
@@ -35263,6 +35279,7 @@
 
       emit() {
         const self = this;
+        if (!self.eventsListeners || self.destroyed) return self;
         if (!self.eventsListeners) return self;
         let events;
         let data;
@@ -37719,6 +37736,8 @@
         'css-mode': params.cssMode
       }, {
         'centered': params.cssMode && params.centeredSlides
+      }, {
+        'watch-progress': params.watchSlidesProgress
       }], params.containerModifierClass);
       classNames.push(...suffixes);
       $el.addClass([...classNames].join(' '));
@@ -38243,6 +38262,7 @@
 
       getSlideClasses(slideEl) {
         const swiper = this;
+        if (swiper.destroyed) return '';
         return slideEl.className.split(' ').filter(className => {
           return className.indexOf('swiper-slide') === 0 || className.indexOf(swiper.params.slideClass) === 0;
         }).join(' ');
@@ -43226,7 +43246,9 @@
         setTranslate,
         setTransition,
         overwriteParams,
-        perspective
+        perspective,
+        recreateShadows,
+        getEffectParams
       } = params;
       on('beforeInit', () => {
         if (swiper.params.effect !== effect) return;
@@ -43247,6 +43269,20 @@
       on('setTransition', (_s, duration) => {
         if (swiper.params.effect !== effect) return;
         setTransition(duration);
+      });
+      on('transitionEnd', () => {
+        if (swiper.params.effect !== effect) return;
+
+        if (recreateShadows) {
+          if (!getEffectParams || !getEffectParams().slideShadows) return; // remove shadows
+
+          swiper.slides.each(slideEl => {
+            const $slideEl = swiper.$(slideEl);
+            $slideEl.find('.swiper-slide-shadow-top, .swiper-slide-shadow-right, .swiper-slide-shadow-bottom, .swiper-slide-shadow-left').remove();
+          }); // create new one
+
+          recreateShadows();
+        }
       });
       let requireUpdateOnVirtual;
       on('virtualUpdate', () => {
@@ -43397,6 +43433,33 @@
         }
       });
 
+      const createSlideShadows = ($slideEl, progress, isHorizontal) => {
+        let shadowBefore = isHorizontal ? $slideEl.find('.swiper-slide-shadow-left') : $slideEl.find('.swiper-slide-shadow-top');
+        let shadowAfter = isHorizontal ? $slideEl.find('.swiper-slide-shadow-right') : $slideEl.find('.swiper-slide-shadow-bottom');
+
+        if (shadowBefore.length === 0) {
+          shadowBefore = $$1(`<div class="swiper-slide-shadow-${isHorizontal ? 'left' : 'top'}"></div>`);
+          $slideEl.append(shadowBefore);
+        }
+
+        if (shadowAfter.length === 0) {
+          shadowAfter = $$1(`<div class="swiper-slide-shadow-${isHorizontal ? 'right' : 'bottom'}"></div>`);
+          $slideEl.append(shadowAfter);
+        }
+
+        if (shadowBefore.length) shadowBefore[0].style.opacity = Math.max(-progress, 0);
+        if (shadowAfter.length) shadowAfter[0].style.opacity = Math.max(progress, 0);
+      };
+
+      const recreateShadows = () => {
+        // create new ones
+        const isHorizontal = swiper.isHorizontal();
+        swiper.slides.each(slideEl => {
+          const progress = Math.max(Math.min(slideEl.progress, 1), -1);
+          createSlideShadows($$1(slideEl), progress, isHorizontal);
+        });
+      };
+
       const setTranslate = () => {
         const {
           $el,
@@ -43490,22 +43553,7 @@
           $slideEl.transform(transform);
 
           if (params.slideShadows) {
-            // Set shadows
-            let shadowBefore = isHorizontal ? $slideEl.find('.swiper-slide-shadow-left') : $slideEl.find('.swiper-slide-shadow-top');
-            let shadowAfter = isHorizontal ? $slideEl.find('.swiper-slide-shadow-right') : $slideEl.find('.swiper-slide-shadow-bottom');
-
-            if (shadowBefore.length === 0) {
-              shadowBefore = $$1(`<div class="swiper-slide-shadow-${isHorizontal ? 'left' : 'top'}"></div>`);
-              $slideEl.append(shadowBefore);
-            }
-
-            if (shadowAfter.length === 0) {
-              shadowAfter = $$1(`<div class="swiper-slide-shadow-${isHorizontal ? 'right' : 'bottom'}"></div>`);
-              $slideEl.append(shadowAfter);
-            }
-
-            if (shadowBefore.length) shadowBefore[0].style.opacity = Math.max(-progress, 0);
-            if (shadowAfter.length) shadowAfter[0].style.opacity = Math.max(progress, 0);
+            createSlideShadows($slideEl, progress, isHorizontal);
           }
         }
 
@@ -43529,6 +43577,7 @@
 
         const zFactor = browser.isSafari || browser.isWebView ? -swiperSize / 2 : 0;
         $wrapperEl.transform(`translate3d(0px,0,${zFactor}px) rotateX(${swiper.isHorizontal() ? 0 : wrapperRotate}deg) rotateY(${swiper.isHorizontal() ? -wrapperRotate : 0}deg)`);
+        $wrapperEl[0].style.setProperty('--swiper-cube-translate-z', `${zFactor}px`);
       };
 
       const setTransition = duration => {
@@ -43549,6 +43598,8 @@
         on,
         setTranslate,
         setTransition,
+        recreateShadows,
+        getEffectParams: () => swiper.params.cubeEffect,
         perspective: () => true,
         overwriteParams: () => ({
           slidesPerView: 1,
@@ -43589,6 +43640,37 @@
         }
       });
 
+      const createSlideShadows = ($slideEl, progress, params) => {
+        let shadowBefore = swiper.isHorizontal() ? $slideEl.find('.swiper-slide-shadow-left') : $slideEl.find('.swiper-slide-shadow-top');
+        let shadowAfter = swiper.isHorizontal() ? $slideEl.find('.swiper-slide-shadow-right') : $slideEl.find('.swiper-slide-shadow-bottom');
+
+        if (shadowBefore.length === 0) {
+          shadowBefore = createShadow(params, $slideEl, swiper.isHorizontal() ? 'left' : 'top');
+        }
+
+        if (shadowAfter.length === 0) {
+          shadowAfter = createShadow(params, $slideEl, swiper.isHorizontal() ? 'right' : 'bottom');
+        }
+
+        if (shadowBefore.length) shadowBefore[0].style.opacity = Math.max(-progress, 0);
+        if (shadowAfter.length) shadowAfter[0].style.opacity = Math.max(progress, 0);
+      };
+
+      const recreateShadows = () => {
+        // Set shadows
+        const params = swiper.params.flipEffect;
+        swiper.slides.each(slideEl => {
+          const $slideEl = $$1(slideEl);
+          let progress = $slideEl[0].progress;
+
+          if (swiper.params.flipEffect.limitRotation) {
+            progress = Math.max(Math.min(slideEl.progress, 1), -1);
+          }
+
+          createSlideShadows($slideEl, progress, params);
+        });
+      };
+
       const setTranslate = () => {
         const {
           slides,
@@ -43623,20 +43705,7 @@
           $slideEl[0].style.zIndex = -Math.abs(Math.round(progress)) + slides.length;
 
           if (params.slideShadows) {
-            // Set shadows
-            let shadowBefore = swiper.isHorizontal() ? $slideEl.find('.swiper-slide-shadow-left') : $slideEl.find('.swiper-slide-shadow-top');
-            let shadowAfter = swiper.isHorizontal() ? $slideEl.find('.swiper-slide-shadow-right') : $slideEl.find('.swiper-slide-shadow-bottom');
-
-            if (shadowBefore.length === 0) {
-              shadowBefore = createShadow(params, $slideEl, swiper.isHorizontal() ? 'left' : 'top');
-            }
-
-            if (shadowAfter.length === 0) {
-              shadowAfter = createShadow(params, $slideEl, swiper.isHorizontal() ? 'right' : 'bottom');
-            }
-
-            if (shadowBefore.length) shadowBefore[0].style.opacity = Math.max(-progress, 0);
-            if (shadowAfter.length) shadowAfter[0].style.opacity = Math.max(progress, 0);
+            createSlideShadows($slideEl, progress, params);
           }
 
           const transform = `translate3d(${tx}px, ${ty}px, 0px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
@@ -43664,6 +43733,8 @@
         on,
         setTranslate,
         setTransition,
+        recreateShadows,
+        getEffectParams: () => swiper.params.flipEffect,
         perspective: () => true,
         overwriteParams: () => ({
           slidesPerView: 1,
@@ -44056,7 +44127,7 @@
     }
 
     /**
-     * Swiper 8.1.1
+     * Swiper 8.1.4
      * Most modern mobile touch slider and framework with hardware accelerated transitions
      * https://swiperjs.com
      *
@@ -44064,7 +44135,7 @@
      *
      * Released under the MIT License
      *
-     * Released on: April 15, 2022
+     * Released on: April 24, 2022
      */
 
     const modules = [Virtual, Keyboard, Mousewheel, Navigation, Pagination, Scrollbar, Parallax, Zoom, Lazy, Controller, A11y, History, HashNavigation, Autoplay, Thumb, freeMode, Grid, Manipulation, EffectFade, EffectCube, EffectFlip, EffectCoverflow, EffectCreative, EffectCards];

@@ -1,10 +1,10 @@
 import Dom7 from 'dom7';
 import Framework7 from './components/app/app-class'
 
-import request from './types/shared/request';
-import { getSupport } from './types/shared/get-support';
-import { getDevice } from './types/shared/get-device';
-import { Utils } from './types/shared/utils';
+import request from './shared/request';
+import { getSupport } from './shared/get-support';
+import { getDevice } from './shared/get-device';
+import { Utils } from './shared/utils';
 
 import { Clicks as ClicksModule } from './modules/clicks/clicks';
 import { Component as ComponentModule } from './modules/component/component';
@@ -17,8 +17,8 @@ import { Store as StoreModule } from './modules/store/store';
 import { Support as SupportModule } from './modules/support/support';
 import { Touch as TouchModule } from './modules/touch/touch';
 import { Utils as UtilsModule } from './modules/utils/utils';
-import { ComponentFunction as Component } from './types/modules/component/component';
-import { StoreObject as Store, StoreParameters, createStore } from './types/modules/store/store';
+import { ComponentFunction as Component } from './modules/component/component';
+import { StoreObject as Store, StoreParameters, createStore } from './modules/store/store';
 
 import { Accordion } from './components/accordion/accordion';
 import { Actions } from './components/actions/actions';
@@ -91,7 +91,7 @@ import { Typography } from './components/typography/typography';
 import { View } from './components/view/view';
 import { VirtualList } from './components/virtual-list/virtual-list';
 
-declare module './types/components/app/app-class' {
+declare module './components/app/app-class' {
   interface Framework7Class<Events> extends ClicksModule.AppMethods{}
   interface Framework7Parameters extends ClicksModule.AppParams{}
   interface Framework7Events extends ClicksModule.AppEvents{}

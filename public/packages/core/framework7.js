@@ -1,5 +1,5 @@
 /**
- * Framework7 7.0.1
+ * Framework7 7.0.2
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 15, 2022
+ * Released on: April 24, 2022
  */
 
 (function (global, factory) {
@@ -5169,11 +5169,22 @@
 
       push(viewId, viewState, url) {
         const window = getWindow();
+        const document = getDocument();
+        /* eslint-disable no-param-reassign */
 
         if (url.substr(-3) === '#!/') {
-          // eslint-disable-next-line
           url = url.replace('#!/', '');
+
+          if (url === '') {
+            url = document.location.href;
+
+            if (url.includes('#!/')) {
+              url = document.location.href.split('#!/')[0];
+            }
+          }
         }
+        /* eslint-enable no-param-reassign */
+
 
         if (!History.allowChange) {
           History.queue.push(() => {
