@@ -115,7 +115,7 @@ block content
           td
           td An object of key/value pairs to set on the native XHR object
         tr
-          td username
+          td user
           td string
           td
           td A username to be used with XMLHttpRequest in response to an HTTP access authentication request
@@ -261,7 +261,7 @@ block content
 
       var $$ = Dom7;
 
-      app.request.post('auth.php', { username:'foo', password: 'bar' })
+      app.request.post('auth.php', { user:'foo', password: 'bar' })
         .then(function (res) {
           $$('.login').html(res.data);
           console.log('Load was performed');
@@ -329,7 +329,7 @@ block content
 
       var $$ = Dom7;
 
-      app.request.postJSON('http://api.myapp.com', { username:'foo', password: 'bar' })
+      app.request.postJSON('http://api.myapp.com', { user:'foo', password: 'bar' })
         .then(function (res) {
           console.log(res.data);
         });
