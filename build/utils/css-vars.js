@@ -26,7 +26,7 @@ module.exports = (component, info = true, title = 'CSS Variables') => {
   }
 }
 .dark-vars(@ruleset) {
-  .theme-dark, &.theme-dark {
+  .dark, &.dark {
     @ruleset();
   }
 }
