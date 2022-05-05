@@ -194,7 +194,7 @@ html
       .center
         h2 Sponsors
         .home-sponsors-list
-          - var sponsors = getJSONData('sponsors/sponsors.json');
+          - var sponsors = getSponsors(getJSONData('sponsors/sponsors.json'));
           if (sponsors.diamondSponsor && sponsors.diamondSponsor.length)
             each sponsor in sponsors.diamondSponsor
               .home-sponsors-item.home-sponsor-diamond

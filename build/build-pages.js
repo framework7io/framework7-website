@@ -13,6 +13,7 @@ const iconsManifest = require('./manifest-icons.json');
 const getSrcFileUrl = require('./utils/get-src-file-url');
 const getYamlData = require('./utils/get-yaml-data');
 const getJSONData = require('./utils/get-json-data');
+const getSponsors = require('./utils/get-sponsors');
 const inlineSvg = require('./utils/inline-svg');
 const cssVars = require('./utils/css-vars');
 const codeFilter = require('./utils/code-filter');
@@ -136,6 +137,7 @@ function buildPages(
           icons: iconsManifest.icons,
           getYamlData,
           getJSONData,
+          getSponsors,
           inlineSvg,
           cssVars,
           releaseNotes,

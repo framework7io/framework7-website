@@ -2,7 +2,7 @@
   .title
     span Sponsors
     a(href="https://www.patreon.com/framework7" target="_blank") Become a sponsor
-  - var sponsors = getJSONData('sponsors/sponsors.json');
+  - var sponsors = getSponsors(getJSONData('sponsors/sponsors.json'));
   .docs-nav-sponsors-list
     if (sponsors.goldSponsor)
       each sponsor in sponsors.goldSponsor

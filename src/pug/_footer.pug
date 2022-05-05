@@ -63,7 +63,7 @@ footer
       .footer-sponsors
         .footer-sponsors-title Sponsored by
         .custom-sponsors
-          - var sponsors = getJSONData('sponsors/sponsors.json');
+          - var sponsors = getSponsors(getJSONData('sponsors/sponsors.json'));
           if (sponsors.goldSponsor)
             each sponsor in sponsors.goldSponsor
               a.border(href=sponsor.link, target="_blank")
