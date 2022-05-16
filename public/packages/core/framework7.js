@@ -1,5 +1,5 @@
 /**
- * Framework7 7.0.2
+ * Framework7 7.0.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 24, 2022
+ * Released on: May 16, 2022
  */
 
 (function (global, factory) {
@@ -10674,7 +10674,7 @@
       }(s)), r), arguments, [])).length > 1 ? r : r[0];
     }
 
-    const ignoreChildren = [false, null, '', undefined];
+    const ignoreChildren$1 = [false, null, '', undefined];
 
     const h$1 = function (type, props) {
       for (var _len = arguments.length, children = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
@@ -10684,7 +10684,7 @@
       return {
         type,
         props: props || {},
-        children: flattenArray(children.filter(child => ignoreChildren.indexOf(child) < 0))
+        children: flattenArray(children.filter(child => ignoreChildren$1.indexOf(child) < 0))
       };
     };
 
@@ -11838,6 +11838,26 @@
     /* eslint import/no-named-as-default: off */
     const patch = init([attributesModule, propsModule, styleModule, eventListenersModule]);
 
+    const ignoreChildren = [false, null, '', undefined];
+
+    const $jsx = function (type, props) {
+      for (var _len = arguments.length, children = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        children[_key - 2] = arguments[_key];
+      }
+
+      const flatChildren = flattenArray((children || []).filter(child => ignoreChildren.indexOf(child) < 0));
+
+      if (type === 'Fragment') {
+        return flatChildren;
+      }
+
+      return {
+        type,
+        props: props || {},
+        children: flatChildren
+      };
+    };
+
     /* eslint no-underscore-dangle: "off" */
 
     class Component {
@@ -12225,6 +12245,8 @@
       }
 
     }
+
+    Component.$jsx = $jsx;
 
     function parseComponent(componentString) {
       const window = getWindow();

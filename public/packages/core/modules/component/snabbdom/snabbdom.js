@@ -39,8 +39,8 @@ function createKeyToOldIdx(children, beginIdx, endIdx) {
 }
 
 var hooks = ['create', 'update', 'remove', 'destroy', 'pre', 'post'];
-export { h } from './h';
-export { thunk } from './thunk';
+export { h } from './h.js';
+export { thunk } from './thunk.js';
 export function init(modules, domApi) {
   var i,
       j,
