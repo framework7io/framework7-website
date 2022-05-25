@@ -182,7 +182,8 @@ class Popover extends Modal {
     } = popover;
     const {
       targetX,
-      targetY
+      targetY,
+      verticalPosition
     } = popover.params;
     $el.css({
       left: '',
@@ -237,14 +238,15 @@ class Popover extends Modal {
 
     let [left, top, diff] = [0, 0, 0]; // Top Position
 
-    let position = app.theme === 'md' ? 'bottom' : 'top';
+    const forcedPosition = verticalPosition === 'auto' ? false : verticalPosition;
+    let position = forcedPosition || (app.theme === 'md' ? 'bottom' : 'top');
 
     if (app.theme === 'md') {
-      if (height < app.height - targetOffsetTop - targetHeight) {
+      if (forcedPosition === 'bottom' || !forcedPosition && height < app.height - targetOffsetTop - targetHeight) {
         // On bottom
         position = 'bottom';
         top = targetOffsetTop + targetHeight;
-      } else if (height < targetOffsetTop - safeAreaTop) {
+      } else if (forcedPosition === 'top' || !forcedPosition && height < targetOffsetTop - safeAreaTop) {
         // On top
         top = targetOffsetTop - height;
         position = 'top';
@@ -270,10 +272,10 @@ class Popover extends Modal {
       $el.addClass(`popover-on-${position} popover-on-${hPosition}`);
     } else {
       // ios and aurora
-      if (height + angleSize < targetOffsetTop - safeAreaTop) {
+      if (forcedPosition === 'top' || !forcedPosition && height + angleSize < targetOffsetTop - safeAreaTop) {
         // On top
         top = targetOffsetTop - height - angleSize;
-      } else if (height + angleSize < app.height - targetOffsetTop - targetHeight) {
+      } else if (forcedPosition === 'bottom' || !forcedPosition && height + angleSize < app.height - targetOffsetTop - targetHeight) {
         // On bottom
         position = 'bottom';
         top = targetOffsetTop + targetHeight + angleSize;

@@ -1,6 +1,7 @@
 import $ from '../../shared/dom7.js';
 import { extend, deleteProps, id, nextTick } from '../../shared/utils.js';
 import Framework7Class from '../../shared/class.js';
+import removeDiacritics from '../searchbar/remove-diacritics.js';
 /** @jsx $jsx */
 
 import $jsx from '../../shared/$jsx.js';
@@ -662,7 +663,7 @@ class SmartSelect extends Framework7Class {
         height: ss.params.virtualListHeight,
 
         searchByItem(query, item) {
-          if (item.text && item.text.toLowerCase().indexOf(query.trim().toLowerCase()) >= 0) return true;
+          if (item.text && removeDiacritics(item.text).toLowerCase().indexOf(query.trim().toLowerCase()) >= 0) return true;
           return false;
         }
 
