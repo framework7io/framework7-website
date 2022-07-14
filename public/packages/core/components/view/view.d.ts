@@ -1,6 +1,10 @@
 import { Dom7Array } from 'dom7';
-import Framework7, { CSSSelector, Framework7EventsClass, Framework7Plugin } from '../app/app-class';
-import { Router } from '../../modules/router/router';
+import Framework7, {
+  CSSSelector,
+  Framework7EventsClass,
+  Framework7Plugin,
+} from '../app/app-class.js';
+import { Router } from '../../modules/router/router.js';
 
 export namespace View {
   interface View extends Framework7EventsClass<Events> {

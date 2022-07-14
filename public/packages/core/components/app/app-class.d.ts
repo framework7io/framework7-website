@@ -1,11 +1,14 @@
 import { Dom7, Dom7Array } from 'dom7';
-import { Router } from '../../modules/router/router';
-import { DeviceParams, Device } from '../../shared/get-device';
-import { Support } from '../../shared/get-support';
-import { Request } from '../../shared/request';
-import { Utils } from '../../shared/utils';
-import { ComponentClass, ComponentFunction as Component } from '../../modules/component/component';
-import { StoreObject, StoreParameters } from '../../modules/store/store';
+import { Router } from '../../modules/router/router.js';
+import { DeviceParams, Device } from '../../shared/get-device.js';
+import { Support } from '../../shared/get-support.js';
+import { Request } from '../../shared/request.js';
+import { Utils } from '../../shared/utils.js';
+import {
+  ComponentClass,
+  ComponentFunction as Component,
+} from '../../modules/component/component.js';
+import { StoreObject, StoreParameters } from '../../modules/store/store.js';
 
 // Css Selector string is an option on many F7 methods
 // Giving this alias makes the typename show in the intellisense
