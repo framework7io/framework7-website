@@ -2,10 +2,10 @@ import Framework7, {
   Framework7EventsClass,
   Framework7Plugin,
   CSSSelector,
-} from '../../components/app/app-class';
+} from '../../components/app/app-class.js';
 import { Dom7, Dom7Array } from 'dom7';
-import { Router } from '../../modules/router/router';
-import { StoreObject as Store } from '../../modules/store/store';
+import { Router } from '../../modules/router/router.js';
+import { StoreObject as Store } from '../../modules/store/store.js';
 
 interface ComponentRender extends Function {}
 
