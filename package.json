@@ -75,7 +75,7 @@
     "rollup-plugin-vue": "^6.0.0",
     "strip-indent": "^3.0.0",
     "svelte": "^3.46.4",
-    "terser": "^5.10.0",
+    "terser": "^5.14.2",
     "through2": "^4.0.2",
     "vue": "^3.2.31"
   },
