@@ -1,5 +1,16 @@
 [
   {
+    "createdAt": "2022-07-30T13:00:00.00Z",
+    "title": "VPNwelt: VPN Neuigkeiten, Testberichte und Statistik 2022",
+    "link": "https://vpnwelt.com",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/vpnwelt",
+    "image": "vpnwelt.png",
+    "image_h": "",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2022-07-15T18:10:00.00Z",
     "title": "SLON Media - Dedicated Creative and Marketing Team",
     "link": "https://slonmedia.com",
