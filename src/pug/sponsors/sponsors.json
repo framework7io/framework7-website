@@ -149,7 +149,7 @@
     "image": "rushradar.png",
     "image_h": "",
     "endDate": "",
-    "active": true
+    "active": false
   },
   {
     "createdAt": "2022-06-09T10:00:00.00Z",
