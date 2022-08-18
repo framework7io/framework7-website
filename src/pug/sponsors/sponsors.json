@@ -1,5 +1,38 @@
 [
   {
+    "createdAt": "2022-08-18T12:00:00.00Z",
+    "title": "NoNeedToStudy.com - get help with taking online classes and tests from expert tutors",
+    "link": "https://www.noneedtostudy.com/take-my-online-class/",
+    "plan": "goldSponsor",
+    "ref": "https://www.patreon.com/user/creators?u=78489969",
+    "image": "noneedtostudy.png",
+    "image_h": "noneedtostudy-h.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2022-08-18T12:00:00.00Z",
+    "title": "Custom eCommerce Development Services - IntexSoft",
+    "link": "https://intexsoft.com/ecommerce-development-services/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/intexsoft-ecommerce-dev",
+    "image": "intexsoft.png",
+    "image_h": "",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2022-08-18T12:00:00.00Z",
+    "title": "This Ruby on Rails consulting company can save you up to 60% — Rubyroid Labs",
+    "link": "https://rubyroidlabs.com/services/consulting",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/ror-consulting",
+    "image": "rubyroidlabs.png",
+    "image_h": "",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2022-08-01T13:00:00.00Z",
     "title": "CSGO Captain | Your Guide to Counter-Strike 2022 - CS:GO Captain",
     "link": "https://www.csgocaptain.com",
