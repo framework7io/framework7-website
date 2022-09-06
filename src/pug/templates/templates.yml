@@ -9,7 +9,7 @@ community:
     previewUrl: http://guillaumebiton.github.io/hackernews7-svelte/
     description: Hacker News Reader powered by Framework7 and Svelte
     badges:
-      - v6
+      - v7
       - Svelte
   - title: Framework7 iOS App Store
     iconUrl: '/i/templates/appstore.png'
@@ -43,3 +43,5 @@ community:
     url: https://github.com/framework7io/framework7-recipes
     previewUrl: https://framework7io.github.io/framework7-recipes/
     description: Framework7 proof of concept templates, layouts and scripts
+    badges:
+      - v7
