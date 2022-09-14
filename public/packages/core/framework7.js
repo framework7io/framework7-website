@@ -1,5 +1,5 @@
 /**
- * Framework7 7.0.7
+ * Framework7 7.0.8
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: July 15, 2022
+ * Released on: September 14, 2022
  */
 
 (function (global, factory) {
@@ -3052,6 +3052,32 @@
       });
     }
 
+    /* eslint-disable prefer-rest-params */
+    const $jsx$1 = function (tag, props) {
+      const attrs = props || {};
+
+      for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        args[_key - 2] = arguments[_key];
+      }
+
+      const children = args || [];
+      const attrsString = Object.keys(attrs).map(attr => {
+        if (attr[0] === '_') {
+          if (attrs[attr]) return attr.replace('_', '');
+          return '';
+        }
+
+        return `${attr}="${attrs[attr]}"`;
+      }).filter(attr => !!attr).join(' ');
+
+      if (['path', 'img', 'circle', 'polygon', 'line', 'input'].indexOf(tag) >= 0) {
+        return `<${tag} ${attrsString} />`.trim();
+      }
+
+      const childrenContent = children.filter(c => !!c).map(c => Array.isArray(c) ? c.join('') : c).join('');
+      return `<${tag} ${attrsString}>${childrenContent}</${tag}>`.trim();
+    };
+
     /* eslint-disable no-underscore-dangle */
 
     class Framework7 extends Framework7Class {
@@ -3368,6 +3394,7 @@
 
     }
 
+    Framework7.$jsx = $jsx$1;
     Framework7.ModalMethods = ModalMethods;
     Framework7.ConstructorMethods = ConstructorMethods;
     Framework7.loadModule = loadModule;
@@ -12334,6 +12361,7 @@
       name: 'component',
       static: {
         Component,
+        parseComponent,
         registerComponent,
         unregisterComponent
       },

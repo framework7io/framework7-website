@@ -1,5 +1,5 @@
 /**
- * Framework7 7.0.7
+ * Framework7 7.0.8
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: July 15, 2022
+ * Released on: September 14, 2022
  */
 
 (function (global, factory) {
@@ -3052,6 +3052,32 @@
       });
     }
 
+    /* eslint-disable prefer-rest-params */
+    const $jsx$1 = function (tag, props) {
+      const attrs = props || {};
+
+      for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        args[_key - 2] = arguments[_key];
+      }
+
+      const children = args || [];
+      const attrsString = Object.keys(attrs).map(attr => {
+        if (attr[0] === '_') {
+          if (attrs[attr]) return attr.replace('_', '');
+          return '';
+        }
+
+        return `${attr}="${attrs[attr]}"`;
+      }).filter(attr => !!attr).join(' ');
+
+      if (['path', 'img', 'circle', 'polygon', 'line', 'input'].indexOf(tag) >= 0) {
+        return `<${tag} ${attrsString} />`.trim();
+      }
+
+      const childrenContent = children.filter(c => !!c).map(c => Array.isArray(c) ? c.join('') : c).join('');
+      return `<${tag} ${attrsString}>${childrenContent}</${tag}>`.trim();
+    };
+
     /* eslint-disable no-underscore-dangle */
 
     class Framework7 extends Framework7Class {
@@ -3368,6 +3394,7 @@
 
     }
 
+    Framework7.$jsx = $jsx$1;
     Framework7.ModalMethods = ModalMethods;
     Framework7.ConstructorMethods = ConstructorMethods;
     Framework7.loadModule = loadModule;
@@ -11951,7 +11978,7 @@
 
     const ignoreChildren = [false, null, '', undefined];
 
-    const $jsx$1 = function (type, props) {
+    const $jsx = function (type, props) {
       for (var _len = arguments.length, children = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
         children[_key - 2] = arguments[_key];
       }
@@ -12357,7 +12384,7 @@
 
     }
 
-    Component.$jsx = $jsx$1;
+    Component.$jsx = $jsx;
 
     function parseComponent(componentString) {
       const window = getWindow();
@@ -12445,6 +12472,7 @@
       name: 'component',
       static: {
         Component,
+        parseComponent,
         registerComponent,
         unregisterComponent
       },
@@ -14737,32 +14765,6 @@
       name: 'appbar'
     };
 
-    /* eslint-disable prefer-rest-params */
-    const $jsx = function (tag, props) {
-      const attrs = props || {};
-
-      for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-        args[_key - 2] = arguments[_key];
-      }
-
-      const children = args || [];
-      const attrsString = Object.keys(attrs).map(attr => {
-        if (attr[0] === '_') {
-          if (attrs[attr]) return attr.replace('_', '');
-          return '';
-        }
-
-        return `${attr}="${attrs[attr]}"`;
-      }).filter(attr => !!attr).join(' ');
-
-      if (['path', 'img', 'circle', 'polygon', 'line', 'input'].indexOf(tag) >= 0) {
-        return `<${tag} ${attrsString} />`.trim();
-      }
-
-      const childrenContent = children.filter(c => !!c).map(c => Array.isArray(c) ? c.join('') : c).join('');
-      return `<${tag} ${attrsString}>${childrenContent}</${tag}>`.trim();
-    };
-
     class Dialog$1 extends Modal$1 {
       constructor(app, params) {
         const extendedParams = extend$1({
@@ -14812,20 +14814,20 @@
           let buttonsHTML = '';
 
           if (buttons.length > 0) {
-            buttonsHTML = $jsx("div", {
+            buttonsHTML = $jsx$1("div", {
               class: "dialog-buttons"
-            }, buttons.map(button => $jsx("span", {
+            }, buttons.map(button => $jsx$1("span", {
               class: `dialog-button${button.bold ? ' dialog-button-bold' : ''}${button.color ? ` color-${button.color}` : ''}${button.cssClass ? ` ${button.cssClass}` : ''}`
             }, button.text)));
           }
 
-          const dialogHtml = $jsx("div", {
+          const dialogHtml = $jsx$1("div", {
             class: dialogClasses.join(' ')
-          }, $jsx("div", {
+          }, $jsx$1("div", {
             class: "dialog-inner"
-          }, title && $jsx("div", {
+          }, title && $jsx$1("div", {
             class: "dialog-title"
-          }, title), text && $jsx("div", {
+          }, title), text && $jsx$1("div", {
             class: "dialog-text"
           }, text), content), buttonsHTML);
           $el = $(dialogHtml);
@@ -16458,9 +16460,9 @@
           groups
         } = actions;
         const cssClass = actions.params.cssClass;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `actions-modal${actions.params.grid ? ' actions-grid' : ''} ${cssClass || ''}`
-        }, groups.map(group => $jsx("div", {
+        }, groups.map(group => $jsx$1("div", {
           class: "actions-group"
         }, group.map(button => {
           const buttonClasses = [`actions-${button.label ? 'label' : 'button'}`];
@@ -16479,16 +16481,16 @@
           if (disabled) buttonClasses.push('disabled');
 
           if (label) {
-            return $jsx("div", {
+            return $jsx$1("div", {
               class: buttonClasses.join(' ')
             }, text);
           }
 
-          return $jsx("div", {
+          return $jsx$1("div", {
             class: buttonClasses.join(' ')
-          }, icon && $jsx("div", {
+          }, icon && $jsx$1("div", {
             class: "actions-button-media"
-          }, icon), $jsx("div", {
+          }, icon), $jsx$1("div", {
             class: "actions-button-text"
           }, text));
         }))));
@@ -16501,13 +16503,13 @@
           groups
         } = actions;
         const cssClass = actions.params.cssClass;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `popover popover-from-actions ${cssClass || ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "popover-inner"
-        }, groups.map(group => $jsx("div", {
+        }, groups.map(group => $jsx$1("div", {
           class: "list"
-        }, $jsx("ul", null, group.map(button => {
+        }, $jsx$1("ul", null, group.map(button => {
           const itemClasses = [];
           const {
             color,
@@ -16530,19 +16532,19 @@
 
           if (icon) {
             itemClasses.push('item-link item-content');
-            return $jsx("li", null, $jsx("a", {
+            return $jsx$1("li", null, $jsx$1("a", {
               class: itemClasses.join(' ')
-            }, $jsx("div", {
+            }, $jsx$1("div", {
               class: "item-media"
-            }, icon), $jsx("div", {
+            }, icon), $jsx$1("div", {
               class: "item-inner"
-            }, $jsx("div", {
+            }, $jsx$1("div", {
               class: "item-title"
             }, text))));
           }
 
           itemClasses.push('list-button');
-          return $jsx("li", null, $jsx("a", {
+          return $jsx$1("li", null, $jsx$1("a", {
             class: itemClasses.join(' ')
           }, text));
         }))))));
@@ -17331,15 +17333,15 @@
           closeButtonText
         } = toast.params;
         const horizontalClass = position === 'top' || position === 'bottom' ? `toast-horizontal-${horizontalPosition}` : '';
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `toast toast-${position} ${horizontalClass} ${cssClass || ''} ${icon ? 'toast-with-icon' : ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "toast-content"
-        }, icon && $jsx("div", {
+        }, icon && $jsx$1("div", {
           class: "toast-icon"
-        }, icon), $jsx("div", {
+        }, icon), $jsx$1("div", {
           class: "toast-text"
-        }, text), closeButton && !icon && $jsx("a", {
+        }, text), closeButton && !icon && $jsx$1("a", {
           class: `toast-button button ${closeButtonColor ? `color-${closeButtonColor}` : ''}`
         }, closeButtonText)));
       }
@@ -20310,7 +20312,7 @@
           if (!panel.opened) {
             panel.insertToRoot();
             $el.addClass('panel-in-swipe');
-            $backdropEl.css('visibility', 'visible');
+            if ($backdropEl) $backdropEl.css('visibility', 'visible');
             $el.trigger('panel:swipeopen');
             panel.emit('local::swipeOpen panelSwipeOpen', panel);
           }
@@ -20362,7 +20364,7 @@
         if (effect === 'reveal') {
           if (!params.swipeNoFollow) {
             $viewEl.transform(`translate3d(${translate}px,0,0)`).transition(0);
-            $backdropEl.transform(`translate3d(${translate}px,0,0)`).transition(0);
+            if ($backdropEl) $backdropEl.transform(`translate3d(${translate}px,0,0)`).transition(0);
           }
 
           $el.trigger('panel:swipe', Math.abs(translate / panelWidth));
@@ -20371,17 +20373,24 @@
           if (side === 'left') translate -= panelWidth;
 
           if (!params.swipeNoFollow) {
-            $backdropEl.transition(0);
             backdropOpacity = 1 - Math.abs(translate / panelWidth);
-            $backdropEl.css({
-              opacity: backdropOpacity
-            });
+
+            if ($backdropEl) {
+              $backdropEl.transition(0);
+              $backdropEl.css({
+                opacity: backdropOpacity
+              });
+            }
+
             $el.transform(`translate3d(${translate}px,0,0)`).transition(0);
 
             if (effect === 'push') {
               const viewTranslate = side === 'left' ? translate + panelWidth : translate - panelWidth;
               $viewEl.transform(`translate3d(${viewTranslate}px,0,0)`).transition(0);
-              $backdropEl.transform(`translate3d(${viewTranslate}px,0,0)`).transition(0);
+
+              if ($backdropEl) {
+                $backdropEl.transform(`translate3d(${viewTranslate}px,0,0)`).transition(0);
+              }
             }
           }
 
@@ -20495,10 +20504,13 @@
         }
 
         $el.transition('').transform('');
-        $backdropEl.transform('').transition('').css({
-          opacity: '',
-          visibility: ''
-        });
+
+        if ($backdropEl) {
+          $backdropEl.transform('').transition('').css({
+            opacity: '',
+            visibility: ''
+          });
+        }
       }
 
       function handleGestureStart(e) {
@@ -25119,21 +25131,21 @@
       renderSearchbar() {
         const ss = this;
         if (ss.params.renderSearchbar) return ss.params.renderSearchbar.call(ss);
-        return $jsx("form", {
+        return $jsx$1("form", {
           class: "searchbar"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "searchbar-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "searchbar-input-wrap"
-        }, $jsx("input", {
+        }, $jsx$1("input", {
           type: "search",
           spellcheck: ss.params.searchbarSpellcheck || 'false',
           placeholder: ss.params.searchbarPlaceholder
-        }), $jsx("i", {
+        }), $jsx$1("i", {
           class: "searchbar-icon"
-        }), $jsx("span", {
+        }), $jsx$1("span", {
           class: "input-clear-button"
-        })), ss.params.searchbarDisableButton && $jsx("span", {
+        })), ss.params.searchbarDisableButton && $jsx$1("span", {
           class: "searchbar-disable-button"
         }, ss.params.searchbarDisableText)));
       }
@@ -25195,26 +25207,26 @@
           const hasIcon = icon || iconIos || iconMd || iconAurora;
           const iconContent = getIconContent(icon || iconIos || iconMd || iconAurora || '');
           const iconClass = getIconClass(icon || iconIos || iconMd || iconAurora || '');
-          itemHtml = $jsx("li", {
+          itemHtml = $jsx$1("li", {
             class: `${item.className || ''}${disabled ? ' disabled' : ''}`
-          }, $jsx("label", {
+          }, $jsx$1("label", {
             class: `item-${item.inputType} item-content`
-          }, $jsx("input", {
+          }, $jsx$1("input", {
             type: item.inputType,
             name: item.inputName,
             value: item.value,
             _checked: selected
-          }), $jsx("i", {
+          }), $jsx$1("i", {
             class: `icon icon-${item.inputType}`
-          }), item.hasMedia && $jsx("div", {
+          }), item.hasMedia && $jsx$1("div", {
             class: "item-media"
-          }, hasIcon && $jsx("i", {
+          }, hasIcon && $jsx$1("i", {
             class: `icon ${iconClass}`
-          }, iconContent), item.image && $jsx("img", {
+          }, iconContent), item.image && $jsx$1("img", {
             src: item.image
-          })), $jsx("div", {
+          })), $jsx$1("div", {
             class: "item-inner"
-          }, $jsx("div", {
+          }, $jsx$1("div", {
             class: `item-title${item.color ? ` text-color-${item.color}` : ''}`
           }, item.text))));
         }
@@ -25242,35 +25254,35 @@
         }
 
         const cssClass = ss.params.cssClass;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `page smart-select-page ${cssClass}`,
           "data-name": "smart-select-page",
           "data-select-name": ss.selectName
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `navbar ${ss.params.navbarColorTheme ? `color-${ss.params.navbarColorTheme}` : ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "navbar-bg"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: `navbar-inner sliding ${ss.params.navbarColorTheme ? `color-${ss.params.navbarColorTheme}` : ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "left"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link back"
-        }, $jsx("i", {
+        }, $jsx$1("i", {
           class: "icon icon-back"
-        }), $jsx("span", {
+        }), $jsx$1("span", {
           class: "if-not-md"
-        }, ss.params.pageBackLinkText))), pageTitle && $jsx("div", {
+        }, ss.params.pageBackLinkText))), pageTitle && $jsx$1("div", {
           class: "title"
-        }, pageTitle), ss.params.searchbar && $jsx("div", {
+        }, pageTitle), ss.params.searchbar && $jsx$1("div", {
           class: "subnavbar"
-        }, ss.renderSearchbar()))), ss.params.searchbar && $jsx("div", {
+        }, ss.renderSearchbar()))), ss.params.searchbar && $jsx$1("div", {
           class: "searchbar-backdrop"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: "page-content"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `list smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
-        }, $jsx("ul", null, !ss.params.virtualList && ss.renderItems(ss.items)))));
+        }, $jsx$1("ul", null, !ss.params.virtualList && ss.renderItems(ss.items)))));
       }
 
       renderPopup() {
@@ -25284,36 +25296,36 @@
         }
 
         const cssClass = ss.params.cssClass || '';
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `popup smart-select-popup ${cssClass} ${ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : ''}`,
           "data-select-name": ss.selectName
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "view"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `page smart-select-page ${ss.params.searchbar ? 'page-with-subnavbar' : ''}`,
           "data-name": "smart-select-page"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `navbar ${ss.params.navbarColorTheme ? `color-${ss.params.navbarColorTheme}` : ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "navbar-bg"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: "navbar-inner sliding"
-        }, pageTitle && $jsx("div", {
+        }, pageTitle && $jsx$1("div", {
           class: "title"
-        }, pageTitle), $jsx("div", {
+        }, pageTitle), $jsx$1("div", {
           class: "right"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link popup-close",
           "data-popup": `.smart-select-popup[data-select-name='${ss.selectName}']`
-        }, ss.params.popupCloseLinkText)), ss.params.searchbar && $jsx("div", {
+        }, ss.params.popupCloseLinkText)), ss.params.searchbar && $jsx$1("div", {
           class: "subnavbar"
-        }, ss.renderSearchbar()))), ss.params.searchbar && $jsx("div", {
+        }, ss.renderSearchbar()))), ss.params.searchbar && $jsx$1("div", {
           class: "searchbar-backdrop"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: "page-content"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `list smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
-        }, $jsx("ul", null, !ss.params.virtualList && ss.renderItems(ss.items)))))));
+        }, $jsx$1("ul", null, !ss.params.virtualList && ss.renderItems(ss.items)))))));
       }
 
       renderSheet() {
@@ -25321,26 +25333,26 @@
         if (ss.params.renderSheet) return ss.params.renderSheet.call(ss, ss.items);
         const cssClass = ss.params.cssClass; // prettier-ignore
 
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `sheet-modal smart-select-sheet ${cssClass}`,
           "data-select-name": ss.selectName
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `toolbar toolbar-top ${ss.params.toolbarColorTheme ? `color-${ss.params.toolbarColorTheme}` : ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "toolbar-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "left"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: "right"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link sheet-close"
-        }, ss.params.sheetCloseLinkText)))), $jsx("div", {
+        }, ss.params.sheetCloseLinkText)))), $jsx$1("div", {
           class: "sheet-modal-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "page-content"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `list smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
-        }, $jsx("ul", null, !ss.params.virtualList && ss.renderItems(ss.items))))));
+        }, $jsx$1("ul", null, !ss.params.virtualList && ss.renderItems(ss.items))))));
       }
 
       renderPopover() {
@@ -25348,14 +25360,14 @@
         if (ss.params.renderPopover) return ss.params.renderPopover.call(ss, ss.items);
         const cssClass = ss.params.cssClass; // prettier-ignore
 
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `popover smart-select-popover ${cssClass}`,
           "data-select-name": ss.selectName
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "popover-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `list smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
-        }, $jsx("ul", null, !ss.params.virtualList && ss.renderItems(ss.items)))));
+        }, $jsx$1("ul", null, !ss.params.virtualList && ss.renderItems(ss.items)))));
       }
 
       scrollToSelectedItem() {
@@ -27289,7 +27301,7 @@
           return calendar.params.renderMonths.call(calendar, date);
         }
 
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "calendar-months-wrapper"
         }, calendar.renderMonth(date, 'prev'), calendar.renderMonth(date), calendar.renderMonth(date, 'next'));
       }
@@ -27511,7 +27523,7 @@
           weekDaysHtml += `<div class="calendar-week-day">${dayName}</div>`;
         }
 
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "calendar-week-header"
         }, weekDaysHtml);
       }
@@ -27523,19 +27535,19 @@
           return calendar.params.renderMonthSelector.call(calendar);
         }
 
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "calendar-month-selector"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link icon-only calendar-prev-month-button"
-        }, $jsx("i", {
+        }, $jsx$1("i", {
           class: "icon icon-prev"
-        })), calendar.params.monthPicker ? $jsx("a", {
+        })), calendar.params.monthPicker ? $jsx$1("a", {
           class: "current-month-value link"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "current-month-value"
-        }), $jsx("a", {
+        }), $jsx$1("a", {
           class: "link icon-only calendar-next-month-button"
-        }, $jsx("i", {
+        }, $jsx$1("i", {
           class: "icon icon-next"
         })));
       }
@@ -27547,19 +27559,19 @@
           return calendar.params.renderYearSelector.call(calendar);
         }
 
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "calendar-year-selector"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link icon-only calendar-prev-year-button"
-        }, $jsx("i", {
+        }, $jsx$1("i", {
           class: "icon icon-prev"
-        })), calendar.params.yearPicker ? $jsx("a", {
+        })), calendar.params.yearPicker ? $jsx$1("a", {
           class: "current-year-value link"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "current-year-value"
-        }), $jsx("a", {
+        }), $jsx$1("a", {
           class: "link icon-only calendar-next-year-button"
-        }, $jsx("i", {
+        }, $jsx$1("i", {
           class: "icon icon-next"
         })));
       } // eslint-disable-next-line
@@ -27570,9 +27582,9 @@
         const value = calendar.value && calendar.value[0];
         let timeString;
         if (value) timeString = calendar.timeSelectorFormatter(value);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "calendar-time-selector"
-        }, $jsx("span", null, calendar.params.timePickerLabel), $jsx("a", {
+        }, $jsx$1("span", null, calendar.params.timePickerLabel), $jsx$1("a", {
           class: "link"
         }, timeString || calendar.params.timePickerPlaceholder));
       }
@@ -27584,9 +27596,9 @@
           return calendar.params.renderHeader.call(calendar);
         }
 
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "calendar-header"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "calendar-selected-date"
         }, calendar.params.headerPlaceholder));
       }
@@ -27599,9 +27611,9 @@
           return calendar.params.renderFooter.call(calendar);
         }
 
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "calendar-footer"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: `${app.theme === 'md' ? 'button' : 'link'} calendar-close sheet-close popover-close`
         }, calendar.params.toolbarCloseText));
       }
@@ -27614,9 +27626,9 @@
         } // prettier-ignore
 
 
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "toolbar toolbar-top no-shadow"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "toolbar-inner"
         }, calendar.params.monthSelector ? calendar.renderMonthSelector() : '', calendar.params.yearSelector ? calendar.renderYearSelector() : ''));
       } // eslint-disable-next-line
@@ -27637,9 +27649,9 @@
           hasTimePicker
         } = calendar;
         const date = value && value.length ? value[0] : new Date().setHours(0, 0, 0);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `calendar calendar-inline ${rangePicker ? 'calendar-range' : ''} ${cssClass || ''}`
-        }, header && calendar.renderHeader(), toolbar && calendar.renderToolbar(), weekHeader && calendar.renderWeekHeader(), $jsx("div", {
+        }, header && calendar.renderHeader(), toolbar && calendar.renderToolbar(), weekHeader && calendar.renderWeekHeader(), $jsx$1("div", {
           class: "calendar-months"
         }, calendar.renderMonths(date)), hasTimePicker && calendar.renderTimeSelector(), footer && calendar.renderFooter());
       }
@@ -27659,9 +27671,9 @@
           hasTimePicker
         } = calendar;
         const date = value && value.length ? value[0] : new Date().setHours(0, 0, 0);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `calendar calendar-modal ${rangePicker ? 'calendar-range' : ''} ${cssClass || ''}`
-        }, header && calendar.renderHeader(), toolbar && calendar.renderToolbar(), weekHeader && calendar.renderWeekHeader(), $jsx("div", {
+        }, header && calendar.renderHeader(), toolbar && calendar.renderToolbar(), weekHeader && calendar.renderWeekHeader(), $jsx$1("div", {
           class: "calendar-months"
         }, calendar.renderMonths(date)), hasTimePicker && calendar.renderTimeSelector(), footer && calendar.renderFooter());
       }
@@ -27681,9 +27693,9 @@
           hasTimePicker
         } = calendar;
         const date = value && value.length ? value[0] : new Date().setHours(0, 0, 0);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `sheet-modal calendar calendar-sheet ${rangePicker ? 'calendar-range' : ''} ${cssClass || ''}`
-        }, header && calendar.renderHeader(), toolbar && calendar.renderToolbar(), weekHeader && calendar.renderWeekHeader(), $jsx("div", {
+        }, header && calendar.renderHeader(), toolbar && calendar.renderToolbar(), weekHeader && calendar.renderWeekHeader(), $jsx$1("div", {
           class: "sheet-modal-inner calendar-months"
         }, calendar.renderMonths(date)), hasTimePicker && calendar.renderTimeSelector(), footer && calendar.renderFooter());
       }
@@ -27703,13 +27715,13 @@
           hasTimePicker
         } = calendar;
         const date = value && value.length ? value[0] : new Date().setHours(0, 0, 0);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "popover calendar-popover"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "popover-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `calendar ${rangePicker ? 'calendar-range' : ''} ${cssClass || ''}`
-        }, header && calendar.renderHeader(), toolbar && calendar.renderToolbar(), weekHeader && calendar.renderWeekHeader(), $jsx("div", {
+        }, header && calendar.renderHeader(), toolbar && calendar.renderToolbar(), weekHeader && calendar.renderWeekHeader(), $jsx$1("div", {
           class: "calendar-months"
         }, calendar.renderMonths(date)), hasTimePicker && calendar.renderTimeSelector(), footer && calendar.renderFooter())));
       }
@@ -28837,15 +28849,15 @@
       renderToolbar() {
         const picker = this;
         if (picker.params.renderToolbar) return picker.params.renderToolbar.call(picker, picker);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "toolbar toolbar-top no-shadow"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "toolbar-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "left"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: "right"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link sheet-close popover-close"
         }, picker.params.toolbarCloseText))));
       } // eslint-disable-next-line
@@ -28886,11 +28898,11 @@
           cssClass,
           toolbar
         } = picker.params;
-        const inlineHtml = $jsx("div", {
+        const inlineHtml = $jsx$1("div", {
           class: `picker picker-inline ${rotateEffect ? 'picker-3d' : ''} ${cssClass || ''}`
-        }, toolbar && picker.renderToolbar(), $jsx("div", {
+        }, toolbar && picker.renderToolbar(), $jsx$1("div", {
           class: "picker-columns"
-        }, picker.cols.map(col => picker.renderColumn(col)), $jsx("div", {
+        }, picker.cols.map(col => picker.renderColumn(col)), $jsx$1("div", {
           class: "picker-center-highlight"
         })));
         return inlineHtml;
@@ -28903,11 +28915,11 @@
           cssClass,
           toolbar
         } = picker.params;
-        const sheetHtml = $jsx("div", {
+        const sheetHtml = $jsx$1("div", {
           class: `sheet-modal picker picker-sheet ${rotateEffect ? 'picker-3d' : ''} ${cssClass || ''}`
-        }, toolbar && picker.renderToolbar(), $jsx("div", {
+        }, toolbar && picker.renderToolbar(), $jsx$1("div", {
           class: "sheet-modal-inner picker-columns"
-        }, picker.cols.map(col => picker.renderColumn(col)), $jsx("div", {
+        }, picker.cols.map(col => picker.renderColumn(col)), $jsx$1("div", {
           class: "picker-center-highlight"
         })));
         return sheetHtml;
@@ -28920,15 +28932,15 @@
           cssClass,
           toolbar
         } = picker.params;
-        const popoverHtml = $jsx("div", {
+        const popoverHtml = $jsx$1("div", {
           class: "popover picker-popover"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "popover-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `picker ${rotateEffect ? 'picker-3d' : ''} ${cssClass || ''}`
-        }, toolbar && picker.renderToolbar(), $jsx("div", {
+        }, toolbar && picker.renderToolbar(), $jsx$1("div", {
           class: "picker-columns"
-        }, picker.cols.map(col => picker.renderColumn(col)), $jsx("div", {
+        }, picker.cols.map(col => picker.renderColumn(col)), $jsx$1("div", {
           class: "picker-center-highlight"
         })))));
         return popoverHtml;
@@ -30454,9 +30466,9 @@
         table.$el.find('tbody td:not(.checkbox-cell)').each(el => {
           const $el = $(el);
           const elIndex = $el.index();
-          const collpsibleTitle = $el.attr('data-collapsible-title');
+          const collapsibleTitle = $el.attr('data-collapsible-title');
 
-          if (!collpsibleTitle && collpsibleTitle !== '') {
+          if (!collapsibleTitle && collapsibleTitle !== '') {
             $el.attr('data-collapsible-title', table.$el.find('thead th').eq(elIndex).text());
           }
         });
@@ -33652,34 +33664,34 @@
           return `<div class="messages-title">${message.text}</div>`;
         }
 
-        return $jsx("div", _extends({
+        return $jsx$1("div", _extends({
           class: `message message-${message.type} ${message.isTyping ? 'message-typing' : ''} ${message.cssClass || ''}`
-        }, message.attrs), message.avatar && $jsx("div", {
+        }, message.attrs), message.avatar && $jsx$1("div", {
           class: "message-avatar",
           style: `background-image:url(${message.avatar})`
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: "message-content"
-        }, message.name && $jsx("div", {
+        }, message.name && $jsx$1("div", {
           class: "message-name"
-        }, message.name), message.header && $jsx("div", {
+        }, message.name), message.header && $jsx$1("div", {
           class: "message-header"
-        }, message.header), $jsx("div", {
+        }, message.header), $jsx$1("div", {
           class: "message-bubble"
-        }, message.textHeader && $jsx("div", {
+        }, message.textHeader && $jsx$1("div", {
           class: "message-text-header"
-        }, message.textHeader), message.image && $jsx("div", {
+        }, message.textHeader), message.image && $jsx$1("div", {
           class: "message-image"
-        }, message.image), message.imageSrc && !message.image && $jsx("div", {
+        }, message.image), message.imageSrc && !message.image && $jsx$1("div", {
           class: "message-image"
-        }, $jsx("img", {
+        }, $jsx$1("img", {
           src: message.imageSrc
-        })), (message.text || message.isTyping) && $jsx("div", {
+        })), (message.text || message.isTyping) && $jsx$1("div", {
           class: "message-text"
-        }, message.text || '', message.isTyping && $jsx("div", {
+        }, message.text || '', message.isTyping && $jsx$1("div", {
           class: "message-typing-indicator"
-        }, $jsx("div", null), $jsx("div", null), $jsx("div", null))), message.textFooter && $jsx("div", {
+        }, $jsx$1("div", null), $jsx$1("div", null), $jsx$1("div", null))), message.textFooter && $jsx$1("div", {
           class: "message-text-footer"
-        }, message.textFooter)), message.footer && $jsx("div", {
+        }, message.textFooter)), message.footer && $jsx$1("div", {
           class: "message-footer"
         }, message.footer)));
       }
@@ -44527,32 +44539,32 @@
         const pageBackLinkText = (pb.app.theme === 'ios' || pb.app.theme === 'aurora') && pb.params.pageBackLinkText ? pb.params.pageBackLinkText : '';
         const renderNavbarCount = typeof pb.params.navbarShowCount === 'undefined' ? pb.params.photos.length > 1 : pb.params.navbarShowCount;
         const isPopup = pb.params.type !== 'page';
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `navbar navbar-photo-browser ${pb.params.theme === 'dark' ? 'navbar-photo-browser-dark' : ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "navbar-bg"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: "navbar-inner navbar-inner-centered-title sliding"
-        }, !isPopup && $jsx("div", {
+        }, !isPopup && $jsx$1("div", {
           class: "left"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: `link ${!pageBackLinkText ? 'icon-only' : ''} back`
-        }, $jsx("i", {
+        }, $jsx$1("i", {
           class: `icon icon-back ${iconsColor ? `color-${iconsColor}` : ''}`
-        }), pageBackLinkText && $jsx("span", null, pageBackLinkText))), renderNavbarCount && $jsx("div", {
+        }), pageBackLinkText && $jsx$1("span", null, pageBackLinkText))), renderNavbarCount && $jsx$1("div", {
           class: "title"
-        }, $jsx("span", {
+        }, $jsx$1("span", {
           class: "photo-browser-current"
-        }), $jsx("span", {
+        }), $jsx$1("span", {
           class: "photo-browser-of"
-        }, pb.params.navbarOfText), $jsx("span", {
+        }, pb.params.navbarOfText), $jsx$1("span", {
           class: "photo-browser-total"
-        })), isPopup && $jsx("div", {
+        })), isPopup && $jsx$1("div", {
           class: "right"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link popup-close",
           "data-popup": ".photo-browser-popup"
-        }, $jsx("span", null, pb.params.popupCloseLinkText)))));
+        }, $jsx$1("span", null, pb.params.popupCloseLinkText)))));
       }
 
       renderToolbar() {
@@ -44560,17 +44572,17 @@
         if (pb.params.renderToolbar) return pb.params.renderToolbar.call(pb);
         let iconsColor = pb.params.iconsColor;
         if (!pb.params.iconsColor && pb.params.theme === 'dark') iconsColor = 'white';
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "toolbar toolbar-bottom tabbar"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "toolbar-inner"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link photo-browser-prev"
-        }, $jsx("i", {
+        }, $jsx$1("i", {
           class: `icon icon-back ${iconsColor ? `color-${iconsColor}` : ''}`
-        })), $jsx("a", {
+        })), $jsx$1("a", {
           class: "link photo-browser-next"
-        }, $jsx("i", {
+        }, $jsx$1("i", {
           class: `icon icon-forward ${iconsColor ? `color-${iconsColor}` : ''}`
         }))));
       }
@@ -44578,7 +44590,7 @@
       renderCaption(caption, index) {
         const pb = this;
         if (pb.params.renderCaption) return pb.params.renderCaption.call(pb, caption, index);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "photo-browser-caption",
           "data-caption-index": index
         }, caption);
@@ -44587,7 +44599,7 @@
       renderObject(photo, index) {
         const pb = this;
         if (pb.params.renderObject) return pb.params.renderObject.call(pb, photo, index);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "photo-browser-slide photo-browser-object-slide swiper-slide",
           "data-swiper-slide-index": index
         }, photo.html ? photo.html : photo);
@@ -44596,14 +44608,14 @@
       renderLazyPhoto(photo, index) {
         const pb = this;
         if (pb.params.renderLazyPhoto) return pb.params.renderLazyPhoto.call(pb, photo, index);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "photo-browser-slide photo-browser-slide-lazy swiper-slide",
           "data-swiper-slide-index": index
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "swiper-lazy-preloader"
-        }), $jsx("span", {
+        }), $jsx$1("span", {
           class: "swiper-zoom-container"
-        }, $jsx("img", {
+        }, $jsx$1("img", {
           "data-src": photo.url ? photo.url : photo,
           class: "swiper-lazy"
         })));
@@ -44612,12 +44624,12 @@
       renderPhoto(photo, index) {
         const pb = this;
         if (pb.params.renderPhoto) return pb.params.renderPhoto.call(pb, photo, index);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "photo-browser-slide swiper-slide",
           "data-swiper-slide-index": index
-        }, $jsx("span", {
+        }, $jsx$1("span", {
           class: "swiper-zoom-container"
-        }, $jsx("img", {
+        }, $jsx$1("img", {
           src: photo.url ? photo.url : photo
         })));
       }
@@ -44625,21 +44637,21 @@
       render() {
         const pb = this;
         if (pb.params.render) return pb.params.render.call(pb, pb.params);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `photo-browser photo-browser-${pb.params.theme}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "view"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `page photo-browser-page photo-browser-page-${pb.params.theme} no-toolbar ${!pb.params.navbar ? 'no-navbar' : ''}`,
           "data-name": "photo-browser-page"
-        }, pb.params.navbar && pb.renderNavbar(), pb.params.toolbar && pb.renderToolbar(), $jsx("div", {
+        }, pb.params.navbar && pb.renderNavbar(), pb.params.toolbar && pb.renderToolbar(), $jsx$1("div", {
           class: `photo-browser-captions photo-browser-captions-${pb.params.captionsTheme || pb.params.theme}`
         }, pb.params.photos.map((photo, index) => {
           if (photo.caption) return pb.renderCaption(photo.caption, index);
           return '';
-        })), $jsx("div", {
+        })), $jsx$1("div", {
           class: "photo-browser-swiper-container swiper"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "photo-browser-swiper-wrapper swiper-wrapper"
         }, !pb.params.virtualSlides && pb.params.photos.map((photo, index) => {
           if (photo.html || (typeof photo === 'string' || photo instanceof String) && photo.indexOf('<') >= 0 && photo.indexOf('>') >= 0) {
@@ -45402,23 +45414,23 @@
           closeButton,
           cssClass
         } = notification.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `notification ${cssClass || ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "notification-header"
-        }, icon && $jsx("div", {
+        }, icon && $jsx$1("div", {
           class: "notification-icon"
-        }, icon), title && $jsx("div", {
+        }, icon), title && $jsx$1("div", {
           class: "notification-title"
-        }, title), titleRightText && $jsx("div", {
+        }, title), titleRightText && $jsx$1("div", {
           class: "notification-title-right-text"
-        }, titleRightText), closeButton && $jsx("span", {
+        }, titleRightText), closeButton && $jsx$1("span", {
           class: "notification-close-button"
-        })), $jsx("div", {
+        })), $jsx$1("div", {
           class: "notification-content"
-        }, subtitle && $jsx("div", {
+        }, subtitle && $jsx$1("div", {
           class: "notification-subtitle"
-        }, subtitle), text && $jsx("div", {
+        }, subtitle), text && $jsx$1("div", {
           class: "notification-text"
         }, text)));
       }
@@ -45977,7 +45989,7 @@
           mdPreloaderContent,
           auroraPreloaderContent
         };
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `autocomplete-preloader preloader ${ac.params.preloaderColor ? `color-${ac.params.preloaderColor}` : ''}`
         }, preloaders[`${ac.app.theme}PreloaderContent`] || '');
       }
@@ -45985,21 +45997,21 @@
       renderSearchbar() {
         const ac = this;
         if (ac.params.renderSearchbar) return ac.params.renderSearchbar.call(ac);
-        return $jsx("form", {
+        return $jsx$1("form", {
           class: "searchbar"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "searchbar-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "searchbar-input-wrap"
-        }, $jsx("input", {
+        }, $jsx$1("input", {
           type: "search",
           spellcheck: ac.params.searchbarSpellcheck || 'false',
           placeholder: ac.params.searchbarPlaceholder
-        }), $jsx("i", {
+        }), $jsx$1("i", {
           class: "searchbar-icon"
-        }), $jsx("span", {
+        }), $jsx$1("span", {
           class: "input-clear-button"
-        })), ac.params.searchbarDisableButton && $jsx("span", {
+        })), ac.params.searchbarDisableButton && $jsx$1("span", {
           class: "searchbar-disable-button"
         }, ac.params.searchbarDisableText)));
       }
@@ -46010,42 +46022,42 @@
         const itemValue = item.value && typeof item.value === 'string' ? item.value.replace(/"/g, '&quot;') : item.value;
 
         if (ac.params.openIn !== 'dropdown') {
-          return $jsx("li", null, $jsx("label", {
+          return $jsx$1("li", null, $jsx$1("label", {
             class: `item-${item.inputType} item-content`
-          }, $jsx("input", {
+          }, $jsx$1("input", {
             type: item.inputType,
             name: item.inputName,
             value: itemValue,
             _checked: item.selected
-          }), $jsx("i", {
+          }), $jsx$1("i", {
             class: `icon icon-${item.inputType}`
-          }), $jsx("div", {
+          }), $jsx$1("div", {
             class: "item-inner"
-          }, $jsx("div", {
+          }, $jsx$1("div", {
             class: "item-title"
           }, item.text))));
         } // Dropdown
 
 
         if (!item.placeholder) {
-          return $jsx("li", null, $jsx("label", {
+          return $jsx$1("li", null, $jsx$1("label", {
             class: "item-radio item-content",
             "data-value": itemValue
-          }, $jsx("div", {
+          }, $jsx$1("div", {
             class: "item-inner"
-          }, $jsx("div", {
+          }, $jsx$1("div", {
             class: "item-title"
           }, item.text))));
         } // Dropwdown placeholder
 
 
-        return $jsx("li", {
+        return $jsx$1("li", {
           class: "autocomplete-dropdown-placeholder"
-        }, $jsx("label", {
+        }, $jsx$1("label", {
           class: "item-content"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "item-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "item-title"
         }, item.text))));
       }
@@ -46061,34 +46073,34 @@
 
         const inPopup = ac.params.openIn === 'popup'; // eslint-disable-next-line
 
-        const navbarLeft = inPopup ? ac.params.preloader && $jsx("div", {
+        const navbarLeft = inPopup ? ac.params.preloader && $jsx$1("div", {
           class: "left"
-        }, ac.renderPreloader()) : $jsx("div", {
+        }, ac.renderPreloader()) : $jsx$1("div", {
           class: "left sliding"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link back"
-        }, $jsx("i", {
+        }, $jsx$1("i", {
           class: "icon icon-back"
-        }), $jsx("span", {
+        }), $jsx$1("span", {
           class: "if-not-md"
         }, ac.params.pageBackLinkText)));
-        const navbarRight = inPopup ? $jsx("div", {
+        const navbarRight = inPopup ? $jsx$1("div", {
           class: "right"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link popup-close",
           "data-popup": ".autocomplete-popup"
-        }, ac.params.popupCloseLinkText)) : ac.params.preloader && $jsx("div", {
+        }, ac.params.popupCloseLinkText)) : ac.params.preloader && $jsx$1("div", {
           class: "right"
         }, ac.renderPreloader());
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `navbar ${ac.params.navbarColorTheme ? `color-${ac.params.navbarColorTheme}` : ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "navbar-bg"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: `navbar-inner ${ac.params.navbarColorTheme ? `color-${ac.params.navbarColorTheme}` : ''}`
-        }, navbarLeft, pageTitle && $jsx("div", {
+        }, navbarLeft, pageTitle && $jsx$1("div", {
           class: "title sliding"
-        }, pageTitle), navbarRight, $jsx("div", {
+        }, pageTitle), navbarRight, $jsx$1("div", {
           class: "subnavbar sliding"
         }, ac.renderSearchbar())));
       }
@@ -46096,46 +46108,46 @@
       renderDropdown() {
         const ac = this;
         if (ac.params.renderDropdown) return ac.params.renderDropdown.call(ac, ac.items);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "autocomplete-dropdown"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "autocomplete-dropdown-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `list ${!ac.params.expandInput ? 'no-safe-areas' : ''}`
-        }, $jsx("ul", null))), ac.params.preloader && ac.renderPreloader());
+        }, $jsx$1("ul", null))), ac.params.preloader && ac.renderPreloader());
       }
 
       renderPage(inPopup) {
         const ac = this;
         if (ac.params.renderPage) return ac.params.renderPage.call(ac, ac.items);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "page page-with-subnavbar autocomplete-page",
           "data-name": "autocomplete-page"
-        }, ac.renderNavbar(inPopup), $jsx("div", {
+        }, ac.renderNavbar(inPopup), $jsx$1("div", {
           class: "searchbar-backdrop"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: "page-content"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `list autocomplete-list autocomplete-found autocomplete-list-${ac.id} ${ac.params.formColorTheme ? `color-${ac.params.formColorTheme}` : ''}`
-        }, $jsx("ul", null)), $jsx("div", {
+        }, $jsx$1("ul", null)), $jsx$1("div", {
           class: "list autocomplete-not-found"
-        }, $jsx("ul", null, $jsx("li", {
+        }, $jsx$1("ul", null, $jsx$1("li", {
           class: "item-content"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "item-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "item-title"
-        }, ac.params.notFoundText))))), $jsx("div", {
+        }, ac.params.notFoundText))))), $jsx$1("div", {
           class: "list autocomplete-values"
-        }, $jsx("ul", null))));
+        }, $jsx$1("ul", null))));
       }
 
       renderPopup() {
         const ac = this;
         if (ac.params.renderPopup) return ac.params.renderPopup.call(ac, ac.items);
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "popup autocomplete-popup"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "view"
         }, ac.renderPage(true), ";"));
       }
@@ -47089,18 +47101,18 @@
         const radius = self.calcRadius();
         const length = self.calcBorderLength();
         const progress = Math.max(Math.min(value, 1), 0);
-        return $jsx("svg", {
+        return $jsx$1("svg", {
           class: "gauge-svg",
           width: `${size}px`,
           height: `${semiCircle ? size / 2 : size}px`,
           viewBox: `0 0 ${size} ${semiCircle ? size / 2 : size}`
-        }, semiCircle && $jsx("path", {
+        }, semiCircle && $jsx$1("path", {
           class: "gauge-back-semi",
           d: `M${size - borderWidth / 2},${size / 2} a1,1 0 0,0 -${size - borderWidth},0`,
           stroke: borderBgColor,
           "stroke-width": borderWidth,
           fill: bgColor || 'none'
-        }), semiCircle && $jsx("path", {
+        }), semiCircle && $jsx$1("path", {
           class: "gauge-front-semi",
           d: `M${size - borderWidth / 2},${size / 2} a1,1 0 0,0 -${size - borderWidth},0`,
           stroke: borderColor,
@@ -47108,7 +47120,7 @@
           "stroke-dasharray": length / 2,
           "stroke-dashoffset": length / 2 * (1 + progress),
           fill: borderBgColor ? 'none' : bgColor || 'none'
-        }), !semiCircle && borderBgColor && $jsx("circle", {
+        }), !semiCircle && borderBgColor && $jsx$1("circle", {
           class: "gauge-back-circle",
           stroke: borderBgColor,
           "stroke-width": borderWidth,
@@ -47116,7 +47128,7 @@
           cx: size / 2,
           cy: size / 2,
           r: radius
-        }), !semiCircle && $jsx("circle", {
+        }), !semiCircle && $jsx$1("circle", {
           class: "gauge-front-circle",
           transform: `rotate(-90 ${size / 2} ${size / 2})`,
           stroke: borderColor,
@@ -47127,7 +47139,7 @@
           cx: size / 2,
           cy: size / 2,
           r: radius
-        }), valueText && $jsx("text", {
+        }), valueText && $jsx$1("text", {
           class: "gauge-value-text",
           x: "50%",
           y: semiCircle ? '100%' : '50%',
@@ -47137,7 +47149,7 @@
           dy: semiCircle ? labelText ? -labelFontSize - 15 : -5 : 0,
           "text-anchor": "middle",
           "dominant-baseline": !semiCircle && 'middle'
-        }, valueText), labelText && $jsx("text", {
+        }, valueText), labelText && $jsx$1("text", {
           class: "gauge-label-text",
           x: "50%",
           y: semiCircle ? '100%' : '50%',
@@ -47518,23 +47530,23 @@
           sliderValueEditable,
           alphaLabelText
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-alpha-slider"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-slider-wrap"
-        }, sliderLabel && $jsx("div", {
+        }, sliderLabel && $jsx$1("div", {
           class: "color-picker-slider-label"
-        }, alphaLabelText), $jsx("div", {
+        }, alphaLabelText), $jsx$1("div", {
           class: "range-slider color-picker-slider color-picker-slider-alpha"
-        }), sliderValue && $jsx("div", {
+        }), sliderValue && $jsx$1("div", {
           class: "color-picker-slider-value"
-        }, sliderValueEditable ? $jsx("input", {
+        }, sliderValueEditable ? $jsx$1("input", {
           type: "number",
           step: "0.01",
           min: "0",
           max: "1",
           class: "color-picker-value-alpha"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-alpha"
         }))));
       },
@@ -47615,9 +47627,9 @@
     /** @jsx $jsx */
     var moduleCurrentColor = {
       render() {
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-current-color"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-current-color"
         }));
       },
@@ -47636,18 +47648,18 @@
           hexLabelText,
           hexValueEditable
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-hex"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-hex-wrap"
-        }, hexLabel && $jsx("div", {
+        }, hexLabel && $jsx$1("div", {
           class: "color-picker-hex-label"
-        }, hexLabelText), $jsx("div", {
+        }, hexLabelText), $jsx$1("div", {
           class: "color-picker-hex-value"
-        }, hexValueEditable ? $jsx("input", {
+        }, hexValueEditable ? $jsx$1("input", {
           type: "text",
           class: "color-picker-value-hex"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-hex"
         }))));
       },
@@ -47721,58 +47733,58 @@
           saturationLabelText,
           brightnessLabelText
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-hsb-sliders"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-slider-wrap"
-        }, sliderLabel && $jsx("div", {
+        }, sliderLabel && $jsx$1("div", {
           class: "color-picker-slider-label"
-        }, hueLabelText), $jsx("div", {
+        }, hueLabelText), $jsx$1("div", {
           class: "range-slider color-picker-slider color-picker-slider-hue"
-        }), sliderValue && $jsx("div", {
+        }), sliderValue && $jsx$1("div", {
           class: "color-picker-slider-value"
-        }, sliderValueEditable ? $jsx("input", {
+        }, sliderValueEditable ? $jsx$1("input", {
           type: "number",
           step: "0.1",
           min: "0",
           max: "360",
           class: "color-picker-value-hue",
           "data-color-index": "0"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-hue"
-        }))), $jsx("div", {
+        }))), $jsx$1("div", {
           class: "color-picker-slider-wrap"
-        }, sliderLabel && $jsx("div", {
+        }, sliderLabel && $jsx$1("div", {
           class: "color-picker-slider-label"
-        }, saturationLabelText), $jsx("div", {
+        }, saturationLabelText), $jsx$1("div", {
           class: "range-slider color-picker-slider color-picker-slider-saturation"
-        }), sliderValue && $jsx("div", {
+        }), sliderValue && $jsx$1("div", {
           class: "color-picker-slider-value"
-        }, sliderValueEditable ? $jsx("input", {
+        }, sliderValueEditable ? $jsx$1("input", {
           type: "number",
           step: "0.1",
           min: "0",
           max: "100",
           class: "color-picker-value-saturation",
           "data-color-index": "1"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-saturation"
-        }))), $jsx("div", {
+        }))), $jsx$1("div", {
           class: "color-picker-slider-wrap"
-        }, sliderLabel && $jsx("div", {
+        }, sliderLabel && $jsx$1("div", {
           class: "color-picker-slider-label"
-        }, brightnessLabelText), $jsx("div", {
+        }, brightnessLabelText), $jsx$1("div", {
           class: "range-slider color-picker-slider color-picker-slider-brightness"
-        }), sliderValue && $jsx("div", {
+        }), sliderValue && $jsx$1("div", {
           class: "color-picker-slider-value"
-        }, sliderValueEditable ? $jsx("input", {
+        }, sliderValueEditable ? $jsx$1("input", {
           type: "number",
           step: "0.1",
           min: "0",
           max: "100",
           class: "color-picker-value-brightness",
           "data-color-index": "2"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-brightness"
         }))));
       },
@@ -47925,23 +47937,23 @@
           sliderValueEditable,
           hueLabelText
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-hue-slider"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-slider-wrap"
-        }, sliderLabel && $jsx("div", {
+        }, sliderLabel && $jsx$1("div", {
           class: "color-picker-slider-label"
-        }, hueLabelText), $jsx("div", {
+        }, hueLabelText), $jsx$1("div", {
           class: "range-slider color-picker-slider color-picker-slider-hue"
-        }), sliderValue && $jsx("div", {
+        }), sliderValue && $jsx$1("div", {
           class: "color-picker-slider-value"
-        }, sliderValueEditable ? $jsx("input", {
+        }, sliderValueEditable ? $jsx$1("input", {
           type: "number",
           step: "0.1",
           min: "0",
           max: "360",
           class: "color-picker-value-hue"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-hue"
         }))));
       },
@@ -48004,23 +48016,23 @@
           sliderValueEditable,
           brightnessLabelText
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-brightness-slider"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-slider-wrap"
-        }, sliderLabel && $jsx("div", {
+        }, sliderLabel && $jsx$1("div", {
           class: "color-picker-slider-label"
-        }, brightnessLabelText), $jsx("div", {
+        }, brightnessLabelText), $jsx$1("div", {
           class: "range-slider color-picker-slider color-picker-slider-brightness"
-        }), sliderValue && $jsx("div", {
+        }), sliderValue && $jsx$1("div", {
           class: "color-picker-slider-value"
-        }, sliderValueEditable ? $jsx("input", {
+        }, sliderValueEditable ? $jsx$1("input", {
           type: "number",
           step: "0.1",
           min: "0",
           max: "100",
           class: "color-picker-value-brightness"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-brightness"
         }))));
       },
@@ -48084,9 +48096,9 @@
     /* eslint indent: ["off"] */
     var modulePalette = {
       render(self) {
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-palette"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-palette"
         }, self.params.palette.map(p => {
           if (Array.isArray(p)) {
@@ -48099,7 +48111,7 @@
             return row;
           }
 
-          return $jsx("div", {
+          return $jsx$1("div", {
             class: "color-picker-palette-value",
             "data-palette-color": p,
             style: `background-color: ${p}`
@@ -48135,13 +48147,13 @@
     /** @jsx $jsx */
     var moduleInitialCurrentColors = {
       render() {
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-initial-current-colors"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-initial-current-colors"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-initial-color"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: "color-picker-current-color"
         })));
       },
@@ -48192,58 +48204,58 @@
           greenLabelText,
           blueLabelText
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-rgb-bars"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-bar-wrap"
-        }, barLabel && $jsx("div", {
+        }, barLabel && $jsx$1("div", {
           class: "color-picker-bar-label"
-        }, redLabelText), $jsx("div", {
+        }, redLabelText), $jsx$1("div", {
           class: "range-slider color-picker-bar color-picker-bar-red"
-        }), barValue && $jsx("div", {
+        }), barValue && $jsx$1("div", {
           class: "color-picker-bar-value"
-        }, barValueEditable ? $jsx("input", {
+        }, barValueEditable ? $jsx$1("input", {
           type: "number",
           step: "1",
           min: "0",
           max: "255",
           class: "color-picker-value-bar-red",
           "data-color-index": "0"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-bar-red"
-        }))), $jsx("div", {
+        }))), $jsx$1("div", {
           class: "color-picker-bar-wrap"
-        }, barLabel && $jsx("div", {
+        }, barLabel && $jsx$1("div", {
           class: "color-picker-bar-label"
-        }, greenLabelText), $jsx("div", {
+        }, greenLabelText), $jsx$1("div", {
           class: "range-slider color-picker-bar color-picker-bar-green"
-        }), barValue && $jsx("div", {
+        }), barValue && $jsx$1("div", {
           class: "color-picker-bar-value"
-        }, barValueEditable ? $jsx("input", {
+        }, barValueEditable ? $jsx$1("input", {
           type: "number",
           step: "1",
           min: "0",
           max: "255",
           class: "color-picker-value-bar-green",
           "data-color-index": "1"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-bar-green"
-        }))), $jsx("div", {
+        }))), $jsx$1("div", {
           class: "color-picker-bar-wrap"
-        }, barLabel && $jsx("div", {
+        }, barLabel && $jsx$1("div", {
           class: "color-picker-bar-label"
-        }, blueLabelText), $jsx("div", {
+        }, blueLabelText), $jsx$1("div", {
           class: "range-slider color-picker-bar color-picker-bar-blue"
-        }), barValue && $jsx("div", {
+        }), barValue && $jsx$1("div", {
           class: "color-picker-bar-value"
-        }, barValueEditable ? $jsx("input", {
+        }, barValueEditable ? $jsx$1("input", {
           type: "number",
           step: "1",
           min: "0",
           max: "255",
           class: "color-picker-value-bar-blue",
           "data-color-index": "2"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-bar-blue"
         }))));
       },
@@ -48389,58 +48401,58 @@
           greenLabelText,
           blueLabelText
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-rgb-sliders"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-slider-wrap"
-        }, sliderLabel && $jsx("div", {
+        }, sliderLabel && $jsx$1("div", {
           class: "color-picker-slider-label"
-        }, redLabelText), $jsx("div", {
+        }, redLabelText), $jsx$1("div", {
           class: "range-slider color-picker-slider color-picker-slider-red"
-        }), sliderValue && $jsx("div", {
+        }), sliderValue && $jsx$1("div", {
           class: "color-picker-slider-value"
-        }, sliderValueEditable ? $jsx("input", {
+        }, sliderValueEditable ? $jsx$1("input", {
           type: "number",
           step: "1",
           min: "0",
           max: "255",
           class: "color-picker-value-red",
           "data-color-index": "0"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-red"
-        }))), $jsx("div", {
+        }))), $jsx$1("div", {
           class: "color-picker-slider-wrap"
-        }, sliderLabel && $jsx("div", {
+        }, sliderLabel && $jsx$1("div", {
           class: "color-picker-slider-label"
-        }, greenLabelText), $jsx("div", {
+        }, greenLabelText), $jsx$1("div", {
           class: "range-slider color-picker-slider color-picker-slider-green"
-        }), sliderValue && $jsx("div", {
+        }), sliderValue && $jsx$1("div", {
           class: "color-picker-slider-value"
-        }, sliderValueEditable ? $jsx("input", {
+        }, sliderValueEditable ? $jsx$1("input", {
           type: "number",
           step: "1",
           min: "0",
           max: "255",
           class: "color-picker-value-green",
           "data-color-index": "1"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-green"
-        }))), $jsx("div", {
+        }))), $jsx$1("div", {
           class: "color-picker-slider-wrap"
-        }, sliderLabel && $jsx("div", {
+        }, sliderLabel && $jsx$1("div", {
           class: "color-picker-slider-label"
-        }, blueLabelText), $jsx("div", {
+        }, blueLabelText), $jsx$1("div", {
           class: "range-slider color-picker-slider color-picker-slider-blue"
-        }), sliderValue && $jsx("div", {
+        }), sliderValue && $jsx$1("div", {
           class: "color-picker-slider-value"
-        }, sliderValueEditable ? $jsx("input", {
+        }, sliderValueEditable ? $jsx$1("input", {
           type: "number",
           step: "1",
           min: "0",
           max: "255",
           class: "color-picker-value-blue",
           "data-color-index": "2"
-        }) : $jsx("span", {
+        }) : $jsx$1("span", {
           class: "color-picker-value-blue"
         }))));
       },
@@ -48580,12 +48592,12 @@
 
     var moduleSbSpectrum = {
       render() {
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-sb-spectrum"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-sb-spectrum",
           style: "background-color: hsl(0, 100%, 50%)"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-sb-spectrum-handle"
         })));
       },
@@ -48715,11 +48727,11 @@
 
     var moduleHsSpectrum = {
       render() {
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-hs-spectrum"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-hs-spectrum"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-hs-spectrum-handle"
         })));
       },
@@ -48861,20 +48873,20 @@
 
     var moduleWheel = {
       render() {
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "color-picker-module color-picker-module-wheel"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-wheel"
-        }, $jsx("svg", {
+        }, $jsx$1("svg", {
           viewBox: "0 0 300 300",
           width: "300",
           height: "300"
-        }, svgWheelCircles()), $jsx("div", {
+        }, svgWheelCircles()), $jsx$1("div", {
           class: "color-picker-wheel-handle"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: "color-picker-sb-spectrum",
           style: "background-color: hsl(0, 100%, 50%)"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "color-picker-sb-spectrum-handle"
         }))));
       },
@@ -49519,25 +49531,25 @@
           navbarBackLinkText,
           navbarCloseText
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "navbar"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "navbar-bg"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: "navbar-inner sliding"
-        }, openIn === 'page' && $jsx("div", {
+        }, openIn === 'page' && $jsx$1("div", {
           class: "left"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link back"
-        }, $jsx("i", {
+        }, $jsx$1("i", {
           class: "icon icon-back"
-        }), $jsx("span", {
+        }), $jsx$1("span", {
           class: "if-not-md"
-        }, navbarBackLinkText))), $jsx("div", {
+        }, navbarBackLinkText))), $jsx$1("div", {
           class: "title"
-        }, navbarTitleText), openIn !== 'page' && $jsx("div", {
+        }, navbarTitleText), openIn !== 'page' && $jsx$1("div", {
           class: "right"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link popup-close",
           "data-popup": ".color-picker-popup"
         }, navbarCloseText))));
@@ -49550,15 +49562,15 @@
           return self.params.renderToolbar.call(self, self);
         }
 
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: "toolbar toolbar-top no-shadow"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "toolbar-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "left"
-        }), $jsx("div", {
+        }), $jsx$1("div", {
           class: "right"
-        }, $jsx("a", {
+        }, $jsx$1("a", {
           class: "link sheet-close popover-close",
           "data-sheet": ".color-picker-sheet-modal",
           "data-popover": ".color-picker-popover"
@@ -49571,7 +49583,7 @@
           cssClass,
           groupedModules
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `color-picker color-picker-inline ${groupedModules ? 'color-picker-grouped-modules' : ''} ${cssClass || ''}`
         }, self.renderPicker());
       }
@@ -49583,11 +49595,11 @@
           toolbarSheet,
           groupedModules
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `sheet-modal color-picker color-picker-sheet-modal ${groupedModules ? 'color-picker-grouped-modules' : ''} ${cssClass || ''}`
-        }, toolbarSheet && self.renderToolbar(), $jsx("div", {
+        }, toolbarSheet && self.renderToolbar(), $jsx$1("div", {
           class: "sheet-modal-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "page-content"
         }, self.renderPicker())));
       }
@@ -49599,13 +49611,13 @@
           toolbarPopover,
           groupedModules
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `popover color-picker-popover ${cssClass || ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "popover-inner"
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: `color-picker ${groupedModules ? 'color-picker-grouped-modules' : ''}`
-        }, toolbarPopover && self.renderToolbar(), $jsx("div", {
+        }, toolbarPopover && self.renderToolbar(), $jsx$1("div", {
           class: "page-content"
         }, self.renderPicker()))));
       }
@@ -49617,13 +49629,13 @@
           navbarPopup,
           groupedModules
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `popup color-picker-popup ${cssClass || ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "page"
-        }, navbarPopup && self.renderNavbar(), $jsx("div", {
+        }, navbarPopup && self.renderNavbar(), $jsx$1("div", {
           class: `color-picker ${groupedModules ? 'color-picker-grouped-modules' : ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "page-content"
         }, self.renderPicker()))));
       }
@@ -49634,12 +49646,12 @@
           cssClass,
           groupedModules
         } = self.params;
-        return $jsx("div", {
+        return $jsx$1("div", {
           class: `page color-picker-page ${cssClass || ''}`,
           "data-name": "color-picker-page"
-        }, self.renderNavbar(), $jsx("div", {
+        }, self.renderNavbar(), $jsx$1("div", {
           class: `color-picker ${groupedModules ? 'color-picker-grouped-modules' : ''}`
-        }, $jsx("div", {
+        }, $jsx$1("div", {
           class: "page-content"
         }, self.renderPicker())));
       } // eslint-disable-next-line
@@ -51043,12 +51055,12 @@
         const self = this;
         const size = self.params.size;
         const paths = self.getPaths();
-        return $jsx("svg", {
+        return $jsx$1("svg", {
           xmlns: "http://www.w3.org/2000/svg",
           width: size,
           viewBox: `-${size / 3} -${size / 3} ${size * 2 / 3} ${size * 2 / 3}`,
           style: "transform: rotate(-90deg)"
-        }, paths.map((path, index) => $jsx("path", {
+        }, paths.map((path, index) => $jsx$1("path", {
           d: path.points,
           fill: path.color,
           "data-index": index
@@ -51569,36 +51581,36 @@
         const verticalLines = self.getVerticalLines();
         const visibleLegends = self.getVisibleLabels();
         const LegendItemTag = toggleDatasets ? 'button' : 'span';
-        return $jsx("div", null, $jsx("svg", {
+        return $jsx$1("div", null, $jsx$1("svg", {
           xmlns: "http://www.w3.org/2000/svg",
           width: width,
           height: height,
           viewBox: `0 0 ${width} ${height}`,
           preserveAspectRatio: "none"
-        }, chartData.map(data => lineChart ? $jsx("path", {
+        }, chartData.map(data => lineChart ? $jsx$1("path", {
           stroke: data.color,
           "fill-rule": "evenodd",
           d: data.points
-        }) : $jsx("polygon", {
+        }) : $jsx$1("polygon", {
           fill: data.color,
           "fill-rule": "evenodd",
           points: data.points
-        })), verticalLines.map((line, index) => $jsx("line", {
+        })), verticalLines.map((line, index) => $jsx$1("line", {
           "data-index": index,
           fill: "#000",
           x1: line,
           y1: 0,
           x2: line,
           y2: height
-        }))), axis && $jsx("div", {
+        }))), axis && $jsx$1("div", {
           class: "area-chart-axis"
-        }, axisLabels.map(label => $jsx("span", null, visibleLegends.includes(label) && $jsx("span", null, self.formatAxisLabel(label))))), legend && $jsx("div", {
+        }, axisLabels.map(label => $jsx$1("span", null, visibleLegends.includes(label) && $jsx$1("span", null, self.formatAxisLabel(label))))), legend && $jsx$1("div", {
           class: "area-chart-legend"
-        }, datasets.map((dataset, index) => $jsx(LegendItemTag, {
+        }, datasets.map((dataset, index) => $jsx$1(LegendItemTag, {
           "data-index": index,
           class: `area-chart-legend-item ${toggleDatasets ? 'area-chart-legend-button' : ''}`,
           _type: toggleDatasets ? 'button' : undefined
-        }, $jsx("span", {
+        }, $jsx$1("span", {
           style: `background-color: ${dataset.color}`
         }), self.formatLegendLabel(dataset.label)))));
       }
