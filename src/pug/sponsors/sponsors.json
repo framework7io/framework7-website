@@ -490,7 +490,7 @@
   },
   {
     "createdAt": "2021-12-23T14:23:12.168Z",
-    "active": true,
+    "active": false,
     "title": "Software development company",
     "link": "https://www.instinctools.com",
     "plan": "topSupporter",
@@ -1060,7 +1060,7 @@
   },
   {
     "createdAt": "2021-02-25T19:33:28.188Z",
-    "active": true,
+    "active": false,
     "title": "Parhaat Nettikasinot",
     "link": "https://www.parhaatnettikasinot.com",
     "plan": "topSupporter",
