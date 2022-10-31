@@ -1,5 +1,35 @@
 [
   {
+    "createdAt": "2022-10-31T20:00:00.000Z",
+    "title": "online casinoer",
+    "link": "https://topcasinoer.net/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/top-casinoer",
+    "image": "topcasinoer.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2022-10-31T20:00:00.000Z",
+    "title": "casino uden ROFUS",
+    "link": "https://bedstespiludenomrofus.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/bedstespiludenomrofus",
+    "image": "bedstespiludenomrofus.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2022-10-31T20:00:00.000Z",
+    "title": "betting sider",
+    "link": "https://betting-sider.net/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/betting-sider",
+    "image": "betting-sider.jpg",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2022-10-27T20:00:00.000Z",
     "title": "VPS",
     "link": "https://www.vpsserver.com/",
