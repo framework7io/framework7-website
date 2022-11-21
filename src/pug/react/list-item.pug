@@ -337,7 +337,7 @@ block content
               text="Text"
               after="Read more"
               >
-                <img src="path-to-my-image.jpg" slot="media">
+                <img src="path-to-my-image.jpg" slot="media" />
                 <div slot="root-start">Root Start</div>
                 <div slot="root">Root End</div>
                 <div slot="content-start">Content Start</div>
@@ -357,37 +357,39 @@ block content
 
           <div class="list media-list">
             <ul>
-              <li>
-                <div>Root Start</div>
-                <a href="/home/" class="item-link">
+              <li class="media-item">
+                <div slot="root-start">Root Start</div>
+                <a class="item-link" href="/home/">
                   <div class="item-content">
-                    <div>Content Start</div>
+                    <div slot="content-start">Content Start</div>
                     <div class="item-media">
-                      <img src="path-to-my-image.jpg">
+                      <img src="path-to-my-image.jpg" slot="media" />
+                      <div slot="media">Media</div>
                     </div>
                     <div class="item-inner">
-                      <div>Inner Start</div>
+                      <div slot="inner-start">Inner Start</div>
                       <div class="item-title-row">
-                        <div>Before Title</div>
+                        <div slot="before-title">Before Title</div>
                         <div class="item-title">Item Title</div>
-                        <div>After Title</div>
+                        <div slot="after-title">After Title</div>
                         <div class="item-after">
-                          <span>After Start</span>
+                          <span slot="after-start">After Start</span>
                           <span>Read more</span>
-                          <span>After End</span>
+                          <span slot="after">After End</span>
                         </div>
                       </div>
                       <div class="item-subtitle">Item Subtitle</div>
                       <div class="item-text">Text</div>
-                      <div>Inner End</div>
+                      <div slot="inner">Inner End</div>
                     </div>
-                    <div>Content End</div>
+                    <div slot="content">Content End</div>
                   </div>
                 </a>
-                <div>Root End</div>
+                <div slot="root">Root End</div>
               </li>
             </ul>
           </div>
+
 
     .with-device
       h2(data-device-preview="../docs-demos/react/list-view.html") Examples
