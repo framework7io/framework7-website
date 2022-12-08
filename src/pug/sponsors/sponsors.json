@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2022-12-08T20:00:00.000Z",
+    "title": "Best Wealth Management Firms",
+    "link": "https://pillarwm.com/best-wealth-management-firms/",
+    "plan": "topSupporter",
+    "ref": "https://www.patreon.com/user/creators?u=83509877",
+    "image": "pillarwm.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2022-12-03T20:00:00.000Z",
     "title": "iStarTips - Tips for Software, Apps on Android, iPhone",
     "link": "https://istar.tips/",
@@ -259,28 +269,6 @@
     "active": true
   },
   {
-    "createdAt": "2022-08-18T12:00:00.00Z",
-    "title": "Custom eCommerce Development Services - IntexSoft",
-    "link": "https://intexsoft.com/ecommerce-development-services/",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/intexsoft-ecommerce-dev",
-    "image": "intexsoft.png",
-    "image_h": "",
-    "endDate": "",
-    "active": true
-  },
-  {
-    "createdAt": "2022-08-18T12:00:00.00Z",
-    "title": "This Ruby on Rails consulting company can save you up to 60% — Rubyroid Labs",
-    "link": "https://rubyroidlabs.com/services/consulting",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/ror-consulting",
-    "image": "rubyroidlabs.png",
-    "image_h": "",
-    "endDate": "",
-    "active": true
-  },
-  {
     "createdAt": "2022-08-01T13:00:00.00Z",
     "title": "CSGO Captain | Your Guide to Counter-Strike 2022 - CS:GO Captain",
     "link": "https://www.csgocaptain.com",
@@ -398,17 +386,6 @@
     "image_h": "",
     "endDate": "",
     "active": true
-  },
-  {
-    "createdAt": "2022-06-16T15:00:00.00Z",
-    "title": "RushRadar: The Best Articles, Reviews, and Referral Codes",
-    "link": "https://rushradar.com",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/rushradar",
-    "image": "rushradar.png",
-    "image_h": "",
-    "endDate": "",
-    "active": false
   },
   {
     "createdAt": "2022-06-04T14:00:00.00Z",
@@ -538,16 +515,6 @@
     "endDate": "2023-04-06T08:37:22.606Z"
   },
   {
-    "createdAt": "2022-03-22T16:41:06.302Z",
-    "active": false,
-    "title": "Healthcare Software Development Company",
-    "link": "https://www.kandasoft.com/verticals/digital-health-product-software-development/",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/kandasoft",
-    "endDate": "",
-    "image": "kandasoftware.png"
-  },
-  {
     "createdAt": "2022-03-19T19:10:57.706Z",
     "active": true,
     "title": "Espionner un téléphone Android et iPhone, Pour Control Parental",
@@ -628,16 +595,6 @@
     "image": "houseloom.png"
   },
   {
-    "createdAt": "2021-12-23T14:23:12.168Z",
-    "active": false,
-    "title": "Software development company",
-    "link": "https://www.instinctools.com",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/instinctools",
-    "endDate": "2022-07-24T14:23:12.168Z",
-    "image": "instinctools.png"
-  },
-  {
     "createdAt": "2021-12-20T14:36:35.263Z",
     "active": true,
     "title": "Buy Instagram Followers UK - Buy 100% Real Instagram Followers",
@@ -664,7 +621,7 @@
     "link": "https://exittimesharereview.com",
     "plan": "topSupporter",
     "ref": "https://www.patreon.com/user/creators?u=64279480",
-    "endDate": "2022-12-08T00:00+03:00",
+    "endDate": "2023-01-08T00:00+03:00",
     "image": "exittimesharereview.png"
   },
   {
@@ -718,16 +675,6 @@
     "image": "fortunegames.png"
   },
   {
-    "createdAt": "2021-10-14T14:58:26.149Z",
-    "active": true,
-    "title": "Ranking bukmacherów - najlepsze legalne oferty w Polsce",
-    "link": "https://betomania.pl/ranking-bukmacherow/",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/beto_mania",
-    "endDate": "",
-    "image": "betomania.png"
-  },
-  {
     "createdAt": "2021-10-13T08:24:32.974Z",
     "active": true,
     "title": "CryptoGambleTips - 70+ casino reviews, exclusive bonus & games guides",
@@ -768,16 +715,6 @@
     "image": "online-casinos-xyz.png"
   },
   {
-    "createdAt": "2021-10-07T15:35:13.950Z",
-    "active": false,
-    "title": "Best Real Money Online Casino Pennsylvania Toplist 2021",
-    "link": "https://pennsylvania-online-gambling.com/casinos",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/online-casino-pa",
-    "endDate": "",
-    "image": "pennsylvania-online-gambling.png"
-  },
-  {
     "createdAt": "2021-09-17T11:30:51.658Z",
     "active": true,
     "title": "Write My Paper - Your Pay & Go Trusted Essay Writing Solution",
@@ -798,34 +735,14 @@
     "image": "casinos-hunter.png"
   },
   {
-    "createdAt": "2021-08-23T06:31:56.090Z",
-    "active": false,
-    "title": "Online casinos list & casino bonuses 2021 | Allonlinecasinoslist",
-    "link": "https://allonlinecasinoslist.com",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/online-casino-list",
-    "endDate": "",
-    "image": "allonlinecasinoslist.png"
-  },
-  {
     "createdAt": "2021-08-12T12:51:43.413Z",
     "active": true,
     "title": "Online Casino | De Beste Online Casino's in België",
     "link": "https://onlinecasinosbe.com",
     "plan": "topSupporter",
     "ref": "https://opencollective.com/online-casinos-belgie",
-    "endDate": "2022-10-02T12:49:58.498Z",
+    "endDate": "",
     "image": "onlinecasinosbe.png"
-  },
-  {
-    "createdAt": "2021-08-12T12:49:58.498Z",
-    "active": true,
-    "title": "Online Casino Danmark til Rigtige Spillere - Onlinecasinosdk.com",
-    "link": "https://onlinecasinosdk.com",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/online-casino-danmark",
-    "endDate": "2022-10-02T12:49:58.498Z",
-    "image": "onlinecasinosdk.png"
   },
   {
     "createdAt": "2021-08-10T13:53:08.527Z",
@@ -834,7 +751,7 @@
     "link": "https://zamsino.com/ca/free-spins-no-deposit/",
     "plan": "topSupporter",
     "ref": "https://www.patreon.com/user/creators?u=59878529",
-    "endDate": "2022-08-10T00:00+03:00",
+    "endDate": "2023-08-10T00:00+03:00",
     "image": "zamsino.png"
   },
   {
@@ -864,7 +781,7 @@
     "link": "https://casinohex.org/canada/",
     "plan": "topSupporter",
     "ref": "https://opencollective.com/hexcasinoca",
-    "endDate": "2022-07-13T00:00+03:00",
+    "endDate": "",
     "image": "casinohex-canada.png"
   },
   {
@@ -949,12 +866,12 @@
   },
   {
     "createdAt": "2021-04-02T10:18:06.803Z",
-    "active": true,
+    "active": false,
     "title": "hair transplant istanbul",
     "link": "https://www.estepera.com",
     "plan": "topSupporter",
     "ref": "https://opencollective.com/estepera",
-    "endDate": "2022-08-08T00:00+03:00",
+    "endDate": "",
     "image": "estepera.png"
   },
   {
@@ -1188,16 +1105,6 @@
     "image": "edubirdie.png"
   },
   {
-    "createdAt": "2021-02-25T19:33:28.188Z",
-    "active": false,
-    "title": "Parhaat Nettikasinot",
-    "link": "https://www.parhaatnettikasinot.com",
-    "plan": "topSupporter",
-    "ref": "",
-    "endDate": "",
-    "image": "parhaatnettikasinot.png"
-  },
-  {
     "createdAt": "2021-02-25T19:33:22.172Z",
     "active": true,
     "title": "'Spiel mit mehr' dank BonusFinder",
@@ -1426,15 +1333,5 @@
     "ref": "",
     "endDate": "",
     "image": "wfmbuddy.png"
-  },
-  {
-    "createdAt": "2021-02-25T19:34:31.048Z",
-    "active": false,
-    "title": "CasinoHEX ™ - Genuine Gambling Site Reviews & Free Casino Games",
-    "link": "https://aussiecasinohex.com",
-    "plan": "goldSponsor",
-    "ref": "https://opencollective.com/aussiecasinohex",
-    "endDate": "",
-    "image": "aussiecasinohex.png"
   }
 ]
