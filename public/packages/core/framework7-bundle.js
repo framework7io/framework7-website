@@ -1,5 +1,5 @@
 /**
- * Framework7 7.0.9
+ * Framework7 7.1.1
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: November 21, 2022
+ * Released on: December 16, 2022
  */
 
 (function (global, factory) {
@@ -4687,7 +4687,7 @@
             break;
           }
 
-          if (!name) throw new TypeError("Missing parameter name at " + i);
+          if (!name) throw new TypeError("Missing parameter name at ".concat(i));
           tokens.push({
             type: "NAME",
             index: i,
@@ -4703,7 +4703,7 @@
           var j = i + 1;
 
           if (str[j] === "?") {
-            throw new TypeError("Pattern cannot start with \"?\" at " + j);
+            throw new TypeError("Pattern cannot start with \"?\" at ".concat(j));
           }
 
           while (j < str.length) {
@@ -4723,15 +4723,15 @@
               count++;
 
               if (str[j + 1] !== "?") {
-                throw new TypeError("Capturing groups are not allowed at " + j);
+                throw new TypeError("Capturing groups are not allowed at ".concat(j));
               }
             }
 
             pattern += str[j++];
           }
 
-          if (count) throw new TypeError("Unbalanced pattern at " + i);
-          if (!pattern) throw new TypeError("Missing pattern at " + i);
+          if (count) throw new TypeError("Unbalanced pattern at ".concat(i));
+          if (!pattern) throw new TypeError("Missing pattern at ".concat(i));
           tokens.push({
             type: "PATTERN",
             index: i,
@@ -4768,7 +4768,7 @@
       var tokens = lexer(str);
       var _a = options.prefixes,
           prefixes = _a === void 0 ? "./" : _a;
-      var defaultPattern = "[^" + escapeString(options.delimiter || "/#?") + "]+?";
+      var defaultPattern = "[^".concat(escapeString(options.delimiter || "/#?"), "]+?");
       var result = [];
       var key = 0;
       var i = 0;
@@ -4784,12 +4784,12 @@
         var _a = tokens[i],
             nextType = _a.type,
             index = _a.index;
-        throw new TypeError("Unexpected " + nextType + " at " + index + ", expected " + type);
+        throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
       };
 
       var consumeText = function () {
         var result = "";
-        var value; // tslint:disable-next-line
+        var value;
 
         while (value = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
           result += value;
@@ -4887,7 +4887,7 @@
 
       var matches = tokens.map(function (token) {
         if (typeof token === "object") {
-          return new RegExp("^(?:" + token.pattern + ")$", reFlags);
+          return new RegExp("^(?:".concat(token.pattern, ")$"), reFlags);
         }
       });
       return function (data) {
@@ -4907,19 +4907,19 @@
 
           if (Array.isArray(value)) {
             if (!repeat) {
-              throw new TypeError("Expected \"" + token.name + "\" to not repeat, but got an array");
+              throw new TypeError("Expected \"".concat(token.name, "\" to not repeat, but got an array"));
             }
 
             if (value.length === 0) {
               if (optional) continue;
-              throw new TypeError("Expected \"" + token.name + "\" to not be empty");
+              throw new TypeError("Expected \"".concat(token.name, "\" to not be empty"));
             }
 
             for (var j = 0; j < value.length; j++) {
               var segment = encode(value[j], token);
 
               if (validate && !matches[i].test(segment)) {
-                throw new TypeError("Expected all \"" + token.name + "\" to match \"" + token.pattern + "\", but got \"" + segment + "\"");
+                throw new TypeError("Expected all \"".concat(token.name, "\" to match \"").concat(token.pattern, "\", but got \"").concat(segment, "\""));
               }
 
               path += token.prefix + segment + token.suffix;
@@ -4932,7 +4932,7 @@
             var segment = encode(String(value), token);
 
             if (validate && !matches[i].test(segment)) {
-              throw new TypeError("Expected \"" + token.name + "\" to match \"" + token.pattern + "\", but got \"" + segment + "\"");
+              throw new TypeError("Expected \"".concat(token.name, "\" to match \"").concat(token.pattern, "\", but got \"").concat(segment, "\""));
             }
 
             path += token.prefix + segment + token.suffix;
@@ -4941,7 +4941,7 @@
 
           if (optional) continue;
           var typeOfMessage = repeat ? "an array" : "a string";
-          throw new TypeError("Expected \"" + token.name + "\" to be " + typeOfMessage);
+          throw new TypeError("Expected \"".concat(token.name, "\" to be ").concat(typeOfMessage));
         }
 
         return path;
@@ -4977,7 +4977,6 @@
         var params = Object.create(null);
 
         var _loop_1 = function (i) {
-          // tslint:disable-next-line
           if (m[i] === undefined) return "continue";
           var key = keys[i - 1];
 
@@ -5050,7 +5049,7 @@
       var parts = paths.map(function (path) {
         return pathToRegexp(path, keys, options).source;
       });
-      return new RegExp("(?:" + parts.join("|") + ")", flags(options));
+      return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
     }
     /**
      * Create a path regexp from string input.
@@ -5079,9 +5078,13 @@
           _d = options.encode,
           encode = _d === void 0 ? function (x) {
         return x;
-      } : _d;
-      var endsWith = "[" + escapeString(options.endsWith || "") + "]|$";
-      var delimiter = "[" + escapeString(options.delimiter || "/#?") + "]";
+      } : _d,
+          _e = options.delimiter,
+          delimiter = _e === void 0 ? "/#?" : _e,
+          _f = options.endsWith,
+          endsWith = _f === void 0 ? "" : _f;
+      var endsWithRe = "[".concat(escapeString(endsWith), "]|$");
+      var delimiterRe = "[".concat(escapeString(delimiter), "]");
       var route = start ? "^" : ""; // Iterate over the tokens and create our regexp string.
 
       for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
@@ -5099,33 +5102,36 @@
             if (prefix || suffix) {
               if (token.modifier === "+" || token.modifier === "*") {
                 var mod = token.modifier === "*" ? "?" : "";
-                route += "(?:" + prefix + "((?:" + token.pattern + ")(?:" + suffix + prefix + "(?:" + token.pattern + "))*)" + suffix + ")" + mod;
+                route += "(?:".concat(prefix, "((?:").concat(token.pattern, ")(?:").concat(suffix).concat(prefix, "(?:").concat(token.pattern, "))*)").concat(suffix, ")").concat(mod);
               } else {
-                route += "(?:" + prefix + "(" + token.pattern + ")" + suffix + ")" + token.modifier;
+                route += "(?:".concat(prefix, "(").concat(token.pattern, ")").concat(suffix, ")").concat(token.modifier);
               }
             } else {
-              route += "(" + token.pattern + ")" + token.modifier;
+              if (token.modifier === "+" || token.modifier === "*") {
+                route += "((?:".concat(token.pattern, ")").concat(token.modifier, ")");
+              } else {
+                route += "(".concat(token.pattern, ")").concat(token.modifier);
+              }
             }
           } else {
-            route += "(?:" + prefix + suffix + ")" + token.modifier;
+            route += "(?:".concat(prefix).concat(suffix, ")").concat(token.modifier);
           }
         }
       }
 
       if (end) {
-        if (!strict) route += delimiter + "?";
-        route += !options.endsWith ? "$" : "(?=" + endsWith + ")";
+        if (!strict) route += "".concat(delimiterRe, "?");
+        route += !options.endsWith ? "$" : "(?=".concat(endsWithRe, ")");
       } else {
         var endToken = tokens[tokens.length - 1];
-        var isEndDelimited = typeof endToken === "string" ? delimiter.indexOf(endToken[endToken.length - 1]) > -1 : // tslint:disable-next-line
-        endToken === undefined;
+        var isEndDelimited = typeof endToken === "string" ? delimiterRe.indexOf(endToken[endToken.length - 1]) > -1 : endToken === undefined;
 
         if (!strict) {
-          route += "(?:" + delimiter + "(?=" + endsWith + "))?";
+          route += "(?:".concat(delimiterRe, "(?=").concat(endsWithRe, "))?");
         }
 
         if (!isEndDelimited) {
-          route += "(?=" + delimiter + "|" + endsWith + ")";
+          route += "(?=".concat(delimiterRe, "|").concat(endsWithRe, ")");
         }
       }
 
@@ -6184,12 +6190,17 @@
       }
     }
 
-    function refreshPage() {
+    function refreshPage(props) {
+      if (props === void 0) {
+        props = {};
+      }
+
       const router = this;
       appRouterCheck(router, 'refreshPage');
       return router.navigate(router.currentRoute.url, {
         ignoreCache: true,
-        reloadCurrent: true
+        reloadCurrent: true,
+        props
       });
     }
 
@@ -8134,6 +8145,7 @@
       } = params;
 
       if (options.route.url && router.url === options.route.url && !(options.reloadCurrent || options.reloadPrevious) && !router.params.allowDuplicateUrls) {
+        router.allowPageChange = true;
         return false;
       }
 
@@ -21036,7 +21048,9 @@
           modifyHtmlClasses = true;
         }
 
-        const panel = this;
+        const panel = this; // eslint-disable-next-line
+
+        panel._openTimeStamp = new Date().getTime();
         const app = panel.app;
         panel.opened = true;
         app.panel.allowOpen = false;
@@ -21256,7 +21270,14 @@
           $viewEl.add($containerEl.children('.page-content, .tabs'));
         }
 
-        const transitionEndTarget = effect === 'reveal' ? $viewEl : $el;
+        const transitionEndTarget = effect === 'reveal' ? $viewEl : $el; // eslint-disable-next-line
+
+        const openTimeDiff = new Date().getTime() - panel._openTimeStamp;
+
+        if (openTimeDiff < 16) {
+          // eslint-disable-next-line
+          animate = false;
+        }
 
         function transitionEnd() {
           if ($el.hasClass('panel-out')) {
@@ -24895,7 +24916,7 @@
           ss.$selectEl.trigger('change');
 
           if (ss.params.setValueText) {
-            ss.$valueEl.text(ss.formatValueText(optionText));
+            ss.formatValueTextContent(optionText);
           }
 
           if (ss.params.closeOnSelect && ss.inputType === 'radio') {
@@ -24957,7 +24978,7 @@
         }
 
         if (ss.params.setValueText) {
-          ss.$valueEl.text(ss.formatValueText(optionText));
+          ss.formatValueTextContent(optionText);
         }
 
         ss.$selectEl.trigger('change');
@@ -24968,7 +24989,7 @@
         const ss = this;
 
         if (ss.params.setValueText) {
-          ss.$valueEl.text(ss.formatValueText([]));
+          ss.formatValueTextContent([]);
         }
 
         ss.$selectEl.find('option').each(optionEl => {
@@ -25028,6 +25049,17 @@
         }
       }
 
+      formatValueTextContent(values) {
+        const ss = this;
+        const valueFormatted = ss.formatValueText(values);
+
+        if (valueFormatted.includes('<') && valueFormatted.includes('>')) {
+          ss.$valueEl.html(valueFormatted);
+        } else {
+          ss.$valueEl.text(valueFormatted);
+        }
+      }
+
       formatValueText(values) {
         const ss = this;
         let textValue;
@@ -25068,7 +25100,7 @@
         }
 
         if (ss.params.setValueText) {
-          ss.$valueEl.text(ss.formatValueText(valueArray));
+          ss.formatValueTextContent(valueArray);
         }
       }
 
@@ -25559,6 +25591,7 @@
           content: popupHtml,
           push: ss.params.popupPush,
           swipeToClose: ss.params.popupSwipeToClose,
+          closeByBackdropClick: ss.params.closeByBackdropClick,
           on: {
             popupOpen(popup) {
               ss.onOpen('popup', popup.el);
@@ -25606,6 +25639,7 @@
           closeByOutsideClick: true,
           push: ss.params.sheetPush,
           swipeToClose: ss.params.sheetSwipeToClose,
+          closeByBackdropClick: ss.params.closeByBackdropClick,
           on: {
             sheetOpen(sheet) {
               ss.onOpen('sheet', sheet.el);
@@ -25649,6 +25683,7 @@
         const popoverParams = {
           content: popoverHtml,
           targetEl: ss.$el,
+          closeByBackdropClick: ss.params.closeByBackdropClick,
           on: {
             popoverOpen(popover) {
               ss.onOpen('popover', popover.el);
@@ -25768,6 +25803,7 @@
           pageBackLinkText: 'Back',
           popupCloseLinkText: 'Close',
           popupTabletFullscreen: false,
+          closeByBackdropClick: true,
           sheetCloseLinkText: 'Done',
           searchbar: false,
           searchbarPlaceholder: 'Search',
@@ -35715,7 +35751,7 @@
 
       if (swiper.params.slidesPerView !== 'auto' && swiper.params.slidesPerView > 1) {
         if (swiper.params.centeredSlides) {
-          swiper.visibleSlides.each(slide => {
+          (swiper.visibleSlides || $$1([])).each(slide => {
             activeSlides.push(slide);
           });
         } else {
@@ -36380,14 +36416,7 @@
       const skip = Math.min(swiper.params.slidesPerGroupSkip, slideIndex);
       let snapIndex = skip + Math.floor((slideIndex - skip) / swiper.params.slidesPerGroup);
       if (snapIndex >= snapGrid.length) snapIndex = snapGrid.length - 1;
-
-      if ((activeIndex || params.initialSlide || 0) === (previousIndex || 0) && runCallbacks) {
-        swiper.emit('beforeSlideChangeStart');
-      }
-
-      const translate = -snapGrid[snapIndex]; // Update progress
-
-      swiper.updateProgress(translate); // Normalize slideIndex
+      const translate = -snapGrid[snapIndex]; // Normalize slideIndex
 
       if (params.normalizeSlideIndex) {
         for (let i = 0; i < slidesGrid.length; i += 1) {
@@ -36418,6 +36447,12 @@
         }
       }
 
+      if (slideIndex !== (previousIndex || 0) && runCallbacks) {
+        swiper.emit('beforeSlideChangeStart');
+      } // Update progress
+
+
+      swiper.updateProgress(translate);
       let direction;
       if (slideIndex > activeIndex) direction = 'next';else if (slideIndex < activeIndex) direction = 'prev';else direction = 'reset'; // Update Index
 
@@ -36523,6 +36558,29 @@
 
       if (runCallbacks === void 0) {
         runCallbacks = true;
+      }
+
+      if (typeof index === 'string') {
+        /**
+         * The `index` argument converted from `string` to `number`.
+         * @type {number}
+         */
+        const indexAsNumber = parseInt(index, 10);
+        /**
+         * Determines whether the `index` argument is a valid `number`
+         * after being converted from the `string` type.
+         * @type {boolean}
+         */
+
+        const isValidNumber = isFinite(indexAsNumber);
+
+        if (!isValidNumber) {
+          throw new Error(`The passed-in 'index' (string) couldn't be converted to 'number'. [${index}] given.`);
+        } // Knowing that the converted `index` is a valid number,
+        // we can update the original argument's value.
+
+
+        index = indexAsNumber;
       }
 
       const swiper = this;
@@ -36783,7 +36841,7 @@
       swiper.loopedSlides = Math.ceil(parseFloat(params.loopedSlides || params.slidesPerView, 10));
       swiper.loopedSlides += params.loopAdditionalSlides;
 
-      if (swiper.loopedSlides > slides.length) {
+      if (swiper.loopedSlides > slides.length && swiper.params.loopedSlidesLimit) {
         swiper.loopedSlides = slides.length;
       }
 
@@ -36791,17 +36849,14 @@
       const appendSlides = [];
       slides.each((el, index) => {
         const slide = $$1(el);
-
-        if (index < swiper.loopedSlides) {
-          appendSlides.push(el);
-        }
-
-        if (index < slides.length && index >= slides.length - swiper.loopedSlides) {
-          prependSlides.push(el);
-        }
-
         slide.attr('data-swiper-slide-index', index);
       });
+
+      for (let i = 0; i < swiper.loopedSlides; i += 1) {
+        const index = i - Math.floor(i / slides.length) * slides.length;
+        appendSlides.push(slides.eq(index)[0]);
+        prependSlides.unshift(slides.eq(slides.length - index - 1)[0]);
+      }
 
       for (let i = 0; i < appendSlides.length; i += 1) {
         $selector.append($$1(appendSlides[i].cloneNode(true)).addClass(params.slideDuplicateClass));
@@ -36903,6 +36958,11 @@
         if (!el || el === getDocument() || el === getWindow()) return null;
         if (el.assignedSlot) el = el.assignedSlot;
         const found = el.closest(selector);
+
+        if (!found && !el.getRootNode) {
+          return null;
+        }
+
         return found || __closestFrom(el.getRootNode().host);
       }
 
@@ -36942,16 +37002,18 @@
       if (!data.isTouchEvent && 'button' in e && e.button > 0) return;
       if (data.isTouched && data.isMoved) return; // change target el for shadow root component
 
-      const swipingClassHasValue = !!params.noSwipingClass && params.noSwipingClass !== '';
+      const swipingClassHasValue = !!params.noSwipingClass && params.noSwipingClass !== ''; // eslint-disable-next-line
 
-      if (swipingClassHasValue && e.target && e.target.shadowRoot && event.path && event.path[0]) {
-        $targetEl = $$1(event.path[0]);
+      const eventPath = event.composedPath ? event.composedPath() : event.path;
+
+      if (swipingClassHasValue && e.target && e.target.shadowRoot && eventPath) {
+        $targetEl = $$1(eventPath[0]);
       }
 
       const noSwipingSelector = params.noSwipingSelector ? params.noSwipingSelector : `.${params.noSwipingClass}`;
       const isTargetShadow = !!(e.target && e.target.shadowRoot); // use closestElement for shadow root element to get the actual closest for nested shadow root element
 
-      if (params.noSwiping && (isTargetShadow ? closestElement(noSwipingSelector, e.target) : $targetEl.closest(noSwipingSelector)[0])) {
+      if (params.noSwiping && (isTargetShadow ? closestElement(noSwipingSelector, $targetEl[0]) : $targetEl.closest(noSwipingSelector)[0])) {
         swiper.allowClick = true;
         return;
       }
@@ -37622,8 +37684,21 @@
         }
 
         swiper.emitContainerClasses();
-      }
+      } // Toggle navigation, pagination, scrollbar
 
+
+      ['navigation', 'pagination', 'scrollbar'].forEach(prop => {
+        const wasModuleEnabled = params[prop] && params[prop].enabled;
+        const isModuleEnabled = breakpointParams[prop] && breakpointParams[prop].enabled;
+
+        if (wasModuleEnabled && !isModuleEnabled) {
+          swiper[prop].disable();
+        }
+
+        if (!wasModuleEnabled && isModuleEnabled) {
+          swiper[prop].enable();
+        }
+      });
       const directionChanged = breakpointParams.direction && breakpointParams.direction !== params.direction;
       const needsReLoop = params.loop && (breakpointParams.slidesPerView !== params.slidesPerView || directionChanged);
 
@@ -37966,6 +38041,7 @@
       loop: false,
       loopAdditionalSlides: 0,
       loopedSlides: null,
+      loopedSlidesLimit: true,
       loopFillGroupWithBlank: false,
       loopPreventsSlide: true,
       // rewind
@@ -38086,7 +38162,8 @@
               el: containerEl
             });
             swipers.push(new Swiper$1(newParams));
-          });
+          }); // eslint-disable-next-line no-constructor-return
+
           return swipers;
         } // Swiper Instance
 
@@ -38229,6 +38306,7 @@
         if (swiper.params.init) {
           swiper.init();
         } // Return app instance
+        // eslint-disable-next-line no-constructor-return
 
 
         return swiper;
@@ -38449,6 +38527,23 @@
         return swiper;
       }
 
+      changeLanguageDirection(direction) {
+        const swiper = this;
+        if (swiper.rtl && direction === 'rtl' || !swiper.rtl && direction === 'ltr') return;
+        swiper.rtl = direction === 'rtl';
+        swiper.rtlTranslate = swiper.params.direction === 'horizontal' && swiper.rtl;
+
+        if (swiper.rtl) {
+          swiper.$el.addClass(`${swiper.params.containerModifierClass}rtl`);
+          swiper.el.dir = 'rtl';
+        } else {
+          swiper.$el.removeClass(`${swiper.params.containerModifierClass}rtl`);
+          swiper.el.dir = 'ltr';
+        }
+
+        swiper.update();
+      }
+
       mount(el) {
         const swiper = this;
         if (swiper.mounted) return true; // Find el
@@ -38473,6 +38568,10 @@
             res.children = options => $el.children(options);
 
             return res;
+          }
+
+          if (!$el.children) {
+            return $$1($el).children(getWrapperSelector());
           }
 
           return $el.children(getWrapperSelector());
@@ -39542,7 +39641,8 @@
           hideOnClick: false,
           disabledClass: 'swiper-button-disabled',
           hiddenClass: 'swiper-button-hidden',
-          lockClass: 'swiper-button-lock'
+          lockClass: 'swiper-button-lock',
+          navigationDisabledClass: 'swiper-navigation-disabled'
         }
       });
       swiper.navigation = {
@@ -39594,12 +39694,14 @@
         e.preventDefault();
         if (swiper.isBeginning && !swiper.params.loop && !swiper.params.rewind) return;
         swiper.slidePrev();
+        emit('navigationPrev');
       }
 
       function onNextClick(e) {
         e.preventDefault();
         if (swiper.isEnd && !swiper.params.loop && !swiper.params.rewind) return;
         swiper.slideNext();
+        emit('navigationNext');
       }
 
       function init() {
@@ -39651,8 +39753,13 @@
       }
 
       on('init', () => {
-        init();
-        update();
+        if (swiper.params.navigation.enabled === false) {
+          // eslint-disable-next-line
+          disable();
+        } else {
+          init();
+          update();
+        }
       });
       on('toEdge fromEdge lock unlock', () => {
         update();
@@ -39706,7 +39813,21 @@
           }
         }
       });
+
+      const enable = () => {
+        swiper.$el.removeClass(swiper.params.navigation.navigationDisabledClass);
+        init();
+        update();
+      };
+
+      const disable = () => {
+        swiper.$el.addClass(swiper.params.navigation.navigationDisabledClass);
+        destroy();
+      };
+
       Object.assign(swiper.navigation, {
+        enable,
+        disable,
         update,
         init,
         destroy
@@ -39758,7 +39879,8 @@
           clickableClass: `${pfx}-clickable`,
           lockClass: `${pfx}-lock`,
           horizontalClass: `${pfx}-horizontal`,
-          verticalClass: `${pfx}-vertical`
+          verticalClass: `${pfx}-vertical`,
+          paginationDisabledClass: `${pfx}-disabled`
         }
       });
       swiper.pagination = {
@@ -40061,9 +40183,14 @@
       }
 
       on('init', () => {
-        init();
-        render();
-        update();
+        if (swiper.params.pagination.enabled === false) {
+          // eslint-disable-next-line
+          disable();
+        } else {
+          init();
+          render();
+          update();
+        }
       });
       on('activeIndexChange', () => {
         if (swiper.params.loop) {
@@ -40110,7 +40237,7 @@
           $el
         } = swiper.pagination;
 
-        if (swiper.params.pagination.el && swiper.params.pagination.hideOnClick && $el.length > 0 && !$$1(targetEl).hasClass(swiper.params.pagination.bulletClass)) {
+        if (swiper.params.pagination.el && swiper.params.pagination.hideOnClick && $el && $el.length > 0 && !$$1(targetEl).hasClass(swiper.params.pagination.bulletClass)) {
           if (swiper.navigation && (swiper.navigation.nextEl && targetEl === swiper.navigation.nextEl || swiper.navigation.prevEl && targetEl === swiper.navigation.prevEl)) return;
           const isHidden = $el.hasClass(swiper.params.pagination.hiddenClass);
 
@@ -40123,7 +40250,32 @@
           $el.toggleClass(swiper.params.pagination.hiddenClass);
         }
       });
+
+      const enable = () => {
+        swiper.$el.removeClass(swiper.params.pagination.paginationDisabledClass);
+
+        if (swiper.pagination.$el) {
+          swiper.pagination.$el.removeClass(swiper.params.pagination.paginationDisabledClass);
+        }
+
+        init();
+        render();
+        update();
+      };
+
+      const disable = () => {
+        swiper.$el.addClass(swiper.params.pagination.paginationDisabledClass);
+
+        if (swiper.pagination.$el) {
+          swiper.pagination.$el.addClass(swiper.params.pagination.paginationDisabledClass);
+        }
+
+        destroy();
+      };
+
       Object.assign(swiper.pagination, {
+        enable,
+        disable,
         render,
         update,
         init,
@@ -40154,7 +40306,10 @@
           draggable: false,
           snapOnRelease: true,
           lockClass: 'swiper-scrollbar-lock',
-          dragClass: 'swiper-scrollbar-drag'
+          dragClass: 'swiper-scrollbar-drag',
+          scrollbarDisabledClass: 'swiper-scrollbar-disabled',
+          horizontalClass: `swiper-scrollbar-horizontal`,
+          verticalClass: `swiper-scrollbar-vertical`
         }
       });
       swiper.scrollbar = {
@@ -40380,6 +40535,7 @@
           support
         } = swiper;
         const $el = scrollbar.$el;
+        if (!$el) return;
         const target = $el[0];
         const activeListener = support.passiveListener && params.passiveListeners ? {
           passive: false,
@@ -40404,12 +40560,12 @@
       }
 
       function enableDraggable() {
-        if (!swiper.params.scrollbar.el) return;
+        if (!swiper.params.scrollbar.el || !swiper.scrollbar.el) return;
         events('on');
       }
 
       function disableDraggable() {
-        if (!swiper.params.scrollbar.el) return;
+        if (!swiper.params.scrollbar.el || !swiper.scrollbar.el) return;
         events('off');
       }
 
@@ -40429,6 +40585,7 @@
           $el = $swiperEl.find(params.el);
         }
 
+        $el.addClass(swiper.isHorizontal() ? params.horizontalClass : params.verticalClass);
         let $dragEl = $el.find(`.${swiper.params.scrollbar.dragClass}`);
 
         if ($dragEl.length === 0) {
@@ -40453,13 +40610,25 @@
       }
 
       function destroy() {
+        const params = swiper.params.scrollbar;
+        const $el = swiper.scrollbar.$el;
+
+        if ($el) {
+          $el.removeClass(swiper.isHorizontal() ? params.horizontalClass : params.verticalClass);
+        }
+
         disableDraggable();
       }
 
       on('init', () => {
-        init();
-        updateSize();
-        setTranslate();
+        if (swiper.params.scrollbar.enabled === false) {
+          // eslint-disable-next-line
+          disable();
+        } else {
+          init();
+          updateSize();
+          setTranslate();
+        }
       });
       on('update resize observerUpdate lock unlock', () => {
         updateSize();
@@ -40482,7 +40651,32 @@
       on('destroy', () => {
         destroy();
       });
+
+      const enable = () => {
+        swiper.$el.removeClass(swiper.params.scrollbar.scrollbarDisabledClass);
+
+        if (swiper.scrollbar.$el) {
+          swiper.scrollbar.$el.removeClass(swiper.params.scrollbar.scrollbarDisabledClass);
+        }
+
+        init();
+        updateSize();
+        setTranslate();
+      };
+
+      const disable = () => {
+        swiper.$el.addClass(swiper.params.scrollbar.scrollbarDisabledClass);
+
+        if (swiper.scrollbar.$el) {
+          swiper.scrollbar.$el.addClass(swiper.params.scrollbar.scrollbarDisabledClass);
+        }
+
+        destroy();
+      };
+
       Object.assign(swiper.scrollbar, {
+        enable,
+        disable,
         updateSize,
         setTranslate,
         init,
@@ -41380,11 +41574,11 @@
         if (params.loadPrevNext) {
           if (slidesPerView > 1 || params.loadPrevNextAmount && params.loadPrevNextAmount > 1) {
             const amount = params.loadPrevNextAmount;
-            const spv = slidesPerView;
+            const spv = Math.ceil(slidesPerView);
             const maxIndex = Math.min(activeIndex + spv + Math.max(amount, spv), slides.length);
             const minIndex = Math.max(activeIndex - Math.max(spv, amount), 0); // Next Slides
 
-            for (let i = activeIndex + slidesPerView; i < maxIndex; i += 1) {
+            for (let i = activeIndex + spv; i < maxIndex; i += 1) {
               if (slideExist(i)) loadInSlide(i);
             } // Prev Slides
 
@@ -41500,6 +41694,10 @@
         if (lazy.enabled && (cssMode || watchSlidesProgress && (touchReleaseOnEdges || resistanceRatio === 0))) {
           load();
         }
+      });
+      on('destroy', () => {
+        if (!swiper.$el) return;
+        swiper.$el.find(`.${swiper.params.lazy.loadingClass}`).removeClass(swiper.params.lazy.loadingClass);
       });
       Object.assign(swiper.lazy, {
         load,
@@ -41722,6 +41920,9 @@
           id: null
         }
       });
+      swiper.a11y = {
+        clicked: false
+      };
       let liveRegion = null;
 
       function notify(message) {
@@ -41886,16 +42087,62 @@
         addElControls($el, wrapperId);
       };
 
+      const handlePointerDown = () => {
+        swiper.a11y.clicked = true;
+      };
+
+      const handlePointerUp = () => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            if (!swiper.destroyed) {
+              swiper.a11y.clicked = false;
+            }
+          });
+        });
+      };
+
       const handleFocus = e => {
+        if (swiper.a11y.clicked) return;
         const slideEl = e.target.closest(`.${swiper.params.slideClass}`);
         if (!slideEl || !swiper.slides.includes(slideEl)) return;
         const isActive = swiper.slides.indexOf(slideEl) === swiper.activeIndex;
         const isVisible = swiper.params.watchSlidesProgress && swiper.visibleSlides && swiper.visibleSlides.includes(slideEl);
         if (isActive || isVisible) return;
+        if (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) return;
+
+        if (swiper.isHorizontal()) {
+          swiper.el.scrollLeft = 0;
+        } else {
+          swiper.el.scrollTop = 0;
+        }
+
         swiper.slideTo(swiper.slides.indexOf(slideEl), 0);
       };
 
-      function init() {
+      const initSlides = () => {
+        const params = swiper.params.a11y;
+
+        if (params.itemRoleDescriptionMessage) {
+          addElRoleDescription($$1(swiper.slides), params.itemRoleDescriptionMessage);
+        }
+
+        if (params.slideRole) {
+          addElRole($$1(swiper.slides), params.slideRole);
+        }
+
+        const slidesLength = swiper.params.loop ? swiper.slides.filter(el => !el.classList.contains(swiper.params.slideDuplicateClass)).length : swiper.slides.length;
+
+        if (params.slideLabelMessage) {
+          swiper.slides.each((slideEl, index) => {
+            const $slideEl = $$1(slideEl);
+            const slideIndex = swiper.params.loop ? parseInt($slideEl.attr('data-swiper-slide-index'), 10) : index;
+            const ariaLabelMessage = params.slideLabelMessage.replace(/\{\{index\}\}/, slideIndex + 1).replace(/\{\{slidesLength\}\}/, slidesLength);
+            addElLabel($slideEl, ariaLabelMessage);
+          });
+        }
+      };
+
+      const init = () => {
         const params = swiper.params.a11y;
         swiper.$el.append(liveRegion); // Container
 
@@ -41916,18 +42163,7 @@
         addElId($wrapperEl, wrapperId);
         addElLive($wrapperEl, live); // Slide
 
-        if (params.itemRoleDescriptionMessage) {
-          addElRoleDescription($$1(swiper.slides), params.itemRoleDescriptionMessage);
-        }
-
-        addElRole($$1(swiper.slides), params.slideRole);
-        const slidesLength = swiper.params.loop ? swiper.slides.filter(el => !el.classList.contains(swiper.params.slideDuplicateClass)).length : swiper.slides.length;
-        swiper.slides.each((slideEl, index) => {
-          const $slideEl = $$1(slideEl);
-          const slideIndex = swiper.params.loop ? parseInt($slideEl.attr('data-swiper-slide-index'), 10) : index;
-          const ariaLabelMessage = params.slideLabelMessage.replace(/\{\{index\}\}/, slideIndex + 1).replace(/\{\{slidesLength\}\}/, slidesLength);
-          addElLabel($slideEl, ariaLabelMessage);
-        }); // Navigation
+        initSlides(); // Navigation
 
         let $nextEl;
         let $prevEl;
@@ -41955,7 +42191,9 @@
 
 
         swiper.$el.on('focus', handleFocus, true);
-      }
+        swiper.$el.on('pointerdown', handlePointerDown, true);
+        swiper.$el.on('pointerup', handlePointerUp, true);
+      };
 
       function destroy() {
         if (liveRegion && liveRegion.length > 0) liveRegion.remove();
@@ -41985,6 +42223,8 @@
 
 
         swiper.$el.off('focus', handleFocus, true);
+        swiper.$el.off('pointerdown', handlePointerDown, true);
+        swiper.$el.off('pointerup', handlePointerUp, true);
       }
 
       on('beforeInit', () => {
@@ -41993,6 +42233,10 @@
       on('afterInit', () => {
         if (!swiper.params.a11y.enabled) return;
         init();
+      });
+      on('slidesLengthChange snapGridLengthChange slidesGridLengthChange', () => {
+        if (!swiper.params.a11y.enabled) return;
+        initSlides();
       });
       on('fromEdge toEdge afterInit lock unlock', () => {
         if (!swiper.params.a11y.enabled) return;
@@ -42019,7 +42263,8 @@
           enabled: false,
           root: '',
           replaceState: false,
-          key: 'slides'
+          key: 'slides',
+          keepQuery: false
         }
       });
       let initialized = false;
@@ -42071,6 +42316,10 @@
           value = `${key}/${value}`;
         }
 
+        if (swiper.params.history.keepQuery) {
+          value += location.search;
+        }
+
         const currentState = window.history.state;
 
         if (currentState && currentState.value === value) {
@@ -42106,7 +42355,7 @@
 
       const setHistoryPopState = () => {
         paths = getPathValues(swiper.params.url);
-        scrollToSlide(swiper.params.speed, swiper.paths.value, false);
+        scrollToSlide(swiper.params.speed, paths.value, false);
       };
 
       const init = () => {
@@ -42281,6 +42530,12 @@
       });
 
       function run() {
+        if (!swiper.size) {
+          swiper.autoplay.running = false;
+          swiper.autoplay.paused = false;
+          return;
+        }
+
         const $activeSlideEl = swiper.slides.eq(swiper.activeIndex);
         let delay = swiper.params.autoplay.delay;
 
@@ -42567,7 +42822,32 @@
       function update(initial) {
         const thumbsSwiper = swiper.thumbs.swiper;
         if (!thumbsSwiper || thumbsSwiper.destroyed) return;
-        const slidesPerView = thumbsSwiper.params.slidesPerView === 'auto' ? thumbsSwiper.slidesPerViewDynamic() : thumbsSwiper.params.slidesPerView;
+        const slidesPerView = thumbsSwiper.params.slidesPerView === 'auto' ? thumbsSwiper.slidesPerViewDynamic() : thumbsSwiper.params.slidesPerView; // Activate thumbs
+
+        let thumbsToActivate = 1;
+        const thumbActiveClass = swiper.params.thumbs.slideThumbActiveClass;
+
+        if (swiper.params.slidesPerView > 1 && !swiper.params.centeredSlides) {
+          thumbsToActivate = swiper.params.slidesPerView;
+        }
+
+        if (!swiper.params.thumbs.multipleActiveThumbs) {
+          thumbsToActivate = 1;
+        }
+
+        thumbsToActivate = Math.floor(thumbsToActivate);
+        thumbsSwiper.slides.removeClass(thumbActiveClass);
+
+        if (thumbsSwiper.params.loop || thumbsSwiper.params.virtual && thumbsSwiper.params.virtual.enabled) {
+          for (let i = 0; i < thumbsToActivate; i += 1) {
+            thumbsSwiper.$wrapperEl.children(`[data-swiper-slide-index="${swiper.realIndex + i}"]`).addClass(thumbActiveClass);
+          }
+        } else {
+          for (let i = 0; i < thumbsToActivate; i += 1) {
+            thumbsSwiper.slides.eq(swiper.realIndex + i).addClass(thumbActiveClass);
+          }
+        }
+
         const autoScrollOffset = swiper.params.thumbs.autoScrollOffset;
         const useOffset = autoScrollOffset && !thumbsSwiper.params.loop;
 
@@ -42621,31 +42901,6 @@
             }
 
             thumbsSwiper.slideTo(newThumbsIndex, initial ? 0 : undefined);
-          }
-        } // Activate thumbs
-
-
-        let thumbsToActivate = 1;
-        const thumbActiveClass = swiper.params.thumbs.slideThumbActiveClass;
-
-        if (swiper.params.slidesPerView > 1 && !swiper.params.centeredSlides) {
-          thumbsToActivate = swiper.params.slidesPerView;
-        }
-
-        if (!swiper.params.thumbs.multipleActiveThumbs) {
-          thumbsToActivate = 1;
-        }
-
-        thumbsToActivate = Math.floor(thumbsToActivate);
-        thumbsSwiper.slides.removeClass(thumbActiveClass);
-
-        if (thumbsSwiper.params.loop || thumbsSwiper.params.virtual && thumbsSwiper.params.virtual.enabled) {
-          for (let i = 0; i < thumbsToActivate; i += 1) {
-            thumbsSwiper.$wrapperEl.children(`[data-swiper-slide-index="${swiper.realIndex + i}"]`).addClass(thumbActiveClass);
-          }
-        } else {
-          for (let i = 0; i < thumbsToActivate; i += 1) {
-            thumbsSwiper.slides.eq(swiper.realIndex + i).addClass(thumbActiveClass);
           }
         }
       }
@@ -44029,7 +44284,9 @@
         cardsEffect: {
           slideShadows: true,
           transformEl: null,
-          rotate: true
+          rotate: true,
+          perSlideRotate: 2,
+          perSlideOffset: 8
         }
       });
 
@@ -44063,8 +44320,8 @@
           let tY = 0;
           const tZ = -100 * Math.abs(progress);
           let scale = 1;
-          let rotate = -2 * progress;
-          let tXAdd = 8 - Math.abs(progress) * 0.75;
+          let rotate = -params.perSlideRotate * progress;
+          let tXAdd = params.perSlideOffset - Math.abs(progress) * 0.75;
           const slideIndex = swiper.virtual && swiper.params.virtual.enabled ? swiper.virtual.from + i : i;
           const isSwipeToNext = (slideIndex === activeIndex || slideIndex === activeIndex - 1) && progress > 0 && progress < 1 && (isTouched || swiper.params.cssMode) && currentTranslate < startTranslate;
           const isSwipeToPrev = (slideIndex === activeIndex || slideIndex === activeIndex + 1) && progress < 0 && progress > -1 && (isTouched || swiper.params.cssMode) && currentTranslate > startTranslate;
@@ -44145,7 +44402,7 @@
     }
 
     /**
-     * Swiper 8.1.4
+     * Swiper 8.4.5
      * Most modern mobile touch slider and framework with hardware accelerated transitions
      * https://swiperjs.com
      *
@@ -44153,7 +44410,7 @@
      *
      * Released under the MIT License
      *
-     * Released on: April 24, 2022
+     * Released on: November 21, 2022
      */
 
     const modules = [Virtual, Keyboard, Mousewheel, Navigation, Pagination, Scrollbar, Parallax, Zoom, Lazy, Controller, A11y, History, HashNavigation, Autoplay, Thumb, freeMode, Grid, Manipulation, EffectFade, EffectCube, EffectFlip, EffectCoverflow, EffectCreative, EffectCards];
@@ -44980,6 +45237,7 @@
         const popupParams = {
           content: popupHtml,
           push: pb.params.popupPush,
+          closeByBackdropClick: pb.params.closeByBackdropClick,
           on: {
             popupOpen(popup) {
               pb.onOpen('popup', popup.el);
@@ -45149,6 +45407,7 @@
           url: 'photos/',
           routableModals: false,
           virtualSlides: true,
+          closeByBackdropClick: true,
           renderNavbar: undefined,
           renderToolbar: undefined,
           renderCaption: undefined,

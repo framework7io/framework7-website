@@ -496,6 +496,7 @@ function loadBack(router, backParams, backOptions, ignorePageChange) {
   } = params;
 
   if (options.route.url && router.url === options.route.url && !(options.reloadCurrent || options.reloadPrevious) && !router.params.allowDuplicateUrls) {
+    router.allowPageChange = true;
     return false;
   }
 

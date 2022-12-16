@@ -1,21 +1,6 @@
-/**
- * Framework7 7.1.1
- * Full featured mobile HTML framework for building iOS & Android apps
- * https://framework7.io/
- *
- * Copyright 2014-2022 Vladimir Kharlampidi
- *
- * Released under the MIT License
- *
- * Released on: December 16, 2022
- */
-
 import $ from './shared/dom7.js';
-import Framework7 from './components/app/app-class.js';
-import request from './shared/request.js';
-import * as utils from './shared/utils.js';
-import { getSupport } from './shared/get-support.js';
-import { getDevice } from './shared/get-device.js';
+import Framework7 from './components/app/app-class.js'; //IMPORT_HELPERS
+
 import DeviceModule from './modules/device/device.js';
 import SupportModule from './modules/support/support.js';
 import UtilsModule from './modules/utils/utils.js';
@@ -33,7 +18,9 @@ import Navbar from './components/navbar/navbar.js';
 import Toolbar from './components/toolbar/toolbar.js';
 import Subnavbar from './components/subnavbar/subnavbar.js';
 import TouchRipple from './components/touch-ripple/touch-ripple.js';
-import Modal from './components/modal/modal.js';
-Framework7.use([DeviceModule, SupportModule, UtilsModule, ResizeModule, RequestModule, TouchModule, ClicksModule, RouterModule, HistoryModule, ServiceWorkerModule, StoreModule, Statusbar, View, Navbar, Toolbar, Subnavbar, TouchRipple, Modal]);
-export { $ as Dom7, request, utils, getDevice, getSupport, createStore };
+import Modal from './components/modal/modal.js'; //IMPORT_COMPONENTS
+
+Framework7.use([DeviceModule, SupportModule, UtilsModule, ResizeModule, RequestModule, TouchModule, ClicksModule, RouterModule, HistoryModule, ServiceWorkerModule, StoreModule, Statusbar, View, Navbar, Toolbar, Subnavbar, TouchRipple, Modal //INSTALL_COMPONENTS
+]); //NAMED_EXPORT
+
 export default Framework7;

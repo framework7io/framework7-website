@@ -23,6 +23,7 @@ export default {
       pageBackLinkText: 'Back',
       popupCloseLinkText: 'Close',
       popupTabletFullscreen: false,
+      closeByBackdropClick: true,
       sheetCloseLinkText: 'Done',
       searchbar: false,
       searchbarPlaceholder: 'Search',

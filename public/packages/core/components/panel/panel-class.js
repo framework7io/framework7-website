@@ -320,7 +320,9 @@ class Panel extends Framework7Class {
       modifyHtmlClasses = true;
     }
 
-    const panel = this;
+    const panel = this; // eslint-disable-next-line
+
+    panel._openTimeStamp = new Date().getTime();
     const app = panel.app;
     panel.opened = true;
     app.panel.allowOpen = false;
@@ -540,7 +542,14 @@ class Panel extends Framework7Class {
       $viewEl.add($containerEl.children('.page-content, .tabs'));
     }
 
-    const transitionEndTarget = effect === 'reveal' ? $viewEl : $el;
+    const transitionEndTarget = effect === 'reveal' ? $viewEl : $el; // eslint-disable-next-line
+
+    const openTimeDiff = new Date().getTime() - panel._openTimeStamp;
+
+    if (openTimeDiff < 16) {
+      // eslint-disable-next-line
+      animate = false;
+    }
 
     function transitionEnd() {
       if ($el.hasClass('panel-out')) {
