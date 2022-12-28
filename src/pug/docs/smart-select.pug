@@ -380,6 +380,31 @@ block content
           td
           td Additional CSS class name to be set on Smart Select container (Page, Popup, Popover or Sheet)
         tr
+          td closeByBackdropClick
+          td boolean
+          td true
+          td When enabled, Smart Select modal (Popover, Popup, Sheet) will be closed on backdrop click
+        tr
+          td optionIcon
+          td string
+          td
+          td Select option icon to be set on all options. If it just a string then will create an icon with this class. If it is in the format of `f7:icon_name` then it will create a F7-Icons icon. If it is in the format of `md:icon_name` then it will create a Material Icons icon
+        tr
+          td optionIconIos
+          td string
+          td
+          td Same as `optionIcon` but will apply only when iOS theme is active
+        tr
+          td optionIconMd
+          td string
+          td
+          td Same as `optionIcon` but will apply only when MD theme is active
+        tr
+          td optionIconAurora
+          td string
+          td
+          td Same as `optionIcon` but will apply only when Aurora theme is active
+        tr
           th(colspan="4") Render functions
         tr
           td renderSearchbar
