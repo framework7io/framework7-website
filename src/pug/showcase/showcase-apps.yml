@@ -7,7 +7,7 @@
     name: Michael Mustun
   links:
     appstore: https://apps.apple.com/ch/app/byztxt-greek-new-testament-l/id809906339?l=en
-    googleplay: 
+    googleplay:
     website: https://www.flagsoft.com
   description: |
     Interlinear Majority Text NA28. Read the Bible in Koine Greek even if you don’t know the Greek letters. Is it true? Yes it is. What you have here now is the entire New Testament written with the so called Koine Greek which is ancient greek used within the old Byzantine Empire. Below each word in greek you see the transliterated word in plain English for pronunciation. So you can read right ahead even without knowing any greek at all. But I am sure you will find words you already heard of but you did not realize that originally it came from ancient greek. That's fascinating isn't it? The whole Bible is offline ready.
@@ -129,16 +129,16 @@
   iconRounded: true
   title: 'Курсы валют ЦБ России'
   author:
-    url: https://www.itilev.ru/cv.html
+    url: https://www.itilev.ru/
     name: Ивайло Тилев
   links:
-    appstore: https://apps.apple.com/ru/app/id1359763896
+    appstore: https://apps.apple.com/app/id1359763896
     googleplay: https://play.google.com/store/apps/details?id=ru.itilev.cbrrates
-    website: https://www.itilev.ru/app/cbrrates
+    website: https://www.itilev.ru/apps/cbrrates
   description: |
     Простое и удобное приложение для отслеживание курсов валют и драгоценных металлов Центрального Банка России.
 
-    Курсы валют Центрального Банка России обновляемые ежедневно между 13:00 и 14:30 по Московскому времени (+03:00 GMT), кроме выходных и праздничных дней.
+    Курсы валют Центрального Банка России обновляемые ежедневно между 16:00 и 17:30 по Московскому времени (+03:00 GMT), кроме выходных и праздничных дней.
 
     На главном экране можно установить до 6 валют для подробного отслеживание изменения курса (последние 14 значений), а так же установить оповещение при его изменение на заданную  относительную величину.
 
