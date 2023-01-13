@@ -1,3 +1,24 @@
+##########
+- iconUrl: '#{cdn}/i/showcase/sslcerts.png'
+  iconRounded: true
+  title: 'SSL сертификаты безопасности для доменов'
+  author:
+    url: https://www.itilev.ru/
+    name: Ивайло Тилев
+  links:
+    appstore: https://apps.apple.com/app/1572489484
+    googleplay: https://play.google.com/store/apps/details?id=ru.itilev.sslcerts
+    website: https://sslcerts.shop
+  description: |
+    Простое приложение для установки напоминания окончания срока действия SSL сертификата.
+
+    На данный момент создание сертификата доступно для пользователей с банковскими картами, выпущенными российскими банками.
+  screenshots:
+    - '#{cdn}/i/showcase/sslcerts-1.png'
+    - '#{cdn}/i/showcase/sslcerts-2.png'
+    - '#{cdn}/i/showcase/sslcerts-3.png'
+    - '#{cdn}/i/showcase/sslcerts-4.png'
+    - '#{cdn}/i/showcase/sslcerts-5.png'
 #########
 - iconUrl: "#{cdn}/i/showcase/byztxt-icon-1024.png"
   iconRounded: false
