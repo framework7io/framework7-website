@@ -1201,12 +1201,12 @@ class Router extends Framework7Class {
       }
     } else {
       if (browserHistoryRoot && documentUrl.indexOf(browserHistoryRoot) >= 0) {
-        documentUrl = documentUrl.split(browserHistoryRoot)[1];
+        documentUrl = documentUrl.substring(documentUrl.indexOf(browserHistoryRoot) + browserHistoryRoot.length);
         if (documentUrl === '') documentUrl = '/';
       }
 
       if (browserHistorySeparator.length > 0 && documentUrl.indexOf(browserHistorySeparator) >= 0) {
-        initialUrl = documentUrl.split(browserHistorySeparator)[1];
+        initialUrl = documentUrl.substring(documentUrl.indexOf(browserHistorySeparator) + browserHistorySeparator.length);
       } else {
         initialUrl = documentUrl;
       }

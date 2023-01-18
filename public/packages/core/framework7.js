@@ -1,13 +1,13 @@
 /**
- * Framework7 7.1.1
+ * Framework7 7.1.2
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2022 Vladimir Kharlampidi
+ * Copyright 2014-2023 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: December 16, 2022
+ * Released on: January 18, 2023
  */
 
 (function (global, factory) {
@@ -9717,12 +9717,12 @@
           }
         } else {
           if (browserHistoryRoot && documentUrl.indexOf(browserHistoryRoot) >= 0) {
-            documentUrl = documentUrl.split(browserHistoryRoot)[1];
+            documentUrl = documentUrl.substring(documentUrl.indexOf(browserHistoryRoot) + browserHistoryRoot.length);
             if (documentUrl === '') documentUrl = '/';
           }
 
           if (browserHistorySeparator.length > 0 && documentUrl.indexOf(browserHistorySeparator) >= 0) {
-            initialUrl = documentUrl.split(browserHistorySeparator)[1];
+            initialUrl = documentUrl.substring(documentUrl.indexOf(browserHistorySeparator) + browserHistorySeparator.length);
           } else {
             initialUrl = documentUrl;
           }

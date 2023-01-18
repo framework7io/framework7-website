@@ -1,13 +1,13 @@
 /**
- * Framework7 7.1.1
+ * Framework7 7.1.2
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2022 Vladimir Kharlampidi
+ * Copyright 2014-2023 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: December 16, 2022
+ * Released on: January 18, 2023
  */
 
 /*====================
@@ -6556,6 +6556,7 @@ html.with-modal-dialog .page-content {
 }
 .md .dialog-buttons-vertical .dialog-button + .dialog-button {
   margin-top: 12px;
+  margin-left: 0;
 }
 .md .dialog-input {
   padding: 0;
@@ -15060,26 +15061,46 @@ label.item-radio.disabled,
   text-align: right;
   height: 100%;
   position: relative;
-  -webkit-mask-box-image: linear-gradient(to top, transparent, transparent 5%, white 20%, white 80%, transparent 95%, transparent);
   font-size: var(--f7-picker-column-font-size);
+  --f7-picker-mask-bg-color: transparent;
+}
+.popover .picker-columns {
+  border-radius: 0 0 var(--f7-popover-border-radius) var(--f7-popover-border-radius);
+}
+.picker-columns::before,
+.picker-columns::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  z-index: 100;
+  pointer-events: none;
+}
+.page .picker-columns {
+  --f7-picker-mask-bg-color: var(--f7-page-bg-color);
+}
+.block-strong .picker-columns {
+  --f7-picker-mask-bg-color: var(--f7-block-strong-bg-color);
+}
+.picker-sheet .picker-columns {
+  --f7-picker-mask-bg-color: var(--f7-picker-sheet-bg-color, var(--f7-sheet-bg-color));
+}
+.picker-popover .picker-columns {
+  --f7-picker-mask-bg-color: var(--f7-popover-bg-color);
+}
+.picker-columns::before {
+  top: 0;
+  background-image: linear-gradient(to bottom, var(--f7-picker-mask-bg-color), transparent);
+}
+.picker-columns::after {
+  bottom: 0;
+  background-image: linear-gradient(to top, var(--f7-picker-mask-bg-color), transparent);
 }
 .picker-column {
   position: relative;
   max-height: 100%;
-}
-.picker-column.picker-column-first:before,
-.picker-column.picker-column-last:after {
-  height: 100%;
-  width: 100vw;
-  position: absolute;
-  content: '';
-  top: 0;
-}
-.picker-column.picker-column-first:before {
-  right: 100%;
-}
-.picker-column.picker-column-last:after {
-  left: 100%;
+  z-index: 10;
 }
 .picker-column.picker-column-left {
   text-align: left;
