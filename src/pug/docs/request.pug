@@ -109,6 +109,12 @@ block content
           td object
           td
           td An object of additional header key/value pairs to send along with requests using the XMLHttpRequest transport. For example:
+            :code(lang="js")
+              app.request({
+                headers: {
+                  'Authorization': 'sometokenvalue'
+                }
+              })
         tr
           td xhrFields
           td object
