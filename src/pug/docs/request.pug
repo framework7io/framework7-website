@@ -109,6 +109,12 @@ block content
           td object
           td
           td An object of additional header key/value pairs to send along with requests using the XMLHttpRequest transport. For example:
+            :code(lang="js")
+              app.request({
+                headers: {
+                  'Authorization': 'sometokenvalue'
+                }
+              })
         tr
           td xhrFields
           td object
@@ -348,7 +354,7 @@ block content
         span - Set default values for future Ajax requests. <b>Its use is not recommended</b>
     p For example:
     :code(lang="js")
-      // After the following setup all XHR requests will have additional 'Autorization' header
+      // After the following setup all XHR requests will have additional 'Authorization' header
       Framework7.request.setup({
         headers: {
           'Authorization': 'sometokenvalue'
