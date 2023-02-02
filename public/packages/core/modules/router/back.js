@@ -132,11 +132,13 @@ function backward(router, el, backwardOptions) {
       if (router.history.indexOf(options.route.url) >= 0) {
         backIndex = router.history.length - router.history.indexOf(options.route.url) - 1;
         router.history = router.history.slice(0, router.history.indexOf(options.route.url) + 2);
+        router.propsHistory = router.propsHistory.slice(0, router.history.indexOf(options.route.url) + 2);
         view.history = router.history;
       } else if (router.history[[router.history.length - 2]]) {
-        router.history[router.history.length - 2] = options.route.url;
+        router.propsHistory[router.propsHistory.length - 2] = options.props || {};
       } else {
         router.history.unshift(router.url);
+        router.propsHistory.unshift(options.props || {});
       }
 
       if (backIndex && router.params.stackPages) {
@@ -339,12 +341,15 @@ function backward(router, el, backwardOptions) {
 
   if (options.replaceState) {
     router.history[router.history.length - 1] = options.route.url;
+    router.propsHistory[router.propsHistory.length - 1] = options.props || {};
   } else {
     if (router.history.length === 1) {
       router.history.unshift(router.url);
+      router.propsHistory.unshift(options.props || {});
     }
 
     router.history.pop();
+    router.propsHistory.pop();
   }
 
   router.saveHistory(); // Current Page & Navbar
@@ -434,7 +439,8 @@ function backward(router, el, backwardOptions) {
 
     if (preloadPreviousPage && router.history[router.history.length - 2] && !isMaster) {
       router.back(router.history[router.history.length - 2], {
-        preload: true
+        preload: true,
+        props: router.propsHistory[router.propsHistory.length - 2] || {}
       });
     }
 
@@ -565,6 +571,7 @@ function back() {
   if (router.swipeBackActive) return router;
   let navigateUrl;
   let navigateOptions;
+  let navigateProps;
   let route;
 
   if (typeof (arguments.length <= 0 ? undefined : arguments[0]) === 'object') {
@@ -664,6 +671,7 @@ function back() {
 
       router.currentRoute = previousRoute;
       router.history.pop();
+      router.propsHistory.pop();
       router.saveHistory();
 
       if (needHistoryBack && isBrokenBrowserHistory && !currentRouteWithoutBrowserHistory) {
@@ -717,7 +725,8 @@ function back() {
   if (!navigateOptions.force && $previousPage.length && !skipMaster) {
     if (router.params.browserHistory && $previousPage[0].f7Page && router.history[router.history.length - 2] !== $previousPage[0].f7Page.route.url) {
       router.back(router.history[router.history.length - 2], extend(navigateOptions, {
-        force: true
+        force: true,
+        props: router.propsHistory[router.propsHistory.length - 2] || {}
       }));
       return router;
     }
@@ -754,12 +763,14 @@ function back() {
 
   if (!navigateUrl && router.history.length > 1) {
     navigateUrl = router.history[router.history.length - 2];
+    navigateProps = router.propsHistory[router.propsHistory.length - 2] || {};
   }
 
   if (skipMaster && !navigateOptions.force && router.history[router.history.length - 3]) {
     return router.back(router.history[router.history.length - 3], extend({}, navigateOptions || {}, {
       force: true,
-      animate: false
+      animate: false,
+      props: router.propsHistory[router.propsHistory.length - 3] || {}
     }));
   }
 
@@ -795,9 +806,13 @@ function back() {
   const options = {};
 
   if (route.route.options) {
-    extend(options, route.route.options, navigateOptions);
+    extend(options, route.route.options, navigateOptions, {
+      props: navigateProps || {}
+    });
   } else {
-    extend(options, navigateOptions);
+    extend(options, navigateOptions, {
+      props: navigateProps || {}
+    });
   }
 
   options.route = route;

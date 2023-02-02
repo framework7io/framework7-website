@@ -1,7 +1,7 @@
 {
   "name": "framework7-website",
-  "releaseVersion": "7.1.2",
-  "releaseDate": "January 18, 2023",
+  "releaseVersion": "7.1.3",
+  "releaseDate": "February 2, 2023",
   "description": "Framework7 Website",
   "cdn": "//cdn.framework7.io",
   "keywords": [
@@ -80,9 +80,9 @@
     "vue": "^3.2.31"
   },
   "dependencies": {
-    "framework7": "^7.1.2",
-    "framework7-react": "^7.1.2",
-    "framework7-svelte": "^7.1.2",
-    "framework7-vue": "^7.1.2"
+    "framework7": "^7.1.3",
+    "framework7-react": "^7.1.3",
+    "framework7-svelte": "^7.1.3",
+    "framework7-vue": "^7.1.3"
   }
 }
