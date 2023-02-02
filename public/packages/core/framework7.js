@@ -1,5 +1,5 @@
 /**
- * Framework7 7.1.3
+ * Framework7 7.1.5
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -204,15 +204,15 @@
     }
 
     /**
-     * Dom7 4.0.4
+     * Dom7 4.0.6
      * Minimalistic JavaScript library for DOM manipulation, with a jQuery-compatible API
      * https://framework7.io/docs/dom7.html
      *
-     * Copyright 2022, Vladimir Kharlampidi
+     * Copyright 2023, Vladimir Kharlampidi
      *
      * Licensed under MIT
      *
-     * Released on: January 11, 2022
+     * Released on: February 2, 2023
      */
     /* eslint-disable no-proto */
 
@@ -749,6 +749,22 @@
             delete el.dom7EventData;
           }
         }
+      }
+
+      return this;
+    }
+
+    function transitionStart(callback) {
+      const dom = this;
+
+      function fireCallBack(e) {
+        if (e.target !== this) return;
+        callback.call(this, e);
+        dom.off('transitionstart', fireCallBack);
+      }
+
+      if (callback) {
+        dom.on('transitionstart', fireCallBack);
       }
 
       return this;
@@ -1830,6 +1846,7 @@
         transform: transform,
         transition: transition,
         transitionEnd: transitionEnd,
+        transitionStart: transitionStart,
         trigger: trigger,
         val: val,
         value: value,
