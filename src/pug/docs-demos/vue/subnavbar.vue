@@ -1,7 +1,7 @@
 <template>
   <f7-app>
     <f7-view main>
-      <f7-page :page-content="false">
+      <f7-page :page-content="false" with-subnavbar>
         <f7-navbar title="Subnavbar">
           <f7-subnavbar>
             <f7-segmented raised>
