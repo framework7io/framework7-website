@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2023-03-02T20:00:00.000Z",
+    "title": "JetX Apostas | JetiX Aposta - Jogo do Foguete que Ganha Dinheiro",
+    "link": "https://jetxgame.com/pt/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/jetx-game-pt",
+    "image": "jetxgame.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2023-03-01T20:00:00.000Z",
     "title": "Casino utan Svensk Licens 2023",
     "link": "https://starwarscasinos.com/",
@@ -520,17 +530,6 @@
     "plan": "topSupporter",
     "ref": "https://www.patreon.com/user/creators?u=73577453",
     "image": "bonusvedot.png",
-    "image_h": "",
-    "endDate": ""
-  },
-  {
-    "createdAt": "2022-04-23T12:00:00.000Z",
-    "active": true,
-    "title": "JETX APOSTAS - Jogo do foguete JETIX 2022",
-    "link": "https://jetx-apostas.com",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/jetx-apostas",
-    "image": "jetxjogo.png",
     "image_h": "",
     "endDate": ""
   },
