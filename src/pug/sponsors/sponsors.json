@@ -665,16 +665,6 @@
     "image": "boostlikes.png"
   },
   {
-    "createdAt": "2021-12-08T10:37:02.926Z",
-    "active": true,
-    "title": "Timeshare exit company reviews",
-    "link": "https://exittimesharereview.com",
-    "plan": "topSupporter",
-    "ref": "https://www.patreon.com/user/creators?u=64279480",
-    "endDate": "2023-01-08T00:00+03:00",
-    "image": "exittimesharereview.png"
-  },
-  {
     "createdAt": "2021-11-17T09:44:23.341Z",
     "active": true,
     "title": "Sammenlign priser på produkter i Danmark | Billigzonen.dk",
@@ -723,16 +713,6 @@
     "ref": "https://www.patreon.com/user/creators?u=23875904",
     "endDate": "",
     "image": "fortunegames.png"
-  },
-  {
-    "createdAt": "2021-10-13T08:24:32.974Z",
-    "active": true,
-    "title": "CryptoGambleTips - 70+ casino reviews, exclusive bonus & games guides",
-    "link": "https://cryptogamble.tips",
-    "plan": "topSupporter",
-    "ref": "https://www.patreon.com/user/creators?u=63064492",
-    "endDate": "2022-10-13T00:00+03:00",
-    "image": "cryptogamble.png"
   },
   {
     "createdAt": "2021-10-11T16:36:41.734Z",
@@ -1270,7 +1250,7 @@
     "title": "Casinot",
     "link": "https://www.casinot.net",
     "plan": "silverSponsor",
-    "ref": "",
+    "ref": "https://opencollective.com/casinot-net",
     "endDate": "",
     "image": "casinotnet.png"
   },
@@ -1280,7 +1260,7 @@
     "title": "ParasKasino",
     "link": "https://www.paraskasino.fi",
     "plan": "silverSponsor",
-    "ref": "",
+    "ref": "https://opencollective.com/paraskasino",
     "endDate": "",
     "image": "paraskasino.png"
   },
@@ -1290,7 +1270,7 @@
     "title": "NettiCasinoHEX.com",
     "link": "https://netticasinohex.com",
     "plan": "silverSponsor",
-    "ref": "",
+    "ref": "https://opencollective.com/netticasinohex-com",
     "endDate": "",
     "image": "netticasinohex.png"
   },
@@ -1300,7 +1280,7 @@
     "title": "Kasinot.fi",
     "link": "https://www.kasinot.fi",
     "plan": "silverSponsor",
-    "ref": "",
+    "ref": "https://opencollective.com/kasinot-fi",
     "endDate": "",
     "image": "kasinotfi.png"
   },
@@ -1313,16 +1293,6 @@
     "ref": "",
     "endDate": "",
     "image": "thorium.png"
-  },
-  {
-    "createdAt": "2021-02-25T19:35:20.090Z",
-    "active": true,
-    "title": "AppValley",
-    "link": "https://app-valley.vip/",
-    "plan": "silverSponsor",
-    "ref": "",
-    "endDate": "",
-    "image": "appvalley.jpg"
   },
   {
     "createdAt": "2021-02-25T19:35:17.841Z",
