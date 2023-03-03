@@ -1,5 +1,45 @@
 [
   {
+    "createdAt": "2023-03-03T20:00:00.000Z",
+    "title": "Aviator Game | Play Aviator Money Game by Spribe",
+    "link": "https://aviatorgame.net/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/aviator-game",
+    "image": "aviator-game.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2023-03-03T20:00:00.000Z",
+    "title": "Pin Up Aviator Game Casino | Aviator Game in India",
+    "link": "https://pinupaviator.in/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/pin-up-aviator-india",
+    "image": "pin-up-aviator-india.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2023-03-03T20:00:00.000Z",
+    "title": "Revisão do jogo Lucky Jet - Jogue por dinheiro real Jogos Lucky Jet",
+    "link": "https://luckyjetgames.com/pt/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/lucky-jet-brazil",
+    "image": "lucky-jet-brazil.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2023-03-03T20:00:00.000Z",
+    "title": "Gioca Crazy Time Casinò per soldi veri - Crazy Time Casinò Italia",
+    "link": "https://emporioae.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/crazy-time-italia",
+    "image": "crazy-time-italia.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2023-03-02T20:00:00.000Z",
     "title": "JetX Apostas | JetiX Aposta - Jogo do Foguete que Ganha Dinheiro",
     "link": "https://jetxgame.com/pt/",
