@@ -1,0 +1,118 @@
+.example-preview {
+  margin: 32px 0;
+  &-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 8px 8px 0 0;
+    background: #000;
+    padding: 8px 16px;
+  }
+  &-file {
+    color: #fff;
+    opacity: 0.75;
+  }
+  &-buttons {
+    display: flex;
+  }
+  &-buttons-group:nth-child(n + 1) {
+    margin-left: 16px;
+    display: none;
+    @media (min-width: 768px) {
+      display: flex;
+    }
+  }
+  &-buttons-group a {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    svg {
+      position: relative;
+      top: -1px;
+      height: 16px;
+      width: 16px;
+      opacity: 0.5;
+    }
+  }
+  &-buttons-group button {
+    appearance: none;
+    box-shadow: none;
+    border: none;
+    outline: none;
+    height: 32px;
+    width: 80px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    &.example-preview-button-active {
+      background: @primaryColor;
+    }
+    &:not(.example-preview-button-active) {
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.5);
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+    &:first-child {
+      border-radius: 4px 0 0 4px;
+    }
+    &:last-child {
+      border-radius: 0 4px 4px 0;
+    }
+  }
+  &-container {
+    display: flex;
+
+    @media (min-width: 768px) {
+      border: 4px solid #000;
+      border-top: none;
+    }
+  }
+  &-code {
+    width: 100%;
+    min-width: 0;
+    flex-shrink: 10;
+    @media (min-width: 768px) {
+      border-right: 4px solid #000;
+      height: 734px;
+    }
+  }
+  &-frame {
+    display: none;
+    width: 320px;
+    flex-shrink: 0;
+    @media (min-width: 768px) {
+      display: block;
+    }
+    @media (min-width: 1024px) {
+      width: 375px;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      border: none;
+    }
+  }
+  pre {
+    overflow: auto !important;
+    margin: 0;
+    border-radius: 0 !important;
+    height: 100%;
+    code {
+      border-radius: 0 !important;
+    }
+  }
+}

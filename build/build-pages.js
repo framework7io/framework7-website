@@ -23,6 +23,7 @@ const coreSourceFilter = require('./utils/core-source-filter');
 const svelteSourceFilter = require('./utils/svelte-source-filter');
 const vueSourceFilter = require('./utils/vue-source-filter');
 const reactSourceFilter = require('./utils/react-source-filter');
+const reactSourceFilterNew = require('./utils/react-source-filter-new');
 
 const createIndex = require('./utils/create-index');
 const createMobilePreviewLinks = require('./utils/create-mobile-preview-links');
@@ -143,6 +144,7 @@ function buildPages(
           inlineSvg,
           cssVars,
           releaseNotes,
+          reactSourceFilterNew,
         },
       }),
     )
