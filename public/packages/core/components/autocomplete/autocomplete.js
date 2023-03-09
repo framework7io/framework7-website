@@ -13,7 +13,6 @@ export default {
       dropdownPlaceholderText: undefined,
       typeahead: false,
       highlightMatches: true,
-      expandInput: false,
       updateInputValueOnSelect: true,
       inputEvents: 'input',
       value: undefined,
@@ -29,7 +28,7 @@ export default {
       pageTitle: undefined,
       searchbarPlaceholder: 'Search...',
       searchbarDisableText: 'Cancel',
-      searchbarDisableButton: undefined,
+      searchbarDisableButton: true,
       searchbarSpellcheck: false,
       popupPush: false,
       popupSwipeToClose: undefined,
@@ -59,7 +58,6 @@ export default {
   static: {
     Autocomplete
   },
-
   create() {
     const app = this;
     app.autocomplete = extend(ConstructorMethods({
@@ -73,14 +71,11 @@ export default {
         if (ac && ac.open) return ac.open();
         return undefined;
       },
-
       close(autocompleteEl) {
         const ac = app.autocomplete.get(autocompleteEl);
         if (ac && ac.close) return ac.close();
         return undefined;
       }
-
     });
   }
-
 };

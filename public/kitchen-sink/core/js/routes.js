@@ -4,9 +4,6 @@ var routes = [
     path: '/',
     componentUrl: './pages/home.html',
     name: 'home',
-    master(f7) {
-      return f7.theme === 'aurora';
-    },
   },
   // About page
   {
@@ -76,10 +73,6 @@ var routes = [
     componentUrl: './pages/action-sheet.html',
   },
   {
-    path: '/appbar/',
-    componentUrl: './pages/appbar.html',
-  },
-  {
     path: '/area-chart/',
     componentUrl: './pages/area-chart.html',
   },
@@ -144,10 +137,6 @@ var routes = [
     componentUrl: './pages/dialog.html',
   },
   {
-    path: '/elevation/',
-    url: './pages/elevation.html',
-  },
-  {
     path: '/fab/',
     url: './pages/fab.html',
   },
@@ -180,10 +169,6 @@ var routes = [
     url: './pages/inputs.html',
   },
   {
-    path: '/lazy-load/',
-    url: './pages/lazy-load.html',
-  },
-  {
     path: '/list/',
     url: './pages/list.html',
   },
@@ -198,10 +183,6 @@ var routes = [
   {
     path: '/login-screen-page/',
     componentUrl: './pages/login-screen-page.html',
-  },
-  {
-    path: '/menu/',
-    componentUrl: './pages/menu.html',
   },
   {
     path: '/menu-list/',
@@ -356,10 +337,6 @@ var routes = [
         componentUrl: './pages/swiper-gallery.html',
       },
       {
-        path: 'swiper-custom-controls/',
-        url: './pages/swiper-custom-controls.html',
-      },
-      {
         path: 'swiper-parallax/',
         url: './pages/swiper-parallax.html',
       },
@@ -464,8 +441,8 @@ var routes = [
         componentUrl: './pages/tabbar.html',
       },
       {
-        path: 'tabbar-labels/',
-        componentUrl: './pages/tabbar-labels.html',
+        path: 'tabbar-icons/',
+        componentUrl: './pages/tabbar-icons.html',
       },
       {
         path: 'tabbar-scrollable/',

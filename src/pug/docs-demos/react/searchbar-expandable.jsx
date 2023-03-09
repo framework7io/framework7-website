@@ -21,7 +21,6 @@ export default () => (
             <Link
               searchbarEnable=".searchbar-demo"
               iconIos="f7:search"
-              iconAurora="f7:search"
               iconMd="material:search"
             ></Link>
           </NavRight>
@@ -30,7 +29,7 @@ export default () => (
             expandable
             searchContainer=".search-list"
             searchIn=".item-title"
-            disableButton={!theme.aurora}
+            disableButton={true}
           ></Searchbar>
         </Navbar>
         <List className="searchbar-not-found">

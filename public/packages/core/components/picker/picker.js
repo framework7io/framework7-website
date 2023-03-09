@@ -6,7 +6,6 @@ export default {
   static: {
     Picker
   },
-
   create() {
     const app = this;
     app.picker = ConstructorMethods({
@@ -15,12 +14,10 @@ export default {
       app,
       domProp: 'f7Picker'
     });
-
     app.picker.close = function close(el) {
       if (el === void 0) {
         el = '.picker';
       }
-
       const $el = $(el);
       if ($el.length === 0) return;
       const picker = $el[0].f7Picker;
@@ -28,7 +25,6 @@ export default {
       picker.close();
     };
   },
-
   params: {
     picker: {
       // Picker settings

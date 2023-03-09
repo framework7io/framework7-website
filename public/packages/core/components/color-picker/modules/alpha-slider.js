@@ -28,7 +28,6 @@ export default {
       class: "color-picker-value-alpha"
     }))));
   },
-
   init(self) {
     self.alphaRangeSlider = self.app.range.create({
       el: self.$el.find('.color-picker-slider-alpha'),
@@ -43,32 +42,25 @@ export default {
             alpha
           });
         }
-
       }
     });
-
     function handleInputChange(e) {
       const alpha = self.value.alpha;
       let value = parseFloat(e.target.value);
-
       if (Number.isNaN(value)) {
         e.target.value = alpha;
         return;
       }
-
       value = Math.max(0, Math.min(1, value));
       self.setValue({
         alpha: value
       });
     }
-
     self.$el.on('change', '.color-picker-module-alpha-slider input', handleInputChange);
-
     self.destroyAlphaSliderEvents = function destroyAlphaSliderEvents() {
       self.$el.off('change', '.color-picker-module-alpha-slider input', handleInputChange);
     };
   },
-
   update(self) {
     const {
       value
@@ -82,22 +74,18 @@ export default {
     } = value;
     self.alphaRangeSlider.value = alpha;
     self.alphaRangeSlider.layout();
-
     if (sliderValue && sliderValueEditable) {
       self.$el.find('input.color-picker-value-alpha').val(alpha);
     } else {
       self.$el.find('span.color-picker-value-alpha').text(alpha);
     }
   },
-
   destroy(self) {
     if (self.alphaRangeSlider && self.alphaRangeSlider.destroy) {
       self.alphaRangeSlider.destroy();
     }
-
     delete self.alphaRangeSlider;
     if (self.destroyAlphaSliderEvents) self.destroyAlphaSliderEvents();
     delete self.destroyAlphaSliderEvents;
   }
-
 };

@@ -1,6 +1,5 @@
 import $ from '../../../shared/dom7.js';
 /** @jsx $jsx */
-
 import $jsx from '../../../shared/$jsx.js';
 export default {
   render(self) {
@@ -67,7 +66,6 @@ export default {
       class: "color-picker-value-bar-blue"
     }))));
   },
-
   init(self) {
     self.redBar = self.app.range.create({
       el: self.$el.find('.color-picker-bar-red'),
@@ -82,7 +80,6 @@ export default {
             rgb: [value, self.value.rgb[1], self.value.rgb[2]]
           });
         }
-
       }
     });
     self.greenBar = self.app.range.create({
@@ -98,7 +95,6 @@ export default {
             rgb: [self.value.rgb[0], value, self.value.rgb[2]]
           });
         }
-
       }
     });
     self.blueBar = self.app.range.create({
@@ -114,34 +110,27 @@ export default {
             rgb: [self.value.rgb[0], self.value.rgb[1], value]
           });
         }
-
       }
     });
-
     function handleInputChange(e) {
       const rgb = [...self.value.rgb];
       const index = parseInt($(e.target).attr('data-color-index'), 10);
       let value = parseInt(e.target.value, 10);
-
       if (Number.isNaN(value)) {
         e.target.value = rgb[index];
         return;
       }
-
       value = Math.max(0, Math.min(255, value));
       rgb[index] = value;
       self.setValue({
         rgb
       });
     }
-
     self.$el.on('change', '.color-picker-module-rgb-bars input', handleInputChange);
-
     self.destroyRgbBarsEvents = function destroyRgbBarsEvents() {
       self.$el.off('change', '.color-picker-module-rgb-bars input', handleInputChange);
     };
   },
-
   update(self) {
     const {
       value,
@@ -165,7 +154,6 @@ export default {
     redBar.$el.find('.range-bar').css('background-image', `linear-gradient(to top, rgb(0, ${rgb[1]}, ${rgb[2]}), rgb(255, ${rgb[1]}, ${rgb[2]}))`);
     greenBar.$el.find('.range-bar').css('background-image', `linear-gradient(to top, rgb(${rgb[0]}, 0, ${rgb[2]}), rgb(${rgb[0]}, 255, ${rgb[2]}))`);
     blueBar.$el.find('.range-bar').css('background-image', `linear-gradient(to top, rgb(${rgb[0]}, ${rgb[1]}, 0), rgb(${rgb[0]}, ${rgb[1]}, 255))`);
-
     if (barValue && barValueEditable) {
       self.$el.find('input.color-picker-value-bar-red').val(rgb[0]);
       self.$el.find('input.color-picker-value-bar-green').val(rgb[1]);
@@ -176,25 +164,20 @@ export default {
       self.$el.find('span.color-picker-value-bar-blue').text(rgb[2]);
     }
   },
-
   destroy(self) {
     if (self.redBar && self.redBar.destroy) {
       self.redBar.destroy();
     }
-
     if (self.greenBar && self.greenBar.destroy) {
       self.greenBar.destroy();
     }
-
     if (self.blueBar && self.blueBar.destroy) {
       self.blueBar.destroy();
     }
-
     delete self.redBar;
     delete self.greenBar;
     delete self.blueBar;
     if (self.destroyRgbBarsEvents) self.destroyRgbBarsEvents();
     delete self.destroyRgbBarsEvents;
   }
-
 };

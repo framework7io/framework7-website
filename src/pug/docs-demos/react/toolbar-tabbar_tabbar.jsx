@@ -9,7 +9,6 @@ export default () => {
         <NavRight>
           <Link
             iconIos="f7:arrow_up_arrow_down_circle_fill"
-            iconAurora="f7:arrow_up_arrow_down_circle_fill"
             iconMd="material:compare_arrows"
             onClick={() => setIsBottom(!isBottom)}
           ></Link>

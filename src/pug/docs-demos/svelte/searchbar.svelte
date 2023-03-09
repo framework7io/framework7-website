@@ -6,7 +6,7 @@
           <Searchbar
             searchContainer=".search-list"
             searchIn=".item-title"
-            disableButton={!theme.aurora}
+            disableButton={true}
           />
         </Subnavbar>
       </Navbar>

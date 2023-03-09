@@ -854,11 +854,7 @@
     height: 24px;
     border-radius: 4px;
   }
-  .aurora .demo-list-icon, .aurora .icon-f7, .aurora .icon-vi {
-    width: 18px;
-    height: 18px;
-    border-radius: 4px;
-  }
+
 </style>
 <script>
   export default {

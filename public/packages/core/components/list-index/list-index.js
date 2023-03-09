@@ -7,7 +7,6 @@ export default {
   static: {
     ListIndex
   },
-
   create() {
     const app = this;
     app.listIndex = ConstructorMethods({
@@ -17,7 +16,6 @@ export default {
       domProp: 'f7ListIndex'
     });
   },
-
   on: {
     tabMounted(tabEl) {
       const app = this;
@@ -28,13 +26,11 @@ export default {
         app.listIndex.create(params);
       });
     },
-
     tabBeforeRemove(tabEl) {
       $(tabEl).find('.list-index-init').each(listIndexEl => {
         if (listIndexEl.f7ListIndex) listIndexEl.f7ListIndex.destroy();
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.list-index-init').each(listIndexEl => {
@@ -44,13 +40,11 @@ export default {
         app.listIndex.create(params);
       });
     },
-
     pageBeforeRemove(page) {
       page.$el.find('.list-index-init').each(listIndexEl => {
         if (listIndexEl.f7ListIndex) listIndexEl.f7ListIndex.destroy();
       });
     }
-
   },
   vnode: {
     'list-index-init': {
@@ -62,12 +56,10 @@ export default {
         });
         app.listIndex.create(params);
       },
-
       destroy(vnode) {
         const listIndexEl = vnode.elm;
         if (listIndexEl.f7ListIndex) listIndexEl.f7ListIndex.destroy();
       }
-
     }
   }
 };

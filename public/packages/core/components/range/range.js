@@ -4,7 +4,6 @@ import Range from './range-class.js';
 import ConstructorMethods from '../../shared/constructor-methods.js';
 export default {
   name: 'range',
-
   create() {
     const app = this;
     app.range = extend(ConstructorMethods({
@@ -17,25 +16,20 @@ export default {
         if (el === void 0) {
           el = '.range-slider';
         }
-
         const range = app.range.get(el);
         if (range) return range.getValue();
         return undefined;
       },
-
       setValue(el, value) {
         if (el === void 0) {
           el = '.range-slider';
         }
-
         const range = app.range.get(el);
         if (range) return range.setValue(value);
         return undefined;
       }
-
     });
   },
-
   static: {
     Range
   },
@@ -46,26 +40,22 @@ export default {
         el: rangeEl
       }));
     },
-
     tabBeforeRemove(tabEl) {
       $(tabEl).find('.range-slider-init').each(rangeEl => {
         if (rangeEl.f7Range) rangeEl.f7Range.destroy();
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.range-slider-init').each(rangeEl => new Range(app, {
         el: rangeEl
       }));
     },
-
     pageBeforeRemove(page) {
       page.$el.find('.range-slider-init').each(rangeEl => {
         if (rangeEl.f7Range) rangeEl.f7Range.destroy();
       });
     }
-
   },
   vnode: {
     'range-slider-init': {
@@ -76,12 +66,10 @@ export default {
           el: rangeEl
         });
       },
-
       destroy(vnode) {
         const rangeEl = vnode.elm;
         if (rangeEl.f7Range) rangeEl.f7Range.destroy();
       }
-
     }
   }
 };

@@ -66,7 +66,7 @@ $('.home-header .theme-switch a').click(function onClick(e) {
   const url = $(this).attr('href');
   const theme = url.split('?theme=')[1];
   $('header .phone iframe').attr('src', url);
-  $('header .phone').removeClass('ios md aurora').addClass(theme);
+  $('header .phone').removeClass('ios md').addClass(theme);
   $('.home-header .theme-switch a').removeClass('active');
   $(this).addClass('active');
   $('header .phone .fullscreen').attr('href', url);

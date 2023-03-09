@@ -7,7 +7,6 @@ export default {
   static: {
     Searchbar
   },
-
   create() {
     const app = this;
     app.searchbar = ConstructorMethods({
@@ -18,7 +17,6 @@ export default {
       addMethods: 'clear enable disable toggle search'.split(' ')
     });
   },
-
   on: {
     tabMounted(tabEl) {
       const app = this;
@@ -29,7 +27,6 @@ export default {
         }));
       });
     },
-
     tabBeforeRemove(tabEl) {
       $(tabEl).find('.searchbar-init').each(searchbarEl => {
         if (searchbarEl.f7Searchbar && searchbarEl.f7Searchbar.destroy) {
@@ -37,7 +34,6 @@ export default {
         }
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.searchbar-init').each(searchbarEl => {
@@ -46,7 +42,6 @@ export default {
           el: searchbarEl
         }));
       });
-
       if (app.theme === 'ios' && page.view && page.view.router.dynamicNavbar && page.$navbarEl && page.$navbarEl.length > 0) {
         page.$navbarEl.find('.searchbar-init').each(searchbarEl => {
           const $searchbarEl = $(searchbarEl);
@@ -56,7 +51,6 @@ export default {
         });
       }
     },
-
     pageBeforeRemove(page) {
       const app = this;
       page.$el.find('.searchbar-init').each(searchbarEl => {
@@ -64,7 +58,6 @@ export default {
           searchbarEl.f7Searchbar.destroy();
         }
       });
-
       if (app.theme === 'ios' && page.view && page.view.router.dynamicNavbar && page.$navbarEl && page.$navbarEl.length > 0) {
         page.$navbarEl.find('.searchbar-init').each(searchbarEl => {
           if (searchbarEl.f7Searchbar && searchbarEl.f7Searchbar.destroy) {
@@ -73,14 +66,12 @@ export default {
         });
       }
     }
-
   },
   clicks: {
     '.searchbar-clear': function clear($clickedEl, data) {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       const sb = app.searchbar.get(data.searchbar);
       if (sb) sb.clear();
@@ -89,7 +80,6 @@ export default {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       const sb = app.searchbar.get(data.searchbar);
       if (sb) sb.enable(true);
@@ -98,7 +88,6 @@ export default {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       const sb = app.searchbar.get(data.searchbar);
       if (sb) sb.disable();
@@ -107,7 +96,6 @@ export default {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       const sb = app.searchbar.get(data.searchbar);
       if (sb) sb.toggle();
@@ -123,15 +111,12 @@ export default {
           el: searchbarEl
         }));
       },
-
       destroy(vnode) {
         const searchbarEl = vnode.elm;
-
         if (searchbarEl.f7Searchbar && searchbarEl.f7Searchbar.destroy) {
           searchbarEl.f7Searchbar.destroy();
         }
       }
-
     }
   }
 };

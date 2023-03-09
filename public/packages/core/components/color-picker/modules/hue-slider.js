@@ -28,7 +28,6 @@ export default {
       class: "color-picker-value-hue"
     }))));
   },
-
   init(self) {
     self.hueRangeSlider = self.app.range.create({
       el: self.$el.find('.color-picker-slider-hue'),
@@ -42,11 +41,9 @@ export default {
             hue: value
           });
         }
-
       }
     });
   },
-
   update(self) {
     const {
       value
@@ -61,20 +58,16 @@ export default {
     self.hueRangeSlider.value = hue;
     self.hueRangeSlider.layout();
     self.hueRangeSlider.$el[0].style.setProperty('--f7-range-knob-color', `hsl(${hue}, 100%, 50%)`);
-
     if (sliderValue && sliderValueEditable) {
       self.$el.find('input.color-picker-value-hue').val(`${hue}`);
     } else if (sliderValue) {
       self.$el.find('span.color-picker-value-hue').text(`${hue}`);
     }
   },
-
   destroy(self) {
     if (self.hueRangeSlider && self.hueRangeSlider.destroy) {
       self.hueRangeSlider.destroy();
     }
-
     delete self.hueRangeSlider;
   }
-
 };

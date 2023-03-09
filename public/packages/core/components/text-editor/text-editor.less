@@ -27,7 +27,6 @@
   top: 0;
   padding: var(--f7-text-editor-toolbar-padding);
   flex-shrink: 0;
-  box-shadow: var(--f7-text-editor-toolbar-box-shadow);
   box-sizing: border-box;
   .hairline(bottom, var(--f7-text-editor-toolbar-border-color));
 }
@@ -146,8 +145,6 @@ button.text-editor-button {
 .item-input-outline {
   .text-editor-content {
     border-radius: var(--f7-input-outline-border-radius);
-    padding-left: var(--f7-input-outline-padding-horizontal);
-    padding-right: var(--f7-input-outline-padding-horizontal);
   }
 }
 .if-ios-theme({
@@ -155,7 +152,4 @@ button.text-editor-button {
 });
 .if-md-theme({
   @import './text-editor-md.less';
-});
-.if-aurora-theme({
-  @import './text-editor-aurora.less';
 });

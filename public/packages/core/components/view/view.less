@@ -10,7 +10,7 @@
 .framework7-root {
   > .view,
   > .views {
-    height: calc(100% - var(--f7-appbar-app-offset, 0px));
+    height: 100%;
   }
 }
 .view-resize-handler {
@@ -32,7 +32,4 @@
 });
 .if-md-theme({
   @import './view-md.less';
-});
-.if-aurora-theme({
-  @import './view-aurora.less';
 });

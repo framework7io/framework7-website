@@ -7,7 +7,7 @@
             <f7-searchbar
               search-container=".search-list"
               search-in=".item-title"
-              :disable-button="!theme.aurora"
+              :disable-button="true"
             ></f7-searchbar>
           </f7-subnavbar>
         </f7-navbar>
@@ -61,13 +61,13 @@
   </f7-app>
 </template>
 <script>
-  import { theme } from 'framework7-vue';
+import { theme } from 'framework7-vue';
 
-  export default {
-    data() {
-      return {
-        theme,
-      };
-    }
-  }
+export default {
+  data() {
+    return {
+      theme,
+    };
+  },
+};
 </script>

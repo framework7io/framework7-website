@@ -21,8 +21,8 @@ export default () => (
         <FabBackdrop slot="fixed" />
 
         <Fab position="right-bottom" slot="fixed">
-          <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
-          <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
+          <Icon ios="f7:plus" md="material:add"></Icon>
+          <Icon ios="f7:xmark" md="material:close"></Icon>
           <FabButtons position="top">
             <FabButton label="Action 1">1</FabButton>
             <FabButton label="Action 2">2</FabButton>

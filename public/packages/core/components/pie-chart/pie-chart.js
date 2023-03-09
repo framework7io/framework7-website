@@ -12,7 +12,6 @@ export default {
       formatTooltip: null
     }
   },
-
   create() {
     const app = this;
     app.pieChart = ConstructorMethods({
@@ -21,7 +20,6 @@ export default {
       app,
       domProp: 'f7PieChart'
     });
-
     app.pieChart.update = function update(el, newParams) {
       const $el = $(el);
       if ($el.length === 0) return undefined;
@@ -31,5 +29,4 @@ export default {
       return pieChart;
     };
   }
-
 };

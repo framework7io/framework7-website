@@ -28,7 +28,7 @@ export default {
       searchbar: false,
       searchbarPlaceholder: 'Search',
       searchbarDisableText: 'Cancel',
-      searchbarDisableButton: undefined,
+      searchbarDisableButton: true,
       searchbarSpellcheck: false,
       closeOnSelect: false,
       virtualList: false,
@@ -38,8 +38,8 @@ export default {
       navbarColorTheme: undefined,
       routableModals: false,
       url: 'select/',
+      inputIconPosition: 'start',
       cssClass: '',
-
       /*
         Custom render functions
       */
@@ -55,7 +55,6 @@ export default {
   static: {
     SmartSelect
   },
-
   create() {
     const app = this;
     app.smartSelect = extend(ConstructorMethods({
@@ -69,16 +68,13 @@ export default {
         if (ss && ss.open) return ss.open();
         return undefined;
       },
-
       close(smartSelectEl) {
         const ss = app.smartSelect.get(smartSelectEl);
         if (ss && ss.close) return ss.close();
         return undefined;
       }
-
     });
   },
-
   on: {
     tabMounted(tabEl) {
       const app = this;
@@ -88,7 +84,6 @@ export default {
         }, $(smartSelectEl).dataset()));
       });
     },
-
     tabBeforeRemove(tabEl) {
       $(tabEl).find('.smart-select-init').each(smartSelectEl => {
         if (smartSelectEl.f7SmartSelect && smartSelectEl.f7SmartSelect.destroy) {
@@ -96,7 +91,6 @@ export default {
         }
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.smart-select-init').each(smartSelectEl => {
@@ -105,7 +99,6 @@ export default {
         }, $(smartSelectEl).dataset()));
       });
     },
-
     pageBeforeRemove(page) {
       page.$el.find('.smart-select-init').each(smartSelectEl => {
         if (smartSelectEl.f7SmartSelect && smartSelectEl.f7SmartSelect.destroy) {
@@ -113,12 +106,10 @@ export default {
         }
       });
     }
-
   },
   clicks: {
     '.smart-select': function open($clickedEl, data) {
       const app = this;
-
       if (!$clickedEl[0].f7SmartSelect) {
         const ss = app.smartSelect.create(extend({
           el: $clickedEl
@@ -136,15 +127,12 @@ export default {
           el: smartSelectEl
         }, $(smartSelectEl).dataset()));
       },
-
       destroy(vnode) {
         const smartSelectEl = vnode.elm;
-
         if (smartSelectEl.f7SmartSelect && smartSelectEl.f7SmartSelect.destroy) {
           smartSelectEl.f7SmartSelect.destroy();
         }
       }
-
     }
   }
 };

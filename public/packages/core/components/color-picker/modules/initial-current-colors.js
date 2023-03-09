@@ -12,7 +12,6 @@ export default {
       class: "color-picker-current-color"
     })));
   },
-
   init(self) {
     function handleInitialColorClick() {
       if (self.initialValue) {
@@ -26,25 +25,19 @@ export default {
         });
       }
     }
-
     self.$el.on('click', '.color-picker-initial-color', handleInitialColorClick);
-
     self.destroyInitialCurrentEvents = function destroyInitialCurrentEvents() {
       self.$el.off('click', '.color-picker-initial-color', handleInitialColorClick);
     };
   },
-
   update(self) {
     self.$el.find('.color-picker-module-initial-current-colors .color-picker-initial-color').css('background-color', self.initialValue.hex);
     self.$el.find('.color-picker-module-initial-current-colors .color-picker-current-color').css('background-color', self.value.hex);
   },
-
   destroy(self) {
     if (self.destroyInitialCurrentEvents) {
       self.destroyInitialCurrentEvents();
     }
-
     delete self.destroyInitialCurrentEvents;
   }
-
 };

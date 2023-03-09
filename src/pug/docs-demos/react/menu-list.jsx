@@ -17,7 +17,7 @@ export default () => {
               selected={selected === 'home'}
               onClick={() => setSelected('home')}
             >
-              <Icon md="material:home" aurora="f7:house_fill" ios="f7:house_fill" slot="media" />
+              <Icon md="material:home" ios="f7:house_fill" slot="media" />
             </ListItem>
             <ListItem
               link
@@ -25,12 +25,7 @@ export default () => {
               selected={selected === 'profile'}
               onClick={() => setSelected('profile')}
             >
-              <Icon
-                md="material:person"
-                aurora="f7:person_fill"
-                ios="f7:person_fill"
-                slot="media"
-              />
+              <Icon md="material:person" ios="f7:person_fill" slot="media" />
             </ListItem>
             <ListItem
               link
@@ -38,12 +33,7 @@ export default () => {
               selected={selected === 'settings'}
               onClick={() => setSelected('settings')}
             >
-              <Icon
-                md="material:settings"
-                aurora="f7:gear_alt_fill"
-                ios="f7:gear_alt_fill"
-                slot="media"
-              />
+              <Icon md="material:settings" ios="f7:gear_alt_fill" slot="media" />
             </ListItem>
           </List>
 
@@ -55,7 +45,7 @@ export default () => {
               selected={selectedMedia === 'home'}
               onClick={() => setSelectedMedia('home')}
             >
-              <Icon md="material:home" aurora="f7:house_fill" ios="f7:house_fill" slot="media" />
+              <Icon md="material:home" ios="f7:house_fill" slot="media" />
             </ListItem>
             <ListItem
               link
@@ -64,12 +54,7 @@ export default () => {
               selected={selectedMedia === 'profile'}
               onClick={() => setSelectedMedia('profile')}
             >
-              <Icon
-                md="material:person"
-                aurora="f7:person_fill"
-                ios="f7:person_fill"
-                slot="media"
-              />
+              <Icon md="material:person" ios="f7:person_fill" slot="media" />
             </ListItem>
             <ListItem
               link
@@ -78,12 +63,7 @@ export default () => {
               selected={selectedMedia === 'settings'}
               onClick={() => setSelectedMedia('settings')}
             >
-              <Icon
-                md="material:settings"
-                aurora="f7:gear_alt_fill"
-                ios="f7:gear_alt_fill"
-                slot="media"
-              />
+              <Icon md="material:settings" ios="f7:gear_alt_fill" slot="media" />
             </ListItem>
           </List>
         </Page>

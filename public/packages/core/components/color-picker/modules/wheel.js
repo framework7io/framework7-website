@@ -1,22 +1,17 @@
 import $ from '../../../shared/dom7.js';
 import { getSupport } from '../../../shared/get-support.js';
 /** @jsx $jsx */
-
 import $jsx from '../../../shared/$jsx.js';
-
 function svgWheelCircles() {
   const total = 256;
   let circles = '';
-
   for (let i = total; i > 0; i -= 1) {
     const angle = i * Math.PI / (total / 2);
     const hue = 360 / total * i;
     circles += `<circle cx="${150 - Math.sin(angle) * 125}" cy="${150 - Math.cos(angle) * 125}" r="25" fill="hsl(${hue}, 100%, 50%)"></circle>`;
   }
-
   return circles;
 }
-
 export default {
   render() {
     return $jsx("div", {
@@ -36,7 +31,6 @@ export default {
       class: "color-picker-sb-spectrum-handle"
     }))));
   },
-
   init(self) {
     const {
       app
@@ -56,7 +50,6 @@ export default {
     const {
       $el
     } = self;
-
     function setHueFromWheelCoords(x, y) {
       const wheelCenterX = wheelRect.left + wheelRect.width / 2;
       const wheelCenterY = wheelRect.top + wheelRect.height / 2;
@@ -68,7 +61,6 @@ export default {
         hue: angleDeg
       });
     }
-
     function setSBFromSpecterCoords(x, y) {
       let s = (x - specterRect.left) / specterRect.width;
       let b = (y - specterRect.top) / specterRect.height;
@@ -78,7 +70,6 @@ export default {
         hsb: [self.value.hue, s, b]
       });
     }
-
     function handleTouchStart(e) {
       if (isMoved || isTouched) return;
       touchStartX = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
@@ -89,71 +80,56 @@ export default {
       wheelHandleIsTouched = $targetEl.closest('.color-picker-wheel-handle').length > 0;
       wheelIsTouched = $targetEl.closest('circle').length > 0;
       specterHandleIsTouched = $targetEl.closest('.color-picker-sb-spectrum-handle').length > 0;
-
       if (!specterHandleIsTouched) {
         specterIsTouched = $targetEl.closest('.color-picker-sb-spectrum').length > 0;
       }
-
       if (wheelIsTouched) {
         wheelRect = $el.find('.color-picker-wheel')[0].getBoundingClientRect();
         setHueFromWheelCoords(touchStartX, touchStartY);
       }
-
       if (specterIsTouched) {
         specterRect = $el.find('.color-picker-sb-spectrum')[0].getBoundingClientRect();
         setSBFromSpecterCoords(touchStartX, touchStartY);
       }
-
       if (specterHandleIsTouched || specterIsTouched) {
         $el.find('.color-picker-sb-spectrum-handle').addClass('color-picker-sb-spectrum-handle-pressed');
       }
     }
-
     function handleTouchMove(e) {
       if (!(wheelIsTouched || wheelHandleIsTouched) && !(specterIsTouched || specterHandleIsTouched)) return;
       touchCurrentX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
       touchCurrentY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
       e.preventDefault();
-
       if (!isMoved) {
         // First move
         isMoved = true;
-
         if (wheelHandleIsTouched) {
           wheelRect = $el.find('.color-picker-wheel')[0].getBoundingClientRect();
         }
-
         if (specterHandleIsTouched) {
           specterRect = $el.find('.color-picker-sb-spectrum')[0].getBoundingClientRect();
         }
       }
-
       if (wheelIsTouched || wheelHandleIsTouched) {
         setHueFromWheelCoords(touchCurrentX, touchCurrentY);
       }
-
       if (specterIsTouched || specterHandleIsTouched) {
         setSBFromSpecterCoords(touchCurrentX, touchCurrentY);
       }
     }
-
     function handleTouchEnd() {
       isMoved = false;
-
       if (specterIsTouched || specterHandleIsTouched) {
         $el.find('.color-picker-sb-spectrum-handle').removeClass('color-picker-sb-spectrum-handle-pressed');
       }
-
       wheelIsTouched = false;
       wheelHandleIsTouched = false;
       specterIsTouched = false;
       specterHandleIsTouched = false;
     }
-
     function handleResize() {
       self.modules.wheel.update(self);
     }
-
     const passiveListener = app.touchEvents.start === 'touchstart' && getSupport().passiveListener ? {
       passive: true,
       capture: false
@@ -162,7 +138,6 @@ export default {
     app.on('touchmove:active', handleTouchMove);
     app.on('touchend:passive', handleTouchEnd);
     app.on('resize', handleResize);
-
     self.destroyWheelEvents = function destroyWheelEvents() {
       self.$el.off(app.touchEvents.start, handleTouchStart, passiveListener);
       app.off('touchmove:active', handleTouchMove);
@@ -170,7 +145,6 @@ export default {
       app.off('resize', handleResize);
     };
   },
-
   update(self) {
     const {
       value
@@ -192,10 +166,8 @@ export default {
     self.$el.find('.color-picker-sb-spectrum').css('background-color', `hsl(${hsl[0]}, 100%, 50%)`);
     self.$el.find('.color-picker-sb-spectrum-handle').css('background-color', `hsl(${hsl[0]}, ${hsl[1] * 100}%, ${hsl[2] * 100}%)`).transform(`translate(${specterWidth * hsb[1]}px, ${specterHeight * (1 - hsb[2])}px)`);
   },
-
   destroy(self) {
     if (self.destroyWheelEvents) self.destroyWheelEvents();
     delete self.destroyWheelEvents;
   }
-
 };

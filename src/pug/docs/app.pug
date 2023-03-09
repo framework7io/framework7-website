@@ -67,7 +67,7 @@ block content
           td theme
           td string
           td auto
-          td App theme. Can be `ios`, `md`, `aurora` or `auto`. In case of `auto` it will use iOS theme for iOS devices, Aurora theme for desktop device running in Electron environment, and MD theme for all other devices.
+          td App theme. Can be `ios`, `md` or `auto`. In case of `auto` it will use iOS theme for iOS devices and MD theme for all other devices.
         tr
           td language
           td string
@@ -219,11 +219,6 @@ block content
           td true
           td Enables touch ripple effect for MD theme
         tr.subparam-row
-          td auroraTouchRipple
-          td boolean
-          td false
-          td Enables touch ripple effect for Aurora theme
-        tr.subparam-row
           td touchRippleElements
           td string
           td .ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content, .list.accordion-list .accordion-item-toggle
@@ -313,7 +308,7 @@ block content
           td Boolean property indicating app is in RTL layout or not
         tr
           td app.theme
-          td String with current app theme. Can be `md`, `ios` or `aurora`
+          td String with current app theme. Can be `md`, `ios`
         tr
           td app.darkMode
           td Boolean property that indicates whether the dark theme active or not. This property has effect only when `autoDarkMode` enabled.
@@ -612,16 +607,4 @@ block content
       .md.dark {
         --f7-text-color: rgba(255, 255, 255, 0.87);
         --f7-bars-bg-color: #202020;
-      }
-      .aurora {
-        --f7-font-family: -apple-system, system-ui, Helvetica, Arial, sans-serif;
-        --f7-line-height: 1.5;
-        --f7-text-color: #000;
-        --f7-bars-border-color: rgba(0, 0, 0, 0.2);
-      }
-      .aurora .dark,
-      .aurora.dark {
-        --f7-text-color: #fff;
-        --f7-bars-bg-color: #202020;
-        --f7-bars-border-color: rgba(255, 255, 255, 0.1);
       }

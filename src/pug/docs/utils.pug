@@ -231,7 +231,7 @@ block content
       app.utils.id('xxxx-xxxx', 'abcd') // -> aabc-ccda
 
     h3 `preloaderContent`
-    p There are properties that contain theme-related (iOS, MD or Aurora) content of <a href="preloader.html#preloader-layout">Preloader</a> element. Theses properties can be useful if you create preloaders dynamically.
+    p There are properties that contain theme-related (iOS, MD) content of <a href="preloader.html#preloader-layout">Preloader</a> element. Theses properties can be useful if you create preloaders dynamically.
     .method-wrap
       p
         span.method app.utils.iosPreloaderContent
@@ -240,10 +240,7 @@ block content
       p
         span.method app.utils.mdPreloaderContent
         span - contains required preloader inner content (HTML string) for MD theme
-    .method-wrap
-      p
-        span.method app.utils.auroraPreloaderContent
-        span - contains required preloader inner content (HTML string) for Aurora theme
+
     :code(lang="js")
       // call method dynamically based on current app theme
       var preloaderContent = app.utils[app.theme + 'PreloaderContent'];

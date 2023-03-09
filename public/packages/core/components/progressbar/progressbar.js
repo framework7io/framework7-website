@@ -3,57 +3,45 @@ import { bindMethods } from '../../shared/utils.js';
 const Progressbar = {
   set() {
     const app = this;
-
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
-
     let [el, progress, duration] = args;
-
     if (typeof args[0] === 'number') {
       [progress, duration] = args;
       el = app.$el;
     }
-
     if (typeof progress === 'undefined' || progress === null) return el;
     if (!progress) progress = 0;
     const $el = $(el || app.$el);
-
     if ($el.length === 0) {
       return el;
     }
-
     const progressNormalized = Math.min(Math.max(progress, 0), 100);
     let $progressbarEl;
     if ($el.hasClass('progressbar')) $progressbarEl = $el.eq(0);else {
       $progressbarEl = $el.children('.progressbar');
     }
-
     if ($progressbarEl.length === 0 || $progressbarEl.hasClass('progressbar-infinite')) {
       return $progressbarEl;
     }
-
     let $progressbarLine = $progressbarEl.children('span');
-
     if ($progressbarLine.length === 0) {
       $progressbarLine = $('<span></span>');
       $progressbarEl.append($progressbarLine);
     }
-
     $progressbarLine.transition(typeof duration !== 'undefined' ? duration : '').transform(`translate3d(${(-100 + progressNormalized) * (app.rtl ? -1 : 1)}%,0,0)`);
     return $progressbarEl[0];
   },
-
   show() {
-    const app = this; // '.page', 50, 'multi'
+    const app = this;
 
+    // '.page', 50, 'multi'
     for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
       args[_key2] = arguments[_key2];
     }
-
     let [el, progress, color] = args;
     let type = 'determined';
-
     if (args.length === 2) {
       if ((typeof args[0] === 'string' || typeof args[0] === 'object') && typeof args[1] === 'string') {
         // '.page', 'multi'
@@ -77,16 +65,13 @@ const Progressbar = {
       type = 'infinite';
       el = app.$el;
     }
-
     const $el = $(el);
     if ($el.length === 0) return undefined;
     let $progressbarEl;
-
     if ($el.hasClass('progressbar') || $el.hasClass('progressbar-infinite')) {
       $progressbarEl = $el;
     } else {
       $progressbarEl = $el.children('.progressbar:not(.progressbar-out), .progressbar-infinite:not(.progressbar-out)');
-
       if ($progressbarEl.length === 0) {
         $progressbarEl = $(`
           <span class="progressbar${type === 'infinite' ? '-infinite' : ''}${color ? ` color-${color}` : ''} progressbar-in">
@@ -95,34 +80,27 @@ const Progressbar = {
         $el.append($progressbarEl);
       }
     }
-
     if (typeof progress !== 'undefined') {
       app.progressbar.set($progressbarEl, progress);
     }
-
     return $progressbarEl[0];
   },
-
   hide(el, removeAfterHide) {
     if (removeAfterHide === void 0) {
       removeAfterHide = true;
     }
-
     const app = this;
     const $el = $(el || app.$el);
     if ($el.length === 0) return undefined;
     let $progressbarEl;
-
     if ($el.hasClass('progressbar') || $el.hasClass('progressbar-infinite')) {
       $progressbarEl = $el;
     } else {
       $progressbarEl = $el.children('.progressbar, .progressbar-infinite');
     }
-
     if ($progressbarEl.length === 0 || !$progressbarEl.hasClass('progressbar-in') || $progressbarEl.hasClass('progressbar-out')) {
       return $progressbarEl;
     }
-
     $progressbarEl.removeClass('progressbar-in').addClass('progressbar-out').animationEnd(() => {
       if (removeAfterHide) {
         $progressbarEl.remove();
@@ -130,18 +108,15 @@ const Progressbar = {
     });
     return $progressbarEl;
   }
-
 };
 export default {
   name: 'progressbar',
-
   create() {
     const app = this;
     bindMethods(app, {
       progressbar: Progressbar
     });
   },
-
   on: {
     tabMounted(tabEl) {
       const app = this;
@@ -150,7 +125,6 @@ export default {
         app.progressbar.set($progressbarEl, $progressbarEl.attr('data-progress'));
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.progressbar').each(progressbarEl => {
@@ -158,7 +132,6 @@ export default {
         app.progressbar.set($progressbarEl, $progressbarEl.attr('data-progress'));
       });
     }
-
   },
   vnode: {
     progressbar: {
@@ -167,13 +140,11 @@ export default {
         const el = vnode.elm;
         app.progressbar.set(el, el.getAttribute('data-progress'));
       },
-
       update(vnode) {
         const app = this;
         const el = vnode.elm;
         app.progressbar.set(el, el.getAttribute('data-progress'));
       }
-
     }
   }
 };

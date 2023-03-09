@@ -4,7 +4,6 @@ import PullToRefresh from './pull-to-refresh-class.js';
 import ConstructorMethods from '../../shared/constructor-methods.js';
 export default {
   name: 'pullToRefresh',
-
   create() {
     const app = this;
     app.ptr = extend(ConstructorMethods({
@@ -18,16 +17,13 @@ export default {
         if (ptr) return ptr.done();
         return undefined;
       },
-
       refresh(el) {
         const ptr = app.ptr.get(el);
         if (ptr) return ptr.refresh();
         return undefined;
       }
-
     });
   },
-
   static: {
     PullToRefresh
   },
@@ -41,7 +37,6 @@ export default {
         app.ptr.create(el);
       });
     },
-
     tabBeforeRemove(tabEl) {
       const $tabEl = $(tabEl);
       const app = this;
@@ -51,20 +46,17 @@ export default {
         app.ptr.destroy(el);
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.ptr-content').each(el => {
         app.ptr.create(el);
       });
     },
-
     pageBeforeRemove(page) {
       const app = this;
       page.$el.find('.ptr-content').each(el => {
         app.ptr.destroy(el);
       });
     }
-
   }
 };

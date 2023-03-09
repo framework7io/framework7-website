@@ -20,9 +20,9 @@
       </Block>
       <BlockTitle>Icon Chips</BlockTitle>
       <Block strong>
-        <Chip text="Add Contact" mediaBgColor="blue" iconIos="f7:plus_circle" iconAurora="f7:plus_circle" iconMd="material:add_circle" />
-        <Chip text="London" mediaBgColor="green" iconIos="f7:compass" iconAurora="f7:compass" iconMd="material:location_on" />
-        <Chip text="John Doe" mediaBgColor="red" iconIos="f7:person" iconAurora="f7:person" iconMd="material:person" />
+        <Chip text="Add Contact" mediaBgColor="blue" iconIos="f7:plus_circle" iconMd="material:add_circle" />
+        <Chip text="London" mediaBgColor="green" iconIos="f7:compass" iconMd="material:location_on" />
+        <Chip text="John Doe" mediaBgColor="red" iconIos="f7:person" iconMd="material:person" />
       </Block>
       <BlockTitle>Contact Chips</BlockTitle>
       <Block strong>

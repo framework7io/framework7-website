@@ -6,17 +6,14 @@ export default {
     Modal,
     CustomModal
   },
-
   create() {
     const app = this;
     app.customModal = {
       create(params) {
         return new CustomModal(app, params);
       }
-
     };
   },
-
   params: {
     modal: {
       queueDialogs: true

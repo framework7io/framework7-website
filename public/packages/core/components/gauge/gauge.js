@@ -7,7 +7,6 @@ export default {
   static: {
     Gauge
   },
-
   create() {
     const app = this;
     app.gauge = ConstructorMethods({
@@ -16,7 +15,6 @@ export default {
       app,
       domProp: 'f7Gauge'
     });
-
     app.gauge.update = function update(el, newParams) {
       const $el = $(el);
       if ($el.length === 0) return undefined;
@@ -26,7 +24,6 @@ export default {
       return gauge;
     };
   },
-
   params: {
     gauge: {
       el: null,
@@ -56,13 +53,11 @@ export default {
         }, $(el).dataset() || {}));
       });
     },
-
     tabBeforeRemove(tabEl) {
       $(tabEl).find('.gauge-init').each(el => {
         if (el.f7Gauge) el.f7Gauge.destroy();
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.gauge-init').each(el => {
@@ -71,13 +66,11 @@ export default {
         }, $(el).dataset() || {}));
       });
     },
-
     pageBeforeRemove(page) {
       page.$el.find('.gauge-init').each(el => {
         if (el.f7Gauge) el.f7Gauge.destroy();
       });
     }
-
   },
   vnode: {
     'gauge-init': {
@@ -88,12 +81,10 @@ export default {
           el
         }, $(el).dataset() || {}));
       },
-
       destroy(vnode) {
         const el = vnode.elm;
         if (el.f7Gauge) el.f7Gauge.destroy();
       }
-
     }
   }
 };

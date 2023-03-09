@@ -18,7 +18,6 @@ export default {
   static: {
     Popup
   },
-
   create() {
     const app = this;
     app.popup = ModalMethods({
@@ -28,13 +27,11 @@ export default {
       parentSelector: '.popup'
     });
   },
-
   clicks: {
     '.popup-open': function openPopup($clickedEl, data) {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       app.popup.open(data.popup, data.animate, $clickedEl);
     },
@@ -42,7 +39,6 @@ export default {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       app.popup.close(data.popup, data.animate, $clickedEl);
     }

@@ -1,5 +1,5 @@
 /**
- * Framework7 7.1.5
+ * Framework7 8.0.0-beta.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,12 +7,11 @@
  *
  * Released under the MIT License
  *
- * Released on: February 2, 2023
+ * Released on: March 9, 2023
  */
 
 import $ from './shared/dom7.js';
 import Framework7 from './components/app/app-class.js';
-import request from './shared/request.js';
 import * as utils from './shared/utils.js';
 import { getSupport } from './shared/get-support.js';
 import { getDevice } from './shared/get-device.js';
@@ -20,7 +19,6 @@ import DeviceModule from './modules/device/device.js';
 import SupportModule from './modules/support/support.js';
 import UtilsModule from './modules/utils/utils.js';
 import ResizeModule from './modules/resize/resize.js';
-import RequestModule from './modules/request/request.js';
 import TouchModule from './modules/touch/touch.js';
 import ClicksModule from './modules/clicks/clicks.js';
 import RouterModule from './modules/router/router.js';
@@ -34,7 +32,6 @@ import Toolbar from './components/toolbar/toolbar.js';
 import Subnavbar from './components/subnavbar/subnavbar.js';
 import TouchRipple from './components/touch-ripple/touch-ripple.js';
 import Modal from './components/modal/modal.js';
-import Appbar from './components/appbar/appbar.js';
 import Dialog from './components/dialog/dialog.js';
 import Popup from './components/popup/popup.js';
 import LoginScreen from './components/login-screen/login-screen.js';
@@ -68,7 +65,6 @@ import Calendar from './components/calendar/calendar.js';
 import Picker from './components/picker/picker.js';
 import InfiniteScroll from './components/infinite-scroll/infinite-scroll.js';
 import PullToRefresh from './components/pull-to-refresh/pull-to-refresh.js';
-import Lazy from './components/lazy/lazy.js';
 import DataTable from './components/data-table/data-table.js';
 import Fab from './components/fab/fab.js';
 import Searchbar from './components/searchbar/searchbar.js';
@@ -80,13 +76,11 @@ import Notification from './components/notification/notification.js';
 import Autocomplete from './components/autocomplete/autocomplete.js';
 import Tooltip from './components/tooltip/tooltip.js';
 import Skeleton from './components/skeleton/skeleton.js';
-import Menu from './components/menu/menu.js';
 import ColorPicker from './components/color-picker/color-picker.js';
 import Treeview from './components/treeview/treeview.js';
 import TextEditor from './components/text-editor/text-editor.js';
 import Breadcrumbs from './components/breadcrumbs/breadcrumbs.js';
-import Elevation from './components/elevation/elevation.js';
 import Typography from './components/typography/typography.js';
-Framework7.use([DeviceModule, SupportModule, UtilsModule, ResizeModule, RequestModule, TouchModule, ClicksModule, RouterModule, HistoryModule, ServiceWorkerModule, StoreModule, Statusbar, View, Navbar, Toolbar, Subnavbar, TouchRipple, Modal, Appbar, Dialog, Popup, LoginScreen, Popover, Actions, Sheet, Toast, Preloader, Progressbar, Sortable, Swipeout, Accordion, ContactsList, VirtualList, ListIndex, Timeline, Tabs, Panel, Card, Chip, Form, Input, Checkbox, Radio, Toggle, Range, Stepper, SmartSelect, Grid, Calendar, Picker, InfiniteScroll, PullToRefresh, Lazy, DataTable, Fab, Searchbar, Messages, Messagebar, Swiper, PhotoBrowser, Notification, Autocomplete, Tooltip, Skeleton, Menu, ColorPicker, Treeview, TextEditor, Breadcrumbs, Elevation, Typography]);
-export { $ as Dom7, request, utils, getDevice, getSupport, createStore };
+Framework7.use([DeviceModule, SupportModule, UtilsModule, ResizeModule, TouchModule, ClicksModule, RouterModule, HistoryModule, ServiceWorkerModule, StoreModule, Statusbar, View, Navbar, Toolbar, Subnavbar, TouchRipple, Modal, Dialog, Popup, LoginScreen, Popover, Actions, Sheet, Toast, Preloader, Progressbar, Sortable, Swipeout, Accordion, ContactsList, VirtualList, ListIndex, Timeline, Tabs, Panel, Card, Chip, Form, Input, Checkbox, Radio, Toggle, Range, Stepper, SmartSelect, Grid, Calendar, Picker, InfiniteScroll, PullToRefresh, DataTable, Fab, Searchbar, Messages, Messagebar, Swiper, PhotoBrowser, Notification, Autocomplete, Tooltip, Skeleton, ColorPicker, Treeview, TextEditor, Breadcrumbs, Typography]);
+export { $ as Dom7, utils, getDevice, getSupport, createStore };
 export default Framework7;

@@ -22,7 +22,8 @@
     "Samsung >= 6"
   ],
   "scripts": {
-    "start": "gulp server -local",
+    "start": "npm run dev",
+    "dev": "gulp server -local",
     "build": "gulp build",
     "build-js": "gulp js",
     "build-less": "gulp less",
@@ -80,9 +81,9 @@
     "vue": "^3.2.31"
   },
   "dependencies": {
-    "framework7": "^7.1.5",
-    "framework7-react": "^7.1.5",
-    "framework7-svelte": "^7.1.5",
-    "framework7-vue": "^7.1.5"
+    "framework7": "^8.0.0-beta.3",
+    "framework7-react": "^8.0.0-beta.3",
+    "framework7-svelte": "^8.0.0-beta.3",
+    "framework7-vue": "^8.0.0-beta.3"
   }
 }

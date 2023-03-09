@@ -5,7 +5,6 @@ export default {
   static: {
     VirtualList
   },
-
   create() {
     const app = this;
     app.virtualList = ConstructorMethods({
@@ -15,5 +14,4 @@ export default {
       domProp: 'f7VirtualList'
     });
   }
-
 };

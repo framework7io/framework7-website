@@ -10,8 +10,8 @@
       </Toolbar>
 
       <Fab position="left-top" color="yellow">
-        <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
-        <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
+        <Icon ios="f7:plus" md="material:add"></Icon>
+        <Icon ios="f7:xmark" md="material:close"></Icon>
         <FabButtons position="bottom">
           <FabButton>1</FabButton>
           <FabButton>2</FabButton>
@@ -20,8 +20,8 @@
       </Fab>
 
       <Fab position="right-top" color="pink">
-        <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
-        <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
+        <Icon ios="f7:plus" md="material:add"></Icon>
+        <Icon ios="f7:xmark" md="material:close"></Icon>
         <FabButtons position="left">
           <FabButton>1</FabButton>
           <FabButton>2</FabButton>
@@ -30,8 +30,8 @@
       </Fab>
 
       <Fab position="center-center" color="green">
-        <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
-        <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
+        <Icon ios="f7:plus" md="material:add"></Icon>
+        <Icon ios="f7:xmark" md="material:close"></Icon>
         <FabButtons position="center">
           <FabButton>1</FabButton>
           <FabButton>2</FabButton>
@@ -41,13 +41,13 @@
       </Fab>
 
       <Fab position="left-bottom" morphTo=".toolbar.fab-morph-target">
-        <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
-        <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
+        <Icon ios="f7:plus" md="material:add"></Icon>
+        <Icon ios="f7:xmark" md="material:close"></Icon>
       </Fab>
 
       <Fab position="right-bottom" color="orange">
-        <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
-        <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
+        <Icon ios="f7:plus" md="material:add"></Icon>
+        <Icon ios="f7:xmark" md="material:close"></Icon>
         <FabButtons position="top">
           <FabButton label="Action 1">1</FabButton>
           <FabButton label="Action 2">2</FabButton>
@@ -55,7 +55,7 @@
       </Fab>
 
       <Fab position="center-bottom" text="Create" color="red">
-        <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
+        <Icon ios="f7:plus" md="material:add"></Icon>
       </Fab>
 
       <Block>

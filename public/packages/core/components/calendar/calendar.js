@@ -6,7 +6,6 @@ export default {
   static: {
     Calendar
   },
-
   create() {
     const app = this;
     app.calendar = ConstructorMethods({
@@ -15,12 +14,10 @@ export default {
       app,
       domProp: 'f7Calendar'
     });
-
     app.calendar.close = function close(el) {
       if (el === void 0) {
         el = '.calendar';
       }
-
       const $el = $(el);
       if ($el.length === 0) return;
       const calendar = $el[0].f7Calendar;
@@ -28,7 +25,6 @@ export default {
       calendar.close();
     };
   },
-
   params: {
     calendar: {
       // Calendar settings
@@ -63,17 +59,23 @@ export default {
       closeOnSelect: false,
       monthSelector: true,
       monthPicker: true,
+      monthPickerToolbar: true,
+      monthPickerCloseText: 'Done',
       yearSelector: true,
       yearPicker: true,
+      yearPickerToolbar: true,
       yearPickerMin: undefined,
       yearPickerMax: undefined,
+      yearPickerCloseText: 'Done',
       timePicker: false,
+      timePickerToolbar: true,
       timePickerLabel: 'Time',
       timePickerFormat: {
         hour: 'numeric',
         minute: 'numeric'
       },
       timePickerPlaceholder: 'Select time',
+      timePickerCloseText: 'Done',
       weekHeader: true,
       value: null,
       // Common opener settings

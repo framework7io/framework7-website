@@ -3,7 +3,6 @@ import ConstructorMethods from '../../shared/constructor-methods.js';
 import Toggle from './toggle-class.js';
 export default {
   name: 'toggle',
-
   create() {
     const app = this;
     app.toggle = ConstructorMethods({
@@ -13,7 +12,6 @@ export default {
       domProp: 'f7Toggle'
     });
   },
-
   static: {
     Toggle
   },
@@ -24,26 +22,22 @@ export default {
         el: toggleEl
       }));
     },
-
     tabBeforeRemove(tabEl) {
       $(tabEl).find('.toggle-init').each(toggleEl => {
         if (toggleEl.f7Toggle) toggleEl.f7Toggle.destroy();
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.toggle-init').each(toggleEl => app.toggle.create({
         el: toggleEl
       }));
     },
-
     pageBeforeRemove(page) {
       page.$el.find('.toggle-init').each(toggleEl => {
         if (toggleEl.f7Toggle) toggleEl.f7Toggle.destroy();
       });
     }
-
   },
   vnode: {
     'toggle-init': {
@@ -54,12 +48,10 @@ export default {
           el: toggleEl
         });
       },
-
       destroy(vnode) {
         const toggleEl = vnode.elm;
         if (toggleEl.f7Toggle) toggleEl.f7Toggle.destroy();
       }
-
     }
   }
 };

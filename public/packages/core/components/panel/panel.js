@@ -31,104 +31,80 @@ export default {
   static: {
     Panel
   },
-
   create() {
     const app = this;
     extend(app, {
       panel: {
         allowOpen: true,
-
         create(params) {
           return new Panel(app, params);
         },
-
         get(el) {
           if (el === void 0) {
             el = '.panel';
           }
-
           if (el instanceof Panel) return el;
           if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
-
           const $el = $(el);
           if ($el.length === 0 || $el.length > 1) return undefined;
           return $el[0].f7Panel;
         },
-
         destroy(el) {
           if (el === void 0) {
             el = '.panel';
           }
-
           const panel = app.panel.get(el);
           if (panel && panel.destroy) return panel.destroy();
           return undefined;
         },
-
         open(el, animate) {
           if (el === void 0) {
             el = '.panel';
           }
-
           if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
-
           let panel = app.panel.get(el);
           if (panel && panel.open) return panel.open(animate);
-
           if (!panel) {
             panel = app.panel.create({
               el
             });
             return panel.open(animate);
           }
-
           return undefined;
         },
-
         close(el, animate) {
           if (el === void 0) {
             el = '.panel-in';
           }
-
           if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
-
           let panel = app.panel.get(el);
           if (panel && panel.open) return panel.close(animate);
-
           if (!panel) {
             panel = app.panel.create({
               el
             });
             return panel.close(animate);
           }
-
           return undefined;
         },
-
         toggle(el, animate) {
           if (el === void 0) {
             el = '.panel';
           }
-
           if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
-
           let panel = app.panel.get(el);
           if (panel && panel.toggle) return panel.toggle(animate);
-
           if (!panel) {
             panel = app.panel.create({
               el
             });
             return panel.toggle(animate);
           }
-
           return undefined;
         }
-
       }
     });
   },
-
   on: {
     init() {
       const app = this;
@@ -139,7 +115,6 @@ export default {
         app.panel.create(params);
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.panel-init').each(panelEl => {
@@ -149,7 +124,6 @@ export default {
         app.panel.create(params);
       });
     },
-
     pageBeforeRemove(page) {
       const app = this;
       page.$el.find('.panel-init').each(panelEl => {
@@ -157,7 +131,6 @@ export default {
         if (panel && panel.destroy) panel.destroy();
       });
     }
-
   },
   vnode: {
     'panel-init': {
@@ -169,14 +142,12 @@ export default {
         }, $(panelEl).dataset() || {});
         app.panel.create(params);
       },
-
       destroy(vnode) {
         const app = this;
         const panelEl = vnode.elm;
         const panel = app.panel.get(panelEl);
         if (panel && panel.destroy) panel.destroy();
       }
-
     }
   },
   clicks: {
@@ -184,7 +155,6 @@ export default {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       app.panel.open(data.panel, data.animate);
     },
@@ -192,7 +162,6 @@ export default {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       app.panel.close(data.panel, data.animate);
     },
@@ -200,7 +169,6 @@ export default {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       app.panel.toggle(data.panel, data.animate);
     },
@@ -210,11 +178,9 @@ export default {
       if (!$panelEl.length) return;
       const instance = $panelEl[0] && $panelEl[0].f7Panel;
       $panelEl.trigger('panel:backdrop-click');
-
       if (instance) {
         instance.emit('backdropClick', instance);
       }
-
       app.emit('panelBackdropClick', instance || $panelEl[0]);
       if (instance && instance.params.closeByBackdropClick === false) return;
       if (app.params.panel.closeByBackdropClick) app.panel.close();

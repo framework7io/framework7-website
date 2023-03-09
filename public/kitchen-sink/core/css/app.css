@@ -65,12 +65,6 @@
   font-feature-settings: 'liga';
   text-align: center;
 }
-.md:not([class*='color-theme']) {
-  --f7-theme-color: #6200ee;
-  --f7-theme-color-rgb: 98, 0, 238;
-  --f7-theme-color-shade: #5100c5;
-  --f7-theme-color-tint: #7718ff;
-}
 .demo-list-icon,
 .icon-f7 {
   background: #ccc;
@@ -103,27 +97,6 @@
   width: 24px;
   height: 24px;
   border-radius: 4px;
-}
-.aurora .demo-list-icon,
-.aurora .icon-f7,
-.aurora .icon-vi {
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
-}
-
-/* Lazy Demo */
-img.demo-lazy {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-div.demo-lazy {
-  background: #aaa;
-  -webkit-background-size: cover;
-  background-size: cover;
-  height: 300px;
-  height: 60vw;
 }
 
 /* FAB Morph */
@@ -183,27 +156,18 @@ div.demo-lazy {
   opacity: 0.5;
 }
 /* Grid demo */
-.grid-demo div[class*='col'] {
+.grid-demo .grid > div {
   background: #fff;
   text-align: center;
   color: #000;
   border: 1px solid #ddd;
   padding: 5px;
   font-size: 12px;
-  margin-bottom: 15px;
 }
-.grid-resizable-demo {
-  --f7-grid-row-gap: 16px;
+.grid-demo .grid {
+  margin-bottom: 16px;
 }
-.grid-resizable-demo div[class*='col'] {
-  margin-bottom: 0;
-}
-.grid-resizable-demo .demo-col-center-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.dark .grid-demo div[class*='col'] {
+.dark .grid-demo .grid > div {
   background-color: #000;
   color: #fff;
   border-color: #444;
@@ -215,45 +179,16 @@ div.demo-lazy {
   background-position: center;
   color: #fff;
 }
+.md .demo-card-header-pic .card-header {
+  margin: 0 16px 16px;
+  border-radius: 16px;
+  position: relative;
+  top: 16px;
+}
 .demo-card-header-pic .card-content-padding .date {
   color: #8e8e93;
 }
-.demo-facebook-card .card-header {
-  display: block;
-  padding: 10px;
-}
-.demo-facebook-card .demo-facebook-avatar {
-  float: left;
-}
-.demo-facebook-card .demo-facebook-name {
-  margin-left: 44px;
-  font-size: 14px;
-  font-weight: 500;
-}
-.demo-facebook-card .demo-facebook-date {
-  margin-left: 44px;
-  font-size: 13px;
-  color: #8e8e93;
-}
-.demo-facebook-card .card-footer {
-  background: #fafafa;
-}
-.dark .demo-facebook-card .card-footer {
-  background-color: transparent;
-}
-.demo-facebook-card .card-footer a {
-  color: #81848b;
-  font-weight: 500;
-}
-.demo-facebook-card .card-content img {
-  display: block;
-}
-.demo-facebook-card .card-content-padding {
-  padding: 15px 10px;
-}
-.demo-facebook-card .card-content-padding .likes {
-  color: #8e8e93;
-}
+
 /* Panels Demo */
 .panel {
   min-width: 150px;
@@ -295,7 +230,9 @@ div.demo-lazy {
   height: 100%;
 }
 .demo-swiper .swiper-slide,
-.demo-swiper-multiple .swiper-slide {
+.demo-swiper swiper-slide,
+.demo-swiper-multiple .swiper-slide,
+.demo-swiper-multiple swiper-slide {
   font-size: 25px;
   font-weight: 300;
   display: -webkit-box;
@@ -313,7 +250,8 @@ div.demo-lazy {
   background: #fff;
   color: #000;
 }
-.demo-swiper-multiple .swiper-slide {
+.demo-swiper-multiple .swiper-slide,
+.demo-swiper-multiple swiper-slide {
   box-sizing: border-box;
   border: 1px solid #ccc;
   background: #fff;
@@ -323,23 +261,28 @@ div.demo-lazy {
   font-size: 18px;
   height: 120px;
 }
-.demo-swiper-multiple.demo-swiper-multiple-auto .swiper-slide {
+.demo-swiper-multiple.demo-swiper-multiple-auto .swiper-slide,
+.demo-swiper-multiple.demo-swiper-multiple-auto swiper-slide {
   width: 85%;
 }
-.demo-swiper-multiple.demo-swiper-multiple-auto .swiper-slide:nth-child(2n) {
+.demo-swiper-multiple.demo-swiper-multiple-auto .swiper-slide:nth-child(2n),
+.demo-swiper-multiple.demo-swiper-multiple-auto swiper-slide:nth-child(2n) {
   width: 70%;
 }
-.demo-swiper-multiple.demo-swiper-multiple-auto .swiper-slide:nth-child(3n) {
+.demo-swiper-multiple.demo-swiper-multiple-auto .swiper-slide:nth-child(3n),
+.demo-swiper-multiple.demo-swiper-multiple-auto swiper-slide:nth-child(3n) {
   width: 30%;
 }
 .demo-swiper-custom {
   height: 100%;
 }
-.demo-swiper-custom .swiper {
+.demo-swiper-custom .swiper,
+.demo-swiper-custom swiper-container {
   background: #000;
   height: 100%;
 }
-.demo-swiper-custom .swiper-slide {
+.demo-swiper-custom .swiper-slide,
+.demo-swiper-custom swiper-slide {
   background-size: cover;
   background-position: center;
 }
@@ -370,16 +313,20 @@ div.demo-lazy {
   height: 60%;
   top: 20%;
 }
-.demo-swiper-coverflow .swiper-slide {
+.demo-swiper-coverflow .swiper-slide,
+.demo-swiper-coverflow swiper-slide {
   width: 65%;
 }
 .demo-swiper-cube .swiper-slide,
-.demo-swiper-coverflow .swiper-slide {
+.demo-swiper-cube swiper-slide,
+.demo-swiper-coverflow .swiper-slide,
+.demo-swiper-coverflow swiper-slide {
   background-size: cover;
   color: #fff;
   -webkit-backface-visibility: hidden;
 }
-.demo-swiper-fade .swiper-slide {
+.demo-swiper-fade .swiper-slide,
+.demo-swiper-fade swiper-slide {
   background-size: cover;
   background-position: center;
 }
@@ -408,6 +355,7 @@ div.demo-lazy {
   opacity: 1;
 }
 .demo-swiper-gallery-top .swiper-slide,
+.demo-swiper-gallery-top swiper-slide,
 .demo-swiper-gallery-thumbs .swiper-slide-pic {
   background-size: cover;
   background-position: center;
@@ -425,7 +373,8 @@ div.demo-lazy {
   background-size: cover;
   background-position: center;
 }
-.demo-swiper-parallax .swiper-slide {
+.demo-swiper-parallax .swiper-slide,
+.demo-swiper-parallax swiper-slide {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   padding: 40px 60px;
@@ -446,10 +395,12 @@ div.demo-lazy {
 .demo-swiper-lazy {
   height: 100%;
 }
-.demo-swiper-lazy .swiper-slide {
+.demo-swiper-lazy .swiper-slide,
+.demo-swiper-lazy swiper-slide {
   position: relative;
 }
-.demo-swiper-lazy .swiper-slide img {
+.demo-swiper-lazy .swiper-slide img,
+.demo-swiper-lazy swiper-slide img {
   width: auto;
   height: auto;
   max-width: 100%;
@@ -489,18 +440,6 @@ code {
   color: #aaa;
 }
 
-.elevation-demo {
-  height: 100px;
-  margin: 30px 10px;
-  background: #fff;
-  font-size: 18px;
-  text-align: center;
-  line-height: 100px;
-}
-.dark .elevation-demo {
-  background: none;
-}
-
 /* Demo Color Themes */
 .demo-theme-picker {
   cursor: pointer;
@@ -517,7 +456,6 @@ code {
   bottom: 10px;
 }
 .demo-color-picker-button {
-  margin-bottom: 1em;
   text-transform: capitalize;
 }
 .demo-bars-picker {
@@ -663,17 +601,6 @@ code {
   margin-top: -3px;
   border-radius: 3px;
   background: #666;
-}
-
-.page-home,
-.page-about {
-  --f7-list-border-color: transparent;
-  --f7-block-strong-border-color: transparent;
-  --f7-block-font-size: 16px;
-}
-:root:not(.dark) .page-home,
-:root:not(.dark) .page-about {
-  --f7-page-bg-color: #fff;
 }
 
 .area-chart {

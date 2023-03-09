@@ -6,7 +6,6 @@ export default {
   static: {
     DataTable
   },
-
   create() {
     const app = this;
     app.dataTable = ConstructorMethods({
@@ -16,7 +15,6 @@ export default {
       domProp: 'f7DataTable'
     });
   },
-
   on: {
     tabBeforeRemove(tabEl) {
       const app = this;
@@ -24,7 +22,6 @@ export default {
         app.dataTable.destroy(tableEl);
       });
     },
-
     tabMounted(tabEl) {
       const app = this;
       $(tabEl).find('.data-table-init').each(tableEl => {
@@ -33,14 +30,12 @@ export default {
         });
       });
     },
-
     pageBeforeRemove(page) {
       const app = this;
       page.$el.find('.data-table-init').each(tableEl => {
         app.dataTable.destroy(tableEl);
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.data-table-init').each(tableEl => {
@@ -49,7 +44,6 @@ export default {
         });
       });
     }
-
   },
   vnode: {
     'data-table-init': {
@@ -60,13 +54,11 @@ export default {
           el: tableEl
         });
       },
-
       destroy(vnode) {
         const app = this;
         const tableEl = vnode.elm;
         app.dataTable.destroy(tableEl);
       }
-
     }
   }
 };

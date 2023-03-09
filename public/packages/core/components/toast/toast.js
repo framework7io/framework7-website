@@ -6,7 +6,6 @@ export default {
   static: {
     Toast
   },
-
   create() {
     const app = this;
     app.toast = extend({}, ModalMethods({
@@ -21,10 +20,8 @@ export default {
         });
         return new Toast(app, params).open();
       }
-
     });
   },
-
   params: {
     toast: {
       icon: null,

@@ -81,7 +81,7 @@ export namespace Autocomplete {
     searchbarPlaceholder?: string;
     /** Searchbar "Cancel" button text. (default Cancel) */
     searchbarDisableText?: string;
-    /** Enables searchbar disable button. By default, disabled for Aurora theme */
+    /** Enables searchbar disable button. (default true) */
     searchbarDisableButton?: boolean;
     /** Value of "spellcheck" attribute on searchbar input (default false) */
     searchbarSpellcheck?: boolean;
@@ -121,8 +121,6 @@ export namespace Autocomplete {
     dropdownPlaceholderText?: string;
     /** If true then value of related input will be update as well. (default true) */
     updateInputValueOnSelect?: boolean;
-    /** If true then input which is used as item-input in List View will be expanded to full screen wide during dropdown visible.. (default false) */
-    expandInput?: boolean;
     /** By default dropdown will be added to parent page-content element. You can specify here different element where to add dropdown element. */
     dropdownContainerEl?: HTMLElement | CSSSelector;
     /** Function to render autocomplete dropdown, must return dropdown HTML string. */

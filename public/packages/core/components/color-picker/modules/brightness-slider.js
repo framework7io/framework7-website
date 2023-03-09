@@ -1,6 +1,5 @@
 import { colorHsbToHsl } from '../../../shared/utils.js';
 /** @jsx $jsx */
-
 import $jsx from '../../../shared/$jsx.js';
 export default {
   render(self) {
@@ -30,7 +29,6 @@ export default {
       class: "color-picker-value-brightness"
     }))));
   },
-
   init(self) {
     self.brightnessRangeSlider = self.app.range.create({
       el: self.$el.find('.color-picker-slider-brightness'),
@@ -45,11 +43,9 @@ export default {
             hsb: [self.value.hsb[0], self.value.hsb[1], b]
           });
         }
-
       }
     });
   },
-
   update(self) {
     const {
       value,
@@ -69,20 +65,16 @@ export default {
     const hslRight = colorHsbToHsl(hsb[0], hsb[1], 1);
     self.brightnessRangeSlider.$el[0].style.setProperty('--f7-range-knob-color', `hsl(${hslCurrent[0]}, ${hslCurrent[1] * 100}%, ${hslCurrent[2] * 100}%)`);
     self.brightnessRangeSlider.$el.find('.range-bar').css('background-image', `linear-gradient(${app.rtl ? 'to left' : 'to right'}, hsl(${hslLeft[0]}, ${hslLeft[1] * 100}%, ${hslLeft[2] * 100}%), hsl(${hslRight[0]}, ${hslRight[1] * 100}%, ${hslRight[2] * 100}%))`);
-
     if (sliderValue && sliderValueEditable) {
       self.$el.find('input.color-picker-value-brightness').val(`${hsb[2] * 1000 / 10}`);
     } else if (sliderValue) {
       self.$el.find('span.color-picker-value-brightness').text(`${hsb[2] * 1000 / 10}`);
     }
   },
-
   destroy(self) {
     if (self.brightnessRangeSlider && self.brightnessRangeSlider.destroy) {
       self.brightnessRangeSlider.destroy();
     }
-
     delete self.brightnessRangeSlider;
   }
-
 };

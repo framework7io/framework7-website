@@ -2,17 +2,14 @@ import { getWindow } from 'ssr-window';
 import { extend } from '../../shared/utils.js';
 const SW = {
   registrations: [],
-
   register(path, scope) {
     const app = this;
     const window = getWindow();
-
     if (!('serviceWorker' in window.navigator) || !app.serviceWorker.container) {
       return new Promise((resolve, reject) => {
         reject(new Error('Service worker is not supported'));
       });
     }
-
     return new Promise((resolve, reject) => {
       app.serviceWorker.container.register(path, scope ? {
         scope
@@ -26,17 +23,14 @@ const SW = {
       });
     });
   },
-
   unregister(registration) {
     const app = this;
     const window = getWindow();
-
     if (!('serviceWorker' in window.navigator) || !app.serviceWorker.container) {
       return new Promise((resolve, reject) => {
         reject(new Error('Service worker is not supported'));
       });
     }
-
     let registrations;
     if (!registration) registrations = SW.registrations;else if (Array.isArray(registration)) registrations = registration;else registrations = [registration];
     return Promise.all(registrations.map(reg => new Promise((resolve, reject) => {
@@ -44,7 +38,6 @@ const SW = {
         if (SW.registrations.indexOf(reg) >= 0) {
           SW.registrations.splice(SW.registrations.indexOf(reg), 1);
         }
-
         app.emit('serviceWorkerUnregisterSuccess', reg);
         resolve();
       }).catch(error => {
@@ -53,7 +46,6 @@ const SW = {
       });
     })));
   }
-
 };
 export default {
   name: 'sw',
@@ -63,7 +55,6 @@ export default {
       scope: undefined
     }
   },
-
   create() {
     const app = this;
     const window = getWindow();
@@ -76,7 +67,6 @@ export default {
       }
     });
   },
-
   on: {
     init() {
       const window = getWindow();
@@ -92,6 +82,5 @@ export default {
         app.serviceWorker.register(path, scope);
       });
     }
-
   }
 };

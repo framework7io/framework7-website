@@ -1,7 +1,7 @@
 <Page pageContent={false}>
   <Navbar title="Tabbar" backLink="Back">
     <NavRight>
-      <Link iconIos="f7:arrow_up_arrow_down_circle_fill" iconAurora="f7:arrow_up_arrow_down_circle_fill" iconMd="material:compare_arrows" onClick={() => isBottom = !isBottom}></Link>
+      <Link iconIos="f7:arrow_up_arrow_down_circle_fill" iconMd="material:compare_arrows" onClick={() => isBottom = !isBottom}></Link>
     </NavRight>
   </Navbar>
 

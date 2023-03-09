@@ -6,7 +6,6 @@ export default {
   static: {
     Messages
   },
-
   create() {
     const app = this;
     app.messages = ConstructorMethods({
@@ -17,7 +16,6 @@ export default {
       addMethods: 'renderMessages layout scroll clear removeMessage removeMessages addMessage addMessages'.split(' ')
     });
   },
-
   on: {
     tabBeforeRemove(tabEl) {
       const app = this;
@@ -25,7 +23,6 @@ export default {
         app.messages.destroy(messagesEl);
       });
     },
-
     tabMounted(tabEl) {
       const app = this;
       $(tabEl).find('.messages-init').each(messagesEl => {
@@ -34,14 +31,12 @@ export default {
         });
       });
     },
-
     pageBeforeRemove(page) {
       const app = this;
       page.$el.find('.messages-init').each(messagesEl => {
         app.messages.destroy(messagesEl);
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.messages-init').each(messagesEl => {
@@ -50,7 +45,6 @@ export default {
         });
       });
     }
-
   },
   vnode: {
     'messages-init': {
@@ -61,13 +55,11 @@ export default {
           el: messagesEl
         });
       },
-
       destroy(vnode) {
         const app = this;
         const messagesEl = vnode.elm;
         app.messages.destroy(messagesEl);
       }
-
     }
   }
 };

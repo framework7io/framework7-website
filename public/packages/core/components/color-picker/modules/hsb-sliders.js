@@ -1,7 +1,6 @@
 import $ from '../../../shared/dom7.js';
 import { colorHsbToHsl } from '../../../shared/utils.js';
 /** @jsx $jsx */
-
 import $jsx from '../../../shared/$jsx.js';
 export default {
   render(self) {
@@ -68,7 +67,6 @@ export default {
       class: "color-picker-value-brightness"
     }))));
   },
-
   init(self) {
     self.hueRangeSlider = self.app.range.create({
       el: self.$el.find('.color-picker-slider-hue'),
@@ -82,7 +80,6 @@ export default {
             hue: value
           });
         }
-
       }
     });
     self.saturationRangeSlider = self.app.range.create({
@@ -98,7 +95,6 @@ export default {
             hsb: [self.value.hsb[0], s, self.value.hsb[2]]
           });
         }
-
       }
     });
     self.brightnessRangeSlider = self.app.range.create({
@@ -114,39 +110,31 @@ export default {
             hsb: [self.value.hsb[0], self.value.hsb[1], b]
           });
         }
-
       }
     });
-
     function handleInputChange(e) {
       const hsb = [...self.value.hsb];
       const index = parseInt($(e.target).attr('data-color-index'), 10);
       let value = parseFloat(e.target.value);
-
       if (Number.isNaN(value)) {
         e.target.value = hsb[index];
         return;
       }
-
       if (index === 0) {
         value = Math.max(0, Math.min(360, value));
       } else {
         value = Math.max(0, Math.min(100, value)) / 100;
       }
-
       hsb[index] = value;
       self.setValue({
         hsb
       });
     }
-
     self.$el.on('change', '.color-picker-module-hsb-sliders input', handleInputChange);
-
     self.destroyHsbSlidersEvents = function destroyHsbSlidersEvents() {
       self.$el.off('change', '.color-picker-module-hsb-sliders input', handleInputChange);
     };
   },
-
   update(self) {
     const {
       app,
@@ -174,7 +162,6 @@ export default {
     self.saturationRangeSlider.$el[0].style.setProperty('--f7-range-knob-color', `hsl(${hslCurrent[0]}, ${hslCurrent[1] * 100}%, ${hslCurrent[2] * 100}%)`);
     self.brightnessRangeSlider.$el[0].style.setProperty('--f7-range-knob-color', `rgb(${brightness * 255}, ${brightness * 255}, ${brightness * 255})`);
     self.saturationRangeSlider.$el.find('.range-bar').css('background-image', `linear-gradient(${app.rtl ? 'to left' : 'to right'}, hsl(${hslLeft[0]}, ${hslLeft[1] * 100}%, ${hslLeft[2] * 100}%), hsl(${hslRight[0]}, ${hslRight[1] * 100}%, ${hslRight[2] * 100}%))`);
-
     if (sliderValue && sliderValueEditable) {
       self.$el.find('input.color-picker-value-hue').val(`${hue}`);
       self.$el.find('input.color-picker-value-saturation').val(`${hsb[1] * 1000 / 10}`);
@@ -185,25 +172,20 @@ export default {
       self.$el.find('span.color-picker-value-brightness').text(`${hsb[2] * 1000 / 10}`);
     }
   },
-
   destroy(self) {
     if (self.hueRangeSlider && self.hueRangeSlider.destroy) {
       self.hueRangeSlider.destroy();
     }
-
     if (self.saturationRangeSlider && self.saturationRangeSlider.destroy) {
       self.saturationRangeSlider.destroy();
     }
-
     if (self.brightnessRangeSlider && self.brightnessRangeSlider.destroy) {
       self.brightnessRangeSlider.destroy();
     }
-
     delete self.hueRangeSlider;
     delete self.saturationRangeSlider;
     delete self.brightnessRangeSlider;
     if (self.destroyHsbSlidersEvents) self.destroyHsbSlidersEvents();
     delete self.destroyHsbSlidersEvents;
   }
-
 };

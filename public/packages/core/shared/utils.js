@@ -1,4 +1,5 @@
 import { getWindow } from 'ssr-window';
+import { materialColors } from './material-colors.js';
 let uniqueNum = 0;
 export function uniqueNumber() {
   uniqueNum += 1;
@@ -8,11 +9,9 @@ export function id(mask, map) {
   if (mask === void 0) {
     mask = 'xxxxxxxxxx';
   }
-
   if (map === void 0) {
     map = '0123456789abcdef';
   }
-
   const length = map.length;
   return mask.replace(/x/g, () => map[Math.floor(Math.random() * length)]);
 }
@@ -28,11 +27,6 @@ export const iosPreloaderContent = `
     ${[0, 1, 2, 3, 4, 5, 6, 7].map(() => '<span class="preloader-inner-line"></span>').join('')}
   </span>
 `.trim();
-export const auroraPreloaderContent = `
-  <span class="preloader-inner">
-    <span class="preloader-inner-circle"></span>
-  </span>
-`;
 export function eventNameToColonCase(eventName) {
   let hasColon;
   return eventName.split('').map((char, index) => {
@@ -40,7 +34,6 @@ export function eventNameToColonCase(eventName) {
       hasColon = true;
       return `:${char.toLowerCase()}`;
     }
-
     return char.toLowerCase();
   }).join('');
 }
@@ -49,12 +42,13 @@ export function deleteProps(obj) {
   Object.keys(object).forEach(key => {
     try {
       object[key] = null;
-    } catch (e) {// no setter for object
+    } catch (e) {
+      // no setter for object
     }
-
     try {
       delete object[key];
-    } catch (e) {// something got wrong
+    } catch (e) {
+      // something got wrong
     }
   });
 }
@@ -70,7 +64,6 @@ export function nextTick(callback, delay) {
   if (delay === void 0) {
     delay = 0;
   }
-
   return setTimeout(callback, delay);
 }
 export function nextFrame(callback) {
@@ -89,96 +82,81 @@ export function parseUrlQuery(url) {
   let params;
   let param;
   let length;
-
   if (typeof urlToParse === 'string' && urlToParse.length) {
     urlToParse = urlToParse.indexOf('?') > -1 ? urlToParse.replace(/\S*\?/, '') : '';
     params = urlToParse.split('&').filter(paramsPart => paramsPart !== '');
     length = params.length;
-
     for (i = 0; i < length; i += 1) {
       param = params[i].replace(/#\S+/g, '').split('=');
       query[decodeURIComponent(param[0])] = typeof param[1] === 'undefined' ? undefined : decodeURIComponent(param.slice(1).join('=')) || '';
     }
   }
-
   return query;
 }
 export function getTranslate(el, axis) {
   if (axis === void 0) {
     axis = 'x';
   }
-
   const window = getWindow();
   let matrix;
   let curTransform;
   let transformMatrix;
   const curStyle = window.getComputedStyle(el, null);
-
   if (window.WebKitCSSMatrix) {
     curTransform = curStyle.transform || curStyle.webkitTransform;
-
     if (curTransform.split(',').length > 6) {
       curTransform = curTransform.split(', ').map(a => a.replace(',', '.')).join(', ');
-    } // Some old versions of Webkit choke when 'none' is passed; pass
+    }
+    // Some old versions of Webkit choke when 'none' is passed; pass
     // empty string instead in this case
-
-
     transformMatrix = new window.WebKitCSSMatrix(curTransform === 'none' ? '' : curTransform);
   } else {
     transformMatrix = curStyle.MozTransform || curStyle.OTransform || curStyle.MsTransform || curStyle.msTransform || curStyle.transform || curStyle.getPropertyValue('transform').replace('translate(', 'matrix(1, 0, 0, 1,');
     matrix = transformMatrix.toString().split(',');
   }
-
   if (axis === 'x') {
     // Latest Chrome and webkits Fix
-    if (window.WebKitCSSMatrix) curTransform = transformMatrix.m41; // Crazy IE10 Matrix
-    else if (matrix.length === 16) curTransform = parseFloat(matrix[12]); // Normal Browsers
+    if (window.WebKitCSSMatrix) curTransform = transformMatrix.m41;
+    // Crazy IE10 Matrix
+    else if (matrix.length === 16) curTransform = parseFloat(matrix[12]);
+    // Normal Browsers
     else curTransform = parseFloat(matrix[4]);
   }
-
   if (axis === 'y') {
     // Latest Chrome and webkits Fix
-    if (window.WebKitCSSMatrix) curTransform = transformMatrix.m42; // Crazy IE10 Matrix
-    else if (matrix.length === 16) curTransform = parseFloat(matrix[13]); // Normal Browsers
+    if (window.WebKitCSSMatrix) curTransform = transformMatrix.m42;
+    // Crazy IE10 Matrix
+    else if (matrix.length === 16) curTransform = parseFloat(matrix[13]);
+    // Normal Browsers
     else curTransform = parseFloat(matrix[5]);
   }
-
   return curTransform || 0;
 }
 export function serializeObject(obj, parents) {
   if (parents === void 0) {
     parents = [];
   }
-
   if (typeof obj === 'string') return obj;
   const resultArray = [];
   const separator = '&';
   let newParents;
-
   function varName(name) {
     if (parents.length > 0) {
       let parentParts = '';
-
       for (let j = 0; j < parents.length; j += 1) {
         if (j === 0) parentParts += parents[j];else parentParts += `[${encodeURIComponent(parents[j])}]`;
       }
-
       return `${parentParts}[${encodeURIComponent(name)}]`;
     }
-
     return encodeURIComponent(name);
   }
-
   function varValue(value) {
     return encodeURIComponent(value);
   }
-
   Object.keys(obj).forEach(prop => {
     let toPush;
-
     if (Array.isArray(obj[prop])) {
       toPush = [];
-
       for (let i = 0; i < obj[prop].length; i += 1) {
         if (!Array.isArray(obj[prop][i]) && typeof obj[prop][i] === 'object') {
           newParents = parents.slice();
@@ -189,7 +167,6 @@ export function serializeObject(obj, parents) {
           toPush.push(`${varName(prop)}[]=${varValue(obj[prop][i])}`);
         }
       }
-
       if (toPush.length > 0) resultArray.push(toPush.join(separator));
     } else if (obj[prop] === null || obj[prop] === '') {
       resultArray.push(`${varName(prop)}=`);
@@ -213,39 +190,31 @@ export function merge() {
   for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
     args[_key] = arguments[_key];
   }
-
   const to = args[0];
   args.splice(0, 1);
   const from = args;
-
   for (let i = 0; i < from.length; i += 1) {
     const nextSource = args[i];
-
     if (nextSource !== undefined && nextSource !== null) {
       const keysArray = Object.keys(Object(nextSource));
-
       for (let nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex += 1) {
         const nextKey = keysArray[nextIndex];
         const desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
-
         if (desc !== undefined && desc.enumerable) {
           to[nextKey] = nextSource[nextKey];
         }
       }
     }
   }
-
   return to;
 }
 export function extend() {
   let deep = true;
   let to;
   let from;
-
   for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
     args[_key2] = arguments[_key2];
   }
-
   if (typeof args[0] === 'boolean') {
     deep = args[0];
     to = args[1];
@@ -256,17 +225,13 @@ export function extend() {
     args.splice(0, 1);
     from = args;
   }
-
   for (let i = 0; i < from.length; i += 1) {
     const nextSource = args[i];
-
     if (nextSource !== undefined && nextSource !== null) {
       const keysArray = Object.keys(Object(nextSource));
-
       for (let nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex += 1) {
         const nextKey = keysArray[nextIndex];
         const desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
-
         if (desc !== undefined && desc.enumerable) {
           if (!deep) {
             to[nextKey] = nextSource[nextKey];
@@ -282,7 +247,6 @@ export function extend() {
       }
     }
   }
-
   return to;
 }
 export function colorHexToRgb(hex) {
@@ -299,11 +263,8 @@ export function colorRgbToHex(r, g, b) {
 }
 export function colorRgbToHsl(r, g, b) {
   r /= 255; // eslint-disable-line
-
   g /= 255; // eslint-disable-line
-
   b /= 255; // eslint-disable-line
-
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   const d = max - min;
@@ -319,11 +280,9 @@ export function colorHslToRgb(h, s, l) {
   const hp = h / 60;
   const x = c * (1 - Math.abs(hp % 2 - 1));
   let rgb1;
-
   if (Number.isNaN(h) || typeof h === 'undefined') {
     rgb1 = [0, 0, 0];
   } else if (hp <= 1) rgb1 = [c, x, 0];else if (hp <= 2) rgb1 = [x, c, 0];else if (hp <= 3) rgb1 = [0, c, x];else if (hp <= 4) rgb1 = [0, x, c];else if (hp <= 5) rgb1 = [x, 0, c];else if (hp <= 6) rgb1 = [c, 0, x];
-
   const m = l - c / 2;
   return rgb1.map(n => Math.max(0, Math.min(255, Math.round(255 * (n + m)))));
 }
@@ -358,14 +317,23 @@ export function colorHslToHsb(h, s, l) {
   HSB.s = HSL.l > 0 ? 2 * t / HSB.b : HSB.s;
   return [HSB.h, HSB.s, HSB.b];
 }
+const getShadeTintColors = rgb => {
+  const hsl = colorRgbToHsl(...rgb);
+  const hslShade = [hsl[0], hsl[1], Math.max(0, hsl[2] - 0.08)];
+  const hslTint = [hsl[0], hsl[1], Math.max(0, hsl[2] + 0.08)];
+  const shade = colorRgbToHex(...colorHslToRgb(...hslShade));
+  const tint = colorRgbToHex(...colorHslToRgb(...hslTint));
+  return {
+    shade,
+    tint
+  };
+};
 export function colorThemeCSSProperties() {
   let hex;
   let rgb;
-
   for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
     args[_key3] = arguments[_key3];
   }
-
   if (args.length === 1) {
     hex = args[0];
     rgb = colorHexToRgb(hex);
@@ -373,18 +341,53 @@ export function colorThemeCSSProperties() {
     rgb = args;
     hex = colorRgbToHex(...rgb);
   }
-
   if (!rgb) return {};
-  const hsl = colorRgbToHsl(...rgb);
-  const hslShade = [hsl[0], hsl[1], Math.max(0, hsl[2] - 0.08)];
-  const hslTint = [hsl[0], hsl[1], Math.max(0, hsl[2] + 0.08)];
-  const shade = colorRgbToHex(...colorHslToRgb(...hslShade));
-  const tint = colorRgbToHex(...colorHslToRgb(...hslTint));
+  const {
+    light,
+    dark
+  } = materialColors(hex);
+  const shadeTintIos = getShadeTintColors(rgb);
+  const shadeTintMdLight = getShadeTintColors(colorHexToRgb(light['--f7-md-primary']));
+  const shadeTintMdDark = getShadeTintColors(colorHexToRgb(dark['--f7-md-primary']));
+  Object.keys(light).forEach(key => {
+    if (key.includes('surface-')) {
+      light[`${key}-rgb`] = colorHexToRgb(light[key]);
+    }
+  });
+  Object.keys(dark).forEach(key => {
+    if (key.includes('surface-')) {
+      dark[`${key}-rgb`] = colorHexToRgb(dark[key]);
+    }
+  });
   return {
-    '--f7-theme-color': hex,
-    '--f7-theme-color-rgb': rgb.join(', '),
-    '--f7-theme-color-shade': shade,
-    '--f7-theme-color-tint': tint
+    ios: {
+      '--f7-theme-color': 'var(--f7-ios-primary)',
+      '--f7-theme-color-rgb': 'var(--f7-ios-primary-rgb)',
+      '--f7-theme-color-shade': 'var(--f7-ios-primary-shade)',
+      '--f7-theme-color-tint': 'var(--f7-ios-primary-tint)'
+    },
+    md: {
+      '--f7-theme-color': 'var(--f7-md-primary)',
+      '--f7-theme-color-rgb': 'var(--f7-md-primary-rgb)',
+      '--f7-theme-color-shade': 'var(--f7-md-primary-shade)',
+      '--f7-theme-color-tint': 'var(--f7-md-primary-tint)'
+    },
+    light: {
+      '--f7-ios-primary': hex,
+      '--f7-ios-primary-shade': shadeTintIos.shade,
+      '--f7-ios-primary-tint': shadeTintIos.tint,
+      '--f7-ios-primary-rgb': rgb.join(', '),
+      '--f7-md-primary-shade': shadeTintMdLight.shade,
+      '--f7-md-primary-tint': shadeTintMdLight.tint,
+      '--f7-md-primary-rgb': colorHexToRgb(light['--f7-md-primary']).join(', '),
+      ...light
+    },
+    dark: {
+      '--f7-md-primary-shade': shadeTintMdDark.shade,
+      '--f7-md-primary-tint': shadeTintMdDark.tint,
+      '--f7-md-primary-rgb': colorHexToRgb(dark['--f7-md-primary']).join(', '),
+      ...dark
+    }
   };
 }
 export function bindMethods(instance, obj) {
@@ -396,19 +399,136 @@ export function bindMethods(instance, obj) {
         }
       });
     }
-
     instance[key] = obj[key];
   });
 }
 export function flattenArray() {
   const arr = [];
-
   for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
     args[_key4] = arguments[_key4];
   }
-
   args.forEach(arg => {
     if (Array.isArray(arg)) arr.push(...flattenArray(...arg));else arr.push(arg);
   });
   return arr;
+}
+export function colorThemeCSSStyles(colors) {
+  if (colors === void 0) {
+    colors = {};
+  }
+  const stringifyObject = obj => {
+    let res = '';
+    Object.keys(obj).forEach(key => {
+      res += `${key}:${obj[key]};`;
+    });
+    return res;
+  };
+  const colorVars = colorThemeCSSProperties(colors.primary);
+  const primary = [`:root{`, stringifyObject(colorVars.light), `--swiper-theme-color:var(--f7-theme-color);`, ...Object.keys(colors).map(colorName => `--f7-color-${colorName}: ${colors[colorName]};`), `}`, `.dark{`, stringifyObject(colorVars.dark), `}`, `.ios{`, stringifyObject(colorVars.ios), '}', `.md{`, stringifyObject(colorVars.md), '}'].join('');
+  const restVars = {};
+  Object.keys(colors).forEach(colorName => {
+    const colorValue = colors[colorName];
+    restVars[colorName] = colorThemeCSSProperties(colorValue);
+  });
+
+  // rest
+  let rest = '';
+  Object.keys(colors).forEach(colorName => {
+    const {
+      light,
+      dark,
+      ios,
+      md
+    } = restVars[colorName];
+    const whiteColorVars = `
+    --f7-ios-primary: #ffffff;
+    --f7-ios-primary-shade: #ebebeb;
+    --f7-ios-primary-tint: #ffffff;
+    --f7-ios-primary-rgb: 255, 255, 255;
+    --f7-md-primary-shade: #eee;
+    --f7-md-primary-tint: #fff;
+    --f7-md-primary-rgb: 255, 255, 255;
+    --f7-md-primary: #fff;
+    --f7-md-on-primary: #000;
+    --f7-md-primary-container: #fff;
+    --f7-md-on-primary-container: #000;
+    --f7-md-secondary: #fff;
+    --f7-md-on-secondary: #000;
+    --f7-md-secondary-container: #555;
+    --f7-md-on-secondary-container: #fff;
+    --f7-md-surface: #fff;
+    --f7-md-on-surface: #000;
+    --f7-md-surface-variant: #333;
+    --f7-md-on-surface-variant: #fff;
+    --f7-md-outline: #fff;
+    --f7-md-outline-variant: #fff;
+    --f7-md-inverse-surface: #000;
+    --f7-md-inverse-on-surface: #fff;
+    --f7-md-inverse-primary: #000;
+    --f7-md-surface-1: #f8f8f8;
+    --f7-md-surface-2: #f1f1f1;
+    --f7-md-surface-3: #e7e7e7;
+    --f7-md-surface-4: #e1e1e1;
+    --f7-md-surface-5: #d7d7d7;
+    --f7-md-surface-variant-rgb: 51, 51, 51;
+    --f7-md-on-surface-variant-rgb: 255, 255, 255;
+    --f7-md-surface-1-rgb: 248, 248, 248;
+    --f7-md-surface-2-rgb: 241, 241, 241;
+    --f7-md-surface-3-rgb: 231, 231, 231;
+    --f7-md-surface-4-rgb: 225, 225, 225;
+    --f7-md-surface-5-rgb: 215, 215, 215;
+    `;
+    const blackColorVars = `
+    --f7-ios-primary: #000;
+    --f7-ios-primary-shade: #000;
+    --f7-ios-primary-tint: #232323;
+    --f7-ios-primary-rgb: 0, 0, 0;
+    --f7-md-primary-shade: #000;
+    --f7-md-primary-tint: #232323;
+    --f7-md-primary-rgb: 0, 0, 0;
+    --f7-md-primary: #000;
+    --f7-md-on-primary: #fff;
+    --f7-md-primary-container: #000;
+    --f7-md-on-primary-container: #fff;
+    --f7-md-secondary: #000;
+    --f7-md-on-secondary: #fff;
+    --f7-md-secondary-container: #aaa;
+    --f7-md-on-secondary-container: #000;
+    --f7-md-surface: #000;
+    --f7-md-on-surface: #fff;
+    --f7-md-surface-variant: #ccc;
+    --f7-md-on-surface-variant: #000;
+    --f7-md-outline: #000;
+    --f7-md-outline-variant: #000;
+    --f7-md-inverse-surface: #fff;
+    --f7-md-inverse-on-surface: #000;
+    --f7-md-inverse-primary: #fff;
+    --f7-md-surface-1: #070707;
+    --f7-md-surface-2: #161616;
+    --f7-md-surface-3: #232323;
+    --f7-md-surface-4: #303030;
+    --f7-md-surface-5: #373737;
+    --f7-md-surface-variant-rgb: 204, 204, 204;
+    --f7-md-on-surface-variant-rgb: 0, 0, 0;
+    --f7-md-surface-1-rgb: 7, 7, 7;
+    --f7-md-surface-2-rgb: 22, 22, 22;
+    --f7-md-surface-3-rgb: 35, 35, 35;
+    --f7-md-surface-4-rgb: 48, 48, 48;
+    --f7-md-surface-5-rgb: 55, 55, 55;
+    `;
+    /* eslint-disable */
+    const lightString = colorName === 'white' ? whiteColorVars : colorName === 'black' ? blackColorVars : stringifyObject(light);
+    const darkString = colorName === 'white' ? whiteColorVars : colorName === 'black' ? blackColorVars : stringifyObject(dark);
+    /* eslint-enable */
+    rest += [`.color-${colorName} {`, lightString, `--swiper-theme-color: var(--f7-theme-color);`, `}`, `.color-${colorName}.dark, .color-${colorName} .dark, .dark .color-${colorName} {`, darkString, `--swiper-theme-color: var(--f7-theme-color);`, `}`, `.ios .color-${colorName}, .ios.color-${colorName} {`, stringifyObject(ios), `}`, `.md .color-${colorName}, .md.color-${colorName} {`, stringifyObject(md), `}`,
+    // text color
+    `.text-color-${colorName} {`, `--f7-theme-color-text-color: ${colors[colorName]};`, `}`,
+    // bg color
+    `.bg-color-${colorName} {`, `--f7-theme-color-bg-color: ${colors[colorName]};`, `}`,
+    // border color
+    `.border-color-${colorName} {`, `--f7-theme-color-border-color: ${colors[colorName]};`, `}`,
+    // ripple color
+    `.ripple-color-${colorName} {`, `--f7-theme-color-ripple-color: rgba(${light['--f7-ios-primary-rgb']}, 0.3);`, `}`].join('');
+  });
+  return `${primary}${rest}`;
 }

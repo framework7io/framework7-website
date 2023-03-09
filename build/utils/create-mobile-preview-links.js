@@ -11,7 +11,6 @@ module.exports = (content = '') => {
       return `${string}${indent}.docs-mobile-preview-links
 ${indent}  a(href="${url.split('?')[0]}?theme=ios" target="_blank").mobile-preview-ios
 ${indent}  a(href="${url.split('?')[0]}?theme=md" target="_blank").mobile-preview-md
-${indent}  a(href="${url.split('?')[0]}?theme=aurora" target="_blank").mobile-preview-aurora
 `;
     },
   );

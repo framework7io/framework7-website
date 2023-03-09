@@ -295,11 +295,6 @@
     height: 24px;
     border-radius: 4px;
   }
-  :global(.aurora .demo-list-icon, .aurora .icon-f7, .aurora .icon-vi) {
-    width: 18px;
-    height: 18px;
-    border-radius: 4px;
-  }
 </style>
 <script>
   import {App, View, Page, Navbar, BlockTitle, List, ListItem, Icon, ListGroup, Toggle, BlockFooter, Block} from 'framework7-svelte';

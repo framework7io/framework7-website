@@ -2,19 +2,17 @@ import $ from '../../shared/dom7.js';
 import { extend, deleteProps } from '../../shared/utils.js';
 import Framework7Class from '../../shared/class.js';
 /** @jsx $jsx */
-
 import $jsx from '../../shared/$jsx.js';
-
 class AreaChart extends Framework7Class {
   constructor(app, params) {
     if (params === void 0) {
       params = {};
     }
-
     super(params, [app]);
     const self = this;
-    const defaults = extend({}, app.params.areaChart); // Extend defaults with modules params
+    const defaults = extend({}, app.params.areaChart);
 
+    // Extend defaults with modules params
     self.useModulesParams(defaults);
     self.params = extend(defaults, params);
     const {
@@ -33,8 +31,9 @@ class AreaChart extends Framework7Class {
       f7Tooltip: null,
       linesOffsets: null
     });
-    $el[0].f7AreaChart = self; // Install Modules
+    $el[0].f7AreaChart = self;
 
+    // Install Modules
     self.useModules();
     self.onMouseEnter = self.onMouseEnter.bind(self);
     self.onMouseMove = self.onMouseMove.bind(self);
@@ -43,7 +42,6 @@ class AreaChart extends Framework7Class {
     self.init();
     return self;
   }
-
   getVisibleLabels() {
     const {
       maxAxisLabels,
@@ -54,7 +52,6 @@ class AreaChart extends Framework7Class {
     const filtered = axisLabels.filter((label, index) => index % skipStep === 0);
     return filtered;
   }
-
   getSummValues() {
     const {
       datasets
@@ -74,7 +71,6 @@ class AreaChart extends Framework7Class {
     });
     return summValues;
   }
-
   getChartData() {
     const {
       datasets,
@@ -86,14 +82,11 @@ class AreaChart extends Framework7Class {
       hiddenDatasets
     } = this;
     const data = [];
-
     if (!datasets.length) {
       return data;
     }
-
     const lastValues = datasets[0].values.map(() => 0);
     let maxValue = 0;
-
     if (lineChart) {
       datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(_ref2 => {
         let {
@@ -105,7 +98,6 @@ class AreaChart extends Framework7Class {
     } else {
       maxValue = Math.max(...this.getSummValues());
     }
-
     datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(_ref3 => {
       let {
         label,
@@ -117,18 +109,14 @@ class AreaChart extends Framework7Class {
         const value = lineChart ? originalValue : lastValues[valueIndex];
         const x = valueIndex / (values.length - 1) * width;
         const y = height - value / maxValue * height;
-
         if (lineChart) {
           return `${valueIndex === 0 ? 'M' : 'L'}${x},${y}`;
         }
-
         return `${x} ${y}`;
       });
-
       if (!lineChart) {
         points.push(`${width} ${height} 0 ${height}`);
       }
-
       data.push({
         label,
         points: points.join(' '),
@@ -137,18 +125,15 @@ class AreaChart extends Framework7Class {
     });
     return data.reverse();
   }
-
   getVerticalLines() {
     const {
       datasets,
       width
     } = this.params;
     const lines = [];
-
     if (!datasets.length) {
       return lines;
     }
-
     const values = datasets[0].values;
     values.forEach((value, valueIndex) => {
       const x = valueIndex / (values.length - 1) * width;
@@ -156,7 +141,6 @@ class AreaChart extends Framework7Class {
     });
     return lines;
   }
-
   toggleDataset(index) {
     const {
       hiddenDatasets,
@@ -165,23 +149,19 @@ class AreaChart extends Framework7Class {
       }
     } = this;
     if (!toggleDatasets) return;
-
     if (hiddenDatasets.includes(index)) {
       hiddenDatasets.splice(hiddenDatasets.indexOf(index), 1);
     } else {
       hiddenDatasets.push(index);
     }
-
     if (this.$legendEl) {
       this.$legendEl.find('.area-chart-legend-item').removeClass('area-chart-legend-item-hidden');
       hiddenDatasets.forEach(i => {
         this.$legendEl.find(`.area-chart-legend-item[data-index="${i}"]`).addClass('area-chart-legend-item-hidden');
       });
     }
-
     this.update({}, true);
   }
-
   formatAxisLabel(label) {
     const {
       formatAxisLabel
@@ -189,7 +169,6 @@ class AreaChart extends Framework7Class {
     if (formatAxisLabel) return formatAxisLabel.call(this, label);
     return label;
   }
-
   formatLegendLabel(label) {
     const {
       formatLegendLabel
@@ -197,16 +176,13 @@ class AreaChart extends Framework7Class {
     if (formatLegendLabel) return formatLegendLabel.call(this, label);
     return label;
   }
-
   calcLinesOffsets() {
     const lines = this.svgEl.querySelectorAll('line');
     this.linesOffsets = [];
-
     for (let i = 0; i < lines.length; i += 1) {
       this.linesOffsets.push(lines[i].getBoundingClientRect().left);
     }
   }
-
   formatTooltip() {
     const self = this;
     const {
@@ -231,7 +207,6 @@ class AreaChart extends Framework7Class {
     currentValues.forEach(dataset => {
       total += dataset.value;
     });
-
     if (formatTooltip) {
       return formatTooltip({
         index: currentIndex,
@@ -239,11 +214,10 @@ class AreaChart extends Framework7Class {
         datasets: currentValues
       });
     }
-
     let labelText = formatTooltipAxisLabel ? formatTooltipAxisLabel.call(self, axisLabels[currentIndex]) : this.formatAxisLabel(axisLabels[currentIndex]);
     if (!labelText) labelText = '';
-    const totalText = formatTooltipTotal ? formatTooltipTotal.call(self, total) : total; // prettier-ignore
-
+    const totalText = formatTooltipTotal ? formatTooltipTotal.call(self, total) : total;
+    // prettier-ignore
     const datasetsText = currentValues.length > 0 ? `
       <ul class="area-chart-tooltip-list">
         ${currentValues.map(_ref4 => {
@@ -257,15 +231,14 @@ class AreaChart extends Framework7Class {
               <li><span style="background-color: ${color};"></span>${valueText}</li>
             `;
     }).join('')}
-      </ul>` : ''; // prettier-ignore
-
+      </ul>` : '';
+    // prettier-ignore
     return `
       <div class="area-chart-tooltip-label">${labelText}</div>
       <div class="area-chart-tooltip-total">${totalText}</div>
       ${datasetsText}
     `;
   }
-
   setTooltip() {
     const self = this;
     const {
@@ -281,12 +254,10 @@ class AreaChart extends Framework7Class {
     } = self;
     if (!tooltip) return;
     const hasVisibleDataSets = datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).length > 0;
-
     if (!hasVisibleDataSets) {
       if (self.f7Tooltip && self.f7Tooltip.hide) self.f7Tooltip.hide();
       return;
     }
-
     if (currentIndex !== null && !self.f7Tooltip) {
       self.f7Tooltip = app.tooltip.create({
         trigger: 'manual',
@@ -295,18 +266,14 @@ class AreaChart extends Framework7Class {
         text: self.formatTooltip(),
         cssClass: 'area-chart-tooltip'
       });
-
       if (self.f7Tooltip && self.f7Tooltip.show) {
         self.f7Tooltip.show();
       }
-
       return;
     }
-
     if (!self.f7Tooltip || !self.f7Tooltip.hide || !self.f7Tooltip.show) {
       return;
     }
-
     if (currentIndex !== null) {
       self.f7Tooltip.setText(self.formatTooltip());
       self.f7Tooltip.setTargetEl(svgEl.querySelector(`line[data-index="${currentIndex}"]`));
@@ -315,7 +282,6 @@ class AreaChart extends Framework7Class {
       self.f7Tooltip.hide();
     }
   }
-
   setCurrentIndex(index) {
     if (index === this.currentIndex) return;
     this.currentIndex = index;
@@ -327,23 +293,18 @@ class AreaChart extends Framework7Class {
     this.$svgEl.find(`line[data-index="${index}"]`).addClass('area-chart-current-line');
     this.setTooltip();
   }
-
   onLegendClick(e) {
     const index = parseInt($(e.target).closest('.area-chart-legend-item').attr('data-index'), 10);
     this.toggleDataset(index);
   }
-
   onMouseEnter() {
     this.calcLinesOffsets();
   }
-
   onMouseMove(e) {
     const self = this;
-
     if (!self.linesOffsets) {
       self.calcLinesOffsets();
     }
-
     let currentLeft = e.pageX;
     if (typeof currentLeft === 'undefined') currentLeft = 0;
     const distances = self.linesOffsets.map(left => Math.abs(currentLeft - left));
@@ -351,11 +312,9 @@ class AreaChart extends Framework7Class {
     const closestIndex = distances.indexOf(minDistance);
     self.setCurrentIndex(closestIndex);
   }
-
   onMouseLeave() {
     this.setCurrentIndex(null);
   }
-
   attachEvents() {
     const {
       svgEl,
@@ -367,7 +326,6 @@ class AreaChart extends Framework7Class {
     svgEl.addEventListener('mouseleave', this.onMouseLeave);
     $el.on('click', '.area-chart-legend-item', this.onLegendClick);
   }
-
   detachEvents() {
     const {
       svgEl,
@@ -379,7 +337,6 @@ class AreaChart extends Framework7Class {
     svgEl.removeEventListener('mouseleave', this.onMouseLeave);
     $el.off('click', '.area-chart-legend-item', this.onLegendClick);
   }
-
   render() {
     const self = this;
     const {
@@ -429,16 +386,13 @@ class AreaChart extends Framework7Class {
       style: `background-color: ${dataset.color}`
     }), self.formatLegendLabel(dataset.label)))));
   }
-
   update(newParams, onlySvg) {
     if (newParams === void 0) {
       newParams = {};
     }
-
     if (onlySvg === void 0) {
       onlySvg = false;
     }
-
     const self = this;
     const {
       params
@@ -451,19 +405,16 @@ class AreaChart extends Framework7Class {
     if (self.$svgEl.length === 0) return self;
     self.detachEvents();
     self.$svgEl.remove();
-
     if (!onlySvg) {
       self.$axisEl.remove();
       self.$legendEl.remove();
     }
-
     const $rendered = $(self.render());
     const $svgEl = $rendered.find('svg');
     extend(self, {
       svgEl: $svgEl && $svgEl[0],
       $svgEl
     });
-
     if (!onlySvg) {
       const $axisEl = $rendered.find('.area-chart-axis');
       const $legendEl = $rendered.find('.area-chart-legend');
@@ -474,12 +425,10 @@ class AreaChart extends Framework7Class {
       self.$el.append($axisEl);
       self.$el.append($legendEl);
     }
-
     self.$el.prepend($svgEl);
     self.attachEvents();
     return self;
   }
-
   init() {
     const self = this;
     const $rendered = $(self.render());
@@ -498,7 +447,6 @@ class AreaChart extends Framework7Class {
     self.attachEvents();
     return self;
   }
-
   destroy() {
     const self = this;
     if (!self.$el || self.destroyed) return;
@@ -508,16 +456,12 @@ class AreaChart extends Framework7Class {
     self.$svgEl.remove();
     self.$axisEl.remove();
     self.$legendEl.remove();
-
     if (self.f7Tooltip && self.f7Tooltip.destroy) {
       self.f7Tooltip.destroy();
     }
-
     delete self.$el[0].f7AreaChart;
     deleteProps(self);
     self.destroyed = true;
   }
-
 }
-
 export default AreaChart;

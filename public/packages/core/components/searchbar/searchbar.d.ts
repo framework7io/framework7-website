@@ -23,7 +23,7 @@ export namespace Searchbar {
     searchItem?: CSSSelector;
     /** CSS selector of group element. Used when hideGroups enabled to hide groups. If we do a search in List View, then it usually a list group (default "list-group") */
     searchGroup?: CSSSelector;
-    /** CSS selector of group titles and dividers. Used when hideDividers enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider (default ".item-divider, .list-group-title") */
+    /** CSS selector of group titles and dividers. Used when hideDividers enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider (default ".list-group-title") */
     searchGroupTitle?: CSSSelector;
     /** CSS selector or HTMLElement of searchbar "found" element to make it hidden when there is no search results (default ".searchbar-found") */
     foundEl?: HTMLElement | CSSSelector;
@@ -33,7 +33,7 @@ export namespace Searchbar {
     hideOnEnableEl?: HTMLElement | CSSSelector;
     /** CSS selector or HTMLElement of elements to be hidden on searchbar search (default ".searchbar-hide-on-search") */
     hideOnSearchEl?: HTMLElement | CSSSelector;
-    /** Enables searchbar backdrop element. By default disabled for Aurora theme */
+    /** Enables searchbar backdrop element. (default true) */
     backdrop?: boolean;
     /** CSS selector or HTMLElement of searchbar backdrop element. If not passed and backdrop parameter is true then it will look for .searchbar-backdrop element. In case none found it will create one automatically */
     backdropEl?: HTMLElement | CSSSelector;

@@ -6,7 +6,6 @@ import App from './F7_VUE_DEMO.vue';
 
 let theme = 'ios';
 if (window.location.href.indexOf('theme=md') >= 0) theme = 'md';
-if (window.location.href.indexOf('theme=aurora') >= 0) theme = 'aurora';
 
 const themePlugin = {
   params: {

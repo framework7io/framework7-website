@@ -11,10 +11,8 @@ export default {
       components: []
     }
   },
-
   create() {
     const instance = this;
-
     if (instance.app) {
       // View Router
       if (instance.params.router) {
@@ -25,5 +23,4 @@ export default {
       instance.router = new Router(instance);
     }
   }
-
 };

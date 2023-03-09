@@ -4,14 +4,14 @@
     <Page>
       <Navbar title="Searchbar">
         <NavRight>
-          <Link searchbarEnable=".searchbar-demo" iconIos="f7:search" iconAurora="f7:search" iconMd="material:search"></Link>
+          <Link searchbarEnable=".searchbar-demo" iconIos="f7:search" iconMd="material:search"></Link>
         </NavRight>
         <Searchbar
           class="searchbar-demo"
           expandable
           searchContainer=".search-list"
           searchIn=".item-title"
-          disableButton={!theme.aurora}
+          disableButton={true}
         />
       </Navbar>
       <List class="searchbar-not-found">

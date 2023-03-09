@@ -6,7 +6,6 @@ export default {
   static: {
     ColorPicker
   },
-
   create() {
     const app = this;
     app.colorPicker = ConstructorMethods({
@@ -15,12 +14,10 @@ export default {
       app,
       domProp: 'f7ColorPicker'
     });
-
     app.colorPicker.close = function close(el) {
       if (el === void 0) {
         el = '.color-picker';
       }
-
       const $el = $(el);
       if ($el.length === 0) return;
       const colorPicker = $el[0].f7ColorPicker;
@@ -28,7 +25,6 @@ export default {
       colorPicker.close();
     };
   },
-
   params: {
     colorPicker: {
       // Color picker settings

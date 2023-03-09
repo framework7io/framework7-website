@@ -25,13 +25,13 @@
     });
   }
 }
+.link[class*='color-'] {
+  color: var(--f7-theme-color);
+}
 
 .if-ios-theme({
   @import './link-ios.less';
 });
 .if-md-theme({
   @import './link-md.less';
-});
-.if-aurora-theme({
-  @import './link-aurora.less';
 });

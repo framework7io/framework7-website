@@ -6,7 +6,6 @@ export default {
   static: {
     Tooltip
   },
-
   create() {
     const app = this;
     app.tooltip = ConstructorMethods({
@@ -15,7 +14,6 @@ export default {
       app,
       domProp: 'f7Tooltip'
     });
-
     app.tooltip.show = function show(el) {
       const $el = $(el);
       if ($el.length === 0) return undefined;
@@ -24,7 +22,6 @@ export default {
       tooltip.show($el[0]);
       return tooltip;
     };
-
     app.tooltip.hide = function hide(el) {
       const $el = $(el);
       if ($el.length === 0) return undefined;
@@ -33,7 +30,6 @@ export default {
       tooltip.hide();
       return tooltip;
     };
-
     app.tooltip.setText = function text(el, newText) {
       const $el = $(el);
       if ($el.length === 0) return undefined;
@@ -43,7 +39,6 @@ export default {
       return tooltip;
     };
   },
-
   params: {
     tooltip: {
       targetEl: null,
@@ -68,13 +63,11 @@ export default {
         });
       });
     },
-
     tabBeforeRemove(tabEl) {
       $(tabEl).find('.tooltip-init').each(el => {
         if (el.f7Tooltip) el.f7Tooltip.destroy();
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.tooltip-init').each(el => {
@@ -85,7 +78,6 @@ export default {
           text
         });
       });
-
       if (app.theme === 'ios' && page.view && page.view.router.dynamicNavbar && page.$navbarEl && page.$navbarEl.length > 0) {
         page.$navbarEl.find('.tooltip-init').each(el => {
           const text = $(el).attr('data-tooltip');
@@ -97,20 +89,17 @@ export default {
         });
       }
     },
-
     pageBeforeRemove(page) {
       const app = this;
       page.$el.find('.tooltip-init').each(el => {
         if (el.f7Tooltip) el.f7Tooltip.destroy();
       });
-
       if (app.theme === 'ios' && page.view && page.view.router.dynamicNavbar && page.$navbarEl && page.$navbarEl.length > 0) {
         page.$navbarEl.find('.tooltip-init').each(el => {
           if (el.f7Tooltip) el.f7Tooltip.destroy();
         });
       }
     }
-
   },
   vnode: {
     'tooltip-init': {
@@ -124,21 +113,17 @@ export default {
           text
         });
       },
-
       update(vnode) {
         const el = vnode.elm;
         if (!el.f7Tooltip) return;
-
         if (vnode && vnode.data && vnode.data.attrs && vnode.data.attrs['data-tooltip']) {
           el.f7Tooltip.setText(vnode.data.attrs['data-tooltip']);
         }
       },
-
       destroy(vnode) {
         const el = vnode.elm;
         if (el.f7Tooltip) el.f7Tooltip.destroy();
       }
-
     }
   }
 };

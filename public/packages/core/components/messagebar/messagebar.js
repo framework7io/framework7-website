@@ -7,7 +7,6 @@ export default {
   static: {
     Messagebar
   },
-
   create() {
     const app = this;
     app.messagebar = ConstructorMethods({
@@ -18,7 +17,6 @@ export default {
       addMethods: 'clear getValue setValue setPlaceholder resizePage focus blur attachmentsCreate attachmentsShow attachmentsHide attachmentsToggle renderAttachments sheetCreate sheetShow sheetHide sheetToggle'.split(' ')
     });
   },
-
   on: {
     tabBeforeRemove(tabEl) {
       const app = this;
@@ -26,7 +24,6 @@ export default {
         app.messagebar.destroy(messagebarEl);
       });
     },
-
     tabMounted(tabEl) {
       const app = this;
       $(tabEl).find('.messagebar-init').each(messagebarEl => {
@@ -35,14 +32,12 @@ export default {
         }, $(messagebarEl).dataset()));
       });
     },
-
     pageBeforeRemove(page) {
       const app = this;
       page.$el.find('.messagebar-init').each(messagebarEl => {
         app.messagebar.destroy(messagebarEl);
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.messagebar-init').each(messagebarEl => {
@@ -51,7 +46,6 @@ export default {
         }, $(messagebarEl).dataset()));
       });
     }
-
   },
   vnode: {
     'messagebar-init': {
@@ -62,13 +56,11 @@ export default {
           el: messagebarEl
         }, $(messagebarEl).dataset()));
       },
-
       destroy(vnode) {
         const app = this;
         const messagebarEl = vnode.elm;
         app.messagebar.destroy(messagebarEl);
       }
-
     }
   }
 };

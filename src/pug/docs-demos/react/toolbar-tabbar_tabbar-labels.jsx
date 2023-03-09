@@ -9,7 +9,6 @@ export default () => {
         <NavRight>
           <Link
             iconIos="f7:arrow_up_arrow_down_circle_fill"
-            iconAurora="f7:arrow_up_arrow_down_circle_fill"
             iconMd="material:compare_arrows"
             onClick={() => setIsBottom(!isBottom)}
           ></Link>
@@ -22,21 +21,18 @@ export default () => {
           tabLinkActive
           text="Tab 1"
           iconIos="f7:envelope_fill"
-          iconAurora="f7:envelope_fill"
           iconMd="material:email"
         ></Link>
         <Link
           tabLink="#tab-2"
           text="Tab 2"
           iconIos="f7:calendar_fill"
-          iconAurora="f7:calendar_fill"
           iconMd="material:today"
         ></Link>
         <Link
           tabLink="#tab-3"
           text="Tab 3"
           iconIos="f7:cloud_upload_fill"
-          iconAurora="f7:cloud_upload_fill"
           iconMd="material:file_upload"
         ></Link>
       </Toolbar>

@@ -6,7 +6,6 @@ export default {
   static: {
     Notification
   },
-
   create() {
     const app = this;
     app.notification = extend({}, ModalMethods({
@@ -15,7 +14,6 @@ export default {
       defaultSelector: '.notification.modal-in'
     }));
   },
-
   params: {
     notification: {
       icon: null,

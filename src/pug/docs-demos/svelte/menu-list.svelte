@@ -19,7 +19,7 @@
       <List menuList>
         <ListItem link title="Home" selected={selected === 'home'} onClick={() => (selected = 'home')}>
           <span slot="media">
-            <Icon md="material:home" aurora="f7:house_fill" ios="f7:house_fill" />
+            <Icon md="material:home" ios="f7:house_fill" />
           </span>
         </ListItem>
         <ListItem
@@ -28,7 +28,7 @@
           selected={selected === 'profile'}
           onClick={() => (selected = 'profile')}>
           <span slot="media">
-            <Icon md="material:person" aurora="f7:person_fill" ios="f7:person_fill" />
+            <Icon md="material:person" ios="f7:person_fill" />
           </span>
         </ListItem>
         <ListItem
@@ -37,7 +37,7 @@
           selected={selected === 'settings'}
           onClick={() => (selected = 'settings')}>
           <span slot="media">
-            <Icon md="material:settings" aurora="f7:gear_alt_fill" ios="f7:gear_alt_fill" />
+            <Icon md="material:settings" ios="f7:gear_alt_fill" />
           </span>
         </ListItem>
       </List>
@@ -50,7 +50,7 @@
           selected={selectedMedia === 'home'}
           onClick={() => (selectedMedia = 'home')}>
           <span slot="media">
-            <Icon md="material:home" aurora="f7:house_fill" ios="f7:house_fill" />
+            <Icon md="material:home" ios="f7:house_fill" />
           </span>
         </ListItem>
         <ListItem
@@ -60,7 +60,7 @@
           selected={selectedMedia === 'profile'}
           onClick={() => (selectedMedia = 'profile')}>
           <span slot="media">
-            <Icon md="material:person" aurora="f7:person_fill" ios="f7:person_fill" />
+            <Icon md="material:person" ios="f7:person_fill" />
           </span>
         </ListItem>
         <ListItem
@@ -70,7 +70,7 @@
           selected={selectedMedia === 'settings'}
           onClick={() => (selectedMedia = 'settings')}>
           <span slot="media">
-            <Icon md="material:settings" aurora="f7:gear_alt_fill" ios="f7:gear_alt_fill" />
+            <Icon md="material:settings" ios="f7:gear_alt_fill" />
           </span>
         </ListItem>
       </List>

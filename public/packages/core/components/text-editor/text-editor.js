@@ -20,7 +20,6 @@ export default {
       clearFormattingOnPaste: true
     }
   },
-
   create() {
     const app = this;
     app.textEditor = extend(ConstructorMethods({
@@ -30,7 +29,6 @@ export default {
       domProp: 'f7TextEditor'
     }));
   },
-
   static: {
     TextEditor
   },
@@ -44,13 +42,11 @@ export default {
         }, dataset || {}));
       });
     },
-
     tabBeforeRemove(tabEl) {
       $(tabEl).find('.text-editor-init').each(editorEl => {
         if (editorEl.f7TextEditor) editorEl.f7TextEditor.destroy();
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.text-editor-init').each(editorEl => {
@@ -60,13 +56,11 @@ export default {
         }, dataset || {}));
       });
     },
-
     pageBeforeRemove(page) {
       page.$el.find('.text-editor-init').each(editorEl => {
         if (editorEl.f7TextEditor) editorEl.f7TextEditor.destroy();
       });
     }
-
   },
   vnode: {
     'text-editor-init': {
@@ -78,12 +72,10 @@ export default {
           el: editorEl
         }, dataset || {}));
       },
-
       destroy(vnode) {
         const editorEl = vnode.elm;
         if (editorEl.f7TextEditor) editorEl.f7TextEditor.destroy();
       }
-
     }
   }
 };

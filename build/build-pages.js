@@ -30,6 +30,8 @@ const createInlineCodeTags = require('./utils/create-inline-code-tags');
 const createCodeFilter = require('./utils/create-code-filter');
 const releaseNotes = require('./utils/release-notes');
 
+const { releaseDate, version: releaseVersion } = require('../node_modules/framework7/package.json');
+
 if (!pug.filter && !pug.filters.code) {
   pug.filters = {
     coreSource: coreSourceFilter,
@@ -130,8 +132,8 @@ function buildPages(
         pretty,
         locals: {
           release: {
-            version: pkg.releaseVersion,
-            date: pkg.releaseDate,
+            version: releaseVersion,
+            date: releaseDate,
           },
           cdn: cdn ? pkg.cdn : '',
           icons: iconsManifest.icons,

@@ -1,48 +1,40 @@
 import $ from '../../shared/dom7.js';
 import { extend } from '../../shared/utils.js';
 import View from './view-class.js';
-
 function getCurrentView(app) {
   const $popoverView = $('.popover.modal-in .view');
   const $popupView = $('.popup.modal-in .view');
   const $panelView = $('.panel.panel-in .view');
   let $viewsEl = $('.views');
-  if ($viewsEl.length === 0) $viewsEl = app.$el; // Find active view as tab
-
+  if ($viewsEl.length === 0) $viewsEl = app.$el;
+  // Find active view as tab
   let $viewEl = $viewsEl.children('.view');
-
   if ($viewEl.length === 0) {
     $viewEl = $viewsEl.children('.tabs').children('.view');
-  } // Propably in tabs or split view
-
-
+  }
+  // Propably in tabs or split view
   if ($viewEl.length > 1) {
     if ($viewEl.hasClass('tab')) {
       // Tabs
       $viewEl = $viewsEl.children('.view.tab-active');
-
       if ($viewEl.length === 0) {
         $viewEl = $viewsEl.children('.tabs').children('.view.tab-active');
       }
-    } else {// Split View, leave appView intact
+    } else {
+      // Split View, leave appView intact
     }
   }
-
   if ($popoverView.length > 0 && $popoverView[0].f7View) return $popoverView[0].f7View;
   if ($popupView.length > 0 && $popupView[0].f7View) return $popupView[0].f7View;
   if ($panelView.length > 0 && $panelView[0].f7View) return $panelView[0].f7View;
-
   if ($viewEl.length > 0) {
     if ($viewEl.length === 1 && $viewEl[0].f7View) return $viewEl[0].f7View;
-
     if ($viewEl.length > 1) {
       return app.views.main;
     }
   }
-
   return undefined;
 }
-
 export default {
   name: 'view',
   params: {
@@ -53,7 +45,6 @@ export default {
       main: false,
       router: true,
       linksView: null,
-      stackPages: false,
       xhrCache: true,
       xhrCacheIgnore: [],
       xhrCacheIgnoreGetParameters: false,
@@ -85,11 +76,6 @@ export default {
       mdSwipeBackAnimateOpacity: false,
       mdSwipeBackActiveArea: 30,
       mdSwipeBackThreshold: 0,
-      auroraSwipeBack: false,
-      auroraSwipeBackAnimateShadow: false,
-      auroraSwipeBackAnimateOpacity: true,
-      auroraSwipeBackActiveArea: 30,
-      auroraSwipeBackThreshold: 0,
       // Push State
       browserHistory: false,
       browserHistoryRoot: undefined,
@@ -109,7 +95,6 @@ export default {
       // Delays
       iosPageLoadDelay: 0,
       mdPageLoadDelay: 0,
-      auroraPageLoadDelay: 0,
       // Routes hooks
       routesBeforeEnter: null,
       routesBeforeLeave: null
@@ -118,7 +103,6 @@ export default {
   static: {
     View
   },
-
   create() {
     const app = this;
     extend(app, {
@@ -126,28 +110,23 @@ export default {
         create(el, params) {
           return new View(app, el, params);
         },
-
         get(viewEl) {
           const $viewEl = $(viewEl);
           if ($viewEl.length && $viewEl[0].f7View) return $viewEl[0].f7View;
           return undefined;
         }
-
       })
     });
     Object.defineProperty(app.views, 'current', {
       enumerable: true,
       configurable: true,
-
       get() {
         return getCurrentView(app);
       }
-
-    }); // Alias
-
+    });
+    // Alias
     app.view = app.views;
   },
-
   on: {
     init() {
       const app = this;
@@ -157,7 +136,6 @@ export default {
         app.views.create(viewEl, viewParams);
       });
     },
-
     'modalOpen panelOpen': function onOpen(instance) {
       const app = this;
       instance.$el.find('.view-init').each(viewEl => {
@@ -184,14 +162,12 @@ export default {
         const viewParams = $(viewEl).dataset();
         app.views.create(viewEl, viewParams);
       },
-
       destroy(vnode) {
         const viewEl = vnode.elm;
         const view = viewEl.f7View;
         if (!view) return;
         view.destroy();
       }
-
     }
   }
 };

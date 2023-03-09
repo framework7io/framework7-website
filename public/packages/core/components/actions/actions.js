@@ -20,7 +20,6 @@ export default {
   static: {
     Actions
   },
-
   create() {
     const app = this;
     app.actions = ModalMethods({
@@ -29,13 +28,11 @@ export default {
       defaultSelector: '.actions-modal.modal-in'
     });
   },
-
   clicks: {
     '.actions-open': function openActions($clickedEl, data) {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       app.actions.open(data.actions, data.animate, $clickedEl);
     },
@@ -43,7 +40,6 @@ export default {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       app.actions.close(data.actions, data.animate, $clickedEl);
     }

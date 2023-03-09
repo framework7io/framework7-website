@@ -3,15 +3,14 @@ import $ from '../../shared/dom7.js';
 import { extend, nextTick } from '../../shared/utils.js';
 import Modal from '../modal/modal-class.js';
 /** @jsx $jsx */
-
 import $jsx from '../../shared/$jsx.js';
-
 class Toast extends Modal {
   constructor(app, params) {
     const extendedParams = extend({
       on: {}
-    }, app.params.toast, params); // Extends with open/close Modal methods;
+    }, app.params.toast, params);
 
+    // Extends with open/close Modal methods;
     super(app, extendedParams);
     const toast = this;
     const window = getWindow();
@@ -22,7 +21,6 @@ class Toast extends Modal {
       closeTimeout
     } = toast.params;
     let $el;
-
     if (!toast.params.el) {
       // Find Element
       const toastHtml = toast.render();
@@ -30,22 +28,18 @@ class Toast extends Modal {
     } else {
       $el = $(toast.params.el);
     }
-
     if ($el && $el.length > 0 && $el[0].f7Modal) {
       return $el[0].f7Modal;
     }
-
     if ($el.length === 0) {
       return toast.destroy();
     }
-
     extend(toast, {
       $el,
       el: $el[0],
       type: 'toast'
     });
     $el[0].f7Modal = toast;
-
     if (closeButton) {
       $el.find('.toast-button').on('click', () => {
         toast.emit('local::closeButtonClick toastCloseButtonClick', toast);
@@ -55,17 +49,14 @@ class Toast extends Modal {
         $el.find('.toast-button').off('click');
       });
     }
-
     let timeoutId;
     toast.on('open', () => {
       $('.toast.modal-in').each(openedEl => {
         const toastInstance = app.toast.get(openedEl);
-
         if (openedEl !== toast.el && toastInstance) {
           toastInstance.close();
         }
       });
-
       if (closeTimeout) {
         timeoutId = nextTick(() => {
           toast.close();
@@ -75,7 +66,6 @@ class Toast extends Modal {
     toast.on('close', () => {
       window.clearTimeout(timeoutId);
     });
-
     if (toast.params.destroyOnClose) {
       toast.once('closed', () => {
         setTimeout(() => {
@@ -83,10 +73,8 @@ class Toast extends Modal {
         }, 0);
       });
     }
-
     return toast;
   }
-
   render() {
     const toast = this;
     if (toast.params.render) return toast.params.render.call(toast, toast);
@@ -113,7 +101,5 @@ class Toast extends Modal {
       class: `toast-button button ${closeButtonColor ? `color-${closeButtonColor}` : ''}`
     }, closeButtonText)));
   }
-
 }
-
 export default Toast;

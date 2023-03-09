@@ -24,7 +24,6 @@ export default {
       formatTooltipDataset: null
     }
   },
-
   create() {
     const app = this;
     app.areaChart = ConstructorMethods({
@@ -33,7 +32,6 @@ export default {
       app,
       domProp: 'f7AreaChart'
     });
-
     app.areaChart.update = function update(el, newParams) {
       const $el = $(el);
       if ($el.length === 0) return undefined;
@@ -43,5 +41,4 @@ export default {
       return areaChart;
     };
   }
-
 };

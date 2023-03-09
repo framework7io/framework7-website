@@ -1,6 +1,5 @@
 import { getWindow, getDocument } from 'ssr-window';
 let support;
-
 function calcSupport() {
   const window = getWindow();
   const document = getDocument();
@@ -9,19 +8,17 @@ function calcSupport() {
     pointerEvents: !!window.PointerEvent && 'maxTouchPoints' in window.navigator && window.navigator.maxTouchPoints >= 0,
     passiveListener: function checkPassiveListener() {
       let supportsPassive = false;
-
       try {
         const opts = Object.defineProperty({}, 'passive', {
           // eslint-disable-next-line
           get() {
             supportsPassive = true;
           }
-
         });
         window.addEventListener('testPassiveListener', null, opts);
-      } catch (e) {// No support
+      } catch (e) {
+        // No support
       }
-
       return supportsPassive;
     }(),
     intersectionObserver: function checkObserver() {
@@ -29,13 +26,10 @@ function calcSupport() {
     }()
   };
 }
-
 function getSupport() {
   if (!support) {
     support = calcSupport();
   }
-
   return support;
 }
-
 export { getSupport };

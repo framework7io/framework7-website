@@ -234,7 +234,6 @@ export default () => {
           >
             <Link
               iconIos="f7:camera_fill"
-              iconAurora="f7:camera_fill"
               iconMd="material:camera_alt"
               slot="inner-start"
               onClick={() => {
@@ -243,7 +242,6 @@ export default () => {
             />
             <Link
               iconIos="f7:arrow_up_circle_fill"
-              iconAurora="f7:arrow_up_circle_fill"
               iconMd="material:send"
               slot="inner-end"
               onClick={sendMessage}

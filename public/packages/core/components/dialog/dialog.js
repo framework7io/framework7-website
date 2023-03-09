@@ -1,4 +1,4 @@
-import { extend, iosPreloaderContent, mdPreloaderContent, auroraPreloaderContent } from '../../shared/utils.js';
+import { extend, iosPreloaderContent, mdPreloaderContent } from '../../shared/utils.js';
 import Dialog from './dialog-class.js';
 import ModalMethods from '../../shared/modal-methods.js';
 export default {
@@ -22,14 +22,11 @@ export default {
   static: {
     Dialog
   },
-
   create() {
     const app = this;
-
     function defaultDialogTitle() {
       return app.params.dialog.title || app.name;
     }
-
     const destroyOnClose = app.params.dialog.destroyPredefinedDialogs;
     const keyboardActions = app.params.dialog.keyboardActions;
     const autoFocus = app.params.dialog.autoFocus;
@@ -38,9 +35,9 @@ export default {
         opened(dialog) {
           dialog.$el.find('input').eq(0).focus();
         }
-
       }
     } : {};
+    const isIosTheme = app.theme === 'ios';
     app.dialog = extend(ModalMethods({
       app,
       constructor: Dialog,
@@ -51,37 +48,30 @@ export default {
         for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
           args[_key] = arguments[_key];
         }
-
         let [text, title, callbackOk] = args;
-
         if (args.length === 2 && typeof args[1] === 'function') {
           [text, callbackOk, title] = args;
         }
-
         return new Dialog(app, {
           title: typeof title === 'undefined' ? defaultDialogTitle() : title,
           text,
           buttons: [{
             text: app.params.dialog.buttonOk,
-            bold: true,
+            strong: isIosTheme,
             onClick: callbackOk,
             keyCodes: keyboardActions ? [13, 27] : null
           }],
           destroyOnClose
         }).open();
       },
-
       prompt() {
         for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
           args[_key2] = arguments[_key2];
         }
-
         let [text, title, callbackOk, callbackCancel, defaultValue] = args;
-
         if (typeof args[1] === 'function') {
           [text, callbackOk, callbackCancel, defaultValue, title] = args;
         }
-
         defaultValue = typeof defaultValue === 'undefined' || defaultValue === null ? '' : defaultValue;
         return new Dialog(app, {
           title: typeof title === 'undefined' ? defaultDialogTitle() : title,
@@ -90,35 +80,29 @@ export default {
           buttons: [{
             text: app.params.dialog.buttonCancel,
             keyCodes: keyboardActions ? [27] : null,
-            color: app.theme === 'aurora' ? 'gray' : null
+            color: null
           }, {
             text: app.params.dialog.buttonOk,
-            bold: true,
+            strong: isIosTheme,
             keyCodes: keyboardActions ? [13] : null
           }],
-
           onClick(dialog, index) {
             const inputValue = dialog.$el.find('.dialog-input').val();
             if (index === 0 && callbackCancel) callbackCancel(inputValue);
             if (index === 1 && callbackOk) callbackOk(inputValue);
           },
-
           destroyOnClose,
           ...autoFocusHandler
         }).open();
       },
-
       confirm() {
         for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
           args[_key3] = arguments[_key3];
         }
-
         let [text, title, callbackOk, callbackCancel] = args;
-
         if (typeof args[1] === 'function') {
           [text, callbackOk, callbackCancel, title] = args;
         }
-
         return new Dialog(app, {
           title: typeof title === 'undefined' ? defaultDialogTitle() : title,
           text,
@@ -126,28 +110,24 @@ export default {
             text: app.params.dialog.buttonCancel,
             onClick: callbackCancel,
             keyCodes: keyboardActions ? [27] : null,
-            color: app.theme === 'aurora' ? 'gray' : null
+            color: null
           }, {
             text: app.params.dialog.buttonOk,
-            bold: true,
+            strong: isIosTheme,
             onClick: callbackOk,
             keyCodes: keyboardActions ? [13] : null
           }],
           destroyOnClose
         }).open();
       },
-
       login() {
         for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
           args[_key4] = arguments[_key4];
         }
-
         let [text, title, callbackOk, callbackCancel] = args;
-
         if (typeof args[1] === 'function') {
           [text, callbackOk, callbackCancel, title] = args;
         }
-
         return new Dialog(app, {
           title: typeof title === 'undefined' ? defaultDialogTitle() : title,
           text,
@@ -162,36 +142,30 @@ export default {
           buttons: [{
             text: app.params.dialog.buttonCancel,
             keyCodes: keyboardActions ? [27] : null,
-            color: app.theme === 'aurora' ? 'gray' : null
+            color: null
           }, {
             text: app.params.dialog.buttonOk,
-            bold: true,
+            strong: isIosTheme,
             keyCodes: keyboardActions ? [13] : null
           }],
-
           onClick(dialog, index) {
             const username = dialog.$el.find('[name="dialog-username"]').val();
             const password = dialog.$el.find('[name="dialog-password"]').val();
             if (index === 0 && callbackCancel) callbackCancel(username, password);
             if (index === 1 && callbackOk) callbackOk(username, password);
           },
-
           destroyOnClose,
           ...autoFocusHandler
         }).open();
       },
-
       password() {
         for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
           args[_key5] = arguments[_key5];
         }
-
         let [text, title, callbackOk, callbackCancel] = args;
-
         if (typeof args[1] === 'function') {
           [text, callbackOk, callbackCancel, title] = args;
         }
-
         return new Dialog(app, {
           title: typeof title === 'undefined' ? defaultDialogTitle() : title,
           text,
@@ -203,29 +177,25 @@ export default {
           buttons: [{
             text: app.params.dialog.buttonCancel,
             keyCodes: keyboardActions ? [27] : null,
-            color: app.theme === 'aurora' ? 'gray' : null
+            color: null
           }, {
             text: app.params.dialog.buttonOk,
-            bold: true,
+            strong: isIosTheme,
             keyCodes: keyboardActions ? [13] : null
           }],
-
           onClick(dialog, index) {
             const password = dialog.$el.find('[name="dialog-password"]').val();
             if (index === 0 && callbackCancel) callbackCancel(password);
             if (index === 1 && callbackOk) callbackOk(password);
           },
-
           destroyOnClose,
           ...autoFocusHandler
         }).open();
       },
-
       preloader(title, color) {
         const preloaders = {
           iosPreloaderContent,
-          mdPreloaderContent,
-          auroraPreloaderContent
+          mdPreloaderContent
         };
         const preloaderInner = preloaders[`${app.theme}PreloaderContent`] || '';
         return new Dialog(app, {
@@ -236,14 +206,11 @@ export default {
           destroyOnClose
         }).open();
       },
-
       progress() {
         for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
           args[_key6] = arguments[_key6];
         }
-
         let [title, progress, color] = args;
-
         if (args.length === 2) {
           if (typeof args[0] === 'number') {
             [progress, color, title] = args;
@@ -255,7 +222,6 @@ export default {
             [progress, title, color] = args;
           }
         }
-
         const infinite = typeof progress === 'undefined';
         const dialog = new Dialog(app, {
           title: typeof title === 'undefined' ? app.params.dialog.progressTitle : title,
@@ -271,8 +237,6 @@ export default {
         if (!infinite) dialog.setProgress(progress);
         return dialog.open();
       }
-
     });
   }
-
 };

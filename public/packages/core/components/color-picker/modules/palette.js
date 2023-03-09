@@ -1,7 +1,6 @@
 /* eslint indent: ["off"] */
 import $ from '../../../shared/dom7.js';
 /** @jsx $jsx */
-
 import $jsx from '../../../shared/$jsx.js';
 export default {
   render(self) {
@@ -11,15 +10,14 @@ export default {
       class: "color-picker-palette"
     }, self.params.palette.map(p => {
       if (Array.isArray(p)) {
-        let row = '<div class="color-picker-palette-row">'; // prettier-ignore
-
+        let row = '<div class="color-picker-palette-row">';
+        // prettier-ignore
         row += p.map(c => `
                 <div class="color-picker-palette-value" data-palette-color="${c}" style="background-color: ${c}"></div>
               `).join('');
         row += '</div>';
         return row;
       }
-
       return $jsx("div", {
         class: "color-picker-palette-value",
         "data-palette-color": p,
@@ -27,7 +25,6 @@ export default {
       });
     })));
   },
-
   init(self) {
     function handlePaletteClick(e) {
       const hex = $(e.target).attr('data-palette-color');
@@ -35,20 +32,15 @@ export default {
         hex
       });
     }
-
     self.$el.on('click', '.color-picker-module-palette .color-picker-palette-value', handlePaletteClick);
-
     self.destroyPaletteEvents = function destroyPaletteEvents() {
       self.$el.off('click', '.color-picker-module-hex input', handlePaletteClick);
     };
   },
-
   destroy(self) {
     if (self.destroyPaletteEvents) {
       self.destroyPaletteEvents();
     }
-
     delete self.destroyPaletteEvents;
   }
-
 };

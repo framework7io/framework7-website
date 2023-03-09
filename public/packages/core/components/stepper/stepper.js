@@ -4,7 +4,6 @@ import Stepper from './stepper-class.js';
 import ConstructorMethods from '../../shared/constructor-methods.js';
 export default {
   name: 'stepper',
-
   create() {
     const app = this;
     app.stepper = extend(ConstructorMethods({
@@ -17,25 +16,20 @@ export default {
         if (el === void 0) {
           el = '.stepper';
         }
-
         const stepper = app.stepper.get(el);
         if (stepper) return stepper.getValue();
         return undefined;
       },
-
       setValue(el, value) {
         if (el === void 0) {
           el = '.stepper';
         }
-
         const stepper = app.stepper.get(el);
         if (stepper) return stepper.setValue(value);
         return undefined;
       }
-
     });
   },
-
   static: {
     Stepper
   },
@@ -49,13 +43,11 @@ export default {
         }, dataset || {}));
       });
     },
-
     tabBeforeRemove(tabEl) {
       $(tabEl).find('.stepper-init').each(stepperEl => {
         if (stepperEl.f7Stepper) stepperEl.f7Stepper.destroy();
       });
     },
-
     pageInit(page) {
       const app = this;
       page.$el.find('.stepper-init').each(stepperEl => {
@@ -65,13 +57,11 @@ export default {
         }, dataset || {}));
       });
     },
-
     pageBeforeRemove(page) {
       page.$el.find('.stepper-init').each(stepperEl => {
         if (stepperEl.f7Stepper) stepperEl.f7Stepper.destroy();
       });
     }
-
   },
   vnode: {
     'stepper-init': {
@@ -83,12 +73,10 @@ export default {
           el: stepperEl
         }, dataset || {}));
       },
-
       destroy(vnode) {
         const stepperEl = vnode.elm;
         if (stepperEl.f7Stepper) stepperEl.f7Stepper.destroy();
       }
-
     }
   }
 };

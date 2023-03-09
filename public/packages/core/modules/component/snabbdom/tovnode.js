@@ -3,7 +3,6 @@ import htmlDomApi from './htmldomapi.js';
 export function toVNode(node, domApi) {
   var api = domApi !== undefined ? domApi : htmlDomApi;
   var text;
-
   if (api.isElement(node)) {
     var id = node.id ? '#' + node.id : '';
     var cn = node.getAttribute('class');
@@ -13,22 +12,18 @@ export function toVNode(node, domApi) {
     var children = [];
     var name_1;
     var i = void 0,
-        n = void 0;
+      n = void 0;
     var elmAttrs = node.attributes;
     var elmChildren = node.childNodes;
-
     for (i = 0, n = elmAttrs.length; i < n; i++) {
       name_1 = elmAttrs[i].nodeName;
-
       if (name_1 !== 'id' && name_1 !== 'class') {
         attrs[name_1] = elmAttrs[i].nodeValue;
       }
     }
-
     for (i = 0, n = elmChildren.length; i < n; i++) {
       children.push(toVNode(elmChildren[i]));
     }
-
     return vnode(sel, {
       attrs: attrs
     }, children, undefined, node);

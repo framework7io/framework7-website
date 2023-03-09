@@ -4,9 +4,7 @@ import { extend } from '../../shared/utils.js';
 import { getDevice } from '../../shared/get-device.js';
 import Modal from '../modal/modal-class.js';
 /** @jsx $jsx */
-
 import $jsx from '../../shared/$jsx.js';
-
 class Dialog extends Modal {
   constructor(app, params) {
     const extendedParams = extend({
@@ -20,16 +18,14 @@ class Dialog extends Modal {
       destroyOnClose: false,
       on: {}
     }, params);
-
     if (typeof extendedParams.closeByBackdropClick === 'undefined') {
       extendedParams.closeByBackdropClick = app.params.dialog.closeByBackdropClick;
     }
-
     if (typeof extendedParams.backdrop === 'undefined') {
       extendedParams.backdrop = app.params.dialog.backdrop;
-    } // Extends with open/close Modal methods;
+    }
 
-
+    // Extends with open/close Modal methods;
     super(app, extendedParams);
     const dialog = this;
     const device = getDevice();
@@ -43,10 +39,10 @@ class Dialog extends Modal {
       cssClass,
       backdrop
     } = extendedParams;
-    dialog.params = extendedParams; // Find Element
+    dialog.params = extendedParams;
 
+    // Find Element
     let $el;
-
     if (!dialog.params.el) {
       const dialogClasses = ['dialog'];
       if (buttons.length === 0) dialogClasses.push('dialog-no-buttons');
@@ -54,15 +50,13 @@ class Dialog extends Modal {
       if (verticalButtons) dialogClasses.push('dialog-buttons-vertical');
       if (cssClass) dialogClasses.push(cssClass);
       let buttonsHTML = '';
-
       if (buttons.length > 0) {
         buttonsHTML = $jsx("div", {
           class: "dialog-buttons"
         }, buttons.map(button => $jsx("span", {
-          class: `dialog-button${button.bold ? ' dialog-button-bold' : ''}${button.color ? ` color-${button.color}` : ''}${button.cssClass ? ` ${button.cssClass}` : ''}`
+          class: `dialog-button${button.strong ? ' dialog-button-strong' : ''}${button.color ? ` color-${button.color}` : ''}${button.cssClass ? ` ${button.cssClass}` : ''}`
         }, button.text)));
       }
-
       const dialogHtml = $jsx("div", {
         class: dialogClasses.join(' ')
       }, $jsx("div", {
@@ -76,27 +70,22 @@ class Dialog extends Modal {
     } else {
       $el = $(dialog.params.el);
     }
-
     if ($el && $el.length > 0 && $el[0].f7Modal) {
       return $el[0].f7Modal;
     }
-
     if ($el.length === 0) {
       return dialog.destroy();
     }
-
     let $backdropEl;
-
     if (backdrop) {
       $backdropEl = app.$el.children('.dialog-backdrop');
-
       if ($backdropEl.length === 0) {
         $backdropEl = $('<div class="dialog-backdrop"></div>');
         app.$el.append($backdropEl);
       }
-    } // Assign events
+    }
 
-
+    // Assign events
     function buttonOnClick(e) {
       const buttonEl = this;
       const index = $(buttonEl).index();
@@ -105,9 +94,7 @@ class Dialog extends Modal {
       if (dialog.params.onClick) dialog.params.onClick(dialog, index);
       if (button.close !== false) dialog.close();
     }
-
     let addKeyboardHander;
-
     function onKeyDown(e) {
       const keyCode = e.keyCode;
       buttons.forEach((button, index) => {
@@ -119,7 +106,6 @@ class Dialog extends Modal {
         }
       });
     }
-
     if (buttons && buttons.length > 0) {
       dialog.on('open', () => {
         $el.find('.dialog-button').each((buttonEl, index) => {
@@ -127,7 +113,6 @@ class Dialog extends Modal {
           if (button.keyCodes) addKeyboardHander = true;
           $(buttonEl).on('click', buttonOnClick);
         });
-
         if (addKeyboardHander && !device.ios && !device.android && !device.cordova && !device.capacitor) {
           $(document).on('keydown', onKeyDown);
         }
@@ -136,15 +121,12 @@ class Dialog extends Modal {
         $el.find('.dialog-button').each(buttonEl => {
           $(buttonEl).off('click', buttonOnClick);
         });
-
         if (addKeyboardHander && !device.ios && !device.android && !device.cordova && !device.capacitor) {
           $(document).off('keydown', onKeyDown);
         }
-
         addKeyboardHander = false;
       });
     }
-
     extend(dialog, {
       app,
       $el,
@@ -152,56 +134,44 @@ class Dialog extends Modal {
       $backdropEl,
       backdropEl: $backdropEl && $backdropEl[0],
       type: 'dialog',
-
       setProgress(progress, duration) {
         app.progressbar.set($el.find('.progressbar'), progress, duration);
         return dialog;
       },
-
       setText(newText) {
         let $textEl = $el.find('.dialog-text');
-
         if ($textEl.length === 0) {
           $textEl = $('<div class="dialog-text"></div>');
-
           if (typeof title !== 'undefined') {
             $textEl.insertAfter($el.find('.dialog-title'));
           } else {
             $el.find('.dialog-inner').prepend($textEl);
           }
         }
-
         $textEl.html(newText);
         dialog.params.text = newText;
         return dialog;
       },
-
       setTitle(newTitle) {
         let $titleEl = $el.find('.dialog-title');
-
         if ($titleEl.length === 0) {
           $titleEl = $('<div class="dialog-title"></div>');
           $el.find('.dialog-inner').prepend($titleEl);
         }
-
         $titleEl.html(newTitle);
         dialog.params.title = newTitle;
         return dialog;
       }
-
     });
-
     function handleClick(e) {
       const target = e.target;
       const $target = $(target);
-
       if ($target.closest(dialog.el).length === 0) {
         if (dialog.params.closeByBackdropClick && dialog.backdropEl && dialog.backdropEl === target) {
           dialog.close();
         }
       }
     }
-
     dialog.on('opened', () => {
       if (dialog.params.closeByBackdropClick) {
         app.on('click', handleClick);
@@ -213,7 +183,6 @@ class Dialog extends Modal {
       }
     });
     $el[0].f7Modal = dialog;
-
     if (dialog.params.destroyOnClose) {
       dialog.once('closed', () => {
         setTimeout(() => {
@@ -221,10 +190,7 @@ class Dialog extends Modal {
         }, 0);
       });
     }
-
     return dialog;
   }
-
 }
-
 export default Dialog;

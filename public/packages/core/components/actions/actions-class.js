@@ -5,33 +5,31 @@ import { extend, nextTick } from '../../shared/utils.js';
 import Modal from '../modal/modal-class.js';
 import $ from '../../shared/dom7.js';
 /** @jsx $jsx */
-
 import $jsx from '../../shared/$jsx.js';
-
 class Actions extends Modal {
   constructor(app, params) {
     const extendedParams = extend({
       on: {}
-    }, app.params.actions, params); // Extends with open/close Modal methods;
+    }, app.params.actions, params);
 
+    // Extends with open/close Modal methods;
     super(app, extendedParams);
     const actions = this;
     const device = getDevice();
     const window = getWindow();
     const document = getDocument();
-    actions.params = extendedParams; // Buttons
+    actions.params = extendedParams;
 
+    // Buttons
     let groups;
-
     if (actions.params.buttons) {
       groups = actions.params.buttons;
       if (!Array.isArray(groups[0])) groups = [groups];
     }
+    actions.groups = groups;
 
-    actions.groups = groups; // Find Element
-
+    // Find Element
     let $el;
-
     if (actions.params.el) {
       $el = $(actions.params.el).eq(0);
     } else if (actions.params.content) {
@@ -40,21 +38,17 @@ class Actions extends Modal {
       if (actions.params.convertToPopover) {
         actions.popoverHtml = actions.renderPopover();
       }
-
       actions.actionsHtml = actions.render();
     }
-
     if ($el && $el.length > 0 && $el[0].f7Modal) {
       return $el[0].f7Modal;
     }
-
     if ($el && $el.length === 0 && !(actions.actionsHtml || actions.popoverHtml)) {
       return actions.destroy();
-    } // Backdrop
+    }
 
-
+    // Backdrop
     let $backdropEl;
-
     if (actions.params.backdrop && actions.params.backdropEl) {
       $backdropEl = $(actions.params.backdropEl);
     } else if (actions.params.backdrop) {
@@ -64,22 +58,18 @@ class Actions extends Modal {
       } else {
         $backdropEl = actions.$containerEl.children('.actions-backdrop');
       }
-
       if ($backdropEl.length === 0) {
         $backdropEl = $('<div class="actions-backdrop"></div>');
         actions.$containerEl.append($backdropEl);
       }
     }
-
     const originalOpen = actions.open;
     const originalClose = actions.close;
     let popover;
-
     function buttonOnClick(e) {
       const $buttonEl = $(this);
       let buttonIndex;
       let groupIndex;
-
       if ($buttonEl.hasClass('list-button') || $buttonEl.hasClass('item-link')) {
         buttonIndex = $buttonEl.parents('li').index();
         groupIndex = $buttonEl.parents('.list').index();
@@ -87,7 +77,6 @@ class Actions extends Modal {
         buttonIndex = $buttonEl.index();
         groupIndex = $buttonEl.parents('.actions-group').index();
       }
-
       if (typeof groups !== 'undefined') {
         const button = groups[groupIndex][buttonIndex];
         if (button.onClick) button.onClick(actions, e);
@@ -95,7 +84,6 @@ class Actions extends Modal {
         if (button.close !== false) actions.close();
       }
     }
-
     actions.open = function open(animate) {
       let convertToPopover = false;
       const {
@@ -105,14 +93,12 @@ class Actions extends Modal {
         targetWidth,
         targetHeight
       } = actions.params;
-
       if (actions.params.convertToPopover && (targetEl || targetX !== undefined && targetY !== undefined)) {
         // Popover
-        if (actions.params.forceToPopover || device.ios && device.ipad || app.width >= 768 || device.desktop && app.theme === 'aurora') {
+        if (actions.params.forceToPopover || device.ios && device.ipad || app.width >= 768 || device.desktop) {
           convertToPopover = true;
         }
       }
-
       if (convertToPopover && actions.popoverHtml) {
         popover = app.popover.create({
           containerEl: actions.params.containerEl,
@@ -128,38 +114,30 @@ class Actions extends Modal {
               if (!actions.$el) {
                 actions.$el = popover.$el;
               }
-
               actions.$el.trigger(`modal:open ${actions.type.toLowerCase()}:open`);
               actions.emit(`local::open modalOpen ${actions.type}Open`, actions);
             },
-
             opened() {
               if (!actions.$el) {
                 actions.$el = popover.$el;
               }
-
               actions.$el.trigger(`modal:opened ${actions.type.toLowerCase()}:opened`);
               actions.emit(`local::opened modalOpened ${actions.type}Opened`, actions);
             },
-
             close() {
               if (!actions.$el) {
                 actions.$el = popover.$el;
               }
-
               actions.$el.trigger(`modal:close ${actions.type.toLowerCase()}:close`);
               actions.emit(`local::close modalClose ${actions.type}Close`, actions);
             },
-
             closed() {
               if (!actions.$el) {
                 actions.$el = popover.$el;
               }
-
               actions.$el.trigger(`modal:closed ${actions.type.toLowerCase()}:closed`);
               actions.emit(`local::closed modalClosed ${actions.type}Closed`, actions);
             }
-
           }
         });
         popover.open(animate);
@@ -180,7 +158,6 @@ class Actions extends Modal {
       } else {
         actions.$el = actions.actionsHtml ? $(actions.actionsHtml) : actions.$el;
         actions.$el[0].f7Modal = actions;
-
         if (actions.groups) {
           actions.$el.find('.actions-button').each(buttonEl => {
             $(buttonEl).on('click', buttonOnClick);
@@ -191,24 +168,19 @@ class Actions extends Modal {
             });
           });
         }
-
         actions.el = actions.$el[0];
         originalOpen.call(actions, animate);
       }
-
       return actions;
     };
-
     actions.close = function close(animate) {
       if (popover) {
         popover.close(animate);
       } else {
         originalClose.call(actions, animate);
       }
-
       return actions;
     };
-
     extend(actions, {
       app,
       $el,
@@ -217,13 +189,11 @@ class Actions extends Modal {
       backdropEl: $backdropEl && $backdropEl[0],
       type: 'actions'
     });
-
     function handleClick(e) {
       const target = e.target;
       const $target = $(target);
       const keyboardOpened = !device.desktop && device.cordova && (window.Keyboard && window.Keyboard.isVisible || window.cordova.plugins && window.cordova.plugins.Keyboard && window.cordova.plugins.Keyboard.isVisible);
       if (keyboardOpened) return;
-
       if ($target.closest(actions.el).length === 0) {
         if (actions.params.closeByBackdropClick && actions.params.backdrop && actions.backdropEl && actions.backdropEl === target) {
           actions.close();
@@ -232,15 +202,12 @@ class Actions extends Modal {
         }
       }
     }
-
     function onKeyDown(e) {
       const keyCode = e.keyCode;
-
       if (keyCode === 27 && actions.params.closeOnEscape) {
         actions.close();
       }
     }
-
     if (actions.params.closeOnEscape) {
       actions.on('open', () => {
         $(document).on('keydown', onKeyDown);
@@ -249,7 +216,6 @@ class Actions extends Modal {
         $(document).off('keydown', onKeyDown);
       });
     }
-
     actions.on('opened', () => {
       if (actions.params.closeByBackdropClick || actions.params.closeByOutsideClick) {
         app.on('click', handleClick);
@@ -260,14 +226,11 @@ class Actions extends Modal {
         app.off('click', handleClick);
       }
     });
-
     if ($el) {
       $el[0].f7Modal = actions;
     }
-
     return actions;
   }
-
   render() {
     const actions = this;
     if (actions.params.render) return actions.params.render.call(actions, actions);
@@ -284,7 +247,7 @@ class Actions extends Modal {
       const {
         color,
         bg,
-        bold,
+        strong,
         disabled,
         label,
         text,
@@ -292,15 +255,13 @@ class Actions extends Modal {
       } = button;
       if (color) buttonClasses.push(`color-${color}`);
       if (bg) buttonClasses.push(`bg-color-${bg}`);
-      if (bold) buttonClasses.push('actions-button-bold');
+      if (strong) buttonClasses.push('actions-button-strong');
       if (disabled) buttonClasses.push('disabled');
-
       if (label) {
         return $jsx("div", {
           class: buttonClasses.join(' ')
         }, text);
       }
-
       return $jsx("div", {
         class: buttonClasses.join(' ')
       }, icon && $jsx("div", {
@@ -310,7 +271,6 @@ class Actions extends Modal {
       }, text));
     }))));
   }
-
   renderPopover() {
     const actions = this;
     if (actions.params.renderPopover) return actions.params.renderPopover.call(actions, actions);
@@ -329,7 +289,7 @@ class Actions extends Modal {
       const {
         color,
         bg,
-        bold,
+        strong,
         disabled,
         label,
         text,
@@ -337,14 +297,12 @@ class Actions extends Modal {
       } = button;
       if (color) itemClasses.push(`color-${color}`);
       if (bg) itemClasses.push(`bg-color-${bg}`);
-      if (bold) itemClasses.push('popover-from-actions-bold');
+      if (strong) itemClasses.push('popover-from-actions-strong');
       if (disabled) itemClasses.push('disabled');
-
       if (label) {
         itemClasses.push('popover-from-actions-label');
         return `<li class="${itemClasses.join(' ')}">${text}</li>`;
       }
-
       if (icon) {
         itemClasses.push('item-link item-content');
         return $jsx("li", null, $jsx("a", {
@@ -357,14 +315,11 @@ class Actions extends Modal {
           class: "item-title"
         }, text))));
       }
-
       itemClasses.push('list-button');
       return $jsx("li", null, $jsx("a", {
         class: itemClasses.join(' ')
       }, text));
     }))))));
   }
-
 }
-
 export default Actions;

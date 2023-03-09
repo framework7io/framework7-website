@@ -5,7 +5,6 @@ export default {
   static: {
     LoginScreen
   },
-
   create() {
     const app = this;
     app.loginScreen = ModalMethods({
@@ -14,13 +13,11 @@ export default {
       defaultSelector: '.login-screen.modal-in'
     });
   },
-
   clicks: {
     '.login-screen-open': function openLoginScreen($clickedEl, data) {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       app.loginScreen.open(data.loginScreen, data.animate, $clickedEl);
     },
@@ -28,7 +25,6 @@ export default {
       if (data === void 0) {
         data = {};
       }
-
       const app = this;
       app.loginScreen.close(data.loginScreen, data.animate, $clickedEl);
     }

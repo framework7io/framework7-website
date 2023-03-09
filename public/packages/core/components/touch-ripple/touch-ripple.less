@@ -35,8 +35,7 @@
     animation: touch-ripple-out 300ms forwards;
   }
   .button-fill &,
-  .picker-calendar-day &,
-  .menu & {
+  .picker-calendar-day & {
     z-index: 1;
   }
 }
@@ -73,7 +72,4 @@
 });
 .if-md-theme({
   @import './touch-ripple-md.less';
-});
-.if-aurora-theme({
-  @import './touch-ripple-aurora.less';
 });

@@ -20,11 +20,6 @@
     @ruleset();
   }
 }
-.if-aurora-theme(@ruleset) {
-  & when (@includeAuroraTheme) {
-    @ruleset();
-  }
-}
 .if-dark-theme(@ruleset) {
   & when(@includeDarkTheme) {
     @ruleset();
@@ -44,9 +39,11 @@
     }
   }
 }
-.aurora-vars(@ruleset) {
-  & when (@includeAuroraTheme) {
-    .aurora {
+.md-color-vars(@ruleset) {
+  & when (@includeMdTheme) {
+    .md,
+    .md .dark,
+    .md [class*='color-'] {
       @ruleset();
     }
   }
@@ -100,59 +97,7 @@
     opacity: 1;
   }
 }
-// No Hairlines
-.no-hairlines() {
-  &.no-hairlines,
-  &.no-hairlines ul,
-  .md &.no-hairlines-md,
-  .md &.no-hairlines-md ul,
-  .ios &.no-hairlines-ios,
-  .ios &.no-hairlines-ios ul,
-  .aurora &.no-hairlines-aurora,
-  .aurora &.no-hairlines-aurora ul {
-    .hairline-remove-top-bottom();
-  }
-  &.no-hairline-top,
-  &.no-hairline-top ul,
-  .md &.no-hairline-top-md,
-  .md &.no-hairline-top-md ul,
-  .ios &.no-hairline-top-ios,
-  .ios &.no-hairline-top-ios ul,
-  .aurora &.no-hairline-top-aurora,
-  .aurora &.no-hairline-top-aurora ul {
-    .hairline-remove(top);
-  }
-  &.no-hairline-bottom,
-  &.no-hairline-bottom ul,
-  .md &.no-hairline-bottom-md,
-  .md &.no-hairline-bottom-md ul,
-  .ios &.no-hairline-bottom-ios,
-  .ios &.no-hairline-bottom-ios ul,
-  .aurora &.no-hairline-bottom-aurora,
-  .aurora &.no-hairline-bottom-aurora ul {
-    .hairline-remove(bottom);
-  }
-}
-.no-hairlines-between() {
-  &.no-hairlines-between,
-  .md &.no-hairlines-between-md,
-  .ios &.no-hairlines-between-ios,
-  .aurora &.no-hairlines-between-aurora {
-    .item-inner,
-    .list-button,
-    .item-divider,
-    .list-group-title,
-    .list-group-title {
-      .hairline-remove(bottom);
-    }
-    &.simple-list li {
-      .hairline-remove(bottom);
-    }
-    &.links-list a {
-      .hairline-remove(bottom);
-    }
-  }
-}
+
 // Hairlines
 .hairline-pseudo(@color, @top, @right, @bottom, @left) {
   content: '';
@@ -274,33 +219,7 @@
   }
 }
 // MD Bars Shadow
-.bar-shadow-bottom(@image) {
-  &:before {
-    content: '';
-    position: absolute;
-    right: 0;
-    width: 100%;
-    top: 100%;
-    bottom: auto;
-    height: 8px;
-    pointer-events: none;
-    background: @image;
-  }
-}
-.bar-shadow-top(@image) {
-  &:after {
-    content: '';
-    position: absolute;
-    right: 0;
-    width: 100%;
-    bottom: 100%;
-    height: 8px;
-    top: auto;
-    pointer-events: none;
-    background: @image;
-    transform: translate3d(0, 0, 0);
-  }
-}
+
 .core-icons-font() {
   font-family: 'framework7-core-icons';
   font-weight: normal;

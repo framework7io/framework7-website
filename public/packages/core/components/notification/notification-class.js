@@ -2,15 +2,14 @@ import $ from '../../shared/dom7.js';
 import { extend, now, nextTick } from '../../shared/utils.js';
 import Modal from '../modal/modal-class.js';
 /** @jsx $jsx */
-
 import $jsx from '../../shared/$jsx.js';
-
 class Notification extends Modal {
   constructor(app, params) {
     const extendedParams = extend({
       on: {}
-    }, app.params.notification, params); // Extends with open/close Modal methods;
+    }, app.params.notification, params);
 
+    // Extends with open/close Modal methods;
     super(app, extendedParams);
     const notification = this;
     notification.app = app;
@@ -27,7 +26,6 @@ class Notification extends Modal {
       closeOnClick
     } = notification.params;
     let $el;
-
     if (!notification.params.el) {
       // Find Element
       const notificationHtml = notification.render({
@@ -43,41 +41,35 @@ class Notification extends Modal {
     } else {
       $el = $(notification.params.el);
     }
-
     if ($el && $el.length > 0 && $el[0].f7Modal) {
       return $el[0].f7Modal;
     }
-
     if ($el.length === 0) {
       return notification.destroy();
     }
-
     extend(notification, {
       $el,
       el: $el[0],
       type: 'notification'
     });
     $el[0].f7Modal = notification;
-
     if (closeButton) {
       $el.find('.notification-close-button').on('click', () => {
         notification.close();
       });
     }
-
     $el.on('click', e => {
       if (closeButton && $(e.target).closest('.notification-close-button').length) {
         return;
       }
-
       notification.emit('local::click notificationClick', notification);
       if (closeOnClick) notification.close();
     });
     notification.on('beforeDestroy', () => {
       $el.off('click');
     });
-    /* Touch Events */
 
+    /* Touch Events */
     let isTouched;
     let isMoved;
     let isScrolling;
@@ -85,7 +77,6 @@ class Notification extends Modal {
     let touchStartTime;
     let notificationHeight;
     const touchesStart = {};
-
     function handleTouchStart(e) {
       if (isTouched) return;
       isTouched = true;
@@ -95,64 +86,50 @@ class Notification extends Modal {
       touchesStart.x = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
       touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
     }
-
     function handleTouchMove(e) {
       if (!isTouched) return;
       const pageX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
       const pageY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
-
       if (typeof isScrolling === 'undefined') {
         isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) < Math.abs(pageX - touchesStart.x));
       }
-
       if (isScrolling) {
         isTouched = false;
         return;
       }
-
       e.preventDefault();
-
       if (!isMoved) {
         notification.$el.removeClass('notification-transitioning');
         notification.$el.transition(0);
         notificationHeight = notification.$el[0].offsetHeight / 2;
       }
-
       isMoved = true;
       touchesDiff = pageY - touchesStart.y;
       let newTranslate = touchesDiff;
-
       if (touchesDiff > 0) {
         newTranslate = touchesDiff ** 0.8;
       }
-
       notification.$el.transform(`translate3d(0, ${newTranslate}px, 0)`);
     }
-
     function handleTouchEnd() {
       if (!isTouched || !isMoved) {
         isTouched = false;
         isMoved = false;
         return;
       }
-
       isTouched = false;
       isMoved = false;
-
       if (touchesDiff === 0) {
         return;
       }
-
       const timeDiff = now() - touchStartTime;
       notification.$el.transition('');
       notification.$el.addClass('notification-transitioning');
       notification.$el.transform('');
-
       if (touchesDiff < -10 && timeDiff < 300 || -touchesDiff >= notificationHeight / 1) {
         notification.close();
       }
     }
-
     function attachTouchEvents() {
       notification.$el.on(app.touchEvents.start, handleTouchStart, {
         passive: true
@@ -160,7 +137,6 @@ class Notification extends Modal {
       app.on('touchmove:active', handleTouchMove);
       app.on('touchend:passive', handleTouchEnd);
     }
-
     function detachTouchEvents() {
       notification.$el.off(app.touchEvents.start, handleTouchStart, {
         passive: true
@@ -168,33 +144,26 @@ class Notification extends Modal {
       app.off('touchmove:active', handleTouchMove);
       app.off('touchend:passive', handleTouchEnd);
     }
-
     let timeoutId;
-
     function closeOnTimeout() {
       timeoutId = nextTick(() => {
         if (isTouched && isMoved) {
           closeOnTimeout();
           return;
         }
-
         notification.close();
       }, closeTimeout);
     }
-
     notification.on('open', () => {
       if (notification.params.swipeToClose) {
         attachTouchEvents();
       }
-
       $('.notification.modal-in').each(openedEl => {
         const notificationInstance = app.notification.get(openedEl);
-
         if (openedEl !== notification.el && notificationInstance) {
           notificationInstance.close();
         }
       });
-
       if (closeTimeout) {
         closeOnTimeout();
       }
@@ -203,12 +172,10 @@ class Notification extends Modal {
       if (notification.params.swipeToClose) {
         detachTouchEvents();
       }
-
       clearTimeout(timeoutId);
     });
     return notification;
   }
-
   render() {
     const notification = this;
     if (notification.params.render) return notification.params.render.call(notification, notification);
@@ -222,7 +189,7 @@ class Notification extends Modal {
       cssClass
     } = notification.params;
     return $jsx("div", {
-      class: `notification ${cssClass || ''}`
+      class: `notification ${icon ? 'notification-with-icon' : ''} ${cssClass || ''}`
     }, $jsx("div", {
       class: "notification-header"
     }, icon && $jsx("div", {
@@ -241,7 +208,5 @@ class Notification extends Modal {
       class: "notification-text"
     }, text)));
   }
-
 }
-
 export default Notification;

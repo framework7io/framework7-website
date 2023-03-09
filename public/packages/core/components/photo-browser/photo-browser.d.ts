@@ -56,6 +56,8 @@ export namespace PhotoBrowser {
     swiper?: object;
     /** When enabled then Swiper will use Virtual Slides (default true) */
     virtualSlides?: boolean;
+    /** Enables lazy loading images (default true) */
+    lazy?: boolean;
     /** When enabled, Photo Browser popup will be closed on backdrop click. (default true) */
     closeByBackdropClick?: boolean;
 
@@ -134,10 +136,6 @@ export namespace PhotoBrowser {
     slideChangeTransitionStart: (photoBrowser: PhotoBrowser) => void;
     /** Event will be fired after animation to other slide (next or previous) */
     slideChangeTransitionEnd: (photoBrowser: PhotoBrowser) => void;
-    /** Event will be fired in the beginning of lazy loading of image */
-    lazyImageLoad: (photoBrowser: PhotoBrowser) => void;
-    /** Event will be fired when lazy loading image will be loaded */
-    lazyImageReady: (photoBrowser: PhotoBrowser) => void;
     /** Event will be fired when user touch Swiper. Receives 'touchstart' event as an arguments */
     touchStart: (photoBrowser: PhotoBrowser) => void;
     /** Event will be fired when user touch and move finger over Swiper in direction opposite to direction parameter. Receives 'touchmove' event as an arguments */

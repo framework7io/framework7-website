@@ -1,12 +1,6 @@
 import Dom7 from 'dom7';
 import Framework7 from './components/app/app-class.js'
 
-import request, {
-  RequestError,
-  RequestResponse,
-  RequestParameters,
-  RequestXHR,
-} from './shared/request';
 import { getSupport, Support } from './shared/get-support.js';
 import { getDevice, Device } from './shared/get-device.js';
 import { Utils } from './shared/utils.js';
@@ -15,7 +9,6 @@ import { Framework7Parameters, Framework7Plugin } from './components/app/app-cla
 import { Clicks as ClicksModule } from './modules/clicks/clicks.js';
 import { Component as ComponentModule } from './modules/component/component.js';
 import { Device as DeviceModule } from './modules/device/device.js';
-import { Request as RequestModule } from './modules/request/request.js';
 import { Resize as ResizeModule } from './modules/resize/resize.js';
 import { Router as RouterModule } from './modules/router/router.js';
 import { ServiceWorker as ServiceWorkerModule } from './modules/service-worker/service-worker.js';
@@ -28,7 +21,6 @@ import { StoreObject as Store, StoreParameters, createStore } from './modules/st
 
 import { Accordion } from './components/accordion/accordion.js';
 import { Actions } from './components/actions/actions.js';
-import { Appbar } from './components/appbar/appbar.js';
 import { AreaChart } from './components/area-chart/area-chart.js';
 import { Autocomplete } from './components/autocomplete/autocomplete.js';
 import { Badge } from './components/badge/badge.js';
@@ -43,7 +35,6 @@ import { ColorPicker } from './components/color-picker/color-picker.js';
 import { ContactsList } from './components/contacts-list/contacts-list.js';
 import { DataTable } from './components/data-table/data-table.js';
 import { Dialog } from './components/dialog/dialog.js';
-import { Elevation } from './components/elevation/elevation.js';
 import { Fab } from './components/fab/fab.js';
 import { Form } from './components/form/form.js';
 import { Gauge } from './components/gauge/gauge.js';
@@ -51,12 +42,10 @@ import { Grid } from './components/grid/grid.js';
 import { Icon } from './components/icon/icon.js';
 import { InfiniteScroll } from './components/infinite-scroll/infinite-scroll.js';
 import { Input } from './components/input/input.js';
-import { Lazy } from './components/lazy/lazy.js';
 import { Link } from './components/link/link.js';
 import { List } from './components/list/list.js';
 import { ListIndex } from './components/list-index/list-index.js';
 import { LoginScreen } from './components/login-screen/login-screen.js';
-import { Menu } from './components/menu/menu.js';
 import { Messagebar } from './components/messagebar/messagebar.js';
 import { Messages } from './components/messages/messages.js';
 import { Modal } from './components/modal/modal.js';
@@ -107,9 +96,6 @@ declare module './components/app/app-class.js' {
   interface Framework7Class<Events> extends DeviceModule.AppMethods{}
   interface Framework7Parameters extends DeviceModule.AppParams{}
   interface Framework7Events extends DeviceModule.AppEvents{}
-  interface Framework7Class<Events> extends RequestModule.AppMethods{}
-  interface Framework7Parameters extends RequestModule.AppParams{}
-  interface Framework7Events extends RequestModule.AppEvents{}
   interface Framework7Class<Events> extends ResizeModule.AppMethods{}
   interface Framework7Parameters extends ResizeModule.AppParams{}
   interface Framework7Events extends ResizeModule.AppEvents{}
@@ -137,9 +123,6 @@ declare module './components/app/app-class.js' {
   interface Framework7Class<Events> extends Actions.AppMethods{}
   interface Framework7Parameters extends Actions.AppParams{}
   interface Framework7Events extends Actions.AppEvents{}
-  interface Framework7Class<Events> extends Appbar.AppMethods{}
-  interface Framework7Parameters extends Appbar.AppParams{}
-  interface Framework7Events extends Appbar.AppEvents{}
   interface Framework7Class<Events> extends AreaChart.AppMethods{}
   interface Framework7Parameters extends AreaChart.AppParams{}
   interface Framework7Events extends AreaChart.AppEvents{}
@@ -182,9 +165,6 @@ declare module './components/app/app-class.js' {
   interface Framework7Class<Events> extends Dialog.AppMethods{}
   interface Framework7Parameters extends Dialog.AppParams{}
   interface Framework7Events extends Dialog.AppEvents{}
-  interface Framework7Class<Events> extends Elevation.AppMethods{}
-  interface Framework7Parameters extends Elevation.AppParams{}
-  interface Framework7Events extends Elevation.AppEvents{}
   interface Framework7Class<Events> extends Fab.AppMethods{}
   interface Framework7Parameters extends Fab.AppParams{}
   interface Framework7Events extends Fab.AppEvents{}
@@ -206,9 +186,6 @@ declare module './components/app/app-class.js' {
   interface Framework7Class<Events> extends Input.AppMethods{}
   interface Framework7Parameters extends Input.AppParams{}
   interface Framework7Events extends Input.AppEvents{}
-  interface Framework7Class<Events> extends Lazy.AppMethods{}
-  interface Framework7Parameters extends Lazy.AppParams{}
-  interface Framework7Events extends Lazy.AppEvents{}
   interface Framework7Class<Events> extends Link.AppMethods{}
   interface Framework7Parameters extends Link.AppParams{}
   interface Framework7Events extends Link.AppEvents{}
@@ -221,9 +198,6 @@ declare module './components/app/app-class.js' {
   interface Framework7Class<Events> extends LoginScreen.AppMethods{}
   interface Framework7Parameters extends LoginScreen.AppParams{}
   interface Framework7Events extends LoginScreen.AppEvents{}
-  interface Framework7Class<Events> extends Menu.AppMethods{}
-  interface Framework7Parameters extends Menu.AppParams{}
-  interface Framework7Events extends Menu.AppEvents{}
   interface Framework7Class<Events> extends Messagebar.AppMethods{}
   interface Framework7Parameters extends Messagebar.AppParams{}
   interface Framework7Events extends Messagebar.AppEvents{}
@@ -344,11 +318,6 @@ declare module './components/app/app-class.js' {
 }
 
 export {
-  request,
-  RequestError,
-  RequestResponse,
-  RequestParameters,
-  RequestXHR,
   getSupport,
   Support,
   getDevice,
@@ -363,5 +332,5 @@ export {
   StoreParameters,
   createStore,
 };
-export { Accordion, Actions, Appbar, AreaChart, Autocomplete, Badge, Block, Breadcrumbs, Button, Calendar, Card, Checkbox, Chip, ColorPicker, ContactsList, DataTable, Dialog, Elevation, Fab, Form, Gauge, Grid, Icon, InfiniteScroll, Input, Lazy, Link, List, ListIndex, LoginScreen, Menu, Messagebar, Messages, Modal, Navbar, Notification, Page, Panel, PhotoBrowser, Picker, PieChart, Popover, Popup, Preloader, Progressbar, PullToRefresh, Radio, Range, Searchbar, Sheet, Skeleton, SmartSelect, Sortable, Statusbar, Stepper, Subnavbar, Swipeout, Swiper, Tabs, TextEditor, Timeline, Toast, Toggle, Toolbar, Tooltip, TouchRipple, Treeview, Typography, View, VirtualList }
+export { Accordion, Actions, AreaChart, Autocomplete, Badge, Block, Breadcrumbs, Button, Calendar, Card, Checkbox, Chip, ColorPicker, ContactsList, DataTable, Dialog, Fab, Form, Gauge, Grid, Icon, InfiniteScroll, Input, Link, List, ListIndex, LoginScreen, Messagebar, Messages, Modal, Navbar, Notification, Page, Panel, PhotoBrowser, Picker, PieChart, Popover, Popup, Preloader, Progressbar, PullToRefresh, Radio, Range, Searchbar, Sheet, Skeleton, SmartSelect, Sortable, Statusbar, Stepper, Subnavbar, Swipeout, Swiper, Tabs, TextEditor, Timeline, Toast, Toggle, Toolbar, Tooltip, TouchRipple, Treeview, Typography, View, VirtualList }
 export default Framework7;

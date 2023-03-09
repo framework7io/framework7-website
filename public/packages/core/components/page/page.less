@@ -16,9 +16,6 @@
   transform: none;
   background-color: var(--f7-page-bg-color);
   z-index: 1;
-  &.stacked {
-    display: none;
-  }
 }
 .page-with-navbar-large-collapsed {
   --f7-navbar-large-collapse-progress: 1;
@@ -59,8 +56,7 @@
 .router-transition-forward,
 .router-transition-backward {
   .page-next,
-  .page-current,
-  .page-previous:not(.stacked) {
+  .page-current {
     pointer-events: none;
   }
 }
@@ -104,9 +100,6 @@
 });
 .if-md-theme({
   @import './page-md.less';
-});
-.if-aurora-theme({
-  @import './page-aurora.less';
 });
 
 .view:not(.view-master-detail) {
@@ -171,8 +164,7 @@
   }
 }
 .md .router-transition-custom,
-.ios .router-transition-custom,
-.aurora .router-transition-custom {
+.ios .router-transition-custom {
   .page-previous,
   .page-next {
     opacity: 1;

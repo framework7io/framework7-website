@@ -48,7 +48,7 @@ export default () => {
                 searchContainer=".virtual-list"
                 searchItem="li"
                 searchIn=".item-title"
-                disableButton={!theme.aurora}
+                disableButton={true}
               />
             </Subnavbar>
           </Navbar>

@@ -1,6 +1,5 @@
 import $ from '../../../shared/dom7.js';
 /** @jsx $jsx */
-
 import $jsx from '../../../shared/$jsx.js';
 export default {
   render(self) {
@@ -67,7 +66,6 @@ export default {
       class: "color-picker-value-blue"
     }))));
   },
-
   init(self) {
     self.redRangeSlider = self.app.range.create({
       el: self.$el.find('.color-picker-slider-red'),
@@ -81,7 +79,6 @@ export default {
             rgb: [value, self.value.rgb[1], self.value.rgb[2]]
           });
         }
-
       }
     });
     self.greenRangeSlider = self.app.range.create({
@@ -96,7 +93,6 @@ export default {
             rgb: [self.value.rgb[0], value, self.value.rgb[2]]
           });
         }
-
       }
     });
     self.blueRangeSlider = self.app.range.create({
@@ -111,34 +107,27 @@ export default {
             rgb: [self.value.rgb[0], self.value.rgb[1], value]
           });
         }
-
       }
     });
-
     function handleInputChange(e) {
       const rgb = [...self.value.rgb];
       const index = parseInt($(e.target).attr('data-color-index'), 10);
       let value = parseInt(e.target.value, 10);
-
       if (Number.isNaN(value)) {
         e.target.value = rgb[index];
         return;
       }
-
       value = Math.max(0, Math.min(255, value));
       rgb[index] = value;
       self.setValue({
         rgb
       });
     }
-
     self.$el.on('change', '.color-picker-module-rgb-sliders input', handleInputChange);
-
     self.destroyRgbSlidersEvents = function destroyRgbSlidersEvents() {
       self.$el.off('change', '.color-picker-module-rgb-sliders input', handleInputChange);
     };
   },
-
   update(self) {
     const {
       app,
@@ -167,7 +156,6 @@ export default {
     redRangeSlider.$el.find('.range-bar').css('background-image', `linear-gradient(${direction}, rgb(0, ${rgb[1]}, ${rgb[2]}), rgb(255, ${rgb[1]}, ${rgb[2]}))`);
     greenRangeSlider.$el.find('.range-bar').css('background-image', `linear-gradient(${direction}, rgb(${rgb[0]}, 0, ${rgb[2]}), rgb(${rgb[0]}, 255, ${rgb[2]}))`);
     blueRangeSlider.$el.find('.range-bar').css('background-image', `linear-gradient(${direction}, rgb(${rgb[0]}, ${rgb[1]}, 0), rgb(${rgb[0]}, ${rgb[1]}, 255))`);
-
     if (sliderValue && sliderValueEditable) {
       self.$el.find('input.color-picker-value-red').val(rgb[0]);
       self.$el.find('input.color-picker-value-green').val(rgb[1]);
@@ -178,25 +166,20 @@ export default {
       self.$el.find('span.color-picker-value-blue').text(rgb[2]);
     }
   },
-
   destroy(self) {
     if (self.redRangeSlider && self.redRangeSlider.destroy) {
       self.redRangeSlider.destroy();
     }
-
     if (self.greenRangeSlider && self.greenRangeSlider.destroy) {
       self.greenRangeSlider.destroy();
     }
-
     if (self.blueRangeSlider && self.blueRangeSlider.destroy) {
       self.blueRangeSlider.destroy();
     }
-
     delete self.redRangeSlider;
     delete self.greenRangeSlider;
     delete self.blueRangeSlider;
     if (self.destroyRgbSlidersEvents) self.destroyRgbSlidersEvents();
     delete self.destroyRgbSlidersEvents;
   }
-
 };

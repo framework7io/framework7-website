@@ -8,6 +8,5 @@ export default {
     init() {
       History.init(this);
     }
-
   }
 };

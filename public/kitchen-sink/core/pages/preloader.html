@@ -18,45 +18,45 @@
           with CSS so it can be easily resized.</p>
       </div>
       <div class="block-title">Default</div>
-      <div class="block block-strong demo-preloaders align-items-stretch text-align-center">
-        <div class="row">
-          <div class="col-25">
+      <div class="block block-strong-ios block-outline-ios demo-preloaders align-items-stretch text-align-center">
+        <div class="grid grid-cols-4 grid-gap">
+          <div>
             <div class="preloader"></div>
           </div>
-          <div class="col-25 demo-black-col">
+          <div class="demo-black-col">
             <div class="preloader color-white"></div>
           </div>
-          <div class="col-25">
+          <div>
             <div class="preloader preloader-large"></div>
           </div>
-          <div class="col-25 demo-black-col">
+          <div class="demo-black-col">
             <div class="preloader preloader-large color-white"></div>
           </div>
         </div>
       </div>
       <div class="block-title">Color Preloaders</div>
-      <div class="block block-strong text-align-center">
-        <div class="row">
-          <div class="col-25">
-            <div class="preloader color-red"></div>
+      <div class="block block-strong-ios block-outline-ios text-align-center">
+        <div class="grid grid-cols-4 grid-gap">
+          <div>
+            <div class="preloader text-color-red"></div>
           </div>
-          <div class="col-25">
-            <div class="preloader color-green"></div>
+          <div>
+            <div class="preloader text-color-green"></div>
           </div>
-          <div class="col-25">
-            <div class="preloader color-orange"></div>
+          <div>
+            <div class="preloader text-color-orange"></div>
           </div>
-          <div class="col-25">
-            <div class="preloader color-blue"></div>
+          <div>
+            <div class="preloader text-color-blue"></div>
           </div>
         </div>
       </div>
       <div class="block-title">Multi-color</div>
-      <div class="block block-strong text-align-center">
+      <div class="block block-strong-ios block-outline-ios text-align-center">
         <div class="preloader color-multi"></div>
       </div>
       <div class="block-title">Preloader Modals</div>
-      <div class="block block-strong">
+      <div class="block block-strong-ios block-outline-ios">
         <p>With <b>app.preloader.show()</b> you can show small overlay with preloader indicator.</p>
         <p>
           <a class="button button-fill" @click=${openIndicator}>Open Small Indicator</a>
@@ -79,7 +79,7 @@
     height: 42px;
   }
 
-  .demo-preloaders .col-25 {
+  .demo-preloaders .grid>div {
     padding: 5px;
     line-height: 42px;
   }

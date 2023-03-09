@@ -2,7 +2,7 @@
   <div class="page page-home">
     <div class="navbar navbar-large navbar-transparent">
       <div class="navbar-bg"></div>
-      <div class="navbar-inner">
+      <div class="navbar-inner navbar-inner-centered-title">
         <div class="left">
           <a href="#" class="link icon-only panel-open" data-panel="left">
             <i class="icon f7-icons if-not-md">menu</i>
@@ -27,13 +27,13 @@
               <i class="searchbar-icon"></i>
               <span class="input-clear-button"></span>
             </div>
-            <span class="searchbar-disable-button if-not-aurora">Cancel</span>
+            <span class="searchbar-disable-button">Cancel</span>
           </div>
         </form>
       </div>
     </div>
     <div class="page-content">
-      <div class="list searchbar-hide-on-search">
+      <div class="list list-strong inset list-dividers-ios searchbar-hide-on-search">
         <ul>
           <li>
             <a class="item-content item-link" href="/about/">
@@ -45,8 +45,8 @@
           </li>
         </ul>
       </div>
-      <div class="block-title block-title-medium searchbar-found">Components</div>
-      <div class="list components-list searchbar-found">
+      <div class="block-title searchbar-found">Components</div>
+      <div class="list list-strong inset list-dividers-ios components-list searchbar-found">
         <ul>
           <li>
             <a class="item-content item-link" href="/accordion/">
@@ -61,14 +61,6 @@
               <div class="item-media"><i class="icon icon-f7"></i></div>
               <div class="item-inner">
                 <div class="item-title">Action Sheet</div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a class="item-content item-link" href="/appbar/">
-              <div class="item-media"><i class="icon icon-f7"></i></div>
-              <div class="item-inner">
-                <div class="item-title">Appbar</div>
               </div>
             </a>
           </li>
@@ -193,14 +185,6 @@
             </a>
           </li>
           <li>
-            <a class="item-content item-link" href="/elevation/">
-              <div class="item-media"><i class="icon icon-f7"></i></div>
-              <div class="item-inner">
-                <div class="item-title">Elevation</div>
-              </div>
-            </a>
-          </li>
-          <li>
             <a class="item-content item-link" href="/fab/">
               <div class="item-media"><i class="icon icon-f7"></i></div>
               <div class="item-inner">
@@ -265,14 +249,6 @@
             </a>
           </li>
           <li>
-            <a class="item-content item-link" href="/lazy-load/">
-              <div class="item-media"><i class="icon icon-f7"></i></div>
-              <div class="item-inner">
-                <div class="item-title">Lazy Load</div>
-              </div>
-            </a>
-          </li>
-          <li>
             <a class="item-content item-link" href="/list/">
               <div class="item-media"><i class="icon icon-f7"></i></div>
               <div class="item-inner">
@@ -293,14 +269,6 @@
               <div class="item-media"><i class="icon icon-f7"></i></div>
               <div class="item-inner">
                 <div class="item-title">Login Screen</div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a class="item-content item-link" href="/menu/">
-              <div class="item-media"><i class="icon icon-f7"></i></div>
-              <div class="item-inner">
-                <div class="item-title">Menu</div>
               </div>
             </a>
           </li>
@@ -578,13 +546,13 @@
           </li>
         </ul>
       </div>
-      <div class="list simple-list searchbar-not-found">
+      <div class="list list-strong inset simple-list searchbar-not-found">
         <ul>
           <li>Nothing found</li>
         </ul>
       </div>
-      <div class="block-title block-title-medium searchbar-hide-on-search">Themes</div>
-      <div class="list searchbar-hide-on-search">
+      <div class="block-title searchbar-hide-on-search">Themes</div>
+      <div class="list list-strong inset list-dividers-ios searchbar-hide-on-search">
         <ul>
           <li>
             <a href="./index.html?theme=ios" class="external item-content item-link">
@@ -601,13 +569,6 @@
             </a>
           </li>
           <li>
-            <a href="./index.html?theme=aurora" class="external item-content item-link">
-              <div class="item-inner">
-                <div class="item-title">Aurora Desktop Theme</div>
-              </div>
-            </a>
-          </li>
-          <li>
             <a href="/color-themes/" class="item-content item-link">
               <div class="item-inner">
                 <div class="item-title">Color Themes</div>
@@ -616,8 +577,8 @@
           </li>
         </ul>
       </div>
-      <div class="block-title block-title-medium searchbar-hide-on-search">Page Loaders & Router</div>
-      <div class="list searchbar-hide-on-search">
+      <div class="block-title searchbar-hide-on-search">Page Loaders & Router</div>
+      <div class="list list-strong inset list-dividers-ios searchbar-hide-on-search">
         <ul>
           <li>
             <a class="item-content item-link" href="/page-transitions/">
@@ -640,13 +601,6 @@
               </div>
             </a>
           </li>
-          <li class="if-not-aurora">
-            <a class="item-content item-link" href="/master-detail/">
-              <div class="item-inner">
-                <div class="item-title">Master-Detail (Split View)</div>
-              </div>
-            </a>
-          </li>
         </ul>
       </div>
     </div>
@@ -654,44 +608,6 @@
 </template>
 <script>
   export default function (props, ctx) {
-    var $f7router = ctx.$f7router;
-    var $el = ctx.$el;
-    var $f7 = ctx.$f7;
-    var $onMounted = ctx.$onMounted;
-    var $on = ctx.$on;
-
-    function onResize() {
-      if ($f7.width >= 768) {
-        $el.value.find('.list:not(.searchbar-not-found)').addClass('menu-list');
-      } else {
-        $el.value.find('.list:not(.searchbar-not-found)').removeClass('menu-list');
-      }
-    }
-
-    if ($f7.theme === 'aurora') {
-      $onMounted(function () {
-        $el.value.find('.list a[href]:not(.external)').attr('data-reload-detail', 'true');
-        onResize();
-      });
-
-      $on('pageAfterIn', function () {
-        if ($f7.width >= 768) {
-          $f7router.navigate('/about/', { reloadDetail: true });
-        }
-      })
-
-      $f7.on('resize', onResize);
-
-      $f7router.on('routeChange', function (route) {
-        var url = route.url;
-        if (!$el.value) return;
-        var $linkEl = $el.value.find('a[href="' + url + '"]');
-        if (!$linkEl.length) return;
-        $el.value.find('.item-selected').removeClass('item-selected');
-        $linkEl.addClass('item-selected');
-      });
-    }
-
     return $render;
   };
 </script>
