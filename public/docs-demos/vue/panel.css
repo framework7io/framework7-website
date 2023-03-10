@@ -1,6 +1,0 @@
-
-/* Limit resizable panel width */
-.panel {
-  min-width: 100px;
-  max-width: 90vw;
-}

@@ -1,8 +1,59 @@
+const stripIndent = require('strip-indent');
 const fs = require('fs');
 const codeFilter = require('./code-filter');
 
 module.exports = (framework, src, url = '') => {
-  let source = fs.readFileSync(`./public/kitchen-sink/${framework}/src/pages/${src}`, 'utf-8');
+  const subPath = framework === 'core' ? '' : 'src/';
+  const filePath = `./public/kitchen-sink/${framework}/${subPath}pages/${src}`;
+  /* eslint-disable */
+  const lang = framework === 'react' ? 'jsx' : framework === 'svelte' ? 'svelte' : 'html';
+  /* eslint-enable */
+  let iframeSrc =
+    framework === 'core'
+      ? `/kitchen-sink/${framework}/?theme=ios&mode=light#!/${url}/`
+      : `/kitchen-sink/${framework}/dist/?theme=ios&mode=light#!/${url}/`;
+  let source;
+  if (framework === 'core' && !fs.existsSync(filePath)) {
+    iframeSrc = `/docs-demos/core/${url}.html?theme=ios&mode=light`;
+    source = fs.readFileSync(`./src/pug/docs-demos/core/${src}`, 'utf-8');
+    let templateContent = src.match(/<!-- source start -->([^±]*)<!-- source end -->/g);
+    if (templateContent && templateContent[0]) {
+      templateContent = templateContent[0]
+        .replace(/<!-- source start -->\n/, '')
+        .replace(/<!-- source end -->/, '')
+        .split('\n')
+        .map((line) => {
+          let indent = 0;
+          let stopIndent;
+          if (line.indexOf(' ') === 0) {
+            line.split('').forEach((char) => {
+              if (char === ' ' && !stopIndent) indent += 1;
+              else stopIndent = true;
+            });
+          }
+          if (indent > 4) {
+            line = line.slice(4);
+          }
+          return line;
+        })
+        .join('\n');
+      const scriptContent = source.split('</template>')[1].trim();
+      source = `<template>\n${templateContent}</template>\n${scriptContent}`.replace(
+        /[ ]*<\/template>/,
+        '</template>',
+      );
+      if (source.indexOf('<script>') < 0 && source.indexOf('<style>') < 0) {
+        source = source.split('<template>')[1].split('</template>')[0];
+        source = stripIndent(source).trim();
+      }
+    }
+
+    if (source.indexOf('// SKIP SOURCE START') >= 0) {
+      source = source.split('// SKIP SOURCE START')[0] + source.split('// SKIP SOURCE END')[1];
+    }
+  } else {
+    source = fs.readFileSync(filePath, 'utf-8');
+  }
   source = source
     .replace(` backLink="Back"`, '')
     .replace(` back-link="Back"`, '')
@@ -27,13 +78,6 @@ module.exports = (framework, src, url = '') => {
       '',
     );
 
-  /* eslint-disable */
-  const lang = framework === 'react' ? 'jsx' : framework === 'svelte' ? 'svelte' : 'html';
-  /* eslint-enable */
-  const path =
-    framework === 'core'
-      ? `/kitchen-sink/${framework}/?theme=ios#!/${url}/`
-      : `/kitchen-sink/${framework}/dist/?theme=ios#!/${url}/`;
   const res = `
   <div class="example-preview my-8">
     <div class="example-preview-top flex items-center justify-between rounded-t-lg bg-black py-2 px-4">
@@ -41,7 +85,7 @@ module.exports = (framework, src, url = '') => {
       <div class="example-preview-buttons flex">
         <div class="example-preview-buttons-group">
           <a
-            href=${path}
+            href=${iframeSrc}
             target="_blank"
           >
             <svg
@@ -83,7 +127,7 @@ module.exports = (framework, src, url = '') => {
       <div class="example-preview-frame">
         <iframe
           title="demo"
-          src="${path}"
+          src="${iframeSrc}"
           loading="lazy"
         />
       </div>
