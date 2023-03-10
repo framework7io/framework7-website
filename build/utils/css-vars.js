@@ -38,6 +38,14 @@ module.exports = (component, info = true, title = 'CSS Variables') => {
 }
 .rtl(@ruleset) {}
 
+.md-color-vars(@ruleset) {
+  .md,
+  .md .dark,
+  .md [class*='color-'] {
+    @ruleset();
+  }
+}
+
 ${content}
   `;
   less.render(content, (err, output) => {

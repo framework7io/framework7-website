@@ -45,9 +45,6 @@ public/packages/react/
 public/packages/vue/
 public/packages/svelte/
 search-index.json
-public/kitchen-sink/react/src
-public/kitchen-sink/vue/src
-public/kitchen-sink/svelte/src
 
 src/pug/docs-demos/core/*.html
 !src/pug/docs-demos/core/*.f7.html

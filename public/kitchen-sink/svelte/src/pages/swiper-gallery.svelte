@@ -1,0 +1,77 @@
+<script>
+  import { Navbar, Page } from 'framework7-svelte';
+</script>
+
+<Page style="background: #000">
+  <Navbar title="Two Way Control Gallery" backLink="Back" />
+  <swiper-container
+    navigation={true}
+    space-between={10}
+    thumbs={{ swiper: '.demo-swiper-gallery-thumbs' }}
+    class="demo-swiper-gallery-top color-white"
+  >
+    <swiper-slide
+      style="background-image:url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"
+    />
+    <swiper-slide
+      style="background-image:url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"
+    />
+    <swiper-slide
+      style="background-image:url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"
+    />
+    <swiper-slide
+      style="background-image:url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"
+    />
+    <swiper-slide
+      style="background-image:url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"
+    />
+    <swiper-slide
+      style="background-image:url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"
+    />
+  </swiper-container>
+  <swiper-container
+    slides-per-view={4}
+    space-between={10}
+    free-mode={true}
+    watch-slides-progress={true}
+    watch-slides-visibility={true}
+    class="demo-swiper-gallery-thumbs"
+  >
+    <swiper-slide>
+      <div
+        style="background-image:url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg)"
+        class="swiper-slide-pic"
+      />
+    </swiper-slide>
+    <swiper-slide>
+      <div
+        style="background-image:url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg)"
+        class="swiper-slide-pic"
+      />
+    </swiper-slide>
+    <swiper-slide>
+      <div
+        style="background-image:url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg)"
+        class="swiper-slide-pic"
+      />
+    </swiper-slide>
+    <swiper-slide>
+      <div
+        style="background-image:url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg)"
+        class="swiper-slide-pic"
+      />
+    </swiper-slide>
+    <swiper-slide>
+      <div
+        style="background-image:url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg)"
+        class="swiper-slide-pic"
+      />
+    </swiper-slide>
+    <swiper-slide>
+      <div
+        style="background-image:url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg)"
+        class="swiper-slide-pic"
+      />
+    </swiper-slide>
+  </swiper-container>
+</Page>

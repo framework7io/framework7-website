@@ -88,7 +88,8 @@ gulp.task('open', () => {
   return gulp.src('./public/index.html').pipe(open({ uri: 'http://localhost:3001/index.html' }));
 });
 
-gulp.task('server', gulp.parallel(['watch', 'connect', 'open']));
+// gulp.task('server', gulp.parallel(['watch', 'connect', 'open']));
+gulp.task('server', gulp.parallel(['watch', 'connect']));
 
 gulp.task('default', gulp.series(['server']));
 

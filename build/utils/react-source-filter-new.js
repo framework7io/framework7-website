@@ -1,8 +1,8 @@
 const fs = require('fs');
 const codeFilter = require('./code-filter');
 
-module.exports = (src, url = '') => {
-  let source = fs.readFileSync(`../framework7/kitchen-sink/react/src/pages/${src}`, 'utf-8');
+module.exports = (framework, src, url = '') => {
+  let source = fs.readFileSync(`./public/kitchen-sink/${framework}/src/pages/${src}`, 'utf-8');
   // console.log(src);
   source = source.replace(` backLink="Back"`, '');
   const res = `
@@ -54,7 +54,7 @@ module.exports = (src, url = '') => {
       <div class="example-preview-frame">
         <iframe
           title="demo"
-          src="/kitchen-sink/react/${url}"
+          src="/kitchen-sink/${framework}/dist/?theme=ios#!/${url}/"
           loading="lazy"
         />
       </div>

@@ -289,10 +289,9 @@ block content
     ```
     p Because we used Framework7 `useStore` helper/hook, the component will be auto updated when users loaded.
 
-    .with-device
-      h2(data-device-preview="../docs-demos/react/store.html") Examples
-      include:reactSource ../docs-demos/react/store.js
-      include:reactSource(strip=false) ../docs-demos/react/store_page.jsx
+    h2 Examples
+    include:reactSource ../docs-demos/react/store.js
+    +reactSourceFilterNew('react', 'store.jsx', 'store')
 
 
 
