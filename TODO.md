@@ -5,3 +5,4 @@
 - core store
 - CORE TOOlbar position demos
 - colors live demos with code
+- check with-device Colors pages
