@@ -1,14 +1,16 @@
 const fs = require('fs');
 
 fs.readdirSync('./src/pug/svelte').forEach((f) => {
-  if (!f.includes('.pug') || f.includes('svelteSource')) return;
+  if (!f.includes('.pug')) return;
   let sourceCount = 0;
+  if (!fs.existsSync(`./src/pug/react/${f}`)) return;
   const reactContentSources = fs
     .readFileSync(`./src/pug/react/${f}`, 'utf-8')
     .split('\n')
     .filter((line) => line.includes('reactSourceFilterNew'));
-  const content = fs
-    .readFileSync(`./src/pug/svelte/${f}`, 'utf-8')
+  let content = fs.readFileSync(`./src/pug/svelte/${f}`, 'utf-8');
+  if (!content.includes('svelteSource')) return;
+  content = content
     .split('\n')
     .map((line) => {
       if (line.includes('svelteSource')) {
@@ -19,6 +21,7 @@ fs.readdirSync('./src/pug/svelte').forEach((f) => {
           .replace(`.jsx`, '.svelte');
       }
       return line;
-    });
-  fs.readFileSync(`./src/pug/svelte/${f}`, content);
+    })
+    .join('\n');
+  fs.writeFileSync(`./src/pug/svelte/${f}`, content);
 });
