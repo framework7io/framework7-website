@@ -3,8 +3,37 @@ const codeFilter = require('./code-filter');
 
 module.exports = (framework, src, url = '') => {
   let source = fs.readFileSync(`./public/kitchen-sink/${framework}/src/pages/${src}`, 'utf-8');
-  // console.log(src);
-  source = source.replace(` backLink="Back"`, '');
+  source = source
+    .replace(` backLink="Back"`, '')
+    .replace(` back-link="Back"`, '')
+    .replace(
+      `<div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="if-not-md">Back</span>
+        </a>
+      </div>
+      `,
+      '',
+    )
+    .replace(
+      `<div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="if-not-md">Back</span>
+          </a>
+        </div>
+        `,
+      '',
+    );
+
+  /* eslint-disable */
+  const lang = framework === 'react' ? 'jsx' : framework === 'svelte' ? 'svelte' : 'html';
+  /* eslint-enable */
+  const path =
+    framework === 'core'
+      ? `/kitchen-sink/${framework}/?theme=ios#!/${url}/`
+      : `/kitchen-sink/${framework}/dist/?theme=ios#!/${url}/`;
   const res = `
   <div class="example-preview my-8">
     <div class="example-preview-top flex items-center justify-between rounded-t-lg bg-black py-2 px-4">
@@ -12,7 +41,7 @@ module.exports = (framework, src, url = '') => {
       <div class="example-preview-buttons flex">
         <div class="example-preview-buttons-group">
           <a
-            href=${url}
+            href=${path}
             target="_blank"
           >
             <svg
@@ -49,12 +78,12 @@ module.exports = (framework, src, url = '') => {
     </div>
     <div class="example-preview-container">
       <div class="example-preview-code">
-        ${codeFilter(source, { lang: 'jsx' })}
+        ${codeFilter(source, { lang })}
       </div>
       <div class="example-preview-frame">
         <iframe
           title="demo"
-          src="/kitchen-sink/${framework}/dist/?theme=ios#!/${url}/"
+          src="${path}"
           loading="lazy"
         />
       </div>

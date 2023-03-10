@@ -405,14 +405,14 @@ block content
     +cssVars('tabs')
 
     .with-device
-      h2(data-device-preview="../docs-demos/core/tabs.html") Examples
-      include:coreSource ../docs-demos/core/tabs_static.f7.html
+      h2 Examples
+      +examplePreview('core', 'tabs-static.html', 'tabs-static')
 
       h3 Animated Tabs
-      include:coreSource ../docs-demos/core/tabs_animated.f7.html
+      +examplePreview('core', 'tabs-animated.html', 'tabs-animated')
 
       h3 Swipeable Tabs
-      include:coreSource ../docs-demos/core/tabs_swipeable.f7.html
+      +examplePreview('core', 'tabs-swipeable.html', 'tabs-swipeable')
 
       h3 Routable Tabs
       :code(lang="js")
@@ -456,4 +456,4 @@ block content
             },
           ]
         });
-      include:coreSource ../docs-demos/core/tabs_routable.f7.html
+      +examplePreview('core', 'tabs-routable.html', 'tabs-routable')
