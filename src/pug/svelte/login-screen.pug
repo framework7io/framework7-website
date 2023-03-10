@@ -89,7 +89,7 @@ block content
 
     .with-device
       h2(data-device-preview="../docs-demos/svelte/login-screen.html") Examples
-      include:svelteSource ../docs-demos/svelte/login-screen_main.svelte
+      +reactSourceFilterNew(svelte, 'login-screen.svelte', 'login-screen')
 
       h4 Separate Login Screen Page
-      include:svelteSource ../docs-demos/svelte/login-screen_page.svelte
+      +reactSourceFilterNew(svelte, 'login-screen-page.svelte', 'login-screen-page')
