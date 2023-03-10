@@ -10,8 +10,8 @@ module.exports = (framework, src, url = '') => {
   /* eslint-enable */
   let iframeSrc =
     framework === 'core'
-      ? `/kitchen-sink/${framework}/?theme=ios&mode=light#!/${url}/`
-      : `/kitchen-sink/${framework}/dist/?theme=ios&mode=light#!/${url}/`;
+      ? `/kitchen-sink/${framework}/?theme=ios&mode=light&example-preview=true#!/${url}/`
+      : `/kitchen-sink/${framework}/dist/?theme=ios&mode=light&example-preview=true#!/${url}/`;
   let source;
   if (framework === 'core' && !fs.existsSync(filePath)) {
     iframeSrc = `/docs-demos/core/${url}.html?theme=ios&mode=light`;
@@ -129,7 +129,7 @@ module.exports = (framework, src, url = '') => {
           title="demo"
           src="${iframeSrc}"
           loading="lazy"
-        />
+        ></iframe>
       </div>
     </div>
   </div>
