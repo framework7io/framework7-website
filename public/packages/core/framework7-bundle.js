@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.0-beta.3
+ * Framework7 8.0.0-beta.4
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: March 9, 2023
+ * Released on: March 14, 2023
  */
 
 (function (global, factory) {
@@ -8394,7 +8394,7 @@
         flattenedRoutes.forEach(route => {
           if (matchingRoute) return;
           const keys = [];
-          const pathsToMatch = [route.path];
+          const pathsToMatch = [route.path || '/'];
           if (route.alias) {
             if (typeof route.alias === 'string') pathsToMatch.push(route.alias);else if (Array.isArray(route.alias)) {
               route.alias.forEach(aliasPath => {
@@ -8405,7 +8405,7 @@
           let matched;
           pathsToMatch.forEach(pathToMatch => {
             if (matched) return;
-            matched = pathToRegexp(pathToMatch, keys).exec(path);
+            matched = pathToRegexp(pathToMatch, keys).exec(path || '/');
           });
           if (matched) {
             keys.forEach((keyObj, index) => {
@@ -8419,14 +8419,14 @@
             });
             let parentPath;
             if (route.parentPath) {
-              parentPath = path.split('/').slice(0, route.parentPath.split('/').length - 1).join('/');
+              parentPath = (path || '/').split('/').slice(0, route.parentPath.split('/').length - 1).join('/');
             }
             matchingRoute = {
               query,
               hash,
               params,
               url,
-              path,
+              path: path || '/',
               parentPath,
               route,
               name: route.name
@@ -22227,7 +22227,7 @@
         }), $jsx$1("div", {
           class: "page-content"
         }, $jsx$1("div", {
-          class: `list smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
+          class: `list list-outline-ios list-strong-ios list-dividers-ios smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
         }, $jsx$1("ul", null, !ss.params.virtualList && ss.renderItems(ss.items)))));
       }
       renderPopup() {
@@ -22267,7 +22267,7 @@
         }), $jsx$1("div", {
           class: "page-content"
         }, $jsx$1("div", {
-          class: `list smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
+          class: `list list-outline-ios list-strong-ios list-dividers-ios smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
         }, $jsx$1("ul", null, !ss.params.virtualList && ss.renderItems(ss.items)))))));
       }
       renderSheet() {
@@ -22293,7 +22293,7 @@
         }, $jsx$1("div", {
           class: "page-content"
         }, $jsx$1("div", {
-          class: `list smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
+          class: `list list-strong-ios list-dividers-ios smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
         }, $jsx$1("ul", null, !ss.params.virtualList && ss.renderItems(ss.items))))));
       }
       renderPopover() {
@@ -22307,7 +22307,7 @@
         }, $jsx$1("div", {
           class: "popover-inner"
         }, $jsx$1("div", {
-          class: `list smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
+          class: `list list-strong-ios list-dividers-ios smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
         }, $jsx$1("ul", null, !ss.params.virtualList && ss.renderItems(ss.items)))));
       }
       scrollToSelectedItem() {

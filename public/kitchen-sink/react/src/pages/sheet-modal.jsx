@@ -30,7 +30,7 @@ export default () => {
           <div class="sheet-modal sheet-modal-bottom">
             <div class="toolbar">
               <div class="toolbar-inner justify-content-flex-end">
-                <a href="#" class="link sheet-close">Close</a>
+                <a  class="link sheet-close">Close</a>
               </div>
             </div>
             <div class="sheet-modal-inner">
@@ -67,12 +67,12 @@ export default () => {
           Sheet Modals slide up from the bottom of the screen to reveal more content. Such modals
           allow to create custom overlays with custom content.
         </p>
-        <p className="grid grid-cols-2 grid-2">
+        <p className="grid grid-cols-2 grid-gap">
           <Button fill sheetOpen=".demo-sheet">
             Open Sheet
           </Button>
           <Button fill onClick={createSheet}>
-            Create Dynamic Sheet
+            Dynamic Sheet
           </Button>
         </p>
         <p>

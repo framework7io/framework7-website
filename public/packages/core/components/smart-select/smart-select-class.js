@@ -459,7 +459,7 @@ class SmartSelect extends Framework7Class {
     }), $jsx("div", {
       class: "page-content"
     }, $jsx("div", {
-      class: `list smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
+      class: `list list-outline-ios list-strong-ios list-dividers-ios smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
     }, $jsx("ul", null, !ss.params.virtualList && ss.renderItems(ss.items)))));
   }
   renderPopup() {
@@ -499,7 +499,7 @@ class SmartSelect extends Framework7Class {
     }), $jsx("div", {
       class: "page-content"
     }, $jsx("div", {
-      class: `list smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
+      class: `list list-outline-ios list-strong-ios list-dividers-ios smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
     }, $jsx("ul", null, !ss.params.virtualList && ss.renderItems(ss.items)))))));
   }
   renderSheet() {
@@ -525,7 +525,7 @@ class SmartSelect extends Framework7Class {
     }, $jsx("div", {
       class: "page-content"
     }, $jsx("div", {
-      class: `list smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
+      class: `list list-strong-ios list-dividers-ios smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
     }, $jsx("ul", null, !ss.params.virtualList && ss.renderItems(ss.items))))));
   }
   renderPopover() {
@@ -539,7 +539,7 @@ class SmartSelect extends Framework7Class {
     }, $jsx("div", {
       class: "popover-inner"
     }, $jsx("div", {
-      class: `list smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
+      class: `list list-strong-ios list-dividers-ios smart-select-list-${ss.id} ${ss.params.virtualList ? ' virtual-list' : ''} ${ss.params.formColorTheme ? `color-${ss.params.formColorTheme}` : ''}`
     }, $jsx("ul", null, !ss.params.virtualList && ss.renderItems(ss.items)))));
   }
   scrollToSelectedItem() {

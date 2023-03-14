@@ -99,7 +99,7 @@ block content
           app.preloader.show();
 
           // Perform Ajax request
-          app.request.get('someurl.html').then(() => {
+          fetch('someurl.html').then(() => {
             // Hide preloader when Ajax request completed
             app.preloader.hide();
           });

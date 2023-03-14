@@ -1,7 +1,1 @@
-- Navbar demos in core
-- core store
-- CORE TOOlbar position demos
-- colors live demos with code
-- timeline demo
-- data-table demo
 - info about color config in app params

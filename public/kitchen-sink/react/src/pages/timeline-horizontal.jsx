@@ -4,7 +4,7 @@ import { Navbar, Page } from 'framework7-react';
 export default () => (
   <Page>
     <Navbar title="Horizontal Timeline" backLink="Back"></Navbar>
-    <div className="timeline timeline-horizontal col-33 tablet-20">
+    <div className="timeline timeline-horizontal timeline-cols-3 medium-timeline-cols-5">
       <div className="timeline-item">
         <div className="timeline-item-date">
           21 <small>DEC</small>
@@ -65,13 +65,13 @@ export default () => (
           <div className="list links-list inset list-strong list-dividers-ios no-safe-areas">
             <ul>
               <li>
-                <a href="#">Item 1</a>
+                <a>Item 1</a>
               </li>
               <li>
-                <a href="#">Item 2</a>
+                <a>Item 2</a>
               </li>
               <li>
-                <a href="#">Item 3</a>
+                <a>Item 3</a>
               </li>
             </ul>
           </div>

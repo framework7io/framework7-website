@@ -574,7 +574,7 @@ class Router extends Framework7Class {
     flattenedRoutes.forEach(route => {
       if (matchingRoute) return;
       const keys = [];
-      const pathsToMatch = [route.path];
+      const pathsToMatch = [route.path || '/'];
       if (route.alias) {
         if (typeof route.alias === 'string') pathsToMatch.push(route.alias);else if (Array.isArray(route.alias)) {
           route.alias.forEach(aliasPath => {
@@ -585,7 +585,7 @@ class Router extends Framework7Class {
       let matched;
       pathsToMatch.forEach(pathToMatch => {
         if (matched) return;
-        matched = pathToRegexp(pathToMatch, keys).exec(path);
+        matched = pathToRegexp(pathToMatch, keys).exec(path || '/');
       });
       if (matched) {
         keys.forEach((keyObj, index) => {
@@ -599,14 +599,14 @@ class Router extends Framework7Class {
         });
         let parentPath;
         if (route.parentPath) {
-          parentPath = path.split('/').slice(0, route.parentPath.split('/').length - 1).join('/');
+          parentPath = (path || '/').split('/').slice(0, route.parentPath.split('/').length - 1).join('/');
         }
         matchingRoute = {
           query,
           hash,
           params,
           url,
-          path,
+          path: path || '/',
           parentPath,
           route,
           name: route.name

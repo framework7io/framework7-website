@@ -1,5 +1,4 @@
 .home-header {
-  height: 700px;
   position: relative;
   box-sizing: border-box;
   position: relative;
@@ -14,10 +13,9 @@
     position: relative;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
   }
   .logo-title {
-    margin-bottom: auto;
     svg {
       width: 400px;
       height: auto;
@@ -33,22 +31,22 @@
     font-weight: bold;
     line-height: 1.2;
     margin: 20px 0 20px;
+    text-align: right;
   }
   .content {
     float: left;
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
+    align-items: flex-end;
     flex-shrink: 10;
-    width: 60%;
+    width: 50%;
     height: 100%;
-  }
-  .buttons-links {
-    align-self: flex-start;
-    width: 100%;
+    max-width: 560px;
   }
   .buttons {
+    text-align: right;
     a {
       .solid-button();
       min-width: 200px;
@@ -83,19 +81,21 @@
       }
     }
   }
+  .phone-wrap {
+    width: 50%;
+  }
   .phone {
     flex-shrink: 0;
-    width: 320px + 24px;
-    height: 680px + 24px;
+    width: 375px + 24px;
+    height: 790px + 24px;
     padding: 12px;
     border-radius: 54px;
     background: @colorSurface4;
     align-self: center;
-    margin-left: 60px;
     position: relative;
-    margin-right: -10px;
     box-sizing: border-box;
     border: 1px solid @colorBorder;
+    margin-left: 64px;
     &.ios {
       &::before {
         content: '';
@@ -211,7 +211,6 @@
 
   .release-info {
     font-size: 12px;
-    margin-top: auto;
     a {
       color: inherit;
       text-decoration: none;
@@ -229,6 +228,22 @@
   }
   .github-buttons {
     margin-right: 20px;
+    display: flex;
+    font-size: 12px;
+    align-items: center;
+    line-height: 20px;
+    height: 20px;
+    text-decoration: none;
+    position: relative;
+    top: -1px;
+    > span {
+      margin-left: 8px;
+      position: relative;
+      top: 1px;
+    }
+    span span {
+      font-size: 16px;
+    }
   }
   .github-buttons,
   .patreon-button {

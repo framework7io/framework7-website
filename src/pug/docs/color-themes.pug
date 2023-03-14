@@ -31,67 +31,68 @@ block content
     +improveDocsLink
     h1 Color Themes
     ul.docs-index
-    .with-device(data-device-preview="../docs-demos/core/color-themes.html")
-      h2 Default Theme Color
-      p Default theme color is set to the following:
-      p #[b #007aff]
-      div.color-example(style="background-color: #007aff")
 
-      h2 Colors
-      p Framework7 comes with 15 ready to use additional color themes.
-      table
-        tbody
-          each color, key in colors
-            tr
-              td
-                b=key
-              td
-                div.color-example(style=`background-color: ${color}`)
-                div
-                  b=color
+    h2 Default Theme Color
+    p Default theme color is set to the following:
+    p #[b #007aff]
+    +examplePreview('core', 'color-themes.html', 'color-themes')
 
-      h2 Apply Color Themes
-      p It is easy to apply color themes. All you need is just to add `color-theme-[color]` class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
-      :code(lang="html")
-           <body class="color-theme-red">
-               ...
-           </body>
 
-           <div class="page color-theme-green">
-               ...
-           </div>
+    h2 Colors
+    p Framework7 comes with 15 ready to use additional color themes.
+    table
+      tbody
+        each color, key in colors
+          tr
+            td
+              b=key
+            td
+              div.color-example(style=`background-color: ${color}`)
+              div
+                b=color
 
-           <div class="list-block color-theme-pink">
-               ...
-           </div>
+    h2 Apply Color Themes
+    p It is easy to apply color themes. All you need is just to add `color-theme-[color]` class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
+    :code(lang="html")
+          <body class="color-theme-red">
+              ...
+          </body>
 
-           <div class="navbar color-theme-orange">
-               ...
-           </div>
+          <div class="page color-theme-green">
+              ...
+          </div>
 
-           <div class="segmented color-theme-yellow">
-               ...
-           </div>
-      .important-note
-        p Note, that applied color theme affects only interractive elements such as links, buttons, form elements, icons. It doesn't change basic text color or background colors on other blocks.
-      h2 Dark Theme
-      p Framework7 also has additional dark theme layout. To apply dark theme we need to add `dark` class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
-      :code(lang="html")
-           <html class="dark">
-               ...
-           </html>
+          <div class="list-block color-theme-pink">
+              ...
+          </div>
 
-           <body class="dark">
-               ...
-           </body>
+          <div class="navbar color-theme-orange">
+              ...
+          </div>
 
-           <div class="page dark">
-               ...
-           </div>
+          <div class="segmented color-theme-yellow">
+              ...
+          </div>
+    .important-note
+      p Note, that applied color theme affects only interractive elements such as links, buttons, form elements, icons. It doesn't change basic text color or background colors on other blocks.
+    h2 Dark Theme
+    p Framework7 also has additional dark theme layout. To apply dark theme we need to add `dark` class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
+    :code(lang="html")
+          <html class="dark">
+              ...
+          </html>
 
-           <div class="list-block dark">
-               ...
-           </div>
+          <body class="dark">
+              ...
+          </body>
+
+          <div class="page dark">
+              ...
+          </div>
+
+          <div class="list-block dark">
+              ...
+          </div>
 
     h2 Helper Classes
     p There are also additional helper classes that could be used without/outside color themes:
@@ -154,48 +155,7 @@ block content
         "--f7-theme-color-tint": "#ff2929"
       }
 
-    .with-device.with-device-inline
-      h2 Generate Color Theme
-      .docs-demo-device.docs-inline-device
-        .docs-demo-device-theme-buttons
-          a(data-theme="ios").active
-            i.f7-icons logo_apple
-          a(data-theme="md")
-            i.f7-icons logo_android
-        .docs-demo-device-iframe
-          iframe(width="320", height="548", frameborder="0", scrolling="on", src="/docs-demos/core/color-themes-generate.html")
-          .fade-overlay
-      form.docs-color-form
-        fieldset.docs-color-form-col
-          p
-            b Layout Theme
-          label.docs-color-form-radio
-            input(name="theme" value="light" type="radio" checked)
-            span Light
-          label.docs-color-form-radio
-            input(name="theme" value="dark" type="radio")
-            span Dark
-        fieldset.docs-color-form-col
-          p
-            b Navigation Bars Style
-          label.docs-color-form-radio
-            input(name="bars" value="empty" type="radio" checked)
-            span Empty
-          label.docs-color-form-radio
-            input(name="bars" value="fill" type="radio")
-            span Fill
-        fieldset
-          p
-            b Color
-          p
-            label.docs-color-form-input
-              span HEX Color
-              input(type="text" name="color" placeholder="#ff0000")
-      h4 Generated Styles
-      p Copy following CSS styles to your app's styles:
-      <pre class="docs-color-form-code">
-        <code class="css"><span class="token comment">/*<br>  Change color or navigation bars style to see genearted styles<br>*/</span></code>
-      </pre>
+
     h2 CSS Variables
     :code(lang="css")
       /*====================

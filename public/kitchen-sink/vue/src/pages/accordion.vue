@@ -81,16 +81,6 @@
         </f7-accordion-content>
       </f7-list-item>
     </f7-list>
-
-    <f7-block-title>Custom Collapsible</f7-block-title>
-    <f7-block inner accordion-list>
-      <f7-accordion-item v-for="n in 3" :key="n">
-        <f7-accordion-toggle
-          ><b>Item {{ n }}</b></f7-accordion-toggle
-        >
-        <f7-accordion-content>Content {{ n }}</f7-accordion-content>
-      </f7-accordion-item>
-    </f7-block>
   </f7-page>
 </template>
 <script>
@@ -99,8 +89,6 @@ import {
   f7Page,
   f7BlockTitle,
   f7Block,
-  f7AccordionItem,
-  f7AccordionToggle,
   f7AccordionContent,
   f7List,
   f7ListItem,
@@ -112,8 +100,6 @@ export default {
     f7Page,
     f7BlockTitle,
     f7Block,
-    f7AccordionItem,
-    f7AccordionToggle,
     f7AccordionContent,
     f7List,
     f7ListItem,

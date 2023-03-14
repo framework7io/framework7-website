@@ -320,15 +320,17 @@ block content
                 // Requested route
                 console.log(to);
                 // Get external data and return page content
-                app.request.json('http://some-endpoint/').then(function (res) {
-                  resolve(
-                    // How and what to load
-                    {
-                      content: `<div class="page">${res.data.users}</div>`
-                    },
-                  );
-                });
-              }
+                fetch('http://some-endpoint/')
+                  .then((res) => res.json())
+                  .then(function (data) {
+                    resolve(
+                      // How and what to load
+                      {
+                        content: `<div class="page">${data.users}</div>`
+                      },
+                    );
+                  });
+                }
             }
           ],
     h2 Route Path

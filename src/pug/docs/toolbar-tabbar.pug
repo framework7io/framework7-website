@@ -130,7 +130,7 @@ block content
               li <span class="parameter">animate</span> - <span class="parameter-type">Boolean</span> - whether it should be shown with animation or not. By default is `true`
         tr
           td app.toolbar.setHighlight(<span>tabbarEl</span>)
-          td Set highlight on tab links according to active one. <span class="md-only">This will have effect only in MD theme</span>
+          td Set highlight on tab links according to active one. This will have effect only in MD theme
             ul.method-parameters
               li <span class="parameter">tabbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required tabbar. Required.
     h2 Toolbar App Parameters
@@ -167,7 +167,7 @@ block content
       });
 
     h2 Tabbar
-    p Tabbar is a particular case of Toolbar, but it contains icons (or icons with labels) instead of plain links and inteded to be used with <a href="tabs.html">Tabs</a>.
+    p Tabbar is a particular case of Toolbar, but it contains icons (or icons with labels) instead of plain links and intended to be used with <a href="tabs.html">Tabs</a>.
     h3 Tabbar Layout
     p Tabbar layout is almost the same as for Toolbar, but Tabbar has additional `tabbar` class:
     :code(lang="html")
@@ -190,10 +190,10 @@ block content
           p On narrow screen (phone) all links will have the same size equal to [screen width] / [number of links]
         li
           p On wide screen (tablet) all links will be centered with minimal width equal to 105px
-    h3 Tabbar With Labels
-    p If you need to use Tabbar icons with labels we need one more "tabbar-labels" class on Tabbar, and to put `<span class="tabbar-label">` inside of link:
+    h3 Tabbar With Icons
+    p If you need to use Tabbar icons with labels we need one more "tabbar-icons" class on Tabbar, and to put `<span class="tabbar-label">` inside of link:
     :code(lang="html")
-      <div class="toolbar tabbar tabbar-labels toolbar-bottom">
+      <div class="toolbar tabbar tabbar-icons toolbar-bottom">
         <div class="toolbar-inner">
           <a href="#tab1" class="tab-link tab-link-active">
             <i class="icon demo-icon-1"></i>
@@ -319,7 +319,7 @@ block content
     h3 Tabbar
     +examplePreview('core', 'toolbar-tabbar-tabbar.f7.html', 'toolbar-tabbar-tabbar')
 
-    h3 Tabbar With Labels
+    h3 Tabbar With Icons
     +examplePreview('core', 'toolbar-tabbar-tabbar-icons.f7.html', 'toolbar-tabbar-tabbar-icons')
 
     h3 Scrollable Tabbar

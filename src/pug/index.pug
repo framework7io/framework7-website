@@ -15,9 +15,68 @@ html
     meta(name="twitter:title", content="Framework7")
     meta(name="twitter:description", content="Build full featured iOS, Android & Desktop apps")
     meta(name="twitter:image", content="https://framework7.io/i/share-banner.jpg")
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3")
     link(rel="stylesheet", href="/css/main.css")
     link(rel="shortcut icon" href="/i/favicon.png")
   body
+    nav
+      .nav-left
+        a(href="/").nav-logo
+          img(src="/i/logo.svg")
+          img(src="/i/logo-text-white.svg")
+          span v#{release.version}
+      .nav-right
+        .nav-searchbar
+          input(type="search", placeholder="Search")
+          span.disable-search
+        ul
+          li
+            a(href="/docs/") Docs
+            ul
+              li
+                a(href="/docs/introduction.html") Getting Started
+              li.divider
+              li
+                a(href="/docs/") Framework7 Core / API
+              li
+                a(href="/vue/") Framework7 Vue
+              li
+                a(href="/react/") Framework7 React
+              li
+                a(href="/svelte/") Framework7 Svelte
+              li.divider
+              li
+                a(href="/cli/") Framework7 CLI
+              li
+                a(href="/icons/") Framework7 Icons
+              li
+                a(href="/docs/dom7.html") Dom7
+              li.divider
+              li
+                a(href="/release-notes/") Release Notes
+              li.divider
+              li
+                a(href="https://v1.framework7.io/" target="_blank") Framework7 v1
+              li
+                a(href="https://v6.framework7.io/" target="_blank") Framework7 v6
+
+          li
+            a(href="#") Resources
+            ul
+              li
+                a(href="https://forum.framework7.io" target="_blank") Community Forum
+              li
+                a(href="/tutorials/") Tutorials
+              li
+                a(href="/templates/") Templates
+              li
+                a(href="/plugins/") Plugins
+              li
+                a(href="/showcase/") Apps Showcase
+          li
+            a(href="https://blog.framework7.io" target="_blank") Blog
+          li
+            include _github-buttons
     header.home-header
       .center
         .content
@@ -38,27 +97,27 @@ html
           .patreon-github
             include _github-buttons
             include _patreon
-        .phone.ios
-          .iframe-wrapper
-            iframe(src="kitchen-sink/core/?theme=ios&safe-areas=true", frameborder="0", scrolling="no")
-          .theme-switch
-            a(href="kitchen-sink/core/?theme=ios", target="_blank").active
-              .theme-icon
-                i.f7-icons logo_ios
-              .fullscreen
-                i.f7-icons expand
-            a(href="kitchen-sink/core/?theme=md", target="_blank")
-              .theme-icon
-                i.f7-icons logo_android
-              .fullscreen
-                i.f7-icons expand
-        .mobile-preview-button
-          i.f7-icons arrow_left
-          i.f7-icons device_phone_portrait
+        .phone-wrap
+          .phone.ios
+            .iframe-wrapper
+              iframe(src="kitchen-sink/core/?theme=ios&safe-areas=true", frameborder="0", scrolling="no")
+            .theme-switch
+              a(href="kitchen-sink/core/?theme=ios", target="_blank").active
+                .theme-icon
+                  i.f7-icons logo_ios
+                .fullscreen
+                  i.f7-icons expand
+              a(href="kitchen-sink/core/?theme=md", target="_blank")
+                .theme-icon
+                  i.f7-icons logo_android
+                .fullscreen
+                  i.f7-icons expand
+          .mobile-preview-button
+            i.f7-icons arrow_left
+            i.f7-icons device_phone_portrait
 
     .home-block
       .center
-        //- include _carbon
         .text
           p Framework7 - is a <b>free and open source</b> framework to develop mobile, desktop or web apps with <b>native look and feel</b>. It is also an indispensable prototyping tool to show working app prototype as soon as possible in case you need to.
     .home-block.home-block-left

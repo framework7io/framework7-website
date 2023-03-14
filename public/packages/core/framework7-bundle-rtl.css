@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.0-beta.3
+ * Framework7 8.0.0-beta.4
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: March 9, 2023
+ * Released on: March 14, 2023
  */
 
 /*====================
@@ -7136,7 +7136,7 @@ html.with-modal-preloader .page-content,
 .preloader.color-black {
   --f7-preloader-color: #000;
 }
-.ios {
+.ios .preloader {
   color: var(--f7-preloader-color);
 }
 .ios .preloader-inner {
@@ -8637,7 +8637,7 @@ html.device-android-4 .accordion-item-content {
 }
 .timeline-horizontal .timeline-item-content {
   padding: var(--f7-timeline-horizontal-item-padding);
-  height: calc(100% - var(--f7-timeline-horizontal-item-padding));
+  height: calc(100vw - var(--f7-timeline-horizontal-item-padding));
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   margin: 0;
@@ -8649,138 +8649,374 @@ html.device-android-4 .accordion-item-content {
 .timeline-horizontal .timeline-month:last-child .timeline-item:last-child:after {
   display: none !important;
 }
-.timeline-horizontal.col-5 .timeline-item {
-  width: 5vw;
+.timeline-horizontal.timeline-cols-1 .timeline-item {
+  width: calc(100vw / 1);
 }
-.timeline-horizontal.col-10 .timeline-item {
-  width: 10vw;
+.timeline-horizontal.timeline-cols-2 .timeline-item {
+  width: calc(100vw / 2);
 }
-.timeline-horizontal.col-15 .timeline-item {
-  width: 15vw;
+.timeline-horizontal.timeline-cols-3 .timeline-item {
+  width: calc(100vw / 3);
 }
-.timeline-horizontal.col-20 .timeline-item {
-  width: 20vw;
+.timeline-horizontal.timeline-cols-4 .timeline-item {
+  width: calc(100vw / 4);
 }
-.timeline-horizontal.col-25 .timeline-item {
-  width: 25vw;
+.timeline-horizontal.timeline-cols-5 .timeline-item {
+  width: calc(100vw / 5);
 }
-.timeline-horizontal.col-30 .timeline-item {
-  width: 30vw;
+.timeline-horizontal.timeline-cols-6 .timeline-item {
+  width: calc(100vw / 6);
 }
-.timeline-horizontal.col-33 .timeline-item {
-  width: 100/3vw;
+.timeline-horizontal.timeline-cols-7 .timeline-item {
+  width: calc(100vw / 7);
 }
-.timeline-horizontal.col-35 .timeline-item {
-  width: 35vw;
+.timeline-horizontal.timeline-cols-8 .timeline-item {
+  width: calc(100vw / 8);
 }
-.timeline-horizontal.col-40 .timeline-item {
-  width: 40vw;
+.timeline-horizontal.timeline-cols-9 .timeline-item {
+  width: calc(100vw / 9);
 }
-.timeline-horizontal.col-45 .timeline-item {
-  width: 45vw;
+.timeline-horizontal.timeline-cols-10 .timeline-item {
+  width: calc(100vw / 10);
 }
-.timeline-horizontal.col-50 .timeline-item {
-  width: 50vw;
+.timeline-horizontal.timeline-cols-11 .timeline-item {
+  width: calc(100vw / 11);
 }
-.timeline-horizontal.col-55 .timeline-item {
-  width: 55vw;
+.timeline-horizontal.timeline-cols-12 .timeline-item {
+  width: calc(100vw / 12);
 }
-.timeline-horizontal.col-60 .timeline-item {
-  width: 60vw;
+.timeline-horizontal.timeline-cols-13 .timeline-item {
+  width: calc(100vw / 13);
 }
-.timeline-horizontal.col-65 .timeline-item {
-  width: 65vw;
+.timeline-horizontal.timeline-cols-14 .timeline-item {
+  width: calc(100vw / 14);
 }
-.timeline-horizontal.col-66 .timeline-item {
-  width: 66.66666666666666vw;
+.timeline-horizontal.timeline-cols-15 .timeline-item {
+  width: calc(100vw / 15);
 }
-.timeline-horizontal.col-70 .timeline-item {
-  width: 70vw;
+.timeline-horizontal.timeline-cols-16 .timeline-item {
+  width: calc(100vw / 16);
 }
-.timeline-horizontal.col-75 .timeline-item {
-  width: 75vw;
+.timeline-horizontal.timeline-cols-17 .timeline-item {
+  width: calc(100vw / 17);
 }
-.timeline-horizontal.col-80 .timeline-item {
-  width: 80vw;
+.timeline-horizontal.timeline-cols-18 .timeline-item {
+  width: calc(100vw / 18);
 }
-.timeline-horizontal.col-85 .timeline-item {
-  width: 85vw;
+.timeline-horizontal.timeline-cols-19 .timeline-item {
+  width: calc(100vw / 19);
 }
-.timeline-horizontal.col-90 .timeline-item {
-  width: 90vw;
+.timeline-horizontal.timeline-cols-20 .timeline-item {
+  width: calc(100vw / 20);
 }
-.timeline-horizontal.col-95 .timeline-item {
-  width: 95vw;
+@media (min-width: 480px) {
+  .timeline-horizontal.xsmall-timeline-cols-1 .timeline-item {
+    width: calc(100vw / 1);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-2 .timeline-item {
+    width: calc(100vw / 2);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-3 .timeline-item {
+    width: calc(100vw / 3);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-4 .timeline-item {
+    width: calc(100vw / 4);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-5 .timeline-item {
+    width: calc(100vw / 5);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-6 .timeline-item {
+    width: calc(100vw / 6);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-7 .timeline-item {
+    width: calc(100vw / 7);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-8 .timeline-item {
+    width: calc(100vw / 8);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-9 .timeline-item {
+    width: calc(100vw / 9);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-10 .timeline-item {
+    width: calc(100vw / 10);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-11 .timeline-item {
+    width: calc(100vw / 11);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-12 .timeline-item {
+    width: calc(100vw / 12);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-13 .timeline-item {
+    width: calc(100vw / 13);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-14 .timeline-item {
+    width: calc(100vw / 14);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-15 .timeline-item {
+    width: calc(100vw / 15);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-16 .timeline-item {
+    width: calc(100vw / 16);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-17 .timeline-item {
+    width: calc(100vw / 17);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-18 .timeline-item {
+    width: calc(100vw / 18);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-19 .timeline-item {
+    width: calc(100vw / 19);
+  }
+  .timeline-horizontal.xsmall-timeline-cols-20 .timeline-item {
+    width: calc(100vw / 20);
+  }
 }
-.timeline-horizontal.col-100 .timeline-item {
-  width: 100vw;
+@media (min-width: 568px) {
+  .timeline-horizontal.small-timeline-cols-1 .timeline-item {
+    width: calc(100vw / 1);
+  }
+  .timeline-horizontal.small-timeline-cols-2 .timeline-item {
+    width: calc(100vw / 2);
+  }
+  .timeline-horizontal.small-timeline-cols-3 .timeline-item {
+    width: calc(100vw / 3);
+  }
+  .timeline-horizontal.small-timeline-cols-4 .timeline-item {
+    width: calc(100vw / 4);
+  }
+  .timeline-horizontal.small-timeline-cols-5 .timeline-item {
+    width: calc(100vw / 5);
+  }
+  .timeline-horizontal.small-timeline-cols-6 .timeline-item {
+    width: calc(100vw / 6);
+  }
+  .timeline-horizontal.small-timeline-cols-7 .timeline-item {
+    width: calc(100vw / 7);
+  }
+  .timeline-horizontal.small-timeline-cols-8 .timeline-item {
+    width: calc(100vw / 8);
+  }
+  .timeline-horizontal.small-timeline-cols-9 .timeline-item {
+    width: calc(100vw / 9);
+  }
+  .timeline-horizontal.small-timeline-cols-10 .timeline-item {
+    width: calc(100vw / 10);
+  }
+  .timeline-horizontal.small-timeline-cols-11 .timeline-item {
+    width: calc(100vw / 11);
+  }
+  .timeline-horizontal.small-timeline-cols-12 .timeline-item {
+    width: calc(100vw / 12);
+  }
+  .timeline-horizontal.small-timeline-cols-13 .timeline-item {
+    width: calc(100vw / 13);
+  }
+  .timeline-horizontal.small-timeline-cols-14 .timeline-item {
+    width: calc(100vw / 14);
+  }
+  .timeline-horizontal.small-timeline-cols-15 .timeline-item {
+    width: calc(100vw / 15);
+  }
+  .timeline-horizontal.small-timeline-cols-16 .timeline-item {
+    width: calc(100vw / 16);
+  }
+  .timeline-horizontal.small-timeline-cols-17 .timeline-item {
+    width: calc(100vw / 17);
+  }
+  .timeline-horizontal.small-timeline-cols-18 .timeline-item {
+    width: calc(100vw / 18);
+  }
+  .timeline-horizontal.small-timeline-cols-19 .timeline-item {
+    width: calc(100vw / 19);
+  }
+  .timeline-horizontal.small-timeline-cols-20 .timeline-item {
+    width: calc(100vw / 20);
+  }
 }
 @media (min-width: 768px) {
-  .timeline-horizontal.tablet-5 .timeline-item {
-    width: 5vw;
+  .timeline-horizontal.medium-timeline-cols-1 .timeline-item {
+    width: calc(100vw / 1);
   }
-  .timeline-horizontal.tablet-10 .timeline-item {
-    width: 10vw;
+  .timeline-horizontal.medium-timeline-cols-2 .timeline-item {
+    width: calc(100vw / 2);
   }
-  .timeline-horizontal.tablet-15 .timeline-item {
-    width: 15vw;
+  .timeline-horizontal.medium-timeline-cols-3 .timeline-item {
+    width: calc(100vw / 3);
   }
-  .timeline-horizontal.tablet-20 .timeline-item {
-    width: 20vw;
+  .timeline-horizontal.medium-timeline-cols-4 .timeline-item {
+    width: calc(100vw / 4);
   }
-  .timeline-horizontal.tablet-25 .timeline-item {
-    width: 25vw;
+  .timeline-horizontal.medium-timeline-cols-5 .timeline-item {
+    width: calc(100vw / 5);
   }
-  .timeline-horizontal.tablet-30 .timeline-item {
-    width: 30vw;
+  .timeline-horizontal.medium-timeline-cols-6 .timeline-item {
+    width: calc(100vw / 6);
   }
-  .timeline-horizontal.tablet-33 .timeline-item {
-    width: 100/3vw;
+  .timeline-horizontal.medium-timeline-cols-7 .timeline-item {
+    width: calc(100vw / 7);
   }
-  .timeline-horizontal.tablet-35 .timeline-item {
-    width: 35vw;
+  .timeline-horizontal.medium-timeline-cols-8 .timeline-item {
+    width: calc(100vw / 8);
   }
-  .timeline-horizontal.tablet-40 .timeline-item {
-    width: 40vw;
+  .timeline-horizontal.medium-timeline-cols-9 .timeline-item {
+    width: calc(100vw / 9);
   }
-  .timeline-horizontal.tablet-45 .timeline-item {
-    width: 45vw;
+  .timeline-horizontal.medium-timeline-cols-10 .timeline-item {
+    width: calc(100vw / 10);
   }
-  .timeline-horizontal.tablet-50 .timeline-item {
-    width: 50vw;
+  .timeline-horizontal.medium-timeline-cols-11 .timeline-item {
+    width: calc(100vw / 11);
   }
-  .timeline-horizontal.tablet-55 .timeline-item {
-    width: 55vw;
+  .timeline-horizontal.medium-timeline-cols-12 .timeline-item {
+    width: calc(100vw / 12);
   }
-  .timeline-horizontal.tablet-60 .timeline-item {
-    width: 60vw;
+  .timeline-horizontal.medium-timeline-cols-13 .timeline-item {
+    width: calc(100vw / 13);
   }
-  .timeline-horizontal.tablet-65 .timeline-item {
-    width: 65vw;
+  .timeline-horizontal.medium-timeline-cols-14 .timeline-item {
+    width: calc(100vw / 14);
   }
-  .timeline-horizontal.tablet-66 .timeline-item {
-    width: 66.66666666666666vw;
+  .timeline-horizontal.medium-timeline-cols-15 .timeline-item {
+    width: calc(100vw / 15);
   }
-  .timeline-horizontal.tablet-70 .timeline-item {
-    width: 70vw;
+  .timeline-horizontal.medium-timeline-cols-16 .timeline-item {
+    width: calc(100vw / 16);
   }
-  .timeline-horizontal.tablet-75 .timeline-item {
-    width: 75vw;
+  .timeline-horizontal.medium-timeline-cols-17 .timeline-item {
+    width: calc(100vw / 17);
   }
-  .timeline-horizontal.tablet-80 .timeline-item {
-    width: 80vw;
+  .timeline-horizontal.medium-timeline-cols-18 .timeline-item {
+    width: calc(100vw / 18);
   }
-  .timeline-horizontal.tablet-85 .timeline-item {
-    width: 85vw;
+  .timeline-horizontal.medium-timeline-cols-19 .timeline-item {
+    width: calc(100vw / 19);
   }
-  .timeline-horizontal.tablet-90 .timeline-item {
-    width: 90vw;
+  .timeline-horizontal.medium-timeline-cols-20 .timeline-item {
+    width: calc(100vw / 20);
   }
-  .timeline-horizontal.tablet-95 .timeline-item {
-    width: 95vw;
+}
+@media (min-width: 1024px) {
+  .timeline-horizontal.large-timeline-cols-1 .timeline-item {
+    width: calc(100vw / 1);
   }
-  .timeline-horizontal.tablet-100 .timeline-item {
-    width: 100vw;
+  .timeline-horizontal.large-timeline-cols-2 .timeline-item {
+    width: calc(100vw / 2);
+  }
+  .timeline-horizontal.large-timeline-cols-3 .timeline-item {
+    width: calc(100vw / 3);
+  }
+  .timeline-horizontal.large-timeline-cols-4 .timeline-item {
+    width: calc(100vw / 4);
+  }
+  .timeline-horizontal.large-timeline-cols-5 .timeline-item {
+    width: calc(100vw / 5);
+  }
+  .timeline-horizontal.large-timeline-cols-6 .timeline-item {
+    width: calc(100vw / 6);
+  }
+  .timeline-horizontal.large-timeline-cols-7 .timeline-item {
+    width: calc(100vw / 7);
+  }
+  .timeline-horizontal.large-timeline-cols-8 .timeline-item {
+    width: calc(100vw / 8);
+  }
+  .timeline-horizontal.large-timeline-cols-9 .timeline-item {
+    width: calc(100vw / 9);
+  }
+  .timeline-horizontal.large-timeline-cols-10 .timeline-item {
+    width: calc(100vw / 10);
+  }
+  .timeline-horizontal.large-timeline-cols-11 .timeline-item {
+    width: calc(100vw / 11);
+  }
+  .timeline-horizontal.large-timeline-cols-12 .timeline-item {
+    width: calc(100vw / 12);
+  }
+  .timeline-horizontal.large-timeline-cols-13 .timeline-item {
+    width: calc(100vw / 13);
+  }
+  .timeline-horizontal.large-timeline-cols-14 .timeline-item {
+    width: calc(100vw / 14);
+  }
+  .timeline-horizontal.large-timeline-cols-15 .timeline-item {
+    width: calc(100vw / 15);
+  }
+  .timeline-horizontal.large-timeline-cols-16 .timeline-item {
+    width: calc(100vw / 16);
+  }
+  .timeline-horizontal.large-timeline-cols-17 .timeline-item {
+    width: calc(100vw / 17);
+  }
+  .timeline-horizontal.large-timeline-cols-18 .timeline-item {
+    width: calc(100vw / 18);
+  }
+  .timeline-horizontal.large-timeline-cols-19 .timeline-item {
+    width: calc(100vw / 19);
+  }
+  .timeline-horizontal.large-timeline-cols-20 .timeline-item {
+    width: calc(100vw / 20);
+  }
+}
+@media (min-width: 1200px) {
+  .timeline-horizontal.xlarge-timeline-cols-1 .timeline-item {
+    width: calc(100vw / 1);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-2 .timeline-item {
+    width: calc(100vw / 2);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-3 .timeline-item {
+    width: calc(100vw / 3);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-4 .timeline-item {
+    width: calc(100vw / 4);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-5 .timeline-item {
+    width: calc(100vw / 5);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-6 .timeline-item {
+    width: calc(100vw / 6);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-7 .timeline-item {
+    width: calc(100vw / 7);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-8 .timeline-item {
+    width: calc(100vw / 8);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-9 .timeline-item {
+    width: calc(100vw / 9);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-10 .timeline-item {
+    width: calc(100vw / 10);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-11 .timeline-item {
+    width: calc(100vw / 11);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-12 .timeline-item {
+    width: calc(100vw / 12);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-13 .timeline-item {
+    width: calc(100vw / 13);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-14 .timeline-item {
+    width: calc(100vw / 14);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-15 .timeline-item {
+    width: calc(100vw / 15);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-16 .timeline-item {
+    width: calc(100vw / 16);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-17 .timeline-item {
+    width: calc(100vw / 17);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-18 .timeline-item {
+    width: calc(100vw / 18);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-19 .timeline-item {
+    width: calc(100vw / 19);
+  }
+  .timeline-horizontal.xlarge-timeline-cols-20 .timeline-item {
+    width: calc(100vw / 20);
   }
 }
 .timeline-year {

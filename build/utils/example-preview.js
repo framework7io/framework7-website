@@ -16,7 +16,7 @@ module.exports = (framework, src, url = '') => {
   if (framework === 'core' && !fs.existsSync(filePath)) {
     iframeSrc = `/docs-demos/core/${url}.html?theme=ios&mode=light`;
     source = fs.readFileSync(`./src/pug/docs-demos/core/${src}`, 'utf-8');
-    let templateContent = src.match(/<!-- source start -->([^±]*)<!-- source end -->/g);
+    let templateContent = source.match(/<!-- source start -->([^±]*)<!-- source end -->/g);
     if (templateContent && templateContent[0]) {
       templateContent = templateContent[0]
         .replace(/<!-- source start -->\n/, '')

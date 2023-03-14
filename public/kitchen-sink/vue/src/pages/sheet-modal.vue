@@ -8,7 +8,7 @@
       </p>
       <p class="grid grid-cols-2 grid-gap">
         <f7-button fill sheet-open=".demo-sheet">Open Sheet</f7-button>
-        <f7-button fill @click="createSheet">Create Dynamic Sheet</f7-button>
+        <f7-button fill @click="createSheet">Dynamic Sheet</f7-button>
       </p>
       <p>
         <f7-button fill sheet-open=".demo-sheet-top">Top Sheet</f7-button>
@@ -270,7 +270,7 @@ export default {
             <div class="sheet-modal sheet-modal-bottom">
               <div class="toolbar">
                 <div class="toolbar-inner justify-content-flex-end">
-                  <a href="#" class="link sheet-close">Close</a>
+                  <a  class="link sheet-close">Close</a>
                 </div>
               </div>
               <div class="sheet-modal-inner">

@@ -13,513 +13,87 @@ block content
     h1 Data Table
     ul.docs-index
     p Data tables display sets of raw data. They usually appear in desktop enterprise products
-    .with-device
-      h2 Data Table Layout
-      p Common Data Table layout could be treated as the following:
-      :code(lang="html")
-            <div class="data-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th class="label-cell">Dessert (100g serving)</th>
-                    <th class="numeric-cell">Calories</th>
-                    ...
-                    <th class="medium-only">Comment</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="label-cell">Frozen yogurt</td>
-                    <td class="numeric-cell">159</td>
-                    ...
-                    <td class="medium-only">I like it!</td>
-                  </tr>
-                  ...
-                </tbody>
-              </table>
-            </div>
-      p Within <a href="./cards.html">Card</a>:
-      :code(lang="html")
-            <div class="data-table card">
-              <table>
-                <thead>
-                ...
-                </thead>
-                <tbody>
-                ...
-                </tbody>
-              </table>
-            </div>
-      p Where
-      ul
-        li `data-table` - main Data Table wrapper. Required
-          ul
-            li `table` - table itself. Required
-              ul
-                li `thead` - table head
-                li `tbody` - table body. Required
-                li `label-cell` - main label cell (only one such kind of cell per row, usually first cell)
-                li `numeric-cell` - cell to display numeric data (right-aligned)
-                li `medium-only` - additional class to show this cell/column only when app width >= 768px. For full set of such responsive classes check #[a(href="grid.html#column-sizes") Grid docs]. They are `xsmall-only`, `small-only`, `medium-only`, `large-only`, `xlarge-only`.
-      h2 Pagination Footer
-      :code(lang="html")
-            <div class="card data-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th class="label-cell">Dessert (100g serving)</th>
-                    <th class="numeric-cell">Calories</th>
-                    <th class="numeric-cell">Fat (g)</th>
-                    <th class="numeric-cell">Carbs</th>
-                    <th class="numeric-cell">Protein (g)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="label-cell">Frozen yogurt</td>
-                    <td class="numeric-cell">159</td>
-                    <td class="numeric-cell">6.0</td>
-                    <td class="numeric-cell">24</td>
-                    <td class="numeric-cell">4.0</td>
-                  </tr>
-                  ...
-                </tbody>
-              </table>
-              <div class="data-table-footer">
-                <div class="data-table-rows-select">
-                  Per page:
-                  <div class="input input-dropdown">
-                    <select>
-                      <option value="5">5</option>
-                      <option value="10">10</option>
-                      <option value="25">25</option>
-                      <option value="all">All</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="data-table-pagination">
-                  <span class="data-table-pagination-label">1-5 of 10</span>
-                  <a href="#" class="link disabled">
-                    <i class="icon icon-prev color-gray"></i>
-                  </a>
-                  <a href="#" class="link">
-                    <i class="icon icon-next color-gray"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-      p Where
-      ul
-        li `data-table-footer` - data table footer main element
-          ul
-            li `data-table-rows-select` - container with amount per page select
-            li `data-table-pagination` - container with information about current page and prev/next navigation buttons
-              ul
-                li `data-table-pagination-label` - current paging label
-      h2 Selectable Rows
-      :code(lang="html")
-            <div class="data-table data-table-init card">
-              <table>
-                <thead>
-                  <tr>
-                    <th class="checkbox-cell">
-                      <label class="checkbox">
-                        <input type="checkbox"/>
-                        <i class="icon-checkbox"></i>
-                      </label>
-                    </th>
-                    <th class="label-cell">Dessert (100g serving)</th>
-                    <th class="numeric-cell">Calories</th>
-                    ...
-                    <th class="numeric-cell">Protein (g)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="checkbox-cell">
-                      <label class="checkbox">
-                        <input type="checkbox"/>
-                        <i class="icon-checkbox"></i>
-                      </label>
-                    </td>
-                    <td class="label-cell">Frozen yogurt</td>
-                    <td class="numeric-cell">159</td>
-                    ...
-                    <td class="numeric-cell">4.0</td>
-                  </tr>
-                  ...
-                </tbody>
-              </table>
-            </div>
-      p Where
-      ul
-        li `data-table-init` - additional class to enable JavaScript action required for selectable rows
-        li
-          p Checkbox cell. Such cell in table header will select/deselect all rows in table body:
-          :code(lang="html")
-                <td class="checkbox-cell">
-                  <label class="checkbox">
-                    <input type="checkbox"/>
-                    <i class="icon-checkbox"></i>
-                  </label>
-                </td>
-      h2 Inputs In Table Head
-      p Such tables are widely used in admin interfaces for filtering or search data
-      :code(lang="html")
-            <div class="card data-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th class="input-cell">
-                      <span class="table-head-label">ID</span>
-                      <div class="input" style="width: 50px">
-                        <input type="number" placeholder="Filter" />
-                      </div>
-                    </th>
-                    <th class="input-cell">
-                      <span class="table-head-label">Name</span>
-                      <div class="input">
-                        <input type="text" placeholder="Filter" />
-                      </div>
-                    </th>
-                    ...
-                    <th class="input-cell">
-                      <span class="table-head-label">Gender</span>
-                      <div class="input input-dropdown">
-                        <select>
-                          <option value="All">All</option>
-                          <option value="Male">Male</option>
-                          <option value="Female">Female</option>
-                        </select>
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>John Doe</td>
-                    <td>john@doe.com</td>
-                    <td>Male</td>
-                  </tr>
-                  ...
-                </tbody>
-              </table>
-            </div>
-      p Where
-      ul
-        li
-          p `input-cell` - additional class on table cell required to display input
-        li
-          p `<span class="table-head-label">` - input label
-        li
-          p `<div class="input">` - input container
+    h2 Table Layout
+    p Common Data Table layout could be treated as the following:
+    +examplePreview('core', 'data-table.f7.html', 'data-table')
 
-      h2 Table Title/Header
-      p When data table is used within <a href="./cards.html">Card</a> it is possible to use additional data table title with actions in card header.
-      h4 With title and actions
-      :code(lang="html")
-            <div class="data-table data-table-init card">
-              <!-- Card Header -->
-              <div class="card-header">
-                <!-- Table title -->
-                <div class="data-table-title">Nutrition</div>
-                <!-- Table actions -->
-                <div class="data-table-actions">
-                  <a class="link icon-only">
-                    <i class="icon f7-icons if-not-md">line_horizontal_3_decrease</i>
-                    <i class="icon material-icons md-only">sort</i>
-                  </a>
-                  <a class="link icon-only">
-                    <i class="icon f7-icons if-not-md">ellipsis_vertical_circle</i>
-                    <i class="icon material-icons md-only">more_vert</i>
-                  </a>
-                </div>
-              </div>
-              <!-- Card Content -->
-              <div class="card-content">
-                <table>
-                  <thead>
-                    <tr>
-                      <th class="checkbox-cell">
-                        <label class="checkbox">
-                          <input type="checkbox" />
-                          <i class="icon-checkbox"></i>
-                        </label>
-                      </th>
-                      <th class="label-cell">Dessert (100g serving)</th>
-                      <th class="numeric-cell">Calories</th>
-                      ...
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="checkbox-cell">
-                        <label class="checkbox">
-                          <input type="checkbox" />
-                          <i class="icon-checkbox"></i>
-                        </label>
-                      </td>
-                      <td class="label-cell">Frozen yogurt</td>
-                      <td class="numeric-cell">159</td>
-                      ...
-                    </tr>
-                    ...
-                  </tbody>
-                </table>
-              </div>
-            </div>
-      p Where
-      ul
-        li `data-table-title` - table title
-        li `data-table-actions` - main table actions
-      h4 Different actions on select
-      :code(lang="html")
-            <div class="data-table data-table-init card">
-              <!-- Card header -->
-              <div class="card-header">
-                <!-- Default table header -->
-                <div class="data-table-header">
-                  <!-- Default table title -->
-                  <div class="data-table-title">Nutrition</div>
-                  <!-- Default table actions -->
-                  <div class="data-table-actions">
-                    <a class="link icon-only">
-                      <i class="icon f7-icons if-not-md">line_horizontal_3_decrease</i>
-                      <i class="icon material-icons md-only">sort</i>
-                    </a>
-                    <a class="link icon-only">
-                      <i class="icon f7-icons if-not-md">ellipsis_vertical_circle</i>
-                      <i class="icon material-icons md-only">more_vert</i>
-                    </a>
-                  </div>
-                </div>
-                <!-- Selected table header -->
-                <div class="data-table-header-selected">
-                  <!-- Selected table title -->
-                  <div class="data-table-title-selected"><span class="data-table-selected-count"></span> items selected</div>
-                  <!-- Selected table actions -->
-                  <div class="data-table-actions">
-                    <a class="link icon-only">
-                      <i class="icon f7-icons if-not-md">trash</i>
-                      <i class="icon material-icons md-only">delete</i>
-                    </a>
-                    <a class="link icon-only">
-                      <i class="icon f7-icons if-not-md">ellipsis_vertical_circle</i>
-                      <i class="icon material-icons md-only">more_vert</i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div class="card-content">
-                <table>
-                  <thead>
-                    <tr>
-                      <th class="checkbox-cell">
-                        <label class="checkbox">
-                          <input type="checkbox" />
-                          <i class="icon-checkbox"></i>
-                        </label>
-                      </th>
-                      <th class="label-cell">Dessert (100g serving)</th>
-                      <th class="numeric-cell">Calories</th>
-                      ...
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="checkbox-cell">
-                        <label class="checkbox">
-                          <input type="checkbox" />
-                          <i class="icon-checkbox"></i>
-                        </label>
-                      </td>
-                      <td class="label-cell">Frozen yogurt</td>
-                      <td class="numeric-cell">159</td>
-                      ...
-                    </tr>
-                    ...
-                  </tbody>
-                </table>
-              </div>
-            </div>
-      p Where
-      ul
-        li `data-table-header` - default table header. Visible when there are no selected rows
-        li `data-table-header-selected` - selected table header. Visible when there are selected rows
-        li `data-table-selected-count` - count of selected table rows. Number will be placed here by JavaScript
-      h3 Alternate header with row actions
-      :code(lang="html")
-            <div class="data-table data-table-init card">
-              <div class="card-header">
-                <!-- Table links/actions -->
-                <div class="data-table-links">
-                  <a class="link">Add</a>
-                  <a class="link">Remove</a>
-                </div>
-                <!-- Table actions -->
-                <div class="data-table-actions">
-                  <a class="link icon-only">
-                    <i class="icon f7-icons if-not-md">line_horizontal_3_decrease</i>
-                    <i class="icon material-icons md-only">sort</i>
-                  </a>
-                  <a class="link icon-only">
-                    <i class="icon f7-icons if-not-md">ellipsis_vertical_circle</i>
-                    <i class="icon material-icons md-only">more_vert</i>
-                  </a>
-                </div>
-              </div>
-              <div class="card-content">
-                <table>
-                  <thead>
-                    <tr>
-                      <th class="checkbox-cell">
-                        <label class="checkbox">
-                          <input type="checkbox" />
-                          <i class="icon-checkbox"></i>
-                        </label>
-                      </th>
-                      <th class="label-cell">Dessert (100g serving)</th>
-                      <th class="numeric-cell">Calories</th>
-                      ...
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="checkbox-cell">
-                        <label class="checkbox">
-                          <input type="checkbox" />
-                          <i class="icon-checkbox"></i>
-                        </label>
-                      </td>
-                      <td class="label-cell">Frozen yogurt</td>
-                      <td class="numeric-cell">159</td>
-                      ...
-                      <td class="actions-cell">
-                        <a class="link icon-only">
-                          <i class="icon f7-icons if-not-md">square_pencil</i>
-                          <i class="icon material-icons md-only">edit</i>
-                        </a>
-                        <a class="link icon-only">
-                          <i class="icon f7-icons if-not-md">trash</i>
-                          <i class="icon material-icons md-only">delete</i>
-                        </a>
-                      </td>
-                    </tr>
-                    ...
-                  </tbody>
-                </table>
-              </div>
-            </div>
-      p Where
-      ul
-        li `data-table-links` - alternate/additional table actions
-        li `actions-cell` - action links/icons cell
+    p Where
+    ul
+      li `data-table` - main Data Table wrapper. Required
+        ul
+          li `table` - table itself. Required
+            ul
+              li `thead` - table head
+              li `tbody` - table body. Required
+              li `label-cell` - main label cell (only one such kind of cell per row, usually first cell)
+              li `numeric-cell` - cell to display numeric data (right-aligned)
+              li `medium-only` - additional class to show this cell/column only when app width >= 768px. For full set of such responsive classes check #[a(href="grid.html#column-sizes") Grid docs]. They are `xsmall-only`, `small-only`, `medium-only`, `large-only`, `xlarge-only`.
+    h2 Pagination Footer
+    +examplePreview('core', 'data-table-pagination-footer.f7.html', 'data-table-pagination-footer')
+    p Where
+    ul
+      li `data-table-footer` - data table footer main element
+        ul
+          li `data-table-rows-select` - container with amount per page select
+          li `data-table-pagination` - container with information about current page and prev/next navigation buttons
+            ul
+              li `data-table-pagination-label` - current paging label
+    h2 Selectable Rows
+    +examplePreview('core', 'data-table-selectable.f7.html', 'data-table-selectable')
+    p Where
+    ul
+      li `data-table-init` - additional class to enable JavaScript action required for selectable rows
+      li
+        p Checkbox cell. Such cell in table header will select/deselect all rows in table body:
+        :code(lang="html")
+              <td class="checkbox-cell">
+                <label class="checkbox">
+                  <input type="checkbox"/>
+                  <i class="icon-checkbox"></i>
+                </label>
+              </td>
+    h2 Inputs In Table Head
+    p Such tables are widely used in admin interfaces for filtering or search data
+    +examplePreview('core', 'data-table-head-inputs.f7.html', 'data-table-head-inputs')
+    p Where
+    ul
+      li
+        p `input-cell` - additional class on table cell required to display input
+      li
+        p `<span class="table-head-label">` - input label
+      li
+        p `<div class="input">` - input container
 
-      h2 Sortable
-      :code(lang="html")
-            <div class="data-table data-table-init card">
-              <div class="card-header">
-                <div class="data-table-title">Nutrition</div>
-                <div class="data-table-actions">
-                  <a class="link icon-only">
-                    <i class="icon f7-icons if-not-md">line_horizontal_3_decrease</i>
-                    <i class="icon material-icons md-only">sort</i>
-                  </a>
-                  <a class="link icon-only">
-                    <i class="icon f7-icons if-not-md">ellipsis_vertical_circle</i>
-                    <i class="icon material-icons md-only">more_vert</i>
-                  </a>
-                </div>
-              </div>
-              <div class="card-content">
-                <table>
-                  <thead>
-                    <tr>
-                      <th class="checkbox-cell">
-                        <label class="checkbox">
-                          <input type="checkbox" />
-                          <i class="icon-checkbox"></i>
-                        </label>
-                      </th>
-                      <th class="label-cell sortable-cell sortable-cell-active">Dessert (100g serving)</th>
-                      <th class="numeric-cell sortable-cell">Calories</th>
-                      <th class="numeric-cell sortable-cell">Fat (g)</th>
-                      <th class="numeric-cell sortable-cell">Carbs</th>
-                      <th class="numeric-cell sortable-cell">Protein (g)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="checkbox-cell">
-                        <label class="checkbox">
-                          <input type="checkbox" />
-                          <i class="icon-checkbox"></i>
-                        </label>
-                      </td>
-                      <td class="label-cell">Frozen yogurt</td>
-                      <td class="numeric-cell">159</td>
-                      <td class="numeric-cell">6.0</td>
-                      <td class="numeric-cell">24</td>
-                      <td class="numeric-cell">4.0</td>
-                    </tr>
-                    ...
-                  </tbody>
-                </table>
-              </div>
-            </div>
-      p Where
-      ul
-        li `sortable-cell` - additional class to make cell/column is sortable
-        li `sortable-cell-active` - additional class to specify active/default sortable cell/column
-        li `sortable-asc` - additional class to specify current sorting as ascending (default)
-        li `sortable-desc` - additional class to specify current sorting as descending
-      .important-note
-        p Note, <b>there is no actual sortable logic</b> provided by framework. Actual sorting logic should be realized manually
+    h2 Table Title/Header
+    p When data table is used within <a href="./cards.html">Card</a> it is possible to use additional data table title with actions in card header.
+    +examplePreview('core', 'data-table-title.f7.html', 'data-table-title')
+    p Where
+    ul
+      li `data-table-title` - table title
+      li `data-table-actions` - main table actions
+      li `data-table-header` - default table header. Visible when there are no selected rows
+      li `data-table-header-selected` - selected table header. Visible when there are selected rows
+      li `data-table-selected-count` - count of selected table rows. Number will be placed here by JavaScript
+      li `data-table-links` - alternate/additional table actions
+      li `actions-cell` - action links/icons cell
 
-      h2 Collapsible
-      p The following table will be collapsed to kind of List View on small screens:
-      :code(lang="html")
-            <div class="card data-table data-table-collapsible data-table-init">
-              <div class="card-header">
-                <div class="data-table-title">Nutrition</div>
-                <div class="data-table-actions">
-                  <a class="link icon-only">
-                    <i class="icon f7-icons if-not-md">line_horizontal_3_decrease</i>
-                    <i class="icon material-icons md-only">sort</i>
-                  </a>
-                  <a class="link icon-only">
-                    <i class="icon f7-icons if-not-md">ellipsis_vertical_circle</i>
-                    <i class="icon material-icons md-only">more_vert</i>
-                  </a>
-                </div>
-              </div>
-              <div class="card-content">
-                <table>
-                  <thead>
-                    <tr>
-                      <th class="label-cell">Dessert (100g serving)</th>
-                      <th class="numeric-cell">Calories</th>
-                      ...
-                      <th class="numeric-cell">Protein (g)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="label-cell" data-collapsible-title="Dessert (100g serving)">Frozen yogurt</td>
-                      <td class="numeric-cell" data-collapsible-title="Calories">159</td>
-                      ...
-                      <td class="numeric-cell" data-collapsible-title="Protein (g)">4.0</td>
-                    </tr>
-                    ...
-                  </tbody>
-                </table>
-              </div>
-            </div>
-      p Where
-      ul
-        li `data-table-collapsible` - additional table class to enable collapsible logic. Note that "data-table-init" class is also required for this.
+    h2 Sortable
+    +examplePreview('core', 'data-table-sortable.f7.html', 'data-table-sortable')
+    p Where
+    ul
+      li `sortable-cell` - additional class to make cell/column is sortable
+      li `sortable-cell-active` - additional class to specify active/default sortable cell/column
+      li `sortable-asc` - additional class to specify current sorting as ascending (default)
+      li `sortable-desc` - additional class to specify current sorting as descending
+    .important-note
+      p Note, <b>there is no actual sortable logic</b> provided by framework. Actual sorting logic should be realized manually
+
+    h2 Collapsible
+    p The following table will be collapsed to kind of List View on small screens:
+    +examplePreview('core', 'data-table-collapsible.f7.html', 'data-table-collapsible')
+    p Where
+    ul
+      li `data-table-collapsible` - additional table class to enable collapsible logic. Note that "data-table-init" class is also required for this.
     h2 Data Table App Methods
     p In case you add data table dynamically and you need such selecting rows or switching headers logic you need to init it manually. Let's look at related app methods to work with data table:
     .method-wrap

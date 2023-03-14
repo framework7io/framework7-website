@@ -1,7 +1,7 @@
 <template>
   <f7-page>
     <f7-navbar title="Horizontal Timeline" back-link="Back"></f7-navbar>
-    <div class="timeline timeline-horizontal col-33 tablet-20">
+    <div class="timeline timeline-horizontal timeline-cols-3 medium-timeline-cols-5">
       <div class="timeline-item">
         <div class="timeline-item-date">21 <small>DEC</small></div>
         <div class="timeline-item-content">
@@ -53,9 +53,9 @@
         <div class="timeline-item-content">
           <div class="list links-list inset list-strong list-dividers-ios no-safe-areas">
             <ul>
-              <li><a href="#">Item 1</a></li>
-              <li><a href="#">Item 2</a></li>
-              <li><a href="#">Item 3</a></li>
+              <li><a>Item 1</a></li>
+              <li><a>Item 2</a></li>
+              <li><a>Item 3</a></li>
             </ul>
           </div>
         </div>

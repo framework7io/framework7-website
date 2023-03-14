@@ -1,0 +1,167 @@
+nav {
+  position: relative;
+  height: 64px;
+  background: @colorSurface2;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  .nav-left,
+  .nav-left a,
+  .nav-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nav-logo {
+    text-decoration: none;
+    img:first-child {
+      height: 48px;
+    }
+    img:nth-child(2) {
+      height: 20px;
+    }
+    img + img {
+      margin-left: 8px;
+    }
+    span {
+      font-size: 10px;
+      color: #fff;
+      .monospace();
+      pointer-events: none;
+      position: relative;
+      left: 8px;
+      top: 1px;
+      opacity: 0.75;
+    }
+  }
+  .nav-right > ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-weight: 500;
+    a {
+      text-decoration: none;
+    }
+    li + li {
+      margin-left: 8px;
+    }
+    > li > a {
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+    > li:hover > ul {
+      display: block;
+    }
+    > li:hover > a {
+      background: @colorPrimary;
+      color: @colorOnPrimary;
+    }
+    > li {
+      position: relative;
+    }
+    ul {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: @colorSurface3;
+      border-radius: 12px;
+      white-space: nowrap;
+      font-size: 14px;
+      list-style: none;
+      margin: 0;
+      padding: 16px 12px;
+      border: 1px solid @colorBorder;
+      &::before {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        height: 32px;
+        width: 50%;
+        right: 0;
+      }
+      .divider {
+        height: 1px;
+        background: @colorBorder;
+        margin: 14px 0;
+      }
+      li {
+        margin: 0;
+        + li {
+          margin-top: 2px;
+        }
+      }
+      a {
+        padding: 4px 12px;
+        display: block;
+        border-radius: 6px;
+        &:hover {
+          background: @colorPrimary;
+          color: @colorOnPrimary;
+        }
+      }
+    }
+  }
+  .nav-searchbar {
+    display: flex;
+    margin-right: 24px;
+    --docsearch-searchbox-background: transparent;
+    --docsearch-searchbox-focus-background: @colorSurface4;
+    --docsearch-searchbox-shadow: none;
+    --docsearch-text-color: @colorSecondary;
+    button {
+      border: 1px solid @colorBorderStrong;
+      border-radius: 8px;
+    }
+    .DocSearch-Button-Placeholder {
+      font-size: 14px;
+      color: @colorSecondary;
+      font-weight: normal;
+    }
+    .DocSearch-Button-Keys {
+      justify-content: end;
+      display: flex;
+      align-items: center;
+      kbd {
+        display: flex;
+        color: lighten(@colorSecondary, 10%);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.05);
+        opacity: 0.85;
+        box-shadow: none;
+        padding: 1px 4px;
+        top: 0;
+        margin-right: 2px;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+  .github-buttons {
+    display: flex;
+    align-items: center;
+    .gh-forks {
+      display: none;
+    }
+    .gh-stars {
+      position: relative;
+      top: 2px;
+      margin-left: 4px;
+    }
+    a {
+      display: flex;
+      align-items: center;
+      line-height: 1;
+      color: @colorSecondary;
+      span {
+        margin-right: 2px;
+      }
+    }
+  }
+}

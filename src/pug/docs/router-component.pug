@@ -681,12 +681,14 @@ block content
 
           $on('pageInit', () => {
             // request user data on page init
-            $f7.request.get('https://api.website.com/get-user-profile').then((res) => {
-              // update user with new data
-              user = res.data;
-              // trigger re-render
-              $update();
-            });
+            fetch('https://api.website.com/get-user-profile')
+              .then((res) => res.json())
+              .then((data) => {
+                // update user with new data
+                user = data;
+                // trigger re-render
+                $update();
+              });
           })
 
           return $render;

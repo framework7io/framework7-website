@@ -2,7 +2,6 @@ import $, * as methods from 'dom7';
 import initDocsSearch from './init-docs-search';
 import initDocsDevice from './init-docs-device';
 import initDocsNav from './init-docs-nav';
-import initDocsColorForm from './init-docs-color-form';
 import initDocsTables from './init-docs-tables';
 import copyToClipboard from './copy-to-clipboard';
 import initUiInitiativeTemplates from './init-uiinititative-templates';
@@ -16,7 +15,6 @@ initDocsTables();
 initDocsSearch();
 initDocsDevice();
 initDocsNav();
-initDocsColorForm();
 initUiInitiativeTemplates();
 initUiInitiativePlugins();
 

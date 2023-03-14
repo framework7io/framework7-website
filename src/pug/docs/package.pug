@@ -98,17 +98,14 @@ block content
       // Init app
       var app = new Framework7({/*...*/});
     p Such modular structure provides best tree-shaking results and package size optimization.
-    p In addition to `default` export it has named export for `Dom7`, `request`, `getDevice`, `createStore`, `utils` and `getSupport` helpers:
+    p In addition to `default` export it has named export for `Dom7`, `getDevice`, `createStore`, `utils` and `getSupport` helpers:
     :code(lang="js")
-      import Framework7, { getDevice, request } from 'framework7';
+      import Framework7, { getDevice } from 'framework7';
 
       var app = new Framework7({/*...*/});
 
       var device = getDevice();
 
-      if (device.ios) {
-        request.get('http://google.com');
-      }
     p "Lite" module is also available:
     :code(lang="js")
       import Framework7 from 'framework7/lite';
