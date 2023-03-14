@@ -9,7 +9,7 @@ body.body-docs {
   }
 }
 .docs-page-nav {
-  border-top: 1px solid #eee;
+  border-top: 1px solid @colorBorder;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -211,12 +211,12 @@ b.ios-only {
   }
 }
 .method-wrap {
-  padding: 20px;
+  padding: 24px;
   margin: 1em -0px;
-  border-left: 3px solid #ccc;
-  background: #fafafa;
+  border-left: 4px solid @colorBorderStrong;
+  background: @colorSurface2;
   + .method-wrap {
-    margin-top: 30px;
+    margin-top: 32px;
   }
   p:first-child {
     margin-top: 0;
@@ -228,7 +228,7 @@ b.ios-only {
   .method-parameters {
     font-size: 14px;
     + .method-returns {
-      margin-top: -10px;
+      margin-top: -12px;
     }
   }
   .method-returns {
@@ -240,7 +240,7 @@ b.ios-only {
 p.method,
 span.method {
   .monospace();
-  color: #000;
+  color: #fff;
   font-weight: 500;
   span {
     color: @docsCodeRed;
@@ -257,7 +257,7 @@ ul.method-parameters {
   }
   .parameter-type {
     .monospace();
-    color: @docsCodeGreen;
+    color: @colorBlue;
     font-weight: 500;
   }
 }
@@ -287,10 +287,8 @@ ul.method-parameters {
     }
   }
   a {
-    color: #000;
-    opacity: 0.75;
     &:hover {
-      opacity: 1;
+      opacity: 0.75;
     }
   }
   ul {
@@ -309,20 +307,19 @@ ul.method-parameters {
   }
 }
 .docs-nav {
-  width: 200px;
+  width: 256px;
   margin-left: -40px;
   box-sizing: border-box;
   flex-shrink: 0;
-  background: #ffffff;
+  background: @colorSurface;
   position: relative;
   margin-top: -40px;
   margin-bottom: -40px;
-  margin-right: 30px;
+  margin-right: 40px;
   padding-top: 20px;
   padding-left: 20px;
 
   .title {
-    color: #000;
     margin-bottom: 10px;
     font-weight: 700;
     font-size: 14px;
@@ -476,7 +473,6 @@ ul.method-parameters {
     }
   }
   a {
-    color: #000;
     text-decoration: none;
     display: block;
     padding-right: 10px;
@@ -503,11 +499,7 @@ ul.method-parameters {
   display: flex !important;
 }
 .docs-nav-searchbar {
-  // position: absolute;
-  // top: 20px;
   z-index: 10;
-  // left: 20px;
-  // right: 0px;
   button {
     margin-left: 0;
     width: 100%;
@@ -615,7 +607,6 @@ ul.method-parameters {
     height: 100%;
     transform: translateX(-100%);
     width: 260px;
-    // overflow: auto;
     padding: 0;
     &.docs-nav-visible {
       transform: translateX(0%);

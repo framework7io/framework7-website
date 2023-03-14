@@ -8,6 +8,12 @@ table {
   th,
   td {
     padding: 10px 5px;
+    &:first-child {
+      padding-left: 0;
+    }
+    &:last-child {
+      padding-right: 0;
+    }
   }
   thead {
     text-align: left;
@@ -16,7 +22,7 @@ table {
   tbody {
     th,
     td {
-      border-top: 1px solid #eaeaea;
+      border-top: 1px solid @colorBorder;
     }
   }
   thead + tbody tr:first-child {
@@ -32,9 +38,11 @@ table {
 .heading-cell() {
   text-align: left;
   font-size: 14px;
-  background: #f6f6f6;
+  background: @colorSurface1;
   padding-top: 20px;
   padding-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
   small {
     font-size: 14px;
     font-weight: 500;
@@ -54,13 +62,13 @@ table.params-table {
     td:first-child:not([colspan]),
     td:nth-child(2),
     td:nth-child(3):not(:last-child) {
-      color: @docsCodeRed;
+      color: #fff;
       .monospace();
       font-weight: 500;
       font-size: var(--table-monospace-font-size);
     }
     td:nth-child(2) {
-      color: @docsCodeGreen;
+      color: @colorBlue;
     }
     td:nth-child(n + 3) {
       word-break: break-word;
@@ -110,7 +118,7 @@ table.methods-table {
   }
   tbody td:first-child:not(:last-child) {
     .monospace();
-    color: #000;
+    color: #fff;
     white-space: nowrap;
     font-weight: 500;
     font-size: var(--table-monospace-font-size);
@@ -121,7 +129,7 @@ table.methods-table {
   .parameter-type {
     .monospace();
     font-size: var(--table-monospace-font-size);
-    color: @docsCodeGreen;
+    color: @colorBlue;
   }
   ul.method-parameters {
     margin: 0;
@@ -147,7 +155,7 @@ table.methods-table {
     tbody td:first-child:not(:last-child) {
       .monospace();
       font-size: var(--table-monospace-font-size);
-      color: #000;
+      color: #fff;
       white-space: normal;
       font-weight: 500;
       span {
@@ -182,7 +190,7 @@ table.events-table {
   tbody td:first-child:not([colspan]) {
     .monospace();
     font-size: var(--table-monospace-font-size);
-    color: #000;
+    color: #fff;
     white-space: nowrap;
     font-weight: 500;
   }
@@ -195,7 +203,7 @@ table.props-table {
   tbody td:first-child {
     .monospace();
     font-size: var(--table-monospace-font-size);
-    color: #000;
+    color: #fff;
     white-space: nowrap;
     font-weight: 500;
   }
@@ -208,10 +216,10 @@ table.double-events-table {
     }
   }
   tr:nth-child(4n - 5) {
-    background: #fafafa;
+    background: @colorSurface1;
   }
   tr:nth-child(4n - 4) {
-    background: #fafafa;
+    background: @colorSurface1;
     td {
       border: none;
     }
@@ -264,11 +272,9 @@ table.double-events-table {
         font-size: 16px;
       }
       tr + tr {
-        border-top: 1px solid #eaeaea;
+        border-top: 1px solid @colorBorder;
       }
-      // td ~ td {
-      //   margin-left: 10px;
-      // }
+
       td:last-child {
         width: 100% !important;
         margin-top: 10px;

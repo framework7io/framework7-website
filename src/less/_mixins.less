@@ -1,17 +1,33 @@
-@primaryColor: #EE350F;
-@redColor: #EE350F;
-@pinkColor: #EE0F58;
-@brownColor: #80030C;
+@primaryColor: #ee350f;
+@redColor: #ee350f;
+@pinkColor: #ee0f58;
+@brownColor: #80030c;
 @darkBrownColor: #500308;
-@lightBrownColor: #A00D0F;
-@yellowColor: #FCFF00;
-@blueColor: #0D9EF1;
-@sandColor: #FCDF53;
-@docsCodeRed: #b72f20;
+@lightBrownColor: #a00d0f;
+@yellowColor: #fcff00;
+@blueColor: #0d9ef1;
+@sandColor: #fcdf53;
+@docsCodeRed: #e7bdb4;
 @docsCodeGreen: #006700;
 
+@colorLightBlue: #c1e8ff;
+@colorSecondary: #e7bdb4;
+@colorBlue: #74d1ff;
+@colorPrimary: #ffb4a4;
+@colorPrimaryContainer: #8d1600;
+@colorOnPrimary: #640d00;
+@colorSurface0: #1b1412;
+@colorSurface: #201a19;
+@colorSurface1: #2b2220;
+@colorSurface2: #322624;
+@colorSurface3: #392b28;
+@colorSurface4: #3b2c2a;
+@colorText: #ede0dd;
+@colorBorder: #534340;
+@colorBorderStrong: #a08c88;
+
 .monospace() {
-  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 .badge() {
   background: @blueColor;
@@ -47,8 +63,8 @@
   }
 }
 .solid-button() {
-  background: @redColor;
-  color: #fff;
+  background: @colorPrimary;
+  color: @colorOnPrimary;
   text-align: center;
   box-sizing: border-box;
   display: inline-flex;
@@ -61,18 +77,11 @@
   transition: 200ms;
   font-weight: bold;
   padding: 0 30px;
-  box-shadow: 0px 10px 20px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.3);
-  &:hover {
-    box-shadow: 0px 10px 20px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.5);
-  }
-  &:active {
-    box-shadow: 0px 5px 10px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.2);
-  }
 }
 .clearfix() {
   &:before,
   &:after {
-    content: " "; /* 1 */
+    content: ' '; /* 1 */
     display: table; /* 2 */
   }
   &:after {
