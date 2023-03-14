@@ -8,28 +8,25 @@
     </div>
     <div class="page-content">
       ${users.value.length > 0 ? $h`
-        <div class="list">
-          <ul>
-            ${users.value.map((user) => $h`
-            <li class="item-content">
-              <div class="item-inner">
-                <div class="item-title">${user}</div>
-              </div>
-            </li>
-            `)}
-          </ul>
-        </div>
+      <div class="list list-strong list-outline-ios list-dividers-ios inset-md">
+        <ul>
+          ${users.value.map((user) => $h`
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title">${user}</div>
+            </div>
+          </li>
+          `)}
+        </ul>
+      </div>
       ` : $h`
-        <div class="block block-strong">
-          <a
-            href="#"
-            class="button button-fill button-preloader ${loading.value ? 'button-loading' : ''}"
-            @click=${loadUsers}
-          >
-            <span class="preloader"></span>
-            <span>Load Users</span>
-          </a>
-        </div>
+      <div class="block block-strong block-outline-ios inset-md">
+        <a href="#" class="button button-fill button-round button-preloader ${loading.value ? 'button-loading' : ''}"
+          @click=${loadUsers}>
+          <span class="preloader"></span>
+          <span>Load Users</span>
+        </a>
+      </div>
       `}
     </div>
   </div>

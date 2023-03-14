@@ -97,19 +97,23 @@ function buildPages(
 
   console.log(`Starting pug: ${name}`);
 
+  const sep = path.sep;
+  if (sep === '\\' && name !== 'all') {
+    dest = `${dest.split('public\\')[0]}public\\`;
+  }
   gulp
     .src(src, { cwd: 'src/pug' })
     .pipe(
       gulpData((file) => {
         if (file.path) {
-          if (file.path.includes('pug/docs/'))
-            docs.push(file.path.split('pug/docs/')[1].split('.pug')[0]);
-          if (file.path.includes('pug/vue/'))
-            vue.push(file.path.split('pug/vue/')[1].split('.pug')[0]);
-          if (file.path.includes('pug/react/'))
-            react.push(file.path.split('pug/react/')[1].split('.pug')[0]);
-          if (file.path.includes('pug/svelte/'))
-            svelte.push(file.path.split('pug/svelte/')[1].split('.pug')[0]);
+          if (file.path.includes(`pug${sep}docs${sep}`))
+            docs.push(file.path.split(`pug${sep}docs${sep}`)[1].split('.pug')[0]);
+          if (file.path.includes(`pug${sep}vue${sep}`))
+            vue.push(file.path.split(`pug${sep}vue${sep}`)[1].split('.pug')[0]);
+          if (file.path.includes(`pug${sep}react${sep}`))
+            react.push(file.path.split(`pug${sep}react${sep}`)[1].split('.pug')[0]);
+          if (file.path.includes(`pug${sep}svelte${sep}`))
+            svelte.push(file.path.split(`pug${sep}svelte${sep}`)[1].split('.pug')[0]);
         }
         return { srcFileUrl: getSrcFileUrl(file) };
       }),

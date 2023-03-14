@@ -30,80 +30,67 @@ block content
   .docs-content
     +improveDocsLink
     h1 Color Properties
-    ul.docs-index
-    .with-device
-      h2 Color Properties
-      p <b>All Framework7 Svelte components</b> supports same set of color properties that allow to set separate element colors and color themes:
+    p <b>All Framework7 Svelte components</b> supports same set of color properties that allow to set separate element colors and color themes:
 
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td color
-            td string
-            td
-            td Single element color. One of the default colors.
-          tr
-            td colorTheme
-            td string
-            td
-            td Applies color theme to the element. It should be some parent element as this will have visual effect on all supported children elements, e.g. view, page, navbar, toolbar, list, etc. One of the default colors.
-          tr
-            td textColor
-            td string
-            td
-            td Sets element's text color. One of the default colors.
-          tr
-            td bgColor
-            td string
-            td
-            td Sets element's background color. One of the default colors.
-          tr
-            td borderTheme
-            td string
-            td
-            td Sets element's borders color. One of the default colors.
-          tr
-            td rippleColor
-            td string
-            td
-            td Sets element ripple wave color. One of the default colors.
-          tr
-            td dark
-            td boolean
-            td false
-            td Enables dark layout theme on element. It should be some parent element as this will have visual effect on all supported children elements, e.g. view, page, navbar, toolbar, list, etc.
-      p For example:
-      :code(lang="html")
-        <!-- Button color -->
-        <Button color="red">Red Button</Button>
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td color
+          td string
+          td
+          td Single element color. One of the default colors.
+        tr
+          td colorTheme
+          td string
+          td
+          td Applies color theme to the element. It should be some parent element as this will have visual effect on all supported children elements, e.g. view, page, navbar, toolbar, list, etc. One of the default colors.
+        tr
+          td textColor
+          td string
+          td
+          td Sets element's text color. One of the default colors.
+        tr
+          td bgColor
+          td string
+          td
+          td Sets element's background color. One of the default colors.
+        tr
+          td borderTheme
+          td string
+          td
+          td Sets element's borders color. One of the default colors.
+        tr
+          td rippleColor
+          td string
+          td
+          td Sets element ripple wave color. One of the default colors.
+        tr
+          td dark
+          td boolean
+          td false
+          td Enables dark layout theme on element. It should be some parent element as this will have visual effect on all supported children elements, e.g. view, page, navbar, toolbar, list, etc.
+    p For example:
+    :code(lang="html")
+      <!-- Button color -->
+      <Button color="red">Red Button</Button>
 
-        <!-- Link color -->
-        <Link color="green">Green Link</Link>
+      <!-- Link color -->
+      <Link color="green">Green Link</Link>
 
-        <!-- Page color theme -->
-        <Page colorTheme="orange">
-          ...
-        </Page>
+      <!-- Page color theme -->
+      <Page colorTheme="orange">
+        ...
+      </Page>
 
-        <!-- Panel with dark theme -->
-        <Panel dark>
-          ...
-        </Panel>
+      <!-- Panel with dark theme -->
+      <Panel dark>
+        ...
+      </Panel>
 
-      h2 Supported Colors
-      table
-        tbody
-          each color, key in colors
-            tr
-              td
-                b=key
-              td
-                div.color-example(style=`background-color: ${color}`)
-                div
-                  b=color
+    +examplePreview('svelte', 'color-themes.svelte', 'color-themes')

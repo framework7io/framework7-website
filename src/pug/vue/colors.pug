@@ -31,80 +31,68 @@ block content
   .docs-content
     +improveDocsLink
     h1 Color Properties
-    ul.docs-index
-    .with-device
-      h2 Color Properties
-      p <b>All Framework7-Vue components</b> supports same set of color properties that allow to set separate element colors and color themes:
+    p <b>All Framework7-Vue components</b> supports same set of color properties that allow to set separate element colors and color themes:
 
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td color
-            td string
-            td
-            td Single element color. One of the default colors.
-          tr
-            td color-theme
-            td string
-            td
-            td Applies color theme to the element. It should be some parent element as this will have visual effect on all supported children elements, e.g. view, page, navbar, toolbar, list, etc. One of the default colors.
-          tr
-            td text-color
-            td string
-            td
-            td Sets element's text color. One of the default colors.
-          tr
-            td bg-color
-            td string
-            td
-            td Sets element's background color. One of the default colors.
-          tr
-            td border-theme
-            td string
-            td
-            td Sets element's borders color. One of the default colors.
-          tr
-            td ripple-color
-            td string
-            td
-            td Sets element ripple wave color. One of the default colors.
-          tr
-            td dark
-            td boolean
-            td false
-            td Enables dark layout theme on element. It should be some parent element as this will have visual effect on all supported children elements, e.g. view, page, navbar, toolbar, list, etc.
-      p For example:
-      :code(lang="html")
-        <!-- Button color -->
-        <f7-button color="red">Red Button</f7-button>
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td color
+          td string
+          td
+          td Single element color. One of the default colors.
+        tr
+          td color-theme
+          td string
+          td
+          td Applies color theme to the element. It should be some parent element as this will have visual effect on all supported children elements, e.g. view, page, navbar, toolbar, list, etc. One of the default colors.
+        tr
+          td text-color
+          td string
+          td
+          td Sets element's text color. One of the default colors.
+        tr
+          td bg-color
+          td string
+          td
+          td Sets element's background color. One of the default colors.
+        tr
+          td border-theme
+          td string
+          td
+          td Sets element's borders color. One of the default colors.
+        tr
+          td ripple-color
+          td string
+          td
+          td Sets element ripple wave color. One of the default colors.
+        tr
+          td dark
+          td boolean
+          td false
+          td Enables dark layout theme on element. It should be some parent element as this will have visual effect on all supported children elements, e.g. view, page, navbar, toolbar, list, etc.
+    p For example:
+    :code(lang="html")
+      <!-- Button color -->
+      <f7-button color="red">Red Button</f7-button>
 
-        <!-- Link color -->
-        <f7-link color="green">Green Link</f7-link>
+      <!-- Link color -->
+      <f7-link color="green">Green Link</f7-link>
 
-        <!-- Page color theme -->
-        <f7-page color-theme="orange">
-          ...
-        </f7-page>
+      <!-- Page color theme -->
+      <f7-page color-theme="orange">
+        ...
+      </f7-page>
 
-        <!-- Panel with dark theme -->
-        <f7-panel dark>
-          ...
-        </f7-panel>
+      <!-- Panel with dark theme -->
+      <f7-panel dark>
+        ...
+      </f7-panel>
 
-      h2 Supported Colors
-      table
-        tbody
-          each color, key in colors
-            tr
-              td
-                b=key
-              td
-                div.color-example(style=`background-color: ${color}`)
-                div
-                  b=color
+    +examplePreview('vue', 'color-themes.vue', 'color-themes')
+

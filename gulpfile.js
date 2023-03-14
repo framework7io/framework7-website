@@ -34,41 +34,56 @@ gulp.task('watch', () => {
   gulp.watch('./src/js/**/*.*', gulp.series(['js']));
   gulp.watch('./src/less/**/*.*', gulp.series(['less']));
   gulp.watch('./src/pug/**/*.pug', { events: ['change'] }).on('change', (changedPath) => {
-    const filePath = changedPath.split('src/pug/')[1];
-    if (filePath.indexOf('docs-demos/svelte') >= 0) return;
+    const sep = String(path.sep);
+    const filePath = changedPath.split(`src${sep}pug${sep}`)[1];
+    if (filePath.indexOf(`docs-demos${sep}svelte`) >= 0) return;
     if (filePath.indexOf('_') === 0 || filePath.indexOf('_layout.pug') >= 0) {
       buildPages();
       return;
     }
     const src = [];
 
-    if (filePath.split('/')[1] && filePath.split('/')[1].indexOf('_') === 0) {
-      src.push(`${filePath.split('/')[0]}/*.pug`);
-      src.push(`!${filePath.split('/')[0]}/_*.pug`);
+    if (filePath.split(sep)[1] && filePath.split(sep)[1].indexOf('_') === 0) {
+      src.push(`${filePath.split(sep)[0]}${sep}*.pug`);
+      src.push(`!${filePath.split(sep)[0]}${sep}_*.pug`);
     } else {
       src.push(filePath);
     }
     const dest =
-      filePath.split('/')[0] === filePath ? './public/' : `./public/${path.parse(filePath).dir}`;
+      filePath.split(sep)[0] === filePath
+        ? `.${sep}public${sep}`
+        : `.${sep}public${sep}${path.parse(filePath).dir}`;
     buildPages(null, {
       src,
       dest,
     });
   });
   gulp.watch('./src/pug/**/*.f7.html', { events: ['change'] }).on('change', (changedPath) => {
-    const name = changedPath.split('src/pug/docs-demos/core/')[1].split('.f7.html')[0];
+    const sep = String(path.sep);
+    const name = changedPath
+      .split(`src${sep}pug${sep}docs-demos${sep}core${sep}`)[1]
+      .split('.f7.html')[0];
     buildCoreDemos.one(name);
   });
   gulp.watch('./src/pug/**/*.svelte', { events: ['change'] }).on('change', (changedPath) => {
-    const name = changedPath.split('src/pug/docs-demos/svelte/')[1].split('.svelte')[0];
+    const sep = String(path.sep);
+    const name = changedPath
+      .split(`src${sep}pug${sep}docs-demos${sep}svelte${sep}`)[1]
+      .split('.svelte')[0];
     buildSvelteDemos.one(name);
   });
   gulp.watch('./src/pug/**/*.vue', { events: ['change'] }).on('change', (changedPath) => {
-    const name = changedPath.split('src/pug/docs-demos/vue/')[1].split('.vue')[0];
+    const sep = String(path.sep);
+    const name = changedPath
+      .split(`src${sep}pug${sep}docs-demos${sep}vue${sep}`)[1]
+      .split('.vue')[0];
     buildVueDemos.one(name);
   });
   gulp.watch('./src/pug/**/*.jsx', { events: ['change'] }).on('change', (changedPath) => {
-    const name = changedPath.split('src/pug/docs-demos/react/')[1].split('.jsx')[0];
+    const sep = String(path.sep);
+    const name = changedPath
+      .split(`src${sep}pug${sep}docs-demos${sep}react${sep}`)[1]
+      .split('.jsx')[0];
     buildReactDemos.one(name);
   });
 });

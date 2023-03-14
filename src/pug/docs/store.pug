@@ -274,37 +274,36 @@ block content
         }
       </script>
 
-    .with-device
-      h2 Examples
-      :code(lang="js")
-        import { createStore } from 'store';
+    h2 Examples
+    :code(lang="js")
+      import { createStore } from 'store';
 
-        const store = createStore({
-          state: {
-            loading: false,
-            users: [],
+      const store = createStore({
+        state: {
+          loading: false,
+          users: [],
+        },
+        actions: {
+          getUsers({ state }) {
+            state.loading = true;
+            setTimeout(() => {
+              state.users = ['User 1', 'User 2', 'User 3', 'User 4', 'User 5'];
+              state.loading = false;
+            }, 3000);
           },
-          actions: {
-            getUsers({ state }) {
-              state.loading = true;
-              setTimeout(() => {
-                state.users = ['User 1', 'User 2', 'User 3', 'User 4', 'User 5'];
-                state.loading = false;
-              }, 3000);
-            },
+        },
+        getters: {
+          loading({ state }) {
+            return state.loading;
           },
-          getters: {
-            loading({ state }) {
-              return state.loading;
-            },
-            users({ state }) {
-              return state.users;
-            },
+          users({ state }) {
+            return state.users;
           },
-        });
+        },
+      });
 
-        export default store;
-      +examplePreview('core', 'store_page.f7.html', 'store')
+      export default store;
+    +examplePreview('core', 'store_page.f7.html', 'store')
 
 
 
