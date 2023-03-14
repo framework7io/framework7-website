@@ -3,9 +3,7 @@
   position: relative;
   box-sizing: border-box;
   position: relative;
-  color: #000;
   z-index: 1;
-  background: #fff;
   .mobile-preview-button {
     display: none;
   }
@@ -76,6 +74,7 @@
       text-align: center;
       font-weight: 500;
       font-size: 16px;
+      color: @colorPrimary;
       + a {
         margin-left: 15px;
       }
@@ -86,17 +85,17 @@
   }
   .phone {
     flex-shrink: 0;
-    box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.2);
     width: 320px + 24px;
     height: 680px + 24px;
     padding: 12px;
     border-radius: 54px;
-    background: #000;
+    background: @colorSurface4;
     align-self: center;
     margin-left: 60px;
     position: relative;
     margin-right: -10px;
     box-sizing: border-box;
+    border: 1px solid @colorBorder;
     &.ios {
       &::before {
         content: '';
@@ -213,7 +212,6 @@
   .release-info {
     font-size: 12px;
     margin-top: auto;
-    color: rgba(0, 0, 0, 0.7);
     a {
       color: inherit;
       text-decoration: none;

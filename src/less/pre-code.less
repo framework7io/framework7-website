@@ -3,37 +3,41 @@
 // @codeComment: #536E7B;
 @codeComment: #6c8e9e;
 @codeMeta: #aaa;
-@codeOrange: #F98C68;
-@codeRed: #F27076;
-@codeYellow: #FFCC63;
-@codeGreen: #C2E988;
-@codeLightBlue: #86DDFF;
-@codeBlue: #80A8FF;
-@codePurple: #C88FEC;
-@codePink: #FF506E;
-@codeGray: #B1CCD7;
+@codeOrange: #f98c68;
+@codeRed: #f27076;
+@codeYellow: #ffcc63;
+@codeGreen: #c2e988;
+@codeLightBlue: #86ddff;
+@codeBlue: #80a8ff;
+@codePurple: #c88fec;
+@codePink: #ff506e;
+@codeGray: #b1ccd7;
 
 :root {
   --pre-code-padding: 20px;
   --pre-code-line-height: 20px;
   --pre-code-font-size: 13.5px;
-  --pre-code-border-radius: 4px;
+  --pre-code-border-radius: 8px;
 }
 
-pre, code {
+pre,
+code {
   .monospace();
 }
 code {
   font-size: 14px;
-  color: #333;
   font-weight: normal;
-  background: rgba(0,0,0,0.05);
-  color: #000;
+  background: rgba(0, 0, 0, 0.05);
+  color: @colorLightBlue;
   display: inline-flex;
   word-break: break-word;
-  padding: 0px 4px;
-  border-radius: 4px;
   font-weight: 500;
+}
+code:not([class]) {
+  &::before,
+  &::after {
+    content: '`';
+  }
 }
 a {
   code {
@@ -41,13 +45,17 @@ a {
     display: inline;
   }
 }
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   code {
     font-size: inherit;
     font-weight: bold;
   }
 }
-b, strong {
+b,
+strong {
   code {
     font-weight: bold;
   }
@@ -56,9 +64,10 @@ pre {
   overflow: hidden;
   word-wrap: break-word;
   white-space: pre-wrap;
+  margin: 32px 0;
   code {
     padding: var(--pre-code-padding);
-    background: @codeBg;
+    background: @colorSurface1;
     display: block;
     color: @codeMain;
     display: block;
@@ -73,18 +82,9 @@ pre {
   white-space: nowrap;
 }
 
-.important-note {
-  code {
-    background: rgba(255,255,255,0.8);
-  }
-  pre code {
-    background: @codeBg;
-  }
-}
 .important-note pre code,
 table pre code {
   --pre-code-padding: 8px;
-  --pre-code-border-radius: 4px;
 }
 table pre {
   &:first-child {
@@ -124,7 +124,7 @@ code {
   &.svelte .tag .token.language-javascript {
     color: #fff;
   }
-  .spread  {
+  .spread {
     color: #fff;
   }
   .attr-value {
@@ -137,7 +137,8 @@ code {
     color: @codeComment;
     font-style: italic;
   }
-  .number, .boolean {
+  .number,
+  .boolean {
     color: @codeOrange;
   }
   .constant {
