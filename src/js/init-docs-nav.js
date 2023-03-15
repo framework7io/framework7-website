@@ -1,12 +1,5 @@
 import $ from 'dom7';
 
-function handleNavToggleScroll() {
-  const st = window.scrollY;
-
-  const pos = Math.max(64 - st, 0);
-  $('.docs-nav-toggle').transform(`translateY(${pos}px)`);
-  $('.docs-nav-toggle').css({ opacity: 1 });
-}
 function findPrevLink(current) {
   let prev = current.prev('li');
   if (!prev.length) {
@@ -71,8 +64,13 @@ export default function initDocsNav() {
         $(this).addClass('active').parent('li').addClass('active');
       }
     });
-    $('.docs-nav-toggle').click(() => {
+    $('.docs-nav-toggle, .docs-nav-backdrop').click(() => {
       $('.docs-nav').toggleClass('docs-nav-visible');
+      if ($('.docs-nav').hasClass('docs-nav-visible')) {
+        $('nav').css('z-index', 10);
+      } else {
+        $('nav').css('z-index', '');
+      }
     });
 
     if ($activeListItem && $activeListItem.length) {
@@ -103,10 +101,5 @@ export default function initDocsNav() {
         `);
       }
     }
-
-    $(window).on('resize scroll', () => {
-      handleNavToggleScroll();
-    });
-    handleNavToggleScroll();
   }
 }

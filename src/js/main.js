@@ -6,6 +6,7 @@ import initDocsTables from './init-docs-tables';
 import copyToClipboard from './copy-to-clipboard';
 import initUiInitiativeTemplates from './init-uiinititative-templates';
 import initUiInitiativePlugins from './init-uiinititative-plugins';
+import initExamplePreview from './init-example-preview';
 
 Object.keys(methods).forEach((key) => {
   $.fn[key] = methods[key];
@@ -17,6 +18,7 @@ initDocsDevice();
 initDocsNav();
 initUiInitiativeTemplates();
 initUiInitiativePlugins();
+initExamplePreview();
 
 function trackOutboundClick(url, category) {
   if (!window.ga || !url) return;
@@ -33,10 +35,10 @@ $('a').on('click', function onClick() {
 
 // Mobile nav
 $('.nav-toggle').on('click', () => {
-  $('.nav-menu').addClass('visible');
+  $('.nav-menu').addClass('nav-menu-visible');
 });
 $('.nav-menu-backdrop').on('click', () => {
-  $('.nav-menu').removeClass('visible');
+  $('.nav-menu').removeClass('nav-menu-visible');
 });
 
 // Shuffle footer sponsors

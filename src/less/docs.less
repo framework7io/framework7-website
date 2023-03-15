@@ -114,12 +114,13 @@ body.body-docs {
   position: absolute;
   right: 20px;
   top: 0;
-  background: black;
+  background: @colorSurface4;
   z-index: 1000;
   margin-top: 40px;
-  padding: 12px;
-  border-radius: 32px;
+  padding: 8px;
+  border-radius: 24px;
   backface-visibility: hidden;
+  border: 1px solid @colorBorder;
 
   iframe {
     width: 320px;
@@ -157,21 +158,21 @@ body.body-docs {
   .docs-demo-device-mode-buttons {
     font-size: 0;
     white-space: nowrap;
-    background: rgba(0, 0, 0, 0.075);
-    border-radius: 4px;
-    padding: 4px;
+    background: @colorBorder;
+    border-radius: 8px;
+    padding: 2px;
     a {
       padding-top: 4px;
       padding-bottom: 4px;
       width: 48px;
       text-align: center;
-      color: #777;
+      color: @colorOnSurfaceVariant;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       cursor: pointer;
-      border-radius: 4px;
+      border-radius: 6px;
       text-decoration: none;
       + a {
         margin-left: 2px;
@@ -181,11 +182,11 @@ body.body-docs {
       }
 
       &:hover {
-        background: rgba(red(@redColor), green(@redColor), blue(@redColor), 0.2);
+        background: rgba(red(@colorPrimary), green(@colorPrimary), blue(@colorPrimary), 0.1);
       }
       &.active {
-        background-color: @redColor;
-        color: #fff;
+        background-color: @colorPrimary;
+        color: @colorOnPrimary;
       }
     }
   }
@@ -477,12 +478,7 @@ ul.method-parameters {
     }
   }
 }
-.DocSearch-Container {
-  z-index: 3000 !important;
-}
-.DocSearch-Button-Placeholder {
-  display: flex !important;
-}
+
 .docs-nav-searchbar {
   z-index: 10;
   button {
@@ -493,27 +489,35 @@ ul.method-parameters {
     right: 20px;
   }
 }
-.docs-nav-toggle {
-  opacity: 0;
+.docs-nav-backdrop {
   position: absolute;
+  left: 0;
   top: 0;
-  left: 100%;
-  background: @redColor;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  display: none;
+}
+.docs-nav-toggle {
+  position: absolute;
+  bottom: 24px;
+  left: calc(100% + 100vw - 44px - 24px);
+  background: @colorPrimary;
   cursor: pointer;
   width: 44px;
   height: 44px;
   z-index: 100;
+  border-radius: 999px;
 
   span {
     display: block;
-    height: 3px;
-    width: 60%;
-    background: #fff;
+    height: 2px;
+    width: 20px;
+    background: @colorOnPrimary;
     position: relative;
-    border-radius: 4px;
-    top: 12px;
-    left: 20%;
-    transition: 300ms;
+    top: 14px;
+    left: 50%;
+    margin-left: -10px;
     + span {
       margin-top: 4px;
     }
@@ -525,15 +529,7 @@ ul.method-parameters {
     transform-origin: left bottom;
   }
   .docs-nav-visible & {
-    span:first-child {
-      transform: translate(15%, -2px) rotate(45deg);
-    }
-    span:last-child {
-      transform: translate(15%, 1px) rotate(-45deg);
-    }
-    span:nth-child(2) {
-      opacity: 0;
-    }
+    display: none;
   }
 }
 .improve-docs-link {
@@ -564,17 +560,19 @@ ul.method-parameters {
   .docs-nav-toggle {
     display: none;
   }
+  .docs-nav-backdrop {
+    display: none;
+  }
   .docs-nav {
     position: sticky;
     overflow: auto;
     top: 0;
     max-height: 100vh;
+    .scrollbar();
   }
 }
 @media (max-width: 960px) {
   .docs-nav {
-    transition-duration: 300ms;
-    transition-property: transform, box-shadow;
     z-index: 1000;
     margin: 0;
     position: fixed;
@@ -582,17 +580,20 @@ ul.method-parameters {
     top: 0;
     height: 100%;
     transform: translateX(-100%);
-    width: 260px;
     padding: 0;
     &.docs-nav-visible {
       transform: translateX(0%);
       box-shadow: 20px 0 50px rgba(0, 0, 0, 0.3);
+      .docs-nav-backdrop {
+        display: block;
+      }
     }
     .docs-nav-content {
       overflow: auto;
       height: 100%;
       padding-right: 20px;
       padding: 20px 20px 0 20px;
+      .scrollbar();
     }
   }
 }
@@ -623,18 +624,10 @@ ul.method-parameters {
     align-items: center;
     flex-wrap: wrap;
     a {
-      font-size: 14px;
-      color: #fff;
-      display: inline-flex;
-      align-items: center;
-      align-content: center;
-      background: @redColor;
-      margin-right: 10px;
-      margin-bottom: 10px;
-      padding: 4px 12px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-weight: 500;
+      .button();
+    }
+    a + a {
+      margin-left: 16px;
     }
     .mobile-preview-ios,
     .mobile-preview-md {

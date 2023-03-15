@@ -22,7 +22,7 @@
     cursor: pointer;
     img {
       max-width: 100%;
-      box-shadow: 0px 10px 30px rgba(0,0,0,0.1);
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
     }
     &.app-icon-rounded {
       img {
@@ -31,23 +31,27 @@
     }
     &.app-icon-bordered {
       img {
-        border: 1px solid rgba(0,0,0,0.1);
+        border: 1px solid rgba(0, 0, 0, 0.1);
       }
     }
   }
   .app-icon:hover {
     img {
-      box-shadow: 0px 40px 80px rgba(0,0,0,0.1);
+      box-shadow: 0px 40px 80px rgba(0, 0, 0, 0.1);
       transform: scale(1.05);
     }
     ~ .app-info {
-      h4, .app-author {
+      h4,
+      .app-author {
         transform: translateY(10px);
       }
     }
   }
 
-  .app-about, .app-links, .app-show-shots, .app-shots {
+  .app-about,
+  .app-links,
+  .app-show-shots,
+  .app-shots {
     display: none;
   }
   h4 {
@@ -64,7 +68,7 @@
   position: fixed;
   left: 0;
   top: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   width: 100%;
   height: 100%;
   z-index: 900;
@@ -83,7 +87,7 @@
   height: 600px;
   max-height: 90%;
   max-width: 90%;
-  box-shadow: 0px 30px 60px rgba(0,0,0,0.4);
+  box-shadow: 0px 30px 60px rgba(0, 0, 0, 0.4);
   animation: showcase-app-preview-in 200ms forwards;
   .showcase-app-preview-close {
     position: absolute;
@@ -96,10 +100,10 @@
     border-radius: 50%;
     box-sizing: border-box;
     &:hover {
-      &:after, &:before {
+      &:after,
+      &:before {
         transform: scale(1.2);
       }
-
     }
     &:after {
       content: '';
@@ -142,7 +146,7 @@
     }
     &.app-icon-bordered {
       img {
-        border: 1px solid rgba(0,0,0,0.1);
+        border: 1px solid rgba(0, 0, 0, 0.1);
       }
     }
   }
@@ -164,10 +168,13 @@
       width: 600px/4;
       padding: 0;
       text-align: center;
-      font-weight: bold;
     }
   }
-  .appstore-button, .firefox-button, .googleplay-button, .amazon-button, .chrome-button {
+  .appstore-button,
+  .firefox-button,
+  .googleplay-button,
+  .amazon-button,
+  .chrome-button {
     width: 600px/4;
     height: 180px/4;
     display: inline-block;
@@ -202,13 +209,15 @@
     -webkit-overflow-scrolling: touch;
     white-space: nowrap;
     display: none;
-    img, iframe {
+    img,
+    iframe {
       max-height: 568px;
       margin-right: 10px;
       display: inline-block;
       vertical-align: top;
     }
-    img:last-child, iframe:last-child {
+    img:last-child,
+    iframe:last-child {
       margin-right: 0;
     }
   }
@@ -226,7 +235,6 @@
       width: 100% / 3;
     }
   }
-
 }
 @media (max-width: 800px) {
   .showcase-apps {
@@ -290,7 +298,8 @@
       h3 {
         margin: 0;
       }
-      h3, .app-author {
+      h3,
+      .app-author {
         margin-left: 100px;
       }
     }
@@ -316,10 +325,10 @@
 @keyframes showcase-app-preview-in {
   from {
     opacity: 0.8;
-    transform: translate3d(-50%,-45%,0);
+    transform: translate3d(-50%, -45%, 0);
   }
   to {
     opacity: 1;
-    transform: translate3d(-50%,-50%,0);
+    transform: translate3d(-50%, -50%, 0);
   }
 }

@@ -99,23 +99,23 @@ module.exports = (framework, src, url = '') => {
           </a>
         </div>
         <div class="example-preview-buttons-group">
-          <button class="example-preview-button-active"
+          <button class="example-preview-button-active" data-theme="ios"
           >
-            iOS
+            <i class="f7-icons">logo_apple</i>
           </button>
-          <button
+          <button data-theme="md"
           >
-            MD
+            <i class="f7-icons">logo_android</i>
           </button>
         </div>
         <div class="example-preview-buttons-group">
-          <button class="example-preview-button-active"
+          <button class="example-preview-button-active" data-mode="light"
           >
-            Light
+            <i class="f7-icons">sun_max_fill</i>
           </button>
-          <button
+          <button data-mode="dark"
           >
-            Dark
+            <i class="f7-icons">moon_fill</i>
           </button>
         </div>
       </div>

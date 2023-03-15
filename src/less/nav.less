@@ -7,6 +7,7 @@ nav {
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
+  z-index: 1010;
   .nav-left,
   .nav-left a,
   .nav-right {
@@ -118,6 +119,12 @@ nav {
       border: 1px solid @colorBorderStrong;
       border-radius: 8px;
     }
+    .DocSearch-Container {
+      z-index: 3000 !important;
+    }
+    .DocSearch-Button-Placeholder {
+      display: flex !important;
+    }
     .DocSearch-Button-Placeholder {
       font-size: 14px;
       color: @colorSecondary;
@@ -186,7 +193,7 @@ nav {
     .nav-searchbar {
       margin-right: 12px;
     }
-    .nav-menu:not(.visible) {
+    .nav-menu:not(.nav-menu-visible) {
       display: none;
       + .nav-menu-backdrop {
         display: none;
@@ -194,6 +201,8 @@ nav {
     }
     .nav-menu {
       overflow: auto;
+      .scrollbar();
+      box-shadow: -20px 0 50px rgba(0, 0, 0, 0.3);
       position: fixed;
       right: 0;
       top: 0;

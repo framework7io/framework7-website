@@ -23,6 +23,8 @@
 @colorSurface3: #392b28;
 @colorSurface4: #3b2c2a;
 @colorText: #ede0dd;
+@colorOnSurfaceVariant: #d8c2bd;
+@colorSurfaceVariant: #534340;
 @colorBorder: #534340;
 @colorBorderStrong: #a08c88;
 
@@ -61,19 +63,21 @@
   }
 }
 .button() {
+  background: @colorPrimary;
+  color: @colorOnPrimary;
   border-radius: 10em;
   display: inline-block;
   transition: 200ms;
-  background-color: #f3f3f3;
-  color: #333;
   text-decoration: none;
+  font-weight: bold;
+  padding: 0 12px;
+  font-size: 14px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   &:hover {
-    background: @redColor;
-    color: #fff;
-  }
-  &:active {
-    background: @redColor;
-    color: #fff;
+    background: darken(@colorPrimary, 10%);
   }
 }
 .solid-button() {
@@ -90,7 +94,10 @@
   border-radius: 44px;
   transition: 200ms;
   font-weight: bold;
-  padding: 0 30px;
+  padding: 0 24px;
+  &:hover {
+    background: darken(@colorPrimary, 10%);
+  }
 }
 .clearfix() {
   &:before,
