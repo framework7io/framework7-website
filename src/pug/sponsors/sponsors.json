@@ -1,5 +1,25 @@
 [
   {
+    "createdAt": "2023-03-15T20:00:00.000Z",
+    "title": "Get Free Instagram Likes | Soc-Promotion",
+    "link": "https://soc-promotion.com/free-instagram-likes",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/soc-promotion-free-likes",
+    "image": "soc-promotion.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2023-03-15T20:00:00.000Z",
+    "title": "Обзор лицензионных казино в Украине",
+    "link": "https://sloto-top.com/casino",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/slototop",
+    "image": "slototop.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2023-03-13T20:00:00.000Z",
     "title": "Огляд найкращих казино в Україні",
     "link": "https://thesportsgeek.com/",
@@ -610,7 +630,7 @@
   },
   {
     "createdAt": "2021-06-16T12:30:28.011Z",
-    "active": false,
+    "active": true,
     "title": "VPN for Firefox to Make the Internet a Better Place",
     "link": "https://veepn.com/vpn-apps/vpn-for-firefox/",
     "plan": "topSupporter",
