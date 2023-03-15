@@ -14,8 +14,10 @@ html
     meta(name="twitter:image", content="https://framework7.io/i/share-banner.jpg")
     meta(name="theme-color" content="#ee350f")
     link(rel="shortcut icon" href="/i/favicon.png")
-    link(rel="preconnect" href="https://fonts.gstatic.com")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3")
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet")
     link(rel="stylesheet", href="/css/main.css")
   body.body-docs
     include _nav
@@ -31,4 +33,3 @@ html
         block docs-index
     include _footer
     include _footer-scripts
-    block scripts

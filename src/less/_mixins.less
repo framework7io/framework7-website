@@ -46,18 +46,16 @@
   font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 .badge() {
-  background: @blueColor;
-  display: inline-block;
+  background: @colorSurfaceVariant;
+  padding: 4px 6px;
+  color: @colorBlue;
+  display: block;
   text-align: center;
   box-sizing: border-box;
-  min-width: 24px;
-  color: #fff;
   font-size: 12px;
   font-weight: bold;
-  line-height: 18px;
-  height: 18px;
-  border-radius: 9px;
-  padding: 0 5px;
+  line-height: 1;
+  border-radius: 6px;
   + span {
     margin-left: 5px;
   }

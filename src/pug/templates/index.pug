@@ -14,27 +14,27 @@ block content
         .img(style="background-color: #ee350f; color: #fff") Framework7 CLI
       .app-info
         .app-title Framework7 CLI
+        .app-description Official Framework7 CLI provides flexible and up to date way to start app development
         .app-buttons
           a(href="/cli/") Documentation
-        .app-description Official Framework7 CLI provides flexible and up to date way to start app development
     .app
       a.app-icon(href="https://wappler.io", target="_blank")
         .img(style="background-color: #fff;")
           img(src='/i/sponsors/wappler.png')
       .app-info
         .app-title Wappler
+        .app-description Visual Web App Creator, offers full visual Framework7 builder
         .app-buttons
           a(href="https://wappler.io", target="_blank") Learn More
-        .app-description Visual Web App Creator, offers full visual Framework7 builder
     .app
       a.app-icon(href="https://www.thoriumbuilder.com/", target="_blank")
         .img(style="background-color: #fff;")
           img(src='/i/templates/thorium.png')
       .app-info
         .app-title Thorium Builder
+        .app-description Native macOs app - full visual Framework7 app builder
         .app-buttons
           a(href="https://www.thoriumbuilder.com/", target="_blank") Learn More
-        .app-description Native macOs app - full visual Framework7 app builder
   h2.text-align-center UI Initiative Templates
   p.text-align-center Premium Framework7 app templates from <a href="https://uiinitiative.com" target="_blank">UI Initiative</a>
   .apps.templates.uiinitiative-apps.uiinitiative-templates
@@ -43,7 +43,7 @@ block content
     .apps.templates
       each app in templates.official
         .app
-          a.app-icon(href=app.url, target="_blank", data-hover-text="Source")
+          a.app-icon(href=app.url, target="_blank")
             if (app.iconUrl)
               img(src=app.iconUrl.replace('#{cdn}', cdn))
             else if (app.icon)
@@ -57,17 +57,17 @@ block content
             .app-title #{app.title}
             if app.author
               .app-author by <a href="#{app.author.url}" target="_blank">#{app.author.name}</a>
+            .app-description #{app.description}
             .app-buttons
               a(href=app.url, target="_blank") Source
               if app.previewUrl
                 a(href=app.previewUrl, target="_blank") Preview
-            .app-description #{app.description}
 
   h2.text-align-center Community Starter Apps & Templates
   .apps.templates
     each app in templates.community
       .app
-        a.app-icon(href=app.url, target="_blank", data-hover-text="Source")
+        a.app-icon(href=app.url, target="_blank")
           if (app.iconUrl)
             img(src=app.iconUrl.replace('#{cdn}', cdn))
           else if (app.icon)
@@ -81,8 +81,8 @@ block content
           .app-title #{app.title}
           if app.author
             .app-author by <a href="#{app.author.url}" target="_blank">#{app.author.name}</a>
+          .app-description #{app.description}
           .app-buttons
             a(href=app.url, target="_blank") Source
             if app.previewUrl
               a(href=app.previewUrl, target="_blank") Preview
-          .app-description #{app.description}

@@ -2,21 +2,22 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  margin-top: 40px;
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+
   .app {
-    width: 25%;
-    text-align: center;
-    margin-bottom: 50px;
     position: relative;
+    min-width: 0;
   }
   .app-icon {
+    text-align: center;
     width: 200px;
     height: 200px;
-    margin-left: auto;
-    margin-right: auto;
     cursor: pointer;
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-    border-radius: 45px;
+    border-radius: 44px;
     position: relative;
     display: block;
     text-decoration: none;
@@ -37,31 +38,10 @@
       font-weight: 500;
       border-radius: inherit;
       line-height: 1.1;
-    }
-    &:after {
-      position: absolute;
-      bottom: 10px;
-      font-size: 12px;
       font-weight: bold;
-      background: rgba(0, 0, 0, 0.5);
-      color: #fff;
-      padding: 0 10px;
-      border-radius: 2em;
-      opacity: 0;
-      left: 50%;
-      transform: translate3d(-50%, 10px, 0);
-      content: attr(data-hover-text);
     }
     &:hover {
-      box-shadow: 0px 40px 80px rgba(0, 0, 0, 0.1);
-      transform: translate3d(0, 0, 0) scale(1.05);
-      ~ .app-info {
-        transform: translate3d(0, 10px, 0);
-      }
-      &:after {
-        opacity: 1;
-        transform: translate3d(-50%, 0px, 0);
-      }
+      opacity: 0.75;
     }
   }
   .app-icon,
@@ -71,45 +51,47 @@
     transition-property: transform, box-shadow;
   }
   .app-info {
-    margin-top: 20px;
+    margin-top: 16px;
+  }
+  .app-author {
+    font-size: 12px;
   }
   .app-title {
-    .h4;
+    font-weight: bold;
+    font-size: 20px;
     margin-bottom: 0;
     margin-top: 0px;
     line-height: 1.2;
   }
   .app-description {
-    margin-top: 10px;
-    padding: 0 10px;
+    margin-top: 12px;
     font-size: 14px;
     line-height: 1.5;
   }
   .app-badges {
     position: absolute;
-    right: 5px;
-    top: 5px;
-    width: 100%;
+    right: 8px;
+    top: 4px;
     text-align: right;
+    display: flex;
+    align-items: center;
+    line-height: 1;
     span {
       .badge();
     }
   }
   .app-buttons {
     z-index: 10;
-    margin-top: 10px;
+    margin-top: 16px;
     a {
       .button();
-      padding: 0 15px;
-      margin-bottom: 5px;
-      margin-left: 2px;
-      margin-right: 2px;
+      padding: 0 8px;
+      + a {
+        margin-left: 4px;
+      }
     }
   }
   &.uiinitiative-apps {
-    .app {
-      width: 33.33%;
-    }
     .app-title {
       line-height: inherit;
     }
@@ -118,13 +100,9 @@
     }
     .app-cover {
       display: block;
-      transition: 400ms;
-      width: calc(100% - 32px);
-      margin: 0 auto;
       &:hover {
-        transform: scale(1.05);
+        opacity: 0.75;
       }
-
       img {
         display: block;
         border-radius: 12px;
@@ -134,9 +112,7 @@
 }
 @media (max-width: 1023px) {
   .apps {
-    .app {
-      width: 100% / 3;
-    }
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 @media (max-width: 800px) {
@@ -151,53 +127,49 @@
     .app-title {
       font-size: 18px;
     }
-    &.uiinitiative-apps .app {
-      width: 50%;
-      .app-cover {
-        width: calc(100% - 16px);
-      }
+    &.uiinitiative-apps {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 }
 @media (max-width: 600px) {
   .apps {
+    .app-buttons {
+      flex-direction: column;
+      a + a {
+        margin-left: 0;
+        margin-top: 4px;
+      }
+    }
     .app-icon {
-      width: 80%;
-      max-width: 150px;
-      height: 25.17vw;
-      max-height: 150px;
-      border-radius: 5vw;
+      width: 100%;
+      height: 0;
+      padding-bottom: 100%;
       img {
         display: block;
       }
       .img {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 16px;
       }
-    }
-    .app-title {
-      font-size: 14px;
-      word-break: break-word;
-    }
-    .app-author,
-    .app-description {
-      font-size: 12px;
     }
   }
 }
 @media (max-width: 400px) {
   .apps {
-    .app {
-      width: 50%;
-    }
+    grid-template-columns: repeat(2, 1fr);
     .app-icon {
       border-radius: 8vw;
-      height: 37vw;
     }
-    &.uiinitiative-apps .app {
-      width: 100%;
-      .app-cover {
-        width: 100%;
-      }
+    &.uiinitiative-apps {
+      grid-template-columns: repeat(1, 1fr);
     }
   }
 }
