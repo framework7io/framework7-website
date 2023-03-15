@@ -26,6 +26,20 @@
 @colorBorder: #534340;
 @colorBorderStrong: #a08c88;
 
+.scrollbar() {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    box-shadow: none;
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: @colorSurface4;
+    outline: none;
+    border-radius: 9999px;
+  }
+}
 .monospace() {
   font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
