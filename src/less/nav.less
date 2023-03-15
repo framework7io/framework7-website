@@ -151,7 +151,6 @@ nav {
     }
     .gh-stars {
       position: relative;
-      top: 2px;
       margin-left: 4px;
     }
     a {
@@ -161,6 +160,124 @@ nav {
       color: @colorSecondary;
       span {
         margin-right: 2px;
+      }
+    }
+  }
+  @media (max-width: 1024px) {
+    .nav-logo img:nth-child(2) {
+      display: none;
+    }
+    .nav-logo span {
+      display: none;
+    }
+  }
+  @media (max-width: 768px) {
+    .github-buttons .gh-stars {
+      display: none;
+    }
+  }
+  @media (max-width: 768px) {
+    .github-buttons .gh-stars {
+      display: none;
+    }
+  }
+  @media (max-width: 620px) {
+    padding: 0 16px;
+    .nav-searchbar {
+      margin-right: 12px;
+    }
+    .nav-right > ul:not(.visible) {
+      display: none;
+    }
+    .nav-right > ul {
+      overflow: auto;
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100vh;
+      width: 256px;
+      background: @colorSurface4;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      > li {
+        width: 100%;
+        &:hover > a {
+          background: transparent;
+          color: @colorPrimary;
+        }
+        > a {
+          display: block;
+          box-sizing: border-box;
+          padding-left: 16px;
+          margin-left: 8px;
+          margin-right: 8px;
+          &:hover {
+            background: @colorPrimary;
+            color: @colorOnPrimary;
+          }
+        }
+
+        + li {
+          padding-top: 8px;
+          border-top: 1px solid @colorBorderStrong;
+        }
+      }
+      > li + li {
+        margin-left: 0;
+      }
+      ul {
+        padding-left: 28px;
+        padding-top: 0;
+        padding-bottom: 16px;
+        box-sizing: border-box;
+        width: 100%;
+        display: block;
+        position: relative;
+        border: none;
+        background: transparent;
+        top: 0;
+        left: 0;
+        right: 0;
+        &:before {
+          content: '';
+          display: none;
+        }
+      }
+      .divider {
+        display: none;
+      }
+      .github-buttons {
+        display: flex;
+      }
+      .github-buttons .gh-stars {
+        display: block;
+      }
+    }
+    .nav-toggle {
+      height: 32px;
+      width: 32px;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      &:hover {
+        background: @colorPrimary;
+        span {
+          background: @colorOnPrimary;
+        }
+      }
+      span {
+        display: block;
+        width: 20px;
+        height: 2px;
+        background: @colorPrimary;
+        + span {
+          margin-top: 3px;
+        }
       }
     }
   }
