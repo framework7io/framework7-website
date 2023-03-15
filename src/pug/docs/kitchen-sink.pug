@@ -3,6 +3,8 @@ extends ../_docs-template
 block vars
   - var title = 'Kitchen Sink | Framework7 Documentation';
 
+block docs-index
+
 block content
   include ../_docs-demo-device
   .docs-nav
@@ -10,7 +12,7 @@ block content
   .docs-content
 
     h1 Kitchen Sink
-    ul.docs-index
+    
     .with-device(data-device-preview="/kitchen-sink/core/")
       p Framework7 Kitchen Sink is a great place to get started, it has a lot of examples for all Framework7 components and covers most of aspects.
       p It is recommended to use Kitchen Sink as a reference during development.

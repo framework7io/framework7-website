@@ -3,6 +3,8 @@ extends ../_docs-template
 block vars
   - var title = 'Panel / Side Panels | Framework7 Documentation';
 
+block docs-index
+
 block content
   include ../_docs-demo-device
 
@@ -11,7 +13,7 @@ block content
   .docs-content
 
     h1 Panel / Side Panels
-    ul.docs-index
+    
     h2 Panel Layout
     p Let's look how to add Side Panels to our App. We may include up to 2 panels to our App, one on left side and another one on right side. We should add panels' HTML right in the beginning of the app root element (or `<body>` in case there is no root element in use):
     :code(lang="html")

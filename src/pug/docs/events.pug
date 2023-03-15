@@ -3,13 +3,15 @@ extends ../_docs-template
 block vars
   - var title = 'Events | Framework7 Documentation';
 
+block docs-index
+
 block content
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Events
-    ul.docs-index
+    
     p Most of Framework7 components that is built with classes/constructors (including Framework7 class itself) have event emitter API.
     p It allows us easily to emit and handle all kind of events, including events between components.
     h2 Events Handlers in Parameters

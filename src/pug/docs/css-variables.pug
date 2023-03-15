@@ -3,6 +3,8 @@ extends ../_docs-template
 block vars
   - var title = 'CSS Variables Reference | Framework7 Documentation';
 
+block docs-index
+
 block content
   include ../_docs-demo-device
 
@@ -11,7 +13,7 @@ block content
   .docs-content
 
     h1 CSS Variables Reference
-    ul.docs-index.docs-index-multicolumn(style="height: 700px")
+    .docs-index-multicolumn(style="height: 700px")
     p This page contains reference to all CSS variables defined in all components.
     .important-note
       p Note that commented variables are not specified by default and their values is what they fallback to in this case.
