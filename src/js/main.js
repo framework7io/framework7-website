@@ -31,7 +31,15 @@ $('a').on('click', function onClick() {
   trackOutboundClick(url, 'outbound');
 });
 
-// Shuffle sponsors
+// Mobile nav
+$('.nav-toggle').on('click', () => {
+  $('.nav-menu').addClass('visible');
+});
+$('.nav-menu-backdrop').on('click', () => {
+  $('.nav-menu').removeClass('visible');
+});
+
+// Shuffle footer sponsors
 function shuffleArray(array, inPlace = false) {
   const arr = inPlace ? array : [...array];
   let j;

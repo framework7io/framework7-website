@@ -38,7 +38,6 @@ gulp.task('watch', () => {
     const filePath = changedPath.split(`src${sep}pug${sep}`)[1];
     if (filePath.indexOf(`docs-demos${sep}svelte`) >= 0) return;
     if (filePath.indexOf('_') === 0 || filePath.indexOf('_layout.pug') >= 0) {
-      buildPages();
       return;
     }
     const src = [];

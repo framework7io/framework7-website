@@ -2,7 +2,7 @@ const makeId = require('./make-id');
 const componentsWithCssVars = require('./components-with-css-vars');
 
 module.exports = (content = '') => {
-  if (content.indexOf('ul.docs-index') < 0) {
+  if (content.indexOf('block docs-index') < 0) {
     return content;
   }
   function replaceText(text) {
@@ -17,7 +17,7 @@ module.exports = (content = '') => {
   function findHeadings(replace) {
     let re;
     re = / h([1-5])\([^\(]*\) ([^\n]*)/g;
-    content = content.replace(re, ((string, level, text, index) => {
+    content = content.replace(re, (string, level, text, index) => {
       if (level === '1' || level === '4' || level === '5') return string;
       text = replaceText(text);
       const id = makeId(text);
@@ -31,10 +31,10 @@ module.exports = (content = '') => {
         return string;
       }
       return ` h${level}#${id}${string.substring(3)}`;
-    }));
+    });
 
     re = / h([1-5]) ([^\n]*)/g;
-    content = content.replace(re, ((string, level, text, index) => {
+    content = content.replace(re, (string, level, text, index) => {
       if (level === '1' || level === '4' || level === '5') return string;
       text = replaceText(text);
       const id = makeId(text);
@@ -48,10 +48,10 @@ module.exports = (content = '') => {
         return string;
       }
       return ` h${level}#${id}${string.substring(3)}`;
-    }));
+    });
 
     re = / \+cssVars\('([a-z\-0-9]*)'\)/g;
-    content = content.replace(re, ((string, module, index) => {
+    content = content.replace(re, (string, module, index) => {
       if (componentsWithCssVars.indexOf(module) < 0) {
         return string;
       }
@@ -66,10 +66,10 @@ module.exports = (content = '') => {
       }
 
       return string;
-    }));
+    });
 
     re = / \+cssVars\('([a-z\-0-9]*)', false, '([a-zA-Z 0-9]*)'\)/g;
-    content = content.replace(re, ((string, module, title, index) => {
+    content = content.replace(re, (string, module, title, index) => {
       if (componentsWithCssVars.indexOf(module) < 0) {
         return string;
       }
@@ -84,7 +84,7 @@ module.exports = (content = '') => {
       }
 
       return string;
-    }));
+    });
   }
 
   findHeadings();
@@ -113,8 +113,9 @@ module.exports = (content = '') => {
       indexHtml += '</ul>';
     }
   });
-
-  content = content.replace(/\n([ ]*)ul.docs-index([^\n]*)\n/g, `\n$1ul.docs-index$2\n$1  ${indexHtml}\n`);
-
+  content = content.replace(
+    /block docs-index/g,
+    `block docs-index\n  .docs-right-block\n    .docs-index-title On this page\n    ul.docs-index\n      ${indexHtml}\n`,
+  );
   return content;
 };

@@ -7,6 +7,40 @@ body.body-docs {
     max-width: 1400px;
     display: flex;
   }
+  main {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+.docs-right {
+  flex-shrink: 0;
+  width: 256px;
+  font-size: 14px;
+  max-height: 100vh;
+  position: sticky;
+  overflow: auto;
+  top: 0;
+  padding-top: 40px;
+  box-sizing: border-box;
+  padding-bottom: 40px;
+  margin-top: -40px;
+  margin-bottom: -40px;
+  @media (max-width: 1400px) {
+    display: none;
+  }
+  a {
+    color: @colorSecondary;
+    &:hover {
+      color: @colorPrimary;
+    }
+  }
+}
+.docs-right-block {
+  + .docs-right-block {
+    padding-top: 12px;
+    margin-top: 12px;
+    border-top: 1px solid @colorBorder;
+  }
 }
 .docs-page-nav {
   border-top: 1px solid @colorBorder;
@@ -39,6 +73,15 @@ body.body-docs {
   position: relative;
   min-width: 0;
   width: 100%;
+  padding-left: 24px;
+  padding-right: 24px;
+  @media (min-width: 960px) {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  @media (min-width: 1400px) {
+    width: calc(1400px - 40px - 40px - 256px);
+  }
   h1 {
     margin-top: 0;
   }
@@ -228,18 +271,20 @@ ul.method-parameters {
 }
 
 .docs-index {
-  margin: 1em 0 2em;
   padding: 0;
   list-style: none;
-  font-size: 14px;
-  font-weight: 500;
   position: relative;
+  margin: 0;
+  &-title {
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
   &:empty {
     padding: 0;
     border: none;
   }
   li {
-    margin: 3px 0;
+    margin: 2px 0;
     position: relative;
     &:first-child {
       margin-top: 0;
@@ -249,9 +294,7 @@ ul.method-parameters {
     }
   }
   a {
-    &:hover {
-      opacity: 0.75;
-    }
+    text-decoration: none;
   }
   ul {
     list-style: none;
@@ -259,27 +302,17 @@ ul.method-parameters {
     padding: 0;
     margin-left: 20px;
   }
-  &.docs-index-multicolumn {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    > li {
-      width: calc(100% / 3);
-    }
-  }
 }
 .docs-nav {
   width: 256px;
-  margin-left: -40px;
   box-sizing: border-box;
   flex-shrink: 0;
   background: @colorSurface;
   position: relative;
   margin-top: -40px;
   margin-bottom: -40px;
-  margin-right: 40px;
-  padding-top: 20px;
-  padding-left: 20px;
+  padding-top: 40px;
+  padding-left: 24px;
 
   .title {
     margin-bottom: 10px;
@@ -296,23 +329,23 @@ ul.method-parameters {
   display: flex;
   box-sizing: border-box;
   padding: 4px;
-  background: rgba(0, 0, 0, 0.075);
-  border-radius: 4px;
-  margin-bottom: 16px;
+  background: @colorSurface1;
+  border: 1px solid @colorBorder;
+  border-radius: 8px;
+  margin-bottom: 24px;
   a {
     width: 25%;
     display: block;
-    padding: 4px !important;
+    padding: 8px 4px !important;
     border-radius: 4px;
     + a {
       margin-left: 4px;
     }
     &:hover {
-      background: rgba(255, 255, 255, 0.45);
+      background: @colorSurface3;
     }
     &.active {
-      background: #fff;
-      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
+      background: lighten(@colorSurface4, 20%);
     }
   }
   img {
@@ -324,7 +357,6 @@ ul.method-parameters {
   }
 }
 .docs-nav-menu {
-  margin-top: 20px;
   padding-bottom: 40px;
   box-sizing: border-box;
   > ul {
@@ -338,8 +370,8 @@ ul.method-parameters {
   }
   .docs-nav-sponsors {
     padding-top: 16px;
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin-top: 24px;
+    margin-bottom: 24px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     border-top: 1px solid rgba(0, 0, 0, 0.05);
     padding-bottom: 16px;
@@ -349,7 +381,6 @@ ul.method-parameters {
       justify-content: space-between;
       align-content: center;
       a {
-        color: @redColor;
         font-weight: 500;
         font-size: 11px;
         padding-right: 0;
@@ -364,37 +395,23 @@ ul.method-parameters {
       margin-right: 20px;
     }
     &-list {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 4px;
       a {
-        width: calc(50% - 4px);
         display: flex;
-        height: 44px;
         align-items: center;
         justify-content: center;
         box-sizing: border-box;
-        margin-bottom: 8px;
         text-align: center;
         padding: 0;
+        background: #fff;
+        border-radius: 4px;
         img {
           display: block;
           max-width: 100%;
           max-height: 100%;
         }
-      }
-      a:nth-child(2n) {
-        margin-left: 8px;
-      }
-    }
-    .patreon-button {
-      border: none;
-      height: auto;
-      white-space: nowrap;
-      color: @redColor;
-      margin-bottom: 10px;
-      .patreon-text {
-        font-size: 12px;
-        font-weight: 500;
       }
     }
   }
@@ -412,7 +429,9 @@ ul.method-parameters {
   li {
     margin-bottom: 10px;
     position: relative;
+    li:hover:before,
     &.active:before {
+      pointer-events: none;
       content: '';
       position: absolute;
       right: 0;
@@ -420,18 +439,18 @@ ul.method-parameters {
       width: calc(100% + 12px);
       height: 100%;
       padding: 5px 0;
-      background: rgba(red(@redColor), green(@redColor), blue(@redColor), 0.1);
       top: 50%;
       transform: translateY(-50%);
       border-radius: 4px;
-      @media (max-width: 960px) {
-        right: -8px;
-        width: auto;
-        left: -12px;
-      }
+    }
+    li:hover:before {
+      background: lighten(@colorSurface, 10%);
+    }
+    &.active:before {
+      background: @colorPrimary !important;
     }
     &.active a {
-      color: @redColor;
+      color: @colorOnPrimary !important;
     }
   }
   a {
@@ -439,12 +458,13 @@ ul.method-parameters {
     display: block;
     padding-right: 10px;
     position: relative;
+    color: @colorSecondary;
     &:hover {
-      color: @redColor;
+      color: @colorPrimary;
     }
     &.active {
       font-weight: 500;
-      color: #fff;
+      color: @colorOnPrimary;
     }
   }
   .inactive {
@@ -514,19 +534,10 @@ ul.method-parameters {
   }
 }
 .improve-docs-link {
-  float: right;
   a {
-    color: #000;
-    font-size: 16px;
-    display: block;
-    line-height: 20px;
-    height: 20px;
-    opacity: 0.4;
+    display: inline-flex;
+    align-items: center;
     text-decoration: none;
-    transition: 200ms;
-    &:hover {
-      opacity: 1;
-    }
     &:before {
       content: 'logo_github';
       font-family: 'Framework7 Icons';

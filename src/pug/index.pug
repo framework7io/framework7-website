@@ -19,68 +19,7 @@ html
     link(rel="stylesheet", href="/css/main.css")
     link(rel="shortcut icon" href="/i/favicon.png")
   body
-    nav
-      .nav-left
-        a(href="/").nav-logo
-          img(src="/i/logo.svg")
-          img(src="/i/logo-text-white.svg")
-          span v#{release.version}
-      .nav-right
-        .nav-searchbar
-          input(type="search", placeholder="Search")
-          span.disable-search
-        ul
-          li
-            a(href="/docs/") Docs
-            ul
-              li
-                a(href="/docs/introduction.html") Getting Started
-              li.divider
-              li
-                a(href="/docs/") Framework7 Core / API
-              li
-                a(href="/vue/") Framework7 Vue
-              li
-                a(href="/react/") Framework7 React
-              li
-                a(href="/svelte/") Framework7 Svelte
-              li.divider
-              li
-                a(href="/cli/") Framework7 CLI
-              li
-                a(href="/icons/") Framework7 Icons
-              li
-                a(href="/docs/dom7.html") Dom7
-              li.divider
-              li
-                a(href="/release-notes/") Release Notes
-              li.divider
-              li
-                a(href="https://v1.framework7.io/" target="_blank") Framework7 v1
-              li
-                a(href="https://v6.framework7.io/" target="_blank") Framework7 v6
-
-          li
-            a Resources
-            ul
-              li
-                a(href="https://forum.framework7.io" target="_blank") Community Forum
-              li
-                a(href="/tutorials/") Tutorials
-              li
-                a(href="/templates/") Templates
-              li
-                a(href="/plugins/") Plugins
-              li
-                a(href="/showcase/") Apps Showcase
-          li
-            a(href="https://blog.framework7.io" target="_blank") Blog
-          li
-            include _github-buttons
-        .nav-toggle
-          span
-          span
-          span
+    include _nav
     header.home-header
       .center
         .content

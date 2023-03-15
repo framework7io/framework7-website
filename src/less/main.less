@@ -190,17 +190,16 @@ main {
   }
 }
 
-.carbon,
-.header-sponsor {
-  width: 300px;
+.carbon {
+  width: 256px;
   font-size: 13px;
   line-height: 1.4;
-  padding: 8px 10px 8px;
   overflow: hidden;
   border-radius: 3px;
+  box-sizing: border-box;
   margin-top: 0px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
   min-height: 103px;
+  padding-right: 16px;
   a {
     color: #333;
     display: block;
@@ -208,34 +207,24 @@ main {
   }
   img {
     display: block;
-    width: 130px;
-    height: 100px;
+    width: 96px;
+    height: auto;
+    object-fit: contain;
   }
-  .carbon-img,
-  .header-sponsor-image {
+  .carbon-img {
     display: block;
     float: left;
   }
-  .carbon-text,
-  .header-sponsor-text {
+  .carbon-text {
     margin-top: 3px;
-    margin-left: 140px;
-  }
-  .header-sponsor-text {
-    line-height: 1.35;
-  }
-  .carbon-poweredby,
-  .header-sponsor-label {
-    opacity: 0.8;
+    margin-left: 112px;
     font-size: 12px;
-    margin-top: 10px;
-    margin-left: 140px;
   }
-  .header-sponsor-label {
-    display: block;
-    margin-top: 0;
-    font-size: 10px;
-    opacity: 0.5;
+  .carbon-poweredby {
+    opacity: 0.75;
+    font-size: 11px;
+    margin-top: 8px;
+    margin-left: 112px;
   }
 }
 .carbon-placeholder {
@@ -363,7 +352,6 @@ main {
 @import url('nav.less');
 @import url('header.less');
 @import url('header-home.less');
-@import url('header-internal.less');
 @import url('home-page.less');
 @import url('docs.less');
 @import url('tables.less');

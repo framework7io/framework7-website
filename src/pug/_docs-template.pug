@@ -18,10 +18,17 @@ html
     link(rel="preconnect" href="https://fonts.gstatic.com")
     link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3")
   body.body-docs
-    include _internal-header
+    include _nav
     main
-      .center
-        block content
+      block content
+      .docs-right
+        .docs-right-block
+          include _carbon
+        .docs-right-block
+          if (srcFileUrl)
+            .improve-docs-link
+              a(href=srcFileUrl, target="_blank") Improve this Doc
+        block docs-index
     include _footer
     include _footer-scripts
     block scripts
