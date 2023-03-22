@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: March 14, 2023
+ * Released on: March 22, 2023
  */
 
 import $ from './shared/dom7.js';

@@ -1,7 +1,5 @@
 {
   "name": "framework7-website",
-  "releaseVersion": "7.1.5",
-  "releaseDate": "February 2, 2023",
   "description": "Framework7 Website",
   "cdn": "//cdn.framework7.io",
   "keywords": [
