@@ -6,14 +6,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Tabs
-    
+
     p Tabs allow to simply switch between different content.
     h2 Tabs Layout
     p Let's look at Tabs layout:
@@ -171,28 +171,26 @@ block content
       p Note that animted tabs wrapper `div class="tabs-animated-wrap"` must have <b>fixed height</b>. By default, it is 100% height of its parent
 
     h2 Swipeable Tabs
-    p It is also possible to switch tabs with swipes. This requires additional `div class="tabs-swipeable-wrap"` wrapper for `div class="tabs"`.
+    p It is also possible to switch tabs with swipes. This requires using <a href="https://swiperjs.com/element" target="_blank">Swiper Element</a> (which is already part of the Framework7).
     p In this example let's put tab links in Subnavbar and we will use <b>page-content</b> as <b>tab</b> to keep scrolling position for each tab separately:
     :code(lang="html")
-          <!-- Tabs swipeable wrapper, required to switch tabs with swipes -->
-          <div class="tabs-swipeable-wrap">
-            <!-- Tabs, tabs wrapper -->
-            <div class="tabs">
-              <!-- Tab 1, active by default -->
-              <div id="tab1" class="tab tab-active">
-                ... Tab 1 content ...
-              </div>
-              <!-- Tab 2 -->
-              <div id="tab2" class="tab">
-                ... Tab 2 content ...
-              </div>
-              <!-- Tab 3 -->
-              <div id="tab3" class="tab">
-                ... Tab 3 content ...
-              </div>
-            </div>
-          </div>
-    p To achieve swipeable effect, swipeable tabs are actually will be converted to <a href="swiper.html">Swiper</a>, so it is possible to tweak their behavior by passing <a href="swiper.html#swiper-auto-initialization">Swiper parameters</a> using `data-` attributes.
+          <!-- Swiper Element should be used as Tabs -->
+          <swiper-container class="tabs">
+            <!-- Each Tab must be a "swiper-slide" element -->
+
+            <!-- Tab 1, active by default -->
+            <swiper-slide id="tab1" class="tab tab-active">
+              ... Tab 1 content ...
+            </swiper-slide>
+            <!-- Tab 2 -->
+            <swiper-slide id="tab2" class="tab">
+              ... Tab 2 content ...
+            </swiper-slide>
+            <!-- Tab 3 -->
+            <swiper-slide id="tab3" class="tab">
+              ... Tab 3 content ...
+            </swiper-slide>
+          </swiper-container>
 
     h2 Tabs App Methods
     p We can control tabs using the following app methods:
