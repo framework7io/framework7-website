@@ -7,11 +7,13 @@ import copyToClipboard from './copy-to-clipboard';
 import initUiInitiativeTemplates from './init-uiinititative-templates';
 import initUiInitiativePlugins from './init-uiinititative-plugins';
 import initExamplePreview from './init-example-preview';
+import initHomeCanvas from './init-home-canvas';
 
 Object.keys(methods).forEach((key) => {
   $.fn[key] = methods[key];
 });
 
+initHomeCanvas();
 initDocsTables();
 initDocsSearch();
 initDocsDevice();
@@ -146,9 +148,6 @@ function fetchGitStats(local) {
     if (localStorage.getItem('f7-git-stats-stars')) {
       $('.gh-stars span').html(localStorage.getItem('f7-git-stats-stars'));
     }
-    if (localStorage.getItem('f7-git-stats-forks')) {
-      $('.gh-forks span').html(localStorage.getItem('f7-git-stats-forks'));
-    }
     return;
   }
   if (window.fetch) {
@@ -162,11 +161,6 @@ function fetchGitStats(local) {
           const stars = data.stargazers_count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
           localStorage.setItem('f7-git-stats-stars', stars);
           $('.gh-stars span').html(stars);
-        }
-        if (data.forks) {
-          const forks = data.forks.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-          localStorage.setItem('f7-git-stats-forks', forks);
-          $('.gh-forks span').html(forks);
         }
       });
   }

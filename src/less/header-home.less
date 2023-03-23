@@ -3,10 +3,36 @@
   box-sizing: border-box;
   position: relative;
   z-index: 1;
+  &-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    &::after {
+      pointer-events: none;
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 25%;
+      background-image: linear-gradient(to top, #201a19, rgba(0, 0, 0, 0));
+    }
+  }
+  canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
 
   > .center {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 24px;
+    padding-bottom: 24px;
     height: 100%;
     position: relative;
     display: flex;
@@ -25,7 +51,7 @@
     margin: 0;
     font-weight: bold;
     line-height: 1.2;
-    margin: 20px 0 20px;
+    margin: 24px 0 24px;
     text-align: right;
   }
   .content {
@@ -39,6 +65,15 @@
     width: 50%;
     height: 100%;
     max-width: 560px;
+  }
+  .links-info {
+    text-align: right;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid @colorBorder;
+    margin-top: 24px;
   }
   .buttons {
     text-align: right;
@@ -55,7 +90,7 @@
   }
 
   .links {
-    margin: 20px 0;
+    margin: 0px 0 12px;
     a {
       border: none;
       border-radius: 0;
@@ -69,7 +104,7 @@
       font-size: 16px;
       color: @colorPrimary;
       + a {
-        margin-left: 15px;
+        margin-left: 12px;
       }
       &:hover {
         text-decoration: underline;
@@ -95,30 +130,46 @@
     box-sizing: border-box;
     margin-left: 64px;
     border: 1px solid @colorBorder;
+    &::after {
+      content: '';
+      width: 120px;
+      height: 4px;
+      background: #999;
+      border-radius: 999px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 27px;
+      z-index: 100;
+    }
     &.ios {
       &::before {
         content: '';
         position: absolute;
-        width: 219px;
-        height: 23px;
+        width: 80px;
+        height: 24px;
         left: 50%;
         transform: translateX(-50%);
-        top: 11px;
-        background: url('../i/notch.svg') no-repeat center;
-        background-size: contain;
+        top: 22px;
+        background: #000;
         z-index: 100;
-      }
-      &::after {
-        content: '';
-        width: 120px;
-        height: 4px;
-        background: #999;
+        pointer-events: none;
         border-radius: 999px;
+      }
+    }
+    &.md {
+      &::before {
+        content: '';
         position: absolute;
+        width: 24px;
+        height: 24px;
         left: 50%;
         transform: translateX(-50%);
-        bottom: 27px;
+        top: 22px;
+        background: #000;
         z-index: 100;
+        pointer-events: none;
+        border-radius: 999px;
       }
     }
 
@@ -219,7 +270,7 @@
     align-items: center;
     margin-top: 10px;
     flex-wrap: nowrap;
-    justify-content: flex-start;
+    justify-content: flex-end;
   }
   .github-buttons {
     margin-right: 20px;
@@ -241,7 +292,7 @@
       top: 1px;
     }
     span span {
-      font-size: 16px;
+      font-size: 14px;
     }
   }
   .github-buttons,
@@ -258,6 +309,17 @@
 }
 @media (max-width: 980px) {
   .home-header {
+    &-canvas {
+      height: 50%;
+    }
+    .patreon-github {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .links-info {
+      text-align: center;
+      border: 1px solid @colorBorder;
+    }
     .center {
       flex-direction: column;
       align-items: center;
@@ -266,9 +328,6 @@
       width: 100%;
       align-items: center;
       max-width: none;
-    }
-    .buttons-links {
-      margin-bottom: 32px;
     }
     .buttons {
       text-align: center;
@@ -325,6 +384,9 @@
 }
 @media (max-width: 480px) {
   .home-header {
+    &-canvas {
+      height: 75%;
+    }
     .logo-title {
       max-width: 320px;
     }
@@ -340,8 +402,14 @@
     .slogan {
       font-size: 38px;
     }
-    .buttons-links {
-      margin-bottom: 16px;
+    .links-info {
+      text-align: center;
+    }
+    .links {
+      margin-bottom: 8px;
+      a {
+        font-size: 14px;
+      }
     }
     .patreon-github {
       width: 100%;
@@ -349,9 +417,6 @@
     }
     .phone {
       display: none !important;
-    }
-    .links {
-      margin-bottom: 0;
     }
   }
 }

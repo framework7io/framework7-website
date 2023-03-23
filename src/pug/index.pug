@@ -24,25 +24,26 @@ html
   body
     include _nav
     header.home-header
+      .home-header-canvas
       .center
         .content
           .logo-title
             | !{inlineSvg('public/i/logo-text-icon.svg')}
           .slogan Build full featured iOS, Android & Desktop apps
-          .buttons-links
-            .buttons
-              a(href="#get-started")
-                i.f7-icons rocket_fill
-                span Get Started
+          .buttons
+            a(href="#get-started")
+              i.f7-icons rocket_fill
+              span Get Started
+          .links-info
             .links
               a(href="/docs/") Docs
               a(href="/templates/") Templates
               a(href="/showcase/") Apps Showcase
               a(href="https://forum.framework7.io") Forum
-          .release-info MIT Licensed, <b>v#{release.version}</b> released on #{release.date}
-          .patreon-github
-            include _github-buttons
-            include _patreon
+            .release-info MIT Licensed, <b>v#{release.version}</b> released on #{release.date}
+            .patreon-github
+              include _github-buttons
+              include _patreon
         .phone-wrap
           h2 See it in action
           a(href="/kitchen-sink/core/" target="_blank").phone-button
