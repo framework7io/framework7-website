@@ -7,14 +7,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-vue
   .docs-content
 
     h1 List Vue Component
-    
+
     p List views are versatile and powerful user interface components frequently found in apps. A list view presents data in a scrollable list of multiple rows that may be divided into sections/groups.
     p List views have many purposes:
     ul
@@ -44,33 +44,48 @@ block content
         tr
           td inset
           td boolean
-          td false
-          td Makes list block inset
+          td
+          td Makes list inset. `inset-ios` and `inset-md` props available for theme specific layout
         tr
           td xsmall-inset
           td boolean
           td
-          td Makes block inset when app width >= 480px
+          td Makes list inset when app width >= 480px. `xsmall-inset-ios` and `xsmall-inset-md` props available for theme specific layout
         tr
           td small-inset
           td boolean
           td
-          td Makes block inset when app width >= 568px
+          td Makes list inset when app width >= 568px. `small-inset-ios` and `small-inset-md` props available for theme specific layout
         tr
           td medium-inset
           td boolean
           td
-          td Makes block inset when app width >= 768px
+          td Makes list inset when app width >= 768px. `medium-inset-ios` and `medium-inset-md` props available for theme specific layout
         tr
           td large-inset
           td boolean
           td
-          td Makes block inset when app width >= 1024px
+          td Makes list inset when app width >= 1024px. `large-inset-ios` and `large-inset-md` props available for theme specific layout
         tr
           td xlarge-inset
           td boolean
           td
-          td Makes block inset when app width >= 1200px
+          td Makes list inset when app width >= 1200px. `xlarge-inset-ios` and `xlarge-inset-md` props available for theme specific layout
+        tr
+          td strong
+          td boolean
+          td
+          td Adds extra highlighting to the list. `strong-ios` and `strong-md` props available for theme specific layout
+        tr
+          td outline
+          td boolean
+          td
+          td Makes list outline (with border). `outline-ios` and `outline-md` props available for theme specific layout
+        tr
+          td dividers
+          td boolean
+          td
+          td Adds dividers (borders) between list items. `dividers-ios` and `dividers-md` props available for theme specific layout
         tr
           td media-list
           td boolean
@@ -141,11 +156,7 @@ block content
           td boolean
           td false
           td Enables <a href="../docs/form.html#form-storage">form storage</a> for the current form
-        tr
-          td inline-labels
-          td boolean
-          td false
-          td Enables inline-styled labels for <a href="inputs.html">Form Inputs</a>
+
         tr
           td no-chevron
           td boolean
@@ -156,36 +167,6 @@ block content
           td boolean
           td false
           td Sets "chevron" icon on nested media list items on center (vertically)
-        tr
-          td no-hairlines
-          td boolean
-          td false
-          td Removes outer <a href="../docs/hairlines.html">hairlines</a>
-        tr
-          td no-hairlines-md
-          td boolean
-          td false
-          td Removes outer <a href="../docs/hairlines.html">hairlines</a> for MD theme
-        tr
-          td no-hairlines-ios
-          td boolean
-          td false
-          td Removes outer <a href="../docs/hairlines.html">hairlines</a> for iOS theme
-        tr
-          td no-hairlines-between
-          td boolean
-          td false
-          td Removes inner <a href="../docs/hairlines.html">hairlines</a> between items
-        tr
-          td no-hairlines-between-md
-          td boolean
-          td false
-          td Removes inner <a href="../docs/hairlines.html">hairlines</a> between items for MD theme
-        tr
-          td no-hairlines-between-ios
-          td boolean
-          td false
-          td Removes inner <a href="../docs/hairlines.html">hairlines</a> between items for iOS theme
         tr
           td tab
           td boolean

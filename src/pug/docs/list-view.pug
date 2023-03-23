@@ -6,7 +6,7 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
@@ -29,16 +29,21 @@ block content
                  ... list elements here ...
              </ul>
          </div>
-    p To remove hairlines (thin borders) around list block we need additional `no-hairlines` class:
+    p To add extra highlighting to list block we need additional `list-strong` class
     :code(lang="html")
-          <div class="list no-hairlines">
+          <div class="list list-strong">
+            <!-- block content -->
+          </div>
+    p To add outline (borders) around the list block we need additional `list-outline` class:
+    :code(lang="html")
+          <div class="list list-outline">
               <ul>
                   ... list elements here ...
               </ul>
           </div>
-    p To remove hairlines (thin borders) between list items we need additional `no-hairlines-between` class:
+    p To add dividers (borders) between list items we need additional `list-dividers` class:
     :code(lang="html")
-          <div class="list no-hairlines-between">
+          <div class="list list-dividers">
               <ul>
                   ... list elements here ...
               </ul>
@@ -155,7 +160,7 @@ block content
         strong Note that `item-inner` has additional right padding and chevron icon when it is in `item-link`
       p To remove this chevron icon and extra padding, you can add `no-chevron` class to link item or to containing list
     h2 List Button
-    p List button is a simplified list link item, usefule in case you need to trigger simple self-explaining actions:
+    p List button is a simplified list link item, useful in case you need to trigger simple self-explaining actions:
     :code(lang="html")
       <li>
         <a class="list-button">List Button 1</a>
@@ -163,27 +168,6 @@ block content
       <li>
         <a class="list-button">List Button 2</a>
       </li>
-
-    h2 List Divider
-    p List divider is a simple list element with title to visually divide one list items from another:
-    :code(lang="html")
-      <li class="item-divider">Divider title here</li>
-
-    :code(lang="html")
-           <div class="list">
-             <ul>
-               <!-- List items -->
-               <li class="item-content">...</li>
-               <li class="item-content">...</li>
-
-               <!-- Divider -->
-               <li class="item-divider">Divider title here</li>
-
-               <!-- Another list items -->
-               <li class="item-content">...</li>
-               <li class="item-content">...</li>
-             </ul>
-           </div>
 
     h2 Grouped Lists
     p Sometimes we need to group list view elements inside of single list block. In this case we need to additional `list-group` elements:
@@ -209,7 +193,7 @@ block content
                </ul>
              </div>
            </div>
-    p You may ask what is the difference from simple dividers? <strong>With list groups, group titles have sticky position during scroll within single group.</strong>
+
     h2 Simple List
     p In case we need list with simple items structure that have only titles, we may use Simple List modification. In this case we need additional class `simple-list` on list block with plain `<li>` items layout:
     :code(lang="html")
@@ -286,36 +270,8 @@ block content
             p `item-text` - additional two-lines container for detailed description. <strong>Optional</strong> element.
     .important-note
       p When you use Link Item (item-link) in media list it will render chevron icon (`>`) at the level of `item-title`. If you want to move this chevron to the center of item, then you need to add `chevron-center` class to this item or to the containing list
-    h2 Custom Table-like Elements
-    p In you case you need some custom list item layout with table-like structure you may use additional list elements `item-row` and `item-cell`:
-    :code(lang="html")
-          <li class="item-content">
-            <div class="item-inner item-cell">
-              <div class="item-row">
-                <div class="item-cell">Cell 1-1</div>
-                <div class="item-cell">Cell 1-2</div>
-                <div class="item-cell">Cell 1-3</div>
-              </div>
-              <div class="item-row">
-                <div class="item-cell">Cell 2-1</div>
-                <div class="item-cell">Cell 2-2</div>
-              </div>
-              <div class="item-row">
-                <div class="item-cell">Cell 3-1</div>
-                <div class="item-cell">
-                  <div class="item-row">
-                    Cell 3-2
-                  </div>
-                  <div class="item-row">
-                    Cell 3-3
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
 
     +cssVars('list')
-
 
     h2 Examples
     +examplePreview('core', 'list.html', 'list')
