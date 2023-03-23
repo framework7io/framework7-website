@@ -6,31 +6,31 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Swiper Slider
-    
+
     p Framework7 comes with powerful and most modern touch slider ever - <a href="https://swiperjs.com/">Swiper Slider</a> with super flexible configuration and lot, lot of features.
     h2 Swiper Slider HTML Layout
     p Swiper HTML layout is pretty simple:
     :code(lang="html")
-          <!-- Slider container -->
-          <div class="swiper">
-              <!-- Slides wrapper -->
-              <div class="swiper-wrapper">
-                  <!-- Slides -->
-                  <div class="swiper-slide">Slide 1</div>
-                  <div class="swiper-slide">Slide 2</div>
-                  <div class="swiper-slide">Slide 3</div>
-                  ... other slides ...
-              </div>
-              <!-- Pagination, if required -->
-              <div class="swiper-pagination"></div>
+      <!-- Slider container -->
+      <div class="swiper">
+          <!-- Slides wrapper -->
+          <div class="swiper-wrapper">
+              <!-- Slides -->
+              <div class="swiper-slide">Slide 1</div>
+              <div class="swiper-slide">Slide 2</div>
+              <div class="swiper-slide">Slide 3</div>
+              ... other slides ...
           </div>
+          <!-- Pagination, if required -->
+          <div class="swiper-pagination"></div>
+      </div>
     p Where:
     ul
       li
@@ -83,50 +83,13 @@ block content
               spaceBetween: 100
           });
     h2 Swiper API (Parameters, Methods And Properties)
-    p Сheck out <a href="https://swiperjs.com/swiper-api#parameters" target="_blank">Swiper API Website</a> for the most relevant API parameters and methods.
+    p Check out <a href="https://swiperjs.com/swiper-api#parameters" target="_blank">Swiper API Website</a> for the most relevant API parameters and methods.
     .important-note
       p Framework7's version of Swiper doesn't contain <b>History</b> and <b>Hash Navigation</b> modules
-    h2 Swiper Auto Initialization
-    p If you don't need to use Swiper API and your Swiper is inside of the page and <b>presented in DOM on moment of page initialization</b> then it can be auto initialized with just adding additional `swiper-init` class:
-    :code(lang="html")
-          <!-- swiper-init to initialize swiper automatically -->
-          <div class="swiper swiper-init">
-              <div class="swiper-wrapper">
-                  <div class="swiper-slide">Slide 1</div>
-                  <div class="swiper-slide">Slide 2</div>
-                  <div class="swiper-slide">Slide 3</div>
-                  ... other slides ...
-              </div>
-          </div>
-    p In this case if you need to access created Swiper instance you can use the `app.swiper.get` app method:
-    :code(lang="js")
-          var swiper = app.swiper.get('.swiper');
 
-          swiper.slideNext();
-    p But what about Swiper parameters. In this case we need to pass them in `data-` attributes.
-    .important-note
-      p Parameters that used in camelCase, for example `slidesPerView`, in data- attributes should be used as kebab-case as <b>data-slides-per-view</b>
-    :code(lang="html")
-          <!-- swiper properties in data- attributes -->
-          <div class="swiper swiper-init" data-speed="400" data-space-between="40">
-              <div class="swiper-wrapper">
-                  <div class="swiper-slide">Slide 1</div>
-                  <div class="swiper-slide">Slide 2</div>
-                  <div class="swiper-slide">Slide 3</div>
-                  ... other slides ...
-              </div>
-          </div>
-    p Or we can pass all Swiper parameters in <strong>valid JSON format</strong> in `data-swiper` attribute:
-    :code(lang="html")
-          <!-- swiper properties in JSON format in data-swiper attribute -->
-          <div class="swiper swiper-init" data-swiper='{"speed":"400", "spaceBetween":"40"}'>
-              <div class="swiper-wrapper">
-                  <div class="swiper-slide">Slide 1</div>
-                  <div class="swiper-slide">Slide 2</div>
-                  <div class="swiper-slide">Slide 3</div>
-                  ... other slides ...
-              </div>
-          </div>
+    h2 Swiper Element
+    p Since Framework7 v8, it is highly recommended to use <a href="https://swiperjs.com/element/" target="_blank">Swiper Element</a> instead, it provides much easier way to define Swiper with parameters in HTML, and Swiper custom elements are already registered in Framework7.
+
 
     +cssVars('swiper')
 
