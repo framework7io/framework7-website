@@ -231,6 +231,10 @@
     text-decoration: none;
     position: relative;
     top: -1px;
+    border-bottom: 1px solid transparent;
+    &:hover {
+      border-bottom: 1px solid currentColor;
+    }
     > span {
       margin-left: 8px;
       position: relative;
@@ -243,6 +247,13 @@
   .github-buttons,
   .patreon-button {
     flex-shrink: 0;
+  }
+  .patreon-button {
+    border-bottom: 1px solid transparent;
+    &:hover {
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+    }
   }
 }
 @media (max-width: 980px) {

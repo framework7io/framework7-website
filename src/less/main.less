@@ -304,11 +304,7 @@ main {
   font-size: 0;
   line-height: 22px;
   display: inline-block;
-  border-radius: 11px;
   font-weight: 500;
-  &:hover .patreon-text {
-    text-decoration: underline;
-  }
   .patreon-logo {
     display: inline-block;
     position: relative;
@@ -323,13 +319,13 @@ main {
       width: calc(16px / 5);
       height: @size;
       content: '';
-      background: @redColor;
+      background: currentColor;
     }
     &:after {
       width: @size * 0.75;
       height: @size * 0.75;
       position: absolute;
-      background: @redColor;
+      background: currentColor;
       border-radius: 10px;
       content: '';
       right: 0;
