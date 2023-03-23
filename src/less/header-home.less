@@ -3,9 +3,7 @@
   box-sizing: border-box;
   position: relative;
   z-index: 1;
-  .mobile-preview-button {
-    display: none;
-  }
+
   > .center {
     padding-top: 20px;
     padding-bottom: 20px;
@@ -19,10 +17,7 @@
     svg {
       width: 400px;
       height: auto;
-      max-width: 107%;
-      margin-top: -2%;
-      margin-bottom: -6.5%;
-      margin-right: -4%;
+      max-width: 100%;
     }
   }
   .slogan {
@@ -84,6 +79,10 @@
   .phone-wrap {
     width: 50%;
   }
+  h2,
+  .phone-button {
+    display: none;
+  }
   .phone {
     flex-shrink: 0;
     width: 375px + 24px;
@@ -94,8 +93,8 @@
     align-self: center;
     position: relative;
     box-sizing: border-box;
-    border: 1px solid @colorBorder;
     margin-left: 64px;
+    border: 1px solid @colorBorder;
     &.ios {
       &::before {
         content: '';
@@ -246,25 +245,47 @@
     flex-shrink: 0;
   }
 }
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   .home-header {
+    .center {
+      flex-direction: column;
+      align-items: center;
+    }
+    .content {
+      width: 100%;
+      align-items: center;
+      max-width: none;
+    }
+    .buttons-links {
+      margin-bottom: 32px;
+    }
+    .buttons {
+      text-align: center;
+    }
     .slogan {
-      font-size: 32px;
+      text-align: center;
+      margin: 32px 0;
+    }
+    .phone-wrap {
+      width: auto;
+      margin-left: 0;
+      padding-top: 48px;
+    }
+    h2 {
+      display: block;
+      font-size: 48px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.9em;
+      margin-top: 0.2em;
+    }
+    .phone {
+      margin-left: 0;
     }
   }
 }
 @media (max-width: 768px) {
   .home-header {
-    height: auto;
-    overflow: hidden;
-
-    .release-info {
-      text-align: center;
-    }
-    .content {
-      width: 100%;
-      align-items: center;
-    }
     .logo-title {
       text-align: center;
       max-width: 500px;
@@ -272,97 +293,22 @@
         max-width: 100%;
       }
     }
-    .slogan {
-      text-align: center;
-      margin: 40px 0;
-      font-size: 44px;
-    }
-    .buttons-links {
-      align-self: center;
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    .links {
-      text-align: center;
-    }
+
     .patreon-github {
       flex-wrap: wrap;
       justify-content: center;
     }
     .github-buttons,
     .patreon-button {
-      margin-left: 10px;
-      margin-right: 10px;
-      margin-top: 10px;
-    }
-    .buttons {
-      text-align: center;
-    }
-    .phone {
-      position: absolute;
-      left: ~'calc(100vw + 50%)';
-      margin: 0;
-      margin-left: 15px;
-      transform: ~'translateX(-50%)';
-    }
-    &:not(.mobile-preview-enabled) {
-      .phone {
-        box-shadow: none;
-        .theme-switch {
-          opacity: 0;
-        }
-      }
-    }
-    .mobile-preview-button {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: absolute;
-      right: 2px;
-      top: 40%;
-      height: 34px;
-      margin-top: -17px;
-      width: 34px;
-      background-color: @redColor;
-      color: #fff;
-      border-radius: 50%;
-      box-shadow: 0px 5px 10px rgba(red(@redColor), green(@redColor), blue(@redColor), 0.3);
-      cursor: pointer;
-      i:first-child {
-        position: absolute;
-        font-size: 24px;
-        right: 26px;
-        color: @redColor;
-      }
-      i {
-        font-size: 24px;
-      }
-    }
-    .content,
-    .phone,
-    .mobile-preview-button,
-    .mobile-preview-button i,
-    .theme-switch {
-      transition: 600ms;
-      transition-property: transform, box-shadow, opacity;
+      margin-left: 12px;
+      margin-right: 12px;
     }
   }
-  .mobile-preview-enabled {
-    .content {
-      transform: translateX(-100vw);
-      opacity: 0;
-    }
-    .phone {
-      transform: ~'translateX(calc(-100vw - 50%))';
-    }
-    .theme-switch {
-      opacity: 1;
-    }
-    .mobile-preview-button {
-      transform: ~'translateX(calc(-100vw + 40px))';
-      i:first-child {
-        transform: translateX(40px) rotate(180deg);
-      }
+}
+@media (max-width: 600px) {
+  .home-header {
+    h2 {
+      font-size: 38px;
     }
   }
 }
@@ -371,17 +317,27 @@
     .logo-title {
       max-width: 320px;
     }
+    .phone-button {
+      display: flex;
+      .solid-button();
+      width: 100%;
+      i {
+        font-size: 34px;
+        margin-left: 4px;
+      }
+    }
     .slogan {
-      font-size: 34px;
+      font-size: 38px;
+    }
+    .buttons-links {
+      margin-bottom: 16px;
     }
     .patreon-github {
       width: 100%;
-      .github-buttons,
-      .patreon-button {
-        margin-left: 0;
-        margin-top: 10px;
-        margin-right: 10px;
-      }
+      display: none;
+    }
+    .phone {
+      display: none !important;
     }
     .links {
       margin-bottom: 0;

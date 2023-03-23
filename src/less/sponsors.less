@@ -6,12 +6,16 @@
   .sponsor {
     text-align: center;
     font-size: 0;
-    margin: 10px;
-    min-width: 100px;
+    margin: 4px;
+    border-radius: 4px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     img {
-      max-width: 100%;
-      max-height: 100%;
-      vertical-align: middle;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
     a {
       display: block;
@@ -19,60 +23,60 @@
       height: 100%;
     }
   }
-  .sponsor-join {
-    font-size: 12px;
-    display: flex;
-    align-content: center;
-    align-items: center;
-    justify-content: center;
-    line-height: 1.2 !important;
-    font-weight: 500;
-    border-radius: 4px;
+}
+.sponsor-join {
+  font-size: 12px;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2 !important;
+  font-weight: 500;
+  border-radius: 16px;
+  text-decoration: none;
+  transition: 200ms;
+  transition-property: background-color;
+  box-sizing: border-box;
+  padding: 0 2px;
+  background: @colorSurface1;
+  border: 1px solid @colorBorder;
+  width: 256px;
+  height: 64px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  .sponsors + & {
+    margin-top: 32px;
+  }
+  &:hover {
     text-decoration: none;
-    transition: 200ms;
-    transition-property: background-color;
-    box-sizing: border-box;
-    padding: 0 5px;
-    background: #f5f5f5;
-    &:hover {
-      background: #eee;
-    }
+    background: @colorSurface2;
   }
 }
-.sponsors-diamond {
-  .sponsor {
-    width: ~"calc(50% - 30px)";
-    height: 100px;
-    line-height: 100px;
-  }
-}
-.sponsors-platinum {
-  .sponsor {
-    width: ~"calc(100% / 3 - 30px)";
-    height: 100px;
-    line-height: 100px;
-  }
-}
+.sponsors-diamond,
+.sponsors-platinum,
 .sponsors-gold {
   .sponsor {
-    width: ~"calc(25% - 25px)";
-    height: 100px;
-    line-height: 100px;
+    width: 96px;
+    height: 96px;
   }
 }
+
 .sponsors-silver {
   .sponsor {
-    width: ~"calc(20% - 25px)";
-    height: 100px;
-    line-height: 100px;
+    width: 64px;
+    height: 64px;
   }
 }
 
 .sponsors-top {
   .sponsor {
-    width: ~"calc(100% / 10 - 25px)";
-    height: 80px;
-    line-height: 80px;
+    width: 32px;
+    height: 32px;
   }
   .sponsor-join {
     font-size: 12px;

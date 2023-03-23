@@ -79,10 +79,7 @@ $('.home-header .theme-switch a').click(function onClick(e) {
   $(this).addClass('active');
   $('header .phone .fullscreen').attr('href', url);
 });
-$('.home-header .mobile-preview-button').click((e) => {
-  e.preventDefault();
-  $('.home-header').toggleClass('mobile-preview-enabled');
-});
+
 $('.home-header a[href="#get-started"]').click((e) => {
   e.preventDefault();
   $('#get-started')[0].scrollIntoView({

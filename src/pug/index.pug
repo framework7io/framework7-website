@@ -44,6 +44,10 @@ html
             include _github-buttons
             include _patreon
         .phone-wrap
+          h2 See it in action
+          a(href="/kitchen-sink/core/" target="_blank").phone-button
+            span Open in new tab
+            i.f7-icons arrow_up_right_square_fill
           .phone.ios
             .iframe-wrapper
               iframe(src="kitchen-sink/core/?theme=ios&safe-areas=true", frameborder="0", scrolling="no")
@@ -58,9 +62,6 @@ html
                   i.f7-icons logo_android
                 .fullscreen
                   i.f7-icons expand
-          .mobile-preview-button
-            i.f7-icons arrow_left
-            i.f7-icons device_phone_portrait
 
     .home-block
       .center
@@ -85,7 +86,6 @@ html
           img(src="/i/brand-logos/vue-red.svg")
           img(src="/i/brand-logos/react-red.svg")
           img(src="/i/brand-logos/svelte-red.svg")
-          img(src="/i/brand-logos/gulp-red.svg")
           img(src="/i/brand-logos/rollup-red.svg")
           img(src="/i/brand-logos/webpack-red.svg")
         .text
@@ -150,26 +150,41 @@ html
           <br>
           | <span>$</span> framework7 create --ui
         .buttons
-          a(href="/docs/") Framework7 Core
-          a(href="/vue/") Framework7 Vue
-          a(href="/react/") Framework7 React
-          a(href="/svelte/") Framework7 Svelte
+          a(href="/docs/")
+            img(src="/i/frameworks/js.svg")
+            div
+              div Framework7 Core
+              span Documentation
+          a(href="/vue/")
+            img(src="/i/frameworks/vue.svg")
+            div
+              div Framework7 Vue
+              span Documentation
+          a(href="/react/")
+            img(src="/i/frameworks/react.svg")
+            div
+              div Framework7 React
+              span Documentation
+          a(href="/svelte/")
+            img(src="/i/frameworks/svelte.svg")
+            div
+              div Framework7 Svelte
+              span Documentation
 
-    .home-block.home-support
-      .center
-        h2 Support Framework7
-        .text
-          p Framework7 is an MIT-licensed open source project with its ongoing development made possible entirely by the support of #[a(href="/sponsors/") sponsors] and  #[a(href="https://github.com/framework7io/framework7/blob/master/BACKERS.md" target="_blank") these awesome backers].
-          p
-            a(href="https://www.patreon.com/framework7", target="_blank").home-support-button Support Framework7 #[i.f7-icons hand_thumbsup_fill]
     .home-block.home-uiinitiative
       .center
         h2 UI Initiative
         .text
           p Premium Framework7 templates & plugins for Framework7 patrons
-        p
-          a(href="https://uiinitiative.com" target="_blank")
-            img(src="/i/uiinitiative-banner.jpg")
+        a(href="https://uiinitiative.com" target="_blank").uiinitiative-banner
+          .uiinitiative-logo
+            img(src="/i/uiinitiative-logo.svg")
+          .uiinitiative-items
+            img(src="https://s.uiinitiative.com/items/seven-burger/cover.jpg")
+            img(src="https://s.uiinitiative.com/items/espresso-app/cover.jpg")
+            img(src="https://s.uiinitiative.com/items/backlogger/cover.jpg")
+            img(src="https://s.uiinitiative.com/items/cookingo/cover.jpg")
+
     .home-block.home-projects
       .center
         h2 More Of Our Projects
@@ -228,6 +243,11 @@ html
                 a(href=sponsor.link, target="_blank")
                   .sponsor-badge.sponsor-badge-topSupporter(title="Top Supporter")
                   img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
-
+        .home-sponsors-content
+          p Support Framework7 on <a href="https://opencollective.com/framework7" target="_blank">Open Collective</a> or <a href="https://www.patreon.com/framework7" target="_blank">Patreon</a> and help us to make it even better!<br>Your support means a lot for us!
+          p
+            a(href="https://opencollective.com/framework7", target="_blank").home-support-button Become a sponsor on OpenCollective
+          p
+            a(href="https://www.patreon.com/framework7", target="_blank").home-support-button Support Framework7 on Patreon
     include _footer
     include _footer-scripts
