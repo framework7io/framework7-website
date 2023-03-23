@@ -12,14 +12,14 @@ function initSwiper(swiperEl) {
   const app = this;
   const $swiperEl = $(swiperEl);
   if ($swiperEl.length === 0) return;
-  if ($swiperEl[0].swiper) return;
+  const isElement = $swiperEl[0].swiper && $swiperEl[0].swiper.isElement;
+  if ($swiperEl[0].swiper && !$swiperEl[0].swiper.isElement) return;
   let initialSlide;
   let params = {};
   let isTabs;
   let isRoutableTabs;
-  if ($swiperEl.hasClass('tabs-swipeable-wrap')) {
-    $swiperEl.addClass('swiper').children('.tabs').addClass('swiper-wrapper').children('.tab').addClass('swiper-slide');
-    initialSlide = $swiperEl.children('.tabs').children('.tab-active').index();
+  if ($swiperEl.hasClass('tabs')) {
+    initialSlide = $swiperEl.children('swiper-slide').indexOf($swiperEl.children('.tab-active')[0]);
     isTabs = true;
     isRoutableTabs = $swiperEl.find('.tabs-routable').length > 0;
   }
@@ -43,12 +43,15 @@ function initSwiper(swiperEl) {
   if (typeof params.initialSlide === 'undefined' && typeof initialSlide !== 'undefined') {
     params.initialSlide = initialSlide;
   }
-  const swiper = app.swiper.create($swiperEl[0], params);
+  const swiper = isElement ? $swiperEl[0].swiper : app.swiper.create($swiperEl[0], params);
+  if (isElement) {
+    swiper.slideTo(initialSlide, 0);
+  }
   function updateSwiper() {
     swiper.update();
   }
   const $tabEl = $swiperEl.parents('.tab').filter(tabEl => {
-    return $(tabEl).parent('.tabs').parent('.tabs-animated-wrap, .tabs-swipeable-wrap').length === 0;
+    return $(tabEl).parent('.tabs').parent('.tabs-animated-wrap, swiper-container.tabs').length === 0;
   }).eq(0);
   $swiperEl.parents('.popup, .login-screen, .sheet-modal, .popover').on('modal:open', updateSwiper);
   $swiperEl.parents('.panel').on('panel:open', updateSwiper);
@@ -96,63 +99,43 @@ export default {
     });
   },
   on: {
-    pageBeforeRemove(page) {
-      const app = this;
-      page.$el.find('.tabs-swipeable-wrap').each(swiperEl => {
-        app.swiper.destroy(swiperEl);
-      });
-    },
     pageMounted(page) {
       const app = this;
-      page.$el.find('.tabs-swipeable-wrap').each(swiperEl => {
+      page.$el.find('swiper-container.tabs').each(swiperEl => {
         initSwiper.call(app, swiperEl);
       });
     },
     pageInit(page) {
       const app = this;
-      page.$el.find('.tabs-swipeable-wrap').each(swiperEl => {
+      page.$el.find('swiper-container.tabs').each(swiperEl => {
         initSwiper.call(app, swiperEl);
       });
     },
     pageReinit(page) {
       const app = this;
-      page.$el.find('.tabs-swipeable-wrap').each(swiperEl => {
+      page.$el.find('swiper-container.tabs').each(swiperEl => {
         const swiper = app.swiper.get(swiperEl);
         if (swiper && swiper.update) swiper.update();
       });
     },
     tabMounted(tabEl) {
       const app = this;
-      $(tabEl).find('.tabs-swipeable-wrap').each(swiperEl => {
+      $(tabEl).find('swiper-container.tabs').each(swiperEl => {
         initSwiper.call(app, swiperEl);
       });
     },
     tabShow(tabEl) {
       const app = this;
-      $(tabEl).find('.tabs-swipeable-wrap').each(swiperEl => {
+      $(tabEl).find('swiper-container.tabs').each(swiperEl => {
         const swiper = app.swiper.get(swiperEl);
         if (swiper && swiper.update) swiper.update();
       });
     },
     tabBeforeRemove(tabEl) {
       const app = this;
-      $(tabEl).find('.tabs-swipeable-wrap').each(swiperEl => {
+      $(tabEl).find('swiper-container.tabs').each(swiperEl => {
         app.swiper.destroy(swiperEl);
       });
-    }
-  },
-  vnode: {
-    'tabs-swipeable-wrap': {
-      insert(vnode) {
-        const app = this;
-        const swiperEl = vnode.elm;
-        initSwiper.call(app, swiperEl);
-      },
-      destroy(vnode) {
-        const app = this;
-        const swiperEl = vnode.elm;
-        app.swiper.destroy(swiperEl);
-      }
     }
   }
 };

@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.0-beta.4
+ * Framework7 8.0.0-beta.5
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: March 22, 2023
+ * Released on: March 23, 2023
  */
 
 /*====================
@@ -6130,7 +6130,7 @@ html.with-modal-popup-push-closing .framework7-root > .view.dark:after {
 .md .popover-from-actions-label {
   justify-content: center;
 }
-.popover-angle {
+.popover-arrow {
   width: 26px;
   height: 26px;
   position: absolute;
@@ -6139,7 +6139,7 @@ html.with-modal-popup-push-closing .framework7-root > .view.dark:after {
   z-index: 100;
   overflow: hidden;
 }
-.popover-angle:after {
+.popover-arrow:after {
   content: '';
   background: var(--f7-popover-bg-color);
   width: 26px;
@@ -6150,33 +6150,33 @@ html.with-modal-popup-push-closing .framework7-root > .view.dark:after {
   border-radius: 3px;
   transform: rotate(45deg);
 }
-.popover-angle.on-left {
+.popover-arrow.on-left {
   left: -26px;
 }
-.popover-angle.on-left:after {
+.popover-arrow.on-left:after {
   left: 19px;
   top: 0;
 }
-.popover-angle.on-right {
+.popover-arrow.on-right {
   left: 100%;
 }
-.popover-angle.on-right:after {
+.popover-arrow.on-right:after {
   left: -19px;
   top: 0;
 }
-.popover-angle.on-top {
+.popover-arrow.on-top {
   left: 0;
   top: -26px;
 }
-.popover-angle.on-top:after {
+.popover-arrow.on-top:after {
   left: 0;
   top: 19px;
 }
-.popover-angle.on-bottom {
+.popover-arrow.on-bottom {
   left: 0;
   top: 100%;
 }
-.popover-angle.on-bottom:after {
+.popover-arrow.on-bottom:after {
   left: 0;
   top: -19px;
 }
@@ -9179,13 +9179,10 @@ html.device-android-4 .accordion-item-content {
 .tabs-animated-wrap.not-animated > .tabs {
   transition-duration: 0ms;
 }
-.tabs-swipeable-wrap {
+swiper-container.tabs {
   height: 100%;
 }
-.tabs-swipeable-wrap > .tabs {
-  height: 100%;
-}
-.tabs-swipeable-wrap > .tabs > .tab {
+swiper-container.tabs > .tab {
   display: block;
   touch-action: pan-y;
 }
@@ -16540,7 +16537,7 @@ table.data-table {
 }
 /* === Swiper === */
 /**
- * Swiper 9.0.3
+ * Swiper 9.1.1
  * Most modern mobile touch slider and framework with hardware accelerated transitions
  * https://swiperjs.com
  *
@@ -16548,7 +16545,7 @@ table.data-table {
  *
  * Released under the MIT License
  *
- * Released on: February 6, 2023
+ * Released on: March 16, 2023
  */
 
 /* FONT_START */
@@ -16853,6 +16850,7 @@ swiper-container:not(.swiper-watch-progress) .swiper-lazy-preloader,
   --swiper-pagination-bullet-size: 8px;
   --swiper-pagination-bullet-width: 8px;
   --swiper-pagination-bullet-height: 8px;
+  --swiper-pagination-bullet-border-radius: 50%;
   --swiper-pagination-bullet-inactive-color: #000;
   --swiper-pagination-bullet-inactive-opacity: 0.2;
   --swiper-pagination-bullet-opacity: 1;
@@ -16915,7 +16913,7 @@ swiper-container:not(.swiper-watch-progress) .swiper-lazy-preloader,
   width: var(--swiper-pagination-bullet-width, var(--swiper-pagination-bullet-size, 8px));
   height: var(--swiper-pagination-bullet-height, var(--swiper-pagination-bullet-size, 8px));
   display: inline-block;
-  border-radius: 50%;
+  border-radius: var(--swiper-pagination-bullet-border-radius, 50%);
   background: var(--swiper-pagination-bullet-inactive-color, #000);
   opacity: var(--swiper-pagination-bullet-inactive-opacity, 0.2);
 }
@@ -19739,34 +19737,4 @@ button.text-editor-button .material-icons sub {
 }
 [class*='border-color-'] {
   border-color: var(--f7-theme-color-border-color) !important;
-}
-.no-hairlines:before,
-.no-hairlines ul:before,
-.md .no-hairlines-md:before,
-.md .no-hairlines-md ul:before,
-.ios .no-hairlines-ios:before,
-.ios .no-hairlines-ios ul:before,
-.no-hairlines:after,
-.no-hairlines ul:after,
-.md .no-hairlines-md:after,
-.md .no-hairlines-md ul:after,
-.ios .no-hairlines-ios:after,
-.ios .no-hairlines-ios ul:after {
-  display: none !important;
-}
-.no-hairline-top:before,
-.no-hairline-top ul:before,
-.md .no-hairline-top-md:before,
-.md .no-hairline-top-md ul:before,
-.ios .no-hairline-top-ios:before,
-.ios .no-hairline-top-ios ul:before {
-  display: none !important;
-}
-.no-hairline-bottom:after,
-.no-hairline-bottom ul:after,
-.md .no-hairline-bottom-md:after,
-.md .no-hairline-bottom-md ul:after,
-.ios .no-hairline-bottom-ios:after,
-.ios .no-hairline-bottom-ios ul:after {
-  display: none !important;
 }

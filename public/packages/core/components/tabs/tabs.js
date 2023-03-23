@@ -74,13 +74,14 @@ const Tab = {
 
     // Swipeable tabs
     let swiper;
-    if ($tabsEl.parent().hasClass('tabs-swipeable-wrap') && app.swiper) {
-      swiper = $tabsEl.parent()[0].swiper;
-      if (swiper && swiper.activeIndex !== $newTabEl.index()) {
+    if ($tabsEl[0].nodeName.toLowerCase() === 'swiper-container' && app.swiper) {
+      swiper = $tabsEl[0].swiper;
+      const newTabIndex = swiper.slides.indexOf($newTabEl[0]);
+      if (swiper && swiper.activeIndex !== newTabIndex) {
         animated = true;
         swiper.once('slideChangeTransitionEnd', () => {
           tabsChanged();
-        }).slideTo($newTabEl.index(), animate ? undefined : 0);
+        }).slideTo(newTabIndex, animate ? undefined : 0);
       } else if (swiper && swiper.animating) {
         animated = true;
         swiper.once('slideChangeTransitionEnd', () => {

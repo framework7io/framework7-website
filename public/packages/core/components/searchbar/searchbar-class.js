@@ -34,7 +34,7 @@ class Searchbar extends FrameworkClass {
       backdrop: true,
       removeDiacritics: true,
       customSearch: false,
-      hideDividers: true,
+      hideGroupTitles: true,
       hideGroups: true,
       disableOnBackdropClick: true,
       expandable: false,
@@ -521,7 +521,7 @@ class Searchbar extends FrameworkClass {
           foundItems.push($itemEl[0]);
         }
       });
-      if (sb.params.hideDividers) {
+      if (sb.params.hideGroupTitles) {
         $searchContainer.find(sb.params.searchGroupTitle).each(titleEl => {
           const $titleEl = $(titleEl);
           const $nextElements = $titleEl.nextAll(sb.params.searchItem);

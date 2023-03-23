@@ -126,7 +126,7 @@ class VirtualList extends Framework7Class {
     vl.attachEvents = function attachEvents() {
       $pageEl = vl.$el.parents('.page').eq(0);
       $tabEl = vl.$el.parents('.tab').filter(tabEl => {
-        return $(tabEl).parent('.tabs').parent('.tabs-animated-wrap, .tabs-swipeable-wrap').length === 0;
+        return $(tabEl).parent('.tabs').parent('.tabs-animated-wrap, swiper-container.tabs').length === 0;
       }).eq(0);
       $panelEl = vl.$el.parents('.panel').eq(0);
       $popupEl = vl.$el.parents('.popup').eq(0);
