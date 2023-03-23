@@ -6,14 +6,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Cards
-    
+
     p Cards, along with List View, is a great way to contain and organize your information. Cards contain unique related data, for example, a photo, text, and link all about a single subject. Cards are typically an entry point to more complex and detailed information.
     h2 Card Layout
     p Lets look at a basic card HTML layout
@@ -26,7 +26,7 @@ block content
             <div class="card-footer">Footer</div>
           </div>
 
-          <div class="card">
+          <div class="card card-raised">
             <div class="card-header">Header</div>
             <div class="card-content card-content-padding">
               <!-- Card content -->
@@ -34,7 +34,7 @@ block content
             <div class="card-footer">Footer</div>
           </div>
 
-          <div class="card card-outline">
+          <div class="card card-outline card-header-divider card-footer-divider">
             <div class="card-header">Header</div>
             <div class="card-content">
               <!-- Card content -->
@@ -55,11 +55,13 @@ block content
           li
             p `<div class="card-content card-content-padding">` - Additional <b>card-content-padding</b> used to add extra padding to card-content
           li
-            p `card-outline` - additional class that can be added to card element to make it outline
+            p `card-raised` - additional class that can be added to card element to make card raised - with shadow
           li
-            p `no-shadow` - additional class that can be added to card element to remove its shadow
+            p `card-outline` - additional class that can be added to card element to make it outline (add border)
           li
-            p `no-border` - additional class that can be added to card element to remove its border (for outline card)
+            p `card-header-divider` - additional class that can be added to card element to add divider (border) after card header element
+          li
+            p `card-footer-divider` - additional class that can be added to card element to add divider (border) before card footer element
     .important-note
       p Note that "card-header" and "card-footer" have a flexbox layout (<em>display:flex</em>) where as items have a center vertical alignment. If you need to align items to top or to bottom of header/footer, then you may use additional <a href="typography.html">typography</a> classes, for example:
       p <b>&lt;div class="card-header align-items-flex-start"&gt;</b> - align header items by header top line
@@ -220,9 +222,9 @@ block content
     .important-note
       ul
         li
-          p To open expandable card we need to add "<b>card-open</b>" class to any HTML element (prefered to link)
+          p To open expandable card we need to add "<b>card-open</b>" class to any HTML element (preferred to link)
         li
-          p To close expandable we need to add "<b>card-close</b>" class to any HTML element (prefered to link)
+          p To close expandable we need to add "<b>card-close</b>" class to any HTML element (preferred to link)
         li
           p If you have more than one expandable cards in DOM, you need to specify appropriate card via additional <b>data-card=".my-card"</b> attribute on this HTML element
 
