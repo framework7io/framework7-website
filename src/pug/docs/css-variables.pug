@@ -6,7 +6,7 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
@@ -19,66 +19,62 @@ block content
       p Note that commented variables are not specified by default and their values is what they fallback to in this case.
     h2 App / Core
     :code(lang="css")
+      /*====================
+        Core
+        ==================== */
       :root {
-        --f7-theme-color: #007aff;
-        --f7-theme-color-rgb: 0, 122, 255;
-        --f7-theme-color-shade: #0066d6;
-        --f7-theme-color-tint: #298fff;
         --f7-safe-area-left: 0px;
         --f7-safe-area-right: 0px;
         --f7-safe-area-top: 0px;
         --f7-safe-area-bottom: 0px;
+
         --f7-safe-area-outer-left: 0px;
         --f7-safe-area-outer-right: 0px;
-        --f7-device-pixel-ratio: 1;
-      }
-      @supports (left: env(safe-area-inset-left)) {
-        :root {
+
+        @supports (left: env(safe-area-inset-left)) {
           --f7-safe-area-top: env(safe-area-inset-top);
           --f7-safe-area-bottom: env(safe-area-inset-bottom);
+          .ios-left-edge,
+          .ios-edges,
+          .safe-area-left,
+          .safe-areas,
+          .popup,
+          .sheet-modal,
+          .panel-left {
+            --f7-safe-area-left: env(safe-area-inset-left);
+            --f7-safe-area-outer-left: env(safe-area-inset-left);
+          }
+          .ios-right-edge,
+          .ios-edges,
+          .safe-area-right,
+          .safe-areas,
+          .popup,
+          .sheet-modal,
+          .panel-right {
+            --f7-safe-area-right: env(safe-area-inset-right);
+            --f7-safe-area-outer-right: env(safe-area-inset-right);
+          }
+          .no-safe-areas,
+          .no-safe-area-left,
+          .no-ios-edges,
+          .no-ios-left-edge {
+            --f7-safe-area-left: 0px;
+            --f7-safe-area-outer-left: 0px;
+          }
+          .no-safe-areas,
+          .no-safe-area-right,
+          .no-ios-edges,
+          .no-ios-right-edge {
+            --f7-safe-area-right: 0px;
+            --f7-safe-area-outer-right: 0px;
+          }
         }
-        :root .ios-left-edge,
-        :root .ios-edges,
-        :root .safe-area-left,
-        :root .safe-areas,
-        :root .popup,
-        :root .sheet-modal,
-        :root .panel-left {
-          --f7-safe-area-left: env(safe-area-inset-left);
-          --f7-safe-area-outer-left: env(safe-area-inset-left);
-        }
-        :root .ios-right-edge,
-        :root .ios-edges,
-        :root .safe-area-right,
-        :root .safe-areas,
-        :root .popup,
-        :root .sheet-modal,
-        :root .panel-right {
-          --f7-safe-area-right: env(safe-area-inset-right);
-          --f7-safe-area-outer-right: env(safe-area-inset-right);
-        }
-        :root .no-safe-areas,
-        :root .no-safe-area-left,
-        :root .no-ios-edges,
-        :root .no-ios-left-edge {
-          --f7-safe-area-left: 0px;
-          --f7-safe-area-outer-left: 0px;
-        }
-        :root .no-safe-areas,
-        :root .no-safe-area-right,
-        :root .no-ios-edges,
-        :root .no-ios-right-edge {
-          --f7-safe-area-right: 0px;
-          --f7-safe-area-outer-right: 0px;
-        }
-      }
-      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
-        :root {
+
+        --f7-device-pixel-ratio: 1;
+        @media (min-resolution: 2dppx) {
           --f7-device-pixel-ratio: 2;
         }
-      }
-      @media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 3dppx) {
-        :root {
+        @media (min-resolution: 3dppx) {
           --f7-device-pixel-ratio: 3;
         }
       }
@@ -87,35 +83,31 @@ block content
         ==================== */
       :root {
         --f7-font-size: 14px;
-        /*
-        --f7-bars-link-color: var(--f7-theme-color);
-        */
-        --f7-bars-bg-image: none;
+
         --f7-bars-translucent-opacity: 0.8;
         --f7-bars-translucent-blur: 20px;
-        --f7-bars-shadow-bottom-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.08) 40%, rgba(0, 0, 0, 0.04) 50%, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 0) 100%);
-        --f7-bars-shadow-top-image: linear-gradient(to top, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.08) 40%, rgba(0, 0, 0, 0.04) 50%, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 0) 100%);
-        --f7-bars-text-color: #000;
-        --f7-bars-bg-color: #f7f7f8;
-        --f7-bars-bg-color-rgb: 247, 247, 248;
-      }
-      :root .dark,
-      :root.dark {
-        --f7-bars-text-color: #fff;
       }
       .ios {
         --f7-font-family: -apple-system, SF Pro Text, SF UI Text, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
         --f7-line-height: 1.4;
+        /*
+        --f7-bars-link-color: var(--f7-theme-color);
+        */
+        --f7-bars-text-color: #000;
         --f7-text-color: #000;
-        --f7-bars-border-color: rgba(0, 0, 0, 0.25);
+        --f7-bars-bg-color: #f7f7f8;
+        --f7-bars-bg-color-rgb: 247, 247, 248;
+        --f7-bars-border-color: rgba(0,0,0,0.25);
       }
       .ios .dark,
       .ios.dark {
+        --f7-bars-text-color: #fff;
         --f7-text-color: #fff;
         --f7-bars-bg-color: #121212;
-        --f7-bars-bg-color-rgb: 19, 19, 19;
-        --f7-bars-border-color: rgba(255, 255, 255, 0.1);
+        --f7-bars-bg-color-rgb: 22, 22, 22;
+        --f7-bars-border-color: rgba(255,255,255,0.16);
       }
+
       .md {
         --f7-font-family: Roboto, system-ui, Noto, Helvetica, Arial, sans-serif;
         --f7-line-height: 1.5;
@@ -124,14 +116,19 @@ block content
       }
       .md .dark,
       .md.dark {
-        --f7-text-color: rgba(255, 255, 255, 0.87);
-        --f7-bars-bg-color: #202020;
+        --f7-text-color: rgba(255,255,255,0.87);
       }
 
-    h2 Color Theme Variables
-    :code(lang="css")
+      .md,
+      .md .dark,
+      .md [class*='color-'] {
+        --f7-bars-link-color: var(--f7-md-on-surface);
+        --f7-bars-bg-color: var(--f7-md-surface-2);
+        --f7-bars-bg-color-rgb: var(--f7-md-surface-2-rgb);
+      }
+
       /*====================
-        Primary Theme
+        Color Themes
         ==================== */
       .text-color-primary {
         --f7-theme-color-text-color: var(--f7-theme-color);
@@ -145,452 +142,8 @@ block content
       .ripple-color-primary {
         --f7-theme-color-ripple-color: rgba(var(--f7-theme-color-rgb), 0.3);
       }
-      /*====================
-        Colors List
-        ==================== */
-      :root {
-        --f7-color-red: #ff3b30;
-        --f7-color-red-rgb: 255, 59, 48;
-        --f7-color-red-shade: #ff1407;
-        --f7-color-red-tint: #ff6259;
-        --f7-color-green: #4cd964;
-        --f7-color-green-rgb: 76, 217, 100;
-        --f7-color-green-shade: #2cd048;
-        --f7-color-green-tint: #6ee081;
-        --f7-color-blue: #2196f3;
-        --f7-color-blue-rgb: 33, 150, 243;
-        --f7-color-blue-shade: #0c82df;
-        --f7-color-blue-tint: #48a8f5;
-        --f7-color-pink: #ff2d55;
-        --f7-color-pink-rgb: 255, 45, 85;
-        --f7-color-pink-shade: #ff0434;
-        --f7-color-pink-tint: #ff5676;
-        --f7-color-yellow: #ffcc00;
-        --f7-color-yellow-rgb: 255, 204, 0;
-        --f7-color-yellow-shade: #d6ab00;
-        --f7-color-yellow-tint: #ffd429;
-        --f7-color-orange: #ff9500;
-        --f7-color-orange-rgb: 255, 149, 0;
-        --f7-color-orange-shade: #d67d00;
-        --f7-color-orange-tint: #ffa629;
-        --f7-color-purple: #9c27b0;
-        --f7-color-purple-rgb: 156, 39, 176;
-        --f7-color-purple-shade: #7e208f;
-        --f7-color-purple-tint: #b92fd1;
-        --f7-color-deeppurple: #673ab7;
-        --f7-color-deeppurple-rgb: 103, 58, 183;
-        --f7-color-deeppurple-shade: #563098;
-        --f7-color-deeppurple-tint: #7c52c8;
-        --f7-color-lightblue: #5ac8fa;
-        --f7-color-lightblue-rgb: 90, 200, 250;
-        --f7-color-lightblue-shade: #32bbf9;
-        --f7-color-lightblue-tint: #82d5fb;
-        --f7-color-teal: #009688;
-        --f7-color-teal-rgb: 0, 150, 136;
-        --f7-color-teal-shade: #006d63;
-        --f7-color-teal-tint: #00bfad;
-        --f7-color-lime: #cddc39;
-        --f7-color-lime-rgb: 205, 220, 57;
-        --f7-color-lime-shade: #bac923;
-        --f7-color-lime-tint: #d6e25c;
-        --f7-color-deeporange: #ff6b22;
-        --f7-color-deeporange-rgb: 255, 107, 34;
-        --f7-color-deeporange-shade: #f85200;
-        --f7-color-deeporange-tint: #ff864b;
-        --f7-color-gray: #8e8e93;
-        --f7-color-gray-rgb: 142, 142, 147;
-        --f7-color-gray-shade: #79797f;
-        --f7-color-gray-tint: #a3a3a7;
-        --f7-color-white: #ffffff;
-        --f7-color-white-rgb: 255, 255, 255;
-        --f7-color-white-shade: #ebebeb;
-        --f7-color-white-tint: #ffffff;
-        --f7-color-black: #000000;
-        --f7-color-black-rgb: 0, 0, 0;
-        --f7-color-black-shade: #000000;
-        --f7-color-black-tint: #141414;
-      }
-      /*====================
-        Color Themes
-        ==================== */
-      .color-theme-red {
-        --f7-theme-color: #ff3b30;
-        --f7-theme-color-rgb: 255, 59, 48;
-        --f7-theme-color-shade: #ff1407;
-        --f7-theme-color-tint: #ff6259;
-      }
-      .color-theme-green {
-        --f7-theme-color: #4cd964;
-        --f7-theme-color-rgb: 76, 217, 100;
-        --f7-theme-color-shade: #2cd048;
-        --f7-theme-color-tint: #6ee081;
-      }
-      .color-theme-blue {
-        --f7-theme-color: #2196f3;
-        --f7-theme-color-rgb: 33, 150, 243;
-        --f7-theme-color-shade: #0c82df;
-        --f7-theme-color-tint: #48a8f5;
-      }
-      .color-theme-pink {
-        --f7-theme-color: #ff2d55;
-        --f7-theme-color-rgb: 255, 45, 85;
-        --f7-theme-color-shade: #ff0434;
-        --f7-theme-color-tint: #ff5676;
-      }
-      .color-theme-yellow {
-        --f7-theme-color: #ffcc00;
-        --f7-theme-color-rgb: 255, 204, 0;
-        --f7-theme-color-shade: #d6ab00;
-        --f7-theme-color-tint: #ffd429;
-      }
-      .color-theme-orange {
-        --f7-theme-color: #ff9500;
-        --f7-theme-color-rgb: 255, 149, 0;
-        --f7-theme-color-shade: #d67d00;
-        --f7-theme-color-tint: #ffa629;
-      }
-      .color-theme-purple {
-        --f7-theme-color: #9c27b0;
-        --f7-theme-color-rgb: 156, 39, 176;
-        --f7-theme-color-shade: #7e208f;
-        --f7-theme-color-tint: #b92fd1;
-      }
-      .color-theme-deeppurple {
-        --f7-theme-color: #673ab7;
-        --f7-theme-color-rgb: 103, 58, 183;
-        --f7-theme-color-shade: #563098;
-        --f7-theme-color-tint: #7c52c8;
-      }
-      .color-theme-lightblue {
-        --f7-theme-color: #5ac8fa;
-        --f7-theme-color-rgb: 90, 200, 250;
-        --f7-theme-color-shade: #32bbf9;
-        --f7-theme-color-tint: #82d5fb;
-      }
-      .color-theme-teal {
-        --f7-theme-color: #009688;
-        --f7-theme-color-rgb: 0, 150, 136;
-        --f7-theme-color-shade: #006d63;
-        --f7-theme-color-tint: #00bfad;
-      }
-      .color-theme-lime {
-        --f7-theme-color: #cddc39;
-        --f7-theme-color-rgb: 205, 220, 57;
-        --f7-theme-color-shade: #bac923;
-        --f7-theme-color-tint: #d6e25c;
-      }
-      .color-theme-deeporange {
-        --f7-theme-color: #ff6b22;
-        --f7-theme-color-rgb: 255, 107, 34;
-        --f7-theme-color-shade: #f85200;
-        --f7-theme-color-tint: #ff864b;
-      }
-      .color-theme-gray {
-        --f7-theme-color: #8e8e93;
-        --f7-theme-color-rgb: 142, 142, 147;
-        --f7-theme-color-shade: #79797f;
-        --f7-theme-color-tint: #a3a3a7;
-      }
-      .color-theme-white {
-        --f7-theme-color: #ffffff;
-        --f7-theme-color-rgb: 255, 255, 255;
-        --f7-theme-color-shade: #ebebeb;
-        --f7-theme-color-tint: #ffffff;
-      }
-      .color-theme-black {
-        --f7-theme-color: #000000;
-        --f7-theme-color-rgb: 0, 0, 0;
-        --f7-theme-color-shade: #000000;
-        --f7-theme-color-tint: #141414;
-      }
-      /*====================
-        Color Overrides
-        ==================== */
-      .color-red {
-        --f7-theme-color: #ff3b30;
-        --f7-theme-color-rgb: 255, 59, 48;
-        --f7-theme-color-shade: #ff1407;
-        --f7-theme-color-tint: #ff6259;
-      }
-      .text-color-red {
-        --f7-theme-color-text-color: #ff3b30;
-      }
-      .bg-color-red {
-        --f7-theme-color-bg-color: #ff3b30;
-      }
-      .border-color-red {
-        --f7-theme-color-border-color: #ff3b30;
-      }
-      .ripple-color-red,
-      .ripple-red {
-        --f7-theme-color-ripple-color: rgba(255, 59, 48, 0.3);
-      }
-      .color-green {
-        --f7-theme-color: #4cd964;
-        --f7-theme-color-rgb: 76, 217, 100;
-        --f7-theme-color-shade: #2cd048;
-        --f7-theme-color-tint: #6ee081;
-      }
-      .text-color-green {
-        --f7-theme-color-text-color: #4cd964;
-      }
-      .bg-color-green {
-        --f7-theme-color-bg-color: #4cd964;
-      }
-      .border-color-green {
-        --f7-theme-color-border-color: #4cd964;
-      }
-      .ripple-color-green,
-      .ripple-green {
-        --f7-theme-color-ripple-color: rgba(76, 217, 100, 0.3);
-      }
-      .color-blue {
-        --f7-theme-color: #2196f3;
-        --f7-theme-color-rgb: 33, 150, 243;
-        --f7-theme-color-shade: #0c82df;
-        --f7-theme-color-tint: #48a8f5;
-      }
-      .text-color-blue {
-        --f7-theme-color-text-color: #2196f3;
-      }
-      .bg-color-blue {
-        --f7-theme-color-bg-color: #2196f3;
-      }
-      .border-color-blue {
-        --f7-theme-color-border-color: #2196f3;
-      }
-      .ripple-color-blue,
-      .ripple-blue {
-        --f7-theme-color-ripple-color: rgba(33, 150, 243, 0.3);
-      }
-      .color-pink {
-        --f7-theme-color: #ff2d55;
-        --f7-theme-color-rgb: 255, 45, 85;
-        --f7-theme-color-shade: #ff0434;
-        --f7-theme-color-tint: #ff5676;
-      }
-      .text-color-pink {
-        --f7-theme-color-text-color: #ff2d55;
-      }
-      .bg-color-pink {
-        --f7-theme-color-bg-color: #ff2d55;
-      }
-      .border-color-pink {
-        --f7-theme-color-border-color: #ff2d55;
-      }
-      .ripple-color-pink,
-      .ripple-pink {
-        --f7-theme-color-ripple-color: rgba(255, 45, 85, 0.3);
-      }
-      .color-yellow {
-        --f7-theme-color: #ffcc00;
-        --f7-theme-color-rgb: 255, 204, 0;
-        --f7-theme-color-shade: #d6ab00;
-        --f7-theme-color-tint: #ffd429;
-      }
-      .text-color-yellow {
-        --f7-theme-color-text-color: #ffcc00;
-      }
-      .bg-color-yellow {
-        --f7-theme-color-bg-color: #ffcc00;
-      }
-      .border-color-yellow {
-        --f7-theme-color-border-color: #ffcc00;
-      }
-      .ripple-color-yellow,
-      .ripple-yellow {
-        --f7-theme-color-ripple-color: rgba(255, 204, 0, 0.3);
-      }
-      .color-orange {
-        --f7-theme-color: #ff9500;
-        --f7-theme-color-rgb: 255, 149, 0;
-        --f7-theme-color-shade: #d67d00;
-        --f7-theme-color-tint: #ffa629;
-      }
-      .text-color-orange {
-        --f7-theme-color-text-color: #ff9500;
-      }
-      .bg-color-orange {
-        --f7-theme-color-bg-color: #ff9500;
-      }
-      .border-color-orange {
-        --f7-theme-color-border-color: #ff9500;
-      }
-      .ripple-color-orange,
-      .ripple-orange {
-        --f7-theme-color-ripple-color: rgba(255, 149, 0, 0.3);
-      }
-      .color-purple {
-        --f7-theme-color: #9c27b0;
-        --f7-theme-color-rgb: 156, 39, 176;
-        --f7-theme-color-shade: #7e208f;
-        --f7-theme-color-tint: #b92fd1;
-      }
-      .text-color-purple {
-        --f7-theme-color-text-color: #9c27b0;
-      }
-      .bg-color-purple {
-        --f7-theme-color-bg-color: #9c27b0;
-      }
-      .border-color-purple {
-        --f7-theme-color-border-color: #9c27b0;
-      }
-      .ripple-color-purple,
-      .ripple-purple {
-        --f7-theme-color-ripple-color: rgba(156, 39, 176, 0.3);
-      }
-      .color-deeppurple {
-        --f7-theme-color: #673ab7;
-        --f7-theme-color-rgb: 103, 58, 183;
-        --f7-theme-color-shade: #563098;
-        --f7-theme-color-tint: #7c52c8;
-      }
-      .text-color-deeppurple {
-        --f7-theme-color-text-color: #673ab7;
-      }
-      .bg-color-deeppurple {
-        --f7-theme-color-bg-color: #673ab7;
-      }
-      .border-color-deeppurple {
-        --f7-theme-color-border-color: #673ab7;
-      }
-      .ripple-color-deeppurple,
-      .ripple-deeppurple {
-        --f7-theme-color-ripple-color: rgba(103, 58, 183, 0.3);
-      }
-      .color-lightblue {
-        --f7-theme-color: #5ac8fa;
-        --f7-theme-color-rgb: 90, 200, 250;
-        --f7-theme-color-shade: #32bbf9;
-        --f7-theme-color-tint: #82d5fb;
-      }
-      .text-color-lightblue {
-        --f7-theme-color-text-color: #5ac8fa;
-      }
-      .bg-color-lightblue {
-        --f7-theme-color-bg-color: #5ac8fa;
-      }
-      .border-color-lightblue {
-        --f7-theme-color-border-color: #5ac8fa;
-      }
-      .ripple-color-lightblue,
-      .ripple-lightblue {
-        --f7-theme-color-ripple-color: rgba(90, 200, 250, 0.3);
-      }
-      .color-teal {
-        --f7-theme-color: #009688;
-        --f7-theme-color-rgb: 0, 150, 136;
-        --f7-theme-color-shade: #006d63;
-        --f7-theme-color-tint: #00bfad;
-      }
-      .text-color-teal {
-        --f7-theme-color-text-color: #009688;
-      }
-      .bg-color-teal {
-        --f7-theme-color-bg-color: #009688;
-      }
-      .border-color-teal {
-        --f7-theme-color-border-color: #009688;
-      }
-      .ripple-color-teal,
-      .ripple-teal {
-        --f7-theme-color-ripple-color: rgba(0, 150, 136, 0.3);
-      }
-      .color-lime {
-        --f7-theme-color: #cddc39;
-        --f7-theme-color-rgb: 205, 220, 57;
-        --f7-theme-color-shade: #bac923;
-        --f7-theme-color-tint: #d6e25c;
-      }
-      .text-color-lime {
-        --f7-theme-color-text-color: #cddc39;
-      }
-      .bg-color-lime {
-        --f7-theme-color-bg-color: #cddc39;
-      }
-      .border-color-lime {
-        --f7-theme-color-border-color: #cddc39;
-      }
-      .ripple-color-lime,
-      .ripple-lime {
-        --f7-theme-color-ripple-color: rgba(205, 220, 57, 0.3);
-      }
-      .color-deeporange {
-        --f7-theme-color: #ff6b22;
-        --f7-theme-color-rgb: 255, 107, 34;
-        --f7-theme-color-shade: #f85200;
-        --f7-theme-color-tint: #ff864b;
-      }
-      .text-color-deeporange {
-        --f7-theme-color-text-color: #ff6b22;
-      }
-      .bg-color-deeporange {
-        --f7-theme-color-bg-color: #ff6b22;
-      }
-      .border-color-deeporange {
-        --f7-theme-color-border-color: #ff6b22;
-      }
-      .ripple-color-deeporange,
-      .ripple-deeporange {
-        --f7-theme-color-ripple-color: rgba(255, 107, 34, 0.3);
-      }
-      .color-gray {
-        --f7-theme-color: #8e8e93;
-        --f7-theme-color-rgb: 142, 142, 147;
-        --f7-theme-color-shade: #79797f;
-        --f7-theme-color-tint: #a3a3a7;
-      }
-      .text-color-gray {
-        --f7-theme-color-text-color: #8e8e93;
-      }
-      .bg-color-gray {
-        --f7-theme-color-bg-color: #8e8e93;
-      }
-      .border-color-gray {
-        --f7-theme-color-border-color: #8e8e93;
-      }
-      .ripple-color-gray,
-      .ripple-gray {
-        --f7-theme-color-ripple-color: rgba(142, 142, 147, 0.3);
-      }
-      .color-white {
-        --f7-theme-color: #ffffff;
-        --f7-theme-color-rgb: 255, 255, 255;
-        --f7-theme-color-shade: #ebebeb;
-        --f7-theme-color-tint: #ffffff;
-      }
-      .text-color-white {
-        --f7-theme-color-text-color: #ffffff;
-      }
-      .bg-color-white {
-        --f7-theme-color-bg-color: #ffffff;
-      }
-      .border-color-white {
-        --f7-theme-color-border-color: #ffffff;
-      }
-      .ripple-color-white,
-      .ripple-white {
-        --f7-theme-color-ripple-color: rgba(255, 255, 255, 0.3);
-      }
-      .color-black {
-        --f7-theme-color: #000000;
-        --f7-theme-color-rgb: 0, 0, 0;
-        --f7-theme-color-shade: #000000;
-        --f7-theme-color-tint: #141414;
-      }
-      .text-color-black {
-        --f7-theme-color-text-color: #000000;
-      }
-      .bg-color-black {
-        --f7-theme-color-bg-color: #000000;
-      }
-      .border-color-black {
-        --f7-theme-color-border-color: #000000;
-      }
-      .ripple-color-black,
-      .ripple-black {
-        --f7-theme-color-ripple-color: rgba(0, 0, 0, 0.3);
-      }
+
+
     +cssVars('accordion', false, 'Accordion')
     +cssVars('actions', false, 'Action Sheet')
     +cssVars('area-chart', false, 'Area Chart')
