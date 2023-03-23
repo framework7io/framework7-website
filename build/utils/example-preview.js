@@ -87,6 +87,7 @@ module.exports = (framework, src, url = '') => {
           <a
             href=${iframeSrc}
             target="_blank"
+            title="Open in new tab"
           >
             <svg
               fill="currentColor"
@@ -99,22 +100,18 @@ module.exports = (framework, src, url = '') => {
           </a>
         </div>
         <div class="example-preview-buttons-group">
-          <button class="example-preview-button-active" data-theme="ios"
-          >
+          <button class="example-preview-button-active" data-theme="ios" title="iOS theme">
             <i class="f7-icons">logo_apple</i>
           </button>
-          <button data-theme="md"
-          >
+          <button data-theme="md" title="Material theme">
             <i class="f7-icons">logo_android</i>
           </button>
         </div>
         <div class="example-preview-buttons-group">
-          <button class="example-preview-button-active" data-mode="light"
-          >
+          <button class="example-preview-button-active" data-mode="light" title="Light mode">
             <i class="f7-icons">sun_max_fill</i>
           </button>
-          <button data-mode="dark"
-          >
+          <button data-mode="dark" title="Dark mode">
             <i class="f7-icons">moon_fill</i>
           </button>
         </div>
