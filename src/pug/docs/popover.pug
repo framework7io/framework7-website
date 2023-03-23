@@ -6,14 +6,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Popover
-    
+
     p Popover component is used to manage the presentation of content in a popover. You use popovers to present information temporarily. The popover remains visible until the user taps outside of the popover window or you explicitly dismiss it.
     .important-note
       p Note that is not recommended to use Popover on small screens (iPhone). On small screens you should use <a href="action-sheet.html">Action Sheet</a> instead.
@@ -23,8 +23,8 @@ block content
           <body>
               ...
               <div class="popover">
-                  <!-- Popover's angle arrow -->
-                  <div class="popover-angle"></div>
+                  <!-- Popover's arrow -->
+                  <div class="popover-arrow"></div>
 
                   <!-- Popover content -->
                   <div class="popover-inner">
@@ -107,6 +107,11 @@ block content
           td HTMLElement
           td
           td Popover element. Can be useful if you already have Popover element in your HTML and want to create new instance using this element
+        tr
+          td arrow
+          td boolean
+          td true
+          td Enables Popover arrow/corner
         tr
           td content
           td string
@@ -297,9 +302,9 @@ block content
     .important-note
       ul
         li
-          p To open popover we need to add "<b>popover-open</b>" class to any HTML element (prefered to link)
+          p To open popover we need to add "<b>popover-open</b>" class to any HTML element (preferred to link)
         li
-          p To close popover we need to add "<b>popover-close</b>" class to any HTML element (prefered to link)
+          p To close popover we need to add "<b>popover-close</b>" class to any HTML element (preferred to link)
         li
           p If you have more than one popover in DOM, you need to specify appropriate popover via additional <b>data-popover=".my-popover"</b> attribute on this HTML element
     p According to above note:
