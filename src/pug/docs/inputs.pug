@@ -6,14 +6,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Inputs / Form Inputs
-    
+
     p Form inputs allow you to create flexible and beautiful Form layouts.
     h2 Inputs Layout
     p It is recommended to use inputs with <a href="list-view.html">List View</a>:
@@ -66,36 +66,7 @@ block content
     ul
       li
         p `item-title item-label` - input label
-    h3 Inline Labels
-    p If you want to use inline labels then you can additional `inline-labels` class to the whole list or `inline-label` class to the single item:
-    :code(lang="html")
-      <div class="list inline-labels">
-        <ul>
-          ...
-          <li class="item-content item-input">
-            <div class="item-media">... icon/image here ...</div>
-            <div class="item-inner">
-              <div class="item-title item-label">Name</div>
-              <div class="item-input-wrap">
-                <input type="text" name="name" />
-                <span class="input-clear-button"></span>
-              </div>
-            </div>
-          </li>
-          ...
-        </ul>
-      </div>
-      <!-- or just to single item -->
-      <div class="list">
-        <ul>
-          ...
-          <!-- additional "inline-label" class -->
-          <li class="item-content item-input inline-label">
-            ...
-          </li>
-          ...
-        </ul>
-      </div>
+
     h3 Floating Labels
     p To add floating label, we need to use `item-floating-label` class instead of item-label.
     :code(lang="html")
