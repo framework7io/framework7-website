@@ -6,44 +6,44 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Block / Content Block
-    
+
     p Content blocks designed (mostly) to add extra formatting and required spacing for text content:
     h2 Block
-    p To add content block element just add `<div>` with <b>`block`</b> class:
+    p To add content block element just add `<div>` with `block` class:
     :code(lang="html")
           <div class="block">
             <!-- block content -->
           </div>
-    p To add extra highlighting to block element we need additional <b>`block-strong`</b> class
+    p To add extra highlighting to block element we need additional `block-strong` class
     :code(lang="html")
           <div class="block block-strong">
             <!-- block content -->
           </div>
-    p To remove hairlines around strong block we need additional <b>`no-hairlines`</b> class
+    p To add outline (borders) around the block we need additional `block-outline` class
     :code(lang="html")
-          <div class="block block-strong no-hairlines">
+          <div class="block block-strong block-outline">
             <!-- block content -->
           </div>
-    p To make block inset we need additional <b>`inset`</b> class
+    p To make block inset we need additional `inset` class
     :code(lang="html")
           <div class="block block-strong inset">
             <!-- inset block content -->
           </div>
-    p To make block inset only on large screens we need to use <b>`medium-inset`</b> (>= 768px) class instead:
+    p To make block inset only on large screens we need to use `medium-inset` (>= 768px) class instead:
     :code(lang="html")
           <div class="block block-strong medium-inset">
             <!-- inset block content -->
           </div>
     p For full set of such responsive classes check #[a(href="grid.html#column-sizes") Grid docs]. They are `xsmall-inset`, `small-inset`, `medium-inset`, `large-inset`, `xlarge-inset`.
     h2 Block Title
-    p To add block title before Block or <a href="list-view.html">List View</a> we need element with <b>`block-title`</b> class:
+    p To add block title before Block or <a href="list-view.html">List View</a> we need element with `block-title` class:
     :code(lang="html")
           <div class="block-title">Here comes block title</div>
           <div class="block">

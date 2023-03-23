@@ -7,14 +7,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-react
   .docs-content
 
     h1 Block React Component
-    
+
     p Block React component represents <a href="../docs/block.html">Block / Content Block</a> element designed (mostly) to add extra formatting and required spacing for text content.
     h2 Block Components
     p There are following components included:
@@ -38,37 +38,42 @@ block content
           td inset
           td boolean
           td
-          td Makes block inset
+          td Makes block inset. `insetIos` and `insetMd` props available for theme specific layout
         tr
           td xsmallInset
           td boolean
           td
-          td Makes block inset when app width >= 480px
+          td Makes block inset when app width >= 480px. `xsmallInsetIos` and `xsmallInsetMd` props available for theme specific layout
         tr
           td smallInset
           td boolean
           td
-          td Makes block inset when app width >= 568px
+          td Makes block inset when app width >= 568px. `smallInsetIos` and `smallInsetMd` props available for theme specific layout
         tr
           td mediumInset
           td boolean
           td
-          td Makes block inset when app width >= 768px
+          td Makes block inset when app width >= 768px. `mediumInsetIos` and `mediumInsetMd` props available for theme specific layout
         tr
           td largeInset
           td boolean
           td
-          td Makes block inset when app width >= 1024px
+          td Makes block inset when app width >= 1024px. `largeInsetIos` and `largeInsetMd` props available for theme specific layout
         tr
           td xlargeInset
           td boolean
           td
-          td Makes block inset when app width >= 1200px
+          td Makes block inset when app width >= 1200px. `xlargeInsetIos` and `xlargeInsetMd` props available for theme specific layout
         tr
           td strong
           td boolean
           td
-          td Adds extra highlighting and padding block content
+          td Adds extra highlighting and padding block content. `strongIos` and `strongMd` props available for theme specific layout
+        tr
+          td outline
+          td boolean
+          td
+          td Makes block outline (with border). `outlineIos` and `outlineMd` props available for theme specific layout
         tr
           td accordionList
           td boolean
@@ -89,21 +94,6 @@ block content
           td boolean
           td
           td Adds additional "tab-active" class when block used as a Tab and makes it active tab
-        tr
-          td noHairlines
-          td boolean
-          td
-          td Removes outer <a href="../docs/hairlines.html">hairlines</a>
-        tr
-          td noHairlinesMd
-          td boolean
-          td
-          td Removes outer <a href="../docs/hairlines.html">hairlines</a> for MD theme
-        tr
-          td noHairlinesIos
-          td boolean
-          td
-          td Removes outer <a href="../docs/hairlines.html">hairlines</a> for iOS theme
         tr
           th(colspan="4") &lt;BlockTitle&gt; properties
         tr
