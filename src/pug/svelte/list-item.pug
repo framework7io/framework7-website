@@ -7,21 +7,19 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-svelte
   .docs-content
 
     h1 List Item Svelte Component
-    
+
 
     h2 List Item Components
     p There are following components included:
     ul
       li `ListItem` - main list item element
-      li `ListItemRow` - list item row element for custom layout
-      li `ListItemCell` - list item cell element for custom layout
 
     h2 List Item Properties
     table.params-table
@@ -84,11 +82,6 @@ block content
           td boolean
           td
           td Enables Media list item for the current list item
-        tr
-          td divider
-          td boolean
-          td
-          td Converts list item to list item divider
         tr
           td groupTitle
           td boolean
@@ -184,6 +177,11 @@ block content
           td false
           td Enables checkbox-item
         tr
+          td checkboxIcon
+          td string
+          td
+          td Allows to specify checkbox icon position - in the beginning or in the end of the list item. Can be `start` or `end`. By default checkbox list item icon is displayed in the beginning of the list item.
+        tr
           td radio
           td boolean
           td false
@@ -192,7 +190,7 @@ block content
           td radioIcon
           td string
           td
-          td Allows to specify radio icon position - in the beggining or in the end of the list item. Can be `start` or `end`. By default radio list item icon is displayed in the end of the list item in iOS theme, and in the beginning of the list item in MD theme.
+          td Allows to specify radio icon position - in the beginning or in the end of the list item. Can be `start` or `end`. By default radio list item icon is displayed in the end of the list item in iOS theme, and in the beginning of the list item in MD theme.
         tr
           td checked
           td boolean
@@ -262,10 +260,10 @@ block content
           th(colspan="2") &lt;ListItem&gt; events
         tr
           td click
-          td Event will be triggeres when user clicks on list item
+          td Event will be triggers when user clicks on list item
         tr
           td change
-          td Event will be triggeres when "change" event occurs on list item input (radio or checkbox)
+          td Event will be triggers when "change" event occurs on list item input (radio or checkbox)
         tr
           td swipeout
           td Event will be triggered while you move swipeout element. First handler argument contains `progress` object with current opened progress percentage

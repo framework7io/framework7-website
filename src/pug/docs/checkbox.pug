@@ -6,14 +6,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Checkbox
-    
+
     h2 Checkbox Layout
     p Checkbox layout is pretty simple:
     :code(lang="html")
@@ -76,6 +76,27 @@ block content
     p But if you use it with <a href="./router-component.html">Router Component</a> then it will automatically detect this attribute and set it as element property, so it can be used in templates:
     :code(lang="html")
       <input type="checkbox" {{#if something}}indeterminate{{/if}} id="my-checkbox" />
+
+    h3 Checkbox Icon Position
+    p By default checkbox list item icon is displayed in the beginning of the list item.
+    p And it is possible to override this behavior to specify position of checkbox list item icon - in the beginning or in the end of the list item.
+    p To do this, we need to add additional `item-checkbox-icon-start` or `item-checkbox-icon-end` class to `item-checkbox`:
+    ```html
+      <!-- Additional "item-checkbox-icon-end" class will force checkbox icon to appear in the beginning of the list item for all themes -->
+      <li>
+        <!-- Additional "item-checkbox-icon-end" class -->
+        <label class="item-checkbox item-checkbox-icon-end item-content">
+          <!-- Checkbox input -->
+          <input type="checkbox" />
+          <!-- Checkbox icon -->
+          <i class="icon icon-checkbox"></i>
+          <div class="item-inner">
+            <!-- Checkbox Title -->
+            <div class="item-title">Books</div>
+          </div>
+        </label>
+      </li>
+    ```
 
     +cssVars('checkbox')
 
