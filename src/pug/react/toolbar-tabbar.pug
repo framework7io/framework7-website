@@ -7,14 +7,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-react
   .docs-content
 
     h1 Toolbar React Component
-    
+
     p Toolbar is a fixed (with Fixed and Through layout types) area at the bottom of a screen that contains navigation elements. Toolbar does not have any parts, just plain links inside
     p Toolbar React component represents <a href="../docs/toolbar-tabbar.html">Toolbar</a> component.
 
@@ -90,15 +90,10 @@ block content
           td false
           td Enables scrollable Tabbar (affects only when `tabbar: true`)
         tr
-          td noShadow
+          td outline
           td boolean
-          td
-          td Disable shadow rendering for Material theme
-        tr
-          td noHairline
-          td boolean
-          td false
-          td Disable toolbar/tabbar top thin border (hairline) for iOS theme
+          td true
+          td Adds toolbar/tabbar top thin border (hairline) for iOS theme
         tr
           td hidden
           td boolean
