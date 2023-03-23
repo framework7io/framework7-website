@@ -6,14 +6,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Searchbar
-    
+
     p Searchbar allows user to search through <a href="list-view.html">List View</a> elements. Or it can be used as a visual UI component for your custom search realization.
     h2 Searchbar Layout
     :code(lang="html")
@@ -302,8 +302,8 @@ block content
         tr
           td searchGroupTitle
           td string
-          td .list-group-title, .item-divider
-          td CSS selector of group titles and dividers. Used when `hideDividers` enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider.
+          td .list-group-title
+          td CSS selector of group titles. Used when `hideGroupTitles` enabled to hide group titles. If we do a search in List View, then it usually a list group title.
         tr
           td foundEl
           td string<br>HTMLElement
@@ -350,10 +350,10 @@ block content
           td false
           td Enable to remove/replace diacritics (á, í, ó, etc.) during search
         tr
-          td hideDividers
+          td hideGroupTitles
           td boolean
           td true
-          td If enabled, then search will consider item dividers and group titles and hide them if there are no found items right after them
+          td If enabled, then search will consider group titles and hide them if there are no found items right after them
         tr
           td hideGroups
           td boolean

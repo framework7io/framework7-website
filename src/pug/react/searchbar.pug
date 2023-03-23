@@ -7,14 +7,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-react
   .docs-content
 
     h1 Searchbar React Component
-    
+
     p Searchbar React component represents Framework7's <a href="../docs/searchbar.html">Searchbar</a> component.
 
     h2 Searchbar Components
@@ -44,7 +44,7 @@ block content
           td value
           td string<br>number
           td
-          td Allows to specify Searchbar input's value. Can be usefule when used with `customSearch` enabled
+          td Allows to specify Searchbar input's value. Can be useful when used with `customSearch` enabled
         tr
           td form
           td boolean
@@ -108,8 +108,8 @@ block content
         tr
           td searchGroupTitle
           td string
-          td .list-group-title, .item-divider
-          td CSS selector of group titles and dividers. Used when `hideDividers` enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider.
+          td .list-group-title
+          td CSS selector of group titles. Used when `hideGroupTitles` enabled to hide group titles. If we do a search in List View, then it usually a list group title.
         tr
           td foundEl
           td string<br>object
@@ -146,25 +146,20 @@ block content
           td false
           td Enable to remove/replace diacritics (á, í, ó, etc.) during search
         tr
-          td hideDividers
+          td hideGroupTitles
           td boolean
           td true
-          td If enabled, then search will consider item dividers and group titles and hide them if there are no found items right after them
+          td If enabled, then search will consider group titles and hide them if there are no found items right after them
         tr
           td hideGroups
           td boolean
           td true
           td If enabled, then search will consider list view groups hide them if there are no found items inside of these groups
         tr
-          td noShadow
+          td outline
           td boolean
-          td false
-          td Disable shadow rendering for MD theme
-        tr
-          td noHairline
-          td boolean
-          td false
-          td Disable searchbar bottom thin border (hairline) for iOS theme
+          td true
+          td Adds searchbar bottom thin border (hairline) for iOS theme
 
     h2 Searchbar Methods
     table.methods-table
