@@ -6,14 +6,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Smart Select
-    
+
     p Smart select allows you to easily convert your usual form selects to dynamic pages with grouped radio or checkbox inputs. You can see such feature in many native iOS apps
     h2 Smart Select Layout
     p Smart select layout is pretty simple. It is a well known <a href="list-view.html">List View</a> link with `<select>` inside and additional `smart-select` class on `item-link`:
@@ -385,6 +385,11 @@ block content
           td boolean
           td true
           td When enabled, Smart Select modal (Popover, Popup, Sheet) will be closed on backdrop click
+        tr
+          td inputIconPosition
+          td string
+          td 'start'
+          td Select option checkbox or radio icon position. Can be `'start'` or `'end'`. Also can be set on each option via `data-input-icon-position` attribute
         tr
           td optionIcon
           td string
