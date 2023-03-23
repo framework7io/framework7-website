@@ -7,14 +7,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-react
   .docs-content
 
     h1 Panel React Component
-    
+
     p Panel React component represents <a href="../docs/panel.html">Side Panels</a> component.
     h2 Panel Components
     p There are following components included:
@@ -48,7 +48,7 @@ block content
           td effect
           td string
           td
-          td Panel effect. Can be `cover`, `reveal` or `push`
+          td Panel effect. Can be `cover`, `reveal`, `floating` or `push`
         tr
           td cover
           td boolean
@@ -64,6 +64,11 @@ block content
           td boolean
           td
           td Shortcut prop for `effect="push"`
+        tr
+          td floating
+          td boolean
+          td
+          td Shortcut prop for `effect="floating"`
         tr
           td visibleBreakpoint
           td number

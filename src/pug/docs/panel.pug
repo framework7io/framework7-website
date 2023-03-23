@@ -6,14 +6,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Panel / Side Panels
-    
+
     h2 Panel Layout
     p Let's look how to add Side Panels to our App. We may include up to 2 panels to our App, one on left side and another one on right side. We should add panels' HTML right in the beginning of the app root element (or `<body>` in case there is no root element in use):
     :code(lang="html")
@@ -38,6 +38,7 @@ block content
       li <b>"reveal"</b> - when panel moves out whole app's content,
       li <b>"cover"</b> - when panel overlays app's content,
       li <b>"push"</b> - when both panel and app's content moves out together.
+      li <b>"floating"</b> - similar to "cover" but extra space around the panel.
     p If you want to use "Reveal" effect you should add additional `panel-reveal` class to Panel, `panel-cover` for cover effect, or `panel-push` for push effect:
     :code(lang="html")
       <body>
@@ -261,7 +262,7 @@ block content
           td String with panel side: `left` or `right`
         tr
           td panel.effect
-          td String with panel effect: `cover`, `reveal` or `push`
+          td String with panel effect: `cover`, `reveal`, `floating` or `push`
         tr
           td panel.opened
           td Boolean property indicating whether it is opened or not
@@ -556,11 +557,11 @@ block content
     .important-note
       ul
         li
-          p To open panel we need to add `panel-open` class to any HTML element (prefered to link)
+          p To open panel we need to add `panel-open` class to any HTML element (preferred to link)
         li
-          p To close panel we need to add `panel-close` class to any HTML element (prefered to link)
+          p To close panel we need to add `panel-close` class to any HTML element (preferred to link)
         li
-          p To toggle panel we need to add `panel-toggle` class to any HTML element (prefered to link)
+          p To toggle panel we need to add `panel-toggle` class to any HTML element (preferred to link)
         li
           p If you want to specify which panel should opened/closed, then it could be done via additional `data-panel=".panel-left"` attribute on this HTML element. This attribute can also receive just `left` or `right` value if there is only one panel of such side in DOM.
     p According to above note:
