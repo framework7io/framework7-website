@@ -6,155 +6,53 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Grid / Layout Grid
-    
+
     p Framework7 comes with flexible layout grid that allows you place your content as you need.
     h2 Grid Layout
     :code(lang="html")
-          <!-- Each "cells" row should be wrapped with div class="row" -->
-          <div class="row">
-              <!-- Each "cell" has col-[width in percents] class -->
-              <div class="col-50">50%</div>
-              <div class="col-50">50%</div>
+          <!-- Grid with 2 columns -->
+          <div class="grid grid-cols-2">
+            <div>50%</div>
+            <div>50%</div>
           </div>
-          <div class="row">
-              <!-- Each "cell" has col-[width in percents] class -->
-              <div class="col-33">33%</div>
-              <div class="col-33">33%</div>
-              <div class="col-33">33%</div>
+          <!-- Grid with 3 columns and gap/space between -->
+          <div class="grid grid-cols-3 grid-gap">
+            <div>33%</div>
+            <div>33%</div>
+            <div>33%</div>
           </div>
-    p By default all "cells" has 15px gap between each other for iOS theme and 16px gap for MD theme. If you want "cells" without gap, you should add additional `no-gap` class to "row":
-    :code(lang="html")
-          <!-- Additional "no-gap" class on row to remove space between cells -->
-          <div class="row no-gap">
-              <!-- Each "cell" has col-[width in percents] class -->
-              <div class="col-50">50%</div>
-              <div class="col-50">50%</div>
-          </div>
-          <div class="row">
-              <!-- Each "cell" has col-[width in percents] class -->
-              <div class="col-33">33%</div>
-              <div class="col-33">33%</div>
-              <div class="col-33">33%</div>
-          </div>
+
     h2 Column Sizes
     p The following columns size are available:
-    - var cols = [5, 10, 15, 20, 25, 30, 100/3, 35, 40, 45, 50, 55, 60, 65, 100*(2/3), 70, 75, 80, 85, 90, 95, 100];
+    - var cols = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
     table
       thead
         tr
           th Class
-          th xsmall <br><small>width >= 480px</small>
-          th small <br><small>width >= 568px</small>
-          th medium <br><small>width >= 768px</small>
-          th large <br><small>width >= 1024px</small>
-          th xlarge <br><small>width >= 1200px</small>
-          th Width
+          th xsmall <br><code>width >= 480px</code>
+          th small <br><code>width >= 568px</code>
+          th medium <br><code>width >= 768px</code>
+          th large <br><code>width >= 1024px</code>
+          th xlarge <br><code>width >= 1200px</code>
       tbody
         - for (var i = 0; i < cols.length; i++)
           - var className = Math.floor(cols[i]);
           tr
-            td col-#{className}
-            td xsmall-#{className}
-            td small-#{className}
-            td medium-#{className}
-            td large-#{className}
-            td xlarge-#{className}
-            td #{cols[i]}%
-        tr
-          td col
-          td xsmall-auto
-          td small-auto
-          td medium-auto
-          td large-auto
-          td xlarge-auto
-          td Equal width
+            td grid-cols-#{className}
+            td xsmall-grid-cols-#{className}
+            td small-grid-cols-#{className}
+            td medium-grid-cols-#{className}
+            td large-grid-cols-#{className}
+            td xlarge-grid-cols-#{className}
 
-    h2 Resizable Grid
-    p It is also possible to make layout grid resizable. Let's take a look at its HTML layout:
-    :code(lang="html")
-      <div class="row">
-        <div class="col resizable">
-          ...
-          <span class="resize-handler"></span>
-        </div>
-        <div class="col resizable">
-          ...
-          <span class="resize-handler"></span>
-        </div>
-        ...
-      </div>
-    p where:
-    ul
-      li `resizable` - additional class on column to make it resizable
-      li `<span class="resize-handler"></span>` - resize handler between columns that is used to resize columns
-    p There are also additional classes that can be used to control resizing:
-    ul
-      li `resizable-fixed` - columns with such class will have fixed size (not resizable)
-      li `resizable-absolute` - enables absolute (in px) resizing. When it is not enabled, it resize columns in relative form (sets width in %), this keeps them responsive. With absolute resize it will set absolute size in px to each column, but it can break responsiveness.
 
-    p In the same way, we can make grid rows resizable as well:
-    :code(lang="html")
-      <div>
-        <!-- add "resizable" class to row -->
-        <div class="row resizable">
-          <div class="col">...</div>
-          <div class="col">...</div>
-          <!-- put "resize-handler" as the last child of the row -->
-          <span class="resize-handler"></span>
-        </div>
-
-        <!-- add "resizable" class to row -->
-        <div class="row resizable">
-          <div class="col">...</div>
-          <div class="col">...</div>
-          <!-- put "resize-handler" as the last child of the row -->
-          <span class="resize-handler"></span>
-        </div>
-
-        ...
-      </div>
-    p Resizable rows support same additional `resizable-fixed` and `resizable-absolute` modifiers.
-
-    .important-note
-      ul
-        li To limit colums min/max size (width), they must have `min-width` and `max-width` CSS properties specified
-        li To limit rows min/max size (height), they must have `min-height` and `max-height` CSS properties specified
-        li By default rows (as well as columns) resized in "relative way", to ensure it works correctly, make sure they have parent with fixed height
-
-    h2 Grid Events
-    p Grid will fire the following DOM events on column and row items and app events on app instance:
-    h3 DOM Events
-    table.events-table
-      thead
-        tr
-          th Event
-          th Target
-          th Description
-      tbody
-        tr
-          td grid:resize
-          td Grid column or row element<span>&lt;div class="col"&gt;</span><span>&lt;div class="row"&gt;</span>
-          td Event will be triggered on resizable grid column (or row) resize
-
-    h3 App Events
-    table.events-table
-      thead
-        tr
-          th Event
-          th Arguments
-          th Description
-      tbody
-        tr
-          td gridResize
-          td <span>(el)</span>
-          td Event will be triggered on resizable grid column (or row) resize
 
     +cssVars('grid')
 
