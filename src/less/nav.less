@@ -111,6 +111,23 @@ nav {
   .nav-searchbar {
     display: flex;
     margin-right: 24px;
+    input {
+      background: transparent;
+      border: 1px solid @colorBorderStrong;
+      border-radius: 8px;
+      height: 36px;
+      width: 160px;
+      box-sizing: border-box;
+      color: @colorSecondary;
+      font-size: 14px;
+      padding-left: 34px;
+      appearance: none;
+      outline: none;
+      box-shadow: none;
+      &::placeholder {
+        color: @colorSecondary;
+      }
+    }
     --docsearch-searchbox-background: transparent;
     --docsearch-searchbox-focus-background: @colorSurface4;
     --docsearch-searchbox-shadow: none;
