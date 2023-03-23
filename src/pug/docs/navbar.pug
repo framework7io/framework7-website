@@ -6,14 +6,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Navbar
-    
+
     p Navbar is a fixed area at the top of a screen that contains Page title and navigation elements.
     p Navbar has 3 main parts: `Left`, `Title` and `Right`. Each part may contain any HTML content, but it is recommended to use them in the following way:
     ul
@@ -155,12 +155,9 @@ block content
       </div>
 
     h3 Theme-specific Styling
-    p In `ios` theme Navbar has thin border on the bottom. To disable this border you need to add `no-hairline` class to navbar element:
+    p In `ios` theme Navbar has thin border on the bottom. To disable this border you need to add `no-outline` class to navbar element:
     :code(lang="html")
-          <div class="navbar no-hairline">...</div>
-    p In `md` theme Navbar has shadow. To disable this shadow you need to add `no-shadow` class to navbar element:
-    :code(lang="html")
-          <div class="navbar no-shadow">...</div>
+          <div class="navbar no-outline">...</div>
 
     h2 Navbar Type
     p Now let's look where we can place our Navbar in DOM. There are several rules to place Navbar.
