@@ -8,6 +8,7 @@ block docs-index
 block content
   -
     var colors = {
+      primary: '#007aff',
       red: '#ff3b30',
       green: '#4cd964',
       blue: '#2196f3',
@@ -20,29 +21,27 @@ block content
       teal: '#009688',
       lime: '#cddc39',
       deeporange: '#ff6b22',
-      gray: '#8e8e93',
       white: '#ffffff',
       black: '#000000',
     };
 
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Color Themes
-    
+
 
     h2 Default Theme Color
-    p Default theme color is set to the following:
-    p #[b #007aff]
+    p Default theme color is set to the following: #[code #007aff]
     +examplePreview('core', 'color-themes.html', 'color-themes')
 
 
     h2 Colors
     p Framework7 comes with 15 ready to use additional color themes.
-    table
+    table.colors-table
       tbody
         each color, key in colors
           tr
@@ -51,58 +50,54 @@ block content
             td
               div.color-example(style=`background-color: ${color}`)
               div
-                b=color
+                code=color
 
     h2 Apply Color Themes
-    p It is easy to apply color themes. All you need is just to add `color-theme-[color]` class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
+    p It is easy to apply color themes. All you need is just to add `color-[color]` class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
     :code(lang="html")
-          <body class="color-theme-red">
-              ...
-          </body>
+      <body class="color-red">
+          ...
+      </body>
 
-          <div class="page color-theme-green">
-              ...
-          </div>
+      <div class="page color-green">
+          ...
+      </div>
 
-          <div class="list-block color-theme-pink">
-              ...
-          </div>
+      <div class="list-block color-pink">
+          ...
+      </div>
 
-          <div class="navbar color-theme-orange">
-              ...
-          </div>
+      <div class="navbar color-orange">
+          ...
+      </div>
 
-          <div class="segmented color-theme-yellow">
-              ...
-          </div>
+      <div class="segmented color-yellow">
+          ...
+      </div>
     .important-note
-      p Note, that applied color theme affects only interractive elements such as links, buttons, form elements, icons. It doesn't change basic text color or background colors on other blocks.
-    h2 Dark Theme
-    p Framework7 also has additional dark theme layout. To apply dark theme we need to add `dark` class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
+      p Note, that applied color theme affects only interactive elements such as links, buttons, form elements, icons. It doesn't change basic text color or background colors on other blocks.
+    h2 Dark Mode
+    p Framework7 also has additional dark mode layout. To apply dark theme we need to add `dark` class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
     :code(lang="html")
-          <html class="dark">
-              ...
-          </html>
+      <html class="dark">
+          ...
+      </html>
 
-          <body class="dark">
-              ...
-          </body>
+      <body class="dark">
+          ...
+      </body>
 
-          <div class="page dark">
-              ...
-          </div>
+      <div class="page dark">
+          ...
+      </div>
 
-          <div class="list-block dark">
-              ...
-          </div>
+      <div class="list-block dark">
+          ...
+      </div>
 
     h2 Helper Classes
     p There are also additional helper classes that could be used without/outside color themes:
     ul
-      li
-        p `color-[color]` - if you want to change color of individual button, link or icon, for example:
-        :code(lang="html")
-              <a class="button color-red">Red button</a>
       li
         p `text-color-[color]` - if you want to change text color of required element:
         :code(lang="html")
@@ -130,494 +125,218 @@ block content
         p `border-color-primary` - to change border color of element to theme color.
 
     h2 Custom Color Theme
-    p To set custom color theme, we need to specify few CSS variables:
-    ul
-      li `--f7-theme-color` — HEX value of theme color.
-      li `--f7-theme-color-shade` — 8% darken theme color. Required, for example, for pressed buttons state.
-      li `--f7-theme-color-tint` — 8% lighten theme color. Required, for example, for pressed buttons state.
-      li `--f7-theme-color-rgb` — RGB value of theme color. Required for semitransparent elements.
-    p For example, if custom theme color is #f00 (red), we just need to add following variables to our CSS:
+    p To set custom color theme, we need to specify `primary` color in `app.colors` parameter:
+    ```js
+      const app = new Framework7({
+        colors: {
+          // specify primary color theme
+          primary: '#ff0000'
+        }
+      })
+    ```
+    p It will generate all required CSS variables and automatically inject it to the document.
+    p For example, if custom theme color is #f00 (red), it will generate and add the following CSS styles to the document for the primary color
     :code(lang="css")
       :root {
-        --f7-theme-color: #f00;
-        --f7-theme-color-shade: #d60000;
-        --f7-theme-color-tint: #ff2929;
-        --f7-theme-color-rgb: 255, 0, 0;
+        --f7-ios-primary: #ff0000;
+        --f7-ios-primary-shade: #d60000;
+        --f7-ios-primary-tint: #ff2929;
+        --f7-ios-primary-rgb: 255, 0, 0;
+        --f7-md-primary-shade: #970100;
+        --f7-md-primary-tint: #e90100;
+        --f7-md-primary-rgb: 192, 1, 0;
+        --f7-md-primary: #c00100;
+        --f7-md-on-primary: #ffffff;
+        --f7-md-primary-container: #ffdad4;
+        --f7-md-on-primary-container: #410000;
+        --f7-md-secondary: #775651;
+        --f7-md-on-secondary: #ffffff;
+        --f7-md-secondary-container: #ffdad4;
+        --f7-md-on-secondary-container: #2c1512;
+        --f7-md-surface: #fffbff;
+        --f7-md-on-surface: #201a19;
+        --f7-md-surface-variant: #f5ddda;
+        --f7-md-on-surface-variant: #534341;
+        --f7-md-outline: #857370;
+        --f7-md-outline-variant: #d8c2be;
+        --f7-md-inverse-surface: #362f2e;
+        --f7-md-inverse-on-surface: #fbeeec;
+        --f7-md-inverse-primary: #ffb4a8;
+        --f7-md-surface-1: #fceff2;
+        --f7-md-surface-2: #fae7eb;
+        --f7-md-surface-3: #f8e0e3;
+        --f7-md-surface-4: #f7dde0;
+        --f7-md-surface-5: #f6d8db;
+        --f7-md-surface-variant-rgb: 245, 221, 218;
+        --f7-md-on-surface-variant-rgb: 83, 67, 65;
+        --f7-md-surface-1-rgb: 252, 239, 242;
+        --f7-md-surface-2-rgb: 250, 231, 235;
+        --f7-md-surface-3-rgb: 248, 224, 227;
+        --f7-md-surface-4-rgb: 247, 221, 224;
+        --f7-md-surface-5-rgb: 246, 216, 219;
+        --swiper-theme-color: var(--f7-theme-color);
+        --f7-color-primary: #ff0000;
       }
-    p There is also new #[a(href="utils.html#colorthemecssproperties") colorThemeCSSProperties] util that can generate required CSS variables:
-    :code(lang="js")
-      /* Generate CSS variables for red theme color */
-      app.utils.colorThemeCSSProperties('#f00');
-    p It will return the following object:
-    :code(lang="js")
-      {
-        "--f7-theme-color": "#f00",
-        "--f7-theme-color-rgb": "255, 0, 0",
-        "--f7-theme-color-shade": "#d60000",
-        "--f7-theme-color-tint": "#ff2929"
+      .dark {
+        --f7-md-primary-shade: #ff917f;
+        --f7-md-primary-tint: #ffd7d1;
+        --f7-md-primary-rgb: 255, 180, 168;
+        --f7-md-primary: #ffb4a8;
+        --f7-md-on-primary: #690100;
+        --f7-md-primary-container: #930100;
+        --f7-md-on-primary-container: #ffdad4;
+        --f7-md-secondary: #e7bdb6;
+        --f7-md-on-secondary: #442925;
+        --f7-md-secondary-container: #5d3f3b;
+        --f7-md-on-secondary-container: #ffdad4;
+        --f7-md-surface: #201a19;
+        --f7-md-on-surface: #ede0dd;
+        --f7-md-surface-variant: #534341;
+        --f7-md-on-surface-variant: #d8c2be;
+        --f7-md-outline: #a08c89;
+        --f7-md-outline-variant: #534341;
+        --f7-md-inverse-surface: #ede0dd;
+        --f7-md-inverse-on-surface: #362f2e;
+        --f7-md-inverse-primary: #c00100;
+        --f7-md-surface-1: #2b2220;
+        --f7-md-surface-2: #322624;
+        --f7-md-surface-3: #392b29;
+        --f7-md-surface-4: #3b2c2a;
+        --f7-md-surface-5: #3f302d;
+        --f7-md-surface-variant-rgb: 83, 67, 65;
+        --f7-md-on-surface-variant-rgb: 216, 194, 190;
+        --f7-md-surface-1-rgb: 43, 34, 32;
+        --f7-md-surface-2-rgb: 50, 38, 36;
+        --f7-md-surface-3-rgb: 57, 43, 41;
+        --f7-md-surface-4-rgb: 59, 44, 42;
+        --f7-md-surface-5-rgb: 63, 48, 45;
       }
-
-
-    h2 CSS Variables
-    :code(lang="css")
-      /*====================
-        Primary Theme
-        ==================== */
+      .ios {
+        --f7-theme-color: var(--f7-ios-primary);
+        --f7-theme-color-rgb: var(--f7-ios-primary-rgb);
+        --f7-theme-color-shade: var(--f7-ios-primary-shade);
+        --f7-theme-color-tint: var(--f7-ios-primary-tint);
+      }
+      .md {
+        --f7-theme-color: var(--f7-md-primary);
+        --f7-theme-color-rgb: var(--f7-md-primary-rgb);
+        --f7-theme-color-shade: var(--f7-md-primary-shade);
+        --f7-theme-color-tint: var(--f7-md-primary-tint);
+      }
+      .color-primary {
+        --f7-ios-primary: #ff0000;
+        --f7-ios-primary-shade: #d60000;
+        --f7-ios-primary-tint: #ff2929;
+        --f7-ios-primary-rgb: 255, 0, 0;
+        --f7-md-primary-shade: #970100;
+        --f7-md-primary-tint: #e90100;
+        --f7-md-primary-rgb: 192, 1, 0;
+        --f7-md-primary: #c00100;
+        --f7-md-on-primary: #ffffff;
+        --f7-md-primary-container: #ffdad4;
+        --f7-md-on-primary-container: #410000;
+        --f7-md-secondary: #775651;
+        --f7-md-on-secondary: #ffffff;
+        --f7-md-secondary-container: #ffdad4;
+        --f7-md-on-secondary-container: #2c1512;
+        --f7-md-surface: #fffbff;
+        --f7-md-on-surface: #201a19;
+        --f7-md-surface-variant: #f5ddda;
+        --f7-md-on-surface-variant: #534341;
+        --f7-md-outline: #857370;
+        --f7-md-outline-variant: #d8c2be;
+        --f7-md-inverse-surface: #362f2e;
+        --f7-md-inverse-on-surface: #fbeeec;
+        --f7-md-inverse-primary: #ffb4a8;
+        --f7-md-surface-1: #fceff2;
+        --f7-md-surface-2: #fae7eb;
+        --f7-md-surface-3: #f8e0e3;
+        --f7-md-surface-4: #f7dde0;
+        --f7-md-surface-5: #f6d8db;
+        --f7-md-surface-variant-rgb: 245, 221, 218;
+        --f7-md-on-surface-variant-rgb: 83, 67, 65;
+        --f7-md-surface-1-rgb: 252, 239, 242;
+        --f7-md-surface-2-rgb: 250, 231, 235;
+        --f7-md-surface-3-rgb: 248, 224, 227;
+        --f7-md-surface-4-rgb: 247, 221, 224;
+        --f7-md-surface-5-rgb: 246, 216, 219;
+        --swiper-theme-color: var(--f7-theme-color);
+      }
+      .color-primary.dark,
+      .color-primary .dark,
+      .dark .color-primary {
+        --f7-md-primary-shade: #ff917f;
+        --f7-md-primary-tint: #ffd7d1;
+        --f7-md-primary-rgb: 255, 180, 168;
+        --f7-md-primary: #ffb4a8;
+        --f7-md-on-primary: #690100;
+        --f7-md-primary-container: #930100;
+        --f7-md-on-primary-container: #ffdad4;
+        --f7-md-secondary: #e7bdb6;
+        --f7-md-on-secondary: #442925;
+        --f7-md-secondary-container: #5d3f3b;
+        --f7-md-on-secondary-container: #ffdad4;
+        --f7-md-surface: #201a19;
+        --f7-md-on-surface: #ede0dd;
+        --f7-md-surface-variant: #534341;
+        --f7-md-on-surface-variant: #d8c2be;
+        --f7-md-outline: #a08c89;
+        --f7-md-outline-variant: #534341;
+        --f7-md-inverse-surface: #ede0dd;
+        --f7-md-inverse-on-surface: #362f2e;
+        --f7-md-inverse-primary: #c00100;
+        --f7-md-surface-1: #2b2220;
+        --f7-md-surface-2: #322624;
+        --f7-md-surface-3: #392b29;
+        --f7-md-surface-4: #3b2c2a;
+        --f7-md-surface-5: #3f302d;
+        --f7-md-surface-variant-rgb: 83, 67, 65;
+        --f7-md-on-surface-variant-rgb: 216, 194, 190;
+        --f7-md-surface-1-rgb: 43, 34, 32;
+        --f7-md-surface-2-rgb: 50, 38, 36;
+        --f7-md-surface-3-rgb: 57, 43, 41;
+        --f7-md-surface-4-rgb: 59, 44, 42;
+        --f7-md-surface-5-rgb: 63, 48, 45;
+        --swiper-theme-color: var(--f7-theme-color);
+      }
+      .ios .color-primary,
+      .ios.color-primary {
+        --f7-theme-color: var(--f7-ios-primary);
+        --f7-theme-color-rgb: var(--f7-ios-primary-rgb);
+        --f7-theme-color-shade: var(--f7-ios-primary-shade);
+        --f7-theme-color-tint: var(--f7-ios-primary-tint);
+      }
+      .md .color-primary,
+      .md.color-primary {
+        --f7-theme-color: var(--f7-md-primary);
+        --f7-theme-color-rgb: var(--f7-md-primary-rgb);
+        --f7-theme-color-shade: var(--f7-md-primary-shade);
+        --f7-theme-color-tint: var(--f7-md-primary-tint);
+      }
       .text-color-primary {
-        --f7-theme-color-text-color: var(--f7-theme-color);
+        --f7-theme-color-text-color: #ff0000;
       }
       .bg-color-primary {
-        --f7-theme-color-bg-color: var(--f7-theme-color);
+        --f7-theme-color-bg-color: #ff0000;
       }
       .border-color-primary {
-        --f7-theme-color-border-color: var(--f7-theme-color);
+        --f7-theme-color-border-color: #ff0000;
       }
       .ripple-color-primary {
-        --f7-theme-color-ripple-color: rgba(var(--f7-theme-color-rgb), 0.3);
-      }
-      /*====================
-        Colors List
-        ==================== */
-      :root {
-        --f7-color-red: #ff3b30;
-        --f7-color-red-rgb: 255, 59, 48;
-        --f7-color-red-shade: #ff1407;
-        --f7-color-red-tint: #ff6259;
-        --f7-color-green: #4cd964;
-        --f7-color-green-rgb: 76, 217, 100;
-        --f7-color-green-shade: #2cd048;
-        --f7-color-green-tint: #6ee081;
-        --f7-color-blue: #2196f3;
-        --f7-color-blue-rgb: 33, 150, 243;
-        --f7-color-blue-shade: #0c82df;
-        --f7-color-blue-tint: #48a8f5;
-        --f7-color-pink: #ff2d55;
-        --f7-color-pink-rgb: 255, 45, 85;
-        --f7-color-pink-shade: #ff0434;
-        --f7-color-pink-tint: #ff5676;
-        --f7-color-yellow: #ffcc00;
-        --f7-color-yellow-rgb: 255, 204, 0;
-        --f7-color-yellow-shade: #d6ab00;
-        --f7-color-yellow-tint: #ffd429;
-        --f7-color-orange: #ff9500;
-        --f7-color-orange-rgb: 255, 149, 0;
-        --f7-color-orange-shade: #d67d00;
-        --f7-color-orange-tint: #ffa629;
-        --f7-color-purple: #9c27b0;
-        --f7-color-purple-rgb: 156, 39, 176;
-        --f7-color-purple-shade: #7e208f;
-        --f7-color-purple-tint: #b92fd1;
-        --f7-color-deeppurple: #673ab7;
-        --f7-color-deeppurple-rgb: 103, 58, 183;
-        --f7-color-deeppurple-shade: #563098;
-        --f7-color-deeppurple-tint: #7c52c8;
-        --f7-color-lightblue: #5ac8fa;
-        --f7-color-lightblue-rgb: 90, 200, 250;
-        --f7-color-lightblue-shade: #32bbf9;
-        --f7-color-lightblue-tint: #82d5fb;
-        --f7-color-teal: #009688;
-        --f7-color-teal-rgb: 0, 150, 136;
-        --f7-color-teal-shade: #006d63;
-        --f7-color-teal-tint: #00bfad;
-        --f7-color-lime: #cddc39;
-        --f7-color-lime-rgb: 205, 220, 57;
-        --f7-color-lime-shade: #bac923;
-        --f7-color-lime-tint: #d6e25c;
-        --f7-color-deeporange: #ff6b22;
-        --f7-color-deeporange-rgb: 255, 107, 34;
-        --f7-color-deeporange-shade: #f85200;
-        --f7-color-deeporange-tint: #ff864b;
-        --f7-color-gray: #8e8e93;
-        --f7-color-gray-rgb: 142, 142, 147;
-        --f7-color-gray-shade: #79797f;
-        --f7-color-gray-tint: #a3a3a7;
-        --f7-color-white: #ffffff;
-        --f7-color-white-rgb: 255, 255, 255;
-        --f7-color-white-shade: #ebebeb;
-        --f7-color-white-tint: #ffffff;
-        --f7-color-black: #000000;
-        --f7-color-black-rgb: 0, 0, 0;
-        --f7-color-black-shade: #000000;
-        --f7-color-black-tint: #141414;
-      }
-      /*====================
-        Color Themes
-        ==================== */
-      .color-theme-red {
-        --f7-theme-color: #ff3b30;
-        --f7-theme-color-rgb: 255, 59, 48;
-        --f7-theme-color-shade: #ff1407;
-        --f7-theme-color-tint: #ff6259;
-      }
-      .color-theme-green {
-        --f7-theme-color: #4cd964;
-        --f7-theme-color-rgb: 76, 217, 100;
-        --f7-theme-color-shade: #2cd048;
-        --f7-theme-color-tint: #6ee081;
-      }
-      .color-theme-blue {
-        --f7-theme-color: #2196f3;
-        --f7-theme-color-rgb: 33, 150, 243;
-        --f7-theme-color-shade: #0c82df;
-        --f7-theme-color-tint: #48a8f5;
-      }
-      .color-theme-pink {
-        --f7-theme-color: #ff2d55;
-        --f7-theme-color-rgb: 255, 45, 85;
-        --f7-theme-color-shade: #ff0434;
-        --f7-theme-color-tint: #ff5676;
-      }
-      .color-theme-yellow {
-        --f7-theme-color: #ffcc00;
-        --f7-theme-color-rgb: 255, 204, 0;
-        --f7-theme-color-shade: #d6ab00;
-        --f7-theme-color-tint: #ffd429;
-      }
-      .color-theme-orange {
-        --f7-theme-color: #ff9500;
-        --f7-theme-color-rgb: 255, 149, 0;
-        --f7-theme-color-shade: #d67d00;
-        --f7-theme-color-tint: #ffa629;
-      }
-      .color-theme-purple {
-        --f7-theme-color: #9c27b0;
-        --f7-theme-color-rgb: 156, 39, 176;
-        --f7-theme-color-shade: #7e208f;
-        --f7-theme-color-tint: #b92fd1;
-      }
-      .color-theme-deeppurple {
-        --f7-theme-color: #673ab7;
-        --f7-theme-color-rgb: 103, 58, 183;
-        --f7-theme-color-shade: #563098;
-        --f7-theme-color-tint: #7c52c8;
-      }
-      .color-theme-lightblue {
-        --f7-theme-color: #5ac8fa;
-        --f7-theme-color-rgb: 90, 200, 250;
-        --f7-theme-color-shade: #32bbf9;
-        --f7-theme-color-tint: #82d5fb;
-      }
-      .color-theme-teal {
-        --f7-theme-color: #009688;
-        --f7-theme-color-rgb: 0, 150, 136;
-        --f7-theme-color-shade: #006d63;
-        --f7-theme-color-tint: #00bfad;
-      }
-      .color-theme-lime {
-        --f7-theme-color: #cddc39;
-        --f7-theme-color-rgb: 205, 220, 57;
-        --f7-theme-color-shade: #bac923;
-        --f7-theme-color-tint: #d6e25c;
-      }
-      .color-theme-deeporange {
-        --f7-theme-color: #ff6b22;
-        --f7-theme-color-rgb: 255, 107, 34;
-        --f7-theme-color-shade: #f85200;
-        --f7-theme-color-tint: #ff864b;
-      }
-      .color-theme-gray {
-        --f7-theme-color: #8e8e93;
-        --f7-theme-color-rgb: 142, 142, 147;
-        --f7-theme-color-shade: #79797f;
-        --f7-theme-color-tint: #a3a3a7;
-      }
-      .color-theme-white {
-        --f7-theme-color: #ffffff;
-        --f7-theme-color-rgb: 255, 255, 255;
-        --f7-theme-color-shade: #ebebeb;
-        --f7-theme-color-tint: #ffffff;
-      }
-      .color-theme-black {
-        --f7-theme-color: #000000;
-        --f7-theme-color-rgb: 0, 0, 0;
-        --f7-theme-color-shade: #000000;
-        --f7-theme-color-tint: #141414;
-      }
-      /*====================
-        Color Overrides
-        ==================== */
-      .color-red {
-        --f7-theme-color: #ff3b30;
-        --f7-theme-color-rgb: 255, 59, 48;
-        --f7-theme-color-shade: #ff1407;
-        --f7-theme-color-tint: #ff6259;
-      }
-      .text-color-red {
-        --f7-theme-color-text-color: #ff3b30;
-      }
-      .bg-color-red {
-        --f7-theme-color-bg-color: #ff3b30;
-      }
-      .border-color-red {
-        --f7-theme-color-border-color: #ff3b30;
-      }
-      .ripple-color-red,
-      .ripple-red {
-        --f7-theme-color-ripple-color: rgba(255, 59, 48, 0.3);
-      }
-      .color-green {
-        --f7-theme-color: #4cd964;
-        --f7-theme-color-rgb: 76, 217, 100;
-        --f7-theme-color-shade: #2cd048;
-        --f7-theme-color-tint: #6ee081;
-      }
-      .text-color-green {
-        --f7-theme-color-text-color: #4cd964;
-      }
-      .bg-color-green {
-        --f7-theme-color-bg-color: #4cd964;
-      }
-      .border-color-green {
-        --f7-theme-color-border-color: #4cd964;
-      }
-      .ripple-color-green,
-      .ripple-green {
-        --f7-theme-color-ripple-color: rgba(76, 217, 100, 0.3);
-      }
-      .color-blue {
-        --f7-theme-color: #2196f3;
-        --f7-theme-color-rgb: 33, 150, 243;
-        --f7-theme-color-shade: #0c82df;
-        --f7-theme-color-tint: #48a8f5;
-      }
-      .text-color-blue {
-        --f7-theme-color-text-color: #2196f3;
-      }
-      .bg-color-blue {
-        --f7-theme-color-bg-color: #2196f3;
-      }
-      .border-color-blue {
-        --f7-theme-color-border-color: #2196f3;
-      }
-      .ripple-color-blue,
-      .ripple-blue {
-        --f7-theme-color-ripple-color: rgba(33, 150, 243, 0.3);
-      }
-      .color-pink {
-        --f7-theme-color: #ff2d55;
-        --f7-theme-color-rgb: 255, 45, 85;
-        --f7-theme-color-shade: #ff0434;
-        --f7-theme-color-tint: #ff5676;
-      }
-      .text-color-pink {
-        --f7-theme-color-text-color: #ff2d55;
-      }
-      .bg-color-pink {
-        --f7-theme-color-bg-color: #ff2d55;
-      }
-      .border-color-pink {
-        --f7-theme-color-border-color: #ff2d55;
-      }
-      .ripple-color-pink,
-      .ripple-pink {
-        --f7-theme-color-ripple-color: rgba(255, 45, 85, 0.3);
-      }
-      .color-yellow {
-        --f7-theme-color: #ffcc00;
-        --f7-theme-color-rgb: 255, 204, 0;
-        --f7-theme-color-shade: #d6ab00;
-        --f7-theme-color-tint: #ffd429;
-      }
-      .text-color-yellow {
-        --f7-theme-color-text-color: #ffcc00;
-      }
-      .bg-color-yellow {
-        --f7-theme-color-bg-color: #ffcc00;
-      }
-      .border-color-yellow {
-        --f7-theme-color-border-color: #ffcc00;
-      }
-      .ripple-color-yellow,
-      .ripple-yellow {
-        --f7-theme-color-ripple-color: rgba(255, 204, 0, 0.3);
-      }
-      .color-orange {
-        --f7-theme-color: #ff9500;
-        --f7-theme-color-rgb: 255, 149, 0;
-        --f7-theme-color-shade: #d67d00;
-        --f7-theme-color-tint: #ffa629;
-      }
-      .text-color-orange {
-        --f7-theme-color-text-color: #ff9500;
-      }
-      .bg-color-orange {
-        --f7-theme-color-bg-color: #ff9500;
-      }
-      .border-color-orange {
-        --f7-theme-color-border-color: #ff9500;
-      }
-      .ripple-color-orange,
-      .ripple-orange {
-        --f7-theme-color-ripple-color: rgba(255, 149, 0, 0.3);
-      }
-      .color-purple {
-        --f7-theme-color: #9c27b0;
-        --f7-theme-color-rgb: 156, 39, 176;
-        --f7-theme-color-shade: #7e208f;
-        --f7-theme-color-tint: #b92fd1;
-      }
-      .text-color-purple {
-        --f7-theme-color-text-color: #9c27b0;
-      }
-      .bg-color-purple {
-        --f7-theme-color-bg-color: #9c27b0;
-      }
-      .border-color-purple {
-        --f7-theme-color-border-color: #9c27b0;
-      }
-      .ripple-color-purple,
-      .ripple-purple {
-        --f7-theme-color-ripple-color: rgba(156, 39, 176, 0.3);
-      }
-      .color-deeppurple {
-        --f7-theme-color: #673ab7;
-        --f7-theme-color-rgb: 103, 58, 183;
-        --f7-theme-color-shade: #563098;
-        --f7-theme-color-tint: #7c52c8;
-      }
-      .text-color-deeppurple {
-        --f7-theme-color-text-color: #673ab7;
-      }
-      .bg-color-deeppurple {
-        --f7-theme-color-bg-color: #673ab7;
-      }
-      .border-color-deeppurple {
-        --f7-theme-color-border-color: #673ab7;
-      }
-      .ripple-color-deeppurple,
-      .ripple-deeppurple {
-        --f7-theme-color-ripple-color: rgba(103, 58, 183, 0.3);
-      }
-      .color-lightblue {
-        --f7-theme-color: #5ac8fa;
-        --f7-theme-color-rgb: 90, 200, 250;
-        --f7-theme-color-shade: #32bbf9;
-        --f7-theme-color-tint: #82d5fb;
-      }
-      .text-color-lightblue {
-        --f7-theme-color-text-color: #5ac8fa;
-      }
-      .bg-color-lightblue {
-        --f7-theme-color-bg-color: #5ac8fa;
-      }
-      .border-color-lightblue {
-        --f7-theme-color-border-color: #5ac8fa;
-      }
-      .ripple-color-lightblue,
-      .ripple-lightblue {
-        --f7-theme-color-ripple-color: rgba(90, 200, 250, 0.3);
-      }
-      .color-teal {
-        --f7-theme-color: #009688;
-        --f7-theme-color-rgb: 0, 150, 136;
-        --f7-theme-color-shade: #006d63;
-        --f7-theme-color-tint: #00bfad;
-      }
-      .text-color-teal {
-        --f7-theme-color-text-color: #009688;
-      }
-      .bg-color-teal {
-        --f7-theme-color-bg-color: #009688;
-      }
-      .border-color-teal {
-        --f7-theme-color-border-color: #009688;
-      }
-      .ripple-color-teal,
-      .ripple-teal {
-        --f7-theme-color-ripple-color: rgba(0, 150, 136, 0.3);
-      }
-      .color-lime {
-        --f7-theme-color: #cddc39;
-        --f7-theme-color-rgb: 205, 220, 57;
-        --f7-theme-color-shade: #bac923;
-        --f7-theme-color-tint: #d6e25c;
-      }
-      .text-color-lime {
-        --f7-theme-color-text-color: #cddc39;
-      }
-      .bg-color-lime {
-        --f7-theme-color-bg-color: #cddc39;
-      }
-      .border-color-lime {
-        --f7-theme-color-border-color: #cddc39;
-      }
-      .ripple-color-lime,
-      .ripple-lime {
-        --f7-theme-color-ripple-color: rgba(205, 220, 57, 0.3);
-      }
-      .color-deeporange {
-        --f7-theme-color: #ff6b22;
-        --f7-theme-color-rgb: 255, 107, 34;
-        --f7-theme-color-shade: #f85200;
-        --f7-theme-color-tint: #ff864b;
-      }
-      .text-color-deeporange {
-        --f7-theme-color-text-color: #ff6b22;
-      }
-      .bg-color-deeporange {
-        --f7-theme-color-bg-color: #ff6b22;
-      }
-      .border-color-deeporange {
-        --f7-theme-color-border-color: #ff6b22;
-      }
-      .ripple-color-deeporange,
-      .ripple-deeporange {
-        --f7-theme-color-ripple-color: rgba(255, 107, 34, 0.3);
-      }
-      .color-gray {
-        --f7-theme-color: #8e8e93;
-        --f7-theme-color-rgb: 142, 142, 147;
-        --f7-theme-color-shade: #79797f;
-        --f7-theme-color-tint: #a3a3a7;
-      }
-      .text-color-gray {
-        --f7-theme-color-text-color: #8e8e93;
-      }
-      .bg-color-gray {
-        --f7-theme-color-bg-color: #8e8e93;
-      }
-      .border-color-gray {
-        --f7-theme-color-border-color: #8e8e93;
-      }
-      .ripple-color-gray,
-      .ripple-gray {
-        --f7-theme-color-ripple-color: rgba(142, 142, 147, 0.3);
-      }
-      .color-white {
-        --f7-theme-color: #ffffff;
-        --f7-theme-color-rgb: 255, 255, 255;
-        --f7-theme-color-shade: #ebebeb;
-        --f7-theme-color-tint: #ffffff;
-      }
-      .text-color-white {
-        --f7-theme-color-text-color: #ffffff;
-      }
-      .bg-color-white {
-        --f7-theme-color-bg-color: #ffffff;
-      }
-      .border-color-white {
-        --f7-theme-color-border-color: #ffffff;
-      }
-      .ripple-color-white,
-      .ripple-white {
-        --f7-theme-color-ripple-color: rgba(255, 255, 255, 0.3);
-      }
-      .color-black {
-        --f7-theme-color: #000000;
-        --f7-theme-color-rgb: 0, 0, 0;
-        --f7-theme-color-shade: #000000;
-        --f7-theme-color-tint: #141414;
-      }
-      .text-color-black {
-        --f7-theme-color-text-color: #000000;
-      }
-      .bg-color-black {
-        --f7-theme-color-bg-color: #000000;
-      }
-      .border-color-black {
-        --f7-theme-color-border-color: #000000;
-      }
-      .ripple-color-black,
-      .ripple-black {
-        --f7-theme-color-ripple-color: rgba(0, 0, 0, 0.3);
-      }
+        --f7-theme-color-ripple-color: rgba(255, 0, 0, 0.3);
+      }
+
+    h2 Change Color Theme
+    p It is also possible to change/set color theme dynamically, by using `app.setColorTheme` method:
+    ```js
+      // initially with go with red color theme
+      const app = new Framework7({
+        colors: {
+          primary: '#ff0000'
+        }
+      });
+
+      // change it later to different color
+      app.setColorTheme('#00ff00')
+    ```
+    p Calling `app.setColorTheme` method will regenerate required CSS styles dynamically.

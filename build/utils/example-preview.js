@@ -69,7 +69,37 @@ module.exports = (framework, src, url = '') => {
     )
     .replace(
       `<div class="left">
+        <a class="link back">
+          <i class="icon icon-back"></i>
+          <span class="if-not-md">Back</span>
+        </a>
+      </div>
+      `,
+      '',
+    )
+    .replace(
+      `<div class="left">
           <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="if-not-md">Back</span>
+          </a>
+        </div>
+        `,
+      '',
+    )
+    .replace(
+      `<div class="left">
+          <a class="link back">
+            <i class="icon icon-back"></i>
+            <span class="if-not-md">Back</span>
+          </a>
+        </div>
+        `,
+      '',
+    )
+    .replace(
+      `<div class="left">
+          <a class="link back">
             <i class="icon icon-back"></i>
             <span class="if-not-md">Back</span>
           </a>

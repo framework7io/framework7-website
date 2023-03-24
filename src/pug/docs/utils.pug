@@ -12,7 +12,7 @@ block content
   .docs-content
 
     h1 Utils
-    
+
     p Framework7 utils is a set of helper methods that used internally and can be handy during development as well.
     p It is available as a `utils` property of Framework7 class (`Framework7.utils`) and same property on initialized app instance (`app.utils`):
     :code(lang="js")
@@ -393,19 +393,90 @@ block content
       app.utils.colorThemeCSSProperties('#f00')
       /* returns the following object:
       {
-        "--f7-theme-color": "#f00",
-        "--f7-theme-color-rgb": "255, 0, 0",
-        "--f7-theme-color-shade": "#d60000",
-        "--f7-theme-color-tint": "#ff2929"
+        "ios": {
+          "--f7-theme-color": "var(--f7-ios-primary)",
+          "--f7-theme-color-rgb": "var(--f7-ios-primary-rgb)",
+          "--f7-theme-color-shade": "var(--f7-ios-primary-shade)",
+          "--f7-theme-color-tint": "var(--f7-ios-primary-tint)"
+        },
+        "md": {
+          "--f7-theme-color": "var(--f7-md-primary)",
+          "--f7-theme-color-rgb": "var(--f7-md-primary-rgb)",
+          "--f7-theme-color-shade": "var(--f7-md-primary-shade)",
+          "--f7-theme-color-tint": "var(--f7-md-primary-tint)"
+        },
+        "light": {
+          "--f7-ios-primary": "#f00",
+          "--f7-ios-primary-shade": "#d60000",
+          "--f7-ios-primary-tint": "#ff2929",
+          "--f7-ios-primary-rgb": "255, 0, 0",
+          "--f7-md-primary-shade": "#970100",
+          "--f7-md-primary-tint": "#e90100",
+          "--f7-md-primary-rgb": "192, 1, 0",
+          "--f7-md-primary": "#c00100",
+          "--f7-md-on-primary": "#ffffff",
+          "--f7-md-primary-container": "#ffdad4",
+          "--f7-md-on-primary-container": "#410000",
+          "--f7-md-secondary": "#775651",
+          "--f7-md-on-secondary": "#ffffff",
+          "--f7-md-secondary-container": "#ffdad4",
+          "--f7-md-on-secondary-container": "#2c1512",
+          "--f7-md-surface": "#fffbff",
+          "--f7-md-on-surface": "#201a19",
+          "--f7-md-surface-variant": "#f5ddda",
+          "--f7-md-on-surface-variant": "#534341",
+          "--f7-md-outline": "#857370",
+          "--f7-md-outline-variant": "#d8c2be",
+          "--f7-md-inverse-surface": "#362f2e",
+          "--f7-md-inverse-on-surface": "#fbeeec",
+          "--f7-md-inverse-primary": "#ffb4a8",
+          "--f7-md-surface-1": "#fceff2",
+          "--f7-md-surface-2": "#fae7eb",
+          "--f7-md-surface-3": "#f8e0e3",
+          "--f7-md-surface-4": "#f7dde0",
+          "--f7-md-surface-5": "#f6d8db",
+          "--f7-md-surface-variant-rgb": [245, 221, 218],
+          "--f7-md-on-surface-variant-rgb": [83, 67, 65],
+          "--f7-md-surface-1-rgb": [252, 239, 242],
+          "--f7-md-surface-2-rgb": [250, 231, 235],
+          "--f7-md-surface-3-rgb": [248, 224, 227],
+          "--f7-md-surface-4-rgb": [247, 221, 224],
+          "--f7-md-surface-5-rgb": [246, 216, 219]
+        },
+        "dark": {
+          "--f7-md-primary-shade": "#ff917f",
+          "--f7-md-primary-tint": "#ffd7d1",
+          "--f7-md-primary-rgb": "255, 180, 168",
+          "--f7-md-primary": "#ffb4a8",
+          "--f7-md-on-primary": "#690100",
+          "--f7-md-primary-container": "#930100",
+          "--f7-md-on-primary-container": "#ffdad4",
+          "--f7-md-secondary": "#e7bdb6",
+          "--f7-md-on-secondary": "#442925",
+          "--f7-md-secondary-container": "#5d3f3b",
+          "--f7-md-on-secondary-container": "#ffdad4",
+          "--f7-md-surface": "#201a19",
+          "--f7-md-on-surface": "#ede0dd",
+          "--f7-md-surface-variant": "#534341",
+          "--f7-md-on-surface-variant": "#d8c2be",
+          "--f7-md-outline": "#a08c89",
+          "--f7-md-outline-variant": "#534341",
+          "--f7-md-inverse-surface": "#ede0dd",
+          "--f7-md-inverse-on-surface": "#362f2e",
+          "--f7-md-inverse-primary": "#c00100",
+          "--f7-md-surface-1": "#2b2220",
+          "--f7-md-surface-2": "#322624",
+          "--f7-md-surface-3": "#392b29",
+          "--f7-md-surface-4": "#3b2c2a",
+          "--f7-md-surface-5": "#3f302d",
+          "--f7-md-surface-variant-rgb": [83, 67, 65],
+          "--f7-md-on-surface-variant-rgb": [216, 194, 190],
+          "--f7-md-surface-1-rgb": [43, 34, 32],
+          "--f7-md-surface-2-rgb": [50, 38, 36],
+          "--f7-md-surface-3-rgb": [57, 43, 41],
+          "--f7-md-surface-4-rgb": [59, 44, 42],
+          "--f7-md-surface-5-rgb": [63, 48, 45]
+        }
       }
       */
-    :code(lang="js")
-      app.utils.colorThemeCSSProperties(255, 0, 0)
-      /* returns the following object:
-      {
-        "--f7-theme-color": "#f00",
-        "--f7-theme-color-rgb": "255, 0, 0",
-        "--f7-theme-color-shade": "#d60000",
-        "--f7-theme-color-tint": "#ff2929"
-      }
-      */
+

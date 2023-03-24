@@ -13,53 +13,79 @@ block content
 
     h1 Migration from Framework7 v7 to v8
 
-    p In this article we will walk through most of the breaking changes to check what needs to be done to migrate your app from Framework7 v6 to Framework7 v7.
+    p In this article we will walk through most of the breaking changes to check what needs to be done to migrate your app from Framework7 v7 to Framework7 v8.
     p You can also check the <a href="/release-notes/">full changelog here</a>
 
-    h2 Package
-    p Core version has <a href="package.html">new package structure</a>, it is now uses pure ES module structure so you may need to tweak your imports to match <a href="package.html#es-module-exports">package exports</a>.
+    h2 Removed Aurora Theme
+    p We decided to focus exclusively on mobile applications and interfaces, which is what the Framework7 was originally created for. Therefore it was decided to remove Aurora theme.
 
-    p So if you have something like this in v6:
-    ```js
-      import Framework7 from 'framework7'
-      import Searchbar from 'framework7/components/searchbar/searchbar.js'
-      import 'framework7/framework7.css'
-      import 'framework7/components/searchbar/searchbar.css'
-    ```
-    p it should be changed to:
-    ```js
-      import Framework7 from 'framework7'
-      import Searchbar from 'framework7/components/searchbar'
-      import 'framework7/css'
-      import 'framework7/components/searchbar/css'
-    ```
+    h2 Removed Functionality
+    p The following components, modules and functionality have been removed:
+    ul
+      li Elevation - removed as such shadows are not used in Material Design anymore
+      li Lazy - removed in favor of native `loading="lazy"`
+      li Menu - removed as was intended to be used in Aurora theme
+      li Appbar - removed as was intended to be used in Aurora theme
+      li Request - removed in favor of native `fetch`
+      li Inline Input Labels - removed as such layouts are rarely used in modern apps
+      li List Item Cell & Row - removed as not really useful
+      li Removed `stackPages` functionality in router that allows you to load pages from existing DOM elements, and keep previous pages in DOM. It is recommended to use <a href="/docs/router-component.html">Router Components</a> instead
+      li Removed `expandInput` functionality in Autocomplete as it was indented for inline inputs labels (which are removed now)
+      li Browser lazy components - components files with `.lazy` prefix to be loaded by browser are removed now. Use bundler instead
+
+    h2 App `id`, `version`, `language`
+    p These app parameters and properties have been removed as anyway they not used anywhere in the app.
 
     h2 Dark Mode
-    p Dark "theme" term has been renamed to dark "mode" in v7:
     ul
-      li `theme-dark` CSS class added to elements (or to `<html>` element) to make layout dark has been renamed to just `dark`
-      li `autoDarkTheme` app parameter has been renamed to `autoDarkMode`
-      li `darkThemeChange` app event has been renamed to `darkModeChange`
-      li `app.darkTheme` app boolean prop has been renamed to `app.darkMode`
-      li `app.enableAutoDarkTheme()` method has been renamed to `app.enableAutoDarkMode()` method
-      li `app.disableAutoDarkTheme()` method has been renamed to `app.disableAutoDarkMode()` method
-      li in React, Vue and Svelte components `themeDark` prop has been renamed to `dark` prop
+      li `autoDarkMode` app parameter has been renamed to `darkMode: 'auto'`
+      li `app.enableAutoDarkTheme()` and `app.disableAutoDarkTheme()` method have been removed in favor of new `app.setDarkMode('auto')`, `app.setDarkMode(false)`, `app.setDarkMode(true)` methods
 
-    h2 Calendar
-    p <a href="calendar.html">Calendar</a> component has updated design and Moth/Year/Time pickers are now opened in popovers. So make sure it doesn't break your design if you did some CSS/JS tweaks there
-
-    h2 Picker
-    p <a href="picker.html">Picker</a> component has been reworked to use CSS Scroll Snap API for smoother experience. So make sure it doesn't break your design if you did some CSS/JS tweaks there
-
-    h2 Swiper v8
-    p Framework7 v7 comes with all new Swiper version 8 which has a lot of new features and bunch of API changes since Swiper v6 (that was in Framework7 v6).
-    p It is recommended to check Swiper update guides on what is new:
+    h2 Colors
+    p Material You design arrives in Framework7 v9 with a lot of changes to color theming:
     ul
-      li
-        a(href="https://swiperjs.com/migration-guide" target="_blank") Migration Guide to Swiper 7
-      li
-        a(href="https://swiperjs.com/migration-guide-v8" target="_blank") Migration Guide to Swiper 8
+      li Now, primary theme color and all additional colors must be specified in `app.colors` parameters, rather than in CSS
+      li `utils.colorThemeCSSProperties()` now returns object with `ios`, `md`, `light` and `dark` CSS vars
+      li A lot of CSS variables related to theme colors are changed now (especially in Material theme)
+      li `color-theme-[$color]` classes (and components props) have been removed as `color-[$color]` classes now do the same
+      li Check updated <a href="/docs/color-themes.html">Color Themes</a> documentation
 
-    h2 Photo Browser
-    p Photo Browser by default now uses Swiper's CSS mode on iOS and Android devices, so make sure it still works properly for you
+    h2 Swiper v9
+    p Framework7 v8 comes with all new Swiper version 9 which has a lot of new features, especially new Swiper Element web component.
+
+    ul
+      li `swiper-init` class support to auto init Swiper has been removed in favor of <a href="https://swiperjs.com/element" target="_blank">Swiper Element</a>
+      li Swipeable Tabs now <a href="/docs/tabs.html#swipeable-tabs">require to use Swiper Element</a>
+      li It is recommended to check <a href="https://swiperjs.com/migration-guide-v9" target="_blank">Swiper v9 migration guide</a>
+
+    h2 Grid
+    ul
+      li New simplified <a href="/dics/grid.html">grid layout and sizes</a>
+      li Resizable grid functionality has been removed
+
+    h2 Timeline
+    p Timeline uses new classes according to new grid to specify <a href="/docs/timeline.html#horizontal-timeline">amount of columns</a> in horizontal timeline
+
+    h2 Searchbar
+    p `hideDividers` parameter has been renamed to `hideGroupTitles`.
+
+    h2 Popover
+    p `angle` parameter (prop) and layout class has been renamed to `arrow`.
+
+    h2 Hairlines
+    p Hairlines helper classes have been removed, as most of components now have `outline`/`no-outline` classes
+
+    h2 Block
+    p By default strong block is rendered now without outline (borders), new `block-outline` class is required for that
+
+    h2 List
+    ul
+      li By default list is rendered now without outline (borders), new `list-outline` class is required for that
+      li By default list is rendered now without background, new `list-strong` class is required for that
+      li By default list is rendered now dividers (borders between list items), new `list-dividers` class is required for that
+
+    h2 Card
+    ul
+      li By default card is rendered now without shadow, new `card-raised` class is required for that
+      li By default card is rendered now dividers (border) between card header and footer, new `card-header-divider` and `card-footer-divider` classes are required for that
 
