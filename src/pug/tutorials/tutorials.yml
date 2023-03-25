@@ -10,7 +10,7 @@
 - date: March 5, 2021
   video: false
   title: 'Framework7, Next.js & Server-Side Rendering? Yes!'
-  url: https://blog.framework7.io/framework7-next-js-server-side-rendering-yes-1f6c9334dc03
+  url: https://blog.framework7.io/framework7-next-js-server-side-rendering-yes
   author:
     name: Vladimir Kharlampidi
     url: https://twitter.com/nolimits4web
@@ -19,7 +19,7 @@
 - date: October 7, 2019
   video: false
   title: 'Migration To Framework7 v5'
-  url: https://blog.framework7.io/migration-to-framework7-v5-1374257bb5a7
+  url: https://blog.framework7.io/migration-to-framework7-v5
   author:
     name: Vladimir Kharlampidi
     url: https://twitter.com/nolimits4web
@@ -46,7 +46,7 @@
 - date: February 12, 2019
   video: false
   title: 'Migration To Framework7 v4'
-  url: https://blog.framework7.io/migration-to-framework7-v4-89d1ce49f4c0
+  url: https://blog.framework7.io/migration-to-framework7-v4
   author:
     name: Vladimir Kharlampidi
     url: https://twitter.com/nolimits4web
@@ -73,7 +73,7 @@
 - date: July 9, 2018
   video: false
   title: 'Migration To Framework7 v3'
-  url: https://blog.framework7.io/migration-to-framework7-v3-928a21a1eac9
+  url: https://blog.framework7.io/migration-to-framework7-v3
   author:
     name: Vladimir Kharlampidi
     url: https://twitter.com/nolimits4web
@@ -98,7 +98,7 @@
 - date: Jan 14, 2018
   video: false
   title: 'Migration To Framework7 v2'
-  url: https://blog.framework7.io/migration-to-framework7-v2-eb6dc38ede3b
+  url: https://blog.framework7.io/migration-to-framework7-v2
   author:
     name: Vladimir Kharlampidi
     url: https://twitter.com/nolimits4web
@@ -107,7 +107,7 @@
 - date: Sep 8, 2017
   video: false
   title: 'Mastering Framework7 v2 Router'
-  url: https://blog.framework7.io/mastering-v2-router-958ea2dbd24f
+  url: https://blog.framework7.io/mastering-v2-router
   author:
     name: Vladimir Kharlampidi
     url: https://twitter.com/nolimits4web
