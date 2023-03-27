@@ -11,7 +11,7 @@ block content
   .docs-content
 
     h1 Router Component
-    
+
     p Router Component is a special type of content that can be loaded by Router when we specify route content using `component` or `componentUrl` properties.
     p It should help to better structure our apps, keep things in appropriate place, and make many things quicker and in a more clear and comfortable way.
     h2 Component Function
@@ -202,6 +202,137 @@ block content
               }
 
             p It is not guaranteed that the DOM changes are applied immediately, so if you rely on DOM (e.g. need to get HTML content or attribute values after state changed) then pass `callback` function as argument.
+
+        tr
+          td $useState(<span>initialValue</span>)
+          td
+            p This method creates reactive "state".
+            p `$useState` accept 3 types of data:
+            ul
+              li `array`
+              li `object`
+              li `atoms` - anything that is NOT array or object (string, number, null, etc.)
+
+            p `array` & `object` are kept as they are (they are already refs),
+            p `atoms` are wrapped in obj via Object.defineProperty (just like `$ref`)
+
+            p For `atoms` `$useState` returns:
+            ```js
+              {
+                state:         // state.value
+                update:  (v)   // [state.value = value]
+                clear:   ()    // [state.value = undefined]
+                method:  (f)   // [custom method]
+                async:   (f)   // [custom method promise]
+              }
+            ```
+
+            p For `array` `$useState` returns:
+            ```js
+              {
+                state:         // state.value
+                update:  (v)   // [state.length = 0, state.push(...value)]
+                remove:  (x)   // [remove item/list by given position]
+                clear:   ()    // [remove all items from array]
+                insert:  (x,v) // [insert item/list at position x]
+                replace: (x,v) // [replace item/list at position x]
+                append:  (v)   // [append item/list]
+                prepend: (v)   // [prepend item/list]
+                swap:    (a,b) // [swap index a with index b]
+                fromTo:  (a,b) // [move index a to index b]
+                method:  (f)   // [custom method]
+                async:   (f)   // [custom method promise]
+              }
+            ```
+
+            p For `object` `$useState` returns:
+            ```js
+              {
+                state:         // state.value
+                update:  (v)   // [Object.assign(state,value)]
+                remove:  (v)   // [remove key or list of keys]
+                clear:   ()    // [remove all keys from object]
+                method:  (f)   // [cunstom method]
+                async:   (f)   // [cunstom method promise]
+              }
+            ```
+            p For example:
+            ```js
+              // atoms
+              const { state, update } = $useState('text');
+
+              state.value; // 'text'
+              update('new value');
+              state.value; // 'new value'
+              clear();
+              state.value; // undefined
+              update('text');
+              state.value; // 'text'
+            ```
+            ```js
+              // object
+              const { state, update, remove, clear } = $useState({});
+
+              state; // {}
+              update({ foo: 'bar' });
+              state; // { foo: 'bar' }
+              update({ foo: 'qux', baz: 'quux' });
+              state; // { foo: 'qux', baz: 'quux' }
+              update({ baz: 'corge' });
+              state; // { foo: 'qux', baz: 'corge' }
+              clear();
+              state; // {}
+              update({ grault: 'garply', list: [1, 2, 3] });
+              state; // { grault: 'garply', list: [1, 2, 3] }
+              update({ grault: null, dummy: { key: 'value' } });
+              state; // { grault: null, list: [1, 2, 3], dummy: { key: 'value' } }
+              remove('grault');
+              state; // { list: [1, 2, 3], dummy: { key: 'value' } }
+              update({ foo: 'bar' });
+              state; // { list: [1, 2, 3], dummy: { key: 'value' }, foo: 'bar' }
+              remove(['list', 'dummy']);
+              state; // { foo: 'bar' }
+            ```
+            ```js
+              // array
+              const {
+                state, update, insert, replace, append,
+                prepend, swap, fromTo, remove, clear
+              } = $useState([]);
+
+              state // []
+              update([1, 2, 3]);
+              state // [1, 2, 3]
+              append(4);
+              state // [1, 2, 3, 4]
+              append([5, 6]);
+              state // [1, 2, 3, 4, 5, 6]
+              prepend(-1);
+              state // [-1, 1, 2, 3, 4, 5, 6]
+              prepend([-3, -2]);
+              state // [-3, -2, -1, 1, 2, 3, 4, 5, 6]
+              insert(3,0);
+              state // [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6]
+              insert(4,[0.5, 0.9]);
+              state // [-3, -2, -1, 0, 0.5, 0.9, 1, 2, 3, 4, 5, 6]
+              replace(5,0.8);
+              state // [-3, -2, -1, 0, 0.5, 0.8, 1, 2, 3, 4, 5, 6]
+              replace(7,[22, 2.5]);
+              state // [-3, -2, -1, 0, 0.5, 0.8, 1, 22, 2.5, 3, 4, 5, 6]
+              swap(0,12);
+              state // [6, -2, -1, 0, 0.5, 0.8, 1, 22, 2.5, 3, 4, 5, -3]
+              fromTo(1,10);
+              state // [6, -1, 0, 0.5, 0.8, 1, 22, 2.5, 3, 4, -2, 5, -3]
+              remove(2);
+              state // [6, -1, 0.5, 0.8, 1, 22, 2.5, 3, 4, -2, 5, -3]
+              remove([0, 3, 1, 2]);
+              state // [1, 22, 2.5, 3, 4, -2, 5, -3]
+              clear();
+              state // []
+              update([1, 2, 3]);
+              state // [1, 2, 3]
+            ```
+
         tr
           td $tick(<span>callback</span>)
           td

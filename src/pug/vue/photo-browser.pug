@@ -7,14 +7,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-vue
   .docs-content
 
     h1 Photo Browser Vue Component
-    
+
     p Photo Browser is an photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional).
     p Photo Browser Vue component represents Framework7's <a href="../docs/photo-browser.html">Photo Browser</a> component.
     .important-note
@@ -50,6 +50,11 @@ block content
           td array
           td []
           td Array with URLs of photos or array of objects with "url" (or "html") and "caption" properties.
+        tr
+          td thumbs
+          td array
+          td []
+          td Array with URLs of thumbs images. Will not render thumbs if not specified, or empty array
         tr
           td url
           td string

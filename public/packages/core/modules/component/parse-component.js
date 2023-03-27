@@ -46,6 +46,7 @@ function parseComponent(componentString) {
           var $update = $$ctx.$update;
           var $store = $$ctx.$store;
           var $ref = $$ctx.$ref;
+          var $useState = $$ctx.$useState;
 
           return $h\`${template}\`
         }

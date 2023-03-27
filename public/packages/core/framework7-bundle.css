@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.0-beta.6
+ * Framework7 8.0.0-beta.8
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: March 24, 2023
+ * Released on: March 27, 2023
  */
 
 /*====================
@@ -17216,11 +17216,10 @@ swiper-container .swiper-notification {
   --f7-photobrowser-bars-bg-color: rgba(var(--f7-bars-bg-color-rgb), 0.95);
   --f7-photobrowser-bars-text-color: var(--f7-bars-text-color);
   --f7-photobrowser-bars-link-color: var(--f7-bars-link-color);
-  --f7-photobrowser-caption-font-size: 14px;
+  --f7-photobrowser-caption-font-size: 13px;
+  --f7-photobrowser-caption-font-weight: 500;
   --f7-photobrowser-caption-light-text-color: #000;
-  --f7-photobrowser-caption-light-bg-color: rgba(255, 255, 255, 0.8);
   --f7-photobrowser-caption-dark-text-color: #fff;
-  --f7-photobrowser-caption-dark-bg-color: rgba(0, 0, 0, 0.8);
   --f7-photobrowser-exposed-bg-color: #000;
   --f7-photobrowser-dark-bg-color: #000;
   --f7-photobrowser-dark-bars-bg-color: rgba(27, 27, 27, 0.8);
@@ -17249,7 +17248,6 @@ swiper-container .swiper-notification {
 }
 .photo-browser-standalone.photo-browser-transitioning {
   transition: 400ms;
-  transition-property: transform;
   animation: none !important;
 }
 .photo-browser-popup.modal-out.swipe-close-to-bottom,
@@ -17282,10 +17280,27 @@ swiper-container .swiper-notification {
   bottom: var(--f7-safe-area-bottom);
   z-index: 10;
   opacity: 1;
-  transition: 400ms;
+  transition-duration: 400ms;
 }
 .photo-browser-captions.photo-browser-captions-exposed {
   opacity: 0;
+}
+.toolbar ~ .toolbar.photo-browser-thumbs {
+  bottom: calc(var(--f7-toolbar-height) + var(--f7-safe-area-bottom));
+}
+.page ~ .photo-browser-page:not(.photo-browser-exposed) .toolbar ~ .toolbar.photo-browser-thumbs,
+.photo-browser-popup:not(.photo-browser-exposed) .toolbar ~ .toolbar.photo-browser-thumbs,
+.photo-browser-standalone:not(.photo-browser-exposed) .toolbar ~ .toolbar.photo-browser-thumbs {
+  height: var(--f7-toolbar-height);
+}
+.photo-browser-exposed .toolbar ~ .toolbar.photo-browser-thumbs {
+  transform: translate3d(0, calc(var(--f7-toolbar-height) + var(--f7-safe-area-bottom, 0)), 0);
+}
+.photo-browser-exposed .toolbar ~ .toolbar.photo-browser-thumbs .swiper {
+  height: calc(100% - var(--f7-safe-area-bottom, 0));
+}
+.navbar + .toolbar.photo-browser-thumbs .swiper {
+  height: calc(100% - var(--f7-safe-area-bottom, 0));
 }
 .toolbar ~ .photo-browser-captions {
   bottom: calc(var(--f7-toolbar-height) + var(--f7-safe-area-bottom));
@@ -17294,9 +17309,45 @@ swiper-container .swiper-notification {
 .toolbar ~ .photo-browser-captions.photo-browser-captions-exposed {
   transform: translate3d(0, 0px, 0);
 }
+.toolbar ~ .toolbar ~ .photo-browser-captions {
+  bottom: calc(var(--f7-toolbar-height) * 2 + var(--f7-safe-area-bottom));
+}
+.toolbar ~ .toolbar ~ .photo-browser-captions.photo-browser-captions-exposed {
+  transform: translate3d(0, var(--f7-toolbar-height), 0);
+}
+.photo-browser-thumbs {
+  transition-property: transform, background-color, color;
+}
+.photo-browser-thumbs .swiper {
+  width: 100%;
+  height: 100%;
+}
+.photo-browser-thumbs .swiper-slide {
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.photo-browser-thumbs img {
+  width: auto;
+  height: 75%;
+  display: block;
+  border-radius: 2px;
+  min-width: 4px;
+}
+.photo-browser-thumbs .swiper-slide img {
+  transform: translateX(-4px);
+  transition-duration: 150ms;
+}
+.photo-browser-thumbs .swiper-slide-active img {
+  transform: scale(1.2);
+}
+.photo-browser-thumbs .swiper-slide-active ~ .swiper-slide img {
+  transform: translateX(4px);
+}
 .photo-browser-caption {
   box-sizing: border-box;
-  transition: 300ms;
+  transition-duration: 400ms;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -17305,6 +17356,13 @@ swiper-container .swiper-notification {
   width: 100%;
   text-align: center;
   font-size: var(--f7-photobrowser-caption-font-size);
+  font-weight: var(--f7-photobrowser-caption-font-weight);
+}
+@supports ((-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))) {
+  .ios-translucent-bars .photo-browser-caption {
+    -webkit-backdrop-filter: saturate(180%) blur(var(--f7-bars-translucent-blur));
+            backdrop-filter: saturate(180%) blur(var(--f7-bars-translucent-blur));
+  }
 }
 .photo-browser-caption:empty {
   display: none;
@@ -17314,11 +17372,10 @@ swiper-container .swiper-notification {
 }
 .photo-browser-captions-light .photo-browser-caption {
   color: var(--f7-photobrowser-caption-light-text-color);
-  background: var(--f7-photobrowser-caption-light-bg-color);
 }
-.photo-browser-captions-dark .photo-browser-caption {
+.photo-browser-captions-dark .photo-browser-caption,
+.dark .photo-browser-caption {
   color: var(--f7-photobrowser-caption-dark-text-color);
-  background: var(--f7-photobrowser-caption-dark-bg-color);
 }
 .photo-browser-swiper-container {
   position: absolute;
@@ -17330,6 +17387,7 @@ swiper-container .swiper-notification {
   background: var(--f7-photobrowser-bg-color);
   transition: 400ms;
   transition-property: background-color;
+  touch-action: pan-x pan-y;
 }
 .photo-browser-prev.swiper-button-disabled,
 .photo-browser-next.swiper-button-disabled {
@@ -17386,15 +17444,25 @@ swiper-container .swiper-notification {
   left: 50%;
   top: 50%;
 }
+.navbar-photo-browser .right .link svg,
+.navbar-photo-browser .right .link i {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
 .photo-browser-page .navbar-bg,
 .navbar-photo-browser .navbar-bg,
-.photo-browser-page .toolbar {
+.photo-browser-page .toolbar,
+.photo-browser-caption {
   background-color: var(--f7-photobrowser-bars-bg-color, rgba(var(--f7-bars-bg-color-rgb), 0.95));
+}
+.photo-browser-page {
+  touch-action: manipulation;
 }
 .photo-browser-page .navbar,
 .photo-browser-page .toolbar {
   transform: translate3d(0, 0, 0);
-  transition: 400ms;
+  transition-duration: 400ms;
   color: var(--f7-photobrowser-bars-text-color, var(--f7-bars-text-color));
 }
 .photo-browser-page .navbar a,
@@ -17402,36 +17470,45 @@ swiper-container .swiper-notification {
   color: var(--f7-photobrowser-bars-link-color, var(--f7-bars-link-color, var(--f7-theme-color)));
 }
 .photo-browser-exposed .navbar,
-.photo-browser-exposed .toolbar {
+.photo-browser-exposed .toolbar:not(.photo-browser-thumbs) {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 }
-.photo-browser-exposed .toolbar ~ .photo-browser-captions {
+.photo-browser-exposed .toolbar:not(.photo-browser-thumbs) ~ .photo-browser-captions,
+.photo-browser-exposed .toolbar ~ .toolbar.photo-browser-thumbs ~ .photo-browser-captions {
   transform: translate3d(0, var(--f7-toolbar-height), 0);
 }
 .photo-browser-exposed .photo-browser-swiper-container {
   background: var(--f7-photobrowser-exposed-bg-color);
 }
-.photo-browser-exposed .photo-browser-caption {
+.photo-browser-exposed .photo-browser-thumbs,
+.photo-browser-dark .photo-browser-thumbs,
+.photo-browser-exposed .toolbar,
+.photo-browser-dark .toolbar {
+  background-color: var(--f7-photobrowser-dark-bars-bg-color);
+}
+.photo-browser-exposed .photo-browser-caption,
+.photo-browser-dark .photo-browser-caption {
   color: var(--f7-photobrowser-caption-dark-text-color);
-  background: var(--f7-photobrowser-caption-dark-bg-color);
+  background-color: var(--f7-photobrowser-dark-bars-bg-color);
 }
 .view.with-photo-browser-page-exposed .navbar {
   opacity: 0;
   pointer-events: none;
 }
+.photo-browser-page .toolbar:before,
+.photo-browser-page .toolbar:after {
+  display: none !important;
+}
 .photo-browser-page-dark .navbar-bg,
-.navbar-photo-browser-dark .navbar-bg,
-.photo-browser-page-dark .toolbar {
+.navbar-photo-browser-dark .navbar-bg {
   background: var(--f7-photobrowser-dark-bars-bg-color);
 }
 .photo-browser-page-dark .navbar-bg:before,
 .navbar-photo-browser-dark .navbar-bg:before,
-.photo-browser-page-dark .toolbar:before,
 .photo-browser-page-dark .navbar-bg:after,
-.navbar-photo-browser-dark .navbar-bg:after,
-.photo-browser-page-dark .toolbar:after {
+.navbar-photo-browser-dark .navbar-bg:after {
   display: none !important;
 }
 .navbar-photo-browser-dark,

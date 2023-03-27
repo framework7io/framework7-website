@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.0-beta.6
+ * Framework7 8.0.0-beta.8
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: March 24, 2023
+ * Released on: March 27, 2023
  */
 
 (function (global, factory) {
@@ -10760,6 +10760,118 @@
     };
 
     /* eslint no-underscore-dangle: "off" */
+
+    /* eslint-disable no-shadow */
+    /* eslint-disable no-return-assign */
+    /* eslint-disable no-plusplus */
+    /* eslint-disable no-param-reassign */
+    /* eslint-disable no-sequences */
+    const types = [{
+      name: 'array',
+      init: i => i,
+      type: i => [i].find(Array.isArray),
+      update: (i, o) => [o].filter(Array.isArray).find(() => (i.length = 0, i.push(...o))),
+      insert: function (i, x, o) {
+        if (o === void 0) {
+          o = [];
+        }
+        return i.splice(Math.max(x, 0), 0, ...[o].flat());
+      },
+      replace: function (i, x, o) {
+        if (o === void 0) {
+          o = [];
+        }
+        return i.splice(Math.max(x, 0), Math.min(++x, 1), ...[o].flat());
+      },
+      append: function (i, o) {
+        if (o === void 0) {
+          o = [];
+        }
+        return i.push(...[o].flat());
+      },
+      prepend: function (i, o) {
+        if (o === void 0) {
+          o = [];
+        }
+        return i.unshift(...[o].flat());
+      },
+      swap: (i, a, b) => {
+        [i[a], i[b]] = [i[b], i[a]];
+      },
+      fromTo: function (i, a, b) {
+        if (b === void 0) {
+          b = a;
+        }
+        return i.splice(Math.max(b, 0), 0, ...i.splice(Math.max(a, 0), 1));
+      },
+      remove: function (i, o, a) {
+        if (a === void 0) {
+          a = i.map((_, x) => x);
+        }
+        return [o].flat().filter(i => a.includes(i)).sort((a, b) => b - a).forEach(x => i.splice(x, 1));
+      },
+      clear: i => i.length = 0
+    }, {
+      name: 'object',
+      init: i => i,
+      type: i => [i].filter(i => [i !== null, i !== undefined].every(i => i)).find(i => Object.getPrototypeOf(i) === Object.prototype),
+      update: (i, o) => Object.assign(i, o),
+      insert: () => {},
+      replace: () => {},
+      append: () => {},
+      prepend: () => {},
+      swap: () => ({}),
+      // N/A
+      fromTo: () => ({}),
+      // N/A
+      remove: (i, o) => [o].flat().forEach(k => delete i[k]),
+      clear: i => Object.keys(i).forEach(k => delete i[k])
+    }, {
+      name: 'atoms',
+      type: () => true,
+      init: function (i, o) {
+        if (o === void 0) {
+          o = {};
+        }
+        return Object.defineProperty(o, 'value', {
+          get: () => i,
+          set: v => {
+            // eslint-disable-next-line
+            i = v;
+          }
+        }), o;
+      },
+      update: function (i, v) {
+        if (v === void 0) {
+          v = i.value;
+        }
+        i.value = v;
+      },
+      insert: () => ({}),
+      // N/A
+      replace: () => ({}),
+      // N/A
+      append: () => ({}),
+      // N/A
+      prepend: () => ({}),
+      // N/A
+      swap: () => ({}),
+      // N/A
+      fromTo: () => ({}),
+      // N/A
+      remove: () => ({}),
+      // N/A
+      clear: i => {
+        i.value = undefined;
+      }
+    }];
+
+    /* eslint-enable no-shadow */
+    /* eslint-enable no-return-assign */
+    /* eslint-enable no-plusplus */
+    /* eslint-enable no-param-reassign */
+    /* eslint-enable no-sequences */
+
     class Component {
       constructor(app, component, props, _temp) {
         if (props === void 0) {
@@ -10904,6 +11016,84 @@
         });
         return $store;
       }
+
+      /* eslint-disable no-sequences */
+      getUseState() {
+        var _this = this;
+        return o => [o].reduce(function (t, _i, _x, _a, i) {
+          if (i === void 0) {
+            i = t.init(_i);
+          }
+          return {
+            state: i,
+            update: v => (t.update(i, v), _this.update()),
+            remove: v => (t.remove(i, v), _this.update()),
+            clear: () => (t.clear(i), _this.update()),
+            insert: (x, v) => (t.insert(i, x, v), _this.update()),
+            replace: (x, v) => (t.replace(i, x, v), _this.update()),
+            append: v => (t.append(i, v), _this.update()),
+            prepend: v => (t.prepend(i, v), _this.update()),
+            swap: (a, b) => (t.swap(i, a, b), _this.update()),
+            fromTo: (a, b) => (t.fromTo(i, a, b), _this.update()),
+            method: function (f) {
+              if (f === void 0) {
+                f = () => ({});
+              }
+              return f(i), _this.update();
+            },
+            async: function (f) {
+              if (f === void 0) {
+                f = () => Promise.reject(i);
+              }
+              return f(i).then(() => _this.update());
+            }
+          };
+        }, types.find(i => i.type(o)));
+      }
+      _getUseState() {
+        var _this2 = this;
+        return o => [o].reduce(function (t, _i, _x, _a, i) {
+          if (i === void 0) {
+            i = t.init(_i);
+          }
+          return [i,
+          // state
+          v => (t.update(i, v), _this2.update()),
+          // update
+          v => (t.remove(i, v), _this2.update()),
+          // remove
+          () => (t.clear(i), _this2.update()),
+          // clear
+          (x, v) => (t.insert(i, x, v), _this2.update()),
+          // insert
+          (x, v) => (t.replace(i, x, v), _this2.update()),
+          // replace
+          v => (t.append(i, v), _this2.update()),
+          // append
+          v => (t.prepend(i, v), _this2.update()),
+          // prepend
+          (a, b) => (t.swap(i, a, b), _this2.update()),
+          // swap
+          (a, b) => (t.fromTo(i, a, b), _this2.update()),
+          // fromTo
+          function (f) {
+            if (f === void 0) {
+              f = () => ({});
+            }
+            return f(i), _this2.update();
+          },
+          // method
+          function (f) {
+            if (f === void 0) {
+              f = () => Promise.reject(i);
+            }
+            return f(i).then(() => _this2.update());
+          } // async
+          ];
+        }, types.find(i => i.type(o)));
+      }
+      /* eslint-enable no-sequences */
+
       getComponentContext(includeHooks) {
         const ctx = {
           $f7route: this.context.f7route,
@@ -10919,7 +11109,9 @@
           $emit: this.emit.bind(this),
           $store: this.getComponentStore(),
           $ref: this.getComponentRef(),
-          $el: {}
+          $el: {},
+          $useState: this.getUseState(),
+          $_useState: this._getUseState()
         };
         Object.defineProperty(ctx.$el, 'value', {
           get: () => {
@@ -11141,6 +11333,7 @@
           var $update = $$ctx.$update;
           var $store = $$ctx.$store;
           var $ref = $$ctx.$ref;
+          var $useState = $$ctx.$useState;
 
           return $h\`${template}\`
         }
@@ -39931,12 +40124,31 @@
           class: "photo-browser-of"
         }, pb.params.navbarOfText), $jsx$1("span", {
           class: "photo-browser-total"
-        })), isPopup && $jsx$1("div", {
+        })), isPopup && (pb.params.popupCloseLinkText || pb.params.popupCloseLinkIcon) && $jsx$1("div", {
           class: "right"
         }, $jsx$1("a", {
           class: "link popup-close",
           "data-popup": ".photo-browser-popup"
-        }, $jsx$1("span", null, pb.params.popupCloseLinkText)))));
+        }, pb.params.popupCloseLinkIcon && pb.app.theme === 'ios' && $jsx$1("i", null, $jsx$1("svg", {
+          xmlns: "http://www.w3.org/2000/svg",
+          width: "56",
+          height: "56",
+          viewBox: "0 0 56 56"
+        }, $jsx$1("path", {
+          fill: "currentColor",
+          d: "M 10.0234 43.0234 C 9.2266 43.8203 9.2031 45.1797 10.0234 45.9766 C 10.8438 46.7734 12.1797 46.7734 13.0000 45.9766 L 28.0000 30.9766 L 43.0000 45.9766 C 43.7969 46.7734 45.1563 46.7969 45.9766 45.9766 C 46.7734 45.1562 46.7734 43.8203 45.9766 43.0234 L 30.9531 28.0000 L 45.9766 13.0000 C 46.7734 12.2031 46.7969 10.8437 45.9766 10.0469 C 45.1328 9.2266 43.7969 9.2266 43.0000 10.0469 L 28.0000 25.0469 L 13.0000 10.0469 C 12.1797 9.2266 10.8203 9.2031 10.0234 10.0469 C 9.2266 10.8672 9.2266 12.2031 10.0234 13.0000 L 25.0234 28.0000 Z"
+        }))), pb.params.popupCloseLinkIcon && pb.app.theme === 'md' && $jsx$1("i", null, $jsx$1("svg", {
+          xmlns: "http://www.w3.org/2000/svg",
+          height: "24px",
+          viewBox: "0 0 24 24",
+          width: "24px",
+          fill: "currentColor"
+        }, $jsx$1("path", {
+          d: "M0 0h24v24H0V0z",
+          fill: "none"
+        }), $jsx$1("path", {
+          d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+        }))), pb.params.popupCloseLinkText && $jsx$1("span", null, pb.params.popupCloseLinkText)))));
       }
       renderToolbar() {
         const pb = this;
@@ -39955,6 +40167,16 @@
         }, $jsx$1("i", {
           class: `icon icon-forward ${iconsColor ? `color-${iconsColor}` : ''}`
         }))));
+      }
+      renderThumbs() {
+        const pb = this;
+        return $jsx$1("div", {
+          class: "toolbar toolbar-bottom photo-browser-thumbs"
+        }, $jsx$1("div", {
+          class: "swiper"
+        }, $jsx$1("div", {
+          class: "swiper-wrapper"
+        }, pb.params.thumbs.map((thumb, index) => pb.renderThumb(thumb, index)))));
       }
       renderCaption(caption, index) {
         const pb = this;
@@ -39999,6 +40221,18 @@
           src: photo.url ? photo.url : photo
         })));
       }
+      renderThumb(thumb, index) {
+        const pb = this;
+        const url = typeof thumb === 'string' ? thumb : thumb.url;
+        if (pb.params.renderThumb) return pb.params.renderThumb.call(pb, thumb, index);
+        return $jsx$1("div", {
+          class: "photo-browser-thumbs-slide swiper-slide",
+          "data-swiper-slide-index": index
+        }, url && $jsx$1("img", {
+          src: url,
+          loading: "lazy"
+        }));
+      }
       render() {
         const pb = this;
         if (pb.params.render) return pb.params.render.call(pb, pb.params);
@@ -40009,7 +40243,7 @@
         }, $jsx$1("div", {
           class: `page photo-browser-page photo-browser-page-${pb.params.theme} no-toolbar ${!pb.params.navbar ? 'no-navbar' : ''}`,
           "data-name": "photo-browser-page"
-        }, pb.params.navbar && pb.renderNavbar(), pb.params.toolbar && pb.renderToolbar(), $jsx$1("div", {
+        }, pb.params.navbar && pb.renderNavbar(), pb.params.toolbar && pb.renderToolbar(), pb.params.thumbs && pb.params.thumbs.length && pb.renderThumbs(), $jsx$1("div", {
           class: `photo-browser-captions photo-browser-captions-${pb.params.captionsTheme || pb.params.theme}`
         }, pb.params.photos.map((photo, index) => {
           if (photo.caption) return pb.renderCaption(photo.caption, index);
@@ -40062,11 +40296,15 @@
         pb.slides = pb.$el.find('.photo-browser-slide');
         pb.$captionsContainerEl = pb.$el.find('.photo-browser-captions');
         pb.captions = pb.$el.find('.photo-browser-caption');
+        const hasThumbs = pb.params.thumbs && pb.params.thumbs.length > 0;
 
         // Init Swiper
         let clickTimeout;
+        let preventThumbsSlide;
+        let preventMainSlide;
+        const initialSlide = pb.activeIndex;
         const swiperParams = extend$2({}, pb.params.swiper, {
-          initialSlide: pb.activeIndex,
+          initialSlide,
           // cssMode:
           //   typeof pb.params.swiper.cssMode === 'undefined' && (app.device.ios || app.device.android)
           //     ? true
@@ -40089,6 +40327,13 @@
             },
             slideChange() {
               const swiper = this;
+              if (hasThumbs && pb.thumbsSwiper && !preventMainSlide) {
+                preventThumbsSlide = true;
+                pb.thumbsSwiper.slideTo(pb.swiper.activeIndex);
+                setTimeout(() => {
+                  preventThumbsSlide = false;
+                });
+              }
               pb.onSlideChange(swiper);
               for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
                 args[_key] = arguments[_key];
@@ -40160,6 +40405,34 @@
         if (pb.activeIndex === 0 || pb.params.virtualSlides) {
           pb.onSlideChange(pb.swiper);
         }
+        if (hasThumbs) {
+          const thumbsSwiperParams = {
+            el: pb.$el.find('.photo-browser-thumbs .swiper')[0],
+            slidesPerView: 'auto',
+            centeredSlides: true,
+            spaceBetween: 4,
+            watchSlidesProgress: true,
+            initialSlide,
+            on: {
+              touchMove() {
+                preventMainSlide = true;
+              },
+              touchEnd() {
+                preventMainSlide = false;
+              },
+              slideChange(s) {
+                if (preventThumbsSlide) return;
+                pb.swiper.slideTo(s.activeIndex, 0);
+              },
+              click(s) {
+                if (!s.clickedSlide) return;
+                const index = parseInt($(s.clickedSlide).attr('data-swiper-slide-index'), 10);
+                s.slideTo(index, 0);
+              }
+            }
+          };
+          pb.thumbsSwiper = app.swiper ? app.swiper.create(thumbsSwiperParams) : new window.Swiper(thumbsSwiperParams);
+        }
         if (pb.$el) {
           pb.$el.trigger('photobrowser:open');
         }
@@ -40184,6 +40457,11 @@
           pb.swiper.destroy(true, false);
           pb.swiper = null;
           delete pb.swiper;
+        }
+        if (pb.thumbsSwiper && pb.thumbsSwiper.destroy) {
+          pb.thumbsSwiper.destroy(true, false);
+          pb.thumbsSwiper = null;
+          delete pb.thumbsSwiper;
         }
         if (pb.$el) {
           pb.$el.trigger('photobrowser:close');
@@ -40398,6 +40676,7 @@
       params: {
         photoBrowser: {
           photos: [],
+          thumbs: [],
           exposition: true,
           expositionHideCaptions: false,
           type: 'standalone',
@@ -40409,7 +40688,8 @@
           popupPush: false,
           swipeToClose: true,
           pageBackLinkText: 'Back',
-          popupCloseLinkText: 'Close',
+          popupCloseLinkText: undefined,
+          popupCloseLinkIcon: true,
           navbarOfText: 'of',
           navbarShowCount: undefined,
           view: undefined,
@@ -40424,6 +40704,7 @@
           renderObject: undefined,
           renderLazyPhoto: undefined,
           renderPhoto: undefined,
+          renderThumb: undefined,
           renderPage: undefined,
           renderPopup: undefined,
           renderStandalone: undefined,

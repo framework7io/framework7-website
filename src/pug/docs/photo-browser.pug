@@ -6,14 +6,14 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
     h1 Photo Browser
-    
+
     p Photo Browser is a photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional).
     p Photo Browser uses <a href="swiper.html">Swiper Slider</a> component to slide between photos.
 
@@ -69,6 +69,11 @@ block content
           td array
           td []
           td Array with URLs of photos or array of objects with "url" (or "html") and "caption" properties.
+        tr
+          td thumbs
+          td array
+          td []
+          td Array with URLs of thumbs images. Will not render thumbs if not specified, or empty array
         tr
           td exposition
           td boolean
