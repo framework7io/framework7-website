@@ -1,3 +1,30 @@
+- date: March 31, 2023
+  video: false
+  title: 'Migration To Framework7 v8'
+  url: http://framework7.io/docs/migration-from-v7-to-v8.html
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+    - v8
+- date: April 15, 2022
+  video: false
+  title: 'Migration To Framework7 v7'
+  url: https://v7.framework7.io/docs/migration-from-v6-to-v7
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+    - v7
+- date: December 31, 2020
+  video: false
+  title: 'Migration To Framework7 v6'
+  url: https://v6.framework7.io/docs/migration-from-v5
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+    - v6
 - date: March 31, 2021
   video: false
   title: 'How to Deploy a Framework7 App to AWS via CI/CD'
