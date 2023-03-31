@@ -22,6 +22,18 @@ initUiInitiativeTemplates();
 initUiInitiativePlugins();
 initExamplePreview();
 
+if ($('.home-intro .factory').length) {
+  const content = $('.home-intro .factory').html();
+  $('.home-intro').on('animationend', (e) => {
+    if (e.animationName === 'factory-flip') {
+      setTimeout(() => {
+        $('.home-intro .factory').remove();
+        $('.home-intro .center').prepend(`<div class="factory factory-no-in">${content}</div>`);
+      });
+    }
+  });
+}
+
 function trackOutboundClick(url, category) {
   if (!window.ga || !url) return;
   if (!url) return;
