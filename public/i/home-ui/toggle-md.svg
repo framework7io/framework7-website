@@ -8,7 +8,7 @@
             <g id="Stunning-UI" transform="translate(360.000000, 2696.000000)">
                 <g id="UI-White" transform="translate(39.000000, 110.000000)">
                     <g id="toggle-md" transform="translate(120.000000, 4.000000)">
-                        <rect id="Rectangle" opacity="0.688058036" x="0" y="9" width="64" height="16" rx="8"></rect>
+                        <rect id="Rectangle" fill="#534340" x="0" y="9" width="64" height="16" rx="8"></rect>
                         <circle id="Oval" cx="53" cy="17" r="17"></circle>
                     </g>
                 </g>

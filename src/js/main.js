@@ -22,13 +22,15 @@ initUiInitiativeTemplates();
 initUiInitiativePlugins();
 initExamplePreview();
 
-if ($('.home-intro .factory').length) {
-  const content = $('.home-intro .factory').html();
+if ($('.home-intro .constructor').length) {
+  const content = $('.home-intro .constructor').html();
   $('.home-intro').on('animationend', (e) => {
-    if (e.animationName === 'factory-flip') {
+    if (e.animationName === 'constructor-flip') {
       setTimeout(() => {
-        $('.home-intro .factory').remove();
-        $('.home-intro .center').prepend(`<div class="factory factory-no-in">${content}</div>`);
+        $('.home-intro .constructor').remove();
+        $('.home-intro .center').prepend(
+          `<div class="constructor constructor-no-in">${content}</div>`,
+        );
       });
     }
   });
