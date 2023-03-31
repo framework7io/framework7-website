@@ -25,7 +25,7 @@ export default class TouchRipple {
     if (!isInset && $el.css('overflow') === 'hidden') {
       const distanceFromCenter = ((center.x - width / 2) ** 2 + (center.y - height / 2) ** 2) ** 0.5;
       const scale = (diameter / 2 + distanceFromCenter) / (diameter / 2);
-      ripple.rippleTransform = `translate3d(0px, 0px, 0) scale(${scale})`;
+      ripple.rippleTransform = `translate3d(0px, 0px, 0) scale(${scale * 2})`;
     } else {
       // prettier-ignore
       ripple.rippleTransform = `translate3d(${-center.x + width / 2}px, ${-center.y + height / 2}px, 0) scale(1)`;
@@ -33,7 +33,7 @@ export default class TouchRipple {
     if (isInset) {
       $el.addClass('ripple-inset');
     }
-    ripple.$rippleWaveEl = $(`<div class="ripple-wave" style="width: ${diameter}px; height: ${diameter}px; margin-top:-${diameter / 2}px; margin-left:-${diameter / 2}px; left:${center.x}px; top:${center.y}px; --f7-ripple-transform: ${ripple.rippleTransform}"></div>`);
+    ripple.$rippleWaveEl = $(`<div class="ripple-wave${isInset ? ' ripple-wave-inset' : ''}" style="width: ${diameter}px; height: ${diameter}px; margin-top:-${diameter / 2}px; margin-left:-${diameter / 2}px; left:${center.x}px; top:${center.y}px; --f7-ripple-transform: ${ripple.rippleTransform}"></div>`);
     $el.prepend(ripple.$rippleWaveEl);
     ripple.$rippleWaveEl.animationEnd(() => {
       if (!ripple.$rippleWaveEl) return;

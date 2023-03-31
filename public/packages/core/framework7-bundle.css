@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.0-beta.8
+ * Framework7 8.0.0-beta.9
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: March 27, 2023
+ * Released on: March 31, 2023
  */
 
 /*====================
@@ -2090,37 +2090,6 @@ html.device-full-viewport body {
   padding: 0 12px;
   min-width: 48px;
 }
-.md .navbar a.link:before {
-  content: '';
-  width: 152%;
-  height: 152%;
-  left: -26%;
-  top: -26%;
-  position: absolute;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 66%, rgba(255, 255, 255, 0) 66%);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition-duration: 300ms;
-  transition-property: opacity;
-}
-.md .navbar a.link.icon-only:before,
-.md .navbar a.link.ripple-inset:before,
-.md .navbar a.link.searchbar-disable-button:before,
-.md .navbar a.link.input-clear-button:before,
-.md .navbar a.link.notification-close-button:before {
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 71%, rgba(255, 255, 255, 0) 71%);
-}
-.md .navbar a.link.active-state:before {
-  opacity: 1;
-  transition-duration: 150ms;
-}
 .md .navbar a.icon-only {
   min-width: 0;
   flex-shrink: 0;
@@ -2623,37 +2592,6 @@ html.device-full-viewport body {
   padding: 0 12px;
   min-width: 48px;
 }
-.md .toolbar .link:before {
-  content: '';
-  width: 152%;
-  height: 152%;
-  left: -26%;
-  top: -26%;
-  position: absolute;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 66%, rgba(255, 255, 255, 0) 66%);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition-duration: 300ms;
-  transition-property: opacity;
-}
-.md .toolbar .link.icon-only:before,
-.md .toolbar .link.ripple-inset:before,
-.md .toolbar .link.searchbar-disable-button:before,
-.md .toolbar .link.input-clear-button:before,
-.md .toolbar .link.notification-close-button:before {
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 71%, rgba(255, 255, 255, 0) 71%);
-}
-.md .toolbar .link.active-state:before {
-  opacity: 1;
-  transition-duration: 150ms;
-}
 .md .toolbar a.icon-only {
   min-width: 0;
   flex-shrink: 0;
@@ -2918,37 +2856,6 @@ html.device-full-viewport body {
 .md .subnavbar a.link {
   justify-content: center;
   padding: 0 12px;
-}
-.md .subnavbar a.link:before {
-  content: '';
-  width: 152%;
-  height: 152%;
-  left: -26%;
-  top: -26%;
-  position: absolute;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 66%, rgba(255, 255, 255, 0) 66%);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition-duration: 300ms;
-  transition-property: opacity;
-}
-.md .subnavbar a.link.icon-only:before,
-.md .subnavbar a.link.ripple-inset:before,
-.md .subnavbar a.link.searchbar-disable-button:before,
-.md .subnavbar a.link.input-clear-button:before,
-.md .subnavbar a.link.notification-close-button:before {
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 71%, rgba(255, 255, 255, 0) 71%);
-}
-.md .subnavbar a.link.active-state:before {
-  opacity: 1;
-  transition-duration: 150ms;
 }
 .md .subnavbar a.icon-only {
   flex-shrink: 0;
@@ -3432,7 +3339,6 @@ html.device-full-viewport body {
   --f7-list-item-footer-line-height: 1.2;
   /*
   --f7-list-button-text-color: var(--f7-theme-color);
-  --f7-list-button-pressed-bg-color: rgba(var(--f7-theme-color-rgb), .15);
   */
   --f7-list-button-font-size: inherit;
   --f7-list-button-font-weight: 400;
@@ -3473,6 +3379,9 @@ html.device-full-viewport body {
   --f7-list-media-item-padding-vertical: 10px;
   --f7-list-media-item-title-font-weight: 600;
   --f7-list-button-border-color: rgba(0, 0, 0, 0.22);
+  /*
+  --f7-list-button-pressed-bg-color: rgba(var(--f7-theme-color-rgb), .15);
+  */
   --f7-list-group-title-border-color: rgba(0, 0, 0, 0.22);
   --f7-list-group-title-height: 31px;
   --f7-list-group-title-font-size: inherit;
@@ -3525,6 +3434,9 @@ html.device-full-viewport body {
   --f7-list-media-item-padding-vertical: 12px;
   --f7-list-media-item-title-font-weight: 500;
   --f7-list-button-border-color: transparent;
+  /*
+  --f7-list-button-pressed-bg-color: transparent;
+  */
   --f7-list-group-title-border-color: transparent;
   --f7-list-group-title-height: 48px;
   --f7-list-group-title-font-size: 16px;
@@ -3532,11 +3444,7 @@ html.device-full-viewport body {
   --f7-menu-list-offset: 16px;
   --f7-menu-list-border-radius: 999px;
   --f7-menu-list-item-min-height: 56px;
-  --f7-list-link-pressed-bg-color: rgba(0, 0, 0, 0.1);
-}
-.md .dark,
-.md.dark {
-  --f7-list-link-pressed-bg-color: rgba(255, 255, 255, 0.05);
+  --f7-list-link-pressed-bg-color: transparent;
 }
 .md,
 .md .dark,
@@ -3809,8 +3717,11 @@ html.device-full-viewport body {
   font-weight: var(--f7-list-button-font-weight);
   text-align: var(--f7-list-button-text-align);
 }
-.list-button.active-state {
+.ios .list-button.active-state {
   background-color: var(--f7-list-button-pressed-bg-color, rgba(var(--f7-theme-color-rgb), 0.15));
+}
+.md .list-button.active-state {
+  background-color: var(--f7-list-button-pressed-bg-color, transparent);
 }
 .list-dividers .list-button:after,
 .ios .list-dividers-ios .list-button:after,
@@ -4472,6 +4383,9 @@ li.list-group-title:after,
 .ios .list .list-button.active-state {
   transition-duration: 0ms;
 }
+.md .menu-list .item-link.active-state {
+  background-color: var(--f7-menu-list-item-bg-color);
+}
 /* === Badge === */
 :root {
   --f7-badge-text-color: #fff;
@@ -4532,7 +4446,6 @@ li.list-group-title:after,
   --f7-button-border-width: 0px;
   /*
   --f7-button-text-color: var(--f7-theme-color);
-  --f7-button-pressed-bg-color: rgba(var(--f7-theme-color-rgb), .15);
   --f7-button-pressed-text-color: var(--f7-button-text-color, var(--f7-theme-color));
   --f7-button-border-color: var(--f7-theme-color);
   --f7-button-fill-bg-color: var(--f7-theme-color);
@@ -4547,14 +4460,12 @@ li.list-group-title:after,
   --f7-segmented-strong-button-font-weight: 500;
   --f7-segmented-strong-button-active-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   --f7-segmented-strong-button-text-color: #000;
-  --f7-segmented-strong-button-pressed-bg-color: rgba(0, 0, 0, 0.07);
   --f7-segmented-strong-button-hover-bg-color: rgba(0, 0, 0, 0.04);
   --f7-segmented-strong-button-active-text-color: #000;
   --f7-segmented-strong-button-active-bg-color: #fff;
 }
 :root .dark,
 :root.dark {
-  --f7-segmented-strong-button-pressed-bg-color: rgba(255, 255, 255, 0.04);
   --f7-segmented-strong-button-hover-bg-color: rgba(255, 255, 255, 0.02);
   --f7-segmented-strong-button-active-bg-color: rgba(255, 255, 255, 0.14);
   --f7-segmented-strong-button-text-color: #fff;
@@ -4571,6 +4482,7 @@ li.list-group-title:after,
   --f7-button-outline-border-color: var(--f7-theme-color);
   --f7-button-outline-border-width: 2px;
   /*
+  --f7-button-pressed-bg-color: rgba(var(--f7-theme-color-rgb), .15);
   --f7-button-fill-pressed-bg-color: var(--f7-theme-color-tint);
   */
   --f7-button-large-text-transform: uppercase;
@@ -4588,12 +4500,17 @@ li.list-group-title:after,
   --f7-button-tonal-pressed-bg-color: rgba(var(--f7-theme-color-rgb), 0.25);
   --f7-button-tonal-text-color: var(--f7-theme-color);
   --f7-segmented-strong-bg-color: rgba(0, 0, 0, 0.07);
+  --f7-segmented-strong-button-pressed-bg-color: rgba(0, 0, 0, 0.07);
 }
 .ios .dark,
 .ios.dark {
   --f7-segmented-strong-bg-color: rgba(255, 255, 255, 0.1);
+  --f7-segmented-strong-button-pressed-bg-color: rgba(255, 255, 255, 0.04);
 }
 .md {
+  /*
+  --f7-button-pressed-bg-color: transparent;
+  */
   --f7-button-text-transform: none;
   --f7-button-height: 40px;
   --f7-button-padding-horizontal: 16px;
@@ -4612,16 +4529,17 @@ li.list-group-title:after,
   --f7-button-small-font-weight: 500;
   --f7-segmented-strong-button-text-transform: none;
   --f7-segmented-strong-button-active-font-weight: 500;
+  --f7-segmented-strong-button-pressed-bg-color: transparent;
 }
 .md,
 .md .dark,
 .md [class*='color-'] {
-  --f7-button-fill-pressed-bg-color: var(--f7-theme-color-shade);
+  --f7-button-fill-pressed-bg-color: transparent;
   --f7-button-fill-text-color: var(--f7-md-on-primary);
   --f7-button-outline-border-color: var(--f7-md-outline);
   --f7-segmented-strong-bg-color: var(--f7-md-surface-variant);
   --f7-button-tonal-bg-color: var(--f7-md-secondary-container);
-  --f7-button-tonal-pressed-bg-color: rgba(var(--f7-theme-color-rgb), 0.25);
+  --f7-button-tonal-pressed-bg-color: transparent;
   --f7-button-tonal-text-color: var(--f7-md-on-secondary-container);
 }
 button {
@@ -4664,7 +4582,6 @@ button {
   box-shadow: var(--f7-button-box-shadow);
 }
 .button.active-state {
-  background-color: var(--f7-button-pressed-bg-color, rgba(var(--f7-theme-color-rgb), 0.15));
   color: var(--f7-button-pressed-text-color, var(--f7-button-text-color, var(--f7-theme-color)));
 }
 input[type='submit'].button,
@@ -4996,6 +4913,9 @@ input[type='reset'].button {
 .ios .button {
   transition-duration: 100ms;
 }
+.ios .button.active-state {
+  background-color: var(--f7-button-pressed-bg-color, rgba(var(--f7-theme-color-rgb), 0.15));
+}
 .ios .button-fill,
 .ios .button-fill-ios {
   --f7-button-pressed-bg-color: var(--f7-button-fill-pressed-bg-color, var(--f7-theme-color-tint));
@@ -5010,12 +4930,12 @@ input[type='reset'].button {
 }
 .md .button-fill,
 .md .button-fill-md {
-  --f7-button-pressed-bg-color: var(--f7-button-fill-pressed-bg-color, var(--f7-theme-color-shade));
+  --f7-button-pressed-bg-color: var(--f7-button-fill-pressed-bg-color, transparent);
 }
 /* === Touch Ripple === */
 :root {
   --f7-touch-ripple-black: rgba(0, 0, 0, 0.1);
-  --f7-touch-ripple-white: rgba(255, 255, 255, 0.3);
+  --f7-touch-ripple-white: rgba(255, 255, 255, 0.15);
   --f7-touch-ripple-color: var(--f7-touch-ripple-black);
 }
 .dark {
@@ -5050,13 +4970,33 @@ input[type='reset'].button {
   background-color: var(--f7-touch-ripple-color);
   animation: touch-ripple-in 200ms forwards;
 }
+.ripple-wave.ripple-wave-inset {
+  background-image: none;
+  background-color: var(--f7-touch-ripple-color);
+}
 .ripple-wave.ripple-wave-out {
   transform: var(--f7-ripple-transform);
-  animation: touch-ripple-out 300ms forwards;
+  animation: touch-ripple-out 250ms forwards !important;
 }
-.button-fill .ripple-wave,
-.picker-calendar-day .ripple-wave {
-  z-index: 1;
+.item-link .ripple-wave,
+.list label.item-content .ripple-wave,
+.list-button .ripple-wave,
+.links-list a .ripple-wave,
+.button .ripple-wave,
+button .ripple-wave,
+.dialog-button .ripple-wave,
+.tab-link .ripple-wave,
+.item-radio .ripple-wave,
+.item-checkbox .ripple-wave,
+.actions-button .ripple-wave,
+.fab a .ripple-wave,
+.stepper-button .ripple-wave,
+.stepper-button-minus .ripple-wave,
+.stepper-button-plus .ripple-wave,
+.list.accordion-list .accordion-item-toggle .ripple-wave {
+  animation: touch-ripple-in-blurred 250ms forwards;
+  background-image: radial-gradient(closest-side circle at 50% 50%, var(--f7-touch-ripple-color) 50%, rgba(255, 255, 255, 0));
+  background-color: transparent;
 }
 .checkbox .ripple-wave,
 .radio .ripple-wave,
@@ -5065,6 +5005,14 @@ input[type='reset'].button {
 }
 [class*='ripple-color-'] {
   --f7-touch-ripple-color: var(--f7-theme-color-ripple-color);
+}
+@keyframes touch-ripple-in-blurred {
+  from {
+    transform: translate3d(0px, 0px, 0) scale(0.5);
+  }
+  to {
+    transform: var(--f7-ripple-transform);
+  }
 }
 @keyframes touch-ripple-in {
   from {
@@ -5297,10 +5245,10 @@ i.icon {
 .md,
 .md .dark,
 .md [class*='color-'] {
-  --f7-dialog-button-pressed-bg-color: rgba(var(--f7-theme-color-rgb), 0.15);
+  --f7-dialog-button-pressed-bg-color: transparent;
   --f7-dialog-button-strong-bg-color: var(--f7-theme-color);
   --f7-dialog-button-strong-text-color: var(--f7-md-on-primary);
-  --f7-dialog-button-strong-pressed-bg-color: var(--f7-theme-color-shade);
+  --f7-dialog-button-strong-pressed-bg-color: transparent;
   --f7-dialog-bg-color: var(--f7-md-surface-3);
   --f7-dialog-text-color: var(--f7-md-on-surface-variant);
   --f7-dialog-title-text-color: var(--f7-md-on-surface);
@@ -6311,8 +6259,11 @@ html.with-modal-popup-push-closing .framework7-root > .view.dark:after {
 .actions-modal.not-animated {
   transition-duration: 0ms;
 }
-.actions-modal.modal-in {
+.ios .actions-modal.modal-in {
   transform: translate3d(0, calc(-1 * var(--f7-safe-area-bottom)), 0);
+}
+.md .actions-modal.modal-in {
+  transform: translate3d(0, 0, 0);
 }
 .actions-modal.modal-out {
   z-index: 13499;
@@ -6565,6 +6516,7 @@ html.with-modal-popup-push-closing .framework7-root > .view.dark:after {
 .md .actions-modal {
   background-color: var(--f7-actions-bg-color);
   border-radius: var(--f7-actions-border-radius) var(--f7-actions-border-radius) 0 0;
+  padding-bottom: var(--f7-safe-area-bottom);
 }
 .md .actions-button {
   transition-duration: 300ms;
@@ -6861,7 +6813,6 @@ html.with-modal-sheet-push-closing .framework7-root > .view.dark:after {
   --f7-toast-bg-color: var(--f7-md-surface-5);
 }
 .toast {
-  --f7-touch-ripple-color: var(--f7-touch-ripple-white);
   transition-property: transform, opacity;
   position: absolute;
   max-width: var(--f7-toast-max-width);
@@ -11749,12 +11700,13 @@ label.item-radio.disabled,
   --f7-stepper-value-font-size: 14px;
   --f7-stepper-border-width: 1px;
   --f7-stepper-small-border-width: 1px;
+  --f7-stepper-button-pressed-bg-color: transparent;
 }
 .md,
 .md .dark,
 .md [class*='color-'] {
   --f7-stepper-fill-button-text-color: var(--f7-md-on-primary);
-  --f7-stepper-fill-button-pressed-bg-color: var(--f7-theme-color-shade);
+  --f7-stepper-fill-button-pressed-bg-color: var(--f7-theme-color);
   --f7-stepper-border-color: var(--f7-md-outline);
 }
 .stepper {
@@ -11978,7 +11930,7 @@ label.item-radio.disabled,
 }
 .md .stepper-fill,
 .md .stepper-fill-md {
-  --f7-stepper-button-pressed-bg-color: var(--f7-stepper-fill-button-pressed-bg-color, var(--f7-theme-color-shade));
+  --f7-stepper-button-pressed-bg-color: var(--f7-stepper-fill-button-bg-color, var(--f7-theme-color));
 }
 /* === Smart Select === */
 .smart-select :root {
@@ -14381,44 +14333,6 @@ table.data-table {
   width: 48px;
   height: 48px;
 }
-.md .data-table-rows-select a.link:before,
-.md .data-table-pagination a.link:before {
-  content: '';
-  width: 152%;
-  height: 152%;
-  left: -26%;
-  top: -26%;
-  position: absolute;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 66%, rgba(255, 255, 255, 0) 66%);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition-duration: 300ms;
-  transition-property: opacity;
-}
-.md .data-table-rows-select a.link.icon-only:before,
-.md .data-table-pagination a.link.icon-only:before,
-.md .data-table-rows-select a.link.ripple-inset:before,
-.md .data-table-pagination a.link.ripple-inset:before,
-.md .data-table-rows-select a.link.searchbar-disable-button:before,
-.md .data-table-pagination a.link.searchbar-disable-button:before,
-.md .data-table-rows-select a.link.input-clear-button:before,
-.md .data-table-pagination a.link.input-clear-button:before,
-.md .data-table-rows-select a.link.notification-close-button:before,
-.md .data-table-pagination a.link.notification-close-button:before {
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 71%, rgba(255, 255, 255, 0) 71%);
-}
-.md .data-table-rows-select a.link.active-state:before,
-.md .data-table-pagination a.link.active-state:before {
-  opacity: 1;
-  transition-duration: 150ms;
-}
 .md .data-table-rows-select + .data-table-pagination {
   margin-left: 32px;
 }
@@ -14439,9 +14353,10 @@ table.data-table {
   --f7-fab-label-padding: 4px 12px;
   --f7-fab-label-font-size: inherit;
   --f7-fab-button-size: 40px;
-  /* --f7-fab-pressed-bg-color: var(--f7-theme-color-shade); */
+  /* --f7-fab-bg-color: var(--f7-theme-color)); */
 }
 .ios {
+  /* --f7-fab-pressed-bg-color: var(--f7-theme-color-shade); */
   --f7-fab-text-color: #fff;
   --f7-fab-border-radius: 50px;
   --f7-fab-size: 50px;
@@ -14456,6 +14371,9 @@ table.data-table {
   --f7-fab-label-bg-color: #fff;
 }
 .md {
+  /*
+  --f7-fab-pressed-bg-color: var(--f7-fab-bg-color, var(--f7-theme-color));
+  */
   --f7-fab-border-radius: 16px;
   --f7-fab-size: 56px;
   --f7-fab-box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
@@ -14539,10 +14457,6 @@ table.data-table {
   overflow: hidden;
   z-index: 1;
   color: var(--f7-fab-text-color);
-}
-.fab > a.active-state,
-.fab-buttons a.active-state {
-  background-color: var(--f7-fab-pressed-bg-color, var(--f7-theme-color-shade));
 }
 .fab > a i {
   position: absolute;
@@ -14946,6 +14860,11 @@ table.data-table {
 .ios .fab > a.active-state,
 .ios .fab-buttons a.active-state {
   transition-duration: 0ms;
+  background-color: var(--f7-fab-pressed-bg-color, var(--f7-theme-color-shade));
+}
+.md .fab > a.active-state,
+.md .fab-buttons a.active-state {
+  background-color: var(--f7-fab-pressed-bg-color, var(--f7-fab-bg-color, var(--f7-theme-color)));
 }
 /* === Searchbar === */
 :root {
@@ -15146,7 +15065,11 @@ table.data-table {
   display: none !important;
 }
 .navbar .searchbar.searchbar-expandable {
-  --f7-searchbar-expandable-size: var(--f7-navbar-height);
+  --f7-searchbar-expandable-size: calc(var(--f7-navbar-height) + var(--f7-safe-area-top));
+}
+.navbar .searchbar.searchbar-expandable .searchbar-inner {
+  top: var(--f7-safe-area-top);
+  height: calc(100% - var(--f7-safe-area-top));
 }
 .toolbar .searchbar.searchbar-expandable {
   --f7-searchbar-expandable-size: var(--f7-toolbar-height);
@@ -15453,37 +15376,6 @@ table.data-table {
   color: var(--f7-searchbar-link-color, var(--f7-bars-link-color, var(--f7-theme-color)));
   left: calc(var(--f7-searchbar-inner-padding-left) + var(--f7-safe-area-left));
 }
-.md .searchbar-disable-button:before {
-  content: '';
-  width: 152%;
-  height: 152%;
-  left: -26%;
-  top: -26%;
-  position: absolute;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 66%, rgba(255, 255, 255, 0) 66%);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition-duration: 300ms;
-  transition-property: opacity;
-}
-.md .searchbar-disable-button.icon-only:before,
-.md .searchbar-disable-button.ripple-inset:before,
-.md .searchbar-disable-button.searchbar-disable-button:before,
-.md .searchbar-disable-button.input-clear-button:before,
-.md .searchbar-disable-button.notification-close-button:before {
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 71%, rgba(255, 255, 255, 0) 71%);
-}
-.md .searchbar-disable-button.active-state:before {
-  opacity: 1;
-  transition-duration: 150ms;
-}
 .md .searchbar-disable-button:after {
   font-family: 'framework7-core-icons';
   font-weight: normal;
@@ -15523,37 +15415,6 @@ table.data-table {
   height: 48px;
   margin-top: -24px;
   right: 0;
-}
-.md .searchbar .input-clear-button:before {
-  content: '';
-  width: 152%;
-  height: 152%;
-  left: -26%;
-  top: -26%;
-  position: absolute;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 66%, rgba(255, 255, 255, 0) 66%);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition-duration: 300ms;
-  transition-property: opacity;
-}
-.md .searchbar .input-clear-button.icon-only:before,
-.md .searchbar .input-clear-button.ripple-inset:before,
-.md .searchbar .input-clear-button.searchbar-disable-button:before,
-.md .searchbar .input-clear-button.input-clear-button:before,
-.md .searchbar .input-clear-button.notification-close-button:before {
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 71%, rgba(255, 255, 255, 0) 71%);
-}
-.md .searchbar .input-clear-button.active-state:before {
-  opacity: 1;
-  transition-duration: 150ms;
 }
 .md .searchbar .input-clear-button:after {
   line-height: 48px;
@@ -17387,7 +17248,7 @@ swiper-container .swiper-notification {
   background: var(--f7-photobrowser-bg-color);
   transition: 400ms;
   transition-property: background-color;
-  touch-action: pan-x pan-y;
+  touch-action: none;
 }
 .photo-browser-prev.swiper-button-disabled,
 .photo-browser-next.swiper-button-disabled {
@@ -17457,7 +17318,7 @@ swiper-container .swiper-notification {
   background-color: var(--f7-photobrowser-bars-bg-color, rgba(var(--f7-bars-bg-color-rgb), 0.95));
 }
 .photo-browser-page {
-  touch-action: manipulation;
+  touch-action: none;
 }
 .photo-browser-page .navbar,
 .photo-browser-page .toolbar {
@@ -17623,8 +17484,6 @@ swiper-container .swiper-notification {
   --f7-notification-subtitle-color: var(--f7-md-on-surface);
 }
 .notification {
-  --f7-link-highlight-color: var(--f7-link-highlight-black);
-  --f7-touch-ripple-color: var(--f7-touch-ripple-black);
   position: absolute;
   left: var(--f7-notification-margin);
   top: var(--f7-notification-margin);
@@ -19086,37 +18945,6 @@ button.text-editor-button .material-icons sub {
 }
 .md button.text-editor-button {
   --f7-touch-ripple-color: rgba(var(--f7-theme-color-rgb), 0.25);
-}
-.md button.text-editor-button:before {
-  content: '';
-  width: 152%;
-  height: 152%;
-  left: -26%;
-  top: -26%;
-  position: absolute;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 66%, rgba(255, 255, 255, 0) 66%);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition-duration: 300ms;
-  transition-property: opacity;
-}
-.md button.text-editor-button.icon-only:before,
-.md button.text-editor-button.ripple-inset:before,
-.md button.text-editor-button.searchbar-disable-button:before,
-.md button.text-editor-button.input-clear-button:before,
-.md button.text-editor-button.notification-close-button:before {
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  background-image: radial-gradient(circle at center, var(--f7-link-highlight-color) 71%, rgba(255, 255, 255, 0) 71%);
-}
-.md button.text-editor-button.active-state:before {
-  opacity: 1;
-  transition-duration: 150ms;
 }
 .md .text-editor-keyboard-toolbar .toolbar-inner {
   padding-left: 8px;

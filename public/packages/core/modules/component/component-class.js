@@ -266,77 +266,59 @@ class Component {
   /* eslint-disable no-sequences */
   getUseState() {
     var _this = this;
-    return o => [o].reduce(function (t, _i, _x, _a, i) {
-      if (i === void 0) {
-        i = t.init(_i);
-      }
-      return {
-        state: i,
-        update: v => (t.update(i, v), _this.update()),
-        remove: v => (t.remove(i, v), _this.update()),
-        clear: () => (t.clear(i), _this.update()),
-        insert: (x, v) => (t.insert(i, x, v), _this.update()),
-        replace: (x, v) => (t.replace(i, x, v), _this.update()),
-        append: v => (t.append(i, v), _this.update()),
-        prepend: v => (t.prepend(i, v), _this.update()),
-        swap: (a, b) => (t.swap(i, a, b), _this.update()),
-        fromTo: (a, b) => (t.fromTo(i, a, b), _this.update()),
-        method: function (f) {
-          if (f === void 0) {
-            f = () => ({});
-          }
-          return f(i), _this.update();
-        },
-        async: function (f) {
-          if (f === void 0) {
-            f = () => Promise.reject(i);
-          }
-          return f(i).then(() => _this.update());
+    return o => {
+      const obj = [o].reduce(function (t, _i, _x, _a, i) {
+        if (i === void 0) {
+          i = t.init(_i);
         }
+        return {
+          state: i,
+          update: v => (t.update(i, v), _this.update()),
+          remove: v => (t.remove(i, v), _this.update()),
+          clear: () => (t.clear(i), _this.update()),
+          insert: (x, v) => (t.insert(i, x, v), _this.update()),
+          replace: (x, v) => (t.replace(i, x, v), _this.update()),
+          append: v => (t.append(i, v), _this.update()),
+          prepend: v => (t.prepend(i, v), _this.update()),
+          swap: (a, b) => (t.swap(i, a, b), _this.update()),
+          fromTo: (a, b) => (t.fromTo(i, a, b), _this.update()),
+          method: function (f) {
+            if (f === void 0) {
+              f = () => ({});
+            }
+            return f(i), _this.update();
+          },
+          async: function (f) {
+            if (f === void 0) {
+              f = () => Promise.reject(i);
+            }
+            return f(i).then(() => _this.update());
+          }
+        };
+      }, types.find(i => i.type(o)));
+      obj.length = 12;
+      obj[Symbol.iterator] = function Iterate() {
+        const values = Object.values(this);
+        values.splice(values.indexOf(12), 1);
+        let index = 0;
+        return {
+          next() {
+            if (index < values.length) {
+              const val = values[index];
+              index += 1;
+              return {
+                value: val,
+                done: false
+              };
+            }
+            return {
+              done: true
+            };
+          }
+        };
       };
-    }, types.find(i => i.type(o)));
-  }
-  _getUseState() {
-    var _this2 = this;
-    return o => [o].reduce(function (t, _i, _x, _a, i) {
-      if (i === void 0) {
-        i = t.init(_i);
-      }
-      return [i,
-      // state
-      v => (t.update(i, v), _this2.update()),
-      // update
-      v => (t.remove(i, v), _this2.update()),
-      // remove
-      () => (t.clear(i), _this2.update()),
-      // clear
-      (x, v) => (t.insert(i, x, v), _this2.update()),
-      // insert
-      (x, v) => (t.replace(i, x, v), _this2.update()),
-      // replace
-      v => (t.append(i, v), _this2.update()),
-      // append
-      v => (t.prepend(i, v), _this2.update()),
-      // prepend
-      (a, b) => (t.swap(i, a, b), _this2.update()),
-      // swap
-      (a, b) => (t.fromTo(i, a, b), _this2.update()),
-      // fromTo
-      function (f) {
-        if (f === void 0) {
-          f = () => ({});
-        }
-        return f(i), _this2.update();
-      },
-      // method
-      function (f) {
-        if (f === void 0) {
-          f = () => Promise.reject(i);
-        }
-        return f(i).then(() => _this2.update());
-      } // async
-      ];
-    }, types.find(i => i.type(o)));
+      return obj;
+    };
   }
   /* eslint-enable no-sequences */
 
@@ -356,8 +338,7 @@ class Component {
       $store: this.getComponentStore(),
       $ref: this.getComponentRef(),
       $el: {},
-      $useState: this.getUseState(),
-      $_useState: this._getUseState()
+      $useState: this.getUseState()
     };
     Object.defineProperty(ctx.$el, 'value', {
       get: () => {
