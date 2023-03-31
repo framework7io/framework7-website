@@ -16,8 +16,6 @@ block content
     p When we init the app we can use the `new Framework7` constructor and pass an object with main app parameters:
     :code(lang="js")
       var app = new Framework7({
-        // App id
-        id: 'com.myapp.test',
         // Enable swipe panel
         panel: {
           swipe: true,
@@ -272,7 +270,6 @@ block content
     p Example:
     :code(lang="js")
           var app = new Framework7({
-            id: 'com.myapp.test',
             // Extended by Panel component:
             panel: {
               swipe: true,
@@ -294,20 +291,11 @@ block content
         tr
           th(colspan="2") Properties
         tr
-          td app.id
-          td App ID passed in parameters
-        tr
           td app.name
           td App name passed in parameters
         tr
-          td app.version
-          td App version
-        tr
           td app.routes
           td App routes
-        tr
-          td app.language
-          td App language
         tr
           td app.el
           td App root HTML element
