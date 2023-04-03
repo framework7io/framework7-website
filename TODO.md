@@ -1,1 +1,0 @@
-- **core:** new Material You colors system. `colorThemeCSSProperties` util now return object with `common`, `light` and `dark` vars
