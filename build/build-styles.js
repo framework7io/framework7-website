@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const gulp = require('gulp');
 const gulpLess = require('gulp-less');
@@ -16,6 +17,10 @@ function buildLess(cb) {
     .pipe(gulp.dest('./public/css/'))
     .pipe(connect.reload())
     .on('end', () => {
+      fs.renameSync(
+        path.resolve(__dirname, '../public/css/main.css'),
+        path.resolve(__dirname, '../public/css/main-v8.css'),
+      );
       if (cb) cb();
     });
 }

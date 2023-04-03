@@ -23,11 +23,11 @@ function build(cb) {
     .then((bundle) => {
       return bundle.write({
         strict: true,
-        file: './public/js/main.js',
+        file: './public/js/main-v8.js',
         format: 'umd',
         name: 'app',
         sourcemap: true,
-        sourcemapFile: './public/js/main.js.map',
+        sourcemapFile: './public/js/main-v8.js.map',
       });
     })
     .then(async (bundle) => {
@@ -36,12 +36,12 @@ function build(cb) {
       const minified = await Terser.minify(result.code, {
         sourceMap: {
           content: result.map,
-          url: 'main.js.map',
+          url: 'main-v8.js.map',
         },
       });
 
-      fs.writeFileSync('./public/js/main.js', minified.code);
-      fs.writeFileSync('./public/js/main.js.map', minified.map);
+      fs.writeFileSync('./public/js/main-v8.js', minified.code);
+      fs.writeFileSync('./public/js/main-v8.js.map', minified.map);
 
       cb();
     })
