@@ -3,7 +3,7 @@ const path = require('path');
 
 const update = async () => {
   await exec(
-    'npm i framework7@beta framework7-react@beta framework7-vue@beta framework7-svelte@beta --save',
+    'npm i framework7@latest framework7-react@latest framework7-vue@latest framework7-svelte@latest --save',
   );
   await exec('cp -r ../framework7/packages/* public/packages/');
   await exec('rm -rf public/kitchen-sink');

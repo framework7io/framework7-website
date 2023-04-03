@@ -179,8 +179,9 @@ export function serializeObject(obj, parents) {
     } else if (typeof obj[prop] !== 'undefined' && obj[prop] !== '') {
       // Should be string or plain value
       resultArray.push(`${varName(prop)}=${varValue(obj[prop])}`);
-    } else if (obj[prop] === '') resultArray.push(varName(prop));
+    } else if (obj[prop] === '') resultArray.push(varName(prop)); // eslint-disable-line
   });
+
   return resultArray.join(separator);
 }
 export function isObject(o) {

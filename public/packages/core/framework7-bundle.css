@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.0-beta.9
+ * Framework7 8.0.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: March 31, 2023
+ * Released on: April 3, 2023
  */
 
 /*====================
@@ -1416,8 +1416,12 @@ html.device-full-viewport body {
 .navbars > .navbar {
   position: absolute;
 }
-.navbar-transparent:not(.navbar-large):not(.navbar-transparent-visible):not(.with-searchbar-expandable-enabled) .navbar-bg,
-.navbar-transparent:not(.navbar-large):not(.navbar-transparent-visible):not(.with-searchbar-expandable-enabled) .title {
+.navbar-transparent:not(.navbar-large):not(.navbar-transparent-visible):not(
+    .with-searchbar-expandable-enabled
+  ) .navbar-bg,
+.navbar-transparent:not(.navbar-large):not(.navbar-transparent-visible):not(
+    .with-searchbar-expandable-enabled
+  ) .title {
   opacity: 0;
 }
 .navbar-large .navbar-bg {
@@ -9192,7 +9196,9 @@ swiper-container.tabs > .tab {
   transition-property: transform;
   transition-duration: var(--f7-panel-transition-duration);
 }
-.panel:not(.panel-in):not(.panel-out):not(.panel-in-breakpoint):not(.panel-in-collapsed):not(.panel-in-swipe) {
+.panel:not(.panel-in):not(.panel-out):not(.panel-in-breakpoint):not(.panel-in-collapsed):not(
+      .panel-in-swipe
+    ) {
   display: none;
 }
 .panel:after {
@@ -16379,7 +16385,7 @@ table.data-table {
 }
 /* === Swiper === */
 /**
- * Swiper 9.1.1
+ * Swiper 9.2.0
  * Most modern mobile touch slider and framework with hardware accelerated transitions
  * https://swiperjs.com
  *
@@ -16387,7 +16393,7 @@ table.data-table {
  *
  * Released under the MIT License
  *
- * Released on: March 16, 2023
+ * Released on: March 31, 2023
  */
 
 /* FONT_START */
