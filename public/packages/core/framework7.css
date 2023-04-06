@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.0
+ * Framework7 8.0.1
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 3, 2023
+ * Released on: April 6, 2023
  */
 
 /*====================
@@ -666,6 +666,10 @@ html.device-full-viewport body {
   background: var(--f7-page-bg-color);
   z-index: 100;
 }
+.router-transition-f7-circle-forward .page,
+.router-transition-f7-circle-backward .page {
+  pointer-events: none;
+}
 .router-transition-f7-circle-forward:after {
   transform: scale(0);
   border-radius: 50%;
@@ -751,6 +755,10 @@ html.device-full-viewport body {
   background: #000;
   perspective: 1200px;
 }
+.router-transition-f7-cover-v-forward .page,
+.router-transition-f7-cover-v-backward .page {
+  pointer-events: none;
+}
 .router-transition-f7-cover-v-forward .page-next {
   animation: f7-cover-v-next-to-current var(--f7-page-cover-transition-duration) forwards;
 }
@@ -804,6 +812,10 @@ html.device-full-viewport body {
   background: #000;
   perspective: 1200px;
 }
+.router-transition-f7-cover-forward .page,
+.router-transition-f7-cover-backward .page {
+  pointer-events: none;
+}
 .router-transition-f7-cover-forward .page-next {
   animation: f7-cover-next-to-current var(--f7-page-cover-transition-duration) forwards;
 }
@@ -856,6 +868,10 @@ html.device-full-viewport body {
 .router-transition-f7-dive-backward {
   background: var(--f7-page-bg-color);
   perspective: 1200px;
+}
+.router-transition-f7-dive-forward .page,
+.router-transition-f7-dive-backward .page {
+  pointer-events: none;
 }
 .router-transition-f7-dive-forward .page-next {
   animation: f7-dive-next-to-current var(--f7-page-dive-transition-duration) forwards;
@@ -925,6 +941,10 @@ html.device-full-viewport body {
 .router-transition-f7-fade-backward {
   background: var(--f7-page-bg-color);
 }
+.router-transition-f7-fade-forward .page,
+.router-transition-f7-fade-backward .page {
+  pointer-events: none;
+}
 .ios .router-transition-f7-fade-forward .page-next,
 .md .router-transition-f7-fade-forward .page-next {
   opacity: 0;
@@ -974,6 +994,7 @@ html.device-full-viewport body {
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
   overflow: hidden;
+  pointer-events: none;
 }
 .router-transition-f7-flip-forward .page-next {
   transform-style: preserve-3d;
@@ -1031,11 +1052,17 @@ html.device-full-viewport body {
     transform: translateZ(0px) rotateY(0deg);
   }
 }
+.router-transition-f7-parallax-forward .page {
+  pointer-events: none;
+}
 .router-transition-f7-parallax-forward .page-next {
   animation: f7-parallax-next-to-current var(--f7-page-parallax-transition-duration) forwards;
 }
 .router-transition-f7-parallax-forward .page-current {
   animation: f7-parallax-current-to-prev var(--f7-page-parallax-transition-duration) forwards;
+}
+.router-transition-f7-parallax-backward .page {
+  pointer-events: none;
 }
 .router-transition-f7-parallax-backward .page-current {
   animation: f7-parallax-current-to-next var(--f7-page-parallax-transition-duration) forwards;
@@ -1075,11 +1102,17 @@ html.device-full-viewport body {
     transform: translateX(0%);
   }
 }
+.router-transition-f7-push-forward .page {
+  pointer-events: none;
+}
 .router-transition-f7-push-forward .page-next {
   animation: f7-push-next-to-current var(--f7-page-push-transition-duration) forwards;
 }
 .router-transition-f7-push-forward .page-current {
   animation: f7-push-current-to-prev var(--f7-page-push-transition-duration) forwards;
+}
+.router-transition-f7-push-backward .page {
+  pointer-events: none;
 }
 .router-transition-f7-push-backward .page-current {
   animation: f7-push-current-to-next var(--f7-page-push-transition-duration) forwards;
@@ -4997,7 +5030,9 @@ button .ripple-wave,
 .stepper-button .ripple-wave,
 .stepper-button-minus .ripple-wave,
 .stepper-button-plus .ripple-wave,
-.list.accordion-list .accordion-item-toggle .ripple-wave {
+.list.accordion-list .accordion-item-toggle .ripple-wave,
+.photo-browser .toolbar .link .ripple-wave,
+.ripple-blur .ripple-wave {
   animation: touch-ripple-in-blurred 250ms forwards;
   background-image: radial-gradient(closest-side circle at 50% 50%, var(--f7-touch-ripple-color) 50%, rgba(255, 255, 255, 0));
   background-color: transparent;

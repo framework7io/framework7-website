@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.0
+ * Framework7 8.0.1
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 3, 2023
+ * Released on: April 6, 2023
  */
 
 (function (global, factory) {
@@ -26469,7 +26469,7 @@
         let table = this;
         table.$el.trigger('datatable:beforedestroy');
         table.emit('local::beforeDestroy dataTableBeforeDestroy', table);
-        table.attachEvents();
+        table.detachEvents();
         if (table.$el[0]) {
           table.$el[0].f7DataTable = null;
           delete table.$el[0].f7DataTable;
