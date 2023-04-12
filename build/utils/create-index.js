@@ -115,7 +115,7 @@ module.exports = (content = '') => {
   });
   content = content.replace(
     /block docs-index/g,
-    `block docs-index\n  .docs-right-block\n    .docs-index-title On this page\n    ul.docs-index\n      ${indexHtml}\n`,
+    `block docs-index\n  .docs-right-block.docs-right-block-index\n    .docs-index-title On this page\n    ul.docs-index\n      ${indexHtml}\n`,
   );
   return content;
 };

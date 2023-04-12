@@ -102,4 +102,17 @@ export default function initDocsNav() {
       }
     }
   }
+  if ($('.docs-index-title').length > 0) {
+    $('.docs-index-title').on('click', () => {
+      $('.docs-right-block-index').toggleClass('docs-index-visible');
+    });
+    $('.docs-index a').on('click', () => {
+      $('.docs-right-block-index').removeClass('docs-index-visible');
+    });
+    $(document).on('click', (e) => {
+      if (!e.target.closest('.docs-right-block-index')) {
+        $('.docs-right-block-index').removeClass('docs-index-visible');
+      }
+    });
+  }
 }
