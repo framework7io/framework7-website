@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.1
+ * Framework7 8.0.2
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 6, 2023
+ * Released on: April 12, 2023
  */
 
 /*====================
@@ -139,6 +139,9 @@
   font-style: normal;
 }
 html {
+  overscroll-behavior: none;
+}
+html {
   direction: rtl;
 }
 html,
@@ -155,12 +158,28 @@ body {
   width: 100%;
   background: #fff;
   overflow: hidden;
+  overflow-y: scroll;
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   font-family: var(--f7-font-family);
   font-size: var(--f7-font-size);
   line-height: var(--f7-line-height);
   color: var(--f7-text-color);
+}
+body::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+  position: relative;
+}
+body::-webkit-scrollbar-track {
+  box-shadow: none;
+  background: transparent;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  outline: none;
+  border-radius: 9999px;
+  position: relative;
 }
 .dark body,
 body.dark {
@@ -5282,11 +5301,6 @@ i.icon {
   --f7-dialog-input-border-width: 0px;
   --f7-dialog-preloader-size: 32px;
   --f7-dialog-input-bg-color: transparent;
-  --f7-dialog-input-placeholder-color: rgba(0, 0, 0, 0.35);
-}
-.md .dark,
-.md.dark {
-  --f7-dialog-input-placeholder-color: rgba(255, 255, 255, 0.54);
 }
 .md,
 .md .dark,
@@ -5296,6 +5310,7 @@ i.icon {
   --f7-dialog-button-strong-text-color: var(--f7-md-on-primary);
   --f7-dialog-button-strong-pressed-bg-color: transparent;
   --f7-dialog-bg-color: var(--f7-md-surface-3);
+  --f7-dialog-input-placeholder-color: var(--f7-md-on-surface-variant);
   --f7-dialog-text-color: var(--f7-md-on-surface-variant);
   --f7-dialog-title-text-color: var(--f7-md-on-surface);
 }
@@ -10205,17 +10220,16 @@ html.with-modal-sheet-push-closing .framework7-root > .panel-in.panel-push.panel
   */
   --f7-floating-label-scale: calc(16 / 12);
   --f7-input-clear-button-size: 24px;
-  --f7-input-placeholder-color: rgba(0, 0, 0, 0.35);
   --f7-input-info-text-color: rgba(0, 0, 0, 0.45);
 }
 .md .dark,
 .md.dark {
-  --f7-input-placeholder-color: rgba(255, 255, 255, 0.35);
   --f7-input-info-text-color: rgba(255, 255, 255, 0.45);
 }
 .md,
 .md .dark,
 .md [class*='color-'] {
+  --f7-input-placeholder-color: var(--f7-md-on-surface-variant);
   --f7-input-item-bg-color: var(--f7-md-surface-variant);
   --f7-input-border-color: var(--f7-md-outline);
   --f7-input-clear-button-color: var(--f7-md-on-surface-variant);
@@ -14407,20 +14421,20 @@ table.data-table {
 :root {
   --f7-fab-margin: 16px;
   --f7-fab-extended-text-font-size: 14px;
-  --f7-fab-extended-text-padding: 0 20px;
   --f7-fab-label-padding: 4px 12px;
   --f7-fab-label-font-size: inherit;
   --f7-fab-button-size: 40px;
-  /* --f7-fab-bg-color: var(--f7-theme-color)); */
 }
 .ios {
   /* --f7-fab-pressed-bg-color: var(--f7-theme-color-shade); */
+  /* --f7-fab-bg-color: var(--f7-theme-color)); */
   --f7-fab-text-color: #fff;
   --f7-fab-border-radius: 50px;
   --f7-fab-size: 50px;
   --f7-fab-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
   --f7-fab-extended-text-transform: uppercase;
   --f7-fab-extended-size: 50px;
+  --f7-fab-extended-text-padding: 0 20px;
   --f7-fab-extended-text-font-weight: 600;
   --f7-fab-extended-text-letter-spacing: 0;
   --f7-fab-label-border-radius: 4px;
@@ -14434,22 +14448,20 @@ table.data-table {
   */
   --f7-fab-border-radius: 16px;
   --f7-fab-size: 56px;
-  --f7-fab-box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
-                       0px 6px 10px 0px rgba(0, 0, 0, 0.14),
-                       0px 1px 18px 0px rgba(0, 0, 0, 0.12);
-  --f7-fab-extended-size: 48px;
+  --f7-fab-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+  --f7-fab-extended-size: 56px;
+  --f7-fab-extended-text-padding: 0 16px;
   --f7-fab-extended-text-font-weight: 500;
   --f7-fab-extended-text-letter-spacing: 0;
   --f7-fab-extended-text-transform: none;
   --f7-fab-label-border-radius: 8px;
-  --f7-fab-label-box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2),
-                             0px 3px 4px 0px rgba(0, 0, 0, 0.14),
-                             0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+  --f7-fab-label-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
 }
 .md,
 .md .dark,
 .md [class*='color-'] {
-  --f7-fab-text-color: var(--f7-md-on-primary);
+  --f7-fab-bg-color: var(--f7-md-primary-container);
+  --f7-fab-text-color: var(--f7-md-on-primary-container);
   --f7-fab-label-text-color: var(--f7-md-on-surface);
   --f7-fab-label-bg-color: var(--f7-md-surface-5);
 }
@@ -14969,10 +14981,10 @@ table.data-table {
 }
 .ios .dark,
 .ios.dark {
+  --f7-searchbar-placeholder-color: rgba(255, 255, 255, 0.4);
   --f7-searchbar-input-text-color: #fff;
   --f7-searchbar-search-icon-color: rgba(255, 255, 255, 0.4);
   --f7-searchbar-input-bg-color: #2a2a2a;
-  --f7-searchbar-placeholder-color: rgba(255, 255, 255, 0.4);
 }
 .md {
   --f7-searchbar-border-color: transparent;
@@ -16054,6 +16066,7 @@ table.data-table {
   --f7-messagebar-attachment-border-radius: 12px;
   --f7-messagebar-attachment-height: 155px;
   --f7-messagebar-attachment-landscape-height: 120px;
+  --f7-messagebar-textarea-placeholder-color: rgba(0, 0, 0, 0.4);
   --f7-messagebar-textarea-text-color: #000;
   --f7-messagebar-textarea-border: 1px solid #c8c8cd;
   --f7-messagebar-attachments-border-color: #c8c8cd;
@@ -16062,6 +16075,7 @@ table.data-table {
 }
 .ios .dark,
 .ios.dark {
+  --f7-messagebar-textarea-placeholder-color: rgba(255, 255, 255, 0.4);
   --f7-messagebar-textarea-text-color: #fff;
   --f7-messagebar-textarea-border: 1px solid var(--f7-bars-border-color);
   --f7-messagebar-attachments-border-color: var(--f7-bars-border-color);
@@ -16086,6 +16100,7 @@ table.data-table {
 .md,
 .md .dark,
 .md [class*='color-'] {
+  --f7-messagebar-textarea-placeholder-color: var(--f7-md-on-surface-variant);
   --f7-messagebar-textarea-bg-color: var(--f7-md-surface-variant);
   --f7-messagebar-bg-color: var(--f7-md-surface);
   --f7-messagebar-textarea-text-color: var(--f7-md-on-surface);
@@ -16159,6 +16174,9 @@ table.data-table {
   font-size: var(--f7-messagebar-textarea-font-size);
   line-height: var(--f7-messagebar-textarea-line-height);
   border: var(--f7-messagebar-textarea-border);
+}
+.messagebar textarea::placeholder {
+  color: var(--f7-messagebar-textarea-placeholder-color);
 }
 .messagebar a.link {
   align-self: flex-end;
@@ -18795,18 +18813,17 @@ a.treeview-item-root.active-state {
   --f7-text-editor-text-color: #000;
   --f7-text-editor-bg-color: #fff;
   --f7-text-editor-button-divider-color: rgba(0, 0, 0, 0.15);
-  --f7-text-editor-placeholder-color: rgba(0, 0, 0, 0.35);
 }
 :root .dark,
 :root.dark {
   --f7-text-editor-bg-color: #121212;
   --f7-text-editor-text-color: #fff;
-  --f7-text-editor-placeholder-color: rgba(255, 255, 255, 0.35);
   --f7-text-editor-button-divider-color: rgba(255, 255, 255, 0.15);
 }
 .ios {
   --f7-text-editor-toolbar-padding: 6px;
   --f7-text-editor-button-border-radius: 2px;
+  --f7-text-editor-placeholder-color: rgba(0, 0, 0, 0.35);
   --f7-text-editor-toolbar-border-color: rgba(0, 0, 0, 0.25);
   --f7-text-editor-toolbar-bg-color: #fff;
   --f7-text-editor-border-color: rgba(0, 0, 0, 0.1);
@@ -18814,6 +18831,7 @@ a.treeview-item-root.active-state {
 }
 .ios .dark,
 .ios.dark {
+  --f7-text-editor-placeholder-color: rgba(255, 255, 255, 0.35);
   --f7-text-editor-toolbar-bg-color: #121212;
   --f7-text-editor-toolbar-border-color: rgba(255, 255, 255, 0.1);
   --f7-text-editor-toolbar-bg-color: #202020;
@@ -18827,6 +18845,7 @@ a.treeview-item-root.active-state {
 .md,
 .md .dark,
 .md [class*='color-'] {
+  --f7-text-editor-placeholder-color: var(--f7-md-on-surface-variant);
   --f7-text-editor-toolbar-bg-color: var(--f7-md-surface-1);
   --f7-text-editor-border-color: var(--f7-md-outline);
   --f7-text-editor-button-text-color: var(--f7-md-on-surface);

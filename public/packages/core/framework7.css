@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.1
+ * Framework7 8.0.2
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 6, 2023
+ * Released on: April 12, 2023
  */
 
 /*====================
@@ -138,6 +138,9 @@
   font-weight: 400;
   font-style: normal;
 }
+html {
+  overscroll-behavior: none;
+}
 html,
 body,
 .framework7-root {
@@ -152,12 +155,28 @@ body {
   width: 100%;
   background: #fff;
   overflow: hidden;
+  overflow-y: scroll;
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   font-family: var(--f7-font-family);
   font-size: var(--f7-font-size);
   line-height: var(--f7-line-height);
   color: var(--f7-text-color);
+}
+body::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+  position: relative;
+}
+body::-webkit-scrollbar-track {
+  box-shadow: none;
+  background: transparent;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  outline: none;
+  border-radius: 9999px;
+  position: relative;
 }
 .dark body,
 body.dark {

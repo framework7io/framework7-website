@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.1
+ * Framework7 8.0.2
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 6, 2023
+ * Released on: April 12, 2023
  */
 
 import $ from './shared/dom7.js';

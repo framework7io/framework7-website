@@ -78,9 +78,6 @@ function labInvf(ft) {
   return ft3 > 216 / 24389 ? ft3 : (116 * ft - 16) / 903.2962962962963;
 }
 class ViewingConditions {
-  constructor(n, aw, nbb, ncb, c, nc, rgbD, fl, fLRoot, z) {
-    this.n = n, this.aw = aw, this.nbb = nbb, this.ncb = ncb, this.c = c, this.nc = nc, this.rgbD = rgbD, this.fl = fl, this.fLRoot = fLRoot, this.z = z;
-  }
   static make(whitePoint, adaptingLuminance, backgroundLstar, surround, discountingIlluminant) {
     if (whitePoint === void 0) {
       whitePoint = whitePointD65();
@@ -118,6 +115,9 @@ class ViewingConditions {
       rgbAFactors = [Math.pow(fl * rgbD[0] * rW / 100, .42), Math.pow(fl * rgbD[1] * gW / 100, .42), Math.pow(fl * rgbD[2] * bW / 100, .42)],
       rgbA = [400 * rgbAFactors[0] / (rgbAFactors[0] + 27.13), 400 * rgbAFactors[1] / (rgbAFactors[1] + 27.13), 400 * rgbAFactors[2] / (rgbAFactors[2] + 27.13)];
     return new ViewingConditions(n, (2 * rgbA[0] + rgbA[1] + .05 * rgbA[2]) * nbb, nbb, ncb, c, nc, rgbD, fl, Math.pow(fl, .25), z);
+  }
+  constructor(n, aw, nbb, ncb, c, nc, rgbD, fl, fLRoot, z) {
+    this.n = n, this.aw = aw, this.nbb = nbb, this.ncb = ncb, this.c = c, this.nc = nc, this.rgbD = rgbD, this.fl = fl, this.fLRoot = fLRoot, this.z = z;
   }
 }
 ViewingConditions.DEFAULT = ViewingConditions.make();
@@ -392,11 +392,6 @@ class HctSolver {
 }
 HctSolver.SCALED_DISCOUNT_FROM_LINRGB = [[.001200833568784504, .002389694492170889, .0002795742885861124], [.0005891086651375999, .0029785502573438758, .0003270666104008398], [.00010146692491640572, .0005364214359186694, .0032979401770712076]], HctSolver.LINRGB_FROM_SCALED_DISCOUNT = [[1373.2198709594231, -1100.4251190754821, -7.278681089101213], [-271.815969077903, 559.6580465940733, -32.46047482791194], [1.9622899599665666, -57.173814538844006, 308.7233197812385]], HctSolver.Y_FROM_LINRGB = [.2126, .7152, .0722], HctSolver.CRITICAL_PLANES = [.015176349177441876, .045529047532325624, .07588174588720938, .10623444424209313, .13658714259697685, .16693984095186062, .19729253930674434, .2276452376616281, .2579979360165119, .28835063437139563, .3188300904430532, .350925934958123, .3848314933096426, .42057480301049466, .458183274052838, .4976837250274023, .5391024159806381, .5824650784040898, .6277969426914107, .6751227633498623, .7244668422128921, .775853049866786, .829304845476233, .8848452951698498, .942497089126609, 1.0022825574869039, 1.0642236851973577, 1.1283421258858297, 1.1946592148522128, 1.2631959812511864, 1.3339731595349034, 1.407011200216447, 1.4823302800086415, 1.5599503113873272, 1.6398909516233677, 1.7221716113234105, 1.8068114625156377, 1.8938294463134073, 1.9832442801866852, 2.075074464868551, 2.1693382909216234, 2.2660538449872063, 2.36523901573795, 2.4669114995532007, 2.5710888059345764, 2.6777882626779785, 2.7870270208169257, 2.898822059350997, 3.0131901897720907, 3.1301480604002863, 3.2497121605402226, 3.3718988244681087, 3.4967242352587946, 3.624204428461639, 3.754355295633311, 3.887192587735158, 4.022731918402185, 4.160988767090289, 4.301978482107941, 4.445716283538092, 4.592217266055746, 4.741496401646282, 4.893568542229298, 5.048448422192488, 5.20615066083972, 5.3666897647573375, 5.5300801301023865, 5.696336044816294, 5.865471690767354, 6.037501145825082, 6.212438385869475, 6.390297286737924, 6.571091626112461, 6.7548350853498045, 6.941541251256611, 7.131223617812143, 7.323895587840543, 7.5195704746346665, 7.7182615035334345, 7.919981813454504, 8.124744458384042, 8.332562408825165, 8.543448553206703, 8.757415699253682, 8.974476575321063, 9.194643831691977, 9.417930041841839, 9.644347703669503, 9.873909240696694, 10.106627003236781, 10.342513269534024, 10.58158024687427, 10.8238400726681, 11.069304815507364, 11.317986476196008, 11.569896988756009, 11.825048221409341, 12.083451977536606, 12.345119996613247, 12.610063955123938, 12.878295467455942, 13.149826086772048, 13.42466730586372, 13.702830557985108, 13.984327217668513, 14.269168601521828, 14.55736596900856, 14.848930523210871, 15.143873411576273, 15.44220572664832, 15.743938506781891, 16.04908273684337, 16.35764934889634, 16.66964922287304, 16.985093187232053, 17.30399201960269, 17.62635644741625, 17.95219714852476, 18.281524751807332, 18.614349837764564, 18.95068293910138, 19.290534541298456, 19.633915083172692, 19.98083495742689, 20.331304511189067, 20.685334046541502, 21.042933821039977, 21.404114048223256, 21.76888489811322, 22.137256497705877, 22.50923893145328, 22.884842241736916, 23.264076429332462, 23.6469514538663, 24.033477234264016, 24.42366364919083, 24.817520537484558, 25.21505769858089, 25.61628489293138, 26.021211842414342, 26.429848230738664, 26.842203703840827, 27.258287870275353, 27.678110301598522, 28.10168053274597, 28.529008062403893, 28.96010235337422, 29.39497283293396, 29.83362889318845, 30.276079891419332, 30.722335150426627, 31.172403958865512, 31.62629557157785, 32.08401920991837, 32.54558406207592, 33.010999283389665, 33.4802739966603, 33.953417292456834, 34.430438229418264, 34.911345834551085, 35.39614910352207, 35.88485700094671, 36.37747846067349, 36.87402238606382, 37.37449765026789, 37.87891309649659, 38.38727753828926, 38.89959975977785, 39.41588851594697, 39.93615253289054, 40.460400508064545, 40.98864111053629, 41.520882981230194, 42.05713473317016, 42.597404951718396, 43.141702194811224, 43.6900349931913, 44.24241185063697, 44.798841244188324, 45.35933162437017, 45.92389141541209, 46.49252901546552, 47.065252796817916, 47.64207110610409, 48.22299226451468, 48.808024568002054, 49.3971762874833, 49.9904556690408, 50.587870934119984, 51.189430279724725, 51.79514187861014, 52.40501387947288, 53.0190544071392, 53.637271562750364, 54.259673423945976, 54.88626804504493, 55.517063457223934, 56.15206766869424, 56.79128866487574, 57.43473440856916, 58.08241284012621, 58.734331877617365, 59.39049941699807, 60.05092333227251, 60.715611475655585, 61.38457167773311, 62.057811747619894, 62.7353394731159, 63.417162620860914, 64.10328893648692, 64.79372614476921, 65.48848194977529, 66.18756403501224, 66.89098006357258, 67.59873767827808, 68.31084450182222, 69.02730813691093, 69.74813616640164, 70.47333615344107, 71.20291564160104, 71.93688215501312, 72.67524319850172, 73.41800625771542, 74.16517879925733, 74.9167682708136, 75.67278210128072, 76.43322770089146, 77.1981124613393, 77.96744375590167, 78.74122893956174, 79.51947534912904, 80.30219030335869, 81.08938110306934, 81.88105503125999, 82.67721935322541, 83.4778813166706, 84.28304815182372, 85.09272707154808, 85.90692527145302, 86.72564993000343, 87.54890820862819, 88.3767072518277, 89.2090541872801, 90.04595612594655, 90.88742016217518, 91.73345337380438, 92.58406282226491, 93.43925555268066, 94.29903859396902, 95.16341895893969, 96.03240364439274, 96.9059996312159, 97.78421388448044, 98.6670533535366, 99.55452497210776];
 class Hct {
-  constructor(argb) {
-    this.argb = argb;
-    const cam = Cam16.fromInt(argb);
-    this.internalHue = cam.hue, this.internalChroma = cam.chroma, this.internalTone = lstarFromArgb(argb), this.argb = argb;
-  }
   static from(hue, chroma, tone) {
     return new Hct(HctSolver.solveToInt(hue, chroma, tone));
   }
@@ -423,6 +418,11 @@ class Hct {
   }
   set tone(newTone) {
     this.setInternalState(HctSolver.solveToInt(this.internalHue, this.internalChroma, newTone));
+  }
+  constructor(argb) {
+    this.argb = argb;
+    const cam = Cam16.fromInt(argb);
+    this.internalHue = cam.hue, this.internalChroma = cam.chroma, this.internalTone = lstarFromArgb(argb), this.argb = argb;
   }
   setInternalState(argb) {
     const cam = Cam16.fromInt(argb);
@@ -457,9 +457,6 @@ class Blend {
   }
 }
 class TonalPalette {
-  constructor(hue, chroma) {
-    this.hue = hue, this.chroma = chroma, this.cache = new Map();
-  }
   static fromInt(argb) {
     const hct = Hct.fromInt(argb);
     return TonalPalette.fromHueAndChroma(hct.hue, hct.chroma);
@@ -467,29 +464,59 @@ class TonalPalette {
   static fromHueAndChroma(hue, chroma) {
     return new TonalPalette(hue, chroma);
   }
+  constructor(hue, chroma) {
+    this.hue = hue, this.chroma = chroma, this.cache = new Map();
+  }
   tone(tone) {
     let argb = this.cache.get(tone);
     return void 0 === argb && (argb = Hct.from(this.hue, this.chroma, tone).toInt(), this.cache.set(tone, argb)), argb;
   }
 }
 class CorePalette {
-  constructor(argb, isContent) {
-    const hct = Hct.fromInt(argb),
-      hue = hct.hue,
-      chroma = hct.chroma;
-    isContent ? (this.a1 = TonalPalette.fromHueAndChroma(hue, chroma), this.a2 = TonalPalette.fromHueAndChroma(hue, chroma / 3), this.a3 = TonalPalette.fromHueAndChroma(hue + 60, chroma / 2), this.n1 = TonalPalette.fromHueAndChroma(hue, Math.min(chroma / 12, 4)), this.n2 = TonalPalette.fromHueAndChroma(hue, Math.min(chroma / 6, 8))) : (this.a1 = TonalPalette.fromHueAndChroma(hue, Math.max(48, chroma)), this.a2 = TonalPalette.fromHueAndChroma(hue, 16), this.a3 = TonalPalette.fromHueAndChroma(hue + 60, 24), this.n1 = TonalPalette.fromHueAndChroma(hue, 4), this.n2 = TonalPalette.fromHueAndChroma(hue, 8)), this.error = TonalPalette.fromHueAndChroma(25, 84);
-  }
   static of(argb) {
     return new CorePalette(argb, !1);
   }
   static contentOf(argb) {
     return new CorePalette(argb, !0);
   }
+  static fromColors(colors) {
+    return CorePalette.createPaletteFromColors(!1, colors);
+  }
+  static contentFromColors(colors) {
+    return CorePalette.createPaletteFromColors(!0, colors);
+  }
+  static createPaletteFromColors(content, colors) {
+    const palette = new CorePalette(colors.primary, content);
+    if (colors.secondary) {
+      const p = new CorePalette(colors.secondary, content);
+      palette.a2 = p.a1;
+    }
+    if (colors.tertiary) {
+      const p = new CorePalette(colors.tertiary, content);
+      palette.a3 = p.a1;
+    }
+    if (colors.error) {
+      const p = new CorePalette(colors.error, content);
+      palette.error = p.a1;
+    }
+    if (colors.neutral) {
+      const p = new CorePalette(colors.neutral, content);
+      palette.n1 = p.n1;
+    }
+    if (colors.neutralVariant) {
+      const p = new CorePalette(colors.neutralVariant, content);
+      palette.n2 = p.n2;
+    }
+    return palette;
+  }
+  constructor(argb, isContent) {
+    const hct = Hct.fromInt(argb),
+      hue = hct.hue,
+      chroma = hct.chroma;
+    isContent ? (this.a1 = TonalPalette.fromHueAndChroma(hue, chroma), this.a2 = TonalPalette.fromHueAndChroma(hue, chroma / 3), this.a3 = TonalPalette.fromHueAndChroma(hue + 60, chroma / 2), this.n1 = TonalPalette.fromHueAndChroma(hue, Math.min(chroma / 12, 4)), this.n2 = TonalPalette.fromHueAndChroma(hue, Math.min(chroma / 6, 8))) : (this.a1 = TonalPalette.fromHueAndChroma(hue, Math.max(48, chroma)), this.a2 = TonalPalette.fromHueAndChroma(hue, 16), this.a3 = TonalPalette.fromHueAndChroma(hue + 60, 24), this.n1 = TonalPalette.fromHueAndChroma(hue, 4), this.n2 = TonalPalette.fromHueAndChroma(hue, 8)), this.error = TonalPalette.fromHueAndChroma(25, 84);
+  }
 }
 class Scheme {
-  constructor(props) {
-    this.props = props;
-  }
   get primary() {
     return this.props.primary;
   }
@@ -655,28 +682,33 @@ class Scheme {
       inversePrimary: core.a1.tone(40)
     });
   }
+  constructor(props) {
+    this.props = props;
+  }
   toJSON() {
-    return Object.assign({}, this.props);
+    return {
+      ...this.props
+    };
   }
 }
-const hexFromArgb = argb => {
-    const r = redFromArgb(argb),
-      g = greenFromArgb(argb),
-      b = blueFromArgb(argb),
-      outParts = [r.toString(16), g.toString(16), b.toString(16)];
-    for (const [i, part] of outParts.entries()) 1 === part.length && (outParts[i] = "0" + part);
-    return "#" + outParts.join("");
-  },
-  argbFromHex = hex => {
-    const isThree = 3 === (hex = hex.replace("#", "")).length,
-      isSix = 6 === hex.length,
-      isEight = 8 === hex.length;
-    if (!isThree && !isSix && !isEight) throw new Error("unexpected hex " + hex);
-    let r = 0,
-      g = 0,
-      b = 0;
-    return isThree ? (r = parseIntHex(hex.slice(0, 1).repeat(2)), g = parseIntHex(hex.slice(1, 2).repeat(2)), b = parseIntHex(hex.slice(2, 3).repeat(2))) : isSix ? (r = parseIntHex(hex.slice(0, 2)), g = parseIntHex(hex.slice(2, 4)), b = parseIntHex(hex.slice(4, 6))) : isEight && (r = parseIntHex(hex.slice(2, 4)), g = parseIntHex(hex.slice(4, 6)), b = parseIntHex(hex.slice(6, 8))), (255 << 24 | (255 & r) << 16 | (255 & g) << 8 | 255 & b) >>> 0;
-  };
+function hexFromArgb(argb) {
+  const r = redFromArgb(argb),
+    g = greenFromArgb(argb),
+    b = blueFromArgb(argb),
+    outParts = [r.toString(16), g.toString(16), b.toString(16)];
+  for (const [i, part] of outParts.entries()) 1 === part.length && (outParts[i] = "0" + part);
+  return "#" + outParts.join("");
+}
+function argbFromHex(hex) {
+  const isThree = 3 === (hex = hex.replace("#", "")).length,
+    isSix = 6 === hex.length,
+    isEight = 8 === hex.length;
+  if (!isThree && !isSix && !isEight) throw new Error("unexpected hex " + hex);
+  let r = 0,
+    g = 0,
+    b = 0;
+  return isThree ? (r = parseIntHex(hex.slice(0, 1).repeat(2)), g = parseIntHex(hex.slice(1, 2).repeat(2)), b = parseIntHex(hex.slice(2, 3).repeat(2))) : isSix ? (r = parseIntHex(hex.slice(0, 2)), g = parseIntHex(hex.slice(2, 4)), b = parseIntHex(hex.slice(4, 6))) : isEight && (r = parseIntHex(hex.slice(2, 4)), g = parseIntHex(hex.slice(4, 6)), b = parseIntHex(hex.slice(6, 8))), (255 << 24 | (255 & r) << 16 | (255 & g) << 8 | 255 & b) >>> 0;
+}
 function parseIntHex(value) {
   return parseInt(value, 16);
 }
