@@ -289,6 +289,7 @@ function SwipeBack(r) {
     }
   }
   function handleTouchStart(e) {
+    if (!e.isTrusted) return;
     const swipeBackEnabled = params[`${app.theme}SwipeBack`];
     if (!allowViewTouchMove || !swipeBackEnabled || isTouched || app.swipeout && app.swipeout.el || !router.allowPageChange) return;
     if ($(e.target).closest('.range-slider, .calendar-months').length > 0) return;
@@ -302,6 +303,7 @@ function SwipeBack(r) {
     dynamicNavbar = router.dynamicNavbar;
   }
   function handleTouchMove(e) {
+    if (!e.isTrusted) return;
     if (!isTouched) return;
     const pageX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
     const pageY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
@@ -422,7 +424,8 @@ function SwipeBack(r) {
       progress: percentage
     });
   }
-  function handleTouchEnd() {
+  function handleTouchEnd(e) {
+    if (!e.isTrusted) return;
     app.preventSwipePanelBySwipeBack = false;
     if (!isTouched || !isMoved) {
       isTouched = false;

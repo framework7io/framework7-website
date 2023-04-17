@@ -141,7 +141,7 @@ class Sheet extends Modal {
     let sheetPageContentScrollHeight;
     let sheetPageContentOffsetHeight;
     function handleTouchStart(e) {
-      if (isTouched || !(sheet.params.swipeToClose || sheet.params.swipeToStep)) return;
+      if (isTouched || !(sheet.params.swipeToClose || sheet.params.swipeToStep) || !e.isTrusted) return;
       if (sheet.params.swipeHandler && $(e.target).closest(sheet.params.swipeHandler).length === 0) {
         return;
       }
@@ -159,7 +159,7 @@ class Sheet extends Modal {
       }
     }
     function handleTouchMove(e) {
-      if (!isTouched) return;
+      if (!isTouched || !e.isTrusted) return;
       currentTouch = {
         x: e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX,
         y: e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY

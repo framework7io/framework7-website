@@ -425,7 +425,7 @@ export function colorThemeCSSStyles(colors) {
     return res;
   };
   const colorVars = colorThemeCSSProperties(colors.primary);
-  const primary = [`:root{`, stringifyObject(colorVars.light), `--swiper-theme-color:var(--f7-theme-color);`, ...Object.keys(colors).map(colorName => `--f7-color-${colorName}: ${colors[colorName]};`), `}`, `.dark{`, stringifyObject(colorVars.dark), `}`, `.ios{`, stringifyObject(colorVars.ios), '}', `.md{`, stringifyObject(colorVars.md), '}'].join('');
+  const primary = [`:root{`, stringifyObject(colorVars.light), `--swiper-theme-color:var(--f7-theme-color);`, ...Object.keys(colors).map(colorName => `--f7-color-${colorName}: ${colors[colorName]};`), `}`, `.dark{`, stringifyObject(colorVars.dark), `}`, `.ios, .ios .dark{`, stringifyObject(colorVars.ios), '}', `.md, .md .dark{`, stringifyObject(colorVars.md), '}'].join('');
   const restVars = {};
   Object.keys(colors).forEach(colorName => {
     const colorValue = colors[colorName];
@@ -521,7 +521,7 @@ export function colorThemeCSSStyles(colors) {
     const lightString = colorName === 'white' ? whiteColorVars : colorName === 'black' ? blackColorVars : stringifyObject(light);
     const darkString = colorName === 'white' ? whiteColorVars : colorName === 'black' ? blackColorVars : stringifyObject(dark);
     /* eslint-enable */
-    rest += [`.color-${colorName} {`, lightString, `--swiper-theme-color: var(--f7-theme-color);`, `}`, `.color-${colorName}.dark, .color-${colorName} .dark, .dark .color-${colorName} {`, darkString, `--swiper-theme-color: var(--f7-theme-color);`, `}`, `.ios .color-${colorName}, .ios.color-${colorName} {`, stringifyObject(ios), `}`, `.md .color-${colorName}, .md.color-${colorName} {`, stringifyObject(md), `}`,
+    rest += [`.color-${colorName} {`, lightString, `--swiper-theme-color: var(--f7-theme-color);`, `}`, `.color-${colorName}.dark, .color-${colorName} .dark, .dark .color-${colorName} {`, darkString, `--swiper-theme-color: var(--f7-theme-color);`, `}`, `.ios .color-${colorName}, .ios.color-${colorName}, .ios .dark .color-${colorName}, .ios .dark.color-${colorName} {`, stringifyObject(ios), `}`, `.md .color-${colorName}, .md.color-${colorName}, .md .dark .color-${colorName}, .md .dark.color-${colorName} {`, stringifyObject(md), `}`,
     // text color
     `.text-color-${colorName} {`, `--f7-theme-color-text-color: ${colors[colorName]};`, `}`,
     // bg color

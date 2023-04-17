@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.2
+ * Framework7 8.0.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 12, 2023
+ * Released on: April 17, 2023
  */
 
 /*====================
@@ -10378,9 +10378,6 @@ textarea:-webkit-autofill-and-obscured {
 }
 .list textarea.resizable {
   height: calc(var(--f7-input-height) + var(--f7-textarea-padding-vertical) * 2);
-}
-.list input[type='datetime-local'] {
-  max-width: 50vw;
 }
 .list input[type='time'],
 .list input[type='date'],

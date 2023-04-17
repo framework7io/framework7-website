@@ -184,6 +184,7 @@ function initTouch() {
   let isTouchMoveActivable = false;
   let touchmoveActivableEl = null;
   function handleTouchStart(e) {
+    if (!e.isTrusted) return true;
     isMoved = false;
     tapHoldFired = false;
     preventClick = false;
@@ -228,6 +229,7 @@ function initTouch() {
     return true;
   }
   function handleTouchMove(e) {
+    if (!e.isTrusted) return;
     let touch;
     let distance;
     let shouldRemoveActive = true;
@@ -288,6 +290,7 @@ function initTouch() {
     }
   }
   function handleTouchEnd(e) {
+    if (!e.isTrusted) return true;
     isScrolling = undefined;
     isSegmentedStrong = false;
     segmentedStrongEl = null;

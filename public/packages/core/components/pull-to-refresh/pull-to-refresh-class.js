@@ -108,6 +108,7 @@ class PullToRefresh extends Framework7Class {
       $preloaderEl.find('.preloader-inner-line').css('opacity', '');
     }
     function handleTouchStart(e) {
+      if (!e.isTrusted) return;
       if (isTouched) {
         if (device.os === 'android') {
           if ('targetTouches' in e && e.targetTouches.length > 1) return;
@@ -127,7 +128,7 @@ class PullToRefresh extends Framework7Class {
       touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
     }
     function handleTouchMove(e) {
-      if (!isTouched) return;
+      if (!isTouched || !e.isTrusted) return;
       let pageX;
       let pageY;
       let touch;
@@ -269,6 +270,7 @@ class PullToRefresh extends Framework7Class {
       }
     }
     function handleTouchEnd(e) {
+      if (!e.isTrusted) return;
       if (e.type === 'touchend' && e.changedTouches && e.changedTouches.length > 0 && touchId) {
         if (e.changedTouches[0].identifier !== touchId) {
           isTouched = false;

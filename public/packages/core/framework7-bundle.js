@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.2
+ * Framework7 8.0.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 12, 2023
+ * Released on: April 17, 2023
  */
 
 (function (global, factory) {
@@ -2780,7 +2780,7 @@
         return res;
       };
       const colorVars = colorThemeCSSProperties(colors.primary);
-      const primary = [`:root{`, stringifyObject(colorVars.light), `--swiper-theme-color:var(--f7-theme-color);`, ...Object.keys(colors).map(colorName => `--f7-color-${colorName}: ${colors[colorName]};`), `}`, `.dark{`, stringifyObject(colorVars.dark), `}`, `.ios{`, stringifyObject(colorVars.ios), '}', `.md{`, stringifyObject(colorVars.md), '}'].join('');
+      const primary = [`:root{`, stringifyObject(colorVars.light), `--swiper-theme-color:var(--f7-theme-color);`, ...Object.keys(colors).map(colorName => `--f7-color-${colorName}: ${colors[colorName]};`), `}`, `.dark{`, stringifyObject(colorVars.dark), `}`, `.ios, .ios .dark{`, stringifyObject(colorVars.ios), '}', `.md, .md .dark{`, stringifyObject(colorVars.md), '}'].join('');
       const restVars = {};
       Object.keys(colors).forEach(colorName => {
         const colorValue = colors[colorName];
@@ -2876,7 +2876,7 @@
         const lightString = colorName === 'white' ? whiteColorVars : colorName === 'black' ? blackColorVars : stringifyObject(light);
         const darkString = colorName === 'white' ? whiteColorVars : colorName === 'black' ? blackColorVars : stringifyObject(dark);
         /* eslint-enable */
-        rest += [`.color-${colorName} {`, lightString, `--swiper-theme-color: var(--f7-theme-color);`, `}`, `.color-${colorName}.dark, .color-${colorName} .dark, .dark .color-${colorName} {`, darkString, `--swiper-theme-color: var(--f7-theme-color);`, `}`, `.ios .color-${colorName}, .ios.color-${colorName} {`, stringifyObject(ios), `}`, `.md .color-${colorName}, .md.color-${colorName} {`, stringifyObject(md), `}`,
+        rest += [`.color-${colorName} {`, lightString, `--swiper-theme-color: var(--f7-theme-color);`, `}`, `.color-${colorName}.dark, .color-${colorName} .dark, .dark .color-${colorName} {`, darkString, `--swiper-theme-color: var(--f7-theme-color);`, `}`, `.ios .color-${colorName}, .ios.color-${colorName}, .ios .dark .color-${colorName}, .ios .dark.color-${colorName} {`, stringifyObject(ios), `}`, `.md .color-${colorName}, .md.color-${colorName}, .md .dark .color-${colorName}, .md .dark.color-${colorName} {`, stringifyObject(md), `}`,
         // text color
         `.text-color-${colorName} {`, `--f7-theme-color-text-color: ${colors[colorName]};`, `}`,
         // bg color
@@ -4239,6 +4239,7 @@
       let isTouchMoveActivable = false;
       let touchmoveActivableEl = null;
       function handleTouchStart(e) {
+        if (!e.isTrusted) return true;
         isMoved = false;
         tapHoldFired = false;
         preventClick = false;
@@ -4283,6 +4284,7 @@
         return true;
       }
       function handleTouchMove(e) {
+        if (!e.isTrusted) return;
         let touch;
         let distance;
         let shouldRemoveActive = true;
@@ -4343,6 +4345,7 @@
         }
       }
       function handleTouchEnd(e) {
+        if (!e.isTrusted) return true;
         isScrolling = undefined;
         isSegmentedStrong = false;
         segmentedStrongEl = null;
@@ -5430,6 +5433,7 @@
         }
       }
       function handleTouchStart(e) {
+        if (!e.isTrusted) return;
         const swipeBackEnabled = params[`${app.theme}SwipeBack`];
         if (!allowViewTouchMove || !swipeBackEnabled || isTouched || app.swipeout && app.swipeout.el || !router.allowPageChange) return;
         if ($(e.target).closest('.range-slider, .calendar-months').length > 0) return;
@@ -5443,6 +5447,7 @@
         dynamicNavbar = router.dynamicNavbar;
       }
       function handleTouchMove(e) {
+        if (!e.isTrusted) return;
         if (!isTouched) return;
         const pageX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
         const pageY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
@@ -5563,7 +5568,8 @@
           progress: percentage
         });
       }
-      function handleTouchEnd() {
+      function handleTouchEnd(e) {
+        if (!e.isTrusted) return;
         app.preventSwipePanelBySwipeBack = false;
         if (!isTouched || !isMoved) {
           isTouched = false;
@@ -13883,7 +13889,7 @@
         let popupHeight;
         let $pushEl;
         function handleTouchStart(e) {
-          if (isTouched || !allowSwipeToClose || !popup.params.swipeToClose) return;
+          if (isTouched || !allowSwipeToClose || !popup.params.swipeToClose || !e.isTrusted) return;
           if (popup.params.swipeHandler && $(e.target).closest(popup.params.swipeHandler).length === 0) {
             return;
           }
@@ -13900,7 +13906,7 @@
           }
         }
         function handleTouchMove(e) {
-          if (!isTouched) return;
+          if (!isTouched || !e.isTrusted) return;
           currentTouch = {
             x: e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX,
             y: e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY
@@ -13973,7 +13979,8 @@
           }
           $el.transition(0).transform(`translate3d(0,${-touchesDiff}px,0)`);
         }
-        function handleTouchEnd() {
+        function handleTouchEnd(e) {
+          if (!e.isTrusted) return;
           isTouched = false;
           if (!isMoved) {
             return;
@@ -15073,7 +15080,7 @@
         let sheetPageContentScrollHeight;
         let sheetPageContentOffsetHeight;
         function handleTouchStart(e) {
-          if (isTouched || !(sheet.params.swipeToClose || sheet.params.swipeToStep)) return;
+          if (isTouched || !(sheet.params.swipeToClose || sheet.params.swipeToStep) || !e.isTrusted) return;
           if (sheet.params.swipeHandler && $(e.target).closest(sheet.params.swipeHandler).length === 0) {
             return;
           }
@@ -15091,7 +15098,7 @@
           }
         }
         function handleTouchMove(e) {
-          if (!isTouched) return;
+          if (!isTouched || !e.isTrusted) return;
           currentTouch = {
             x: e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX,
             y: e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY
@@ -19431,7 +19438,7 @@
         let isH;
         let $cardScrollableEl;
         function onTouchStart(e) {
-          if (!$(e.target).closest($cardEl).length) return;
+          if (!$(e.target).closest($cardEl).length || !e.isTrusted) return;
           if (!$cardEl.hasClass('card-opened')) return;
           $cardScrollableEl = $cardEl.find(cardParams.scrollableEl);
           if ($cardScrollableEl[0] && $cardScrollableEl[0] !== $cardContentEl[0] && !$cardScrollableEl[0].contains(e.target)) {
@@ -19447,7 +19454,7 @@
           isH = false;
         }
         function onTouchMove(e) {
-          if (!isTouched) return;
+          if (!isTouched || !e.isTrusted) return;
           touchEndX = e.targetTouches[0].pageX;
           touchEndY = e.targetTouches[0].pageY;
           if (typeof isScrolling === 'undefined') {
@@ -19486,8 +19493,8 @@
             $cardEl.transform(`translate3d(${app.rtl ? -translateX : translateX}px, ${translateY}px, 0) scale(${scaleX * (1 - progress * 0.2)}, ${scaleY * (1 - progress * 0.2)})`);
           }
         }
-        function onTouchEnd() {
-          if (!isTouched || !isMoved) return;
+        function onTouchEnd(e) {
+          if (!isTouched || !isMoved || !e.isTrusted) return;
           isTouched = false;
           isMoved = false;
           if (device.ios) {
@@ -23142,7 +23149,7 @@
             $wrapperEl
           } = calendar;
           function handleTouchStart(e) {
-            if (isMoved || isTouched) return;
+            if (isMoved || isTouched || !e.isTrusted) return;
             isTouched = true;
             touchStartX = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
             touchCurrentX = touchStartX;
@@ -23155,7 +23162,7 @@
             currentTranslate = calendar.monthsTranslate;
           }
           function handleTouchMove(e) {
-            if (!isTouched) return;
+            if (!isTouched || !e.isTrusted) return;
             const {
               isHorizontal: isH
             } = calendar;
@@ -23188,8 +23195,8 @@
             // Transform wrapper
             $wrapperEl.transform(`translate3d(${isH ? currentTranslate : 0}%, ${isH ? 0 : currentTranslate}%, 0)`);
           }
-          function handleTouchEnd() {
-            if (!isTouched || !isMoved) {
+          function handleTouchEnd(e) {
+            if (!isTouched || !isMoved || !e.isTrusted) {
               isTouched = false;
               isMoved = false;
               return;
@@ -25914,6 +25921,7 @@
           $preloaderEl.find('.preloader-inner-line').css('opacity', '');
         }
         function handleTouchStart(e) {
+          if (!e.isTrusted) return;
           if (isTouched) {
             if (device.os === 'android') {
               if ('targetTouches' in e && e.targetTouches.length > 1) return;
@@ -25933,7 +25941,7 @@
           touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
         }
         function handleTouchMove(e) {
-          if (!isTouched) return;
+          if (!isTouched || !e.isTrusted) return;
           let pageX;
           let pageY;
           let touch;
@@ -26075,6 +26083,7 @@
           }
         }
         function handleTouchEnd(e) {
+          if (!e.isTrusted) return;
           if (e.type === 'touchend' && e.changedTouches && e.changedTouches.length > 0 && touchId) {
             if (e.changedTouches[0].identifier !== touchId) {
               isTouched = false;

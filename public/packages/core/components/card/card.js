@@ -229,7 +229,7 @@ const CardExpandable = {
     let isH;
     let $cardScrollableEl;
     function onTouchStart(e) {
-      if (!$(e.target).closest($cardEl).length) return;
+      if (!$(e.target).closest($cardEl).length || !e.isTrusted) return;
       if (!$cardEl.hasClass('card-opened')) return;
       $cardScrollableEl = $cardEl.find(cardParams.scrollableEl);
       if ($cardScrollableEl[0] && $cardScrollableEl[0] !== $cardContentEl[0] && !$cardScrollableEl[0].contains(e.target)) {
@@ -245,7 +245,7 @@ const CardExpandable = {
       isH = false;
     }
     function onTouchMove(e) {
-      if (!isTouched) return;
+      if (!isTouched || !e.isTrusted) return;
       touchEndX = e.targetTouches[0].pageX;
       touchEndY = e.targetTouches[0].pageY;
       if (typeof isScrolling === 'undefined') {
@@ -284,8 +284,8 @@ const CardExpandable = {
         $cardEl.transform(`translate3d(${app.rtl ? -translateX : translateX}px, ${translateY}px, 0) scale(${scaleX * (1 - progress * 0.2)}, ${scaleY * (1 - progress * 0.2)})`);
       }
     }
-    function onTouchEnd() {
-      if (!isTouched || !isMoved) return;
+    function onTouchEnd(e) {
+      if (!isTouched || !isMoved || !e.isTrusted) return;
       isTouched = false;
       isMoved = false;
       if (device.ios) {

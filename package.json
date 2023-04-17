@@ -80,9 +80,9 @@
     "vue": "^3.2.31"
   },
   "dependencies": {
-    "framework7": "^8.0.2",
-    "framework7-react": "^8.0.2",
-    "framework7-svelte": "^8.0.2",
-    "framework7-vue": "^8.0.2"
+    "framework7": "^8.0.3",
+    "framework7-react": "^8.0.3",
+    "framework7-svelte": "^8.0.3",
+    "framework7-vue": "^8.0.3"
   }
 }
