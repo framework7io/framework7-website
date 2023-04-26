@@ -1,9 +1,13 @@
 let theme = 'ios';
 if (window.location.href.indexOf('theme=md') >= 0) theme = 'md';
 
+let darkMode = false;
+if (window.location.href.indexOf('mode=dark') >= 0) darkMode = true;
+
 const themePlugin = {
   params: {
     theme,
+    darkMode,
   },
 };
 
