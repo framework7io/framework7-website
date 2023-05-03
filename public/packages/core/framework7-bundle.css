@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.3
+ * Framework7 8.0.4
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 17, 2023
+ * Released on: May 3, 2023
  */
 
 /*====================
@@ -4535,7 +4535,9 @@ li.list-group-title:after,
   --f7-button-border-radius: 4px;
   --f7-button-font-weight: 600;
   --f7-button-letter-spacing: 0;
+  /*
   --f7-button-outline-border-color: var(--f7-theme-color);
+  */
   --f7-button-outline-border-width: 2px;
   /*
   --f7-button-pressed-bg-color: rgba(var(--f7-theme-color-rgb), .15);
@@ -10046,7 +10048,6 @@ html.with-modal-sheet-push-closing .framework7-root > .panel-in.panel-push.panel
   color: #fff;
   font-size: var(--f7-chip-media-font-size);
   vertical-align: middle;
-  margin-left: calc(-1 * var(--f7-chip-padding-horizontal) + 4px);
 }
 .chip-media i.icon {
   font-size: calc(var(--f7-chip-media-size) - 8px);
@@ -10122,6 +10123,9 @@ html.with-modal-sheet-push-closing .framework7-root > .panel-in.panel-push.panel
   --f7-chip-outline-border-color: var(--f7-theme-color);
   --f7-chip-outline-text-color: var(--f7-theme-color);
 }
+.ios .chip-media {
+  margin-left: calc(-1 * var(--f7-chip-padding-horizontal));
+}
 .ios .chip-delete {
   margin-right: calc(-1 * var(--f7-chip-padding-horizontal));
 }
@@ -10130,6 +10134,9 @@ html.with-modal-sheet-push-closing .framework7-root > .panel-in.panel-push.panel
 }
 .ios .chip-delete:after {
   font-size: 10px;
+}
+.md .chip-media {
+  margin-left: calc(-1 * var(--f7-chip-padding-horizontal) + 4px);
 }
 .md .chip-label + .chip-delete {
   margin-left: 4px;
@@ -19051,7 +19058,6 @@ button.text-editor-button .material-icons sub {
   --f7-area-chart-axis-font-size: 10px;
   --f7-area-chart-axis-font-weight: 500;
   --f7-area-chart-tooltip-font-size: 12px;
-  --f7-area-chart-tooltip-total-label-text-color: rgba(255, 255, 255, 0.75);
   --f7-area-chart-tooltip-total-font-size: 16px;
   --f7-area-chart-tooltip-total-font-weight: bold;
   --f7-area-chart-tooltip-color-size: 10px;
@@ -19069,6 +19075,12 @@ button.text-editor-button .material-icons sub {
 :root.dark {
   --f7-area-chart-axis-bg-color: rgba(255, 255, 255, 0.15);
   --f7-area-chart-legend-disabled-text-color: rgba(255, 255, 255, 0.22);
+}
+.ios {
+  --f7-area-chart-tooltip-total-label-text-color: rgba(255, 255, 255, 0.75);
+}
+.md {
+  --f7-area-chart-tooltip-total-label-text-color: inherit;
 }
 .area-chart {
   position: relative;

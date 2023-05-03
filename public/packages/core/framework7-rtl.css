@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.3
+ * Framework7 8.0.4
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: April 17, 2023
+ * Released on: May 3, 2023
  */
 
 /*====================
@@ -4542,7 +4542,9 @@ li.list-group-title:after,
   --f7-button-border-radius: 4px;
   --f7-button-font-weight: 600;
   --f7-button-letter-spacing: 0;
+  /*
   --f7-button-outline-border-color: var(--f7-theme-color);
+  */
   --f7-button-outline-border-width: 2px;
   /*
   --f7-button-pressed-bg-color: rgba(var(--f7-theme-color-rgb), .15);
