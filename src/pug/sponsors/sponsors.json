@@ -590,16 +590,6 @@
     "active": true
   },
   {
-    "createdAt": "2022-05-19T20:00:00.000Z",
-    "title": "VPN Unlimited – Encrypted, Secure & Private online VPN service",
-    "link": "https://www.vpnunlimited.com",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/keepsolid",
-    "image": "keepsolid.png",
-    "endDate": "",
-    "active": true
-  },
-  {
     "createdAt": "2022-04-23T12:00:00.000Z",
     "active": true,
     "title": "JETX APOSTAS - Jet jogo do foguete",
@@ -1038,16 +1028,6 @@
     "ref": "https://opencollective.com/paraskasino",
     "endDate": "",
     "image": "paraskasino.png"
-  },
-  {
-    "createdAt": "2021-02-25T19:35:31.723Z",
-    "active": true,
-    "title": "NettiCasinoHEX.com",
-    "link": "https://netticasinohex.com",
-    "plan": "silverSponsor",
-    "ref": "https://opencollective.com/netticasinohex-com",
-    "endDate": "",
-    "image": "netticasinohex.png"
   },
   {
     "createdAt": "2021-02-25T19:35:24.743Z",
