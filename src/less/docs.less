@@ -840,3 +840,50 @@ ul.method-parameters {
   border-radius: 16px;
   border: 1px solid @colorBorder;
 }
+
+.motion-docs-page-title {
+  @media (min-width: 640px) {
+    height: 240px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-left: 24px;
+    background: @colorSurface0;
+    border-radius: 16px;
+    border: 1px solid @colorBorder;
+    margin-bottom: 28px;
+    h1 {
+      margin: 0;
+      padding-bottom: 32px;
+      flex-shrink: 10;
+      min-width: 0;
+    }
+  }
+
+  @media (max-width: 639px) {
+    [motion] {
+      background: @colorSurface0;
+      border-radius: 16px;
+      border: 1px solid @colorBorder;
+      width: 100%;
+      padding-left: calc(50% - 160px - 24px);
+      padding-right: calc(50% - 160px - 24px);
+      box-sizing: border-box;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+  }
+  @media (max-width: 429px) {
+    padding-left: 24px;
+    padding-right: 24px;
+    overflow: hidden;
+    margin-left: -24px;
+    width: calc(100% + 48px);
+    box-sizing: border-box;
+    [motion] {
+      margin-left: -16px;
+      width: calc(100% + 32px);
+      box-sizing: border-box;
+    }
+  }
+}
