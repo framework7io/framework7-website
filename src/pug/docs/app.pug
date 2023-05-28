@@ -11,8 +11,10 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
-
-    h1 App / Core
+    .motion-docs-page-title
+      h1 App / Core
+      script(src="/js/motion/app.js")
+      f7-motion-app(motion)
     p When we init the app we can use the `new Framework7` constructor and pass an object with main app parameters:
     :code(lang="js")
       var app = new Framework7({
