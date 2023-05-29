@@ -5,13 +5,16 @@ block vars
   - var title = 'Sortable Svelte Component | Framework7 Svelte Documentation';
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-svelte
   .docs-content
-
-    h1 Sortable Svelte Component
+    .motion-docs-page-title
+      h1 Sortable Svelte Component
+      script(src="/js/motion/sortablelist.js")
+      f7-motion-sortablelist(motion)
+      
     p Sortable is not a separate component, but just a particular case of using <a href="list-view.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.
     h2 Sortable Events
     table.events-table

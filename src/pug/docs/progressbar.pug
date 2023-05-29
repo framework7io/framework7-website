@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Progressbar
+      script(src="/js/motion/progressbar.js")
+      f7-motion-progressbar(motion)
 
-    h1 Progressbar
-    
     p In addition to <a href="preloader.html">Preloader</a> Framework7 also comes with fancy animated determinate and infinite/indeterminate progressbars to indicate activity.
 
     h2 Determinate Progressbar

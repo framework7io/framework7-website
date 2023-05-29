@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Data Table
+      script(src="/js/motion/datatable.js")
+      f7-motion-datatable(motion)
 
-    h1 Data Table
-    
     p Data tables display sets of raw data. They usually appear in desktop enterprise products
     h2 Table Layout
     p Common Data Table layout could be treated as the following:

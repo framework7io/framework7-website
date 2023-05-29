@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Toggle
+      script(src="/js/motion/toggle.js")
+      f7-motion-toggle(motion)
 
-    h1 Toggle
-    
     h2 Toggle Layout
     p Layout is pretty simple:
     :code(lang="html")

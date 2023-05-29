@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Treeview
+      script(src="/js/motion/treeview.js")
+      f7-motion-treeview(motion)
 
-    h1 Treeview
-    
     h2 Treeview Layout
     :code(lang="html")
       <!-- Treeview container -->

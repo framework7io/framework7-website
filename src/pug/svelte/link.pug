@@ -11,9 +11,11 @@ block content
   .docs-nav
     include ../_docs-menu-svelte
   .docs-content
+    .motion-docs-page-title
+      h1 Link Svelte Component
+      script(src="/js/motion/link.js")
+      f7-motion-link(motion)
 
-    h1 Link Svelte Component
-    
     p Link is main component to create links for navigation, custom actions, switching tabs, open/close panels, etc.
 
     h2 Link Components

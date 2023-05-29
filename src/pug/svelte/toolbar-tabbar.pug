@@ -10,8 +10,11 @@ block content
   .docs-nav
     include ../_docs-menu-svelte
   .docs-content
+    .motion-docs-page-title
+      h1 Toolbar Svelte Component
+      script(src="/js/motion/tabbar.js")
+      f7-motion-tabbar(motion)
 
-    h1 Toolbar Svelte Component
     ul.docsIndex
     p Toolbar is a fixed (with Fixed and Through layout types) area at the bottom of a screen that contains navigation elements. Toolbar does not have any parts, just plain links inside
     p Toolbar Svelte component represents <a href="../docs/toolbar-tabbar.html">Toolbar</a> component.

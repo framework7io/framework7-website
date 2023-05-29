@@ -12,8 +12,11 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Action Sheet
+      script(src="/js/motion/actionsheet.js")
+      f7-motion-actionsheet(motion)
 
-    h1 Action Sheet
     p Action Sheet is a slide-up pane for presenting the user with a set of alternatives for how to proceed with a given task.
     p You can also use action sheets to prompt the user to confirm a potentially dangerous action.
     p The action sheet contains an optional title and one or more buttons, each of which corresponds to an action to take.

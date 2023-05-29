@@ -12,8 +12,10 @@ block content
   .docs-nav
     include ../_docs-menu-svelte
   .docs-content
-
-    h1 Treeview Svelte Component
+    .motion-docs-page-title
+      h1 Treeview Svelte Component
+      script(src="/js/motion/treeview.js")
+      f7-motion-treeview(motion)
 
     p Treeview Svelte component represents Framework7's <a href="/docs/treeview.html">Treeview</a> component.
 

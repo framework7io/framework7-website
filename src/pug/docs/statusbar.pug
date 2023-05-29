@@ -9,9 +9,11 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Statusbar
+      script(src="/js/motion/statusbar.js")
+      f7-motion-statusbar(motion)
 
-    h1 Statusbar
-    
     p Framework7 comes with statusbar component (wrapper around <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>) that may help to customize app statusbar and its behavior.
     p.important-note This functionality is only available when app is running under cordova/capacitor environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
 
