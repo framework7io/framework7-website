@@ -6,7 +6,6 @@ const pug = require('pug');
 const through2 = require('through2');
 const fs = require('fs');
 const path = require('path');
-
 const pkg = require('../package.json');
 const iconsManifest = require('./manifest-icons.json');
 
@@ -89,11 +88,11 @@ function buildPages(
   } = {},
 ) {
   const cssHash = fs
-    .readdirSync('./public/css')
+    .readdirSync(path.resolve(__dirname, '../public/css'))
     .filter((f) => f.includes('main.'))[0]
     .split('.')[1];
   const jsHash = fs
-    .readdirSync('./public/js')
+    .readdirSync(path.resolve(__dirname, '../public/js'))
     .filter((f) => f.includes('main.') && !f.includes('main.js'))[0]
     .split('.')[1];
   const cdn = process.argv.slice(3)

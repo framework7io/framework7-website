@@ -7,9 +7,10 @@ const connect = require('gulp-connect');
 const cleanCss = require('gulp-clean-css');
 
 function buildLess(cb) {
-  fs.readdirSync('./public/css').forEach((f) => {
+  const cssFolder = path.resolve(__dirname, '../public/css');
+  fs.readdirSync(cssFolder).forEach((f) => {
     if (f.includes('main')) {
-      fs.unlinkSync(`./public/css/${f}`);
+      fs.unlinkSync(`${cssFolder}/${f}`);
     }
   });
   gulp
@@ -20,15 +21,12 @@ function buildLess(cb) {
       }),
     )
     .pipe(cleanCss({ compatibility: '*,-properties.zeroUnits', level: 2 }))
-    .pipe(gulp.dest('./public/css/'))
+    .pipe(gulp.dest(cssFolder))
     .pipe(connect.reload())
     .on('end', () => {
-      const content = fs.readFileSync(path.resolve(__dirname, '../public/css/main.css'));
+      const content = fs.readFileSync(`${cssFolder}/main.css`);
       const hash = crypto.createHash('md5').update(content).digest('hex').slice(0, 6);
-      fs.renameSync(
-        path.resolve(__dirname, '../public/css/main.css'),
-        path.resolve(__dirname, `../public/css/main.${hash}.css`),
-      );
+      fs.renameSync(`${cssFolder}/main.css`, `${cssFolder}/main.${hash}.css`);
       if (cb) cb();
     });
 }

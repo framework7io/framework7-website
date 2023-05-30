@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const crypto = require('crypto');
 const rollup = require('rollup');
 const { babel } = require('@rollup/plugin-babel');
@@ -7,9 +8,11 @@ const Terser = require('terser');
 const replace = require('@rollup/plugin-replace');
 
 function build(cb) {
-  fs.readdirSync('./public/js').forEach((f) => {
+  const jsFolder = path.resolve(__dirname, '../public/js');
+
+  fs.readdirSync(jsFolder).forEach((f) => {
     if (f.includes('main')) {
-      fs.unlinkSync(`./public/js/${f}`);
+      fs.unlinkSync(`${jsFolder}/${f}`);
     }
   });
   rollup
@@ -29,11 +32,11 @@ function build(cb) {
     .then((bundle) => {
       return bundle.write({
         strict: true,
-        file: './public/js/main.js',
+        file: `${jsFolder}/main.js`,
         format: 'umd',
         name: 'app',
         sourcemap: true,
-        sourcemapFile: './public/js/main.js.map',
+        sourcemapFile: `${jsFolder}/main.js.map`,
       });
     })
     .then(async (bundle) => {
@@ -47,8 +50,8 @@ function build(cb) {
         },
       });
 
-      fs.writeFileSync(`./public/js/main.${hash}.js`, minified.code);
-      fs.writeFileSync(`./public/js/main.${hash}.js.map`, minified.map);
+      fs.writeFileSync(`${jsFolder}/main.${hash}.js`, minified.code);
+      fs.writeFileSync(`${jsFolder}/main.${hash}.js.map`, minified.map);
 
       cb();
     })
