@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Preloader
+      script(async src="/js/motion/preloader.js")
+      f7-motion-preloader(motion)
 
-    h1 Preloader
-    
     p Framework7 has a nice preloader indicator. Preloader is made with SVG and animated with CSS so it can be easily resized.
     h2 Preloader Layout
     p Layout is pretty simple:

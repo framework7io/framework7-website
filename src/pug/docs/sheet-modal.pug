@@ -11,8 +11,10 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
-
-    h1 Sheet Modal
+    .motion-docs-page-title
+      h1 Sheet Modal
+      script(async src="/js/motion/sheet.js")
+      f7-motion-sheet(motion)
 
     p Sheet Modal is a special overlay type which is similar to Picker/Calendar's overlay. Such modal allows to create custom overlays with custom content
     h2 Sheet Layout

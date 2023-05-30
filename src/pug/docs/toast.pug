@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Toast
+      script(async src="/js/motion/toast.js")
+      f7-motion-toast(motion)
 
-    h1 Toast
-    
     p Toasts provide brief feedback about an operation through a message on the screen.
     h2 Toast App Methods
     p Let's look at related App methods to work with Toast:

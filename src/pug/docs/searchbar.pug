@@ -11,8 +11,10 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
-
-    h1 Searchbar
+    .motion-docs-page-title
+      h1 Searchbar
+      script(async src="/js/motion/searchbar.js")
+      f7-motion-searchbar(motion)
 
     p Searchbar allows user to search through <a href="list-view.html">List View</a> elements. Or it can be used as a visual UI component for your custom search realization.
     h2 Searchbar Layout

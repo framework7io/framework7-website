@@ -88,6 +88,14 @@ function buildPages(
     dest = './public',
   } = {},
 ) {
+  const cssHash = fs
+    .readdirSync('./public/css')
+    .filter((f) => f.includes('main.'))[0]
+    .split('.')[1];
+  const jsHash = fs
+    .readdirSync('./public/js')
+    .filter((f) => f.includes('main.') && !f.includes('main.js'))[0]
+    .split('.')[1];
   const cdn = process.argv.slice(3)
     ? process.argv.slice(3).toString().replace('-', '') !== 'local'
     : true;
@@ -140,6 +148,8 @@ function buildPages(
             version: releaseVersion,
             date: releaseDate,
           },
+          cssHash,
+          jsHash,
           cdn: cdn ? pkg.cdn : '',
           icons: iconsManifest.icons,
           getYamlData,

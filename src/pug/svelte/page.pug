@@ -12,8 +12,10 @@ block content
   .docs-nav
     include ../_docs-menu-svelte
   .docs-content
-
-    h1 Page Svelte Component
+    .motion-docs-page-title
+      h1 Page Svelte Component
+      script(async src="/js/motion/page.js")
+      f7-motion-page(motion)
 
     p Page in Framework7 has the same meaning as when you think about web pages. Page is the main component to display and operate content.
     p Page Svelte component represents Framework7's <a href="../docs/page.html">Page</a>.

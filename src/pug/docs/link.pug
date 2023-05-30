@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Link
+      script(async src="/js/motion/link.js")
+      f7-motion-link(motion)
 
-    h1 Link
-    
     p Link element is used to call app actions and for navigation between pages (routes)
     h2 Link Layout
     :code(lang="html")

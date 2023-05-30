@@ -9,7 +9,6 @@ body.body-docs {
   }
   main {
     display: flex;
-    justify-content: space-between;
   }
 }
 .docs-right {
@@ -42,15 +41,6 @@ body.body-docs {
   }
 }
 
-@media (max-width: 960px) {
-  .docs-right {
-    margin-left: 24px;
-    margin-top: -24px;
-  }
-  .docs-content {
-    margin-top: 40px;
-  }
-}
 .docs-page-nav {
   border-top: 1px solid @colorBorder;
   display: flex;
@@ -87,6 +77,10 @@ body.body-docs {
   @media (min-width: 960px) {
     padding-left: 40px;
     padding-right: 40px;
+  }
+  @media (max-width: 620px) {
+    padding-left: 16px;
+    padding-right: 16px;
   }
   @media (min-width: 1400px) {
     width: calc(1400px - 40px - 40px - 256px);
@@ -419,9 +413,17 @@ ul.method-parameters {
   .docs-right {
     margin-left: 24px;
     margin-top: -16px;
+    margin-right: -264px;
   }
   .docs-content {
     margin-top: 48px;
+  }
+}
+
+@media (max-width: 620px) {
+  .docs-right {
+    margin-left: 16px;
+    margin-right: -256px;
   }
 }
 .docs-nav {
@@ -839,4 +841,55 @@ ul.method-parameters {
 .docs-image {
   border-radius: 16px;
   border: 1px solid @colorBorder;
+}
+
+.motion-docs-page-title {
+  @media (min-width: 640px) {
+    height: 240px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-left: 24px;
+    background: @colorSurface0;
+    border-radius: 16px;
+    border: 1px solid @colorBorder;
+    margin-bottom: 28px;
+    h1 {
+      margin: 0;
+      padding-bottom: 32px;
+      flex-shrink: 10;
+      min-width: 0;
+    }
+  }
+
+  @media (max-width: 639px) {
+    [motion] {
+      background: @colorSurface0;
+      border-radius: 16px;
+      border: 1px solid @colorBorder;
+      width: 100%;
+      padding-left: calc(50% - 160px - 24px);
+      padding-right: calc(50% - 160px - 24px);
+      box-sizing: border-box;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+  }
+  @media (max-width: 429px) {
+    padding-left: 16px;
+    padding-right: 16px;
+    overflow: hidden;
+    margin-left: -16px;
+    width: calc(100% + 32px);
+    box-sizing: border-box;
+
+    [motion] {
+      margin-left: -16px;
+      width: calc(100% + 32px);
+      box-sizing: border-box;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+  }
 }

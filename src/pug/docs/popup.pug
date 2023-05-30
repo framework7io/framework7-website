@@ -11,8 +11,10 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
-
-    h1 Popup
+    .motion-docs-page-title
+      h1 Popup
+      script(async src="/js/motion/popup.js")
+      f7-motion-popup(motion)
 
     p Popup is a popup window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called "Temporary Views".
     h2 Popup Layout

@@ -5,13 +5,16 @@ block vars
   - var title = 'Sortable React Component | Framework7 React Documentation';
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-react
   .docs-content
+    .motion-docs-page-title
+      h1 Sortable React Component
+      script(async src="/js/motion/sortablelist.js")
+      f7-motion-sortablelist(motion)
 
-    h1 Sortable React Component
     p Sortable is not a separate component, but just a particular case of using <a href="list-view.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.
     h2 Sortable Events
     table.events-table

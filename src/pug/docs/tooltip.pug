@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Tooltip
+      script(async src="/js/motion/tooltip.js")
+      f7-motion-tooltip(motion)
 
-    h1 Tooltip
-    
     p Tooltips display informative text when users hover over, or tap an target element.
     p Tooltip can be positioned around any element with any HTML content inside.
 

@@ -12,8 +12,10 @@ block content
   .docs-nav
     include ../_docs-menu-vue
   .docs-content
-
-    h1 Block Vue Component
+    .motion-docs-page-title
+      h1 Block Vue Component
+      script(async src="/js/motion/block.js")
+      f7-motion-block(motion)
 
     p Block Vue component represents <a href="../docs/block.html">Block / Content Block</a> element designed (mostly) to add extra formatting and required spacing for text content.
     h2 Block Components

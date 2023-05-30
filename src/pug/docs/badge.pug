@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Badge
+      script(async src="/js/motion/badge.js")
+      f7-motion-badge(motion)
 
-    h1 Badge
-    
     p Badges are used to display/indicate count numbers and labels on different elements of your app.
     h2 Badge Layout
     p Badges have a super simple layout, it's just an element with a `badge` class:

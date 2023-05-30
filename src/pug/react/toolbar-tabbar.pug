@@ -12,8 +12,10 @@ block content
   .docs-nav
     include ../_docs-menu-react
   .docs-content
-
-    h1 Toolbar React Component
+    .motion-docs-page-title
+      h1 Toolbar React Component
+      script(async src="/js/motion/tabbar.js")
+      f7-motion-tabbar(motion)
 
     p Toolbar is a fixed (with Fixed and Through layout types) area at the bottom of a screen that contains navigation elements. Toolbar does not have any parts, just plain links inside
     p Toolbar React component represents <a href="../docs/toolbar-tabbar.html">Toolbar</a> component.

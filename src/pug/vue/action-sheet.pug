@@ -12,8 +12,10 @@ block content
   .docs-nav
     include ../_docs-menu-vue
   .docs-content
-
-    h1 Action Sheet Vue Component
+    .motion-docs-page-title
+      h1 Action Sheet Vue Component
+      script(async src="/js/motion/actionsheet.js")
+      f7-motion-actionsheet(motion)
 
     p Action Sheet is a slide-up pane for presenting the user with a set of alternatives for how to proceed with a given task. You can also use action sheets to prompt the user to confirm a potentially dangerous action. The action sheet contains an optional title and one or more buttons, each of which corresponds to an action to take.
     p Action Sheet Vue component represents <a href="../docs/action-sheet.html">Action Sheet</a> component.

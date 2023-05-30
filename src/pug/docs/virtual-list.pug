@@ -6,13 +6,15 @@ block vars
 block docs-index
 
 block content
-  
+
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Virtual List
+      script(async src="/js/motion/virtuallist.js")
+      f7-motion-virtuallist(motion)
 
-    h1 Virtual List
-    
     p Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 components which work with lists such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.
     h2 Virtual List Layout
     p Virtual List HTML layout is pretty simple, it is almost the same as for usual <a href="list-view.html">List View</a> with only difference: you need to leave it empty:

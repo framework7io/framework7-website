@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Subnavbar
+      script(async src="/js/motion/subnavbar.js")
+      f7-motion-subnavbar(motion)
 
-    h1 Subnavbar
-    
     p Subnavbar is useful when you need to put any additional elements into Navbar, like Tab Links or Searchbar. It also remains visible when Navbar hidden
     h2 Subnavbar Layout
     h4 In Navbar

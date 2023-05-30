@@ -5,13 +5,16 @@ block vars
   - var title = 'Skeleton Vue Component | Framework7 Vue Documentation';
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-vue
   .docs-content
+    .motion-docs-page-title
+      h1 Skeleton Vue Component
+      script(async src="/js/motion/skeleton.js")
+      f7-motion-skeleton(motion)
 
-    h1 Skeleton Vue Component
     p Framework7 comes with Skeleton Elements library (aka UI Skeletons, Skeleton Screens, Ghost Elements) - UI for improved perceived performance.
     p Skeleton Elements library already integrated into Framework7 and you don't have to install it separately. For the full API documentation and more examples check out the official <a href="https://skeleton-elements.nolimits4web.com/vue/" target="_blank">Skeleton Elements for Vue documentation</a>.
 

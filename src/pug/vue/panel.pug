@@ -12,8 +12,10 @@ block content
   .docs-nav
     include ../_docs-menu-vue
   .docs-content
-
-    h1 Panel Vue Component
+    .motion-docs-page-title
+      h1 Panel Vue Component
+      script(async src="/js/motion/sidepanels.js")
+      f7-motion-sidepanels(motion)
 
     p Panel Vue component represents <a href="../docs/panel.html">Side Panels</a> component.
     h2 Panel Components

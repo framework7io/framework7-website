@@ -11,8 +11,10 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
-
-    h1 Login Screen
+    .motion-docs-page-title
+      h1 Login Screen
+      script(async src="/js/motion/loginscreen.js")
+      f7-motion-loginscreen(motion)
 
     p Framework7 comes with ready to use Login Screen layout. It could be used inside of page or login screen (embedded) or as a standalone modal.
     h2 Login Screen Layout

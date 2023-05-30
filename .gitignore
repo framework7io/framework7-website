@@ -3,11 +3,9 @@ node_modules/
 *.log
 *.DS_Store
 public/css/main.css
-public/css/main-v8.css
-public/js/main.js
-public/js/main-v8.js
-public/js/main.js.map
-public/js/main-v8.js.map
+public/css/main.*.css
+public/js/*.js
+public/js/*.map
 public/release-notes/*.html
 public/contribute/index.html
 public/cli/*.html

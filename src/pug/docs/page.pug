@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Page
+      script(async src="/js/motion/page.js")
+      f7-motion-page(motion)
 
-    h1 Page
-    
     p Page is one of the main components (containers) used to display app content.
     h2 Page Layout
     :code(lang="html")

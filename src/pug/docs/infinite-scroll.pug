@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Infinite Scroll
+      script(async src="/js/motion/infinitescroll.js")
+      f7-motion-infinitescroll(motion)
 
-    h1 Infinite Scroll
-    
     p Infinite Scroll allows to load additional content or do any other required action when page scroll is near to the bottom.
 
     h2 Infinite Scroll Layout

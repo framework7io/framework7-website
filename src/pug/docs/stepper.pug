@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Stepper
+      script(async src="/js/motion/stepper.js")
+      f7-motion-stepper(motion)
 
-    h1 Stepper
-    
     h2 Stepper Layout
     p Single stepper layout is pretty simple:
     :code(lang="html")

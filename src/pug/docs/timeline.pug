@@ -11,8 +11,10 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
-
-    h1 Timeline
+    .motion-docs-page-title
+      h1 Timeline
+      script(async src="/js/motion/timeline.js")
+      f7-motion-timeline(motion)
 
     p Framework7 comes with Timeline component that allows to display both Vertical & Horizontal timeline layouts.
     h2 Vertical Timeline

@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Color Picker
+      script(async src="/js/motion/colorpicker.js")
+      f7-motion-colorpicker(motion)
 
-    h1 Color Picker
-    
     p Framework7 comes with ultimate modular Color Picker component that allows to create color picker with limitless combinations of "color modules".
     h2 Color Picker App Methods
     p Let's look at related App methods to work with Color Picker:

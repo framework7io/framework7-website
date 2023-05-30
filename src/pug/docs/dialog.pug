@@ -11,8 +11,10 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
-
-    h1 Dialog
+    .motion-docs-page-title
+      h1 Dialog
+      script(async src="/js/motion/dialog.js")
+      f7-motion-dialog(motion)
 
     p Dialog is a small content pane that pops up over App's main content. Dialogs are usualy used to ask something from a user, or to notify or warn a user. Dialog, as all other modals, is part of so called "Temporary Views".
 

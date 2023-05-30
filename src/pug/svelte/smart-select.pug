@@ -7,14 +7,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-svelte
   .docs-content
+    .motion-docs-page-title
+      h1 Smart Select Svelte Component
+      script(async src="/js/motion/smartselect.js")
+      f7-motion-smartselect(motion)
 
-    h1 Smart Select Svelte Component
-    
     p Smart Select allows you to easily convert your usual form selects to dynamic pages with grouped radio inputs. You can see such feature in many native apps.
     p It is not a separate Svelte component, but just a particular case of using <a href="list-view.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components with Framework7's <a href="../docs/smart-select.html">Smart Select</a> component.
 

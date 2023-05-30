@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Picker
+      script(async src="/js/motion/picker.js")
+      f7-motion-picker(motion)
 
-    h1 Picker
-    
     p Picker is a powerful component that allows you to create custom overlay pickers which looks like iOS native picker.
     p Picker could be used as inline component or as overlay. Overlay Picker will be automatically converted to Popover on tablets (iPad).
     h2 Picker App Methods

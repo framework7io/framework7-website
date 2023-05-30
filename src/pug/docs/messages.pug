@@ -6,14 +6,17 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
 
-    h1 Messages
-    
+    .motion-docs-page-title
+      h1 Messages
+      script(async src="/js/motion/messages.js")
+      f7-motion-messages(motion)
+
     p Messages component will help you with visualisation of comments and messaging system in your app.
     h2 Messages Layout
     :code(lang="html")

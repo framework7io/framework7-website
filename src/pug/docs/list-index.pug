@@ -11,8 +11,10 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
-
-    h1 List Index
+    .motion-docs-page-title
+      h1 List Index
+      script(async src="/js/motion/listindex.js")
+      f7-motion-listindex(motion)
 
     p List Index allows to access a particular section of the list view instantly without scrolling through each section.
     h2 List Index Layout

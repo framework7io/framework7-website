@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Breadcrumbs
+      script(async src="/js/motion/breadcrumbs.js")
+      f7-motion-breadcrumbs(motion)
 
-    h1 Breadcrumbs
-    
     p Breadcrumbs allow users to keep track and maintain awareness of their locations within the app or website. They should be used for large sites and apps with hierarchically arranged pages.
     h2 Breadcrumbs Layout
     p Common Breadcrumbs layout is the following:

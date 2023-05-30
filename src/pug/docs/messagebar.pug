@@ -6,13 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
   .docs-nav
     include ../_docs-menu
   .docs-content
 
-    h1 Messagebar
-    
+    .motion-docs-page-title
+      h1 Messagebar
+      script(async src="/js/motion/messagebar.js")
+      f7-motion-messagebar(motion)
+
     p Framework7 comes with special resizable toolbar for usage with <a href="messages.html">Messages</a>
     h2 Messagebar Layout
     p Messagebar layout is pretty simple:
