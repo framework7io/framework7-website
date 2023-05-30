@@ -11,9 +11,11 @@ block content
   .docs-nav
     include ../_docs-menu-svelte
   .docs-content
+    .motion-docs-page-title
+      h1 App Svelte Component
+      script(src="/js/motion/app.js")
+      f7-motion-app(motion)
 
-    h1 App Svelte Component
-    
     p App Svelte component is the main Framework7 app component where all the <a href="../docs/app.html">Framework7 core initialization</a> happens and where you pass all main Framework7 parameters.
     h2 App Components
     p There are following components included:

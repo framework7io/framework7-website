@@ -5,13 +5,16 @@ block vars
   - var title = 'Menu List Svelte Component | Framework7 Svelte Documentation';
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-svelte
   .docs-content
+    .motion-docs-page-title
+      h1 Menu List Svelte Component
+      script(src="/js/motion/menulist.js")
+      f7-motion-menulist(motion)
 
-    h1 Menu List Svelte Component
     p Menu List is not a separate component, but just a particular case of using <a href="list-view.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.
     p To enable Menu List we need to add `menuList` prop to `List` component, and control currently selected menu list item by setting `selected` prop on relevant `ListItem`
 

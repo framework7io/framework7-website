@@ -11,8 +11,10 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
-
-    h1 Navbar
+    .motion-docs-page-title
+      h1 Navbar
+      script(src="/js/motion/navbar.js")
+      f7-motion-navbar(motion)
 
     p Navbar is a fixed area at the top of a screen that contains Page title and navigation elements.
     p Navbar has 3 main parts: `Left`, `Title` and `Right`. Each part may contain any HTML content, but it is recommended to use them in the following way:

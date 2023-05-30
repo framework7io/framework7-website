@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Contacts List
+      script(src="/js/motion/contacts.js")
+      f7-motion-contacts(motion)
 
-    h1 Contacts List
-    
     p Contacts lists intended to display list of personal people contacts.
     p Contacts list is a particular case of grouped <a href="list-view.html">List View</a> with one difference.
     p The only difference is what we need to add additional `contacts-list` class to the list view element (`<div class="list">`)

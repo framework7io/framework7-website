@@ -10,9 +10,11 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Icons
+      script(src="/js/motion/icons.js")
+      f7-motion-icons(motion)
 
-    h1 Icons
-    
     p By default Framework7 contains pretty limited set of icons used internally, such are `back`, `forward`, `prev` and `next` icons:
     :code(lang="html")
             <i class="icon icon-back"></i>

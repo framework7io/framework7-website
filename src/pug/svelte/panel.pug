@@ -12,8 +12,10 @@ block content
   .docs-nav
     include ../_docs-menu-svelte
   .docs-content
-
-    h1 Panel Svelte Component
+    .motion-docs-page-title
+      h1 Panel Svelte Component
+      script(src="/js/motion/sidepanels.js")
+      f7-motion-sidepanels(motion)
 
     p Panel Svelte component represents <a href="../docs/panel.html">Side Panels</a> component.
     h2 Panel Components

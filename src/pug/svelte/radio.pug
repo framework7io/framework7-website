@@ -7,14 +7,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-svelte
   .docs-content
+    .motion-docs-page-title
+      h1 Radio Svelte Component
+      script(src="/js/motion/radio.js")
+      f7-motion-radio(motion)
 
-    h1 Radio Svelte Component
-    
     p Radio Svelte component represents <a href="../docs/radio.html">Radio</a> component.
     h2 Radio Components
     p There are following components included:

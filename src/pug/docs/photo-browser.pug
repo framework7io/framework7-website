@@ -11,8 +11,10 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
-
-    h1 Photo Browser
+    .motion-docs-page-title
+      h1 Photo Browser
+      script(src="/js/motion/photobrowser.js")
+      f7-motion-photobrowser(motion)
 
     p Photo Browser is a photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional).
     p Photo Browser uses <a href="swiper.html">Swiper Slider</a> component to slide between photos.

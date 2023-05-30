@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Radio
+      script(src="/js/motion/radio.js")
+      f7-motion-radio(motion)
 
-    h1 Radio
-    
     h2 Radio Layout
     p Radio layout is pretty simple:
     ```html

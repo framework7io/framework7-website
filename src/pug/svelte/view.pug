@@ -11,9 +11,11 @@ block content
   .docs-nav
     include ../_docs-menu-svelte
   .docs-content
+    .motion-docs-page-title
+      h1 View Svelte Component
+      script(src="/js/motion/router.js")
+      f7-motion-router(motion)
 
-    h1 View Svelte Component
-    
     p <b>View</b> - is a separate visual part of app with its own settings, navigation and history. Each view also may have different navbar and toolbar layouts, different styles. So it is some kind of app in app. Such kind of functionality allows you easily manipulate each part of your app.
     p View Svelte component represents Framework7's <a href="../docs/view.html">View</a> component.
 

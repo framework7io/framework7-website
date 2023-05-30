@@ -12,8 +12,10 @@ block content
   .docs-nav
     include ../_docs-menu-vue
   .docs-content
-
-    h1 Popover Vue Component
+    .motion-docs-page-title
+      h1 Popover Vue Component
+      script(src="/js/motion/popover.js")
+      f7-motion-popover(motion)
 
     p Popover component is used to manage the presentation of content in a popover. You use popovers to present information temporarily. The popover remains visible until the user taps outside of the popover window or you explicitly dismiss it.
     p Popover Vue component represents <a href="../docs/popover.html">Popover</a> component.

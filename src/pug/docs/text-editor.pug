@@ -6,14 +6,17 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Text Editor
+      script(src="/js/motion/texteditor.js")
+      f7-motion-texteditor(motion)
 
-    h1 Text Editor
-    
+
     p Framework7 comes with a touch-friendly Rich Text Editor component. It is based on modern "contenteditable" API so it should work everywhere as is.
     p It comes with the basic set of formatting features. But its functionality can be easily extended and customized to fit any requirements.
     h2 Text Editor Layout

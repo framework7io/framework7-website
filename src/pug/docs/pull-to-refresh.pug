@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Pull To Refresh
+      script(src="/js/motion/pulltorefresh.js")
+      f7-motion-pulltorefresh(motion)
 
-    h1 Pull To Refresh
-    
     p Pull to refresh is a special component that can be used to initiate the refreshing of a page’s contents.
     h2 Pull To Refresh Layout
     p Let's look on how to integrate pull to refresh to page:

@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Chips
+      script(src="/js/motion/chips.js")
+      f7-motion-chips(motion)
 
-    h1 Chips
-    
     p Chips (Tags) represent complex entities in small blocks, such as a contact. They can contain a photo, short title string, and brief information.
     h2 Chips Layout
     p Let's look at basic chip HTML layout

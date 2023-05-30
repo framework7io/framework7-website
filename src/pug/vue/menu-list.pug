@@ -5,13 +5,16 @@ block vars
   - var title = 'Menu List Vue Component | Framework7 Vue Documentation';
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu-vue
   .docs-content
+    .motion-docs-page-title
+      h1 Menu List Vue Component
+      script(src="/js/motion/menulist.js")
+      f7-motion-menulist(motion)
 
-    h1 Menu List Vue Component
     p Menu List is not a separate component, but just a particular case of using <a href="list-view.html">&lt;f7-list&gt;</a> and <a href="list-item.html">&lt;f7-list-item&gt;</a> components.
     p To enable Menu List we need to add `menu-list` prop to `f7-list` component, and control currently selected menu list item by setting `selected` prop on relevant `f7-list-item`
 

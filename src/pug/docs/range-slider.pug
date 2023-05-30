@@ -6,14 +6,16 @@ block vars
 block docs-index
 
 block content
-  
+
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    .motion-docs-page-title
+      h1 Range Slider
+      script(src="/js/motion/rangeslider.js")
+      f7-motion-rangeslider(motion)
 
-    h1 Range Slider
-    
     h2 Range Slider Layout
     h3 Single Range
     p Single range slider layout is pretty simple:
