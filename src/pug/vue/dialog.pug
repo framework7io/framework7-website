@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Dialog Vue Component | Framework7 Vue Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    .motion-docs-page-title
+      h1 Dialog Vue Component
+      script(async src="/js/motion/dialog.js")
+      f7-motion-dialog(motion)
+    p There is no specific Dialog Vue Component, you need to use core <a href="../docs/dialog.html">Dialog component</a>.
+    h2 Examples
+    +examplePreview('vue', 'dialog.vue', 'dialog')

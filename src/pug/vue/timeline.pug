@@ -1,0 +1,24 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Timeline Vue Component | Framework7 Vue Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    .motion-docs-page-title
+      h1 Timeline Vue Component
+      script(async src="/js/motion/timeline.js")
+      f7-motion-timeline(motion)
+    p There is no specific Timeline Vue Component, you need to use core <a href="../docs/timeline.html">Timeline component</a>.
+    h2 Examples
+    h3 Vertical Timeline
+    +examplePreview('vue', 'timeline-vertical.vue', 'timeline-vertical')
+    h3 Horizontal Timeline
+    +examplePreview('vue', 'timeline-horizontal.vue', 'timeline-horizontal')
+    h3 Calendar Timeline
+    +examplePreview('vue', 'timeline-horizontal-calendar.vue', 'timeline-horizontal-calendar')

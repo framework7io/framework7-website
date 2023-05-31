@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Autocomplete Vue Component | Framework7 Vue Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    .motion-docs-page-title
+      h1 Autocomplete Vue Component
+      script(async src="/js/motion/autocomplete.js")
+      f7-motion-autocomplete(motion)
+    p There is no specific Autocomplete Vue Component, you need to use core <a href="../docs/autocomplete.html">Autocomplete component</a>.
+    h2 Examples
+    +examplePreview('vue', 'autocomplete.vue', 'autocomplete')

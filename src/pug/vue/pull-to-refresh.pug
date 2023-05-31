@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Pull To Refresh Vue Component | Framework7 Vue Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    .motion-docs-page-title
+      h1 Pull To Refresh Vue Component
+      script(async src="/js/motion/pulltorefresh.js")
+      f7-motion-pulltorefresh(motion)
+    p Pull To Refresh in Vue components is a part of the <a href="/vue/page.html">Page Vue Component</a>
+    h2 Examples
+    +examplePreview('vue', 'pull-to-refresh.vue', 'pull-to-refresh')

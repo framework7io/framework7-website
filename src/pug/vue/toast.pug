@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Toast Vue Component | Framework7 Vue Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    .motion-docs-page-title
+      h1 Toast Vue Component
+      script(async src="/js/motion/toast.js")
+      f7-motion-toast(motion)
+    p There is no specific Toast Vue Component, you need to use core <a href="../docs/toast.html">Toast component</a>.
+    h2 Examples
+    +examplePreview('vue', 'toast.vue', 'toast')

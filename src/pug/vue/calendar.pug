@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Calendar / Datepicker | Framework7 Vue Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    .motion-docs-page-title
+      h1 Calendar / Datepicker
+      script(async src="/js/motion/calendar.js")
+      f7-motion-calendar(motion)
+    p There is no specific Calendar / Datepicker Vue Component, you need to use core <a href="../docs/calendar.html">Calendar / Datepicker component</a>.
+    h2 Examples
+    +examplePreview('vue', 'calendar.vue', 'calendar')

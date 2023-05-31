@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Color Picker Vue Component | Framework7 Vue Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    .motion-docs-page-title
+      h1 Color Picker Vue Component
+      script(async src="/js/motion/colorpicker.js")
+      f7-motion-colorpicker(motion)
+    p There is no specific Color Picker Vue Component, you need to use core <a href="../docs/color-picker.html">Color Picker component</a>.
+    h2 Examples
+    +examplePreview('vue', 'color-picker.vue', 'color-picker')

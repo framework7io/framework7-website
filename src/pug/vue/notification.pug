@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Notification Vue Component | Framework7 Vue Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    .motion-docs-page-title
+      h1 Notification Vue Component
+      script(async src="/js/motion/notification.js")
+      f7-motion-notification(motion)
+    p There is no specific Notification Vue Component, you need to use core <a href="../docs/notification.html">Notification component</a>.
+    h2 Examples
+    +examplePreview('vue', 'notifications.vue', 'notifications')
