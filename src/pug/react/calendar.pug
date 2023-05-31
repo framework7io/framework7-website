@@ -1,0 +1,20 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Calendar / Datepicker React Component | Framework7 React Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    .motion-docs-page-title
+        h1 Calendar / Datepicker React Component
+        script(src="/js/motion/calendar.js")
+        f7-motion-calendar(motion)
+    p There is no specific Calendar / Datepicker React component, you need to use core <a href="../docs/calendar.html">Calendar / Datepicker component</a>.
+    h2 Examples
+    +examplePreview('react', 'calendar.jsx', 'calendar')
+

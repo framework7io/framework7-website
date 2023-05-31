@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Pull To Refresh React Component | Framework7 React Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    .motion-docs-page-title
+        h1 Pull To Refresh React Component
+        script(src="/js/motion/pulltorefresh.js")
+        f7-motion-pulltorefresh(motion)
+    p There is no specific Pull To Refresh React component, you need to use core <a href="../docs/pull-to-refresh.html">Pull To Refresh component</a>.
+    h2 Examples
+    +examplePreview('react', 'pull-to-refresh.jsx', 'pull-to-refresh')
