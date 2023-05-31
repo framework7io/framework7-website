@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Grid / Layout Grid Svelte Component | Framework7 Svelte Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    .motion-docs-page-title
+      h1 Grid / Layout Grid Svelte Component
+      script(async src="/js/motion/grid.js")
+      f7-motion-grid(motion)
+    p There is no specific Grid / Layout Grid Svelte component, you need to use core <a href="../docs/grid.html">Grid / Layout Grid component</a>.
+    h2 Examples
+    +examplePreview('svelte', 'grid.svelte', 'grid')
