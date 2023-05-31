@@ -10,7 +10,11 @@ block content
   .docs-nav
     include ../_docs-menu-react
   .docs-content
-    h1 Form Storage React Component
+    .motion-docs-page-title
+      h1 Form Storage React Component
+      script(async src="/js/motion/inputs.js")
+      f7-motion-inputs(motion)
+      
     p There is no specific Form Storage React component, you need to use core <a href="../docs/form.html">Form Storage component</a>.
     h2 Examples
     +examplePreview('react', 'form-storage.jsx', 'form-storage')
