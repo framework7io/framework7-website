@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Picker React Component | Framework7 React Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    .motion-docs-page-title
+        h1 Picker React Component
+        script(async src="/js/motion/picker.js")
+        f7-motion-picker(motion)
+    p There is no specific Picker React component, you need to use core <a href="../docs/picker.html">Picker component</a>.
+    h2 Examples
+    +examplePreview('react', 'picker.jsx', 'picker')

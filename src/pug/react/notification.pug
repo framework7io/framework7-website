@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Notification React Component | Framework7 React Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    .motion-docs-page-title
+        h1 Notification React Component
+        script(async src="/js/motion/notification.js")
+        f7-motion-notification(motion)
+    p There is no specific Notification React component, you need to use core <a href="../docs/notification.html">Notification component</a>.
+    h2 Examples
+    +examplePreview('react', 'notifications.jsx', 'notifications')

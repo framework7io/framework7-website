@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Dialog React Component | Framework7 React Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    .motion-docs-page-title
+        h1 Dialog React Component
+        script(async src="/js/motion/dialog.js")
+        f7-motion-dialog(motion)
+    p There is no specific Dialog React component, you need to use core <a href="../docs/dialog.html">Dialog component</a>.
+    h2 Examples
+    +examplePreview('react', 'dialog.jsx', 'dialog')

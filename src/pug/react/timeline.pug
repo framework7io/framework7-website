@@ -1,0 +1,24 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Timeline React Component | Framework7 React Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    .motion-docs-page-title
+        h1 Timeline React Component
+        script(async src="/js/motion/timeline.js")
+        f7-motion-timeline(motion)
+    p There is no specific Timeline React component, you need to use core <a href="../docs/timeline.html">Timeline component</a>.
+    h2 Examples
+    h3 Vertical Timeline
+    +examplePreview('react', 'timeline-vertical.jsx', 'timeline-vertical')
+    h3 Horizontal Timeline
+    +examplePreview('react', 'timeline-horizontal.jsx', 'timeline-horizontal')
+    h3 Calendar Timeline
+    +examplePreview('react', 'timeline-horizontal-calendar.jsx', 'timeline-horizontal-calendar')
