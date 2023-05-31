@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'svelte';
+  - var title = 'Pull To Refresh Svelte Component | Framework7 Svelte Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-svelte
+  .docs-content
+    .motion-docs-page-title
+      h1 Pull To Refresh Svelte Component
+      script(async src="/js/motion/pulltorefresh.js")
+      f7-motion-pulltorefresh(motion)
+    p Pull To Refresh in Svelte components is a part of the <a href="./page.html">Page Svelte component</a>.
+    h2 Examples
+    +examplePreview('svelte', 'pull-to-refresh.svelte', 'pull-to-refresh')
