@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Data Table Vue Component | Framework7 Vue Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    .motion-docs-page-title
+      h1 Data Table Vue Component
+      script(async src="/js/motion/datatable.js")
+      f7-motion-datatable(motion)
+    p There is no specific Data Table Vue Component, you need to use core <a href="../docs/data-table.html">Data Table component</a>.
+    h2 Examples
+    +examplePreview('vue', 'data-table.vue', 'data-table')

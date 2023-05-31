@@ -1,0 +1,19 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Tooltip Vue Component | Framework7 Vue Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    .motion-docs-page-title
+      h1 Tooltip Vue Component
+      script(async src="/js/motion/tooltip.js")
+      f7-motion-tooltip(motion)
+    p There is no specific Tooltip Vue Component, you need to use core <a href="../docs/tooltip.html">Tooltip component</a>.
+    h2 Examples
+    +examplePreview('vue', 'tooltip.vue', 'tooltip')
