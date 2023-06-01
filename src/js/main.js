@@ -36,10 +36,12 @@ if ($('.home-intro .constructor').length) {
   });
 }
 
-function trackOutboundClick(url, category) {
-  if (!window.ga || !url) return;
-  if (!url) return;
-  window.ga('send', 'event', category, 'click', url);
+function trackOutboundClick(url) {
+  if (!window.gtag || !url) return;
+  window.gtag('event', 'click', {
+    event_category: 'outbound',
+    event_label: url,
+  });
 }
 
 $('a').on('click', function onClick() {
