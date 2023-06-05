@@ -50,3 +50,13 @@ search-index.json
 src/pug/docs-demos/core/*.html
 !src/pug/docs-demos/core/*.f7.html
 .env.local
+
+public/kitchen-sink/react/public
+public/kitchen-sink/react/index.html
+public/kitchen-sink/react/vite.config.js
+public/kitchen-sink/vue/public
+public/kitchen-sink/vue/index.html
+public/kitchen-sink/vue/vite.config.js
+public/kitchen-sink/svelte/public
+public/kitchen-sink/svelte/index.html
+public/kitchen-sink/svelte/vite.config.js

@@ -1,0 +1,86 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Segmented React Component | Framework7 React Documentation';
+
+block docs-index
+
+block content
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    .motion-docs-page-title
+      h1 Segmented React Component
+      script(async src="/js/motion/segmented.js")
+      f7-motion-segmented(motion)
+    p There are following components included:
+    ul
+      li `Segmented`  - segmented wrapper for buttons
+
+    h2 Button Properties
+    p Button component has almost the same properties as the <a href="link.html">Link</a> component but with few additional button-specific properties:
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Segmented&gt; properties
+        tr
+          td raised
+          td boolean
+          td false
+          td Makes segmented raised
+        tr
+          td raisedIos
+          td boolean
+          td false
+          td Makes segmented raised only in iOS theme
+        tr
+          td raisedMd
+          td boolean
+          td false
+          td Makes segmented raised only in MD theme
+        tr
+          td round
+          td boolean
+          td false
+          td Makes segmented round
+        tr
+          td roundIos
+          td boolean
+          td false
+          td Makes segmented round only in iOS theme
+        tr
+          td roundMd
+          td boolean
+          td false
+          td Makes segmented round only in MD theme
+        tr
+          td strong
+          td boolean
+          td false
+          td Makes strong segmented
+        tr
+          td strongIos
+          td boolean
+          td false
+          td Makes strong segmented only in iOS theme
+        tr
+          td strongMd
+          td boolean
+          td false
+          td Makes strong segmented only in MD theme
+        tr
+          td tag
+          td string
+          td div
+          td Tag used to render Segmented element
+
+    h2 Examples
+    +examplePreview('react', 'segmented.jsx', 'segmented')
