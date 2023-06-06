@@ -1,0 +1,68 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Segmented | Framework7 Documentation';
+
+block docs-index
+
+block content
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    .motion-docs-page-title
+      h1 Segmented
+      script(async src="/js/motion/segmented.js")
+      f7-motion-segmented(motion)
+    h2 Segmented Control
+    p A segmented control is a linear set of two or more segments (buttons), each of which functions as a mutually exclusive button. Within the control, all buttons are equal in width. Segmented controls are often used to display different views (switch tabs).
+    h3 Segmented Layout
+    p Segmented control layout is pretty simple, just a `<div>` with a `segmented` class around buttons:
+    :code
+      <div class="segmented">
+        <a class="button button-active">Tab 1</a>
+        <a class="button">Tab 2</a>
+      </div>
+    p Segmented "strong" requires additional element to correctly indicate active state:
+    :code
+      <div class="segmented segmented-strong">
+        <a class="button button-active">Tab 1</a>
+        <a class="button">Tab 2</a>
+        <!-- addition element required in segmented strong -->
+        <span class="segmented-highlight"></span>
+      </div>
+    h3 Segmented Modifier Classes
+    p As well as buttons, segmented also supports few additional classes for styling:
+    table.props-table
+      tbody
+        tr
+          td segmented-round
+          td Rounded segmented
+        tr
+          td segmented-round-ios
+          td Rounded segmented in iOS theme
+        tr
+          td segmented-round-md
+          td Rounded segmented in MD theme
+        tr
+          td segmented-raised
+          td Raised segmented
+        tr
+          td segmented-raised-ios
+          td Raised segmented in iOS theme
+        tr
+          td segmented-raised-md
+          td Raised segmented in MD theme
+        tr
+          td segmented-strong
+          td Strong segmented
+        tr
+          td segmented-strong-ios
+          td Strong segmented in iOS theme
+        tr
+          td segmented-strong-md
+          td Strong segmented in MD theme
+
+    +cssVars('button')
+    
+    h2 Examples
+    +examplePreview('core', 'segmented.html', 'segmented')
