@@ -1,12 +1,21 @@
 [
   {
+    "createdAt": "2023-06-09T16:00:00.00Z",
+    "title": "Slots Not on GamStop - New Non-GamStop Casinos UK",
+    "link": "https://www.outlookindia.com/outlook-spotlight/slots-not-on-gamstop-new-non-gamstop-casinos-uk-news-284058",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/alistair3",
+    "image": "alistair3.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2023-06-06T16:00:00.00Z",
     "title": "Nettikasinot | Katso parhaat nettikasinot 2023 | Top 10 lista",
     "link": "https://www.nettikasinot.media/",
     "plan": "topSupporter",
     "ref": "https://opencollective.com/nettikasinot-media",
     "image": "nettikasinot-media.png",
-    "image_h": "",
     "endDate": "",
     "active": true
   },
@@ -17,7 +26,6 @@
     "plan": "topSupporter",
     "ref": "https://opencollective.com/nyecasino",
     "image": "nyecasino.png",
-    "image_h": "",
     "endDate": "",
     "active": true
   },
@@ -28,7 +36,6 @@
     "plan": "topSupporter",
     "ref": "https://opencollective.com/nettcasino",
     "image": "nettcasino.png",
-    "image_h": "",
     "endDate": "",
     "active": true
   },
@@ -39,7 +46,6 @@
     "plan": "topSupporter",
     "ref": "https://www.patreon.com/user/creators?u=31009923",
     "image": "boostlikes-uk.png",
-    "image_h": "",
     "endDate": "",
     "active": true
   },
@@ -50,7 +56,6 @@
     "plan": "topSupporter",
     "ref": "https://www.patreon.com/NielHeijnsbergen",
     "image": "idealecasinos.png",
-    "image_h": "",
     "endDate": "2023-11-02T16:00:00.00Z",
     "active": true
   },
