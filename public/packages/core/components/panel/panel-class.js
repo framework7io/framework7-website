@@ -442,6 +442,8 @@ class Panel extends Framework7Class {
       $el.removeClass('panel-out').addClass('panel-in not-animated');
       panel.onOpen();
       panel.onOpened();
+      // eslint-disable-next-line
+      panel._openTransitionStarted = true;
     }
     return true;
   }

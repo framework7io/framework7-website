@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.5
+ * Framework7 8.1.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: May 8, 2023
+ * Released on: June 12, 2023
  */
 
 /*====================
@@ -162,11 +162,16 @@ body {
   font-size: var(--f7-font-size);
   line-height: var(--f7-line-height);
   color: var(--f7-text-color);
+  scrollbar-width: none;
+  scrollbar-color: transparent;
 }
 body::-webkit-scrollbar {
+  -webkit-appearance: none;
+          appearance: none;
   width: 0px;
+  display: none;
+  opacity: 0;
   background: transparent;
-  position: relative;
 }
 body::-webkit-scrollbar-track {
   box-shadow: none;
@@ -2488,13 +2493,26 @@ html.device-full-viewport body {
   justify-content: flex-start;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scrollbar-color: transparent;
 }
 .tabbar-scrollable .toolbar-inner::-webkit-scrollbar {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
   -webkit-appearance: none;
-  opacity: 0 !important;
+          appearance: none;
+  width: 0px;
+  display: none;
+  opacity: 0;
+  background: transparent;
+}
+.tabbar-scrollable .toolbar-inner::-webkit-scrollbar-track {
+  box-shadow: none;
+  background: transparent;
+}
+.tabbar-scrollable .toolbar-inner::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  outline: none;
+  border-radius: 9999px;
+  position: relative;
 }
 .tabbar-scrollable .tab-link,
 .tabbar-scrollable .link {
@@ -8060,11 +8078,11 @@ html.device-android-4 .accordion-item-content {
   --f7-list-index-font-weight: 600;
   /* --f7-list-index-text-color: var(--f7-theme-color); */
   --f7-list-index-item-height: 14px;
-  --f7-list-index-label-text-color: #fff;
-  /* --f7-list-index-label-bg-color: var(--f7-theme-color); */
   --f7-list-index-label-font-weight: 500;
 }
 .ios {
+  --f7-list-index-label-text-color: #fff;
+  /* --f7-list-index-label-bg-color: var(--f7-theme-color); */
   --f7-list-index-label-size: 44px;
   --f7-list-index-label-font-size: 17px;
   --f7-list-index-skip-dot-size: 6px;
@@ -8073,6 +8091,12 @@ html.device-android-4 .accordion-item-content {
   --f7-list-index-label-size: 56px;
   --f7-list-index-label-font-size: 20px;
   --f7-list-index-skip-dot-size: 4px;
+}
+.md,
+.md .dark,
+.md [class*='color-'] {
+  --f7-list-index-label-bg-color: var(--f7-md-primary);
+  --f7-list-index-label-text-color: var(--f7-md-on-primary);
 }
 .list-index {
   position: absolute;
@@ -13180,6 +13204,10 @@ label.item-radio.disabled,
 .calendar-day-selected-right:first-child:before {
   display: none;
 }
+.calendar-day-selected-left.calendar-day-selected-right:before {
+  content: none;
+  display: none;
+}
 .calendar-day-selected-range .calendar-day-number {
   background-color: transparent;
   color: inherit;
@@ -13452,6 +13480,9 @@ label.item-radio.disabled,
   max-height: 100%;
   z-index: 10;
 }
+.picker-column.picker-column-first.picker-column-last {
+  width: 100%;
+}
 .picker-column.picker-column-left {
   text-align: left;
 }
@@ -13468,15 +13499,30 @@ label.item-radio.disabled,
 }
 .picker-items {
   overflow: auto;
-  scrollbar-width: none;
   scroll-snap-type: y mandatory;
   height: 100%;
   box-sizing: border-box;
   padding: var(--f7-picker-scroll-padding, 0px) 0px;
+  scrollbar-width: none;
+  scrollbar-color: transparent;
 }
 .picker-items::-webkit-scrollbar {
+  -webkit-appearance: none;
+          appearance: none;
+  width: 0px;
   display: none;
   opacity: 0;
+  background: transparent;
+}
+.picker-items::-webkit-scrollbar-track {
+  box-shadow: none;
+  background: transparent;
+}
+.picker-items::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  outline: none;
+  border-radius: 9999px;
+  position: relative;
 }
 .picker-item {
   height: var(--f7-picker-item-height);
@@ -13588,6 +13634,12 @@ label.item-radio.disabled,
   --f7-ptr-preloader-size: 22px;
   --f7-ptr-size: 40px;
 }
+.md,
+.md .dark,
+.md [class*='color-'] {
+  --f7-ptr-preloader-bg-color: var(--f7-md-surface-1);
+  --f7-ptr-preloader-color: var(--f7-md-primary);
+}
 .ptr-preloader {
   position: relative;
   top: var(--f7-ptr-top, 0);
@@ -13684,7 +13736,8 @@ label.item-radio.disabled,
 .md .ptr-preloader {
   width: var(--f7-ptr-size);
   border-radius: 50%;
-  background: #fff;
+  background: var(--f7-ptr-preloader-bg-color);
+  --f7-preloader-color: var(--f7-ptr-preloader-color);
   margin-top: calc(-1 * var(--f7-ptr-size));
   z-index: 100;
   box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
@@ -15479,8 +15532,7 @@ table.data-table {
   opacity: 1;
 }
 .md .searchbar .input-clear-button:before {
-  margin-left: 0;
-  margin-top: 0;
+  display: none;
 }
 .md .searchbar-inline {
   --f7-searchbar-input-extra-padding-left: 32px;
@@ -17491,7 +17543,8 @@ swiper-container .swiper-notification {
 }
 .ios {
   --f7-notification-margin: 8px;
-  --f7-notification-padding: 10px;
+  --f7-notification-padding-horizontal: 10px;
+  --f7-notification-padding-vertical: 10px;
   --f7-notification-border-radius: 12px;
   --f7-notification-box-shadow: 0px 5px 25px -10px rgba(0, 0, 0, 0.7);
   --f7-notification-icon-size: 20px;
@@ -17523,7 +17576,8 @@ swiper-container .swiper-notification {
 }
 .md {
   --f7-notification-margin: 16px;
-  --f7-notification-padding: 16px;
+  --f7-notification-padding-vertical: 20px;
+  --f7-notification-padding-horizontal: 16px;
   --f7-notification-border-radius: 16px;
   --f7-notification-box-shadow: none;
   --f7-notification-icon-size: 24px;
@@ -17560,7 +17614,7 @@ swiper-container .swiper-notification {
   transition-property: transform;
   direction: ltr;
   max-width: var(--f7-notification-max-width);
-  padding: var(--f7-notification-padding);
+  padding: var(--f7-notification-padding-vertical) var(--f7-notification-padding-horizontal);
   border-radius: var(--f7-notification-border-radius);
   box-shadow: var(--f7-notification-box-shadow);
   background: var(--f7-notification-bg-color);
@@ -17707,7 +17761,7 @@ swiper-container .swiper-notification {
   transform: translate3d(0, -150%, 0);
 }
 .md .notification.modal-in {
-  transition-duration: 200ms;
+  transition-duration: 500ms;
   transform: translate3d(0, 0%, 0);
   transition-timing-function: cubic-bezier(0, 0.8, 0.34, 1);
 }
@@ -17722,8 +17776,8 @@ swiper-container .swiper-notification {
 }
 .md .notification-with-icon .notification-icon {
   position: absolute;
-  left: var(--f7-notification-padding);
-  top: var(--f7-notification-padding);
+  left: var(--f7-notification-padding-horizontal);
+  top: var(--f7-notification-padding-vertical);
 }
 .md .notification-with-icon .notification-content,
 .md .notification-with-icon .notification-header {
@@ -17736,7 +17790,7 @@ swiper-container .swiper-notification {
   margin-top: 4px;
 }
 .md .notification-header + .notification-content {
-  margin-top: 4px;
+  margin-top: 8px;
 }
 .md .notification-title-right-text {
   margin-left: 4px;
@@ -18971,9 +19025,26 @@ button.text-editor-button .material-icons sub {
   justify-content: flex-start !important;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scrollbar-color: transparent;
 }
 .text-editor-keyboard-toolbar .toolbar-inner::-webkit-scrollbar {
+  -webkit-appearance: none;
+          appearance: none;
+  width: 0px;
   display: none;
+  opacity: 0;
+  background: transparent;
+}
+.text-editor-keyboard-toolbar .toolbar-inner::-webkit-scrollbar-track {
+  box-shadow: none;
+  background: transparent;
+}
+.text-editor-keyboard-toolbar .toolbar-inner::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  outline: none;
+  border-radius: 9999px;
+  position: relative;
 }
 .text-editor-keyboard-toolbar .toolbar-inner .text-editor-button-divider {
   height: 100%;
@@ -19262,10 +19333,26 @@ button.text-editor-button .material-icons sub {
   overflow: auto;
   white-space: nowrap;
   padding: var(--f7-breadcrumbs-padding);
+  scrollbar-width: none;
+  scrollbar-color: transparent;
 }
 .breadcrumbs::-webkit-scrollbar {
+  -webkit-appearance: none;
+          appearance: none;
+  width: 0px;
   display: none;
   opacity: 0;
+  background: transparent;
+}
+.breadcrumbs::-webkit-scrollbar-track {
+  box-shadow: none;
+  background: transparent;
+}
+.breadcrumbs::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  outline: none;
+  border-radius: 9999px;
+  position: relative;
 }
 .breadcrumbs-separator,
 .breadcrumbs-item,

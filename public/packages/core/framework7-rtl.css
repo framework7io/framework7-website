@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.5
+ * Framework7 8.1.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: May 8, 2023
+ * Released on: June 12, 2023
  */
 
 /*====================
@@ -165,11 +165,16 @@ body {
   font-size: var(--f7-font-size);
   line-height: var(--f7-line-height);
   color: var(--f7-text-color);
+  scrollbar-width: none;
+  scrollbar-color: transparent;
 }
 body::-webkit-scrollbar {
+  -webkit-appearance: none;
+          appearance: none;
   width: 0px;
+  display: none;
+  opacity: 0;
   background: transparent;
-  position: relative;
 }
 body::-webkit-scrollbar-track {
   box-shadow: none;
@@ -2494,13 +2499,26 @@ html.device-full-viewport body {
   justify-content: flex-start;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scrollbar-color: transparent;
 }
 .tabbar-scrollable .toolbar-inner::-webkit-scrollbar {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
   -webkit-appearance: none;
-  opacity: 0 !important;
+          appearance: none;
+  width: 0px;
+  display: none;
+  opacity: 0;
+  background: transparent;
+}
+.tabbar-scrollable .toolbar-inner::-webkit-scrollbar-track {
+  box-shadow: none;
+  background: transparent;
+}
+.tabbar-scrollable .toolbar-inner::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  outline: none;
+  border-radius: 9999px;
+  position: relative;
 }
 .tabbar-scrollable .tab-link,
 .tabbar-scrollable .link {

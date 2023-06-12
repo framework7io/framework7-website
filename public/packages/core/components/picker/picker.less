@@ -78,6 +78,9 @@
   position: relative;
   max-height: 100%;
   z-index: 10;
+  &.picker-column-first.picker-column-last {
+    width: 100%;
+  }
 
   &.picker-column-left {
     text-align: left;
@@ -101,10 +104,7 @@
   height: 100%;
   box-sizing: border-box;
   padding: var(--f7-picker-scroll-padding, 0px) 0px;
-  &::-webkit-scrollbar {
-    display: none;
-    opacity: 0;
-  }
+  .no-scrollbar();
 }
 .picker-item {
   height: var(--f7-picker-item-height);

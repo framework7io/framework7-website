@@ -1,5 +1,5 @@
 /**
- * Framework7 8.0.5
+ * Framework7 8.1.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: May 8, 2023
+ * Released on: June 12, 2023
  */
 
 (function (global, factory) {
@@ -3865,11 +3865,10 @@
           $('html').removeClass('ios md').addClass(app.theme);
 
           // iOS Translucent
-          const device = app.device;
-          if (app.params.iosTranslucentBars && app.theme === 'ios' && device.ios) {
+          if (app.params.iosTranslucentBars && app.theme === 'ios') {
             $('html').addClass('ios-translucent-bars');
           }
-          if (app.params.iosTranslucentModals && app.theme === 'ios' && device.ios) {
+          if (app.params.iosTranslucentModals && app.theme === 'ios') {
             $('html').addClass('ios-translucent-modals');
           }
 
@@ -6970,7 +6969,7 @@
             modalComponent.destroy();
           }
           nextTick$1(() => {
-            if (modalComponent || modalParams.component || modalParams.asyncComponent) {
+            if (modalComponent || modalParams.component || modalParams.asyncComponent || modalParams.async) {
               router.removeModal(modal.el);
             }
             modal.destroy();
@@ -8348,6 +8347,9 @@
           params,
           query
         });
+        if (url === '') {
+          return '/';
+        }
         if (!url) {
           throw new Error(`Framework7: can't construct URL for route with name "${name}"`);
         }
@@ -18916,6 +18918,8 @@
           $el.removeClass('panel-out').addClass('panel-in not-animated');
           panel.onOpen();
           panel.onOpened();
+          // eslint-disable-next-line
+          panel._openTransitionStarted = true;
         }
         return true;
       }
