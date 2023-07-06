@@ -27,6 +27,7 @@ function resizablePanel(panel) {
   let panelMinWidth;
   let panelMaxWidth;
   let visibleByBreakpoint;
+  const isPushingPanel = effect !== 'cover' && effect !== 'floating';
   function transformCSSWidth(v) {
     if (!v) return null;
     if (v.indexOf('%') >= 0 || v.indexOf('vw') >= 0) {
@@ -57,13 +58,13 @@ function resizablePanel(panel) {
       $el.transition(0);
       $el.addClass('panel-resizing');
       $htmlEl.css('cursor', 'col-resize');
-      if (effect !== 'cover' || visibleByBreakpoint) {
+      if (isPushingPanel || visibleByBreakpoint) {
         $viewEl = $(panel.getViewEl());
         if (panel.$containerEl && panel.$containerEl.hasClass('page')) {
           $viewEl.add(panel.$containerEl.children('.page-content, .tabs, .fab'));
         }
       }
-      if (effect !== 'cover' && !visibleByBreakpoint) {
+      if (isPushingPanel && !visibleByBreakpoint) {
         $backdropEl.transition(0);
         $viewEl.transition(0);
       }
@@ -81,7 +82,7 @@ function resizablePanel(panel) {
     newPanelWidth = Math.min(Math.max(newPanelWidth, 0), app.width);
     panel.resizableWidth = newPanelWidth;
     $el[0].style.width = `${newPanelWidth}px`;
-    if (effect !== 'cover' && !visibleByBreakpoint) {
+    if (isPushingPanel && !visibleByBreakpoint) {
       if ($viewEl) {
         $viewEl.transform(`translate3d(${side === 'left' ? newPanelWidth : -newPanelWidth}px, 0, 0)`);
       }
@@ -105,14 +106,14 @@ function resizablePanel(panel) {
     isMoved = false;
     $htmlEl[0].style.setProperty(`--f7-panel-${side}-width`, `${panel.resizableWidth}px`);
     $el[0].style.width = '';
-    if (effect !== 'cover' && !visibleByBreakpoint) {
+    if (isPushingPanel && !visibleByBreakpoint) {
       $viewEl.transform('');
       $backdropEl.transform('');
     }
     $el.removeClass('panel-resizing');
     nextFrame(() => {
       $el.transition('');
-      if (effect !== 'cover') {
+      if (isPushingPanel) {
         $backdropEl.transition('');
         if ($viewEl) $viewEl.transition('');
       }
