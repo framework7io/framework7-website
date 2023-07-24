@@ -187,24 +187,3 @@ if (gitStatsDate && new Date().getTime() - gitStatsDate * 1 < 1000 * 60 * 60) {
 } else {
   fetchGitStats();
 }
-
-// Carbon
-function testAdBlock() {
-  let adBlockEnabled = false;
-  const testAd = document.createElement('div');
-  testAd.innerHTML = '&nbsp;';
-  testAd.className = 'adsbox';
-  document.body.appendChild(testAd);
-  window.setTimeout(() => {
-    if (testAd.offsetHeight === 0) {
-      adBlockEnabled = true;
-    }
-    testAd.remove();
-    if (adBlockEnabled) {
-      $('.carbon').append(
-        '<div class="carbon-placeholder">Support Framework7 development by disabling AdBlock for this website</div>',
-      );
-    }
-  }, 0);
-}
-testAdBlock();
