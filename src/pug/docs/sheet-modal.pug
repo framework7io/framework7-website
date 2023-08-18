@@ -145,6 +145,12 @@ block content
           span.parameter el
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Sheet element to toggle swipe step.
       p.method-returns Method returns Sheet's instance
+    .method-wrap
+      p
+        span.method app.sheet.setBreakpoint(<span>el</span>, <span>value</span>)
+        | - Set/open sheet modal on specific breakpoint (from `breakpoints` array parameter). Also passing `0` will close sheet modal, passing `1` will fully open it
+      p.method-returns Method returns Sheet's instance
+
 
     h2 Sheet Parameters
     p Now let's look at list of available parameters we need to create Sheet:
@@ -225,7 +231,22 @@ block content
           td push
           td boolean
           td false
-          td When enabled it will push view behind on open. Works only when top safe area is in place. It can also be enabled by adding `sheet-modal-push` class to Sheet element.
+          td When enabled it will push view behind on open. Works only when top safe area is in place. It can also be enabled by adding `sheet-modal-push` class to Sheet element.
+        tr
+          td breakpoints
+          td number[]
+          td []
+          td Use instead of `swipeToStep` to enable swipe breakpoints. Must be an array of numbers > 0 and < 1, where 0 is fully closed and 1 is fully opened, e.g. `[0.33, 0.66]`, `[0.5]`, etc.
+        tr
+          td backdropBreakpoint
+          td number
+          td 0
+          td Defines breakpoint when backdrop becomes visible. Number from `0` (ideally from the lowest (first) value of `breakpoints` array) to `1`  (default 0)
+        tr
+          td pushBreakpoint
+          td number
+          td 0
+          td Defines breakpoint when to push back the view behind (`push` must be enabled). Number from `0` (ideally from the lowest (first) value of `breakpoints` array) to `1` (default 0)
         tr
           td containerEl
           td HTMLElement<br>string
@@ -319,6 +340,9 @@ block content
         tr
           td sheet.setSwipeStep()
           td Update step position. Required to call after content of sheet modal has been modified manually when it is opened
+        tr
+          td sheet.setBreakpoint(<span>value</span>)
+          td Set/open sheet modal on specific breakpoint (from `breakpoints` array parameter). Also passing `0` will close sheet modal, passing `1` will fully open it
         tr
           td sheet.destroy()
           td Destroy sheet
@@ -427,9 +451,13 @@ block content
           td Sheet Element<span>&lt;div class="sheet"&gt;</span>
           td Event will be triggered on Sheet swipe step between step opened and closed state. As `event.detail` it receives step open progress number (from `0` to `1`)
         tr
+          td sheet:breakpoint
+          td Sheet Element<span>&lt;div class="sheet"&gt;</span>
+          td Event will be triggered on Sheet swipe step between step opened and closed state. As `event.detail` it receives step open progress number (from `0` to `1`)
+        tr
           td sheet:beforedestroy
           td Sheet Element<span>&lt;div class="sheet"&gt;</span>
-          td Event will be triggered right before Sheet instance will be destroyed
+          td Event will be triggered on Sheet breakpoint change. As `event.detail` it receives current breakpoint (from `0` to `1`)
     h3 App and Sheet Instance Events
     p Sheet instance emits events on both self instance and app instance. App instance events has same names prefixed with `popup`.
     table.events-table.double-events-table
@@ -512,6 +540,15 @@ block content
         tr
           td sheetStepProgress
           td <span>sheet,progress</span>
+          td app
+        tr
+          td breakpoint
+          td <span>sheet,breakpoint</span>
+          td sheet
+          td(rowspan="2") Event will be triggered on Sheet breakpoint change. As second argument it receives current breakpoint (from `0` to `1`)
+        tr
+          td sheetBreakpoint
+          td <span>sheet,breakpoint</span>
           td app
 
     +cssVars('sheet')

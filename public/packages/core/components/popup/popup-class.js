@@ -111,6 +111,7 @@ class Popup extends Modal {
       if (popup.params.swipeHandler && $(e.target).closest(popup.params.swipeHandler).length === 0) {
         return;
       }
+      if ($(e.target).closest('.sortable-handler').length > 0) return;
       isTouched = true;
       isMoved = false;
       startTouch = {

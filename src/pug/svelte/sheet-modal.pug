@@ -90,6 +90,18 @@ block content
           td boolean
           td When enabled it will push view behind on open. Works only when top safe area is in place. It can also be enabled by adding `sheet-modal-push` class to Sheet element.
         tr
+          td breakpoints
+          td number[]
+          td Use instead of `swipeToStep` to enable swipe breakpoints. Must be an array of numbers > 0 and < 1, where 0 is fully closed and 1 is fully opened, e.g. `[0.33, 0.66]`, `[0.5]`, etc.
+        tr
+          td backdropBreakpoint
+          td number
+          td Defines breakpoint when backdrop becomes visible. Number from `0` (ideally from the lowest (first) value of `breakpoints` array) to `1`  (default 0)
+        tr
+          td pushBreakpoint
+          td number
+          td Defines breakpoint when to push back the view behind (`push` must be enabled). Number from `0` (ideally from the lowest (first) value of `breakpoints` array) to `1` (default 0)
+        tr
           td animate
           td boolean
           td Whether the modal should be opened/closed with animation or not
@@ -127,7 +139,10 @@ block content
           td Event will be triggered on Sheet swipe step close/collapse
         tr
           td sheetStepProgress
-          td Event will be triggered on Sheet swipe step between step opened and closed state. As `event.detail` it receives step open progress number (from `0` to `1`)
+          td Event will be triggered on Sheet swipe step between step opened and closed state. As second argument it receives step open progress number (from `0` to `1`)
+        tr
+          td sheetBreakpoint
+          td Event will be triggered on Sheet breakpoint change. As second argument it receives current breakpoint (from `0` to `1`)
 
     h2 Sheet Modal Slots
     p `<Sheet>` component has additional slots for custom elements:
