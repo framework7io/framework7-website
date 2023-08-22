@@ -295,6 +295,36 @@ main {
   }
 }
 
+pre {
+  position: relative;
+  .f7-copy-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 60px;
+
+    .f7-copy-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .hidden{
+      opacity: 0;
+      transition: opacity 0.3ms ease-in-out;
+    }
+    .f7-check-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  }
+}
+
+
 .clearfix {
   .clearfix();
 }

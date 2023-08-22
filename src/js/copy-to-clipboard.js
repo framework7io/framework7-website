@@ -1,7 +1,7 @@
 const Clipboard = {
   el: undefined,
   createEl() {
-    const el = document.createElement('div');
+    const el = document.createElement('textarea');
     el.style.display = 'none';
     el.style.position = 'absolute';
     el.style.visibility = 'hidden';
@@ -62,4 +62,4 @@ const Clipboard = {
 export default function (text, callback) {
   const result = Clipboard.copy(text);
   if (result && callback) callback();
-};
+}
