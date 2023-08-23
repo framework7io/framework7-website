@@ -8,6 +8,7 @@ import initUiInitiativeTemplates from './init-uiinititative-templates';
 import initUiInitiativePlugins from './init-uiinititative-plugins';
 import initExamplePreview from './init-example-preview';
 import initHomeCanvas from './init-home-canvas';
+import initCopyCode from './init-copy-code';
 
 Object.keys(methods).forEach((key) => {
   $.fn[key] = methods[key];
@@ -16,6 +17,7 @@ Object.keys(methods).forEach((key) => {
 initHomeCanvas();
 initDocsTables();
 initDocsSearch();
+initCopyCode();
 initDocsDevice();
 initDocsNav();
 initUiInitiativeTemplates();

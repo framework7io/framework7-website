@@ -295,6 +295,46 @@ main {
   }
 }
 
+pre {
+  position: relative;
+  .f7-copy-btn {
+    position: absolute;
+    appearance: none;
+    border: none;
+    outline: 0;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    top: 0;
+    right: 0;
+    height: 48px;
+    width: 48px;
+    appearance: none;
+    background: transparent;
+    border-radius: 0;
+    opacity: 0.5;
+    cursor: pointer;
+    &:focus {
+      opacity: 0.85;
+    }
+    &:hover {
+      opacity: 1;
+    }
+    i {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin-left: -10px;
+      margin-top: -10px;
+      font-size: 20px;
+      transition: transform 0.3s;
+    }
+    .hidden {
+      transform: scale(0);
+    }
+  }
+}
+
 .clearfix {
   .clearfix();
 }
