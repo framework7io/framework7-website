@@ -1,6 +1,16 @@
 [
   {
     "createdAt": "2023-10-11T16:00:00.00Z",
+    "title": "Detectico Phone Tracker to Find Location by Phone Number",
+    "link": "https://detectico.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/detectico",
+    "image": "detectico.png",
+    "endDate": "2024-10-12T16:00:00.00Z",
+    "active": true
+  },
+  {
+    "createdAt": "2023-10-11T16:00:00.00Z",
     "title": "UK Betting Sites Not on GamStop » Non GamStop Bookies 2023",
     "link": "https://casinogap.org/uk/betting-sites-not-on-gamstop/",
     "plan": "topSupporter",
