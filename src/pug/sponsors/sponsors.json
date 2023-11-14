@@ -1,6 +1,16 @@
 [
   {
     "createdAt": "2023-11-14T16:00:00.00Z",
+    "title": "Welcome To SafeHamsters: The Pinnacle of Crypto Sports - SafeHamsters",
+    "link": "https://safehamsters.io/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/safehamsters",
+    "image": "safehamsters.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2023-11-14T16:00:00.00Z",
     "title": "YTMP3 | YouTube to MP3 Converter, YT MP3, YT to MP3",
     "link": "https://ytmp3.page/ldy/",
     "plan": "silverSponsor",
