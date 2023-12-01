@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2023-12-01T16:00:00.00Z",
+    "title": "Software Development Company - Chudovo",
+    "link": "https://chudovo.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/chudovo",
+    "image": "chudovo.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2023-11-20T16:00:00.00Z",
     "title": "Svitua",
     "link": "https://svitua.com.ua/",
