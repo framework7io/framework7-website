@@ -832,7 +832,7 @@ block content
       ]
     p And of course there are multiple hooks are supported when passed as array of functions:
     :code(lang="js")
-      function checkAuth({ to, from, resolve, reject }) {
+      function checkAuth({ to, from, resolve, reject, router }) {
         if (/* some condition to check user is logged in */) {
           resolve();
         } else {
@@ -861,7 +861,8 @@ block content
           beforeEnter: [checkAuth, checkPermission],
         }
       ]
-
+    .important-note
+      p Note that <b>`beforeEnter` will not work properly if page is loaded using `component` property</b>, in such case you should use `async` or `asyncComponent` property to load page dynamically after `beforeEnter` is triggered
 
     h2 Redirect & Alias
     h4 Alias
