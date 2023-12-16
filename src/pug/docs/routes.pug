@@ -832,7 +832,7 @@ block content
       ]
     p And of course there are multiple hooks are supported when passed as array of functions:
     :code(lang="js")
-      function checkAuth({ to, from, resolve, reject, router }) {
+      function checkAuth({ to, from, resolve, reject }) {
         if (/* some condition to check user is logged in */) {
           resolve();
         } else {
