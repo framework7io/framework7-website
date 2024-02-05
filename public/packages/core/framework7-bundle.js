@@ -1,13 +1,13 @@
 /**
- * Framework7 8.3.0
+ * Framework7 8.3.1
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2023 Vladimir Kharlampidi
+ * Copyright 2014-2024 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: August 18, 2023
+ * Released on: February 5, 2024
  */
 
 (function (global, factory) {
@@ -1530,6 +1530,9 @@
     function clampInt(min, max, input) {
       return input < min ? min : input > max ? max : input;
     }
+    function clampDouble(min, max, input) {
+      return input < min ? min : input > max ? max : input;
+    }
     function sanitizeDegreesDouble(degrees) {
       return (degrees %= 360) < 0 && (degrees += 360), degrees;
     }
@@ -1579,6 +1582,9 @@
     }
     function yFromLstar(lstar) {
       return 100 * labInvf((lstar + 16) / 116);
+    }
+    function lstarFromY(y) {
+      return 116 * labF(y / 100) - 16;
     }
     function linearized(rgbComponent) {
       const normalized = rgbComponent / 255;
@@ -1757,6 +1763,68 @@
           gF = gC / viewingConditions.rgbD[1],
           bF = bC / viewingConditions.rgbD[2];
         return argbFromXyz(1.86206786 * rF - 1.01125463 * gF + .14918677 * bF, .38752654 * rF + .62144744 * gF - .00897398 * bF, -.0158415 * rF - .03412294 * gF + 1.04996444 * bF);
+      }
+      static fromXyzInViewingConditions(x, y, z, viewingConditions) {
+        const rC = .401288 * x + .650173 * y - .051461 * z,
+          gC = -.250268 * x + 1.204414 * y + .045854 * z,
+          bC = -.002079 * x + .048952 * y + .953127 * z,
+          rD = viewingConditions.rgbD[0] * rC,
+          gD = viewingConditions.rgbD[1] * gC,
+          bD = viewingConditions.rgbD[2] * bC,
+          rAF = Math.pow(viewingConditions.fl * Math.abs(rD) / 100, .42),
+          gAF = Math.pow(viewingConditions.fl * Math.abs(gD) / 100, .42),
+          bAF = Math.pow(viewingConditions.fl * Math.abs(bD) / 100, .42),
+          rA = 400 * signum(rD) * rAF / (rAF + 27.13),
+          gA = 400 * signum(gD) * gAF / (gAF + 27.13),
+          bA = 400 * signum(bD) * bAF / (bAF + 27.13),
+          a = (11 * rA + -12 * gA + bA) / 11,
+          b = (rA + gA - 2 * bA) / 9,
+          u = (20 * rA + 20 * gA + 21 * bA) / 20,
+          p2 = (40 * rA + 20 * gA + bA) / 20,
+          atanDegrees = 180 * Math.atan2(b, a) / Math.PI,
+          hue = atanDegrees < 0 ? atanDegrees + 360 : atanDegrees >= 360 ? atanDegrees - 360 : atanDegrees,
+          hueRadians = hue * Math.PI / 180,
+          ac = p2 * viewingConditions.nbb,
+          J = 100 * Math.pow(ac / viewingConditions.aw, viewingConditions.c * viewingConditions.z),
+          Q = 4 / viewingConditions.c * Math.sqrt(J / 100) * (viewingConditions.aw + 4) * viewingConditions.fLRoot,
+          huePrime = hue < 20.14 ? hue + 360 : hue,
+          t = 5e4 / 13 * (1 / 4 * (Math.cos(huePrime * Math.PI / 180 + 2) + 3.8)) * viewingConditions.nc * viewingConditions.ncb * Math.sqrt(a * a + b * b) / (u + .305),
+          alpha = Math.pow(t, .9) * Math.pow(1.64 - Math.pow(.29, viewingConditions.n), .73),
+          C = alpha * Math.sqrt(J / 100),
+          M = C * viewingConditions.fLRoot,
+          s = 50 * Math.sqrt(alpha * viewingConditions.c / (viewingConditions.aw + 4)),
+          jstar = (1 + 100 * .007) * J / (1 + .007 * J),
+          mstar = Math.log(1 + .0228 * M) / .0228,
+          astar = mstar * Math.cos(hueRadians),
+          bstar = mstar * Math.sin(hueRadians);
+        return new Cam16(hue, C, J, Q, M, s, jstar, astar, bstar);
+      }
+      xyzInViewingConditions(viewingConditions) {
+        const alpha = 0 === this.chroma || 0 === this.j ? 0 : this.chroma / Math.sqrt(this.j / 100),
+          t = Math.pow(alpha / Math.pow(1.64 - Math.pow(.29, viewingConditions.n), .73), 1 / .9),
+          hRad = this.hue * Math.PI / 180,
+          eHue = .25 * (Math.cos(hRad + 2) + 3.8),
+          ac = viewingConditions.aw * Math.pow(this.j / 100, 1 / viewingConditions.c / viewingConditions.z),
+          p1 = eHue * (5e4 / 13) * viewingConditions.nc * viewingConditions.ncb,
+          p2 = ac / viewingConditions.nbb,
+          hSin = Math.sin(hRad),
+          hCos = Math.cos(hRad),
+          gamma = 23 * (p2 + .305) * t / (23 * p1 + 11 * t * hCos + 108 * t * hSin),
+          a = gamma * hCos,
+          b = gamma * hSin,
+          rA = (460 * p2 + 451 * a + 288 * b) / 1403,
+          gA = (460 * p2 - 891 * a - 261 * b) / 1403,
+          bA = (460 * p2 - 220 * a - 6300 * b) / 1403,
+          rCBase = Math.max(0, 27.13 * Math.abs(rA) / (400 - Math.abs(rA))),
+          rC = signum(rA) * (100 / viewingConditions.fl) * Math.pow(rCBase, 1 / .42),
+          gCBase = Math.max(0, 27.13 * Math.abs(gA) / (400 - Math.abs(gA))),
+          gC = signum(gA) * (100 / viewingConditions.fl) * Math.pow(gCBase, 1 / .42),
+          bCBase = Math.max(0, 27.13 * Math.abs(bA) / (400 - Math.abs(bA))),
+          bC = signum(bA) * (100 / viewingConditions.fl) * Math.pow(bCBase, 1 / .42),
+          rF = rC / viewingConditions.rgbD[0],
+          gF = gC / viewingConditions.rgbD[1],
+          bF = bC / viewingConditions.rgbD[2];
+        return [1.86206786 * rF - 1.01125463 * gF + .14918677 * bF, .38752654 * rF + .62144744 * gF - .00897398 * bF, -.0158415 * rF - .03412294 * gF + 1.04996444 * bF];
       }
     }
     class HctSolver {
@@ -1950,6 +2018,11 @@
         const cam = Cam16.fromInt(argb);
         this.internalHue = cam.hue, this.internalChroma = cam.chroma, this.internalTone = lstarFromArgb(argb), this.argb = argb;
       }
+      inViewingConditions(vc) {
+        const viewedInVc = Cam16.fromInt(this.toInt()).xyzInViewingConditions(vc),
+          recastInVc = Cam16.fromXyzInViewingConditions(viewedInVc[0], viewedInVc[1], viewedInVc[2], ViewingConditions.make());
+        return Hct.from(recastInVc.hue, recastInVc.chroma, lstarFromY(viewedInVc[1]));
+      }
     }
     class Blend {
       static harmonize(designColor, sourceColor) {
@@ -1978,20 +2051,564 @@
         return Cam16.fromUcs(jstar, astar, bstar).toInt();
       }
     }
+    class Contrast {
+      static ratioOfTones(toneA, toneB) {
+        return toneA = clampDouble(0, 100, toneA), toneB = clampDouble(0, 100, toneB), Contrast.ratioOfYs(yFromLstar(toneA), yFromLstar(toneB));
+      }
+      static ratioOfYs(y1, y2) {
+        const lighter = y1 > y2 ? y1 : y2;
+        return (lighter + 5) / ((lighter === y2 ? y1 : y2) + 5);
+      }
+      static lighter(tone, ratio) {
+        if (tone < 0 || tone > 100) return -1;
+        const darkY = yFromLstar(tone),
+          lightY = ratio * (darkY + 5) - 5,
+          realContrast = Contrast.ratioOfYs(lightY, darkY),
+          delta = Math.abs(realContrast - ratio);
+        if (realContrast < ratio && delta > .04) return -1;
+        const returnValue = lstarFromY(lightY) + .4;
+        return returnValue < 0 || returnValue > 100 ? -1 : returnValue;
+      }
+      static darker(tone, ratio) {
+        if (tone < 0 || tone > 100) return -1;
+        const lightY = yFromLstar(tone),
+          darkY = (lightY + 5) / ratio - 5,
+          realContrast = Contrast.ratioOfYs(lightY, darkY),
+          delta = Math.abs(realContrast - ratio);
+        if (realContrast < ratio && delta > .04) return -1;
+        const returnValue = lstarFromY(darkY) - .4;
+        return returnValue < 0 || returnValue > 100 ? -1 : returnValue;
+      }
+      static lighterUnsafe(tone, ratio) {
+        const lighterSafe = Contrast.lighter(tone, ratio);
+        return lighterSafe < 0 ? 100 : lighterSafe;
+      }
+      static darkerUnsafe(tone, ratio) {
+        const darkerSafe = Contrast.darker(tone, ratio);
+        return darkerSafe < 0 ? 0 : darkerSafe;
+      }
+    }
+    class DislikeAnalyzer {
+      static isDisliked(hct) {
+        const huePasses = Math.round(hct.hue) >= 90 && Math.round(hct.hue) <= 111,
+          chromaPasses = Math.round(hct.chroma) > 16,
+          tonePasses = Math.round(hct.tone) < 65;
+        return huePasses && chromaPasses && tonePasses;
+      }
+      static fixIfDisliked(hct) {
+        return DislikeAnalyzer.isDisliked(hct) ? Hct.from(hct.hue, hct.chroma, 70) : hct;
+      }
+    }
+    class DynamicColor {
+      static fromPalette(args) {
+        return new DynamicColor(args.name ?? "", args.palette, args.tone, args.isBackground ?? !1, args.background, args.secondBackground, args.contrastCurve, args.toneDeltaPair);
+      }
+      constructor(name, palette, tone, isBackground, background, secondBackground, contrastCurve, toneDeltaPair) {
+        if (this.name = name, this.palette = palette, this.tone = tone, this.isBackground = isBackground, this.background = background, this.secondBackground = secondBackground, this.contrastCurve = contrastCurve, this.toneDeltaPair = toneDeltaPair, this.hctCache = new Map(), !background && secondBackground) throw new Error(`Color ${name} has secondBackgrounddefined, but background is not defined.`);
+        if (!background && contrastCurve) throw new Error(`Color ${name} has contrastCurvedefined, but background is not defined.`);
+        if (background && !contrastCurve) throw new Error(`Color ${name} has backgrounddefined, but contrastCurve is not defined.`);
+      }
+      getArgb(scheme) {
+        return this.getHct(scheme).toInt();
+      }
+      getHct(scheme) {
+        const cachedAnswer = this.hctCache.get(scheme);
+        if (null != cachedAnswer) return cachedAnswer;
+        const tone = this.getTone(scheme),
+          answer = this.palette(scheme).getHct(tone);
+        return this.hctCache.size > 4 && this.hctCache.clear(), this.hctCache.set(scheme, answer), answer;
+      }
+      getTone(scheme) {
+        const decreasingContrast = scheme.contrastLevel < 0;
+        if (this.toneDeltaPair) {
+          const toneDeltaPair = this.toneDeltaPair(scheme),
+            roleA = toneDeltaPair.roleA,
+            roleB = toneDeltaPair.roleB,
+            delta = toneDeltaPair.delta,
+            polarity = toneDeltaPair.polarity,
+            stayTogether = toneDeltaPair.stayTogether,
+            bgTone = this.background(scheme).getTone(scheme),
+            aIsNearer = "nearer" === polarity || "lighter" === polarity && !scheme.isDark || "darker" === polarity && scheme.isDark,
+            nearer = aIsNearer ? roleA : roleB,
+            farther = aIsNearer ? roleB : roleA,
+            amNearer = this.name === nearer.name,
+            expansionDir = scheme.isDark ? 1 : -1,
+            nContrast = nearer.contrastCurve.getContrast(scheme.contrastLevel),
+            fContrast = farther.contrastCurve.getContrast(scheme.contrastLevel),
+            nInitialTone = nearer.tone(scheme);
+          let nTone = Contrast.ratioOfTones(bgTone, nInitialTone) >= nContrast ? nInitialTone : DynamicColor.foregroundTone(bgTone, nContrast);
+          const fInitialTone = farther.tone(scheme);
+          let fTone = Contrast.ratioOfTones(bgTone, fInitialTone) >= fContrast ? fInitialTone : DynamicColor.foregroundTone(bgTone, fContrast);
+          return decreasingContrast && (nTone = DynamicColor.foregroundTone(bgTone, nContrast), fTone = DynamicColor.foregroundTone(bgTone, fContrast)), (fTone - nTone) * expansionDir >= delta || (fTone = clampDouble(0, 100, nTone + delta * expansionDir), (fTone - nTone) * expansionDir >= delta || (nTone = clampDouble(0, 100, fTone - delta * expansionDir))), 50 <= nTone && nTone < 60 ? expansionDir > 0 ? (nTone = 60, fTone = Math.max(fTone, nTone + delta * expansionDir)) : (nTone = 49, fTone = Math.min(fTone, nTone + delta * expansionDir)) : 50 <= fTone && fTone < 60 && (stayTogether ? expansionDir > 0 ? (nTone = 60, fTone = Math.max(fTone, nTone + delta * expansionDir)) : (nTone = 49, fTone = Math.min(fTone, nTone + delta * expansionDir)) : fTone = expansionDir > 0 ? 60 : 49), amNearer ? nTone : fTone;
+        }
+        {
+          let answer = this.tone(scheme);
+          if (null == this.background) return answer;
+          const bgTone = this.background(scheme).getTone(scheme),
+            desiredRatio = this.contrastCurve.getContrast(scheme.contrastLevel);
+          if (Contrast.ratioOfTones(bgTone, answer) >= desiredRatio || (answer = DynamicColor.foregroundTone(bgTone, desiredRatio)), decreasingContrast && (answer = DynamicColor.foregroundTone(bgTone, desiredRatio)), this.isBackground && 50 <= answer && answer < 60 && (answer = Contrast.ratioOfTones(49, bgTone) >= desiredRatio ? 49 : 60), this.secondBackground) {
+            const [bg1, bg2] = [this.background, this.secondBackground],
+              [bgTone1, bgTone2] = [bg1(scheme).getTone(scheme), bg2(scheme).getTone(scheme)],
+              [upper, lower] = [Math.max(bgTone1, bgTone2), Math.min(bgTone1, bgTone2)];
+            if (Contrast.ratioOfTones(upper, answer) >= desiredRatio && Contrast.ratioOfTones(lower, answer) >= desiredRatio) return answer;
+            const lightOption = Contrast.lighter(upper, desiredRatio),
+              darkOption = Contrast.darker(lower, desiredRatio),
+              availables = [];
+            -1 !== lightOption && availables.push(lightOption), -1 !== darkOption && availables.push(darkOption);
+            return DynamicColor.tonePrefersLightForeground(bgTone1) || DynamicColor.tonePrefersLightForeground(bgTone2) ? lightOption < 0 ? 100 : lightOption : 1 === availables.length ? availables[0] : darkOption < 0 ? 0 : darkOption;
+          }
+          return answer;
+        }
+      }
+      static foregroundTone(bgTone, ratio) {
+        const lighterTone = Contrast.lighterUnsafe(bgTone, ratio),
+          darkerTone = Contrast.darkerUnsafe(bgTone, ratio),
+          lighterRatio = Contrast.ratioOfTones(lighterTone, bgTone),
+          darkerRatio = Contrast.ratioOfTones(darkerTone, bgTone);
+        if (DynamicColor.tonePrefersLightForeground(bgTone)) {
+          const negligibleDifference = Math.abs(lighterRatio - darkerRatio) < .1 && lighterRatio < ratio && darkerRatio < ratio;
+          return lighterRatio >= ratio || lighterRatio >= darkerRatio || negligibleDifference ? lighterTone : darkerTone;
+        }
+        return darkerRatio >= ratio || darkerRatio >= lighterRatio ? darkerTone : lighterTone;
+      }
+      static tonePrefersLightForeground(tone) {
+        return Math.round(tone) < 60;
+      }
+      static toneAllowsLightForeground(tone) {
+        return Math.round(tone) <= 49;
+      }
+      static enableLightForeground(tone) {
+        return DynamicColor.tonePrefersLightForeground(tone) && !DynamicColor.toneAllowsLightForeground(tone) ? 49 : tone;
+      }
+    }
+    var Variant;
+    !function (Variant) {
+      Variant[Variant.MONOCHROME = 0] = "MONOCHROME", Variant[Variant.NEUTRAL = 1] = "NEUTRAL", Variant[Variant.TONAL_SPOT = 2] = "TONAL_SPOT", Variant[Variant.VIBRANT = 3] = "VIBRANT", Variant[Variant.EXPRESSIVE = 4] = "EXPRESSIVE", Variant[Variant.FIDELITY = 5] = "FIDELITY", Variant[Variant.CONTENT = 6] = "CONTENT", Variant[Variant.RAINBOW = 7] = "RAINBOW", Variant[Variant.FRUIT_SALAD = 8] = "FRUIT_SALAD";
+    }(Variant || (Variant = {}));
+    class ContrastCurve {
+      constructor(low, normal, medium, high) {
+        this.low = low, this.normal = normal, this.medium = medium, this.high = high;
+      }
+      getContrast(contrastLevel) {
+        return contrastLevel <= -1 ? this.low : contrastLevel < 0 ? lerp(this.low, this.normal, (contrastLevel - -1) / 1) : contrastLevel < .5 ? lerp(this.normal, this.medium, (contrastLevel - 0) / .5) : contrastLevel < 1 ? lerp(this.medium, this.high, (contrastLevel - .5) / .5) : this.high;
+      }
+    }
+    class ToneDeltaPair {
+      constructor(roleA, roleB, delta, polarity, stayTogether) {
+        this.roleA = roleA, this.roleB = roleB, this.delta = delta, this.polarity = polarity, this.stayTogether = stayTogether;
+      }
+    }
+    function isFidelity(scheme) {
+      return scheme.variant === Variant.FIDELITY || scheme.variant === Variant.CONTENT;
+    }
+    function isMonochrome(scheme) {
+      return scheme.variant === Variant.MONOCHROME;
+    }
+    function findDesiredChromaByTone(hue, chroma, tone, byDecreasingTone) {
+      let answer = tone,
+        closestToChroma = Hct.from(hue, chroma, tone);
+      if (closestToChroma.chroma < chroma) {
+        let chromaPeak = closestToChroma.chroma;
+        for (; closestToChroma.chroma < chroma;) {
+          answer += byDecreasingTone ? -1 : 1;
+          const potentialSolution = Hct.from(hue, chroma, answer);
+          if (chromaPeak > potentialSolution.chroma) break;
+          if (Math.abs(potentialSolution.chroma - chroma) < .4) break;
+          Math.abs(potentialSolution.chroma - chroma) < Math.abs(closestToChroma.chroma - chroma) && (closestToChroma = potentialSolution), chromaPeak = Math.max(chromaPeak, potentialSolution.chroma);
+        }
+      }
+      return answer;
+    }
+    function viewingConditionsForAlbers(scheme) {
+      return ViewingConditions.make(void 0, void 0, scheme.isDark ? 30 : 80, void 0, void 0);
+    }
+    function performAlbers(prealbers, scheme) {
+      const albersd = prealbers.inViewingConditions(viewingConditionsForAlbers(scheme));
+      return DynamicColor.tonePrefersLightForeground(prealbers.tone) && !DynamicColor.toneAllowsLightForeground(albersd.tone) ? DynamicColor.enableLightForeground(prealbers.tone) : DynamicColor.enableLightForeground(albersd.tone);
+    }
+    class MaterialDynamicColors {
+      static highestSurface(s) {
+        return s.isDark ? MaterialDynamicColors.surfaceBright : MaterialDynamicColors.surfaceDim;
+      }
+    }
+    MaterialDynamicColors.contentAccentToneDelta = 15, MaterialDynamicColors.primaryPaletteKeyColor = DynamicColor.fromPalette({
+      name: "primary_palette_key_color",
+      palette: s => s.primaryPalette,
+      tone: s => s.primaryPalette.keyColor.tone
+    }), MaterialDynamicColors.secondaryPaletteKeyColor = DynamicColor.fromPalette({
+      name: "secondary_palette_key_color",
+      palette: s => s.secondaryPalette,
+      tone: s => s.secondaryPalette.keyColor.tone
+    }), MaterialDynamicColors.tertiaryPaletteKeyColor = DynamicColor.fromPalette({
+      name: "tertiary_palette_key_color",
+      palette: s => s.tertiaryPalette,
+      tone: s => s.tertiaryPalette.keyColor.tone
+    }), MaterialDynamicColors.neutralPaletteKeyColor = DynamicColor.fromPalette({
+      name: "neutral_palette_key_color",
+      palette: s => s.neutralPalette,
+      tone: s => s.neutralPalette.keyColor.tone
+    }), MaterialDynamicColors.neutralVariantPaletteKeyColor = DynamicColor.fromPalette({
+      name: "neutral_variant_palette_key_color",
+      palette: s => s.neutralVariantPalette,
+      tone: s => s.neutralVariantPalette.keyColor.tone
+    }), MaterialDynamicColors.background = DynamicColor.fromPalette({
+      name: "background",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 6 : 98,
+      isBackground: !0
+    }), MaterialDynamicColors.onBackground = DynamicColor.fromPalette({
+      name: "on_background",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 90 : 10,
+      background: s => MaterialDynamicColors.background,
+      contrastCurve: new ContrastCurve(3, 3, 4.5, 7)
+    }), MaterialDynamicColors.surface = DynamicColor.fromPalette({
+      name: "surface",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 6 : 98,
+      isBackground: !0
+    }), MaterialDynamicColors.surfaceDim = DynamicColor.fromPalette({
+      name: "surface_dim",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 6 : 87,
+      isBackground: !0
+    }), MaterialDynamicColors.surfaceBright = DynamicColor.fromPalette({
+      name: "surface_bright",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 24 : 98,
+      isBackground: !0
+    }), MaterialDynamicColors.surfaceContainerLowest = DynamicColor.fromPalette({
+      name: "surface_container_lowest",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 4 : 100,
+      isBackground: !0
+    }), MaterialDynamicColors.surfaceContainerLow = DynamicColor.fromPalette({
+      name: "surface_container_low",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 10 : 96,
+      isBackground: !0
+    }), MaterialDynamicColors.surfaceContainer = DynamicColor.fromPalette({
+      name: "surface_container",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 12 : 94,
+      isBackground: !0
+    }), MaterialDynamicColors.surfaceContainerHigh = DynamicColor.fromPalette({
+      name: "surface_container_high",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 17 : 92,
+      isBackground: !0
+    }), MaterialDynamicColors.surfaceContainerHighest = DynamicColor.fromPalette({
+      name: "surface_container_highest",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 22 : 90,
+      isBackground: !0
+    }), MaterialDynamicColors.onSurface = DynamicColor.fromPalette({
+      name: "on_surface",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 90 : 10,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.surfaceVariant = DynamicColor.fromPalette({
+      name: "surface_variant",
+      palette: s => s.neutralVariantPalette,
+      tone: s => s.isDark ? 30 : 90,
+      isBackground: !0
+    }), MaterialDynamicColors.onSurfaceVariant = DynamicColor.fromPalette({
+      name: "on_surface_variant",
+      palette: s => s.neutralVariantPalette,
+      tone: s => s.isDark ? 80 : 30,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(3, 4.5, 7, 11)
+    }), MaterialDynamicColors.inverseSurface = DynamicColor.fromPalette({
+      name: "inverse_surface",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 90 : 20
+    }), MaterialDynamicColors.inverseOnSurface = DynamicColor.fromPalette({
+      name: "inverse_on_surface",
+      palette: s => s.neutralPalette,
+      tone: s => s.isDark ? 20 : 95,
+      background: s => MaterialDynamicColors.inverseSurface,
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.outline = DynamicColor.fromPalette({
+      name: "outline",
+      palette: s => s.neutralVariantPalette,
+      tone: s => s.isDark ? 60 : 50,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(1.5, 3, 4.5, 7)
+    }), MaterialDynamicColors.outlineVariant = DynamicColor.fromPalette({
+      name: "outline_variant",
+      palette: s => s.neutralVariantPalette,
+      tone: s => s.isDark ? 30 : 80,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(1, 1, 3, 7)
+    }), MaterialDynamicColors.shadow = DynamicColor.fromPalette({
+      name: "shadow",
+      palette: s => s.neutralPalette,
+      tone: s => 0
+    }), MaterialDynamicColors.scrim = DynamicColor.fromPalette({
+      name: "scrim",
+      palette: s => s.neutralPalette,
+      tone: s => 0
+    }), MaterialDynamicColors.surfaceTint = DynamicColor.fromPalette({
+      name: "surface_tint",
+      palette: s => s.primaryPalette,
+      tone: s => s.isDark ? 80 : 40,
+      isBackground: !0
+    }), MaterialDynamicColors.primary = DynamicColor.fromPalette({
+      name: "primary",
+      palette: s => s.primaryPalette,
+      tone: s => isMonochrome(s) ? s.isDark ? 100 : 0 : s.isDark ? 80 : 40,
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(3, 4.5, 7, 11),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.primaryContainer, MaterialDynamicColors.primary, 15, "nearer", !1)
+    }), MaterialDynamicColors.onPrimary = DynamicColor.fromPalette({
+      name: "on_primary",
+      palette: s => s.primaryPalette,
+      tone: s => isMonochrome(s) ? s.isDark ? 10 : 90 : s.isDark ? 20 : 100,
+      background: s => MaterialDynamicColors.primary,
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.primaryContainer = DynamicColor.fromPalette({
+      name: "primary_container",
+      palette: s => s.primaryPalette,
+      tone: s => isFidelity(s) ? performAlbers(s.sourceColorHct, s) : isMonochrome(s) ? s.isDark ? 85 : 25 : s.isDark ? 30 : 90,
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(1, 1, 3, 7),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.primaryContainer, MaterialDynamicColors.primary, 15, "nearer", !1)
+    }), MaterialDynamicColors.onPrimaryContainer = DynamicColor.fromPalette({
+      name: "on_primary_container",
+      palette: s => s.primaryPalette,
+      tone: s => isFidelity(s) ? DynamicColor.foregroundTone(MaterialDynamicColors.primaryContainer.tone(s), 4.5) : isMonochrome(s) ? s.isDark ? 0 : 100 : s.isDark ? 90 : 10,
+      background: s => MaterialDynamicColors.primaryContainer,
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.inversePrimary = DynamicColor.fromPalette({
+      name: "inverse_primary",
+      palette: s => s.primaryPalette,
+      tone: s => s.isDark ? 40 : 80,
+      background: s => MaterialDynamicColors.inverseSurface,
+      contrastCurve: new ContrastCurve(3, 4.5, 7, 11)
+    }), MaterialDynamicColors.secondary = DynamicColor.fromPalette({
+      name: "secondary",
+      palette: s => s.secondaryPalette,
+      tone: s => s.isDark ? 80 : 40,
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(3, 4.5, 7, 11),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.secondaryContainer, MaterialDynamicColors.secondary, 15, "nearer", !1)
+    }), MaterialDynamicColors.onSecondary = DynamicColor.fromPalette({
+      name: "on_secondary",
+      palette: s => s.secondaryPalette,
+      tone: s => isMonochrome(s) ? s.isDark ? 10 : 100 : s.isDark ? 20 : 100,
+      background: s => MaterialDynamicColors.secondary,
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.secondaryContainer = DynamicColor.fromPalette({
+      name: "secondary_container",
+      palette: s => s.secondaryPalette,
+      tone: s => {
+        const initialTone = s.isDark ? 30 : 90;
+        if (isMonochrome(s)) return s.isDark ? 30 : 85;
+        if (!isFidelity(s)) return initialTone;
+        let answer = findDesiredChromaByTone(s.secondaryPalette.hue, s.secondaryPalette.chroma, initialTone, !s.isDark);
+        return answer = performAlbers(s.secondaryPalette.getHct(answer), s), answer;
+      },
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(1, 1, 3, 7),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.secondaryContainer, MaterialDynamicColors.secondary, 15, "nearer", !1)
+    }), MaterialDynamicColors.onSecondaryContainer = DynamicColor.fromPalette({
+      name: "on_secondary_container",
+      palette: s => s.secondaryPalette,
+      tone: s => isFidelity(s) ? DynamicColor.foregroundTone(MaterialDynamicColors.secondaryContainer.tone(s), 4.5) : s.isDark ? 90 : 10,
+      background: s => MaterialDynamicColors.secondaryContainer,
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.tertiary = DynamicColor.fromPalette({
+      name: "tertiary",
+      palette: s => s.tertiaryPalette,
+      tone: s => isMonochrome(s) ? s.isDark ? 90 : 25 : s.isDark ? 80 : 40,
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(3, 4.5, 7, 11),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.tertiaryContainer, MaterialDynamicColors.tertiary, 15, "nearer", !1)
+    }), MaterialDynamicColors.onTertiary = DynamicColor.fromPalette({
+      name: "on_tertiary",
+      palette: s => s.tertiaryPalette,
+      tone: s => isMonochrome(s) ? s.isDark ? 10 : 90 : s.isDark ? 20 : 100,
+      background: s => MaterialDynamicColors.tertiary,
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.tertiaryContainer = DynamicColor.fromPalette({
+      name: "tertiary_container",
+      palette: s => s.tertiaryPalette,
+      tone: s => {
+        if (isMonochrome(s)) return s.isDark ? 60 : 49;
+        if (!isFidelity(s)) return s.isDark ? 30 : 90;
+        const albersTone = performAlbers(s.tertiaryPalette.getHct(s.sourceColorHct.tone), s),
+          proposedHct = s.tertiaryPalette.getHct(albersTone);
+        return DislikeAnalyzer.fixIfDisliked(proposedHct).tone;
+      },
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(1, 1, 3, 7),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.tertiaryContainer, MaterialDynamicColors.tertiary, 15, "nearer", !1)
+    }), MaterialDynamicColors.onTertiaryContainer = DynamicColor.fromPalette({
+      name: "on_tertiary_container",
+      palette: s => s.tertiaryPalette,
+      tone: s => isMonochrome(s) ? s.isDark ? 0 : 100 : isFidelity(s) ? DynamicColor.foregroundTone(MaterialDynamicColors.tertiaryContainer.tone(s), 4.5) : s.isDark ? 90 : 10,
+      background: s => MaterialDynamicColors.tertiaryContainer,
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.error = DynamicColor.fromPalette({
+      name: "error",
+      palette: s => s.errorPalette,
+      tone: s => s.isDark ? 80 : 40,
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(3, 4.5, 7, 11),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.errorContainer, MaterialDynamicColors.error, 15, "nearer", !1)
+    }), MaterialDynamicColors.onError = DynamicColor.fromPalette({
+      name: "on_error",
+      palette: s => s.errorPalette,
+      tone: s => s.isDark ? 20 : 100,
+      background: s => MaterialDynamicColors.error,
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.errorContainer = DynamicColor.fromPalette({
+      name: "error_container",
+      palette: s => s.errorPalette,
+      tone: s => s.isDark ? 30 : 90,
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(1, 1, 3, 7),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.errorContainer, MaterialDynamicColors.error, 15, "nearer", !1)
+    }), MaterialDynamicColors.onErrorContainer = DynamicColor.fromPalette({
+      name: "on_error_container",
+      palette: s => s.errorPalette,
+      tone: s => s.isDark ? 90 : 10,
+      background: s => MaterialDynamicColors.errorContainer,
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.primaryFixed = DynamicColor.fromPalette({
+      name: "primary_fixed",
+      palette: s => s.primaryPalette,
+      tone: s => isMonochrome(s) ? 40 : 90,
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(1, 1, 3, 7),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.primaryFixed, MaterialDynamicColors.primaryFixedDim, 10, "lighter", !0)
+    }), MaterialDynamicColors.primaryFixedDim = DynamicColor.fromPalette({
+      name: "primary_fixed_dim",
+      palette: s => s.primaryPalette,
+      tone: s => isMonochrome(s) ? 30 : 80,
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(1, 1, 3, 7),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.primaryFixed, MaterialDynamicColors.primaryFixedDim, 10, "lighter", !0)
+    }), MaterialDynamicColors.onPrimaryFixed = DynamicColor.fromPalette({
+      name: "on_primary_fixed",
+      palette: s => s.primaryPalette,
+      tone: s => isMonochrome(s) ? 100 : 10,
+      background: s => MaterialDynamicColors.primaryFixedDim,
+      secondBackground: s => MaterialDynamicColors.primaryFixed,
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.onPrimaryFixedVariant = DynamicColor.fromPalette({
+      name: "on_primary_fixed_variant",
+      palette: s => s.primaryPalette,
+      tone: s => isMonochrome(s) ? 90 : 30,
+      background: s => MaterialDynamicColors.primaryFixedDim,
+      secondBackground: s => MaterialDynamicColors.primaryFixed,
+      contrastCurve: new ContrastCurve(3, 4.5, 7, 11)
+    }), MaterialDynamicColors.secondaryFixed = DynamicColor.fromPalette({
+      name: "secondary_fixed",
+      palette: s => s.secondaryPalette,
+      tone: s => isMonochrome(s) ? 80 : 90,
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(1, 1, 3, 7),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.secondaryFixed, MaterialDynamicColors.secondaryFixedDim, 10, "lighter", !0)
+    }), MaterialDynamicColors.secondaryFixedDim = DynamicColor.fromPalette({
+      name: "secondary_fixed_dim",
+      palette: s => s.secondaryPalette,
+      tone: s => isMonochrome(s) ? 70 : 80,
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(1, 1, 3, 7),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.secondaryFixed, MaterialDynamicColors.secondaryFixedDim, 10, "lighter", !0)
+    }), MaterialDynamicColors.onSecondaryFixed = DynamicColor.fromPalette({
+      name: "on_secondary_fixed",
+      palette: s => s.secondaryPalette,
+      tone: s => 10,
+      background: s => MaterialDynamicColors.secondaryFixedDim,
+      secondBackground: s => MaterialDynamicColors.secondaryFixed,
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.onSecondaryFixedVariant = DynamicColor.fromPalette({
+      name: "on_secondary_fixed_variant",
+      palette: s => s.secondaryPalette,
+      tone: s => isMonochrome(s) ? 25 : 30,
+      background: s => MaterialDynamicColors.secondaryFixedDim,
+      secondBackground: s => MaterialDynamicColors.secondaryFixed,
+      contrastCurve: new ContrastCurve(3, 4.5, 7, 11)
+    }), MaterialDynamicColors.tertiaryFixed = DynamicColor.fromPalette({
+      name: "tertiary_fixed",
+      palette: s => s.tertiaryPalette,
+      tone: s => isMonochrome(s) ? 40 : 90,
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(1, 1, 3, 7),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.tertiaryFixed, MaterialDynamicColors.tertiaryFixedDim, 10, "lighter", !0)
+    }), MaterialDynamicColors.tertiaryFixedDim = DynamicColor.fromPalette({
+      name: "tertiary_fixed_dim",
+      palette: s => s.tertiaryPalette,
+      tone: s => isMonochrome(s) ? 30 : 80,
+      isBackground: !0,
+      background: s => MaterialDynamicColors.highestSurface(s),
+      contrastCurve: new ContrastCurve(1, 1, 3, 7),
+      toneDeltaPair: s => new ToneDeltaPair(MaterialDynamicColors.tertiaryFixed, MaterialDynamicColors.tertiaryFixedDim, 10, "lighter", !0)
+    }), MaterialDynamicColors.onTertiaryFixed = DynamicColor.fromPalette({
+      name: "on_tertiary_fixed",
+      palette: s => s.tertiaryPalette,
+      tone: s => isMonochrome(s) ? 100 : 10,
+      background: s => MaterialDynamicColors.tertiaryFixedDim,
+      secondBackground: s => MaterialDynamicColors.tertiaryFixed,
+      contrastCurve: new ContrastCurve(4.5, 7, 11, 21)
+    }), MaterialDynamicColors.onTertiaryFixedVariant = DynamicColor.fromPalette({
+      name: "on_tertiary_fixed_variant",
+      palette: s => s.tertiaryPalette,
+      tone: s => isMonochrome(s) ? 90 : 30,
+      background: s => MaterialDynamicColors.tertiaryFixedDim,
+      secondBackground: s => MaterialDynamicColors.tertiaryFixed,
+      contrastCurve: new ContrastCurve(3, 4.5, 7, 11)
+    });
     class TonalPalette {
       static fromInt(argb) {
         const hct = Hct.fromInt(argb);
-        return TonalPalette.fromHueAndChroma(hct.hue, hct.chroma);
+        return TonalPalette.fromHct(hct);
+      }
+      static fromHct(hct) {
+        return new TonalPalette(hct.hue, hct.chroma, hct);
       }
       static fromHueAndChroma(hue, chroma) {
-        return new TonalPalette(hue, chroma);
+        return new TonalPalette(hue, chroma, TonalPalette.createKeyColor(hue, chroma));
       }
-      constructor(hue, chroma) {
-        this.hue = hue, this.chroma = chroma, this.cache = new Map();
+      constructor(hue, chroma, keyColor) {
+        this.hue = hue, this.chroma = chroma, this.keyColor = keyColor, this.cache = new Map();
+      }
+      static createKeyColor(hue, chroma) {
+        let smallestDeltaHct = Hct.from(hue, chroma, 50),
+          smallestDelta = Math.abs(smallestDeltaHct.chroma - chroma);
+        for (let delta = 1; delta < 50; delta += 1) {
+          if (Math.round(chroma) === Math.round(smallestDeltaHct.chroma)) return smallestDeltaHct;
+          const hctAdd = Hct.from(hue, chroma, 50 + delta),
+            hctAddDelta = Math.abs(hctAdd.chroma - chroma);
+          hctAddDelta < smallestDelta && (smallestDelta = hctAddDelta, smallestDeltaHct = hctAdd);
+          const hctSubtract = Hct.from(hue, chroma, 50 - delta),
+            hctSubtractDelta = Math.abs(hctSubtract.chroma - chroma);
+          hctSubtractDelta < smallestDelta && (smallestDelta = hctSubtractDelta, smallestDeltaHct = hctSubtract);
+        }
+        return smallestDeltaHct;
       }
       tone(tone) {
         let argb = this.cache.get(tone);
         return void 0 === argb && (argb = Hct.from(this.hue, this.chroma, tone).toInt(), this.cache.set(tone, argb)), argb;
+      }
+      getHct(tone) {
+        return Hct.fromInt(this.tone(tone));
       }
     }
     class CorePalette {
@@ -3600,6 +4217,7 @@
     };
 
     /* eslint-disable no-underscore-dangle */
+
     class Framework7 extends Framework7Class {
       constructor(params) {
         if (params === void 0) {
@@ -3721,7 +4339,7 @@
         const document = getDocument$1();
         if (!app.colorsStyleEl) {
           app.colorsStyleEl = document.createElement('style');
-          document.head.appendChild(app.colorsStyleEl);
+          document.head.prepend(app.colorsStyleEl);
         }
         app.colorsStyleEl.textContent = app.utils.colorThemeCSSStyles(app.colors);
       }
@@ -3781,8 +4399,8 @@
         const app = this;
         const html = document.querySelector('html');
         if (app.mq.dark && app.mq.light) {
-          app.mq.dark.addListener(app.colorSchemeListener);
-          app.mq.light.addListener(app.colorSchemeListener);
+          app.mq.dark.addEventListener('change', app.colorSchemeListener);
+          app.mq.light.addEventListener('change', app.colorSchemeListener);
         }
         if (app.mq.dark && app.mq.dark.matches) {
           html.classList.add('dark');
@@ -3798,8 +4416,8 @@
         const window = getWindow$1();
         if (!window.matchMedia) return;
         const app = this;
-        if (app.mq.dark) app.mq.dark.removeListener(app.colorSchemeListener);
-        if (app.mq.light) app.mq.light.removeListener(app.colorSchemeListener);
+        if (app.mq.dark) app.mq.dark.removeEventListener('change', app.colorSchemeListener);
+        if (app.mq.light) app.mq.light.removeEventListener('change', app.colorSchemeListener);
       }
       setDarkMode(mode) {
         const app = this;
@@ -4594,7 +5212,7 @@
             }
             break;
           }
-          if (!name) throw new TypeError("Missing parameter name at " + i);
+          if (!name) throw new TypeError("Missing parameter name at ".concat(i));
           tokens.push({
             type: "NAME",
             index: i,
@@ -4608,7 +5226,7 @@
           var pattern = "";
           var j = i + 1;
           if (str[j] === "?") {
-            throw new TypeError("Pattern cannot start with \"?\" at " + j);
+            throw new TypeError("Pattern cannot start with \"?\" at ".concat(j));
           }
           while (j < str.length) {
             if (str[j] === "\\") {
@@ -4624,13 +5242,13 @@
             } else if (str[j] === "(") {
               count++;
               if (str[j + 1] !== "?") {
-                throw new TypeError("Capturing groups are not allowed at " + j);
+                throw new TypeError("Capturing groups are not allowed at ".concat(j));
               }
             }
             pattern += str[j++];
           }
-          if (count) throw new TypeError("Unbalanced pattern at " + i);
-          if (!pattern) throw new TypeError("Missing pattern at " + i);
+          if (count) throw new TypeError("Unbalanced pattern at ".concat(i));
+          if (!pattern) throw new TypeError("Missing pattern at ".concat(i));
           tokens.push({
             type: "PATTERN",
             index: i,
@@ -4662,7 +5280,7 @@
       var tokens = lexer(str);
       var _a = options.prefixes,
         prefixes = _a === void 0 ? "./" : _a;
-      var defaultPattern = "[^" + escapeString(options.delimiter || "/#?") + "]+?";
+      var defaultPattern = "[^".concat(escapeString(options.delimiter || "/#?"), "]+?");
       var result = [];
       var key = 0;
       var i = 0;
@@ -4676,12 +5294,11 @@
         var _a = tokens[i],
           nextType = _a.type,
           index = _a.index;
-        throw new TypeError("Unexpected " + nextType + " at " + index + ", expected " + type);
+        throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
       };
       var consumeText = function () {
         var result = "";
         var value;
-        // tslint:disable-next-line
         while (value = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
           result += value;
         }
@@ -4762,7 +5379,7 @@
       // Compile all the tokens into regexps.
       var matches = tokens.map(function (token) {
         if (typeof token === "object") {
-          return new RegExp("^(?:" + token.pattern + ")$", reFlags);
+          return new RegExp("^(?:".concat(token.pattern, ")$"), reFlags);
         }
       });
       return function (data) {
@@ -4778,16 +5395,16 @@
           var repeat = token.modifier === "*" || token.modifier === "+";
           if (Array.isArray(value)) {
             if (!repeat) {
-              throw new TypeError("Expected \"" + token.name + "\" to not repeat, but got an array");
+              throw new TypeError("Expected \"".concat(token.name, "\" to not repeat, but got an array"));
             }
             if (value.length === 0) {
               if (optional) continue;
-              throw new TypeError("Expected \"" + token.name + "\" to not be empty");
+              throw new TypeError("Expected \"".concat(token.name, "\" to not be empty"));
             }
             for (var j = 0; j < value.length; j++) {
               var segment = encode(value[j], token);
               if (validate && !matches[i].test(segment)) {
-                throw new TypeError("Expected all \"" + token.name + "\" to match \"" + token.pattern + "\", but got \"" + segment + "\"");
+                throw new TypeError("Expected all \"".concat(token.name, "\" to match \"").concat(token.pattern, "\", but got \"").concat(segment, "\""));
               }
               path += token.prefix + segment + token.suffix;
             }
@@ -4796,14 +5413,14 @@
           if (typeof value === "string" || typeof value === "number") {
             var segment = encode(String(value), token);
             if (validate && !matches[i].test(segment)) {
-              throw new TypeError("Expected \"" + token.name + "\" to match \"" + token.pattern + "\", but got \"" + segment + "\"");
+              throw new TypeError("Expected \"".concat(token.name, "\" to match \"").concat(token.pattern, "\", but got \"").concat(segment, "\""));
             }
             path += token.prefix + segment + token.suffix;
             continue;
           }
           if (optional) continue;
           var typeOfMessage = repeat ? "an array" : "a string";
-          throw new TypeError("Expected \"" + token.name + "\" to be " + typeOfMessage);
+          throw new TypeError("Expected \"".concat(token.name, "\" to be ").concat(typeOfMessage));
         }
         return path;
       };
@@ -4834,7 +5451,6 @@
           index = m.index;
         var params = Object.create(null);
         var _loop_1 = function (i) {
-          // tslint:disable-next-line
           if (m[i] === undefined) return "continue";
           var key = keys[i - 1];
           if (key.modifier === "*" || key.modifier === "+") {
@@ -4895,7 +5511,7 @@
       var parts = paths.map(function (path) {
         return pathToRegexp(path, keys, options).source;
       });
-      return new RegExp("(?:" + parts.join("|") + ")", flags(options));
+      return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
     }
     /**
      * Create a path regexp from string input.
@@ -4919,9 +5535,13 @@
         _d = options.encode,
         encode = _d === void 0 ? function (x) {
           return x;
-        } : _d;
-      var endsWith = "[" + escapeString(options.endsWith || "") + "]|$";
-      var delimiter = "[" + escapeString(options.delimiter || "/#?") + "]";
+        } : _d,
+        _e = options.delimiter,
+        delimiter = _e === void 0 ? "/#?" : _e,
+        _f = options.endsWith,
+        endsWith = _f === void 0 ? "" : _f;
+      var endsWithRe = "[".concat(escapeString(endsWith), "]|$");
+      var delimiterRe = "[".concat(escapeString(delimiter), "]");
       var route = start ? "^" : "";
       // Iterate over the tokens and create our regexp string.
       for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
@@ -4936,31 +5556,33 @@
             if (prefix || suffix) {
               if (token.modifier === "+" || token.modifier === "*") {
                 var mod = token.modifier === "*" ? "?" : "";
-                route += "(?:" + prefix + "((?:" + token.pattern + ")(?:" + suffix + prefix + "(?:" + token.pattern + "))*)" + suffix + ")" + mod;
+                route += "(?:".concat(prefix, "((?:").concat(token.pattern, ")(?:").concat(suffix).concat(prefix, "(?:").concat(token.pattern, "))*)").concat(suffix, ")").concat(mod);
               } else {
-                route += "(?:" + prefix + "(" + token.pattern + ")" + suffix + ")" + token.modifier;
+                route += "(?:".concat(prefix, "(").concat(token.pattern, ")").concat(suffix, ")").concat(token.modifier);
               }
             } else {
-              route += "(" + token.pattern + ")" + token.modifier;
+              if (token.modifier === "+" || token.modifier === "*") {
+                route += "((?:".concat(token.pattern, ")").concat(token.modifier, ")");
+              } else {
+                route += "(".concat(token.pattern, ")").concat(token.modifier);
+              }
             }
           } else {
-            route += "(?:" + prefix + suffix + ")" + token.modifier;
+            route += "(?:".concat(prefix).concat(suffix, ")").concat(token.modifier);
           }
         }
       }
       if (end) {
-        if (!strict) route += delimiter + "?";
-        route += !options.endsWith ? "$" : "(?=" + endsWith + ")";
+        if (!strict) route += "".concat(delimiterRe, "?");
+        route += !options.endsWith ? "$" : "(?=".concat(endsWithRe, ")");
       } else {
         var endToken = tokens[tokens.length - 1];
-        var isEndDelimited = typeof endToken === "string" ? delimiter.indexOf(endToken[endToken.length - 1]) > -1 :
-        // tslint:disable-next-line
-        endToken === undefined;
+        var isEndDelimited = typeof endToken === "string" ? delimiterRe.indexOf(endToken[endToken.length - 1]) > -1 : endToken === undefined;
         if (!strict) {
-          route += "(?:" + delimiter + "(?=" + endsWith + "))?";
+          route += "(?:".concat(delimiterRe, "(?=").concat(endsWithRe, "))?");
         }
         if (!isEndDelimited) {
-          route += "(?=" + delimiter + "|" + endsWith + ")";
+          route += "(?=".concat(delimiterRe, "|").concat(endsWithRe, ")");
         }
       }
       return new RegExp(route, flags(options));
@@ -9859,6 +10481,7 @@
     var customComponents = {};
 
     /* eslint no-use-before-define: "off" */
+    /* eslint import/no-named-as-default: "off" */
     const SELF_CLOSING = 'area base br col command embed hr img input keygen link menuitem meta param source track wbr'.split(' ');
     const PROPS_ATTRS = 'hidden checked disabled readonly selected autofocus autoplay required multiple value indeterminate routeProps innerHTML'.split(' ');
     const BOOLEAN_PROPS = 'hidden checked disabled readonly selected autofocus autoplay required multiple readOnly indeterminate'.split(' ');
@@ -28004,12 +28627,608 @@
         protoMetadataMap = {};
       return old_applyMemberDecs(ret, targetClass, protoMetadataMap, staticMetadataMap, memberDecs), old_convertMetadataMapToFinal(targetClass.prototype, protoMetadataMap), old_applyClassDecs(ret, targetClass, staticMetadataMap, classDecs), old_convertMetadataMapToFinal(targetClass, staticMetadataMap), ret;
     }
+    function applyDecs2203Factory() {
+      function createAddInitializerMethod(initializers, decoratorFinishedRef) {
+        return function (initializer) {
+          !function (decoratorFinishedRef, fnName) {
+            if (decoratorFinishedRef.v) throw new Error("attempted to call " + fnName + " after decoration was finished");
+          }(decoratorFinishedRef, "addInitializer"), assertCallable(initializer, "An initializer"), initializers.push(initializer);
+        };
+      }
+      function memberDec(dec, name, desc, initializers, kind, isStatic, isPrivate, value) {
+        var kindStr;
+        switch (kind) {
+          case 1:
+            kindStr = "accessor";
+            break;
+          case 2:
+            kindStr = "method";
+            break;
+          case 3:
+            kindStr = "getter";
+            break;
+          case 4:
+            kindStr = "setter";
+            break;
+          default:
+            kindStr = "field";
+        }
+        var get,
+          set,
+          ctx = {
+            kind: kindStr,
+            name: isPrivate ? "#" + name : name,
+            static: isStatic,
+            private: isPrivate
+          },
+          decoratorFinishedRef = {
+            v: !1
+          };
+        0 !== kind && (ctx.addInitializer = createAddInitializerMethod(initializers, decoratorFinishedRef)), 0 === kind ? isPrivate ? (get = desc.get, set = desc.set) : (get = function () {
+          return this[name];
+        }, set = function (v) {
+          this[name] = v;
+        }) : 2 === kind ? get = function () {
+          return desc.value;
+        } : (1 !== kind && 3 !== kind || (get = function () {
+          return desc.get.call(this);
+        }), 1 !== kind && 4 !== kind || (set = function (v) {
+          desc.set.call(this, v);
+        })), ctx.access = get && set ? {
+          get: get,
+          set: set
+        } : get ? {
+          get: get
+        } : {
+          set: set
+        };
+        try {
+          return dec(value, ctx);
+        } finally {
+          decoratorFinishedRef.v = !0;
+        }
+      }
+      function assertCallable(fn, hint) {
+        if ("function" != typeof fn) throw new TypeError(hint + " must be a function");
+      }
+      function assertValidReturnValue(kind, value) {
+        var type = typeof value;
+        if (1 === kind) {
+          if ("object" !== type || null === value) throw new TypeError("accessor decorators must return an object with get, set, or init properties or void 0");
+          void 0 !== value.get && assertCallable(value.get, "accessor.get"), void 0 !== value.set && assertCallable(value.set, "accessor.set"), void 0 !== value.init && assertCallable(value.init, "accessor.init");
+        } else if ("function" !== type) {
+          var hint;
+          throw hint = 0 === kind ? "field" : 10 === kind ? "class" : "method", new TypeError(hint + " decorators must return a function or void 0");
+        }
+      }
+      function applyMemberDec(ret, base, decInfo, name, kind, isStatic, isPrivate, initializers) {
+        var desc,
+          init,
+          value,
+          newValue,
+          get,
+          set,
+          decs = decInfo[0];
+        if (isPrivate ? desc = 0 === kind || 1 === kind ? {
+          get: decInfo[3],
+          set: decInfo[4]
+        } : 3 === kind ? {
+          get: decInfo[3]
+        } : 4 === kind ? {
+          set: decInfo[3]
+        } : {
+          value: decInfo[3]
+        } : 0 !== kind && (desc = Object.getOwnPropertyDescriptor(base, name)), 1 === kind ? value = {
+          get: desc.get,
+          set: desc.set
+        } : 2 === kind ? value = desc.value : 3 === kind ? value = desc.get : 4 === kind && (value = desc.set), "function" == typeof decs) void 0 !== (newValue = memberDec(decs, name, desc, initializers, kind, isStatic, isPrivate, value)) && (assertValidReturnValue(kind, newValue), 0 === kind ? init = newValue : 1 === kind ? (init = newValue.init, get = newValue.get || value.get, set = newValue.set || value.set, value = {
+          get: get,
+          set: set
+        }) : value = newValue);else for (var i = decs.length - 1; i >= 0; i--) {
+          var newInit;
+          if (void 0 !== (newValue = memberDec(decs[i], name, desc, initializers, kind, isStatic, isPrivate, value))) assertValidReturnValue(kind, newValue), 0 === kind ? newInit = newValue : 1 === kind ? (newInit = newValue.init, get = newValue.get || value.get, set = newValue.set || value.set, value = {
+            get: get,
+            set: set
+          }) : value = newValue, void 0 !== newInit && (void 0 === init ? init = newInit : "function" == typeof init ? init = [init, newInit] : init.push(newInit));
+        }
+        if (0 === kind || 1 === kind) {
+          if (void 0 === init) init = function (instance, init) {
+            return init;
+          };else if ("function" != typeof init) {
+            var ownInitializers = init;
+            init = function (instance, init) {
+              for (var value = init, i = 0; i < ownInitializers.length; i++) value = ownInitializers[i].call(instance, value);
+              return value;
+            };
+          } else {
+            var originalInitializer = init;
+            init = function (instance, init) {
+              return originalInitializer.call(instance, init);
+            };
+          }
+          ret.push(init);
+        }
+        0 !== kind && (1 === kind ? (desc.get = value.get, desc.set = value.set) : 2 === kind ? desc.value = value : 3 === kind ? desc.get = value : 4 === kind && (desc.set = value), isPrivate ? 1 === kind ? (ret.push(function (instance, args) {
+          return value.get.call(instance, args);
+        }), ret.push(function (instance, args) {
+          return value.set.call(instance, args);
+        })) : 2 === kind ? ret.push(value) : ret.push(function (instance, args) {
+          return value.call(instance, args);
+        }) : Object.defineProperty(base, name, desc));
+      }
+      function pushInitializers(ret, initializers) {
+        initializers && ret.push(function (instance) {
+          for (var i = 0; i < initializers.length; i++) initializers[i].call(instance);
+          return instance;
+        });
+      }
+      return function (targetClass, memberDecs, classDecs) {
+        var ret = [];
+        return function (ret, Class, decInfos) {
+          for (var protoInitializers, staticInitializers, existingProtoNonFields = new Map(), existingStaticNonFields = new Map(), i = 0; i < decInfos.length; i++) {
+            var decInfo = decInfos[i];
+            if (Array.isArray(decInfo)) {
+              var base,
+                initializers,
+                kind = decInfo[1],
+                name = decInfo[2],
+                isPrivate = decInfo.length > 3,
+                isStatic = kind >= 5;
+              if (isStatic ? (base = Class, 0 != (kind -= 5) && (initializers = staticInitializers = staticInitializers || [])) : (base = Class.prototype, 0 !== kind && (initializers = protoInitializers = protoInitializers || [])), 0 !== kind && !isPrivate) {
+                var existingNonFields = isStatic ? existingStaticNonFields : existingProtoNonFields,
+                  existingKind = existingNonFields.get(name) || 0;
+                if (!0 === existingKind || 3 === existingKind && 4 !== kind || 4 === existingKind && 3 !== kind) throw new Error("Attempted to decorate a public method/accessor that has the same name as a previously decorated public method/accessor. This is not currently supported by the decorators plugin. Property name was: " + name);
+                !existingKind && kind > 2 ? existingNonFields.set(name, kind) : existingNonFields.set(name, !0);
+              }
+              applyMemberDec(ret, base, decInfo, name, kind, isStatic, isPrivate, initializers);
+            }
+          }
+          pushInitializers(ret, protoInitializers), pushInitializers(ret, staticInitializers);
+        }(ret, targetClass, memberDecs), function (ret, targetClass, classDecs) {
+          if (classDecs.length > 0) {
+            for (var initializers = [], newClass = targetClass, name = targetClass.name, i = classDecs.length - 1; i >= 0; i--) {
+              var decoratorFinishedRef = {
+                v: !1
+              };
+              try {
+                var nextNewClass = classDecs[i](newClass, {
+                  kind: "class",
+                  name: name,
+                  addInitializer: createAddInitializerMethod(initializers, decoratorFinishedRef)
+                });
+              } finally {
+                decoratorFinishedRef.v = !0;
+              }
+              void 0 !== nextNewClass && (assertValidReturnValue(10, nextNewClass), newClass = nextNewClass);
+            }
+            ret.push(newClass, function () {
+              for (var i = 0; i < initializers.length; i++) initializers[i].call(newClass);
+            });
+          }
+        }(ret, targetClass, classDecs), ret;
+      };
+    }
+    var applyDecs2203Impl;
+    function _applyDecs2203(targetClass, memberDecs, classDecs) {
+      return (applyDecs2203Impl = applyDecs2203Impl || applyDecs2203Factory())(targetClass, memberDecs, classDecs);
+    }
+    function applyDecs2203RFactory() {
+      function createAddInitializerMethod(initializers, decoratorFinishedRef) {
+        return function (initializer) {
+          !function (decoratorFinishedRef, fnName) {
+            if (decoratorFinishedRef.v) throw new Error("attempted to call " + fnName + " after decoration was finished");
+          }(decoratorFinishedRef, "addInitializer"), assertCallable(initializer, "An initializer"), initializers.push(initializer);
+        };
+      }
+      function memberDec(dec, name, desc, initializers, kind, isStatic, isPrivate, value) {
+        var kindStr;
+        switch (kind) {
+          case 1:
+            kindStr = "accessor";
+            break;
+          case 2:
+            kindStr = "method";
+            break;
+          case 3:
+            kindStr = "getter";
+            break;
+          case 4:
+            kindStr = "setter";
+            break;
+          default:
+            kindStr = "field";
+        }
+        var get,
+          set,
+          ctx = {
+            kind: kindStr,
+            name: isPrivate ? "#" + name : name,
+            static: isStatic,
+            private: isPrivate
+          },
+          decoratorFinishedRef = {
+            v: !1
+          };
+        0 !== kind && (ctx.addInitializer = createAddInitializerMethod(initializers, decoratorFinishedRef)), 0 === kind ? isPrivate ? (get = desc.get, set = desc.set) : (get = function () {
+          return this[name];
+        }, set = function (v) {
+          this[name] = v;
+        }) : 2 === kind ? get = function () {
+          return desc.value;
+        } : (1 !== kind && 3 !== kind || (get = function () {
+          return desc.get.call(this);
+        }), 1 !== kind && 4 !== kind || (set = function (v) {
+          desc.set.call(this, v);
+        })), ctx.access = get && set ? {
+          get: get,
+          set: set
+        } : get ? {
+          get: get
+        } : {
+          set: set
+        };
+        try {
+          return dec(value, ctx);
+        } finally {
+          decoratorFinishedRef.v = !0;
+        }
+      }
+      function assertCallable(fn, hint) {
+        if ("function" != typeof fn) throw new TypeError(hint + " must be a function");
+      }
+      function assertValidReturnValue(kind, value) {
+        var type = typeof value;
+        if (1 === kind) {
+          if ("object" !== type || null === value) throw new TypeError("accessor decorators must return an object with get, set, or init properties or void 0");
+          void 0 !== value.get && assertCallable(value.get, "accessor.get"), void 0 !== value.set && assertCallable(value.set, "accessor.set"), void 0 !== value.init && assertCallable(value.init, "accessor.init");
+        } else if ("function" !== type) {
+          var hint;
+          throw hint = 0 === kind ? "field" : 10 === kind ? "class" : "method", new TypeError(hint + " decorators must return a function or void 0");
+        }
+      }
+      function applyMemberDec(ret, base, decInfo, name, kind, isStatic, isPrivate, initializers) {
+        var desc,
+          init,
+          value,
+          newValue,
+          get,
+          set,
+          decs = decInfo[0];
+        if (isPrivate ? desc = 0 === kind || 1 === kind ? {
+          get: decInfo[3],
+          set: decInfo[4]
+        } : 3 === kind ? {
+          get: decInfo[3]
+        } : 4 === kind ? {
+          set: decInfo[3]
+        } : {
+          value: decInfo[3]
+        } : 0 !== kind && (desc = Object.getOwnPropertyDescriptor(base, name)), 1 === kind ? value = {
+          get: desc.get,
+          set: desc.set
+        } : 2 === kind ? value = desc.value : 3 === kind ? value = desc.get : 4 === kind && (value = desc.set), "function" == typeof decs) void 0 !== (newValue = memberDec(decs, name, desc, initializers, kind, isStatic, isPrivate, value)) && (assertValidReturnValue(kind, newValue), 0 === kind ? init = newValue : 1 === kind ? (init = newValue.init, get = newValue.get || value.get, set = newValue.set || value.set, value = {
+          get: get,
+          set: set
+        }) : value = newValue);else for (var i = decs.length - 1; i >= 0; i--) {
+          var newInit;
+          if (void 0 !== (newValue = memberDec(decs[i], name, desc, initializers, kind, isStatic, isPrivate, value))) assertValidReturnValue(kind, newValue), 0 === kind ? newInit = newValue : 1 === kind ? (newInit = newValue.init, get = newValue.get || value.get, set = newValue.set || value.set, value = {
+            get: get,
+            set: set
+          }) : value = newValue, void 0 !== newInit && (void 0 === init ? init = newInit : "function" == typeof init ? init = [init, newInit] : init.push(newInit));
+        }
+        if (0 === kind || 1 === kind) {
+          if (void 0 === init) init = function (instance, init) {
+            return init;
+          };else if ("function" != typeof init) {
+            var ownInitializers = init;
+            init = function (instance, init) {
+              for (var value = init, i = 0; i < ownInitializers.length; i++) value = ownInitializers[i].call(instance, value);
+              return value;
+            };
+          } else {
+            var originalInitializer = init;
+            init = function (instance, init) {
+              return originalInitializer.call(instance, init);
+            };
+          }
+          ret.push(init);
+        }
+        0 !== kind && (1 === kind ? (desc.get = value.get, desc.set = value.set) : 2 === kind ? desc.value = value : 3 === kind ? desc.get = value : 4 === kind && (desc.set = value), isPrivate ? 1 === kind ? (ret.push(function (instance, args) {
+          return value.get.call(instance, args);
+        }), ret.push(function (instance, args) {
+          return value.set.call(instance, args);
+        })) : 2 === kind ? ret.push(value) : ret.push(function (instance, args) {
+          return value.call(instance, args);
+        }) : Object.defineProperty(base, name, desc));
+      }
+      function applyMemberDecs(Class, decInfos) {
+        for (var protoInitializers, staticInitializers, ret = [], existingProtoNonFields = new Map(), existingStaticNonFields = new Map(), i = 0; i < decInfos.length; i++) {
+          var decInfo = decInfos[i];
+          if (Array.isArray(decInfo)) {
+            var base,
+              initializers,
+              kind = decInfo[1],
+              name = decInfo[2],
+              isPrivate = decInfo.length > 3,
+              isStatic = kind >= 5;
+            if (isStatic ? (base = Class, 0 !== (kind -= 5) && (initializers = staticInitializers = staticInitializers || [])) : (base = Class.prototype, 0 !== kind && (initializers = protoInitializers = protoInitializers || [])), 0 !== kind && !isPrivate) {
+              var existingNonFields = isStatic ? existingStaticNonFields : existingProtoNonFields,
+                existingKind = existingNonFields.get(name) || 0;
+              if (!0 === existingKind || 3 === existingKind && 4 !== kind || 4 === existingKind && 3 !== kind) throw new Error("Attempted to decorate a public method/accessor that has the same name as a previously decorated public method/accessor. This is not currently supported by the decorators plugin. Property name was: " + name);
+              !existingKind && kind > 2 ? existingNonFields.set(name, kind) : existingNonFields.set(name, !0);
+            }
+            applyMemberDec(ret, base, decInfo, name, kind, isStatic, isPrivate, initializers);
+          }
+        }
+        return pushInitializers(ret, protoInitializers), pushInitializers(ret, staticInitializers), ret;
+      }
+      function pushInitializers(ret, initializers) {
+        initializers && ret.push(function (instance) {
+          for (var i = 0; i < initializers.length; i++) initializers[i].call(instance);
+          return instance;
+        });
+      }
+      return function (targetClass, memberDecs, classDecs) {
+        return {
+          e: applyMemberDecs(targetClass, memberDecs),
+          get c() {
+            return function (targetClass, classDecs) {
+              if (classDecs.length > 0) {
+                for (var initializers = [], newClass = targetClass, name = targetClass.name, i = classDecs.length - 1; i >= 0; i--) {
+                  var decoratorFinishedRef = {
+                    v: !1
+                  };
+                  try {
+                    var nextNewClass = classDecs[i](newClass, {
+                      kind: "class",
+                      name: name,
+                      addInitializer: createAddInitializerMethod(initializers, decoratorFinishedRef)
+                    });
+                  } finally {
+                    decoratorFinishedRef.v = !0;
+                  }
+                  void 0 !== nextNewClass && (assertValidReturnValue(10, nextNewClass), newClass = nextNewClass);
+                }
+                return [newClass, function () {
+                  for (var i = 0; i < initializers.length; i++) initializers[i].call(newClass);
+                }];
+              }
+            }(targetClass, classDecs);
+          }
+        };
+      };
+    }
+    function _applyDecs2203R(targetClass, memberDecs, classDecs) {
+      return (_applyDecs2203R = applyDecs2203RFactory())(targetClass, memberDecs, classDecs);
+    }
+    function applyDecs2301Factory() {
+      function createAddInitializerMethod(initializers, decoratorFinishedRef) {
+        return function (initializer) {
+          !function (decoratorFinishedRef, fnName) {
+            if (decoratorFinishedRef.v) throw new Error("attempted to call " + fnName + " after decoration was finished");
+          }(decoratorFinishedRef, "addInitializer"), assertCallable(initializer, "An initializer"), initializers.push(initializer);
+        };
+      }
+      function assertInstanceIfPrivate(has, target) {
+        if (!has(target)) throw new TypeError("Attempted to access private element on non-instance");
+      }
+      function memberDec(dec, name, desc, initializers, kind, isStatic, isPrivate, value, hasPrivateBrand) {
+        var kindStr;
+        switch (kind) {
+          case 1:
+            kindStr = "accessor";
+            break;
+          case 2:
+            kindStr = "method";
+            break;
+          case 3:
+            kindStr = "getter";
+            break;
+          case 4:
+            kindStr = "setter";
+            break;
+          default:
+            kindStr = "field";
+        }
+        var get,
+          set,
+          ctx = {
+            kind: kindStr,
+            name: isPrivate ? "#" + name : name,
+            static: isStatic,
+            private: isPrivate
+          },
+          decoratorFinishedRef = {
+            v: !1
+          };
+        if (0 !== kind && (ctx.addInitializer = createAddInitializerMethod(initializers, decoratorFinishedRef)), isPrivate || 0 !== kind && 2 !== kind) {
+          if (2 === kind) get = function (target) {
+            return assertInstanceIfPrivate(hasPrivateBrand, target), desc.value;
+          };else {
+            var t = 0 === kind || 1 === kind;
+            (t || 3 === kind) && (get = isPrivate ? function (target) {
+              return assertInstanceIfPrivate(hasPrivateBrand, target), desc.get.call(target);
+            } : function (target) {
+              return desc.get.call(target);
+            }), (t || 4 === kind) && (set = isPrivate ? function (target, value) {
+              assertInstanceIfPrivate(hasPrivateBrand, target), desc.set.call(target, value);
+            } : function (target, value) {
+              desc.set.call(target, value);
+            });
+          }
+        } else get = function (target) {
+          return target[name];
+        }, 0 === kind && (set = function (target, v) {
+          target[name] = v;
+        });
+        var has = isPrivate ? hasPrivateBrand.bind() : function (target) {
+          return name in target;
+        };
+        ctx.access = get && set ? {
+          get: get,
+          set: set,
+          has: has
+        } : get ? {
+          get: get,
+          has: has
+        } : {
+          set: set,
+          has: has
+        };
+        try {
+          return dec(value, ctx);
+        } finally {
+          decoratorFinishedRef.v = !0;
+        }
+      }
+      function assertCallable(fn, hint) {
+        if ("function" != typeof fn) throw new TypeError(hint + " must be a function");
+      }
+      function assertValidReturnValue(kind, value) {
+        var type = typeof value;
+        if (1 === kind) {
+          if ("object" !== type || null === value) throw new TypeError("accessor decorators must return an object with get, set, or init properties or void 0");
+          void 0 !== value.get && assertCallable(value.get, "accessor.get"), void 0 !== value.set && assertCallable(value.set, "accessor.set"), void 0 !== value.init && assertCallable(value.init, "accessor.init");
+        } else if ("function" !== type) {
+          var hint;
+          throw hint = 0 === kind ? "field" : 10 === kind ? "class" : "method", new TypeError(hint + " decorators must return a function or void 0");
+        }
+      }
+      function curryThis2(fn) {
+        return function (value) {
+          fn(this, value);
+        };
+      }
+      function applyMemberDec(ret, base, decInfo, name, kind, isStatic, isPrivate, initializers, hasPrivateBrand) {
+        var desc,
+          init,
+          value,
+          fn,
+          newValue,
+          get,
+          set,
+          decs = decInfo[0];
+        if (isPrivate ? desc = 0 === kind || 1 === kind ? {
+          get: (fn = decInfo[3], function () {
+            return fn(this);
+          }),
+          set: curryThis2(decInfo[4])
+        } : 3 === kind ? {
+          get: decInfo[3]
+        } : 4 === kind ? {
+          set: decInfo[3]
+        } : {
+          value: decInfo[3]
+        } : 0 !== kind && (desc = Object.getOwnPropertyDescriptor(base, name)), 1 === kind ? value = {
+          get: desc.get,
+          set: desc.set
+        } : 2 === kind ? value = desc.value : 3 === kind ? value = desc.get : 4 === kind && (value = desc.set), "function" == typeof decs) void 0 !== (newValue = memberDec(decs, name, desc, initializers, kind, isStatic, isPrivate, value, hasPrivateBrand)) && (assertValidReturnValue(kind, newValue), 0 === kind ? init = newValue : 1 === kind ? (init = newValue.init, get = newValue.get || value.get, set = newValue.set || value.set, value = {
+          get: get,
+          set: set
+        }) : value = newValue);else for (var i = decs.length - 1; i >= 0; i--) {
+          var newInit;
+          if (void 0 !== (newValue = memberDec(decs[i], name, desc, initializers, kind, isStatic, isPrivate, value, hasPrivateBrand))) assertValidReturnValue(kind, newValue), 0 === kind ? newInit = newValue : 1 === kind ? (newInit = newValue.init, get = newValue.get || value.get, set = newValue.set || value.set, value = {
+            get: get,
+            set: set
+          }) : value = newValue, void 0 !== newInit && (void 0 === init ? init = newInit : "function" == typeof init ? init = [init, newInit] : init.push(newInit));
+        }
+        if (0 === kind || 1 === kind) {
+          if (void 0 === init) init = function (instance, init) {
+            return init;
+          };else if ("function" != typeof init) {
+            var ownInitializers = init;
+            init = function (instance, init) {
+              for (var value = init, i = 0; i < ownInitializers.length; i++) value = ownInitializers[i].call(instance, value);
+              return value;
+            };
+          } else {
+            var originalInitializer = init;
+            init = function (instance, init) {
+              return originalInitializer.call(instance, init);
+            };
+          }
+          ret.push(init);
+        }
+        0 !== kind && (1 === kind ? (desc.get = value.get, desc.set = value.set) : 2 === kind ? desc.value = value : 3 === kind ? desc.get = value : 4 === kind && (desc.set = value), isPrivate ? 1 === kind ? (ret.push(function (instance, args) {
+          return value.get.call(instance, args);
+        }), ret.push(function (instance, args) {
+          return value.set.call(instance, args);
+        })) : 2 === kind ? ret.push(value) : ret.push(function (instance, args) {
+          return value.call(instance, args);
+        }) : Object.defineProperty(base, name, desc));
+      }
+      function applyMemberDecs(Class, decInfos, instanceBrand) {
+        for (var protoInitializers, staticInitializers, staticBrand, ret = [], existingProtoNonFields = new Map(), existingStaticNonFields = new Map(), i = 0; i < decInfos.length; i++) {
+          var decInfo = decInfos[i];
+          if (Array.isArray(decInfo)) {
+            var base,
+              initializers,
+              kind = decInfo[1],
+              name = decInfo[2],
+              isPrivate = decInfo.length > 3,
+              isStatic = kind >= 5,
+              hasPrivateBrand = instanceBrand;
+            if (isStatic ? (base = Class, 0 !== (kind -= 5) && (initializers = staticInitializers = staticInitializers || []), isPrivate && !staticBrand && (staticBrand = function (_) {
+              return _checkInRHS(_) === Class;
+            }), hasPrivateBrand = staticBrand) : (base = Class.prototype, 0 !== kind && (initializers = protoInitializers = protoInitializers || [])), 0 !== kind && !isPrivate) {
+              var existingNonFields = isStatic ? existingStaticNonFields : existingProtoNonFields,
+                existingKind = existingNonFields.get(name) || 0;
+              if (!0 === existingKind || 3 === existingKind && 4 !== kind || 4 === existingKind && 3 !== kind) throw new Error("Attempted to decorate a public method/accessor that has the same name as a previously decorated public method/accessor. This is not currently supported by the decorators plugin. Property name was: " + name);
+              !existingKind && kind > 2 ? existingNonFields.set(name, kind) : existingNonFields.set(name, !0);
+            }
+            applyMemberDec(ret, base, decInfo, name, kind, isStatic, isPrivate, initializers, hasPrivateBrand);
+          }
+        }
+        return pushInitializers(ret, protoInitializers), pushInitializers(ret, staticInitializers), ret;
+      }
+      function pushInitializers(ret, initializers) {
+        initializers && ret.push(function (instance) {
+          for (var i = 0; i < initializers.length; i++) initializers[i].call(instance);
+          return instance;
+        });
+      }
+      return function (targetClass, memberDecs, classDecs, instanceBrand) {
+        return {
+          e: applyMemberDecs(targetClass, memberDecs, instanceBrand),
+          get c() {
+            return function (targetClass, classDecs) {
+              if (classDecs.length > 0) {
+                for (var initializers = [], newClass = targetClass, name = targetClass.name, i = classDecs.length - 1; i >= 0; i--) {
+                  var decoratorFinishedRef = {
+                    v: !1
+                  };
+                  try {
+                    var nextNewClass = classDecs[i](newClass, {
+                      kind: "class",
+                      name: name,
+                      addInitializer: createAddInitializerMethod(initializers, decoratorFinishedRef)
+                    });
+                  } finally {
+                    decoratorFinishedRef.v = !0;
+                  }
+                  void 0 !== nextNewClass && (assertValidReturnValue(10, nextNewClass), newClass = nextNewClass);
+                }
+                return [newClass, function () {
+                  for (var i = 0; i < initializers.length; i++) initializers[i].call(newClass);
+                }];
+              }
+            }(targetClass, classDecs);
+          }
+        };
+      };
+    }
+    function _applyDecs2301(targetClass, memberDecs, classDecs, instanceBrand) {
+      return (_applyDecs2301 = applyDecs2301Factory())(targetClass, memberDecs, classDecs, instanceBrand);
+    }
     function createAddInitializerMethod(initializers, decoratorFinishedRef) {
       return function (initializer) {
         assertNotFinished(decoratorFinishedRef, "addInitializer"), assertCallable(initializer, "An initializer"), initializers.push(initializer);
       };
     }
-    function memberDec(dec, name, desc, initializers, kind, isStatic, isPrivate, value) {
+    function assertInstanceIfPrivate(has, target) {
+      if (!has(target)) throw new TypeError("Attempted to access private element on non-instance");
+    }
+    function memberDec(dec, thisArg, name, desc, initializers, kind, isStatic, isPrivate, value, hasPrivateBrand) {
       var kindStr;
       switch (kind) {
         case 1:
@@ -28038,26 +29257,42 @@
         decoratorFinishedRef = {
           v: !1
         };
-      0 !== kind && (ctx.addInitializer = createAddInitializerMethod(initializers, decoratorFinishedRef)), 0 === kind ? isPrivate ? (get = desc.get, set = desc.set) : (get = function () {
-        return this[name];
-      }, set = function (v) {
-        this[name] = v;
-      }) : 2 === kind ? get = function () {
-        return desc.value;
-      } : (1 !== kind && 3 !== kind || (get = function () {
-        return desc.get.call(this);
-      }), 1 !== kind && 4 !== kind || (set = function (v) {
-        desc.set.call(this, v);
-      })), ctx.access = get && set ? {
+      if (0 !== kind && (ctx.addInitializer = createAddInitializerMethod(initializers, decoratorFinishedRef)), isPrivate || 0 !== kind && 2 !== kind) {
+        if (2 === kind) get = function (target) {
+          return assertInstanceIfPrivate(hasPrivateBrand, target), desc.value;
+        };else {
+          var t = 0 === kind || 1 === kind;
+          (t || 3 === kind) && (get = isPrivate ? function (target) {
+            return assertInstanceIfPrivate(hasPrivateBrand, target), desc.get.call(target);
+          } : function (target) {
+            return desc.get.call(target);
+          }), (t || 4 === kind) && (set = isPrivate ? function (target, value) {
+            assertInstanceIfPrivate(hasPrivateBrand, target), desc.set.call(target, value);
+          } : function (target, value) {
+            desc.set.call(target, value);
+          });
+        }
+      } else get = function (target) {
+        return target[name];
+      }, 0 === kind && (set = function (target, v) {
+        target[name] = v;
+      });
+      var has = isPrivate ? hasPrivateBrand.bind() : function (target) {
+        return name in target;
+      };
+      ctx.access = get && set ? {
         get: get,
-        set: set
+        set: set,
+        has: has
       } : get ? {
-        get: get
+        get: get,
+        has: has
       } : {
-        set: set
+        set: set,
+        has: has
       };
       try {
-        return dec(value, ctx);
+        return dec.call(thisArg, value, ctx);
       } finally {
         decoratorFinishedRef.v = !0;
       }
@@ -28075,10 +29310,20 @@
         void 0 !== value.get && assertCallable(value.get, "accessor.get"), void 0 !== value.set && assertCallable(value.set, "accessor.set"), void 0 !== value.init && assertCallable(value.init, "accessor.init");
       } else if ("function" !== type) {
         var hint;
-        throw hint = 0 === kind ? "field" : 10 === kind ? "class" : "method", new TypeError(hint + " decorators must return a function or void 0");
+        throw hint = 0 === kind ? "field" : 5 === kind ? "class" : "method", new TypeError(hint + " decorators must return a function or void 0");
       }
     }
-    function applyMemberDec(ret, base, decInfo, name, kind, isStatic, isPrivate, initializers) {
+    function curryThis1(fn) {
+      return function () {
+        return fn(this);
+      };
+    }
+    function curryThis2(fn) {
+      return function (value) {
+        fn(this, value);
+      };
+    }
+    function applyMemberDec(ret, base, decInfo, decoratorsHaveThis, name, kind, isStatic, isPrivate, initializers, hasPrivateBrand) {
       var desc,
         init,
         value,
@@ -28086,9 +29331,9 @@
         get,
         set,
         decs = decInfo[0];
-      if (isPrivate ? desc = 0 === kind || 1 === kind ? {
-        get: decInfo[3],
-        set: decInfo[4]
+      decoratorsHaveThis || Array.isArray(decs) || (decs = [decs]), isPrivate ? desc = 0 === kind || 1 === kind ? {
+        get: curryThis1(decInfo[3]),
+        set: curryThis2(decInfo[4])
       } : 3 === kind ? {
         get: decInfo[3]
       } : 4 === kind ? {
@@ -28098,12 +29343,10 @@
       } : 0 !== kind && (desc = Object.getOwnPropertyDescriptor(base, name)), 1 === kind ? value = {
         get: desc.get,
         set: desc.set
-      } : 2 === kind ? value = desc.value : 3 === kind ? value = desc.get : 4 === kind && (value = desc.set), "function" == typeof decs) void 0 !== (newValue = memberDec(decs, name, desc, initializers, kind, isStatic, isPrivate, value)) && (assertValidReturnValue(kind, newValue), 0 === kind ? init = newValue : 1 === kind ? (init = newValue.init, get = newValue.get || value.get, set = newValue.set || value.set, value = {
-        get: get,
-        set: set
-      }) : value = newValue);else for (var i = decs.length - 1; i >= 0; i--) {
+      } : 2 === kind ? value = desc.value : 3 === kind ? value = desc.get : 4 === kind && (value = desc.set);
+      for (var inc = decoratorsHaveThis ? 2 : 1, i = decs.length - 1; i >= 0; i -= inc) {
         var newInit;
-        if (void 0 !== (newValue = memberDec(decs[i], name, desc, initializers, kind, isStatic, isPrivate, value))) assertValidReturnValue(kind, newValue), 0 === kind ? newInit = newValue : 1 === kind ? (newInit = newValue.init, get = newValue.get || value.get, set = newValue.set || value.set, value = {
+        if (void 0 !== (newValue = memberDec(decs[i], decoratorsHaveThis ? decs[i - 1] : void 0, name, desc, initializers, kind, isStatic, isPrivate, value, hasPrivateBrand))) assertValidReturnValue(kind, newValue), 0 === kind ? newInit = newValue : 1 === kind ? (newInit = newValue.init, get = newValue.get || value.get, set = newValue.set || value.set, value = {
           get: get,
           set: set
         }) : value = newValue, void 0 !== newInit && (void 0 === init ? init = newInit : "function" == typeof init ? init = [init, newInit] : init.push(newInit));
@@ -28114,7 +29357,7 @@
         };else if ("function" != typeof init) {
           var ownInitializers = init;
           init = function (instance, init) {
-            for (var value = init, i = 0; i < ownInitializers.length; i++) value = ownInitializers[i].call(instance, value);
+            for (var value = init, i = ownInitializers.length - 1; i >= 0; i--) value = ownInitializers[i].call(instance, value);
             return value;
           };
         } else {
@@ -28133,8 +29376,8 @@
         return value.call(instance, args);
       }) : Object.defineProperty(base, name, desc));
     }
-    function applyMemberDecs(ret, Class, decInfos) {
-      for (var protoInitializers, staticInitializers, existingProtoNonFields = new Map(), existingStaticNonFields = new Map(), i = 0; i < decInfos.length; i++) {
+    function applyMemberDecs(Class, decInfos, instanceBrand) {
+      for (var protoInitializers, staticInitializers, staticBrand, ret = [], existingProtoNonFields = new Map(), existingStaticNonFields = new Map(), i = 0; i < decInfos.length; i++) {
         var decInfo = decInfos[i];
         if (Array.isArray(decInfo)) {
           var base,
@@ -28142,17 +29385,21 @@
             kind = decInfo[1],
             name = decInfo[2],
             isPrivate = decInfo.length > 3,
-            isStatic = kind >= 5;
-          if (isStatic ? (base = Class, 0 !== (kind -= 5) && (initializers = staticInitializers = staticInitializers || [])) : (base = Class.prototype, 0 !== kind && (initializers = protoInitializers = protoInitializers || [])), 0 !== kind && !isPrivate) {
+            decoratorsHaveThis = 16 & kind,
+            isStatic = !!(8 & kind),
+            hasPrivateBrand = instanceBrand;
+          if (kind &= 7, isStatic ? (base = Class, 0 !== kind && (initializers = staticInitializers = staticInitializers || []), isPrivate && !staticBrand && (staticBrand = function (_) {
+            return _checkInRHS(_) === Class;
+          }), hasPrivateBrand = staticBrand) : (base = Class.prototype, 0 !== kind && (initializers = protoInitializers = protoInitializers || [])), 0 !== kind && !isPrivate) {
             var existingNonFields = isStatic ? existingStaticNonFields : existingProtoNonFields,
               existingKind = existingNonFields.get(name) || 0;
             if (!0 === existingKind || 3 === existingKind && 4 !== kind || 4 === existingKind && 3 !== kind) throw new Error("Attempted to decorate a public method/accessor that has the same name as a previously decorated public method/accessor. This is not currently supported by the decorators plugin. Property name was: " + name);
-            !existingKind && kind > 2 ? existingNonFields.set(name, kind) : existingNonFields.set(name, !0);
+            existingNonFields.set(name, !(!existingKind && kind > 2) || kind);
           }
-          applyMemberDec(ret, base, decInfo, name, kind, isStatic, isPrivate, initializers);
+          applyMemberDec(ret, base, decInfo, decoratorsHaveThis, name, kind, isStatic, isPrivate, initializers, hasPrivateBrand);
         }
       }
-      pushInitializers(ret, protoInitializers), pushInitializers(ret, staticInitializers);
+      return pushInitializers(ret, protoInitializers), pushInitializers(ret, staticInitializers), ret;
     }
     function pushInitializers(ret, initializers) {
       initializers && ret.push(function (instance) {
@@ -28160,14 +29407,14 @@
         return instance;
       });
     }
-    function applyClassDecs(ret, targetClass, classDecs) {
-      if (classDecs.length > 0) {
-        for (var initializers = [], newClass = targetClass, name = targetClass.name, i = classDecs.length - 1; i >= 0; i--) {
+    function applyClassDecs(targetClass, classDecs, decoratorsHaveThis) {
+      if (classDecs.length) {
+        for (var initializers = [], newClass = targetClass, name = targetClass.name, inc = decoratorsHaveThis ? 2 : 1, i = classDecs.length - 1; i >= 0; i -= inc) {
           var decoratorFinishedRef = {
             v: !1
           };
           try {
-            var nextNewClass = classDecs[i](newClass, {
+            var nextNewClass = classDecs[i].call(decoratorsHaveThis ? classDecs[i - 1] : void 0, newClass, {
               kind: "class",
               name: name,
               addInitializer: createAddInitializerMethod(initializers, decoratorFinishedRef)
@@ -28175,16 +29422,20 @@
           } finally {
             decoratorFinishedRef.v = !0;
           }
-          void 0 !== nextNewClass && (assertValidReturnValue(10, nextNewClass), newClass = nextNewClass);
+          void 0 !== nextNewClass && (assertValidReturnValue(5, nextNewClass), newClass = nextNewClass);
         }
-        ret.push(newClass, function () {
+        return [newClass, function () {
           for (var i = 0; i < initializers.length; i++) initializers[i].call(newClass);
-        });
+        }];
       }
     }
-    function _applyDecs2203(targetClass, memberDecs, classDecs) {
-      var ret = [];
-      return applyMemberDecs(ret, targetClass, memberDecs), applyClassDecs(ret, targetClass, classDecs), ret;
+    function _applyDecs2305(targetClass, memberDecs, classDecs, classDecsHaveThis, instanceBrand) {
+      return {
+        e: applyMemberDecs(targetClass, memberDecs, instanceBrand),
+        get c() {
+          return applyClassDecs(targetClass, classDecs, classDecsHaveThis);
+        }
+      };
     }
     function _asyncGeneratorDelegate(inner) {
       var iter = {},
@@ -28255,6 +29506,80 @@
     function _awaitAsyncGenerator(value) {
       return new _OverloadYield(value, 0);
     }
+    function _checkInRHS(value) {
+      if (Object(value) !== value) throw TypeError("right-hand side of 'in' should be an object, got " + (null !== value ? typeof value : "null"));
+      return value;
+    }
+    function _defineAccessor(type, obj, key, fn) {
+      var desc = {
+        configurable: !0,
+        enumerable: !0
+      };
+      return desc[type] = fn, Object.defineProperty(obj, key, desc);
+    }
+    function dispose_SuppressedError(suppressed, error) {
+      return "undefined" != typeof SuppressedError ? dispose_SuppressedError = SuppressedError : (dispose_SuppressedError = function (suppressed, error) {
+        this.suppressed = suppressed, this.error = error, this.stack = new Error().stack;
+      }, dispose_SuppressedError.prototype = Object.create(Error.prototype, {
+        constructor: {
+          value: dispose_SuppressedError,
+          writable: !0,
+          configurable: !0
+        }
+      })), new dispose_SuppressedError(suppressed, error);
+    }
+    function _dispose(stack, error, hasError) {
+      function next() {
+        for (; stack.length > 0;) try {
+          var r = stack.pop(),
+            p = r.d.call(r.v);
+          if (r.a) return Promise.resolve(p).then(next, err);
+        } catch (e) {
+          return err(e);
+        }
+        if (hasError) throw error;
+      }
+      function err(e) {
+        return error = hasError ? new dispose_SuppressedError(e, error) : e, hasError = !0, next();
+      }
+      return next();
+    }
+    function _iterableToArrayLimit(arr, i) {
+      var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"];
+      if (null != _i) {
+        var _s,
+          _e,
+          _x,
+          _r,
+          _arr = [],
+          _n = !0,
+          _d = !1;
+        try {
+          if (_x = (_i = _i.call(arr)).next, 0 === i) {
+            if (Object(_i) !== _i) return;
+            _n = !1;
+          } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0);
+        } catch (err) {
+          _d = !0, _e = err;
+        } finally {
+          try {
+            if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return;
+          } finally {
+            if (_d) throw _e;
+          }
+        }
+        return _arr;
+      }
+    }
+    function _iterableToArrayLimitLoose(arr, i) {
+      var _i = arr && ("undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]);
+      if (null != _i) {
+        var _s,
+          _arr = [];
+        for (_i = _i.call(arr); arr.length < i && !(_s = _i.next()).done;) _arr.push(_s.value);
+        return _arr;
+      }
+    }
     var REACT_ELEMENT_TYPE;
     function _jsx(type, props, key, children) {
       REACT_ELEMENT_TYPE || (REACT_ELEMENT_TYPE = "function" == typeof Symbol && Symbol.for && Symbol.for("react.element") || 60103);
@@ -28305,6 +29630,9 @@
       var exports = {},
         Op = Object.prototype,
         hasOwn = Op.hasOwnProperty,
+        defineProperty = Object.defineProperty || function (obj, key, desc) {
+          obj[key] = desc.value;
+        },
         $Symbol = "function" == typeof Symbol ? Symbol : {},
         iteratorSymbol = $Symbol.iterator || "@@iterator",
         asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator",
@@ -28328,40 +29656,9 @@
         var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator,
           generator = Object.create(protoGenerator.prototype),
           context = new Context(tryLocsList || []);
-        return generator._invoke = function (innerFn, self, context) {
-          var state = "suspendedStart";
-          return function (method, arg) {
-            if ("executing" === state) throw new Error("Generator is already running");
-            if ("completed" === state) {
-              if ("throw" === method) throw arg;
-              return doneResult();
-            }
-            for (context.method = method, context.arg = arg;;) {
-              var delegate = context.delegate;
-              if (delegate) {
-                var delegateResult = maybeInvokeDelegate(delegate, context);
-                if (delegateResult) {
-                  if (delegateResult === ContinueSentinel) continue;
-                  return delegateResult;
-                }
-              }
-              if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) {
-                if ("suspendedStart" === state) throw state = "completed", context.arg;
-                context.dispatchException(context.arg);
-              } else "return" === context.method && context.abrupt("return", context.arg);
-              state = "executing";
-              var record = tryCatch(innerFn, self, context);
-              if ("normal" === record.type) {
-                if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue;
-                return {
-                  value: record.arg,
-                  done: context.done
-                };
-              }
-              "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg);
-            }
-          };
-        }(innerFn, self, context), generator;
+        return defineProperty(generator, "_invoke", {
+          value: makeInvokeMethod(innerFn, self, context)
+        }), generator;
       }
       function tryCatch(fn, obj, arg) {
         try {
@@ -28415,24 +29712,58 @@
           reject(record.arg);
         }
         var previousPromise;
-        this._invoke = function (method, arg) {
-          function callInvokeWithMethodAndArg() {
-            return new PromiseImpl(function (resolve, reject) {
-              invoke(method, arg, resolve, reject);
-            });
+        defineProperty(this, "_invoke", {
+          value: function (method, arg) {
+            function callInvokeWithMethodAndArg() {
+              return new PromiseImpl(function (resolve, reject) {
+                invoke(method, arg, resolve, reject);
+              });
+            }
+            return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg();
           }
-          return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg();
+        });
+      }
+      function makeInvokeMethod(innerFn, self, context) {
+        var state = "suspendedStart";
+        return function (method, arg) {
+          if ("executing" === state) throw new Error("Generator is already running");
+          if ("completed" === state) {
+            if ("throw" === method) throw arg;
+            return {
+              value: void 0,
+              done: !0
+            };
+          }
+          for (context.method = method, context.arg = arg;;) {
+            var delegate = context.delegate;
+            if (delegate) {
+              var delegateResult = maybeInvokeDelegate(delegate, context);
+              if (delegateResult) {
+                if (delegateResult === ContinueSentinel) continue;
+                return delegateResult;
+              }
+            }
+            if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) {
+              if ("suspendedStart" === state) throw state = "completed", context.arg;
+              context.dispatchException(context.arg);
+            } else "return" === context.method && context.abrupt("return", context.arg);
+            state = "executing";
+            var record = tryCatch(innerFn, self, context);
+            if ("normal" === record.type) {
+              if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue;
+              return {
+                value: record.arg,
+                done: context.done
+              };
+            }
+            "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg);
+          }
         };
       }
       function maybeInvokeDelegate(delegate, context) {
-        var method = delegate.iterator[context.method];
-        if (undefined === method) {
-          if (context.delegate = null, "throw" === context.method) {
-            if (delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel;
-            context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method");
-          }
-          return ContinueSentinel;
-        }
+        var methodName = context.method,
+          method = delegate.iterator[methodName];
+        if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel;
         var record = tryCatch(method, delegate.iterator, context.arg);
         if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel;
         var info = record.arg;
@@ -28454,7 +29785,7 @@
         }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0);
       }
       function values(iterable) {
-        if (iterable) {
+        if (iterable || "" === iterable) {
           var iteratorMethod = iterable[iteratorSymbol];
           if (iteratorMethod) return iteratorMethod.call(iterable);
           if ("function" == typeof iterable.next) return iterable;
@@ -28467,17 +29798,15 @@
             return next.next = next;
           }
         }
-        return {
-          next: doneResult
-        };
+        throw new TypeError(typeof iterable + " is not iterable");
       }
-      function doneResult() {
-        return {
-          value: undefined,
-          done: !0
-        };
-      }
-      return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) {
+      return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", {
+        value: GeneratorFunctionPrototype,
+        configurable: !0
+      }), defineProperty(GeneratorFunctionPrototype, "constructor", {
+        value: GeneratorFunction,
+        configurable: !0
+      }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) {
         var ctor = "function" == typeof genFun && genFun.constructor;
         return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name));
       }, exports.mark = function (genFun) {
@@ -28498,8 +29827,9 @@
         return this;
       }), define(Gp, "toString", function () {
         return "[object Generator]";
-      }), exports.keys = function (object) {
-        var keys = [];
+      }), exports.keys = function (val) {
+        var object = Object(val),
+          keys = [];
         for (var key in object) keys.push(key);
         return keys.reverse(), function next() {
           for (; keys.length;) {
@@ -28598,6 +29928,17 @@
         return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
       }, _typeof(obj);
     }
+    function _using(stack, value, isAwait) {
+      if (null == value) return value;
+      if ("object" != typeof value) throw new TypeError("using declarations can only be used with objects, null, or undefined.");
+      if (isAwait) var dispose = value[Symbol.asyncDispose || Symbol.for("Symbol.asyncDispose")];
+      if (null == dispose && (dispose = value[Symbol.dispose || Symbol.for("Symbol.dispose")]), "function" != typeof dispose) throw new TypeError("Property [Symbol.dispose] is not a function.");
+      return stack.push({
+        v: value,
+        d: dispose,
+        a: isAwait
+      }), value;
+    }
     function _wrapRegExp() {
       _wrapRegExp = function (re, groups) {
         return new BabelRegExp(re, void 0, groups);
@@ -28621,12 +29962,18 @@
       }
       return _inherits(BabelRegExp, RegExp), BabelRegExp.prototype.exec = function (str) {
         var result = _super.exec.call(this, str);
-        return result && (result.groups = buildGroups(result, this)), result;
+        if (result) {
+          result.groups = buildGroups(result, this);
+          var indices = result.indices;
+          indices && (indices.groups = buildGroups(indices, this));
+        }
+        return result;
       }, BabelRegExp.prototype[Symbol.replace] = function (str, substitution) {
         if ("string" == typeof substitution) {
           var groups = _groups.get(this);
           return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)>/g, function (_, name) {
-            return "$" + groups[name];
+            var group = groups[name];
+            return "$" + (Array.isArray(group) ? group.join("$") : group);
           }));
         }
         if ("function" == typeof substitution) {
@@ -28688,7 +30035,7 @@
         descriptor.enumerable = descriptor.enumerable || false;
         descriptor.configurable = true;
         if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
+        Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
       }
     }
     function _createClass(Constructor, protoProps, staticProps) {
@@ -28730,6 +30077,7 @@
       return obj;
     }
     function _defineProperty(obj, key, value) {
+      key = _toPropertyKey(key);
       if (key in obj) {
         Object.defineProperty(obj, key, {
           value: value,
@@ -29031,7 +30379,7 @@
     function _set(target, property, value, receiver, isStrict) {
       var s = set(target, property, value, receiver || target);
       if (!s && isStrict) {
-        throw new Error('failed to set property');
+        throw new TypeError('failed to set property');
       }
       return value;
     }
@@ -29059,7 +30407,7 @@
       throw new TypeError("\"" + name + "\" is write-only");
     }
     function _classNameTDZError(name) {
-      throw new Error("Class \"" + name + "\" cannot be referenced in computed property keys.");
+      throw new ReferenceError("Class \"" + name + "\" cannot be referenced in computed property keys.");
     }
     function _temporalUndefined() {}
     function _tdz(name) {
@@ -29095,40 +30443,6 @@
     }
     function _iterableToArray(iter) {
       if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-    }
-    function _iterableToArrayLimit(arr, i) {
-      var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-      if (_i == null) return;
-      var _arr = [];
-      var _n = true;
-      var _d = false;
-      var _s, _e;
-      try {
-        for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-          _arr.push(_s.value);
-          if (i && _arr.length === i) break;
-        }
-      } catch (err) {
-        _d = true;
-        _e = err;
-      } finally {
-        try {
-          if (!_n && _i["return"] != null) _i["return"]();
-        } finally {
-          if (_d) throw _e;
-        }
-      }
-      return _arr;
-    }
-    function _iterableToArrayLimitLoose(arr, i) {
-      var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]);
-      if (_i == null) return;
-      var _arr = [];
-      for (_i = _i.call(arr), _step; !(_step = _i.next()).done;) {
-        _arr.push(_step.value);
-        if (i && _arr.length === i) break;
-      }
-      return _arr;
     }
     function _unsupportedIterableToArray(o, minLen) {
       if (!o) return;
@@ -29240,7 +30554,7 @@
       return typeof key === "symbol" ? key : String(key);
     }
     function _initializerWarningHelper(descriptor, context) {
-      throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.');
+      throw new Error('Decorating class property failed. Please ensure that ' + 'transform-class-properties is enabled and runs after the decorators transform.');
     }
     function _initializerDefineProperty(target, property, descriptor, context) {
       if (!descriptor) return;
@@ -39783,6 +41097,7 @@
      * Released on: August 17, 2023
      */
 
+
     // Swiper Class
     const modules = [Virtual, Keyboard, Mousewheel, Navigation, Pagination, Scrollbar, Parallax, Zoom, Controller, A11y, History, HashNavigation, Autoplay, Thumb, freeMode, Grid, Manipulation, EffectFade, EffectCube, EffectFlip, EffectCoverflow, EffectCreative, EffectCards];
     Swiper$1.use(modules);
@@ -40128,6 +41443,7 @@
      *
      * Released on: August 17, 2023
      */
+
 
     /* eslint-disable spaced-comment */
 

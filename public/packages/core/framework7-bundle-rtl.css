@@ -1,13 +1,13 @@
 /**
- * Framework7 8.3.0
+ * Framework7 8.3.1
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2023 Vladimir Kharlampidi
+ * Copyright 2014-2024 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: August 18, 2023
+ * Released on: February 5, 2024
  */
 
 /*====================
@@ -7657,6 +7657,7 @@ body > .progressbar-infinite,
 }
 .sortable-enabled li:not(.no-sorting):not(.disallow-sorting) .sortable-handler {
   pointer-events: auto;
+  touch-action: none;
   opacity: 1;
 }
 .sortable-enabled li:not(.no-sorting):not(.disallow-sorting) .sortable-handler:after {
@@ -18631,8 +18632,12 @@ button.swiper-pagination-bullet {
 }
 .color-picker-slider-alpha .range-bar {
   background-image: linear-gradient(to left, rgba(0, 0, 0, 0), #000), linear-gradient(to right, rgba(255, 255, 255, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%), linear-gradient(to left, rgba(255, 255, 255, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%);
-  background-size: 100% 100%, 6px 3px, 6px 3px;
-  background-position: 0 0, 0px 3px, 0 0;
+  background-size: 100% 100%,
+      6px 3px,
+      6px 3px;
+  background-position: 0 0,
+      0px 3px,
+      0 0;
   background-repeat: repeat-y, repeat-x, repeat-x;
 }
 .color-picker-slider-hue .range-bar {
