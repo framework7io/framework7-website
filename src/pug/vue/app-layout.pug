@@ -98,14 +98,10 @@ block content
                 <p>Here comes main view page text</p>
               </f7-block>
               <!-- Buttons to open panels -->
-              <f7-row>
-                <f7-col>
-                  <f7-button panel-open="left">Left Panel</f7-button>
-                </f7-col>
-                <f7-col>
-                  <f7-button panel-open="right">Right Panel</f7-button>
-                </f7-col>
-              </f7-row>
+              <f7-block class="grid grid-cols-2 grid-gap">
+                <f7-button panel-open="left">Left Panel</f7-button>
+                <f7-button panel-open="right">Right Panel</f7-button>
+              </f7-block>
               <!-- Button to open popup -->
               <f7-button popup-open="#my-popup">Open Popup</f7-button>
             </f7-page>
