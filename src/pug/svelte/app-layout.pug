@@ -100,14 +100,10 @@ block content
               <p>Here comes main view page text</p>
             </Block>
             <!-- Buttons to open panels -->
-            <Row>
-              <Col>
-                <Button panelOpen="left">Left Panel</Button>
-              </Col>
-              <Col>
-                <Button panelOpen="right">Right Panel</Button>
-              </Col>
-            </Row>
+            <Block class="grid grid-cols-2 grid-gap">
+              <Button panelOpen="left">Left Panel</Button>
+              <Button panelOpen="right">Right Panel</Button>
+            </Block>
             <!-- Button to open popup -->
             <Button popupOpen="#my-popup">Open Popup</Button>
           </Page>
@@ -131,7 +127,7 @@ block content
         </Popup>
       </App>
       <script>
-        import { App, NavRight, Panel, View, Page, Navbar, Block, Row, Col, Button, Popup, Link } from 'framework7-svelte';
+        import { App, NavRight, Panel, View, Page, Navbar, Block, Button, Popup, Link } from 'framework7-svelte';
       </script>
 
     p You can read more about views, navbar, toolbar, pages, panels and other components in appropriate sections.
