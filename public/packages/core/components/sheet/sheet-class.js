@@ -614,8 +614,8 @@ class Sheet extends Modal {
       if (sheet.params.swipeToStep || useBreakpoints) {
         $el.removeClass('modal-in-swipe-step modal-in-breakpoint');
         sheet.emit('local::_swipeStep', false);
-        app.off('resize', onResize);
       }
+      app.off('resize', onResize);
       if (sheet.params.closeOnEscape) {
         $(document).off('keydown', onKeyDown);
       }

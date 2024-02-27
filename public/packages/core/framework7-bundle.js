@@ -1,5 +1,5 @@
 /**
- * Framework7 8.3.1
+ * Framework7 8.3.2
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: February 5, 2024
+ * Released on: February 27, 2024
  */
 
 (function (global, factory) {
@@ -6472,7 +6472,9 @@
           });
         }).catch(err => {
           reject();
-          throw new Error(err);
+          throw new Error(err, {
+            cause: err
+          });
         });
       }
       if (component instanceof Promise) {
@@ -10297,7 +10299,9 @@
               resolve(createdComponent.el);
             }).catch(err => {
               reject(err);
-              throw new Error(err);
+              throw new Error(err, {
+                cause: err
+              });
             });
           }
           let cachedComponent;
@@ -16213,8 +16217,8 @@
           if (sheet.params.swipeToStep || useBreakpoints) {
             $el.removeClass('modal-in-swipe-step modal-in-breakpoint');
             sheet.emit('local::_swipeStep', false);
-            app.off('resize', onResize);
           }
+          app.off('resize', onResize);
           if (sheet.params.closeOnEscape) {
             $(document).off('keydown', onKeyDown);
           }
