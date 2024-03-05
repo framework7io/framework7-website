@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2024-03-05T20:00:00.000Z",
+    "title": "Slotozilla Poland",
+    "link": "https://www.slotozilla.com/pl/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/slotozilla-poland",
+    "image": "slotozilla-poland.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2024-02-26T20:00:00.000Z",
     "title": "Metronet Internet",
     "link": "https://buymetrointernet.com/",
@@ -746,7 +756,7 @@
     "plan": "silverSponsor",
     "ref": "https://opencollective.com/casino-utan-svensk-licens1",
     "image": "starwarscasinos.png",
-    "endDate": "2024-03-01T20:00:00.000Z",
+    "endDate": "2025-03-01T20:00:00.000Z",
     "active": true
   },
   {
@@ -767,16 +777,6 @@
     "ref": "https://www.patreon.com/user/creators?u=84826658",
     "image": "play-jetx.png",
     "endDate": "",
-    "active": true
-  },
-  {
-    "createdAt": "2022-12-03T20:00:00.000Z",
-    "title": "iStarTips - Tips for Software, Apps on Android, iPhone",
-    "link": "https://istar.tips/",
-    "plan": "topSupporter",
-    "ref": "https://www.patreon.com/user?u=75991313",
-    "image": "istartips.svg",
-    "endDate": "2023-12-03T20:00:00.000Z",
     "active": true
   },
   {
