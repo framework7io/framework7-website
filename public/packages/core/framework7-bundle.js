@@ -1,5 +1,5 @@
 /**
- * Framework7 8.3.2
+ * Framework7 8.3.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: February 27, 2024
+ * Released on: March 25, 2024
  */
 
 (function (global, factory) {
@@ -3694,9 +3694,21 @@
       // Export object
       return device;
     }
+    const IS_BROWSER = (() => {
+      const document = getDocument$1();
+      try {
+        // eslint-disable-next-line no-restricted-globals
+        return Boolean(document && document.body && document.body.getBoundingClientRect && document.body.getBoundingClientRect().width > 0);
+      } catch (e) {
+        return false;
+      }
+    })();
     function getDevice$1(overrides, reset) {
       if (overrides === void 0) {
         overrides = {};
+      }
+      if (reset === void 0) {
+        reset = IS_BROWSER;
       }
       if (!deviceCalculated || reset) {
         deviceCalculated = calcDevice$1(overrides);
@@ -8316,22 +8328,25 @@
         }
       }
       if (!navigateOptions.force && $previousPage.length && !skipMaster) {
-        if (router.params.browserHistory && $previousPage[0].f7Page && router.history[router.history.length - 2] !== $previousPage[0].f7Page.route.url) {
+        const previousPageObj = $previousPage[0].f7Page;
+        if (router.params.browserHistory && previousPageObj && router.history[router.history.length - 2] !== previousPageObj.route.url) {
           router.back(router.history[router.history.length - 2], extend$3(navigateOptions, {
             force: true,
             props: router.propsHistory[router.propsHistory.length - 2] || {}
           }));
           return router;
         }
-        const previousPageRoute = $previousPage[0].f7Page.route;
-        processRouteQueue.call(router, previousPageRoute, router.currentRoute, () => {
-          loadBack(router, {
-            el: $previousPage
-          }, extend$3(navigateOptions, {
-            route: previousPageRoute
-          }));
-        }, () => {}, 'backward');
-        return router;
+        if (previousPageObj) {
+          const previousPageRoute = previousPageObj.route;
+          processRouteQueue.call(router, previousPageRoute, router.currentRoute, () => {
+            loadBack(router, {
+              el: $previousPage
+            }, extend$3(navigateOptions, {
+              route: previousPageRoute
+            }));
+          }, () => {}, 'backward');
+          return router;
+        }
       }
 
       // Navigate URL
