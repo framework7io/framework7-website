@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2024-03-26T20:00:00.000Z",
+    "title": "Parimatch",
+    "link": "https://parimatch-brasil-br.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/parimatch4",
+    "image": "parimatch4.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2024-03-18T20:00:00.000Z",
     "title": "Casinos Online Sin Licencia 2024",
     "link": "https://casinosinlicenciaespana.com/",
@@ -26,7 +36,7 @@
     "plan": "topSupporter",
     "ref": "https://opencollective.com/slotozilla-poland",
     "image": "slotozilla-poland.png",
-    "endDate": "",
+    "endDate": "2025-03-26T20:00:00.000Z",
     "active": true
   },
   {
