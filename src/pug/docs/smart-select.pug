@@ -25,7 +25,7 @@ block content
           <!-- Smart select item -->
           <li>
             <!-- Additional "smart-select" class -->
-            <a href="#" class="item-link smart-select">
+            <span class="item-link smart-select">
               <!-- select -->
               <select name="fruits">
                 <option value="apple" selected>Apple</option>
@@ -40,7 +40,7 @@ block content
                   <div class="item-after">Apple</div>
                 </div>
               </div>
-            </a>
+            </span>
           </li>
           <!-- Another smart selects or list view elements -->
           ...
@@ -69,7 +69,7 @@ block content
     p For single option we may also use `data-option-color` and `data-option-class` attributes to add specific option color or css class for additional styling
     :code(lang="html")
       <li>
-        <a href="#" class="item-link smart-select">
+        <span class="item-link smart-select">
           <select name="fruits">
             <option value="apple" selected data-option-image="https://cdn.framework7.io/placeholder/abstract-29x29-1.jpg">Apple</option>
             <option value="pineapple" data-option-image="https://cdn.framework7.io/placeholder/abstract-29x29-2.jpg">Pineapple</option>
@@ -81,14 +81,14 @@ block content
               <div class="item-title">Fruit</div>
             </div>
           </div>
-        </a>
+        </span>
       </li>
 
     h3 Multiple Select And &lt;optgroup&gt;
     p We can also use multiple select and group options using `<optgroup>`. So if we add `multiple` attribute to our select then radio buttons on smart select page will be automatically converted to checkboxes:
     :code(lang="html")
       <li>
-        <a href="#" class="item-link smart-select">
+        <span class="item-link smart-select">
           <!-- "multiple" attribute for multiple select-->
           <select name="car" multiple>
             <!-- options grouped within "optgroup" tag-->
@@ -113,13 +113,13 @@ block content
               <div class="item-title">Car</div>
             </div>
           </div>
-        </a>
+        </span>
       </li>
     h3 Multiple Select and maxlength
     p With multiple select we can also use <b>maxlength</b> attribute to limit number of possible selected items:
     :code(lang="html")
       <li>
-        <a href="#" class="item-link smart-select">
+        <span class="item-link smart-select">
           <!-- "maxlength" attribute to limit number of possible selected items -->
           <!-- we won't allow to select more than 3 items -->
           <select name="car" multiple maxlength="3">
@@ -144,13 +144,13 @@ block content
               <div class="item-title">Car</div>
             </div>
           </div>
-        </a>
+        </span
       </li>
     h3 Different Display Value
     p Using `data-display-as` attribute on options we can show selected value in different way:
     :code(lang="html")
       <li>
-        <a href="#" class="item-link smart-select">
+        <span class="item-link smart-select">
           <select name="days">
             <option value="monday" selected data-display-as="Mon">Monday</option>
             <option value="tuesday" data-display-as="Tue">Tuesday</option>
@@ -165,7 +165,7 @@ block content
               <div class="item-title">Day</div>
             </div>
           </div>
-        </a>
+        </span
       </li>
     h2 Smart Select App Methods
     p Let's look at related App methods to work with Smart Select:
@@ -646,7 +646,7 @@ block content
     :code(lang="html")
       <li>
         <!-- Add smart-select-init class -->
-        <a href="#" class="item-link smart-select smart-select-init">
+        <span class="item-link smart-select smart-select-init">
           <!-- select -->
           <select name="fruits">
             <option value="apple" selected>Apple</option>
@@ -659,7 +659,7 @@ block content
               <div class="item-after">Apple</div>
             </div>
           </div>
-        </a>
+        </span
       </li>
     p In this case if you need to access created Smart Select instance you can use the `app.smartSelect.get` app method:
     :code(lang="js")
@@ -669,7 +669,7 @@ block content
     :code(lang="html")
       <li>
         <!-- Pass parameters as kebab-case data attributes -->
-        <a href="#" class="item-link smart-select smart-select-init" data-open-in="popup" data-virtual-list="true" data-page-back-link-text="Go back">
+        <span class="item-link smart-select smart-select-init" data-open-in="popup" data-virtual-list="true" data-page-back-link-text="Go back">
           <!-- select -->
           <select name="fruits">
             <option value="apple" selected>Apple</option>
@@ -682,7 +682,7 @@ block content
               <div class="item-after">Apple</div>
             </div>
           </div>
-        </a>
+        </span
       </li>
 
     +cssVars('smart-select')
