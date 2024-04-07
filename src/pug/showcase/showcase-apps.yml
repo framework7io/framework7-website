@@ -1,4 +1,28 @@
 ##########
+- iconUrl: "#{cdn}/i/showcase/5digits-icon.png"
+  iconRounded: false
+  title: "5 Digits - Tally Counter"
+  author:
+    url: https://5digits.erfan.me
+    name: Erfan Reed
+  links:
+    appstore: https://apps.apple.com/app/id1356435234
+    googleplay:
+    website: https://5digits.erfan.me
+  description: |
+    The 5 Digits Tally Counter app stands as a comprehensive solution tailored to meet your tallying and display needs with sophistication and efficiency. Whether you're managing event attendance, integrating a digital display into your IoT project, or streamlining your business's queue management, this app is equipped to deliver outstanding performance and reliability.
+  features:
+  - Aesthetic Interface
+  - Remote Control
+  - MQTT Communication
+  - Multi-Counter Management
+  screenshots:
+  - "#{cdn}/i/showcase/5digits-01.png"
+  - "#{cdn}/i/showcase/5digits-02.png"
+  - "#{cdn}/i/showcase/5digits-03.png"
+  - "#{cdn}/i/showcase/5digits-04.png"
+
+##########
 - iconUrl: '#{cdn}/i/showcase/sslcerts.png'
   iconRounded: true
   title: 'SSL сертификаты безопасности для доменов'
@@ -19,6 +43,7 @@
     - '#{cdn}/i/showcase/sslcerts-3.png'
     - '#{cdn}/i/showcase/sslcerts-4.png'
     - '#{cdn}/i/showcase/sslcerts-5.png'
+
 #########
 - iconUrl: "#{cdn}/i/showcase/byztxt-icon-1024.png"
   iconRounded: false
