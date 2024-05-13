@@ -1,4 +1,27 @@
 ##########
+- iconUrl: "#{cdn}/i/showcase/magicace-icon.png"
+  iconRounded: false
+  title: "Magic Ace - Magic Prop App"
+  author:
+    url: https://magicace.erfan.me
+    name: Erfan Reed
+  links:
+    appstore: https://apps.apple.com/us/app/magic-ace/id6502392439
+    website: https://magicace.erfan.me
+  description: |
+    Magic Ace is a magic prop app designed to empower magicians and magic enthusiasts alike in delivering captivating performances. At its core, Magic Ace enables users to seamlessly execute an array of tricks, including the uncanny ability to predict a chosen playing card.
+  features:
+  - Shake the phone to reveal the card
+  - Remote control (MQTT) capability for seamless manipulation
+  - Customize backgrounds to enhance the visual experience
+  - Available on iPhone and iPad
+  screenshots:
+  - "#{cdn}/i/showcase/magicace-01.png"
+  - "#{cdn}/i/showcase/magicace-02.png"
+  - "#{cdn}/i/showcase/magicace-03.png"
+  - "#{cdn}/i/showcase/magicace-04.png"
+
+##########
 - iconUrl: "#{cdn}/i/showcase/5digits-icon.png"
   iconRounded: false
   title: "5 Digits - Tally Counter"
@@ -6,8 +29,7 @@
     url: https://5digits.erfan.me
     name: Erfan Reed
   links:
-    appstore: https://apps.apple.com/app/id1356435234
-    googleplay:
+    appstore: https://apps.apple.com/us/app/5-digits/id1356435234
     website: https://5digits.erfan.me
   description: |
     The 5 Digits Tally Counter app stands as a comprehensive solution tailored to meet your tallying and display needs with sophistication and efficiency. Whether you're managing event attendance, integrating a digital display into your IoT project, or streamlining your business's queue management, this app is equipped to deliver outstanding performance and reliability.
