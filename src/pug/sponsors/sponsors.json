@@ -1,5 +1,25 @@
 [
   {
+    "createdAt": "2024-06-17T20:00:00.000Z",
+    "title": "Accelerating Your Software Products | Teravision Technologies",
+    "link": "https://www.teravisiontech.com/",
+    "plan": "topSupporter",
+    "ref": "https://www.patreon.com/user?u=131596767",
+    "image": "teravisiontech.webp",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2024-06-17T20:00:00.000Z",
+    "title": "revistacomunicacion.org",
+    "link": "https://revistacomunicacion.org/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/revistacomunicacion-org",
+    "image": "revistacomunicacion-org.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2024-06-14T20:00:00.000Z",
     "title": "Ta καλύτερα διαδικτυακά καζίνο στην Ελλάδα το 2024",
     "link": "https://onlinecasinosgr.com/",
