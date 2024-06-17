@@ -1,6 +1,16 @@
 [
   {
     "createdAt": "2024-06-17T20:00:00.000Z",
+    "title": "CasinoRevisor: Alles über die besten Casinos in Deutschland",
+    "link": "https://casinorevisor.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/casinos-ohne-lizenz",
+    "image": "casinos-ohne-lizenz.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2024-06-17T20:00:00.000Z",
     "title": "Accelerating Your Software Products | Teravision Technologies",
     "link": "https://www.teravisiontech.com/",
     "plan": "topSupporter",
