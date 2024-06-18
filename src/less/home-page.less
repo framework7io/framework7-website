@@ -322,6 +322,16 @@
 .home-projects {
   .text {
     display: flex;
+    flex-direction: column;
+    gap: 16px;
+    @media (min-width: 600px) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    @media (min-width: 800px) {
+      gap: 32px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
   }
   a {
     display: flex;
@@ -349,9 +359,7 @@
       transform: scale(1.025);
     }
   }
-  a:nth-child(2) {
-    margin: 0 32px;
-  }
+
   span {
     font-size: 0.75em;
     font-weight: normal;
@@ -361,15 +369,9 @@
     margin-bottom: 24px;
   }
   @media (max-width: 600px) {
-    .text {
-      display: block;
-    }
     a {
       flex-direction: row;
       text-align: left;
-    }
-    a:nth-child(2) {
-      margin: 16px 0px;
     }
     img {
       width: 64px;

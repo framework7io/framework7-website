@@ -323,3 +323,25 @@ nav {
 .DocSearch-Container {
   z-index: 3000;
 }
+.toggles-ribbon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 14px;
+  padding: 8px 16px;
+  min-height: 48px;
+  background: @colorSurface2;
+  border-bottom: 1px solid @colorSurface;
+  box-sizing: border-box;
+  a:hover {
+    text-decoration: none;
+    opacity: 0.75;
+  }
+  span {
+    text-decoration: underline;
+    &::before {
+      content: ' ';
+    }
+  }
+}
