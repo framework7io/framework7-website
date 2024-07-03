@@ -1,5 +1,25 @@
 [
   {
+    "createdAt": "2024-07-03T20:00:00.000Z",
+    "title": "Сasino Without Swedish License",
+    "link": "https://casinos-without-license.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/minsta-insattning-casino-utan-svensk-licens",
+    "image": "minsta-insattning-casino-utan-svensk-licens.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2024-07-03T20:00:00.000Z",
+    "title": "Ai2people",
+    "link": "https://ai2people.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/ai2people",
+    "image": "ai2people.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2024-07-01T20:00:00.000Z",
     "title": "The Red Playground",
     "link": "https://theredplayground.com/",
