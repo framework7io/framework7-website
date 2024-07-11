@@ -1,5 +1,35 @@
 [
   {
+    "createdAt": "2024-07-11T20:00:00.000Z",
+    "title": "IGComment",
+    "link": "https://igcomment.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/igcomment",
+    "image": "igcomment.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2024-07-11T20:00:00.000Z",
+    "title": "trygge norske casino",
+    "link": "https://oddgrenland.no/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/trygge-norske-casino",
+    "image": "trygge-norske-casino.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2024-07-11T20:00:00.000Z",
+    "title": "SMM Panel Services JAP",
+    "link": "https://justanotherpanel.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/casino-non-aams1",
+    "image": "jap.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2024-07-10T20:00:00.000Z",
     "title": "casino non AAMS",
     "link": "https://casino-non-aams.info/",
@@ -1092,7 +1122,7 @@
   {
     "createdAt": "2021-07-13T09:25:50.350Z",
     "active": true,
-    "title": "Online Casino HEX - Best Online Casinos in Canada [2021]",
+    "title": "Online Casino HEX - Best Online Casinos in Canada",
     "link": "https://casinohex.org/canada/",
     "plan": "topSupporter",
     "ref": "https://opencollective.com/hexcasinoca",
