@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2024-07-25T20:00:00.000Z",
+    "title": "Proxy Coupons",
+    "link": "https://proxy.coupons/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/proxy-coupons",
+    "image": "proxy-coupons.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2024-07-11T20:00:00.000Z",
     "title": "IGComment",
     "link": "https://igcomment.com/",
