@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2024-07-30T20:00:00.000Z",
+    "title": "Online Kasyno Polis",
+    "link": "https://onlinekasyno-polis.pl/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/onlinekasyno-polis",
+    "image": "onlinekasyno-polis.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2024-07-25T20:00:00.000Z",
     "title": "Proxy Coupons",
     "link": "https://proxy.coupons/",
