@@ -1,6 +1,16 @@
 [
   {
     "createdAt": "2024-08-05T20:00:00.000Z",
+    "title": "Guidebook.BetWinner",
+    "link": "https://guidebook.betwinner.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/guidebook_betwinner_com",
+    "image": "guidebook_betwinner_com.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2024-08-05T20:00:00.000Z",
     "title": "Route4Me Route Planner",
     "link": "https://route4me.com/",
     "plan": "silverSponsor",
