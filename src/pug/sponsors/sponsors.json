@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2024-08-07T20:00:00.000Z",
+    "title": "CreditCaptain – Leading AI Credit Repair Service",
+    "link": "https://www.creditcaptain.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/creditcaptain",
+    "image": "creditcaptain.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2024-08-06T20:00:00.000Z",
     "title": "Gymgrit",
     "link": "https://gymgrit.net/",
