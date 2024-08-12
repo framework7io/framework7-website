@@ -20,7 +20,7 @@ const trs = csv
   })
   .filter((tr) => !!tr)
   .filter(({ date }) => {
-    return new Date().getTime() - date.getTime() < 45 * 24 * 60 * 60 * 1000;
+    return new Date().getTime() - date.getTime() < 30 * 24 * 60 * 60 * 1000;
   })
   .map(({ ref }) => ref);
 
