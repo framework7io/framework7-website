@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2025-01-10T20:00:00.000Z",
+    "title": "Casino Online C19",
+    "link": "https://www.c19.cl/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/casino-online-chile",
+    "image": "casino-online-chile.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2025-01-02T20:00:00.000Z",
     "title": "Generate QR codes",
     "link": "https://www.eldiario.es/madrid/somos/canal-empresas/crear-codigo-qr-de-un-pdf_1_11815280.html",
