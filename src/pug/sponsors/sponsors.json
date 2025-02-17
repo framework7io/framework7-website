@@ -1,5 +1,25 @@
 [
   {
+    "createdAt": "2025-02-17T20:00:00.000Z",
+    "title": "Non Gamstop Casino",
+    "link": "https://nongamstopcasinos.net/gb/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/nongamstopcasinosnet",
+    "image": "nongamstopcasinosnet.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2025-02-17T20:00:00.000Z",
+    "title": "MagicUGC - AI UGC Video Generator",
+    "link": "https://www.magicugc.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/magicugc",
+    "image": "magicugc.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2025-02-07T20:00:00.000Z",
     "title": "Bettilt Giriş",
     "link": "https://opencollective.com/bettilt-giris",
