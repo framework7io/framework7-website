@@ -1,5 +1,25 @@
 [
   {
+    "createdAt": "2025-02-25T20:00:00.000Z",
+    "title": "Bonusoid",
+    "link": "https://bonusoid.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/bonusoidcom",
+    "image": "bonusoidcom.png",
+    "endDate": "2026-02-25T20:00:00.000Z",
+    "active": true
+  },
+  {
+    "createdAt": "2025-02-25T20:00:00.000Z",
+    "title": "Casinos Internacionales Online",
+    "link": "https://casinosinternacionalesonline.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/casinosinternacionalesonline",
+    "image": "casinosinternacionalesonline.png",
+    "endDate": "2026-02-25T20:00:00.000Z",
+    "active": true
+  },
+  {
     "createdAt": "2025-02-17T20:00:00.000Z",
     "title": "Non Gamstop Casino",
     "link": "https://nongamstopcasinos.net/gb/",
