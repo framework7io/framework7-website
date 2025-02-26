@@ -1,6 +1,16 @@
 [
   {
     "createdAt": "2025-02-25T20:00:00.000Z",
+    "title": "Follower-Börse",
+    "link": "https://follower-boerse.de/produkt/twitch-live-zuschauer-kaufen/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/follower-borse-or-twitch-zuschauer-kaufen",
+    "image": "follower-borse-or-twitch-zuschauer-kaufen.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2025-02-25T20:00:00.000Z",
     "title": "Bonusoid",
     "link": "https://bonusoid.com/",
     "plan": "topSupporter",
