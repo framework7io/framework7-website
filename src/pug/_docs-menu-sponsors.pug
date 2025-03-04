@@ -6,5 +6,5 @@
   .docs-nav-sponsors-list
     if (sponsors.goldSponsor)
       each sponsor in sponsors.goldSponsor
-        a.sponsor(href=sponsor.link, target="_blank")
+        a.sponsor(href=sponsor.link, target="_blank", rel="sponsored")
           img(src='/i/sponsors/' + (sponsor.image), alt=sponsor.title, title=sponsor.title)

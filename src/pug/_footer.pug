@@ -60,7 +60,7 @@ footer
           - var sponsors = getSponsors(getJSONData('sponsors/sponsors.json'));
           if (sponsors.goldSponsor)
             each sponsor in sponsors.goldSponsor
-              a.border(href=sponsor.link, target="_blank")
+              a.border(href=sponsor.link, target="_blank", rel="sponsored")
                 img(src='/i/sponsors/' + (sponsor.image_h || sponsor.image), alt=sponsor.title, title=sponsor.title)
     .copy
       .copy-left
