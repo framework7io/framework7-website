@@ -267,14 +267,12 @@ html
             each sponsor in sponsors.diamondSponsor
               .home-sponsors-item.home-sponsor-diamond
                 a(href=sponsor.link, target="_blank", rel="sponsored")
-                  .sponsor-badge.sponsor-badge-diamond(title="Diamond Sponsor")
                   img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.platinumSponsor && sponsors.platinumSponsor.length)
             each sponsor in sponsors.platinumSponsor
               .home-sponsors-item.home-sponsor-platinum
                 a(href=sponsor.link, target="_blank", rel="sponsored")
-                  .sponsor-badge.sponsor-badge-platinum(title="Platinum Sponsor")
                   img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.goldSponsor)
@@ -293,8 +291,10 @@ html
             each sponsor in sponsors.topSupporter
               .home-sponsors-item
                 a(href=sponsor.link, target="_blank", rel="sponsored")
-                  .sponsor-badge.sponsor-badge-topSupporter(title="Top Supporter")
-                  img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
+                  if (sponsor.image)
+                    img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
+                  else
+                    span= sponsor.title
         .home-sponsors-content
           p Support Framework7 on <a href="https://opencollective.com/framework7" target="_blank">Open Collective</a> or <a href="https://www.patreon.com/framework7" target="_blank">Patreon</a> and help us to make it even better!<br>Your support means a lot for us!
           p
