@@ -34,7 +34,7 @@ block content
     p To generate your own icons and splash screen images, you will need to replace all assets in this directory with your own images (pay attention to image size and format), and run the following command in the project directory:
 
     ```shell
-      $ framework7 assets
+      framework7 assets
     ```
 
     p This command will generate all required sizes of icons and splash screens and place them automatically where they need to be.
@@ -44,7 +44,7 @@ block content
     p On `assets` command CLI will first check for CLI update to always deliver latest and better experience. If, for some reason, you want to disable it, you can run command with `--skipUpdate` flag:
 
     ```shell
-      $ framework7 assets --skipUpdate
+      framework7 assets --skipUpdate
     ```
 
     h2 User Interface
@@ -54,7 +54,7 @@ block content
     p To launch it with UI, run the `assets` command with `--ui` flag in the directory with your app.
 
     ```shell
-      $ framework7 assets --ui
+      framework7 assets --ui
     ```
 
     p It will launch UI where you will be able to replace assets with custom ones and generate the required icons.
@@ -65,7 +65,7 @@ block content
     p By default it launches server on `localhost:3001` address. If you want to change the port then use `--port <n>` argument:
 
     ```shell
-      $ framework7 assets --ui --port 8080
+      framework7 assets --ui --port 8080
     ```
 
     h2 NPX
@@ -75,7 +75,7 @@ block content
     p For example:
 
     ```shell
-      $ npx framework7-cli assets --ui
+      npx framework7-cli assets --ui
     ```
 
 
