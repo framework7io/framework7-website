@@ -1,4 +1,31 @@
 ##########
+- iconUrl: "#{cdn}/i/showcase/chester-icon.png"
+  iconRounded: false
+  title: "Chess Jester (Chester)"
+  author:
+    url: https://chester.justshare.me
+    name: Erfan Reed
+  links:
+    appstore: https://apps.apple.com/us/app/chess-jester/id6744574391
+    website: https://chester.justshare.me
+  description: |
+    Step into the royal court of chess with Chess Jester, a beautifully crafted chess app for iPhone and iPad that mixes serious gameplay with a touch of humor. Whether you're a casual player, a chess enthusiast, or just someone looking to hear a jester mock your moves, Chester delivers a fun and engaging experience.
+  features:
+  - Funny, context-aware narration
+  - Robust chess engine with multiple difficulty levels
+  - Play online with a friend, Join a game instantly or host one with a unique code
+  - Load a game using a PGN or FEN string, and export games in PGN format
+  - Spectators can watch your games live in any browser
+  - Mirror the game on a TV or projector using AirPlay or an HDMI dongle
+  - Change the look and feel of your game with customizable board themes, piece styles, and background
+  - Available on iPhone and iPad
+  screenshots:
+  - "#{cdn}/i/showcase/chester-01.png"
+  - "#{cdn}/i/showcase/chester-02.png"
+  - "#{cdn}/i/showcase/chester-03.png"
+  - "#{cdn}/i/showcase/chester-04.png"
+
+##########
 - iconUrl: "#{cdn}/i/showcase/magicace-icon.png"
   iconRounded: false
   title: "Magic Ace - Magic Prop App"
