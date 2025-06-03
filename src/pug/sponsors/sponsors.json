@@ -510,23 +510,13 @@
     "active": true
   },
   {
-    "createdAt": "2024-03-05T20:00:00.000Z",
-    "title": "Slotozilla Poland",
-    "link": "https://www.slotozilla.com/pl/",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/slotozilla-poland",
-    "image": "slotozilla-poland.png",
-    "endDate": "2025-03-26T20:00:00.000Z",
-    "active": true
-  },
-  {
     "createdAt": "2024-02-08T20:00:00.000Z",
     "title": "JinaCoin | 仮想通貨/暗号資産ニュース・情報メディア",
     "link": "https://jinanbo11.com/",
     "plan": "topSupporter",
     "ref": "https://www.patreon.com/members?userId=118165565",
     "image": "jinacoin.png",
-    "endDate": "2025-02-08T20:00:00.000Z",
+    "endDate": "2026-02-08T20:00:00.000Z",
     "active": true
   },
   {
@@ -537,16 +527,6 @@
     "ref": "https://opencollective.com/blastup_com",
     "image": "blastup_com.png",
     "endDate": "",
-    "active": true
-  },
-  {
-    "createdAt": "2024-01-25T20:00:00.000Z",
-    "title": "UK Online Casinos Not On GamStop",
-    "link": "https://www.nongamstopbets.com/casinos-not-on-gamstop/",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/casinos-on-nongamstopbets",
-    "image": "casinos-on-nongamstopbets.png",
-    "endDate": "2025-01-25T20:00:00.000Z",
     "active": true
   },
   {
@@ -574,39 +554,9 @@
     "title": "Best Bitcoin Casinos",
     "link": "https://www.doublethebitcoin.net/",
     "plan": "topSupporter",
-    "ref": "",
+    "ref": "https://opencollective.com/bet-consulting",
     "image": "doublethebitcoin.png",
     "endDate": "2025-12-30T16:00:00.00Z",
-    "active": true
-  },
-  {
-    "createdAt": "2023-12-18T16:00:00.00Z",
-    "title": "Aviator game",
-    "link": "https://aviator-game.com/",
-    "plan": "topSupporter",
-    "ref": "",
-    "image": "aviator-game-com.png",
-    "endDate": "2024-12-18T16:00:00.00Z",
-    "active": true
-  },
-  {
-    "createdAt": "2023-12-18T16:00:00.00Z",
-    "title": "Lucky jet",
-    "link": "https://lucky-jet.com/",
-    "plan": "topSupporter",
-    "ref": "",
-    "image": "lucky-jet.png",
-    "endDate": "2024-12-18T16:00:00.00Z",
-    "active": true
-  },
-  {
-    "createdAt": "2023-12-13T16:00:00.00Z",
-    "title": "UK Betting Sites Not on GamStop » Non GamStop Bookmakers",
-    "link": "https://uk.nonstopcasino.org/betting-sites-not-on-gamstop/",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/nonstopcasino-betting",
-    "image": "nonstopcasino-betting.png",
-    "endDate": "2024-12-13T16:00:00.00Z",
     "active": true
   },
   {
@@ -616,7 +566,7 @@
     "plan": "topSupporter",
     "ref": "https://opencollective.com/bet-consulting",
     "image": "bet-consulting.png",
-    "endDate": "2024-12-13T16:00:00.00Z",
+    "endDate": "2025-12-13T16:00:00.00Z",
     "active": true
   },
   {
@@ -626,7 +576,7 @@
     "plan": "topSupporter",
     "ref": "https://www.patreon.com/members?userId=82179258",
     "image": "airdroplist.png",
-    "endDate": "2024-12-01T16:00:00.00Z",
+    "endDate": "2025-12-01T16:00:00.00Z",
     "active": true
   },
   {
@@ -687,16 +637,6 @@
     "ref": "https://opencollective.com/nettikasinot-media",
     "image": "nettikasinot-media.png",
     "endDate": "",
-    "active": true
-  },
-  {
-    "createdAt": "2023-03-31T20:00:00.000Z",
-    "title": "Svindel.info | Vi sjekker gambling- og spillsider for svindel",
-    "link": "https://www.svindel.info/",
-    "plan": "silverSponsor",
-    "ref": "https://opencollective.com/svindel-info",
-    "image": "svindel-info.png",
-    "endDate": "2025-03-31T20:00:00.000Z",
     "active": true
   },
   {
@@ -796,17 +736,7 @@
     "plan": "silverSponsor",
     "ref": "https://opencollective.com/casino-utan-svensk-licens1",
     "image": "starwarscasinos.png",
-    "endDate": "2025-03-01T20:00:00.000Z",
-    "active": true
-  },
-  {
-    "createdAt": "2023-02-23T20:00:00.000Z",
-    "title": "neue online casinos deutschland",
-    "link": "https://automatenspielex.com/",
-    "plan": "topSupporter",
-    "ref": "https://opencollective.com/automatenspielexcom",
-    "image": "automatenspielex.png",
-    "endDate": "2025-02-23T20:00:00.000Z",
+    "endDate": "",
     "active": true
   },
   {
