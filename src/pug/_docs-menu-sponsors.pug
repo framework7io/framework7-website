@@ -8,3 +8,7 @@
       each sponsor in sponsors.goldSponsor
         a.sponsor(href=sponsor.link, target="_blank", rel="sponsored")
           img(src='/i/sponsors/' + (sponsor.image), alt=sponsor.title, title=sponsor.title)
+    if (sponsors.silverSponsor)
+      each sponsor in sponsors.silverSponsor
+        a.sponsor(href=sponsor.link, target="_blank", rel="sponsored")
+          img(src='/i/sponsors/' + (sponsor.image), alt=sponsor.title, title=sponsor.title)

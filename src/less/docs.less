@@ -520,7 +520,7 @@ ul.method-parameters {
     }
     &-list {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 4px;
       a {
         display: flex;
@@ -530,7 +530,6 @@ ul.method-parameters {
         text-align: center;
         padding: 0;
         background: #fff;
-        border-radius: 4px;
         img {
           display: block;
           max-width: 100%;
@@ -891,5 +890,17 @@ ul.method-parameters {
       border-left: none;
       border-right: none;
     }
+  }
+}
+#TA_AD_CONTAINER {
+  margin-left: -20px;
+  margin-right: -20px;
+  @media (min-height: 640px) {
+    position: sticky;
+    bottom: 0;
+  }
+  @media (min-width: 961px) {
+    margin-left: -24px;
+    margin-right: -8px;
   }
 }
