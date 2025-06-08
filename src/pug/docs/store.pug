@@ -265,7 +265,7 @@ block content
       <script>
         export default (props, { $store, $on }) => {
           // retrieve "users" getter handler value. Initially empty array
-          const users = $store.getters('users');
+          const users = $store.getters.users;
 
           $on('pageInit', () => {
             // load users on page init
