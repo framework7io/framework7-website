@@ -266,31 +266,31 @@ html
           if (sponsors.diamondSponsor && sponsors.diamondSponsor.length)
             each sponsor in sponsors.diamondSponsor
               .home-sponsors-item.home-sponsor-diamond
-                a(href=sponsor.link, target="_blank", rel="sponsored")
+                a(href=sponsor.link, target="_blank", rel="noopener")
                   img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.platinumSponsor && sponsors.platinumSponsor.length)
             each sponsor in sponsors.platinumSponsor
               .home-sponsors-item.home-sponsor-platinum
-                a(href=sponsor.link, target="_blank", rel="sponsored")
+                a(href=sponsor.link, target="_blank", rel="noopener")
                   img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.goldSponsor)
             each sponsor in sponsors.goldSponsor
               .home-sponsors-item.home-sponsor-gold
-                a(href=sponsor.link, target="_blank", rel="sponsored")
+                a(href=sponsor.link, target="_blank", rel="noopener")
                   img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.silverSponsor)
             each sponsor in sponsors.silverSponsor
               .home-sponsors-item.home-sponsor-silver
-                a(href=sponsor.link, target="_blank", rel="sponsored")
+                a(href=sponsor.link, target="_blank", rel="noopener")
                   img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
             .home-sponsors-separator
           if (sponsors.topSupporter)
             each sponsor in sponsors.topSupporter
               .home-sponsors-item
-                a(href=sponsor.link, target="_blank", rel="sponsored")
+                a(href=sponsor.link, target="_blank", rel="noopener")
                   if (sponsor.image)
                     img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
                   else
