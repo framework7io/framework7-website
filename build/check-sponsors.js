@@ -15,7 +15,7 @@ const trs = csv
       return '';
     }
 
-    const ref = `https://opencollective.com/${data[17].replace(/"/g, '')}`;
+    const ref = `https://opencollective.com/${data[13].replace(/"/g, '')}`;
     return { date, ref };
   })
   .filter((tr) => !!tr)
