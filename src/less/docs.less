@@ -897,13 +897,16 @@ ul.method-parameters {
   width: auto !important;
   margin-left: -20px;
   margin-right: -20px;
-  @media (min-height: 640px) {
-    position: sticky;
-    bottom: 0;
+  position: sticky;
+  bottom: 0;
+  &:empty {
+    background: transparent;
   }
   @media (min-width: 961px) {
     margin-left: -24px;
     margin-right: -8px;
+    padding-bottom: 56px;
+    background: #171106;
   }
   @media (max-width: 960px) and (min-height: 640px) {
     bottom: 20px;
