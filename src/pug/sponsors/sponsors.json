@@ -1,6 +1,16 @@
 [
   {
     "createdAt": "2025-08-28T20:00:00.000Z",
+    "title": "Interac-casino.com - Fast Payout",
+    "link": "https://interac-casino.com/en-ca/fast-withdrawal-casinos/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/interac-casino-fast-payout",
+    "image": "interac-casino-fast-payout.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2025-08-28T20:00:00.000Z",
     "title": "VanguardNGR France",
     "link": "https://www.vanguardngr.com/casino/fr/",
     "plan": "topSupporter",
