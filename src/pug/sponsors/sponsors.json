@@ -1,6 +1,16 @@
 [
   {
     "createdAt": "2025-08-28T20:00:00.000Z",
+    "title": "AltMarket - Best Deals on Games, Software & Subscriptions",
+    "link": "https://altmarket.app/",
+    "plan": "silverSponsor",
+    "ref": "",
+    "image": "altmarket.png",
+    "endDate": "",
+    "active": true
+  },
+  {
+    "createdAt": "2025-08-28T20:00:00.000Z",
     "title": "Interac-casino.com - Fast Payout",
     "link": "https://interac-casino.com/en-ca/fast-withdrawal-casinos/",
     "plan": "topSupporter",
