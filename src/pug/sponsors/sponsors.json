@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2025-09-28T20:00:00.000Z",
+    "title": "Give Me Boost",
+    "link": "https://givemeboost.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/give-me-boost",
+    "image": "give-me-boost.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2025-09-24T20:00:00.000Z",
     "title": "super clone watches",
     "link": "https://etawatchesindia.in/",
