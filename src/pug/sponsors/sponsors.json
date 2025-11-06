@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2025-11-06T20:00:00.000Z",
+    "title": "Ставки на спорт",
+    "link": "https://betking.com.ua/sports-book/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/stavki-na-sport-ua",
+    "image": "stavki-na-sport-ua.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2025-11-05T20:00:00.000Z",
     "title": "Best Online Casino",
     "link": "https://nl.trustpilot.com/review/scandicasinos.com",
