@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2025-11-19T20:00:00.000Z",
+    "title": "WriteHuman AI Humanizer",
+    "link": "https://writehuman.ai/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/writehuman",
+    "image": "writehuman.png",
+    "endDate": "2026-11-19T20:00:00.000Z",
+    "active": true
+  },
+  {
     "createdAt": "2025-11-15T20:00:00.000Z",
     "title": "Casino Zonder Registratie",
     "link": "https://nl.trustpilot.com/review/casinozonderregistratie.vip",
