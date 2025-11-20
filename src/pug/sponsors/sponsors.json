@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2025-11-20T20:00:00.000Z",
+    "title": "SoftOrbits",
+    "link": "https://www.softorbits.net/ai-undresser/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/softorbits",
+    "image": "softorbits.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2025-11-19T20:00:00.000Z",
     "title": "WriteHuman AI Humanizer",
     "link": "https://writehuman.ai/",
