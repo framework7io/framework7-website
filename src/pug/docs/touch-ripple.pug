@@ -21,7 +21,7 @@ block content
     h2 Ripple Elements
     p By default it is enabled for the elements that match to the following CSS selector:
     :code(lang="css")
-      .ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content, .list.accordion-list .accordion-item-toggle
+      .ripple, .link, .item-link, .list label.item-content, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .list.accordion-list .accordion-item-toggle
     p which are defined in `touch.touchRippleElements` <a href="app.html#app-parameters">app parameter</a>.
     p So when you <em>touch</em> such elements you will see so called "ripple" effect.
     p If you need to add "ripple" effect for any custom element you may add this element's selector to `touch.touchRippleElements` parameter or just add `ripple` class.
@@ -47,16 +47,16 @@ block content
           <a href="#" class="button no-ripple">Button Without Ripple Effect</a>
 
     h2 iOS Touch Highlight
-    p <strong>Framework7 v9</strong> introduces a new Touch Highlight effect for iOS theme, providing a native iOS-like highlight on touch.
+    p <strong>Framework7 v9</strong> introduces a new Touch Highlight effect for iOS theme, providing a native iOS-like highlight on touch for container elements.
     p Touch Highlight is enabled by default for iOS theme and can be configured using the following <a href="app.html#app-parameters">app parameters</a>:
     ul
       li `touch.touchHighlight` - boolean, default `true` - enables/disables touch highlight effect for iOS theme
       li `touch.touchHighlightElements` - string, CSS selector of elements to apply touch highlight effect on
-    p The default elements that have touch highlight effect are:
+    p The default elements that have touch highlight effect are container/area elements:
     :code(lang="css")
-      .link, .item-link, .list-button, .links-list a, .button, button, .tab-link, .item-radio, .item-checkbox, .actions-button, .fab a, .checkbox, .radio, .menu-item-content
+      .toolbar-pane, .navbar .left, .navbar .right, .popover-inner, .actions-group:not(.actions-grid .actions-group), .searchbar-input-wrap, .searchbar-disable-button, .subnavbar, .searchbar-input-wrap .autocomplete-dropdown, .messagebar-area, .notification, .toast, .fab > a
     p To disable touch highlight for specific elements, add `no-touch-highlight` class:
     :code(lang="html")
-      <a href="#" class="button no-touch-highlight">Button Without Touch Highlight</a>
+      <div class="toolbar-pane no-touch-highlight">Toolbar Pane Without Highlight</div>
 
     +cssVars('touch-ripple')
