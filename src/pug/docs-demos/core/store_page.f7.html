@@ -8,7 +8,7 @@
     </div>
     <div class="page-content">
       ${users.value.length > 0 ? $h`
-      <div class="list list-strong list-outline-ios list-dividers-ios inset-md">
+      <div class="list list-strong inset list-dividers-ios">
         <ul>
           ${users.value.map((user) => $h`
           <li class="item-content">
@@ -20,7 +20,7 @@
         </ul>
       </div>
       ` : $h`
-      <div class="block block-strong block-outline-ios inset-md">
+      <div class="block block-strong inset">
         <a href="#" class="button button-fill button-round button-preloader ${loading.value ? 'button-loading' : ''}"
           @click=${loadUsers}>
           <span class="preloader"></span>
