@@ -1,14 +1,11 @@
-function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 import $ from '../../shared/dom7.js';
 import { extend, deleteProps } from '../../shared/utils.js';
 import Framework7Class from '../../shared/class.js';
 /** @jsx $jsx */
 import $jsx from '../../shared/$jsx.js';
 class Messages extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const m = this;
     const defaults = {
@@ -136,55 +133,49 @@ class Messages extends Framework7Class {
       class: "message-footer"
     }, message.footer)));
   }
-  renderMessages(messagesToRender, method) {
-    if (messagesToRender === void 0) {
-      messagesToRender = this.messages;
-    }
-    if (method === void 0) {
-      method = this.params.newMessagesFirst ? 'prepend' : 'append';
-    }
+  renderMessages(messagesToRender = this.messages, method = this.params.newMessagesFirst ? 'prepend' : 'append') {
     const m = this;
     const html = messagesToRender.map(message => m.renderMessage(message)).join('');
     m.$el[method](html);
   }
-  isFirstMessage() {
+  isFirstMessage(...args) {
     const m = this;
-    if (m.params.firstMessageRule) return m.params.firstMessageRule(...arguments);
+    if (m.params.firstMessageRule) return m.params.firstMessageRule(...args);
     return false;
   }
-  isLastMessage() {
+  isLastMessage(...args) {
     const m = this;
-    if (m.params.lastMessageRule) return m.params.lastMessageRule(...arguments);
+    if (m.params.lastMessageRule) return m.params.lastMessageRule(...args);
     return false;
   }
-  isTailMessage() {
+  isTailMessage(...args) {
     const m = this;
-    if (m.params.tailMessageRule) return m.params.tailMessageRule(...arguments);
+    if (m.params.tailMessageRule) return m.params.tailMessageRule(...args);
     return false;
   }
-  isSameNameMessage() {
+  isSameNameMessage(...args) {
     const m = this;
-    if (m.params.sameNameMessageRule) return m.params.sameNameMessageRule(...arguments);
+    if (m.params.sameNameMessageRule) return m.params.sameNameMessageRule(...args);
     return false;
   }
-  isSameHeaderMessage() {
+  isSameHeaderMessage(...args) {
     const m = this;
-    if (m.params.sameHeaderMessageRule) return m.params.sameHeaderMessageRule(...arguments);
+    if (m.params.sameHeaderMessageRule) return m.params.sameHeaderMessageRule(...args);
     return false;
   }
-  isSameFooterMessage() {
+  isSameFooterMessage(...args) {
     const m = this;
-    if (m.params.sameFooterMessageRule) return m.params.sameFooterMessageRule(...arguments);
+    if (m.params.sameFooterMessageRule) return m.params.sameFooterMessageRule(...args);
     return false;
   }
-  isSameAvatarMessage() {
+  isSameAvatarMessage(...args) {
     const m = this;
-    if (m.params.sameAvatarMessageRule) return m.params.sameAvatarMessageRule(...arguments);
+    if (m.params.sameAvatarMessageRule) return m.params.sameAvatarMessageRule(...args);
     return false;
   }
-  isCustomClassMessage() {
+  isCustomClassMessage(...args) {
     const m = this;
-    if (m.params.customClassMessageRule) return m.params.customClassMessageRule(...arguments);
+    if (m.params.customClassMessageRule) return m.params.customClassMessageRule(...args);
     return undefined;
   }
   layout() {
@@ -239,10 +230,7 @@ class Messages extends Framework7Class {
     m.messages = [];
     m.$el.html('');
   }
-  removeMessage(messageToRemove, layout) {
-    if (layout === void 0) {
-      layout = true;
-    }
+  removeMessage(messageToRemove, layout = true) {
     const m = this;
     // Index or El
     let index;
@@ -265,10 +253,7 @@ class Messages extends Framework7Class {
     if (m.params.autoLayout && layout) m.layout();
     return m;
   }
-  removeMessages(messagesToRemove, layout) {
-    if (layout === void 0) {
-      layout = true;
-    }
+  removeMessages(messagesToRemove, layout = true) {
     const m = this;
     if (Array.isArray(messagesToRemove)) {
       const messagesToRemoveEls = [];
@@ -286,14 +271,11 @@ class Messages extends Framework7Class {
     if (m.params.autoLayout && layout) m.layout();
     return m;
   }
-  addMessage() {
+  addMessage(...args) {
     const m = this;
     let messageToAdd;
     let animate;
     let method;
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
     if (typeof args[1] === 'boolean') {
       [messageToAdd, animate, method] = args;
     } else {
@@ -324,14 +306,11 @@ class Messages extends Framework7Class {
       scrollBefore
     };
   }
-  addMessages() {
+  addMessages(...args) {
     const m = this;
     let messagesToAdd;
     let animate;
     let method;
-    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      args[_key2] = arguments[_key2];
-    }
     if (typeof args[1] === 'boolean') {
       [messagesToAdd, animate, method] = args;
     } else {
@@ -392,10 +371,7 @@ class Messages extends Framework7Class {
     }
     return m;
   }
-  showTyping(message) {
-    if (message === void 0) {
-      message = {};
-    }
+  showTyping(message = {}) {
     const m = this;
     const typingMessage = m.messages.filter(el => el.isTyping)[0];
     if (typingMessage) {
@@ -448,10 +424,7 @@ class Messages extends Framework7Class {
       m.scroll(animate ? undefined : 0);
     }
   }
-  scroll(duration, scrollTop) {
-    if (duration === void 0) {
-      duration = 300;
-    }
+  scroll(duration = 300, scrollTop) {
     const m = this;
     const currentScroll = m.pageContentEl.scrollTop;
     let newScrollTop;

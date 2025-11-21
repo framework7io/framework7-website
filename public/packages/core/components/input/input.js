@@ -29,7 +29,7 @@ const Input = {
       app.$el.append($shadowEl);
     }
     const styles = window.getComputedStyle($textareaEl[0]);
-    'padding-top padding-bottom padding-left padding-right margin-left margin-right margin-top margin-bottom width font-size font-family font-style font-weight line-height font-variant text-transform letter-spacing border box-sizing display'.split(' ').forEach(style => {
+    'padding-top padding-bottom padding-left padding-right margin-left margin-right margin-top margin-bottom width font-size font-family font-style font-weight line-height font-variant text-transform letter-spacing border box-sizing display min-height'.split(' ').forEach(style => {
       let styleValue = styles[style];
       if ('font-size line-height letter-spacing width'.split(' ').indexOf(style) >= 0) {
         styleValue = styleValue.replace(',', '.');
@@ -158,10 +158,7 @@ const Input = {
       app.emit('inputEmpty', $inputEl[0]);
     }
   },
-  scrollIntoView(inputEl, duration, centered, force) {
-    if (duration === void 0) {
-      duration = 0;
-    }
+  scrollIntoView(inputEl, duration = 0, centered, force) {
     const $inputEl = $(inputEl);
     const $scrollableEl = $inputEl.parents('.page-content, .panel, .card-expandable .card-content').eq(0);
     if (!$scrollableEl.length) {

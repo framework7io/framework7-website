@@ -6,41 +6,41 @@
         <div class="left">
           <a class="link back">
             <i class="icon icon-back"></i>
-            <span class="if-not-md">Back</span>
+
           </a>
         </div>
         <div class="title">Popup</div>
       </div>
     </div>
     <div class="page-content">
-      <div class="block block-strong-ios block-outline-ios">
+      <div class="block block-strong inset">
         <p>Popup is a modal window with any HTML content that pops up over App's main content. Popup as all other
           overlays is part of so called "Temporary Views".</p>
         <p>
-          <a class="button button-fill popup-open" data-popup=".demo-popup">Open Popup</a>
+          <a class="button button-fill button-round popup-open" data-popup=".demo-popup">Open Popup</a>
         </p>
         <p>
-          <a class="button button-fill" @click=${createPopup}>Create Dynamic Popup</a>
+          <a class="button button-fill button-round" @click=${createPopup}>Create Dynamic Popup</a>
         </p>
       </div>
       <div class="block-title">Swipe To Close</div>
-      <div class="block block-strong-ios block-outline-ios">
+      <div class="block block-strong inset">
         <p>Popup can be closed with swipe to top or bottom:</p>
         <p>
-          <a class="button button-fill popup-open" data-popup=".demo-popup-swipe">Swipe To Close</a>
+          <a class="button button-fill button-round popup-open" data-popup=".demo-popup-swipe">Swipe To Close</a>
         </p>
         <p>Or it can be closed with swipe on special swipe handler and, for example, only to bottom:</p>
         <p>
-          <a class="button button-fill popup-open" data-popup=".demo-popup-swipe-handler">With Swipe
+          <a class="button button-fill button-round popup-open" data-popup=".demo-popup-swipe-handler">With Swipe
             Handler</a>
         </p>
       </div>
       <div class="block-title">Push View</div>
-      <div class="block block-strong-ios block-outline-ios">
+      <div class="block block-strong inset">
         <p>Popup can push view behind. By default it has effect only when "safe-area-inset-top" is more than zero (iOS
           fullscreen webapp or iOS cordova app)</p>
         <p>
-          <a class="button button-fill popup-open" data-popup=".demo-popup-push">Popup Push</a>
+          <a class="button button-fill button-round popup-open" data-popup=".demo-popup-push">Popup Push</a>
         </p>
       </div>
     </div>
@@ -50,7 +50,7 @@
           <div class="navbar-bg"></div>
           <div class="navbar-inner">
             <div class="title">Popup Title</div>
-            <div class="right"><a class="link popup-close">Close</a></div>
+            <div class="right"><a class="link popup-close"><i class="icon icon-close"></i></a></div>
           </div>
         </div>
         <div class="page-content">
@@ -82,7 +82,7 @@
             <div class="navbar-bg"></div>
             <div class="navbar-inner">
               <div class="title">Push Popup</div>
-              <div class="right"><a class="link popup-close">Close</a></div>
+              <div class="right"><a class="link popup-close"><i class="icon icon-close"></i></a></div>
               <div class="title-large">
                 <div class="title-large-text">Push Popup</div>
               </div>
@@ -122,7 +122,7 @@
           <div class="navbar-bg"></div>
           <div class="navbar-inner">
             <div class="title">Swipe To Close</div>
-            <div class="right"><a class="link popup-close">Close</a></div>
+            <div class="right"><a class="link popup-close"><i class="icon icon-close"></i></a></div>
           </div>
         </div>
         <div class="page-content">
@@ -137,7 +137,7 @@
         <div class="swipe-handler"></div>
         <div class="page-content">
           <div class="block-title block-title-large">Hello!</div>
-          <div class="block block-strong-ios block-outline-ios">
+          <div class="block block-strong inset">
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum
               neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus,
               viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper
@@ -188,7 +188,7 @@
                   <div class="navbar-bg"></div>
                   <div class="navbar-inner">
                     <div class="title">Dynamic Popup</div>
-                    <div class="right"><a  class="link popup-close">Close</a></div>
+                    <div class="right"><a  class="link popup-close"><i class="icon icon-close"></i></a></div>
                   </div>
                 </div>
                 <div class="page-content">

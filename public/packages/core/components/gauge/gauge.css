@@ -1,1 +1,1 @@
-.gauge{position:relative;text-align:center;margin-left:auto;margin-right:auto;display:inline-block}.gauge svg,.gauge-svg{max-width:100%;height:auto}.gauge svg circle,.gauge svg path,.gauge-svg circle,.gauge-svg path{transition-duration:.4s}
+.gauge{display:inline-block;margin-left:auto;margin-right:auto;position:relative;text-align:center}.gauge svg,.gauge-svg{height:auto;max-width:100%}.gauge svg circle,.gauge svg path,.gauge-svg circle,.gauge-svg path{transition-duration:.4s}

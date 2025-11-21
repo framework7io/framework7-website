@@ -12,18 +12,12 @@ export default {
       app,
       domProp: 'f7Range'
     }), {
-      getValue(el) {
-        if (el === void 0) {
-          el = '.range-slider';
-        }
+      getValue(el = '.range-slider') {
         const range = app.range.get(el);
         if (range) return range.getValue();
         return undefined;
       },
-      setValue(el, value) {
-        if (el === void 0) {
-          el = '.range-slider';
-        }
+      setValue(el = '.range-slider', value) {
         const range = app.range.get(el);
         if (range) return range.setValue(value);
         return undefined;

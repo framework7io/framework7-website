@@ -6,10 +6,7 @@ import Framework7Class from '../../shared/class.js';
 /** @jsx $jsx */
 import $jsx from '../../shared/$jsx.js';
 class Gauge extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const self = this;
     const defaults = extend({}, app.params.gauge);
@@ -133,10 +130,7 @@ class Gauge extends Framework7Class {
       "dominant-baseline": !semiCircle && 'middle'
     }, labelText));
   }
-  update(newParams) {
-    if (newParams === void 0) {
-      newParams = {};
-    }
+  update(newParams = {}) {
     const self = this;
     const document = getDocument();
     const {

@@ -1,9 +1,6 @@
 /* eslint-disable prefer-rest-params */
-const $jsx = function (tag, props) {
+const $jsx = (tag, props, ...args) => {
   const attrs = props || {};
-  for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-    args[_key - 2] = arguments[_key];
-  }
   const children = args || [];
   const attrsString = Object.keys(attrs).map(attr => {
     if (attr[0] === '_') {

@@ -2,14 +2,10 @@ import { extend, nextTick, deleteProps } from '../../shared/utils.js';
 import Framework7Class from '../../shared/class.js';
 import $ from '../../shared/dom7.js';
 import { getDevice } from '../../shared/get-device.js';
-import { getSupport } from '../../shared/get-support.js';
 /** @jsx $jsx */
 import $jsx from '../../shared/$jsx.js';
 class Calendar extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const calendar = this;
     calendar.params = extend({}, app.params.calendar, params);
@@ -297,7 +293,7 @@ class Calendar extends Framework7Class {
       function onTimeSelectorClick() {
         calendar.openTimePicker();
       }
-      const passiveListener = app.touchEvents.start === 'touchstart' && getSupport().passiveListener ? {
+      const passiveListener = app.touchEvents.start === 'touchstart' ? {
         passive: true,
         capture: false
       } : false;
@@ -719,7 +715,6 @@ class Calendar extends Framework7Class {
       dir = 'next'; // eslint-disable-line
       rebuildBoth = true; // eslint-disable-line
     }
-
     if (!rebuildBoth) {
       currentMonthHtml = calendar.renderMonth(new Date(currentYear, currentMonth), dir);
     } else {
@@ -771,7 +766,6 @@ class Calendar extends Framework7Class {
       transition = ''; // eslint-disable-line
       if (!params.animate) transition = 0; // eslint-disable-line
     }
-
     const nextMonth = parseInt(calendar.$months.eq(calendar.$months.length - 1).attr('data-month'), 10);
     const nextYear = parseInt(calendar.$months.eq(calendar.$months.length - 1).attr('data-year'), 10);
     const nextDate = new Date(nextYear, nextMonth);
@@ -816,7 +810,6 @@ class Calendar extends Framework7Class {
       transition = ''; // eslint-disable-line
       if (!params.animate) transition = 0; // eslint-disable-line
     }
-
     const prevMonth = parseInt(calendar.$months.eq(0).attr('data-month'), 10);
     const prevYear = parseInt(calendar.$months.eq(0).attr('data-year'), 10);
     const prevDate = new Date(prevYear, prevMonth + 1, -1);
@@ -851,10 +844,7 @@ class Calendar extends Framework7Class {
       calendar.onMonthChangeEnd('prev');
     }
   }
-  resetMonth(transition) {
-    if (transition === void 0) {
-      transition = '';
-    }
+  resetMonth(transition = '') {
     const calendar = this;
     const {
       $wrapperEl,
@@ -1202,7 +1192,7 @@ class Calendar extends Framework7Class {
       return calendar.params.renderMonthSelector.call(calendar);
     }
     return $jsx("div", {
-      class: "calendar-month-selector"
+      class: "calendar-month-selector toolbar-pane"
     }, $jsx("a", {
       class: "link icon-only calendar-prev-month-button"
     }, $jsx("i", {
@@ -1223,7 +1213,7 @@ class Calendar extends Framework7Class {
       return calendar.params.renderYearSelector.call(calendar);
     }
     return $jsx("div", {
-      class: "calendar-year-selector"
+      class: "calendar-year-selector toolbar-pane"
     }, $jsx("a", {
       class: "link icon-only calendar-prev-year-button"
     }, $jsx("i", {
@@ -1260,19 +1250,32 @@ class Calendar extends Framework7Class {
       class: "calendar-header"
     }, $jsx("div", {
       class: "calendar-selected-date"
-    }, calendar.params.headerPlaceholder));
+    }, calendar.params.headerPlaceholder), calendar.app.theme === 'ios' && calendar.params.footer && $jsx("div", {
+      class: "toolbar-pane"
+    }, $jsx("a", {
+      class: `link calendar-close sheet-close popover-close`
+    }, $jsx("i", {
+      class: "icon icon-close"
+    }), calendar.params.toolbarCloseText && $jsx("span", null, calendar.params.toolbarCloseText))));
   }
   renderFooter() {
     const calendar = this;
     const app = calendar.app;
+    if (app.theme === 'ios') {
+      return '';
+    }
     if (calendar.params.renderFooter) {
       return calendar.params.renderFooter.call(calendar);
     }
     return $jsx("div", {
       class: "calendar-footer"
+    }, $jsx("div", {
+      class: "toolbar-pane"
     }, $jsx("a", {
       class: `${app.theme === 'md' ? 'button button-round' : 'link'} calendar-close sheet-close popover-close`
-    }, calendar.params.toolbarCloseText));
+    }, $jsx("i", {
+      class: "icon icon-close"
+    }), calendar.params.toolbarCloseText && $jsx("span", null, calendar.params.toolbarCloseText))));
   }
   renderToolbar() {
     const calendar = this;

@@ -94,9 +94,6 @@ import TabbarScrollable from './pages/tabbar-scrollable.svelte';
 import ToolbarHideScroll from './pages/toolbar-hide-scroll.svelte';
 import Tooltip from './pages/tooltip.svelte';
 import Timeline from './pages/timeline.svelte';
-import TimelineVertical from './pages/timeline-vertical.svelte';
-import TimelineHorizontal from './pages/timeline-horizontal.svelte';
-import TimelineHorizontalCalendar from './pages/timeline-horizontal-calendar.svelte';
 import Treeview from './pages/treeview.svelte';
 import VirtualList from './pages/virtual-list.svelte';
 import ColorThemes from './pages/color-themes.svelte';
@@ -144,11 +141,10 @@ export default [
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner sliding">
+          <div class="navbar-inner">
             <div class="left">
               <a  class="link back">
                 <i class="icon icon-back"></i>
-                <span class="if-not-md">Back</span>
               </a>
             </div>
             <div class="title">Panel Page 1</div>
@@ -169,11 +165,10 @@ export default [
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner sliding">
+          <div class="navbar-inner">
             <div class="left">
               <a  class="link back">
                 <i class="icon icon-back"></i>
-                <span class="if-not-md">Back</span>
               </a>
             </div>
             <div class="title">Panel Page 2</div>
@@ -595,18 +590,6 @@ export default [
   {
     path: '/timeline/',
     component: Timeline,
-  },
-  {
-    path: '/timeline-vertical/',
-    component: TimelineVertical,
-  },
-  {
-    path: '/timeline-horizontal/',
-    component: TimelineHorizontal,
-  },
-  {
-    path: '/timeline-horizontal-calendar/',
-    component: TimelineHorizontalCalendar,
   },
   {
     path: '/treeview/',

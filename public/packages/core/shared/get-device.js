@@ -1,10 +1,9 @@
 import { getWindow, getDocument } from 'ssr-window';
 import { getSupport } from './get-support.js';
 let deviceCalculated;
-function calcDevice(_temp) {
-  let {
-    userAgent
-  } = _temp === void 0 ? {} : _temp;
+function calcDevice({
+  userAgent
+} = {}) {
   const support = getSupport();
   const window = getWindow();
   const platform = window.navigator.platform;
@@ -132,13 +131,7 @@ const IS_BROWSER = (() => {
     return false;
   }
 })();
-function getDevice(overrides, reset) {
-  if (overrides === void 0) {
-    overrides = {};
-  }
-  if (reset === void 0) {
-    reset = IS_BROWSER;
-  }
+function getDevice(overrides = {}, reset = IS_BROWSER) {
   if (!deviceCalculated || reset) {
     deviceCalculated = calcDevice(overrides);
   }

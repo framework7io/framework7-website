@@ -1,13 +1,13 @@
 /**
- * Framework7 8.3.4
+ * Framework7 9.0.0-beta.1
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2024 Vladimir Kharlampidi
+ * Copyright 2014-2025 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: September 18, 2024
+ * Released on: November 21, 2025
  */
 
 import $ from './shared/dom7.js';
@@ -31,6 +31,7 @@ import Navbar from './components/navbar/navbar.js';
 import Toolbar from './components/toolbar/toolbar.js';
 import Subnavbar from './components/subnavbar/subnavbar.js';
 import TouchRipple from './components/touch-ripple/touch-ripple.js';
+import TouchHighlight from './components/touch-highlight/touch-highlight.js';
 import Modal from './components/modal/modal.js';
 import Dialog from './components/dialog/dialog.js';
 import Popup from './components/popup/popup.js';
@@ -81,6 +82,6 @@ import Treeview from './components/treeview/treeview.js';
 import TextEditor from './components/text-editor/text-editor.js';
 import Breadcrumbs from './components/breadcrumbs/breadcrumbs.js';
 import Typography from './components/typography/typography.js';
-Framework7.use([DeviceModule, SupportModule, UtilsModule, ResizeModule, TouchModule, ClicksModule, RouterModule, HistoryModule, ServiceWorkerModule, StoreModule, Statusbar, View, Navbar, Toolbar, Subnavbar, TouchRipple, Modal, Dialog, Popup, LoginScreen, Popover, Actions, Sheet, Toast, Preloader, Progressbar, Sortable, Swipeout, Accordion, ContactsList, VirtualList, ListIndex, Timeline, Tabs, Panel, Card, Chip, Form, Input, Checkbox, Radio, Toggle, Range, Stepper, SmartSelect, Grid, Calendar, Picker, InfiniteScroll, PullToRefresh, DataTable, Fab, Searchbar, Messages, Messagebar, Swiper, PhotoBrowser, Notification, Autocomplete, Tooltip, Skeleton, ColorPicker, Treeview, TextEditor, Breadcrumbs, Typography]);
+Framework7.use([DeviceModule, SupportModule, UtilsModule, ResizeModule, TouchModule, ClicksModule, RouterModule, HistoryModule, ServiceWorkerModule, StoreModule, Statusbar, View, Navbar, Toolbar, Subnavbar, TouchRipple, TouchHighlight, Modal, Dialog, Popup, LoginScreen, Popover, Actions, Sheet, Toast, Preloader, Progressbar, Sortable, Swipeout, Accordion, ContactsList, VirtualList, ListIndex, Timeline, Tabs, Panel, Card, Chip, Form, Input, Checkbox, Radio, Toggle, Range, Stepper, SmartSelect, Grid, Calendar, Picker, InfiniteScroll, PullToRefresh, DataTable, Fab, Searchbar, Messages, Messagebar, Swiper, PhotoBrowser, Notification, Autocomplete, Tooltip, Skeleton, ColorPicker, Treeview, TextEditor, Breadcrumbs, Typography]);
 export { $ as Dom7, utils, getDevice, getSupport, createStore };
 export default Framework7;

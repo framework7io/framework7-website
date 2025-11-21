@@ -55,20 +55,14 @@ export default {
     });
   },
   clicks: {
-    '.sheet-open': function openSheet($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.sheet-open': function openSheet($clickedEl, data = {}) {
       const app = this;
       if ($('.sheet-modal.modal-in').length > 0 && data.sheet && $(data.sheet)[0] !== $('.sheet-modal.modal-in')[0]) {
         app.sheet.close('.sheet-modal.modal-in');
       }
       app.sheet.open(data.sheet, data.animate, $clickedEl);
     },
-    '.sheet-close': function closeSheet($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.sheet-close': function closeSheet($clickedEl, data = {}) {
       const app = this;
       app.sheet.close(data.sheet, data.animate, $clickedEl);
     }

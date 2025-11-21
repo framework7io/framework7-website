@@ -31,7 +31,6 @@ function calcTransformOrigin(isTextNode, textRect, boundingRect) {
   }
   return '0 0'; //top left
 }
-
 function getTextDx(oldTextRect, newTextRect) {
   if (oldTextRect && newTextRect) {
     return oldTextRect.left + oldTextRect.width / 2 - (newTextRect.left + newTextRect.width / 2);

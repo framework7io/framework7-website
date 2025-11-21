@@ -22,7 +22,7 @@ var routes = [
             <div class="left">
               <a  class="link back">
                 <i class="icon icon-back"></i>
-                <span class="if-not-md">Back</span>
+
               </a>
             </div>
             <div class="title">Panel Page 1</div>
@@ -47,7 +47,7 @@ var routes = [
             <div class="left">
               <a  class="link back">
                 <i class="icon icon-back"></i>
-                <span class="if-not-md">Back</span>
+
               </a>
             </div>
             <div class="title">Panel Page 2</div>
@@ -394,7 +394,7 @@ var routes = [
         path: '/',
         id: 'tab1',
         content: `
-        <div class="block">
+        <div class="block block-strong inset">
           <p>Tab 1 content</p>
           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
           <p>Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.</p>
@@ -406,7 +406,7 @@ var routes = [
         path: '/tab2/',
         id: 'tab2',
         content: `
-        <div class="block">
+        <div class="block block-strong inset">
           <p>Tab 2 content</p>
           <p>Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!</p>
           <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p>
@@ -418,7 +418,7 @@ var routes = [
         path: '/tab3/',
         id: 'tab3',
         content: `
-        <div class="block">
+        <div class="block block-strong inset">
           <p>Tab 3 content</p>
           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
           <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p>
@@ -473,18 +473,6 @@ var routes = [
   {
     path: '/timeline/',
     url: './pages/timeline.html',
-  },
-  {
-    path: '/timeline-vertical/',
-    url: './pages/timeline-vertical.html',
-  },
-  {
-    path: '/timeline-horizontal/',
-    url: './pages/timeline-horizontal.html',
-  },
-  {
-    path: '/timeline-horizontal-calendar/',
-    url: './pages/timeline-horizontal-calendar.html',
   },
   {
     path: '/virtual-list/',

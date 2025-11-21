@@ -4,10 +4,7 @@ import { extend, deleteProps } from '../../shared/utils.js';
 import { getSupport } from '../../shared/get-support.js';
 import Framework7Class from '../../shared/class.js';
 class Tooltip extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const tooltip = this;
     const support = getSupport();
@@ -101,9 +98,9 @@ class Tooltip extends Framework7Class {
       }
       if (tooltip.params.trigger === 'manual') return;
       if (support.touch) {
-        const passive = support.passiveListener ? {
+        const passive = {
           passive: true
-        } : false;
+        };
         if (tooltip.params.delegated) {
           $(document).on(app.touchEvents.start, tooltip.params.targetEl, handleTouchStart, passive);
         } else {
@@ -114,11 +111,11 @@ class Tooltip extends Framework7Class {
       } else {
         // eslint-disable-next-line
         if (tooltip.params.delegated) {
-          $(document).on(support.pointerEvents ? 'pointerenter' : 'mouseenter', tooltip.params.targetEl, handleMouseEnter, true);
-          $(document).on(support.pointerEvents ? 'pointerleave' : 'mouseleave', tooltip.params.targetEl, handleMouseLeave, true);
+          $(document).on('pointerenter', tooltip.params.targetEl, handleMouseEnter, true);
+          $(document).on('pointerleave', tooltip.params.targetEl, handleMouseLeave, true);
         } else {
-          tooltip.$targetEl.on(support.pointerEvents ? 'pointerenter' : 'mouseenter', handleMouseEnter);
-          tooltip.$targetEl.on(support.pointerEvents ? 'pointerleave' : 'mouseleave', handleMouseLeave);
+          tooltip.$targetEl.on('pointerenter', handleMouseEnter);
+          tooltip.$targetEl.on('pointerleave', handleMouseLeave);
         }
       }
     };
@@ -135,9 +132,9 @@ class Tooltip extends Framework7Class {
       }
       if (tooltip.params.trigger === 'manual') return;
       if (support.touch) {
-        const passive = support.passiveListener ? {
+        const passive = {
           passive: true
-        } : false;
+        };
         if (tooltip.params.delegated) {
           $(document).off(app.touchEvents.start, tooltip.params.targetEl, handleTouchStart, passive);
         } else {
@@ -148,11 +145,11 @@ class Tooltip extends Framework7Class {
       } else {
         // eslint-disable-next-line
         if (tooltip.params.delegated) {
-          $(document).off(support.pointerEvents ? 'pointerenter' : 'mouseenter', tooltip.params.targetEl, handleMouseEnter, true);
-          $(document).off(support.pointerEvents ? 'pointerleave' : 'mouseleave', tooltip.params.targetEl, handleMouseLeave, true);
+          $(document).off('pointerenter', tooltip.params.targetEl, handleMouseEnter, true);
+          $(document).off('pointerleave', tooltip.params.targetEl, handleMouseLeave, true);
         } else {
-          tooltip.$targetEl.off(support.pointerEvents ? 'pointerenter' : 'mouseenter', handleMouseEnter);
-          tooltip.$targetEl.off(support.pointerEvents ? 'pointerleave' : 'mouseleave', handleMouseLeave);
+          tooltip.$targetEl.off('pointerenter', handleMouseEnter);
+          tooltip.$targetEl.off('pointerleave', handleMouseLeave);
         }
       }
     };

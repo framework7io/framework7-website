@@ -6,10 +6,7 @@ import Framework7Class from '../../shared/class.js';
 /** @jsx $jsx */
 import $jsx from '../../shared/$jsx.js';
 class PhotoBrowser extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const pb = this;
     pb.app = app;
@@ -166,11 +163,11 @@ class PhotoBrowser extends Framework7Class {
     const renderNavbarCount = typeof pb.params.navbarShowCount === 'undefined' ? pb.params.photos.length > 1 : pb.params.navbarShowCount;
     const isPopup = pb.params.type !== 'page';
     return $jsx("div", {
-      class: `navbar navbar-photo-browser ${pb.params.theme === 'dark' ? 'navbar-photo-browser-dark' : ''}`
+      class: `navbar navbar-photo-browser`
     }, $jsx("div", {
       class: "navbar-bg"
     }), $jsx("div", {
-      class: "navbar-inner navbar-inner-centered-title sliding"
+      class: "navbar-inner navbar-inner-centered-title"
     }, !isPopup && $jsx("div", {
       class: "left"
     }, $jsx("a", {
@@ -185,31 +182,14 @@ class PhotoBrowser extends Framework7Class {
       class: "photo-browser-of"
     }, pb.params.navbarOfText), $jsx("span", {
       class: "photo-browser-total"
-    })), isPopup && (pb.params.popupCloseLinkText || pb.params.popupCloseLinkIcon) && $jsx("div", {
+    })), isPopup && $jsx("div", {
       class: "right"
     }, $jsx("a", {
       class: "link popup-close",
       "data-popup": ".photo-browser-popup"
-    }, pb.params.popupCloseLinkIcon && pb.app.theme === 'ios' && $jsx("i", null, $jsx("svg", {
-      xmlns: "http://www.w3.org/2000/svg",
-      width: "56",
-      height: "56",
-      viewBox: "0 0 56 56"
-    }, $jsx("path", {
-      fill: "currentColor",
-      d: "M 10.0234 43.0234 C 9.2266 43.8203 9.2031 45.1797 10.0234 45.9766 C 10.8438 46.7734 12.1797 46.7734 13.0000 45.9766 L 28.0000 30.9766 L 43.0000 45.9766 C 43.7969 46.7734 45.1563 46.7969 45.9766 45.9766 C 46.7734 45.1562 46.7734 43.8203 45.9766 43.0234 L 30.9531 28.0000 L 45.9766 13.0000 C 46.7734 12.2031 46.7969 10.8437 45.9766 10.0469 C 45.1328 9.2266 43.7969 9.2266 43.0000 10.0469 L 28.0000 25.0469 L 13.0000 10.0469 C 12.1797 9.2266 10.8203 9.2031 10.0234 10.0469 C 9.2266 10.8672 9.2266 12.2031 10.0234 13.0000 L 25.0234 28.0000 Z"
-    }))), pb.params.popupCloseLinkIcon && pb.app.theme === 'md' && $jsx("i", null, $jsx("svg", {
-      xmlns: "http://www.w3.org/2000/svg",
-      height: "24px",
-      viewBox: "0 0 24 24",
-      width: "24px",
-      fill: "currentColor"
-    }, $jsx("path", {
-      d: "M0 0h24v24H0V0z",
-      fill: "none"
-    }), $jsx("path", {
-      d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
-    }))), pb.params.popupCloseLinkText && $jsx("span", null, pb.params.popupCloseLinkText)))));
+    }, $jsx("i", {
+      class: "icon icon-close"
+    }), pb.params.popupCloseLinkText ? $jsx("span", null, pb.params.popupCloseLinkText) : ''))));
   }
   renderToolbar() {
     const pb = this;
@@ -386,7 +366,7 @@ class PhotoBrowser extends Framework7Class {
           pb.emit('local::doubleTap', e);
           pb.emit('local::doubleClick', e);
         },
-        slideChange() {
+        slideChange(...args) {
           const swiper = this;
           if (hasThumbs && pb.thumbsSwiper && !preventMainSlide) {
             preventThumbsSlide = true;
@@ -396,35 +376,20 @@ class PhotoBrowser extends Framework7Class {
             });
           }
           pb.onSlideChange(swiper);
-          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
-          }
           pb.emit('local::slideChange', ...args);
         },
-        transitionStart() {
-          for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-            args[_key2] = arguments[_key2];
-          }
+        transitionStart(...args) {
           pb.emit('local::transitionStart', ...args);
         },
-        transitionEnd() {
-          for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-            args[_key3] = arguments[_key3];
-          }
+        transitionEnd(...args) {
           pb.emit('local::transitionEnd', ...args);
         },
-        slideChangeTransitionStart() {
+        slideChangeTransitionStart(...args) {
           const swiper = this;
           pb.onSlideChange(swiper);
-          for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-            args[_key4] = arguments[_key4];
-          }
           pb.emit('local::slideChangeTransitionStart', ...args);
         },
-        slideChangeTransitionEnd() {
-          for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-            args[_key5] = arguments[_key5];
-          }
+        slideChangeTransitionEnd(...args) {
           pb.emit('local::slideChangeTransitionEnd', ...args);
         }
       }

@@ -3,11 +3,11 @@
 </script>
 
 <Page>
-  <Navbar title="Floating Action Button" backLink="Back" />
+  <Navbar title="Floating Action Button" backLink />
 
   <Fab position="right-top">
-    <Icon ios="f7:add" md="material:add" />
-    <Icon ios="f7:close" md="material:close" />
+    <Icon ios="f7:plus" md="material:add" />
+    <Icon ios="f7:xmark" md="material:close" />
     <FabButtons position="left">
       <FabButton>1</FabButton>
       <FabButton>2</FabButton>
@@ -16,8 +16,8 @@
   </Fab>
 
   <Fab position="right-bottom">
-    <Icon ios="f7:add" md="material:add" />
-    <Icon ios="f7:close" md="material:close" />
+    <Icon ios="f7:plus" md="material:add" />
+    <Icon ios="f7:xmark" md="material:close" />
     <FabButtons position="top">
       <FabButton label="Action 1">1</FabButton>
       <FabButton label="Action 2">2</FabButton>
@@ -26,8 +26,8 @@
   </Fab>
 
   <Fab position="left-bottom">
-    <Icon ios="f7:add" md="material:add" />
-    <Icon ios="f7:close" md="material:close" />
+    <Icon ios="f7:plus" md="material:add" />
+    <Icon ios="f7:xmark" md="material:close" />
     <FabButtons position="top">
       <FabButton>1</FabButton>
       <FabButton>2</FabButton>
@@ -36,8 +36,8 @@
   </Fab>
 
   <Fab position="left-top">
-    <Icon ios="f7:add" md="material:add" />
-    <Icon ios="f7:close" md="material:close" />
+    <Icon ios="f7:plus" md="material:add" />
+    <Icon ios="f7:xmark" md="material:close" />
     <FabButtons position="bottom">
       <FabButton>1</FabButton>
       <FabButton>2</FabButton>
@@ -46,8 +46,8 @@
   </Fab>
 
   <Fab position="center-center">
-    <Icon ios="f7:add" md="material:add" />
-    <Icon ios="f7:close" md="material:close" />
+    <Icon ios="f7:plus" md="material:add" />
+    <Icon ios="f7:xmark" md="material:close" />
     <FabButtons position="center">
       <FabButton>1</FabButton>
       <FabButton>2</FabButton>
@@ -57,10 +57,10 @@
   </Fab>
 
   <Fab position="center-bottom" text="Create">
-    <Icon ios="f7:add" md="material:add" />
+    <Icon ios="f7:plus" md="material:add" />
   </Fab>
 
-  <Block>
+  <Block strong inset>
     <p>
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus
       eligendi est saepe molestias perferendis suscipit, commodi labore ipsa non quasi eum magnam
@@ -87,7 +87,7 @@
       obcaecati aspernatur odio assumenda veniam, ipsum alias.
     </p>
   </Block>
-  <Block>
+  <Block strong inset>
     <p>
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ipsa debitis sed nihil eaque
       dolore cum iste quibusdam, accusamus doloribus, tempora quia quos voluptatibus corporis

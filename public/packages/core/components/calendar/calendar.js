@@ -14,10 +14,7 @@ export default {
       app,
       domProp: 'f7Calendar'
     });
-    app.calendar.close = function close(el) {
-      if (el === void 0) {
-        el = '.calendar';
-      }
+    app.calendar.close = function close(el = '.calendar') {
       const $el = $(el);
       if ($el.length === 0) return;
       const calendar = $el[0].f7Calendar;
@@ -60,13 +57,13 @@ export default {
       monthSelector: true,
       monthPicker: true,
       monthPickerToolbar: true,
-      monthPickerCloseText: 'Done',
+      monthPickerCloseText: '',
       yearSelector: true,
       yearPicker: true,
       yearPickerToolbar: true,
       yearPickerMin: undefined,
       yearPickerMax: undefined,
-      yearPickerCloseText: 'Done',
+      yearPickerCloseText: '',
       timePicker: false,
       timePickerToolbar: true,
       timePickerLabel: 'Time',
@@ -75,7 +72,7 @@ export default {
         minute: 'numeric'
       },
       timePickerPlaceholder: 'Select time',
-      timePickerCloseText: 'Done',
+      timePickerCloseText: '',
       weekHeader: true,
       value: null,
       // Common opener settings
@@ -92,7 +89,7 @@ export default {
       header: false,
       headerPlaceholder: 'Select date',
       toolbar: true,
-      toolbarCloseText: 'Done',
+      toolbarCloseText: '',
       footer: false,
       cssClass: null,
       routableModals: false,

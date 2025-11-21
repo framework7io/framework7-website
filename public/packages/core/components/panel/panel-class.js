@@ -5,10 +5,7 @@ import Framework7Class from '../../shared/class.js';
 import swipePanel from './swipe-panel.js';
 import resizablePanel from './resizable-panel.js';
 class Panel extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     const extendedParams = extend({
       on: {}
     }, app.params.panel, params);
@@ -124,10 +121,7 @@ class Panel extends Framework7Class {
     panel.setVisibleBreakpoint();
     return panel;
   }
-  setVisibleBreakpoint(emitEvents) {
-    if (emitEvents === void 0) {
-      emitEvents = true;
-    }
+  setVisibleBreakpoint(emitEvents = true) {
     const panel = this;
     const app = panel.app;
     if (!panel.visibleBreakpointResizeHandler) {
@@ -199,10 +193,7 @@ class Panel extends Framework7Class {
     panel.setCollapsedBreakpoint();
     return panel;
   }
-  setCollapsedBreakpoint(emitEvents) {
-    if (emitEvents === void 0) {
-      emitEvents = true;
-    }
+  setCollapsedBreakpoint(emitEvents = true) {
     const panel = this;
     const app = panel.app;
     if (!panel.collapsedBreakpointResizeHandler) {
@@ -269,10 +260,7 @@ class Panel extends Framework7Class {
     panel.swipeable = false;
     return panel;
   }
-  onOpen(modifyHtmlClasses) {
-    if (modifyHtmlClasses === void 0) {
-      modifyHtmlClasses = true;
-    }
+  onOpen(modifyHtmlClasses = true) {
     const panel = this;
     // eslint-disable-next-line
     panel._openTransitionStarted = false;
@@ -321,10 +309,7 @@ class Panel extends Framework7Class {
     panel.$el.trigger('panel:closed');
     panel.emit('local::closed panelClosed', panel);
   }
-  toggle(animate) {
-    if (animate === void 0) {
-      animate = true;
-    }
+  toggle(animate = true) {
     const panel = this;
     const breakpoint = panel.params.visibleBreakpoint;
     const app = panel.app;
@@ -366,10 +351,7 @@ class Panel extends Framework7Class {
       });
     }
   }
-  open(animate) {
-    if (animate === void 0) {
-      animate = true;
-    }
+  open(animate = true) {
     const panel = this;
     const app = panel.app;
     if (!app.panel.allowOpen) return false;
@@ -447,10 +429,7 @@ class Panel extends Framework7Class {
     }
     return true;
   }
-  close(animate) {
-    if (animate === void 0) {
-      animate = true;
-    }
+  close(animate = true) {
     const panel = this;
     const {
       effect,

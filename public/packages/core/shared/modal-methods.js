@@ -1,10 +1,7 @@
 import $ from './dom7.js';
 import { extend } from './utils.js';
 import ConstructorMethods from './constructor-methods.js';
-export default function ModalMethods(parameters) {
-  if (parameters === void 0) {
-    parameters = {};
-  }
+export default function ModalMethods(parameters = {}) {
   const {
     defaultSelector,
     constructor: Constructor,
@@ -44,10 +41,7 @@ export default function ModalMethods(parameters) {
       }
       return instance.open(animate);
     },
-    close(el, animate, targetEl) {
-      if (el === void 0) {
-        el = defaultSelector;
-      }
+    close(el = defaultSelector, animate, targetEl) {
       let $el = $(el);
       if (!$el.length) return undefined;
       if ($el.length > 1) {

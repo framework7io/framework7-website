@@ -3,8 +3,8 @@
 </script>
 
 <Page>
-  <Navbar title="Master Detail" backLink="Back" />
-  <Block strong>
+  <Navbar title="Master Detail" backLink />
+  <Block strong inset>
     <p>
       Master-Detail pattern oftenly used on wide enough screens and tablets, and consists of two
       views. Master - is an area in the UI where you have a list of something. Detail - is the area
@@ -17,7 +17,7 @@
     <p>Navigation to/from Master-Detail view happens without transition.</p>
   </Block>
 
-  <List>
+  <List strong inset dividersIos>
     <ListItem reloadDetail={true} link="/master-detail/1/">Detail Page 1</ListItem>
     <ListItem reloadDetail={true} link="/master-detail/2/">Detail Page 2</ListItem>
     <ListItem reloadDetail={true} link="/master-detail/3/">Detail Page 3</ListItem>

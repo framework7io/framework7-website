@@ -69,22 +69,57 @@
 .ios-vars({
   --f7-font-family: -apple-system, SF Pro Text, SF UI Text, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
   --f7-line-height: 1.4;
+  --f7-bars-border-color: transparent;
   /*
   --f7-bars-link-color: var(--f7-theme-color);
   */
+
   .light-vars({
+    --f7-glass-bg-color: rgba(255, 255, 255, 0.75);
+    --f7-glass-shadow:
+      inset -1px -1px 0px -0.5px rgba(255, 255, 255, 1),
+      inset 1px 1px 0px -0.5px rgba(255, 255, 255, 1),
+      inset 3px 3px 10px -3px #ddd,
+      inset -3px -3px 10px -3px #ddd,
+      inset 0 0 5px 1px #fff,
+      inset 0 0 0 0.5px rgba(0, 0, 0, 0.25),
+      inset 0 0 24px 0 rgba(0, 0, 0, 0.1),
+      0 0 25px 0 rgba(0, 0, 0, 0.2);
+    --f7-glass-shadow-thumb:
+      inset -3px -3px 0px -3.5px rgba(255, 255, 255, 1),
+      inset 3px 3px 0px -3.5px rgba(255, 255, 255, 1),
+      inset 0px 0px 0px 0.5px rgba(255, 255, 255, 0.5),
+      inset 3px 3px 10px -2px #eee,
+      inset -3px -3px 10px -2px #eee,
+      inset 0 0 5px 1px #fff;
     --f7-bars-text-color: #000;
     --f7-text-color: #000;
-    --f7-bars-bg-color: #f7f7f8;
-    --f7-bars-bg-color-rgb: 247, 247, 248;
-    --f7-bars-border-color: rgba(0,0,0,0.25);
+    --f7-bars-bg-color: #efeff4;
+
   });
   .dark-vars({
+    --f7-glass-bg-color: rgba(50, 50, 50, 0.5);
+    --f7-glass-shadow:
+      inset -2px -2px 0.5px -2.5px rgba(255, 255, 255, 0.4),
+      inset 3px 3px 0.5px -3.5px rgba(255, 255, 255, 0.4),
+      inset 2px 2px 0.5px -2px #262626,
+      inset -2px -2px 0.5px -2px #262626,
+      inset 0 0 5px 1px #141414,
+      inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+      inset 0 0 10px 0 rgba(255, 255, 255, 0.075),
+      inset 0 0 24px 0 rgba(255, 255, 255, 0.05),
+      0 0 25px 0 rgba(0, 0, 0, 0.15);
+    --f7-glass-shadow-thumb:
+      inset 3px 3px 0px -3.5px rgba(255, 255, 255, 1),
+      inset -3px -3px 0px -3.5px rgba(255, 255, 255, 1),
+      inset -0.5px -0.5px 0px rgba(255, 255, 255, 0.5),
+      inset 0.5px 0.5px 0px rgba(255, 255, 255, 0.1),
+      inset -3px 3px 0px -3.5px rgba(255, 255, 255, 0.25),
+      inset 0px -5px 0px -3.5px rgba(255, 255, 255, 0.25),
+      inset 0px -5px 5px rgba(255, 255, 255, 0.25);
     --f7-bars-text-color: #fff;
     --f7-text-color: #fff;
-    --f7-bars-bg-color: #121212;
-    --f7-bars-bg-color-rgb: 22, 22, 22;
-    --f7-bars-border-color: rgba(255,255,255,0.16);
+    --f7-bars-bg-color: rgba(0,0,0,0.5);
   });
 });
 .md-vars({

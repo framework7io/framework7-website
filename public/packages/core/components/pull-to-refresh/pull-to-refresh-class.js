@@ -1,14 +1,12 @@
 import $ from '../../shared/dom7.js';
 import { deleteProps } from '../../shared/utils.js';
 import Framework7Class from '../../shared/class.js';
-import { getSupport } from '../../shared/get-support.js';
 import { getDevice } from '../../shared/get-device.js';
 class PullToRefresh extends Framework7Class {
   constructor(app, el) {
     super({}, [app]);
     const ptr = this;
     const device = getDevice();
-    const support = getSupport();
     const $el = $(el);
     const $preloaderEl = $el.find('.ptr-preloader');
     ptr.$el = $el;
@@ -93,10 +91,7 @@ class PullToRefresh extends Framework7Class {
     } else if (isIos) {
       triggerDistance = 44;
     }
-    function setPreloaderProgress(progress) {
-      if (progress === void 0) {
-        progress = 0;
-      }
+    function setPreloaderProgress(progress = 0) {
       const $bars = $preloaderEl.find('.preloader-inner-line');
       const perBarProgress = 1 / $bars.length;
       $bars.forEach((barEl, barIndex) => {
@@ -466,10 +461,9 @@ class PullToRefresh extends Framework7Class {
 
     // Events
     ptr.attachEvents = function attachEvents() {
-      const passive = support.passiveListener ? {
+      $el.on(app.touchEvents.start, handleTouchStart, {
         passive: true
-      } : false;
-      $el.on(app.touchEvents.start, handleTouchStart, passive);
+      });
       app.on('touchmove:active', handleTouchMove);
       app.on('touchend:passive', handleTouchEnd);
       if (ptr.mousewheel && !ptr.bottom) {
@@ -477,10 +471,9 @@ class PullToRefresh extends Framework7Class {
       }
     };
     ptr.detachEvents = function detachEvents() {
-      const passive = support.passiveListener ? {
+      $el.off(app.touchEvents.start, handleTouchStart, {
         passive: true
-      } : false;
-      $el.off(app.touchEvents.start, handleTouchStart, passive);
+      });
       app.off('touchmove:active', handleTouchMove);
       app.off('touchend:passive', handleTouchEnd);
       if (ptr.mousewheel && !ptr.bottom) {

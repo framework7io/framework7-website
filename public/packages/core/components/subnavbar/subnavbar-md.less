@@ -1,7 +1,7 @@
 .md {
   .subnavbar {
     height: var(--f7-subnavbar-height);
-    .ltr ({
+    .ltr({
       .right {
         margin-left: auto;
       }
@@ -9,7 +9,7 @@
         right: 16px;
       }
     });;
-    .rtl ({
+    .rtl({
       .right {
         margin-right: auto;
       }
@@ -21,7 +21,7 @@
       justify-content: center;
       padding: 0 12px;
     }
-    a.icon-only {
+    a:is(.icon-only, :has(i:only-child), :has(svg:only-child)) {
       flex-shrink: 0;
       padding: 0 12px;
     }

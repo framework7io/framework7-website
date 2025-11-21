@@ -7,11 +7,7 @@ export default function redirect(direction, route, options) {
     options.replaceState = true; // eslint-disable-line
     options.history = true; // eslint-disable-line
   }
-
-  function redirectResolve(redirectUrl, redirectOptions) {
-    if (redirectOptions === void 0) {
-      redirectOptions = {};
-    }
+  function redirectResolve(redirectUrl, redirectOptions = {}) {
     router.allowPageChange = true;
     router[method](redirectUrl, extend({}, options, redirectOptions));
   }

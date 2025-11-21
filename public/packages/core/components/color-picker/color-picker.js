@@ -14,10 +14,7 @@ export default {
       app,
       domProp: 'f7ColorPicker'
     });
-    app.colorPicker.close = function close(el) {
-      if (el === void 0) {
-        el = '.color-picker';
-      }
+    app.colorPicker.close = function close(el = '.color-picker') {
       const $el = $(el);
       if ($el.length === 0) return;
       const colorPicker = $el[0].f7ColorPicker;
@@ -68,11 +65,10 @@ export default {
       scrollToInput: true,
       toolbarSheet: true,
       toolbarPopover: false,
-      toolbarCloseText: 'Done',
+      toolbarCloseText: '',
       navbarPopup: true,
-      navbarCloseText: 'Done',
+      navbarCloseText: '',
       navbarTitleText: 'Color',
-      navbarBackLinkText: 'Back',
       cssClass: null,
       routableModals: false,
       view: null,

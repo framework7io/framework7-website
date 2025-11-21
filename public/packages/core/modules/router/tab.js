@@ -2,10 +2,7 @@ import $ from '../../shared/dom7.js';
 import { extend } from '../../shared/utils.js';
 import History from '../../shared/history.js';
 import asyncComponent from './async-component.js';
-function tabLoad(tabRoute, loadOptions) {
-  if (loadOptions === void 0) {
-    loadOptions = {};
-  }
+function tabLoad(tabRoute, loadOptions = {}) {
   const router = this;
   const options = extend({
     animate: router.params.animate,

@@ -5,13 +5,7 @@ import { getSupport } from '../../shared/get-support.js';
 import { getDevice } from '../../shared/get-device.js';
 import $ from '../../shared/dom7.js';
 const CardExpandable = {
-  open(cardEl, animate) {
-    if (cardEl === void 0) {
-      cardEl = '.card-expandable';
-    }
-    if (animate === void 0) {
-      animate = true;
-    }
+  open(cardEl = '.card-expandable', animate = true) {
     const app = this;
     const device = getDevice();
     const document = getDocument();
@@ -312,13 +306,7 @@ const CardExpandable = {
       app.on('touchend:passive', onTouchEnd);
     }
   },
-  close(cardEl, animate) {
-    if (cardEl === void 0) {
-      cardEl = '.card-expandable.card-opened';
-    }
-    if (animate === void 0) {
-      animate = true;
-    }
+  close(cardEl = '.card-expandable.card-opened', animate = true) {
     const app = this;
     const device = getDevice();
     const $cardEl = $(cardEl).eq(0);
@@ -419,10 +407,7 @@ const CardExpandable = {
       delete $cardEl[0].detachEventHandlers;
     }
   },
-  toggle(cardEl, animate) {
-    if (cardEl === void 0) {
-      cardEl = '.card-expandable';
-    }
+  toggle(cardEl = '.card-expandable', animate) {
     const app = this;
     const $cardEl = $(cardEl).eq(0);
     if (!$cardEl.length) return;

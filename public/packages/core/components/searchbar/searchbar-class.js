@@ -5,10 +5,7 @@ import FrameworkClass from '../../shared/class.js';
 import { getDevice } from '../../shared/get-device.js';
 import removeDiacritics from './remove-diacritics.js';
 class Searchbar extends FrameworkClass {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const sb = this;
     const defaults = {
@@ -265,7 +262,8 @@ class Searchbar extends FrameworkClass {
     const sb = this;
     if (sb.expandable) return;
     const app = sb.app;
-    sb.$disableButtonEl.transition(0).show();
+    sb.$disableButtonEl.transition(0);
+    sb.$disableButtonEl.css('display', 'flex');
     sb.$disableButtonEl.css(`margin-${app.rtl ? 'left' : 'right'}`, `${-sb.disableButtonEl.offsetWidth}px`);
     /* eslint no-underscore-dangle: ["error", { "allow": ["_clientLeft"] }] */
     sb._clientLeft = sb.$disableButtonEl[0].clientLeft;
@@ -359,9 +357,10 @@ class Searchbar extends FrameworkClass {
     if (sb.expandable) {
       const $navbarEl = sb.$el.parents('.navbar');
       const $pageContentEl = sb.$pageEl && sb.$pageEl.find('.page-content');
+      const $transitionTargetEl = app.them === 'md' ? sb.$el : sb.$el.find('.searchbar-input-wrap');
       if ($navbarEl.hasClass('navbar-large') && $pageContentEl.length) {
         const $titleLargeEl = $navbarEl.find('.title-large');
-        sb.$el.transitionEnd(() => {
+        $transitionTargetEl.transitionEnd(() => {
           $pageContentEl.removeClass('with-searchbar-expandable-closing');
         });
         if ($navbarEl.hasClass('navbar-large') && $navbarEl.hasClass('navbar-large-collapsed') && $titleLargeEl.length) {
@@ -379,12 +378,12 @@ class Searchbar extends FrameworkClass {
       }
       if (app.theme === 'md' && $navbarEl.length) {
         $navbarEl.removeClass('with-searchbar-expandable-enabled with-searchbar-expandable-enabled-no-transition').addClass('with-searchbar-expandable-closing');
-        sb.$el.transitionEnd(() => {
+        $transitionTargetEl.transitionEnd(() => {
           $navbarEl.removeClass('with-searchbar-expandable-closing');
         });
       } else {
         $navbarEl.removeClass('with-searchbar-expandable-enabled with-searchbar-expandable-enabled-no-transition').addClass('with-searchbar-expandable-closing');
-        sb.$el.transitionEnd(() => {
+        $transitionTargetEl.transitionEnd(() => {
           $navbarEl.removeClass('with-searchbar-expandable-closing');
         });
         if (sb.$pageEl) {

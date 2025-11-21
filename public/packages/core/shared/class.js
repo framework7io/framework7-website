@@ -1,13 +1,7 @@
 import { extend, now } from './utils.js';
 import EventsClass from './events-class.js';
 class Framework7Class extends EventsClass {
-  constructor(params, parents) {
-    if (params === void 0) {
-      params = {};
-    }
-    if (parents === void 0) {
-      parents = [];
-    }
+  constructor(params = {}, parents = []) {
     super(parents);
     const self = this;
     self.params = params;
@@ -43,13 +37,7 @@ class Framework7Class extends EventsClass {
       }
     });
   }
-  useModule(moduleName, moduleParams) {
-    if (moduleName === void 0) {
-      moduleName = '';
-    }
-    if (moduleParams === void 0) {
-      moduleParams = {};
-    }
+  useModule(moduleName = '', moduleParams = {}) {
     const instance = this;
     if (!instance.modules) return;
     const module = typeof moduleName === 'string' ? instance.modules[moduleName] : moduleName;
@@ -89,10 +77,7 @@ class Framework7Class extends EventsClass {
       module.create.bind(instance)(moduleParams);
     }
   }
-  useModules(modulesParams) {
-    if (modulesParams === void 0) {
-      modulesParams = {};
-    }
+  useModules(modulesParams = {}) {
     const instance = this;
     if (!instance.modules) return;
     Object.keys(instance.modules).forEach(moduleName => {
@@ -105,7 +90,7 @@ class Framework7Class extends EventsClass {
     if (!Class.use) return;
     Class.use(components);
   }
-  static installModule(module) {
+  static installModule(module, ...params) {
     const Class = this;
     if (!Class.prototype.modules) Class.prototype.modules = {};
     const name = module.name || `${Object.keys(Class.prototype.modules).length}_${now()}`;
@@ -124,21 +109,15 @@ class Framework7Class extends EventsClass {
     }
     // Callback
     if (module.install) {
-      for (var _len = arguments.length, params = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        params[_key - 1] = arguments[_key];
-      }
       module.install.apply(Class, params);
     }
     return Class;
   }
-  static use(module) {
+  static use(module, ...params) {
     const Class = this;
     if (Array.isArray(module)) {
       module.forEach(m => Class.installModule(m));
       return Class;
-    }
-    for (var _len2 = arguments.length, params = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-      params[_key2 - 1] = arguments[_key2];
     }
     return Class.installModule(module, ...params);
   }

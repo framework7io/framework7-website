@@ -51,10 +51,10 @@
 </script>
 
 <Page>
-  <Navbar title="Treeview" backLink="Back" />
+  <Navbar title="Treeview" backLink />
 
   <BlockTitle>Basic tree view</BlockTitle>
-  <Block strong outlineIos class="no-padding-horizontal">
+  <Block strong inset class="no-padding-horizontal">
     <Treeview>
       <TreeviewItem label="Item 1">
         <TreeviewItem label="Sub Item 1">
@@ -81,7 +81,7 @@
   </Block>
 
   <BlockTitle>With icons</BlockTitle>
-  <Block strong outlineIos class="no-padding-horizontal">
+  <Block strong inset class="no-padding-horizontal">
     <Treeview>
       <TreeviewItem label="images" iconF7="folder_fill">
         <TreeviewItem label="avatar.png" iconF7="photo_fill" />
@@ -97,10 +97,10 @@
   </Block>
 
   <BlockTitle>With checkboxes</BlockTitle>
-  <Block strong outlineIos class="no-padding-horizontal">
+  <Block strong inset class="no-padding-horizontal">
     <Treeview>
       <TreeviewItem label="images" iconF7="folder_fill">
-        <span slot="content-start">
+        {#snippet contentStart()}
           <Checkbox
             checked={Object.values(checkboxes.images).indexOf(false) < 0}
             indeterminate={Object.values(checkboxes.images).indexOf(false) >= 0 &&
@@ -112,9 +112,9 @@
               checkboxes = checkboxes;
             }}
           />
-        </span>
+        {/snippet}
         <TreeviewItem label="avatar.png" iconF7="photo_fill" toggle={false}>
-          <span slot="content-start">
+          {#snippet contentStart()}
             <Checkbox
               checked={checkboxes.images['avatar.png']}
               onChange={(e) => {
@@ -122,10 +122,10 @@
                 checkboxes = checkboxes;
               }}
             />
-          </span>
+          {/snippet}
         </TreeviewItem>
         <TreeviewItem label="background.jpg" iconF7="photo_fill" toggle={false}>
-          <span slot="content-start">
+          {#snippet contentStart()}
             <Checkbox
               checked={checkboxes.images['background.jpg']}
               onChange={(e) => {
@@ -133,11 +133,11 @@
                 checkboxes = checkboxes;
               }}
             />
-          </span>
+          {/snippet}
         </TreeviewItem>
       </TreeviewItem>
       <TreeviewItem label="documents" iconF7="folder_fill">
-        <span slot="content-start">
+        {#snippet contentStart()}
           <Checkbox
             checked={Object.values(checkboxes.documents).indexOf(false) < 0}
             indeterminate={Object.values(checkboxes.documents).indexOf(false) >= 0 &&
@@ -149,9 +149,9 @@
               checkboxes = checkboxes;
             }}
           />
-        </span>
+        {/snippet}
         <TreeviewItem label="cv.docx" iconF7="doc_text_fill" toggle={false}>
-          <span slot="content-start">
+          {#snippet contentStart()}
             <Checkbox
               checked={checkboxes.documents['cv.docx']}
               onChange={(e) => {
@@ -159,10 +159,10 @@
                 checkboxes = checkboxes;
               }}
             />
-          </span>
+          {/snippet}
         </TreeviewItem>
         <TreeviewItem label="info.docx" iconF7="doc_text_fill" toggle={false}>
-          <span slot="content-start">
+          {#snippet contentStart()}
             <Checkbox
               checked={checkboxes.documents['info.docx']}
               onChange={(e) => {
@@ -170,11 +170,11 @@
                 checkboxes = checkboxes;
               }}
             />
-          </span>
+          {/snippet}
         </TreeviewItem>
       </TreeviewItem>
       <TreeviewItem label=".gitignore" iconF7="logo_github" toggle={false}>
-        <span slot="content-start">
+        {#snippet contentStart()}
           <Checkbox
             checked={checkboxes['.gitignore']}
             onChange={(e) => {
@@ -182,10 +182,10 @@
               checkboxes = checkboxes;
             }}
           />
-        </span>
+        {/snippet}
       </TreeviewItem>
       <TreeviewItem label="index.html" iconF7="doc_text_fill" toggle={false}>
-        <span slot="content-start">
+        {#snippet contentStart()}
           <Checkbox
             checked={checkboxes['index.html']}
             onChange={(e) => {
@@ -193,13 +193,13 @@
               checkboxes = checkboxes;
             }}
           />
-        </span>
+        {/snippet}
       </TreeviewItem>
     </Treeview>
   </Block>
 
   <BlockTitle>Whole item as toggle</BlockTitle>
-  <Block strong outlineIos class="no-padding-horizontal">
+  <Block strong inset class="no-padding-horizontal">
     <Treeview>
       <TreeviewItem itemToggle label="images" iconF7="folder_fill">
         <TreeviewItem label="avatar.png" iconF7="photo_fill" />
@@ -215,7 +215,7 @@
   </Block>
 
   <BlockTitle>Selectable</BlockTitle>
-  <Block strong outlineIos class="no-padding-horizontal">
+  <Block strong inset class="no-padding-horizontal">
     <Treeview>
       <TreeviewItem
         selectable
@@ -279,7 +279,7 @@
   </Block>
 
   <BlockTitle>Preload children</BlockTitle>
-  <Block strong outlineIos class="no-padding-horizontal">
+  <Block strong inset class="no-padding-horizontal">
     <Treeview>
       <TreeviewItem
         toggle
@@ -296,7 +296,7 @@
   </Block>
 
   <BlockTitle>With links</BlockTitle>
-  <Block strong outlineIos class="no-padding-horizontal">
+  <Block strong inset class="no-padding-horizontal">
     <Treeview>
       <TreeviewItem iconF7="square_grid_2x2_fill" itemToggle label="Modals">
         <TreeviewItem link="/popup/" iconF7="link" label="Popup" />

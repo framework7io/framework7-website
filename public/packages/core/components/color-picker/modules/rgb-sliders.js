@@ -73,6 +73,8 @@ export default {
       max: 255,
       step: 1,
       value: 0,
+      limitBarPosition: false,
+      limitKnobPosition: self.app.theme === 'ios',
       on: {
         change(range, value) {
           self.setValue({
@@ -87,6 +89,8 @@ export default {
       max: 255,
       step: 1,
       value: 0,
+      limitBarPosition: false,
+      limitKnobPosition: self.app.theme === 'ios',
       on: {
         change(range, value) {
           self.setValue({
@@ -101,6 +105,8 @@ export default {
       max: 255,
       step: 1,
       value: 0,
+      limitBarPosition: false,
+      limitKnobPosition: self.app.theme === 'ios',
       on: {
         change(range, value) {
           self.setValue({

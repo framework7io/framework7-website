@@ -2,10 +2,7 @@ import $ from '../../shared/dom7.js';
 import { extend, deleteProps } from '../../shared/utils.js';
 import Framework7Class from '../../shared/class.js';
 class Messagebar extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const messagebar = this;
     const defaults = {
@@ -226,10 +223,7 @@ class Messagebar extends Framework7Class {
       $el.removeClass('messagebar-with-value');
     }
   }
-  attachmentsCreate(innerHTML) {
-    if (innerHTML === void 0) {
-      innerHTML = '';
-    }
+  attachmentsCreate(innerHTML = '') {
     const messagebar = this;
     const $attachmentsEl = $(`<div class="messagebar-attachments">${innerHTML}</div>`);
     $attachmentsEl.insertBefore(messagebar.$textareaEl);
@@ -239,10 +233,7 @@ class Messagebar extends Framework7Class {
     });
     return messagebar;
   }
-  attachmentsShow(innerHTML) {
-    if (innerHTML === void 0) {
-      innerHTML = '';
-    }
+  attachmentsShow(innerHTML = '') {
     const messagebar = this;
     messagebar.$attachmentsEl = messagebar.$el.find('.messagebar-attachments');
     if (messagebar.$attachmentsEl.length === 0) {
@@ -299,10 +290,7 @@ class Messagebar extends Framework7Class {
       messagebar.$attachmentsEl.html(html);
     }
   }
-  sheetCreate(innerHTML) {
-    if (innerHTML === void 0) {
-      innerHTML = '';
-    }
+  sheetCreate(innerHTML = '') {
     const messagebar = this;
     const $sheetEl = $(`<div class="messagebar-sheet">${innerHTML}</div>`);
     messagebar.$el.append($sheetEl);
@@ -312,10 +300,7 @@ class Messagebar extends Framework7Class {
     });
     return messagebar;
   }
-  sheetShow(innerHTML) {
-    if (innerHTML === void 0) {
-      innerHTML = '';
-    }
+  sheetShow(innerHTML = '') {
     const messagebar = this;
     messagebar.$sheetEl = messagebar.$el.find('.messagebar-sheet');
     if (messagebar.$sheetEl.length === 0) {

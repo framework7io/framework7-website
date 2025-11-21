@@ -14,17 +14,11 @@ export default {
     });
   },
   clicks: {
-    '.login-screen-open': function openLoginScreen($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.login-screen-open': function openLoginScreen($clickedEl, data = {}) {
       const app = this;
       app.loginScreen.open(data.loginScreen, data.animate, $clickedEl);
     },
-    '.login-screen-close': function closeLoginScreen($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.login-screen-close': function closeLoginScreen($clickedEl, data = {}) {
       const app = this;
       app.loginScreen.close(data.loginScreen, data.animate, $clickedEl);
     }

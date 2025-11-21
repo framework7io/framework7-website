@@ -30,9 +30,9 @@
 </script>
 
 <Page>
-  <Navbar title="Text Editor" backLink="Back" />
+  <Navbar title="Text Editor" backLink />
 
-  <Block>
+  <Block strong inset>
     <p>
       Framework7 comes with a touch-friendly Rich Text Editor component. It is based on modern
       "contenteditable" API so it should work everywhere as is.

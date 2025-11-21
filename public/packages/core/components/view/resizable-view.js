@@ -1,9 +1,7 @@
 import $ from '../../shared/dom7.js';
 import { extend } from '../../shared/utils.js';
-import { getSupport } from '../../shared/get-support.js';
 function resizableView(view) {
   const app = view.app;
-  const support = getSupport();
   if (view.resizableInitialized) return;
   extend(view, {
     resizable: true,
@@ -104,9 +102,9 @@ function resizableView(view) {
   $el.addClass('view-resizable');
 
   // Add Events
-  const passive = support.passiveListener ? {
+  const passive = {
     passive: true
-  } : false;
+  };
   view.$el.on(app.touchEvents.start, '.view-resize-handler', handleTouchStart, passive);
   app.on('touchmove:active', handleTouchMove);
   app.on('touchend:passive', handleTouchEnd);

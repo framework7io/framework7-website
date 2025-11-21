@@ -1,3 +1,38 @@
+# WIP
+
+### Core
+
+- iOS theme:
+  - All new iOS 26 styles across all components
+- Material theme:
+  - Colors schemes updated to latest Material You spec
+  - New Vibrant and Monochrome color schemes
+  - Updated look for Range slider
+  - Updated look for Progressbar
+  - Reworked page transitions (effect and direction)
+- Components:
+  - Navbar
+    - Removed `dynamicNavbar` functionality
+    - Default back link text ("Back") is not empty in favor of using back icon only
+  - Photo Browser
+    - Removed both light/dark modes. Now it uses the same the light (or dark) mode as an app
+  - Autocomplete
+    - Removed default "Cancel" text (in favor of using just an icon)
+  - Smart Select
+    - Removed default "Cancel" text (in favor of using just an icon)
+  - Searchbar
+    - Removed default "Cancel" text (in favor of using just an icon)
+  - Timeline
+    - Removed "Horizontal Timeline" style
+
+### Svelte
+
+- Updated to latest Svelte v5 API
+
+### React
+
+- Updated to latest React 19 API
+
 <a href="https://www.patreon.com/framework7"><img src="https://framework7.io/i/support-badge.png" height="20"></a>
 
 # Change Log

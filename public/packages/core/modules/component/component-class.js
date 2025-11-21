@@ -17,45 +17,15 @@ const types = [{
   init: i => i,
   type: i => [i].find(Array.isArray),
   update: (i, o) => [o].filter(Array.isArray).find(() => (i.length = 0, i.push(...o))),
-  insert: function (i, x, o) {
-    if (o === void 0) {
-      o = [];
-    }
-    return i.splice(Math.max(x, 0), 0, ...[o].flat());
-  },
-  replace: function (i, x, o) {
-    if (o === void 0) {
-      o = [];
-    }
-    return i.splice(Math.max(x, 0), Math.min(++x, 1), ...[o].flat());
-  },
-  append: function (i, o) {
-    if (o === void 0) {
-      o = [];
-    }
-    return i.push(...[o].flat());
-  },
-  prepend: function (i, o) {
-    if (o === void 0) {
-      o = [];
-    }
-    return i.unshift(...[o].flat());
-  },
+  insert: (i, x, o = []) => i.splice(Math.max(x, 0), 0, ...[o].flat()),
+  replace: (i, x, o = []) => i.splice(Math.max(x, 0), Math.min(++x, 1), ...[o].flat()),
+  append: (i, o = []) => i.push(...[o].flat()),
+  prepend: (i, o = []) => i.unshift(...[o].flat()),
   swap: (i, a, b) => {
     [i[a], i[b]] = [i[b], i[a]];
   },
-  fromTo: function (i, a, b) {
-    if (b === void 0) {
-      b = a;
-    }
-    return i.splice(Math.max(b, 0), 0, ...i.splice(Math.max(a, 0), 1));
-  },
-  remove: function (i, o, a) {
-    if (a === void 0) {
-      a = i.map((_, x) => x);
-    }
-    return [o].flat().filter(i => a.includes(i)).sort((a, b) => b - a).forEach(x => i.splice(x, 1));
-  },
+  fromTo: (i, a, b = a) => i.splice(Math.max(b, 0), 0, ...i.splice(Math.max(a, 0), 1)),
+  remove: (i, o, a = i.map((_, x) => x)) => [o].flat().filter(i => a.includes(i)).sort((a, b) => b - a).forEach(x => i.splice(x, 1)),
   clear: i => i.length = 0
 }, {
   name: 'object',
@@ -75,22 +45,14 @@ const types = [{
 }, {
   name: 'atoms',
   type: () => true,
-  init: function (i, o) {
-    if (o === void 0) {
-      o = {};
+  init: (i, o = {}) => (Object.defineProperty(o, 'value', {
+    get: () => i,
+    set: v => {
+      // eslint-disable-next-line
+      i = v;
     }
-    return Object.defineProperty(o, 'value', {
-      get: () => i,
-      set: v => {
-        // eslint-disable-next-line
-        i = v;
-      }
-    }), o;
-  },
-  update: function (i, v) {
-    if (v === void 0) {
-      v = i.value;
-    }
+  }), o),
+  update: (i, v = i.value) => {
     i.value = v;
   },
   insert: () => ({}),
@@ -119,15 +81,11 @@ const types = [{
 /* eslint-enable no-sequences */
 
 class Component {
-  constructor(app, component, props, _temp) {
-    if (props === void 0) {
-      props = {};
-    }
-    let {
-      el,
-      context,
-      children
-    } = _temp === void 0 ? {} : _temp;
+  constructor(app, component, props = {}, {
+    el,
+    context,
+    children
+  } = {}) {
     const document = getDocument();
     merge(this, {
       f7: app,
@@ -265,37 +223,21 @@ class Component {
 
   /* eslint-disable no-sequences */
   getUseState() {
-    var _this = this;
     return o => {
-      const obj = [o].reduce(function (t, _i, _x, _a, i) {
-        if (i === void 0) {
-          i = t.init(_i);
-        }
-        return {
-          state: i,
-          update: v => (t.update(i, v), _this.update()),
-          remove: v => (t.remove(i, v), _this.update()),
-          clear: () => (t.clear(i), _this.update()),
-          insert: (x, v) => (t.insert(i, x, v), _this.update()),
-          replace: (x, v) => (t.replace(i, x, v), _this.update()),
-          append: v => (t.append(i, v), _this.update()),
-          prepend: v => (t.prepend(i, v), _this.update()),
-          swap: (a, b) => (t.swap(i, a, b), _this.update()),
-          fromTo: (a, b) => (t.fromTo(i, a, b), _this.update()),
-          method: function (f) {
-            if (f === void 0) {
-              f = () => ({});
-            }
-            return f(i), _this.update();
-          },
-          async: function (f) {
-            if (f === void 0) {
-              f = () => Promise.reject(i);
-            }
-            return f(i).then(() => _this.update());
-          }
-        };
-      }, types.find(i => i.type(o)));
+      const obj = [o].reduce((t, _i, _x, _a, i = t.init(_i)) => ({
+        state: i,
+        update: v => (t.update(i, v), this.update()),
+        remove: v => (t.remove(i, v), this.update()),
+        clear: () => (t.clear(i), this.update()),
+        insert: (x, v) => (t.insert(i, x, v), this.update()),
+        replace: (x, v) => (t.replace(i, x, v), this.update()),
+        append: v => (t.append(i, v), this.update()),
+        prepend: v => (t.prepend(i, v), this.update()),
+        swap: (a, b) => (t.swap(i, a, b), this.update()),
+        fromTo: (a, b) => (t.fromTo(i, a, b), this.update()),
+        method: (f = () => ({})) => (f(i), this.update()),
+        async: (f = () => Promise.reject(i)) => f(i).then(() => this.update())
+      }), types.find(i => i.type(o)));
       obj.length = 12;
       obj[Symbol.iterator] = function Iterate() {
         const values = Object.values(this);
@@ -369,18 +311,16 @@ class Component {
       $el
     } = this;
     if (!this.__eventHandlers) return;
-    this.__eventHandlers.forEach(_ref => {
-      let {
-        eventName,
-        handler
-      } = _ref;
+    this.__eventHandlers.forEach(({
+      eventName,
+      handler
+    }) => {
       $el.on(eventNameToColonCase(eventName), handler);
     });
-    this.__onceEventHandlers.forEach(_ref2 => {
-      let {
-        eventName,
-        handler
-      } = _ref2;
+    this.__onceEventHandlers.forEach(({
+      eventName,
+      handler
+    }) => {
       $el.once(eventNameToColonCase(eventName), handler);
     });
   }
@@ -389,18 +329,16 @@ class Component {
       $el
     } = this;
     if (!this.__eventHandlers) return;
-    this.__eventHandlers.forEach(_ref3 => {
-      let {
-        eventName,
-        handler
-      } = _ref3;
+    this.__eventHandlers.forEach(({
+      eventName,
+      handler
+    }) => {
       $el.on(eventNameToColonCase(eventName), handler);
     });
-    this.__onceEventHandlers.forEach(_ref4 => {
-      let {
-        eventName,
-        handler
-      } = _ref4;
+    this.__onceEventHandlers.forEach(({
+      eventName,
+      handler
+    }) => {
       $el.once(eventNameToColonCase(eventName), handler);
     });
   }
@@ -503,10 +441,7 @@ class Component {
     deleteProps(this);
     this.__destroyed = true;
   }
-  hook(name) {
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
+  hook(name, ...args) {
     if (this.__destroyed) return;
     this[`__${name}`].forEach(handler => {
       handler(...args);

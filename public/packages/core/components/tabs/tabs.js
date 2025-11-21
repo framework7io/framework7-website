@@ -1,16 +1,13 @@
 import $ from '../../shared/dom7.js';
 import { extend } from '../../shared/utils.js';
 const Tab = {
-  show() {
+  show(...args) {
     const app = this;
     let tabEl;
     let tabLinkEl;
     let animate;
     let tabRoute;
     let animatedInit;
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
     if (args.length === 1 && args[0] && args[0].constructor === Object) {
       tabEl = args[0].tabEl;
       tabLinkEl = args[0].tabLinkEl;
@@ -186,7 +183,7 @@ const Tab = {
         $tabLinkEl.addClass('tab-link-active');
         // Material Highlight
         const $tabbarEl = $tabLinkEl.parents('.tabbar, .tabbar-icons');
-        const hasHighlight = app.toolbar && $tabbarEl.length > 0 && ($tabbarEl.hasClass('tabbar-highlight') || app.theme !== 'ios');
+        const hasHighlight = app.toolbar && $tabbarEl.length > 0;
         if (hasHighlight) {
           app.toolbar.setHighlight($tabbarEl);
         }
@@ -226,10 +223,7 @@ export default {
     }
   },
   clicks: {
-    '.tab-link': function tabLinkClick($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.tab-link': function tabLinkClick($clickedEl, data = {}) {
       if ($clickedEl.attr('href') && $clickedEl.attr('href').indexOf('#') === 0 || $clickedEl.attr('data-tab')) {
         const app = this;
         app.tab.show({

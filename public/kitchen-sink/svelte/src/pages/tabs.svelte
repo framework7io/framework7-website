@@ -3,8 +3,8 @@
 </script>
 
 <Page>
-  <Navbar title="Tabs" backLink="Back" />
-  <List strongIos outlineIos dividersIos>
+  <Navbar title="Tabs" backLink />
+  <List strong inset dividersIos>
     <ListItem link="/tabs-static/" title="Static Tabs" />
     <ListItem link="/tabs-animated/" title="Animated Tabs" />
     <ListItem link="/tabs-swipeable/" title="Swipeable Tabs" />
