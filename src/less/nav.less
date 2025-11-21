@@ -324,6 +324,7 @@ nav {
   z-index: 3000;
 }
 .sale-ribbon,
+.sale-banner,
 .toggles-ribbon,
 .paneflow-banner {
   display: flex;
@@ -345,6 +346,18 @@ nav {
     text-decoration: underline;
     &::before {
       content: ' ';
+    }
+  }
+}
+.sale-banner {
+  text-align: center;
+  font-size: 14px;
+  display: block;
+  a {
+    text-decoration: underline;
+    &:hover {
+      text-decoration: none;
+      opacity: 0.75;
     }
   }
 }
