@@ -22,7 +22,25 @@ block content
     h2 Toolbar Components
     p There are following components included:
     ul
-      li `Toolbar`
+      li `Toolbar` - main toolbar component
+      li `ToolbarPane` - toolbar pane component (new in v9)
+
+    h2 Toolbar Panes
+    p <strong>Framework7 v9</strong> introduces the `ToolbarPane` component as part of the new iOS 26 design. Toolbar Panes add a "glass" pane effect to group links within a toolbar.
+    p You can use multiple `ToolbarPane` components in the same toolbar to organize links:
+    :code(lang="html")
+      <Toolbar>
+        <!-- Left pane with links -->
+        <ToolbarPane>
+          <Link>Link 1</Link>
+          <Link>Link 2</Link>
+        </ToolbarPane>
+        <!-- Right pane with links -->
+        <ToolbarPane>
+          <Link>Link 3</Link>
+        </ToolbarPane>
+      </Toolbar>
+    p Each `ToolbarPane` wraps a group of links or other elements, providing visual separation and the glass pane effect.
 
     h2 Toolbar Properties
     table.params-table

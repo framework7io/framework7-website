@@ -27,6 +27,26 @@ block content
           <a href="#" class="link">Link 3</a>
         </div>
       </div>
+
+    h2 Toolbar Panes
+    p <strong>Framework7 v9</strong> introduces Toolbar Panes as part of the new iOS 26 design. Toolbar Panes add a "glass" pane effect to group links within a toolbar.
+    p You can use multiple Toolbar Panes in the same toolbar to organize links, for example, positioning one pane on the left and another on the right:
+    :code(lang="html")
+      <div class="toolbar">
+        <div class="toolbar-inner">
+          <!-- Left pane with links -->
+          <div class="toolbar-pane">
+            <a href="#" class="link">Link 1</a>
+            <a href="#" class="link">Link 2</a>
+          </div>
+          <!-- Right pane with links -->
+          <div class="toolbar-pane">
+            <a href="#" class="link">Link 3</a>
+          </div>
+        </div>
+      </div>
+    p Each `toolbar-pane` wraps a group of links or other elements, providing visual separation and the glass pane effect. You can have as many toolbar panes as needed within a single toolbar.
+
     h2 Toolbar Position
     p Toolbar can be placed on top of the page, or on bottom. So we always also need to specify its position by addition class.
     p To make it on the top, we need to add `toolbar-top` class to Toolbar element:
