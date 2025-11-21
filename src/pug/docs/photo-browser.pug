@@ -18,6 +18,8 @@ block content
 
     p Photo Browser is a photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional).
     p Photo Browser uses <a href="swiper.html">Swiper Slider</a> component to slide between photos.
+    .important-note
+      p <strong>Note:</strong> Starting from Framework7 v9, Photo Browser automatically uses the same light or dark mode as your app. The <code>theme</code> and <code>captionsTheme</code> parameters have been removed.
 
     h2 Photo Browser App Methods
     p Let's look at related App methods to work with Photo Browser:
@@ -116,16 +118,6 @@ block content
           td string
           td standalone
           td Define how Photo Browser should be opened. Could be `standalone` (will be opened as an overlay with custom transition effect), `popup` (will be opened as <a href="popup.html">popup</a>), `page` (will be injected to View and loaded as a new page).
-        tr
-          td theme
-          td string
-          td light
-          td Photo Browser color theme, could be `light` or `dark`
-        tr
-          td captionsTheme
-          td string
-          td
-          td Captions color theme, could be also `light` or `dark`. By default, equal to `theme` parameter
         tr
           td navbar
           td boolean

@@ -1,0 +1,147 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Migration from Framework7 v8 to v9 | Framework7 Documentation';
+
+block docs-index
+
+block content
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+
+    h1 Migration from Framework7 v8 to v9
+
+    p In this article we will walk through most of the breaking changes to check what needs to be done to migrate your app from Framework7 v8 to Framework7 v9.
+    p You can also check the <a href="/release-notes/">full changelog here</a>
+
+    h2 iOS Theme Updates
+    p Framework7 v9 brings all new iOS 26 styles across all components:
+    ul
+      li Updated visual design to match the latest iOS design language
+      li Refined spacing, typography, and visual elements
+      li Improved consistency across all iOS theme components
+
+    h2 Material Theme Updates
+    p The Material theme has been significantly updated with the latest Material You specifications:
+    ul
+      li Color schemes updated to latest Material You spec
+      li New <strong>Vibrant</strong> color scheme - provides more colorful and dynamic appearance
+      li New <strong>Monochrome</strong> color scheme - provides neutral, grayscale appearance
+      li Updated look for Range slider with better visual feedback
+      li Updated look for Progressbar with refined animations
+      li Reworked page transitions with improved effects and direction handling
+
+    h2 Navbar
+    h3 Removed Dynamic Navbar
+    p The <code>dynamicNavbar</code> functionality has been removed. This feature allowed automatic navbar transitions between pages.
+    ul
+      li Remove <code>dynamicNavbar</code> parameter from your app configuration
+      li Navbar transitions will now work automatically based on the standard page transition logic
+      li No additional configuration is needed - navbars will transition naturally with pages
+
+    h3 Back Link Text
+    p The default back link text has been changed:
+    ul
+      li Previously: Back links showed "Back" text by default
+      li Now: Back links use <strong>icon only</strong> by default (no text)
+      li This provides a cleaner, more modern interface
+      li If you need back link text, you'll need to explicitly add it in your markup:
+    :code(lang="html")
+          <div class="navbar">
+              <div class="navbar-bg"></div>
+              <div class="navbar-inner">
+                  <div class="left">
+                      <a href="#" class="link back">
+                          <i class="icon icon-back"></i>
+                          <span>Back</span>
+                      </a>
+                  </div>
+                  <div class="title">Page Title</div>
+              </div>
+          </div>
+
+    h2 Photo Browser
+    p Photo Browser has been simplified by removing theme mode options:
+    ul
+      li Removed both light and dark mode specific settings
+      li Photo Browser now uses the same light or dark mode as your app
+      li It automatically adapts to your app's current theme
+      li Remove any <code>theme</code> parameter from Photo Browser configuration
+      li Remove any light/dark specific styling overrides
+
+    h2 Autocomplete
+    p Autocomplete component has been updated for a cleaner interface:
+    ul
+      li Removed default "Cancel" text
+      li Now uses <strong>icon only</strong> for the cancel button
+      li Provides more consistent interface across all components
+      li If you need custom cancel text, you'll need to explicitly add it using the <code>closeButtonText</code> parameter
+
+    h2 Smart Select
+    p Smart Select component has been updated similarly:
+    ul
+      li Removed default "Cancel" text
+      li Now uses <strong>icon only</strong> for the cancel button
+      li Provides cleaner, more modern interface
+      li If you need custom cancel text, you'll need to explicitly add it using the <code>closeButtonText</code> parameter
+
+    h2 Searchbar
+    p Searchbar component has been updated:
+    ul
+      li Removed default "Cancel" text
+      li Now uses <strong>icon only</strong> for the cancel button
+      li Aligns with iOS design patterns
+      li If you need custom cancel text, you'll need to explicitly add it using the <code>disableButtonText</code> parameter
+
+    h2 Timeline
+    h3 Removed Horizontal Timeline
+    p The Horizontal Timeline style has been removed:
+    ul
+      li Only vertical timeline is now supported
+      li This aligns with modern design patterns and improves consistency
+      li If you were using horizontal timeline, you'll need to refactor to use vertical timeline
+      li Consider using alternative layouts like Grid or Cards for horizontal content presentation
+
+    h2 React
+    p Framework7 React has been updated to support React 19:
+    ul
+      li Updated to the latest React 19 API
+      li Improved TypeScript types
+      li Better compatibility with React 19 features
+      li Make sure to update your React dependencies to version 19 or later
+      li Check <a href="https://react.dev/blog" target="_blank">React 19 release notes</a> for React-specific changes
+
+    h2 Vue
+    p Framework7 Vue continues to support the latest Vue 3 API:
+    ul
+      li Improved TypeScript types
+      li Better compatibility with Vue 3 composition API
+      li Ensure you're using Vue 3 for full compatibility
+
+    h2 Svelte
+    p Framework7 Svelte has been updated to Svelte 5:
+    ul
+      li Updated to the latest Svelte v5 API
+      li Improved reactivity system
+      li Better TypeScript support
+      li Make sure to update your Svelte dependencies to version 5 or later
+      li Check <a href="https://svelte.dev/blog/svelte-5-is-alive" target="_blank">Svelte 5 migration guide</a> for Svelte-specific changes
+      li Update your component syntax to use Svelte 5's new runes system if needed
+
+    h2 Summary of Breaking Changes
+    p Quick checklist for migration:
+    ul
+      li ✓ Remove <code>dynamicNavbar</code> parameter from app configuration
+      li ✓ Update back links to explicitly include text if needed
+      li ✓ Remove Photo Browser <code>theme</code> parameters
+      li ✓ Update Autocomplete to include <code>closeButtonText</code> if cancel text is needed
+      li ✓ Update Smart Select to include <code>closeButtonText</code> if cancel text is needed
+      li ✓ Update Searchbar to include <code>disableButtonText</code> if cancel text is needed
+      li ✓ Refactor horizontal timelines to vertical layout or alternative components
+      li ✓ Update React to version 19 or later
+      li ✓ Update Svelte to version 5 or later
+      li ✓ Test your app with the new Material theme color schemes
+
+
