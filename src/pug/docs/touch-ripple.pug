@@ -15,7 +15,9 @@ block content
     
     p Framework7 Material Theme comes with great an dynamic implementation of Material Touch Ripple effect.
     p It is enabled by default for MD theme.
-    p However, you may disable it by passing `touch.mdTouchRipple:false` <a href="app.html#app-parameters">app parameter</a>.
+    .important-note
+      p <strong>Framework7 v9:</strong> Touch Ripple now works only in Material theme. For iOS theme, there is a new Touch Highlight effect (see below).
+    p You may disable it by passing `touch.touchRipple: false` <a href="app.html#app-parameters">app parameter</a>.
     h2 Ripple Elements
     p By default it is enabled for the elements that match to the following CSS selector:
     :code(lang="css")
@@ -43,5 +45,18 @@ block content
     p If you want to disable ripple element for specific elements, then you may add `no-ripple` class to such elements:
     :code(lang="html")
           <a href="#" class="button no-ripple">Button Without Ripple Effect</a>
+
+    h2 iOS Touch Highlight
+    p <strong>Framework7 v9</strong> introduces a new Touch Highlight effect for iOS theme, providing a native iOS-like highlight on touch.
+    p Touch Highlight is enabled by default for iOS theme and can be configured using the following <a href="app.html#app-parameters">app parameters</a>:
+    ul
+      li `touch.touchHighlight` - boolean, default `true` - enables/disables touch highlight effect for iOS theme
+      li `touch.touchHighlightElements` - string, CSS selector of elements to apply touch highlight effect on
+    p The default elements that have touch highlight effect are:
+    :code(lang="css")
+      .link, .item-link, .list-button, .links-list a, .button, button, .tab-link, .item-radio, .item-checkbox, .actions-button, .fab a, .checkbox, .radio, .menu-item-content
+    p To disable touch highlight for specific elements, add `no-touch-highlight` class:
+    :code(lang="html")
+      <a href="#" class="button no-touch-highlight">Button Without Touch Highlight</a>
 
     +cssVars('touch-ripple')
