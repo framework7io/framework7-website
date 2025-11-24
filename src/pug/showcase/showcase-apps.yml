@@ -1,4 +1,26 @@
 ##########
+- iconUrl: "#{cdn}/i/showcase/fakegps-icon.png"
+  iconRounded: true
+  title: "Fake GPS - Simulate GPS Location"
+  author:
+    url: https://fake-gps.app
+    name: Cesar Cervantes
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.ccervantesb.fakegps
+    website: https://fake-gps.app
+  description: |
+    Fake GPS it's an application designed to quickly and easily change the GPS location of your device. You can pretend to be anywhere in the world without having to physically move.
+  features:
+  - Simulate GPS location
+  - Share a custom location
+  - Save your custom locations
+  - Enter custom locations
+  - Search address
+  screenshots:
+  - "#{cdn}/i/showcase/fakegps-01.png"
+  - "#{cdn}/i/showcase/fakegps-02.png"
+  - "#{cdn}/i/showcase/fakegps-03.png"
+##########
 - iconUrl: "#{cdn}/i/showcase/chester-icon.png"
   iconRounded: false
   title: "Chess Jester (Chester)"
