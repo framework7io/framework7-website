@@ -1,5 +1,5 @@
 /**
- * Framework7 9.0.0
+ * Framework7 9.0.1
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: November 25, 2025
+ * Released on: November 26, 2025
  */
 
 /*====================
@@ -14195,6 +14195,19 @@ table.data-table {
 .ios .fab-buttons a.active-state {
   transition-duration: 0ms;
   background-color: var(--f7-fab-pressed-bg-color, var(--f7-theme-color-shade));
+}
+.ios,
+.ios [class*='color-'] {
+  --f7-fab-pressed-bg-color: var(--f7-theme-color-shade);
+  --f7-fab-bg-color: var(--f7-theme-color);
+  --f7-glass-shadow-fab: inset -3px -3px 0px -3.5px #fff, inset 3px 3px 0px -3.5px #fff, inset 0px 0px 0px 0.5px rgba(255, 255, 255, 0.5), inset 3px 3px 10px -2px color-mix(in oklab, var(--f7-theme-color) 100%, black), inset -3px -3px 10px -2px color-mix(in oklab, var(--f7-theme-color) 100%, black), inset 0 0 5px 1px #fff, 0 0 15px 4px rgba(0, 0, 0, 0.2);
+}
+.ios.dark,
+.ios .dark,
+.ios.dark [class*='color-'],
+.ios .dark [class*='color-'] {
+  --f7-fab-bg-color: color-mix(in oklab, var(--f7-theme-color-shade) 50%, transparent 0%);
+  --f7-glass-shadow-fab: inset 3px 3px 0px -3.5px var(--f7-theme-color), inset -3px -3px 0px -3.5px var(--f7-theme-color), inset -0.5px -0.5px 0px rgba(255, 255, 255, 0.5), inset 0.5px 0.5px 0px rgba(255, 255, 255, 0.1), inset -3px 3px 0px -3.5px rgba(255, 255, 255, 0.25), inset 0px -5px 0px -3.5px color-mix(in oklab, var(--f7-theme-color) 50%, transparent 10%), inset 0px -5px 5px color-mix(in oklab, var(--f7-theme-color) 50%, transparent 10%), 0 0 15px 4px rgba(0, 0, 0, 0.2);
 }
 .md .fab > a.active-state,
 .md .fab-buttons a.active-state {
