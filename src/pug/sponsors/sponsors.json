@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2025-12-01T20:00:00.000Z",
+    "title": "iDealeCasinos",
+    "link": "https://idealecasinos.com/",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/idealecasinoscom",
+    "image": "idealecasinoscom.png",
+    "endDate": "2026-12-01T20:00:00.000Z",
+    "active": true
+  },
+  {
     "createdAt": "2025-11-20T20:00:00.000Z",
     "title": "SoftOrbits",
     "link": "https://www.softorbits.net/ai-undresser/",
