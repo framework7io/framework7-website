@@ -1,5 +1,15 @@
 [
   {
+    "createdAt": "2026-01-09T20:00:00.000Z",
+    "title": "CASINOLEGAL",
+    "link": "https://casinolegal.ro/cazinouri/noi",
+    "plan": "topSupporter",
+    "ref": "https://opencollective.com/casinolegalnew",
+    "image": "casinolegalnew.png",
+    "endDate": "",
+    "active": true
+  },
+  {
     "createdAt": "2026-01-07T20:00:00.000Z",
     "title": "SuperClones",
     "link": "https://www.superclones.io/",
