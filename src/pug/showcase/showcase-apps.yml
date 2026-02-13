@@ -15,26 +15,26 @@
     Every element of LEA Pulse is built around privacy, usability, and long-term digital security. Wallets can be restored at any time using a recovery phrase, and biometric login ensures smooth yet safe access. XP levels unlock engagement milestones, and push notifications keep users informed about governance proposals, feature releases, and ecosystem news.
     As the network expands, LEA Pulse will evolve into a full-featured hub for interacting with modular PODs — enabling token transfers, governance participation, and secure domain-level interactions on the LEA blockchain.
   features:
-  - Non-Custodial Wallet – Create, back up, and recover your wallet in seconds.
-  - Framework7 Hybrid UI – Built entirely with Framework7 Vanilla JS for a fast, fluid UX.
-  - Post-Quantum Ready Security – Implements PQC-based signature models from the LEA protocol.
-  - XP & Reward System – Complete tasks, gain XP, and unlock $LEA token rewards.
-  - Founders Voice – Receive direct project updates and development insights.
-  - Push Notifications – Stay informed on airdrops, milestones, and ecosystem launches.
-  - Transaction Overview – Track your wallet history in a clear, intuitive interface.
-  - Community Hub (coming soon) – Connect and collaborate with other LEA members.
-  - Biometric & PIN Protection – Secure your app with Face ID, fingerprint, or PIN.
+    - Non-Custodial Wallet – Create, back up, and recover your wallet in seconds.
+    - Framework7 Hybrid UI – Built entirely with Framework7 Vanilla JS for a fast, fluid UX.
+    - Post-Quantum Ready Security – Implements PQC-based signature models from the LEA protocol.
+    - XP & Reward System – Complete tasks, gain XP, and unlock $LEA token rewards.
+    - Founders Voice – Receive direct project updates and development insights.
+    - Push Notifications – Stay informed on airdrops, milestones, and ecosystem launches.
+    - Transaction Overview – Track your wallet history in a clear, intuitive interface.
+    - Community Hub (coming soon) – Connect and collaborate with other LEA members.
+    - Biometric & PIN Protection – Secure your app with Face ID, fingerprint, or PIN.
   screenshots:
-  - '#{cdn}/i/showcase/lea-pulse-1.png'
-  - '#{cdn}/i/showcase/lea-pulse-2.png'
-  - '#{cdn}/i/showcase/lea-pulse-3.png'
-  - '#{cdn}/i/showcase/lea-pulse-4.png'
-  - '#{cdn}/i/showcase/lea-pulse-5.png'
-  - '#{cdn}/i/showcase/lea-pulse-6.png'
+    - '#{cdn}/i/showcase/lea-pulse-1.png'
+    - '#{cdn}/i/showcase/lea-pulse-2.png'
+    - '#{cdn}/i/showcase/lea-pulse-3.png'
+    - '#{cdn}/i/showcase/lea-pulse-4.png'
+    - '#{cdn}/i/showcase/lea-pulse-5.png'
+    - '#{cdn}/i/showcase/lea-pulse-6.png'
 ##########
-- iconUrl: "#{cdn}/i/showcase/postalpoint-icon.png"
+- iconUrl: '#{cdn}/i/showcase/postalpoint-icon.png'
   iconRounded: false
-  title: "PostalPoint Retail Shipping"
+  title: 'PostalPoint Retail Shipping'
   author:
     url: https://postalpoint.app
     name: PostalPortal LLC
@@ -43,23 +43,23 @@
   description: |
     Run a pack-and-ship store, sell shipping services, rent mailboxes, sell merchandise, and more with PostalPoint.
   features:
-  - Easily create shipments and sell shipping labels at whatever markup you choose
-  - Manage mailboxes and customer packages, and get automatic rent payments
-  - Print and sell U.S. postage stamps on demand
-  - Get paid with the fully-integrated cash register, with card reader support
-  - Extend PostalPoint with JavaScript plugins to seamlessly integrate additional shipping carriers, card payment processors, bookkeeping software, and more.
-  - Self-serve kiosk mode for basic shipping and package drop-offs/returns
-  - Integrates directly with hardware, including barcode scanners, scales, receipt and label printers, and card readers
-  - Available to download for Linux and Windows
+    - Easily create shipments and sell shipping labels at whatever markup you choose
+    - Manage mailboxes and customer packages, and get automatic rent payments
+    - Print and sell U.S. postage stamps on demand
+    - Get paid with the fully-integrated cash register, with card reader support
+    - Extend PostalPoint with JavaScript plugins to seamlessly integrate additional shipping carriers, card payment processors, bookkeeping software, and more.
+    - Self-serve kiosk mode for basic shipping and package drop-offs/returns
+    - Integrates directly with hardware, including barcode scanners, scales, receipt and label printers, and card readers
+    - Available to download for Linux and Windows
   screenshots:
-  - "#{cdn}/i/showcase/postalpoint-01.png"
-  - "#{cdn}/i/showcase/postalpoint-02.png"
-  - "#{cdn}/i/showcase/postalpoint-03.png"
-  - "#{cdn}/i/showcase/postalpoint-04.png"
+    - '#{cdn}/i/showcase/postalpoint-01.png'
+    - '#{cdn}/i/showcase/postalpoint-02.png'
+    - '#{cdn}/i/showcase/postalpoint-03.png'
+    - '#{cdn}/i/showcase/postalpoint-04.png'
 ##########
-- iconUrl: "#{cdn}/i/showcase/fakegps-icon.png"
+- iconUrl: '#{cdn}/i/showcase/fakegps-icon.png'
   iconRounded: true
-  title: "Fake GPS - Simulate GPS Location"
+  title: 'Fake GPS - Simulate GPS Location'
   author:
     url: https://fake-gps.app
     name: Cesar Cervantes
@@ -69,19 +69,19 @@
   description: |
     Fake GPS it's an application designed to quickly and easily change the GPS location of your device. You can pretend to be anywhere in the world without having to physically move.
   features:
-  - Simulate GPS location
-  - Share a custom location
-  - Save your custom locations
-  - Enter custom locations
-  - Search address
+    - Simulate GPS location
+    - Share a custom location
+    - Save your custom locations
+    - Enter custom locations
+    - Search address
   screenshots:
-  - "#{cdn}/i/showcase/fakegps-01.png"
-  - "#{cdn}/i/showcase/fakegps-02.png"
-  - "#{cdn}/i/showcase/fakegps-03.png"
+    - '#{cdn}/i/showcase/fakegps-01.png'
+    - '#{cdn}/i/showcase/fakegps-02.png'
+    - '#{cdn}/i/showcase/fakegps-03.png'
 ##########
-- iconUrl: "#{cdn}/i/showcase/chester-icon.png"
+- iconUrl: '#{cdn}/i/showcase/chester-icon.png'
   iconRounded: false
-  title: "Chess Jester (Chester)"
+  title: 'Chess Jester (Chester)'
   author:
     url: https://chester.justshare.me
     name: Erfan Reed
@@ -91,24 +91,24 @@
   description: |
     Step into the royal court of chess with Chess Jester, a beautifully crafted chess app for iPhone and iPad that mixes serious gameplay with a touch of humor. Whether you're a casual player, a chess enthusiast, or just someone looking to hear a jester mock your moves, Chester delivers a fun and engaging experience.
   features:
-  - Funny, context-aware narration
-  - Robust chess engine with multiple difficulty levels
-  - Play online with a friend, Join a game instantly or host one with a unique code
-  - Load a game using a PGN or FEN string, and export games in PGN format
-  - Spectators can watch your games live in any browser
-  - Mirror the game on a TV or projector using AirPlay or an HDMI dongle
-  - Change the look and feel of your game with customizable board themes, piece styles, and background
-  - Available on iPhone and iPad
+    - Funny, context-aware narration
+    - Robust chess engine with multiple difficulty levels
+    - Play online with a friend, Join a game instantly or host one with a unique code
+    - Load a game using a PGN or FEN string, and export games in PGN format
+    - Spectators can watch your games live in any browser
+    - Mirror the game on a TV or projector using AirPlay or an HDMI dongle
+    - Change the look and feel of your game with customizable board themes, piece styles, and background
+    - Available on iPhone and iPad
   screenshots:
-  - "#{cdn}/i/showcase/chester-01.png"
-  - "#{cdn}/i/showcase/chester-02.png"
-  - "#{cdn}/i/showcase/chester-03.png"
-  - "#{cdn}/i/showcase/chester-04.png"
+    - '#{cdn}/i/showcase/chester-01.png'
+    - '#{cdn}/i/showcase/chester-02.png'
+    - '#{cdn}/i/showcase/chester-03.png'
+    - '#{cdn}/i/showcase/chester-04.png'
 
 ##########
-- iconUrl: "#{cdn}/i/showcase/magicace-icon.png"
+- iconUrl: '#{cdn}/i/showcase/magicace-icon.png'
   iconRounded: false
-  title: "Magic Ace - Magic Prop App"
+  title: 'Magic Ace - Magic Prop App'
   author:
     url: https://magicace.erfan.me
     name: Erfan Reed
@@ -118,20 +118,20 @@
   description: |
     Magic Ace is a magic prop app designed to empower magicians and magic enthusiasts alike in delivering captivating performances. At its core, Magic Ace enables users to seamlessly execute an array of tricks, including the uncanny ability to predict a chosen playing card.
   features:
-  - Shake the phone to reveal the card
-  - Remote control (MQTT) capability for seamless manipulation
-  - Customize backgrounds to enhance the visual experience
-  - Available on iPhone and iPad
+    - Shake the phone to reveal the card
+    - Remote control (MQTT) capability for seamless manipulation
+    - Customize backgrounds to enhance the visual experience
+    - Available on iPhone and iPad
   screenshots:
-  - "#{cdn}/i/showcase/magicace-01.png"
-  - "#{cdn}/i/showcase/magicace-02.png"
-  - "#{cdn}/i/showcase/magicace-03.png"
-  - "#{cdn}/i/showcase/magicace-04.png"
+    - '#{cdn}/i/showcase/magicace-01.png'
+    - '#{cdn}/i/showcase/magicace-02.png'
+    - '#{cdn}/i/showcase/magicace-03.png'
+    - '#{cdn}/i/showcase/magicace-04.png'
 
 ##########
-- iconUrl: "#{cdn}/i/showcase/5digits-icon.png"
+- iconUrl: '#{cdn}/i/showcase/5digits-icon.png'
   iconRounded: false
-  title: "5 Digits - Tally Counter"
+  title: '5 Digits - Tally Counter'
   author:
     url: https://5digits.erfan.me
     name: Erfan Reed
@@ -141,15 +141,15 @@
   description: |
     The 5 Digits Tally Counter app stands as a comprehensive solution tailored to meet your tallying and display needs with sophistication and efficiency. Whether you're managing event attendance, integrating a digital display into your IoT project, or streamlining your business's queue management, this app is equipped to deliver outstanding performance and reliability.
   features:
-  - Aesthetic Interface
-  - Remote Control
-  - MQTT Communication
-  - Multi-Counter Management
+    - Aesthetic Interface
+    - Remote Control
+    - MQTT Communication
+    - Multi-Counter Management
   screenshots:
-  - "#{cdn}/i/showcase/5digits-01.png"
-  - "#{cdn}/i/showcase/5digits-02.png"
-  - "#{cdn}/i/showcase/5digits-03.png"
-  - "#{cdn}/i/showcase/5digits-04.png"
+    - '#{cdn}/i/showcase/5digits-01.png'
+    - '#{cdn}/i/showcase/5digits-02.png'
+    - '#{cdn}/i/showcase/5digits-03.png'
+    - '#{cdn}/i/showcase/5digits-04.png'
 
 ##########
 - iconUrl: '#{cdn}/i/showcase/sslcerts.png'
@@ -174,9 +174,9 @@
     - '#{cdn}/i/showcase/sslcerts-5.png'
 
 #########
-- iconUrl: "#{cdn}/i/showcase/byztxt-icon-1024.png"
+- iconUrl: '#{cdn}/i/showcase/byztxt-icon-1024.png'
   iconRounded: false
-  title: "Byztxt Greek New Testament"
+  title: 'Byztxt Greek New Testament'
   author:
     url: https://www.flagsoft.com
     name: Michael Mustun
@@ -187,13 +187,13 @@
   description: |
     Interlinear Majority Text NA28. Read the Bible in Koine Greek even if you don’t know the Greek letters. Is it true? Yes it is. What you have here now is the entire New Testament written with the so called Koine Greek which is ancient greek used within the old Byzantine Empire. Below each word in greek you see the transliterated word in plain English for pronunciation. So you can read right ahead even without knowing any greek at all. But I am sure you will find words you already heard of but you did not realize that originally it came from ancient greek. That's fascinating isn't it? The whole Bible is offline ready.
   features:
-  - Multiple Languages
+    - Multiple Languages
   screenshots:
-  - "#{cdn}/i/showcase/byztxt-01.png"
-  - "#{cdn}/i/showcase/byztxt-02.png"
-  - "#{cdn}/i/showcase/byztxt-03.png"
-  - "#{cdn}/i/showcase/byztxt-04.png"
-  - "#{cdn}/i/showcase/byztxt-05.png"
+    - '#{cdn}/i/showcase/byztxt-01.png'
+    - '#{cdn}/i/showcase/byztxt-02.png'
+    - '#{cdn}/i/showcase/byztxt-03.png'
+    - '#{cdn}/i/showcase/byztxt-04.png'
+    - '#{cdn}/i/showcase/byztxt-05.png'
 
 ##########
 - iconUrl: '#{cdn}/i/showcase/AvatarGen-icon.png'

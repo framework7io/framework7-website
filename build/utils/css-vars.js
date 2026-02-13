@@ -46,6 +46,14 @@ module.exports = (component, info = true, title = 'CSS Variables') => {
   }
 }
 
+.ios-color-vars(@ruleset) {
+  .ios,
+  .ios .dark,
+  .ios [class*='color-'] {
+    @ruleset();
+  }
+}
+
 ${content}
   `;
   less.render(content, (err, output) => {
