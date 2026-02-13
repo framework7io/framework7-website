@@ -1,4 +1,37 @@
 ##########
+- iconUrl: '#{cdn}/i/showcase/lea-pulse.png'
+  iconRounded: true
+  title: 'LEA Pulse - Gateway to LEA Blockchain'
+  author:
+    url: https://getlea.org
+    name: LEA Blockchain Project
+  links:
+    appstore: https://apps.apple.com/app/lea-pulse/id6748052697
+    googleplay: https://play.google.com/store/apps/details?id=com.lea.pulse
+    website: https://getlea.org/lea-pulse/
+  description: |
+    LEA Pulse is the official companion app of the LEA Blockchain, designed to connect users with a next-generation, modular Layer-1 network built on post-quantum cryptography and Programmable Object Domains (PODs).
+    The app provides a seamless entry point into the LEA ecosystem — enabling users to create a secure, non-custodial wallet, participate in early missions, earn XP and $LEA rewards, and follow project updates directly from the founding team.
+    Every element of LEA Pulse is built around privacy, usability, and long-term digital security. Wallets can be restored at any time using a recovery phrase, and biometric login ensures smooth yet safe access. XP levels unlock engagement milestones, and push notifications keep users informed about governance proposals, feature releases, and ecosystem news.
+    As the network expands, LEA Pulse will evolve into a full-featured hub for interacting with modular PODs — enabling token transfers, governance participation, and secure domain-level interactions on the LEA blockchain.
+  features:
+  - Non-Custodial Wallet – Create, back up, and recover your wallet in seconds.
+  - Framework7 Hybrid UI – Built entirely with Framework7 Vanilla JS for a fast, fluid UX.
+  - Post-Quantum Ready Security – Implements PQC-based signature models from the LEA protocol.
+  - XP & Reward System – Complete tasks, gain XP, and unlock $LEA token rewards.
+  - Founders Voice – Receive direct project updates and development insights.
+  - Push Notifications – Stay informed on airdrops, milestones, and ecosystem launches.
+  - Transaction Overview – Track your wallet history in a clear, intuitive interface.
+  - Community Hub (coming soon) – Connect and collaborate with other LEA members.
+  - Biometric & PIN Protection – Secure your app with Face ID, fingerprint, or PIN.
+  screenshots:
+  - '#{cdn}/i/showcase/lea-pulse-1.png'
+  - '#{cdn}/i/showcase/lea-pulse-2.png'
+  - '#{cdn}/i/showcase/lea-pulse-3.png'
+  - '#{cdn}/i/showcase/lea-pulse-4.png'
+  - '#{cdn}/i/showcase/lea-pulse-5.png'
+  - '#{cdn}/i/showcase/lea-pulse-6.png'
+##########
 - iconUrl: "#{cdn}/i/showcase/postalpoint-icon.png"
   iconRounded: false
   title: "PostalPoint Retail Shipping"
@@ -23,7 +56,7 @@
   - "#{cdn}/i/showcase/postalpoint-02.png"
   - "#{cdn}/i/showcase/postalpoint-03.png"
   - "#{cdn}/i/showcase/postalpoint-04.png"
-  
+##########
 - iconUrl: "#{cdn}/i/showcase/fakegps-icon.png"
   iconRounded: true
   title: "Fake GPS - Simulate GPS Location"
