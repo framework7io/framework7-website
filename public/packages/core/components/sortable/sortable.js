@@ -1,7 +1,6 @@
 import { getDocument } from 'ssr-window';
 import $ from '../../shared/dom7.js';
 import { bindMethods } from '../../shared/utils.js';
-import { getSupport } from '../../shared/get-support.js';
 const Sortable = {
   init() {
     const app = this;
@@ -193,10 +192,10 @@ const Sortable = {
       isTouched = false;
       isMoved = false;
     }
-    const activeListener = getSupport().passiveListener ? {
+    const activeListener = {
       passive: false,
       capture: false
-    } : false;
+    };
     $(document).on(app.touchEvents.start, '.list.sortable .sortable-handler', handleTouchStart, activeListener);
     app.on('touchmove:active', handleTouchMove);
     app.on('touchend:passive', handleTouchEnd);
@@ -204,10 +203,7 @@ const Sortable = {
       handleTouchStart(pointerEvent, true);
     });
   },
-  enable(el) {
-    if (el === void 0) {
-      el = '.list.sortable';
-    }
+  enable(el = '.list.sortable') {
     const app = this;
     const $el = $(el);
     if ($el.length === 0) return;
@@ -215,10 +211,7 @@ const Sortable = {
     $el.trigger('sortable:enable');
     app.emit('sortableEnable', $el[0]);
   },
-  disable(el) {
-    if (el === void 0) {
-      el = '.list.sortable';
-    }
+  disable(el = '.list.sortable') {
     const app = this;
     const $el = $(el);
     if ($el.length === 0) return;
@@ -226,10 +219,7 @@ const Sortable = {
     $el.trigger('sortable:disable');
     app.emit('sortableDisable', $el[0]);
   },
-  toggle(el) {
-    if (el === void 0) {
-      el = '.list.sortable';
-    }
+  toggle(el = '.list.sortable') {
     const app = this;
     const $el = $(el);
     if ($el.length === 0) return;
@@ -261,24 +251,15 @@ export default {
     }
   },
   clicks: {
-    '.sortable-enable': function enable($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.sortable-enable': function enable($clickedEl, data = {}) {
       const app = this;
       app.sortable.enable(data.sortable);
     },
-    '.sortable-disable': function disable($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.sortable-disable': function disable($clickedEl, data = {}) {
       const app = this;
       app.sortable.disable(data.sortable);
     },
-    '.sortable-toggle': function toggle($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.sortable-toggle': function toggle($clickedEl, data = {}) {
       const app = this;
       app.sortable.toggle(data.sortable);
     }

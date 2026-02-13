@@ -122,9 +122,9 @@
         color: var(--f7-table-actions-cell-link-color, var(--f7-theme-color));
       }
     }
-    a.icon-only,
-    .card & a.icon-only,
-    .card& a.icon-only {
+    a:is(.icon-only, :has(i:only-child), :has(svg:only-child)),
+    .card & a:is(.icon-only, :has(i:only-child), :has(svg:only-child)),
+    .card& a:is(.icon-only, :has(i:only-child), :has(svg:only-child)) {
       display: inline-block;
       vertical-align: middle;
       text-align: center;
@@ -178,11 +178,8 @@
       opacity: 0.87 !important;
     }
   }
-  .sortable-cell.sortable-asc {
-  }
   .sortable-cell.sortable-desc,
-  .sortable-cell.sortable-desc,
-  .table-head-label {
+  .sortable-cell.sortable-desc .table-head-label {
     &:after,
     &:before {
       transform: rotate(180deg) !important;
@@ -227,7 +224,7 @@
       color: var(--f7-table-actions-link-color, var(--f7-theme-color));
       min-width: 0;
     }
-    a.link.icon-only {
+    a.link:is(.icon-only, :has(i:only-child), :has(svg:only-child)) {
       line-height: 1;
       justify-content: center;
       padding: 0;

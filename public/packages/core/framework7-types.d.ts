@@ -80,6 +80,7 @@ import { Toast } from './components/toast/toast.js';
 import { Toggle } from './components/toggle/toggle.js';
 import { Toolbar } from './components/toolbar/toolbar.js';
 import { Tooltip } from './components/tooltip/tooltip.js';
+import { TouchHighlight } from './components/touch-highlight/touch-highlight.js';
 import { TouchRipple } from './components/touch-ripple/touch-ripple.js';
 import { Treeview } from './components/treeview/treeview.js';
 import { Typography } from './components/typography/typography.js';
@@ -300,6 +301,9 @@ declare module './components/app/app-class.js' {
   interface Framework7Class<Events> extends Tooltip.AppMethods{}
   interface Framework7Parameters extends Tooltip.AppParams{}
   interface Framework7Events extends Tooltip.AppEvents{}
+  interface Framework7Class<Events> extends TouchHighlight.AppMethods{}
+  interface Framework7Parameters extends TouchHighlight.AppParams{}
+  interface Framework7Events extends TouchHighlight.AppEvents{}
   interface Framework7Class<Events> extends TouchRipple.AppMethods{}
   interface Framework7Parameters extends TouchRipple.AppParams{}
   interface Framework7Events extends TouchRipple.AppEvents{}
@@ -332,5 +336,5 @@ export {
   StoreParameters,
   createStore,
 };
-export { Accordion, Actions, AreaChart, Autocomplete, Badge, Block, Breadcrumbs, Button, Calendar, Card, Checkbox, Chip, ColorPicker, ContactsList, DataTable, Dialog, Fab, Form, Gauge, Grid, Icon, InfiniteScroll, Input, Link, List, ListIndex, LoginScreen, Messagebar, Messages, Modal, Navbar, Notification, Page, Panel, PhotoBrowser, Picker, PieChart, Popover, Popup, Preloader, Progressbar, PullToRefresh, Radio, Range, Searchbar, Sheet, Skeleton, SmartSelect, Sortable, Statusbar, Stepper, Subnavbar, Swipeout, Swiper, Tabs, TextEditor, Timeline, Toast, Toggle, Toolbar, Tooltip, TouchRipple, Treeview, Typography, View, VirtualList }
+export { Accordion, Actions, AreaChart, Autocomplete, Badge, Block, Breadcrumbs, Button, Calendar, Card, Checkbox, Chip, ColorPicker, ContactsList, DataTable, Dialog, Fab, Form, Gauge, Grid, Icon, InfiniteScroll, Input, Link, List, ListIndex, LoginScreen, Messagebar, Messages, Modal, Navbar, Notification, Page, Panel, PhotoBrowser, Picker, PieChart, Popover, Popup, Preloader, Progressbar, PullToRefresh, Radio, Range, Searchbar, Sheet, Skeleton, SmartSelect, Sortable, Statusbar, Stepper, Subnavbar, Swipeout, Swiper, Tabs, TextEditor, Timeline, Toast, Toggle, Toolbar, Tooltip, TouchHighlight, TouchRipple, Treeview, Typography, View, VirtualList }
 export default Framework7;

@@ -74,6 +74,8 @@ export default {
       step: 1,
       value: 0,
       vertical: true,
+      limitBarPosition: false,
+      limitKnobPosition: true,
       on: {
         change(range, value) {
           self.setValue({
@@ -89,6 +91,8 @@ export default {
       step: 1,
       value: 0,
       vertical: true,
+      limitBarPosition: false,
+      limitKnobPosition: true,
       on: {
         change(range, value) {
           self.setValue({
@@ -104,6 +108,8 @@ export default {
       step: 1,
       value: 0,
       vertical: true,
+      limitBarPosition: false,
+      limitKnobPosition: true,
       on: {
         change(range, value) {
           self.setValue({

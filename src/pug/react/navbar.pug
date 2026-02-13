@@ -18,6 +18,8 @@ block content
 
     p Navbar is a fixed (with Fixed and Through layout types) area at the top of a screen that contains Page title and navigation elements.
     p Navbar React component represents <a href="../docs/navbar.html">Navbar</a> component.
+    .important-note
+      p <strong>Note:</strong> Starting from Framework7 v9, back links use <strong>icon only</strong> by default (without text). To show text, explicitly pass a string value to the <code>backLink</code> prop or use <code>backLinkShowText</code> prop.
     h2 Navbar Components
     p There are following components included:
     ul
@@ -51,7 +53,7 @@ block content
           td backLink
           td boolean<br>string
           td
-          td Adds back-link with text (if `string` value is specified)
+          td Adds back-link. Pass `true` for icon only, or pass a string to show text (e.g. `backLink="Back"`)
         tr
           td backLinkUrl
           td string
@@ -65,8 +67,8 @@ block content
         tr
           td backLinkShowText
           td boolean
-          td
-          td By default back link text disable for MD theme
+          td false
+          td By default back link shows icon only. Set to `true` to show text
         tr
           td sliding
           td boolean
@@ -127,8 +129,8 @@ block content
         tr
           td backLinkShowText
           td boolean
-          td
-          td By default back link text disable for MD theme
+          td false
+          td By default back link shows icon only. Set to `true` to show text
         tr
           td sliding
           td boolean

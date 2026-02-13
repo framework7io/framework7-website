@@ -33,6 +33,8 @@ block content
 
     h1 Color Themes
 
+    .important-note
+      p <strong>Framework7 v9:</strong> Material theme has been updated with the latest Material You specifications, including new <strong>Vibrant</strong> and <strong>Monochrome</strong> color schemes for more dynamic and flexible design options.
 
     h2 Default Theme Color
     p Default theme color is set to the following: #[code #007aff]
@@ -135,6 +137,45 @@ block content
       })
     ```
     p It will generate all required CSS variables and automatically inject it to the document.
+
+    h2 Material Color Schemes
+    p Framework7 v9 introduces new Material You color schemes that can be applied to Material theme:
+    h3 Vibrant Color Scheme
+    p The Vibrant color scheme provides a more colorful and dynamic appearance with increased color saturation. To enable it, use the `mdColorScheme` parameter:
+    ```js
+      const app = new Framework7({
+        colors: {
+          primary: '#007aff',
+          mdColorScheme: 'vibrant' // enables vibrant color scheme
+        }
+      })
+    ```
+    p This scheme is ideal for apps that want to emphasize color and create a more energetic visual experience.
+
+    h3 Monochrome Color Scheme
+    p The Monochrome color scheme provides a neutral, grayscale appearance. To enable it:
+    ```js
+      const app = new Framework7({
+        colors: {
+          primary: '#007aff',
+          mdColorScheme: 'monochrome' // enables monochrome color scheme
+        }
+      })
+    ```
+    p This scheme is perfect for apps that prefer a minimalist, elegant design with subtle color accents.
+
+    h3 Default Color Scheme
+    p If `mdColorScheme` is not specified or set to `'default'`, Framework7 uses the standard Material You color scheme:
+    ```js
+      const app = new Framework7({
+        colors: {
+          primary: '#007aff',
+          mdColorScheme: 'default' // or omit this parameter
+        }
+      })
+    ```
+    .important-note
+      p Color schemes only affect the Material theme. The iOS theme appearance remains unchanged regardless of the `mdColorScheme` setting.
     p For example, if custom theme color is #f00 (red), it will generate and add the following CSS styles to the document for the primary color
     :code(lang="css")
       :root {

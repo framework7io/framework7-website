@@ -6,7 +6,7 @@
         <div class="left">
           <a class="link back">
             <i class="icon icon-back"></i>
-            <span class="if-not-md">Back</span>
+
           </a>
         </div>
         <div class="title">Tabbar Scrollable</div>
@@ -20,15 +20,17 @@
     </div>
     <div class="toolbar tabbar tabbar-scrollable toolbar-${toolbarPosition}">
       <div class="toolbar-inner">
-        ${tabs.map((tab, index) => $h`
-        <a href="#tab-${tab}" class="tab-link ${index === 0 ? 'tab-link-active' : ''}">Tab ${tab}</a>
-        `)}
+        <div class="toolbar-pane">
+          ${tabs.map((tab, index) => $h`
+          <a href="#tab-${tab}" class="tab-link ${index === 0 ? 'tab-link-active' : ''}">Tab ${tab}</a>
+          `)}
+        </div>
       </div>
     </div>
     <div class="tabs">
       ${tabs.map((tab, index) => $h`
       <div id="tab-${tab}" class="page-content tab ${index === 0 ? 'tab-active' : ''}">
-        <div class="block">
+        <div class="block block-strong inset">
           <p><b>Tab ${tab} content</b></p>
           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur
             illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto

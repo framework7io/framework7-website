@@ -1,13 +1,13 @@
 /**
- * Framework7 8.3.4
+ * Framework7 9.0.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2024 Vladimir Kharlampidi
+ * Copyright 2014-2026 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: September 18, 2024
+ * Released on: February 13, 2026
  */
 
 import $ from './shared/dom7.js';
@@ -33,6 +33,7 @@ import Navbar from './components/navbar/navbar.js';
 import Toolbar from './components/toolbar/toolbar.js';
 import Subnavbar from './components/subnavbar/subnavbar.js';
 import TouchRipple from './components/touch-ripple/touch-ripple.js';
+import TouchHighlight from './components/touch-highlight/touch-highlight.js';
 import Modal from './components/modal/modal.js';
 import Router from './modules/router/router-class.js';
 import Dialog from './components/dialog/dialog.js';
@@ -88,6 +89,6 @@ import AreaChart from './components/area-chart/area-chart.js';
 import Breadcrumbs from './components/breadcrumbs/breadcrumbs.js';
 import Typography from './components/typography/typography.js';
 Router.use([RouterComponentLoaderModule]);
-Framework7.use([DeviceModule, SupportModule, UtilsModule, ResizeModule, TouchModule, ClicksModule, RouterModule, HistoryModule, ComponentModule, ServiceWorkerModule, StoreModule, Statusbar, View, Navbar, Toolbar, Subnavbar, TouchRipple, Modal, Dialog, Popup, LoginScreen, Popover, Actions, Sheet, Toast, Preloader, Progressbar, Sortable, Swipeout, Accordion, ContactsList, VirtualList, ListIndex, Timeline, Tabs, Panel, Card, Chip, Form, Input, Checkbox, Radio, Toggle, Range, Stepper, SmartSelect, Grid, Calendar, Picker, InfiniteScroll, PullToRefresh, DataTable, Fab, Searchbar, Messages, Messagebar, Swiper, PhotoBrowser, Notification, Autocomplete, Tooltip, Gauge, Skeleton, ColorPicker, Treeview, TextEditor, PieChart, AreaChart, Breadcrumbs, Typography]);
+Framework7.use([DeviceModule, SupportModule, UtilsModule, ResizeModule, TouchModule, ClicksModule, RouterModule, HistoryModule, ComponentModule, ServiceWorkerModule, StoreModule, Statusbar, View, Navbar, Toolbar, Subnavbar, TouchRipple, Modal, TouchHighlight, Dialog, Popup, LoginScreen, Popover, Actions, Sheet, Toast, Preloader, Progressbar, Sortable, Swipeout, Accordion, ContactsList, VirtualList, ListIndex, Timeline, Tabs, Panel, Card, Chip, Form, Input, Checkbox, Radio, Toggle, Range, Stepper, SmartSelect, Grid, Calendar, Picker, InfiniteScroll, PullToRefresh, DataTable, Fab, Searchbar, Messages, Messagebar, Swiper, PhotoBrowser, Notification, Autocomplete, Tooltip, Gauge, Skeleton, ColorPicker, Treeview, TextEditor, PieChart, AreaChart, Breadcrumbs, Typography]);
 export { Component, $jsx, $ as Dom7, utils, getDevice, getSupport, createStore };
 export default Framework7;

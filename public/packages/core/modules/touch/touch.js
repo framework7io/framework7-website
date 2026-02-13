@@ -11,7 +11,7 @@ function initTouch() {
   const window = getWindow();
   const document = getDocument();
   const params = app.params.touch;
-  const useRipple = params[`${app.theme}TouchRipple`];
+  const useRipple = params.touchRipple && app.theme === 'md';
   if (device.ios && device.webView) {
     // Strange hack required for iOS 8 webview to work on inputs
     window.addEventListener('touchstart', () => {});
@@ -381,42 +381,27 @@ function initTouch() {
   function appTouchEndPassive(e) {
     emitAppTouchEvent('touchend:passive', e);
   }
-  const passiveListener = support.passiveListener ? {
+  const passiveListener = {
     passive: true
-  } : false;
-  const passiveListenerCapture = support.passiveListener ? {
+  };
+  const passiveListenerCapture = {
     passive: true,
     capture: true
-  } : true;
-  const activeListener = support.passiveListener ? {
+  };
+  const activeListener = {
     passive: false
-  } : false;
-  const activeListenerCapture = support.passiveListener ? {
+  };
+  const activeListenerCapture = {
     passive: false,
     capture: true
-  } : true;
+  };
   document.addEventListener('click', appClick, true);
-  if (support.passiveListener) {
-    document.addEventListener(app.touchEvents.start, appTouchStartActive, activeListenerCapture);
-    document.addEventListener(app.touchEvents.move, appTouchMoveActive, activeListener);
-    document.addEventListener(app.touchEvents.end, appTouchEndActive, activeListener);
-    document.addEventListener(app.touchEvents.start, appTouchStartPassive, passiveListenerCapture);
-    document.addEventListener(app.touchEvents.move, appTouchMovePassive, passiveListener);
-    document.addEventListener(app.touchEvents.end, appTouchEndPassive, passiveListener);
-  } else {
-    document.addEventListener(app.touchEvents.start, e => {
-      appTouchStartActive(e);
-      appTouchStartPassive(e);
-    }, true);
-    document.addEventListener(app.touchEvents.move, e => {
-      appTouchMoveActive(e);
-      appTouchMovePassive(e);
-    }, false);
-    document.addEventListener(app.touchEvents.end, e => {
-      appTouchEndActive(e);
-      appTouchEndPassive(e);
-    }, false);
-  }
+  document.addEventListener(app.touchEvents.start, appTouchStartActive, activeListenerCapture);
+  document.addEventListener(app.touchEvents.move, appTouchMoveActive, activeListener);
+  document.addEventListener(app.touchEvents.end, appTouchEndActive, activeListener);
+  document.addEventListener(app.touchEvents.start, appTouchStartPassive, passiveListenerCapture);
+  document.addEventListener(app.touchEvents.move, appTouchMovePassive, passiveListener);
+  document.addEventListener(app.touchEvents.end, appTouchEndPassive, passiveListener);
   if (support.touch) {
     app.on('click', handleClick);
     app.on('touchstart', handleTouchStart);
@@ -434,7 +419,7 @@ function initTouch() {
     });
   }
   document.addEventListener('contextmenu', e => {
-    if (params.disableContextMenu && (device.ios || device.android || device.cordova || window.Capacitor && window.Capacitor.isNative)) {
+    if (params.disableContextMenu && (device.ios || device.android || device.cordova || window.Capacitor && (window.Capacitor.isNative || window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()))) {
       e.preventDefault();
     }
     if (useRipple) {
@@ -459,10 +444,11 @@ export default {
       activeState: true,
       activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .link, .item-link, .accordion-item-toggle',
       activeStateOnMouseMove: false,
-      mdTouchRipple: true,
-      iosTouchRipple: false,
+      touchRipple: true,
       touchRippleElements: '.ripple, .link, .item-link, .list label.item-content, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .list.accordion-list .accordion-item-toggle',
-      touchRippleInsetElements: '.ripple-inset, .icon-only, .searchbar-disable-button, .input-clear-button, .notification-close-button, .md .navbar .link.back'
+      touchRippleInsetElements: '.ripple-inset, .icon-only, .searchbar-disable-button, .input-clear-button, .notification-close-button, .md .navbar .link.back',
+      touchHighlight: true,
+      touchHighlightElements: '.toolbar-pane, .navbar .left, .navbar .right, .actions-group:not(.actions-grid .actions-group), .searchbar-input-wrap, .searchbar-disable-button, .subnavbar, .searchbar-input-wrap .autocomplete-dropdown, .messagebar-area, .notification, .toast, .fab > a'
     }
   },
   create() {
@@ -470,9 +456,9 @@ export default {
     const support = getSupport();
     extend(app, {
       touchEvents: {
-        start: support.touch ? 'touchstart' : support.pointerEvents ? 'pointerdown' : 'mousedown',
-        move: support.touch ? 'touchmove' : support.pointerEvents ? 'pointermove' : 'mousemove',
-        end: support.touch ? 'touchend' : support.pointerEvents ? 'pointerup' : 'mouseup'
+        start: support.touch ? 'touchstart' : 'pointerdown',
+        move: support.touch ? 'touchmove' : 'pointermove',
+        end: support.touch ? 'touchend' : 'pointerup'
       }
     });
   },

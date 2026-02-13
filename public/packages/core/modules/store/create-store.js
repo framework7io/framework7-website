@@ -1,9 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { extend } from '../../shared/utils.js';
-function createStore(storeParams) {
-  if (storeParams === void 0) {
-    storeParams = {};
-  }
+function createStore(storeParams = {}) {
   const store = {
     __store: true
   };
@@ -65,10 +62,7 @@ function createStore(storeParams) {
   store.__removeCallback = callback => {
     removeGetterCallback(callback);
   };
-  const getterValue = function (getterKey, addCallback) {
-    if (addCallback === void 0) {
-      addCallback = true;
-    }
+  const getterValue = (getterKey, addCallback = true) => {
     if (getterKey === 'constructor') return undefined;
     propsQueue = [];
     const value = getGetterValue(getterKey);

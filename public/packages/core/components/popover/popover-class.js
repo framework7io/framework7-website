@@ -53,15 +53,6 @@ class Popover extends Modal {
       }
     }
 
-    // Find Arrow
-    let $arrowEl;
-    if ($el.find('.popover-arrow').length === 0 && popover.params.arrow) {
-      $arrowEl = $('<div class="popover-arrow"></div>');
-      $el.prepend($arrowEl);
-    } else {
-      $arrowEl = $el.find('.popover-arrow');
-    }
-
     // Open
     const originalOpen = popover.open;
     extend(popover, {
@@ -70,16 +61,11 @@ class Popover extends Modal {
       el: $el[0],
       $targetEl,
       targetEl: $targetEl[0],
-      $arrowEl,
-      arrowEl: $arrowEl[0],
       $backdropEl,
       backdropEl: $backdropEl && $backdropEl[0],
       type: 'popover',
       forceBackdropUnique,
-      open() {
-        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
+      open(...args) {
         let [targetEl, animate] = args;
         if (typeof args[0] === 'boolean') [animate, targetEl] = args;
         if (targetEl) {
@@ -93,7 +79,15 @@ class Popover extends Modal {
       popover.resize();
     }
     popover.on('popoverOpen', () => {
+      if (popover.app.theme === 'ios') {
+        $el.removeClass('modal-in');
+      }
       popover.resize();
+      if (popover.app.theme === 'ios') {
+        requestAnimationFrame(() => {
+          $el.addClass('modal-in');
+        });
+      }
       app.on('resize', handleResize);
       $(window).on('keyboardDidShow keyboardDidHide', handleResize);
       popover.on('popoverClose popoverBeforeDestroy', () => {
@@ -156,8 +150,7 @@ class Popover extends Modal {
     const {
       app,
       $el,
-      $targetEl,
-      $arrowEl
+      $targetEl
     } = popover;
     const {
       targetX,
@@ -169,18 +162,6 @@ class Popover extends Modal {
       top: ''
     });
     const [width, height] = [$el.width(), $el.height()];
-    let arrowSize = 0;
-    let arrowLeft;
-    let arrowTop;
-    const hasArrow = $arrowEl.length > 0;
-    const arrowMin = app.theme === 'ios' ? 13 : 24;
-    if (hasArrow) {
-      $arrowEl.removeClass('on-left on-right on-top on-bottom').css({
-        left: '',
-        top: ''
-      });
-      arrowSize = $arrowEl.width() / 2;
-    }
     $el.removeClass('popover-on-left popover-on-right popover-on-top popover-on-bottom popover-on-middle').css({
       left: '',
       top: ''
@@ -211,30 +192,27 @@ class Popover extends Modal {
       targetWidth = popover.params.targetWidth || 0;
       targetHeight = popover.params.targetHeight || 0;
     }
-    let [left, top, diff] = [0, 0, 0];
+    let [left, top] = [0, 0];
     // Top Position
     const forcedPosition = verticalPosition === 'auto' ? false : verticalPosition;
     let position = forcedPosition || 'top';
-    if (forcedPosition === 'top' || !forcedPosition && height + arrowSize < targetOffsetTop - safeAreaTop) {
+    if (forcedPosition === 'top' || !forcedPosition && height < targetOffsetTop - safeAreaTop) {
       // On top
-      top = targetOffsetTop - height - arrowSize;
-    } else if (forcedPosition === 'bottom' || !forcedPosition && height + arrowSize < app.height - targetOffsetTop - targetHeight) {
+      top = targetOffsetTop - height;
+    } else if (forcedPosition === 'bottom' || !forcedPosition && height < app.height - targetOffsetTop - targetHeight) {
       // On bottom
       position = 'bottom';
-      top = targetOffsetTop + targetHeight + arrowSize;
+      top = targetOffsetTop + targetHeight;
     } else {
       // On middle
       position = 'middle';
       top = targetHeight / 2 + targetOffsetTop - height / 2;
-      diff = top;
       top = Math.max(5, Math.min(top, app.height - height - 5));
-      diff -= top;
     }
 
     // Horizontal Position
     if (position === 'top' || position === 'bottom') {
       left = targetWidth / 2 + targetOffsetLeft - width / 2;
-      diff = left;
       left = Math.max(5, Math.min(left, app.width - width - 5));
       if (safeAreaLeft) {
         left = Math.max(left, safeAreaLeft);
@@ -242,35 +220,12 @@ class Popover extends Modal {
       if (safeAreaRight && left + width > app.width - 5 - safeAreaRight) {
         left = app.width - 5 - safeAreaRight - width;
       }
-      diff -= left;
-      if (hasArrow) {
-        if (position === 'top') {
-          $arrowEl.addClass('on-bottom');
-        }
-        if (position === 'bottom') {
-          $arrowEl.addClass('on-top');
-        }
-        arrowLeft = width / 2 - arrowSize + diff;
-        arrowLeft = Math.max(Math.min(arrowLeft, width - arrowSize * 2 - arrowMin), arrowMin);
-        $arrowEl.css({
-          left: `${arrowLeft}px`
-        });
-      }
     } else if (position === 'middle') {
-      left = targetOffsetLeft - width - arrowSize;
-      if (hasArrow) $arrowEl.addClass('on-right');
+      left = targetOffsetLeft - width;
       if (left < 5 || left + width + safeAreaRight > app.width || left < safeAreaLeft) {
-        if (left < 5) left = targetOffsetLeft + targetWidth + arrowSize;
+        if (left < 5) left = targetOffsetLeft + targetWidth;
         if (left + width + safeAreaRight > app.width) left = app.width - width - 5 - safeAreaRight;
         if (left < safeAreaLeft) left = safeAreaLeft;
-        if (hasArrow) $arrowEl.removeClass('on-right').addClass('on-left');
-      }
-      if (hasArrow) {
-        arrowTop = height / 2 - arrowSize + diff;
-        arrowTop = Math.max(Math.min(arrowTop, height - arrowSize * 2 - arrowMin), arrowMin);
-        $arrowEl.css({
-          top: `${arrowTop}px`
-        });
       }
     }
 
@@ -288,6 +243,11 @@ class Popover extends Modal {
       top: `${top}px`,
       left: `${left}px`
     });
+    if (app.theme === 'ios') {
+      $el.css({
+        transformOrigin: `${targetOffsetLeft + targetWidth / 2 - left}px ${targetOffsetTop + targetHeight / 2 - top}px`
+      });
+    }
   }
 }
 export default Popover;

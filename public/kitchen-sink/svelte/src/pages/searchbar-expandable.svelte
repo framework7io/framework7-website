@@ -3,7 +3,7 @@
 </script>
 
 <Page>
-  <Navbar backLink="Back" title="Searchbar">
+  <Navbar backLink title="Searchbar">
     <NavRight>
       <Link searchbarEnable=".searchbar-demo" iconIos="f7:search" iconMd="material:search" />
     </NavRight>
@@ -14,10 +14,10 @@
       searchIn=".item-title"
     />
   </Navbar>
-  <List strongIos outlineIos dividersIos class="searchbar-not-found">
+  <List strong inset dividersIos class="searchbar-not-found">
     <ListItem title="Nothing found" />
   </List>
-  <List strongIos outlineIos dividersIos class="search-list searchbar-found">
+  <List strong inset dividersIos class="search-list searchbar-found">
     <ListItem title="Acura" />
     <ListItem title="Audi" />
     <ListItem title="BMW" />

@@ -6,10 +6,7 @@ import Framework7Class from '../../shared/class.js';
 /** @jsx $jsx */
 import $jsx from '../../shared/$jsx.js';
 class Autocomplete extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const ac = this;
     ac.app = app;
@@ -459,7 +456,9 @@ class Autocomplete extends Framework7Class {
       class: "input-clear-button"
     })), ac.params.searchbarDisableButton && $jsx("span", {
       class: "searchbar-disable-button"
-    }, ac.params.searchbarDisableText)));
+    }, $jsx("i", {
+      class: "icon icon-close"
+    }), ac.params.searchbarDisableText && $jsx("span", null, ac.params.searchbarDisableText))));
   }
   renderItem(item, index) {
     const ac = this;
@@ -515,23 +514,23 @@ class Autocomplete extends Framework7Class {
 
     // eslint-disable-next-line
     const navbarLeft = inPopup ? ac.params.preloader && $jsx("div", {
-      class: "left"
+      class: "left autocomplete-preloader-wrap"
     }, ac.renderPreloader()) : $jsx("div", {
-      class: "left sliding"
+      class: "left"
     }, $jsx("a", {
       class: "link back"
     }, $jsx("i", {
       class: "icon icon-back"
-    }), $jsx("span", {
-      class: "if-not-md"
-    }, ac.params.pageBackLinkText)));
+    }), ac.params.pageBackLinkText ? $jsx("span", null, ac.params.pageBackLinkText) : ''));
     const navbarRight = inPopup ? $jsx("div", {
       class: "right"
     }, $jsx("a", {
       class: "link popup-close",
       "data-popup": ".autocomplete-popup"
-    }, ac.params.popupCloseLinkText)) : ac.params.preloader && $jsx("div", {
-      class: "right"
+    }, $jsx("i", {
+      class: "icon icon-close"
+    }), ac.params.popupCloseLinkText ? $jsx("span", null, ac.params.popupCloseLinkText) : '')) : ac.params.preloader && $jsx("div", {
+      class: "right autocomplete-preloader-wrap"
     }, ac.renderPreloader());
     return $jsx("div", {
       class: `navbar ${ac.params.navbarColorTheme ? `color-${ac.params.navbarColorTheme}` : ''}`
@@ -540,9 +539,9 @@ class Autocomplete extends Framework7Class {
     }), $jsx("div", {
       class: `navbar-inner ${ac.params.navbarColorTheme ? `color-${ac.params.navbarColorTheme}` : ''}`
     }, navbarLeft, pageTitle && $jsx("div", {
-      class: "title sliding"
+      class: "title"
     }, pageTitle), navbarRight, $jsx("div", {
-      class: "subnavbar sliding"
+      class: "subnavbar"
     }, ac.renderSearchbar())));
   }
   renderDropdown() {

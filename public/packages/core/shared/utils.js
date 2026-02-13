@@ -5,13 +5,7 @@ export function uniqueNumber() {
   uniqueNum += 1;
   return uniqueNum;
 }
-export function id(mask, map) {
-  if (mask === void 0) {
-    mask = 'xxxxxxxxxx';
-  }
-  if (map === void 0) {
-    map = '0123456789abcdef';
-  }
+export function id(mask = 'xxxxxxxxxx', map = '0123456789abcdef') {
   const length = map.length;
   return mask.replace(/x/g, () => map[Math.floor(Math.random() * length)]);
 }
@@ -60,10 +54,7 @@ export function cancelAnimationFrame(frameId) {
   const window = getWindow();
   return window.cancelAnimationFrame(frameId);
 }
-export function nextTick(callback, delay) {
-  if (delay === void 0) {
-    delay = 0;
-  }
+export function nextTick(callback, delay = 0) {
   return setTimeout(callback, delay);
 }
 export function nextFrame(callback) {
@@ -93,10 +84,7 @@ export function parseUrlQuery(url) {
   }
   return query;
 }
-export function getTranslate(el, axis) {
-  if (axis === void 0) {
-    axis = 'x';
-  }
+export function getTranslate(el, axis = 'x') {
   const window = getWindow();
   let matrix;
   let curTransform;
@@ -132,10 +120,7 @@ export function getTranslate(el, axis) {
   }
   return curTransform || 0;
 }
-export function serializeObject(obj, parents) {
-  if (parents === void 0) {
-    parents = [];
-  }
+export function serializeObject(obj, parents = []) {
   if (typeof obj === 'string') return obj;
   const resultArray = [];
   const separator = '&';
@@ -181,16 +166,12 @@ export function serializeObject(obj, parents) {
       resultArray.push(`${varName(prop)}=${varValue(obj[prop])}`);
     } else if (obj[prop] === '') resultArray.push(varName(prop)); // eslint-disable-line
   });
-
   return resultArray.join(separator);
 }
 export function isObject(o) {
   return typeof o === 'object' && o !== null && o.constructor && o.constructor === Object;
 }
-export function merge() {
-  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-    args[_key] = arguments[_key];
-  }
+export function merge(...args) {
   const to = args[0];
   args.splice(0, 1);
   const from = args;
@@ -209,13 +190,10 @@ export function merge() {
   }
   return to;
 }
-export function extend() {
+export function extend(...args) {
   let deep = true;
   let to;
   let from;
-  for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-    args[_key2] = arguments[_key2];
-  }
   if (typeof args[0] === 'boolean') {
     deep = args[0];
     to = args[1];
@@ -329,34 +307,40 @@ const getShadeTintColors = rgb => {
     tint
   };
 };
-export function colorThemeCSSProperties() {
+export function colorThemeCSSProperties(...args) {
   let hex;
   let rgb;
-  for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-    args[_key3] = arguments[_key3];
-  }
+  let mdColorScheme;
   if (args.length === 1) {
     hex = args[0];
     rgb = colorHexToRgb(hex);
+  } else if (args.length === 2) {
+    hex = args[0];
+    rgb = colorHexToRgb(hex);
+    mdColorScheme = args[1] || 'default';
   } else if (args.length === 3) {
     rgb = args;
     hex = colorRgbToHex(...rgb);
+  } else if (args.length === 4) {
+    rgb = args.slice(0, 3);
+    hex = colorRgbToHex(...rgb);
+    mdColorScheme = args[3] || 'default';
   }
   if (!rgb) return {};
   const {
     light,
     dark
-  } = materialColors(hex);
+  } = materialColors(hex, mdColorScheme);
   const shadeTintIos = getShadeTintColors(rgb);
   const shadeTintMdLight = getShadeTintColors(colorHexToRgb(light['--f7-md-primary']));
   const shadeTintMdDark = getShadeTintColors(colorHexToRgb(dark['--f7-md-primary']));
   Object.keys(light).forEach(key => {
-    if (key.includes('surface-')) {
+    if (key.includes('surface-') && !key.includes('-rgb')) {
       light[`${key}-rgb`] = colorHexToRgb(light[key]);
     }
   });
   Object.keys(dark).forEach(key => {
-    if (key.includes('surface-')) {
+    if (key.includes('surface-') && !key.includes('-rgb')) {
       dark[`${key}-rgb`] = colorHexToRgb(dark[key]);
     }
   });
@@ -403,20 +387,14 @@ export function bindMethods(instance, obj) {
     instance[key] = obj[key];
   });
 }
-export function flattenArray() {
+export function flattenArray(...args) {
   const arr = [];
-  for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-    args[_key4] = arguments[_key4];
-  }
   args.forEach(arg => {
     if (Array.isArray(arg)) arr.push(...flattenArray(...arg));else arr.push(arg);
   });
   return arr;
 }
-export function colorThemeCSSStyles(colors) {
-  if (colors === void 0) {
-    colors = {};
-  }
+export function colorThemeCSSStyles(colors = {}, mdColorScheme = 'default') {
   const stringifyObject = obj => {
     let res = '';
     Object.keys(obj).forEach(key => {
@@ -424,12 +402,12 @@ export function colorThemeCSSStyles(colors) {
     });
     return res;
   };
-  const colorVars = colorThemeCSSProperties(colors.primary);
+  const colorVars = colorThemeCSSProperties(colors.primary, mdColorScheme);
   const primary = [`:root{`, stringifyObject(colorVars.light), `--swiper-theme-color:var(--f7-theme-color);`, ...Object.keys(colors).map(colorName => `--f7-color-${colorName}: ${colors[colorName]};`), `}`, `.dark{`, stringifyObject(colorVars.dark), `}`, `.ios, .ios .dark{`, stringifyObject(colorVars.ios), '}', `.md, .md .dark{`, stringifyObject(colorVars.md), '}'].join('');
   const restVars = {};
   Object.keys(colors).forEach(colorName => {
     const colorValue = colors[colorName];
-    restVars[colorName] = colorThemeCSSProperties(colorValue);
+    restVars[colorName] = colorThemeCSSProperties(colorValue, mdColorScheme);
   });
 
   // rest

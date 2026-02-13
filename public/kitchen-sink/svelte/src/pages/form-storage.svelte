@@ -3,7 +3,7 @@
 </script>
 
 <Page>
-  <Navbar title="Form Storage" backLink="Back" />
+  <Navbar title="Form Storage" backLink />
   <Block strong>
     <p>
       With forms storage it is easy to store and parse form data, especially on Ajax loaded pages.
@@ -42,9 +42,9 @@
     />
     <ListInput label="Date time" name="date" type="datetime-local" placeholder="Please choose..." />
     <ListInput label="Range" input={false}>
-      <span slot="input">
+      {#snippet inputContent()}
         <Range input={true} name="range" value={50} min={0} max={100} step={1} />
-      </span>
+      {/snippet}
     </ListInput>
 
     <ListInput label="About you" type="textarea" name="bio" resizable placeholder="Bio" />

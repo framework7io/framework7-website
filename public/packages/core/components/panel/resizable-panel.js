@@ -1,9 +1,7 @@
 import $ from '../../shared/dom7.js';
 import { extend, nextFrame } from '../../shared/utils.js';
-import { getSupport } from '../../shared/get-support.js';
 function resizablePanel(panel) {
   const app = panel.app;
-  const support = getSupport();
   if (panel.resizableInitialized) return;
   extend(panel, {
     resizable: true,
@@ -139,9 +137,9 @@ function resizablePanel(panel) {
   $el.addClass('panel-resizable');
 
   // Add Events
-  const passive = support.passiveListener ? {
+  const passive = {
     passive: true
-  } : false;
+  };
   panel.$el.on(app.touchEvents.start, '.panel-resize-handler', handleTouchStart, passive);
   app.on('touchmove:active', handleTouchMove);
   app.on('touchend:passive', handleTouchEnd);

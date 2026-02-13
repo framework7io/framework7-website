@@ -4,10 +4,7 @@ import { extend, deleteProps } from '../../shared/utils.js';
 import Framework7Class from '../../shared/class.js';
 import { getDevice } from '../../shared/get-device.js';
 class VirtualList extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const vl = this;
     const device = getDevice();
@@ -333,10 +330,7 @@ class VirtualList extends Framework7Class {
   }
 
   // Filter
-  filterItems(indexes, resetScrollTop) {
-    if (resetScrollTop === void 0) {
-      resetScrollTop = true;
-    }
+  filterItems(indexes, resetScrollTop = true) {
     const vl = this;
     vl.filteredItems = [];
     for (let i = 0; i < indexes.length; i += 1) {

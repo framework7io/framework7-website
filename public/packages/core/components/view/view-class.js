@@ -4,10 +4,7 @@ import Router from '../../modules/router/router.js';
 import Framework7Class from '../../shared/class.js';
 import resizableView from './resizable-view.js';
 class View extends Framework7Class {
-  constructor(app, el, viewParams) {
-    if (viewParams === void 0) {
-      viewParams = {};
-    }
+  constructor(app, el, viewParams = {}) {
     super(viewParams, [app]);
     const view = this;
     const ssr = view.params.routerId;
@@ -154,21 +151,10 @@ class View extends Framework7Class {
       // Supposed to be HTMLElement or Dom7
       selector = ($el.attr('id') ? `#${$el.attr('id')}` : '') + ($el.attr('class') ? `.${$el.attr('class').replace(/ /g, '.').replace('.active', '')}` : '');
     }
-
-    // DynamicNavbar
-    let $navbarsEl;
-    if (app.theme === 'ios' && view.params.iosDynamicNavbar) {
-      $navbarsEl = $el.children('.navbars').eq(0);
-      if ($navbarsEl.length === 0) {
-        $navbarsEl = $('<div class="navbars"></div>');
-      }
-    }
     extend(view, {
       $el,
       el: $el[0],
       main: view.main || $el.hasClass('view-main'),
-      $navbarsEl,
-      navbarsEl: $navbarsEl ? $navbarsEl[0] : undefined,
       selector
     });
     if (view.main) {

@@ -13,8 +13,8 @@
     ActionsButton,
   } from 'framework7-svelte';
 
-  let actionsOneGroupOpened = false;
-  let actionGridOpened = false;
+  let actionsOneGroupOpened = $state(false);
+  let actionGridOpened = $state(false);
 
   let actionsToPopover;
   let buttonToPopoverWrapper;
@@ -57,12 +57,13 @@
 
 <!-- svelte-ignore a11y-missing-attribute -->
 <Page>
-  <Navbar title="Action Sheet" backLink="Back" />
+  <Navbar title="Action Sheet" backLink />
   <Block strong inset>
     <p class="grid grid-cols-2 grid-gap">
       <!-- One group, open by direct accessing instance .open() method -->
       <Button
         fill
+        round
         onClick={() => {
           actionsOneGroupOpened = true;
         }}
@@ -70,12 +71,13 @@
         One group
       </Button>
       <!--  Two groups, open by "actionsOpen" attribute -->
-      <Button fill actionsOpen="#actions-two-groups">Two groups</Button>
+      <Button fill round actionsOpen="#actions-two-groups">Two groups</Button>
     </p>
     <p>
       <!-- Actions Grid, open by changing actionGridOpened state property -->
       <Button
         fill
+        round
         onClick={() => {
           actionGridOpened = true;
         }}
@@ -90,7 +92,14 @@
     <p bind:this={buttonToPopoverWrapper}>
       Action Sheet can be automatically converted to Popover (for tablets). This button will open
       Popover on tablets and Action Sheet on phones:
-      <Button style="display: inline-block" class="button-to-popover" onClick={openActionsPopover}>
+      <Button
+        round
+        fill
+        small
+        style="display: inline-block"
+        class="button-to-popover"
+        onClick={openActionsPopover}
+      >
         Actions
       </Button>
     </p>
@@ -122,59 +131,65 @@
   <Actions grid={true} bind:opened={actionGridOpened}>
     <ActionsGroup>
       <ActionsButton>
-        <img
-          slot="media"
-          src="https://cdn.framework7.io/placeholder/people-96x96-1.jpg"
-          width="48"
-          style="max-width: 100%; border-radius: 8px"
-        />
+        {#snippet media()}
+          <img
+            src="https://cdn.framework7.io/placeholder/people-96x96-1.jpg"
+            width="48"
+            style="max-width: 100%; border-radius: 8px"
+          />
+        {/snippet}
         <span>Button 1</span>
       </ActionsButton>
       <ActionsButton>
-        <img
-          slot="media"
-          src="https://cdn.framework7.io/placeholder/people-96x96-2.jpg"
-          width="48"
-          style="max-width: 100%; border-radius: 8px"
-        />
+        {#snippet media()}
+          <img
+            src="https://cdn.framework7.io/placeholder/people-96x96-2.jpg"
+            width="48"
+            style="max-width: 100%; border-radius: 8px"
+          />
+        {/snippet}
         <span>Button 2</span>
       </ActionsButton>
       <ActionsButton>
-        <img
-          slot="media"
-          src="https://cdn.framework7.io/placeholder/people-96x96-3.jpg"
-          width="48"
-          style="max-width: 100%; border-radius: 8px"
-        />
+        {#snippet media()}
+          <img
+            src="https://cdn.framework7.io/placeholder/people-96x96-3.jpg"
+            width="48"
+            style="max-width: 100%; border-radius: 8px"
+          />
+        {/snippet}
         <span>Button 3</span>
       </ActionsButton>
     </ActionsGroup>
     <ActionsGroup>
       <ActionsButton>
-        <img
-          slot="media"
-          src="https://cdn.framework7.io/placeholder/fashion-96x96-4.jpg"
-          width="48"
-          style="max-width: 100%; border-radius: 8px"
-        />
+        {#snippet media()}
+          <img
+            src="https://cdn.framework7.io/placeholder/fashion-96x96-4.jpg"
+            width="48"
+            style="max-width: 100%; border-radius: 8px"
+          />
+        {/snippet}
         <span>Button 4</span>
       </ActionsButton>
       <ActionsButton>
-        <img
-          slot="media"
-          src="https://cdn.framework7.io/placeholder/fashion-96x96-5.jpg"
-          width="48"
-          style="max-width: 100%; border-radius: 8px"
-        />
+        {#snippet media()}
+          <img
+            src="https://cdn.framework7.io/placeholder/fashion-96x96-5.jpg"
+            width="48"
+            style="max-width: 100%; border-radius: 8px"
+          />
+        {/snippet}
         <span>Button 5</span>
       </ActionsButton>
       <ActionsButton>
-        <img
-          slot="media"
-          src="https://cdn.framework7.io/placeholder/fashion-96x96-6.jpg"
-          width="48"
-          style="max-width: 100%; border-radius: 8px"
-        />
+        {#snippet media()}
+          <img
+            src="https://cdn.framework7.io/placeholder/fashion-96x96-6.jpg"
+            width="48"
+            style="max-width: 100%; border-radius: 8px"
+          />
+        {/snippet}
         <span>Button 6</span>
       </ActionsButton>
     </ActionsGroup>

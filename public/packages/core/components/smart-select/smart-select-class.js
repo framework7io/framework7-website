@@ -6,10 +6,7 @@ import removeDiacritics from '../searchbar/remove-diacritics.js';
 /** @jsx $jsx */
 import $jsx from '../../shared/$jsx.js';
 class SmartSelect extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const ss = this;
     const defaults = extend({
@@ -343,24 +340,20 @@ class SmartSelect extends Framework7Class {
       class: "input-clear-button"
     })), ss.params.searchbarDisableButton && $jsx("span", {
       class: "searchbar-disable-button"
-    }, ss.params.searchbarDisableText)));
+    }, $jsx("i", {
+      class: "icon icon-close"
+    }), ss.params.searchbarDisableText && $jsx("span", null, ss.params.searchbarDisableText))));
   }
   renderItem(item, index) {
     const ss = this;
     if (ss.params.renderItem) return ss.params.renderItem.call(ss, item, index);
-    function getIconContent(iconValue) {
-      if (iconValue === void 0) {
-        iconValue = '';
-      }
+    function getIconContent(iconValue = '') {
       if (iconValue.indexOf(':') >= 0) {
         return iconValue.split(':')[1];
       }
       return '';
     }
-    function getIconClass(iconValue) {
-      if (iconValue === void 0) {
-        iconValue = '';
-      }
+    function getIconClass(iconValue = '') {
       if (iconValue.indexOf(':') >= 0) {
         let className = iconValue.split(':')[0];
         if (className === 'f7') className = 'f7-icons';
@@ -441,16 +434,14 @@ class SmartSelect extends Framework7Class {
     }, $jsx("div", {
       class: "navbar-bg"
     }), $jsx("div", {
-      class: `navbar-inner sliding ${ss.params.navbarColorTheme ? `color-${ss.params.navbarColorTheme}` : ''}`
+      class: `navbar-inner ${ss.params.navbarColorTheme ? `color-${ss.params.navbarColorTheme}` : ''}`
     }, $jsx("div", {
       class: "left"
     }, $jsx("a", {
       class: "link back"
     }, $jsx("i", {
       class: "icon icon-back"
-    }), $jsx("span", {
-      class: "if-not-md"
-    }, ss.params.pageBackLinkText))), pageTitle && $jsx("div", {
+    }), ss.params.pageBackLinkText && $jsx("span", null, ss.params.pageBackLinkText))), pageTitle && $jsx("div", {
       class: "title"
     }, pageTitle), ss.params.searchbar && $jsx("div", {
       class: "subnavbar"
@@ -484,7 +475,7 @@ class SmartSelect extends Framework7Class {
     }, $jsx("div", {
       class: "navbar-bg"
     }), $jsx("div", {
-      class: "navbar-inner sliding"
+      class: "navbar-inner"
     }, pageTitle && $jsx("div", {
       class: "title"
     }, pageTitle), $jsx("div", {
@@ -492,7 +483,9 @@ class SmartSelect extends Framework7Class {
     }, $jsx("a", {
       class: "link popup-close",
       "data-popup": `.smart-select-popup[data-select-name='${ss.selectName}']`
-    }, ss.params.popupCloseLinkText)), ss.params.searchbar && $jsx("div", {
+    }, $jsx("i", {
+      class: "icon icon-close"
+    }), ss.params.popupCloseLinkText && $jsx("span", null, ss.params.popupCloseLinkText))), ss.params.searchbar && $jsx("div", {
       class: "subnavbar"
     }, ss.renderSearchbar()))), ss.params.searchbar && $jsx("div", {
       class: "searchbar-backdrop"
@@ -520,7 +513,9 @@ class SmartSelect extends Framework7Class {
       class: "right"
     }, $jsx("a", {
       class: "link sheet-close"
-    }, ss.params.sheetCloseLinkText)))), $jsx("div", {
+    }, $jsx("i", {
+      class: "icon icon-close"
+    }), ss.params.sheetCloseLinkText && $jsx("span", null, ss.params.sheetCloseLinkText))))), $jsx("div", {
       class: "sheet-modal-inner"
     }, $jsx("div", {
       class: "page-content"

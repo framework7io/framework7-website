@@ -4,7 +4,7 @@ import { bindMethods } from '../../shared/utils.js';
 import { getDevice } from '../../shared/get-device.js';
 const isCapacitor = () => {
   const window = getWindow();
-  return window.Capacitor && window.Capacitor.isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.StatusBar;
+  return window.Capacitor && (window.Capacitor.isNative || window.Capacitor.isNativePlatform) && window.Capacitor.Plugins && window.Capacitor.Plugins.StatusBar;
 };
 const Statusbar = {
   hide() {
@@ -101,10 +101,7 @@ const Statusbar = {
       resolve(false);
     });
   },
-  overlaysWebView(overlays) {
-    if (overlays === void 0) {
-      overlays = true;
-    }
+  overlaysWebView(overlays = true) {
     const window = getWindow();
     const device = getDevice();
     if (device.cordova && window.StatusBar) {

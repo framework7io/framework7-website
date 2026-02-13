@@ -35,6 +35,8 @@ export default {
       max: 360,
       step: 0.1,
       value: 0,
+      limitBarPosition: false,
+      limitKnobPosition: self.app.theme === 'ios',
       on: {
         change(range, value) {
           self.setValue({

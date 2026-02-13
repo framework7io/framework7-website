@@ -86,23 +86,23 @@
 </script>
 
 <Page {onPageBeforeOut} {onPageBeforeRemove}>
-  <Navbar title="Notifications" backLink="Back" />
-  <Block strongIos outlineIos>
+  <Navbar title="Notifications" backLink />
+  <Block strong inset>
     <p>
       Framework7 comes with simple Notifications component that allows you to show some useful
       messages to user and request basic actions.
     </p>
     <p>
-      <Button fill onClick={showNotificationFull}>Full layout notification</Button>
+      <Button fill round onClick={showNotificationFull}>Full layout notification</Button>
     </p>
     <p>
-      <Button fill onClick={showNotificationWithButton}>With close button</Button>
+      <Button fill round onClick={showNotificationWithButton}>With close button</Button>
     </p>
     <p>
-      <Button fill onClick={showNotificationCloseOnClick}>Click to close</Button>
+      <Button fill round onClick={showNotificationCloseOnClick}>Click to close</Button>
     </p>
     <p>
-      <Button fill onClick={showNotificationCallbackOnClose}>Callback on close</Button>
+      <Button fill round onClick={showNotificationCallbackOnClose}>Callback on close</Button>
     </p>
   </Block>
 </Page>

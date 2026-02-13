@@ -12,18 +12,12 @@ export default {
       app,
       domProp: 'f7Stepper'
     }), {
-      getValue(el) {
-        if (el === void 0) {
-          el = '.stepper';
-        }
+      getValue(el = '.stepper') {
         const stepper = app.stepper.get(el);
         if (stepper) return stepper.getValue();
         return undefined;
       },
-      setValue(el, value) {
-        if (el === void 0) {
-          el = '.stepper';
-        }
+      setValue(el = '.stepper', value) {
         const stepper = app.stepper.get(el);
         if (stepper) return stepper.setValue(value);
         return undefined;

@@ -1,5 +1,4 @@
 import $ from '../../../shared/dom7.js';
-import { getSupport } from '../../../shared/get-support.js';
 /** @jsx $jsx */
 import $jsx from '../../../shared/$jsx.js';
 export default {
@@ -84,7 +83,7 @@ export default {
     function handleResize() {
       self.modules['sb-spectrum'].update(self);
     }
-    const passiveListener = app.touchEvents.start === 'touchstart' && getSupport().passiveListener ? {
+    const passiveListener = app.touchEvents.start === 'touchstart' ? {
       passive: true,
       capture: false
     } : false;

@@ -39,28 +39,19 @@ export default {
         create(params) {
           return new Panel(app, params);
         },
-        get(el) {
-          if (el === void 0) {
-            el = '.panel';
-          }
+        get(el = '.panel') {
           if (el instanceof Panel) return el;
           if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
           const $el = $(el);
           if ($el.length === 0 || $el.length > 1) return undefined;
           return $el[0].f7Panel;
         },
-        destroy(el) {
-          if (el === void 0) {
-            el = '.panel';
-          }
+        destroy(el = '.panel') {
           const panel = app.panel.get(el);
           if (panel && panel.destroy) return panel.destroy();
           return undefined;
         },
-        open(el, animate) {
-          if (el === void 0) {
-            el = '.panel';
-          }
+        open(el = '.panel', animate) {
           if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
           let panel = app.panel.get(el);
           if (panel && panel.open) return panel.open(animate);
@@ -72,10 +63,7 @@ export default {
           }
           return undefined;
         },
-        close(el, animate) {
-          if (el === void 0) {
-            el = '.panel-in';
-          }
+        close(el = '.panel-in', animate) {
           if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
           let panel = app.panel.get(el);
           if (panel && panel.open) return panel.close(animate);
@@ -87,10 +75,7 @@ export default {
           }
           return undefined;
         },
-        toggle(el, animate) {
-          if (el === void 0) {
-            el = '.panel';
-          }
+        toggle(el = '.panel', animate) {
           if (el === 'left' || el === 'right') el = `.panel-${el}`; // eslint-disable-line
           let panel = app.panel.get(el);
           if (panel && panel.toggle) return panel.toggle(animate);
@@ -151,24 +136,15 @@ export default {
     }
   },
   clicks: {
-    '.panel-open': function open(clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.panel-open': function open(clickedEl, data = {}) {
       const app = this;
       app.panel.open(data.panel, data.animate);
     },
-    '.panel-close': function close(clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.panel-close': function close(clickedEl, data = {}) {
       const app = this;
       app.panel.close(data.panel, data.animate);
     },
-    '.panel-toggle': function close(clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.panel-toggle': function close(clickedEl, data = {}) {
       const app = this;
       app.panel.toggle(data.panel, data.animate);
     },

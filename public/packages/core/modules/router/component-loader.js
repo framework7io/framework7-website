@@ -77,10 +77,7 @@ export default {
       params.component = component;
       return router.navigate(navigateOptions);
     },
-    componentLoader(component, componentUrl, options, resolve, reject) {
-      if (options === void 0) {
-        options = {};
-      }
+    componentLoader(component, componentUrl, options = {}, resolve, reject) {
       const router = this;
       const {
         app
@@ -154,45 +151,39 @@ export default {
         compile(component);
       }
     },
-    modalComponentLoader(_temp) {
-      let {
-        component,
-        componentUrl,
-        options,
-        resolve,
-        reject
-      } = _temp === void 0 ? {} : _temp;
+    modalComponentLoader({
+      component,
+      componentUrl,
+      options,
+      resolve,
+      reject
+    } = {}) {
       const router = this;
       router.componentLoader(component, componentUrl, options, el => {
         resolve(el);
       }, reject);
     },
-    tabComponentLoader(_temp2) {
-      let {
-        component,
-        componentUrl,
-        options,
-        resolve,
-        reject
-      } = _temp2 === void 0 ? {} : _temp2;
+    tabComponentLoader({
+      component,
+      componentUrl,
+      options,
+      resolve,
+      reject
+    } = {}) {
       const router = this;
       router.componentLoader(component, componentUrl, options, el => {
         resolve(el);
       }, reject);
     },
-    pageComponentLoader(_temp3) {
-      let {
-        component,
-        componentUrl,
-        options,
-        resolve,
-        reject
-      } = _temp3 === void 0 ? {} : _temp3;
+    pageComponentLoader({
+      component,
+      componentUrl,
+      options,
+      resolve,
+      reject
+    } = {}) {
       const router = this;
-      router.componentLoader(component, componentUrl, options, function (el, newOptions) {
-        if (newOptions === void 0) {
-          newOptions = {};
-        }
+      router.componentLoader(component, componentUrl, options, (el, newOptions = {}) => {
         resolve(el, newOptions);
       }, reject);
     }

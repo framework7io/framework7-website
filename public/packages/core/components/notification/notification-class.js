@@ -190,19 +190,19 @@ class Notification extends Modal {
     } = notification.params;
     return $jsx("div", {
       class: `notification ${icon ? 'notification-with-icon' : ''} ${cssClass || ''}`
-    }, $jsx("div", {
-      class: "notification-header"
     }, icon && $jsx("div", {
       class: "notification-icon"
-    }, icon), title && $jsx("div", {
+    }, icon), $jsx("div", {
+      class: "notification-content"
+    }, (title || titleRightText || closeButton) && $jsx("div", {
+      class: "notification-header"
+    }, title && $jsx("div", {
       class: "notification-title"
     }, title), titleRightText && $jsx("div", {
       class: "notification-title-right-text"
     }, titleRightText), closeButton && $jsx("span", {
       class: "notification-close-button"
-    })), $jsx("div", {
-      class: "notification-content"
-    }, subtitle && $jsx("div", {
+    })), subtitle && $jsx("div", {
       class: "notification-subtitle"
     }, subtitle), text && $jsx("div", {
       class: "notification-text"

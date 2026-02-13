@@ -2,9 +2,7 @@ const { promise: exec } = require('exec-sh');
 const path = require('path');
 
 const update = async () => {
-  await exec(
-    'npm i framework7@latest framework7-react@latest framework7-vue@latest framework7-svelte@latest --save',
-  );
+  await exec('npm i framework7 framework7-react framework7-vue framework7-svelte --save');
   await exec('cp -r ../framework7/packages/* public/packages/');
   await exec('rm -rf public/kitchen-sink');
   try {

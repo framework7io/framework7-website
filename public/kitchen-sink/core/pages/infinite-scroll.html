@@ -6,7 +6,7 @@
         <div class="left">
           <a class="link back">
             <i class="icon icon-back"></i>
-            <span class="if-not-md">Back</span>
+
           </a>
         </div>
         <div class="title">Infinite Scroll</div>
@@ -14,7 +14,7 @@
     </div>
     <div data-infinite-distance="50" class="page-content infinite-scroll-content" @infinite=${loadMore}>
       <div class="block-title">Scroll bottom</div>
-      <div class="list simple-list list-strong-ios list-outline-ios list-dividers-ios">
+      <div class="list simple-list list-strong inset list-dividers-ios">
         <ul>
           ${items.map((item, index) => $h`
           <li key=${index}>Item ${item}</li>

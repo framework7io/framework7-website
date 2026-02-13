@@ -29,7 +29,7 @@
           <div class="sheet-modal sheet-modal-bottom">
             <div class="toolbar">
               <div class="toolbar-inner justify-content-flex-end">
-                <a  class="link sheet-close">Close</a>
+                <a  class="link sheet-close"><i class="icon icon-close"></i></a>
               </div>
             </div>
             <div class="sheet-modal-inner">
@@ -60,51 +60,51 @@
 </script>
 
 <Page {onPageBeforeOut} {onPageBeforeRemove}>
-  <Navbar title="Sheet Modal" backLink="Back" />
-  <Block strongIos outlineIos>
+  <Navbar title="Sheet Modal" backLink />
+  <Block strong inset>
     <p>
       Sheet Modals slide up from the bottom of the screen to reveal more content. Such modals allow
       to create custom overlays with custom content.
     </p>
     <p class="grid grid-cols-2 grid-gap">
-      <Button fill sheetOpen=".demo-sheet">Open Sheet</Button>
-      <Button fill onClick={createSheet}>Dynamic Sheet</Button>
+      <Button fill round sheetOpen=".demo-sheet">Open Sheet</Button>
+      <Button fill round onClick={createSheet}>Dynamic Sheet</Button>
     </p>
     <p>
-      <Button fill sheetOpen=".demo-sheet-top">Top Sheet</Button>
+      <Button fill round sheetOpen=".demo-sheet-top">Top Sheet</Button>
     </p>
     <p>
-      <Button fill onClick={() => (sheetOpened = true)}>Open Via Prop Change</Button>
+      <Button fill round onClick={() => (sheetOpened = true)}>Open Via Prop Change</Button>
     </p>
   </Block>
 
   <BlockTitle>Push View</BlockTitle>
-  <Block strongIos outlineIos>
+  <Block strong inset>
     <p>
       Sheet can push view behind on open. By default it has effect only when `safe-area-inset-top`
       is more than zero (iOS fullscreen webapp or iOS cordova app)
     </p>
     <p>
-      <Button fill sheetOpen=".demo-sheet-push">Sheet Push</Button>
+      <Button fill round sheetOpen=".demo-sheet-push">Sheet Push</Button>
     </p>
   </Block>
 
   <BlockTitle>Swipeable Sheet</BlockTitle>
-  <Block strongIos outlineIos>
+  <Block strong inset>
     <p>
       Sheet modal can be closed with swipe to top (for top Sheet) or bottom (for default Bottom
       sheet):
     </p>
     <p>
-      <Button fill sheetOpen=".demo-sheet-swipe-to-close">Swipe To Close</Button>
+      <Button fill round sheetOpen=".demo-sheet-swipe-to-close">Swipe To Close</Button>
     </p>
     <p>Also there is swipe-step that can be set on Sheet modal to expand it with swipe:</p>
     <p>
-      <Button fill sheetOpen=".demo-sheet-swipe-to-step">Swipe To Step</Button>
+      <Button fill round sheetOpen=".demo-sheet-swipe-to-step">Swipe To Step</Button>
     </p>
     <p>In addition to "swipe step" there is a support for position breakpoints (multiple steps):</p>
     <p>
-      <Button fill sheetOpen=".demo-sheet-breakpoints">Breakpoints</Button>
+      <Button fill round sheetOpen=".demo-sheet-breakpoints">Breakpoints</Button>
     </p>
   </Block>
 
@@ -112,7 +112,9 @@
     <Toolbar>
       <div class="left" />
       <div class="right">
-        <Link sheetClose>Close</Link>
+        <Link sheetClose>
+          <i class="icon icon-close" />
+        </Link>
       </div>
     </Toolbar>
     <PageContent>
@@ -150,7 +152,9 @@
     <Toolbar bottom>
       <div class="left" />
       <div class="right">
-        <Link sheetClose>Close</Link>
+        <Link sheetClose>
+          <i class="icon icon-close" />
+        </Link>
       </div>
     </Toolbar>
     <PageContent>
@@ -188,7 +192,9 @@
     <Toolbar>
       <div class="left" />
       <div class="right">
-        <Link sheetClose>Close</Link>
+        <Link sheetClose>
+          <i class="icon icon-close" />
+        </Link>
       </div>
     </Toolbar>
     <PageContent>
@@ -263,9 +269,9 @@
     </div>
     <BlockTitle medium class="margin-top">Your order:</BlockTitle>
     <List>
-      <ListItem title="Item 1"><b slot="after">$200</b></ListItem>
-      <ListItem title="Item 2"><b slot="after">$180</b></ListItem>
-      <ListItem title="Delivery"><b slot="after">$120</b></ListItem>
+      <ListItem title="Item 1">{#snippet after()}<b>$200</b>{/snippet}</ListItem>
+      <ListItem title="Item 2">{#snippet after()}<b>$180</b>{/snippet}</ListItem>
+      <ListItem title="Delivery">{#snippet after()}<b>$120</b>{/snippet}</ListItem>
     </List>
   </Sheet>
 

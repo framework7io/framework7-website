@@ -1,3 +1,12 @@
+- date: November 25, 2025
+  video: false
+  title: 'Migration To Framework7 v9'
+  url: http://framework7.io/docs/migration-from-v8-to-v9.html
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+    - v9
 - date: March 31, 2023
   video: false
   title: 'Migration To Framework7 v8'

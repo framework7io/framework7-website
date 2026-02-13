@@ -97,8 +97,8 @@ class Toast extends Modal {
       class: "toast-icon"
     }, icon), $jsx("div", {
       class: "toast-text"
-    }, text), closeButton && !icon && $jsx("a", {
-      class: `toast-button button ${closeButtonColor ? `color-${closeButtonColor}` : ''}`
+    }, text), closeButton && !icon && $jsx("button", {
+      class: `toast-button button ${closeButtonColor ? `color-${closeButtonColor}` : ''}${toast.app.theme === 'ios' ? ' button-round' : ''}`
     }, closeButtonText)));
   }
 }

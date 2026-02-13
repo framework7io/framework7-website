@@ -44,9 +44,9 @@
 </script>
 
 <Page>
-  <Navbar title="Color Picker" backLink="Back" />
+  <Navbar title="Color Picker" backLink />
 
-  <Block strongIos outlineIos>
+  <Block strong inset>
     <p>
       Framework7 comes with ultimate modular Color Picker component that allows to create color
       picker with limitless combinations of color modules.
@@ -55,7 +55,7 @@
 
   <BlockTitle>Color Wheel</BlockTitle>
   <BlockHeader>Minimal example with color wheel in Popover</BlockHeader>
-  <List strongIos outlineIos>
+  <List strong inset>
     <!-- prettier-ignore -->
     <ListInput
       type="colorpicker"
@@ -67,17 +67,18 @@
         targetEl: '.wheel-picker-target',
       }}
     >
+    {#snippet media()}
       <i
-        slot="media"
         style={`background-color: ${wheePickerValue.hex}`}
         class="icon demo-list-icon wheel-picker-target"
-      />
+      ></i>
+      {/snippet}
     </ListInput>
   </List>
 
   <BlockTitle>Saturation-Brightness Spectrum</BlockTitle>
   <BlockHeader>SB Spectrum + Hue Slider in Popover</BlockHeader>
-  <List strongIos outlineIos>
+  <List strong inset>
     <!-- prettier-ignore -->
     <ListInput
       type="colorpicker"
@@ -90,17 +91,18 @@
         targetEl: '.spectrum-picker-target',
       }}
     >
+    {#snippet media()}
       <i
-        slot="media"
         style={`background-color: ${spectrumPickerValue.hex}`}
         class="icon demo-list-icon spectrum-picker-target"
-      />
+      ></i>
+      {/snippet}
     </ListInput>
   </List>
 
   <BlockTitle>Hue-Saturation Spectrum</BlockTitle>
   <BlockHeader>HS Spectrum + Brightness Slider in Popover</BlockHeader>
-  <List strongIos outlineIos>
+  <List strong inset>
     <!-- prettier-ignore -->
     <ListInput
       type="colorpicker"
@@ -113,17 +115,18 @@
         targetEl: '.hs-spectrum-picker-target',
       }}
     >
+    {#snippet media()}
       <i
-        slot="media"
         style={`background-color: ${hsSpectrumPickerValue.hex}`}
         class="icon demo-list-icon hs-spectrum-picker-target"
-      />
+      ></i>
+      {/snippet}
     </ListInput>
   </List>
 
   <BlockTitle>RGB Sliders</BlockTitle>
   <BlockHeader>RGB sliders with labels and values in Popover</BlockHeader>
-  <List strongIos outlineIos>
+  <List strong inset>
     <!-- prettier-ignore -->
     <ListInput
       type="colorpicker"
@@ -138,17 +141,18 @@
         targetEl: '.rgb-picker-target',
       }}
     >
+    {#snippet media()}
       <i
-        slot="media"
         style={`background-color: ${rgbPickerValue.hex}`}
         class="icon demo-list-icon rgb-picker-target"
-      />
+      ></i>
+      {/snippet}
     </ListInput>
   </List>
 
   <BlockTitle>RGBA Sliders</BlockTitle>
   <BlockHeader>RGB sliders + Alpha Slider with labels and values in Popover</BlockHeader>
-  <List strongIos outlineIos>
+  <List strong inset>
     <!-- prettier-ignore -->
     <ListInput
       type="colorpicker"
@@ -166,17 +170,18 @@
         },
       }}
     >
+    {#snippet media()}
       <i
-        slot="media"
         style={`background-color: ${rgbaPickerValue.rgba ? `rgba(${rgbaPickerValue.rgba.join(', ')})` : rgbaPickerValue.hex}`}
         class="icon demo-list-icon rgba-picker-target"
-      />
+      ></i>
+      {/snippet}
     </ListInput>
   </List>
 
   <BlockTitle>HSB Sliders</BlockTitle>
   <BlockHeader>HSB sliders with labels and values in Popover</BlockHeader>
-  <List strongIos outlineIos>
+  <List strong inset>
     <!-- prettier-ignore -->
     <ListInput
       type="colorpicker"
@@ -194,11 +199,12 @@
         },
       }}
     >
+    {#snippet media()}
       <i
-        slot="media"
         style={`background-color: ${hsbPickerValue.hex}`}
         class="icon demo-list-icon hsb-picker-target"
-      />
+      ></i>
+      {/snippet}
     </ListInput>
   </List>
 
@@ -206,7 +212,7 @@
   <BlockHeader>
     RGB bars with labels and values in Popover on tablet and in Popup on phone
   </BlockHeader>
-  <List strongIos outlineIos>
+  <List strong inset>
     <!-- prettier-ignore -->
     <ListInput
       type="colorpicker"
@@ -225,11 +231,12 @@
         },
       }}
     >
+    {#snippet media()}
       <i
-        slot="media"
         style={`background-color: ${rgbBarsPickerValue.hex}`}
         class="icon demo-list-icon rgb-bars-picker-target"
-      />
+      ></i>
+      {/snippet}
     </ListInput>
   </List>
 
@@ -237,7 +244,7 @@
   <BlockHeader>
     RGB sliders with labels and values in Popover, and previous and current color values blocks
   </BlockHeader>
-  <List strongIos outlineIos>
+  <List strong inset>
     <!-- prettier-ignore -->
     <ListInput
       type="colorpicker"
@@ -255,17 +262,18 @@
         },
       }}
     >
+    {#snippet media()}
       <i
-        slot="media"
         style={`background-color: ${rgbSlidersColorsPickerValue.hex}`}
         class="icon demo-list-icon rgb-sliders-colors-picker-target"
-      />
+      ></i>
+      {/snippet}
     </ListInput>
   </List>
 
   <BlockTitle>Palette</BlockTitle>
   <BlockHeader>Palette opened in Sheet modal on phone and Popover on larger screens</BlockHeader>
-  <List strongIos outlineIos>
+  <List strong inset>
     <!-- prettier-ignore -->
     <ListInput
       type="colorpicker"
@@ -293,11 +301,12 @@
         },
       }}
     >
+    {#snippet media()}
       <i
-        slot="media"
         style={`background-color: ${palettePickerValue.hex}`}
         class="icon demo-list-icon palette-picker-target"
-      />
+      ></i>
+      {/snippet}
     </ListInput>
   </List>
 
@@ -306,7 +315,7 @@
     Current Color + HSB Sliders + RGB sliders + Alpha Slider + HEX + Palette with labels and
     editable values
   </BlockHeader>
-  <List strongIos outlineIos>
+  <List strong inset>
     <!-- prettier-ignore -->
     <ListInput
       type="colorpicker"
@@ -339,17 +348,18 @@
         },
       }}
     >
-      <i
-        slot="media"
+    {#snippet media()}
+        <i
         style={`background-color: ${proPickerValue.rgba ? `rgba(${proPickerValue.rgba.join(', ')})` : proPickerValue.hex}`}
         class="icon demo-list-icon pro-picker-target"
-      />
+      ></i>
+      {/snippet}
     </ListInput>
   </List>
 
   <BlockTitle>Inline Color Picker</BlockTitle>
   <BlockHeader>SB Spectrum + HSB Sliders</BlockHeader>
-  <div class="block block-strong block-outline no-padding">
+  <div class="block block-strong inset no-padding">
     {#if inlinePickerValue.rgb}
       <div class="padding">
         HEX:

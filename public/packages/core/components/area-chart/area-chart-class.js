@@ -4,10 +4,7 @@ import Framework7Class from '../../shared/class.js';
 /** @jsx $jsx */
 import $jsx from '../../shared/$jsx.js';
 class AreaChart extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const self = this;
     const defaults = extend({}, app.params.areaChart);
@@ -60,10 +57,9 @@ class AreaChart extends Framework7Class {
       hiddenDatasets
     } = this;
     const summValues = [];
-    datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(_ref => {
-      let {
-        values
-      } = _ref;
+    datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(({
+      values
+    }) => {
       values.forEach((value, valueIndex) => {
         if (!summValues[valueIndex]) summValues[valueIndex] = 0;
         summValues[valueIndex] += value;
@@ -88,22 +84,20 @@ class AreaChart extends Framework7Class {
     const lastValues = datasets[0].values.map(() => 0);
     let maxValue = 0;
     if (lineChart) {
-      datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(_ref2 => {
-        let {
-          values
-        } = _ref2;
+      datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(({
+        values
+      }) => {
         const datasetMaxValue = Math.max(...values);
         if (datasetMaxValue > maxValue) maxValue = datasetMaxValue;
       });
     } else {
       maxValue = Math.max(...this.getSummValues());
     }
-    datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(_ref3 => {
-      let {
-        label,
-        values,
-        color
-      } = _ref3;
+    datasets.filter((dataset, index) => !hiddenDatasets.includes(index)).forEach(({
+      label,
+      values,
+      color
+    }) => {
       const points = values.map((originalValue, valueIndex) => {
         lastValues[valueIndex] += originalValue;
         const value = lineChart ? originalValue : lastValues[valueIndex];
@@ -220,12 +214,11 @@ class AreaChart extends Framework7Class {
     // prettier-ignore
     const datasetsText = currentValues.length > 0 ? `
       <ul class="area-chart-tooltip-list">
-        ${currentValues.map(_ref4 => {
-      let {
-        label,
-        color,
-        value
-      } = _ref4;
+        ${currentValues.map(({
+      label,
+      color,
+      value
+    }) => {
       const valueText = formatTooltipDataset ? formatTooltipDataset.call(self, label, value, color) : `${label ? `${label}: ` : ''}${value}`;
       return `
               <li><span style="background-color: ${color};"></span>${valueText}</li>
@@ -386,13 +379,7 @@ class AreaChart extends Framework7Class {
       style: `background-color: ${dataset.color}`
     }), self.formatLegendLabel(dataset.label)))));
   }
-  update(newParams, onlySvg) {
-    if (newParams === void 0) {
-      newParams = {};
-    }
-    if (onlySvg === void 0) {
-      onlySvg = false;
-    }
+  update(newParams = {}, onlySvg = false) {
     const self = this;
     const {
       params

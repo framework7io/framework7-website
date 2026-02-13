@@ -1,12 +1,10 @@
 import $ from '../../shared/dom7.js';
 import { extend, nextTick, deleteProps } from '../../shared/utils.js';
 import Framework7Class from '../../shared/class.js';
-import { getSupport } from '../../shared/get-support.js';
 class Range extends Framework7Class {
   constructor(app, params) {
     super(params, [app]);
     const range = this;
-    const support = getSupport();
     const defaults = {
       el: null,
       inputEl: null,
@@ -24,7 +22,8 @@ class Range extends Framework7Class {
       scaleSteps: 5,
       scaleSubSteps: 0,
       formatScaleLabel: null,
-      limitKnobPosition: app.theme === 'ios'
+      limitKnobPosition: true,
+      limitBarPosition: app.theme === 'md'
     };
 
     // Extend defaults with modules params
@@ -72,7 +71,8 @@ class Range extends Framework7Class {
       scale,
       scaleSteps,
       scaleSubSteps,
-      limitKnobPosition
+      limitKnobPosition,
+      limitBarPosition
     } = range.params;
     extend(range, {
       app,
@@ -92,7 +92,8 @@ class Range extends Framework7Class {
       scale,
       scaleSteps,
       scaleSubSteps,
-      limitKnobPosition
+      limitKnobPosition,
+      limitBarPosition
     });
     if ($inputEl) {
       'step min max'.split(' ').forEach(paramName => {
@@ -208,13 +209,15 @@ class Range extends Framework7Class {
       rangeOffsetLeft = rangeOffset.left;
       rangeOffsetTop = rangeOffset.top;
       let progress;
+      const knobSize = range.vertical ? range.knobHeight : range.knobWidth;
+      const progressModify = limitKnobPosition ? knobSize : 0;
       if (range.vertical) {
-        progress = (touchesStart.y - rangeOffsetTop) / range.rangeHeight;
+        progress = (touchesStart.y - rangeOffsetTop - progressModify / 2) / (range.rangeHeight - progressModify);
         if (!range.verticalReversed) progress = 1 - progress;
       } else if (range.app.rtl) {
-        progress = (rangeOffsetLeft + range.rangeWidth - touchesStart.x) / range.rangeWidth;
+        progress = (rangeOffsetLeft + range.rangeWidth + progressModify / 2 - touchesStart.x) / (range.rangeWidth - progressModify);
       } else {
-        progress = (touchesStart.x - rangeOffsetLeft) / range.rangeWidth;
+        progress = (touchesStart.x - rangeOffsetLeft - progressModify / 2) / (range.rangeWidth - progressModify);
       }
       let newValue = progress * (range.max - range.min) + range.min;
       if (range.dual) {
@@ -262,13 +265,15 @@ class Range extends Framework7Class {
       }
       e.preventDefault();
       let progress;
+      const knobSize = range.vertical ? range.knobHeight : range.knobWidth;
+      const progressModify = limitKnobPosition ? knobSize : 0;
       if (range.vertical) {
-        progress = (pageY - rangeOffsetTop) / range.rangeHeight;
+        progress = (pageY - rangeOffsetTop - progressModify / 2) / (range.rangeHeight - progressModify);
         if (!range.verticalReversed) progress = 1 - progress;
       } else if (range.app.rtl) {
-        progress = (rangeOffsetLeft + range.rangeWidth - pageX) / range.rangeWidth;
+        progress = (rangeOffsetLeft + range.rangeWidth + progressModify / 2 - pageX) / (range.rangeWidth - progressModify);
       } else {
-        progress = (pageX - rangeOffsetLeft) / range.rangeWidth;
+        progress = (pageX - rangeOffsetLeft - progressModify / 2) / (range.rangeWidth - progressModify);
       }
       let newValue = progress * (range.max - range.min) + range.min;
       if (range.dual) {
@@ -326,10 +331,9 @@ class Range extends Framework7Class {
     let parentPanel;
     let parentPage;
     range.attachEvents = function attachEvents() {
-      const passive = support.passiveListener ? {
+      range.$el.on(app.touchEvents.start, handleTouchStart, {
         passive: true
-      } : false;
-      range.$el.on(app.touchEvents.start, handleTouchStart, passive);
+      });
       app.on('touchmove', handleTouchMove);
       app.on('touchend:passive', handleTouchEnd);
       app.on('tabShow', handleResize);
@@ -342,10 +346,9 @@ class Range extends Framework7Class {
       parentPage.on('page:reinit', handleResize);
     };
     range.detachEvents = function detachEvents() {
-      const passive = support.passiveListener ? {
+      range.$el.off(app.touchEvents.start, handleTouchStart, {
         passive: true
-      } : false;
-      range.$el.off(app.touchEvents.start, handleTouchStart, passive);
+      });
       app.off('touchmove', handleTouchMove);
       app.off('touchend:passive', handleTouchEnd);
       app.off('tabShow', handleResize);
@@ -402,7 +405,8 @@ class Range extends Framework7Class {
       labels,
       vertical,
       verticalReversed,
-      limitKnobPosition
+      limitKnobPosition,
+      limitBarPosition
     } = range;
     const knobSize = vertical ? knobHeight : knobWidth;
     const rangeSize = vertical ? rangeHeight : rangeWidth;
@@ -410,28 +414,31 @@ class Range extends Framework7Class {
     const positionProperty = vertical ? verticalReversed ? 'top' : 'bottom' : app.rtl ? 'right' : 'left';
     if (range.dual) {
       const progress = [(value[0] - min) / (max - min), (value[1] - min) / (max - min)];
+      const positionStartProgress = limitBarPosition ? knobSize / rangeSize : 0;
+      const barProgressModify = limitBarPosition ? (rangeSize - knobSize) / rangeSize : 1;
       $barActiveEl.css({
-        [positionProperty]: `${progress[0] * 100}%`,
-        [vertical ? 'height' : 'width']: `${(progress[1] - progress[0]) * 100}%`
+        [positionProperty]: `${(positionStartProgress + progress[0] * barProgressModify) * 100}%`,
+        [vertical ? 'height' : 'width']: `${(progress[1] - progress[0] - positionStartProgress) * 100 * barProgressModify}%`
       });
       knobs.forEach(($knobEl, knobIndex) => {
         let startPos = rangeSize * progress[knobIndex];
         if (limitKnobPosition) {
-          const realStartPos = rangeSize * progress[knobIndex] - knobSize / 2;
-          if (realStartPos < 0) startPos = knobSize / 2;
-          if (realStartPos + knobSize > rangeSize) startPos = rangeSize - knobSize / 2;
+          const minPos = knobSize;
+          const maxPos = rangeSize;
+          startPos = (maxPos - minPos) * progress[knobIndex] + knobSize / 2;
         }
         $knobEl.css(positionProperty, `${startPos}px`);
         if (label) labels[knobIndex].text(range.formatLabel(value[knobIndex], labels[knobIndex][0]));
       });
     } else {
       const progress = (value - min) / (max - min);
-      $barActiveEl.css(vertical ? 'height' : 'width', `${progress * 100}%`);
+      const barProgressModify = limitBarPosition ? (rangeSize - knobSize) / rangeSize : 1;
+      $barActiveEl.css(vertical ? 'height' : 'width', `${progress * 100 * barProgressModify}%`);
       let startPos = rangeSize * progress;
       if (limitKnobPosition) {
-        const realStartPos = rangeSize * progress - knobSize / 2;
-        if (realStartPos < 0) startPos = knobSize / 2;
-        if (realStartPos + knobSize > rangeSize) startPos = rangeSize - knobSize / 2;
+        const minPos = knobSize;
+        const maxPos = rangeSize;
+        startPos = (maxPos - minPos) * progress + knobSize / 2;
       }
       knobs[0].css(positionProperty, `${startPos}px`);
       if (label) labels[0].text(range.formatLabel(value, labels[0][0]));

@@ -12,10 +12,7 @@ import $ from '../../shared/dom7.js';
 import loadModule from './load-module.js';
 import $jsx from '../../shared/$jsx.js';
 class Framework7 extends Framework7Class {
-  constructor(params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(params = {}) {
     super(params);
     // eslint-disable-next-line
     if (Framework7.instance && typeof window !== 'undefined') {
@@ -51,6 +48,7 @@ class Framework7 extends Framework7Class {
       componentUrl: undefined,
       userAgent: null,
       url: null,
+      mdColorScheme: 'default',
       colors: {
         primary: '#007aff',
         red: '#ff3b30',
@@ -92,6 +90,7 @@ class Framework7 extends Framework7Class {
       passedParams,
       online: w.navigator.onLine,
       colors: app.params.colors,
+      mdColorScheme: app.params.mdColorScheme || 'default',
       darkMode: app.params.darkMode
     });
     if (params.store) app.params.store = params.store;
@@ -121,10 +120,16 @@ class Framework7 extends Framework7Class {
     // Return app instance
     return app;
   }
-  setColorTheme(color) {
+  setColorTheme(color, mdColorScheme) {
     if (!color) return;
     const app = this;
     app.colors.primary = color;
+    app.mdColorScheme = mdColorScheme || app.mdColorScheme;
+    app.setColors();
+  }
+  setMdColorScheme(mdColorScheme) {
+    const app = this;
+    app.mdColorScheme = mdColorScheme || app.mdColorScheme;
     app.setColors();
   }
   setColors() {
@@ -134,7 +139,7 @@ class Framework7 extends Framework7Class {
       app.colorsStyleEl = document.createElement('style');
       document.head.prepend(app.colorsStyleEl);
     }
-    app.colorsStyleEl.textContent = app.utils.colorThemeCSSStyles(app.colors);
+    app.colorsStyleEl.textContent = app.utils.colorThemeCSSStyles(app.colors, app.mdColorScheme);
   }
   mount(rootEl) {
     const app = this;
@@ -156,11 +161,10 @@ class Framework7 extends Framework7Class {
       app.mq.dark = window.matchMedia(DARK);
       app.mq.light = window.matchMedia(LIGHT);
     }
-    app.colorSchemeListener = function colorSchemeListener(_ref) {
-      let {
-        matches,
-        media
-      } = _ref;
+    app.colorSchemeListener = function colorSchemeListener({
+      matches,
+      media
+    }) {
       if (!matches) {
         return;
       }
@@ -302,13 +306,13 @@ class Framework7 extends Framework7Class {
   }
 
   // eslint-disable-next-line
-  loadModule() {
-    return Framework7.loadModule(...arguments);
+  loadModule(...args) {
+    return Framework7.loadModule(...args);
   }
 
   // eslint-disable-next-line
-  loadModules() {
-    return Framework7.loadModules(...arguments);
+  loadModules(...args) {
+    return Framework7.loadModules(...args);
   }
   getVnodeHooks(hook, id) {
     const app = this;

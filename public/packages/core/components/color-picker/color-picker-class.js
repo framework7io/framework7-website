@@ -19,10 +19,7 @@ import moduleWheel from './modules/wheel.js';
 /** @jsx $jsx */
 import $jsx from '../../shared/$jsx.js';
 class ColorPicker extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const self = this;
     self.params = extend({}, app.params.colorPicker, params);
@@ -69,7 +66,6 @@ class ColorPicker extends Framework7Class {
         wheel: moduleWheel // eslint-disable-line
       }
     });
-
     function onInputClick() {
       self.open();
     }
@@ -223,13 +219,7 @@ class ColorPicker extends Framework7Class {
   normalizeHsValues(arr) {
     return [Math.floor(arr[0] * 10) / 10, Math.floor(arr[1] * 1000) / 1000, Math.floor(arr[2] * 1000) / 1000];
   }
-  setValue(value, updateModules) {
-    if (value === void 0) {
-      value = {};
-    }
-    if (updateModules === void 0) {
-      updateModules = true;
-    }
+  setValue(value = {}, updateModules = true) {
     const self = this;
     if (typeof value === 'undefined') return;
     let {
@@ -352,10 +342,7 @@ class ColorPicker extends Framework7Class {
     const self = this;
     return self.value;
   }
-  updateValue(fireEvents) {
-    if (fireEvents === void 0) {
-      fireEvents = true;
-    }
+  updateValue(fireEvents = true) {
     const self = this;
     const {
       $inputEl,
@@ -422,7 +409,6 @@ class ColorPicker extends Framework7Class {
     const {
       openIn,
       navbarTitleText,
-      navbarBackLinkText,
       navbarCloseText
     } = self.params;
     return $jsx("div", {
@@ -430,23 +416,23 @@ class ColorPicker extends Framework7Class {
     }, $jsx("div", {
       class: "navbar-bg"
     }), $jsx("div", {
-      class: "navbar-inner sliding"
+      class: "navbar-inner"
     }, openIn === 'page' && $jsx("div", {
       class: "left"
     }, $jsx("a", {
       class: "link back"
     }, $jsx("i", {
       class: "icon icon-back"
-    }), $jsx("span", {
-      class: "if-not-md"
-    }, navbarBackLinkText))), $jsx("div", {
+    }))), $jsx("div", {
       class: "title"
     }, navbarTitleText), openIn !== 'page' && $jsx("div", {
       class: "right"
     }, $jsx("a", {
       class: "link popup-close",
       "data-popup": ".color-picker-popup"
-    }, navbarCloseText))));
+    }, $jsx("i", {
+      class: "icon icon-close"
+    }), navbarCloseText && $jsx("span", null, navbarCloseText)))));
   }
   renderToolbar() {
     const self = this;
@@ -465,7 +451,9 @@ class ColorPicker extends Framework7Class {
       class: "link sheet-close popover-close",
       "data-sheet": ".color-picker-sheet-modal",
       "data-popover": ".color-picker-popover"
-    }, self.params.toolbarCloseText))));
+    }, $jsx("i", {
+      class: "icon icon-close"
+    }), self.params.toolbarCloseText && $jsx("span", null, self.params.toolbarCloseText)))));
   }
   renderInline() {
     const self = this;

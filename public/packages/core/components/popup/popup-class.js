@@ -1,7 +1,6 @@
 import { getWindow, getDocument } from 'ssr-window';
 import $ from '../../shared/dom7.js';
 import { extend, now, nextTick } from '../../shared/utils.js';
-import { getSupport } from '../../shared/get-support.js';
 import { getDevice } from '../../shared/get-device.js';
 import Modal from '../modal/modal-class.js';
 class Popup extends Modal {
@@ -15,7 +14,6 @@ class Popup extends Modal {
     const popup = this;
     const window = getWindow();
     const document = getDocument();
-    const support = getSupport();
     const device = getDevice();
     popup.params = extendedParams;
 
@@ -238,9 +236,9 @@ class Popup extends Modal {
       allowSwipeToClose = true;
       $el.transform('');
     }
-    const passive = support.passiveListener ? {
+    const passive = {
       passive: true
-    } : false;
+    };
     if (popup.params.swipeToClose) {
       $el.on(app.touchEvents.start, handleTouchStart, passive);
       app.on('touchmove', handleTouchMove);
@@ -263,7 +261,7 @@ class Popup extends Modal {
       } else if (isPush && wasPush) {
         popup.$htmlEl[0].style.setProperty('--f7-popup-push-scale', pushViewScale(pushOffset));
       } else if (!isPush && wasPush) {
-        popup.$htmlEl.removeClass('with-modal-popup-push');
+        $el.removeClass('popup-push-in');
         popup.$htmlEl[0].style.removeProperty('--f7-popup-push-scale');
       }
     };
@@ -280,8 +278,11 @@ class Popup extends Modal {
         if (!pushOffset) pushOffset = app.theme === 'ios' ? 44 : 48;
         popup.$htmlEl[0].style.setProperty('--f7-popup-push-offset', `${pushOffset}px`);
         $el.addClass('popup-push');
-        popup.$htmlEl.addClass('with-modal-popup-push');
+        $el.addClass('popup-push-in');
+        popup.emit('local::pushIn', popup, true);
         popup.$htmlEl[0].style.setProperty('--f7-popup-push-scale', pushViewScale(pushOffset));
+      } else {
+        popup.emit('local::pushIn', popup, false);
       }
       app.on('resize', updatePushOffset);
     };
@@ -309,15 +310,20 @@ class Popup extends Modal {
       }
       $el.prevAll('.popup.modal-in').eq(0).removeClass('popup-behind');
       if (isPush && pushOffset && !hasPreviousPushPopup) {
-        popup.$htmlEl.removeClass('with-modal-popup-push');
-        popup.$htmlEl.addClass('with-modal-popup-push-closing');
+        $el.removeClass('popup-push-in');
+        $el.addClass('popup-push-closing');
+        popup.emit('local::pushIn', popup, false);
+        popup.emit('local::pushClosing', popup, true);
+      } else {
+        popup.emit('local::pushIn', popup, false);
+        popup.emit('local::pushClosing', popup, false);
       }
       app.off('resize', updatePushOffset);
     });
     popup.on('closed', () => {
       $el.removeClass('popup-behind');
       if (isPush && pushOffset && !hasPreviousPushPopup) {
-        popup.$htmlEl.removeClass('with-modal-popup-push-closing');
+        $el.removeClass('popup-push-closing');
         popup.$htmlEl[0].style.removeProperty('--f7-popup-push-scale');
         popup.$htmlEl[0].style.removeProperty('--f7-popup-push-offset');
       }

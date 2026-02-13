@@ -16,7 +16,9 @@ block content
       script(async src="/js/motion/timeline.js")
       f7-motion-timeline(motion)
 
-    p Framework7 comes with Timeline component that allows to display both Vertical & Horizontal timeline layouts.
+    p Framework7 comes with Timeline component that allows to display vertical timeline layouts.
+    .important-note
+      p <strong>Note:</strong> Starting from Framework7 v9, the Horizontal Timeline style has been removed. Only vertical timelines are now supported. Consider using alternative layouts like Grid or Cards for horizontal content presentation.
     h2 Vertical Timeline
     p Common Vertical Timeline layout could be treated as the following:
     :code(lang="html")
@@ -52,11 +54,11 @@ block content
                   li `timeline-item-title` - item title. Optional
                   li `timeline-item-subtitle` - item subtitle. Optional
                   li `timeline-item-text` - item text. Optional
-    h3 Vertical Timeline Example
-    +examplePreview('core', 'timeline-vertical.html', 'timeline-vertical')
+    h3 Timeline Example
+    +examplePreview('core', 'timeline.html', 'timeline')
 
 
-    h3 Vertical Timeline Side By Side
+    h3 Timeline Side By Side
     p There is another "side-by-side" mode available for Vertical Timeline where each next item will be on different side. To enable "side-by-side" mode you need to add `timeline-sides` class to main `timeline` element.
     p It is also possible to enable this mode based on responsive breakpoint. For example, for tablet devices (width >= 786px) we need to add `medium-sides` class to main timeline element. For full set of such responsive classes check #[a(href="grid.html#column-sizes") Grid docs]. They are `xsmall-sides`, `small-sides`, `medium-sides`, `large-sides`, `xlarge-sides`.
     p To force timeline element to required side we may use additional `timeline-item-left` and `timeline-item-right` classes on single timeline item element `timeline-item`
@@ -137,14 +139,6 @@ block content
               ...
             </div>
           </div>
-    h2 Horizontal Timeline
-    p Horizontal Timeline has the same layout as Vertical but with an additional `timeline-horizontal` class on main `timeline` element.
-    p We can also control columns per view in timeline by using <a href="grid.html">Layout Grid</a> columns' classes like `timeline-cols-3` and `medium-timeline-cols-5` (to define column width for large tablet screens).
-    +examplePreview('core', 'timeline-horizontal.html', 'timeline-horizontal')
-
-    h2 Calendar Timeline
-    p Calendar Timeline has almost the same layout as Horizontal but with additional Year and Month wrapping elements, so the structure should be the following:
-    +examplePreview('core', 'timeline-horizontal-calendar.html', 'timeline-horizontal-calendar')
 
 
     +cssVars('timeline')

@@ -53,9 +53,12 @@ class Dialog extends Modal {
       if (buttons.length > 0) {
         buttonsHTML = $jsx("div", {
           class: "dialog-buttons"
-        }, buttons.map(button => $jsx("span", {
-          class: `dialog-button${button.strong ? ' dialog-button-strong' : ''}${button.color ? ` color-${button.color}` : ''}${button.cssClass ? ` ${button.cssClass}` : ''}`
-        }, button.text)));
+        }, buttons.map(button => {
+          const classes = ['button button-round dialog-button', button.strong && 'button-fill', button.color && `color-${button.color}`, app.theme === 'ios' && 'button-large', app.theme === 'ios' && !button.strong && 'button-tonal', button.cssClass && button.cssClass].filter(Boolean).join(' ');
+          return $jsx("button", {
+            class: classes
+          }, button.text);
+        }));
       }
       const dialogHtml = $jsx("div", {
         class: dialogClasses.join(' ')

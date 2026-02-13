@@ -25,13 +25,12 @@ export default {
       parse(componentString) {
         return parseComponent(componentString);
       },
-      create(component, props, _ref) {
-        let {
-          root,
-          el,
-          context,
-          children
-        } = _ref;
+      create(component, props, {
+        root,
+        el,
+        context,
+        children
+      }) {
         return new Component(app, component, props, {
           root,
           el,

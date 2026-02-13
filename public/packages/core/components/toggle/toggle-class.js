@@ -1,15 +1,10 @@
 import $ from '../../shared/dom7.js';
 import { extend, now, nextTick, deleteProps } from '../../shared/utils.js';
 import Framework7Class from '../../shared/class.js';
-import { getSupport } from '../../shared/get-support.js';
 class Toggle extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const toggle = this;
-    const support = getSupport();
     const defaults = {};
 
     // Extend defaults with modules params
@@ -120,19 +115,17 @@ class Toggle extends Framework7Class {
       toggle.emit('local::change toggleChange', toggle);
     }
     toggle.attachEvents = function attachEvents() {
-      const passive = support.passiveListener ? {
+      $el.on(app.touchEvents.start, handleTouchStart, {
         passive: true
-      } : false;
-      $el.on(app.touchEvents.start, handleTouchStart, passive);
+      });
       app.on('touchmove', handleTouchMove);
       app.on('touchend:passive', handleTouchEnd);
       toggle.$inputEl.on('change', handleInputChange);
     };
     toggle.detachEvents = function detachEvents() {
-      const passive = support.passiveListener ? {
+      $el.off(app.touchEvents.start, handleTouchStart, {
         passive: true
-      } : false;
-      $el.off(app.touchEvents.start, handleTouchStart, passive);
+      });
       app.off('touchmove', handleTouchMove);
       app.off('touchend:passive', handleTouchEnd);
       toggle.$inputEl.off('change', handleInputChange);

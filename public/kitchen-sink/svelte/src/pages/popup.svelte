@@ -26,7 +26,7 @@
                 <div class="navbar-inner">
                   <div class="navbar-bg"></div>
                   <div class="title">Dynamic Popup</div>
-                  <div class="right"><a  class="link popup-close">Close</a></div>
+                  <div class="right"><a  class="link popup-close"><i class="icon icon-close"></i></a></div>
                 </div>
               </div>
               <div class="page-content">
@@ -51,43 +51,43 @@
 </script>
 
 <Page {onPageBeforeRemove}>
-  <Navbar title="Popup" backLink="Back" />
-  <Block strongIos outlineIos>
+  <Navbar title="Popup" backLink />
+  <Block strong inset>
     <p>
       Popup is a modal window with any HTML content that pops up over App's main content. Popup as
       all other overlays is part of so called "Temporary Views".
     </p>
     <p>
-      <Button fill popupOpen=".demo-popup">Open Popup</Button>
+      <Button fill round popupOpen=".demo-popup">Open Popup</Button>
     </p>
     <p>
-      <Button fill onClick={() => (popupOpened = true)}>Open Via Prop Change</Button>
+      <Button fill round onClick={() => (popupOpened = true)}>Open Via Prop Change</Button>
     </p>
     <p>
-      <Button fill onClick={createPopup}>Create Dynamic Popup</Button>
+      <Button fill round onClick={createPopup}>Create Dynamic Popup</Button>
     </p>
   </Block>
 
   <BlockTitle>Swipe To Close</BlockTitle>
-  <Block strongIos outlineIos>
+  <Block strong inset>
     <p>Popup can be closed with swipe to top or bottom:</p>
     <p>
-      <Button fill popupOpen=".demo-popup-swipe">Swipe To Close</Button>
+      <Button fill round popupOpen=".demo-popup-swipe">Swipe To Close</Button>
     </p>
     <p>Or it can be closed with swipe on special swipe handler and, for example, only to bottom:</p>
     <p>
-      <Button fill popupOpen=".demo-popup-swipe-handler">With Swipe Handler</Button>
+      <Button fill round popupOpen=".demo-popup-swipe-handler">With Swipe Handler</Button>
     </p>
   </Block>
 
   <BlockTitle>Push View</BlockTitle>
-  <Block strongIos outlineIos>
+  <Block strong inset>
     <p>
       Popup can push view behind. By default has effect only when `safe-area-inset-top` is more than
       zero (iOS fullscreen webapp or iOS cordova app)
     </p>
     <p>
-      <Button fill popupOpen=".demo-popup-push">Popup Push</Button>
+      <Button fill round popupOpen=".demo-popup-push">Popup Push</Button>
     </p>
   </Block>
 
@@ -95,10 +95,12 @@
     <Page>
       <Navbar title="Popup Title">
         <NavRight>
-          <Link popupClose>Close</Link>
+          <Link popupClose>
+            <i class="icon icon-close" />
+          </Link>
         </NavRight>
       </Navbar>
-      <Block>
+      <Block strong inset>
         <p>
           Here comes popup. You can put here anything, even independent view with its own
           navigation. Also not, that by default popup looks a bit different on iPhone/iPod and iPad,
@@ -131,10 +133,12 @@
       <Page>
         <Navbar title="Push Popup" large transparent>
           <NavRight>
-            <Link popupClose>Close</Link>
+            <Link popupClose>
+              <i class="icon icon-close" />
+            </Link>
           </NavRight>
         </Navbar>
-        <Block>
+        <Block strong inset>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris
             leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac
@@ -173,7 +177,9 @@
     <Page>
       <Navbar title="Swipe To Close">
         <NavRight>
-          <Link popupClose>Close</Link>
+          <Link popupClose>
+            <i class="icon icon-close" />
+          </Link>
         </NavRight>
       </Navbar>
 
@@ -185,9 +191,11 @@
 
   <Popup class="demo-popup-swipe-handler" swipeToClose="to-bottom" swipeHandler=".swipe-handler">
     <Page>
-      <div slot="fixed" class="swipe-handler" />
+      {#snippet fixedContent()}
+        <div class="swipe-handler" />
+      {/snippet}
       <BlockTitle large>Hello!</BlockTitle>
-      <Block strongIos outlineIos>
+      <Block strong inset>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo,
           eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna.

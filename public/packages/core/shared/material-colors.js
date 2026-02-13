@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import { argbFromHex, hexFromArgb, themeFromSourceColor } from './material-color-utils.js';
+import { argbFromHex, hexFromArgb, Hct, SchemeTonalSpot, SchemeVibrant, SchemeMonochrome } from './material-color-utils.js';
 
 /* eslint-disable */
 // prettier-ignore
@@ -24,10 +24,7 @@ function toRGBA(d) {
 }
 
 // prettier-ignore
-function blend(from, to, p) {
-  if (p === void 0) {
-    p = 0.5;
-  }
+function blend(from, to, p = 0.5) {
   const r = Math.round;
   from = from.trim();
   to = to.trim();
@@ -42,34 +39,108 @@ function blend(from, to, p) {
 }
 /* eslint-enable */
 
-export const materialColors = function (hexColor) {
-  if (hexColor === void 0) {
-    hexColor = '';
+let monochromeCached = null;
+const cachedColors = {};
+export const materialColors = (hexColor = '', colorScheme = 'default') => {
+  const cacheKey = `${hexColor}-${colorScheme}`;
+  if (cachedColors[cacheKey]) {
+    return cachedColors[cacheKey];
   }
-  const theme = themeFromSourceColor(argbFromHex(`#${hexColor.replace('#', '')}`));
-  [0.05, 0.08, 0.11, 0.12, 0.14].forEach((amount, index) => {
-    theme.schemes.light.props[`surface${index + 1}`] = argbFromHex(blend(hexFromArgb(theme.schemes.light.props.surface), hexFromArgb(theme.schemes.light.props.primary), amount));
-    theme.schemes.dark.props[`surface${index + 1}`] = argbFromHex(blend(hexFromArgb(theme.schemes.dark.props.surface), hexFromArgb(theme.schemes.dark.props.primary), amount));
-  });
-  const name = n => {
-    return n.split('').map(char => char.toUpperCase() === char && char !== '-' && char !== '7' ? `-${char.toLowerCase()}` : char).join('');
+  if (monochromeCached && colorScheme.includes('monochrome')) {
+    const defaultColors = materialColors(hexColor, colorScheme === 'monochrome' ? 'default' : 'vibrant');
+    cachedColors[cacheKey] = {
+      light: {
+        ...defaultColors.light,
+        ...monochromeCached.light
+      },
+      dark: {
+        ...defaultColors.dark,
+        ...monochromeCached.dark
+      }
+    };
+    return cachedColors[cacheKey];
+  }
+  const sourceColor = argbFromHex(`#${hexColor.replace('#', '')}`);
+  let lightScheme;
+  let darkScheme;
+  const hctColor = Hct.fromInt(sourceColor);
+  if (colorScheme === 'default') {
+    lightScheme = new SchemeTonalSpot(hctColor, false, 0, '2025');
+    darkScheme = new SchemeTonalSpot(hctColor, true, 0, '2025');
+  }
+  if (colorScheme === 'vibrant') {
+    lightScheme = new SchemeVibrant(hctColor, false, 0, '2025');
+    darkScheme = new SchemeVibrant(hctColor, true, 0, '2025');
+  }
+  if (colorScheme.includes('monochrome')) {
+    lightScheme = new SchemeMonochrome(hctColor, false, 0, '2025');
+    darkScheme = new SchemeMonochrome(hctColor, true, 0, '2025');
+  }
+  const getColorName = name => {
+    let newName = name;
+    if (name === 'surface_dim') newName = 'surface_variant';
+    if (name === 'surface_container_low') newName = 'surface_1';
+    if (name === 'surface_container') newName = 'surface_2';
+    if (name === 'surface_container_high') newName = 'surface_3';
+    if (name === 'surface_container_highest') newName = 'surface_4';
+    return newName;
   };
-  const shouldSkip = prop => {
-    const skip = ['tertiary', 'shadow', 'scrim', 'error', 'background'];
-    return skip.filter(v => prop.toLowerCase().includes(v)).length > 0;
+  const theme = {
+    light: {},
+    dark: {}
+  };
+  lightScheme.colors.allColors.forEach(color => {
+    const name = getColorName(color.name);
+    const argb = color.getArgb(lightScheme);
+    theme.light[name] = argb;
+  });
+  darkScheme.colors.allColors.forEach(color => {
+    const name = getColorName(color.name);
+    const argb = color.getArgb(darkScheme);
+    theme.dark[name] = argb;
+  });
+  theme.light.surface_5 = argbFromHex(blend(hexFromArgb(theme.light.surface_4), hexFromArgb(theme.light.primary), 0.05));
+  theme.dark.surface_5 = argbFromHex(blend(hexFromArgb(theme.dark.surface_4), hexFromArgb(theme.dark.primary), 0.05));
+  const name = n => {
+    return n.replace(/_/g, '-');
+  };
+  const shouldKeep = prop => {
+    const foreground = ['inverse_primary', 'primary', 'on_primary', 'primary_container', 'on_primary_container', 'secondary', 'on_secondary', 'secondary_container', 'on_secondary_container', 'outline', 'outline_variant'];
+    const background = ['on_surface', 'on_surface_variant', 'inverse_on_surface', 'inverse_surface', 'surface', 'surface_variant', 'surface_1', 'surface_2', 'surface_3', 'surface_4', 'surface_5'];
+    const keep = colorScheme === 'default' ? [...foreground, ...background] : colorScheme === 'vibrant' ? [...foreground, ...background] : background;
+    return keep.includes(prop);
   };
   const light = {};
   const dark = {};
-  Object.keys(theme.schemes.light.props).forEach(prop => {
-    if (shouldSkip(prop)) return;
-    light[name(`--f7-md-${prop}`)] = hexFromArgb(theme.schemes.light.props[prop]);
+  Object.keys(theme.light).forEach(prop => {
+    if (!shouldKeep(prop)) return;
+    light[name(`--f7-md-${prop}`)] = hexFromArgb(theme.light[prop]);
   });
-  Object.keys(theme.schemes.dark.props).forEach(prop => {
-    if (shouldSkip(prop)) return;
-    dark[name(`--f7-md-${prop}`)] = hexFromArgb(theme.schemes.dark.props[prop]);
+  Object.keys(theme.dark).forEach(prop => {
+    if (!shouldKeep(prop)) return;
+    dark[name(`--f7-md-${prop}`)] = hexFromArgb(theme.dark[prop]);
   });
-  return {
+  if (colorScheme.includes('monochrome')) {
+    monochromeCached = {
+      light,
+      dark
+    };
+    const defaultColors = materialColors(hexColor, colorScheme === 'monochrome' ? 'default' : 'vibrant');
+    cachedColors[cacheKey] = {
+      light: {
+        ...defaultColors.light,
+        ...light
+      },
+      dark: {
+        ...defaultColors.dark,
+        ...dark
+      }
+    };
+    return cachedColors[cacheKey];
+  }
+  cachedColors[cacheKey] = {
     light,
     dark
   };
+  return cachedColors[cacheKey];
 };

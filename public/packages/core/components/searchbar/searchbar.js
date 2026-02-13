@@ -42,60 +42,32 @@ export default {
           el: searchbarEl
         }));
       });
-      if (app.theme === 'ios' && page.view && page.view.router.dynamicNavbar && page.$navbarEl && page.$navbarEl.length > 0) {
-        page.$navbarEl.find('.searchbar-init').each(searchbarEl => {
-          const $searchbarEl = $(searchbarEl);
-          app.searchbar.create(extend($searchbarEl.dataset(), {
-            el: searchbarEl
-          }));
-        });
-      }
     },
     pageBeforeRemove(page) {
-      const app = this;
       page.$el.find('.searchbar-init').each(searchbarEl => {
         if (searchbarEl.f7Searchbar && searchbarEl.f7Searchbar.destroy) {
           searchbarEl.f7Searchbar.destroy();
         }
       });
-      if (app.theme === 'ios' && page.view && page.view.router.dynamicNavbar && page.$navbarEl && page.$navbarEl.length > 0) {
-        page.$navbarEl.find('.searchbar-init').each(searchbarEl => {
-          if (searchbarEl.f7Searchbar && searchbarEl.f7Searchbar.destroy) {
-            searchbarEl.f7Searchbar.destroy();
-          }
-        });
-      }
     }
   },
   clicks: {
-    '.searchbar-clear': function clear($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.searchbar-clear': function clear($clickedEl, data = {}) {
       const app = this;
       const sb = app.searchbar.get(data.searchbar);
       if (sb) sb.clear();
     },
-    '.searchbar-enable': function enable($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.searchbar-enable': function enable($clickedEl, data = {}) {
       const app = this;
       const sb = app.searchbar.get(data.searchbar);
       if (sb) sb.enable(true);
     },
-    '.searchbar-disable': function disable($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.searchbar-disable': function disable($clickedEl, data = {}) {
       const app = this;
       const sb = app.searchbar.get(data.searchbar);
       if (sb) sb.disable();
     },
-    '.searchbar-toggle': function toggle($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.searchbar-toggle': function toggle($clickedEl, data = {}) {
       const app = this;
       const sb = app.searchbar.get(data.searchbar);
       if (sb) sb.toggle();

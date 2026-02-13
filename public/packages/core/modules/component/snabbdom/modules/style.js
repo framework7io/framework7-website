@@ -19,7 +19,7 @@ function updateStyle(oldVnode, vnode) {
   if (oldStyle === style) return;
   oldStyle = oldStyle || {};
   style = style || {};
-  var oldHasDel = ('delayed' in oldStyle);
+  var oldHasDel = 'delayed' in oldStyle;
   for (name in oldStyle) {
     if (!style[name]) {
       if (name[0] === '-' && name[1] === '-') {

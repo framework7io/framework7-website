@@ -1,13 +1,13 @@
 /**
- * Framework7 8.3.4
+ * Framework7 9.0.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2024 Vladimir Kharlampidi
+ * Copyright 2014-2026 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: September 18, 2024
+ * Released on: February 13, 2026
  */
 
 import $ from './shared/dom7.js';
@@ -31,7 +31,8 @@ import Navbar from './components/navbar/navbar.js';
 import Toolbar from './components/toolbar/toolbar.js';
 import Subnavbar from './components/subnavbar/subnavbar.js';
 import TouchRipple from './components/touch-ripple/touch-ripple.js';
+import TouchHighlight from './components/touch-highlight/touch-highlight.js';
 import Modal from './components/modal/modal.js';
-Framework7.use([DeviceModule, SupportModule, UtilsModule, ResizeModule, TouchModule, ClicksModule, RouterModule, HistoryModule, ServiceWorkerModule, StoreModule, Statusbar, View, Navbar, Toolbar, Subnavbar, TouchRipple, Modal]);
+Framework7.use([DeviceModule, SupportModule, UtilsModule, ResizeModule, TouchModule, ClicksModule, RouterModule, HistoryModule, ServiceWorkerModule, StoreModule, Statusbar, View, Navbar, Toolbar, Subnavbar, TouchRipple, TouchHighlight, Modal]);
 export { $ as Dom7, utils, getDevice, getSupport, createStore };
 export default Framework7;

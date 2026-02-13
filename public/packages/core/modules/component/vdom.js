@@ -15,28 +15,21 @@ const toCamelCase = name => {
     return word[0].toUpperCase() + word.substr(1);
   }).join('');
 };
-const propsFromAttrs = function () {
+const propsFromAttrs = (...args) => {
   const context = {};
-  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-    args[_key] = arguments[_key];
-  }
-  args.forEach(function (obj) {
-    if (obj === void 0) {
-      obj = {};
-    }
+  args.forEach((obj = {}) => {
     Object.keys(obj).forEach(key => {
       context[toCamelCase(key)] = obj[key];
     });
   });
   return context;
 };
-const createCustomComponent = _ref => {
-  let {
-    f7,
-    treeNode,
-    vnode,
-    data
-  } = _ref;
+const createCustomComponent = ({
+  f7,
+  treeNode,
+  vnode,
+  data
+}) => {
   const component = typeof treeNode.type === 'function' ? treeNode.type : customComponents[treeNode.type];
   f7.component.create(component, propsFromAttrs(data.attrs || {}, data.props || {}), {
     el: vnode.elm,
@@ -78,7 +71,6 @@ const destroyCustomComponent = vnode => {
     delete vnode.elm.__component__; // eslint-disable-line
   }
 };
-
 const isCustomComponent = treeNodeType => {
   return typeof treeNodeType === 'function' || treeNodeType && treeNodeType.indexOf('-') > 0 && customComponents[treeNodeType];
 };
@@ -159,20 +151,19 @@ function getHooks(treeNode, data, f7, initial, isRoot) {
   }
   return hooks;
 }
-const getEventHandler = function (eventHandler, _temp) {
-  let {
-    stop,
-    prevent,
-    once
-  } = _temp === void 0 ? {} : _temp;
+const getEventHandler = (eventHandler, {
+  stop,
+  prevent,
+  once
+} = {}) => {
   let fired = false;
-  function handler() {
-    const e = arguments.length <= 0 ? undefined : arguments[0];
+  function handler(...args) {
+    const e = args[0];
     if (once && fired) return;
     if (stop) e.stopPropagation();
     if (prevent) e.preventDefault();
     fired = true;
-    eventHandler(...arguments);
+    eventHandler(...args);
   }
   return handler;
 };
@@ -311,9 +302,6 @@ const treeNodeToVNode = (treeNode, component, f7, initial, isRoot) => {
   const children = isCustomComponent(treeNode.type) ? [] : getChildren(treeNode, component, f7, initial);
   return h(getTagName(treeNode), data, children);
 };
-export default function vdom(tree, component, initial) {
-  if (tree === void 0) {
-    tree = {};
-  }
+export default function vdom(tree = {}, component, initial) {
   return treeNodeToVNode(tree, component, component.f7, initial, true);
 }

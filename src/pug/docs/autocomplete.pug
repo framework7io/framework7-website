@@ -19,6 +19,8 @@ block content
 
     p Framework7 comes with mobile-friendly and touch optimized Autocomplete component.
     p Autocomplete could be used in standalone mode or as a dropdown.
+    .important-note
+      p <strong>Note:</strong> Starting from Framework7 v9, the Autocomplete cancel button uses <strong>icon only</strong> by default (without text). Use the <code>searchbarDisableText</code> parameter to add custom text if needed.
     h2 Autocomplete App Methods
     p Autocomplete can be created and initialized only using JavaScript. We need to use related App's method:
     .method-wrap
@@ -180,8 +182,8 @@ block content
         tr
           td searchbarDisableText
           td string
-          td Cancel
-          td Searchbar "Cancel" button text
+          td
+          td Searchbar "Cancel" button text. By default uses icon only (no text)
         tr
           td searchbarSpellcheck
           td boolean

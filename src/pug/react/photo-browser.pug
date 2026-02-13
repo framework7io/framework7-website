@@ -21,6 +21,8 @@ block content
     p Photo Browser React component represents Framework7's <a href="../docs/photo-browser.html">Photo Browser</a> component.
     .important-note
       p Photo Browser React component doesn't render any output. It can be used to create JS Photo Browser instance and control it inside of your React component.
+    .important-note
+      p <strong>Framework7 v9:</strong> Photo Browser now automatically uses your app's theme (light/dark mode). The <code>theme</code> and <code>captionsTheme</code> props have been removed. Back and close link text now defaults to icon only.
     h2 Photo Browser Component
     p There are following components included:
     ul
@@ -126,16 +128,6 @@ block content
           td standalone
           td Define how Photo Browser should be opened. Could be `standalone` (will be opened as an overlay with custom transition effect), `popup` (will be opened as popup), `page` (will be injected to View and loaded as a new page).
         tr
-          td theme
-          td string
-          td light
-          td Photo Browser color theme, could be `light` or `dark`
-        tr
-          td captionsTheme
-          td string
-          td
-          td Captions color theme, could be also `dark` or `light`. By default, equal to "theme" parameter
-        tr
           td navbar
           td boolean
           td true
@@ -148,13 +140,13 @@ block content
         tr
           td pageBackLinkText
           td string
-          td Back
-          td Text on back link in Photo Browser's navbar
+          td
+          td Text on back link in Photo Browser's navbar. By default uses icon only (no text)
         tr
           td popupCloseLinkText
           td string
-          td Close
-          td Text on close link in Photo Browser's navbar when opened in Popup or as Standalone
+          td
+          td Text on close link in Photo Browser's navbar when opened in Popup or as Standalone. By default uses icon only (no text)
         tr
           td navbarShowCount
           td boolean

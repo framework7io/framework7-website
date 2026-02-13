@@ -4,7 +4,7 @@
 
 <!-- svelte-ignore a11y-invalid-attribute -->
 <Page>
-  <Navbar title="Floating Action Button Morph" backLink="Back" />
+  <Navbar title="Floating Action Button Morph" backLink />
   <Toolbar tabbar icons bottom class="fab-morph-target">
     <Link tabLink tabLinkActive iconIos="f7:envelope_fill" iconMd="material:email" text="Inbox" />
     <Link tabLink iconIos="f7:calendar_fill" iconMd="material:today" text="Calendar" />
@@ -19,7 +19,7 @@
   <Fab position="center-bottom" morphTo=".demo-fab-fullscreen-sheet.fab-morph-target">
     <Icon ios="f7:plus" md="material:add" />
   </Fab>
-  <svelte:fragment slot="fixed">
+  {#snippet fixedContent()}
     <div class="list links-list demo-fab-sheet fab-morph-target">
       <ul>
         <li><a class="fab-close">Link 1</a></li>
@@ -39,9 +39,9 @@
         </ul>
       </div>
     </div>
-  </svelte:fragment>
+  {/snippet}
 
-  <Block>
+  <Block strong inset>
     <p>
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus
       eligendi est saepe molestias perferendis suscipit, commodi labore ipsa non quasi eum magnam
@@ -68,7 +68,7 @@
       obcaecati aspernatur odio assumenda veniam, ipsum alias.
     </p>
   </Block>
-  <Block>
+  <Block strong inset>
     <p>
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ipsa debitis sed nihil eaque
       dolore cum iste quibusdam, accusamus doloribus, tempora quia quos voluptatibus corporis

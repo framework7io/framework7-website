@@ -17,6 +17,8 @@ block content
       f7-motion-smartselect(motion)
 
     p Smart select allows you to easily convert your usual form selects to dynamic pages with grouped radio or checkbox inputs. You can see such feature in many native iOS apps
+    .important-note
+      p <strong>Note:</strong> Starting from Framework7 v9, the Smart Select cancel button uses <strong>icon only</strong> by default (without text). Use the <code>searchbarDisableText</code> parameter to add custom text if needed.
     h2 Smart Select Layout
     p Smart select layout is pretty simple. It is a well known <a href="list-view.html">List View</a> link with `<select>` inside and additional `smart-select` class on `item-link`:
     :code(lang="html")
@@ -318,8 +320,8 @@ block content
         tr
           td searchbarDisableText
           td string
-          td Cancel
-          td Searchbar "cancel" link text. Has effect only in iOS theme
+          td
+          td Searchbar "cancel" link text. By default uses icon only (no text). Has effect only in iOS theme
         tr
           td searchbarSpellcheck
           td boolean

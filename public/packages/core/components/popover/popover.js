@@ -7,7 +7,6 @@ export default {
   params: {
     popover: {
       verticalPosition: 'auto',
-      arrow: true,
       backdrop: true,
       backdropEl: undefined,
       backdropUnique: false,
@@ -57,17 +56,11 @@ export default {
     });
   },
   clicks: {
-    '.popover-open': function openPopover($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.popover-open': function openPopover($clickedEl, data = {}) {
       const app = this;
       app.popover.open(data.popover, $clickedEl, data.animate);
     },
-    '.popover-close': function closePopover($clickedEl, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    '.popover-close': function closePopover($clickedEl, data = {}) {
       const app = this;
       app.popover.close(data.popover, data.animate, $clickedEl);
     }

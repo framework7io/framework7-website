@@ -47,19 +47,19 @@ export namespace SmartSelect {
     sheetBackdrop?: boolean;
     /** Smart select page title. If not passed then it will be the <div class="item-title"> text */
     pageTitle?: string;
-    /** Smart select Page back link text (default 'Back') */
+    /** Smart select Page back link text (default '') */
     pageBackLinkText?: string;
-    /** Smart select Popup close link text (default 'Close') */
+    /** Smart select Popup close link text (default '') */
     popupCloseLinkText?: string;
     /** Smart select Popup will be opened as full screen popup on tablet */
     popupTabletFullscreen?: boolean;
-    /** Smart select Sheet close link text (default 'Done') */
+    /** Smart select Sheet close link text (default '') */
     sheetCloseLinkText?: string;
     /** Enables Searchbar on smart select page. If passed as object then it should be valid Searchbar parameters (default false) */
     searchbar?: boolean | Searchbar.Parameters;
     /** Searchbar placeholder text (default 'Search') */
     searchbarPlaceholder?: string;
-    /** Searchbar "cancel" link text. Has effect only in iOS theme (default 'Cancel') */
+    /** Searchbar "cancel" link text. Has effect only in iOS theme (default '') */
     searchbarDisableText?: string;
     /** Enables searchbar disable button. (default true) */
     searchbarDisableButton?: boolean;
@@ -112,9 +112,7 @@ export namespace SmartSelect {
     renderSearchbar?: () => string;
 
     /** Object with events handlers.. */
-    on?: {
-      [event in keyof Events]?: Events[event];
-    };
+    on?: { [event in keyof Events]?: Events[event] };
   }
   interface SmartSelect extends Framework7EventsClass<Events> {
     /** Link to global app instance */

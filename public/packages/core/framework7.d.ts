@@ -79,6 +79,7 @@ import { Toast } from './components/toast/toast.js';
 import { Toggle } from './components/toggle/toggle.js';
 import { Toolbar } from './components/toolbar/toolbar.js';
 import { Tooltip } from './components/tooltip/tooltip.js';
+import { TouchHighlight } from './components/touch-highlight/touch-highlight.js';
 import { TouchRipple } from './components/touch-ripple/touch-ripple.js';
 import { Treeview } from './components/treeview/treeview.js';
 import { Typography } from './components/typography/typography.js';
@@ -299,6 +300,9 @@ declare module './components/app/app-class.js' {
   interface Framework7Class<Events> extends Tooltip.AppMethods{}
   interface Framework7Parameters extends Tooltip.AppParams{}
   interface Framework7Events extends Tooltip.AppEvents{}
+  interface Framework7Class<Events> extends TouchHighlight.AppMethods{}
+  interface Framework7Parameters extends TouchHighlight.AppParams{}
+  interface Framework7Events extends TouchHighlight.AppEvents{}
   interface Framework7Class<Events> extends TouchRipple.AppMethods{}
   interface Framework7Parameters extends TouchRipple.AppParams{}
   interface Framework7Events extends TouchRipple.AppEvents{}

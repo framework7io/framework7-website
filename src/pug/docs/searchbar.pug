@@ -17,6 +17,8 @@ block content
       f7-motion-searchbar(motion)
 
     p Searchbar allows user to search through <a href="list-view.html">List View</a> elements. Or it can be used as a visual UI component for your custom search realization.
+    .important-note
+      p <strong>Note:</strong> Starting from Framework7 v9, the Searchbar disable button (cancel button) uses <strong>icon only</strong> by default (without text). To add custom text, you need to explicitly include it in the <code>searchbar-disable-button</code> element.
     h2 Searchbar Layout
     :code(lang="html")
           <div class="searchbar-backdrop"></div>
@@ -27,7 +29,7 @@ block content
                 <i class="searchbar-icon"></i>
                 <span class="input-clear-button"></span>
               </div>
-              <span class="searchbar-disable-button">Cancel</span>
+              <span class="searchbar-disable-button"></span>
             </div>
           </form>
     p Where:
@@ -37,7 +39,7 @@ block content
           li `<input type="search" />` - search field
           li `<i class="searchbar-icon">` - search icon
           li `<span class="input-clear-button">` - button to clear field value and reset search results. Optional element
-      li `<span class="searchbar-disable-button">` - Searchbar "Cancel" button that will deactivate Searchbar, reset search results and clear search field. Optional element
+      li `<span class="searchbar-disable-button">` - Searchbar disable button that will deactivate Searchbar, reset search results and clear search field. By default shows icon only. Optional element
       li `<div class="searchbar-backdrop">` - semi transparent searchbar backdrop that becomes visible when we enable searchbar. It is recommended to place this element inside of scrollable page's `page-content`
     h2 Searchbar Type
     p Now let's see where we can place Searchbar in page structure. There are few options:
@@ -113,7 +115,7 @@ block content
                       <i class="searchbar-icon"></i>
                       <span class="input-clear-button"></span>
                     </div>
-                    <span class="searchbar-disable-button">Cancel</span>
+                    <span class="searchbar-disable-button"></span>
                   </div>
                 </form>
               </div>

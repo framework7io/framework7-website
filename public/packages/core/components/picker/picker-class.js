@@ -8,10 +8,7 @@ import pickerColumn from './picker-column.js';
 /** @jsx $jsx */
 import $jsx from '../../shared/$jsx.js';
 class Picker extends Framework7Class {
-  constructor(app, params) {
-    if (params === void 0) {
-      params = {};
-    }
+  constructor(app, params = {}) {
     super(params, [app]);
     const picker = this;
     const device = getDevice();
@@ -254,7 +251,9 @@ class Picker extends Framework7Class {
       class: "right"
     }, $jsx("a", {
       class: "link sheet-close popover-close"
-    }, picker.params.toolbarCloseText))));
+    }, $jsx("i", {
+      class: "icon icon-close"
+    }), picker.params.toolbarCloseText && $jsx("span", null, picker.params.toolbarCloseText)))));
   }
   // eslint-disable-next-line
   renderColumn(col, onlyItems) {
