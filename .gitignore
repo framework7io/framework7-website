@@ -60,3 +60,9 @@ public/kitchen-sink/vue/vite.config.js
 public/kitchen-sink/svelte/public
 public/kitchen-sink/svelte/index.html
 public/kitchen-sink/svelte/vite.config.js
+
+
+.claude
+.agents
+.codex
+.gemini

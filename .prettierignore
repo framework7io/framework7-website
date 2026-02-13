@@ -1,1 +1,6 @@
 src/pug/docs-demos/core/*.html
+
+.claude
+.agents
+.codex
+.gemini
