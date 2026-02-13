@@ -9,6 +9,10 @@ class Calendar extends Framework7Class {
     super(params, [app]);
     const calendar = this;
     calendar.params = extend({}, app.params.calendar, params);
+    // dateFormat should not be deep-merged, instance value must fully replace app default
+    if (typeof params.dateFormat !== 'undefined') {
+      calendar.params.dateFormat = params.dateFormat;
+    }
     let $containerEl;
     if (calendar.params.containerEl) {
       $containerEl = $(calendar.params.containerEl);
@@ -1436,6 +1440,7 @@ class Calendar extends Framework7Class {
       toolbar: calendar.params.monthPickerToolbar,
       rotateEffect: false,
       toolbarCloseText: calendar.params.monthPickerCloseText,
+      renderToolbar: picker => `<div class="toolbar toolbar-top"><div class="toolbar-inner"><div class="left"></div><div class="right"><a class="link popover-close"><i class="icon icon-close"></i>${picker.params.toolbarCloseText ? `<span>${picker.params.toolbarCloseText}</span>` : ''}</a></div></div></div>`,
       cols: [{
         values,
         displayValues
@@ -1501,6 +1506,7 @@ class Calendar extends Framework7Class {
       toolbar: calendar.params.yearPickerToolbar,
       rotateEffect: false,
       toolbarCloseText: calendar.params.yearPickerCloseText,
+      renderToolbar: picker => `<div class="toolbar toolbar-top"><div class="toolbar-inner"><div class="left"></div><div class="right"><a class="link popover-close"><i class="icon icon-close"></i>${picker.params.toolbarCloseText ? `<span>${picker.params.toolbarCloseText}</span>` : ''}</a></div></div></div>`,
       cols: [{
         values: years
       }]
@@ -1569,6 +1575,7 @@ class Calendar extends Framework7Class {
       toolbar: calendar.params.timePickerToolbar,
       rotateEffect: false,
       toolbarCloseText: calendar.params.timePickerCloseText,
+      renderToolbar: picker => `<div class="toolbar toolbar-top"><div class="toolbar-inner"><div class="left"></div><div class="right"><a class="link popover-close"><i class="icon icon-close"></i>${picker.params.toolbarCloseText ? `<span>${picker.params.toolbarCloseText}</span>` : ''}</a></div></div></div>`,
       cols: [{
         values: hoursArr
       }, {

@@ -32,6 +32,15 @@
     }
   }
 }
+.ios-color-vars(@ruleset) {
+  & when (@includeIosTheme) {
+    .ios,
+    .ios .dark,
+    .ios [class*='color-'] {
+      @ruleset();
+    }
+  }
+}
 .md-vars(@ruleset) {
   & when (@includeMdTheme) {
     .md {
