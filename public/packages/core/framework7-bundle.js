@@ -1,13 +1,13 @@
 /**
- * Framework7 9.0.2
+ * Framework7 9.0.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2025 Vladimir Kharlampidi
+ * Copyright 2014-2026 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: December 5, 2025
+ * Released on: February 13, 2026
  */
 
 (function (global, factory) {
@@ -6599,7 +6599,7 @@
           touchRippleElements: '.ripple, .link, .item-link, .list label.item-content, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .list.accordion-list .accordion-item-toggle',
           touchRippleInsetElements: '.ripple-inset, .icon-only, .searchbar-disable-button, .input-clear-button, .notification-close-button, .md .navbar .link.back',
           touchHighlight: true,
-          touchHighlightElements: '.toolbar-pane, .navbar .left, .navbar .right, .popover-inner, .actions-group:not(.actions-grid .actions-group), .searchbar-input-wrap, .searchbar-disable-button, .subnavbar, .searchbar-input-wrap .autocomplete-dropdown, .messagebar-area, .notification, .toast, .fab > a'
+          touchHighlightElements: '.toolbar-pane, .navbar .left, .navbar .right, .actions-group:not(.actions-grid .actions-group), .searchbar-input-wrap, .searchbar-disable-button, .subnavbar, .searchbar-input-wrap .autocomplete-dropdown, .messagebar-area, .notification, .toast, .fab > a'
         }
       },
       create() {
@@ -13873,6 +13873,7 @@
         if (!el) return;
         if (e.type === 'pointerdown') {
           data.linkEls = el.querySelectorAll('.tab-link');
+          data.activeIndex = [...data.linkEls].findIndex(link => link.classList.contains('tab-link-active'));
           data.rect = toolbarPaneEl.getBoundingClientRect();
           data.touched = true;
           setHighlightOnTouch(data, e);
@@ -13889,6 +13890,18 @@
           data.moved = false;
           unsetHighlightOnTouch(data);
           stopAnimation(data);
+        }
+        if (e.type === 'pointercancel') {
+          if (!data.touched) return;
+          data.touched = false;
+          data.moved = false;
+          data.setTransform = null;
+          stopAnimation(data);
+          if (highlightEl) {
+            highlightEl.classList.remove('tab-link-highlight-pressed');
+            highlightEl.style.transform = `translateX(${data.activeIndex * 100}%)`;
+            highlightEl.style.transitionTimingFunction = '';
+          }
         }
       };
       el.addEventListener('touchstart', el.f7ToolbarOnPointer, {
@@ -24389,6 +24402,10 @@
         super(params, [app]);
         const calendar = this;
         calendar.params = extend$3({}, app.params.calendar, params);
+        // dateFormat should not be deep-merged, instance value must fully replace app default
+        if (typeof params.dateFormat !== 'undefined') {
+          calendar.params.dateFormat = params.dateFormat;
+        }
         let $containerEl;
         if (calendar.params.containerEl) {
           $containerEl = $(calendar.params.containerEl);
@@ -25816,6 +25833,7 @@
           toolbar: calendar.params.monthPickerToolbar,
           rotateEffect: false,
           toolbarCloseText: calendar.params.monthPickerCloseText,
+          renderToolbar: picker => `<div class="toolbar toolbar-top"><div class="toolbar-inner"><div class="left"></div><div class="right"><a class="link popover-close"><i class="icon icon-close"></i>${picker.params.toolbarCloseText ? `<span>${picker.params.toolbarCloseText}</span>` : ''}</a></div></div></div>`,
           cols: [{
             values,
             displayValues
@@ -25881,6 +25899,7 @@
           toolbar: calendar.params.yearPickerToolbar,
           rotateEffect: false,
           toolbarCloseText: calendar.params.yearPickerCloseText,
+          renderToolbar: picker => `<div class="toolbar toolbar-top"><div class="toolbar-inner"><div class="left"></div><div class="right"><a class="link popover-close"><i class="icon icon-close"></i>${picker.params.toolbarCloseText ? `<span>${picker.params.toolbarCloseText}</span>` : ''}</a></div></div></div>`,
           cols: [{
             values: years
           }]
@@ -25949,6 +25968,7 @@
           toolbar: calendar.params.timePickerToolbar,
           rotateEffect: false,
           toolbarCloseText: calendar.params.timePickerCloseText,
+          renderToolbar: picker => `<div class="toolbar toolbar-top"><div class="toolbar-inner"><div class="left"></div><div class="right"><a class="link popover-close"><i class="icon icon-close"></i>${picker.params.toolbarCloseText ? `<span>${picker.params.toolbarCloseText}</span>` : ''}</a></div></div></div>`,
           cols: [{
             values: hoursArr
           }, {

@@ -1,13 +1,13 @@
 /**
- * Framework7 9.0.2
+ * Framework7 9.0.3
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
- * Copyright 2014-2025 Vladimir Kharlampidi
+ * Copyright 2014-2026 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: December 5, 2025
+ * Released on: February 13, 2026
  */
 
 /*====================
@@ -4203,9 +4203,6 @@ li.list-group-title:after,
   --f7-button-small-font-weight: 500;
   --f7-segmented-strong-button-text-transform: none;
   --f7-segmented-strong-button-active-font-weight: 600;
-  --f7-button-tonal-bg-color: rgba(var(--f7-theme-color-rgb), 0.15);
-  --f7-button-tonal-pressed-bg-color: rgba(var(--f7-theme-color-rgb), 0.25);
-  --f7-button-tonal-text-color: var(--f7-theme-color);
   --f7-segmented-strong-bg-color: rgba(0, 0, 0, 0.07);
   --f7-segmented-strong-button-pressed-bg-color: rgba(0, 0, 0, 0.07);
 }
@@ -4213,6 +4210,13 @@ li.list-group-title:after,
 .ios.dark {
   --f7-segmented-strong-bg-color: rgba(255, 255, 255, 0.1);
   --f7-segmented-strong-button-pressed-bg-color: rgba(255, 255, 255, 0.04);
+}
+.ios,
+.ios .dark,
+.ios [class*='color-'] {
+  --f7-button-tonal-bg-color: rgba(var(--f7-theme-color-rgb), 0.15);
+  --f7-button-tonal-pressed-bg-color: rgba(var(--f7-theme-color-rgb), 0.25);
+  --f7-button-tonal-text-color: var(--f7-theme-color);
 }
 .md {
   --f7-button-font-size: 14px;
@@ -4749,7 +4753,6 @@ button .ripple-wave,
 .ios .toolbar-pane,
 .ios .navbar .left,
 .ios .navbar .right,
-.ios .popover-inner,
 .ios .actions-group:not(.actions-grid .actions-group),
 .ios .searchbar-input-wrap,
 .ios .searchbar-disable-button,

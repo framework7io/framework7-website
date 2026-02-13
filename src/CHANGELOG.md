@@ -1,5 +1,18 @@
 # Change Log
 
+# [9.0.3](https://github.com/framework7io/framework7/compare/v9.0.2...v9.0.3) (2026-02-13)
+
+### Bug Fixes
+
+- **calendar:** fix dateFormat overrides ([d8e8167](https://github.com/framework7io/framework7/commit/d8e8167dc2753bb080024c51689dea30f955272a)), closes [#4374](https://github.com/framework7io/framework7/issues/4374)
+- **calendar:** fix wrong nested popover position in MD theme ([783a92f](https://github.com/framework7io/framework7/commit/783a92fecf17f55c13f98707ada149a656ec9801))
+- **calendar:** fixes calendar nested picker closes calendar ([18b0030](https://github.com/framework7io/framework7/commit/18b0030e2e45594d44d3836fc4272251ea32225e)), closes [#4378](https://github.com/framework7io/framework7/issues/4378)
+- **data-table:** styles for data-table sorting ([5f9e33b](https://github.com/framework7io/framework7/commit/5f9e33b9d4b4fadbf54f8f8396869658989d01a1)), closes [#4377](https://github.com/framework7io/framework7/issues/4377)
+- **dialog:** fix button color ignored in iOS theme ([ce78c34](https://github.com/framework7io/framework7/commit/ce78c34f37db516f8223597c92024de68e517934)), closes [#4373](https://github.com/framework7io/framework7/issues/4373)
+- **popover:** restore scrolling on popover by disabling touch highlight on it ([4881641](https://github.com/framework7io/framework7/commit/488164110e88f1cee4529fcb3990bd1182fec6da)), closes [#4355](https://github.com/framework7io/framework7/issues/4355)
+- **svelte:** add inputmode param to input ([#4379](https://github.com/framework7io/framework7/issues/4379)) ([11ce150](https://github.com/framework7io/framework7/commit/11ce1503ab22f2dae1a44fcc34b81f1118e5f791))
+- **tabbar:** correctly handle pointercancel ([a620a99](https://github.com/framework7io/framework7/commit/a620a999b280511d5f3e7a1d497a85369b7249bc)), closes [#4380](https://github.com/framework7io/framework7/issues/4380) [#4381](https://github.com/framework7io/framework7/issues/4381)
+
 # [9.0.2](https://github.com/framework7io/framework7/compare/v9.0.1...v9.0.2) (2025-12-05)
 
 ### Bug Fixes
