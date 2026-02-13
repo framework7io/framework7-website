@@ -1,4 +1,29 @@
 ##########
+- iconUrl: "#{cdn}/i/showcase/postalpoint-icon.png"
+  iconRounded: false
+  title: "PostalPoint Retail Shipping"
+  author:
+    url: https://postalpoint.app
+    name: PostalPortal LLC
+  links:
+    website: https://postalpoint.app
+  description: |
+    Run a pack-and-ship store, sell shipping services, rent mailboxes, sell merchandise, and more with PostalPoint.
+  features:
+  - Easily create shipments and sell shipping labels at whatever markup you choose
+  - Manage mailboxes and customer packages, and get automatic rent payments
+  - Print and sell U.S. postage stamps on demand
+  - Get paid with the fully-integrated cash register, with card reader support
+  - Extend PostalPoint with JavaScript plugins to seamlessly integrate additional shipping carriers, card payment processors, bookkeeping software, and more.
+  - Self-serve kiosk mode for basic shipping and package drop-offs/returns
+  - Integrates directly with hardware, including barcode scanners, scales, receipt and label printers, and card readers
+  - Available to download for Linux and Windows
+  screenshots:
+  - "#{cdn}/i/showcase/postalpoint-01.png"
+  - "#{cdn}/i/showcase/postalpoint-02.png"
+  - "#{cdn}/i/showcase/postalpoint-03.png"
+  - "#{cdn}/i/showcase/postalpoint-04.png"
+  
 - iconUrl: "#{cdn}/i/showcase/fakegps-icon.png"
   iconRounded: true
   title: "Fake GPS - Simulate GPS Location"
