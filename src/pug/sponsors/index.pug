@@ -13,7 +13,7 @@ block content
   .sponsors.sponsors-gold
     if (sponsors.goldSponsor)
       each sponsor in sponsors.goldSponsor
-        a.sponsor(href=sponsor.link, target="_blank", rel="noopener")
+        a.sponsor(href=sponsor.link, target="_blank", rel="sponsored")
           img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
   a.sponsor.sponsor-join(href="https://opencollective.com/framework7/contribute/gold-sponsor-15263/checkout?interval=month&amount=250&contributeAs=vladimirkharlampidi", target="_blank") Become Gold Sponsor
 
@@ -21,7 +21,7 @@ block content
   .sponsors.sponsors-silver
     if (sponsors.silverSponsor)
       each sponsor in sponsors.silverSponsor
-        a.sponsor(href=sponsor.link, target="_blank", rel="noopener")
+        a.sponsor(href=sponsor.link, target="_blank", rel="sponsored")
           img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
   a.sponsor.sponsor-join(href="https://opencollective.com/framework7/contribute/silver-sponsor-yearly-15265/checkout?interval=year&amount=960&contributeAs=vladimirkharlampidi", target="_blank") Become Silver Sponsor
 
@@ -29,7 +29,7 @@ block content
   .sponsors.sponsors-top
     if (sponsors.topSupporter)
       each sponsor in sponsors.topSupporter
-        a.sponsor(href=sponsor.link, target="_blank", rel="noopener")
+        a.sponsor(href=sponsor.link, target="_blank", rel="sponsored")
           img(src='/i/sponsors/' + sponsor.image, alt=sponsor.title, title=sponsor.title)
   a.sponsor.sponsor-join(href="https://opencollective.com/framework7/contribute/sponsor-yearly-15262/checkout?interval=year&amount=480&contributeAs=vladimirkharlampidi", target="_blank") Become Top Supporter
 
