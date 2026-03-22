@@ -1,4 +1,40 @@
 ##########
+- iconUrl: '#{cdn}/i/showcase/coherence-app-icon.png'
+  iconRounded: true
+  title: 'Coherence - Cardiac Coherence Breathing App'
+  author:
+    url: https://coherence-app.com
+    name: Genux LLC
+  links:
+    appstore: https://apps.apple.com/app/cardiac-coherence-breathing/id6759764067
+    googleplay: https://play.google.com/store/apps/details?id=com.genux.coherence&utm_source=framework7&utm_medium=app-showcase
+    website: https://coherence-app.com/about-coherence/
+  description: |
+      Coherence is a powerful science-backed breathing app designed to synchronize your heart and mind through cardiac coherence breathing.
+      Based on over 30 years of research, this simple exercise helps you relax from stress, sharpen mental focus and achieve physiological balance in a few minutes.
+      
+      🌱 Completely free, works offline, no ads or account needed.
+  features:
+    - Guided Cardiac Coherence Breathing Exercises
+    - Beautiful, Minimalist Design for a calming experience
+    - Personalized Reminders to Help You Stay Consistent
+    - Progress Tracking and Session History to Monitor Your Journey
+    - Real-Time Visual Feedback to Enhance Focus and Relaxation
+    - Customizable Session Duration
+    - Scientifically Backed Techniques
+    - Offline Functionality for Anytime, Anywhere Access
+    - Available on iOS and Android, phone, tablets, computers and on the Web
+  screenshots:
+    - '#{cdn}/i/showcase/coherence-app-0.png'
+    - '#{cdn}/i/showcase/coherence-app-1.png'
+    - '#{cdn}/i/showcase/coherence-app-2.png'
+    - '#{cdn}/i/showcase/coherence-app-3.png'
+    - '#{cdn}/i/showcase/coherence-app-4.png'
+    - '#{cdn}/i/showcase/coherence-app-5.png'
+    - '#{cdn}/i/showcase/coherence-app-6.png'
+    - '#{cdn}/i/showcase/coherence-app-7.png'
+    - '#{cdn}/i/showcase/coherence-app-8.png'
+##########
 - iconUrl: '#{cdn}/i/showcase/lea-pulse.png'
   iconRounded: true
   title: 'LEA Pulse - Gateway to LEA Blockchain'
