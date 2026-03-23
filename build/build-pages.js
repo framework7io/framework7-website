@@ -1,7 +1,6 @@
 const gulp = require('gulp');
 const gulpData = require('gulp-data');
 const gulpPug = require('gulp-pug');
-const connect = require('gulp-connect');
 const pug = require('pug');
 const through2 = require('through2');
 const fs = require('fs');
@@ -165,7 +164,6 @@ function buildPages(
       console.log(err);
     })
     .pipe(gulp.dest(dest))
-    .pipe(connect.reload())
     .on('end', () => {
       if (name === 'all') cleanup();
       console.log(`Finished pug ${name} in ${Date.now() - time}ms`);

@@ -1,0 +1,19 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "framework7-website",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2025-11-17",
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./public",
+    "not_found_handling": "none",
+    "html_handling": "auto-trailing-slash",
+  },
+  "observability": {
+    "enabled": false,
+  },
+}

@@ -3,7 +3,6 @@ const crypto = require('crypto');
 const path = require('path');
 const gulp = require('gulp');
 const gulpLess = require('gulp-less');
-const connect = require('gulp-connect');
 const cleanCss = require('gulp-clean-css');
 
 function buildLess(cb) {
@@ -22,7 +21,6 @@ function buildLess(cb) {
     )
     .pipe(cleanCss({ compatibility: '*,-properties.zeroUnits', level: 2 }))
     .pipe(gulp.dest(cssFolder))
-    .pipe(connect.reload())
     .on('end', () => {
       const content = fs.readFileSync(`${cssFolder}/main.css`);
       const hash = crypto.createHash('md5').update(content).digest('hex').slice(0, 6);

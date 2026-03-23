@@ -1,6 +1,4 @@
 const gulp = require('gulp');
-const connect = require('gulp-connect');
-const open = require('gulp-open');
 const path = require('path');
 
 const buildStyles = require('./build/build-styles');
@@ -87,24 +85,6 @@ gulp.task('watch', () => {
   });
 });
 
-/* =================================
-Server
-================================= */
-gulp.task('connect', () => {
-  return connect.server({
-    root: ['./public/'],
-    livereload: true,
-    port: '3001',
-  });
-});
-
-gulp.task('open', () => {
-  return gulp.src('./public/index.html').pipe(open({ uri: 'http://localhost:3001/index.html' }));
-});
-
-// gulp.task('server', gulp.parallel(['watch', 'connect', 'open']));
-gulp.task('server', gulp.parallel(['watch', 'connect']));
-
-gulp.task('default', gulp.series(['server']));
+gulp.task('default', gulp.series(['watch']));
 
 gulp.task('test', gulp.series(['build']));
