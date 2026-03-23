@@ -1,5 +1,14 @@
 import type { Tool, ToolCallParams, ToolCallResult } from '../types';
 import { getTools } from './initialize';
+import { searchApi } from '../tools/search-api';
+import { getComponent } from '../tools/get-component';
+import { getParameter } from '../tools/get-parameter';
+import { getMethod } from '../tools/get-method';
+import { getEvent } from '../tools/get-event';
+import { getCssVariables } from '../tools/get-css-variables';
+import { listComponents } from '../tools/list-components';
+import { listDemos } from '../tools/list-demos';
+import { getDemo } from '../tools/get-demo';
 
 export function handleToolsList(): Tool[] {
   return getTools();
@@ -14,41 +23,40 @@ export async function handleToolsCall(
 
   switch (name) {
     case 'search-api': {
-      // TODO: implement in Phase 4
-      return { content: [{ type: 'text', text: 'Not implemented yet' }], isError: true };
+      const searchArgs = args as {
+        query: string;
+        type?: 'parameter' | 'method' | 'event' | 'css-variable' | 'all';
+      };
+      return await searchApi(searchArgs);
     }
 
-    case 'get-component': {
-      return { content: [{ type: 'text', text: 'Not implemented yet' }], isError: true };
-    }
+    case 'get-component':
+      return await getComponent(args as { name: string });
 
-    case 'get-parameter': {
-      return { content: [{ type: 'text', text: 'Not implemented yet' }], isError: true };
-    }
+    case 'get-parameter':
+      return await getParameter(args as { name: string; component?: string });
 
-    case 'get-method': {
-      return { content: [{ type: 'text', text: 'Not implemented yet' }], isError: true };
-    }
+    case 'get-method':
+      return await getMethod(args as { name: string; component?: string });
 
-    case 'get-event': {
-      return { content: [{ type: 'text', text: 'Not implemented yet' }], isError: true };
-    }
+    case 'get-event':
+      return await getEvent(args as { name: string; component?: string });
 
-    case 'get-css-variables': {
-      return { content: [{ type: 'text', text: 'Not implemented yet' }], isError: true };
-    }
+    case 'get-css-variables':
+      return await getCssVariables(args as { component: string });
 
-    case 'list-components': {
-      return { content: [{ type: 'text', text: 'Not implemented yet' }], isError: true };
-    }
+    case 'list-components':
+      return await listComponents();
 
-    case 'list-demos': {
-      return { content: [{ type: 'text', text: 'Not implemented yet' }], isError: true };
-    }
+    case 'list-demos':
+      return await listDemos();
 
-    case 'get-demo': {
-      return { content: [{ type: 'text', text: 'Not implemented yet' }], isError: true };
-    }
+    case 'get-demo':
+      return await getDemo(
+        args as { slug: string; framework: string },
+        assets,
+        baseUrl
+      );
 
     default:
       return {
