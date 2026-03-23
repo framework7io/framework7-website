@@ -24,7 +24,7 @@
     "dev": "npx npm-run-all --parallel watch worker-dev",
     "watch": "gulp watch",
     "worker-dev": "wrangler dev --port 3001",
-    "build": "gulp build",
+    "build": "gulp build && npm run build-mcp-data",
     "build-js": "gulp js",
     "build-less": "gulp less",
     "build-pug": "gulp pug",
