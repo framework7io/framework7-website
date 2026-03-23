@@ -27,29 +27,29 @@ export async function handleToolsCall(
         query: string;
         type?: 'parameter' | 'method' | 'event' | 'css-variable' | 'all';
       };
-      return await searchApi(searchArgs);
+      return searchApi(searchArgs);
     }
 
     case 'get-component':
-      return await getComponent(args as { name: string });
+      return getComponent(args as { name: string });
 
     case 'get-parameter':
-      return await getParameter(args as { name: string; component?: string });
+      return getParameter(args as { name: string; component?: string });
 
     case 'get-method':
-      return await getMethod(args as { name: string; component?: string });
+      return getMethod(args as { name: string; component?: string });
 
     case 'get-event':
-      return await getEvent(args as { name: string; component?: string });
+      return getEvent(args as { name: string; component?: string });
 
     case 'get-css-variables':
-      return await getCssVariables(args as { component: string });
+      return getCssVariables(args as { component: string });
 
     case 'list-components':
-      return await listComponents();
+      return listComponents();
 
     case 'list-demos':
-      return await listDemos();
+      return listDemos();
 
     case 'get-demo':
       return await getDemo(

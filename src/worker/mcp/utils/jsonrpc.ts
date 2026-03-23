@@ -103,26 +103,3 @@ export function createMethodNotFoundError(
   );
 }
 
-export function createInvalidParamsError(
-  id: string | number | null,
-  message?: string
-): JsonRpcResponse {
-  return createError(
-    id,
-    JSON_RPC_ERROR_CODES.INVALID_PARAMS,
-    message || 'Invalid params'
-  );
-}
-
-export function createInternalError(
-  id: string | number | null,
-  message?: string,
-  data?: unknown
-): JsonRpcResponse {
-  return createError(
-    id,
-    JSON_RPC_ERROR_CODES.INTERNAL_ERROR,
-    message || 'Internal error',
-    data
-  );
-}

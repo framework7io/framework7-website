@@ -14,9 +14,9 @@ interface SearchApiParams {
   type?: 'parameter' | 'method' | 'event' | 'css-variable' | 'all';
 }
 
-export async function searchApi(
+export function searchApi(
   params: SearchApiParams
-): Promise<ToolCallResult> {
+): ToolCallResult {
   try {
     const { query, type = 'all' } = params;
 

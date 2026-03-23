@@ -8,6 +8,7 @@ import {
   createMethodNotFoundError,
 } from './utils/jsonrpc';
 import { JSON_RPC_ERROR_CODES } from './types';
+import type { InitializeParams } from './types';
 import { handleInitialize } from './handlers/initialize';
 import {
   handleToolsList,
@@ -66,9 +67,6 @@ mcpApp.post('/', async (c) => {
 
     // Handle notifications (requests without id) - these don't expect a response
     if (id === undefined) {
-      if (method === 'notifications/initialized') {
-        return c.body(null, 204);
-      }
       return c.body(null, 204);
     }
 
@@ -77,7 +75,7 @@ mcpApp.post('/', async (c) => {
 
     switch (method) {
       case 'initialize': {
-        result = handleInitialize(params as Parameters<typeof handleInitialize>[0]);
+        result = handleInitialize(params as InitializeParams);
         break;
       }
 

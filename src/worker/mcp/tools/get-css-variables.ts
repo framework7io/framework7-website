@@ -1,14 +1,14 @@
 import { getCssVariablesData } from '../utils/data-loader';
-import { toolResult, toolError, catchToolError } from '../utils/tool-helpers';
+import { toolResult, toolError, catchToolError, normalizeComponentName } from '../utils/tool-helpers';
 import type { ToolCallResult } from '../types';
 
 interface GetCssVariablesParams {
   component: string;
 }
 
-export async function getCssVariables(
+export function getCssVariables(
   params: GetCssVariablesParams
-): Promise<ToolCallResult> {
+): ToolCallResult {
   try {
     const { component } = params;
 
@@ -19,14 +19,11 @@ export async function getCssVariables(
     }
 
     const cssVarsData = getCssVariablesData();
-    const normalized = component.toLowerCase().replace(/[-_\s]/g, '');
+    const normalized = normalizeComponentName(component);
     let matchedKey: string | null = null;
 
     for (const key of Object.keys(cssVarsData)) {
-      if (
-        key === component ||
-        key.toLowerCase().replace(/[-_\s]/g, '') === normalized
-      ) {
+      if (normalizeComponentName(key) === normalized) {
         matchedKey = key;
         break;
       }

@@ -1,3 +1,5 @@
+import { normalizeComponentName } from './tool-helpers';
+
 interface ComponentData {
   readonly dirName: string;
   readonly name: string;
@@ -48,7 +50,7 @@ interface PropertyItem {
   readonly description?: string;
 }
 
-interface CssVariableItem {
+export interface CssVariableItem {
   readonly name: string;
   readonly value: string;
 }
@@ -445,9 +447,3 @@ export function findEvent(
   return null;
 }
 
-/**
- * Normalize component name for matching (kebab-case, PascalCase, lowercase all match)
- */
-function normalizeComponentName(name: string): string {
-  return name.toLowerCase().replace(/[-_\s]/g, '');
-}

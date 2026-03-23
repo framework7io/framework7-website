@@ -6,9 +6,9 @@ interface GetComponentParams {
   name: string;
 }
 
-export async function getComponent(
+export function getComponent(
   params: GetComponentParams
-): Promise<ToolCallResult> {
+): ToolCallResult {
   try {
     const { name } = params;
 

@@ -1,13 +1,10 @@
 import { componentsData } from '../data/components';
 import { cssVariablesData } from '../data/css-variables';
 import { demosData } from '../data/demos';
+import { normalizeComponentName } from './tool-helpers';
+import type { CssVariableItem } from './search';
 
-interface CssVariableEntry {
-  readonly name: string;
-  readonly value: string;
-}
-
-type CssVariablesMap = Record<string, Record<string, readonly CssVariableEntry[]>>;
+type CssVariablesMap = Record<string, Record<string, readonly CssVariableItem[]>>;
 
 // Cache for demo files
 const demoCache = new Map<string, unknown>();
@@ -28,12 +25,12 @@ export function getDemosData() {
  * Get a component by name (supports kebab-case, PascalCase, or lowercase)
  */
 export function getComponentByName(name: string) {
-  const normalized = name.toLowerCase().replace(/[-_\s]/g, '');
+  const normalized = normalizeComponentName(name);
 
   for (const [key, comp] of Object.entries(componentsData)) {
     if (
-      key.toLowerCase() === normalized ||
-      comp.dirName.toLowerCase().replace(/[-_\s]/g, '') === normalized
+      normalizeComponentName(key) === normalized ||
+      normalizeComponentName(comp.dirName) === normalized
     ) {
       return { key, data: comp };
     }

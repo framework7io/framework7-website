@@ -85,9 +85,3 @@ export interface ToolCallResult {
   isError?: boolean;
 }
 
-// Server Capabilities
-export interface ServerCapabilities {
-  tools: {
-    listChanged?: boolean;
-  };
-}

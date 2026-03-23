@@ -371,12 +371,9 @@ function parseCssToVariables(css) {
     if (selector === ':root') {
       result.root.push(...vars);
     } else if (selector.includes('.ios') && selector.includes('.dark')) {
-      // ios dark - tag as ios-dark
-      vars.forEach((v) => (v.scope = 'dark'));
-      result.ios.push(...vars);
+      result.dark.push(...vars);
     } else if (selector.includes('.md') && selector.includes('.dark')) {
-      vars.forEach((v) => (v.scope = 'dark'));
-      result.md.push(...vars);
+      result.dark.push(...vars);
     } else if (selector.includes('.ios')) {
       result.ios.push(...vars);
     } else if (selector.includes('.md')) {
@@ -384,7 +381,6 @@ function parseCssToVariables(css) {
     } else if (selector.includes('.dark')) {
       result.dark.push(...vars);
     } else {
-      // Light/default scope vars
       result.root.push(...vars);
     }
   }

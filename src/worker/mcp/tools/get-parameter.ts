@@ -8,9 +8,9 @@ interface GetParameterParams {
   component?: string;
 }
 
-export async function getParameter(
+export function getParameter(
   params: GetParameterParams
-): Promise<ToolCallResult> {
+): ToolCallResult {
   try {
     const { name, component } = params;
 

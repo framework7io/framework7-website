@@ -1,5 +1,12 @@
 import type { ToolCallResult } from '../types';
 
+/**
+ * Normalize component name for matching (kebab-case, PascalCase, lowercase all match)
+ */
+export function normalizeComponentName(name: string): string {
+  return name.toLowerCase().replace(/[-_\s]/g, '');
+}
+
 export function toolResult(data: unknown): ToolCallResult {
   return {
     content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],

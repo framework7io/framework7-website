@@ -2,7 +2,7 @@ import { getComponentsData } from '../utils/data-loader';
 import { toolResult, catchToolError } from '../utils/tool-helpers';
 import type { ToolCallResult } from '../types';
 
-export async function listComponents(): Promise<ToolCallResult> {
+export function listComponents(): ToolCallResult {
   try {
     const componentsData = getComponentsData();
 

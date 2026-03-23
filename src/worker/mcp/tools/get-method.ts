@@ -8,9 +8,9 @@ interface GetMethodParams {
   component?: string;
 }
 
-export async function getMethod(
+export function getMethod(
   params: GetMethodParams
-): Promise<ToolCallResult> {
+): ToolCallResult {
   try {
     const { name, component } = params;
 
