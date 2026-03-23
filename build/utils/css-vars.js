@@ -4,6 +4,7 @@ const less = require('less');
 const codeFilter = require('./code-filter');
 const makeId = require('./make-id');
 const componentsWithCssVars = require('./components-with-css-vars');
+const LESS_MIXINS = require('./less-mixins');
 
 module.exports = (component, info = true, title = 'CSS Variables') => {
   if (componentsWithCssVars.indexOf(component) < 0) return '';
@@ -12,50 +13,7 @@ module.exports = (component, info = true, title = 'CSS Variables') => {
     'utf8',
   );
   let css;
-  content = `
-.ios-vars(@ruleset) {
-  .ios {
-    @ruleset();
-  }
-}
-.md-vars(@ruleset) {
-  .md {
-    @ruleset();
-  }
-}
-.dark-vars(@ruleset) {
-  .dark, &.dark {
-    @ruleset();
-  }
-}
-.light-vars(@ruleset) {
-  & {
-    @ruleset();
-  }
-}
-.ltr(@ruleset) {
-  @ruleset();
-}
-.rtl(@ruleset) {}
-
-.md-color-vars(@ruleset) {
-  .md,
-  .md .dark,
-  .md [class*='color-'] {
-    @ruleset();
-  }
-}
-
-.ios-color-vars(@ruleset) {
-  .ios,
-  .ios .dark,
-  .ios [class*='color-'] {
-    @ruleset();
-  }
-}
-
-${content}
-  `;
+  content = LESS_MIXINS + '\n' + content;
   less.render(content, (err, output) => {
     css = output.css;
   });
