@@ -8,7 +8,6 @@ export function listComponents(): ToolCallResult {
 
     const components = Object.values(componentsData).map((comp) => ({
       name: comp.name,
-      dirName: comp.dirName,
       hasParameters: comp.parameters.length > 0,
       hasEvents:
         comp.events.length > 0 ||

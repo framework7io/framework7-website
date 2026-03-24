@@ -24,7 +24,8 @@ export function getComponent(
     const cssVarsData = getCssVariablesData();
     const cssVars = cssVarsData[comp.data.dirName] || null;
 
-    return toolResult({ ...comp.data, cssVariables: cssVars });
+    const { dirName, ...componentData } = comp.data;
+    return toolResult({ ...componentData, cssVariables: cssVars });
   } catch (error) {
     return catchToolError(error);
   }
