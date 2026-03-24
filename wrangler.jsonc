@@ -12,6 +12,7 @@
     "directory": "./public",
     "not_found_handling": "none",
     "html_handling": "auto-trailing-slash",
+    "run_worker_first": true,
   },
   "observability": {
     "enabled": false,
