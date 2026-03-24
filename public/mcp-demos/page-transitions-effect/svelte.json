@@ -1,0 +1,1 @@
+{"slug":"page-transitions-effect","framework":"svelte","source":"<script>\n  import { Page, Navbar, Block } from 'framework7-svelte';\n\n  export let effect = '';\n</script>\n\n<Page>\n  <Navbar title={effect} backLink />\n\n  <Block class=\"text-align-center\">\n    <p>This page was loaded with <b>{effect}</b> transition.</p>\n  </Block>\n</Page>\n"}

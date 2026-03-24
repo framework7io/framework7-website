@@ -63,10 +63,6 @@ public/kitchen-sink/svelte/vite.config.js
 
 
 # Auto-generated MCP data
-src/worker/mcp/data/components.ts
-src/worker/mcp/data/css-variables.ts
-src/worker/mcp/data/demos.ts
-public/mcp-demos/
 
 .claude
 .agents

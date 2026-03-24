@@ -14,6 +14,7 @@ const ROOT = path.resolve(__dirname, '..');
 const F7_REPO = path.resolve(ROOT, '../framework7');
 const F7_COMPONENTS = path.resolve(F7_REPO, 'src/core/components');
 const DEMOS_DIR = path.resolve(ROOT, 'src/pug/docs-demos');
+const KITCHEN_SINK_DIR = path.resolve(ROOT, 'public/kitchen-sink');
 const DATA_DIR = path.resolve(ROOT, 'src/worker/mcp/data');
 const MCP_DEMOS_DIR = path.resolve(ROOT, 'public/mcp-demos');
 
@@ -433,23 +434,59 @@ async function buildCssVariablesData() {
 // Part 3: Demo catalog
 // ──────────────────────────────────────────────
 
+function getKitchenSinkPagesDir(fw) {
+  if (fw === 'core') return path.join(KITCHEN_SINK_DIR, 'core/pages');
+  return path.join(KITCHEN_SINK_DIR, `${fw}/src/pages`);
+}
+
+function getKitchenSinkExt(fw) {
+  if (fw === 'core') return '.html';
+  if (fw === 'react') return '.jsx';
+  if (fw === 'vue') return '.vue';
+  if (fw === 'svelte') return '.svelte';
+  return null;
+}
+
+// Files to skip from kitchen-sink (not real demos)
+const SKIP_SLUGS = new Set(['404', 'about', 'home']);
+
 function buildDemosData() {
   const frameworks = ['core', 'vue', 'react', 'svelte'];
   const catalog = {};
+  // Track source file paths: catalog[slug].sources[fw] = filePath
+  const sources = {};
 
+  // 1. Scan kitchen-sink pages (primary source)
+  for (const fw of frameworks) {
+    const pagesDir = getKitchenSinkPagesDir(fw);
+    if (!fs.existsSync(pagesDir)) continue;
+
+    const ext = getKitchenSinkExt(fw);
+    const files = fs.readdirSync(pagesDir).filter((f) => f.endsWith(ext));
+
+    for (const file of files) {
+      const slug = file.replace(ext, '');
+      if (SKIP_SLUGS.has(slug)) continue;
+
+      if (!catalog[slug]) {
+        catalog[slug] = { slug, name: kebabToTitle(slug), frameworks: [] };
+        sources[slug] = {};
+      }
+      if (!catalog[slug].frameworks.includes(fw)) {
+        catalog[slug].frameworks.push(fw);
+      }
+      sources[slug][fw] = path.join(pagesDir, file);
+    }
+  }
+
+  // 2. Scan docs-demos for any additional demos not already found
   for (const fw of frameworks) {
     const fwDir = path.join(DEMOS_DIR, fw);
     if (!fs.existsSync(fwDir)) continue;
 
-    const files = fs.readdirSync(fwDir).filter((f) => {
-      // Skip layout/helper files
-      if (f.startsWith('_')) return false;
-      // Include .f7.html for core, .js/.jsx/.vue/.svelte for frameworks
-      return true;
-    });
+    const files = fs.readdirSync(fwDir).filter((f) => !f.startsWith('_'));
 
     for (const file of files) {
-      // Determine slug from filename
       let slug;
       if (file.endsWith('.f7.html')) {
         slug = file.replace('.f7.html', '');
@@ -463,14 +500,19 @@ function buildDemosData() {
         continue;
       }
 
+      if (SKIP_SLUGS.has(slug)) continue;
+
       if (!catalog[slug]) {
-        catalog[slug] = {
-          slug,
-          name: kebabToTitle(slug),
-          frameworks: [],
-        };
+        catalog[slug] = { slug, name: kebabToTitle(slug), frameworks: [] };
+        sources[slug] = {};
       }
-      catalog[slug].frameworks.push(fw);
+      if (!catalog[slug].frameworks.includes(fw)) {
+        catalog[slug].frameworks.push(fw);
+      }
+      // Only use docs-demos source if we don't already have one from kitchen-sink
+      if (!sources[slug][fw]) {
+        sources[slug][fw] = path.join(fwDir, file);
+      }
     }
   }
 
@@ -480,27 +522,17 @@ function buildDemosData() {
   let fileCount = 0;
   for (const demo of demos) {
     for (const fw of demo.frameworks) {
-      const fwDir = path.join(DEMOS_DIR, fw);
-      // Find the demo file
-      const possibleExts =
-        fw === 'core'
-          ? ['.f7.html']
-          : ['.js', '.jsx', '.vue', '.svelte'];
+      const filePath = sources[demo.slug]?.[fw];
+      if (!filePath || !fs.existsSync(filePath)) continue;
 
-      for (const ext of possibleExts) {
-        const filePath = path.join(fwDir, demo.slug + ext);
-        if (fs.existsSync(filePath)) {
-          const source = fs.readFileSync(filePath, 'utf8');
-          const outDir = path.join(MCP_DEMOS_DIR, demo.slug);
-          fs.mkdirSync(outDir, { recursive: true });
-          fs.writeFileSync(
-            path.join(outDir, `${fw}.json`),
-            JSON.stringify({ slug: demo.slug, framework: fw, source }),
-          );
-          fileCount++;
-          break;
-        }
-      }
+      const source = fs.readFileSync(filePath, 'utf8');
+      const outDir = path.join(MCP_DEMOS_DIR, demo.slug);
+      fs.mkdirSync(outDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(outDir, `${fw}.json`),
+        JSON.stringify({ slug: demo.slug, framework: fw, source }),
+      );
+      fileCount++;
     }
   }
 
